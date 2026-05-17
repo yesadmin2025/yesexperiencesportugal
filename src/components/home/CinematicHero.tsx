@@ -467,7 +467,13 @@ export function CinematicHero() {
     }
   };
 
-  const showCta = ctaRevealed;
+  // On mobile we render the editorial copy block immediately (no
+  // cinematic phrase stage), so CTAs + microcopy must also reveal at
+  // t=0 instead of waiting on the desktop sequence timers.
+  const isMobile = typeof window !== "undefined"
+    ? window.matchMedia?.("(max-width: 767px)").matches
+    : false;
+  const showCta = ctaRevealed || isMobile;
 
   return (
     <section
@@ -573,7 +579,7 @@ export function CinematicHero() {
       {!composed && (
         <div
           aria-hidden={composed ? "true" : undefined}
-          className="hero-phrase-stage pointer-events-none absolute inset-0 z-[5]"
+          className="hero-phrase-stage pointer-events-none absolute inset-0 z-[5] hidden md:block"
           data-hero-phrase-stage="true"
         >
           {/* Left-side editorial scrim — keeps the phrase legible without muddying the film */}
@@ -619,17 +625,49 @@ export function CinematicHero() {
         data-hero-composed={composed ? "true" : "false"}
       >
         <div className="hero-story-column mx-auto max-w-[22rem] xs:max-w-[23.25rem] sm:max-w-[36rem] md:mx-0 md:ml-[6vw] md:max-w-[46rem] lg:ml-[8vw]">
-          {/* Story headline + sub kept in DOM (sr-only) for SEO / a11y /
-             SSR copy locks. The visible cinematic story is told entirely
-             through the corner-entering phrases above; only the CTAs +
-             microcopy remain visible at the closing beat. */}
-          <div className="sr-only">
-            <span data-hero-field="eyebrow">{HERO_COPY.eyebrow}</span>
-            <h1 data-hero-field="headlineLine1 headlineLine2">
-              <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
-              <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
+          {/* Mobile-only editorial copy block — visible from t=0 so
+             phones never see an empty hero waiting on cinematic timers.
+             Desktop keeps the sr-only version + the cinematic phrase
+             stage; this block hides at md+. */}
+          <div className="md:sr-only block mb-6 xs:mb-7 [text-shadow:0_2px_18px_rgba(0,0,0,0.7),0_1px_2px_rgba(0,0,0,0.6)]">
+            <span
+              data-hero-field="eyebrow"
+              className="block [font-family:var(--font-sans)] font-bold uppercase tracking-[0.28em] text-[11px] text-[color:var(--gold-soft)]"
+            >
+              {HERO_COPY.eyebrow}
+            </span>
+            <h1
+              data-hero-field="headlineLine1 headlineLine2"
+              className="mt-4 [font-family:var(--font-display)] font-bold text-[color:var(--ivory)] text-[30px] xs:text-[34px] leading-[1.08] tracking-[-0.022em]"
+            >
+              <span data-hero-field="headlineLine1" className="block">
+                {HERO_COPY.headlineLine1}
+              </span>
+              <span
+                data-hero-field="headlineLine2"
+                className="block mt-1 [font-family:var(--font-serif)] italic font-normal text-[color:var(--gold)] text-[28px] xs:text-[32px] leading-[1.1] tracking-[-0.014em]"
+              >
+                {HERO_COPY.headlineLine2}
+              </span>
             </h1>
-            <p data-hero-field="subheadline">{HERO_COPY.subheadline}</p>
+            <p
+              data-hero-field="subheadline"
+              className="mt-4 [font-family:var(--font-sans)] text-[15px] leading-[1.5] tracking-[0.005em] text-[color:var(--ivory)]/92 max-w-[30ch]"
+            >
+              {HERO_COPY.subheadline}
+            </p>
+          </div>
+
+          {/* Desktop keeps the original sr-only block (cinematic phrases
+             carry the story on md+); the visible mobile block above
+             already provides data-hero-field probes for SSR/a11y. */}
+          <div className="sr-only hidden md:block">
+            <span>{HERO_COPY.eyebrow}</span>
+            <h1>
+              <span>{HERO_COPY.headlineLine1}</span>{" "}
+              <span>{HERO_COPY.headlineLine2}</span>
+            </h1>
+            <p>{HERO_COPY.subheadline}</p>
           </div>
 
           <div className="hero-cta-block">
@@ -637,7 +675,7 @@ export function CinematicHero() {
               <CtaButton
                 to="/builder"
                 variant="primary"
-                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--primary cta-primary min-h-[44px] py-2 px-7 text-[10.75px] tracking-[0.2em] xs:min-h-[46px] xs:text-[11.25px] sm:text-[12px] sm:px-8 rounded-[6px]"
+                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--primary cta-primary w-full sm:w-auto min-h-[48px] py-3.5 px-7 text-[12.5px] tracking-[0.18em] sm:min-h-[46px] sm:text-[12px] sm:py-2 sm:px-8 rounded-[6px]"
                 data-hero-field="primaryCta"
                 data-hero-beat-show={showCta ? "true" : "false"}
                 data-hero-beat-delay="0"
@@ -647,7 +685,7 @@ export function CinematicHero() {
               <CtaButton
                 to="/experiences"
                 variant="ghostDark"
-                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--secondary cta-secondary-dark min-h-[44px] py-2 px-7 text-[10.5px] tracking-[0.18em] xs:min-h-[46px] xs:text-[11px] sm:text-[12px] sm:px-8 rounded-[6px]"
+                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--secondary cta-secondary-dark w-full sm:w-auto min-h-[48px] py-3.5 px-7 text-[12px] tracking-[0.16em] sm:min-h-[46px] sm:text-[12px] sm:py-2 sm:px-8 rounded-[6px]"
                 data-hero-field="secondaryCta"
                 data-cta-stagger="true"
                 data-hero-beat-show={showCta ? "true" : "false"}
@@ -661,7 +699,7 @@ export function CinematicHero() {
               data-hero-field="microcopy"
               data-hero-beat-show={showCta ? "true" : "false"}
               data-hero-beat-delay="320"
-              className="hero-beat hero-beat--rise mt-3.5 xs:mt-4 sm:mt-6 text-[11.75px] xs:text-[12px] sm:text-[13px] leading-[1.5] tracking-[0.025em] text-[color:var(--ivory)]/85 [text-shadow:none]"
+              className="hero-beat hero-beat--rise mt-4 xs:mt-5 sm:mt-6 text-[12.5px] xs:text-[12.75px] sm:text-[13px] leading-[1.5] tracking-[0.025em] text-[color:var(--ivory)]/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]"
             >
               {HERO_COPY.microcopy}
             </p>
