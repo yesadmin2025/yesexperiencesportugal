@@ -622,38 +622,42 @@ export function CinematicHero() {
         data-hero-composed={composed ? "true" : "false"}
       >
         <div className="hero-story-column mx-auto max-w-[22rem] xs:max-w-[23.25rem] sm:max-w-[36rem] md:mx-0 md:ml-[6vw] md:max-w-[46rem] lg:ml-[8vw]">
-          {/* Mobile-only editorial copy block — visible from t=0 so
-             phones never see an empty hero waiting on cinematic timers.
-             Desktop keeps the sr-only version + the cinematic phrase
-             stage; this block hides at md+. */}
-          <div className="md:sr-only block mb-6 xs:mb-7 [text-shadow:0_2px_18px_rgba(0,0,0,0.7),0_1px_2px_rgba(0,0,0,0.6)]">
+          {/* Mobile editorial copy — fades in only AFTER the cinematic
+             phrase sequence has resolved. Soft typographic shadow only
+             (no heavy drop shadow). */}
+          <div
+            className="md:sr-only block mb-6 xs:mb-7 [text-shadow:0_1px_12px_rgba(0,0,0,0.45)] transition-opacity duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{ opacity: composed ? 1 : 0 }}
+            aria-hidden={composed ? undefined : "true"}
+          >
             <span
               data-hero-field="eyebrow"
-              className="block [font-family:var(--font-sans)] font-bold uppercase tracking-[0.28em] text-[11px] text-[color:var(--gold-soft)]"
+              className="block [font-family:var(--font-sans)] font-medium uppercase tracking-[0.32em] text-[10.5px] text-[color:var(--ivory)]/75"
             >
               {HERO_COPY.eyebrow}
             </span>
             <h1
               data-hero-field="headlineLine1 headlineLine2"
-              className="mt-4 [font-family:var(--font-display)] font-bold text-[color:var(--ivory)] text-[30px] xs:text-[34px] leading-[1.08] tracking-[-0.022em]"
+              className="mt-5 [font-family:var(--font-serif)] font-normal text-[color:var(--ivory)] text-[30px] xs:text-[34px] leading-[1.15] tracking-[-0.012em]"
             >
-              <span data-hero-field="headlineLine1" className="block">
+              <span data-hero-field="headlineLine1" className="block font-normal">
                 {HERO_COPY.headlineLine1}
               </span>
               <span
                 data-hero-field="headlineLine2"
-                className="block mt-1 [font-family:var(--font-serif)] italic font-normal text-[color:var(--gold)] text-[28px] xs:text-[32px] leading-[1.1] tracking-[-0.014em]"
+                className="block mt-2 [font-family:var(--font-serif)] italic font-normal text-[color:var(--ivory)]/95 text-[28px] xs:text-[32px] leading-[1.18] tracking-[-0.008em]"
               >
                 {HERO_COPY.headlineLine2}
               </span>
             </h1>
             <p
               data-hero-field="subheadline"
-              className="mt-4 [font-family:var(--font-sans)] text-[15px] leading-[1.5] tracking-[0.005em] text-[color:var(--ivory)]/92 max-w-[30ch]"
+              className="mt-5 [font-family:var(--font-sans)] font-normal text-[14px] leading-[1.6] tracking-[0.01em] text-[color:var(--ivory)]/80 max-w-[32ch]"
             >
               {HERO_COPY.subheadline}
             </p>
           </div>
+
 
           {/* Desktop keeps the original sr-only block (cinematic phrases
              carry the story on md+); the visible mobile block above
