@@ -2031,26 +2031,17 @@
    scene rather than overlaid as UI. Slightly deeper for cinematic feel. */
 .hero-cinematic .hero-phrase-scrim {
   background:
-    /* full base darken — guarantees the gold italic phrase reads on every frame */
     linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.55) 0%,
-      rgba(0, 0, 0, 0.45) 50%,
-      rgba(0, 0, 0, 0.55) 100%
+      rgba(0, 0, 0, 0.22) 0%,
+      rgba(0, 0, 0, 0.18) 50%,
+      rgba(0, 0, 0, 0.28) 100%
     ),
-    /* corner vignette */
     radial-gradient(
-      ellipse 120% 90% at 50% 50%,
-      rgba(0, 0, 0, 0) 50%,
-      rgba(0, 0, 0, 0.38) 88%,
-      rgba(0, 0, 0, 0.55) 100%
-    ),
-    /* deep pocket behind the phrase (top-left weighted on mobile) */
-    radial-gradient(
-      ellipse 95% 55% at 28% 30%,
-      rgba(0, 0, 0, 0.78) 0%,
-      rgba(0, 0, 0, 0.55) 40%,
-      rgba(0, 0, 0, 0.18) 75%,
+      ellipse 95% 60% at 30% 42%,
+      rgba(0, 0, 0, 0.38) 0%,
+      rgba(0, 0, 0, 0.22) 45%,
+      rgba(0, 0, 0, 0.06) 78%,
       rgba(0, 0, 0, 0) 100%
     );
 }
@@ -2059,25 +2050,20 @@
     background:
       linear-gradient(
         180deg,
-        rgba(0, 0, 0, 0.42) 0%,
-        rgba(0, 0, 0, 0.32) 50%,
-        rgba(0, 0, 0, 0.42) 100%
-      ),
-      radial-gradient(
-        ellipse 130% 95% at 50% 50%,
-        rgba(0, 0, 0, 0) 55%,
-        rgba(0, 0, 0, 0.30) 90%,
-        rgba(0, 0, 0, 0.46) 100%
+        rgba(0, 0, 0, 0.16) 0%,
+        rgba(0, 0, 0, 0.12) 50%,
+        rgba(0, 0, 0, 0.22) 100%
       ),
       linear-gradient(
         100deg,
-        rgba(0, 0, 0, 0.78) 0%,
-        rgba(0, 0, 0, 0.50) 34%,
-        rgba(0, 0, 0, 0.22) 60%,
+        rgba(0, 0, 0, 0.46) 0%,
+        rgba(0, 0, 0, 0.28) 32%,
+        rgba(0, 0, 0, 0.10) 60%,
         rgba(0, 0, 0, 0) 84%
       );
   }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   .hero-cinematic .hero-phrase,
