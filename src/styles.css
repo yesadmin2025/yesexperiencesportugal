@@ -97,42 +97,37 @@
      copy + CTA group always clear AA against the brightest frames. */
   --hero-scrim-base: linear-gradient(
     180deg,
-    rgba(var(--scrim-shadow-rgb), 0.22) 0%,
-    rgba(var(--scrim-shadow-rgb), 0.30) 30%,
-    rgba(var(--scrim-shadow-rgb), 0.55) 66%,
-    rgba(var(--scrim-shadow-rgb), 0.76) 100%
+    rgba(var(--scrim-shadow-rgb), 0.10) 0%,
+    rgba(var(--scrim-shadow-rgb), 0.18) 40%,
+    rgba(var(--scrim-shadow-rgb), 0.40) 75%,
+    rgba(var(--scrim-shadow-rgb), 0.60) 100%
   );
 
-  /* Bottom-anchored radial focus — concentrates contrast directly
-     behind the headline / CTA stack on desktop + mobile. */
   --hero-scrim-focus: radial-gradient(
-    110% 78% at 50% 84%,
-    rgba(var(--scrim-shadow-rgb), 0.58) 0%,
-    rgba(var(--scrim-shadow-rgb), 0.42) 46%,
+    110% 70% at 50% 88%,
+    rgba(var(--scrim-shadow-rgb), 0.42) 0%,
+    rgba(var(--scrim-shadow-rgb), 0.26) 50%,
     rgba(var(--scrim-shadow-rgb), 0) 100%
   );
 
-  /* Mobile-only bell-curve radial — peaks softly behind the lifted
-     text group, fades to clear so the video still breathes. */
   --hero-scrim-mobile-radial: radial-gradient(
-    120% 70% at 50% 48%,
-    rgba(var(--scrim-shadow-rgb), 0.50) 0%,
-    rgba(var(--scrim-shadow-rgb), 0.37) 38%,
-    rgba(var(--scrim-shadow-rgb), 0.18) 72%,
+    120% 70% at 50% 50%,
+    rgba(var(--scrim-shadow-rgb), 0.28) 0%,
+    rgba(var(--scrim-shadow-rgb), 0.18) 45%,
+    rgba(var(--scrim-shadow-rgb), 0.08) 75%,
     rgba(var(--scrim-shadow-rgb), 0) 100%
   );
 
-  /* Mobile-only vertical companion — feathers the bell at top + bottom
-     so there is no hard edge against the surrounding video. */
   --hero-scrim-mobile-vertical: linear-gradient(
     180deg,
     rgba(var(--scrim-shadow-rgb), 0) 0%,
-    rgba(var(--scrim-shadow-rgb), 0.15) 18%,
-    rgba(var(--scrim-shadow-rgb), 0.26) 42%,
-    rgba(var(--scrim-shadow-rgb), 0.26) 64%,
-    rgba(var(--scrim-shadow-rgb), 0.13) 85%,
+    rgba(var(--scrim-shadow-rgb), 0.06) 20%,
+    rgba(var(--scrim-shadow-rgb), 0.12) 50%,
+    rgba(var(--scrim-shadow-rgb), 0.12) 70%,
+    rgba(var(--scrim-shadow-rgb), 0.05) 88%,
     rgba(var(--scrim-shadow-rgb), 0) 100%
   );
+
 
   /* ─────────────────────────────────────────────────────────────
      EDITORIAL PALETTE v2 — additive, non-breaking.
