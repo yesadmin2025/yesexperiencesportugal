@@ -467,13 +467,9 @@ export function CinematicHero() {
     }
   };
 
-  // On mobile we render the editorial copy block immediately (no
-  // cinematic phrase stage), so CTAs + microcopy must also reveal at
-  // t=0 instead of waiting on the desktop sequence timers.
-  const isMobile = typeof window !== "undefined"
-    ? window.matchMedia?.("(max-width: 767px)").matches
-    : false;
-  const showCta = ctaRevealed || isMobile;
+  // CTAs reveal ONLY after the final cinematic phrase has dissolved
+  // and the closing stanza has settled — never compete with the film.
+  const showCta = ctaRevealed;
 
   return (
     <section
