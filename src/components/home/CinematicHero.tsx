@@ -467,13 +467,9 @@ export function CinematicHero() {
     }
   };
 
-  // On mobile we render the editorial copy block immediately (no
-  // cinematic phrase stage), so CTAs + microcopy must also reveal at
-  // t=0 instead of waiting on the desktop sequence timers.
-  const isMobile = typeof window !== "undefined"
-    ? window.matchMedia?.("(max-width: 767px)").matches
-    : false;
-  const showCta = ctaRevealed || isMobile;
+  // CTAs reveal ONLY after the final cinematic phrase has dissolved
+  // and the closing stanza has settled — never compete with the film.
+  const showCta = ctaRevealed;
 
   return (
     <section
@@ -579,7 +575,7 @@ export function CinematicHero() {
       {!composed && (
         <div
           aria-hidden={composed ? "true" : undefined}
-          className="hero-phrase-stage pointer-events-none absolute inset-0 z-[5] hidden md:block"
+          className="hero-phrase-stage pointer-events-none absolute inset-0 z-[5]"
           data-hero-phrase-stage="true"
         >
           {/* Left-side editorial scrim — keeps the phrase legible without muddying the film */}
@@ -587,7 +583,7 @@ export function CinematicHero() {
             aria-hidden="true"
             className="hero-phrase-scrim pointer-events-none absolute inset-0"
           />
-          <div className="hero-phrase-frame absolute left-[22px] right-[22px] top-[22svh] md:left-[7vw] md:right-auto md:top-[24vh] md:max-w-[960px]">
+          <div className="hero-phrase-frame absolute left-6 right-6 top-[34svh] sm:left-8 sm:right-8 md:left-[7vw] md:right-auto md:top-[26vh] md:max-w-[920px]">
             {HERO_PHRASES.map((phrase, i) => {
               const state =
                 i === phraseIndex ? "active" : i < phraseIndex ? "past" : "pending";
@@ -610,9 +606,9 @@ export function CinematicHero() {
                   data-hero-phrase-state={state}
                   data-hero-phrase-visible={state === "active" ? "true" : "false"}
                   style={phraseStyle}
-                  className="hero-phrase absolute inset-x-0 top-0 [font-family:var(--font-serif)] italic font-normal text-[color:var(--gold)] text-[32px] xs:text-[36px] sm:text-[58px] md:text-[88px] lg:text-[100px] leading-[1.08] md:leading-[0.98] tracking-[-0.018em] md:tracking-[-0.024em] text-left text-pretty [text-shadow:0_0_24px_rgba(0,0,0,0.95),0_0_56px_rgba(0,0,0,0.85),0_2px_4px_rgba(0,0,0,0.9),0_1px_2px_rgba(0,0,0,0.8)]"
+                  className="hero-phrase absolute inset-x-0 top-0 [font-family:var(--font-serif)] italic font-normal text-[color:var(--ivory)] text-[26px] xs:text-[28px] sm:text-[44px] md:text-[64px] lg:text-[76px] leading-[1.18] md:leading-[1.08] tracking-[-0.012em] md:tracking-[-0.018em] text-left text-pretty"
                 >
-                  <span className="hero-phrase__text block max-w-[18ch] md:max-w-[16ch]">{phrase}</span>
+                  <span className="hero-phrase__text block max-w-[20ch] md:max-w-[18ch]">{phrase}</span>
                 </p>
               );
             })}
@@ -620,43 +616,48 @@ export function CinematicHero() {
         </div>
       )}
 
+
       <div
         className="hero-story-shell relative z-10 w-full px-5 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-5 xs:px-6 xs:pb-[calc(7.5rem+env(safe-area-inset-bottom))] xs:pt-7 sm:px-8 sm:pb-12 md:px-12 md:pb-20 md:pt-24 lg:px-16"
         data-hero-composed={composed ? "true" : "false"}
       >
         <div className="hero-story-column mx-auto max-w-[22rem] xs:max-w-[23.25rem] sm:max-w-[36rem] md:mx-0 md:ml-[6vw] md:max-w-[46rem] lg:ml-[8vw]">
-          {/* Mobile-only editorial copy block — visible from t=0 so
-             phones never see an empty hero waiting on cinematic timers.
-             Desktop keeps the sr-only version + the cinematic phrase
-             stage; this block hides at md+. */}
-          <div className="md:sr-only block mb-6 xs:mb-7 [text-shadow:0_2px_18px_rgba(0,0,0,0.7),0_1px_2px_rgba(0,0,0,0.6)]">
+          {/* Mobile editorial copy — fades in only AFTER the cinematic
+             phrase sequence has resolved. Soft typographic shadow only
+             (no heavy drop shadow). */}
+          <div
+            className="md:sr-only block mb-6 xs:mb-7 [text-shadow:0_1px_12px_rgba(0,0,0,0.45)] transition-opacity duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{ opacity: composed ? 1 : 0 }}
+            aria-hidden={composed ? undefined : "true"}
+          >
             <span
               data-hero-field="eyebrow"
-              className="block [font-family:var(--font-sans)] font-bold uppercase tracking-[0.28em] text-[11px] text-[color:var(--gold-soft)]"
+              className="block [font-family:var(--font-sans)] font-medium uppercase tracking-[0.32em] text-[10.5px] text-[color:var(--ivory)]/75"
             >
               {HERO_COPY.eyebrow}
             </span>
             <h1
               data-hero-field="headlineLine1 headlineLine2"
-              className="mt-4 [font-family:var(--font-display)] font-bold text-[color:var(--ivory)] text-[30px] xs:text-[34px] leading-[1.08] tracking-[-0.022em]"
+              className="mt-5 [font-family:var(--font-serif)] font-normal text-[color:var(--ivory)] text-[30px] xs:text-[34px] leading-[1.15] tracking-[-0.012em]"
             >
-              <span data-hero-field="headlineLine1" className="block">
+              <span data-hero-field="headlineLine1" className="block font-normal">
                 {HERO_COPY.headlineLine1}
               </span>
               <span
                 data-hero-field="headlineLine2"
-                className="block mt-1 [font-family:var(--font-serif)] italic font-normal text-[color:var(--gold)] text-[28px] xs:text-[32px] leading-[1.1] tracking-[-0.014em]"
+                className="block mt-2 [font-family:var(--font-serif)] italic font-normal text-[color:var(--ivory)]/95 text-[28px] xs:text-[32px] leading-[1.18] tracking-[-0.008em]"
               >
                 {HERO_COPY.headlineLine2}
               </span>
             </h1>
             <p
               data-hero-field="subheadline"
-              className="mt-4 [font-family:var(--font-sans)] text-[15px] leading-[1.5] tracking-[0.005em] text-[color:var(--ivory)]/92 max-w-[30ch]"
+              className="mt-5 [font-family:var(--font-sans)] font-normal text-[14px] leading-[1.6] tracking-[0.01em] text-[color:var(--ivory)]/80 max-w-[32ch]"
             >
               {HERO_COPY.subheadline}
             </p>
           </div>
+
 
           {/* Desktop keeps the original sr-only block (cinematic phrases
              carry the story on md+); the visible mobile block above
@@ -699,7 +700,7 @@ export function CinematicHero() {
               data-hero-field="microcopy"
               data-hero-beat-show={showCta ? "true" : "false"}
               data-hero-beat-delay="320"
-              className="hero-beat hero-beat--rise mt-4 xs:mt-5 sm:mt-6 text-[12.5px] xs:text-[12.75px] sm:text-[13px] leading-[1.5] tracking-[0.025em] text-[color:var(--ivory)]/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]"
+              className="hero-beat hero-beat--rise mt-5 xs:mt-6 sm:mt-7 text-[11.5px] xs:text-[12px] sm:text-[12.5px] leading-[1.6] tracking-[0.04em] uppercase font-medium text-[color:var(--ivory)]/70"
             >
               {HERO_COPY.microcopy}
             </p>
