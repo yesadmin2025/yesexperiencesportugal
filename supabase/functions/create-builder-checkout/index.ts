@@ -62,7 +62,10 @@ Deno.serve(async (req) => {
       "https://dreamscape-builder-co.lovable.app",
       ...envAllow,
     ]);
-    const isLovableHost = /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(returnOrigin);
+    const isLovableHost =
+      /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(returnOrigin) ||
+      /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(returnOrigin) ||
+      /^https:\/\/[a-z0-9-]+\.lovable\.dev$/.test(returnOrigin);
     const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(returnOrigin);
     if (!staticAllow.has(returnOrigin) && !isLovableHost && !isLocalhost)
       return jsonError("Return URL not allowed", 400);
