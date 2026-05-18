@@ -1968,6 +1968,8 @@
   opacity: 0;
   pointer-events: none;
   will-change: opacity, transform, -webkit-mask-position;
+  /* Editorial typography — very soft glow only, no hard drop shadow. */
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55), 0 0 32px rgba(0, 0, 0, 0.28);
   transform:
     translate(var(--phrase-rest-x), var(--phrase-rest-y))
     translate3d(var(--phrase-offset-x), var(--phrase-offset-y), 0);
