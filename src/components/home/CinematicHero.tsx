@@ -700,7 +700,7 @@ export function CinematicHero() {
               data-hero-field="microcopy"
               data-hero-beat-show={showCta ? "true" : "false"}
               data-hero-beat-delay="320"
-              className="hero-beat hero-beat--rise mt-4 xs:mt-5 sm:mt-6 text-[12.5px] xs:text-[12.75px] sm:text-[13px] leading-[1.5] tracking-[0.025em] text-[color:var(--ivory)]/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]"
+              className="hero-beat hero-beat--rise mt-5 xs:mt-6 sm:mt-7 text-[11.5px] xs:text-[12px] sm:text-[12.5px] leading-[1.6] tracking-[0.04em] uppercase font-medium text-[color:var(--ivory)]/70"
             >
               {HERO_COPY.microcopy}
             </p>
