@@ -1950,79 +1950,50 @@
    rest anchor (translate %) with the directional offset (translate px),
    so each phrase can come from / leave to a different direction —
    like turning the pages of a story. Light, premium easing. */
-.hero-cinematic .hero-phrase {
-  --phrase-fade-in: 1400ms;
-  --phrase-fade-out: 1000ms;
-  --phrase-from-x: -16px;
-  --phrase-from-y: 0px;
-  --phrase-to-x: 18px;
-  --phrase-to-y: 0px;
-  --phrase-md-scale: 1;
-  --phrase-rest-x: 0%;
-  --phrase-rest-y: 0%;
-  --phrase-offset-x: var(--phrase-from-x);
-  --phrase-offset-y: var(--phrase-from-y);
-  /* Cinematic ease — slow start, gentle settle, no overshoot. */
-  --phrase-ease: cubic-bezier(0.22, 1, 0.36, 1);
+ .hero-cinematic .hero-phrase {
+   --phrase-fade-in: 1400ms;
+   --phrase-fade-out: 1000ms;
+   --phrase-from-x: -16px;
+   --phrase-from-y: 0px;
+   --phrase-to-x: 18px;
+   --phrase-to-y: 0px;
+   --phrase-md-scale: 1;
+   --phrase-rest-x: 0%;
+   --phrase-rest-y: 0%;
+   --phrase-offset-x: var(--phrase-from-x);
+   --phrase-offset-y: var(--phrase-from-y);
+   /* Cinematic ease — slow start, gentle settle, no overshoot. */
+   --phrase-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  opacity: 0;
-  pointer-events: none;
-  will-change: opacity, transform, -webkit-mask-position;
-  /* Editorial typography — very soft glow only, no hard drop shadow. */
-  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55), 0 0 32px rgba(0, 0, 0, 0.28);
-  transform:
-    translate(var(--phrase-rest-x), var(--phrase-rest-y))
-    translate3d(var(--phrase-offset-x), var(--phrase-offset-y), 0);
-  /* Soft left→right reveal mask: a gradient where the opaque band starts
-     fully off to the left (pending), slides across to fully reveal the
-     phrase (active), then keeps drifting off to the right (past). */
-  -webkit-mask-image: linear-gradient(
-    100deg,
-    rgba(0,0,0,1) 0%,
-    rgba(0,0,0,1) 38%,
-    rgba(0,0,0,0) 64%
-  );
-          mask-image: linear-gradient(
-    100deg,
-    rgba(0,0,0,1) 0%,
-    rgba(0,0,0,1) 38%,
-    rgba(0,0,0,0) 64%
-  );
-  -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
-  -webkit-mask-size: 240% 100%;
-          mask-size: 240% 100%;
-  -webkit-mask-position: 100% 0;
-          mask-position: 100% 0;
-  transition:
-    opacity var(--phrase-fade-out) var(--phrase-ease),
-    transform var(--phrase-fade-out) var(--phrase-ease),
-    -webkit-mask-position var(--phrase-fade-out) var(--phrase-ease),
-    mask-position var(--phrase-fade-out) var(--phrase-ease);
-}
+   opacity: 0;
+   pointer-events: none;
+   will-change: opacity, transform;
+   /* Editorial typography — soft glow keeps phrase legible against any frame. */
+   text-shadow: 0 1px 18px rgba(0, 0, 0, 0.6), 0 0 32px rgba(0, 0, 0, 0.32);
+   transform:
+     translate(var(--phrase-rest-x), var(--phrase-rest-y))
+     translate3d(var(--phrase-offset-x), var(--phrase-offset-y), 0);
+   transition:
+     opacity var(--phrase-fade-out) var(--phrase-ease),
+     transform var(--phrase-fade-out) var(--phrase-ease);
+ }
 
-/* Active = settled at rest, fully opaque, mask fully unveiled. */
-.hero-cinematic .hero-phrase[data-hero-phrase-state="active"] {
-  --phrase-offset-x: 0px;
-  --phrase-offset-y: 0px;
-  opacity: 1;
-  -webkit-mask-position: 50% 0;
-          mask-position: 50% 0;
-  transition:
-    opacity var(--phrase-fade-in) var(--phrase-ease),
-    transform calc(var(--phrase-fade-in) * 1.05) var(--phrase-ease),
-    -webkit-mask-position calc(var(--phrase-fade-in) * 1.1) var(--phrase-ease),
-    mask-position calc(var(--phrase-fade-in) * 1.1) var(--phrase-ease);
-}
+ /* Active = settled at rest, fully opaque. */
+ .hero-cinematic .hero-phrase[data-hero-phrase-state="active"] {
+   --phrase-offset-x: 0px;
+   --phrase-offset-y: 0px;
+   opacity: 1;
+   transition:
+     opacity var(--phrase-fade-in) var(--phrase-ease),
+     transform calc(var(--phrase-fade-in) * 1.05) var(--phrase-ease);
+ }
 
-/* Past = drifted slightly to the right, mask runs off the left edge. */
-.hero-cinematic .hero-phrase[data-hero-phrase-state="past"] {
-  --phrase-offset-x: var(--phrase-to-x);
-  --phrase-offset-y: var(--phrase-to-y);
-  opacity: 0;
-  -webkit-mask-position: 0% 0;
-          mask-position: 0% 0;
-}
+ /* Past = drifted slightly out, fully transparent. */
+ .hero-cinematic .hero-phrase[data-hero-phrase-state="past"] {
+   --phrase-offset-x: var(--phrase-to-x);
+   --phrase-offset-y: var(--phrase-to-y);
+   opacity: 0;
+ }
 
 .hero-cinematic .hero-phrase-stage {
   transition: opacity 1100ms cubic-bezier(0.32, 0.08, 0.24, 1);
