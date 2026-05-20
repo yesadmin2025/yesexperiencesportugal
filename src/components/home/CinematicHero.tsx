@@ -676,7 +676,7 @@ export function CinematicHero() {
               <CtaButton
                 to="/builder"
                 variant="primary"
-                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--primary cta-primary inline-flex w-auto whitespace-nowrap min-h-[42px] py-2.5 px-6 text-[11.5px] tracking-[0.2em] sm:min-h-[44px] sm:text-[12px] sm:py-2 sm:px-7 rounded-[2px] font-semibold"
+                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--primary cta-primary inline-flex w-auto whitespace-nowrap min-h-[42px] py-2.5 px-6 text-[11.5px] tracking-[0.22em] sm:min-h-[44px] sm:text-[12px] sm:py-2 sm:px-7 rounded-[2px] font-medium"
                 data-hero-field="primaryCta"
                 data-hero-beat-show={showCta ? "true" : "false"}
                 data-hero-beat-delay="0"
@@ -686,7 +686,7 @@ export function CinematicHero() {
               <CtaButton
                 to="/experiences"
                 variant="ghostDark"
-                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--secondary cta-secondary-dark inline-flex w-auto whitespace-nowrap min-h-[42px] py-2.5 px-2 text-[11.5px] tracking-[0.2em] sm:min-h-[44px] sm:text-[12px] sm:py-2 sm:px-3 !border-0 !bg-transparent underline-offset-[6px] hover:underline"
+                className="hero-beat hero-beat--rise hero-cta-button hero-cta-button--secondary cta-secondary-dark inline-flex w-auto whitespace-nowrap min-h-[42px] py-2.5 px-2 text-[11.5px] tracking-[0.22em] sm:min-h-[44px] sm:text-[12px] sm:py-2 sm:px-3 !border-0 !bg-transparent underline-offset-[6px] hover:underline font-normal"
                 data-hero-field="secondaryCta"
                 data-cta-stagger="true"
                 data-hero-beat-show={showCta ? "true" : "false"}
