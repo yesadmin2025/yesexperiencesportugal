@@ -181,6 +181,7 @@ function RootComponent() {
   useSilenceResetBlankCheck();
   useAppReadyFlag();
   useIframeFooterGuard();
+  useEffect(() => installClientErrorLogger(), []);
   return (
     <>
       <Outlet />
