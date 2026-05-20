@@ -574,6 +574,54 @@ export type Database = {
         }
         Relationships: []
       }
+      client_error_logs: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          metadata: Json
+          route: string | null
+          session_id: string | null
+          severity: string
+          source: string | null
+          stack: string | null
+          url: string | null
+          user_agent: string | null
+          viewport_height: number | null
+          viewport_width: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          metadata?: Json
+          route?: string | null
+          session_id?: string | null
+          severity?: string
+          source?: string | null
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          viewport_height?: number | null
+          viewport_width?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          metadata?: Json
+          route?: string | null
+          session_id?: string | null
+          severity?: string
+          source?: string | null
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          viewport_height?: number | null
+          viewport_width?: number | null
+        }
+        Relationships: []
+      }
       experience_images: {
         Row: {
           alt_text: string
