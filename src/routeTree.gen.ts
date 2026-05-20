@@ -33,6 +33,7 @@ import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
+import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
@@ -158,6 +159,11 @@ const AdminImportToursRoute = AdminImportToursRouteImport.update({
   path: '/admin/import-tours',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
+  id: '/admin/error-logs',
+  path: '/admin/error-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
   id: '/admin/builder-images-qa',
   path: '/admin/builder-images-qa',
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/api/health': typeof ApiHealthRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/api/health': typeof ApiHealthRoute
@@ -259,6 +267,7 @@ export interface FileRoutesById {
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/api/health': typeof ApiHealthRoute
@@ -291,6 +300,7 @@ export interface FileRouteTypes {
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
     | '/api/health'
@@ -321,6 +331,7 @@ export interface FileRouteTypes {
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
     | '/api/health'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
     | '/api/health'
@@ -382,6 +394,7 @@ export interface RootRouteChildren {
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
+  AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
   ApiHealthRoute: typeof ApiHealthRoute
@@ -563,6 +576,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImportToursRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/error-logs': {
+      id: '/admin/error-logs'
+      path: '/admin/error-logs'
+      fullPath: '/admin/error-logs'
+      preLoaderRoute: typeof AdminErrorLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/builder-images-qa': {
       id: '/admin/builder-images-qa'
       path: '/admin/builder-images-qa'
@@ -625,6 +645,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
+  AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
   ApiHealthRoute: ApiHealthRoute,
@@ -638,12 +659,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
