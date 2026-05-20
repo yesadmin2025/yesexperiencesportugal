@@ -211,7 +211,7 @@ function ErrorLogsPage() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
