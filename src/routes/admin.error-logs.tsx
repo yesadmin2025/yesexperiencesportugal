@@ -168,9 +168,8 @@ function ErrorLogsPage() {
                   const mobile = isMobileUA(r.user_agent, r.viewport_width);
                   const isOpen = expanded === r.id;
                   return (
-                    <>
+                    <Fragment key={r.id}>
                       <tr
-                        key={r.id}
                         className="cursor-pointer border-t border-[color:var(--charcoal)]/10 hover:bg-[color:var(--sand)]/40"
                         onClick={() => setExpanded(isOpen ? null : r.id)}
                       >
