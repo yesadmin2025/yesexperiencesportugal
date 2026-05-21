@@ -3,7 +3,7 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
 import { WhatsAppFab } from "./WhatsAppFab";
-import { MobileStickyCTA } from "./MobileStickyCTA";
+
 import { PostHeroAnnouncer } from "./PostHeroAnnouncer";
 import { QaPanel } from "./dev/QaPanel";
 import { MotionQaPanel } from "./dev/MotionQaPanel";
