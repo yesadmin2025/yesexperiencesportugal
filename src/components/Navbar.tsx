@@ -52,7 +52,7 @@ export function Navbar() {
             <Logo
               theme="teal-on-ivory"
               fetchPriority="high"
-              className="block h-[48px] md:h-[58px] lg:h-[66px] w-auto select-none"
+              className="block h-[54px] md:h-[64px] lg:h-[74px] w-auto select-none"
             />
           </Link>
 
