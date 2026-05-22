@@ -312,7 +312,15 @@ function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
 
 /* ───────────────────────── Output sanitisation ────────────────────────────── */
 
-const BANNED = /\b(hidden gem|off the beaten path|luxury|unforgettable|breathtaking|stunning|amazing|magical|whispers of|soul of|journey of a lifetime)\b/i;
+const BANNED = /\b(hidden gem|off the beaten path|luxury|unforgettable|breathtaking|stunning|amazing|magical|enchanting|captivating|timeless|authentic|vibrant|idyllic|pristine|paradise|whispers? of|soul of|journey of a lifetime|escape of a lifetime|once[- ]in[- ]a[- ]lifetime)\b/i;
+
+/** Extended sensory anchor vocabulary — used both for extraction (telemetry)
+ *  and as a mandatory presence check inside sanitiseFragment. If a generated
+ *  fragment contains none of these, it is rejected and the caller falls back
+ *  to the static editorial pool — preventing pure-abstraction AI output. */
+const ANCHOR_VOCAB = [
+  "salt","stone","wood","wooden","tile","tiles","tiled","azulejo","azulejos","pine","cork","vine","vines","wine","glass","bread","bread crust","table","light","wind","breeze","cliff","cliffs","tide","ferry","lemon","sun","sunlight","shade","river","sea","ocean","atlantic","fishing","boat","courtyard","candle","candlelit","oak","afternoon","morning","evening","dusk","dawn","quay","quayside","linen","napkin","ceramic","clay","plaster","whitewashed","slate","cobble","cobbles","coffee","sardine","sardines","oil","paper","enamel","copper","brass","cup","cups","bowl","plate","door","doorway","window","shutter","shutters","balcony","tram","fado","market","crust","smoke","mist","fog","dew","limestone","marble","reed","cane","fig","orange","olive","rosemary","sandy","tilework","mosaic","sal","pedra","madeira","azulejo","pinhal","cortiça","vinha","luz","tarde","manhã","mesa","copo","janela","porta","mar","rio","ferry","cacilheiro","cais","barro","cerâmica","cal","ardósia","pão","azeite","sardinha","calçada","sombra"
+];
 
 function sanitiseFragment(raw: string): string | null {
   const cleaned = raw
@@ -325,16 +333,15 @@ function sanitiseFragment(raw: string): string | null {
   // Take first sentence.
   const firstSentence = cleaned.split(/(?<=[.?])\s+/)[0] ?? cleaned;
   const words = firstSentence.split(/\s+/);
-  if (words.length < 5 || words.length > 26) return null;
+  if (words.length < 5 || words.length > 24) return null;
+  // MANDATORY sensory anchor — pure abstraction is rejected.
+  if (!extractAnchor(firstSentence)) return null;
   return firstSentence;
 }
 
 function extractAnchor(fragment: string): string | null {
-  const anchors = [
-    "salt","stone","wood","tile","azulejo","pine","cork","vine","wine","bread","table","light","wind","cliff","tide","ferry","lemon","sun","shade","glass","river","sea","fishing","boat","courtyard","candle","oak","oak","afternoon","morning",
-  ];
   const lower = fragment.toLowerCase();
-  for (const a of anchors) if (lower.includes(a)) return a;
+  for (const a of ANCHOR_VOCAB) if (lower.includes(a)) return a;
   return null;
 }
 
