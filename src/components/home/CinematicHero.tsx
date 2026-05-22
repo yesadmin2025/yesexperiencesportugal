@@ -138,7 +138,7 @@ export function CinematicHero() {
       </div>
 
       {/* ── Centered stanza ─────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[36vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
+      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[30vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
         <div className="text-center">
           <p
             className="font-serif italic font-normal"
