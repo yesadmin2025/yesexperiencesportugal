@@ -1,7 +1,12 @@
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, MessageCircle, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import type { StudioDict } from "@/hooks/useStudioLocale";
 import type { Intention, Mood, Who } from "@/components/builder/types";
 import { BUILDER_WA_NUMBER } from "@/components/builder/types";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { useStudioLocale } from "@/hooks/useStudioLocale";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
 
 /**
  * MultiDayConcierge — elevated, in-Studio white-glove scene shown when the
@@ -30,6 +35,46 @@ export function MultiDayConcierge({ t, mood, who, intention, onBack }: Props) {
   const whoLabel = labelFor(t.whoOptions, who as Who | null);
   const intentionLabel = labelFor(t.intentionOptions, intention);
   const chips = [moodLabel, whoLabel, intentionLabel].filter(Boolean) as string[];
+
+  const sessionId = useBuilderSessionId();
+  const { locale } = useStudioLocale();
+  const composeFn = useServerFn(composeStudioMoment);
+  const [editorLine, setEditorLine] = useState<string | null>(null);
+  const firedRef = useRef(false);
+
+  /* Private-editor voice — single quiet AI line under the title. Fires
+     once per mount, never repeats. Reduced-motion users see fallback copy. */
+  useEffect(() => {
+    if (!sessionId || firedRef.current) return;
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+    firedRef.current = true;
+    let cancelled = false;
+    composeFn({
+      data: {
+        sessionId,
+        mode: "narrative",
+        locale,
+        mood,
+        who,
+        intention,
+        journeyType: "multi",
+        narrativeStage: "recognition",
+        confidence: 0.7,
+        acceptedCount: 0,
+      },
+    })
+      .then((r) => {
+        if (cancelled) return;
+        if (r.mode === "narrative" && r.fragment) setEditorLine(r.fragment);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, locale, mood, who, intention, composeFn]);
 
   const waText = encodeURIComponent(
     `Olá! Quero desenhar uma viagem de vários dias em Portugal.\n` +
@@ -80,6 +125,16 @@ export function MultiDayConcierge({ t, mood, who, intention, onBack }: Props) {
           >
             {t.conciergeSub}
           </p>
+
+          {editorLine && (
+            <p
+              className="mt-3 text-[13.5px] sm:text-[14.5px] italic leading-snug text-[color:var(--ivory)]/65 max-w-[34ch] mx-auto animate-in fade-in duration-[900ms]"
+              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              aria-live="polite"
+            >
+              {editorLine}
+            </p>
+          )}
 
           {chips.length > 0 && (
             <ul
