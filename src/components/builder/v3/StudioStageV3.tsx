@@ -281,7 +281,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
 
   /* ── Emotion tap (no typing required) ── */
   const handleEmotionPick = useCallback(
-    async (pick: EmotionPick) => {
+    async (pick: ChoicesPick) => {
       const nextMood = pick.mood ?? state.mood;
       const nextWho = pick.who ?? state.who;
       const nextIntention = pick.intention ?? state.intention;
