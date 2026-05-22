@@ -1,24 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { Sparkles } from "lucide-react";
 import type { StudioDict } from "@/hooks/useStudioLocale";
-import type { Intention, Mood, Pace, Who } from "@/components/builder/types";
+import type { Intention, JourneyType, Mood, Pace, Who } from "@/components/builder/types";
 
 /**
  * CinematicChoices — full-screen, cinematic, sequential emotion selection.
  *
- * Replaces the static chips with a phase-by-phase reveal:
- *   mood → who → intention
+ * Phase order: mood → depth (single day | multi-day) → who → intention.
  *
- * Each phase shows 4 visual cards with real footage as background, a single
- * sensory word, and nothing else competing for attention. After a pick, the
- * scene transitions with a fade+scale into the next phase. No typing, no
- * naming of places. Pure feel.
- *
- * Designed to read as a cinematic prologue to the journey — not a form.
+ * When depth = "multi", the parent diverts to the white-glove concierge
+ * scene (MultiDayConcierge) instead of continuing the day-builder flow.
  */
 
-type PhaseKind = "mood" | "who" | "intention";
-const PHASE_ORDER: PhaseKind[] = ["mood", "who", "intention"];
+type PhaseKind = "mood" | "depth" | "who" | "intention";
+const PHASE_ORDER: PhaseKind[] = ["mood", "depth", "who", "intention"];
 
 const CLIP = {
   coast: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
@@ -33,13 +28,16 @@ const CLIP = {
   sesimbra: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
 } as const;
 
-// Map every option to a clip + a single emotional word per locale.
 const MOOD_CLIPS: Record<Mood, string> = {
   romantic: CLIP.hiddenCove,
   slow: CLIP.coast,
   curious: CLIP.hiddenStreet,
   energetic: CLIP.celebration,
   open: CLIP.viewpoint,
+};
+const DEPTH_CLIPS: Record<JourneyType, string> = {
+  day: CLIP.viewpoint,
+  multi: CLIP.route,
 };
 const WHO_CLIPS: Record<Who, string> = {
   couple: CLIP.hiddenCove,
@@ -62,12 +60,14 @@ const INTENTION_CLIPS: Record<Intention, string> = {
 
 function clipFor(kind: PhaseKind, value: string): string {
   if (kind === "mood") return MOOD_CLIPS[value as Mood] ?? CLIP.coast;
+  if (kind === "depth") return DEPTH_CLIPS[value as JourneyType] ?? CLIP.viewpoint;
   if (kind === "who") return WHO_CLIPS[value as Who] ?? CLIP.localTable;
   return INTENTION_CLIPS[value as Intention] ?? CLIP.table;
 }
 
 export interface ChoicesPick {
   mood?: Mood;
+  journeyType?: JourneyType;
   who?: Who;
   intention?: Intention;
   pace?: Pace;
@@ -78,16 +78,21 @@ interface Props {
   t: StudioDict;
   active: {
     mood: Mood | null;
+    journeyType: JourneyType | null;
     who: Who | null;
     intention: Intention | null;
   };
+  /** Affinity-derived ms duration for the fade/scale transition (480–720). */
+  motionMs?: number;
   onPick: (p: ChoicesPick) => void;
   onComplete: () => void;
 }
 
-export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
+export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete }: Props) {
+  const valueFor = (p: PhaseKind) =>
+    p === "depth" ? active.journeyType : (active as Record<string, unknown>)[p];
   const firstIncomplete = useMemo<PhaseKind | null>(() => {
-    for (const p of PHASE_ORDER) if (!active[p]) return p;
+    for (const p of PHASE_ORDER) if (!valueFor(p)) return p;
     return null;
   }, [active]);
 
@@ -104,12 +109,15 @@ export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
 
   if (phase === null) return null;
 
+  // Intention is trimmed to 3 for decision-fatigue reduction.
   const options =
     phase === "mood"
       ? t.moodOptions.slice(0, 4)
-      : phase === "who"
-        ? t.whoOptions.slice(0, 4)
-        : t.intentionOptions.slice(0, 4);
+      : phase === "depth"
+        ? t.journeyTypeOptions
+        : phase === "who"
+          ? t.whoOptions.slice(0, 4)
+          : t.intentionOptions.slice(0, 3);
   const title = t.phaseTitles[phase];
   const hint = t.phaseHints[phase];
   const phaseIndex = PHASE_ORDER.indexOf(phase);
@@ -117,32 +125,35 @@ export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
     .replace("{n}", String(phaseIndex + 1))
     .replace("{total}", String(PHASE_ORDER.length));
 
+  const isDepth = phase === "depth";
+
   const handlePick = (value: string, label: string) => {
     if (transitioning) return;
     setTransitioning(true);
     const pick: ChoicesPick = { seed: label.toLowerCase() };
     if (phase === "mood") pick.mood = value as Mood;
+    if (phase === "depth") pick.journeyType = value as JourneyType;
     if (phase === "who") pick.who = value as Who;
     if (phase === "intention") pick.intention = value as Intention;
     onPick(pick);
-    window.setTimeout(() => setTransitioning(false), 720);
+    window.setTimeout(() => setTransitioning(false), motionMs);
   };
 
   return (
     <div
       key={phase}
-      className={`absolute inset-0 z-40 flex flex-col bg-[color:var(--charcoal)] transition-all duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`absolute inset-0 z-40 flex flex-col bg-[color:var(--charcoal)] ease-[cubic-bezier(0.22,1,0.36,1)] ${
         transitioning ? "opacity-0 scale-[0.985]" : "opacity-100 scale-100"
       }`}
+      style={{ transition: `opacity ${motionMs}ms, transform ${motionMs}ms` }}
     >
-      {/* Header — minimal, just chapter + progress */}
       <header className="relative z-10 px-5 pt-5 pb-2 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-[600ms]">
         <span className="text-[9.5px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]">
           {stepLine}
         </span>
         <div className="flex items-center gap-1.5">
           {PHASE_ORDER.map((p, i) => {
-            const done = i < phaseIndex || Boolean(active[p]);
+            const done = i < phaseIndex || Boolean(valueFor(p));
             const isCur = i === phaseIndex;
             return (
               <span
@@ -160,7 +171,6 @@ export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
         </div>
       </header>
 
-      {/* Title — single emotional question */}
       <div className="relative z-10 px-6 pt-4 pb-3 text-center animate-in fade-in slide-in-from-bottom-2 duration-[700ms]">
         <h2
           className="text-[24px] sm:text-[30px] font-semibold leading-[1.1] text-[color:var(--ivory)]"
@@ -176,25 +186,29 @@ export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
         </p>
       </div>
 
-      {/* 2×2 video card grid — protagonist of the screen */}
       <div className="relative z-10 flex-1 px-4 pb-6 pt-2 min-h-0">
-        <ul className="grid grid-cols-2 gap-3 h-full" role="list">
+        <ul
+          className={`grid gap-3 h-full ${isDepth ? "grid-cols-1 max-w-md mx-auto" : "grid-cols-2"}`}
+          role="list"
+        >
           {options.map((opt, i) => {
             const isActive =
               phase === "mood"
                 ? active.mood === opt.value
-                : phase === "who"
-                  ? active.who === opt.value
-                  : active.intention === opt.value;
+                : phase === "depth"
+                  ? active.journeyType === opt.value
+                  : phase === "who"
+                    ? active.who === opt.value
+                    : active.intention === opt.value;
             return (
               <li key={`${phase}-${opt.value}`} className="min-h-0">
                 <button
                   type="button"
                   onClick={() => handlePick(opt.value, opt.label)}
-                  className={`group relative h-full w-full overflow-hidden rounded-[6px] border transition-all duration-[420ms] ease-out animate-in fade-in zoom-in-95 ${
+                  className={`group relative h-full w-full overflow-hidden rounded-[6px] border transition-all duration-[420ms] ease-out animate-in fade-in zoom-in-95 active:scale-[0.985] ${
                     isActive
-                      ? "border-[color:var(--gold)] shadow-[0_0_0_2px_oklch(0.78_0.12_85)/0.4,0_18px_42px_rgba(0,0,0,0.5)]"
-                      : "border-[color:var(--ivory)]/15 shadow-[0_14px_34px_rgba(0,0,0,0.42)] hover:border-[color:var(--gold)]/70 active:scale-[0.98]"
+                      ? "border-[color:var(--gold)] shadow-[0_0_0_2px_oklch(0.78_0.12_85_/_0.4),0_18px_42px_rgba(0,0,0,0.5)]"
+                      : "border-[color:var(--ivory)]/15 shadow-[0_14px_34px_rgba(0,0,0,0.42)] hover:border-[color:var(--gold)]/70"
                   }`}
                   style={{ animationDelay: `${120 + i * 90}ms`, animationFillMode: "both" }}
                   aria-pressed={isActive}
@@ -212,12 +226,12 @@ export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
                   >
                     <source src={clipFor(phase, opt.value)} type="video/mp4" />
                   </video>
-                  {/* Gradient veil for legibility */}
-                  <span className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/85 via-[color:var(--charcoal)]/30 to-transparent" />
-                  {/* Label */}
+                  <span className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/80 via-[color:var(--charcoal)]/25 to-transparent" />
                   <span className="absolute inset-x-0 bottom-0 z-10 px-3 pb-3 flex items-end justify-between gap-2">
                     <span
-                      className="text-[15px] sm:text-[17px] font-semibold leading-tight text-[color:var(--ivory)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]"
+                      className={`font-semibold leading-tight text-[color:var(--ivory)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] ${
+                        isDepth ? "text-[17px] sm:text-[19px]" : "text-[15px] sm:text-[17px]"
+                      }`}
                       style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
                     >
                       {opt.label}

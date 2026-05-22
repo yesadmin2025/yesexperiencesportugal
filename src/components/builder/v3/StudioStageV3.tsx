@@ -28,6 +28,7 @@ import { LivingMap } from "./LivingMap";
 import { ItineraryRibbon } from "./ItineraryRibbon";
 import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
+import { MultiDayConcierge } from "./MultiDayConcierge";
 
 interface CatalogEntry {
   key: string;
@@ -66,6 +67,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     routedStops,
     regionCenter,
     totalMinutes,
+    affinityProfile,
   } = useStudioState();
 
   const parseFn = useServerFn(parseNarrative);
@@ -287,6 +289,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       const nextWho = pick.who ?? state.who;
       const nextIntention = pick.intention ?? state.intention;
       const nextPace = pick.pace ?? state.pace;
+      const nextJourneyType = pick.journeyType ?? state.journeyType;
       const regionKey = state.regionKey ?? "arrabida-setubal";
       const fullNarrative = state.narrative
         ? `${state.narrative} · ${pick.seed}`
@@ -297,16 +300,21 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         who: nextWho,
         intention: nextIntention,
         pace: nextPace,
+        journeyType: nextJourneyType,
         regionKey,
         awakened: true,
       });
-      await refreshSuggestions(regionKey, nextMood, nextWho, nextIntention, pick.seed);
+      // Skip suggestion fetch if user chose multi-day — concierge handles it.
+      if (nextJourneyType !== "multi") {
+        await refreshSuggestions(regionKey, nextMood, nextWho, nextIntention, pick.seed);
+      }
     },
     [
       state.mood,
       state.who,
       state.intention,
       state.pace,
+      state.journeyType,
       state.regionKey,
       state.narrative,
       patch,
@@ -516,14 +524,31 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       {/* ── Cinematic full-screen choices (mood → who → intention) ──
           Replaces the static invitation/awakening chip layouts. One emotional
           question per screen, with 4 video cards as protagonists. */}
-      {!hasCoreIntent && (
+      {!hasCoreIntent && state.journeyType !== "multi" && (
         <CinematicChoices
           t={t}
-          active={{ mood: state.mood, who: state.who, intention: state.intention }}
+          active={{
+            mood: state.mood,
+            journeyType: state.journeyType,
+            who: state.who,
+            intention: state.intention,
+          }}
+          motionMs={Math.round(480 + affinityProfile.depth * 240)}
           onPick={handleEmotionPick}
           onComplete={() => {
             /* parent re-renders; reveal overlay handles the interlude */
           }}
+        />
+      )}
+
+      {/* ── Multi-day = elevated concierge (NOT a fallback) ── */}
+      {state.journeyType === "multi" && !hasStops && (
+        <MultiDayConcierge
+          t={t}
+          mood={state.mood}
+          who={state.who}
+          intention={state.intention}
+          onBack={() => patch({ journeyType: null })}
         />
       )}
 
