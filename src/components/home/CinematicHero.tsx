@@ -138,7 +138,7 @@ export function CinematicHero() {
       </div>
 
       {/* ── Centered stanza ─────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center px-6 sm:px-10 md:px-16">
+      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[36vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
         <div className="text-center">
           <p
             className="font-serif italic font-normal"
@@ -190,7 +190,7 @@ export function CinematicHero() {
 
       {/* ── Delayed CTA reveal ──────────────────────────────────────── */}
       <div
-        className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:pb-14 md:pb-20"
+        className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.25rem))] sm:pb-14 md:pb-20"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
