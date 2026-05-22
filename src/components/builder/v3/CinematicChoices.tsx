@@ -1,12 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { Sparkles } from "lucide-react";
 import type { StudioDict } from "@/hooks/useStudioLocale";
 import type { Intention, JourneyType, Mood, Pace, Who } from "@/components/builder/types";
 
 /**
- * CinematicChoices — full-screen, cinematic, sequential emotion selection.
+ * CinematicChoices — emotional scene selection (no quiz, no filters).
  *
- * Phase order: mood → depth (single day | multi-day) → who → intention.
+ * Every phase is a cinematic composition the traveller steps INTO, not a
+ * category they pick. Composition deliberately varies per phase to avoid
+ * the onboarding-form rhythm:
+ *
+ *   • mood       → three full-bleed vertical scenes (entry pull)
+ *   • depth      → two stacked editorial panels (single vs durational)
+ *   • who        → asymmetric editorial grid (one tall + three small)
+ *   • intention  → three full-bleed vertical scenes with poetic labels
+ *
+ * No step indicators, no eyebrow chips, no Sparkles icons, no hint text.
+ * The framing question is in serif italic; option labels are in serif italic
+ * placed bottom-left like an editorial caption — the scene IS the choice.
  *
  * When depth = "multi", the parent diverts to the white-glove concierge
  * scene (MultiDayConcierge) instead of continuing the day-builder flow.
@@ -88,6 +98,86 @@ interface Props {
   onComplete: () => void;
 }
 
+interface PhaseOption {
+  value: string;
+  label: string;
+}
+
+/** Shared bottom-left editorial caption — the scene IS the choice. */
+function SceneCaption({ label, size = "md" }: { label: string; size?: "sm" | "md" | "lg" }) {
+  const cls =
+    size === "lg"
+      ? "text-[21px] sm:text-[26px] leading-[1.18] max-w-[18ch]"
+      : size === "sm"
+        ? "text-[15px] sm:text-[17px] leading-[1.2] max-w-[16ch]"
+        : "text-[18px] sm:text-[22px] leading-[1.2] max-w-[18ch]";
+  return (
+    <span className="absolute inset-x-0 bottom-0 z-10 px-4 sm:px-6 pb-4 sm:pb-5 text-left pointer-events-none">
+      <span
+        className={`block font-serif italic text-[color:var(--ivory)] drop-shadow-[0_2px_14px_rgba(0,0,0,0.75)] ${cls}`}
+        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+      >
+        {label}
+      </span>
+    </span>
+  );
+}
+
+/** Cinematic scene tile — full-bleed video, no chrome, no icon. */
+function SceneTile({
+  phase,
+  option,
+  isActive,
+  onPick,
+  captionSize = "md",
+  delayMs = 0,
+}: {
+  phase: PhaseKind;
+  option: PhaseOption;
+  isActive: boolean;
+  onPick: () => void;
+  captionSize?: "sm" | "md" | "lg";
+  delayMs?: number;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onPick}
+      className={`group relative h-full w-full overflow-hidden rounded-[4px] border transition-all duration-[520ms] ease-out animate-in fade-in zoom-in-[0.985] active:scale-[0.992] ${
+        isActive
+          ? "border-[color:var(--gold)]/85 shadow-[0_0_0_1px_oklch(0.78_0.12_85_/_0.45),0_22px_50px_rgba(0,0,0,0.5)]"
+          : "border-[color:var(--ivory)]/10 shadow-[0_16px_38px_rgba(0,0,0,0.45)] hover:border-[color:var(--ivory)]/30"
+      }`}
+      style={{ animationDelay: `${delayMs}ms`, animationFillMode: "both", animationDuration: "1100ms" }}
+      aria-pressed={isActive}
+      aria-label={option.label}
+    >
+      <video
+        aria-hidden="true"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.025] motion-reduce:transition-none"
+        style={{ filter: "saturate(0.82) contrast(1.03) brightness(0.7)" }}
+      >
+        <source src={clipFor(phase, option.value)} type="video/mp4" />
+      </video>
+      {/* Editorial bottom-up gradient — text breathes against it */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, oklch(0.15 0.02 240 / 0.05) 0%, oklch(0.15 0.02 240 / 0.05) 42%, oklch(0.15 0.02 240 / 0.78) 100%)",
+        }}
+      />
+      <SceneCaption label={option.label} size={captionSize} />
+    </button>
+  );
+}
+
 export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete }: Props) {
   const valueFor = (p: PhaseKind) =>
     p === "depth" ? active.journeyType : (active as Record<string, unknown>)[p];
@@ -109,227 +199,110 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
 
   if (phase === null) return null;
 
-  // Intention is trimmed to 3 for decision-fatigue reduction.
-  const options =
+  // Each phase trims options to match its composition.
+  const options: PhaseOption[] =
     phase === "mood"
-      ? t.moodOptions.slice(0, 4)
+      ? t.openingScenes // 3 already-poetic scenes
       : phase === "depth"
-        ? t.journeyTypeOptions
+        ? t.journeyTypeOptions // 2
         : phase === "who"
-          ? t.whoOptions.slice(0, 4)
-          : t.intentionOptions.slice(0, 3);
-  const title = t.phaseTitles[phase];
-  const hint = t.phaseHints[phase];
-  const phaseIndex = PHASE_ORDER.indexOf(phase);
-  const stepLine = t.phaseStepLabel
-    .replace("{n}", String(phaseIndex + 1))
-    .replace("{total}", String(PHASE_ORDER.length));
+          ? t.whoOptions.slice(0, 4) // 4
+          : t.intentionOptions.slice(0, 3); // 3 — calmer than 6
 
-  const isDepth = phase === "depth";
+  const framing = t.phaseTitles[phase] ?? "";
 
-  const handlePick = (value: string, label: string) => {
+  const handlePick = (option: PhaseOption) => {
     if (transitioning) return;
     setTransitioning(true);
-    const pick: ChoicesPick = { seed: label.toLowerCase() };
-    if (phase === "mood") pick.mood = value as Mood;
-    if (phase === "depth") pick.journeyType = value as JourneyType;
-    if (phase === "who") pick.who = value as Who;
-    if (phase === "intention") pick.intention = value as Intention;
+    const pick: ChoicesPick = { seed: option.label.toLowerCase() };
+    if (phase === "mood") pick.mood = option.value as Mood;
+    if (phase === "depth") pick.journeyType = option.value as JourneyType;
+    if (phase === "who") pick.who = option.value as Who;
+    if (phase === "intention") pick.intention = option.value as Intention;
     onPick(pick);
     window.setTimeout(() => setTransitioning(false), motionMs);
   };
 
-  // ── BEAT 2 — OPENING EMOTIONAL PULL ───────────────────────────────────
-  // First phase ("mood") gets a dedicated cinematic layout: 3 full-bleed
-  // vertical scenes, one editorial framing question, no step indicators,
-  // no eyebrow, no icons. Each scene IS the choice — entering one feels
-  // like stepping into the day, not picking a category.
-  if (phase === "mood") {
-    return (
-      <div
-        key={phase}
-        className={`absolute inset-0 z-40 flex flex-col bg-[color:var(--charcoal)] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          transitioning ? "opacity-0 scale-[0.99]" : "opacity-100 scale-100"
-        }`}
-        style={{ transition: `opacity ${motionMs}ms, transform ${motionMs}ms` }}
-      >
-        {/* Single framing question — serif italic, no eyebrow, no chip */}
-        <div className="relative z-10 px-8 pt-[max(env(safe-area-inset-top),1.25rem)] pb-3 text-center pointer-events-none">
-          <h2
-            className="font-serif italic text-[22px] sm:text-[28px] leading-[1.22] text-[color:var(--ivory)] max-w-[24ch] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)] animate-in fade-in slide-in-from-top-1 duration-[900ms]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-          >
-            {t.openingPrompt}
-          </h2>
-        </div>
+  const isActiveFor = (option: PhaseOption) =>
+    phase === "mood"
+      ? active.mood === option.value
+      : phase === "depth"
+        ? active.journeyType === option.value
+        : phase === "who"
+          ? active.who === option.value
+          : active.intention === option.value;
 
-        {/* 3 full-bleed scenes stacked vertically — each one a doorway */}
-        <ul className="relative z-10 flex-1 flex flex-col gap-2 px-2 pb-3 min-h-0" role="list">
-          {t.openingScenes.map((opt, i) => {
-            const isActive = active.mood === opt.value;
-            return (
-              <li key={`mood-${opt.value}`} className="min-h-0 flex-1">
-                <button
-                  type="button"
-                  onClick={() => handlePick(opt.value, opt.label)}
-                  className={`group relative h-full w-full overflow-hidden rounded-[4px] border transition-all duration-[520ms] ease-out animate-in fade-in zoom-in-[0.99] active:scale-[0.992] ${
-                    isActive
-                      ? "border-[color:var(--gold)]/85 shadow-[0_0_0_1px_oklch(0.78_0.12_85_/_0.45),0_22px_50px_rgba(0,0,0,0.5)]"
-                      : "border-[color:var(--ivory)]/10 shadow-[0_16px_38px_rgba(0,0,0,0.45)] hover:border-[color:var(--ivory)]/30"
-                  }`}
-                  style={{ animationDelay: `${280 + i * 220}ms`, animationFillMode: "both", animationDuration: "1100ms" }}
-                  aria-pressed={isActive}
-                  aria-label={opt.label}
-                >
-                  <video
-                    aria-hidden="true"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.025]"
-                    style={{ filter: "saturate(0.82) contrast(1.03) brightness(0.7)" }}
-                  >
-                    <source src={clipFor("mood", opt.value)} type="video/mp4" />
-                  </video>
-                  {/* Editorial bottom-left gradient — text breathes against it */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, oklch(0.15 0.02 240 / 0.05) 0%, oklch(0.15 0.02 240 / 0.05) 45%, oklch(0.15 0.02 240 / 0.72) 100%)",
-                    }}
-                  />
-                  <span className="absolute inset-x-0 bottom-0 z-10 px-5 sm:px-7 pb-5 sm:pb-6 text-left">
-                    <span
-                      className="block font-serif italic text-[20px] sm:text-[24px] leading-[1.18] text-[color:var(--ivory)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)] max-w-[18ch]"
-                      style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                    >
-                      {opt.label}
-                    </span>
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+  // ── Asymmetric editorial grid (who) — 1 tall left + 3 stacked right ──
+  // Avoids the 2×2 grid rhythm; first option is the protagonist.
+  const renderAsymmetric = () => {
+    const [hero, ...rest] = options;
+    return (
+      <div className="relative z-10 flex-1 grid grid-cols-5 grid-rows-3 gap-2 px-2 pb-3 min-h-0">
+        <div className="col-span-3 row-span-3 min-h-0">
+          <SceneTile
+            phase={phase}
+            option={hero}
+            isActive={isActiveFor(hero)}
+            onPick={() => handlePick(hero)}
+            captionSize="lg"
+            delayMs={240}
+          />
+        </div>
+        {rest.map((opt, i) => (
+          <div key={`${phase}-${opt.value}`} className="col-span-2 row-span-1 min-h-0">
+            <SceneTile
+              phase={phase}
+              option={opt}
+              isActive={isActiveFor(opt)}
+              onPick={() => handlePick(opt)}
+              captionSize="sm"
+              delayMs={360 + i * 160}
+            />
+          </div>
+        ))}
       </div>
     );
-  }
+  };
 
-  // ── Phases 2+ (depth, who, intention) — quieter grid, restrained chrome ──
+  // ── Vertical full-bleed stack (mood, depth, intention) ──
+  const renderVerticalStack = () => (
+    <ul className="relative z-10 flex-1 flex flex-col gap-2 px-2 pb-3 min-h-0" role="list">
+      {options.map((opt, i) => (
+        <li key={`${phase}-${opt.value}`} className="min-h-0 flex-1">
+          <SceneTile
+            phase={phase}
+            option={opt}
+            isActive={isActiveFor(opt)}
+            onPick={() => handlePick(opt)}
+            captionSize={options.length <= 2 ? "lg" : "md"}
+            delayMs={280 + i * 220}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <div
       key={phase}
       className={`absolute inset-0 z-40 flex flex-col bg-[color:var(--charcoal)] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        transitioning ? "opacity-0 scale-[0.985]" : "opacity-100 scale-100"
+        transitioning ? "opacity-0 scale-[0.99]" : "opacity-100 scale-100"
       }`}
       style={{ transition: `opacity ${motionMs}ms, transform ${motionMs}ms` }}
     >
-      <header className="relative z-10 px-5 pt-5 pb-2 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-[600ms]">
-        <span className="text-[9.5px] uppercase tracking-[0.34em] font-medium text-[color:var(--ivory)]/55">
-          {stepLine}
-        </span>
-        <div className="flex items-center gap-1.5">
-          {PHASE_ORDER.map((p, i) => {
-            const done = i < phaseIndex || Boolean(valueFor(p));
-            const isCur = i === phaseIndex;
-            return (
-              <span
-                key={p}
-                className={`block rounded-full transition-all duration-500 ${
-                  isCur
-                    ? "w-6 h-[2px] bg-[color:var(--gold)]"
-                    : done
-                      ? "w-2.5 h-[2px] bg-[color:var(--gold)]/60"
-                      : "w-2.5 h-[2px] bg-[color:var(--ivory)]/18"
-                }`}
-              />
-            );
-          })}
+      {/* Single framing question — serif italic, no eyebrow, no chip, no step indicator */}
+      {framing && (
+        <div className="relative z-10 px-8 pt-[max(env(safe-area-inset-top),1.25rem)] pb-3 text-center pointer-events-none">
+          <h2
+            className="font-serif italic text-[20px] sm:text-[26px] leading-[1.22] text-[color:var(--ivory)] max-w-[24ch] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)] animate-in fade-in slide-in-from-top-1 duration-[900ms]"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
+            {framing}
+          </h2>
         </div>
-      </header>
+      )}
 
-      <div className="relative z-10 px-6 pt-4 pb-3 text-center animate-in fade-in slide-in-from-bottom-2 duration-[700ms]">
-        <h2
-          className="text-[24px] sm:text-[30px] font-semibold leading-[1.1] text-[color:var(--ivory)]"
-          style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
-        >
-          {title}
-        </h2>
-        <p
-          className="mt-2 text-[13px] italic text-[color:var(--ivory)]/60"
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-        >
-          {hint}
-        </p>
-      </div>
-
-      <div className="relative z-10 flex-1 px-4 pb-6 pt-2 min-h-0">
-        <ul
-          className={`grid gap-3 h-full ${isDepth ? "grid-cols-1 max-w-md mx-auto" : "grid-cols-2"}`}
-          role="list"
-        >
-          {options.map((opt, i) => {
-            const isActive =
-              phase === "depth"
-                ? active.journeyType === opt.value
-                : phase === "who"
-                  ? active.who === opt.value
-                  : active.intention === opt.value;
-            return (
-              <li key={`${phase}-${opt.value}`} className="min-h-0">
-                <button
-                  type="button"
-                  onClick={() => handlePick(opt.value, opt.label)}
-                  className={`group relative h-full w-full overflow-hidden rounded-[6px] border transition-all duration-[420ms] ease-out animate-in fade-in zoom-in-95 active:scale-[0.985] ${
-                    isActive
-                      ? "border-[color:var(--gold)] shadow-[0_0_0_2px_oklch(0.78_0.12_85_/_0.4),0_18px_42px_rgba(0,0,0,0.5)]"
-                      : "border-[color:var(--ivory)]/15 shadow-[0_14px_34px_rgba(0,0,0,0.42)] hover:border-[color:var(--gold)]/70"
-                  }`}
-                  style={{ animationDelay: `${120 + i * 90}ms`, animationFillMode: "both" }}
-                  aria-pressed={isActive}
-                  aria-label={opt.label}
-                >
-                  <video
-                    aria-hidden="true"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04] group-active:scale-[1.02]"
-                    style={{ filter: "saturate(0.82) contrast(1.04) brightness(0.74)" }}
-                  >
-                    <source src={clipFor(phase, opt.value)} type="video/mp4" />
-                  </video>
-                  <span className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/80 via-[color:var(--charcoal)]/25 to-transparent" />
-                  <span className="absolute inset-x-0 bottom-0 z-10 px-3 pb-3 flex items-end justify-between gap-2">
-                    <span
-                      className={`font-semibold leading-tight text-[color:var(--ivory)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] ${
-                        isDepth ? "text-[17px] sm:text-[19px]" : "text-[15px] sm:text-[17px]"
-                      }`}
-                      style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
-                    >
-                      {opt.label}
-                    </span>
-                    <Sparkles
-                      size={14}
-                      className={`shrink-0 transition-all ${
-                        isActive
-                          ? "text-[color:var(--gold)] opacity-100 scale-110"
-                          : "text-[color:var(--gold)] opacity-60 group-hover:opacity-100 group-hover:scale-110"
-                      }`}
-                    />
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {phase === "who" ? renderAsymmetric() : renderVerticalStack()}
     </div>
   );
 }
