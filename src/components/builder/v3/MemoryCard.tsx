@@ -392,7 +392,9 @@ export function MemoryCard({
             )}
           </button>
 
-          {/* Quiet secondary actions — text links, never buttons */}
+          {/* Quiet secondary actions — text links only, reduced to two.
+              The concierge path stays available elsewhere; the reveal is
+              not the moment for visible alternatives. */}
           <div className="flex flex-col items-center gap-3 pt-1">
             <button
               type="button"
@@ -400,15 +402,7 @@ export function MemoryCard({
               className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
               style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
             >
-              Ver no mapa
-            </button>
-            <button
-              type="button"
-              onClick={handleWhatsApp}
-              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
-              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
-            >
-              Falar com um concierge
+              Ver o trajeto
             </button>
             <button
               type="button"
