@@ -1,105 +1,72 @@
-# Experience Studio → Cinematic Journey OS
+# Experience Studio v2 — Fullscreen, AI-Assisted, Conversational
 
-Evolução faseada do `/builder`. **Homepage não é tocada.** Mantemos o stepper atual e elevamos a sua qualidade emocional, cinemática e operacional. AI corre em background (sugestões silenciosas), respeitando a regra canónica: nunca inventa stops, preços ou itinerários.
-
----
-
-## Princípios não-negociáveis
-
-- **Sem novos stops fictícios.** AI só reordena/sugere a partir de `builder_stops` reais e respeita `builder_compatibility_rules` + `builder_routing_rules`.
-- **Mobile-first** (viewport 393 é o canvas principal). Desktop adapta depois.
-- **Tokens da marca** (teal/gold/ivory/sand/charcoal). Sem novos hex.
-- **Motion permitido fora da home**: fade + translateY 12–16px, hover lift -2px, route draw, accordion — tudo ≤220ms. Sem parallax, sem glass.
-- **Reutilizar primitivos**: `<Eyebrow>`, `<SectionTitle>`, `<CtaButton>`, `BuilderMap`, `JourneyPanel`. Não criar duplicados.
-- **Reduced-motion sempre respeitado.**
+Aprofunda o plano original (já em curso, Fase 1 entregue) com três eixos que escolheste: **fullscreen imersivo total**, **IA com recomendações silenciosas** e **fluxo conversacional narrado**. Tudo respeita as regras canónicas: zero stops/preços inventados, mobile-first, tokens da marca, motion ≤220ms fora da home.
 
 ---
 
-## Fase 1 — Fullscreen Cinematic Shell
+## Eixo A — Fullscreen Cinematic Shell (evolui Fase 1+2)
 
-Eleva o stepper atual a uma experiência imersiva, sem reescrever o flow.
+Objetivo: o builder deixa de viver dentro de `SiteLayout` e passa a ser um palco contínuo.
 
-- Novo wrapper `BuilderStage` (fullscreen, 100dvh, ivory base, sem SiteLayout chrome dentro do builder — navbar fica minimal/transparente sobre o stage).
-- Transições entre steps: cross-fade + translateY 14px (≤220ms). Cada step entra como uma "cena".
-- Mapa promovido a **camada de fundo persistente** no mobile (40vh top, sticky), e split 50/50 no tablet+. Já não fecha entre steps.
-- Header do step: eyebrow ("Capítulo 02 — Ritmo"), título Montserrat, sub-linha Georgia italic. Cria sensação de capítulos.
-- Progress meter atual repensado como **timeline editorial** discreta (gold tick + label), substituindo o stepper numérico.
-- Sticky bar mantém-se mas com fundo `--ivory`/blur leve e CTA primário com arrow ramp.
+- Novo `BuilderStage` (100dvh, ivory base, sem header/footer do site dentro do flow). Navbar minimal flutua por cima, fundo transparente, dissolve no topo.
+- **Mapa persistente como camada de fundo** (40vh mobile sticky, split 50/50 tablet+). Já não fecha entre passos.
+- Transições cena-a-cena: cross-fade + translateY 14px (≤220ms), com `TRANSITION_MICROCOPY` em Georgia italic entre cenas (600ms).
+- Timeline editorial substitui o stepper numérico (tick gold + label do capítulo).
+- Mapa narrativo: `flyTo` ≤700ms a cada escolha, pins editoriais (ivory + borda gold), route draw segmento-a-segmento, ghost da sugestão AI em gold tracejado.
+- Mobile: mapa colapsa para 32vh com handle drag até 70vh (substitui modal atual).
 
-Ficheiros: novo `BuilderStage.tsx`, refactor leve de `builder.tsx`, evolução de `BuilderProgressMeter.tsx`, `StickyBar.tsx`.
-
----
-
-## Fase 2 — Mapa como Motor Narrativo
-
-O `BuilderMap` deixa de ser componente de apoio e passa a contar a história.
-
-- **Reveal progressivo**: a cada step, o mapa anima para a próxima escala (região → sub-zona → cluster de stops), com `flyTo` ≤700ms easing `easeInOutCubic`.
-- **Pins emocionais**: substituir o teardrop genérico por marcador editorial (círculo ivory + borda gold + ícone do `tag` do stop). Pin selecionado pulsa gold uma vez.
-- **Route draw cinemático**: já existe; melhorar para desenhar segmento a segmento (não tudo de uma vez) e adicionar "ghost" da próxima sugestão AI em gold tracejado.
-- **Camadas opcionais** (toggle discreto, canto inferior): "mood overlay" (tinta quente em zonas costeiras / fria em interior, opacity 0.08) — só visual, sem dados inventados.
-- **Mapa não some no mobile**: collapse para 32vh com handle para arrastar até 70vh. Substitui o atual "abrir mapa" modal.
-- Per-region zoom memory mantém-se (regra existente).
-
-Ficheiros: `BuilderMap.tsx` (evoluir, não substituir).
+Ficheiros: novo `src/components/builder/BuilderStage.tsx`, evoluir `BuilderMap.tsx`, `BuilderProgressMeter.tsx`, `StickyBar.tsx`.
 
 ---
 
-## Fase 3 — AI Silenciosa (Lovable AI Gateway)
+## Eixo B — IA Silenciosa Aplicada a Tudo
 
-Camada de inteligência que **nunca inventa**, apenas reordena e justifica.
+A IA já existe para `intent` (`builderIntent.functions.ts`). Estendemos sem nova UI ruidosa.
 
-- Nova server fn `suggestNextStops` (`src/server/builderAI.functions.ts`):
-  - Input: estado atual do builder (mood, pace, who, intentions, região, stops escolhidos).
-  - Lê de `builder_stops` filtrados pela região + tags + `compatible_with` + `builder_compatibility_rules`.
-  - Chama Lovable AI (`google/gemini-3-flash-preview`) com tool-calling estruturado para escolher 2–3 stops da lista real e devolver um micro-rationale editorial (≤90 chars).
-  - Output validado por Zod; descarta qualquer stop key que não exista em `builder_stops`.
-- UI: bloco discreto "Sugestão silenciosa" acima do `ElementsShelf` — chip ivory com label do stop + 1 linha de rationale. Sem chat bubble.
-- Telemetria: `builder_events` (já existe) com `event='ai_suggest_shown' | 'ai_suggest_accepted'`.
-- Rate limit reutiliza `builder_rate_limits` (já existe).
+- Nova server fn `suggestPacing` (Lovable AI Gateway, `google/gemini-3-flash-preview`, tool-calling): recebe stops escolhidos + pace + who → devolve ordem ótima e aviso editorial se o ritmo está apertado (≤90 chars). Nunca inventa stops.
+- Nova server fn `suggestNextStops`: 2–3 sugestões reais da base `builder_stops` filtradas por região/tags/`compatible_with`, com micro-rationale.
+- UI silenciosa:
+  - chip "Sugestão" acima do `ElementsShelf` (ivory + borda gold, 1 linha).
+  - Banner discreto no topo do itinerário com aviso de pacing ("ritmo apertado — considera tirar uma paragem").
+- Telemetria reutiliza `builder_events` (`ai_suggest_shown`, `ai_suggest_accepted`, `ai_pacing_warning_shown`).
+- Rate limit via `builder_rate_limits` (já existe). Fallback determinístico se a IA falhar.
 
 Sem nova tabela. Sem chat. Sem inventar.
 
 ---
 
-## Fase 4 — Storytelling Progression
+## Eixo C — Fluxo Conversacional Narrado (camada opcional sobre o stepper)
 
-Transforma o flow em "capítulos" emocionais sem mudar a ordem técnica.
+Mantém o stepper técnico mas adiciona um modo "narrativa" — o utilizador descreve em texto livre e o builder pré-preenche escolhas.
 
-- Catalogue (`catalogue.ts`) ganha campo `chapter` (Mood = "O tom", Pace = "O ritmo", Who = "Com quem", Intentions = "O que vos move", Region = "Onde", Stops = "Os momentos").
-- Micro-copy de transição entre steps (já existe `TRANSITION_MICROCOPY`) refinada para Georgia italic curta (≤60 chars), aparece 600ms entre cenas.
-- Itinerário (`JourneyPanel`) ganha estado "história a montar-se" — cada novo stop entra com fade + linha do mapa a desenhar-se em sincronia.
-- Review screen ganha capa editorial (hero do stop principal + título do journey gerado pela AI em tom, não em factos).
+- Novo passo inicial opcional: **"Conta-me em uma frase"** (textarea ivory, placeholder editorial). O utilizador escreve "fim-de-semana romântico, vinho e mar, sem pressa".
+- Server fn `parseNarrative` (nova, em `src/server/builderNarrative.functions.ts`):
+  - Input: texto livre (≤500 chars).
+  - Chama Lovable AI com tool-calling estruturado → devolve `{mood, pace, who, intentions, regionHint}` (apenas valores válidos dos enums).
+  - Output validado por Zod, nunca aceita valores fora dos enums.
+- UI: depois de parse, o builder salta para o passo Region/Stops com tudo pré-selecionado e um chip "Ajustado a partir da tua história" (gold, dismissible).
+- Skip permitido: utilizador pode ignorar e ir direto ao stepper clássico.
+- A narrativa também alimenta `suggestFromIntent` (já existe) para ranking inicial dos stops.
 
----
-
-## Fase 5 — Operacional & Reutilização
-
-Limpeza e preparação para escalar.
-
-- Auditar `builder.tsx` (1311 linhas) → extrair lógica de orquestração para hook `useBuilderFlow.ts`. Componente fica fino.
-- Garantir que `JourneyPanel`, `BuilderMap`, `StickyBar`, `BuilderStage` são reutilizáveis no `MultiDayBuilder` sem duplicação.
-- Supabase: zero mudanças de schema nesta fase. Todas as tabelas necessárias (`builder_stops`, `builder_regions`, `builder_routing_rules`, `builder_compatibility_rules`, `builder_journeys`, `builder_events`, `builder_rate_limits`) já existem.
-- Adicionar índice em `builder_stops(region_key, is_active)` se ainda não existir (verificar antes).
+Sem chat contínuo. É um único momento de input narrativo que acelera o stepper.
 
 ---
 
-## Fora de scope (explicitamente)
+## Ordem de execução (faseada)
 
-- Homepage / hero / navbar — **não tocar**.
-- Chat AI visível, copiloto conversacional, fullscreen chat-like flow.
-- Novos stops, regiões, preços, parceiros inventados.
-- Substituir Mapbox/Leaflet por outro motor.
-- Mudar checkout (Stripe sandbox) ou booking truth model.
+1. **Fase 2 (em curso) — Mapa narrativo + Stage fullscreen** (Eixo A). Maior impacto visual imediato.
+2. **Fase 3 — IA silenciosa estendida** (Eixo B). Backend + chips discretos.
+3. **Fase 4 — Modo narrativa** (Eixo C). Passo opcional + parse server fn.
+4. **Fase 5 — Storytelling progression + refactor `useBuilderFlow`** (já no plano original).
+
+Cada fase é mergível isoladamente. Confirma para arrancar a Fase 2.
 
 ---
 
-## Ordem de execução
+## Fora de scope (mantém-se)
 
-1. **Fase 1** (shell cinemático) — base visual, baixo risco.
-2. **Fase 2** (mapa narrativo) — maior impacto emocional.
-3. **Fase 3** (AI silenciosa) — backend + UI mínima.
-4. **Fase 4** (storytelling) — copy + micro-transições.
-5. **Fase 5** (refactor) — limpeza final.
-
-Cada fase entrega valor isolado e é mergível independentemente. Confirma a Fase 1 para começar, ou diz-me se queres reordenar / cortar fases.
+- Homepage / hero / navbar — não tocar.
+- Chat AI visível ou copiloto conversacional contínuo.
+- Novos stops, regiões, preços, parceiros.
+- Substituir Mapbox/Leaflet.
+- Mudar checkout ou booking truth model.

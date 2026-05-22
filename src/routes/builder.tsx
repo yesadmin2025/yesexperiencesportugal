@@ -45,6 +45,7 @@ import {
   TRANSITION_MICROCOPY,
   WHOS,
 } from "@/components/builder/catalogue";
+import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
 
 /** Resolve a human label for current selections, used by the live header. */
 function labelFor<T extends { id: string; label: string }>(
@@ -160,6 +161,7 @@ function BuilderPage() {
   );
 
   const [microcopy, setMicrocopy] = useState<string | null>(null);
+  const [narrativeApplied, setNarrativeApplied] = useState(false);
 
 
   const [route, setRoute] = useState<RouteUI | null>(null);
@@ -546,6 +548,28 @@ function BuilderPage() {
                   {BUILDER_REGIONS.find((r) => r.key === region)?.label ?? region}
                   <span className="text-[color:var(--charcoal)]/40">· change</span>
                 </button>
+                <NarrativeIntro
+                  applied={narrativeApplied}
+                  onReset={() => {
+                    setNarrativeApplied(false);
+                    setSearch({ mood: undefined, who: undefined, intention: undefined, pace: "balanced" });
+                    setIntentions([]);
+                  }}
+                  onApply={(parsed) => {
+                    const patch: Partial<BuilderSearch> = {};
+                    if (parsed.mood) patch.mood = parsed.mood;
+                    if (parsed.who) patch.who = parsed.who;
+                    if (parsed.intention) {
+                      patch.intention = parsed.intention;
+                      setIntentions([parsed.intention]);
+                    }
+                    if (parsed.pace) patch.pace = parsed.pace;
+                    if (Object.keys(patch).length > 0) {
+                      setSearch(patch);
+                      setNarrativeApplied(true);
+                    }
+                  }}
+                />
                 {moodImagesLoading && Object.keys(moodImages).length === 0 ? (
                   <MoodGridSkeleton count={MOODS.length} />
                 ) : (
