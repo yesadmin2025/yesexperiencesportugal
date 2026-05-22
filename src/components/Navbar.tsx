@@ -80,7 +80,7 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-block h-[58px] md:h-[64px] lg:h-[70px]">
+            <span className="relative inline-block h-[46px] md:h-[52px] lg:h-[58px]">
               {/* Single full logo — always rendered, never resizes. The "YES" script
                   stays in the exact same position and size in both states. */}
               <Logo
