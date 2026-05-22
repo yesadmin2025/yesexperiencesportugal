@@ -17,6 +17,12 @@ interface Props {
   onAccept: (stop: StudioStop) => void;
 }
 
+const CARD_CLIPS = [
+  "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
+  "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
+  "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
+] as const;
+
 const PHRASES_BY_TAG: Record<string, string> = {
   wine: "provar devagar, sem pressa",
   gastronomy: "sentar à mesa com tempo",
@@ -55,7 +61,7 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
     return () => timers.forEach(window.clearTimeout);
   }, [suggestions]);
 
-  const available = suggestions.filter((s) => !acceptedKeys.includes(s.key));
+  const available = suggestions.filter((s) => !acceptedKeys.includes(s.key)).slice(0, 3);
   if (!available.length) return null;
 
   return (
@@ -68,7 +74,7 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
             <button
               type="button"
               onClick={() => onAccept(s)}
-              className={`group inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/94 backdrop-blur px-4 py-3 min-h-[46px] max-w-[82vw] border border-[color:var(--gold)]/40 hover:border-[color:var(--gold)] hover:bg-[color:var(--ivory)] shadow-[0_8px_26px_rgba(0,0,0,0.28)] transition-all ease-out`}
+              className="group relative overflow-hidden rounded-[5px] min-h-[86px] w-[min(86vw,380px)] border border-[color:var(--ivory)]/25 shadow-[0_14px_34px_rgba(0,0,0,0.34)] transition-all ease-out hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70"
               style={{
                 transitionDuration: "420ms",
                 opacity: visible ? 1 : 0,
@@ -77,15 +83,30 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
               }}
               aria-label={`${addLabel}: ${phrase}`}
             >
-              <Sparkles
-                size={13}
-                className="text-[color:var(--gold)] shrink-0 transition-transform group-hover:scale-110"
-              />
-              <span
-                className="text-[13px] italic font-medium text-[color:var(--charcoal)] tracking-[0.01em] leading-snug line-clamp-2 text-left"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              <video
+                aria-hidden="true"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+                style={{ filter: "saturate(0.78) contrast(1.02) brightness(0.76)" }}
               >
-                {phrase}
+                <source src={CARD_CLIPS[i % CARD_CLIPS.length]} type="video/mp4" />
+              </video>
+              <span className="absolute inset-0 bg-gradient-to-r from-[color:var(--charcoal)]/78 via-[color:var(--charcoal)]/38 to-transparent" />
+              <span className="relative z-10 flex h-full min-h-[86px] items-center gap-2 px-4 text-left">
+                <Sparkles
+                  size={13}
+                  className="text-[color:var(--gold)] shrink-0 transition-transform group-hover:scale-110"
+                />
+                <span
+                  className="text-[14px] italic font-medium text-[color:var(--ivory)] tracking-[0.01em] leading-snug line-clamp-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.55)]"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                >
+                  {phrase}
+                </span>
               </span>
             </button>
           </li>
