@@ -17,9 +17,22 @@ export interface EmotionOption<V extends string = string> {
   label: string;
 }
 
+export interface OpeningScene<V extends string = string> {
+  value: V;
+  label: string;
+}
+
 export interface StudioDict {
   eyebrow: string;
   prologueLines: string[];
+  /** Single static line for the cinematic arrival (BEAT 1). */
+  arrivalLine: string;
+  /** Subtle continue affordance shown after a long pause (BEAT 1). */
+  arrivalContinue: string;
+  /** Single emotional framing question for the opening scene picker (BEAT 2). */
+  openingPrompt: string;
+  /** 3 full-bleed cinematic scenes for the opening pull (BEAT 2). Each maps to a Mood. */
+  openingScenes: OpeningScene<"open" | "romantic" | "slow">[];
   fragments: string[];
   whisperInvite: string;
   whisperHelper: string;
