@@ -1,0 +1,174 @@
+import { useCallback, useMemo, useState } from "react";
+import type { Intention, Mood, Pace, Who, RoutedStopUI } from "@/components/builder/types";
+import {
+  BUILDER_REGIONS,
+  type BuilderRegionKey,
+} from "@/components/builder/RegionStep";
+
+/**
+ * Unified state for the Living Atmosphere Studio (Builder v3).
+ *
+ * No notion of "step". The world has selections that may or may not exist,
+ * and the UI reacts to whatever is present.
+ */
+
+export interface StudioStop {
+  key: string;
+  label: string;
+  blurb: string | null;
+  tag: string | null;
+  lat: number;
+  lng: number;
+  duration_minutes: number;
+}
+
+export interface StudioState {
+  /** Free-text narrative the user has spoken/typed so far. */
+  narrative: string;
+  /** Mapped from narrative (or null until parsed). */
+  mood: Mood | null;
+  who: Who | null;
+  intention: Intention | null;
+  pace: Pace;
+  regionKey: BuilderRegionKey | null;
+  /** Ordered stops the user has accepted into the itinerary. */
+  acceptedStops: StudioStop[];
+  /** Last AI chapter line shown above the scene. */
+  chapter: string | null;
+  /** Transient AI whisper (pacing advisor). Cleared after timeout. */
+  whisper: string | null;
+  /** Has the user advanced past the opening atmospheric scene? */
+  awakened: boolean;
+  /** Memory mode active (final scene). */
+  closing: boolean;
+}
+
+const INITIAL: StudioState = {
+  narrative: "",
+  mood: null,
+  who: null,
+  intention: null,
+  pace: "balanced",
+  regionKey: null,
+  acceptedStops: [],
+  chapter: null,
+  whisper: null,
+  awakened: false,
+  closing: false,
+};
+
+/** Map parseNarrative regionHint (small enum) to a real BuilderRegionKey. */
+const REGION_HINT_MAP: Record<string, BuilderRegionKey> = {
+  lisbon: "lisbon",
+  porto: "porto", // not in catalog — falls back below
+  alentejo: "alentejo",
+  douro: "porto",
+  algarve: "algarve", // not in catalog — falls back below
+  sintra: "sintra-cascais",
+};
+
+const CATALOG_REGION_KEYS = new Set<string>(BUILDER_REGIONS.map((r) => r.key));
+
+export function resolveRegionFromHint(hint?: string | null): BuilderRegionKey {
+  if (hint && REGION_HINT_MAP[hint] && CATALOG_REGION_KEYS.has(REGION_HINT_MAP[hint])) {
+    return REGION_HINT_MAP[hint];
+  }
+  // Default operation hub: Arrábida & Setúbal (largest catalog).
+  return "arrabida-setubal";
+}
+
+export function regionLabel(key: BuilderRegionKey | null): string {
+  if (!key) return "Portugal";
+  return BUILDER_REGIONS.find((r) => r.key === key)?.label ?? "Portugal";
+}
+
+export function useStudioState() {
+  const [state, setState] = useState<StudioState>(INITIAL);
+
+  const patch = useCallback((p: Partial<StudioState>) => {
+    setState((s) => ({ ...s, ...p }));
+  }, []);
+
+  const acceptStop = useCallback((stop: StudioStop) => {
+    setState((s) =>
+      s.acceptedStops.some((x) => x.key === stop.key)
+        ? s
+        : { ...s, acceptedStops: [...s.acceptedStops, stop] },
+    );
+  }, []);
+
+  const removeStop = useCallback((key: string) => {
+    setState((s) => ({ ...s, acceptedStops: s.acceptedStops.filter((x) => x.key !== key) }));
+  }, []);
+
+  const reorderStops = useCallback((keys: string[]) => {
+    setState((s) => {
+      const map = new Map(s.acceptedStops.map((x) => [x.key, x]));
+      const reordered = keys.map((k) => map.get(k)).filter(Boolean) as StudioStop[];
+      // Append any stops not in `keys` (defensive).
+      for (const x of s.acceptedStops) if (!keys.includes(x.key)) reordered.push(x);
+      return { ...s, acceptedStops: reordered };
+    });
+  }, []);
+
+  const setWhisper = useCallback((line: string | null) => {
+    setState((s) => ({ ...s, whisper: line }));
+  }, []);
+
+  const reset = useCallback(() => setState(INITIAL), []);
+
+  /** Build a RoutedStopUI[] for BuilderMap (drive minutes are approximate). */
+  const routedStops = useMemo<RoutedStopUI[]>(() => {
+    return state.acceptedStops.map((s, i) => ({
+      key: s.key,
+      region_key: state.regionKey ?? "",
+      label: s.label,
+      blurb: s.blurb,
+      tag: s.tag,
+      lat: s.lat,
+      lng: s.lng,
+      duration_minutes: s.duration_minutes,
+      driveMinutesFromPrev: i === 0 ? 0 : 20,
+    }));
+  }, [state.acceptedStops, state.regionKey]);
+
+  const regionCenter = useMemo(() => {
+    if (!state.regionKey) return null;
+    // Approximate centers — BuilderMap will flyTo bounds once stops exist.
+    const centers: Record<string, { lat: number; lng: number }> = {
+      lisbon: { lat: 38.72, lng: -9.14 },
+      "arrabida-setubal": { lat: 38.52, lng: -8.97 },
+      "troia-comporta": { lat: 38.42, lng: -8.78 },
+      porto: { lat: 41.15, lng: -8.61 },
+      alentejo: { lat: 38.57, lng: -7.91 },
+      "sintra-cascais": { lat: 38.8, lng: -9.4 },
+      algarve: { lat: 37.1, lng: -8.2 },
+      "evora-alentejo": { lat: 38.57, lng: -7.91 },
+      "centro-tomar-coimbra": { lat: 39.6, lng: -8.4 },
+      "centro-fatima-nazare-obidos": { lat: 39.6, lng: -9.07 },
+    };
+    return centers[state.regionKey] ?? null;
+  }, [state.regionKey]);
+
+  const totalMinutes = useMemo(
+    () =>
+      state.acceptedStops.reduce(
+        (acc, s, i) => acc + s.duration_minutes + (i === 0 ? 0 : 20),
+        0,
+      ),
+    [state.acceptedStops],
+  );
+
+  return {
+    state,
+    patch,
+    acceptStop,
+    removeStop,
+    reorderStops,
+    setWhisper,
+    reset,
+    routedStops,
+    regionCenter,
+    totalMinutes,
+  };
+}
