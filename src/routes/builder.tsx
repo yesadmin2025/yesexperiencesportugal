@@ -47,6 +47,8 @@ import {
 } from "@/components/builder/catalogue";
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
 import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
+import { StudioStageV3 } from "@/components/builder/v3/StudioStageV3";
+
 
 /** Resolve a human label for current selections, used by the live header. */
 function labelFor<T extends { id: string; label: string }>(
@@ -105,6 +107,22 @@ export const Route = createFileRoute("/builder")({
 function BuilderPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/builder" });
+
+  // Experience Studio v3 (Living Atmosphere) — fullscreen conversational stage.
+  // Escape hatch: append `?legacy=1` to fall back to the v1/v2 stepper flow.
+  const isLegacy =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("legacy") === "1";
+  if (!isLegacy) {
+    return (
+      <StudioStageV3
+        onExit={() => {
+          void navigate({ to: "/" });
+        }}
+      />
+    );
+  }
+
 
   const step = search.step ?? 0;
   const region = search.region;
