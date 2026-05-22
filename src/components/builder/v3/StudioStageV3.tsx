@@ -110,22 +110,47 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
 
   const suggestionStops = useMemo<StudioStop[]>(() => {
     const acceptedSet = new Set(state.acceptedStops.map((s) => s.key));
-    const out: StudioStop[] = [];
+    const acceptedTags = new Set(
+      state.acceptedStops.map((s) => s.tag?.toLowerCase()).filter(Boolean) as string[],
+    );
+
+    // Affinity-weighted scoring — picks the "next best" complementary moment
+    // rather than echoing whatever was just accepted. Higher = better fit.
+    const score = (c: CatalogEntry): number => {
+      const tag = c.tag?.toLowerCase() ?? "";
+      const warmTags = new Set(["wine", "gastronomy", "wellness", "romantic"]);
+      const deepTags = new Set(["heritage", "nature", "hidden", "wellness"]);
+      const energyTags = new Set(["coast", "wonder", "nature"]);
+      let s = 0;
+      if (warmTags.has(tag)) s += affinityProfile.warmth * 1.0;
+      if (deepTags.has(tag)) s += affinityProfile.depth * 0.9;
+      if (energyTags.has(tag)) s += affinityProfile.energy * 0.7;
+      if (state.intention && tag === state.intention) s += 0.4;
+      // Reduce echo: penalize tags already represented in the journey.
+      if (acceptedTags.has(tag)) s -= 0.55;
+      return s;
+    };
+
+    const pool: CatalogEntry[] = [];
     for (const k of suggestionKeys) {
       if (acceptedSet.has(k)) continue;
       const c = catalog.get(k);
-      if (c) out.push(c);
-      if (out.length >= 4) break;
+      if (c) pool.push(c);
     }
-    if (out.length < 3) {
+    if (pool.length < 4) {
       for (const c of catalog.values()) {
-        if (acceptedSet.has(c.key) || out.some((x) => x.key === c.key)) continue;
-        out.push(c);
-        if (out.length >= 4) break;
+        if (acceptedSet.has(c.key) || pool.some((x) => x.key === c.key)) continue;
+        pool.push(c);
+        if (pool.length >= 8) break;
       }
     }
-    return out;
-  }, [suggestionKeys, catalog, state.acceptedStops]);
+    return pool
+      .map((c) => ({ c, s: score(c) }))
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 4)
+      .map(({ c }) => c);
+  }, [suggestionKeys, catalog, state.acceptedStops, state.intention, affinityProfile]);
+
 
   /* ── Chapter line (debounced) ── */
   useEffect(() => {
@@ -423,7 +448,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         regionLabel={regionLabel(state.regionKey)}
         videoUrl={studioClip}
         veil={phase === "living" ? "medium" : "deep"}
+        journeyType={state.journeyType}
+        affinity={affinityProfile}
       />
+
 
       {/* Soft header — fades in only after the world begins reacting */}
       <header
@@ -463,7 +491,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           >
             <RotateCcw size={13} />
           </button>
-          <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" collapsed={phase !== "living"} />
+          <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" collapsed />
           {showRibbonToggle && (
             <button
               type="button"

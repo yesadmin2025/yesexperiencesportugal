@@ -15,7 +15,12 @@ interface Props {
   videoUrl?: string | null;
   /** Stronger overlay when text sits on top. */
   veil?: "light" | "medium" | "deep";
+  /** Single-day vs multi-day journey — drives tint warmth/depth. */
+  journeyType?: "day" | "multi" | null;
+  /** Affinity profile (0–1 each) — fine-tunes tint intensity. */
+  affinity?: { warmth: number; depth: number; energy: number; intimacy: number };
 }
+
 
 const MOOD_GRADIENTS: Record<string, string> = {
   slow: "radial-gradient(ellipse at 30% 60%, oklch(0.42 0.04 200 / 0.9), oklch(0.22 0.03 220 / 1) 70%)",
@@ -30,7 +35,7 @@ function gradientFor(mood?: string | null) {
   return (mood && MOOD_GRADIENTS[mood]) || MOOD_GRADIENTS._default;
 }
 
-export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "medium" }: Props) {
+export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "medium", journeyType, affinity }: Props) {
   const [currentMood, setCurrentMood] = useState<string | null>(mood ?? null);
   const [prevMood, setPrevMood] = useState<string | null>(null);
   const [fading, setFading] = useState(false);
@@ -108,6 +113,25 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
           background: `linear-gradient(180deg, oklch(0.18 0.02 240 / ${veilOpacity * 0.7}) 0%, oklch(0.18 0.02 240 / ${veilOpacity}) 100%)`,
         }}
       />
+      {/* Journey-type + affinity tint —
+          single-day journeys lean warm/gold (sunlit, intimate);
+          multi-day journeys lean deep teal (immersive, durational).
+          Warmth/depth from the affinity profile fine-tunes intensity. */}
+      {journeyType && (
+        <div
+          className="absolute inset-0 transition-opacity duration-[900ms]"
+          style={{
+            opacity: 0.32 + (affinity?.depth ?? 0.5) * 0.18,
+            background:
+              journeyType === "multi"
+                ? `linear-gradient(155deg, oklch(0.36 0.05 200 / 0.55) 0%, oklch(0.22 0.04 220 / 0.7) 100%)`
+                : `radial-gradient(ellipse at 60% 40%, oklch(0.55 0.08 70 / ${0.32 + (affinity?.warmth ?? 0.5) * 0.22}) 0%, transparent 70%)`,
+            mixBlendMode: journeyType === "multi" ? "multiply" : "soft-light",
+          }}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Subtle vignette for cinematic feel */}
       <div
         className="absolute inset-0"

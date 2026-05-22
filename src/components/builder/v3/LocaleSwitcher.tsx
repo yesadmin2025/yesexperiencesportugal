@@ -26,18 +26,20 @@ export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = f
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Language"
+        aria-label={`Language · ${LOCALE_LABELS[locale]}`}
         aria-expanded={false}
-        className={`inline-flex items-center justify-center min-w-[36px] min-h-[36px] rounded-full backdrop-blur border transition-colors ${
+        className={`group inline-flex items-center justify-center min-w-[36px] min-h-[36px] rounded-full transition-opacity ${
           isLight
-            ? "bg-[color:var(--ivory)]/15 border-[color:var(--ivory)]/25 text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)]"
-            : "bg-[color:var(--charcoal)]/55 border-[color:var(--ivory)]/15 text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)]"
+            ? "text-[color:var(--ivory)]/45 hover:text-[color:var(--ivory)]/85"
+            : "text-[color:var(--ivory)]/40 hover:text-[color:var(--ivory)]/80"
         }`}
       >
-        <Globe size={13} aria-hidden="true" />
+        <Globe size={14} aria-hidden="true" />
+        <span className="sr-only">{LOCALE_LABELS[locale]}</span>
       </button>
     );
   }
+
 
   return (
     <div
