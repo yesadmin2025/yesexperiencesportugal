@@ -53,22 +53,28 @@ const HERO_CLIP = "/__l5e/assets-v1/501885a8-7399-4591-99fc-1c410b24c428/scene-r
 
 /* ── Editorial timeline helpers ─────────────────────────────────────────── */
 
-/** Sensory lines per intention tag — Portuguese, editorial, sensory anchor. */
+/** Sensory lines per intention tag — Portuguese, editorial, observed not
+ *  staged. Anchors: azulejos, ferry, linen, ceramic, café, pinhal, salt,
+ *  bell. Each line implies a specific Portuguese rhythm. */
 const SENSORY_BY_TAG: Record<string, string> = {
   wine: "uma mesa longa à sombra das vinhas, vinho a chegar devagar",
-  gastronomy: "pão partido sem pressa, conversa que estica a tarde",
-  coast: "a luz a virar prata sobre o Atlântico, sem pressa de partir",
-  nature: "vento dos pinhais, pedra fresca, o tempo a abrandar",
-  heritage: "azulejos ainda mornos da manhã, a cidade a acordar devagar",
-  wellness: "silêncio, linho, o corpo a encontrar o seu próprio ritmo",
-  romantic: "um pátio com um único limoeiro, candeeiros baixos",
-  family: "uma mesa generosa, pratos a passar de mão em mão",
+  gastronomy: "pão partido devagar, conversa que estica até ao café",
+  coast: "vento atlântico a entrar pela janela, a luz a virar prata",
+  nature: "sombra de pinhal, pedra fresca, o tempo a abrandar",
+  heritage: "azulejos ainda mornos da manhã, sinos ao longe",
+  wellness: "linho a mexer-se, o corpo a encontrar o seu ritmo",
+  romantic: "um pátio com um limoeiro, candeeiros baixos, vinho parado",
+  family: "uma travessa grande a passar de mão em mão",
+  hidden: "uma rua estreita depois da chuva, cheiro a pão acabado de sair",
+  wonder: "o cabo, o vento, e o Atlântico a abrir-se sem fim",
 };
 const SENSORY_FALLBACKS = [
-  "uma travessia tranquila, o rio largo na luz da tarde",
-  "cobre e barro à mesa, a tarde a estender-se",
+  "uma travessia de ferry, o rio largo na luz da tarde",
+  "barro e cobre à mesa, a tarde a estender-se",
   "sombra de figueiras, conversa sem hora marcada",
   "sardinhas em papel oleado, o cais já fresco",
+  "azulejos a refletir a luz baixa do fim de tarde",
+  "um café a arrefecer devagar, ementa escrita à mão",
 ];
 
 function sensoryLine(stop: StudioStop, blurb: string | null, i: number): string {
