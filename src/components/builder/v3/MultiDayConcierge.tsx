@@ -1,7 +1,12 @@
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, MessageCircle, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import type { StudioDict } from "@/hooks/useStudioLocale";
 import type { Intention, Mood, Who } from "@/components/builder/types";
 import { BUILDER_WA_NUMBER } from "@/components/builder/types";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { useStudioLocale } from "@/hooks/useStudioLocale";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
 
 /**
  * MultiDayConcierge — elevated, in-Studio white-glove scene shown when the
