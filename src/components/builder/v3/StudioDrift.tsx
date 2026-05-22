@@ -1,186 +1,119 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**
- * StudioDrift — radical prototype that replaces the question→answer Studio
- * with a pure dwell + gaze experience.
+ * StudioDrift — environmental emotional drift prototype.
  *
- * Philosophy (locked, see mem://design/studio-philosophy):
- *   · No questions. No chips. No forms. No visible flow.
- *   · Portugal arrives as atmosphere — fishing harbours, azulejos, vineyard
- *     shadows, sea wind — BEFORE any conscious "choice".
- *   · The Studio senses rhythm: scenes the traveller lingers on are
- *     remembered. The world narrows emotionally around them.
- *   · Only 3 explicit micro-leans are ever required — and each is a single
- *     tap to "stay here", never a category to pick.
- *   · The reveal arrives the moment the Studio has sensed enough
- *     (system-decided) OR when the traveller summons it via a quiet,
- *     always-present "quando estiveres pronto" affordance.
+ * NOT a configurator. NOT an onboarding flow. NOT a wizard.
  *
- * This is a self-contained prototype: no server functions, no booking
- * backend, no recommendation scoring. The intelligence lives entirely in
- * pacing, atmosphere selection, and the language of the final reflection.
+ * A 60–90s living cinematic Portugal that senses the traveller through
+ * interaction rhythm alone:
+ *   · slow lingering   → quieter pacing, longer holds, coastal/contemplative
+ *   · fast tapping     → spontaneous register, brisk movement, market warmth
+ *   · returning twice  → intimacy deepens (stone, candle, table)
+ *
+ * No questions, no chips, no forms. The world reacts. Atmosphere narrows.
+ * The traveller leaves feeling Portugal sensed them — not the other way
+ * around.
+ *
+ * End state is NOT a proposal. It is a held breath: a single line that
+ * acknowledges what was felt, and a quiet way out.
  */
 
-type Sensory = {
-  /** Tiny Portuguese sensory whisper that surfaces after a lean. */
-  pt: string;
-  /** Soft English fallback (italic, never primary). */
-  en: string;
-};
+type Register = "atlantic" | "tiled" | "vineyard" | "table" | "wind" | "warmth";
 
 type DriftScene = {
   id: string;
   videoUrl: string;
-  /** Region/atmosphere echoed back at reveal — not surfaced during drift. */
-  echo: string;
-  /** Sensory whispers that bloom when traveller leans in. */
-  whispers: Sensory[];
-  /** Atmospheric register for the final composed reflection. */
-  register: "atlantic" | "tiled" | "vineyard" | "table" | "wind" | "warmth";
+  register: Register;
+  /** Sensory fragments in Portuguese — surface only when traveller lingers. */
+  fragments: string[];
+  /** Tempo affinity — which interaction rhythm this scene rewards. */
+  tempo: "slow" | "fast" | "any";
 };
 
 const SCENES: DriftScene[] = [
   {
     id: "arrabida-coast",
     videoUrl: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
-    echo: "a costa baixa, sem pressa",
-    whispers: [
-      { pt: "o vento traz sal", en: "the wind carries salt" },
-      { pt: "a água respira devagar", en: "the water breathes slowly" },
-    ],
     register: "atlantic",
+    fragments: ["o vento traz sal", "a água respira devagar"],
+    tempo: "slow",
   },
   {
     id: "hidden-street",
     videoUrl: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
-    echo: "uma rua que ninguém te indicou",
-    whispers: [
-      { pt: "azulejos antigos, cal nas paredes", en: "old tiles, lime on the walls" },
-      { pt: "passos sobre pedra húmida", en: "footsteps on damp stone" },
-    ],
     register: "tiled",
+    fragments: ["azulejos antigos, cal nas paredes", "passos sobre pedra húmida"],
+    tempo: "any",
   },
   {
     id: "azeitao-table",
     videoUrl: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
-    echo: "uma mesa preparada com tempo",
-    whispers: [
-      { pt: "pão partido devagar", en: "bread broken slowly" },
-      { pt: "vinho da casa, copo simples", en: "house wine, a simple glass" },
-    ],
     register: "table",
+    fragments: ["pão partido devagar", "vinho da casa, copo simples"],
+    tempo: "slow",
   },
   {
     id: "cabo-roca",
     videoUrl: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
-    echo: "o sítio onde a terra acaba",
-    whispers: [
-      { pt: "o Atlântico abre-se sem fim", en: "the Atlantic opens, endless" },
-      { pt: "ninguém fala alto aqui", en: "no one speaks loudly here" },
-    ],
     register: "wind",
+    fragments: ["o Atlântico abre-se sem fim", "ninguém fala alto aqui"],
+    tempo: "slow",
   },
   {
     id: "arrabida-viewpoint",
     videoUrl: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
-    echo: "uma vista que pede silêncio",
-    whispers: [
-      { pt: "pinheiros, sombra fresca", en: "pines, cool shadow" },
-      { pt: "luz baixa sobre a baía", en: "low light over the bay" },
-    ],
     register: "vineyard",
+    fragments: ["pinheiros, sombra fresca", "luz baixa sobre a baía"],
+    tempo: "slow",
   },
   {
-    id: "sesimbra",
+    id: "sesimbra-port",
     videoUrl: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
-    echo: "um porto pequeno, real",
-    whispers: [
-      { pt: "barcos a regressar", en: "boats returning" },
-      { pt: "cheiro a sardinha grelhada", en: "the smell of grilled sardines" },
-    ],
     register: "warmth",
+    fragments: ["barcos a regressar", "cheiro a sardinha grelhada"],
+    tempo: "fast",
   },
 ];
 
-/** Soft reflections composed from accumulated leans. */
-const REGISTER_LINES: Record<DriftScene["register"], { title: string; subtitle: string }> = {
-  atlantic: {
-    title: "Um dia que respira com o Atlântico.",
-    subtitle: "sem pressa, com vento salgado e horas que se alargam",
-  },
-  tiled: {
-    title: "Um dia para perder-te de propósito.",
-    subtitle: "ruas estreitas, azulejos, e silêncios que sabem a verdade",
-  },
-  vineyard: {
-    title: "Um dia desenhado por sombra e luz.",
-    subtitle: "pinheiros, vinha, e uma vista que pede que fiques",
-  },
-  table: {
-    title: "Um dia que termina à mesa.",
-    subtitle: "pão partido devagar, vinho da casa, uma conversa que se demora",
-  },
-  wind: {
-    title: "Um dia no fim do mundo conhecido.",
-    subtitle: "o cabo, o vento, e o Atlântico a abrir-se sem fim",
-  },
-  warmth: {
-    title: "Um dia que cheira a porto.",
-    subtitle: "barcos a regressar, fogo lento, e sardinha sobre brasa",
-  },
+/** Final reflections — never a proposal. Just an emotional acknowledgement. */
+const REGISTER_CLOSING: Record<Register, string> = {
+  atlantic: "ouviste o Atlântico, e ele ouviu-te.",
+  tiled: "perdeste-te, e isso era o caminho.",
+  vineyard: "ficaste para a luz baixa.",
+  table: "uma mesa ficou à tua espera.",
+  wind: "estiveste no fim do mundo conhecido.",
+  warmth: "o porto regressou contigo.",
 };
-
-/**
- * Compose a single reflection from the registers the traveller dwelled on.
- * If multiple registers, the strongest (most dwell time) wins, and the
- * subtitle quietly braids in a second note.
- */
-function composeReflection(
-  leans: Array<{ register: DriftScene["register"]; dwellMs: number }>,
-): { title: string; subtitle: string } {
-  if (leans.length === 0) {
-    return REGISTER_LINES.atlantic;
-  }
-  const byRegister = new Map<DriftScene["register"], number>();
-  for (const l of leans) {
-    byRegister.set(l.register, (byRegister.get(l.register) ?? 0) + l.dwellMs);
-  }
-  const ranked = [...byRegister.entries()].sort((a, b) => b[1] - a[1]);
-  const primary = REGISTER_LINES[ranked[0][0]];
-  if (ranked.length < 2) return primary;
-  const secondary = REGISTER_LINES[ranked[1][0]];
-  // Braid: keep primary title, append the most evocative noun-phrase from
-  // the secondary subtitle (everything after the first comma).
-  const braid = secondary.subtitle.split(",").slice(1).join(",").trim();
-  return {
-    title: primary.title,
-    subtitle: braid ? `${primary.subtitle} — e ${braid}` : primary.subtitle,
-  };
-}
 
 interface Props {
   onExit?: () => void;
 }
 
-/** A lean is captured when the traveller stays with a scene past this threshold. */
-const LEAN_THRESHOLD_MS = 3800;
-/** System auto-advances if no engagement after this. */
-const PASSIVE_ADVANCE_MS = 9000;
-/** Auto-reveal once this many leans accumulated. */
-const REVEAL_AT_LEANS = 3;
+/** Lean = traveller stays with a scene past this. */
+const LEAN_MS = 3600;
+/** Passive drift pace — slower than v3 to allow atmosphere to land. */
+const PASSIVE_ADVANCE_MS = 8500;
+/** Fast-tap window — taps within this window count as "spontaneous tempo". */
+const TEMPO_WINDOW_MS = 1400;
+/** Prototype ends after roughly this duration (system-decided). */
+const PROTOTYPE_DURATION_MS = 78000;
 
 export function StudioDrift({ onExit }: Props) {
   const [sceneIdx, setSceneIdx] = useState(0);
-  const [leans, setLeans] = useState<Array<{ register: DriftScene["register"]; dwellMs: number }>>([]);
-  const [whisperIdx, setWhisperIdx] = useState<number | null>(null);
-  const [revealed, setRevealed] = useState(false);
-  const [summonVisible, setSummonVisible] = useState(false);
+  const [fragmentIdx, setFragmentIdx] = useState<number | null>(null);
+  const [leans, setLeans] = useState<Array<{ register: Register; dwellMs: number }>>([]);
+  const [tempo, setTempo] = useState<"slow" | "fast" | "neutral">("neutral");
+  const [closing, setClosing] = useState(false);
+  const [audioStarted, setAudioStarted] = useState(false);
 
   const enterAtRef = useRef<number>(Date.now());
+  const startAtRef = useRef<number>(Date.now());
   const lingeringRef = useRef(false);
+  const lastTapAtRef = useRef<number>(0);
+  const tapBurstRef = useRef<number>(0);
   const passiveTimerRef = useRef<number | null>(null);
   const leanTimerRef = useRef<number | null>(null);
-  const summonTimerRef = useRef<number | null>(null);
 
   const scene = SCENES[sceneIdx % SCENES.length];
 
@@ -191,98 +124,143 @@ export function StudioDrift({ onExit }: Props) {
     leanTimerRef.current = null;
   }, []);
 
-  const advance = useCallback(() => {
-    setSceneIdx((i) => (i + 1) % SCENES.length);
-  }, []);
+  /** Choose next scene biased by current tempo + recent register affinity. */
+  const chooseNext = useCallback(
+    (currentRegister: Register) => {
+      // Pool of candidates excluding current scene.
+      const pool = SCENES.filter((s) => s.register !== currentRegister);
+      // Score by tempo affinity.
+      const scored = pool.map((s) => {
+        let score = 1;
+        if (tempo === "slow" && s.tempo === "slow") score += 2;
+        if (tempo === "fast" && s.tempo === "fast") score += 2;
+        if (tempo === "slow" && s.tempo === "fast") score -= 1;
+        // Affinity bonus: scenes matching registers the traveller leaned on.
+        const affinity = leans.filter((l) => l.register === s.register).length;
+        score += affinity * 0.7;
+        return { scene: s, score };
+      });
+      // Weighted random pick to keep the world unpredictable.
+      const total = scored.reduce((acc, x) => acc + Math.max(0.1, x.score), 0);
+      let r = Math.random() * total;
+      for (const x of scored) {
+        r -= Math.max(0.1, x.score);
+        if (r <= 0) return SCENES.indexOf(x.scene);
+      }
+      return SCENES.indexOf(scored[0].scene);
+    },
+    [tempo, leans],
+  );
 
-  // Reset per-scene timers + whispers when the scene changes.
+  const advance = useCallback(() => {
+    setSceneIdx((idx) => chooseNext(SCENES[idx].register));
+  }, [chooseNext]);
+
+  // Per-scene lifecycle: passive advance + lean capture.
   useEffect(() => {
-    if (revealed) return;
+    if (closing) return;
     enterAtRef.current = Date.now();
     lingeringRef.current = false;
-    setWhisperIdx(null);
+    setFragmentIdx(null);
     clearTimers();
 
-    // Quiet auto-advance if the traveller doesn't engage.
+    // Slow tempo → hold scenes longer. Fast tempo → drift quicker.
+    const holdMs =
+      tempo === "slow" ? PASSIVE_ADVANCE_MS + 2500 : tempo === "fast" ? PASSIVE_ADVANCE_MS - 2200 : PASSIVE_ADVANCE_MS;
+
     passiveTimerRef.current = window.setTimeout(() => {
       if (!lingeringRef.current) advance();
-    }, PASSIVE_ADVANCE_MS);
+    }, holdMs);
 
-    // Lean timer — if traveller is lingering past threshold, capture it.
     leanTimerRef.current = window.setTimeout(() => {
       if (lingeringRef.current) {
         const dwellMs = Date.now() - enterAtRef.current;
         setLeans((prev) => [...prev, { register: scene.register, dwellMs }]);
-        // Surface a whisper softly after the lean is captured.
-        setWhisperIdx(Math.floor(Math.random() * scene.whispers.length));
+        setFragmentIdx(Math.floor(Math.random() * scene.fragments.length));
       }
-    }, LEAN_THRESHOLD_MS);
+    }, LEAN_MS);
 
     return clearTimers;
-  }, [sceneIdx, scene, advance, clearTimers, revealed]);
+  }, [sceneIdx, scene, advance, clearTimers, closing, tempo]);
 
-  // Reveal trigger — system-decided once enough leans gathered.
+  // System-decided closing — the prototype gracefully resolves.
   useEffect(() => {
-    if (revealed) return;
-    if (leans.length >= REVEAL_AT_LEANS) {
-      const t = window.setTimeout(() => setRevealed(true), 2200);
-      return () => window.clearTimeout(t);
-    }
-  }, [leans.length, revealed]);
+    if (closing) return;
+    const t = window.setTimeout(() => setClosing(true), PROTOTYPE_DURATION_MS);
+    return () => window.clearTimeout(t);
+  }, [closing]);
 
-  // Traveller-summoned reveal — quiet affordance appears after 18s of drift.
-  useEffect(() => {
-    if (revealed) return;
-    summonTimerRef.current = window.setTimeout(() => setSummonVisible(true), 18000);
-    return () => {
-      if (summonTimerRef.current) window.clearTimeout(summonTimerRef.current);
-    };
-  }, [revealed]);
+  /** First interaction starts the ambient audio bed (browsers require gesture). */
+  const ensureAudio = useCallback(() => {
+    if (audioStarted) return;
+    setAudioStarted(true);
+  }, [audioStarted]);
 
-  // Tap/hold begins a lean. Release before threshold = no lean, scene
-  // continues drifting. Holding past threshold captures the moment.
   const onPressStart = useCallback(() => {
+    ensureAudio();
     lingeringRef.current = true;
-    // Cancel passive advance — the traveller is here, in this place.
+    // Track tap tempo — bursts of fast taps shift the world spontaneous.
+    const now = Date.now();
+    const gap = now - lastTapAtRef.current;
+    lastTapAtRef.current = now;
+    if (gap < TEMPO_WINDOW_MS) {
+      tapBurstRef.current += 1;
+      if (tapBurstRef.current >= 2) setTempo("fast");
+    } else {
+      tapBurstRef.current = 0;
+      // Long gap implies contemplative pace.
+      if (gap > 6000) setTempo("slow");
+    }
     if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
-  }, []);
+  }, [ensureAudio]);
 
   const onPressEnd = useCallback(() => {
     lingeringRef.current = false;
   }, []);
 
   const onSceneTap = useCallback(() => {
-    // Single tap on a scene that's already whispered = move to next.
-    if (whisperIdx !== null) {
-      advance();
+    // Tap on a scene that has already whispered = drift onward.
+    if (fragmentIdx !== null) advance();
+  }, [fragmentIdx, advance]);
+
+  // Atmosphere tint shifts with tempo — slow = cooler Atlantic mist,
+  // fast = warmer paprika edge.
+  const atmosphereTint = useMemo(() => {
+    if (tempo === "slow") {
+      return "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--teal) 18%, transparent) 0%, transparent 60%)";
     }
-  }, [whisperIdx, advance]);
+    if (tempo === "fast") {
+      return "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--gold) 16%, transparent) 0%, transparent 55%)";
+    }
+    return "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--ivory) 8%, transparent) 0%, transparent 50%)";
+  }, [tempo]);
 
-  const reflection = useMemo(() => composeReflection(leans), [leans]);
-
-  if (revealed) {
-    return <DriftReveal scene={scene} reflection={reflection} leans={leans} onExit={onExit} />;
+  if (closing) {
+    return <DriftClosing leans={leans} scene={scene} onExit={onExit} />;
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 overflow-hidden bg-black"
-      style={{ touchAction: "manipulation" }}
-    >
-      {/* Atmosphere — full-bleed scene */}
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black" style={{ touchAction: "manipulation" }}>
       <SceneVideo key={scene.id} src={scene.videoUrl} />
 
-      {/* Gentle vignette so whisper text stays legible without a chatbot veil */}
+      {/* Tempo-aware atmospheric tint — the world's mood narrows */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none transition-[background] duration-[2200ms] ease-out"
+        style={{ background: atmosphereTint, mixBlendMode: "soft-light" }}
+      />
+
+      {/* Gentle vignette for legibility — never a chatbot veil */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 28%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.45) 100%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.48) 100%)",
         }}
       />
 
-      {/* Invisible interaction surface — press to linger, tap to drift on */}
+      {/* Invisible interaction surface */}
       <button
         type="button"
         aria-label="Stay with this moment"
@@ -296,19 +274,23 @@ export function StudioDrift({ onExit }: Props) {
         onClick={onSceneTap}
       />
 
-      {/* Lean indicator — a single soft gold breath that blooms when
-          the traveller has been here long enough to count as a lean. */}
-      <LeanBloom active={whisperIdx !== null} />
-
-      {/* Sensory whisper — surfaces only after a lean. Portuguese first. */}
-      {whisperIdx !== null && (
+      {/* Lean bloom — a single warm breath when the traveller is sensed */}
+      {fragmentIdx !== null && (
         <div
-          className="absolute inset-x-0 bottom-[14%] z-20 flex flex-col items-center px-8 text-center pointer-events-none animate-in fade-in duration-[1400ms]"
-        >
-          <span
-            aria-hidden="true"
-            className="mb-4 block h-px w-6 bg-[color:var(--gold)]/70"
-          />
+          aria-hidden="true"
+          className="absolute inset-0 z-[14] pointer-events-none animate-in fade-in duration-[1800ms]"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 58%, color-mix(in oklab, var(--gold) 24%, transparent) 0%, transparent 55%)",
+            mixBlendMode: "soft-light",
+          }}
+        />
+      )}
+
+      {/* Sensory fragment — Portuguese, italic, surfaces only after a lean */}
+      {fragmentIdx !== null && (
+        <div className="absolute inset-x-0 bottom-[16%] z-20 flex flex-col items-center px-8 text-center pointer-events-none animate-in fade-in duration-[1600ms]">
+          <span aria-hidden="true" className="mb-4 block h-px w-6 bg-[color:var(--gold)]/70" />
           <p
             className="italic text-[19px] sm:text-[22px] leading-[1.45] text-[color:var(--ivory)] max-w-[24ch]"
             style={{
@@ -316,58 +298,26 @@ export function StudioDrift({ onExit }: Props) {
               textShadow: "0 1px 22px rgba(0,0,0,0.7)",
             }}
           >
-            {scene.whispers[whisperIdx].pt}
+            {scene.fragments[fragmentIdx]}
           </p>
         </div>
       )}
 
-      {/* Quiet leans dial — three near-invisible marks in the top edge.
-          No "step 2 of 6". Just three breaths filling, slowly. */}
-      <div
-        aria-hidden="true"
-        className="absolute top-5 left-1/2 -translate-x-1/2 z-20 flex gap-2.5"
-      >
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="block h-[3px] w-5 rounded-full transition-all duration-700"
-            style={{
-              background:
-                i < leans.length
-                  ? "color-mix(in oklab, var(--gold) 85%, transparent)"
-                  : "color-mix(in oklab, var(--ivory) 22%, transparent)",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Traveller-summoned reveal — quiet, always-present once earned. */}
-      {summonVisible && (
-        <button
-          type="button"
-          onClick={() => setRevealed(true)}
-          className="absolute bottom-6 right-6 z-30 italic text-[13px] tracking-[0.04em] text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)]/95 transition-colors duration-500 animate-in fade-in duration-[1800ms]"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            textShadow: "0 1px 12px rgba(0,0,0,0.6)",
-          }}
-        >
-          quando estiveres pronto
-        </button>
-      )}
-
-      {/* Exit — a single hairline back, top-left, no chrome. */}
+      {/* Quiet exit — no chrome, no progress bar, no step counter */}
       {onExit && (
         <button
           type="button"
           onClick={onExit}
-          aria-label="Leave the Studio"
+          aria-label="Sair"
           className="absolute top-5 left-5 z-30 text-[12px] tracking-[0.08em] uppercase text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)]/90 transition-colors"
           style={{ fontFamily: "Inter, system-ui, sans-serif", textShadow: "0 1px 10px rgba(0,0,0,0.5)" }}
         >
-          voltar
+          sair
         </button>
       )}
+
+      {/* Ambient audio bed — only mounts once gesture has been received */}
+      {audioStarted && <AmbientAudio tempo={tempo} />}
     </div>
   );
 }
@@ -384,59 +334,110 @@ function SceneVideo({ src }: { src: string }) {
       loop
       playsInline
       preload="auto"
-      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[1600ms]"
-      style={{ filter: "saturate(0.92) contrast(1.02)" }}
+      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[1800ms]"
+      style={{ filter: "saturate(0.93) contrast(1.02)" }}
     />
   );
 }
 
-function LeanBloom({ active }: { active: boolean }) {
-  if (!active) return null;
-  return (
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 z-[15] pointer-events-none animate-in fade-in duration-[1600ms]"
-      style={{
-        background:
-          "radial-gradient(ellipse at 50% 60%, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 55%)",
-        mixBlendMode: "soft-light",
-      }}
-    />
-  );
+/**
+ * AmbientAudio — a low Atlantic-wind drone synthesised via WebAudio.
+ * No external assets needed, no autoplay blocking (mounts after gesture).
+ * Tempo shifts the timbre subtly: slow = deeper, fast = brighter.
+ */
+function AmbientAudio({ tempo }: { tempo: "slow" | "fast" | "neutral" }) {
+  const ctxRef = useRef<AudioContext | null>(null);
+  const filterRef = useRef<BiquadFilterNode | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+
+  useEffect(() => {
+    const AudioCtor = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtor) return;
+    const ctx = new AudioCtor();
+    ctxRef.current = ctx;
+
+    // Pink-ish noise via short looping buffer.
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + 0.02 * white) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 420;
+    filter.Q.value = 0.7;
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+
+    noise.connect(filter).connect(gain).connect(ctx.destination);
+    noise.start();
+
+    // Fade in over 3s.
+    gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 3);
+
+    filterRef.current = filter;
+    gainRef.current = gain;
+
+    return () => {
+      try {
+        gain.gain.cancelScheduledValues(ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
+        window.setTimeout(() => {
+          noise.stop();
+          void ctx.close();
+        }, 1000);
+      } catch {
+        // ignore
+      }
+    };
+  }, []);
+
+  // React to tempo shifts — slow drops the filter, fast lifts it.
+  useEffect(() => {
+    const ctx = ctxRef.current;
+    const f = filterRef.current;
+    if (!ctx || !f) return;
+    const target = tempo === "slow" ? 320 : tempo === "fast" ? 720 : 480;
+    f.frequency.cancelScheduledValues(ctx.currentTime);
+    f.frequency.linearRampToValueAtTime(target, ctx.currentTime + 2.5);
+  }, [tempo]);
+
+  return null;
 }
 
-function DriftReveal({
-  scene,
-  reflection,
+/**
+ * DriftClosing — NOT a proposal. NOT an itinerary preview.
+ * One line acknowledging what the world sensed, then stillness.
+ */
+function DriftClosing({
   leans,
+  scene,
   onExit,
 }: {
+  leans: Array<{ register: Register; dwellMs: number }>;
   scene: DriftScene;
-  reflection: { title: string; subtitle: string };
-  leans: Array<{ register: DriftScene["register"]; dwellMs: number }>;
   onExit?: () => void;
 }) {
-  // Choose the scene the traveller leaned into most as the reveal backdrop.
-  const dominantRegister = useMemo(() => {
+  const dominant: Register = useMemo(() => {
     if (leans.length === 0) return scene.register;
-    const counts = new Map<DriftScene["register"], number>();
+    const counts = new Map<Register, number>();
     for (const l of leans) counts.set(l.register, (counts.get(l.register) ?? 0) + l.dwellMs);
     return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
   }, [leans, scene.register]);
 
-  const backdrop = SCENES.find((s) => s.register === dominantRegister) ?? scene;
-  const echoes = useMemo(() => {
-    const seen = new Set<string>();
-    const out: string[] = [];
-    for (const l of leans) {
-      const s = SCENES.find((x) => x.register === l.register);
-      if (s && !seen.has(s.echo)) {
-        seen.add(s.echo);
-        out.push(s.echo);
-      }
-    }
-    return out.slice(0, 3);
-  }, [leans]);
+  const backdrop = SCENES.find((s) => s.register === dominant) ?? scene;
+  const line = REGISTER_CLOSING[dominant];
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-black">
@@ -446,57 +447,33 @@ function DriftReveal({
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.7) 100%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.72) 100%)",
         }}
       />
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-7 text-center">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
         <span aria-hidden="true" className="mb-7 block h-px w-10 bg-[color:var(--gold)]/75" />
 
-        <h2
-          className="text-[28px] sm:text-[38px] font-semibold leading-[1.05] tracking-[-0.012em] text-[color:var(--ivory)] max-w-[22ch] animate-in fade-in slide-in-from-bottom-2 duration-[1400ms]"
+        <p
+          className="italic text-[22px] sm:text-[28px] leading-[1.4] text-[color:var(--ivory)] max-w-[26ch] animate-in fade-in slide-in-from-bottom-2 duration-[1800ms]"
           style={{
-            fontFamily: "Montserrat, system-ui, sans-serif",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             textShadow: "0 1px 22px rgba(0,0,0,0.6)",
           }}
         >
-          {reflection.title}
-        </h2>
-
-        <p
-          className="mt-5 italic text-[17px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/90 max-w-[34ch] animate-in fade-in duration-[2000ms]"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            textShadow: "0 1px 18px rgba(0,0,0,0.55)",
-          }}
-        >
-          {reflection.subtitle}
+          {line}
         </p>
 
-        {echoes.length > 0 && (
-          <ul
-            className="mt-10 flex flex-col gap-2 text-[14px] tracking-[0.02em] text-[color:var(--ivory)]/70 animate-in fade-in duration-[2400ms]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              textShadow: "0 1px 14px rgba(0,0,0,0.55)",
-            }}
+        {onExit && (
+          <button
+            type="button"
+            onClick={onExit}
+            className="mt-14 text-[12px] tracking-[0.12em] uppercase text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors duration-500 animate-in fade-in duration-[2600ms]"
+            style={{ fontFamily: "Inter, system-ui, sans-serif" }}
           >
-            {echoes.map((e) => (
-              <li key={e} className="italic">
-                {e}
-              </li>
-            ))}
-          </ul>
+            voltar ao silêncio
+          </button>
         )}
-
-        <button
-          type="button"
-          onClick={onExit}
-          className="mt-12 text-[12px] tracking-[0.14em] uppercase text-[color:var(--ivory)]/75 hover:text-[color:var(--ivory)] transition-colors duration-500 border-b border-[color:var(--gold)]/60 hover:border-[color:var(--gold)] pb-1"
-          style={{ fontFamily: "Inter, system-ui, sans-serif" }}
-        >
-          ler isto como uma jornada
-        </button>
       </div>
     </div>
   );
