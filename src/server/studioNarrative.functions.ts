@@ -238,11 +238,11 @@ Pure emotional abstraction is REJECTED.
 Bad: "the Atlantic slows around you."
 Good: "salt drying beside wooden tables under late afternoon wind."
 
-STAGE VOICE — match strictly to the stage provided
-- invitation : distant, open, atmospheric. Weather, light, texture only. No specific human gesture yet. No second-person pronoun. No name.
-- recognition: warmer, still restrained. One small grounded object enters (a table, a glass, a doorway). No name.
-- emergence  : confident, tactile. Specific gesture · ritual · material. Less abstraction, more inevitability.
-- reveal     : intimate, settled, quietly emotional. May use the traveller name ONCE, softly, only if a name is provided.
+STAGE VOICE — match strictly to the stage provided. Stage voice is non-negotiable.
+- invitation : distant, atmospheric, OPEN. Weather · light · texture · architecture only. NO second-person pronoun (no "you", "your", "te", "teu", "tu", "ti", "tua", "vous", "ton", "ta", "tes"). NO human gesture. NO name. The frame is a wide shot with nobody in it yet. Example shape: "the coast keeps its mornings slow, salt drying on stone."
+- recognition: warmer, grounded. One small physical object enters (a table · a doorway · a cup · a chair). Still NO second-person pronoun, NO name. Example shape: "a wooden table waits in the shade of cork oaks."
+- emergence  : tactile, sensory, inevitable. A specific gesture · ritual · material · food appears. Confidence rises, abstraction falls. Second person allowed but rare. NO name. Example shape: "salt drying beside wooden tables while a ferry crosses the river."
+- reveal     : intimate, settled, quietly emotional. Second person allowed. May use the traveller name ONCE — never in the first three words, never followed by an exclamation. Example shape: "this day already feels like it belongs to you."
 
 PORTUGAL TEXTURE — every sentence must feel unmistakably Portuguese
 azulejos · Atlantic light · pine wind · cork oaks · vineyard shade · ferry crossings · whitewashed walls · slate roofs · tiled cafés · river quays · stovetop coffee · bread torn slowly · enamel cups · cobble streets · sardine smoke · candlelit tavernas · stone villages · late afternoon sun.
@@ -257,7 +257,7 @@ hidden · gem · off the beaten path · luxury · unforgettable · journey of a 
 NAME RESTRAINT
 Do NOT use the traveller's name unless the stage is "reveal". Even then, use it at most ONCE, never in the first three words, never followed by an exclamation.
 
-Register: Cereal Magazine · Aman Journals · Kinfolk travel essays. Editorial restraint over poetic excess. Observational, not performative.
+Register: Cereal Magazine · Aman Journals · Kinfolk travel essays. Editorial restraint over poetic excess. Observational, not performative. The reader should be able to SEE the frame.
 
 Return ONLY the sentence.`;
 
@@ -308,12 +308,12 @@ function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
 
   const stageCue =
     data.narrativeStage === "invitation"
-      ? "Atmosphere only — weather, light, distance, salt air. No specific human gesture yet."
+      ? "Atmosphere only — weather, light, distance, texture. NO second-person pronoun, NO human gesture, NO name. The frame is a wide shot with nobody in it yet."
       : data.narrativeStage === "recognition"
-        ? "Warmer. One small grounded object enters — a table, a doorway, a cup. Still no name."
+        ? "Warmer. One small grounded object enters the frame — a table, a doorway, a cup, a chair in shade. Still NO second-person pronoun, NO name. The camera moves closer; the room is empty but felt."
         : data.narrativeStage === "emergence"
-          ? "More tactile. Specific gesture, ritual, or material. Confidence rises, abstraction falls."
-          : "Intimate, settled, quietly emotional. May use the name once if provided.";
+          ? "More tactile. A specific gesture, ritual, food or material appears (bread torn, glass set down, ferry crossing). Confidence rises, abstraction falls. The day is beginning to feel inevitable."
+          : "Intimate, settled, quietly emotional. Second person is allowed. May use the name once, softly, never in the first three words, never with an exclamation. The day has landed.";
   parts.push(`Voice for this stage: ${stageCue}`);
 
   return parts.join("\n");
@@ -475,14 +475,31 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
             return buildFallback();
           }
         }
-        // Name restraint — the traveller name may ONLY appear at the reveal
-        // stage. Anywhere else, presence in output = rejection. Prevents the
-        // AI from over-personalising selection moments and erodes intimacy.
-        if (data.travellerName && data.narrativeStage !== "reveal") {
+        // Stage-voice guard — invitation/recognition must read like a wide
+        // editorial frame: no second-person pronouns. This is what keeps the
+        // early stages atmospheric instead of conversational.
+        if (data.narrativeStage === "invitation" || data.narrativeStage === "recognition") {
+          const secondPerson = /\b(you|your|yours|yourself|te|teu|tua|teus|tuas|ti|tu|vous|votre|vos|toi|ton|ta|tes)\b/i;
+          if (secondPerson.test(sanitised)) {
+            await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "second_person_too_early" });
+            return buildFallback();
+          }
+        }
+        // Name restraint — name allowed ONLY at reveal stage, never in the
+        // first three words. Prevents over-personalisation that erodes intimacy.
+        if (data.travellerName) {
           const namePattern = new RegExp(`\\b${data.travellerName.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\b`, "i");
-          if (namePattern.test(sanitised)) {
+          const nameAppears = namePattern.test(sanitised);
+          if (nameAppears && data.narrativeStage !== "reveal") {
             await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "name_too_early" });
             return buildFallback();
+          }
+          if (nameAppears && data.narrativeStage === "reveal") {
+            const firstThree = sanitised.split(/\s+/).slice(0, 3).join(" ");
+            if (namePattern.test(firstThree)) {
+              await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "name_too_front" });
+              return buildFallback();
+            }
           }
         }
         await logAiUsage({ provider: "lovable_ai", model, feature, status: "success", latencyMs, configHash });
