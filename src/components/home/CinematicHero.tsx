@@ -71,12 +71,13 @@ type Anchor =
   | "lower-right";
 
 const PHRASE_ANCHORS: readonly Anchor[] = [
-  "top-left",      // Portugal, slowly.
-  "center-left",   // Hidden chapters, written by those who live them.
-  "center",        // A private day. A celebration. A journey.
-  "lower-right",   // Yours to live.
-  "center",        // Begin writing.
+  "top-left",      // Portugal is the stage.
+  "center-left",   // You write your story.
+  "center",        // Hidden chapters waiting to unfold.
+  "lower-right",   // Locals know where they begin.
+  "center",        // You decide how to live it.
 ];
+
 
 function anchorClasses(a: Anchor): string {
   switch (a) {
