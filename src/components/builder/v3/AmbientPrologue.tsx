@@ -96,37 +96,6 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         </div>
       </header>
 
-      {/* Drifting mood fragments — sparse optional taps, never a wall of words */}
-      <div aria-hidden={!fragmentsReady} className="absolute inset-0 z-10 pointer-events-none">
-        {fragments.map((f) => (
-          <button
-            key={f.word}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              awaken(f.word);
-            }}
-            tabIndex={fragmentsReady ? 0 : -1}
-            className={`pointer-events-auto absolute select-none font-serif italic text-[color:var(--ivory)]/38 hover:text-[color:var(--gold)] hover:scale-[1.06] transition-all duration-300 ${
-              fragmentsReady ? "ambient-drift opacity-100" : "opacity-0"
-            }`}
-            style={{
-              top: f.top,
-              left: f.left,
-              fontSize: `${f.size}px`,
-              transitionDelay: fragmentsReady ? `${f.delayMs}ms` : "0ms",
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              animationDuration: `${f.driftSec}s`,
-              animationDelay: `${f.delayMs}ms`,
-              textShadow: "0 1px 10px rgba(0,0,0,0.65)",
-            }}
-            aria-label={f.word}
-          >
-            {f.word}
-          </button>
-        ))}
-      </div>
-
       {/* Centerpiece — eyebrow + rotating poetic line */}
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center pointer-events-none">
         <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]/90">
