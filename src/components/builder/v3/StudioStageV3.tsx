@@ -31,6 +31,8 @@ import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
 import { MultiDayConcierge } from "./MultiDayConcierge";
 import { NameWhisper } from "./NameWhisper";
+import { NarrativeBeat } from "./NarrativeBeat";
+
 
 interface CatalogEntry {
   key: string;
