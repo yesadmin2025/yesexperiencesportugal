@@ -343,6 +343,13 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         if (cancelled) return;
         if (r.mode === "narrative" && r.fragment) {
           patch({ narrativeFragment: r.fragment });
+          if (import.meta.env.DEV) {
+            console.debug("[studio.narrative]", {
+              fragment: r.fragment,
+              sensoryAnchor: r.sensoryAnchor,
+              source: r.source,
+            });
+          }
         }
       })
       .catch(() => {});
