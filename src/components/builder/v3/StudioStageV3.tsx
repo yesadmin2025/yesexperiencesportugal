@@ -634,13 +634,33 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         />
       )}
 
+      {/* ── Quiet name moment — once, between depth and who.
+          Inserted only after mood + journey type are chosen so it does not
+          interrupt the very first emotional spark. Skipping is first-class. */}
+      {state.mood &&
+        state.journeyType === "day" &&
+        !state.who &&
+        !state.nameAsked && (
+          <NameWhisper
+            prompt={t.nameWhisper.prompt}
+            placeholder={t.nameWhisper.placeholder}
+            acceptLabel={t.nameWhisper.accept}
+            skipLabel={t.nameWhisper.skip}
+            onSubmit={(name) => patch({ travellerName: name, nameAsked: true })}
+            onSkip={() => patch({ nameAsked: true })}
+          />
+        )}
+
       {/* ── Reveal interlude — Portugal is responding ── */}
       {hasCoreIntent && !hasStops && !revealPlayed && (
         <JourneyReveal
           cue={t.awakeningCue}
+          title={state.proposal?.title ?? null}
+          subtitle={state.proposal?.subtitle ?? null}
           onDone={() => setRevealPlayed(true)}
         />
       )}
+
 
       {/* ── Phase: EMERGENCE ──
           Suggestions emerge softly from the atmosphere. No map yet,
