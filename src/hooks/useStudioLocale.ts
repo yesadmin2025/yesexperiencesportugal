@@ -189,7 +189,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     },
     conciergeTitle: "Viagens assim são desenhadas à mão.",
     conciergeSub: "Um designer privado pega no que partilhaste e compõe contigo, dia a dia.",
-    conciergeBegin: "Começar com um designer",
+    conciergeBegin: "Continuar em privado",
     conciergeBack: "Voltar a um único dia",
     conciergeTrust: "Composta à mão · Chamada privada · Sem roteiros pré-feitos",
     guidedCue: "Isto encaixa a seguir.",
