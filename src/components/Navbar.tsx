@@ -2,7 +2,6 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { YesMark } from "@/components/YesMark";
 
 import { CtaButton } from "@/components/ui/CtaButton";
 
@@ -81,13 +80,20 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-flex h-[42px] md:h-[54px] lg:h-[60px] w-[112px] md:w-[142px] lg:w-[158px] items-start translate-y-[4px] md:translate-y-[7px] lg:translate-y-[8px]">
-              <YesMark
-                className={`absolute left-0 top-0 block h-[34px] md:h-[43px] lg:h-[48px] w-auto select-none transition-opacity duration-[650ms] ease-out ${
+            <span className="relative inline-flex h-[54px] md:h-[58px] lg:h-[62px] w-[86px] md:w-[92px] lg:w-[98px] items-start translate-y-[4px] md:translate-y-[6px] lg:translate-y-[7px]">
+              <span
+                aria-hidden={!showMarkOnly}
+                className={`absolute left-0 top-0 block h-[37px] md:h-[40px] lg:h-[43px] w-full overflow-hidden transition-opacity duration-[650ms] ease-out ${
                   showMarkOnly ? "opacity-100" : "opacity-0"
                 }`}
-                ariaLabel="YES"
-              />
+              >
+                <Logo
+                  theme="teal-on-ivory"
+                  fetchPriority="high"
+                  alt="YES"
+                  className="block h-[54px] md:h-[58px] lg:h-[62px] w-auto select-none"
+                />
+              </span>
               <Logo
                 theme="teal-on-ivory"
                 fetchPriority="high"
