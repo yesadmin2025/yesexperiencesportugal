@@ -113,6 +113,25 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
           background: `linear-gradient(180deg, oklch(0.18 0.02 240 / ${veilOpacity * 0.7}) 0%, oklch(0.18 0.02 240 / ${veilOpacity}) 100%)`,
         }}
       />
+      {/* Journey-type + affinity tint —
+          single-day journeys lean warm/gold (sunlit, intimate);
+          multi-day journeys lean deep teal (immersive, durational).
+          Warmth/depth from the affinity profile fine-tunes intensity. */}
+      {journeyType && (
+        <div
+          className="absolute inset-0 transition-opacity duration-[900ms]"
+          style={{
+            opacity: 0.32 + (affinity?.depth ?? 0.5) * 0.18,
+            background:
+              journeyType === "multi"
+                ? `linear-gradient(155deg, oklch(0.36 0.05 200 / 0.55) 0%, oklch(0.22 0.04 220 / 0.7) 100%)`
+                : `radial-gradient(ellipse at 60% 40%, oklch(0.55 0.08 70 / ${0.32 + (affinity?.warmth ?? 0.5) * 0.22}) 0%, transparent 70%)`,
+            mixBlendMode: journeyType === "multi" ? "multiply" : "soft-light",
+          }}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Subtle vignette for cinematic feel */}
       <div
         className="absolute inset-0"
