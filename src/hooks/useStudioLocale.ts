@@ -376,6 +376,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeContinue: "Continuer",
     resumeRestart: "Recommencer",
     suggestionFallback: "un instant qui t'attend",
+    invitationWhisper: "Respire. Choisis ce que tu ressens — le reste s'éveille seul.",
+    awakeningCue: "Le Portugal répond…",
   },
 };
 
