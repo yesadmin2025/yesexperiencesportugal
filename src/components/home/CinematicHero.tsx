@@ -273,7 +273,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
       <style>{`
         @keyframes heroBreath {
           0%   { transform: scale(1.00); }
-          100% { transform: scale(1.04); }
+          100% { transform: scale(1.03); }
         }
       `}</style>
       <video
