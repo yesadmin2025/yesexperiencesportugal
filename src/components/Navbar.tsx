@@ -64,13 +64,22 @@ export function Navbar() {
       className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
       style={headerStyle}
     >
-      {/* Soft atmospheric dissolve — short, premium fade into the hero with no chunky block. */}
+      {/* Soft atmospheric dissolve — editorial paper into cinema light. Felt, not noticed. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[64px] md:h-[72px] lg:h-[80px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[88px] md:h-[104px] lg:h-[120px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.86) 0%, rgba(247,243,236,0.62) 22%, rgba(247,243,236,0.34) 52%, rgba(247,243,236,0.12) 78%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(247,243,236,0.92) 0%, rgba(247,243,236,0.74) 18%, rgba(247,243,236,0.50) 38%, rgba(247,243,236,0.28) 60%, rgba(247,243,236,0.10) 82%, rgba(247,243,236,0) 100%)",
+        }}
+      />
+      {/* Whisper of editorial shadow at the very edge — almost invisible. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[6px]"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(30,22,14,0.06) 0%, rgba(30,22,14,0) 100%)",
         }}
       />
       <div className="container-x">

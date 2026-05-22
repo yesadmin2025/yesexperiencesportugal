@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T03:22:53.132Z",
+  "generatedAt": "2026-05-22T07:17:01.021Z",
   "filesScanned": 206,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 192,
+    "total": 194,
     "approved": 41,
     "allowlisted": 25,
-    "mismatch": 126
+    "mismatch": 128
   },
   "findings": [
     {
@@ -710,7 +710,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 156,
+      "line": 155,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1750,6 +1750,24 @@
       "raw": "#555",
       "normalized": "#555555",
       "snippet": "(#555) which clears 7:1 on ivory and never reads washed out.",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/styles.css",
+      "line": 4745,
+      "col": 47,
+      "raw": "#8a6f2e",
+      "normalized": "#8a6f2e",
+      "snippet": "color: color-mix(in oklab, var(--gold-deep, #8a6f2e) 92%, var(--charcoal));",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/styles.css",
+      "line": 4781,
+      "col": 47,
+      "raw": "#d8b97a",
+      "normalized": "#d8b97a",
+      "snippet": "color: color-mix(in oklab, var(--gold-soft, #d8b97a) 88%, var(--ivory));",
       "status": "mismatch"
     }
   ]

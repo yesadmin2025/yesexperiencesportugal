@@ -149,10 +149,10 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "#E6C892",
+              color: "#EBD0A0",
               textShadow:
-                "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
-              fontSize: "clamp(26px, 4.4vw, 48px)",
+                "0 1px 2px rgba(0,0,0,0.55), 0 2px 10px rgba(0,0,0,0.45)",
+              fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line1 ? 1 : 0,
               transform: line1 ? "translateY(0)" : "translateY(10px)",
               filter: line1 ? "blur(0px)" : "blur(6px)",
@@ -171,10 +171,10 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "#E6C892",
+              color: "#EBD0A0",
               textShadow:
-                "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
-              fontSize: "clamp(26px, 4.4vw, 48px)",
+                "0 1px 2px rgba(0,0,0,0.55), 0 2px 10px rgba(0,0,0,0.45)",
+              fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line2 ? 1 : 0,
               transform: line2 ? "translateY(0)" : "translateY(10px)",
               filter: line2 ? "blur(0px)" : "blur(6px)",
@@ -203,29 +203,29 @@ export function CinematicHero() {
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[210px] sm:min-w-[220px] px-7 py-[12px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
-              fontWeight: 600,
+              fontWeight: 500,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
               Begin Your Journey
-              <svg className="hero-cta__arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg className="hero-cta__arrow" width="12" height="9" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </span>
           </Link>
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[210px] sm:min-w-[220px] px-7 py-[12px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
-              fontWeight: 500,
+              fontWeight: 450,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
@@ -359,62 +359,55 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           transform: translateX(4px);
         }
 
-        /* PRIMARY — warm translucent ivory glass, cinematic depth */
+        /* PRIMARY — warm ivory, refined and thin */
         .hero-cta--primary {
-          color: #1F1812;
-          border: 1px solid rgba(255, 244, 220, 0.55);
+          color: #2A1F14;
+          border: 1px solid rgba(255, 244, 220, 0.45);
           background:
-            linear-gradient(180deg, rgba(252, 246, 232, 0.82) 0%, rgba(240, 228, 204, 0.74) 100%);
-          -webkit-backdrop-filter: blur(10px) saturate(1.05);
-          backdrop-filter: blur(10px) saturate(1.05);
+            linear-gradient(180deg, rgba(252, 246, 232, 0.86) 0%, rgba(244, 232, 210, 0.80) 100%);
+          -webkit-backdrop-filter: blur(8px) saturate(1.04);
+          backdrop-filter: blur(8px) saturate(1.04);
           box-shadow:
-            0 1px 0 rgba(255, 250, 235, 0.55) inset,
-            0 -1px 0 rgba(120, 90, 50, 0.12) inset,
-            0 18px 38px -22px rgba(40, 28, 12, 0.55),
-            0 4px 12px -6px rgba(0, 0, 0, 0.28);
+            0 1px 0 rgba(255, 250, 235, 0.45) inset,
+            0 10px 24px -16px rgba(30, 20, 8, 0.45),
+            0 2px 6px -3px rgba(0, 0, 0, 0.18);
         }
         .hero-cta--primary:hover,
         .hero-cta--primary:focus-visible {
-          border-color: rgba(255, 244, 220, 0.85);
+          border-color: rgba(255, 244, 220, 0.72);
           background:
-            linear-gradient(180deg, rgba(255, 250, 238, 0.92) 0%, rgba(246, 234, 210, 0.86) 100%);
+            linear-gradient(180deg, rgba(255, 250, 238, 0.94) 0%, rgba(248, 236, 214, 0.88) 100%);
           box-shadow:
-            0 1px 0 rgba(255, 252, 240, 0.7) inset,
-            0 -1px 0 rgba(120, 90, 50, 0.16) inset,
-            0 26px 52px -22px rgba(40, 28, 12, 0.6),
-            0 6px 18px -8px rgba(0, 0, 0, 0.32),
-            0 0 0 1px rgba(255, 240, 210, 0.22);
-          transform: translateY(-2px);
+            0 1px 0 rgba(255, 252, 240, 0.6) inset,
+            0 16px 32px -16px rgba(30, 20, 8, 0.5),
+            0 4px 10px -4px rgba(0, 0, 0, 0.22);
+          transform: translateY(-1px);
         }
         .hero-cta--primary:active {
           transform: translateY(0);
           box-shadow:
-            0 1px 0 rgba(255, 250, 235, 0.4) inset,
-            0 8px 16px -10px rgba(40, 28, 12, 0.5),
-            0 2px 4px -2px rgba(0, 0, 0, 0.3);
+            0 1px 0 rgba(255, 250, 235, 0.35) inset,
+            0 6px 12px -8px rgba(30, 20, 8, 0.4);
         }
 
-        /* GHOST — thinner, softer ivory outline */
+        /* GHOST — clean hairline ivory, restrained */
         .hero-cta--ghost {
-          border: 1px solid rgba(250, 248, 243, 0.32);
-          background: rgba(20, 16, 12, 0.14);
-          -webkit-backdrop-filter: blur(8px) saturate(1.05);
-          backdrop-filter: blur(8px) saturate(1.05);
-          text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-          box-shadow:
-            0 10px 24px -18px rgba(0, 0, 0, 0.5),
-            0 1px 0 rgba(255, 255, 255, 0.05) inset;
+          border: 1px solid rgba(250, 248, 243, 0.26);
+          background: rgba(20, 16, 12, 0.10);
+          -webkit-backdrop-filter: blur(6px) saturate(1.04);
+          backdrop-filter: blur(6px) saturate(1.04);
+          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+          box-shadow: 0 6px 16px -14px rgba(0, 0, 0, 0.45);
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
           color: var(--ivory);
-          border-color: rgba(250, 248, 243, 0.55);
-          background: rgba(250, 248, 243, 0.07);
+          border-color: rgba(250, 248, 243, 0.45);
+          background: rgba(250, 248, 243, 0.06);
           box-shadow:
-            0 16px 32px -18px rgba(0, 0, 0, 0.55),
-            0 1px 0 rgba(255, 255, 255, 0.08) inset,
-            0 0 0 1px rgba(250, 248, 243, 0.12);
-          transform: translateY(-2px);
+            0 10px 22px -14px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(250, 248, 243, 0.08);
+          transform: translateY(-1px);
         }
         .hero-cta--ghost:active {
           transform: translateY(0);
