@@ -538,7 +538,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       {/* ── Phase: EMERGENCE ──
           Suggestions emerge softly from the atmosphere. No map yet,
           no composer — just the cinematic reveal of curated options. */}
-      {phase === "emergence" && (
+      {phase === "emergence" && revealPlayed && (
         <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-3 duration-[900ms]">
           <EmergingChips
             suggestions={suggestionStops}
