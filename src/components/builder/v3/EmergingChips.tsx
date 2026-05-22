@@ -91,8 +91,8 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
           aria-hidden="true"
           className={
             isAiLine
-              ? "max-w-[34ch] text-center italic text-[13px] leading-snug text-[color:var(--ivory)]/82 transition-opacity duration-700"
-              : "text-[10.5px] uppercase tracking-[0.32em] font-medium text-[color:var(--ivory)]/72 transition-opacity duration-700"
+              ? "max-w-[34ch] text-center italic text-[12.5px] leading-[1.45] text-[color:var(--ivory)]/78 transition-opacity duration-[900ms] motion-reduce:transition-none text-balance"
+              : "text-[10.5px] uppercase tracking-[0.32em] font-medium text-[color:var(--ivory)]/70 transition-opacity duration-700 motion-reduce:transition-none"
           }
           style={{
             opacity: reveal > 0 ? 1 : 0,
