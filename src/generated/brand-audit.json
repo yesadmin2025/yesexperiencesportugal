@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T00:24:38.120Z",
+  "generatedAt": "2026-05-22T00:51:46.101Z",
   "filesScanned": 205,
   "approvedPalette": {
     "teal": "#295B61",
@@ -980,7 +980,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 190,
+      "line": 191,
       "col": 80,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -989,25 +989,34 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 261,
-      "col": 82,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"font-serif italic font-normal text-[color:var(--ivory,#FAF8F3)]\"",
+      "line": 266,
+      "col": 39,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "color: \"var(--gold, #C9A96A)\",",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 296,
-      "col": 116,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase text-[color:var(--ivory,#FAF8F3)]/65\"",
+      "line": 300,
+      "col": 33,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "color: \"var(--gold, #C9A96A)\",",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 309,
+      "line": 316,
+      "col": 53,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "color: \"color-mix(in oklab, var(--gold, #C9A96A) 80%, transparent)\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 327,
       "col": 182,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -1016,7 +1025,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 309,
+      "line": 327,
       "col": 214,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1025,7 +1034,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 309,
+      "line": 327,
       "col": 322,
       "raw": "#E8D5A8",
       "normalized": "#e8d5a8",
@@ -1034,7 +1043,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 309,
+      "line": 327,
       "col": 417,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1043,7 +1052,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 321,
+      "line": 339,
       "col": 174,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1052,38 +1061,29 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 321,
-      "col": 217,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 321,
-      "col": 328,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 321,
-      "col": 371,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 321,
-      "col": 466,
+      "line": 339,
+      "col": 279,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
       "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 339,
+      "col": 374,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 344,
+      "col": 66,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "border: \"1px solid color-mix(in oklab, var(--gold, #C9A96A) 40%, transparent)\",",
       "status": "approved"
     },
     {
