@@ -197,7 +197,7 @@ export function CinematicHero() {
       <div className="absolute inset-0 z-0">
         <video
           ref={videoRef}
-          poster={HERO_FILM.poster}
+          poster="/video/real/posters/comporta-beach.jpg"
           autoPlay
           muted
           loop
@@ -207,12 +207,12 @@ export function CinematicHero() {
           className="absolute inset-0 h-full w-full object-cover"
           style={{
             // Faint warm grade, slightly cinematic. No blur, no overlay UI.
-            filter: "saturate(0.92) contrast(1.02) brightness(0.86)",
+            filter: "saturate(0.94) contrast(1.03) brightness(0.84)",
           }}
         >
-          <source src={HERO_FILM.src1080} type="video/mp4" media="(min-width: 768px)" />
-          <source src={HERO_FILM.src720} type="video/mp4" />
+          <source src="/video/real/comporta-beach.mp4" type="video/mp4" />
         </video>
+
 
         {/* Editorial scrim — single soft vignette, no gradient bands.
            Lifted slightly stronger on mobile so any phrase placement
