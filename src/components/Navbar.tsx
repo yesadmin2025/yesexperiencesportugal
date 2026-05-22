@@ -1,7 +1,8 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { YesMark } from "@/components/YesMark";
 import { CtaButton } from "@/components/ui/CtaButton";
 
 const desktopLinks = [
@@ -27,6 +28,25 @@ const mobileLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
+
+  // Progressive logo reveal: at the very top of the homepage we show ONLY the
+  // handwritten "YES" mark. After ~24px of scroll (or on any non-home route)
+  // we crossfade into the full lockup. Smooth, restrained, no choreography.
+  useEffect(() => {
+    if (!isHome) {
+      setScrolled(true);
+      return;
+    }
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
+
+  const showMarkOnly = isHome && !scrolled;
 
   // Solid ivory editorial bar — soft atmospheric fade dissolves into hero below.
   const headerStyle: React.CSSProperties = {
@@ -60,11 +80,29 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <Logo
-              theme="teal-on-ivory"
-              fetchPriority="high"
-              className="relative block h-[58px] md:h-[64px] lg:h-[70px] w-auto select-none"
-            />
+            <span className="relative inline-block h-[58px] md:h-[64px] lg:h-[70px]">
+              <span
+                className="relative block h-full transition-opacity duration-[900ms] ease-out"
+                style={{ opacity: showMarkOnly ? 0 : 1 }}
+                aria-hidden={showMarkOnly ? "true" : undefined}
+              >
+                <Logo
+                  theme="teal-on-ivory"
+                  fetchPriority="high"
+                  className="block h-full w-auto select-none"
+                />
+              </span>
+              <span
+                className="pointer-events-none absolute inset-y-0 left-0 block h-full transition-opacity duration-[900ms] ease-out"
+                style={{ opacity: showMarkOnly ? 1 : 0 }}
+                aria-hidden={showMarkOnly ? undefined : "true"}
+              >
+                <YesMark
+                  ariaLabel="YES"
+                  className="block h-full w-auto select-none"
+                />
+              </span>
+            </span>
           </Link>
 
           <nav
