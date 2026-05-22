@@ -35,7 +35,7 @@ function gradientFor(mood?: string | null) {
   return (mood && MOOD_GRADIENTS[mood]) || MOOD_GRADIENTS._default;
 }
 
-export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "medium" }: Props) {
+export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "medium", journeyType, affinity }: Props) {
   const [currentMood, setCurrentMood] = useState<string | null>(mood ?? null);
   const [prevMood, setPrevMood] = useState<string | null>(null);
   const [fading, setFading] = useState(false);
