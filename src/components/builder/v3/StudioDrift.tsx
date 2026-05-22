@@ -352,6 +352,11 @@ export function StudioDrift({ onExit }: Props) {
         // Taste affinity — the world drifts toward what's resonated.
         const tasteAffinity = s.tastes.reduce((acc, t) => acc + (tasteProfile.get(t) ?? 0), 0);
         score += tasteAffinity * 0.6;
+        // Human-presence affinity — the world remembers which moments
+        // (laughter, late lunches, fishermen, cats on doorsteps) made
+        // the traveller linger, and pulls in that direction.
+        const humanAffinity = s.human.reduce((acc, h) => acc + (humanProfile.get(h) ?? 0), 0);
+        score += humanAffinity * 0.5;
         // Late phase narrows to intimate registers.
         if (forPhase === 3 && (s.register === "table" || s.register === "candle" || s.register === "harbour")) {
           score += 1.2;
@@ -366,7 +371,7 @@ export function StudioDrift({ onExit }: Props) {
       }
       return SCENES.indexOf(scored[0].scene);
     },
-    [tempo, tasteProfile],
+    [tempo, tasteProfile, humanProfile],
   );
 
   const advance = useCallback(
