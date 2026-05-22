@@ -159,17 +159,17 @@ export function CinematicHero() {
             {HERO_PHRASES[0]}
           </p>
           <p
-            className="font-serif italic font-normal mt-1 sm:mt-2"
+            className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
               fontFamily:
                 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,
-              letterSpacing: "-0.014em",
+              letterSpacing: "-0.012em",
               color: "var(--gold, #C9A96A)",
-              textShadow: "0 1px 28px rgba(0,0,0,0.55)",
-              fontSize: "clamp(30px, 5.4vw, 60px)",
+              textShadow: "0 1px 24px rgba(0,0,0,0.45)",
+              fontSize: "clamp(24px, 4.2vw, 46px)",
               opacity: line2 ? 1 : 0,
               transform: line2 ? "translateY(0)" : "translateY(8px)",
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
