@@ -509,6 +509,11 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     conciergeTrust: "Composé à la main · Appel privé · Pas d'itinéraires types",
     guidedCue: "Cela s'enchaîne bien.",
     guidedAnother: "voir un autre",
+    emergingCues: {
+      early: "Tu pourrais aussi aimer",
+      growing: "Cela s'enchaîne bien",
+      settled: "Cela vient naturellement",
+    },
     reserveCta: "Réserver cette journée",
     viewRoute: "Voir l'itinéraire sur la carte",
     hideRoute: "Masquer la carte",
