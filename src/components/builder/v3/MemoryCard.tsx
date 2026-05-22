@@ -228,14 +228,6 @@ export function MemoryCard({
     }
   };
 
-  const handleWhatsApp = () => {
-    const summary = stops.map((s, i) => `${i + 1}. ${s.label}`).join("%0A");
-    const text = encodeURIComponent(
-      `Olá! Gostava de reservar este roteiro em ${regionLabel(regionKey)}:`,
-    );
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}%0A%0A${summary}`;
-    window.open(url, "_blank", "noopener");
-  };
 
   return (
     <div
