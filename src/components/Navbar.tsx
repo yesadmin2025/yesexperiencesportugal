@@ -67,10 +67,10 @@ export function Navbar() {
       {/* Soft atmospheric dissolve — editorial paper into cinema light. Felt, not noticed. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[108px] md:h-[128px] lg:h-[144px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[124px] md:h-[144px] lg:h-[160px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(248,242,232,0.88) 0%, rgba(248,242,232,0.66) 22%, rgba(248,242,232,0.42) 44%, rgba(248,242,232,0.22) 66%, rgba(248,242,232,0.08) 84%, rgba(248,242,232,0) 100%)",
+            "linear-gradient(to bottom, rgba(248,242,232,0.94) 0%, rgba(248,242,232,0.78) 16%, rgba(248,242,232,0.54) 36%, rgba(248,242,232,0.32) 58%, rgba(248,242,232,0.14) 78%, rgba(248,242,232,0.04) 92%, rgba(248,242,232,0) 100%)",
         }}
       />
       {/* Whisper of editorial shadow at the very edge — almost invisible. */}

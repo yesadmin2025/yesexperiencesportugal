@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T07:17:01.021Z",
+  "generatedAt": "2026-05-22T08:39:55.838Z",
   "filesScanned": 206,
   "approvedPalette": {
     "teal": "#295B61",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 80,
+      "line": 89,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,7 +710,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 155,
+      "line": 164,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1027,18 +1027,18 @@
       "file": "src/components/home/CinematicHero.tsx",
       "line": 152,
       "col": 23,
-      "raw": "#E6C892",
-      "normalized": "#e6c892",
-      "snippet": "color: \"#E6C892\",",
+      "raw": "#EFD5A6",
+      "normalized": "#efd5a6",
+      "snippet": "color: \"#EFD5A6\",",
       "status": "mismatch"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 174,
       "col": 23,
-      "raw": "#E6C892",
-      "normalized": "#e6c892",
-      "snippet": "color: \"#E6C892\",",
+      "raw": "#EFD5A6",
+      "normalized": "#efd5a6",
+      "snippet": "color: \"#EFD5A6\",",
       "status": "mismatch"
     },
     {
@@ -1047,7 +1047,7 @@
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] u",
+      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] u",
       "status": "approved"
     },
     {
@@ -1056,7 +1056,7 @@
       "col": 204,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] upp",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] upp",
       "status": "approved"
     },
     {
@@ -1065,16 +1065,16 @@
       "col": 299,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] upp",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] upp",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 364,
       "col": 18,
-      "raw": "#1F1812",
-      "normalized": "#1f1812",
-      "snippet": "color: #1F1812;",
+      "raw": "#2A1F14",
+      "normalized": "#2a1f14",
+      "snippet": "color: #2A1F14;",
       "status": "mismatch"
     },
     {
