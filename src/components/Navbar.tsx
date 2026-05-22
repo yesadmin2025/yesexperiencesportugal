@@ -74,9 +74,9 @@ export function Navbar() {
             style={
               transparent
                 ? {
-                    // Warm champagne tint, slightly desaturated, soft cinematic lift
+                    // Thin, soft champagne signature — same size as teal, lighter strokes
                     filter:
-                      "saturate(0.72) brightness(1.04) sepia(0.08) drop-shadow(0 1px 6px rgba(0,0,0,0.35))",
+                      "saturate(0.6) brightness(1.18) contrast(0.82) sepia(0.06) blur(0.35px) drop-shadow(0 1px 4px rgba(0,0,0,0.28))",
                   }
                 : undefined
             }
@@ -86,7 +86,7 @@ export function Navbar() {
               fetchPriority="high"
               className={
                 transparent
-                  ? "relative block h-[38px] md:h-[46px] lg:h-[52px] w-auto select-none opacity-80 transition-all duration-500"
+                  ? "relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none opacity-75 transition-all duration-500"
                   : "relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none opacity-100 transition-all duration-500"
               }
             />
