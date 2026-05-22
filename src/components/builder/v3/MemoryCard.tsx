@@ -49,7 +49,7 @@ interface Props {
 
 const HERO_CLIP = "/__l5e/assets-v1/501885a8-7399-4591-99fc-1c410b24c428/scene-route-portugal.mp4";
 
-const WHATSAPP_NUMBER = "351912345678"; // placeholder — replace when live
+
 
 /* ── Editorial timeline helpers ─────────────────────────────────────────── */
 
