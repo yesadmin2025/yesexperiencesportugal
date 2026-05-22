@@ -46,6 +46,7 @@ import {
   WHOS,
 } from "@/components/builder/catalogue";
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
+import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
 
 /** Resolve a human label for current selections, used by the live header. */
 function labelFor<T extends { id: string; label: string }>(
