@@ -66,6 +66,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     routedStops,
     regionCenter,
     totalMinutes,
+    affinityProfile,
   } = useStudioState();
 
   const parseFn = useServerFn(parseNarrative);
