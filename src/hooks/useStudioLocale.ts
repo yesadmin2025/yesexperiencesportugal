@@ -56,6 +56,10 @@ export interface StudioDict {
   resumeRestart: string;
   /** Soft suggestion phrase when a stop has no editorial blurb. */
   suggestionFallback: string;
+  /** Single line shown over the atmosphere before the user picks anything. */
+  invitationWhisper: string;
+  /** Subtle cue shown while the world is reacting to the first choice. */
+  awakeningCue: string;
 }
 
 const DICTS: Record<StudioLocale, StudioDict> = {
