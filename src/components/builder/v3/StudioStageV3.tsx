@@ -672,6 +672,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             acceptedKeys={state.acceptedStops.map((s) => s.key)}
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
+            cues={t.emergingCues}
             onAccept={handleAccept}
           />
         </div>
@@ -700,6 +701,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             acceptedKeys={state.acceptedStops.map((s) => s.key)}
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
+            cues={t.emergingCues}
             onAccept={handleAccept}
           />
 

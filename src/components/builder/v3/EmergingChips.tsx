@@ -14,6 +14,7 @@ interface Props {
   acceptedKeys: string[];
   fallbackPhrase: string;
   addLabel: string;
+  cues?: { early: string; growing: string; settled: string };
   onAccept: (stop: StudioStop) => void;
 }
 
@@ -46,7 +47,7 @@ function emotionalPhrase(s: StudioStop, fallback: string, index: number): string
   return fallbackPhrases[index % fallbackPhrases.length] ?? fallback;
 }
 
-export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, onAccept }: Props) {
+export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, onAccept }: Props) {
   const [reveal, setReveal] = useState(0);
 
   useEffect(() => {
@@ -61,19 +62,31 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
     return () => timers.forEach(window.clearTimeout);
   }, [suggestions]);
 
-  // Decision-fatigue reduction: once the journey has at least 2 chosen moments,
-  // we switch to "guided curation" mode — a single hero suggestion at a time so
-  // the traveller never feels confronted with a catalog.
-  const guided = acceptedKeys.length >= 2;
-  const maxCards = guided ? 1 : 2;
+  // Card-count ramp — fewer choices as confidence grows. The Studio should
+  // feel knowing, not interactive. Each card still requires an explicit tap;
+  // no auto-accept, no countdown, no pressure.
+  const accepted = acceptedKeys.length;
+  const stage: "early" | "growing" | "settled" =
+    accepted >= 4 ? "settled" : accepted >= 2 ? "growing" : "early";
+  const maxCards = stage === "settled" ? 1 : 2;
   const available = suggestions
     .filter((s) => !acceptedKeys.includes(s.key))
     .slice(0, maxCards);
   if (!available.length) return null;
 
+  const eyebrow = cues?.[stage];
 
   return (
     <ul className="flex flex-col gap-2.5 items-center" role="list">
+      {eyebrow && (
+        <li
+          aria-hidden="true"
+          className="text-[10.5px] uppercase tracking-[0.32em] font-medium text-[color:var(--ivory)]/72 transition-opacity duration-700"
+          style={{ opacity: reveal > 0 ? 1 : 0 }}
+        >
+          {eyebrow}
+        </li>
+      )}
       {available.map((s, i) => {
         const visible = i < reveal;
         const phrase = emotionalPhrase(s, fallbackPhrase, i);

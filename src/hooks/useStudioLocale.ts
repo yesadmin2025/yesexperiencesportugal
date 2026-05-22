@@ -63,6 +63,7 @@ export interface StudioDict {
   conciergeTrust: string;
   guidedCue: string;
   guidedAnother: string;
+  emergingCues: { early: string; growing: string; settled: string };
   reserveCta: string;
   viewRoute: string;
   hideRoute: string;
@@ -172,6 +173,11 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     conciergeTrust: "Composta à mão · Chamada privada · Sem roteiros pré-feitos",
     guidedCue: "Isto encaixa a seguir.",
     guidedAnother: "ver outro",
+    emergingCues: {
+      early: "Talvez também adores isto",
+      growing: "Isto encaixa a seguir",
+      settled: "Isto segue naturalmente",
+    },
     reserveCta: "Reservar este dia",
     viewRoute: "Ver percurso no mapa",
     hideRoute: "Esconder mapa",
@@ -279,6 +285,11 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     conciergeTrust: "Hand-composed · Private call · No template itineraries",
     guidedCue: "This feels right next.",
     guidedAnother: "show another",
+    emergingCues: {
+      early: "You might also love",
+      growing: "This feels right next",
+      settled: "This follows naturally",
+    },
     reserveCta: "Reserve this day",
     viewRoute: "View route on map",
     hideRoute: "Hide map",
@@ -386,6 +397,11 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     conciergeTrust: "Hecho a mano · Llamada privada · Sin rutas plantilla",
     guidedCue: "Esto encaja a continuación.",
     guidedAnother: "ver otro",
+    emergingCues: {
+      early: "Quizá también te encante",
+      growing: "Esto encaja a continuación",
+      settled: "Esto sigue con naturalidad",
+    },
     reserveCta: "Reservar este día",
     viewRoute: "Ver ruta en el mapa",
     hideRoute: "Ocultar mapa",
@@ -493,6 +509,11 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     conciergeTrust: "Composé à la main · Appel privé · Pas d'itinéraires types",
     guidedCue: "Cela s'enchaîne bien.",
     guidedAnother: "voir un autre",
+    emergingCues: {
+      early: "Tu pourrais aussi aimer",
+      growing: "Cela s'enchaîne bien",
+      settled: "Cela vient naturellement",
+    },
     reserveCta: "Réserver cette journée",
     viewRoute: "Voir l'itinéraire sur la carte",
     hideRoute: "Masquer la carte",
