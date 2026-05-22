@@ -21,9 +21,9 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 // ─────────────────────────────────────────────────────────────────────────────
 
 const HERO_CLIP = {
-  src: "/video/scene-route-portugal.mp4",
-  poster: "/video/hero-coast-poster.jpg",
-  alt: "Driving an empty Portuguese coastal road at golden hour",
+  src: "/__l5e/assets-v1/43a722f9-fa03-41ac-a497-d210e4b4b625/hero-sunset-road.mp4",
+  poster: "/video/hero-sunset-road-poster.jpg",
+  alt: "An empty coastal Portuguese road at golden hour sunset, seen from inside a car",
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
