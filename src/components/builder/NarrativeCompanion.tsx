@@ -303,8 +303,7 @@ export function NarrativeCompanion({
               </p>
             )}
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
