@@ -18,7 +18,7 @@ export function JourneyReveal({ cue, onDone }: Props) {
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setShow(true), 40);
-    const t2 = window.setTimeout(onDone, 1900);
+    const t2 = window.setTimeout(onDone, 1200);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
@@ -26,7 +26,7 @@ export function JourneyReveal({ cue, onDone }: Props) {
   }, [onDone]);
 
   return (
-    <div className="absolute inset-0 z-40 flex items-center justify-center bg-[color:var(--charcoal)]/55 backdrop-blur-md animate-in fade-in duration-500">
+    <div className="absolute inset-0 z-40 flex items-center justify-center bg-[color:var(--charcoal)]/45 backdrop-blur-md animate-in fade-in duration-500">
       <div
         className={`flex flex-col items-center gap-4 px-6 text-center transition-all duration-[800ms] ease-out ${
           show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
