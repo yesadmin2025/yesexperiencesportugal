@@ -176,6 +176,12 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     viewRoute: "Ver percurso no mapa",
     hideRoute: "Esconder mapa",
     talkConcierge: "Falar com um concierge",
+    nameWhisper: {
+      prompt: "Como te chamas?",
+      placeholder: "o teu primeiro nome",
+      accept: "Continuar",
+      skip: "preferir manter o silêncio",
+    },
   },
   en: {
     eyebrow: "Experience Studio",
