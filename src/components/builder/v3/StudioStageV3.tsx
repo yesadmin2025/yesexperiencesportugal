@@ -77,6 +77,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const listFn = useServerFn(listRegionStops);
   const pacingFn = useServerFn(suggestPacing);
   const chapterFn = useServerFn(generateChapter);
+  const composeFn = useServerFn(composeStudioMoment);
 
   const [composerCollapsed, setComposerCollapsed] = useState(true);
   const [composerBusy, setComposerBusy] = useState(false);
