@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Mic, Send, Sparkles } from "lucide-react";
+import type { StudioDict } from "@/hooks/useStudioLocale";
 
 /**
  * The single conversational input. Lives at the bottom of the scene as a
@@ -13,17 +14,13 @@ interface Props {
   busy?: boolean;
   /** Show the composer in collapsed pill state until tapped. */
   collapsed?: boolean;
+  /** Optional seed text to prefill (e.g. fragment tapped in prologue). */
+  seed?: string;
+  /** Localized strings + speech recognition language tag. */
+  t: StudioDict;
   onExpand?: () => void;
   onSubmit: (text: string) => void;
 }
-
-const PLACEHOLDERS = [
-  "fim-de-semana romântico, vinho e mar, sem pressa…",
-  "um dia para celebrar com a família, junto à costa…",
-  "algo lento no Alentejo, gastronomia e silêncio…",
-  "uma fuga curta a sós, com mistério e mapa…",
-  "vinhos do Douro com amigos, ritmo solto…",
-];
 
 type SpeechRecognitionLike = {
   start: () => void;
@@ -36,21 +33,29 @@ type SpeechRecognitionLike = {
   continuous: boolean;
 };
 
-export function NarrativeComposer({ busy, collapsed, onExpand, onSubmit }: Props) {
-  const [text, setText] = useState("");
+export function NarrativeComposer({ busy, collapsed, seed, t, onExpand, onSubmit }: Props) {
+  const [text, setText] = useState(seed ?? "");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const seedAppliedRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (seed && seed !== seedAppliedRef.current) {
+      seedAppliedRef.current = seed;
+      setText((prev) => (prev ? prev : seed));
+    }
+  }, [seed]);
 
   useEffect(() => {
     if (collapsed) return;
     const id = window.setInterval(
-      () => setPlaceholderIdx((i) => (i + 1) % PLACEHOLDERS.length),
+      () => setPlaceholderIdx((i) => (i + 1) % t.composerPlaceholders.length),
       4500,
     );
     return () => window.clearInterval(id);
-  }, [collapsed]);
+  }, [collapsed, t.composerPlaceholders.length]);
 
   useEffect(() => {
     if (!collapsed) {
@@ -71,12 +76,12 @@ export function NarrativeComposer({ busy, collapsed, onExpand, onSubmit }: Props
     if (!Ctor) return;
     try {
       const r = new Ctor();
-      r.lang = "pt-PT";
+      r.lang = t.speechLang;
       r.interimResults = false;
       r.continuous = false;
       r.onresult = (e) => {
         const transcript = e.results[0]?.[0]?.transcript ?? "";
-        if (transcript) setText((t) => (t ? `${t} ${transcript}` : transcript));
+        if (transcript) setText((cur) => (cur ? `${cur} ${transcript}` : transcript));
       };
       r.onend = () => setListening(false);
       r.onerror = () => setListening(false);
@@ -101,10 +106,10 @@ export function NarrativeComposer({ busy, collapsed, onExpand, onSubmit }: Props
         type="button"
         onClick={onExpand}
         className="group inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-4 py-2.5 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] border border-[color:var(--gold)]/40 hover:border-[color:var(--gold)] transition-colors min-h-[44px]"
-        aria-label="Abrir composer narrativo"
+        aria-label={t.composerExpand}
       >
         <Sparkles size={14} className="text-[color:var(--gold)]" />
-        Diz mais
+        {t.composerExpand}
       </button>
     );
   }
@@ -125,17 +130,17 @@ export function NarrativeComposer({ busy, collapsed, onExpand, onSubmit }: Props
               handleSubmit();
             }
           }}
-          placeholder={PLACEHOLDERS[placeholderIdx]}
+          placeholder={t.composerPlaceholders[placeholderIdx]}
           rows={2}
           maxLength={500}
           className="w-full resize-none bg-transparent border-0 outline-none text-[16px] sm:text-[17px] leading-[1.45] text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 placeholder:italic font-serif italic"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-          aria-label="Conta-me esta viagem"
+          aria-label={t.composerExpand}
           disabled={busy}
         />
         <div className="mt-3 flex items-center justify-between gap-3">
           <span className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/45 font-semibold">
-            narra · escreve · adiciona
+            {t.composerFooter}
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -146,7 +151,7 @@ export function NarrativeComposer({ busy, collapsed, onExpand, onSubmit }: Props
                   ? "border-[color:var(--gold)] bg-[color:var(--gold)]/15 text-[color:var(--gold)]"
                   : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal)]/70 hover:border-[color:var(--gold)]/60 hover:text-[color:var(--gold)]"
               }`}
-              aria-label={listening ? "Parar gravação" : "Falar"}
+              aria-label={listening ? t.composerVoiceStop : t.composerVoiceStart}
               aria-pressed={listening}
             >
               <Mic size={16} />
@@ -156,10 +161,10 @@ export function NarrativeComposer({ busy, collapsed, onExpand, onSubmit }: Props
               onClick={handleSubmit}
               disabled={busy || !text.trim()}
               className="inline-flex items-center justify-center gap-2 min-h-[44px] rounded-full bg-[color:var(--charcoal)] px-5 py-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] disabled:opacity-50 hover:bg-[color:var(--teal)] transition-colors"
-              aria-label="Enviar"
+              aria-label={t.composerSend}
             >
               {busy ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-              {busy ? "A ouvir…" : "Continuar"}
+              {busy ? t.composerBusy : t.composerSend}
             </button>
           </div>
         </div>
