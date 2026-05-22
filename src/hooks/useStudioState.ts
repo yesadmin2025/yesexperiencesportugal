@@ -47,6 +47,8 @@ export interface StudioState {
   nameAsked: boolean;
   /** Composed editorial identity for the reveal — generated once, cached. */
   proposal: StudioProposal | null;
+  /** Most recent AI-composed sensory fragment (used as chip eyebrow). */
+  narrativeFragment: string | null;
 }
 
 const INITIAL: StudioState = {
@@ -65,6 +67,7 @@ const INITIAL: StudioState = {
   travellerName: null,
   nameAsked: false,
   proposal: null,
+  narrativeFragment: null,
 };
 
 const STORAGE_KEY = "yes.studio.state.v3";

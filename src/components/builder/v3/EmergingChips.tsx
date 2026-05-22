@@ -15,6 +15,8 @@ interface Props {
   fallbackPhrase: string;
   addLabel: string;
   cues?: { early: string; growing: string; settled: string };
+  /** Optional AI-composed sensory line that supersedes the stage cue. */
+  eyebrowOverride?: string | null;
   onAccept: (stop: StudioStop) => void;
 }
 
@@ -47,7 +49,7 @@ function emotionalPhrase(s: StudioStop, fallback: string, index: number): string
   return fallbackPhrases[index % fallbackPhrases.length] ?? fallback;
 }
 
-export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, onAccept }: Props) {
+export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, eyebrowOverride, onAccept }: Props) {
   const [reveal, setReveal] = useState(0);
 
   useEffect(() => {
@@ -74,15 +76,23 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
     .slice(0, maxCards);
   if (!available.length) return null;
 
-  const eyebrow = cues?.[stage];
+  const eyebrow = eyebrowOverride?.trim() || cues?.[stage];
+  const isAiLine = Boolean(eyebrowOverride?.trim());
 
   return (
     <ul className="flex flex-col gap-2.5 items-center" role="list">
       {eyebrow && (
         <li
           aria-hidden="true"
-          className="text-[10.5px] uppercase tracking-[0.32em] font-medium text-[color:var(--ivory)]/72 transition-opacity duration-700"
-          style={{ opacity: reveal > 0 ? 1 : 0 }}
+          className={
+            isAiLine
+              ? "max-w-[34ch] text-center italic text-[13px] leading-snug text-[color:var(--ivory)]/82 transition-opacity duration-700"
+              : "text-[10.5px] uppercase tracking-[0.32em] font-medium text-[color:var(--ivory)]/72 transition-opacity duration-700"
+          }
+          style={{
+            opacity: reveal > 0 ? 1 : 0,
+            fontFamily: isAiLine ? "Georgia, 'Times New Roman', serif" : undefined,
+          }}
         >
           {eyebrow}
         </li>

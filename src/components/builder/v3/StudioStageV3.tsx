@@ -87,6 +87,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const [composerSeed, setComposerSeed] = useState<string | undefined>(undefined);
   const [revealPlayed, setRevealPlayed] = useState(false);
   const lastChapterReqRef = useRef<string>("");
+  /** Session AI budget — at most 4 composeStudioMoment calls per session. */
+  const aiBudgetRef = useRef<number>(0);
+  const narrativeFiredAtRef = useRef<number>(-1);
 
   /* ── Load region catalog ── */
   useEffect(() => {
@@ -252,6 +255,13 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     if (!hasCore) return;
     if (state.proposal) return;
     if (state.acceptedStops.length > 0) return;
+    // Sparsity + accessibility guards. prefers-reduced-motion → fallback only.
+    if (aiBudgetRef.current >= 4) return;
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+    aiBudgetRef.current += 1;
     let cancelled = false;
     composeFn({
       data: {
@@ -293,6 +303,66 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     composeFn,
     patch,
   ]);
+
+  /* ── Narrative fragment — fires once after the 2nd accepted stop. The
+       resulting sensory line becomes the eyebrow above the next chip set,
+       so guidance feels continuous instead of menu-like. Gated by the
+       same 4-call session budget and reduced-motion preference. ── */
+  useEffect(() => {
+    if (!sessionId) return;
+    const count = state.acceptedStops.length;
+    if (count < 2) return;
+    if (narrativeFiredAtRef.current >= count) return;
+    if (aiBudgetRef.current >= 4) return;
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+    narrativeFiredAtRef.current = count;
+    aiBudgetRef.current += 1;
+    const lastTag = state.acceptedStops[count - 1]?.tag ?? null;
+    let cancelled = false;
+    composeFn({
+      data: {
+        sessionId,
+        mode: "narrative",
+        locale,
+        mood: state.mood,
+        who: state.who,
+        intention: state.intention,
+        journeyType: state.journeyType,
+        travellerName: state.travellerName,
+        narrativeStage: count >= 4 ? "reveal" : "emergence",
+        confidence: Math.min(1, 0.4 + count * 0.12),
+        acceptedCount: count,
+        lastFragment: state.narrativeFragment,
+        lastAcceptedTag: lastTag,
+      },
+    })
+      .then((r) => {
+        if (cancelled) return;
+        if (r.mode === "narrative" && r.fragment) {
+          patch({ narrativeFragment: r.fragment });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    sessionId,
+    locale,
+    state.acceptedStops,
+    state.mood,
+    state.who,
+    state.intention,
+    state.journeyType,
+    state.travellerName,
+    state.narrativeFragment,
+    composeFn,
+    patch,
+  ]);
+
 
 
   /** Shared suggestion fetch — reused by composer submit + emotion taps. */
@@ -712,6 +782,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
             cues={t.emergingCues}
+            eyebrowOverride={state.narrativeFragment}
             onAccept={handleAccept}
           />
 
