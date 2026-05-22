@@ -48,7 +48,6 @@ import {
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
 import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
 import { StudioStageV3 } from "@/components/builder/v3/StudioStageV3";
-import { StudioDrift } from "@/components/builder/v3/StudioDrift";
 
 
 /** Resolve a human label for current selections, used by the live header. */
@@ -109,33 +108,22 @@ function BuilderPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/builder" });
 
-  // Studio Drift — radical dwell + gaze prototype (replaces v3 by default).
-  // Escape hatches:
-  //   ?legacy=1   → original v1/v2 stepper flow
-  //   ?studio=v3  → previous conversational Studio v3 (for A/B comparison)
-  const sp =
-    typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const isLegacy = sp?.get("legacy") === "1";
-  const wantsV3 = sp?.get("studio") === "v3";
-
+  // Experience Studio v3 (Living Atmosphere) — fullscreen conversational stage.
+  // Escape hatch: append `?legacy=1` to fall back to the v1/v2 stepper flow.
+  // (Standalone drift prototype lives at /studio-drift — kept separate on purpose.)
+  const isLegacy =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("legacy") === "1";
   if (!isLegacy) {
-    if (wantsV3) {
-      return (
-        <StudioStageV3
-          onExit={() => {
-            void navigate({ to: "/" });
-          }}
-        />
-      );
-    }
     return (
-      <StudioDrift
+      <StudioStageV3
         onExit={() => {
           void navigate({ to: "/" });
         }}
       />
     );
   }
+
 
 
 
