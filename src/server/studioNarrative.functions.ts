@@ -270,7 +270,7 @@ Return TWO lines exactly, separated by a single newline:
 If a traveller name is provided you MAY use it ONCE in the subtitle, softly, never in the title.
 
 NEVER name real places, hotels, restaurants, roads, partners, villages.
-Forbidden vocabulary: hidden gem · luxury · unforgettable · journey of a lifetime · whispers of · soul of · magical · breathtaking · stunning · amazing · enchanting · captivating · timeless · authentic · vibrant · idyllic · pristine · paradise — any superlative, any mystical phrasing, any exclamation mark.
+Forbidden vocabulary: hidden · gem · luxury · unforgettable · journey of a lifetime · whispers · soul · magic · magical · breathtaking · stunning · amazing · enchanting · captivating · timeless · authentic · vibrant · idyllic · pristine · paradise · escape · adventure · discover · immersive · dream — any superlative, any mystical phrasing, any exclamation mark.
 Register: Cereal Magazine · Aman Journals · Kinfolk.
 
 Return ONLY the two lines — no quotes, no labels, no prefixes.`;
@@ -472,6 +472,16 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
           const prevAnchor = extractAnchor(data.lastFragment);
           if (prevAnchor && sanitised.toLowerCase().includes(prevAnchor)) {
             await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "echo" });
+            return buildFallback();
+          }
+        }
+        // Name restraint — the traveller name may ONLY appear at the reveal
+        // stage. Anywhere else, presence in output = rejection. Prevents the
+        // AI from over-personalising selection moments and erodes intimacy.
+        if (data.travellerName && data.narrativeStage !== "reveal") {
+          const namePattern = new RegExp(`\\b${data.travellerName.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\b`, "i");
+          if (namePattern.test(sanitised)) {
+            await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "name_too_early" });
             return buildFallback();
           }
         }
