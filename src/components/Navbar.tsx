@@ -64,13 +64,13 @@ export function Navbar() {
       className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
       style={headerStyle}
     >
-      {/* Soft atmospheric dissolve — ivory fades into hero footage, longer + softer */}
+      {/* Soft atmospheric dissolve — ivory fades down into hero footage, with no hard edge. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[80px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[92px] md:h-[86px] lg:h-[80px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.55) 0%, rgba(247,243,236,0.34) 28%, rgba(247,243,236,0.16) 58%, rgba(247,243,236,0.06) 82%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(247,243,236,0.92) 0%, rgba(247,243,236,0.68) 18%, rgba(247,243,236,0.38) 44%, rgba(247,243,236,0.14) 74%, rgba(247,243,236,0) 100%)",
         }}
       />
       <div className="container-x">
@@ -80,7 +80,7 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-block h-[46px] md:h-[52px] lg:h-[58px] translate-y-[7px] md:translate-y-[8px] lg:translate-y-[9px]">
+            <span className="relative inline-block h-[46px] md:h-[52px] lg:h-[58px] translate-y-[7px] md:translate-y-[8px] lg:translate-y-[9px] overflow-hidden">
               {/* Single full logo — always rendered, never resizes. The "YES" script
                   stays in the exact same position and size in both states. */}
               <Logo
@@ -90,16 +90,15 @@ export function Navbar() {
               />
               {/* Ivory veil — covers the "experiences PORTUGAL" lower portion of the
                   lockup when at the top of the hero. Fades out on scroll to reveal
-                  the full brand. Soft top edge so the descenders of YES are not
-                  clipped abruptly. */}
+                  the full brand. Clipped inside the logo box so it never creates
+                  a visible ivory block below the navbar or touches the YES descender. */}
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
                 style={{
-                  top: "58%",
-                  bottom: "-30%",
-                  background:
-                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgb(247,243,236) 14%, rgb(247,243,236) 100%)",
+                  top: "66%",
+                  bottom: 0,
+                  background: "rgb(247, 243, 236)",
                   opacity: showMarkOnly ? 1 : 0,
                 }}
               />
