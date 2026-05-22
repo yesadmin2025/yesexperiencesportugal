@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Intention, Mood, Pace, Who, RoutedStopUI } from "@/components/builder/types";
 import {
   BUILDER_REGIONS,
@@ -10,6 +10,9 @@ import {
  *
  * No notion of "step". The world has selections that may or may not exist,
  * and the UI reacts to whatever is present.
+ *
+ * State is auto-persisted to localStorage so a traveller can close the tab
+ * and resume their narration + AI decisions exactly where they left off.
  */
 
 export interface StudioStop {
@@ -23,23 +26,16 @@ export interface StudioStop {
 }
 
 export interface StudioState {
-  /** Free-text narrative the user has spoken/typed so far. */
   narrative: string;
-  /** Mapped from narrative (or null until parsed). */
   mood: Mood | null;
   who: Who | null;
   intention: Intention | null;
   pace: Pace;
   regionKey: BuilderRegionKey | null;
-  /** Ordered stops the user has accepted into the itinerary. */
   acceptedStops: StudioStop[];
-  /** Last AI chapter line shown above the scene. */
   chapter: string | null;
-  /** Transient AI whisper (pacing advisor). Cleared after timeout. */
   whisper: string | null;
-  /** Has the user advanced past the opening atmospheric scene? */
   awakened: boolean;
-  /** Memory mode active (final scene). */
   closing: boolean;
 }
 
@@ -57,13 +53,71 @@ const INITIAL: StudioState = {
   closing: false,
 };
 
+const STORAGE_KEY = "yes.studio.state.v1";
+
+/** Persisted subset — exclude transient UI flags (whisper, closing). */
+type PersistedState = Pick<
+  StudioState,
+  | "narrative"
+  | "mood"
+  | "who"
+  | "intention"
+  | "pace"
+  | "regionKey"
+  | "acceptedStops"
+  | "chapter"
+  | "awakened"
+>;
+
+function loadPersisted(): Partial<StudioState> | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PersistedState;
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function savePersisted(s: StudioState) {
+  if (typeof window === "undefined") return;
+  try {
+    const p: PersistedState = {
+      narrative: s.narrative,
+      mood: s.mood,
+      who: s.who,
+      intention: s.intention,
+      pace: s.pace,
+      regionKey: s.regionKey,
+      acceptedStops: s.acceptedStops,
+      chapter: s.chapter,
+      awakened: s.awakened,
+    };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  } catch {
+    /* quota / private mode — silent */
+  }
+}
+
+function clearPersisted() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 /** Map parseNarrative regionHint (small enum) to a real BuilderRegionKey. */
 const REGION_HINT_MAP: Record<string, BuilderRegionKey> = {
   lisbon: "lisbon",
-  porto: "porto", // not in catalog — falls back below
+  porto: "porto",
   alentejo: "alentejo",
   douro: "porto",
-  algarve: "algarve", // not in catalog — falls back below
+  algarve: "algarve",
   sintra: "sintra-cascais",
 };
 
@@ -73,7 +127,6 @@ export function resolveRegionFromHint(hint?: string | null): BuilderRegionKey {
   if (hint && REGION_HINT_MAP[hint] && CATALOG_REGION_KEYS.has(REGION_HINT_MAP[hint])) {
     return REGION_HINT_MAP[hint];
   }
-  // Default operation hub: Arrábida & Setúbal (largest catalog).
   return "arrabida-setubal";
 }
 
@@ -84,6 +137,28 @@ export function regionLabel(key: BuilderRegionKey | null): string {
 
 export function useStudioState() {
   const [state, setState] = useState<StudioState>(INITIAL);
+  // True if a previous narration was loaded from localStorage on mount.
+  const [restored, setRestored] = useState(false);
+  const hydratedRef = useRef(false);
+
+  // Hydrate from localStorage exactly once on mount.
+  useEffect(() => {
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+    const persisted = loadPersisted();
+    if (persisted && (persisted.narrative || (persisted.acceptedStops?.length ?? 0) > 0)) {
+      setState((s) => ({ ...s, ...persisted, whisper: null, closing: false }));
+      setRestored(true);
+    }
+  }, []);
+
+  // Auto-save on any meaningful change (skip while still hydrating).
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    // Only persist once user has actually engaged.
+    if (!state.narrative && state.acceptedStops.length === 0 && !state.awakened) return;
+    savePersisted(state);
+  }, [state]);
 
   const patch = useCallback((p: Partial<StudioState>) => {
     setState((s) => ({ ...s, ...p }));
@@ -105,7 +180,6 @@ export function useStudioState() {
     setState((s) => {
       const map = new Map(s.acceptedStops.map((x) => [x.key, x]));
       const reordered = keys.map((k) => map.get(k)).filter(Boolean) as StudioStop[];
-      // Append any stops not in `keys` (defensive).
       for (const x of s.acceptedStops) if (!keys.includes(x.key)) reordered.push(x);
       return { ...s, acceptedStops: reordered };
     });
@@ -115,9 +189,14 @@ export function useStudioState() {
     setState((s) => ({ ...s, whisper: line }));
   }, []);
 
-  const reset = useCallback(() => setState(INITIAL), []);
+  const reset = useCallback(() => {
+    clearPersisted();
+    setRestored(false);
+    setState(INITIAL);
+  }, []);
 
-  /** Build a RoutedStopUI[] for BuilderMap (drive minutes are approximate). */
+  const dismissRestored = useCallback(() => setRestored(false), []);
+
   const routedStops = useMemo<RoutedStopUI[]>(() => {
     return state.acceptedStops.map((s, i) => ({
       key: s.key,
@@ -134,7 +213,6 @@ export function useStudioState() {
 
   const regionCenter = useMemo(() => {
     if (!state.regionKey) return null;
-    // Approximate centers — BuilderMap will flyTo bounds once stops exist.
     const centers: Record<string, { lat: number; lng: number }> = {
       lisbon: { lat: 38.72, lng: -9.14 },
       "arrabida-setubal": { lat: 38.52, lng: -8.97 },
@@ -161,6 +239,8 @@ export function useStudioState() {
 
   return {
     state,
+    restored,
+    dismissRestored,
     patch,
     acceptStop,
     removeStop,
