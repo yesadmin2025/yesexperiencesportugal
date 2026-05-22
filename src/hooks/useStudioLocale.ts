@@ -63,6 +63,7 @@ export interface StudioDict {
   conciergeTrust: string;
   guidedCue: string;
   guidedAnother: string;
+  emergingCues: { early: string; growing: string; settled: string };
   reserveCta: string;
   viewRoute: string;
   hideRoute: string;
