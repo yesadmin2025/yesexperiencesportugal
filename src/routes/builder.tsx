@@ -108,6 +108,22 @@ function BuilderPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/builder" });
 
+  // Experience Studio v3 (Living Atmosphere) — fullscreen conversational stage.
+  // Escape hatch: append `?legacy=1` to fall back to the v1/v2 stepper flow.
+  const isLegacy =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("legacy") === "1";
+  if (!isLegacy) {
+    return (
+      <StudioStageV3
+        onExit={() => {
+          void navigate({ to: "/" });
+        }}
+      />
+    );
+  }
+
+
   const step = search.step ?? 0;
   const region = search.region;
   const mood = search.mood;
