@@ -67,6 +67,12 @@ export interface StudioDict {
   viewRoute: string;
   hideRoute: string;
   talkConcierge: string;
+  nameWhisper: {
+    prompt: string;
+    placeholder: string;
+    accept: string;
+    skip: string;
+  };
 }
 
 const DICTS: Record<StudioLocale, StudioDict> = {
