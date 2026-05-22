@@ -15,6 +15,7 @@ import { suggestFromIntent } from "@/server/builderIntent.functions";
 import { listRegionStops } from "@/server/builderEngine.functions";
 import { suggestPacing } from "@/server/builderPacing.functions";
 import { generateChapter } from "@/server/builderChapter.functions";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
 
 import { AmbientStage } from "./AmbientStage";
 import { AmbientPrologue } from "./AmbientPrologue";
@@ -29,6 +30,7 @@ import { ItineraryRibbon } from "./ItineraryRibbon";
 import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
 import { MultiDayConcierge } from "./MultiDayConcierge";
+import { NameWhisper } from "./NameWhisper";
 
 interface CatalogEntry {
   key: string;
