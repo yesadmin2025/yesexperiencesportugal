@@ -97,29 +97,33 @@ export function CinematicHero() {
           className="absolute inset-0 pointer-events-none"
           style={{ background: "rgba(38, 30, 22, 0.06)" }}
         />
-        {/* Soft highlight bloom — natural lens diffusion around the sun */}
+        {/* Soft highlight bloom — natural lens diffusion around the sun, gently breathing */}
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none mix-blend-screen"
           style={{
             background:
-              "radial-gradient(ellipse 45% 32% at 38% 58%, rgba(255, 196, 130, 0.18) 0%, rgba(255, 196, 130, 0.06) 35%, transparent 70%)",
+              "radial-gradient(ellipse 45% 32% at 38% 58%, rgba(255, 196, 130, 0.20) 0%, rgba(255, 196, 130, 0.07) 35%, transparent 70%)",
+            animation: skipIntro ? undefined : "heroSunBreath 9s ease-in-out infinite",
           }}
         />
-        {/* Editorial vignette — single soft radial */}
+        {/* Editorial vignette — single soft radial, much lighter than before */}
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.42) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.26) 100%)",
           }}
         />
-        {/* Mobile lift for AA contrast on gold text */}
+        {/* Mobile contrast lift — only behind the stanza band, leaves sky/sun untouched */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 md:hidden pointer-events-none"
-          style={{ background: "rgba(0,0,0,0.14)" }}
+          className="absolute inset-x-0 top-[30%] h-[40%] md:hidden pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+          }}
         />
         {/* Ultra-subtle film grain — fine texture, ~1% opacity */}
         <div
@@ -143,10 +147,10 @@ export function CinematicHero() {
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,
-              letterSpacing: "-0.014em",
+              letterSpacing: "-0.012em",
               color: "var(--gold, #C9A96A)",
-              textShadow: "0 1px 28px rgba(0,0,0,0.55)",
-              fontSize: "clamp(30px, 5.4vw, 60px)",
+              textShadow: "0 1px 24px rgba(0,0,0,0.45)",
+              fontSize: "clamp(24px, 4.2vw, 46px)",
               opacity: line1 ? 1 : 0,
               transform: line1 ? "translateY(0)" : "translateY(8px)",
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
@@ -155,17 +159,17 @@ export function CinematicHero() {
             {HERO_PHRASES[0]}
           </p>
           <p
-            className="font-serif italic font-normal mt-1 sm:mt-2"
+            className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
               fontFamily:
                 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,
-              letterSpacing: "-0.014em",
+              letterSpacing: "-0.012em",
               color: "var(--gold, #C9A96A)",
-              textShadow: "0 1px 28px rgba(0,0,0,0.55)",
-              fontSize: "clamp(30px, 5.4vw, 60px)",
+              textShadow: "0 1px 24px rgba(0,0,0,0.45)",
+              fontSize: "clamp(24px, 4.2vw, 46px)",
               opacity: line2 ? 1 : 0,
               transform: line2 ? "translateY(0)" : "translateY(8px)",
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
@@ -187,15 +191,18 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-5">
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-medium text-[color:var(--charcoal-deep,#1a1816)] bg-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:bg-[color:var(--gold-soft,#E8D5A8)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--charcoal-deep,#1a1816)] hover:bg-[color:var(--ivory,#FAF8F3)]/95 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
+              border: "1px solid color-mix(in oklab, var(--ivory, #FAF8F3) 55%, transparent)",
+              background: "rgba(250, 248, 243, 0.06)",
+              backdropFilter: "blur(2px)",
             }}
           >
             Begin Your Journey
@@ -203,12 +210,11 @@ export function CinematicHero() {
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:text-[color:var(--gold,#C9A96A)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
-              border: "1px solid color-mix(in oklab, var(--gold, #C9A96A) 40%, transparent)",
             }}
           >
             Explore Experiences
@@ -286,9 +292,16 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
   return (
     <>
       <style>{`
-        @keyframes heroBreath {
-          0%   { transform: scale(1.00); }
-          100% { transform: scale(1.03); }
+        @keyframes heroDrift {
+          0%   { transform: scale(1.020) translate3d(0, 0, 0); }
+          25%  { transform: scale(1.028) translate3d(-0.4%, -0.25%, 0); }
+          50%  { transform: scale(1.034) translate3d(0.2%, -0.4%, 0); }
+          75%  { transform: scale(1.028) translate3d(0.4%, -0.2%, 0); }
+          100% { transform: scale(1.020) translate3d(0, 0, 0); }
+        }
+        @keyframes heroSunBreath {
+          0%, 100% { opacity: 0.85; }
+          50%      { opacity: 1.05; }
         }
       `}</style>
       <video
@@ -303,11 +316,12 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         className="absolute inset-0 h-full w-full object-cover"
         style={{
           opacity: 1,
-          filter: "saturate(0.82) contrast(0.96) brightness(0.86)",
+          filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
           animation: skipMotion
             ? undefined
-            : "heroBreath 28s cubic-bezier(0.22,0.61,0.36,1) both",
-          transformOrigin: "center center",
+            : "heroDrift 42s ease-in-out infinite",
+          transformOrigin: "center 60%",
+          willChange: "transform",
         }}
       >
         <source src={HERO_CLIP.src} type="video/mp4" />
