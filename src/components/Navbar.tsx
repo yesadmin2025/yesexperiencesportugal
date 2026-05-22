@@ -67,10 +67,10 @@ export function Navbar() {
       {/* Soft atmospheric dissolve — ivory fades into hero footage, no hard edge */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[64px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[42px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.85) 0%, rgba(247,243,236,0.55) 28%, rgba(247,243,236,0.28) 55%, rgba(247,243,236,0.10) 78%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(247,243,236,0.54) 0%, rgba(247,243,236,0.30) 34%, rgba(247,243,236,0.12) 68%, rgba(247,243,236,0) 100%)",
         }}
       />
       <div className="container-x">
@@ -96,10 +96,10 @@ export function Navbar() {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
                 style={{
-                  top: "54%",
+                  top: "64%",
                   bottom: "-2%",
                   background:
-                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.92) 14%, rgb(247,243,236) 24%)",
+                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.94) 3%, rgb(247,243,236) 7%)",
                   opacity: showMarkOnly ? 1 : 0,
                 }}
               />
