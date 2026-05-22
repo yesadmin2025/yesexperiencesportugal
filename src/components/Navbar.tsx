@@ -42,29 +42,39 @@ export function Navbar() {
   }, [isHome]);
 
   const headerClass = transparent
-    ? "fixed top-0 inset-x-0 z-50 bg-transparent border-b border-transparent opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
+    ? "fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
     : "fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-b border-[color:var(--charcoal)]/15 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.18)] opacity-0 animate-[headerFade_900ms_ease-out_forwards]";
 
+  const transparentHeaderStyle = transparent
+    ? {
+        background:
+          "linear-gradient(to bottom, rgba(20,16,12,0.34) 0%, rgba(20,16,12,0.18) 60%, rgba(20,16,12,0.00) 100%)",
+        backdropFilter: "blur(10px) saturate(0.92)",
+        WebkitBackdropFilter: "blur(10px) saturate(0.92)",
+        borderBottom: "1px solid rgba(250,248,243,0.06)",
+      }
+    : undefined;
+
   const linkClass = transparent
-    ? "inline-flex items-center text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+    ? "inline-flex items-center text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     : "inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-white";
 
   const menuBtnClass = transparent
-    ? "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-    : "lg:hidden inline-flex items-center justify-center h-11 w-11 border border-[color:var(--charcoal-soft)] hover:border-[color:var(--teal)] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
+    ? "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+    : "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
   return (
-    <header className={headerClass}>
+    <header className={headerClass} style={transparentHeaderStyle}>
       <div className="container-x">
         <div className="flex items-center justify-between h-[64px] md:h-[80px] lg:h-[92px]">
           <Link
             to="/"
             className="flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label="YES experiences PORTUGAL — Home"
-            style={transparent ? { opacity: 0.85 } : undefined}
+            style={transparent ? { opacity: 0.88, filter: "drop-shadow(0 1px 8px rgba(0,0,0,0.35))" } : undefined}
           >
             <Logo
-              theme={transparent ? "gold-on-charcoal" : "teal-on-ivory"}
+              theme="teal-on-ivory"
               fetchPriority="high"
               className="block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
             />
