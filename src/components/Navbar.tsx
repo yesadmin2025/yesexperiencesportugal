@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { YesMark } from "@/components/YesMark";
 
 import { CtaButton } from "@/components/ui/CtaButton";
 
@@ -80,27 +81,19 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-block h-[40px] md:h-[52px] lg:h-[58px] translate-y-[5px] md:translate-y-[8px] lg:translate-y-[9px] overflow-hidden">
-              {/* Single full logo — always rendered, never resizes. The "YES" script
-                  stays in the exact same position and size in both states. */}
+            <span className="relative inline-flex h-[42px] md:h-[54px] lg:h-[60px] w-[112px] md:w-[142px] lg:w-[158px] items-start translate-y-[4px] md:translate-y-[7px] lg:translate-y-[8px]">
+              <YesMark
+                className={`absolute left-0 top-0 block h-[34px] md:h-[43px] lg:h-[48px] w-auto select-none transition-opacity duration-[650ms] ease-out ${
+                  showMarkOnly ? "opacity-100" : "opacity-0"
+                }`}
+                ariaLabel="YES"
+              />
               <Logo
                 theme="teal-on-ivory"
                 fetchPriority="high"
-                className="block h-full w-auto select-none"
-              />
-              {/* Ivory veil — covers the "experiences PORTUGAL" lower portion of the
-                  lockup when at the top of the hero. Fades out on scroll to reveal
-                  the full brand. Clipped inside the logo box so it never creates
-                  a visible ivory block below the navbar or touches the YES descender. */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
-                style={{
-                  top: "67%",
-                  bottom: 0,
-                  background: "rgb(247, 243, 236)",
-                  opacity: showMarkOnly ? 1 : 0,
-                }}
+                className={`absolute left-0 top-0 block h-full w-auto select-none transition-opacity duration-[650ms] ease-out ${
+                  showMarkOnly ? "opacity-0" : "opacity-100"
+                }`}
               />
             </span>
           </Link>
