@@ -55,20 +55,25 @@ function emotionalPhrase(s: StudioStop, fallback: string, index: number): string
   return fallbackPhrases[index % fallbackPhrases.length] ?? fallback;
 }
 
-export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, eyebrowOverride, onAccept }: Props) {
+export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, eyebrowOverride, pacing = 0.55, onAccept }: Props) {
   const [reveal, setReveal] = useState(0);
 
   useEffect(() => {
     setReveal(0);
     if (!suggestions.length) return;
     const timers: number[] = [];
+    // Pacing-driven cadence — slow travellers (pacing ~0.85) breathe up to
+    // ~260ms between reveals; energetic travellers (~0.25) get ~110ms.
+    const step = Math.round(110 + pacing * 180);
+    const lead = Math.round(120 + pacing * 80);
     suggestions.forEach((_, i) => {
       timers.push(
-        window.setTimeout(() => setReveal((r) => Math.max(r, i + 1)), 140 + i * 160),
+        window.setTimeout(() => setReveal((r) => Math.max(r, i + 1)), lead + i * step),
       );
     });
     return () => timers.forEach(window.clearTimeout);
-  }, [suggestions]);
+  }, [suggestions, pacing]);
+
 
   // Card-count ramp — fewer choices as confidence grows. The Studio should
   // feel knowing, not interactive. Each card still requires an explicit tap;
