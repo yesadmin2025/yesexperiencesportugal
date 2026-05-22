@@ -35,45 +35,34 @@ export interface StudioDict {
   yourDay: string;
   saveStory: string;
   speechLang: string;
-  /** Emotion chips — let the user pick without typing. */
   emotionPrompt: string;
-  /** Phased journey titles — one question at a time. */
   phaseTitles: { mood: string; depth: string; who: string; intention: string; pace: string };
   phaseHints: { mood: string; depth: string; who: string; intention: string; pace: string };
-  phaseStepLabel: string; // e.g. "Capítulo {n} de {total}"
+  phaseStepLabel: string;
   phaseSkip: string;
   phaseBack: string;
-  phaseComplete: string; // soft line when all 4 chosen
+  phaseComplete: string;
   moodOptions: EmotionOption<"slow" | "curious" | "romantic" | "open" | "energetic">[];
-  /** Journey-type options — "a single day" vs "several days" (concierge). */
   journeyTypeOptions: EmotionOption<"day" | "multi">[];
   whoOptions: EmotionOption<"couple" | "family" | "friends" | "solo">[];
   intentionOptions: EmotionOption<
     "wine" | "gastronomy" | "nature" | "heritage" | "coast" | "wellness"
   >[];
   paceOptions: EmotionOption<"relaxed" | "balanced" | "full">[];
-  /** Resume banner when a previous narration is found. */
   resumeTitle: string;
   resumeContinue: string;
   resumeRestart: string;
-  /** Soft suggestion phrase when a stop has no editorial blurb. */
   suggestionFallback: string;
-  /** Single line shown over the atmosphere before the user picks anything. */
   invitationWhisper: string;
-  /** Subtle cue shown while the world is reacting to the first choice. */
   awakeningCue: string;
-  /** Grounded loading verbs by stage — implies intelligent curation. */
   loadingVerbs: { curating: string; shaping: string; composing: string };
-  /** Multi-day concierge scene. */
   conciergeTitle: string;
   conciergeSub: string;
   conciergeBegin: string;
   conciergeBack: string;
   conciergeTrust: string;
-  /** Guided suggestion mode (≥2 accepted). */
   guidedCue: string;
   guidedAnother: string;
-  /** Final reveal CTAs. */
   reserveCta: string;
   viewRoute: string;
   hideRoute: string;
@@ -113,12 +102,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     emotionPrompt: "Como te sentes?",
     phaseTitles: {
       mood: "Como te sentes?",
+      depth: "Como queres viver Portugal?",
       who: "Com quem viajas?",
       intention: "O que te chama?",
       pace: "Em que ritmo?",
     },
     phaseHints: {
       mood: "escolhe uma emoção · sem pensar",
+      depth: "cada história tem o seu ritmo",
       who: "uma presença molda tudo",
       intention: "o que queres sentir hoje",
       pace: "respira ao teu próprio passo",
@@ -126,13 +117,17 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Capítulo {n} de {total}",
     phaseSkip: "saltar",
     phaseBack: "voltar",
-    phaseComplete: "A tua viagem já tem alma. Vê o que Portugal te traz.",
+    phaseComplete: "A tua viagem já tem alma.",
     moodOptions: [
       { value: "romantic", label: "Romântico" },
       { value: "slow", label: "Calmo" },
       { value: "curious", label: "Curioso" },
       { value: "energetic", label: "Vibrante" },
       { value: "open", label: "Aberto" },
+    ],
+    journeyTypeOptions: [
+      { value: "day", label: "Um dia inesquecível" },
+      { value: "multi", label: "Uma viagem de vários dias" },
     ],
     whoOptions: [
       { value: "couple", label: "A dois" },
@@ -158,7 +153,23 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeRestart: "Começar de novo",
     suggestionFallback: "um momento à tua espera",
     invitationWhisper: "Respira. Escolhe o que sentes — o resto desperta sozinho.",
-    awakeningCue: "Portugal está a responder…",
+    awakeningCue: "Curating your day",
+    loadingVerbs: {
+      curating: "A compor o teu dia",
+      shaping: "A dar forma ao ritmo",
+      composing: "A tua história ganha forma",
+    },
+    conciergeTitle: "Viagens assim são desenhadas à mão.",
+    conciergeSub: "Um designer privado pega no que partilhaste e compõe contigo, dia a dia.",
+    conciergeBegin: "Começar com um designer",
+    conciergeBack: "Voltar a um único dia",
+    conciergeTrust: "Composta à mão · Chamada privada · Sem roteiros pré-feitos",
+    guidedCue: "Isto encaixa a seguir.",
+    guidedAnother: "ver outro",
+    reserveCta: "Reservar este dia",
+    viewRoute: "Ver percurso no mapa",
+    hideRoute: "Esconder mapa",
+    talkConcierge: "Falar com um concierge",
   },
   en: {
     eyebrow: "Experience Studio",
@@ -192,12 +203,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     emotionPrompt: "How do you feel?",
     phaseTitles: {
       mood: "How do you feel?",
+      depth: "How do you want to experience Portugal?",
       who: "Who travels with you?",
       intention: "What calls you?",
       pace: "At what rhythm?",
     },
     phaseHints: {
       mood: "pick a feeling · don't think",
+      depth: "every story has its own rhythm",
       who: "a presence shapes everything",
       intention: "what you want to feel today",
       pace: "breathe at your own pace",
@@ -205,13 +218,17 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Chapter {n} of {total}",
     phaseSkip: "skip",
     phaseBack: "back",
-    phaseComplete: "Your journey has a soul now. See what Portugal brings you.",
+    phaseComplete: "Your journey has a soul now.",
     moodOptions: [
       { value: "romantic", label: "Romantic" },
       { value: "slow", label: "Calm" },
       { value: "curious", label: "Curious" },
       { value: "energetic", label: "Vibrant" },
       { value: "open", label: "Open" },
+    ],
+    journeyTypeOptions: [
+      { value: "day", label: "A single unforgettable day" },
+      { value: "multi", label: "A journey over several days" },
     ],
     whoOptions: [
       { value: "couple", label: "Just us two" },
@@ -237,7 +254,23 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeRestart: "Start over",
     suggestionFallback: "a moment waiting for you",
     invitationWhisper: "Breathe. Pick what you feel — the rest awakens on its own.",
-    awakeningCue: "Portugal is responding…",
+    awakeningCue: "Curating your day",
+    loadingVerbs: {
+      curating: "Curating your day",
+      shaping: "Shaping the rhythm",
+      composing: "Your story is taking shape",
+    },
+    conciergeTitle: "Journeys like this are shaped by hand.",
+    conciergeSub: "A private designer takes what you've shared and composes the days with you.",
+    conciergeBegin: "Begin with a designer",
+    conciergeBack: "Build a single day instead",
+    conciergeTrust: "Hand-composed · Private call · No template itineraries",
+    guidedCue: "This feels right next.",
+    guidedAnother: "show another",
+    reserveCta: "Reserve this day",
+    viewRoute: "View route on map",
+    hideRoute: "Hide map",
+    talkConcierge: "Talk to concierge",
   },
   es: {
     eyebrow: "Experience Studio",
@@ -271,12 +304,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     emotionPrompt: "¿Cómo te sientes?",
     phaseTitles: {
       mood: "¿Cómo te sientes?",
+      depth: "¿Cómo quieres vivir Portugal?",
       who: "¿Con quién viajas?",
       intention: "¿Qué te llama?",
       pace: "¿A qué ritmo?",
     },
     phaseHints: {
       mood: "elige una emoción · sin pensar",
+      depth: "cada historia tiene su propio ritmo",
       who: "una presencia lo cambia todo",
       intention: "lo que quieres sentir hoy",
       pace: "respira a tu propio paso",
@@ -284,13 +319,17 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Capítulo {n} de {total}",
     phaseSkip: "saltar",
     phaseBack: "volver",
-    phaseComplete: "Tu viaje ya tiene alma. Mira lo que Portugal te trae.",
+    phaseComplete: "Tu viaje ya tiene alma.",
     moodOptions: [
       { value: "romantic", label: "Romántico" },
       { value: "slow", label: "Calmado" },
       { value: "curious", label: "Curioso" },
       { value: "energetic", label: "Vibrante" },
       { value: "open", label: "Abierto" },
+    ],
+    journeyTypeOptions: [
+      { value: "day", label: "Un único día inolvidable" },
+      { value: "multi", label: "Un viaje de varios días" },
     ],
     whoOptions: [
       { value: "couple", label: "En pareja" },
@@ -316,7 +355,23 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeRestart: "Empezar de nuevo",
     suggestionFallback: "un momento esperándote",
     invitationWhisper: "Respira. Elige lo que sientes — el resto despierta solo.",
-    awakeningCue: "Portugal está respondiendo…",
+    awakeningCue: "Componiendo tu día",
+    loadingVerbs: {
+      curating: "Componiendo tu día",
+      shaping: "Dando forma al ritmo",
+      composing: "Tu historia toma forma",
+    },
+    conciergeTitle: "Viajes así se diseñan a mano.",
+    conciergeSub: "Un diseñador privado toma lo que compartiste y compone los días contigo.",
+    conciergeBegin: "Empezar con un diseñador",
+    conciergeBack: "Volver a un solo día",
+    conciergeTrust: "Hecho a mano · Llamada privada · Sin rutas plantilla",
+    guidedCue: "Esto encaja a continuación.",
+    guidedAnother: "ver otro",
+    reserveCta: "Reservar este día",
+    viewRoute: "Ver ruta en el mapa",
+    hideRoute: "Ocultar mapa",
+    talkConcierge: "Hablar con un concierge",
   },
   fr: {
     eyebrow: "Experience Studio",
@@ -328,7 +383,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     ],
     fragments: ["vin", "mer", "silence", "lumière", "sel", "route", "table", "pins"],
     whisperInvite: "Entrer lentement",
-    whisperHelper: "ressens d’abord, choisis ensuite",
+    whisperHelper: "ressens d'abord, choisis ensuite",
     beginPill: "Commencer à raconter",
     composerPlaceholders: [
       "un week-end romantique, vin et océan, sans hâte…",
@@ -350,12 +405,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     emotionPrompt: "Comment te sens-tu ?",
     phaseTitles: {
       mood: "Comment te sens-tu ?",
+      depth: "Comment veux-tu vivre le Portugal ?",
       who: "Avec qui voyages-tu ?",
       intention: "Qu'est-ce qui t'appelle ?",
       pace: "À quel rythme ?",
     },
     phaseHints: {
       mood: "choisis une émotion · sans réfléchir",
+      depth: "chaque histoire a son rythme",
       who: "une présence change tout",
       intention: "ce que tu veux ressentir aujourd'hui",
       pace: "respire à ton propre rythme",
@@ -363,13 +420,17 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Chapitre {n} sur {total}",
     phaseSkip: "passer",
     phaseBack: "retour",
-    phaseComplete: "Ton voyage a déjà une âme. Vois ce que le Portugal t'offre.",
+    phaseComplete: "Ton voyage a déjà une âme.",
     moodOptions: [
       { value: "romantic", label: "Romantique" },
       { value: "slow", label: "Calme" },
       { value: "curious", label: "Curieux" },
       { value: "energetic", label: "Vibrant" },
       { value: "open", label: "Ouvert" },
+    ],
+    journeyTypeOptions: [
+      { value: "day", label: "Une seule journée inoubliable" },
+      { value: "multi", label: "Un voyage de plusieurs jours" },
     ],
     whoOptions: [
       { value: "couple", label: "À deux" },
@@ -395,7 +456,23 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeRestart: "Recommencer",
     suggestionFallback: "un instant qui t'attend",
     invitationWhisper: "Respire. Choisis ce que tu ressens — le reste s'éveille seul.",
-    awakeningCue: "Le Portugal répond…",
+    awakeningCue: "Composition de ta journée",
+    loadingVerbs: {
+      curating: "Composition de ta journée",
+      shaping: "Le rythme prend forme",
+      composing: "Ton histoire prend forme",
+    },
+    conciergeTitle: "Ces voyages se dessinent à la main.",
+    conciergeSub: "Un designer privé prend ce que tu as partagé et compose les jours avec toi.",
+    conciergeBegin: "Commencer avec un designer",
+    conciergeBack: "Revenir à une seule journée",
+    conciergeTrust: "Composé à la main · Appel privé · Pas d'itinéraires types",
+    guidedCue: "Cela s'enchaîne bien.",
+    guidedAnother: "voir un autre",
+    reserveCta: "Réserver cette journée",
+    viewRoute: "Voir l'itinéraire sur la carte",
+    hideRoute: "Masquer la carte",
+    talkConcierge: "Parler à un concierge",
   },
 };
 
