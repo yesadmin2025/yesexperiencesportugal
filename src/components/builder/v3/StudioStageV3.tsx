@@ -80,6 +80,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const [suggestionKeys, setSuggestionKeys] = useState<string[]>([]);
   const [ribbonOpen, setRibbonOpen] = useState(false);
   const [composerSeed, setComposerSeed] = useState<string | undefined>(undefined);
+  const [revealPlayed, setRevealPlayed] = useState(false);
   const lastChapterReqRef = useRef<string>("");
 
   /* ── Load region catalog ── */
