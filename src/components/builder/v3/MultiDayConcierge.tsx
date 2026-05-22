@@ -126,6 +126,16 @@ export function MultiDayConcierge({ t, mood, who, intention, onBack }: Props) {
             {t.conciergeSub}
           </p>
 
+          {editorLine && (
+            <p
+              className="mt-3 text-[13.5px] sm:text-[14.5px] italic leading-snug text-[color:var(--ivory)]/65 max-w-[34ch] mx-auto animate-in fade-in duration-[900ms]"
+              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              aria-live="polite"
+            >
+              {editorLine}
+            </p>
+          )}
+
           {chips.length > 0 && (
             <ul
               className="mt-6 flex flex-wrap items-center justify-center gap-2"
