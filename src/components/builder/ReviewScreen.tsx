@@ -246,6 +246,10 @@ export function ReviewScreen({
               </ul>
             </div>
 
+            <ShareExport route={route} stops={stops} guests={guests} />
+
+
+
             <CtaButton
               type="button"
               onClick={onConfirm}
