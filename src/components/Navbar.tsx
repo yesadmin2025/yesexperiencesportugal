@@ -67,10 +67,10 @@ export function Navbar() {
       {/* Soft atmospheric dissolve — ivory fades into hero footage, no hard edge */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[64px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[30px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.85) 0%, rgba(247,243,236,0.55) 28%, rgba(247,243,236,0.28) 55%, rgba(247,243,236,0.10) 78%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(247,243,236,0.36) 0%, rgba(247,243,236,0.18) 42%, rgba(247,243,236,0) 100%)",
         }}
       />
       <div className="container-x">
@@ -80,7 +80,7 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-block h-[46px] md:h-[52px] lg:h-[58px]">
+            <span className="relative inline-block h-[46px] md:h-[52px] lg:h-[58px] translate-y-[7px] md:translate-y-[8px] lg:translate-y-[9px]">
               {/* Single full logo — always rendered, never resizes. The "YES" script
                   stays in the exact same position and size in both states. */}
               <Logo
@@ -96,10 +96,10 @@ export function Navbar() {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
                 style={{
-                  top: "54%",
+                  top: "64%",
                   bottom: "-2%",
                   background:
-                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.92) 14%, rgb(247,243,236) 24%)",
+                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.94) 3%, rgb(247,243,236) 7%)",
                   opacity: showMarkOnly ? 1 : 0,
                 }}
               />
