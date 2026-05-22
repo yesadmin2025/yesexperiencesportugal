@@ -30,11 +30,12 @@ const HERO_CLIP = {
 // Pacing — one breath (intimate, observational — not promotional)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const LINE1_DELAY_MS = 1800;
-const LINE2_DELAY_MS = 3800;
-const CTA_DELAY_MS = 7000;
-const FADE_MS = 1800;
-const CTA_FADE_MS = 1500;
+const LINE1_DELAY_MS = 2200;
+const LINE2_DELAY_MS = 5200;
+const CTA_DELAY_MS = 8800;
+const FADE_MS = 2600;
+const CTA_FADE_MS = 1800;
+
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
@@ -153,8 +154,10 @@ export function CinematicHero() {
                 "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
               fontSize: "clamp(26px, 4.4vw, 48px)",
               opacity: line1 ? 1 : 0,
-              transform: line1 ? "translateY(0)" : "translateY(8px)",
-              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
+              transform: line1 ? "translateY(0)" : "translateY(10px)",
+              filter: line1 ? "blur(0px)" : "blur(6px)",
+              willChange: "opacity, transform, filter",
+              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
           >
             {HERO_PHRASES[0]}
@@ -173,12 +176,15 @@ export function CinematicHero() {
                 "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
               fontSize: "clamp(26px, 4.4vw, 48px)",
               opacity: line2 ? 1 : 0,
-              transform: line2 ? "translateY(0)" : "translateY(8px)",
-              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
+              transform: line2 ? "translateY(0)" : "translateY(10px)",
+              filter: line2 ? "blur(0px)" : "blur(6px)",
+              willChange: "opacity, transform, filter",
+              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
           >
             {HERO_PHRASES[1]}
           </p>
+
         </div>
       </div>
 
@@ -193,41 +199,33 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-5">
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-5 hero-cta-group">
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--charcoal-deep,#1a1816)] hover:bg-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
-              borderRadius: 0,
-              border: "1px solid rgba(250, 248, 243, 0.85)",
-              background: "rgba(20, 16, 12, 0.32)",
-              backdropFilter: "blur(4px)",
-              boxShadow:
-                "0 10px 30px -12px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
           >
-            Begin Your Journey
+            <span className="hero-cta__sheen" aria-hidden="true" />
+            <span className="relative z-10">Begin Your Journey</span>
           </Link>
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--gold,#C9A96A)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
-              borderRadius: 0,
-              border: "1px solid rgba(250, 248, 243, 0.45)",
-              background: "rgba(20, 16, 12, 0.18)",
-              backdropFilter: "blur(3px)",
-              textShadow: "0 1px 8px rgba(0,0,0,0.55)",
             }}
           >
-            Explore Experiences
+            <span className="hero-cta__sheen" aria-hidden="true" />
+            <span className="relative z-10">Explore Experiences</span>
           </Link>
         </div>
+
       </div>
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
@@ -311,7 +309,95 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           0%, 100% { opacity: 0.85; }
           50%      { opacity: 1.05; }
         }
+        /* ─── Hero CTAs — quiet luxury tactility ─────────────────── */
+        .hero-cta {
+          position: relative;
+          overflow: hidden;
+          border-radius: 0;
+          isolation: isolate;
+          transition:
+            background-color 700ms cubic-bezier(0.22,0.61,0.36,1),
+            border-color 700ms cubic-bezier(0.22,0.61,0.36,1),
+            box-shadow 700ms cubic-bezier(0.22,0.61,0.36,1),
+            transform 350ms cubic-bezier(0.22,0.61,0.36,1),
+            color 500ms cubic-bezier(0.22,0.61,0.36,1);
+          will-change: transform, box-shadow;
+        }
+        .hero-cta__sheen {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: linear-gradient(
+            115deg,
+            transparent 35%,
+            rgba(250, 248, 243, 0.10) 50%,
+            transparent 65%
+          );
+          transform: translateX(-110%);
+          transition: transform 1400ms cubic-bezier(0.22,0.61,0.36,1);
+          z-index: 1;
+        }
+        .hero-cta:hover .hero-cta__sheen,
+        .hero-cta:focus-visible .hero-cta__sheen {
+          transform: translateX(110%);
+        }
+        .hero-cta--primary {
+          border: 1px solid rgba(240, 226, 198, 0.55);
+          background: rgba(28, 22, 16, 0.34);
+          -webkit-backdrop-filter: blur(6px) saturate(1.05);
+          backdrop-filter: blur(6px) saturate(1.05);
+          box-shadow:
+            0 18px 40px -22px rgba(0, 0, 0, 0.65),
+            0 1px 0 rgba(255, 255, 255, 0.05) inset,
+            0 0 0 rgba(230, 200, 146, 0);
+        }
+        .hero-cta--primary:hover,
+        .hero-cta--primary:focus-visible {
+          border-color: rgba(240, 226, 198, 0.75);
+          background: rgba(36, 28, 20, 0.42);
+          box-shadow:
+            0 22px 52px -22px rgba(0, 0, 0, 0.7),
+            0 1px 0 rgba(255, 255, 255, 0.08) inset,
+            0 0 28px -4px rgba(230, 200, 146, 0.28);
+          transform: translateY(-1px);
+        }
+        .hero-cta--primary:active {
+          transform: translateY(1px);
+          box-shadow:
+            0 8px 18px -12px rgba(0, 0, 0, 0.7),
+            0 1px 0 rgba(255, 255, 255, 0.04) inset,
+            0 0 14px -4px rgba(230, 200, 146, 0.18);
+        }
+        .hero-cta--ghost {
+          border: 1px solid rgba(240, 226, 198, 0.28);
+          background: rgba(28, 22, 16, 0.18);
+          -webkit-backdrop-filter: blur(5px) saturate(1.02);
+          backdrop-filter: blur(5px) saturate(1.02);
+          text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+          box-shadow:
+            0 14px 32px -22px rgba(0, 0, 0, 0.55),
+            0 1px 0 rgba(255, 255, 255, 0.04) inset;
+        }
+        .hero-cta--ghost:hover,
+        .hero-cta--ghost:focus-visible {
+          color: #E6C892;
+          border-color: rgba(230, 200, 146, 0.45);
+          background: rgba(34, 26, 18, 0.26);
+          box-shadow:
+            0 18px 40px -22px rgba(0, 0, 0, 0.6),
+            0 1px 0 rgba(255, 255, 255, 0.06) inset,
+            0 0 22px -6px rgba(230, 200, 146, 0.22);
+          transform: translateY(-1px);
+        }
+        .hero-cta--ghost:active {
+          transform: translateY(1px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-cta, .hero-cta__sheen { transition: none !important; }
+          .hero-cta:hover, .hero-cta:active { transform: none !important; }
+        }
       `}</style>
+
       <video
         ref={ref}
         poster={HERO_CLIP.poster}
