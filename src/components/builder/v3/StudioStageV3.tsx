@@ -771,13 +771,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         />
       )}
 
-      {/* ── Multi-day = elevated concierge (NOT a fallback) ── */}
+      {/* ── Multi-day = the deeper Portugal (NOT a fallback) ── */}
       {state.journeyType === "multi" && !hasStops && (
         <MultiDayConcierge
           t={t}
           mood={state.mood}
           who={state.who}
           intention={state.intention}
+          travellerName={state.travellerName}
           onBack={() => patch({ journeyType: null })}
         />
       )}
