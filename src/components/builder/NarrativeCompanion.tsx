@@ -159,12 +159,20 @@ export function NarrativeCompanion({
       className="pointer-events-none fixed inset-x-0 bottom-[88px] z-40 flex justify-center px-3 sm:bottom-[96px] sm:justify-end sm:pr-5"
       aria-live="polite"
     >
-      {!open && (
+      <div
+        className={`relative w-full max-w-md transition-all duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          open
+            ? "opacity-0 -translate-y-1 scale-95 pointer-events-none absolute"
+            : "opacity-100 translate-y-0 scale-100"
+        }`}
+        aria-hidden={open}
+      >
         <button
           type="button"
           onClick={() => setOpen(true)}
           className="pointer-events-auto group inline-flex max-w-[92vw] items-center gap-2 rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)]/95 px-4 py-2.5 text-[12px] text-[color:var(--charcoal)] shadow-[0_10px_30px_-12px_rgba(46,46,46,0.35)] backdrop-blur transition-all hover:-translate-y-px hover:border-[color:var(--gold)]/60"
           aria-label="Open narrative companion"
+          tabIndex={open ? -1 : 0}
         >
           <Sparkles
             className="h-3.5 w-3.5 text-[color:var(--gold)] transition-transform group-hover:scale-110"
@@ -177,11 +185,17 @@ export function NarrativeCompanion({
             AI
           </span>
         </button>
-      )}
+      </div>
 
-      {open && (
-        <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] shadow-[0_24px_60px_-20px_rgba(46,46,46,0.45)] overflow-hidden flex flex-col">
-          <div className="flex items-center gap-2 px-4 pt-3.5 pb-2 border-b border-[color:var(--charcoal)]/8">
+      <div
+        className={`pointer-events-auto w-full max-w-md rounded-2xl border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] shadow-[0_24px_60px_-20px_rgba(46,46,46,0.45)] overflow-hidden flex flex-col origin-bottom transition-all duration-[520ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+          open
+            ? "opacity-100 translate-y-0 scale-100"
+            : "opacity-0 translate-y-4 scale-[0.97] pointer-events-none absolute inset-x-3 sm:inset-x-auto sm:right-0"
+        }`}
+        aria-hidden={!open}
+      >
+        <div className="flex items-center gap-2 px-4 pt-3.5 pb-2 border-b border-[color:var(--charcoal)]/8">
             <MessageCircle
               className="h-4 w-4 text-[color:var(--gold)]"
               aria-hidden
@@ -289,8 +303,7 @@ export function NarrativeCompanion({
               </p>
             )}
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
