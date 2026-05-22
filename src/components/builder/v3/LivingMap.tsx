@@ -46,7 +46,7 @@ export function LivingMap({ stops, regionCenter, regionKey, revealed }: Props) {
           </div>
         }
       >
-        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} />
+        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} emotionalMode />
       </Suspense>
     </div>
   );
