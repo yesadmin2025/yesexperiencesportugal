@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, BookmarkPlus, ChevronDown, ChevronUp, Compass, Sparkles } from "lucide-react";
+import { ArrowLeft, BookmarkPlus, ChevronDown, ChevronUp, Compass } from "lucide-react";
 
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import {
@@ -9,6 +9,7 @@ import {
   useStudioState,
   type StudioStop,
 } from "@/hooks/useStudioState";
+import { useStudioLocale } from "@/hooks/useStudioLocale";
 import { parseNarrative } from "@/server/builderNarrative.functions";
 import { suggestFromIntent } from "@/server/builderIntent.functions";
 import { listRegionStops } from "@/server/builderEngine.functions";
@@ -16,6 +17,8 @@ import { suggestPacing } from "@/server/builderPacing.functions";
 import { generateChapter } from "@/server/builderChapter.functions";
 
 import { AmbientStage } from "./AmbientStage";
+import { AmbientPrologue } from "./AmbientPrologue";
+import { LocaleSwitcher } from "./LocaleSwitcher";
 import { NarrativeComposer } from "./NarrativeComposer";
 import { ChapterLine } from "./ChapterLine";
 import { EmergingChips } from "./EmergingChips";
@@ -46,6 +49,7 @@ interface CatalogEntry {
 
 export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const sessionId = useBuilderSessionId();
+  const { locale, setLocale, t } = useStudioLocale();
   const {
     state,
     patch,
@@ -63,12 +67,12 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const pacingFn = useServerFn(suggestPacing);
   const chapterFn = useServerFn(generateChapter);
 
-  const [composerCollapsed, setComposerCollapsed] = useState(false);
+  const [composerCollapsed, setComposerCollapsed] = useState(true);
   const [composerBusy, setComposerBusy] = useState(false);
   const [catalog, setCatalog] = useState<Map<string, CatalogEntry>>(new Map());
   const [suggestionKeys, setSuggestionKeys] = useState<string[]>([]);
   const [ribbonOpen, setRibbonOpen] = useState(false);
-  const [introTouched, setIntroTouched] = useState(false);
+  const [composerSeed, setComposerSeed] = useState<string | undefined>(undefined);
   const lastChapterReqRef = useRef<string>("");
 
   /* ── Load region catalog whenever the region changes ── */
