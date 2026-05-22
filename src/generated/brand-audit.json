@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T01:56:29.707Z",
+  "generatedAt": "2026-05-22T02:38:26.416Z",
   "filesScanned": 205,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 203,
-    "approved": 54,
+    "total": 199,
+    "approved": 48,
     "allowlisted": 25,
-    "mismatch": 124
+    "mismatch": 126
   },
   "findings": [
     {
@@ -738,15 +738,15 @@
     {
       "file": "src/components/Navbar.tsx",
       "line": 72,
-      "col": 166,
+      "col": 175,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A",
+      "snippet": "className=\"relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gol",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 94,
+      "line": 108,
       "col": 47,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -755,7 +755,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 104,
+      "line": 118,
       "col": 149,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -764,7 +764,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 104,
+      "line": 118,
       "col": 188,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 106,
+      "line": 120,
       "col": 70,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1079,7 +1079,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 87,
+      "line": 88,
       "col": 80,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -1088,93 +1088,57 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 151,
-      "col": 35,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "color: \"var(--gold, #C9A96A)\",",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 170,
-      "col": 35,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "color: \"var(--gold, #C9A96A)\",",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 198,
-      "col": 191,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 198,
-      "col": 239,
-      "raw": "#1a1816",
-      "normalized": "#1a1816",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
+      "line": 152,
+      "col": 23,
+      "raw": "#E6C892",
+      "normalized": "#e6c892",
+      "snippet": "color: \"#E6C892\",",
       "status": "mismatch"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 198,
-      "col": 277,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
-      "status": "approved"
+      "line": 174,
+      "col": 23,
+      "raw": "#E6C892",
+      "normalized": "#e6c892",
+      "snippet": "color: \"#E6C892\",",
+      "status": "mismatch"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 198,
-      "col": 441,
+      "line": 206,
+      "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
+      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] u",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 203,
-      "col": 67,
+      "line": 224,
+      "col": 204,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "border: \"1px solid color-mix(in oklab, var(--ivory, #FAF8F3) 55%, transparent)\",",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] upp",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 213,
-      "col": 191,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 213,
-      "col": 233,
+      "line": 224,
+      "col": 299,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] upp",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 213,
-      "col": 394,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "className=\"group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[",
-      "status": "approved"
+      "line": 364,
+      "col": 18,
+      "raw": "#1F1812",
+      "normalized": "#1f1812",
+      "snippet": "color: #1F1812;",
+      "status": "mismatch"
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
