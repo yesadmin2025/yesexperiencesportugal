@@ -1,85 +1,105 @@
-# Hero Rebuild — Cinematic Editorial Plan
+# Experience Studio → Cinematic Journey OS
 
-## Emotional direction
-"You are entering a private, cinematic journey through Portugal."
-Slow, warm, observational. A24-meets-luxury-travel-editorial. Restraint over spectacle. The viewer should feel held, not sold to.
+Evolução faseada do `/builder`. **Homepage não é tocada.** Mantemos o stepper atual e elevamos a sua qualidade emocional, cinemática e operacional. AI corre em background (sugestões silenciosas), respeitando a regra canónica: nunca inventa stops, preços ou itinerários.
 
-## Video concept
+---
 
-**Approach: real cinematic footage only — no AI-generated video.**
+## Princípios não-negociáveis
 
-Two options for sourcing (pick one at approval):
-- **Option A — Curated stock**: 4–5 short clips from premium libraries (Artgrid, Filmsupply, or Pexels/Coverr for free-tier). Hand-picked for warm golden-hour tones, soft handheld motion, human moments.
-- **Option B — Hybrid**: 1 anchor real clip + subtle Ken Burns/parallax on 2–3 still editorial photographs (real photography, not AI). Lighter weight, even more editorial.
+- **Sem novos stops fictícios.** AI só reordena/sugere a partir de `builder_stops` reais e respeita `builder_compatibility_rules` + `builder_routing_rules`.
+- **Mobile-first** (viewport 393 é o canvas principal). Desktop adapta depois.
+- **Tokens da marca** (teal/gold/ivory/sand/charcoal). Sem novos hex.
+- **Motion permitido fora da home**: fade + translateY 12–16px, hover lift -2px, route draw, accordion — tudo ≤220ms. Sem parallax, sem glass.
+- **Reutilizar primitivos**: `<Eyebrow>`, `<SectionTitle>`, `<CtaButton>`, `BuilderMap`, `JourneyPanel`. Não criar duplicados.
+- **Reduced-motion sempre respeitado.**
 
-**Mood**: golden hour, soft contrast, slightly desaturated, grain-friendly. Natural light only. No drone showreels, no time-lapses, no fast cuts.
+---
 
-**Pacing**: each scene holds 6–8s. One slow crossfade between scenes (1.2s). Total loop ~30s. Footage plays at 0.85× for a quiet, contemplative cadence.
+## Fase 1 — Fullscreen Cinematic Shell
 
-## Scene sequence (4 scenes)
+Eleva o stepper atual a uma experiência imersiva, sem reescrever o flow.
 
-1. **Light** — sun filtering through a window onto an old tile wall or linen curtain. Intimate, still.
-2. **Land** — wide coastal cliff or vineyard at golden hour, slow handheld drift. Sense of place.
-3. **Human** — hands pouring wine, breaking bread, or a quiet local gesture. Close, tactile.
-4. **Path** — empty cobblestone street or trail leading away, soft footsteps implied. Invitation.
+- Novo wrapper `BuilderStage` (fullscreen, 100dvh, ivory base, sem SiteLayout chrome dentro do builder — navbar fica minimal/transparente sobre o stage).
+- Transições entre steps: cross-fade + translateY 14px (≤220ms). Cada step entra como uma "cena".
+- Mapa promovido a **camada de fundo persistente** no mobile (40vh top, sticky), e split 50/50 no tablet+. Já não fecha entre steps.
+- Header do step: eyebrow ("Capítulo 02 — Ritmo"), título Montserrat, sub-linha Georgia italic. Cria sensação de capítulos.
+- Progress meter atual repensado como **timeline editorial** discreta (gold tick + label), substituindo o stepper numérico.
+- Sticky bar mantém-se mas com fundo `--ivory`/blur leve e CTA primário com arrow ramp.
 
-Sequence reads as a short film: light → place → people → invitation.
+Ficheiros: novo `BuilderStage.tsx`, refactor leve de `builder.tsx`, evolução de `BuilderProgressMeter.tsx`, `StickyBar.tsx`.
 
-## Typography
+---
 
-- **Headline**: serif, warm muted gold (`#C9A96A` / `--gold`), not white. Georgia or Cormorant Garamond italic for emphasis lines, regular for anchor lines.
-- **Eyebrow / CTA**: Inter, uppercase, 0.28em tracking, ivory at 65% opacity.
-- **Size**: clamp(28px, 5.4vw, 58px) — slightly smaller than current, more editorial.
-- **Weight**: 400 only. No bold. Letterspacing tight (-0.012em) on serif.
-- **Shadow**: subtle `0 1px 24px rgba(0,0,0,0.4)` for legibility, never a dark overlay band.
+## Fase 2 — Mapa como Motor Narrativo
 
-## Text sequence & timing
+O `BuilderMap` deixa de ser componente de apoio e passa a contar a história.
 
-Reduce from 10 phrases to **5 phrases** — less is more.
+- **Reveal progressivo**: a cada step, o mapa anima para a próxima escala (região → sub-zona → cluster de stops), com `flyTo` ≤700ms easing `easeInOutCubic`.
+- **Pins emocionais**: substituir o teardrop genérico por marcador editorial (círculo ivory + borda gold + ícone do `tag` do stop). Pin selecionado pulsa gold uma vez.
+- **Route draw cinemático**: já existe; melhorar para desenhar segmento a segmento (não tudo de uma vez) e adicionar "ghost" da próxima sugestão AI em gold tracejado.
+- **Camadas opcionais** (toggle discreto, canto inferior): "mood overlay" (tinta quente em zonas costeiras / fria em interior, opacity 0.08) — só visual, sem dados inventados.
+- **Mapa não some no mobile**: collapse para 32vh com handle para arrastar até 70vh. Substitui o atual "abrir mapa" modal.
+- Per-region zoom memory mantém-se (regra existente).
 
-1. "Portugal, slowly." *(top-left, 5.5s)*
-2. "Hidden chapters, written by those who live them." *(center-left, 6s)*
-3. "A private day. A celebration. A journey." *(center, 6s)*
-4. "Yours to live." *(lower-right, 5s)*
-5. "Begin writing." *(center, 5s — holds until CTAs reveal)*
+Ficheiros: `BuilderMap.tsx` (evoluir, não substituir).
 
-**Per-phrase timing**:
-- Fade in: 1600ms (slower, more cinematic)
-- Hold: 4000–4500ms
-- Fade out: 1200ms
-- Gap: 800ms
+---
 
-**Motion**: opacity + 6px translateY only. No parallax on text. Each phrase anchors to a different quadrant (editorial film-title style). One phrase visible at a time.
+## Fase 3 — AI Silenciosa (Lovable AI Gateway)
 
-**Subtle parallax on video**: ±12px Y on scroll, capped. Reduced-motion: disables all motion, shows scene 5 + CTAs immediately.
+Camada de inteligência que **nunca inventa**, apenas reordena e justifica.
 
-## CTAs (revealed after sequence)
+- Nova server fn `suggestNextStops` (`src/server/builderAI.functions.ts`):
+  - Input: estado atual do builder (mood, pace, who, intentions, região, stops escolhidos).
+  - Lê de `builder_stops` filtrados pela região + tags + `compatible_with` + `builder_compatibility_rules`.
+  - Chama Lovable AI (`google/gemini-3-flash-preview`) com tool-calling estruturado para escolher 2–3 stops da lista real e devolver um micro-rationale editorial (≤90 chars).
+  - Output validado por Zod; descarta qualquer stop key que não exista em `builder_stops`.
+- UI: bloco discreto "Sugestão silenciosa" acima do `ElementsShelf` — chip ivory com label do stop + 1 linha de rationale. Sem chat bubble.
+- Telemetria: `builder_events` (já existe) com `event='ai_suggest_shown' | 'ai_suggest_accepted'`.
+- Rate limit reutiliza `builder_rate_limits` (já existe).
 
-Two minimal buttons, identical to current refined treatment but recolored:
-- `[ Build Your Journey ]` — solid ivory bg, charcoal text
-- `[ Explore Experiences ]` — ghost, gold-tinted border `rgba(201,169,106,0.4)`, ivory text
+Sem nova tabela. Sem chat. Sem inventar.
 
-Squared corners, 0.28em tracking, Inter. No glassmorphism.
+---
 
-## Overlay & grading
+## Fase 4 — Storytelling Progression
 
-- Single radial vignette `rgba(0,0,0,0.15) → rgba(0,0,0,0.42)`.
-- Video filter: `saturate(0.88) contrast(1.04) brightness(0.82)` — warmer, slightly faded film stock.
-- Optional faint film grain overlay (CSS noise, 4% opacity) — only if approved.
+Transforma o flow em "capítulos" emocionais sem mudar a ordem técnica.
 
-## Performance & constraints
+- Catalogue (`catalogue.ts`) ganha campo `chapter` (Mood = "O tom", Pace = "O ritmo", Who = "Com quem", Intentions = "O que vos move", Region = "Onde", Stops = "Os momentos").
+- Micro-copy de transição entre steps (já existe `TRANSITION_MICROCOPY`) refinada para Georgia italic curta (≤60 chars), aparece 600ms entre cenas.
+- Itinerário (`JourneyPanel`) ganha estado "história a montar-se" — cada novo stop entra com fade + linha do mapa a desenhar-se em sincronia.
+- Review screen ganha capa editorial (hero do stop principal + título do journey gerado pela AI em tom, não em factos).
 
-- One `<video>` at a time, `preload="metadata"`, muted/loop/playsinline.
-- Total video weight target: ≤ 8 MB across all clips (or Option B: ≤ 3 MB).
-- Poster image for instant paint.
-- All existing `HERO_COPY` / `HERO_PHRASES` data probes preserved so e2e locks pass — `HERO_PHRASES` updated in `src/content/hero-copy.ts` (5 entries) and copy locks updated in sync.
-- No new dependencies.
+---
 
-## Open questions for approval
+## Fase 5 — Operacional & Reutilização
 
-1. **Sourcing**: Option A (curated stock clips) or Option B (hybrid: 1 clip + still photography with Ken Burns)?
-2. **Phrase copy**: approve the 5 phrases above, or refine wording?
-3. **Film grain overlay**: include or skip?
-4. **Update e2e copy locks**: confirm OK to update `HERO_PHRASES` (this will require updating `hero-copy.ts` and the byte-exact tests).
+Limpeza e preparação para escalar.
 
-Awaiting your approval before touching any code or generating assets.
+- Auditar `builder.tsx` (1311 linhas) → extrair lógica de orquestração para hook `useBuilderFlow.ts`. Componente fica fino.
+- Garantir que `JourneyPanel`, `BuilderMap`, `StickyBar`, `BuilderStage` são reutilizáveis no `MultiDayBuilder` sem duplicação.
+- Supabase: zero mudanças de schema nesta fase. Todas as tabelas necessárias (`builder_stops`, `builder_regions`, `builder_routing_rules`, `builder_compatibility_rules`, `builder_journeys`, `builder_events`, `builder_rate_limits`) já existem.
+- Adicionar índice em `builder_stops(region_key, is_active)` se ainda não existir (verificar antes).
+
+---
+
+## Fora de scope (explicitamente)
+
+- Homepage / hero / navbar — **não tocar**.
+- Chat AI visível, copiloto conversacional, fullscreen chat-like flow.
+- Novos stops, regiões, preços, parceiros inventados.
+- Substituir Mapbox/Leaflet por outro motor.
+- Mudar checkout (Stripe sandbox) ou booking truth model.
+
+---
+
+## Ordem de execução
+
+1. **Fase 1** (shell cinemático) — base visual, baixo risco.
+2. **Fase 2** (mapa narrativo) — maior impacto emocional.
+3. **Fase 3** (AI silenciosa) — backend + UI mínima.
+4. **Fase 4** (storytelling) — copy + micro-transições.
+5. **Fase 5** (refactor) — limpeza final.
+
+Cada fase entrega valor isolado e é mergível independentemente. Confirma a Fase 1 para começar, ou diz-me se queres reordenar / cortar fases.
