@@ -28,10 +28,10 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setShow(true), 80);
-    // Breathing room: ~1.8s for proposal copy to land, shorter for the
-    // calm fallback cue. This beat earns its weight from silence — the
-    // backdrop atmosphere does most of the work.
-    const t2 = window.setTimeout(onDone, hasProposal ? 2800 : 1900);
+    // Cinema breathes before information appears. Hold proposal copy in
+    // stillness for ~3.4s so the title/subtitle land emotionally before
+    // the itinerary emerges. Fallback cue stays shorter.
+    const t2 = window.setTimeout(onDone, hasProposal ? 3400 : 2100);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
