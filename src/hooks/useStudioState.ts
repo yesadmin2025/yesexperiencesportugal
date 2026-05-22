@@ -67,7 +67,7 @@ const INITIAL: StudioState = {
   proposal: null,
 };
 
-const STORAGE_KEY = "yes.studio.state.v2";
+const STORAGE_KEY = "yes.studio.state.v3";
 
 /** Persisted subset — exclude transient UI flags (whisper, closing). */
 type PersistedState = Pick<
@@ -82,6 +82,9 @@ type PersistedState = Pick<
   | "acceptedStops"
   | "chapter"
   | "awakened"
+  | "travellerName"
+  | "nameAsked"
+  | "proposal"
 >;
 
 function loadPersisted(): Partial<StudioState> | null {
