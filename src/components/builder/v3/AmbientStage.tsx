@@ -15,7 +15,12 @@ interface Props {
   videoUrl?: string | null;
   /** Stronger overlay when text sits on top. */
   veil?: "light" | "medium" | "deep";
+  /** Single-day vs multi-day journey — drives tint warmth/depth. */
+  journeyType?: "day" | "multi" | null;
+  /** Affinity profile (0–1 each) — fine-tunes tint intensity. */
+  affinity?: { warmth: number; depth: number; energy: number; intimacy: number };
 }
+
 
 const MOOD_GRADIENTS: Record<string, string> = {
   slow: "radial-gradient(ellipse at 30% 60%, oklch(0.42 0.04 200 / 0.9), oklch(0.22 0.03 220 / 1) 70%)",
