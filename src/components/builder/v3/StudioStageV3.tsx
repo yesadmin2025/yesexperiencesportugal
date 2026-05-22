@@ -117,6 +117,13 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       state.acceptedStops.map((s) => s.tag?.toLowerCase()).filter(Boolean) as string[],
     );
 
+    // Trailing-tag diversity: if the last two accepted stops share a tag,
+    // any further candidate with that tag is multiplicatively dampened (×0.4)
+    // so the journey opens into a new sensory register instead of looping.
+    const last = state.acceptedStops.slice(-2).map((s) => s.tag?.toLowerCase() ?? "");
+    const dampenedTag =
+      last.length === 2 && last[0] && last[0] === last[1] ? last[0] : null;
+
     // Affinity-weighted scoring — picks the "next best" complementary moment
     // rather than echoing whatever was just accepted. Higher = better fit.
     const score = (c: CatalogEntry): number => {
@@ -131,6 +138,8 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       if (state.intention && tag === state.intention) s += 0.4;
       // Reduce echo: penalize tags already represented in the journey.
       if (acceptedTags.has(tag)) s -= 0.55;
+      // Diversity penalty: same tag twice in a row → multiplicative dampen.
+      if (dampenedTag && tag === dampenedTag) s *= 0.4;
       return s;
     };
 
@@ -153,6 +162,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       .slice(0, 4)
       .map(({ c }) => c);
   }, [suggestionKeys, catalog, state.acceptedStops, state.intention, affinityProfile]);
+
 
 
   /* ── Chapter line (debounced) ── */
