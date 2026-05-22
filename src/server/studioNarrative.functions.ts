@@ -427,10 +427,15 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
           ],
           temperature:
             data.mode === "proposal"
-              ? 0.75
-              : data.narrativeStage === "reveal"
-                ? 0.65
-                : 0.82,
+              ? 0.72
+              : data.narrativeStage === "invitation"
+                ? 0.7
+                : data.narrativeStage === "recognition"
+                  ? 0.78
+                  : data.narrativeStage === "emergence"
+                    ? 0.78
+                    : 0.62,
+
           max_tokens: data.mode === "proposal" ? 80 : 60,
         }),
       });
@@ -457,9 +462,20 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
           await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "rejected" });
           return buildFallback();
         }
+        // Continuity guard — same emotional thread, fresh imagery. If the
+        // generated line reuses the previous fragment's primary anchor word
+        // (e.g. "salt" twice in a row), fall back rather than echo.
+        if (data.lastFragment) {
+          const prevAnchor = extractAnchor(data.lastFragment);
+          if (prevAnchor && sanitised.toLowerCase().includes(prevAnchor)) {
+            await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "echo" });
+            return buildFallback();
+          }
+        }
         await logAiUsage({ provider: "lovable_ai", model, feature, status: "success", latencyMs, configHash });
         return { mode: "narrative", fragment: sanitised, sensoryAnchor: extractAnchor(sanitised), source: "ai" };
       }
+
 
       const composed = sanitiseProposal(text);
       if (!composed) {

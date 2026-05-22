@@ -15,10 +15,16 @@ interface Props {
   fallbackPhrase: string;
   addLabel: string;
   cues?: { early: string; growing: string; settled: string };
-  /** Optional AI-composed sensory line that supersedes the stage cue. */
+  /** Optional AI-composed sensory line (rare). When absent, the static cue
+   *  shows. Kept here for callers that still want a persistent eyebrow; the
+   *  Studio now surfaces fragments via the transient NarrativeBeat instead. */
   eyebrowOverride?: string | null;
+  /** 0–1 pacing from affinity profile — slow travellers get longer breathing
+   *  room between chip reveals; energetic travellers get a quicker rhythm. */
+  pacing?: number;
   onAccept: (stop: StudioStop) => void;
 }
+
 
 const CARD_CLIPS = [
   "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
@@ -49,20 +55,25 @@ function emotionalPhrase(s: StudioStop, fallback: string, index: number): string
   return fallbackPhrases[index % fallbackPhrases.length] ?? fallback;
 }
 
-export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, eyebrowOverride, onAccept }: Props) {
+export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, eyebrowOverride, pacing = 0.55, onAccept }: Props) {
   const [reveal, setReveal] = useState(0);
 
   useEffect(() => {
     setReveal(0);
     if (!suggestions.length) return;
     const timers: number[] = [];
+    // Pacing-driven cadence — slow travellers (pacing ~0.85) breathe up to
+    // ~260ms between reveals; energetic travellers (~0.25) get ~110ms.
+    const step = Math.round(110 + pacing * 180);
+    const lead = Math.round(120 + pacing * 80);
     suggestions.forEach((_, i) => {
       timers.push(
-        window.setTimeout(() => setReveal((r) => Math.max(r, i + 1)), 140 + i * 160),
+        window.setTimeout(() => setReveal((r) => Math.max(r, i + 1)), lead + i * step),
       );
     });
     return () => timers.forEach(window.clearTimeout);
-  }, [suggestions]);
+  }, [suggestions, pacing]);
+
 
   // Card-count ramp — fewer choices as confidence grows. The Studio should
   // feel knowing, not interactive. Each card still requires an explicit tap;

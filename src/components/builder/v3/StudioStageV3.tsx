@@ -31,6 +31,8 @@ import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
 import { MultiDayConcierge } from "./MultiDayConcierge";
 import { NameWhisper } from "./NameWhisper";
+import { NarrativeBeat } from "./NarrativeBeat";
+
 
 interface CatalogEntry {
   key: string;
@@ -66,11 +68,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     acceptStop,
     removeStop,
     setWhisper,
+    setNarrativeFragment,
     routedStops,
     regionCenter,
     totalMinutes,
     affinityProfile,
+    narrativeStage,
   } = useStudioState();
+
 
   const parseFn = useServerFn(parseNarrative);
   const suggestFn = useServerFn(suggestFromIntent);
@@ -89,7 +94,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const lastChapterReqRef = useRef<string>("");
   /** Session AI budget — at most 4 composeStudioMoment calls per session. */
   const aiBudgetRef = useRef<number>(0);
-  const narrativeFiredAtRef = useRef<number>(-1);
+  /** Stages that have already fired their narrative beat — fires once each. */
+  const firedStagesRef = useRef<Set<string>>(new Set());
+
 
   /* ── Load region catalog ── */
   useEffect(() => {
@@ -311,23 +318,47 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     patch,
   ]);
 
-  /* ── Narrative fragment — fires once after the 2nd accepted stop. The
-       resulting sensory line becomes the eyebrow above the next chip set,
-       so guidance feels continuous instead of menu-like. Gated by the
-       same 4-call session budget and reduced-motion preference. ── */
+  /* ── Narrative beats — emotional transition firings only.
+   *
+   * Sparsity is the whole point: at most one beat per derived stage, gated
+   * by the 4-call session budget. Each beat is a SHORT sensory line that
+   * surfaces briefly via <NarrativeBeat /> and then dissolves — never a
+   * persistent caption, never "AI text on screen". The traveller should
+   * feel quietly recognized, not narrated at.
+   *
+   * Fires:
+   *   • recognition → first emotional pick has landed
+   *   • emergence   → core picks complete OR second stop accepted
+   *   • reveal      → third stop accepted (intimate close)
+   *
+   * Each stage fires AT MOST ONCE per session. Reduced-motion users skip
+   * beats entirely — the static stage cues + fallback chapter line carry
+   * the experience without imposing motion.
+   */
   useEffect(() => {
     if (!sessionId) return;
-    const count = state.acceptedStops.length;
-    if (count < 2) return;
-    if (narrativeFiredAtRef.current >= count) return;
+    if (state.journeyType === "multi") return;
+    const stage = narrativeStage;
+    if (stage === "invitation") return;
+    if (firedStagesRef.current.has(stage)) return;
     if (aiBudgetRef.current >= 4) return;
     const reducedMotion =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) return;
-    narrativeFiredAtRef.current = count;
+
+    firedStagesRef.current.add(stage);
     aiBudgetRef.current += 1;
-    const lastTag = state.acceptedStops[count - 1]?.tag ?? null;
+
+    const count = state.acceptedStops.length;
+    const lastTag =
+      count > 0 ? (state.acceptedStops[count - 1]?.tag ?? null) : null;
+    // Confidence rises with the stage altitude — drives temperature server-side.
+    const confidence =
+      stage === "recognition" ? 0.32
+      : stage === "emergence" ? Math.min(0.8, 0.55 + count * 0.08)
+      : 0.92;
+
     let cancelled = false;
     composeFn({
       data: {
@@ -339,8 +370,8 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         intention: state.intention,
         journeyType: state.journeyType,
         travellerName: state.travellerName,
-        narrativeStage: count >= 4 ? "reveal" : "emergence",
-        confidence: Math.min(1, 0.4 + count * 0.12),
+        narrativeStage: stage,
+        confidence,
         acceptedCount: count,
         lastFragment: state.narrativeFragment,
         lastAcceptedTag: lastTag,
@@ -349,9 +380,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       .then((r) => {
         if (cancelled) return;
         if (r.mode === "narrative" && r.fragment) {
-          patch({ narrativeFragment: r.fragment });
+          setNarrativeFragment(r.fragment);
           if (import.meta.env.DEV) {
             console.debug("[studio.narrative]", {
+              stage,
               fragment: r.fragment,
               sensoryAnchor: r.sensoryAnchor,
               source: r.source,
@@ -366,6 +398,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   }, [
     sessionId,
     locale,
+    narrativeStage,
     state.acceptedStops,
     state.mood,
     state.who,
@@ -374,8 +407,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     state.travellerName,
     state.narrativeFragment,
     composeFn,
-    patch,
+    setNarrativeFragment,
   ]);
+
 
 
 
@@ -595,10 +629,27 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         mood={state.mood}
         regionLabel={regionLabel(state.regionKey)}
         videoUrl={studioClip}
-        veil={phase === "living" ? "medium" : "deep"}
+        veil={
+          narrativeStage === "reveal"
+            ? "medium"
+            : narrativeStage === "invitation"
+              ? "deep"
+              : "medium"
+        }
         journeyType={state.journeyType}
         affinity={affinityProfile}
       />
+
+      {/* Transient narrative beat — appears only at stage transitions, then
+          dissolves. Slow/intimate travellers (high affinity.pacing) get a
+          longer hold; energetic travellers get a quicker rhythm. */}
+      <NarrativeBeat
+        fragment={state.narrativeFragment}
+        at={state.narrativeFragmentAt}
+        holdMs={Math.round(4200 + affinityProfile.pacing * 2600)}
+      />
+
+
 
 
       {/* Soft header — fades in only after the world begins reacting */}
@@ -767,8 +818,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
             cues={t.emergingCues}
+            pacing={affinityProfile.pacing}
             onAccept={handleAccept}
           />
+
         </div>
       )}
 
@@ -796,9 +849,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
             cues={t.emergingCues}
-            eyebrowOverride={state.narrativeFragment}
+            pacing={affinityProfile.pacing}
             onAccept={handleAccept}
           />
+
 
           <div className="flex justify-center">
             <div
