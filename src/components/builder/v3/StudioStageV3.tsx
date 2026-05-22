@@ -505,7 +505,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             className="text-center font-serif italic text-[15px] leading-snug text-[color:var(--ivory)]/85 max-w-[28ch]"
             style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
-            {t.invitationWhisper ?? t.composerPlaceholder}
+            {t.invitationWhisper}
           </p>
           <EmotionChips
             t={t}
