@@ -171,13 +171,13 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "#EFD5A6",
+              color: "#F1D8AB",
               textShadow:
-                "0 1px 1px rgba(0,0,0,0.45), 0 1px 6px rgba(0,0,0,0.32)",
+                "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
               fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line2 ? 1 : 0,
-              transform: line2 ? "translateY(0)" : "translateY(10px)",
-              filter: line2 ? "blur(0px)" : "blur(6px)",
+              transform: line2 ? "translateY(0)" : "translateY(8px)",
+              filter: line2 ? "blur(0px)" : "blur(4px)",
               willChange: "opacity, transform, filter",
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
