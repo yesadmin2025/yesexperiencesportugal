@@ -892,8 +892,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           totalMinutes={totalMinutes}
           chapter={state.chapter}
           farewell={state.chapter}
+          proposal={state.proposal}
           onClose={closeMemory}
         />
+
       )}
     </div>
   );
