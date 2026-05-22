@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, BookmarkPlus, ChevronDown, ChevronUp, Compass } from "lucide-react";
+import { ArrowLeft, BookmarkPlus, ChevronDown, ChevronUp, Compass, RotateCcw, Sparkles } from "lucide-react";
 
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import {
@@ -22,20 +22,11 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { NarrativeComposer } from "./NarrativeComposer";
 import { ChapterLine } from "./ChapterLine";
 import { EmergingChips } from "./EmergingChips";
+import { EmotionChips, type EmotionPick } from "./EmotionChips";
 import { LivingMap } from "./LivingMap";
 import { ItineraryRibbon } from "./ItineraryRibbon";
 import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
-
-/**
- * StudioStageV3 — Living Atmosphere.
- *
- * A single fullscreen cinematic scene. No steps. No cards. The user narrates,
- * the world reacts: ambient mood shifts, chapter line writes itself, real
- * stops emerge as floating chips, map awakens with the first acceptance,
- * itinerary ribbon assembles itself, pacing whispers appear when needed,
- * and the journey closes into a shareable memory card.
- */
 
 interface CatalogEntry {
   key: string;
@@ -52,6 +43,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const { locale, setLocale, t } = useStudioLocale();
   const {
     state,
+    restored,
+    dismissRestored,
+    reset,
     patch,
     acceptStop,
     removeStop,
@@ -75,7 +69,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const [composerSeed, setComposerSeed] = useState<string | undefined>(undefined);
   const lastChapterReqRef = useRef<string>("");
 
-  /* ── Load region catalog whenever the region changes ── */
+  /* ── Load region catalog ── */
   useEffect(() => {
     if (!state.regionKey) return;
     const region = state.regionKey;
@@ -95,12 +89,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         }
         setCatalog(map);
       })
-      .catch(() => {
-        /* silent — chips simply won't appear; world is still navigable */
-      });
+      .catch(() => {});
   }, [state.regionKey, listFn]);
 
-  /* ── Resolve suggestion keys to full StudioStop objects ── */
   const suggestionStops = useMemo<StudioStop[]>(() => {
     const acceptedSet = new Set(state.acceptedStops.map((s) => s.key));
     const out: StudioStop[] = [];
@@ -110,7 +101,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       if (c) out.push(c);
       if (out.length >= 4) break;
     }
-    // If suggestions are empty/exhausted, surface a few from catalog directly.
     if (out.length < 3) {
       for (const c of catalog.values()) {
         if (acceptedSet.has(c.key) || out.some((x) => x.key === c.key)) continue;
@@ -121,14 +111,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     return out;
   }, [suggestionKeys, catalog, state.acceptedStops]);
 
-  /* ── Generate chapter line when context shifts (debounced) ── */
+  /* ── Chapter line (debounced) ── */
   useEffect(() => {
     if (!sessionId) return;
     if (!state.awakened) return;
     const key = `${state.mood}|${state.who}|${state.intention}|${state.regionKey}|${state.acceptedStops.map((s) => s.key).join(",")}`;
     if (key === lastChapterReqRef.current) return;
     lastChapterReqRef.current = key;
-    const t = window.setTimeout(() => {
+    const tm = window.setTimeout(() => {
       chapterFn({
         data: {
           sessionId,
@@ -143,11 +133,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         },
       })
         .then((r) => patch({ chapter: r.line }))
-        .catch(() => {
-          /* silent */
-        });
+        .catch(() => {});
     }, 350);
-    return () => window.clearTimeout(t);
+    return () => window.clearTimeout(tm);
   }, [
     sessionId,
     state.awakened,
@@ -162,16 +150,15 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     locale,
   ]);
 
-  /* Also re-fetch chapter when locale changes (force fresh request). */
   useEffect(() => {
     lastChapterReqRef.current = "";
   }, [locale]);
 
-  /* ── Pacing whisper when itinerary changes ── */
+  /* ── Pacing whisper ── */
   useEffect(() => {
     if (!sessionId) return;
     if (state.acceptedStops.length < 2) return;
-    const t = window.setTimeout(() => {
+    const tm = window.setTimeout(() => {
       pacingFn({
         data: {
           sessionId,
@@ -189,11 +176,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         .then((r) => {
           if (r.warning) setWhisper(r.warning);
         })
-        .catch(() => {
-          /* silent */
-        });
+        .catch(() => {});
     }, 900);
-    return () => window.clearTimeout(t);
+    return () => window.clearTimeout(tm);
   }, [
     sessionId,
     state.acceptedStops,
@@ -205,51 +190,63 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     setWhisper,
   ]);
 
-  /* ── Composer submit: parse → set context → fetch suggestions ── */
+  /** Shared suggestion fetch — reused by composer submit + emotion taps. */
+  const refreshSuggestions = useCallback(
+    async (
+      regionKey: string,
+      mood: string | null,
+      who: string | null,
+      intention: string | null,
+      seedText: string,
+    ) => {
+      if (!sessionId) return;
+      const intentString = [mood, intention, who, seedText].filter(Boolean).join(" · ");
+      try {
+        const sug = await suggestFn({
+          data: {
+            sessionId,
+            intent: intentString || seedText || "experiência",
+            regionKey,
+            excludedKeys: state.acceptedStops.map((s) => s.key),
+          },
+        });
+        setSuggestionKeys(
+          sug.suggestedStopKeys.length > 0 ? sug.suggestedStopKeys : sug.rankedKeys.slice(0, 4),
+        );
+      } catch {}
+    },
+    [sessionId, suggestFn, state.acceptedStops],
+  );
+
+  /* ── Composer submit (free narration) ── */
   const handleSubmit = useCallback(
     async (text: string) => {
       if (!sessionId) return;
       setComposerBusy(true);
-      const fullNarrative = state.narrative
-        ? `${state.narrative}\n${text}`
-        : text;
+      const fullNarrative = state.narrative ? `${state.narrative}\n${text}` : text;
       try {
-        const parsed = await parseFn({
-          data: { sessionId, narrative: fullNarrative },
-        });
+        const parsed = await parseFn({ data: { sessionId, narrative: fullNarrative } });
         const regionKey = resolveRegionFromHint(parsed.regionHint ?? null);
+        const nextMood = parsed.mood ?? state.mood;
+        const nextWho = parsed.who ?? state.who;
+        const nextIntention = parsed.intention ?? state.intention;
         patch({
           narrative: fullNarrative,
-          mood: parsed.mood ?? state.mood,
-          who: parsed.who ?? state.who,
-          intention: parsed.intention ?? state.intention,
+          mood: nextMood,
+          who: nextWho,
+          intention: nextIntention,
           pace: parsed.pace ?? state.pace,
           regionKey,
           awakened: true,
         });
         setComposerCollapsed(true);
-
-        // Fetch ranked suggestions for this region+intent.
-        const intentString = [
-          parsed.mood ?? state.mood,
-          parsed.intention ?? state.intention,
-          parsed.who ?? state.who,
-          text,
-        ]
-          .filter(Boolean)
-          .join(" · ");
-        const sug = await suggestFn({
-          data: {
-            sessionId,
-            intent: intentString || text,
-            regionKey,
-            excludedKeys: state.acceptedStops.map((s) => s.key),
-          },
-        });
-        setSuggestionKeys(sug.suggestedStopKeys.length > 0 ? sug.suggestedStopKeys : sug.rankedKeys.slice(0, 4));
+        await refreshSuggestions(regionKey, nextMood, nextWho, nextIntention, text);
       } catch {
-        // On error, still awaken & let catalog seed suggestions.
-        patch({ narrative: fullNarrative, awakened: true, regionKey: state.regionKey ?? "arrabida-setubal" });
+        patch({
+          narrative: fullNarrative,
+          awakened: true,
+          regionKey: state.regionKey ?? "arrabida-setubal",
+        });
         setComposerCollapsed(true);
       } finally {
         setComposerBusy(false);
@@ -258,25 +255,56 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     [
       sessionId,
       parseFn,
-      suggestFn,
       patch,
+      refreshSuggestions,
       state.narrative,
       state.mood,
       state.who,
       state.intention,
       state.pace,
       state.regionKey,
-      state.acceptedStops,
+    ],
+  );
+
+  /* ── Emotion tap (no typing required) ── */
+  const handleEmotionPick = useCallback(
+    async (pick: EmotionPick) => {
+      const nextMood = pick.mood ?? state.mood;
+      const nextWho = pick.who ?? state.who;
+      const nextIntention = pick.intention ?? state.intention;
+      const nextPace = pick.pace ?? state.pace;
+      const regionKey = state.regionKey ?? "arrabida-setubal";
+      const fullNarrative = state.narrative
+        ? `${state.narrative} · ${pick.seed}`
+        : pick.seed;
+      patch({
+        narrative: fullNarrative,
+        mood: nextMood,
+        who: nextWho,
+        intention: nextIntention,
+        pace: nextPace,
+        regionKey,
+        awakened: true,
+      });
+      await refreshSuggestions(regionKey, nextMood, nextWho, nextIntention, pick.seed);
+    },
+    [
+      state.mood,
+      state.who,
+      state.intention,
+      state.pace,
+      state.regionKey,
+      state.narrative,
+      patch,
+      refreshSuggestions,
     ],
   );
 
   const handleAccept = useCallback(
     (stop: StudioStop) => {
       acceptStop(stop);
-      // Remove from active suggestions
       setSuggestionKeys((keys) => keys.filter((k) => k !== stop.key));
       setRibbonOpen(true);
-      // Auto-collapse ribbon after a beat so the world stays open
       window.setTimeout(() => setRibbonOpen(false), 2200);
     },
     [acceptStop],
@@ -285,36 +313,67 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const openMemory = () => patch({ closing: true });
   const closeMemory = () => patch({ closing: false });
 
-  /* ── OPENING SCENE — passive cinematic prologue ── */
+  /* ── OPENING SCENE — passive prologue (with optional resume banner) ── */
   if (!state.awakened) {
     return (
-      <AmbientPrologue
-        locale={locale}
-        onLocaleChange={setLocale}
-        t={t}
-        onExit={onExit}
-        onAwaken={(seed) => {
-          if (seed) setComposerSeed(seed);
-          setComposerCollapsed(false);
-          // Mark awakened so the living scene mounts; if no seed, composer waits open.
-          patch({ awakened: true });
-        }}
-      />
+      <div className="relative">
+        <AmbientPrologue
+          locale={locale}
+          onLocaleChange={setLocale}
+          t={t}
+          onExit={onExit}
+          onAwaken={(seed) => {
+            if (seed) setComposerSeed(seed);
+            setComposerCollapsed(false);
+            patch({ awakened: true });
+          }}
+        />
+        {restored && (
+          <div className="fixed inset-x-0 top-[68px] z-40 flex justify-center px-3 pointer-events-none">
+            <div className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur-md border border-[color:var(--gold)]/55 shadow-[0_10px_36px_rgba(0,0,0,0.4)] pl-3 pr-1.5 py-1.5 animate-in fade-in slide-in-from-top-2 duration-500">
+              <Sparkles size={12} className="text-[color:var(--gold)]" />
+              <span
+                className="text-[12px] italic text-[color:var(--charcoal)] mr-1"
+                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              >
+                {t.resumeTitle}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  dismissRestored();
+                  patch({ awakened: true });
+                }}
+                className="inline-flex items-center min-h-[34px] rounded-full bg-[color:var(--charcoal)] hover:bg-[color:var(--teal)] text-[color:var(--ivory)] px-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold transition-colors"
+              >
+                {t.resumeContinue}
+              </button>
+              <button
+                type="button"
+                onClick={reset}
+                className="inline-flex items-center gap-1 min-h-[34px] rounded-full px-2.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/60 hover:text-[color:var(--charcoal)] transition-colors"
+                aria-label={t.resumeRestart}
+              >
+                <RotateCcw size={11} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 
-  /* ── LIVING SCENE — post-awakened ── */
+  /* ── LIVING SCENE ── */
   const hasStops = state.acceptedStops.length > 0;
 
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)]">
+    <div className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)] animate-in fade-in duration-700">
       <AmbientStage
         mood={state.mood}
         regionLabel={regionLabel(state.regionKey)}
         veil={hasStops ? "medium" : "deep"}
       />
 
-      {/* Top bar — minimal */}
       <header className="absolute top-0 inset-x-0 z-30 flex items-start justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-5">
         <div className="flex flex-col gap-2 max-w-[60vw]">
           {onExit && (
@@ -336,6 +395,15 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex items-center justify-center min-h-[36px] min-w-[36px] rounded-full bg-[color:var(--ivory)]/15 hover:bg-[color:var(--ivory)]/25 text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] backdrop-blur transition-colors"
+            aria-label={t.resumeRestart}
+            title={t.resumeRestart}
+          >
+            <RotateCcw size={13} />
+          </button>
           <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" />
           {hasStops && (
             <button
@@ -352,16 +420,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         </div>
       </header>
 
-      {/* Whisper layer */}
       <div className="absolute top-[120px] inset-x-0 z-30 flex justify-center px-4">
         <WhisperLayer text={state.whisper} onDismiss={() => setWhisper(null)} />
       </div>
 
-      {/* Living map — fades in when first stop accepted */}
       <div
         className={`absolute z-10 transition-all duration-[700ms] ${
           hasStops
-            ? "left-3 right-3 top-[170px] bottom-[260px] sm:left-6 sm:right-6 sm:top-[180px] sm:bottom-[280px]"
+            ? "left-3 right-3 top-[170px] bottom-[300px] sm:left-6 sm:right-6 sm:top-[180px] sm:bottom-[320px]"
             : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-[1px] opacity-0 pointer-events-none"
         }`}
       >
@@ -373,7 +439,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         />
       </div>
 
-      {/* Itinerary ribbon — drops down from the toggle */}
       {ribbonOpen && hasStops && (
         <div
           id="itinerary-ribbon"
@@ -382,16 +447,17 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           <ItineraryRibbon
             stops={state.acceptedStops}
             totalMinutes={totalMinutes}
+            fallbackPhrase={t.suggestionFallback}
+            removeLabel={t.resumeRestart}
+            titleLabel={t.yourDay}
             onRemove={removeStop}
           />
         </div>
       )}
 
-      {/* Emerging chips + composer at bottom */}
       <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 flex flex-col gap-3">
-        {/* "Save journey" pill — appears when 2+ stops */}
         {state.acceptedStops.length >= 2 && (
-          <div className="flex justify-center">
+          <div className="flex justify-center animate-in fade-in slide-in-from-bottom-1 duration-500">
             <button
               type="button"
               onClick={openMemory}
@@ -406,32 +472,54 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         <EmergingChips
           suggestions={suggestionStops}
           acceptedKeys={state.acceptedStops.map((s) => s.key)}
+          fallbackPhrase={t.suggestionFallback}
+          addLabel={t.composerSend}
           onAccept={handleAccept}
         />
 
+        {/* Emotion chips — always available, no typing required */}
+        <EmotionChips
+          t={t}
+          tone="light"
+          active={{
+            mood: state.mood,
+            who: state.who,
+            intention: state.intention,
+            pace: state.pace,
+          }}
+          onPick={handleEmotionPick}
+        />
+
+        {/* Composer — cinematic crossfade between collapsed pill and open sheet */}
         <div className="flex justify-center">
-          {composerCollapsed ? (
-            <NarrativeComposer
-              busy={composerBusy}
-              collapsed
-              t={t}
-              seed={composerSeed}
-              onExpand={() => setComposerCollapsed(false)}
-              onSubmit={handleSubmit}
-            />
-          ) : (
-            <NarrativeComposer
-              busy={composerBusy}
-              collapsed={false}
-              t={t}
-              seed={composerSeed}
-              onSubmit={handleSubmit}
-            />
-          )}
+          <div
+            key={composerCollapsed ? "pill" : "sheet"}
+            className="w-full max-w-2xl animate-in fade-in zoom-in-95 duration-500 ease-out"
+          >
+            {composerCollapsed ? (
+              <div className="flex justify-center">
+                <NarrativeComposer
+                  busy={composerBusy}
+                  collapsed
+                  t={t}
+                  seed={composerSeed}
+                  onExpand={() => setComposerCollapsed(false)}
+                  onSubmit={handleSubmit}
+                />
+              </div>
+            ) : (
+              <NarrativeComposer
+                busy={composerBusy}
+                collapsed={false}
+                t={t}
+                seed={composerSeed}
+                onSubmit={handleSubmit}
+              />
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Closing memory card */}
       {state.closing && state.regionKey && (
         <MemoryCard
           stops={state.acceptedStops}
