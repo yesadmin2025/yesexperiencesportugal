@@ -497,6 +497,12 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     viewRoute: "Voir l'itinéraire sur la carte",
     hideRoute: "Masquer la carte",
     talkConcierge: "Parler à un concierge",
+    nameWhisper: {
+      prompt: "Comment t'appelles-tu ?",
+      placeholder: "ton prénom",
+      accept: "Continuer",
+      skip: "préférer garder le silence",
+    },
   },
 };
 
