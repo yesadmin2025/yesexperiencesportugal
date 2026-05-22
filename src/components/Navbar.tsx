@@ -2,7 +2,6 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { YesMark } from "@/components/YesMark";
 
 import { CtaButton } from "@/components/ui/CtaButton";
 
@@ -81,24 +80,27 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-flex h-[54px] md:h-[58px] lg:h-[62px] w-[86px] md:w-[92px] lg:w-[98px] items-start translate-y-[4px] md:translate-y-[6px] lg:translate-y-[7px]">
-              <span
-                aria-hidden={!showMarkOnly}
-                className={`absolute left-0 top-0 block h-[36px] md:h-[38px] lg:h-[41px] w-full overflow-hidden transition-opacity duration-[650ms] ease-out ${
-                  showMarkOnly ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <YesMark
-                  ariaLabel="YES"
-                  className="block h-[78px] md:h-[82px] lg:h-[88px] w-auto -translate-x-[7px] -translate-y-[19px] md:-translate-x-[7px] md:-translate-y-[20px] lg:-translate-x-[8px] lg:-translate-y-[21px] select-none"
-                />
-              </span>
+            <span className="relative inline-flex h-[45px] md:h-[50px] lg:h-[56px] w-[72px] md:w-[80px] lg:w-[90px] items-start translate-y-[4px] md:translate-y-[6px] lg:translate-y-[7px] overflow-hidden">
               <Logo
                 theme="teal-on-ivory"
                 fetchPriority="high"
-                className={`absolute left-0 top-0 block h-full w-auto select-none transition-opacity duration-[650ms] ease-out ${
-                  showMarkOnly ? "opacity-0" : "opacity-100"
-                }`}
+                className="absolute left-0 top-0 block h-full w-auto select-none"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 bg-[rgb(247,243,236)] transition-opacity duration-[650ms] ease-out"
+                style={{ top: "67%", opacity: showMarkOnly ? 1 : 0 }}
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute rounded-full bg-[rgb(247,243,236)] transition-opacity duration-[650ms] ease-out"
+                style={{
+                  left: "46%",
+                  top: "57%",
+                  width: "12%",
+                  height: "12%",
+                  opacity: showMarkOnly ? 1 : 0,
+                }}
               />
             </span>
           </Link>
