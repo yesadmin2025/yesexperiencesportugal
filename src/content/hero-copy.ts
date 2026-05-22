@@ -13,16 +13,11 @@
  *   no waiting.
  */
 export const HERO_PHRASES = [
-  "Portugal is the stage.",
-  "You write your story.",
-  "Hidden chapters wait to unfold.",
-  "Locals know where they begin.",
-  "You decide how to live it.",
-  "A private day. A proposal. A celebration. A journey.",
-  "Every story is different.",
-  "So is yours.",
-  "Portugal is waiting to be lived.",
-  "You just have to start writing.",
+  "Portugal, slowly.",
+  "Hidden chapters, written by those who live them.",
+  "A private day. A celebration. A journey.",
+  "Yours to live.",
+  "Begin writing.",
 ] as const;
 
 export const HERO_COPY = {
