@@ -642,12 +642,15 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
 
       {/* Transient narrative beat — appears only at stage transitions, then
           dissolves. Slow/intimate travellers (high affinity.pacing) get a
-          longer hold; energetic travellers get a quicker rhythm. */}
+          longer hold; reveal stage holds longest of all (intimate close). */}
       <NarrativeBeat
         fragment={state.narrativeFragment}
         at={state.narrativeFragmentAt}
-        holdMs={Math.round(4200 + affinityProfile.pacing * 2600)}
+        holdMs={Math.round(
+          (narrativeStage === "reveal" ? 5400 : 4200) + affinityProfile.pacing * 2600,
+        )}
       />
+
 
 
 
