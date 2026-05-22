@@ -191,15 +191,18 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-5">
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-medium text-[color:var(--charcoal-deep,#1a1816)] bg-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:bg-[color:var(--gold-soft,#E8D5A8)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--charcoal-deep,#1a1816)] hover:bg-[color:var(--ivory,#FAF8F3)]/95 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
+              border: "1px solid color-mix(in oklab, var(--ivory, #FAF8F3) 55%, transparent)",
+              background: "rgba(250, 248, 243, 0.06)",
+              backdropFilter: "blur(2px)",
             }}
           >
             Begin Your Journey
@@ -207,12 +210,11 @@ export function CinematicHero() {
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:text-[color:var(--gold,#C9A96A)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
-              border: "1px solid color-mix(in oklab, var(--gold, #C9A96A) 40%, transparent)",
             }}
           >
             Explore Experiences
