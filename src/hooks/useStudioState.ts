@@ -102,6 +102,7 @@ function savePersisted(s: StudioState) {
       who: s.who,
       intention: s.intention,
       pace: s.pace,
+      journeyType: s.journeyType,
       regionKey: s.regionKey,
       acceptedStops: s.acceptedStops,
       chapter: s.chapter,
