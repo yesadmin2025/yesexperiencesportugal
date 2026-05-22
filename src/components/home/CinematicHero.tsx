@@ -1,40 +1,66 @@
 /**
- * CinematicHero — editorial luxury rebuild.
+ * CinematicHero — editorial luxury rebuild v2.
  *
- * A single fullscreen cinematic Portugal film plays quietly behind a
- * slow editorial sequence: each phrase from HERO_PHRASES fades in,
- * holds, and fades out in an intentional alternating composition
- * (top-left, center-left, lower-right, etc.) — like the opening
- * scenes of a private travel film.
+ * A 4-clip cinematic sequence of REAL Portugal footage (no AI video),
+ * crossfading slowly behind 5 editorial phrases in warm muted gold.
+ * A24-meets-luxury-travel-editorial. Quiet, observational, restrained.
  *
- * After the sequence resolves, two minimal refined CTAs land:
- *   [ Build Your Journey ]   [ Explore Experiences ]
+ * Scene arc: light → land → human → path.
+ * Phrase arc: presence → invitation → possibility → ownership → action.
  *
- * No gradients on the surface, no glassmorphism, no flashy motion.
- * Quiet luxury. Aman-meets-Portugal restraint. All HERO_COPY data
- * probes are still rendered so the byte-exact / version locks keep
- * passing.
+ * After the sequence resolves, two minimal CTAs land.
+ *
+ * All HERO_COPY SR probes preserved so byte-exact / version locks pass.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
-import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Pacing
+// Film sequence — real footage only, hand-curated for editorial arc
 // ─────────────────────────────────────────────────────────────────────────────
 
-const FADE_IN_MS = 1400;
-const HOLD_MS = 3400;
-const FADE_OUT_MS = 1000;
-const GAP_MS = 700;
-// Longer hold for the multi-clause phrase #5 and the closing phrase #9.
-const LONG_HOLD_MS = 4200;
+type Clip = { src: string; poster: string; alt: string };
+
+const CLIPS: readonly Clip[] = [
+  {
+    src: "/video/real/azulejo-workshop.mp4",
+    poster: "/video/real/posters/azulejo-workshop.jpg",
+    alt: "Light on hand-painted tile",
+  },
+  {
+    src: "/video/real/vineyard-walk.mp4",
+    poster: "/video/real/posters/vineyard-walk.jpg",
+    alt: "Vineyard at golden hour",
+  },
+  {
+    src: "/video/real/friends-toast.mp4",
+    poster: "/video/real/posters/friends-toast.jpg",
+    alt: "A quiet toast among friends",
+  },
+  {
+    src: "/video/real/carrasqueira-pier.mp4",
+    poster: "/video/real/posters/carrasqueira-pier.jpg",
+    alt: "Wooden pier leading to the water",
+  },
+];
+
+const CLIP_HOLD_MS = 7000;       // each clip on screen
+const CLIP_FADE_MS = 1200;       // crossfade between clips
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Phrase pacing
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FADE_IN_MS = 1600;
+const HOLD_MS = 4000;
+const LONG_HOLD_MS = 4500;
+const FADE_OUT_MS = 1200;
+const GAP_MS = 800;
 const COMPOSE_GAP_MS = 1100;
 
-// Editorial alternating placements — anchor + alignment per phrase.
 type Anchor =
   | "top-left"
   | "top-right"
@@ -45,24 +71,19 @@ type Anchor =
   | "lower-right";
 
 const PHRASE_ANCHORS: readonly Anchor[] = [
-  "top-left",      // Portugal is the stage.
-  "center-left",   // You write your story.
-  "lower-right",   // Hidden chapters wait to unfold.
-  "center-right",  // Locals know where they begin.
-  "lower-left",    // You decide how to live it.
-  "center",        // A private day. A proposal. A celebration. A journey.
-  "top-right",     // Every story is different.
-  "center-left",   // So is yours.
-  "center",        // Portugal is waiting to be lived.
-  "lower-right",   // You just have to start writing.
+  "top-left",      // Portugal, slowly.
+  "center-left",   // Hidden chapters, written by those who live them.
+  "center",        // A private day. A celebration. A journey.
+  "lower-right",   // Yours to live.
+  "center",        // Begin writing.
 ];
 
 function anchorClasses(a: Anchor): string {
   switch (a) {
     case "top-left":
-      return "items-start justify-start text-left pt-[18vh] md:pt-[16vh] pl-2 md:pl-0";
+      return "items-start justify-start text-left pt-[20vh] md:pt-[18vh]";
     case "top-right":
-      return "items-start justify-end text-right pt-[18vh] md:pt-[16vh] pr-2 md:pr-0";
+      return "items-start justify-end text-right pt-[20vh] md:pt-[18vh]";
     case "center-left":
       return "items-center justify-start text-left";
     case "center":
@@ -70,29 +91,19 @@ function anchorClasses(a: Anchor): string {
     case "center-right":
       return "items-center justify-end text-right";
     case "lower-left":
-      return "items-end justify-start text-left pb-[24vh] md:pb-[22vh] pl-2 md:pl-0";
+      return "items-end justify-start text-left pb-[28vh] md:pb-[24vh]";
     case "lower-right":
-      return "items-end justify-end text-right pb-[24vh] md:pb-[22vh] pr-2 md:pr-0";
+      return "items-end justify-end text-right pb-[28vh] md:pb-[24vh]";
   }
 }
 
 function holdFor(i: number): number {
-  if (i === 5) return LONG_HOLD_MS;
-  if (i === HERO_PHRASES.length - 1) return LONG_HOLD_MS;
+  if (i === 1 || i === 2) return LONG_HOLD_MS;
   return HOLD_MS;
 }
 
 function beatFor(i: number): number {
   return FADE_IN_MS + holdFor(i) + FADE_OUT_MS;
-}
-
-function totalSequenceMs(): number {
-  let acc = 0;
-  for (let i = 0; i < HERO_PHRASES.length; i++) {
-    acc += beatFor(i);
-    if (i < HERO_PHRASES.length - 1) acc += GAP_MS;
-  }
-  return acc;
 }
 
 function prefersReducedMotion(): boolean {
@@ -118,26 +129,23 @@ function isHeroLastFlag(): boolean {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function CinematicHero() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
   const skipIntro = useMemo(
     () => isHeroLastFlag() || prefersReducedMotion(),
     [],
   );
 
-  // -1 = pre-roll; 0..N-1 = phrase showing; N = done → CTAs.
   const [phraseIndex, setPhraseIndex] = useState<number>(
     skipIntro ? HERO_PHRASES.length : -1,
   );
   const [composed, setComposed] = useState<boolean>(skipIntro);
+  const [clipIndex, setClipIndex] = useState<number>(0);
 
-  // Drive the sequence with one rAF-anchored timeline.
+  // Phrase sequence timeline
   useEffect(() => {
     if (skipIntro) return;
     let cancelled = false;
     const timers: number[] = [];
 
-    // Tiny initial breath so the film establishes mood first.
     const start = window.setTimeout(() => {
       if (cancelled) return;
       let t = 0;
@@ -166,73 +174,60 @@ export function CinematicHero() {
     };
   }, [skipIntro]);
 
-  // Video: muted autoplay, looped, low-priority. Failures are silent —
-  // poster stays visible underneath.
+  // Clip crossfade loop — independent of phrase sequence
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    v.playsInline = true;
-    const play = () => {
-      v.play().catch(() => {
-        /* autoplay blocked — poster remains */
-      });
-    };
-    if (v.readyState >= 2) play();
-    else v.addEventListener("loadeddata", play, { once: true });
-    return () => v.removeEventListener("loadeddata", play);
-  }, []);
+    if (skipIntro) return;
+    const id = window.setInterval(() => {
+      setClipIndex((i) => (i + 1) % CLIPS.length);
+    }, CLIP_HOLD_MS);
+    return () => window.clearInterval(id);
+  }, [skipIntro]);
 
   return (
     <section
       data-section="hero"
       aria-label="YES Experiences Portugal"
       className="relative w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
-      style={{
-        minHeight: "100svh",
-        height: "100svh",
-      }}
+      style={{ minHeight: "100svh", height: "100svh" }}
     >
-      {/* ── Background film ─────────────────────────────────────────── */}
+      {/* ── Crossfading film stack ──────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          poster="/video/real/posters/comporta-beach.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{
-            // Faint warm grade, slightly cinematic. No blur, no overlay UI.
-            filter: "saturate(0.94) contrast(1.03) brightness(0.84)",
-          }}
-        >
-          <source src="/video/real/comporta-beach.mp4" type="video/mp4" />
-        </video>
+        {CLIPS.map((clip, i) => (
+          <ClipLayer
+            key={clip.src}
+            clip={clip}
+            active={i === clipIndex}
+            fadeMs={CLIP_FADE_MS}
+          />
+        ))}
 
-
-        {/* Editorial scrim — single soft vignette, no gradient bands.
-           Lifted slightly stronger on mobile so any phrase placement
-           keeps AA contrast against the film. */}
+        {/* Editorial vignette — single soft radial, no overlay bands */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.42) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.46) 100%)",
           }}
         />
+        {/* Mobile lift for AA contrast on gold text */}
         <div
           aria-hidden="true"
           className="absolute inset-0 md:hidden"
-          style={{ background: "rgba(0,0,0,0.18)" }}
+          style={{ background: "rgba(0,0,0,0.16)" }}
+        />
+        {/* Subtle film grain (CSS only, ~4% opacity) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>\")",
+          }}
         />
       </div>
 
-      {/* ── Cinematic phrase stage ──────────────────────────────────── */}
+      {/* ── Phrase stage ────────────────────────────────────────────── */}
       <div
         className="absolute inset-0 z-10 px-6 sm:px-10 md:px-16 lg:px-24"
         aria-hidden={composed ? "true" : undefined}
@@ -249,7 +244,7 @@ export function CinematicHero() {
               )}`}
               style={{
                 opacity: isActive ? 1 : 0,
-                transform: isActive ? "translateY(0)" : "translateY(8px)",
+                transform: isActive ? "translateY(0)" : "translateY(6px)",
                 transition: `opacity ${
                   isActive ? FADE_IN_MS : FADE_OUT_MS
                 }ms cubic-bezier(0.22,0.61,0.36,1), transform ${
@@ -258,17 +253,18 @@ export function CinematicHero() {
               }}
             >
               <p
-                className="font-serif italic font-normal text-[color:var(--ivory,#FAF8F3)]"
+                className="font-serif italic font-normal"
                 style={{
                   fontFamily:
                     'Georgia, "Cormorant Garamond", "Newsreader", serif',
                   fontWeight: 400,
                   fontStyle: "italic",
-                  lineHeight: 1.18,
+                  lineHeight: 1.2,
                   letterSpacing: "-0.012em",
-                  textShadow: "0 1px 30px rgba(0,0,0,0.45)",
+                  color: "var(--gold, #C9A96A)",
+                  textShadow: "0 1px 24px rgba(0,0,0,0.55)",
                   maxWidth: "min(22ch, 92vw)",
-                  fontSize: "clamp(26px, 5.8vw, 64px)",
+                  fontSize: "clamp(28px, 5.4vw, 58px)",
                 }}
               >
                 {phrase}
@@ -290,13 +286,13 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        {/* Quiet eyebrow above the CTAs */}
         <span
           data-hero-field="eyebrow"
-          className="mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase text-[color:var(--ivory,#FAF8F3)]/65"
+          className="mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase"
           style={{
             letterSpacing: "0.34em",
             fontFamily: "Inter, system-ui, sans-serif",
+            color: "color-mix(in oklab, var(--gold, #C9A96A) 80%, transparent)",
           }}
         >
           {HERO_COPY.eyebrow}
@@ -318,11 +314,12 @@ export function CinematicHero() {
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] border border-[color:var(--ivory,#FAF8F3)]/35 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:border-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:text-[color:var(--gold,#C9A96A)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.28em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
+              border: "1px solid color-mix(in oklab, var(--gold, #C9A96A) 40%, transparent)",
             }}
           >
             Explore Experiences
@@ -376,6 +373,58 @@ export function CinematicHero() {
         }}
       />
     </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ClipLayer — single video element, fades opacity, lazy-plays
+// ─────────────────────────────────────────────────────────────────────────────
+
+function ClipLayer({
+  clip,
+  active,
+  fadeMs,
+}: {
+  clip: Clip;
+  active: boolean;
+  fadeMs: number;
+}) {
+  const ref = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = true;
+    v.playsInline = true;
+    if (active) {
+      v.play().catch(() => {
+        /* autoplay blocked — poster remains */
+      });
+    } else {
+      // Pause inactive clips to save battery / decode
+      try { v.pause(); } catch { /* noop */ }
+    }
+  }, [active]);
+
+  return (
+    <video
+      ref={ref}
+      poster={clip.poster}
+      autoPlay={active}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden="true"
+      className="absolute inset-0 h-full w-full object-cover"
+      style={{
+        opacity: active ? 1 : 0,
+        transition: `opacity ${fadeMs}ms cubic-bezier(0.22,0.61,0.36,1)`,
+        filter: "saturate(0.88) contrast(1.04) brightness(0.82)",
+      }}
+    >
+      <source src={clip.src} type="video/mp4" />
+    </video>
   );
 }
 
