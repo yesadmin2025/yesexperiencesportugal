@@ -12,6 +12,19 @@ export type Intention =
   | "wonder"
   | "wellness";
 export type Pace = "relaxed" | "balanced" | "full";
+export type JourneyType = "day" | "multi";
+
+/**
+ * Affinity profile — derived (not stored) from emotional selections.
+ * Used to subtly tint imagery, motion duration, microcopy and suggestion
+ * ranking. Each axis is normalised 0–1. Never surfaced as UI text.
+ */
+export interface AffinityProfile {
+  warmth: number;
+  depth: number;
+  energy: number;
+  intimacy: number;
+}
 
 export interface RoutedStopUI {
   key: string;
