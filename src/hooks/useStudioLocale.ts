@@ -181,7 +181,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeRestart: "Começar de novo",
     suggestionFallback: "um momento à tua espera",
     invitationWhisper: "Respira. Escolhe o que sentes — o resto desperta sozinho.",
-    awakeningCue: "Curating your day",
+    awakeningCue: "A compor o teu dia",
     loadingVerbs: {
       curating: "A compor o teu dia",
       shaping: "A dar forma ao ritmo",
