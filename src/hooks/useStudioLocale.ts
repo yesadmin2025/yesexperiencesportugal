@@ -72,8 +72,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "Respira. A história ainda nem começou.",
     ],
     fragments: ["vinho", "mar", "silêncio", "luz", "sal", "rota", "tasca", "pinhal"],
-    whisperInvite: "Sussurra a primeira palavra",
-    whisperHelper: "ou apenas observa, sem pressa",
+    whisperInvite: "Entrar devagar",
+    whisperHelper: "primeiro sente, depois escolhe",
     beginPill: "Começar a narrar",
     composerPlaceholders: [
       "fim-de-semana romântico, vinho e mar, sem pressa…",
@@ -151,8 +151,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "Breathe. The story hasn't begun.",
     ],
     fragments: ["wine", "sea", "silence", "light", "salt", "road", "table", "pines"],
-    whisperInvite: "Whisper your first word",
-    whisperHelper: "or just stay a moment, no rush",
+    whisperInvite: "Enter slowly",
+    whisperHelper: "first feel, then choose",
     beginPill: "Begin narrating",
     composerPlaceholders: [
       "a romantic weekend, wine and ocean, slow…",
@@ -230,8 +230,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "Respira. La historia aún no empezó.",
     ],
     fragments: ["vino", "mar", "silencio", "luz", "sal", "ruta", "mesa", "pinos"],
-    whisperInvite: "Susurra la primera palabra",
-    whisperHelper: "o quédate un momento, sin prisa",
+    whisperInvite: "Entrar despacio",
+    whisperHelper: "primero siente, luego elige",
     beginPill: "Empezar a narrar",
     composerPlaceholders: [
       "un fin de semana romántico, vino y mar, sin prisa…",
@@ -309,8 +309,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "Respire. L'histoire n'a pas commencé.",
     ],
     fragments: ["vin", "mer", "silence", "lumière", "sel", "route", "table", "pins"],
-    whisperInvite: "Murmure ton premier mot",
-    whisperHelper: "ou reste un instant, sans hâte",
+    whisperInvite: "Entrer lentement",
+    whisperHelper: "ressens d’abord, choisis ensuite",
     beginPill: "Commencer à raconter",
     composerPlaceholders: [
       "un week-end romantique, vin et océan, sans hâte…",
