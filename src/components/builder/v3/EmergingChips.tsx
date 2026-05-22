@@ -14,6 +14,7 @@ interface Props {
   acceptedKeys: string[];
   fallbackPhrase: string;
   addLabel: string;
+  cues?: { early: string; growing: string; settled: string };
   onAccept: (stop: StudioStop) => void;
 }
 
