@@ -113,7 +113,8 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 50%, oklch(0.15 0.02 240 / 0.35) 100%)",
+            "radial-gradient(ellipse at center, transparent 55%, oklch(0.15 0.02 240 / 0.22) 100%)",
+
         }}
       />
       {regionLabel && (
