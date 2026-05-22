@@ -145,7 +145,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Capítulo {n} de {total}",
     phaseSkip: "saltar",
     phaseBack: "voltar",
-    phaseComplete: "A tua viagem já tem alma.",
+    phaseComplete: "O teu dia já tem o seu ritmo.",
     moodOptions: [
       { value: "romantic", label: "Romântico" },
       { value: "slow", label: "Calmo" },
@@ -265,7 +265,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Chapter {n} of {total}",
     phaseSkip: "skip",
     phaseBack: "back",
-    phaseComplete: "Your journey has a soul now.",
+    phaseComplete: "Your day has its rhythm now.",
     moodOptions: [
       { value: "romantic", label: "Romantic" },
       { value: "slow", label: "Calm" },
@@ -385,7 +385,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Capítulo {n} de {total}",
     phaseSkip: "saltar",
     phaseBack: "volver",
-    phaseComplete: "Tu viaje ya tiene alma.",
+    phaseComplete: "Tu día ya tiene su ritmo.",
     moodOptions: [
       { value: "romantic", label: "Romántico" },
       { value: "slow", label: "Calmado" },
@@ -505,7 +505,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     phaseStepLabel: "Chapitre {n} sur {total}",
     phaseSkip: "passer",
     phaseBack: "retour",
-    phaseComplete: "Ton voyage a déjà une âme.",
+    phaseComplete: "Ta journée a trouvé son rythme.",
     moodOptions: [
       { value: "romantic", label: "Romantique" },
       { value: "slow", label: "Calme" },
