@@ -320,6 +320,18 @@ export function StudioDrift({ onExit }: Props) {
     return map;
   }, [leans]);
 
+  /** Live human-presence profile — observed moments the traveller lingered on. */
+  const humanProfile = useMemo(() => {
+    const map = new Map<HumanTag, number>();
+    for (const l of leans) {
+      const weight = l.phase === 3 ? 2.4 : l.phase === 2 ? 1.6 : 1;
+      for (const h of l.scene.human) {
+        map.set(h, (map.get(h) ?? 0) + weight);
+      }
+    }
+    return map;
+  }, [leans]);
+
   const clearSceneTimers = useCallback(() => {
     if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
     if (leanTimerRef.current) window.clearTimeout(leanTimerRef.current);
