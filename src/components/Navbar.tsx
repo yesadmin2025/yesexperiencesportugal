@@ -81,27 +81,28 @@ export function Navbar() {
             aria-label="YES experiences PORTUGAL — Home"
           >
             <span className="relative inline-block h-[58px] md:h-[64px] lg:h-[70px]">
+              {/* Single full logo — always rendered, never resizes. The "YES" script
+                  stays in the exact same position and size in both states. */}
+              <Logo
+                theme="teal-on-ivory"
+                fetchPriority="high"
+                className="block h-full w-auto select-none"
+              />
+              {/* Ivory veil — covers the "experiences PORTUGAL" lower portion of the
+                  lockup when at the top of the hero. Fades out on scroll to reveal
+                  the full brand. Soft top edge so the descenders of YES are not
+                  clipped abruptly. */}
               <span
-                className="relative block h-full transition-opacity duration-[900ms] ease-out"
-                style={{ opacity: showMarkOnly ? 0 : 1 }}
-                aria-hidden={showMarkOnly ? "true" : undefined}
-              >
-                <Logo
-                  theme="teal-on-ivory"
-                  fetchPriority="high"
-                  className="block h-full w-auto select-none"
-                />
-              </span>
-              <span
-                className="pointer-events-none absolute inset-y-0 left-0 block h-full transition-opacity duration-[900ms] ease-out"
-                style={{ opacity: showMarkOnly ? 1 : 0 }}
-                aria-hidden={showMarkOnly ? undefined : "true"}
-              >
-                <YesMark
-                  ariaLabel="YES"
-                  className="block h-full w-auto select-none"
-                />
-              </span>
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
+                style={{
+                  top: "46%",
+                  bottom: 0,
+                  background:
+                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.85) 8%, rgb(247,243,236) 16%)",
+                  opacity: showMarkOnly ? 1 : 0,
+                }}
+              />
             </span>
           </Link>
 
