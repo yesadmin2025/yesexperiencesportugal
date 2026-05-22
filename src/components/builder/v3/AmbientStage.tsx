@@ -47,7 +47,7 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
     return () => window.clearTimeout(t);
   }, [mood, currentMood]);
 
-  const veilOpacity = veil === "light" ? 0.25 : veil === "deep" ? 0.55 : 0.4;
+  const veilOpacity = veil === "light" ? 0.16 : veil === "deep" ? 0.38 : 0.26;
 
   return (
     <div
