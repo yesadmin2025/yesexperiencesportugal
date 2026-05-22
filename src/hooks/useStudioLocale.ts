@@ -309,7 +309,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     },
     conciergeTitle: "Journeys like this are shaped by hand.",
     conciergeSub: "A private designer takes what you've shared and composes the days with you.",
-    conciergeBegin: "Begin with a designer",
+    conciergeBegin: "Continue in private",
     conciergeBack: "Build a single day instead",
     conciergeTrust: "Hand-composed · Private call · No template itineraries",
     guidedCue: "This feels right next.",
