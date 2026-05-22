@@ -1,72 +1,128 @@
-# Experience Studio v2 — Fullscreen, AI-Assisted, Conversational
+# Experience Studio v3 — Living Atmosphere
 
-Aprofunda o plano original (já em curso, Fase 1 entregue) com três eixos que escolheste: **fullscreen imersivo total**, **IA com recomendações silenciosas** e **fluxo conversacional narrado**. Tudo respeita as regras canónicas: zero stops/preços inventados, mobile-first, tokens da marca, motion ≤220ms fora da home.
+Reescrita do `/builder` como uma **única cena cinematográfica contínua**, sem stepper, sem cards, sem noção de "passo". O utilizador narra, a IA interpreta, o mundo (imagery + mapa + rota) emerge organicamente. Stepper técnico, ElementsShelf, ChoicesGrid, RegionSelector, ReviewScreen — tudo desaparece como UI primária e é substituído por uma camada conversacional + overlays atmosféricos contextuais.
 
----
-
-## Eixo A — Fullscreen Cinematic Shell (evolui Fase 1+2)
-
-Objetivo: o builder deixa de viver dentro de `SiteLayout` e passa a ser um palco contínuo.
-
-- Novo `BuilderStage` (100dvh, ivory base, sem header/footer do site dentro do flow). Navbar minimal flutua por cima, fundo transparente, dissolve no topo.
-- **Mapa persistente como camada de fundo** (40vh mobile sticky, split 50/50 tablet+). Já não fecha entre passos.
-- Transições cena-a-cena: cross-fade + translateY 14px (≤220ms), com `TRANSITION_MICROCOPY` em Georgia italic entre cenas (600ms).
-- Timeline editorial substitui o stepper numérico (tick gold + label do capítulo).
-- Mapa narrativo: `flyTo` ≤700ms a cada escolha, pins editoriais (ivory + borda gold), route draw segmento-a-segmento, ghost da sugestão AI em gold tracejado.
-- Mobile: mapa colapsa para 32vh com handle drag até 70vh (substitui modal atual).
-
-Ficheiros: novo `src/components/builder/BuilderStage.tsx`, evoluir `BuilderMap.tsx`, `BuilderProgressMeter.tsx`, `StickyBar.tsx`.
+Stack: zero novas dependências. Reutiliza `parseNarrative`, `suggestFromIntent`, `suggestPacing`, `BuilderMap`, `useBuilderPersistence`, `builder_stops`, `createJourney`, `ShareExport`. Brand guardrails mantidos (Montserrat / Georgia italic / Inter, tokens ivory/teal/gold/charcoal, motion ≤220ms fora da home — aqui aplicamos o mesmo critério editorial: fades suaves, sem parallax/blob/spring).
 
 ---
 
-## Eixo B — IA Silenciosa Aplicada a Tudo
+## Estrutura nova (3 camadas sobrepostas, fullscreen 100dvh)
 
-A IA já existe para `intent` (`builderIntent.functions.ts`). Estendemos sem nova UI ruidosa.
+```text
+┌─────────────────────────────────────────────────┐
+│  Layer 0 — AMBIENT STAGE (cena de fundo)        │
+│   imagem/vídeo real reativo a mood+region       │
+│   crossfade 600ms quando contexto muda          │
+│   ── ── ── ── ── ── ── ── ── ── ── ── ── ──    │
+│  Layer 1 — LIVING MAP (revela-se)               │
+│   começa hidden (opacity 0)                     │
+│   fade-in + grow ao 1º stop confirmado          │
+│   ocupa 55% direito em ≥md, 45vh bottom mobile  │
+│   pins+rota desenham-se progressivamente        │
+│   ── ── ── ── ── ── ── ── ── ── ── ── ── ──    │
+│  Layer 2 — NARRATIVE VEIL (UI principal)        │
+│   - chapter line (Georgia italic, top-left)     │
+│   - composer (input narrativo, bottom)          │
+│   - emerging chips (escolhas reais, inline)     │
+│   - itinerary ribbon (lado, scroll vertical)    │
+└─────────────────────────────────────────────────┘
+```
 
-- Nova server fn `suggestPacing` (Lovable AI Gateway, `google/gemini-3-flash-preview`, tool-calling): recebe stops escolhidos + pace + who → devolve ordem ótima e aviso editorial se o ritmo está apertado (≤90 chars). Nunca inventa stops.
-- Nova server fn `suggestNextStops`: 2–3 sugestões reais da base `builder_stops` filtradas por região/tags/`compatible_with`, com micro-rationale.
-- UI silenciosa:
-  - chip "Sugestão" acima do `ElementsShelf` (ivory + borda gold, 1 linha).
-  - Banner discreto no topo do itinerário com aviso de pacing ("ritmo apertado — considera tirar uma paragem").
-- Telemetria reutiliza `builder_events` (`ai_suggest_shown`, `ai_suggest_accepted`, `ai_pacing_warning_shown`).
-- Rate limit via `builder_rate_limits` (já existe). Fallback determinístico se a IA falhar.
-
-Sem nova tabela. Sem chat. Sem inventar.
-
----
-
-## Eixo C — Fluxo Conversacional Narrado (camada opcional sobre o stepper)
-
-Mantém o stepper técnico mas adiciona um modo "narrativa" — o utilizador descreve em texto livre e o builder pré-preenche escolhas.
-
-- Novo passo inicial opcional: **"Conta-me em uma frase"** (textarea ivory, placeholder editorial). O utilizador escreve "fim-de-semana romântico, vinho e mar, sem pressa".
-- Server fn `parseNarrative` (nova, em `src/server/builderNarrative.functions.ts`):
-  - Input: texto livre (≤500 chars).
-  - Chama Lovable AI com tool-calling estruturado → devolve `{mood, pace, who, intentions, regionHint}` (apenas valores válidos dos enums).
-  - Output validado por Zod, nunca aceita valores fora dos enums.
-- UI: depois de parse, o builder salta para o passo Region/Stops com tudo pré-selecionado e um chip "Ajustado a partir da tua história" (gold, dismissible).
-- Skip permitido: utilizador pode ignorar e ir direto ao stepper clássico.
-- A narrativa também alimenta `suggestFromIntent` (já existe) para ranking inicial dos stops.
-
-Sem chat contínuo. É um único momento de input narrativo que acelera o stepper.
+Nada de "Step 1/2/3". Nada de cards. Nada de SiteLayout. Só uma cena que evolui.
 
 ---
 
-## Ordem de execução (faseada)
+## Fluxo emocional (sem passos visíveis)
 
-1. **Fase 2 (em curso) — Mapa narrativo + Stage fullscreen** (Eixo A). Maior impacto visual imediato.
-2. **Fase 3 — IA silenciosa estendida** (Eixo B). Backend + chips discretos.
-3. **Fase 4 — Modo narrativa** (Eixo C). Passo opcional + parse server fn.
-4. **Fase 5 — Storytelling progression + refactor `useBuilderFlow`** (já no plano original).
+1. **Abertura — Cena ambiente**
+   Vídeo real (reutiliza `/video/real/scene-imagine.mp4` ou poster) em fullscreen, overlay charcoal 35%, frase Georgia italic centrada: *"Conta-me esta viagem…"*. Sub-linha Inter discreta: "narra em voz alta, escreve, ou deixa-me começar por ti". Sem botões salientes. Tap em qualquer sítio → composer aparece de baixo (slide-up 220ms).
 
-Cada fase é mergível isoladamente. Confirma para arrancar a Fase 2.
+2. **Narrativa livre**
+   Composer ivory translúcido, textarea Georgia italic placeholder rotativo ("fim-de-semana romântico, vinho e mar…" / "um dia para celebrar com a família…"). Mic icon (Web Speech API se disponível, fallback silencioso). Enter → chama `parseNarrative`.
+
+3. **O mundo desperta**
+   Após parse: cena de fundo crossfade para imagem real da região sugerida. Chapter line aparece no topo: *"Uma história lenta no Douro, para dois."* (gerada da IA, tone-only). Composer encolhe para pill no canto.
+
+4. **Stops emergem**
+   `suggestFromIntent` devolve 2-3 stops reais. Em vez de cards numa shelf, aparecem como **emerging chips** flutuantes sobre a cena (ivory + borda gold, micro-rationale Georgia italic abaixo). Tap → chip "aterra" na itinerary ribbon (lateral direita, vertical, Georgia italic numbered) e o mapa **revela-se pela primeira vez** (fade-in 700ms + flyTo). Cada novo stop: pin desenha-se, rota anima segmento.
+
+5. **Diálogo contínuo**
+   Composer permanece sempre acessível como pill bottom-right. Cada nova frase do utilizador ("mais devagar", "adiciona algo ao pôr-do-sol", "tira o último") → IA re-interpreta, mundo reage: chips removidos com fade-out, novos chips emergem, mapa reanima. Sem confirmações modais.
+
+6. **Sussurros da IA (pacing/sugestões)**
+   `suggestPacing` corre em background a cada mudança. Se houver aviso → aparece como **whisper line** Georgia italic fade-in/out 4s no topo da ribbon ("o ritmo está apertado — queres respirar?"). Não é card, não é modal, não bloqueia.
+
+7. **Fecho — Memória**
+   Quando o utilizador disser "estou pronto" / "guarda" / clicar no pill discreto "Guardar esta história" → cena escurece, ribbon expande para centro como **carta editorial** (Georgia italic título, lista de stops, sussurro final). Ações: copiar link / PDF / WhatsApp (reutiliza `ShareExport`). Sem "review screen".
 
 ---
 
-## Fora de scope (mantém-se)
+## Componentes novos
 
-- Homepage / hero / navbar — não tocar.
-- Chat AI visível ou copiloto conversacional contínuo.
-- Novos stops, regiões, preços, parceiros.
-- Substituir Mapbox/Leaflet.
-- Mudar checkout ou booking truth model.
+| Componente | Ficheiro | Função |
+|---|---|---|
+| `AmbientStage` | `src/components/builder/v3/AmbientStage.tsx` | Layer 0: vídeo/imagem fullscreen reativa a mood+region, crossfade 600ms |
+| `NarrativeComposer` | `src/components/builder/v3/NarrativeComposer.tsx` | Layer 2: input narrativo, mic, placeholder rotativo, estados (idle/listening/parsing) |
+| `ChapterLine` | `src/components/builder/v3/ChapterLine.tsx` | Georgia italic top-left, gerada da IA |
+| `EmergingChips` | `src/components/builder/v3/EmergingChips.tsx` | Sugestões flutuantes (não cards), fade-in escalonado |
+| `ItineraryRibbon` | `src/components/builder/v3/ItineraryRibbon.tsx` | Lista vertical lateral, Georgia italic numbered, drag-to-reorder, swipe-to-remove |
+| `WhisperLayer` | `src/components/builder/v3/WhisperLayer.tsx` | Sussurros transitórios da IA (pacing, sugestões), fade in/out |
+| `LivingMap` | `src/components/builder/v3/LivingMap.tsx` | Wrapper sobre `BuilderMap` com revelação progressiva (hidden → fade-in ao 1º stop) |
+| `MemoryCard` | `src/components/builder/v3/MemoryCard.tsx` | Cena final editorial + share/export |
+| `useStudioState` | `src/hooks/useStudioState.ts` | Estado unificado (mood/who/intention/pace/region/stops/narrative/chapter), substitui `useBuilderFlow` no v3 |
+
+`BuilderMap`, `parseNarrative`, `suggestFromIntent`, `suggestPacing`, `createJourney`, `ShareExport`, `useBuilderPersistence` — **reutilizados sem alterações**.
+
+---
+
+## Server functions
+
+Uma nova, leve, tone-only:
+
+- `generateChapter` (`src/server/builderChapter.functions.ts`) — recebe `{mood, who, intention, region, stopLabels}` → devolve 1 linha Georgia italic ≤80 chars em PT-PT (chapter line + sussurro final). Lovable AI `google/gemini-3-flash-preview`. Fallback determinístico. Nunca inventa stops/regiões.
+
+As outras (`parseNarrative`, `suggestFromIntent`, `suggestPacing`) já existem.
+
+---
+
+## Rota
+
+`src/routes/builder.tsx` — substituído por shell mínimo que monta `<StudioStageV3 />`. Toda a árvore antiga (`ChoicesGrid`, `ElementsShelf`, `StickyBar`, `BuilderProgressMeter`, `ReviewScreen`, `NarrativeCompanion`, `NarrativeIntro`, `PacingChip`) deixa de ser montada — ficheiros preservados no repo por enquanto (não apagados) para permitir rollback rápido. Adicionamos flag `?legacy=1` que monta a versão antiga (escape hatch durante teste).
+
+`/i/$token` (landing partilhável) — mantido como está.
+
+---
+
+## Motion & A11y
+
+- Todas as transições ≤300ms (cena), ≤220ms (UI). Crossfade da Layer 0 = 600ms (atmosférico, permitido).
+- `prefers-reduced-motion`: desliga crossfades, route draw, fade-in do mapa (aparece imediatamente). Tudo continua funcional.
+- Contraste: overlay charcoal 35-45% sobre vídeo garante 4.5:1 para Georgia italic ivory.
+- Teclado: composer focável por defeito; Tab navega chips → ribbon → composer; Esc fecha overlays.
+- Screen reader: `aria-live="polite"` na chapter line e whisper layer; ribbon como `<ol>`.
+- Mobile-first (393×587 viewport do utilizador): composer ocupa bottom 30vh expandível, ribbon vira drawer inferior arrastável, mapa 40vh quando revelado.
+
+---
+
+## Ordem de implementação
+
+1. `useStudioState` + `builderChapter.functions.ts`
+2. `AmbientStage` + `NarrativeComposer` + `ChapterLine` (cena de abertura funcional)
+3. `EmergingChips` + `LivingMap` (mundo desperta)
+4. `ItineraryRibbon` + `WhisperLayer` (diálogo contínuo)
+5. `MemoryCard` + integração `ShareExport`
+6. Substituir `builder.tsx` por `StudioStageV3` + flag `?legacy=1`
+
+Cada passo mergível e testável isoladamente no viewport mobile.
+
+---
+
+## Fora de scope
+
+- Apagar componentes v1/v2 (ficam dormentes, removemos só após validação).
+- Mudar `parseNarrative`/`suggestFromIntent`/dados de `builder_stops`.
+- Voice-to-text avançado além de Web Speech API nativa.
+- Homepage, navbar, Signature, Tailored, Proposals — intocados.
+- Inventar stops, preços, partners ou copy de marketing. IA = tone only.
+
+Confirma para começar pelo passo 1.
