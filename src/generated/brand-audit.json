@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T02:38:26.416Z",
+  "generatedAt": "2026-05-22T02:46:39.044Z",
   "filesScanned": 205,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 199,
-    "approved": 48,
+    "total": 192,
+    "approved": 41,
     "allowlisted": 25,
     "mismatch": 126
   },
@@ -683,101 +683,38 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 59,
-      "col": 57,
+      "line": 40,
+      "col": 293,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "? \"inline-flex items-center text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300 rounded-sm focus-visible:",
+      "snippet": "\"inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 59,
-      "col": 99,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "? \"inline-flex items-center text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300 rounded-sm focus-visible:",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 59,
-      "col": 236,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "? \"inline-flex items-center text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300 rounded-sm focus-visible:",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 63,
-      "col": 92,
+      "line": 43,
+      "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "? \"lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors rou",
+      "snippet": "\"lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-vi",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 63,
-      "col": 134,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "? \"lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors rou",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 63,
-      "col": 260,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "? \"lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors rou",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 72,
-      "col": 175,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "className=\"relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gol",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 108,
-      "col": 47,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "? \"text-[color:var(--gold,#C9A96A)]\"",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 118,
-      "col": 149,
+      "line": 54,
+      "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"ml-2 inline-flex items-center justify-center px-5 py-2.5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory,#FAF8F3)] hover:text-[color:",
+      "snippet": "className=\"relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--tea",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 118,
-      "col": 188,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "className=\"ml-2 inline-flex items-center justify-center px-5 py-2.5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory,#FAF8F3)] hover:text-[color:",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/Navbar.tsx",
-      "line": 120,
-      "col": 70,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "border: \"1px solid color-mix(in oklab, var(--gold, #C9A96A) 45%, transparent)\",",
+      "line": 111,
+      "col": 317,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
       "status": "approved"
     },
     {
