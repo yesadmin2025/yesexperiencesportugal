@@ -83,7 +83,7 @@ export function Navbar() {
             <span className="relative inline-flex h-[54px] md:h-[58px] lg:h-[62px] w-[86px] md:w-[92px] lg:w-[98px] items-start translate-y-[4px] md:translate-y-[6px] lg:translate-y-[7px]">
               <span
                 aria-hidden={!showMarkOnly}
-                className={`absolute left-0 top-0 block h-[37px] md:h-[40px] lg:h-[43px] w-full overflow-hidden transition-opacity duration-[650ms] ease-out ${
+                className={`absolute left-0 top-0 block h-[36px] md:h-[38px] lg:h-[41px] w-full overflow-hidden transition-opacity duration-[650ms] ease-out ${
                   showMarkOnly ? "opacity-100" : "opacity-0"
                 }`}
               >
