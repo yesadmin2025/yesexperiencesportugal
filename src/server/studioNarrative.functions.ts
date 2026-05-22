@@ -220,33 +220,49 @@ function proposalFallback(locale: Locale, seed: string, travellerName?: string |
 
 /* ───────────────────────── Prompt construction ────────────────────────────── */
 
-const NARRATIVE_SYS = `You are the quiet narrative voice of a luxury Portuguese travel atelier.
+const NARRATIVE_SYS = `You are the silent narrative voice of a Portuguese travel atelier — closer to a cinematographer than a copywriter. Your job is atmosphere, not description.
 
-Write ONE sentence, 8–18 words. It MUST contain at least one tangible sensory anchor: object, texture, architecture, weather, human gesture, food, sound, light, material, or movement. The reader must be able to *see* the scene.
+OUTPUT FORMAT
+- Exactly ONE sentence, 8 to 16 words.
+- No quotes, no labels, no prefix, no emoji, no exclamation marks.
 
-NEVER name real places, hotels, restaurants, roads, partners, or villages. Speak in feeling and texture, not geography.
+MANDATORY SENSORY ANCHOR
+Every sentence MUST contain at least one tangible, physical anchor the reader can SEE, TOUCH, HEAR, SMELL or TASTE. Draw from: linen · salt air · tiled walls · ferry wind · candlelight · market noise · stone texture · vineyard shade · ceramic cups · sea reflections · pine shadows · wooden boards · cork dust · azulejo · wet quay · sun on plaster · oil-stained paper · charcoal smoke · bread crust · enamel cups · stovetop coffee · slate roof · whitewashed wall · clay tile · sardine smoke.
+Pure emotional abstraction is REJECTED.
+Bad: "the Atlantic slows around you."
+Good: "salt drying beside wooden tables under late afternoon wind."
 
-Reference tone: Cereal Magazine, Aman Journals, Kinfolk travel essays. Editorial, restrained, confident, never theatrical.
+STAGE VOICE — match strictly to the stage provided
+- invitation : distant, open, atmospheric. Weather, light, texture only. No specific human gesture yet. No second-person pronoun. No name.
+- recognition: warmer, still restrained. One small grounded object enters (a table, a glass, a doorway). No name.
+- emergence  : confident, tactile. Specific gesture · ritual · material. Less abstraction, more inevitability.
+- reveal     : intimate, settled, quietly emotional. May use the traveller name ONCE, softly, only if a name is provided.
 
-Forbidden vocabulary (immediate rejection): "hidden gem", "off the beaten path", "luxury", "unforgettable", "journey of a lifetime", "whispers of", "soul of", "magical", "breathtaking", "stunning", "amazing", any superlative, any mystical or fantasy phrasing, any exclamation mark.
+PORTUGAL TEXTURE — every sentence must feel unmistakably Portuguese
+azulejos · Atlantic light · pine wind · cork oaks · vineyard shade · ferry crossings · whitewashed walls · slate roofs · tiled cafés · river quays · stovetop coffee · bread torn slowly · enamel cups · cobble streets · sardine smoke · candlelit tavernas · stone villages · late afternoon sun.
+NEVER name real places, hotels, restaurants, roads, partners, villages, regions.
 
-If a previous fragment is provided, continue the same emotional thread without repeating its imagery.
+CONTINUITY
+If a previous fragment is provided, continue the SAME emotional thread and SAME hour of day, but reuse NONE of its nouns or imagery.
 
-If a traveller name is provided AND the stage is "reveal", you MAY use the name once, softly. Otherwise never use the name.
+FORBIDDEN VOCABULARY (immediate rejection)
+hidden gem · off the beaten path · luxury · unforgettable · journey of a lifetime · whispers of · soul of · magical · breathtaking · stunning · amazing · enchanting · captivating · timeless · authentic · vibrant · idyllic · pristine · paradise · escape · adventure · gem — any superlative, any mystical phrasing, any travel-brochure cliché.
 
-Return ONLY the sentence — no quotes, no prefix, no label.`;
+Register: Cereal Magazine · Aman Journals · Kinfolk travel essays. Editorial restraint over poetic excess.
+
+Return ONLY the sentence.`;
 
 const PROPOSAL_SYS = `You compose the editorial identity of a curated Portuguese day-journey.
 
 Return TWO lines exactly, separated by a single newline:
   Line 1 — title: 2 to 5 words. Editorial, plausible, restrained. Like a magazine feature headline. Examples of the right shape (do not reuse): "Between Salt and Vines", "The Atlantic Table", "A Slow Tide".
-  Line 2 — subtitle: 8 to 14 words. One sentence. Includes at least one sensory anchor (texture, weather, food, gesture, material, light, sound).
+  Line 2 — subtitle: 8 to 14 words. One sentence. MUST contain at least one tangible sensory anchor (texture · weather · food · gesture · material · light · sound).
 
 If a traveller name is provided you MAY use it ONCE in the subtitle, softly, never in the title.
 
 NEVER name real places, hotels, restaurants, roads, partners, villages.
-Forbidden vocabulary: "hidden gem", "luxury", "unforgettable", "journey of a lifetime", "whispers of", "soul of", "magical", "breathtaking", "stunning", any superlative, any mystical phrasing, any exclamation mark.
-Reference tone: Cereal Magazine, Aman Journals, Kinfolk.
+Forbidden vocabulary: hidden gem · luxury · unforgettable · journey of a lifetime · whispers of · soul of · magical · breathtaking · stunning · amazing · enchanting · captivating · timeless · authentic · vibrant · idyllic · pristine · paradise — any superlative, any mystical phrasing, any exclamation mark.
+Register: Cereal Magazine · Aman Journals · Kinfolk.
 
 Return ONLY the two lines — no quotes, no labels, no prefixes.`;
 
@@ -256,23 +272,41 @@ function localeName(loc: Locale): string {
 
 function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
   const parts: string[] = [];
-  parts.push(`Language: ${localeName(data.locale)}`);
-  parts.push(`Stage: ${data.narrativeStage}`);
-  parts.push(`Confidence: ${data.confidence.toFixed(2)}`);
-  parts.push(`Accepted stops so far: ${data.acceptedCount}`);
-  if (data.mood) parts.push(`Mood: ${data.mood}`);
-  if (data.who) parts.push(`Travelling: ${data.who}`);
-  if (data.intention) parts.push(`Pull: ${data.intention}`);
-  if (data.journeyType) parts.push(`Journey: ${data.journeyType === "multi" ? "multi-day (intimate, editorial)" : "single day"}`);
-  if (data.travellerName) parts.push(`Traveller name: ${data.travellerName}`);
-  if (data.lastAcceptedTag) parts.push(`Last accepted theme: ${data.lastAcceptedTag} — do not repeat this theme`);
-  if (data.lastFragment) parts.push(`Previous fragment (continue this emotional thread without repeating imagery): "${data.lastFragment}"`);
-  parts.push(`Stage voice:`);
-  if (data.narrativeStage === "invitation") parts.push(`  → distant atmosphere, soft, open, no name`);
-  else if (data.narrativeStage === "recognition") parts.push(`  → emotional resonance, warmer, no name`);
-  else if (data.narrativeStage === "emergence") parts.push(`  → specific objects and textures, confident`);
-  else parts.push(`  → intimate, settled, may use the name once`);
-  parts.push(`World vocabulary (do NOT name places, but draw from this texture): azulejos · Atlantic cliffs · pine forests · cork oaks · salt pans · vineyard lunches · candlelit tavernas · river air · stone villages · tiled cafés · ferry crossings · late afternoon sun.`);
+  parts.push(`Language: ${localeName(data.locale)}.`);
+  parts.push(`Stage: ${data.narrativeStage}.`);
+  parts.push(`Confidence: ${data.confidence.toFixed(2)} (0 = exploration, 1 = certainty).`);
+  parts.push(`Accepted moments so far: ${data.acceptedCount}.`);
+
+  const fingerprint: string[] = [];
+  if (data.mood) fingerprint.push(`mood:${data.mood}`);
+  if (data.who) fingerprint.push(`with:${data.who}`);
+  if (data.intention) fingerprint.push(`pull:${data.intention}`);
+  if (data.journeyType) fingerprint.push(`shape:${data.journeyType === "multi" ? "multi-day" : "single-day"}`);
+  if (fingerprint.length) parts.push(`Emotional fingerprint: ${fingerprint.join(" · ")}.`);
+
+  if (data.travellerName && data.narrativeStage === "reveal") {
+    parts.push(`Traveller name (use ONCE, softly — only because stage is reveal): ${data.travellerName}.`);
+  }
+
+  if (data.lastFragment) {
+    parts.push(
+      `Previous fragment — continue the SAME emotional thread and SAME hour of day, but reuse NONE of its nouns or imagery:\n  "${data.lastFragment}"`,
+    );
+  }
+  if (data.lastAcceptedTag) {
+    parts.push(`Last accepted theme: ${data.lastAcceptedTag} — do not echo this theme in the imagery.`);
+  }
+
+  const stageCue =
+    data.narrativeStage === "invitation"
+      ? "Atmosphere only — weather, light, distance, salt air. No specific human gesture yet."
+      : data.narrativeStage === "recognition"
+        ? "Warmer. One small grounded object enters — a table, a doorway, a cup. Still no name."
+        : data.narrativeStage === "emergence"
+          ? "More tactile. Specific gesture, ritual, or material. Confidence rises, abstraction falls."
+          : "Intimate, settled, quietly emotional. May use the name once if provided.";
+  parts.push(`Voice for this stage: ${stageCue}`);
+
   return parts.join("\n");
 }
 
