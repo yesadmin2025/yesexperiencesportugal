@@ -36,6 +36,46 @@ export function MultiDayConcierge({ t, mood, who, intention, onBack }: Props) {
   const intentionLabel = labelFor(t.intentionOptions, intention);
   const chips = [moodLabel, whoLabel, intentionLabel].filter(Boolean) as string[];
 
+  const sessionId = useBuilderSessionId();
+  const { locale } = useStudioLocale();
+  const composeFn = useServerFn(composeStudioMoment);
+  const [editorLine, setEditorLine] = useState<string | null>(null);
+  const firedRef = useRef(false);
+
+  /* Private-editor voice — single quiet AI line under the title. Fires
+     once per mount, never repeats. Reduced-motion users see fallback copy. */
+  useEffect(() => {
+    if (!sessionId || firedRef.current) return;
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+    firedRef.current = true;
+    let cancelled = false;
+    composeFn({
+      data: {
+        sessionId,
+        mode: "narrative",
+        locale,
+        mood,
+        who,
+        intention,
+        journeyType: "multi",
+        narrativeStage: "recognition",
+        confidence: 0.7,
+        acceptedCount: 0,
+      },
+    })
+      .then((r) => {
+        if (cancelled) return;
+        if (r.mode === "narrative" && r.fragment) setEditorLine(r.fragment);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, locale, mood, who, intention, composeFn]);
+
   const waText = encodeURIComponent(
     `Olá! Quero desenhar uma viagem de vários dias em Portugal.\n` +
       chips.map((c) => `• ${c}`).join("\n"),
