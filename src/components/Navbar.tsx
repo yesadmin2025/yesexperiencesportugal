@@ -28,12 +28,9 @@ const mobileLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
 
-  // Single editorial mode — warm ivory glass, teal logo, charcoal links.
+  // Solid ivory editorial bar — soft atmospheric fade dissolves into hero below.
   const headerStyle: React.CSSProperties = {
-    background: "rgba(247, 243, 236, 0.82)",
-    backdropFilter: "blur(14px) saturate(1.05)",
-    WebkitBackdropFilter: "blur(14px) saturate(1.05)",
-    borderBottom: "1px solid rgba(46, 46, 46, 0.06)",
+    background: "rgb(247, 243, 236)",
   };
 
   const linkClass =
@@ -47,6 +44,15 @@ export function Navbar() {
       className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
       style={headerStyle}
     >
+      {/* Soft atmospheric dissolve — ivory fades into hero footage, no hard edge */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[64px]"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(247,243,236,0.85) 0%, rgba(247,243,236,0.55) 28%, rgba(247,243,236,0.28) 55%, rgba(247,243,236,0.10) 78%, rgba(247,243,236,0) 100%)",
+        }}
+      />
       <div className="container-x">
         <div className="flex items-center justify-between h-[76px] md:h-[88px] lg:h-[96px]">
           <Link
