@@ -284,6 +284,13 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           patch({
             proposal: { title: r.title, subtitle: r.subtitle, generatedAt: Date.now() },
           });
+          if (import.meta.env.DEV) {
+            console.debug("[studio.proposal]", {
+              title: r.title,
+              subtitle: r.subtitle,
+              source: r.source,
+            });
+          }
         }
       })
       .catch(() => {});
