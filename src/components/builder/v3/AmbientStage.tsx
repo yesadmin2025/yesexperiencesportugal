@@ -82,7 +82,8 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
           playsInline
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] motion-reduce:transition-none"
-          style={{ opacity: 0.58, filter: "saturate(0.82) contrast(1.02) brightness(0.86)" }}
+          style={{ opacity: 0.72, filter: "saturate(0.92) contrast(1.02) brightness(0.92)" }}
+
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
