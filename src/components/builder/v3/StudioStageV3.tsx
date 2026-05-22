@@ -94,7 +94,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const lastChapterReqRef = useRef<string>("");
   /** Session AI budget — at most 4 composeStudioMoment calls per session. */
   const aiBudgetRef = useRef<number>(0);
-  const narrativeFiredAtRef = useRef<number>(-1);
+  /** Stages that have already fired their narrative beat — fires once each. */
+  const firedStagesRef = useRef<Set<string>>(new Set());
+
 
   /* ── Load region catalog ── */
   useEffect(() => {
