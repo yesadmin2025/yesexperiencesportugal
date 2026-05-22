@@ -59,7 +59,7 @@ const HOLD_MS = 4000;
 const LONG_HOLD_MS = 4500;
 const FADE_OUT_MS = 1200;
 const GAP_MS = 800;
-const COMPOSE_GAP_MS = 1100;
+const COMPOSE_GAP_MS = 1200;
 
 type Anchor =
   | "top-left"
@@ -71,12 +71,13 @@ type Anchor =
   | "lower-right";
 
 const PHRASE_ANCHORS: readonly Anchor[] = [
-  "top-left",      // Portugal, slowly.
-  "center-left",   // Hidden chapters, written by those who live them.
-  "center",        // A private day. A celebration. A journey.
-  "lower-right",   // Yours to live.
-  "center",        // Begin writing.
+  "top-left",      // Portugal is the stage.
+  "center-left",   // You write your story.
+  "center",        // Hidden chapters waiting to unfold.
+  "lower-right",   // Locals know where they begin.
+  "center",        // You decide how to live it.
 ];
+
 
 function anchorClasses(a: Anchor): string {
   switch (a) {
@@ -216,15 +217,16 @@ export function CinematicHero() {
           className="absolute inset-0 md:hidden"
           style={{ background: "rgba(0,0,0,0.16)" }}
         />
-        {/* Subtle film grain (CSS only, ~4% opacity) */}
+        {/* Subtle film grain (CSS only, ~2% opacity) */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.04]"
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.02]"
           style={{
             backgroundImage:
               "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>\")",
           }}
         />
+
       </div>
 
       {/* ── Phrase stage ────────────────────────────────────────────── */}
@@ -286,6 +288,25 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
+        <p
+          aria-hidden={composed ? undefined : "true"}
+          className="mb-7 sm:mb-9 max-w-[22ch] text-center font-serif italic font-normal"
+          style={{
+            fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
+            fontWeight: 400,
+            fontStyle: "italic",
+            lineHeight: 1.25,
+            letterSpacing: "-0.012em",
+            color: "var(--gold, #C9A96A)",
+            textShadow: "0 1px 24px rgba(0,0,0,0.5)",
+            fontSize: "clamp(20px, 3.4vw, 30px)",
+          }}
+        >
+          Every story is different.
+          <br />
+          So is yours.
+        </p>
+
         <span
           data-hero-field="eyebrow"
           className="mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase"
@@ -297,6 +318,7 @@ export function CinematicHero() {
         >
           {HERO_COPY.eyebrow}
         </span>
+
 
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
           <Link
