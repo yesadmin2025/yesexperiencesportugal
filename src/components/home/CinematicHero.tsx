@@ -291,7 +291,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           filter: "saturate(0.86) contrast(1.04) brightness(0.80)",
           animation: skipMotion
             ? undefined
-            : "heroBreath 22s cubic-bezier(0.22,0.61,0.36,1) both",
+            : "heroBreath 28s cubic-bezier(0.22,0.61,0.36,1) both",
           transformOrigin: "center center",
         }}
       >
