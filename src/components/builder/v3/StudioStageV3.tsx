@@ -68,11 +68,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     acceptStop,
     removeStop,
     setWhisper,
+    setNarrativeFragment,
     routedStops,
     regionCenter,
     totalMinutes,
     affinityProfile,
+    narrativeStage,
   } = useStudioState();
+
 
   const parseFn = useServerFn(parseNarrative);
   const suggestFn = useServerFn(suggestFromIntent);
