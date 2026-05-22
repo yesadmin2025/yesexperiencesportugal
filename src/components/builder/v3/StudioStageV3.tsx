@@ -159,7 +159,13 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     state.acceptedStops,
     chapterFn,
     patch,
+    locale,
   ]);
+
+  /* Also re-fetch chapter when locale changes (force fresh request). */
+  useEffect(() => {
+    lastChapterReqRef.current = "";
+  }, [locale]);
 
   /* ── Pacing whisper when itinerary changes ── */
   useEffect(() => {
