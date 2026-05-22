@@ -849,6 +849,7 @@ function BuilderPage() {
               narrative={narrative}
               reviewThumbs={routeImages.reviewThumbs}
               selectedElementLabels={selectedElements.map(elementLabel)}
+              who={who as Who | undefined}
               onConfirm={() => setCheckoutOpen(true)}
               onBack={() => setStep(6)}
               onReset={() => resetBuilder("review")}

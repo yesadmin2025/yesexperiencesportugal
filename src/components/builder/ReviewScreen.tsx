@@ -1,11 +1,13 @@
 import { Check, MessageCircle, X } from "lucide-react";
-import { fmtMinutes, type RouteUI, type RoutedStopUI, builderWaHref } from "./types";
+import { fmtMinutes, type RouteUI, type RoutedStopUI, type Who, builderWaHref } from "./types";
 import type { BuilderImageRef } from "@/hooks/useBuilderImages";
 import { BuilderImage } from "./BuilderImage";
 import { BuilderMap } from "./BuilderMap";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { ReferenceUploader, type ToneResult } from "./ReferenceUploader";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { PacingChip } from "./PacingChip";
+import { ShareExport } from "./ShareExport";
 
 interface Props {
   route: RouteUI;
@@ -15,6 +17,8 @@ interface Props {
   reviewThumbs?: BuilderImageRef[];
   /** Labels of bounded "Add to your day" elements selected by the user. */
   selectedElementLabels?: string[];
+  /** "Who" selection — used by silent AI pacing advisor. */
+  who?: Who;
   onConfirm: () => void;
   onBack: () => void;
   onReset?: () => void;
@@ -54,6 +58,7 @@ export function ReviewScreen({
   narrative,
   reviewThumbs,
   selectedElementLabels,
+  who,
   onConfirm,
   onBack,
   onReset,
@@ -103,6 +108,12 @@ export function ReviewScreen({
           <p className="mt-4 max-w-2xl serif italic text-[1.1rem] sm:text-[1.25rem] leading-[1.4] text-[color:var(--charcoal)]/85">
             {narrative}
           </p>
+        )}
+
+        {who && (
+          <div className="mt-5">
+            <PacingChip route={route} who={who} />
+          </div>
         )}
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
@@ -234,6 +245,10 @@ export function ReviewScreen({
                 ))}
               </ul>
             </div>
+
+            <ShareExport route={route} stops={stops} guests={guests} />
+
+
 
             <CtaButton
               type="button"
