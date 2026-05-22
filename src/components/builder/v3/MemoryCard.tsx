@@ -49,7 +49,7 @@ interface Props {
 
 const HERO_CLIP = "/__l5e/assets-v1/501885a8-7399-4591-99fc-1c410b24c428/scene-route-portugal.mp4";
 
-const WHATSAPP_NUMBER = "351912345678"; // placeholder — replace when live
+
 
 /* ── Editorial timeline helpers ─────────────────────────────────────────── */
 
@@ -127,6 +127,9 @@ export function MemoryCard({
     `${regionLabel(regionKey)}, em ${stops.length} momentos.`;
 
   // ── Layered unfold ────────────────────────────────────────────────────
+  // Beat 1 (Arrival): ~2.2s of stillness — proposal identity alone.
+  // Beat 2 (The day emerges): editorial timeline fades in line by line.
+  // Beat 3 (Desire): single confident CTA + quiet secondary links.
   useEffect(() => {
     const reducedMotion =
       typeof window !== "undefined" &&
@@ -135,10 +138,10 @@ export function MemoryCard({
       setLayer(3);
       return;
     }
-    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 1600);
+    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 2200);
     const t3 = window.setTimeout(
       () => setLayer((l) => (l < 3 ? 3 : l)),
-      1600 + 220 * Math.max(timeline.length, 1) + 600,
+      2200 + 260 * Math.max(timeline.length, 1) + 700,
     );
     return () => {
       window.clearTimeout(t2);
@@ -225,14 +228,6 @@ export function MemoryCard({
     }
   };
 
-  const handleWhatsApp = () => {
-    const summary = stops.map((s, i) => `${i + 1}. ${s.label}`).join("%0A");
-    const text = encodeURIComponent(
-      `Olá! Gostava de reservar este roteiro em ${regionLabel(regionKey)}:`,
-    );
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}%0A%0A${summary}`;
-    window.open(url, "_blank", "noopener");
-  };
 
   return (
     <div
@@ -314,43 +309,39 @@ export function MemoryCard({
           />
         </div>
 
-        {/* ── LAYER 2 · EDITORIAL TIMELINE ────────────────────────────
-            No cards. No borders. Time + sensory line, stop label as a
-            whispered caption. Each row fades in sequentially. */}
+        {/* ── LAYER 2 · THE DAY EMERGES ───────────────────────────────
+            Editorial sequencing. No cards, no borders, no tag pills,
+            no tourism metadata. Serif numbering, restrained spacing,
+            atmospheric rhythm. Reads like a travel essay. */}
         {timeline.length > 0 && (
           <ol
-            className={`relative z-10 w-full max-w-xl px-7 sm:px-10 pb-12 flex flex-col gap-9 transition-opacity duration-[1100ms] ${
+            className={`relative z-10 w-full max-w-xl px-7 sm:px-10 pb-16 flex flex-col gap-11 transition-opacity duration-[1400ms] ${
               layer >= 2 ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
             {timeline.map(({ time, stop }, i) => (
               <li
                 key={stop.key}
-                className="grid grid-cols-[64px_1fr] gap-x-4 sm:gap-x-6 transition-all duration-[800ms] ease-out motion-reduce:transition-opacity"
+                className="grid grid-cols-[58px_1fr] gap-x-5 sm:gap-x-7 transition-all duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-opacity"
                 style={{
                   opacity: layer >= 2 ? 1 : 0,
-                  transform: layer >= 2 ? "translateY(0)" : "translateY(10px)",
-                  transitionDelay: layer >= 2 ? `${i * 220}ms` : "0ms",
+                  transform: layer >= 2 ? "translateY(0)" : "translateY(8px)",
+                  transitionDelay: layer >= 2 ? `${i * 260}ms` : "0ms",
                 }}
               >
                 <span
-                  className="text-[13px] tracking-[0.18em] font-semibold text-[color:var(--gold)] pt-1"
-                  style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+                  className="italic text-[15px] sm:text-[16px] leading-[1.2] text-[color:var(--ivory)]/55 pt-[3px] tabular-nums"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                   aria-hidden="true"
                 >
                   {time}
                 </span>
-                <div className="flex flex-col gap-1.5">
-                  <p
-                    className="italic text-[17px] sm:text-[19px] leading-[1.45] text-[color:var(--ivory)] text-balance"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                  >
-                    {sensoryLine(stop, stop.blurb, i)}
-                  </p>
-                  <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/45">
-                    {stop.label}
-                  </p>
-                </div>
+                <p
+                  className="italic text-[17.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/92 text-balance"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                >
+                  {sensoryLine(stop, stop.blurb, i)}
+                </p>
               </li>
             ))}
           </ol>
@@ -393,7 +384,9 @@ export function MemoryCard({
             )}
           </button>
 
-          {/* Quiet secondary actions — text links, never buttons */}
+          {/* Quiet secondary actions — text links only, reduced to two.
+              The concierge path stays available elsewhere; the reveal is
+              not the moment for visible alternatives. */}
           <div className="flex flex-col items-center gap-3 pt-1">
             <button
               type="button"
@@ -401,15 +394,7 @@ export function MemoryCard({
               className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
               style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
             >
-              Ver no mapa
-            </button>
-            <button
-              type="button"
-              onClick={handleWhatsApp}
-              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
-              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
-            >
-              Falar com um concierge
+              Ver o trajeto
             </button>
             <button
               type="button"
