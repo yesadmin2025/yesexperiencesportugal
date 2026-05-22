@@ -875,7 +875,7 @@ function BuilderPage() {
           />
         )}
       </article>
-    </SiteLayout>
+    </div>
   );
 }
 
