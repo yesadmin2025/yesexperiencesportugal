@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-21T00:41:26.798Z",
+  "generatedAt": "2026-05-22T00:06:59.589Z",
   "filesScanned": 205,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 181,
-    "approved": 34,
+    "total": 193,
+    "approved": 43,
     "allowlisted": 25,
-    "mismatch": 122
+    "mismatch": 125
   },
   "findings": [
     {
@@ -977,6 +977,114 @@
       "normalized": "#ff8a8a",
       "snippet": "<span style={{ color: \"#ff8a8a\" }}>pending</span>",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 190,
+      "col": 80,
+      "raw": "#1a1816",
+      "normalized": "#1a1816",
+      "snippet": "className=\"relative w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 261,
+      "col": 82,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"font-serif italic font-normal text-[color:var(--ivory,#FAF8F3)]\"",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 296,
+      "col": 116,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase text-[color:var(--ivory,#FAF8F3)]/65\"",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 309,
+      "col": 182,
+      "raw": "#1a1816",
+      "normalized": "#1a1816",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-medium text-[color:var(--charc",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 309,
+      "col": 214,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-medium text-[color:var(--charc",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 309,
+      "col": 322,
+      "raw": "#E8D5A8",
+      "normalized": "#e8d5a8",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-medium text-[color:var(--charc",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 309,
+      "col": 417,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-medium text-[color:var(--charc",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 321,
+      "col": 174,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 321,
+      "col": 217,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 321,
+      "col": 328,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 321,
+      "col": 371,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 321,
+      "col": 466,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "className=\"group inline-flex items-center justify-center min-w-[220px] px-8 py-[18px] text-[11.5px] sm:text-[12px] uppercase font-normal text-[color:var(--ivory",
+      "status": "approved"
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
