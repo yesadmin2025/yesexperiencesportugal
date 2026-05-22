@@ -1,23 +1,14 @@
 /**
  * Single source of truth for the home hero copy.
  *
- * The hero now opens with a 10-phrase cinematic sequence (one phrase
- * at a time, soft fade in/out) over a continuous film, before
- * revealing the closing stanza + CTAs + microcopy. `HERO_PHRASES`
- * drives the intro; `HERO_COPY` carries the closing scene strings
- * (still locked for SEO, SSR, and byte-exact e2e).
- *
- * Approved positioning:
- *   Portugal is the stage. The guest writes their story. Locals know
- *   where the hidden chapters begin. Booking is instant — no forms,
- *   no waiting.
+ * Hero v4 — "One Breath": a single held cinematic clip behind one
+ * centered two-line stanza, then delayed minimal CTAs. `HERO_PHRASES`
+ * holds the two stanza lines; `HERO_COPY` carries the closing /
+ * locked strings used by SEO, SSR probes and byte-exact e2e.
  */
 export const HERO_PHRASES = [
   "Portugal is the stage.",
   "You write your story.",
-  "Hidden chapters waiting to unfold.",
-  "Locals know where they begin.",
-  "You decide how to live it.",
 ] as const;
 
 
@@ -26,7 +17,7 @@ export const HERO_COPY = {
   headlineLine1: "Portugal is waiting to be lived.",
   headlineLine2: "You just have to start writing.",
   subheadline: "Every story is different. So is yours.",
-  primaryCta: "Create Your Story",
+  primaryCta: "Begin Your Journey",
   secondaryCta: "Explore Signature Experiences",
   microcopy: "Create it live. Confirm instantly. No forms. No waiting.",
   brandLine: "Whatever you have in mind, we say YES.",
