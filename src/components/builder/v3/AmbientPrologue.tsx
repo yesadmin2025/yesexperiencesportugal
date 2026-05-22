@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { AmbientStage } from "./AmbientStage";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -17,7 +17,6 @@ import type { StudioDict, StudioLocale } from "@/hooks/useStudioLocale";
 
 const LINE_ROTATE_MS = 4200;
 const INVITATION_DELAY_MS = 5400;
-const FRAGMENT_REVEAL_MS = 2400;
 const PROLOGUE_CLIP = "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4";
 
 interface Props {
@@ -28,57 +27,21 @@ interface Props {
   onExit?: () => void;
 }
 
-interface DriftFragment {
-  word: string;
-  top: string;
-  left: string;
-  delayMs: number;
-  driftSec: number;
-  size: number;
-}
-
-function buildFragments(words: string[]): DriftFragment[] {
-  // Deterministic-ish positions so fragments don't shuffle on every render.
-  const slots = [
-    { top: "18%", left: "12%" },
-    { top: "28%", left: "72%" },
-    { top: "62%", left: "10%" },
-    { top: "70%", left: "68%" },
-    { top: "44%", left: "82%" },
-    { top: "52%", left: "20%" },
-    { top: "82%", left: "40%" },
-    { top: "14%", left: "52%" },
-  ];
-  return words.slice(0, slots.length).map((word, i) => ({
-    word,
-    top: slots[i].top,
-    left: slots[i].left,
-    delayMs: 600 + i * 320,
-    driftSec: 14 + (i % 4) * 3,
-    size: 13 + (i % 3),
-  }));
-}
-
 export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }: Props) {
   const [lineIdx, setLineIdx] = useState(0);
   const [showInvite, setShowInvite] = useState(false);
-  const [fragmentsReady, setFragmentsReady] = useState(false);
   const interactedRef = useRef(false);
-
-  const fragments = useMemo(() => buildFragments(t.fragments), [t.fragments]);
 
   useEffect(() => {
     setLineIdx(0);
     setShowInvite(false);
-    const t1 = window.setTimeout(() => setFragmentsReady(true), FRAGMENT_REVEAL_MS);
-    const t2 = window.setTimeout(() => setShowInvite(true), INVITATION_DELAY_MS);
+    const t1 = window.setTimeout(() => setShowInvite(true), INVITATION_DELAY_MS);
     const rotate = window.setInterval(
       () => setLineIdx((i) => (i + 1) % t.prologueLines.length),
       LINE_ROTATE_MS,
     );
     return () => {
       window.clearTimeout(t1);
-      window.clearTimeout(t2);
       window.clearInterval(rotate);
     };
   }, [t.prologueLines.length]);
