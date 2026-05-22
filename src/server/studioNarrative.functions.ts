@@ -251,10 +251,13 @@ NEVER name real places, hotels, restaurants, roads, partners, villages, regions.
 CONTINUITY
 If a previous fragment is provided, continue the SAME emotional thread and SAME hour of day, but reuse NONE of its nouns or imagery.
 
-FORBIDDEN VOCABULARY (immediate rejection)
-hidden gem · off the beaten path · luxury · unforgettable · journey of a lifetime · whispers of · soul of · magical · breathtaking · stunning · amazing · enchanting · captivating · timeless · authentic · vibrant · idyllic · pristine · paradise · escape · adventure · gem — any superlative, any mystical phrasing, any travel-brochure cliché.
+FORBIDDEN VOCABULARY (immediate rejection — bare words too, not only phrases)
+hidden · gem · off the beaten path · luxury · unforgettable · journey of a lifetime · whispers · whisper · soul · magic · magical · breathtaking · stunning · amazing · enchanting · captivating · timeless · authentic · vibrant · idyllic · pristine · paradise · escape · adventure · discover · discovers · discovering · immersive · immerse · dream · dreams · dreamlike · once-in-a-lifetime — any superlative, any mystical phrasing, any travel-brochure cliché.
 
-Register: Cereal Magazine · Aman Journals · Kinfolk travel essays. Editorial restraint over poetic excess.
+NAME RESTRAINT
+Do NOT use the traveller's name unless the stage is "reveal". Even then, use it at most ONCE, never in the first three words, never followed by an exclamation.
+
+Register: Cereal Magazine · Aman Journals · Kinfolk travel essays. Editorial restraint over poetic excess. Observational, not performative.
 
 Return ONLY the sentence.`;
 
@@ -318,7 +321,7 @@ function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
 
 /* ───────────────────────── Output sanitisation ────────────────────────────── */
 
-const BANNED = /\b(hidden gem|off the beaten path|luxury|unforgettable|breathtaking|stunning|amazing|magical|enchanting|captivating|timeless|authentic|vibrant|idyllic|pristine|paradise|whispers? of|soul of|journey of a lifetime|escape of a lifetime|once[- ]in[- ]a[- ]lifetime)\b/i;
+const BANNED = /\b(hidden gem|hidden|gem|gems|off the beaten path|luxury|unforgettable|breathtaking|stunning|amazing|magical|magic|enchanting|captivating|timeless|authentic|vibrant|idyllic|pristine|paradise|whispers?|soul|souls|journey of a lifetime|escape|escapes|escaped|escaping|adventure|adventures|discover|discovers|discovering|discovery|immersive|immerse|dream|dreams|dreamlike|once[- ]in[- ]a[- ]lifetime)\b/i;
 
 /** Extended sensory anchor vocabulary — used both for extraction (telemetry)
  *  and as a mandatory presence check inside sanitiseFragment. If a generated
