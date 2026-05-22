@@ -292,9 +292,16 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
   return (
     <>
       <style>{`
-        @keyframes heroBreath {
-          0%   { transform: scale(1.00); }
-          100% { transform: scale(1.03); }
+        @keyframes heroDrift {
+          0%   { transform: scale(1.020) translate3d(0, 0, 0); }
+          25%  { transform: scale(1.028) translate3d(-0.4%, -0.25%, 0); }
+          50%  { transform: scale(1.034) translate3d(0.2%, -0.4%, 0); }
+          75%  { transform: scale(1.028) translate3d(0.4%, -0.2%, 0); }
+          100% { transform: scale(1.020) translate3d(0, 0, 0); }
+        }
+        @keyframes heroSunBreath {
+          0%, 100% { opacity: 0.85; }
+          50%      { opacity: 1.05; }
         }
       `}</style>
       <video
@@ -309,11 +316,12 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         className="absolute inset-0 h-full w-full object-cover"
         style={{
           opacity: 1,
-          filter: "saturate(0.82) contrast(0.96) brightness(0.86)",
+          filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
           animation: skipMotion
             ? undefined
-            : "heroBreath 28s cubic-bezier(0.22,0.61,0.36,1) both",
-          transformOrigin: "center center",
+            : "heroDrift 42s ease-in-out infinite",
+          transformOrigin: "center 60%",
+          willChange: "transform",
         }}
       >
         <source src={HERO_CLIP.src} type="video/mp4" />
