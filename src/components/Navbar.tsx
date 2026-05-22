@@ -1,5 +1,5 @@
-import { Link, useLocation } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -27,72 +27,39 @@ const mobileLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const isHome = location.pathname === "/";
-  // Transparent overlay only on home, at top of page, with menu closed.
-  const transparent = isHome && !scrolled && !open;
 
-  useEffect(() => {
-    if (!isHome) return;
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
+  // Single editorial mode — warm ivory glass, teal logo, charcoal links.
+  const headerStyle: React.CSSProperties = {
+    background: "rgba(247, 243, 236, 0.82)",
+    backdropFilter: "blur(14px) saturate(1.05)",
+    WebkitBackdropFilter: "blur(14px) saturate(1.05)",
+    borderBottom: "1px solid rgba(46, 46, 46, 0.06)",
+  };
 
-  const headerClass = transparent
-    ? "fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
-    : "fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-b border-[color:var(--charcoal)]/15 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.18)] opacity-0 animate-[headerFade_900ms_ease-out_forwards]";
+  const linkClass =
+    "inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
-  const transparentHeaderStyle = transparent
-    ? {
-        background:
-          "linear-gradient(to bottom, rgba(20,16,12,0.34) 0%, rgba(20,16,12,0.18) 60%, rgba(20,16,12,0.00) 100%)",
-        backdropFilter: "blur(10px) saturate(0.92)",
-        WebkitBackdropFilter: "blur(10px) saturate(0.92)",
-        borderBottom: "1px solid rgba(250,248,243,0.06)",
-      }
-    : undefined;
-
-  const linkClass = transparent
-    ? "inline-flex items-center text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-    : "inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-white";
-
-  const menuBtnClass = transparent
-    ? "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--ivory,#FAF8F3)]/85 hover:text-[color:var(--gold,#C9A96A)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-    : "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
+  const menuBtnClass =
+    "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
   return (
-    <header className={headerClass} style={transparentHeaderStyle}>
+    <header
+      className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
+      style={headerStyle}
+    >
       <div className="container-x">
         <div className="flex items-center justify-between h-[64px] md:h-[80px] lg:h-[92px]">
           <Link
             to="/"
-            className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
-            style={
-              transparent
-                ? {
-                    // Thin, soft champagne signature — same size as teal, lighter strokes
-                    filter:
-                      "saturate(0.6) brightness(1.18) contrast(0.82) sepia(0.06) blur(0.35px) drop-shadow(0 1px 4px rgba(0,0,0,0.28))",
-                  }
-                : undefined
-            }
           >
             <Logo
-              theme={transparent ? "gold-on-charcoal" : "teal-on-ivory"}
+              theme="teal-on-ivory"
               fetchPriority="high"
-              className={
-                transparent
-                  ? "relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none opacity-75 transition-all duration-500"
-                  : "relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none opacity-100 transition-all duration-500"
-              }
+              className="relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
             />
           </Link>
-
-
 
           <nav
             className="hidden lg:flex items-center h-full gap-7 xl:gap-9 text-[11px] uppercase tracking-[0.22em] leading-none"
@@ -103,32 +70,14 @@ export function Navbar() {
                 key={n.to}
                 to={n.to}
                 className={linkClass}
-                activeProps={{
-                  className: transparent
-                    ? "text-[color:var(--gold,#C9A96A)]"
-                    : "text-[color:var(--teal)]",
-                }}
+                activeProps={{ className: "text-[color:var(--teal)]" }}
               >
                 {n.label}
               </Link>
             ))}
-            {transparent ? (
-              <Link
-                to="/builder"
-                className="ml-2 inline-flex items-center justify-center px-5 py-2.5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--gold,#C9A96A)] transition-colors duration-300"
-                style={{
-                  border: "1px solid color-mix(in oklab, var(--gold, #C9A96A) 45%, transparent)",
-                  borderRadius: 0,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                }}
-              >
-                Design &amp; Secure
-              </Link>
-            ) : (
-              <CtaButton to="/builder" variant="primary" size="sm" className="ml-2">
-                Design &amp; Secure
-              </CtaButton>
-            )}
+            <CtaButton to="/builder" variant="primary" size="sm" className="ml-2">
+              Design &amp; Secure
+            </CtaButton>
           </nav>
 
           <button
@@ -144,14 +93,22 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div id="mobile-nav" className="lg:hidden bg-white border-t border-black/[0.05]">
+        <div
+          id="mobile-nav"
+          className="lg:hidden border-t border-[color:var(--charcoal)]/[0.06]"
+          style={{
+            background: "rgba(247, 243, 236, 0.96)",
+            backdropFilter: "blur(14px) saturate(1.05)",
+            WebkitBackdropFilter: "blur(14px) saturate(1.05)",
+          }}
+        >
           <div className="container-x py-7 flex flex-col gap-5 text-sm">
             {mobileLinks.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 onClick={() => setOpen(false)}
-                className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
                 style={{ fontWeight: 380 }}
                 activeProps={{ className: "text-[color:var(--teal)]" }}
               >
