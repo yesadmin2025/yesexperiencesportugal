@@ -28,6 +28,25 @@ const mobileLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
+
+  // Progressive logo reveal: at the very top of the homepage we show ONLY the
+  // handwritten "YES" mark. After ~24px of scroll (or on any non-home route)
+  // we crossfade into the full lockup. Smooth, restrained, no choreography.
+  useEffect(() => {
+    if (!isHome) {
+      setScrolled(true);
+      return;
+    }
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
+
+  const showMarkOnly = isHome && !scrolled;
 
   // Solid ivory editorial bar — soft atmospheric fade dissolves into hero below.
   const headerStyle: React.CSSProperties = {
