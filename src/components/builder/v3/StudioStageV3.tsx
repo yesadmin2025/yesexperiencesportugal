@@ -385,6 +385,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
    */
   const hasStops = state.acceptedStops.length > 0;
   const hasIntent = Boolean(state.mood || state.intention || state.who);
+  const hasCoreIntent = Boolean(state.mood && state.who && state.intention);
   const hasSuggestions = suggestionStops.length > 0;
 
   type Phase = "invitation" | "awakening" | "emergence" | "living" | "memory";
@@ -392,7 +393,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     ? "memory"
     : hasStops
       ? "living"
-      : hasSuggestions && hasIntent
+      : hasSuggestions && hasCoreIntent
         ? "emergence"
         : hasIntent
           ? "awakening"
