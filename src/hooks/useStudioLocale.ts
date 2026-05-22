@@ -17,9 +17,22 @@ export interface EmotionOption<V extends string = string> {
   label: string;
 }
 
+export interface OpeningScene<V extends string = string> {
+  value: V;
+  label: string;
+}
+
 export interface StudioDict {
   eyebrow: string;
   prologueLines: string[];
+  /** Single static line for the cinematic arrival (BEAT 1). */
+  arrivalLine: string;
+  /** Subtle continue affordance shown after a long pause (BEAT 1). */
+  arrivalContinue: string;
+  /** Single emotional framing question for the opening scene picker (BEAT 2). */
+  openingPrompt: string;
+  /** 3 full-bleed cinematic scenes for the opening pull (BEAT 2). Each maps to a Mood. */
+  openingScenes: OpeningScene<"open" | "romantic" | "slow">[];
   fragments: string[];
   whisperInvite: string;
   whisperHelper: string;
@@ -84,6 +97,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "Algumas viagens começam com um sentimento.",
       "Que memória vamos criar?",
       "Respira. A história ainda nem começou.",
+    ],
+    arrivalLine: "Há lugares para visitar.\nPortugal é para sentir.",
+    arrivalContinue: "entrar",
+    openingPrompt: "Que tipo de dia fica contigo?",
+    openingScenes: [
+      { value: "open", label: "Atlântico do nascer ao pôr" },
+      { value: "romantic", label: "Almoços longos entre vinhas" },
+      { value: "slow", label: "Estradas sem pressa" },
     ],
     fragments: ["vinho", "mar", "silêncio", "luz", "sal", "rota", "tasca", "pinhal"],
     whisperInvite: "Entrar devagar",
@@ -197,6 +218,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "What kind of memory shall we make?",
       "Breathe. The story hasn't begun.",
     ],
+    arrivalLine: "Some places ask to be visited.\nPortugal asks to be felt.",
+    arrivalContinue: "enter",
+    openingPrompt: "What kind of day stays with you?",
+    openingScenes: [
+      { value: "open", label: "Atlantic all day" },
+      { value: "romantic", label: "Long lunches beneath vines" },
+      { value: "slow", label: "Roads without rushing" },
+    ],
     fragments: ["wine", "sea", "silence", "light", "salt", "road", "table", "pines"],
     whisperInvite: "Enter slowly",
     whisperHelper: "first feel, then choose",
@@ -309,6 +338,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "¿Qué memoria vamos a crear?",
       "Respira. La historia aún no empezó.",
     ],
+    arrivalLine: "Hay lugares para visitar.\nA Portugal se le siente.",
+    arrivalContinue: "entrar",
+    openingPrompt: "¿Qué tipo de día se queda contigo?",
+    openingScenes: [
+      { value: "open", label: "Atlántico de sol a sol" },
+      { value: "romantic", label: "Almuerzos largos entre viñas" },
+      { value: "slow", label: "Carreteras sin prisa" },
+    ],
     fragments: ["vino", "mar", "silencio", "luz", "sal", "ruta", "mesa", "pinos"],
     whisperInvite: "Entrar despacio",
     whisperHelper: "primero siente, luego elige",
@@ -420,6 +457,14 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       "Certains voyages naissent d'une émotion.",
       "Quel souvenir allons-nous créer ?",
       "Respire. L'histoire n'a pas commencé.",
+    ],
+    arrivalLine: "Certains lieux se visitent.\nLe Portugal se ressent.",
+    arrivalContinue: "entrer",
+    openingPrompt: "Quel genre de journée te marque ?",
+    openingScenes: [
+      { value: "open", label: "L'Atlantique du matin au soir" },
+      { value: "romantic", label: "Longs déjeuners sous les vignes" },
+      { value: "slow", label: "Des routes sans hâte" },
     ],
     fragments: ["vin", "mer", "silence", "lumière", "sel", "route", "table", "pins"],
     whisperInvite: "Entrer lentement",

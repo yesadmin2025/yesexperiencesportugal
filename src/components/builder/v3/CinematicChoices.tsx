@@ -139,6 +139,87 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
     window.setTimeout(() => setTransitioning(false), motionMs);
   };
 
+  // ── BEAT 2 — OPENING EMOTIONAL PULL ───────────────────────────────────
+  // First phase ("mood") gets a dedicated cinematic layout: 3 full-bleed
+  // vertical scenes, one editorial framing question, no step indicators,
+  // no eyebrow, no icons. Each scene IS the choice — entering one feels
+  // like stepping into the day, not picking a category.
+  if (phase === "mood") {
+    return (
+      <div
+        key={phase}
+        className={`absolute inset-0 z-40 flex flex-col bg-[color:var(--charcoal)] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          transitioning ? "opacity-0 scale-[0.99]" : "opacity-100 scale-100"
+        }`}
+        style={{ transition: `opacity ${motionMs}ms, transform ${motionMs}ms` }}
+      >
+        {/* Single framing question — serif italic, no eyebrow, no chip */}
+        <div className="relative z-10 px-8 pt-[max(env(safe-area-inset-top),1.25rem)] pb-3 text-center pointer-events-none">
+          <h2
+            className="font-serif italic text-[22px] sm:text-[28px] leading-[1.22] text-[color:var(--ivory)] max-w-[24ch] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)] animate-in fade-in slide-in-from-top-1 duration-[900ms]"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
+            {t.openingPrompt}
+          </h2>
+        </div>
+
+        {/* 3 full-bleed scenes stacked vertically — each one a doorway */}
+        <ul className="relative z-10 flex-1 flex flex-col gap-2 px-2 pb-3 min-h-0" role="list">
+          {t.openingScenes.map((opt, i) => {
+            const isActive = active.mood === opt.value;
+            return (
+              <li key={`mood-${opt.value}`} className="min-h-0 flex-1">
+                <button
+                  type="button"
+                  onClick={() => handlePick(opt.value, opt.label)}
+                  className={`group relative h-full w-full overflow-hidden rounded-[4px] border transition-all duration-[520ms] ease-out animate-in fade-in zoom-in-[0.99] active:scale-[0.992] ${
+                    isActive
+                      ? "border-[color:var(--gold)]/85 shadow-[0_0_0_1px_oklch(0.78_0.12_85_/_0.45),0_22px_50px_rgba(0,0,0,0.5)]"
+                      : "border-[color:var(--ivory)]/10 shadow-[0_16px_38px_rgba(0,0,0,0.45)] hover:border-[color:var(--ivory)]/30"
+                  }`}
+                  style={{ animationDelay: `${280 + i * 220}ms`, animationFillMode: "both", animationDuration: "1100ms" }}
+                  aria-pressed={isActive}
+                  aria-label={opt.label}
+                >
+                  <video
+                    aria-hidden="true"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.025]"
+                    style={{ filter: "saturate(0.82) contrast(1.03) brightness(0.7)" }}
+                  >
+                    <source src={clipFor("mood", opt.value)} type="video/mp4" />
+                  </video>
+                  {/* Editorial bottom-left gradient — text breathes against it */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, oklch(0.15 0.02 240 / 0.05) 0%, oklch(0.15 0.02 240 / 0.05) 45%, oklch(0.15 0.02 240 / 0.72) 100%)",
+                    }}
+                  />
+                  <span className="absolute inset-x-0 bottom-0 z-10 px-5 sm:px-7 pb-5 sm:pb-6 text-left">
+                    <span
+                      className="block font-serif italic text-[20px] sm:text-[24px] leading-[1.18] text-[color:var(--ivory)] drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)] max-w-[18ch]"
+                      style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    >
+                      {opt.label}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
+  // ── Phases 2+ (depth, who, intention) — quieter grid, restrained chrome ──
   return (
     <div
       key={phase}
@@ -148,7 +229,7 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
       style={{ transition: `opacity ${motionMs}ms, transform ${motionMs}ms` }}
     >
       <header className="relative z-10 px-5 pt-5 pb-2 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-[600ms]">
-        <span className="text-[9.5px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]">
+        <span className="text-[9.5px] uppercase tracking-[0.34em] font-medium text-[color:var(--ivory)]/55">
           {stepLine}
         </span>
         <div className="flex items-center gap-1.5">
@@ -160,10 +241,10 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
                 key={p}
                 className={`block rounded-full transition-all duration-500 ${
                   isCur
-                    ? "w-6 h-[3px] bg-[color:var(--gold)]"
+                    ? "w-6 h-[2px] bg-[color:var(--gold)]"
                     : done
-                      ? "w-2.5 h-[3px] bg-[color:var(--gold)]/70"
-                      : "w-2.5 h-[3px] bg-[color:var(--ivory)]/20"
+                      ? "w-2.5 h-[2px] bg-[color:var(--gold)]/60"
+                      : "w-2.5 h-[2px] bg-[color:var(--ivory)]/18"
                 }`}
               />
             );
@@ -193,13 +274,11 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
         >
           {options.map((opt, i) => {
             const isActive =
-              phase === "mood"
-                ? active.mood === opt.value
-                : phase === "depth"
-                  ? active.journeyType === opt.value
-                  : phase === "who"
-                    ? active.who === opt.value
-                    : active.intention === opt.value;
+              phase === "depth"
+                ? active.journeyType === opt.value
+                : phase === "who"
+                  ? active.who === opt.value
+                  : active.intention === opt.value;
             return (
               <li key={`${phase}-${opt.value}`} className="min-h-0">
                 <button

@@ -1,22 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { AmbientStage } from "./AmbientStage";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import type { StudioDict, StudioLocale } from "@/hooks/useStudioLocale";
 
 /**
- * AmbientPrologue — the passive cinematic entry.
+ * AmbientPrologue — BEAT 1: ARRIVAL.
  *
- * The world breathes for the first ~6 seconds without asking anything.
- * Poetic lines rotate softly. Mood fragments drift in the background as
- * optional taps. Only after the atmosphere has settled does a gentle
- * "whisper" invitation appear at the bottom. Nothing is mandatory —
- * tapping a fragment, the invitation, or anywhere on the scene awakens
- * the composer with a seed phrase (or empty, if just tapped through).
+ * Fullscreen cinematic Portugal. No eyebrow tags. No rotating prose. No
+ * pulsing CTA. One single static line, in serif italic, breathing on top
+ * of real footage. After a long, deliberate pause a near-invisible
+ * "enter" affordance surfaces at the bottom — but the entire canvas is
+ * tappable. The traveller feels invited, not onboarded.
  */
 
-const LINE_ROTATE_MS = 4200;
-const INVITATION_DELAY_MS = 5400;
+const CONTINUE_DELAY_MS = 4200;
 const PROLOGUE_CLIP = "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4";
 
 interface Props {
@@ -28,53 +26,48 @@ interface Props {
 }
 
 export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }: Props) {
-  const [lineIdx, setLineIdx] = useState(0);
-  const [showInvite, setShowInvite] = useState(false);
+  const [showContinue, setShowContinue] = useState(false);
   const interactedRef = useRef(false);
 
   useEffect(() => {
-    setLineIdx(0);
-    setShowInvite(false);
-    const t1 = window.setTimeout(() => setShowInvite(true), INVITATION_DELAY_MS);
-    const rotate = window.setInterval(
-      () => setLineIdx((i) => (i + 1) % t.prologueLines.length),
-      LINE_ROTATE_MS,
-    );
-    return () => {
-      window.clearTimeout(t1);
-      window.clearInterval(rotate);
-    };
-  }, [t.prologueLines.length]);
+    const tm = window.setTimeout(() => setShowContinue(true), CONTINUE_DELAY_MS);
+    return () => window.clearTimeout(tm);
+  }, []);
 
-  const awaken = (seed?: string) => {
+  const awaken = () => {
     if (interactedRef.current) return;
     interactedRef.current = true;
-    onAwaken(seed);
+    onAwaken();
   };
+
+  // Two-line static arrival copy — first line, soft break, second line.
+  const lines = t.arrivalLine.split("\n");
 
   return (
     <div
-      className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)]"
-      // Tap anywhere on the canvas awakens (after invitation surfaces, to avoid pre-empting drift).
+      className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)] cursor-pointer"
       onClick={() => {
-        if (showInvite) awaken();
+        if (showContinue) awaken();
       }}
+      role="button"
+      tabIndex={0}
+      aria-label={t.arrivalContinue}
     >
-      {/* Atmospheric base — real Portuguese footage, slow breathing gradient underneath */}
+      {/* Real cinematic Portugal — deep veil for editorial calm */}
       <AmbientStage mood={null} veil="deep" videoUrl={PROLOGUE_CLIP} />
 
-      {/* Slow breathing radial glow */}
+      {/* Soft top vignette so the corner controls remain legible without a bar */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none ambient-breathe"
+        className="absolute inset-x-0 top-0 h-24 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 55%, oklch(0.55 0.06 80 / 0.18) 0%, transparent 55%)",
+            "linear-gradient(180deg, oklch(0.18 0.02 240 / 0.55) 0%, transparent 100%)",
         }}
       />
 
-      {/* Top bar — locale switcher + back */}
-      <header className="absolute top-0 inset-x-0 z-30 flex items-start justify-between gap-3 px-3 pt-3 sm:px-5 sm:pt-4">
+      {/* Minimal top — back + locale, both very quiet */}
+      <header className="absolute top-0 inset-x-0 z-30 flex items-start justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-5">
         {onExit ? (
           <button
             type="button"
@@ -82,7 +75,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
               e.stopPropagation();
               onExit();
             }}
-            className="inline-flex items-center gap-1.5 min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)] transition-colors"
+            className="inline-flex items-center gap-1.5 min-h-[44px] px-1 text-[10.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
             aria-label={t.back}
           >
             <ArrowLeft size={12} />
@@ -92,74 +85,59 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
           <span />
         )}
         <div onClick={(e) => e.stopPropagation()}>
-          <LocaleSwitcher locale={locale} onChange={onLocaleChange} tone="light" />
+          <LocaleSwitcher locale={locale} onChange={onLocaleChange} tone="light" collapsed />
         </div>
       </header>
 
-      {/* Centerpiece — eyebrow + rotating poetic line */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center pointer-events-none">
-        <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]/90">
-          <Sparkles size={11} aria-hidden="true" />
-          {t.eyebrow}
-        </span>
+      {/* The single static line. Serif italic. Drops in once, then breathes. */}
+      <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
         <h1
-          key={lineIdx}
-          className="mt-6 font-serif italic text-[28px] sm:text-[40px] leading-[1.14] text-[color:var(--ivory)] max-w-[20ch] drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)] ambient-line"
+          className="font-serif italic text-[26px] sm:text-[34px] md:text-[40px] leading-[1.24] tracking-[-0.005em] text-[color:var(--ivory)] max-w-[22ch] drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] arrival-in"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-          aria-live="polite"
         >
-          {t.prologueLines[lineIdx]}
+          {lines.map((ln, i) => (
+            <span key={i} className="block">
+              {ln}
+            </span>
+          ))}
         </h1>
       </div>
 
-      {/* Soft invitation — appears only after the atmosphere has settled */}
-      <div className="absolute inset-x-0 bottom-0 z-30 p-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] flex flex-col items-center gap-2">
-        <div
-          className={`transition-all duration-[700ms] ease-out ${
-            showInvite ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"
+      {/* Quiet bottom continue — appears only after a long pause. No pulse, no chip. */}
+      <div className="absolute inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom),2rem)] flex justify-center">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            awaken();
+          }}
+          className={`group inline-flex flex-col items-center gap-2 px-4 py-2 min-h-[44px] transition-opacity duration-[1100ms] ease-out ${
+            showContinue ? "opacity-90 hover:opacity-100" : "opacity-0 pointer-events-none"
           }`}
+          aria-hidden={!showContinue}
+          tabIndex={showContinue ? 0 : -1}
         >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              awaken();
-            }}
-            className="group inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-5 py-3 text-[12px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)] shadow-[0_10px_36px_rgba(0,0,0,0.4)] border border-[color:var(--gold)]/45 hover:border-[color:var(--gold)] hover:bg-[color:var(--ivory)] transition-all min-h-[48px] ambient-pulse"
+          <span
+            className="text-[10.5px] uppercase tracking-[0.42em] font-medium text-[color:var(--ivory)]/80 group-hover:text-[color:var(--ivory)]"
+            style={{ fontFamily: "Inter, system-ui, sans-serif" }}
           >
-            <Sparkles size={14} className="text-[color:var(--gold)]" />
-            {t.whisperInvite}
-          </button>
-          <p className="mt-3 text-center text-[11px] tracking-[0.06em] text-[color:var(--ivory)]/55 italic font-serif" style={{ fontFamily: "Georgia, serif" }}>
-            {t.whisperHelper}
-          </p>
-        </div>
+            {t.arrivalContinue}
+          </span>
+          <span
+            aria-hidden="true"
+            className="block h-px w-8 bg-[color:var(--ivory)]/55 group-hover:bg-[color:var(--gold)] transition-colors"
+          />
+        </button>
       </div>
 
       <style>{`
-        @keyframes studioBreathe {
-          0%, 100% { opacity: 0.85; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.04); }
-        }
-        @keyframes studioDrift {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
-        @keyframes studioLineIn {
-          from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+        @keyframes arrivalIn {
+          from { opacity: 0; transform: translateY(10px); filter: blur(3px); }
           to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
-        @keyframes studioPulse {
-          0%, 100% { box-shadow: 0 10px 36px rgba(0,0,0,0.4), 0 0 0 0 rgba(201,168,76,0); }
-          50% { box-shadow: 0 10px 36px rgba(0,0,0,0.4), 0 0 0 8px rgba(201,168,76,0.18); }
-        }
-        .ambient-breathe { animation: studioBreathe 7s ease-in-out infinite; }
-        .ambient-drift { animation: studioDrift 14s ease-in-out infinite; }
-        .ambient-line { animation: studioLineIn 900ms ease-out both; }
-        .ambient-pulse { animation: studioPulse 3.6s ease-in-out infinite; }
+        .arrival-in { animation: arrivalIn 1600ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 320ms; }
         @media (prefers-reduced-motion: reduce) {
-          .ambient-breathe, .ambient-drift, .ambient-pulse { animation: none; }
-          .ambient-line { animation: none; }
+          .arrival-in { animation: none; }
         }
       `}</style>
     </div>
