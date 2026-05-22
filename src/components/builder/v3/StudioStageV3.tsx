@@ -466,7 +466,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           >
             <RotateCcw size={13} />
           </button>
-          <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" collapsed={phase !== "living"} />
+          <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" collapsed />
           {showRibbonToggle && (
             <button
               type="button"
