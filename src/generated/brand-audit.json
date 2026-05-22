@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-22T11:45:27.175Z",
-  "filesScanned": 206,
+  "generatedAt": "2026-05-22T12:24:55.422Z",
+  "filesScanned": 213,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,9 +18,9 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 194,
+    "total": 195,
     "approved": 41,
-    "allowlisted": 25,
+    "allowlisted": 26,
     "mismatch": 128
   },
   "findings": [
@@ -1490,6 +1490,15 @@
       "normalized": "#a3271f",
       "snippet": "color: r.ok ? \"var(--teal)\" : \"#a3271f\",",
       "status": "mismatch"
+    },
+    {
+      "file": "src/routes/i.$token.tsx",
+      "line": 332,
+      "col": 34,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "html, body { background: #fff !important; }",
+      "status": "allowlisted"
     },
     {
       "file": "src/routes/index.tsx",
