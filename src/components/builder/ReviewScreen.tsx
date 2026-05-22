@@ -110,6 +110,12 @@ export function ReviewScreen({
           </p>
         )}
 
+        {who && (
+          <div className="mt-5">
+            <PacingChip route={route} who={who} />
+          </div>
+        )}
+
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
           {/* Left: details */}
           <div className="flex flex-col gap-6">
