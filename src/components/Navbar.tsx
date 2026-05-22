@@ -1,7 +1,8 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { YesMark } from "@/components/YesMark";
 import { CtaButton } from "@/components/ui/CtaButton";
 
 const desktopLinks = [
