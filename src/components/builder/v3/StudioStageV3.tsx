@@ -423,7 +423,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         regionLabel={regionLabel(state.regionKey)}
         videoUrl={studioClip}
         veil={phase === "living" ? "medium" : "deep"}
+        journeyType={state.journeyType}
+        affinity={affinityProfile}
       />
+
 
       {/* Soft header — fades in only after the world begins reacting */}
       <header
