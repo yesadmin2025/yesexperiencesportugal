@@ -7,9 +7,24 @@ interface StepHeadProps {
   eyebrow: string;
   title: string;
   onBack?: () => void;
+  /** Optional total step count — renders editorial chapter marker "01 / 06". */
+  totalChapters?: number;
+  /** Optional Georgia italic sub-line under the title — emotional framing. */
+  italicSub?: string;
 }
 
-export function StepHead({ num, eyebrow, title, onBack }: StepHeadProps) {
+export function StepHead({
+  num,
+  eyebrow,
+  title,
+  onBack,
+  totalChapters,
+  italicSub,
+}: StepHeadProps) {
+  const chapterMark =
+    totalChapters && num > 0
+      ? `${String(num).padStart(2, "0")} / ${String(totalChapters).padStart(2, "0")}`
+      : null;
   return (
     <div className="flex flex-col gap-3 builder-reveal">
       <div className="flex items-center gap-3">
@@ -27,10 +42,27 @@ export function StepHead({ num, eyebrow, title, onBack }: StepHeadProps) {
           <Sparkles size={12} aria-hidden="true" />
           {eyebrow}
         </span>
+        {chapterMark && (
+          <span
+            aria-hidden="true"
+            className="ml-auto inline-flex items-center text-[10px] uppercase tracking-[0.3em] font-semibold tabular-nums text-[color:var(--charcoal)]/45"
+          >
+            <span className="mr-2 h-px w-6 bg-[color:var(--charcoal)]/15" />
+            {chapterMark}
+          </span>
+        )}
       </div>
       <h2 className="serif text-[1.7rem] sm:text-[2.2rem] md:text-[2.6rem] leading-[1.05] tracking-[-0.01em] font-semibold text-[color:var(--charcoal)]">
         {title}
       </h2>
+      {italicSub && (
+        <p
+          className="-mt-1 max-w-[34ch] font-serif italic text-[15px] sm:text-[16px] leading-[1.45] text-[color:var(--charcoal)]/65"
+          style={{ fontFamily: "var(--font-serif, Georgia, serif)" }}
+        >
+          {italicSub}
+        </p>
+      )}
     </div>
   );
 }
