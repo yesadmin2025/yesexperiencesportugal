@@ -81,18 +81,27 @@ export function Navbar() {
             aria-label="YES experiences PORTUGAL — Home"
           >
             <span className="relative inline-block h-[58px] md:h-[64px] lg:h-[70px]">
-              <Logo
-                theme="teal-on-ivory"
-                fetchPriority="high"
-                className="relative block h-full w-auto select-none transition-opacity duration-[900ms] ease-out"
-                aria-hidden={showMarkOnly ? "true" : undefined}
+              <span
+                className="relative block h-full transition-opacity duration-[900ms] ease-out"
                 style={{ opacity: showMarkOnly ? 0 : 1 }}
-              />
-              <YesMark
-                ariaLabel="YES"
-                className="absolute inset-y-0 left-0 block h-full w-auto select-none transition-opacity duration-[900ms] ease-out"
-                style={{ opacity: showMarkOnly ? 1 : 0, pointerEvents: "none" }}
-              />
+                aria-hidden={showMarkOnly ? "true" : undefined}
+              >
+                <Logo
+                  theme="teal-on-ivory"
+                  fetchPriority="high"
+                  className="block h-full w-auto select-none"
+                />
+              </span>
+              <span
+                className="pointer-events-none absolute inset-y-0 left-0 block h-full transition-opacity duration-[900ms] ease-out"
+                style={{ opacity: showMarkOnly ? 1 : 0 }}
+                aria-hidden={showMarkOnly ? undefined : "true"}
+              >
+                <YesMark
+                  ariaLabel="YES"
+                  className="block h-full w-auto select-none"
+                />
+              </span>
             </span>
           </Link>
 
