@@ -153,7 +153,7 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
         </span>
         <div className="flex items-center gap-1.5">
           {PHASE_ORDER.map((p, i) => {
-            const done = i < phaseIndex || Boolean(active[p]);
+            const done = i < phaseIndex || Boolean(valueFor(p));
             const isCur = i === phaseIndex;
             return (
               <span
