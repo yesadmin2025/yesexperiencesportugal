@@ -427,10 +427,15 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
           ],
           temperature:
             data.mode === "proposal"
-              ? 0.75
-              : data.narrativeStage === "reveal"
-                ? 0.65
-                : 0.82,
+              ? 0.72
+              : data.narrativeStage === "invitation"
+                ? 0.7
+                : data.narrativeStage === "recognition"
+                  ? 0.78
+                  : data.narrativeStage === "emergence"
+                    ? 0.78
+                    : 0.62,
+
           max_tokens: data.mode === "proposal" ? 80 : 60,
         }),
       });
