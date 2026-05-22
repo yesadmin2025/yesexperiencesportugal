@@ -18,6 +18,20 @@ interface Props {
   onRemove: (key: string) => void;
 }
 
+function ribbonPhrase(s: StudioStop, index: number, fallback: string): string {
+  const tag = s.tag?.trim().toLowerCase();
+  const byTag: Record<string, string> = {
+    wine: "provar devagar, sem pressa",
+    gastronomy: "sentar à mesa com tempo",
+    coast: "seguir a luz junto ao mar",
+    nature: "respirar onde tudo abranda",
+    heritage: "entrar numa história antiga",
+    wellness: "abrir espaço para silêncio",
+  };
+  if (tag && byTag[tag]) return byTag[tag];
+  return [fallback, "um momento que começa a revelar-se", "uma pausa escolhida pelo teu ritmo"][index % 3];
+}
+
 export function ItineraryRibbon({
   stops,
   totalMinutes,
@@ -54,8 +68,7 @@ export function ItineraryRibbon({
       </div>
       <ol className="divide-y divide-[color:var(--charcoal)]/8 max-h-[40vh] overflow-y-auto">
         {stops.map((s, i) => {
-          const phrase =
-            s.blurb && s.blurb.trim().length > 0 ? s.blurb.trim() : fallbackPhrase;
+          const phrase = ribbonPhrase(s, i, fallbackPhrase);
           return (
             <li
               key={s.key}
@@ -79,7 +92,6 @@ export function ItineraryRibbon({
                 </p>
                 <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/45 font-semibold">
                   {fmtMinutes(s.duration_minutes)}
-                  {s.tag && ` · ${s.tag}`}
                 </p>
               </div>
               <button
