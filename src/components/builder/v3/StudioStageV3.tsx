@@ -517,14 +517,31 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       {/* ── Cinematic full-screen choices (mood → who → intention) ──
           Replaces the static invitation/awakening chip layouts. One emotional
           question per screen, with 4 video cards as protagonists. */}
-      {!hasCoreIntent && (
+      {!hasCoreIntent && state.journeyType !== "multi" && (
         <CinematicChoices
           t={t}
-          active={{ mood: state.mood, who: state.who, intention: state.intention }}
+          active={{
+            mood: state.mood,
+            journeyType: state.journeyType,
+            who: state.who,
+            intention: state.intention,
+          }}
+          motionMs={Math.round(480 + affinityProfile.depth * 240)}
           onPick={handleEmotionPick}
           onComplete={() => {
             /* parent re-renders; reveal overlay handles the interlude */
           }}
+        />
+      )}
+
+      {/* ── Multi-day = elevated concierge (NOT a fallback) ── */}
+      {state.journeyType === "multi" && !hasStops && (
+        <MultiDayConcierge
+          t={t}
+          mood={state.mood}
+          who={state.who}
+          intention={state.intention}
+          onBack={() => patch({ journeyType: null })}
         />
       )}
 
