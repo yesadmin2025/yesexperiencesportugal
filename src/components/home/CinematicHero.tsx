@@ -407,7 +407,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
-          color: #FAF8F3;
+          color: var(--ivory);
           border-color: rgba(250, 248, 243, 0.55);
           background: rgba(250, 248, 243, 0.07);
           box-shadow:
