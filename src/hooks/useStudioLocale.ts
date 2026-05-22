@@ -38,13 +38,15 @@ export interface StudioDict {
   /** Emotion chips — let the user pick without typing. */
   emotionPrompt: string;
   /** Phased journey titles — one question at a time. */
-  phaseTitles: { mood: string; who: string; intention: string; pace: string };
-  phaseHints: { mood: string; who: string; intention: string; pace: string };
+  phaseTitles: { mood: string; depth: string; who: string; intention: string; pace: string };
+  phaseHints: { mood: string; depth: string; who: string; intention: string; pace: string };
   phaseStepLabel: string; // e.g. "Capítulo {n} de {total}"
   phaseSkip: string;
   phaseBack: string;
   phaseComplete: string; // soft line when all 4 chosen
   moodOptions: EmotionOption<"slow" | "curious" | "romantic" | "open" | "energetic">[];
+  /** Journey-type options — "a single day" vs "several days" (concierge). */
+  journeyTypeOptions: EmotionOption<"day" | "multi">[];
   whoOptions: EmotionOption<"couple" | "family" | "friends" | "solo">[];
   intentionOptions: EmotionOption<
     "wine" | "gastronomy" | "nature" | "heritage" | "coast" | "wellness"
@@ -60,6 +62,22 @@ export interface StudioDict {
   invitationWhisper: string;
   /** Subtle cue shown while the world is reacting to the first choice. */
   awakeningCue: string;
+  /** Grounded loading verbs by stage — implies intelligent curation. */
+  loadingVerbs: { curating: string; shaping: string; composing: string };
+  /** Multi-day concierge scene. */
+  conciergeTitle: string;
+  conciergeSub: string;
+  conciergeBegin: string;
+  conciergeBack: string;
+  conciergeTrust: string;
+  /** Guided suggestion mode (≥2 accepted). */
+  guidedCue: string;
+  guidedAnother: string;
+  /** Final reveal CTAs. */
+  reserveCta: string;
+  viewRoute: string;
+  hideRoute: string;
+  talkConcierge: string;
 }
 
 const DICTS: Record<StudioLocale, StudioDict> = {
