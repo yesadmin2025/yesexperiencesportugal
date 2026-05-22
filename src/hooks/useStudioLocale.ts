@@ -397,6 +397,11 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     conciergeTrust: "Hecho a mano · Llamada privada · Sin rutas plantilla",
     guidedCue: "Esto encaja a continuación.",
     guidedAnother: "ver otro",
+    emergingCues: {
+      early: "Quizá también te encante",
+      growing: "Esto encaja a continuación",
+      settled: "Esto sigue con naturalidad",
+    },
     reserveCta: "Reservar este día",
     viewRoute: "Ver ruta en el mapa",
     hideRoute: "Ocultar mapa",
