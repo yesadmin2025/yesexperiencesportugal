@@ -288,6 +288,25 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
+        <p
+          aria-hidden={composed ? undefined : "true"}
+          className="mb-7 sm:mb-9 max-w-[22ch] text-center font-serif italic font-normal"
+          style={{
+            fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
+            fontWeight: 400,
+            fontStyle: "italic",
+            lineHeight: 1.25,
+            letterSpacing: "-0.012em",
+            color: "var(--gold, #C9A96A)",
+            textShadow: "0 1px 24px rgba(0,0,0,0.5)",
+            fontSize: "clamp(20px, 3.4vw, 30px)",
+          }}
+        >
+          Every story is different.
+          <br />
+          So is yours.
+        </p>
+
         <span
           data-hero-field="eyebrow"
           className="mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase"
@@ -299,6 +318,7 @@ export function CinematicHero() {
         >
           {HERO_COPY.eyebrow}
         </span>
+
 
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
           <Link
