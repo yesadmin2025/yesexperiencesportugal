@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
+import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
@@ -43,6 +44,11 @@ import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.ta
 const TypographyAuditRoute = TypographyAuditRouteImport.update({
   id: '/typography-audit',
   path: '/typography-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioDriftRoute = StudioDriftRouteImport.update({
+  id: '/studio-drift',
+  path: '/studio-drift',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProposalsRoute = ProposalsRouteImport.update({
@@ -206,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
+  '/studio-drift': typeof StudioDriftRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
+  '/studio-drift': typeof StudioDriftRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -271,6 +279,7 @@ export interface FileRoutesById {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
+  '/studio-drift': typeof StudioDriftRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/proposals'
+    | '/studio-drift'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/proposals'
+    | '/studio-drift'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -369,6 +380,7 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/proposals'
+    | '/studio-drift'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -402,6 +414,7 @@ export interface RootRouteChildren {
   MultiDayRoute: typeof MultiDayRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   ProposalsRoute: typeof ProposalsRoute
+  StudioDriftRoute: typeof StudioDriftRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
@@ -426,6 +439,13 @@ declare module '@tanstack/react-router' {
       path: '/typography-audit'
       fullPath: '/typography-audit'
       preLoaderRoute: typeof TypographyAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio-drift': {
+      id: '/studio-drift'
+      path: '/studio-drift'
+      fullPath: '/studio-drift'
+      preLoaderRoute: typeof StudioDriftRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/proposals': {
@@ -661,6 +681,7 @@ const rootRouteChildren: RootRouteChildren = {
   MultiDayRoute: MultiDayRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   ProposalsRoute: ProposalsRoute,
+  StudioDriftRoute: StudioDriftRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
