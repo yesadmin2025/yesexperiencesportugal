@@ -46,6 +46,7 @@ import {
   WHOS,
 } from "@/components/builder/catalogue";
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
+import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
 
 /** Resolve a human label for current selections, used by the live header. */
 function labelFor<T extends { id: string; label: string }>(
@@ -873,6 +874,44 @@ function BuilderPage() {
             guests={guests}
             selectedElements={selectedElements}
             onClose={() => setCheckoutOpen(false)}
+          />
+        )}
+
+        {/* Persistent narrative companion — continuous conversational layer */}
+        {!checkoutOpen && (
+          <NarrativeCompanion
+            step={step}
+            mood={mood}
+            who={who}
+            intention={intention}
+            pace={pace}
+            narrative={narrative || null}
+            onApply={(parsed) => {
+              const patch: Partial<BuilderSearch> = {};
+              if (parsed.mood) patch.mood = parsed.mood;
+              if (parsed.who) patch.who = parsed.who;
+              if (parsed.intention) {
+                patch.intention = parsed.intention;
+                setIntentions([parsed.intention]);
+              }
+              if (parsed.pace) patch.pace = parsed.pace;
+
+              // Auto-advance to the first still-unset step (≤ live builder).
+              const nextMood = patch.mood ?? mood;
+              const nextWho = patch.who ?? who;
+              const nextIntention = patch.intention ?? intention;
+              let target: Step = step as Step;
+              if (!nextMood) target = 1;
+              else if (!nextWho) target = 2;
+              else if (!nextIntention) target = 3;
+              else if (step < 5) target = 5;
+              if (target !== step) patch.step = target;
+
+              if (Object.keys(patch).length > 0) {
+                setSearch(patch);
+                setNarrativeApplied(true);
+              }
+            }}
           />
         )}
       </article>
