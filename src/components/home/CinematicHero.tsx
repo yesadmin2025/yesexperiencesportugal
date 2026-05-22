@@ -20,10 +20,8 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 // Single held clip — empty Atlantic coastal road, golden hour
 // ─────────────────────────────────────────────────────────────────────────────
 
-import heroSunsetRoad from "../../../public/video/hero-sunset-road.mp4.asset.json";
-
 const HERO_CLIP = {
-  src: heroSunsetRoad.url,
+  src: "/__l5e/assets-v1/43a722f9-fa03-41ac-a497-d210e4b4b625/hero-sunset-road.mp4",
   poster: "/video/hero-sunset-road-poster.jpg",
   alt: "An empty coastal Portuguese road at golden hour sunset, seen from inside a car",
 } as const;
