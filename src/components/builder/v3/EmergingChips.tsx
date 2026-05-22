@@ -15,10 +15,16 @@ interface Props {
   fallbackPhrase: string;
   addLabel: string;
   cues?: { early: string; growing: string; settled: string };
-  /** Optional AI-composed sensory line that supersedes the stage cue. */
+  /** Optional AI-composed sensory line (rare). When absent, the static cue
+   *  shows. Kept here for callers that still want a persistent eyebrow; the
+   *  Studio now surfaces fragments via the transient NarrativeBeat instead. */
   eyebrowOverride?: string | null;
+  /** 0–1 pacing from affinity profile — slow travellers get longer breathing
+   *  room between chip reveals; energetic travellers get a quicker rhythm. */
+  pacing?: number;
   onAccept: (stop: StudioStop) => void;
 }
+
 
 const CARD_CLIPS = [
   "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
