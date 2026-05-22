@@ -295,10 +295,10 @@ export function MultiDayConcierge({
             )}
           </div>
 
-          {/* Beat 3 — one quiet, inevitable CTA. No icon, no trust bullets,
-              no competing alternatives. */}
+          {/* Beat 3 — quiet invitation. Tap opens a handwritten-note moment
+              in-place; the mechanism (WhatsApp) stays invisible. */}
           <div
-            className={`flex flex-col items-center gap-4 transition-all duration-[900ms] ease-out ${
+            className={`flex flex-col items-stretch gap-5 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
               layer >= 3
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-2 pointer-events-none"
@@ -306,17 +306,67 @@ export function MultiDayConcierge({
           >
             <span
               aria-hidden="true"
-              className="block h-px w-6 bg-[color:var(--ivory)]/25"
+              className="block h-px w-6 bg-[color:var(--ivory)]/25 mx-auto"
             />
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center justify-center min-h-[54px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] text-[color:var(--charcoal)] px-8 py-3 text-[12px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.4)]"
-              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
-            >
-              {t.conciergeBegin}
-            </a>
+
+            {!noteOpen ? (
+              <button
+                type="button"
+                onClick={() => setNoteOpen(true)}
+                className="mx-auto inline-flex items-center justify-center min-h-[54px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] text-[color:var(--charcoal)] px-8 py-3 text-[12px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.4)]"
+                style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+              >
+                {t.conciergeBegin}
+              </button>
+            ) : (
+              <div className="flex flex-col gap-5 animate-in fade-in duration-[900ms] text-left">
+                {/* Handwritten note — feels like a margin in a private
+                    notebook. No label, no border-box, just a baseline. */}
+                <label className="flex flex-col gap-2">
+                  <span
+                    className="text-[12.5px] italic text-[color:var(--ivory)]/80 text-center"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  >
+                    {notePrompt(locale)}
+                  </span>
+                  <textarea
+                    ref={noteRef}
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    rows={3}
+                    placeholder={notePlaceholder(locale)}
+                    className="w-full bg-transparent text-[color:var(--ivory)] placeholder:text-[color:var(--ivory)]/35 italic text-[15.5px] leading-[1.6] py-2 px-0 resize-none border-0 border-b border-[color:var(--ivory)]/25 focus:border-[color:var(--gold)]/70 focus:outline-none focus:ring-0 transition-colors"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  />
+                </label>
+
+                {/* Single contact line — no email/whatsapp labels, no icons. */}
+                <label className="sr-only" htmlFor="md-contact">
+                  {contactPlaceholder(locale)}
+                </label>
+                <input
+                  id="md-contact"
+                  type="text"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  placeholder={contactPlaceholder(locale)}
+                  className="w-full bg-transparent text-[color:var(--ivory)] placeholder:text-[color:var(--ivory)]/35 text-[13px] tracking-[0.04em] py-2 px-0 border-0 border-b border-[color:var(--ivory)]/25 focus:border-[color:var(--gold)]/70 focus:outline-none focus:ring-0 transition-colors"
+                  style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+                />
+
+                <button
+                  type="button"
+                  onClick={handleSend}
+                  disabled={!canSend}
+                  className="mx-auto mt-1 inline-flex items-center justify-center min-h-[52px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] disabled:bg-[color:var(--ivory)]/35 disabled:cursor-not-allowed text-[color:var(--charcoal)] px-7 py-3 text-[12px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.4)]"
+                  style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+                >
+                  {sendLabel(locale)}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
