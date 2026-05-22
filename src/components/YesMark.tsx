@@ -4,7 +4,7 @@
  * Used as the cinematic logo state at the top of the homepage hero. As soon as
  * the user begins scrolling, the navbar crossfades to the full lockup (<Logo />).
  *
- * Asset: refined brush-script "YES" in brand teal (#295B61), transparent PNG.
+ * Asset: refined brush-script "YES" in brand teal (var(--teal)), transparent PNG.
  */
 
 import yesMarkAsset from "@/assets/yes-mark-refined.png";
