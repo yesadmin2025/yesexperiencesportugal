@@ -97,29 +97,33 @@ export function CinematicHero() {
           className="absolute inset-0 pointer-events-none"
           style={{ background: "rgba(38, 30, 22, 0.06)" }}
         />
-        {/* Soft highlight bloom — natural lens diffusion around the sun */}
+        {/* Soft highlight bloom — natural lens diffusion around the sun, gently breathing */}
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none mix-blend-screen"
           style={{
             background:
-              "radial-gradient(ellipse 45% 32% at 38% 58%, rgba(255, 196, 130, 0.18) 0%, rgba(255, 196, 130, 0.06) 35%, transparent 70%)",
+              "radial-gradient(ellipse 45% 32% at 38% 58%, rgba(255, 196, 130, 0.20) 0%, rgba(255, 196, 130, 0.07) 35%, transparent 70%)",
+            animation: skipIntro ? undefined : "heroSunBreath 9s ease-in-out infinite",
           }}
         />
-        {/* Editorial vignette — single soft radial */}
+        {/* Editorial vignette — single soft radial, much lighter than before */}
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.42) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.26) 100%)",
           }}
         />
-        {/* Mobile lift for AA contrast on gold text */}
+        {/* Mobile contrast lift — only behind the stanza band, leaves sky/sun untouched */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 md:hidden pointer-events-none"
-          style={{ background: "rgba(0,0,0,0.14)" }}
+          className="absolute inset-x-0 top-[30%] h-[40%] md:hidden pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+          }}
         />
         {/* Ultra-subtle film grain — fine texture, ~1% opacity */}
         <div
