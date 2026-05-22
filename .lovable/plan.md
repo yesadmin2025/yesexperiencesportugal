@@ -1,92 +1,85 @@
-## Scope
+# Hero Rebuild — Cinematic Editorial Plan
 
-One-pass rework of homepage hero, mobile layout, brand-message coverage, and Studio Builder. Locked snapshots/specs will be updated to match. No backend changes.
+## Emotional direction
+"You are entering a private, cinematic journey through Portugal."
+Slow, warm, observational. A24-meets-luxury-travel-editorial. Restraint over spectacle. The viewer should feel held, not sold to.
 
-## 1. Hero — continuous cinematic film
+## Video concept
 
-Current state: 5-scene "chapter" stage with cross-fades, debug overlays, A/B variants, and timed text per scene. The continuous file `public/video/film/yes-hero-film-1080.mp4` already exists.
+**Approach: real cinematic footage only — no AI-generated video.**
 
-Changes in `src/routes/index.tsx` + new `src/components/home/CinematicHero.tsx`:
-- Replace the multi-scene stage with ONE `<video>` element (1080 + 720 sources, poster `yes-hero-poster.jpg`), `autoPlay muted playsInline loop preload="auto"`, full-bleed via `absolute inset-0 w-full h-full object-cover` inside a `min-h-[100svh]` section. No rounded corners, no inner box, no chapter splits.
-- Mobile: section is edge-to-edge (no container-x, no side gutters). Subtle bottom gradient `from-charcoal/55 to-transparent` only where text sits, so the image stays uncropped.
-- Timed overlays driven by `video.currentTime` (single `requestAnimationFrame` loop), 4 beats keyed to film timestamps:
-  - 0.5–4s: eyebrow "Private · By locals · Your way"
-  - 3–9s: H1 line 1 "Portugal is the stage."
-  - 6–12s: H1 line 2 "You write the story." (Georgia italic)
-  - 10s+: subheadline + CTAs (`Create your story` primary, `Explore signature experiences` ghost) + microcopy
-- CTAs render `opacity-0 pointer-events-none` until ~10s, then fade up. No CTA above the hero (remove any pre-hero strip).
-- Reduced-motion fallback: hide the video, show poster + show ALL text + CTAs immediately.
-- Delete: `HeroJourneyOverlay`, `HeroChapterDebugOverlay` usage, `useHeroVariant` scene swap, per-scene cross-fade machinery on the home route. Keep `HERO_COPY` as the source of truth for the rendered strings.
+Two options for sourcing (pick one at approval):
+- **Option A — Curated stock**: 4–5 short clips from premium libraries (Artgrid, Filmsupply, or Pexels/Coverr for free-tier). Hand-picked for warm golden-hour tones, soft handheld motion, human moments.
+- **Option B — Hybrid**: 1 anchor real clip + subtle Ken Burns/parallax on 2–3 still editorial photographs (real photography, not AI). Lighter weight, even more editorial.
 
-## 2. Mobile layout — native, full-width, 20px padding
+**Mood**: golden hour, soft contrast, slightly desaturated, grain-friendly. Natural light only. No drone showreels, no time-lapses, no fast cuts.
 
-Global change in `src/styles.css` to the `.container-x` utility:
-- Mobile (default): `padding-inline: 20px; max-width: 100%;`
-- ≥640px: `padding-inline: 24px;`
-- ≥1024px: `padding-inline: 32px; max-width: 80rem; margin-inline: auto;`
+**Pacing**: each scene holds 6–8s. One slow crossfade between scenes (1.2s). Total loop ~30s. Footage plays at 0.85× for a quiet, contemplative cadence.
 
-So mobile uses full width with 20px gutters; the narrow centered column only kicks in on tablet/desktop. Audit `src/routes/index.tsx`, `src/components/Footer.tsx`, `src/components/home/*` for any `max-w-screen-sm`/`max-w-md` wrappers on mobile and remove. Add `text-pretty` / `hyphens: manual` to headings to prevent word-by-word breaks; ensure `overflow-wrap: normal` + reasonable `min-width` on grid children to stop the "one word per line" effect.
+## Scene sequence (4 scenes)
 
-## 3. Brand message coverage
+1. **Light** — sun filtering through a window onto an old tile wall or linen curtain. Intimate, still.
+2. **Land** — wide coastal cliff or vineyard at golden hour, slow handheld drift. Sense of place.
+3. **Human** — hands pouring wine, breaking bread, or a quiet local gesture. Close, tactile.
+4. **Path** — empty cobblestone street or trail leading away, soft footsteps implied. Invitation.
 
-Restructure `APPROVED_HOMEPAGE_SECTIONS` and the matching JSX to communicate all 10 truths. Single, scannable mobile order:
+Sequence reads as a short film: light → place → people → invitation.
 
-```text
-1.  Hero (cinematic film, copy + CTAs at end)
-2.  Trust strip (reviews + "real local guidance")
-3.  What we do — 4 paths grid (Signature · Tailored · Studio Builder · Proposals)
-4.  Studio Builder promo card (visual, link to /builder)
-5.  Signature Experiences carousel (4 real tours)
-6.  Occasions band (Private days · Proposals · Celebrations · Corporate · Private groups · Multi-day) — 6 small cards on mobile, 2 cols
-7.  Why YES (4 manifesto cards: instant booking, local guidance, real operation, your way)
-8.  FAQ
-9.  Final CTA — talk to a local
-```
+## Typography
 
-Each section gets one sentence-case H2 + one supporting line. Update `src/content/approved-homepage-structure.ts` to match (9 blocks).
+- **Headline**: serif, warm muted gold (`#C9A96A` / `--gold`), not white. Georgia or Cormorant Garamond italic for emphasis lines, regular for anchor lines.
+- **Eyebrow / CTA**: Inter, uppercase, 0.28em tracking, ivory at 65% opacity.
+- **Size**: clamp(28px, 5.4vw, 58px) — slightly smaller than current, more editorial.
+- **Weight**: 400 only. No bold. Letterspacing tight (-0.012em) on serif.
+- **Shadow**: subtle `0 1px 24px rgba(0,0,0,0.4)` for legibility, never a dark overlay band.
 
-## 4. Studio Builder — interactive journey creator
+## Text sequence & timing
 
-`src/routes/builder.tsx` + `src/components/builder/*`:
-- Replace any form-feeling step with a card-grid stepper. Each step = full-bleed mobile screen with one question, 2–4 visual cards (image + label), tap-to-pick, no labels-on-the-left layout.
-- Steps in order:
-  1. Experience type (Private day · Multi-day · Celebration · Proposal · Corporate · Private group) — 6 cards
-  2. Group type (Couple · Family · Friends · Team) — 4 cards
-  3. Mood (Coast · Wine · Hidden · Romantic · Active · Cultural) — 6 cards, real Viator imagery
-  4. Region — Portugal map preview (reuse `BuilderMap`/`PremiumMap`) with tappable regions
-  5. Live route summary — map + selected stops list + storytelling preview paragraph (tone-only AI output)
-  6. Final booking CTA — single sticky button "Reserve instantly"
-- Add `BuilderJourneyHeader` showing animated step dots + step title.
-- Reuse existing `BuilderMap` (per-region zoom memory preserved).
-- Keep all server-fn calls / persistence / Supabase rate limiting untouched.
+Reduce from 10 phrases to **5 phrases** — less is more.
 
-## 5. Style — palette enforcement
+1. "Portugal, slowly." *(top-left, 5.5s)*
+2. "Hidden chapters, written by those who live them." *(center-left, 6s)*
+3. "A private day. A celebration. A journey." *(center, 6s)*
+4. "Yours to live." *(lower-right, 5s)*
+5. "Begin writing." *(center, 5s — holds until CTAs reveal)*
 
-Audit pass on home + builder for any non-token colors. Verify only the 8 tokens are used (`--teal #295B61`, `--gold #C9A96A`, `--ivory #FAF8F3`, `--charcoal #2E2E2E`, plus `--teal-2`, `--gold-soft`, `--sand`, `--charcoal-soft`). Replace any literal hex/`text-white`/`bg-black` with tokens. No new tokens added.
+**Per-phrase timing**:
+- Fade in: 1600ms (slower, more cinematic)
+- Hold: 4000–4500ms
+- Fade out: 1200ms
+- Gap: 800ms
 
-## 6. Locked tests — update to match
+**Motion**: opacity + 6px translateY only. No parallax on text. Each phrase anchors to a different quadrant (editorial film-title style). One phrase visible at a time.
 
-These specs/snapshots will be updated (not bypassed) in the same diff:
-- `src/content/hero-copy.ts` — keep strings, but timing of reveal changes. Update `e2e/hero-copy.spec.ts` waits to ≥10s.
-- `e2e/hero-chapter-crossfade.spec.ts` + `e2e/hero-chapter-crossfade-mobile.spec.ts` + `src/__tests__/hero-scene-contract.test.tsx` — remove (no longer applicable; single continuous film).
-- `e2e/hero-chapter-timeline.spec.ts`, `src/__tests__/hero-credits-pacing.test.ts`, `src/__tests__/hero-timeline-scaling.test.ts` — replace with a single `hero-cinematic-timing.test.ts` asserting the 4 timed reveals.
-- `src/content/approved-homepage-structure.ts` + `src/routes/__tests__/-homepage-structure.test.ts` + `e2e/homepage-structure.spec.ts` — updated to the 9-block order above.
-- `e2e/builder-stepper-keyboard.spec.ts`, `src/__tests__/builder-step-advance.test.ts` — updated selectors for the new card-grid steps.
-- All visual-regression PNG baselines on hero/homepage/builder will be regenerated next CI run; mark them stale via empty snapshot directories.
+**Subtle parallax on video**: ±12px Y on scroll, capped. Reduced-motion: disables all motion, shows scene 5 + CTAs immediately.
 
-## 7. Out of scope (explicit)
+## CTAs (revealed after sequence)
 
-- No backend / DB / edge-function changes.
-- No payments / Bokun changes.
-- Hero copy strings stay byte-identical to `HERO_COPY` lock.
-- No new colors, fonts, or tokens.
-- No competitor copy, no invented tours, no stock imagery.
+Two minimal buttons, identical to current refined treatment but recolored:
+- `[ Build Your Journey ]` — solid ivory bg, charcoal text
+- `[ Explore Experiences ]` — ghost, gold-tinted border `rgba(201,169,106,0.4)`, ivory text
 
-## Risk + verification
+Squared corners, 0.28em tracking, Inter. No glassmorphism.
 
-- Largest risk: stale visual snapshots will fail until baselines regenerate. CI will go red on the first push; that's expected and called out.
-- Verification: typecheck (auto), `vitest run` for the rewritten unit tests, manual QA at 393×851 (the canonical mobile viewport) and 1280×800.
+## Overlay & grading
 
-## Deliverables
+- Single radial vignette `rgba(0,0,0,0.15) → rgba(0,0,0,0.42)`.
+- Video filter: `saturate(0.88) contrast(1.04) brightness(0.82)` — warmer, slightly faded film stock.
+- Optional faint film grain overlay (CSS noise, 4% opacity) — only if approved.
 
-~12 file edits, 1 new component (`CinematicHero`), 1 new test (`hero-cinematic-timing.test.ts`), 3 deleted obsolete specs. Estimated diff: ~1500 lines net.
+## Performance & constraints
+
+- One `<video>` at a time, `preload="metadata"`, muted/loop/playsinline.
+- Total video weight target: ≤ 8 MB across all clips (or Option B: ≤ 3 MB).
+- Poster image for instant paint.
+- All existing `HERO_COPY` / `HERO_PHRASES` data probes preserved so e2e locks pass — `HERO_PHRASES` updated in `src/content/hero-copy.ts` (5 entries) and copy locks updated in sync.
+- No new dependencies.
+
+## Open questions for approval
+
+1. **Sourcing**: Option A (curated stock clips) or Option B (hybrid: 1 clip + still photography with Ken Burns)?
+2. **Phrase copy**: approve the 5 phrases above, or refine wording?
+3. **Film grain overlay**: include or skip?
+4. **Update e2e copy locks**: confirm OK to update `HERO_PHRASES` (this will require updating `hero-copy.ts` and the byte-exact tests).
+
+Awaiting your approval before touching any code or generating assets.
