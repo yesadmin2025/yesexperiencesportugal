@@ -203,7 +203,7 @@ export function CinematicHero() {
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[210px] sm:min-w-[220px] px-7 py-[12px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -213,15 +213,15 @@ export function CinematicHero() {
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
               Begin Your Journey
-              <svg className="hero-cta__arrow" width="12" height="9" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg className="hero-cta__arrow" width="11" height="8" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </span>
           </Link>
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[210px] sm:min-w-[220px] px-7 py-[12px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
