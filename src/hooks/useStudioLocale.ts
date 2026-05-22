@@ -37,6 +37,13 @@ export interface StudioDict {
   speechLang: string;
   /** Emotion chips — let the user pick without typing. */
   emotionPrompt: string;
+  /** Phased journey titles — one question at a time. */
+  phaseTitles: { mood: string; who: string; intention: string; pace: string };
+  phaseHints: { mood: string; who: string; intention: string; pace: string };
+  phaseStepLabel: string; // e.g. "Capítulo {n} de {total}"
+  phaseSkip: string;
+  phaseBack: string;
+  phaseComplete: string; // soft line when all 4 chosen
   moodOptions: EmotionOption<"slow" | "curious" | "romantic" | "open" | "energetic">[];
   whoOptions: EmotionOption<"couple" | "family" | "friends" | "solo">[];
   intentionOptions: EmotionOption<
