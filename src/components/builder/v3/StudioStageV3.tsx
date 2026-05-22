@@ -363,18 +363,50 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     );
   }
 
-  /* ── LIVING SCENE ── */
+  /* ── LIVING SCENE — cinematic phase progression ──
+   *
+   * Only ONE emotional layer dominates at any moment:
+   *   invitation → awakening → emergence → living → memory
+   *
+   * Phase is derived from state, not stored, so the world reacts
+   * organically as the traveller shapes it.
+   */
   const hasStops = state.acceptedStops.length > 0;
+  const hasIntent = Boolean(state.mood || state.intention || state.who);
+  const hasSuggestions = suggestionStops.length > 0;
+
+  type Phase = "invitation" | "awakening" | "emergence" | "living" | "memory";
+  const phase: Phase = state.closing
+    ? "memory"
+    : hasStops
+      ? "living"
+      : hasSuggestions && hasIntent
+        ? "emergence"
+        : hasIntent
+          ? "awakening"
+          : "invitation";
+
+  const showChrome = phase !== "invitation";
+  const showChapter = phase === "awakening" || phase === "emergence" || phase === "living";
+  const showMap = phase === "living";
+  const showRibbonToggle = phase === "living";
+  const showSaveCta = phase === "living" && state.acceptedStops.length >= 2;
 
   return (
     <div className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)] animate-in fade-in duration-700">
       <AmbientStage
         mood={state.mood}
         regionLabel={regionLabel(state.regionKey)}
-        veil={hasStops ? "medium" : "deep"}
+        veil={phase === "living" ? "medium" : "deep"}
       />
 
-      <header className="absolute top-0 inset-x-0 z-30 flex items-start justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-5">
+      {/* Soft header — fades in only after the world begins reacting */}
+      <header
+        className={`absolute top-0 inset-x-0 z-30 flex items-start justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-5 transition-opacity duration-[700ms] ${
+          showChrome ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        aria-hidden={!showChrome}
+      >
         <div className="flex flex-col gap-2 max-w-[60vw]">
           {onExit && (
             <button
@@ -387,11 +419,13 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
               {t.back}
             </button>
           )}
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
-            <Compass size={11} />
-            {regionLabel(state.regionKey)}
-          </span>
-          <ChapterLine text={state.chapter} />
+          {state.regionKey && (
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] animate-in fade-in duration-700">
+              <Compass size={11} />
+              {regionLabel(state.regionKey)}
+            </span>
+          )}
+          {showChapter && <ChapterLine text={state.chapter} />}
         </div>
 
         <div className="flex items-center gap-2">
@@ -405,11 +439,11 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             <RotateCcw size={13} />
           </button>
           <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" />
-          {hasStops && (
+          {showRibbonToggle && (
             <button
               type="button"
               onClick={() => setRibbonOpen((o) => !o)}
-              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/92 backdrop-blur px-3.5 py-2 min-h-[44px] border border-[color:var(--gold)]/40 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] shadow-[0_6px_20px_rgba(0,0,0,0.25)] hover:border-[color:var(--gold)] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/92 backdrop-blur px-3.5 py-2 min-h-[44px] border border-[color:var(--gold)]/40 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] shadow-[0_6px_20px_rgba(0,0,0,0.25)] hover:border-[color:var(--gold)] transition-colors animate-in fade-in zoom-in-95 duration-500"
               aria-expanded={ribbonOpen}
               aria-controls="itinerary-ribbon"
             >
@@ -420,29 +454,36 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         </div>
       </header>
 
-      <div className="absolute top-[120px] inset-x-0 z-30 flex justify-center px-4">
-        <WhisperLayer text={state.whisper} onDismiss={() => setWhisper(null)} />
-      </div>
+      {/* Whisper — only meaningful once the journey exists */}
+      {phase === "living" && (
+        <div className="absolute top-[120px] inset-x-0 z-30 flex justify-center px-4">
+          <WhisperLayer text={state.whisper} onDismiss={() => setWhisper(null)} />
+        </div>
+      )}
 
+      {/* Living map — only present once journey is real (phase=living).
+          Before that the map is fully out of the visual hierarchy so
+          the atmosphere dominates without competing focal points. */}
       <div
-        className={`absolute z-10 transition-all duration-[700ms] ${
-          hasStops
-            ? "left-3 right-3 top-[170px] bottom-[300px] sm:left-6 sm:right-6 sm:top-[180px] sm:bottom-[320px]"
+        className={`absolute z-10 transition-all duration-[900ms] ease-out ${
+          showMap
+            ? "left-3 right-3 top-[170px] bottom-[260px] sm:left-6 sm:right-6 sm:top-[180px] sm:bottom-[300px] opacity-100"
             : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-[1px] opacity-0 pointer-events-none"
         }`}
+        aria-hidden={!showMap}
       >
         <LivingMap
           stops={routedStops}
           regionCenter={regionCenter}
           regionKey={state.regionKey ?? undefined}
-          revealed={hasStops}
+          revealed={showMap}
         />
       </div>
 
-      {ribbonOpen && hasStops && (
+      {ribbonOpen && showRibbonToggle && (
         <div
           id="itinerary-ribbon"
-          className="absolute z-30 top-[100px] right-3 sm:right-6 w-[min(92vw,360px)]"
+          className="absolute z-30 top-[100px] right-3 sm:right-6 w-[min(92vw,360px)] animate-in fade-in slide-in-from-top-2 duration-500"
         >
           <ItineraryRibbon
             stops={state.acceptedStops}
@@ -455,70 +496,127 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         </div>
       )}
 
-      <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 flex flex-col gap-3">
-        {state.acceptedStops.length >= 2 && (
-          <div className="flex justify-center animate-in fade-in slide-in-from-bottom-1 duration-500">
-            <button
-              type="button"
-              onClick={openMemory}
-              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)]/85 backdrop-blur px-4 py-2 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] border border-[color:var(--gold)]/40 hover:border-[color:var(--gold)] hover:bg-[color:var(--charcoal)] transition-colors min-h-[40px]"
-            >
-              <BookmarkPlus size={13} className="text-[color:var(--gold)]" />
-              {t.saveStory}
-            </button>
-          </div>
-        )}
-
-        <EmergingChips
-          suggestions={suggestionStops}
-          acceptedKeys={state.acceptedStops.map((s) => s.key)}
-          fallbackPhrase={t.suggestionFallback}
-          addLabel={t.composerSend}
-          onAccept={handleAccept}
-        />
-
-        {/* Emotion chips — always available, no typing required */}
-        <EmotionChips
-          t={t}
-          tone="light"
-          active={{
-            mood: state.mood,
-            who: state.who,
-            intention: state.intention,
-            pace: state.pace,
-          }}
-          onPick={handleEmotionPick}
-        />
-
-        {/* Composer — cinematic crossfade between collapsed pill and open sheet */}
-        <div className="flex justify-center">
-          <div
-            key={composerCollapsed ? "pill" : "sheet"}
-            className="w-full max-w-2xl animate-in fade-in zoom-in-95 duration-500 ease-out"
+      {/* ── Phase: INVITATION ──
+          Atmosphere dominates. A single gentle invitation appears.
+          No map, no chrome, no suggestions — only emotion. */}
+      {phase === "invitation" && (
+        <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col items-center gap-5 animate-in fade-in slide-in-from-bottom-4 duration-[900ms]">
+          <p
+            className="text-center font-serif italic text-[15px] leading-snug text-[color:var(--ivory)]/85 max-w-[28ch]"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
-            {composerCollapsed ? (
-              <div className="flex justify-center">
+            {t.invitationWhisper}
+          </p>
+          <EmotionChips
+            t={t}
+            tone="light"
+            active={{
+              mood: state.mood,
+              who: state.who,
+              intention: state.intention,
+              pace: state.pace,
+            }}
+            onPick={handleEmotionPick}
+          />
+        </div>
+      )}
+
+      {/* ── Phase: AWAKENING ──
+          The world is reacting to intention. Chapter line at top dominates.
+          A soft cue + remaining emotion chips. No map, no suggestions yet. */}
+      {phase === "awakening" && (
+        <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col items-center gap-4 animate-in fade-in duration-[900ms]">
+          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--ivory)]/65">
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)] animate-pulse"
+              aria-hidden="true"
+            />
+            {t.awakeningCue ?? "shaping your journey"}
+          </span>
+          <EmotionChips
+            t={t}
+            tone="light"
+            active={{
+              mood: state.mood,
+              who: state.who,
+              intention: state.intention,
+              pace: state.pace,
+            }}
+            onPick={handleEmotionPick}
+          />
+        </div>
+      )}
+
+      {/* ── Phase: EMERGENCE ──
+          Suggestions emerge softly from the atmosphere. No map yet,
+          no composer — just the cinematic reveal of curated options. */}
+      {phase === "emergence" && (
+        <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-3 duration-[900ms]">
+          <EmergingChips
+            suggestions={suggestionStops}
+            acceptedKeys={state.acceptedStops.map((s) => s.key)}
+            fallbackPhrase={t.suggestionFallback}
+            addLabel={t.composerSend}
+            onAccept={handleAccept}
+          />
+        </div>
+      )}
+
+      {/* ── Phase: LIVING ──
+          Journey exists. Map dominates as protagonist. Suggestions + composer
+          live quietly at the bottom. */}
+      {phase === "living" && (
+        <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 flex flex-col gap-3 animate-in fade-in duration-[700ms]">
+          {showSaveCta && (
+            <div className="flex justify-center animate-in fade-in slide-in-from-bottom-1 duration-500">
+              <button
+                type="button"
+                onClick={openMemory}
+                className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)]/85 backdrop-blur px-4 py-2 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] border border-[color:var(--gold)]/40 hover:border-[color:var(--gold)] hover:bg-[color:var(--charcoal)] transition-colors min-h-[40px]"
+              >
+                <BookmarkPlus size={13} className="text-[color:var(--gold)]" />
+                {t.saveStory}
+              </button>
+            </div>
+          )}
+
+          <EmergingChips
+            suggestions={suggestionStops}
+            acceptedKeys={state.acceptedStops.map((s) => s.key)}
+            fallbackPhrase={t.suggestionFallback}
+            addLabel={t.composerSend}
+            onAccept={handleAccept}
+          />
+
+          <div className="flex justify-center">
+            <div
+              key={composerCollapsed ? "pill" : "sheet"}
+              className="w-full max-w-2xl animate-in fade-in zoom-in-95 duration-500 ease-out"
+            >
+              {composerCollapsed ? (
+                <div className="flex justify-center">
+                  <NarrativeComposer
+                    busy={composerBusy}
+                    collapsed
+                    t={t}
+                    seed={composerSeed}
+                    onExpand={() => setComposerCollapsed(false)}
+                    onSubmit={handleSubmit}
+                  />
+                </div>
+              ) : (
                 <NarrativeComposer
                   busy={composerBusy}
-                  collapsed
+                  collapsed={false}
                   t={t}
                   seed={composerSeed}
-                  onExpand={() => setComposerCollapsed(false)}
                   onSubmit={handleSubmit}
                 />
-              </div>
-            ) : (
-              <NarrativeComposer
-                busy={composerBusy}
-                collapsed={false}
-                t={t}
-                seed={composerSeed}
-                onSubmit={handleSubmit}
-              />
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {state.closing && state.regionKey && (
         <MemoryCard

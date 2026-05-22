@@ -56,6 +56,10 @@ export interface StudioDict {
   resumeRestart: string;
   /** Soft suggestion phrase when a stop has no editorial blurb. */
   suggestionFallback: string;
+  /** Single line shown over the atmosphere before the user picks anything. */
+  invitationWhisper: string;
+  /** Subtle cue shown while the world is reacting to the first choice. */
+  awakeningCue: string;
 }
 
 const DICTS: Record<StudioLocale, StudioDict> = {
@@ -135,6 +139,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeContinue: "Continuar",
     resumeRestart: "Começar de novo",
     suggestionFallback: "um momento à tua espera",
+    invitationWhisper: "Respira. Escolhe o que sentes — o resto desperta sozinho.",
+    awakeningCue: "Portugal está a responder…",
   },
   en: {
     eyebrow: "Experience Studio",
@@ -212,6 +218,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeContinue: "Continue",
     resumeRestart: "Start over",
     suggestionFallback: "a moment waiting for you",
+    invitationWhisper: "Breathe. Pick what you feel — the rest awakens on its own.",
+    awakeningCue: "Portugal is responding…",
   },
   es: {
     eyebrow: "Experience Studio",
@@ -289,6 +297,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeContinue: "Continuar",
     resumeRestart: "Empezar de nuevo",
     suggestionFallback: "un momento esperándote",
+    invitationWhisper: "Respira. Elige lo que sientes — el resto despierta solo.",
+    awakeningCue: "Portugal está respondiendo…",
   },
   fr: {
     eyebrow: "Experience Studio",
@@ -366,6 +376,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeContinue: "Continuer",
     resumeRestart: "Recommencer",
     suggestionFallback: "un instant qui t'attend",
+    invitationWhisper: "Respire. Choisis ce que tu ressens — le reste s'éveille seul.",
+    awakeningCue: "Le Portugal répond…",
   },
 };
 
