@@ -30,11 +30,12 @@ const HERO_CLIP = {
 // Pacing — one breath (intimate, observational — not promotional)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const LINE1_DELAY_MS = 1800;
-const LINE2_DELAY_MS = 3800;
-const CTA_DELAY_MS = 7000;
-const FADE_MS = 1800;
-const CTA_FADE_MS = 1500;
+const LINE1_DELAY_MS = 2200;
+const LINE2_DELAY_MS = 5200;
+const CTA_DELAY_MS = 8800;
+const FADE_MS = 2600;
+const CTA_FADE_MS = 1800;
+
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
