@@ -818,8 +818,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
             cues={t.emergingCues}
+            pacing={affinityProfile.pacing}
             onAccept={handleAccept}
           />
+
         </div>
       )}
 
