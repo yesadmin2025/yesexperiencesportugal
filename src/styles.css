@@ -4667,3 +4667,144 @@ html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* ────────────────────────────────────────────────────────────────
+   Cinematic hero CTA pair (.hero-cta)
+   ----------------------------------------------------------------
+   Tactile, editorial buttons — NOT teal, so they stay out of the
+   sunset palette. Primary = ivory surface with quiet depth.
+   Secondary = translucent charcoal scrim with ivory edge.
+   Both share a slow sheen sweep on hover and a refined arrow
+   ramp. Used only inside .hero-cinematic.
+   ──────────────────────────────────────────────────────────── */
+.hero-cta {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  transition:
+    transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    background-color 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    color 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform, box-shadow;
+}
+
+/* Slow ivory sheen — passes once on hover, no shimmer loop */
+.hero-cta__sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    color-mix(in oklab, var(--ivory) 28%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  opacity: 0;
+}
+.hero-cta:hover .hero-cta__sheen,
+.hero-cta:focus-visible .hero-cta__sheen {
+  transform: translateX(120%);
+  opacity: 1;
+}
+
+.hero-cta__arrow {
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    color 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  color: color-mix(in oklab, var(--charcoal) 70%, transparent);
+}
+.hero-cta:hover .hero-cta__arrow,
+.hero-cta:focus-visible .hero-cta__arrow {
+  transform: translateX(4px);
+}
+
+/* ── Primary: tactile ivory ───────────────────────────────────── */
+.hero-cta--primary {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--ivory) 99%, white) 0%,
+    var(--ivory) 55%,
+    color-mix(in oklab, var(--ivory) 92%, var(--sand)) 100%
+  );
+  color: var(--charcoal);
+  border: 1px solid color-mix(in oklab, var(--gold) 38%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 0 color-mix(in oklab, var(--charcoal) 8%, transparent),
+    0 1px 1px rgba(20, 14, 8, 0.10),
+    0 8px 22px -10px rgba(20, 14, 8, 0.32),
+    0 22px 44px -22px rgba(20, 14, 8, 0.42);
+}
+.hero-cta--primary .hero-cta__arrow {
+  color: color-mix(in oklab, var(--gold-deep, #8a6f2e) 92%, var(--charcoal));
+}
+.hero-cta--primary:hover,
+.hero-cta--primary:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in oklab, var(--gold) 62%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 0 color-mix(in oklab, var(--charcoal) 10%, transparent),
+    0 2px 2px rgba(20, 14, 8, 0.12),
+    0 12px 28px -10px rgba(20, 14, 8, 0.38),
+    0 28px 54px -22px rgba(20, 14, 8, 0.50);
+}
+.hero-cta--primary:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 1px 2px color-mix(in oklab, var(--charcoal) 16%, transparent),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.6),
+    0 1px 1px rgba(20, 14, 8, 0.10),
+    0 4px 10px -6px rgba(20, 14, 8, 0.30);
+  transition-duration: 120ms;
+}
+
+/* ── Secondary: translucent charcoal scrim ───────────────────── */
+.hero-cta--ghost {
+  background: color-mix(in oklab, var(--charcoal) 28%, transparent);
+  backdrop-filter: blur(6px) saturate(115%);
+  -webkit-backdrop-filter: blur(6px) saturate(115%);
+  color: var(--ivory);
+  border: 1px solid color-mix(in oklab, var(--ivory) 38%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--ivory) 14%, transparent),
+    0 1px 1px rgba(0, 0, 0, 0.25),
+    0 12px 28px -16px rgba(0, 0, 0, 0.55);
+}
+.hero-cta--ghost .hero-cta__arrow {
+  color: color-mix(in oklab, var(--gold-soft, #d8b97a) 88%, var(--ivory));
+}
+.hero-cta--ghost:hover,
+.hero-cta--ghost:focus-visible {
+  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--charcoal) 38%, transparent);
+  border-color: color-mix(in oklab, var(--gold) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--ivory) 22%, transparent),
+    0 2px 2px rgba(0, 0, 0, 0.28),
+    0 18px 38px -18px rgba(0, 0, 0, 0.65),
+    0 0 0 1px color-mix(in oklab, var(--gold) 18%, transparent);
+}
+.hero-cta--ghost:active {
+  transform: translateY(0);
+  background: color-mix(in oklab, var(--charcoal) 44%, transparent);
+  transition-duration: 120ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta,
+  .hero-cta__sheen,
+  .hero-cta__arrow {
+    transition: none !important;
+  }
+  .hero-cta:hover,
+  .hero-cta:focus-visible {
+    transform: none !important;
+  }
+}
