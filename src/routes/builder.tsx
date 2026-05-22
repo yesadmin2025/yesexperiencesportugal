@@ -446,7 +446,7 @@ function BuilderPage() {
   });
 
   return (
-    <SiteLayout>
+    <div className="builder-stage min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
       <article className="bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
         <BuilderDebugPanel
           state={{
