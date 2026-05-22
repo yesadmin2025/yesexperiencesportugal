@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { AmbientStage } from "./AmbientStage";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -17,7 +17,7 @@ import type { StudioDict, StudioLocale } from "@/hooks/useStudioLocale";
 
 const LINE_ROTATE_MS = 4200;
 const INVITATION_DELAY_MS = 5400;
-const FRAGMENT_REVEAL_MS = 2400;
+const PROLOGUE_CLIP = "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4";
 
 interface Props {
   locale: StudioLocale;
@@ -27,57 +27,21 @@ interface Props {
   onExit?: () => void;
 }
 
-interface DriftFragment {
-  word: string;
-  top: string;
-  left: string;
-  delayMs: number;
-  driftSec: number;
-  size: number;
-}
-
-function buildFragments(words: string[]): DriftFragment[] {
-  // Deterministic-ish positions so fragments don't shuffle on every render.
-  const slots = [
-    { top: "18%", left: "12%" },
-    { top: "28%", left: "72%" },
-    { top: "62%", left: "10%" },
-    { top: "70%", left: "68%" },
-    { top: "44%", left: "82%" },
-    { top: "52%", left: "20%" },
-    { top: "82%", left: "40%" },
-    { top: "14%", left: "52%" },
-  ];
-  return words.slice(0, slots.length).map((word, i) => ({
-    word,
-    top: slots[i].top,
-    left: slots[i].left,
-    delayMs: 600 + i * 320,
-    driftSec: 14 + (i % 4) * 3,
-    size: 13 + (i % 3),
-  }));
-}
-
 export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }: Props) {
   const [lineIdx, setLineIdx] = useState(0);
   const [showInvite, setShowInvite] = useState(false);
-  const [fragmentsReady, setFragmentsReady] = useState(false);
   const interactedRef = useRef(false);
-
-  const fragments = useMemo(() => buildFragments(t.fragments), [t.fragments]);
 
   useEffect(() => {
     setLineIdx(0);
     setShowInvite(false);
-    const t1 = window.setTimeout(() => setFragmentsReady(true), FRAGMENT_REVEAL_MS);
-    const t2 = window.setTimeout(() => setShowInvite(true), INVITATION_DELAY_MS);
+    const t1 = window.setTimeout(() => setShowInvite(true), INVITATION_DELAY_MS);
     const rotate = window.setInterval(
       () => setLineIdx((i) => (i + 1) % t.prologueLines.length),
       LINE_ROTATE_MS,
     );
     return () => {
       window.clearTimeout(t1);
-      window.clearTimeout(t2);
       window.clearInterval(rotate);
     };
   }, [t.prologueLines.length]);
@@ -96,8 +60,8 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         if (showInvite) awaken();
       }}
     >
-      {/* Atmospheric base — slow breathing gradient */}
-      <AmbientStage mood={null} veil="deep" />
+      {/* Atmospheric base — real Portuguese footage, slow breathing gradient underneath */}
+      <AmbientStage mood={null} veil="deep" videoUrl={PROLOGUE_CLIP} />
 
       {/* Slow breathing radial glow */}
       <div
@@ -131,37 +95,6 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
           <LocaleSwitcher locale={locale} onChange={onLocaleChange} tone="light" />
         </div>
       </header>
-
-      {/* Drifting mood fragments — optional taps */}
-      <div aria-hidden={!fragmentsReady} className="absolute inset-0 z-10 pointer-events-none">
-        {fragments.map((f) => (
-          <button
-            key={f.word}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              awaken(f.word);
-            }}
-            tabIndex={fragmentsReady ? 0 : -1}
-            className={`pointer-events-auto absolute select-none font-serif italic text-[color:var(--ivory)]/55 hover:text-[color:var(--gold)] hover:scale-[1.08] transition-all duration-300 ${
-              fragmentsReady ? "ambient-drift opacity-100" : "opacity-0"
-            }`}
-            style={{
-              top: f.top,
-              left: f.left,
-              fontSize: `${f.size}px`,
-              transitionDelay: fragmentsReady ? `${f.delayMs}ms` : "0ms",
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              animationDuration: `${f.driftSec}s`,
-              animationDelay: `${f.delayMs}ms`,
-              textShadow: "0 1px 8px rgba(0,0,0,0.55)",
-            }}
-            aria-label={f.word}
-          >
-            {f.word}
-          </button>
-        ))}
-      </div>
 
       {/* Centerpiece — eyebrow + rotating poetic line */}
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center pointer-events-none">

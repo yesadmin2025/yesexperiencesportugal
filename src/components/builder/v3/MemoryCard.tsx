@@ -23,6 +23,24 @@ interface Props {
   onClose: () => void;
 }
 
+function memoryPhrase(stop: StudioStop, index: number): string {
+  const tag = stop.tag?.trim().toLowerCase();
+  const byTag: Record<string, string> = {
+    wine: "Um momento para provar devagar.",
+    gastronomy: "Uma mesa para ficar sem pressa.",
+    coast: "Uma pausa junto à luz do mar.",
+    nature: "Um intervalo para respirar fundo.",
+    heritage: "Uma entrada discreta na história.",
+    wellness: "Um espaço aberto para silêncio.",
+  };
+  if (tag && byTag[tag]) return byTag[tag];
+  return [
+    "Um momento que se revela sem pressa.",
+    "Uma sensação que guia o próximo gesto.",
+    "Uma pausa escolhida pelo ritmo da viagem.",
+  ][index % 3];
+}
+
 export function MemoryCard({
   stops,
   regionKey,
@@ -156,16 +174,14 @@ export function MemoryCard({
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-semibold text-[color:var(--charcoal)] leading-tight">
-                  {s.label}
+                  Momento {i + 1}
                 </p>
-                {s.blurb && (
-                  <p
-                    className="mt-1 text-[12.5px] italic text-[color:var(--charcoal)]/65 leading-snug"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                  >
-                    {s.blurb}
-                  </p>
-                )}
+                <p
+                  className="mt-1 text-[12.5px] italic text-[color:var(--charcoal)]/65 leading-snug"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                >
+                  {memoryPhrase(s, i)}
+                </p>
               </div>
             </li>
           ))}

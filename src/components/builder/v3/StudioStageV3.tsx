@@ -38,6 +38,18 @@ interface CatalogEntry {
   duration_minutes: number;
 }
 
+const STUDIO_CLIPS = {
+  coast: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
+  table: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
+  viewpoint: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
+} as const;
+
+function studioClipFor(intention: string | null, mood: string | null): string {
+  if (intention === "gastronomy" || intention === "wine") return STUDIO_CLIPS.table;
+  if (intention === "coast" || mood === "open") return STUDIO_CLIPS.coast;
+  return STUDIO_CLIPS.viewpoint;
+}
+
 export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const sessionId = useBuilderSessionId();
   const { locale, setLocale, t } = useStudioLocale();
@@ -126,8 +138,8 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           who: state.who,
           intention: state.intention,
           pace: state.pace,
-          regionLabel: regionLabel(state.regionKey),
-          stopLabels: state.acceptedStops.map((s) => s.label),
+          regionLabel: "Portugal",
+          stopLabels: state.acceptedStops.map((_, i) => `momento ${i + 1}`),
           kind: "chapter",
           locale,
         },
@@ -373,6 +385,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
    */
   const hasStops = state.acceptedStops.length > 0;
   const hasIntent = Boolean(state.mood || state.intention || state.who);
+  const hasCoreIntent = Boolean(state.mood && state.who && state.intention);
   const hasSuggestions = suggestionStops.length > 0;
 
   type Phase = "invitation" | "awakening" | "emergence" | "living" | "memory";
@@ -380,7 +393,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     ? "memory"
     : hasStops
       ? "living"
-      : hasSuggestions && hasIntent
+      : hasSuggestions && hasCoreIntent
         ? "emergence"
         : hasIntent
           ? "awakening"
@@ -391,12 +404,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const showMap = phase === "living";
   const showRibbonToggle = phase === "living";
   const showSaveCta = phase === "living" && state.acceptedStops.length >= 2;
+  const studioClip = studioClipFor(state.intention, state.mood);
 
   return (
     <div className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)] animate-in fade-in duration-700">
       <AmbientStage
         mood={state.mood}
         regionLabel={regionLabel(state.regionKey)}
+        videoUrl={studioClip}
         veil={phase === "living" ? "medium" : "deep"}
       />
 
@@ -419,10 +434,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
               {t.back}
             </button>
           )}
-          {state.regionKey && (
+          {showMap && (
             <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] animate-in fade-in duration-700">
               <Compass size={11} />
-              {regionLabel(state.regionKey)}
+              {t.yourDay}
             </span>
           )}
           {showChapter && <ChapterLine text={state.chapter} />}

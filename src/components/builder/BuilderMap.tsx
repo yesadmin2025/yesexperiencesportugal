@@ -17,6 +17,7 @@ interface Props {
   stops: RoutedStopUI[];
   regionCenter: { lat: number; lng: number } | null;
   regionKey?: string;
+  emotionalMode?: boolean;
   /** Candidate stops shown as additional pins (gold = eligible, dimmed = not). */
   candidates?: CandidatePin[];
   /** Tap a candidate pin to add it (only fired when eligible). */
@@ -32,7 +33,7 @@ interface Props {
  */
 const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
 
-export function BuilderMap({ stops, regionCenter, regionKey, candidates, onCandidateClick }: Props) {
+export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
@@ -182,7 +183,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, candidates, onCandi
 
     points.forEach((p, i) => {
       const m = L.marker(p, { icon: pin(i + 1) });
-      m.bindTooltip(validStops[i].label, { direction: "top", offset: [0, -28] });
+      m.bindTooltip(emotionalMode ? `momento ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
       layer.addLayer(m);
     });
 
@@ -253,7 +254,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, candidates, onCandi
       const first = points[0];
       map.setView(first, 9);
     }
-  }, [stops, regionCenter, candidates, onCandidateClick]);
+  }, [stops, regionCenter, candidates, onCandidateClick, emotionalMode]);
 
   return (
     <div className="relative h-full w-full">
@@ -262,11 +263,11 @@ export function BuilderMap({ stops, regionCenter, regionKey, candidates, onCandi
           <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
           <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
         </span>
-        Live route
+        {emotionalMode ? "a tomar forma" : "Live route"}
       </div>
       <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
         <MapPin size={11} aria-hidden="true" />
-        {stops.length} stop{stops.length === 1 ? "" : "s"}
+        {emotionalMode ? `${stops.length} momento${stops.length === 1 ? "" : "s"}` : `${stops.length} stop${stops.length === 1 ? "" : "s"}`}
       </div>
       <div
         ref={ref}

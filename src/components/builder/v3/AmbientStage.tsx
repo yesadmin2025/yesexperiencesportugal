@@ -12,6 +12,7 @@ interface Props {
   mood?: string | null;
   regionLabel?: string | null;
   imageUrl?: string | null;
+  videoUrl?: string | null;
   /** Stronger overlay when text sits on top. */
   veil?: "light" | "medium" | "deep";
 }
@@ -29,7 +30,7 @@ function gradientFor(mood?: string | null) {
   return (mood && MOOD_GRADIENTS[mood]) || MOOD_GRADIENTS._default;
 }
 
-export function AmbientStage({ mood, regionLabel, imageUrl, veil = "medium" }: Props) {
+export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "medium" }: Props) {
   const [currentMood, setCurrentMood] = useState<string | null>(mood ?? null);
   const [prevMood, setPrevMood] = useState<string | null>(null);
   const [fading, setFading] = useState(false);
@@ -71,7 +72,23 @@ export function AmbientStage({ mood, regionLabel, imageUrl, veil = "medium" }: P
           opacity: 1,
         }}
       />
-      {/* Optional real image, gently desaturated */}
+      {/* Real cinematic footage, gently desaturated */}
+      {videoUrl && (
+        <video
+          key={videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] motion-reduce:transition-none"
+          style={{ opacity: 0.58, filter: "saturate(0.82) contrast(1.02) brightness(0.86)" }}
+        >
+          <source src={videoUrl} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Optional real image fallback, gently desaturated */}
       {imageUrl && (
         <img
           key={imageUrl}
