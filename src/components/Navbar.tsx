@@ -80,11 +80,20 @@ export function Navbar() {
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <Logo
-              theme="teal-on-ivory"
-              fetchPriority="high"
-              className="relative block h-[58px] md:h-[64px] lg:h-[70px] w-auto select-none"
-            />
+            <span className="relative inline-block h-[58px] md:h-[64px] lg:h-[70px]">
+              <Logo
+                theme="teal-on-ivory"
+                fetchPriority="high"
+                className="relative block h-full w-auto select-none transition-opacity duration-[900ms] ease-out"
+                aria-hidden={showMarkOnly ? "true" : undefined}
+                style={{ opacity: showMarkOnly ? 0 : 1 }}
+              />
+              <YesMark
+                ariaLabel="YES"
+                className="absolute inset-y-0 left-0 block h-full w-auto select-none transition-opacity duration-[900ms] ease-out"
+                style={{ opacity: showMarkOnly ? 1 : 0, pointerEvents: "none" }}
+              />
+            </span>
           </Link>
 
           <nav
