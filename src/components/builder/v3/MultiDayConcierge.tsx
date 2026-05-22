@@ -149,8 +149,8 @@ export function MultiDayConcierge({
     };
   }, [sessionId, locale, mood, who, intention, composeFn]);
 
-  /* Cinematic unfold — title, then editor voice, then CTA. Lets the room
-     feel quieter before any action is offered. */
+  /* Cinematic unfold — title, then editor voice, then quiet invitation.
+     Slower than the rest of the Studio on purpose: multi-day = stillness. */
   useEffect(() => {
     const reducedMotion =
       typeof window !== "undefined" &&
@@ -159,8 +159,8 @@ export function MultiDayConcierge({
       setLayer(3);
       return;
     }
-    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 1600);
-    const t3 = window.setTimeout(() => setLayer((l) => (l < 3 ? 3 : l)), 3000);
+    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 2200);
+    const t3 = window.setTimeout(() => setLayer((l) => (l < 3 ? 3 : l)), 3800);
     return () => {
       window.clearTimeout(t2);
       window.clearTimeout(t3);
@@ -169,12 +169,38 @@ export function MultiDayConcierge({
 
   const handoff = travellerName ? nameHandoff(travellerName, locale) : null;
 
-  // WhatsApp remains the underlying channel (existing infra). Copy never
-  // exposes it as "contact our team."
-  const waText = encodeURIComponent(
-    `Olá! Quero desenhar uma viagem de vários dias em Portugal.`,
-  );
-  const waHref = `https://wa.me/${BUILDER_WA_NUMBER}?text=${waText}`;
+  /* Handwritten-note moment — the input never appears as a form. It opens
+     after the traveller chooses to begin, then submits invisibly through
+     WhatsApp (existing channel). No labels, no field chrome, no CRM. */
+  const [noteOpen, setNoteOpen] = useState(false);
+  const [note, setNote] = useState("");
+  const [contact, setContact] = useState("");
+  const noteRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (noteOpen) {
+      // Soft focus after the fade settles; never abrupt.
+      const id = window.setTimeout(() => noteRef.current?.focus({ preventScroll: true }), 520);
+      return () => window.clearTimeout(id);
+    }
+  }, [noteOpen]);
+
+  const canSend = note.trim().length > 1 && contact.trim().length > 2;
+
+  const handleSend = () => {
+    if (!canSend) return;
+    // Mechanism stays invisible — compose a single private message.
+    const body = [
+      travellerName ? `— ${travellerName}` : null,
+      note.trim(),
+      "",
+      contact.trim(),
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const href = `https://wa.me/${BUILDER_WA_NUMBER}?text=${encodeURIComponent(body)}`;
+    window.open(href, "_blank", "noopener");
+  };
 
   return (
     <div className="absolute inset-0 z-40 flex flex-col bg-[color:var(--charcoal)] animate-in fade-in duration-[1100ms]">
