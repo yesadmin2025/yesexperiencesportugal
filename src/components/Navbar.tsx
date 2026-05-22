@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { YesMark } from "@/components/YesMark";
 
 import { CtaButton } from "@/components/ui/CtaButton";
 
@@ -67,10 +68,10 @@ export function Navbar() {
       {/* Soft atmospheric dissolve — short, premium fade into the hero with no chunky block. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[46px] md:h-[62px] lg:h-[74px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[64px] md:h-[72px] lg:h-[80px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.82) 0%, rgba(247,243,236,0.46) 34%, rgba(247,243,236,0.16) 68%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(247,243,236,0.86) 0%, rgba(247,243,236,0.62) 22%, rgba(247,243,236,0.34) 52%, rgba(247,243,236,0.12) 78%, rgba(247,243,236,0) 100%)",
         }}
       />
       <div className="container-x">
@@ -87,11 +88,9 @@ export function Navbar() {
                   showMarkOnly ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <Logo
-                  theme="teal-on-ivory"
-                  fetchPriority="high"
-                  alt="YES"
-                  className="block h-[54px] md:h-[58px] lg:h-[62px] w-auto select-none"
+                <YesMark
+                  ariaLabel="YES"
+                  className="block h-[78px] md:h-[82px] lg:h-[88px] w-auto -translate-x-[7px] -translate-y-[19px] md:-translate-x-[7px] md:-translate-y-[20px] lg:-translate-x-[8px] lg:-translate-y-[21px] select-none"
                 />
               </span>
               <Logo
