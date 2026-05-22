@@ -25,7 +25,7 @@ export function YesMark({
       role="img"
       aria-label={ariaLabel}
       className={className}
-      draggable={false}
+      
     >
       <title>{ariaLabel}</title>
       <path
