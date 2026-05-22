@@ -139,6 +139,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           regionLabel: regionLabel(state.regionKey),
           stopLabels: state.acceptedStops.map((s) => s.label),
           kind: "chapter",
+          locale,
         },
       })
         .then((r) => patch({ chapter: r.line }))
