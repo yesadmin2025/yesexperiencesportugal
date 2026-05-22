@@ -390,27 +390,24 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
             0 6px 12px -8px rgba(30, 20, 8, 0.4);
         }
 
-        /* GHOST — thinner, softer ivory outline */
+        /* GHOST — clean hairline ivory, restrained */
         .hero-cta--ghost {
-          border: 1px solid rgba(250, 248, 243, 0.32);
-          background: rgba(20, 16, 12, 0.14);
-          -webkit-backdrop-filter: blur(8px) saturate(1.05);
-          backdrop-filter: blur(8px) saturate(1.05);
-          text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-          box-shadow:
-            0 10px 24px -18px rgba(0, 0, 0, 0.5),
-            0 1px 0 rgba(255, 255, 255, 0.05) inset;
+          border: 1px solid rgba(250, 248, 243, 0.26);
+          background: rgba(20, 16, 12, 0.10);
+          -webkit-backdrop-filter: blur(6px) saturate(1.04);
+          backdrop-filter: blur(6px) saturate(1.04);
+          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+          box-shadow: 0 6px 16px -14px rgba(0, 0, 0, 0.45);
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
           color: var(--ivory);
-          border-color: rgba(250, 248, 243, 0.55);
-          background: rgba(250, 248, 243, 0.07);
+          border-color: rgba(250, 248, 243, 0.45);
+          background: rgba(250, 248, 243, 0.06);
           box-shadow:
-            0 16px 32px -18px rgba(0, 0, 0, 0.55),
-            0 1px 0 rgba(255, 255, 255, 0.08) inset,
-            0 0 0 1px rgba(250, 248, 243, 0.12);
-          transform: translateY(-2px);
+            0 10px 22px -14px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(250, 248, 243, 0.08);
+          transform: translateY(-1px);
         }
         .hero-cta--ghost:active {
           transform: translateY(0);
