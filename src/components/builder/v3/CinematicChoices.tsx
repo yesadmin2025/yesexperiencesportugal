@@ -89,8 +89,10 @@ interface Props {
 }
 
 export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete }: Props) {
+  const valueFor = (p: PhaseKind) =>
+    p === "depth" ? active.journeyType : (active as Record<string, unknown>)[p];
   const firstIncomplete = useMemo<PhaseKind | null>(() => {
-    for (const p of PHASE_ORDER) if (!active[p]) return p;
+    for (const p of PHASE_ORDER) if (!valueFor(p)) return p;
     return null;
   }, [active]);
 
