@@ -22,13 +22,26 @@ interface Props {
 }
 
 
+/**
+ * MOOD_GRADIENTS — Portuguese atmospheric palettes, not generic dark luxury.
+ *
+ * Each mood resolves to a specific lived Portuguese light:
+ *   · slow      → Atlantic afternoon haze (cool linen + sea-mist)
+ *   · curious   → tiled alleyway after rain (azulejo blue + warm lamp)
+ *   · romantic  → terracotta dusk inland (warm clay + vineyard shadow)
+ *   · open      → coastal noon over Cabo da Roca (silver Atlantic light)
+ *   · energetic → late-afternoon market warmth (sun-warmed stone + paprika)
+ *
+ * Keep hues anchored to brand-board territory (warm ivory + sand + teal +
+ * gold) so these read as Portugal, not Mediterranean stock luxury.
+ */
 const MOOD_GRADIENTS: Record<string, string> = {
-  slow: "radial-gradient(ellipse at 30% 60%, oklch(0.42 0.04 200 / 0.9), oklch(0.22 0.03 220 / 1) 70%)",
-  curious: "radial-gradient(ellipse at 70% 40%, oklch(0.48 0.08 80 / 0.85), oklch(0.24 0.04 30 / 1) 75%)",
-  romantic: "radial-gradient(ellipse at 50% 70%, oklch(0.45 0.1 30 / 0.9), oklch(0.22 0.05 350 / 1) 75%)",
-  open: "radial-gradient(ellipse at 60% 30%, oklch(0.55 0.06 220 / 0.85), oklch(0.28 0.03 240 / 1) 75%)",
-  energetic: "radial-gradient(ellipse at 40% 50%, oklch(0.52 0.12 50 / 0.9), oklch(0.25 0.05 20 / 1) 75%)",
-  _default: "radial-gradient(ellipse at 50% 60%, oklch(0.4 0.04 200 / 0.85), oklch(0.2 0.03 230 / 1) 75%)",
+  slow: "radial-gradient(ellipse at 35% 65%, oklch(0.52 0.04 220 / 0.75), oklch(0.26 0.03 230 / 1) 72%)",
+  curious: "radial-gradient(ellipse at 70% 40%, oklch(0.46 0.09 235 / 0.78), oklch(0.22 0.05 245 / 1) 75%)",
+  romantic: "radial-gradient(ellipse at 50% 70%, oklch(0.48 0.11 45 / 0.82), oklch(0.24 0.06 30 / 1) 75%)",
+  open: "radial-gradient(ellipse at 55% 35%, oklch(0.6 0.04 215 / 0.7), oklch(0.3 0.03 225 / 1) 78%)",
+  energetic: "radial-gradient(ellipse at 45% 55%, oklch(0.54 0.13 55 / 0.85), oklch(0.26 0.06 25 / 1) 75%)",
+  _default: "radial-gradient(ellipse at 50% 60%, oklch(0.44 0.05 210 / 0.78), oklch(0.22 0.03 230 / 1) 75%)",
 };
 
 function gradientFor(mood?: string | null) {
