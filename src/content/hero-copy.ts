@@ -8,7 +8,7 @@
  */
 export const HERO_PHRASES = [
   "Portugal is the stage.",
-  "You write your story.",
+  "You write the story.",
 ] as const;
 
 
