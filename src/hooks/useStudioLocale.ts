@@ -12,34 +12,43 @@ export type StudioLocale = "pt" | "en" | "es" | "fr";
 const STORAGE_KEY = "studio.locale";
 const SUPPORTED: StudioLocale[] = ["pt", "en", "es", "fr"];
 
+export interface EmotionOption<V extends string = string> {
+  value: V;
+  label: string;
+}
+
 export interface StudioDict {
   eyebrow: string;
-  /** Rotating poetic invitations shown during the passive prologue. */
   prologueLines: string[];
-  /** Drifting word-fragments the user can tap to begin. */
   fragments: string[];
-  /** Soft optional invitation at the bottom of the prologue. */
   whisperInvite: string;
-  /** Helper microcopy under the invite. */
   whisperHelper: string;
-  /** Label on the awakening pill. */
   beginPill: string;
-  /** Composer placeholders (rotate). */
   composerPlaceholders: string[];
-  /** Composer footer + actions. */
   composerFooter: string;
   composerSend: string;
   composerBusy: string;
   composerExpand: string;
   composerVoiceStart: string;
   composerVoiceStop: string;
-  /** Top-bar actions. */
   back: string;
-  /** Itinerary toggle. */
   yourDay: string;
   saveStory: string;
-  /** Web Speech API language tag. */
   speechLang: string;
+  /** Emotion chips — let the user pick without typing. */
+  emotionPrompt: string;
+  moodOptions: EmotionOption<"slow" | "curious" | "romantic" | "open" | "energetic">[];
+  whoOptions: EmotionOption<"couple" | "family" | "friends" | "solo">[];
+  intentionOptions: EmotionOption<
+    "wine" | "gastronomy" | "nature" | "heritage" | "coast" | "wellness"
+  >[];
+  paceOptions: EmotionOption<"relaxed" | "balanced" | "full">[];
+  /** Resume banner when a previous narration is found. */
+  resumeTitle: string;
+  resumeContinue: string;
+  resumeRestart: string;
+  /** Soft suggestion phrase when a stop has no editorial blurb. */
+  suggestionFallback: string;
 }
 
 const DICTS: Record<StudioLocale, StudioDict> = {
@@ -72,6 +81,37 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     yourDay: "o teu dia",
     saveStory: "guardar esta história",
     speechLang: "pt-PT",
+    emotionPrompt: "Como te sentes?",
+    moodOptions: [
+      { value: "romantic", label: "Romântico" },
+      { value: "slow", label: "Calmo" },
+      { value: "curious", label: "Curioso" },
+      { value: "energetic", label: "Vibrante" },
+      { value: "open", label: "Aberto" },
+    ],
+    whoOptions: [
+      { value: "couple", label: "A dois" },
+      { value: "family", label: "Família" },
+      { value: "friends", label: "Amigos" },
+      { value: "solo", label: "A sós" },
+    ],
+    intentionOptions: [
+      { value: "wine", label: "Vinho" },
+      { value: "gastronomy", label: "Gastronomia" },
+      { value: "coast", label: "Mar & costa" },
+      { value: "nature", label: "Natureza" },
+      { value: "heritage", label: "Cultura" },
+      { value: "wellness", label: "Descanso" },
+    ],
+    paceOptions: [
+      { value: "relaxed", label: "Lento" },
+      { value: "balanced", label: "Equilibrado" },
+      { value: "full", label: "Intenso" },
+    ],
+    resumeTitle: "A tua história ainda está aqui",
+    resumeContinue: "Continuar",
+    resumeRestart: "Começar de novo",
+    suggestionFallback: "um momento à tua espera",
   },
   en: {
     eyebrow: "Experience Studio",
@@ -102,6 +142,37 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     yourDay: "your day",
     saveStory: "save this story",
     speechLang: "en-GB",
+    emotionPrompt: "How do you feel?",
+    moodOptions: [
+      { value: "romantic", label: "Romantic" },
+      { value: "slow", label: "Calm" },
+      { value: "curious", label: "Curious" },
+      { value: "energetic", label: "Vibrant" },
+      { value: "open", label: "Open" },
+    ],
+    whoOptions: [
+      { value: "couple", label: "Just us two" },
+      { value: "family", label: "Family" },
+      { value: "friends", label: "Friends" },
+      { value: "solo", label: "Solo" },
+    ],
+    intentionOptions: [
+      { value: "wine", label: "Wine" },
+      { value: "gastronomy", label: "Cuisine" },
+      { value: "coast", label: "Sea & coast" },
+      { value: "nature", label: "Nature" },
+      { value: "heritage", label: "Culture" },
+      { value: "wellness", label: "Rest" },
+    ],
+    paceOptions: [
+      { value: "relaxed", label: "Slow" },
+      { value: "balanced", label: "Balanced" },
+      { value: "full", label: "Full" },
+    ],
+    resumeTitle: "Your story is still here",
+    resumeContinue: "Continue",
+    resumeRestart: "Start over",
+    suggestionFallback: "a moment waiting for you",
   },
   es: {
     eyebrow: "Experience Studio",
@@ -132,6 +203,37 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     yourDay: "tu día",
     saveStory: "guardar esta historia",
     speechLang: "es-ES",
+    emotionPrompt: "¿Cómo te sientes?",
+    moodOptions: [
+      { value: "romantic", label: "Romántico" },
+      { value: "slow", label: "Calmado" },
+      { value: "curious", label: "Curioso" },
+      { value: "energetic", label: "Vibrante" },
+      { value: "open", label: "Abierto" },
+    ],
+    whoOptions: [
+      { value: "couple", label: "En pareja" },
+      { value: "family", label: "Familia" },
+      { value: "friends", label: "Amigos" },
+      { value: "solo", label: "A solas" },
+    ],
+    intentionOptions: [
+      { value: "wine", label: "Vino" },
+      { value: "gastronomy", label: "Gastronomía" },
+      { value: "coast", label: "Mar y costa" },
+      { value: "nature", label: "Naturaleza" },
+      { value: "heritage", label: "Cultura" },
+      { value: "wellness", label: "Descanso" },
+    ],
+    paceOptions: [
+      { value: "relaxed", label: "Lento" },
+      { value: "balanced", label: "Equilibrado" },
+      { value: "full", label: "Intenso" },
+    ],
+    resumeTitle: "Tu historia sigue aquí",
+    resumeContinue: "Continuar",
+    resumeRestart: "Empezar de nuevo",
+    suggestionFallback: "un momento esperándote",
   },
   fr: {
     eyebrow: "Experience Studio",
@@ -162,6 +264,37 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     yourDay: "ta journée",
     saveStory: "garder cette histoire",
     speechLang: "fr-FR",
+    emotionPrompt: "Comment te sens-tu ?",
+    moodOptions: [
+      { value: "romantic", label: "Romantique" },
+      { value: "slow", label: "Calme" },
+      { value: "curious", label: "Curieux" },
+      { value: "energetic", label: "Vibrant" },
+      { value: "open", label: "Ouvert" },
+    ],
+    whoOptions: [
+      { value: "couple", label: "À deux" },
+      { value: "family", label: "Famille" },
+      { value: "friends", label: "Amis" },
+      { value: "solo", label: "Seul·e" },
+    ],
+    intentionOptions: [
+      { value: "wine", label: "Vin" },
+      { value: "gastronomy", label: "Gastronomie" },
+      { value: "coast", label: "Mer & côte" },
+      { value: "nature", label: "Nature" },
+      { value: "heritage", label: "Culture" },
+      { value: "wellness", label: "Repos" },
+    ],
+    paceOptions: [
+      { value: "relaxed", label: "Lent" },
+      { value: "balanced", label: "Équilibré" },
+      { value: "full", label: "Intense" },
+    ],
+    resumeTitle: "Ton histoire est toujours là",
+    resumeContinue: "Continuer",
+    resumeRestart: "Recommencer",
+    suggestionFallback: "un instant qui t'attend",
   },
 };
 
