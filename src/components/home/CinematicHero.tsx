@@ -154,8 +154,10 @@ export function CinematicHero() {
                 "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
               fontSize: "clamp(26px, 4.4vw, 48px)",
               opacity: line1 ? 1 : 0,
-              transform: line1 ? "translateY(0)" : "translateY(8px)",
-              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
+              transform: line1 ? "translateY(0)" : "translateY(10px)",
+              filter: line1 ? "blur(0px)" : "blur(6px)",
+              willChange: "opacity, transform, filter",
+              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
           >
             {HERO_PHRASES[0]}
@@ -174,12 +176,15 @@ export function CinematicHero() {
                 "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
               fontSize: "clamp(26px, 4.4vw, 48px)",
               opacity: line2 ? 1 : 0,
-              transform: line2 ? "translateY(0)" : "translateY(8px)",
-              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
+              transform: line2 ? "translateY(0)" : "translateY(10px)",
+              filter: line2 ? "blur(0px)" : "blur(6px)",
+              willChange: "opacity, transform, filter",
+              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
           >
             {HERO_PHRASES[1]}
           </p>
+
         </div>
       </div>
 
