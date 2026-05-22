@@ -315,10 +315,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
               type="button"
               onClick={onExit}
               className="self-start inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
-              aria-label="Voltar ao site"
+              aria-label={t.back}
             >
               <ArrowLeft size={11} />
-              voltar
+              {t.back}
             </button>
           )}
           <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
@@ -328,19 +328,21 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           <ChapterLine text={state.chapter} />
         </div>
 
-        {/* Itinerary toggle */}
-        {hasStops && (
-          <button
-            type="button"
-            onClick={() => setRibbonOpen((o) => !o)}
-            className="inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/92 backdrop-blur px-3.5 py-2 min-h-[44px] border border-[color:var(--gold)]/40 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] shadow-[0_6px_20px_rgba(0,0,0,0.25)] hover:border-[color:var(--gold)] transition-colors"
-            aria-expanded={ribbonOpen}
-            aria-controls="itinerary-ribbon"
-          >
-            o teu dia · {state.acceptedStops.length}
-            {ribbonOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <LocaleSwitcher locale={locale} onChange={setLocale} tone="light" />
+          {hasStops && (
+            <button
+              type="button"
+              onClick={() => setRibbonOpen((o) => !o)}
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/92 backdrop-blur px-3.5 py-2 min-h-[44px] border border-[color:var(--gold)]/40 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] shadow-[0_6px_20px_rgba(0,0,0,0.25)] hover:border-[color:var(--gold)] transition-colors"
+              aria-expanded={ribbonOpen}
+              aria-controls="itinerary-ribbon"
+            >
+              {t.yourDay} · {state.acceptedStops.length}
+              {ribbonOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Whisper layer */}
@@ -389,7 +391,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
               className="inline-flex items-center gap-2 rounded-full bg-[color:var(--charcoal)]/85 backdrop-blur px-4 py-2 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] border border-[color:var(--gold)]/40 hover:border-[color:var(--gold)] hover:bg-[color:var(--charcoal)] transition-colors min-h-[40px]"
             >
               <BookmarkPlus size={13} className="text-[color:var(--gold)]" />
-              guardar esta história
+              {t.saveStory}
             </button>
           </div>
         )}
@@ -405,6 +407,8 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             <NarrativeComposer
               busy={composerBusy}
               collapsed
+              t={t}
+              seed={composerSeed}
               onExpand={() => setComposerCollapsed(false)}
               onSubmit={handleSubmit}
             />
@@ -412,6 +416,8 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             <NarrativeComposer
               busy={composerBusy}
               collapsed={false}
+              t={t}
+              seed={composerSeed}
               onSubmit={handleSubmit}
             />
           )}
