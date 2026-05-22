@@ -85,21 +85,24 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
   pt: {
     invitation: [
       "A costa guarda as manhãs devagar, sal a secar na pedra.",
-      "O vento dos pinhais atravessa a tarde, sem pressa.",
+      "O vento dos pinhais atravessa a tarde sobre telhas de ardósia, sem pressa.",
       "Os azulejos ainda seguram um pouco a luz.",
-      "A tarde pousa sobre a pedra como um sopro lento.",
+      "A neblina sobe do cais, o dia ainda dobrado em silêncio.",
+      "Paredes caiadas apanham o primeiro sol, ninguém com pressa.",
     ],
     recognition: [
       "Uma mesa de madeira espera à sombra dos sobreiros.",
       "Sal a secar nas tábuas, junto à maré tardia.",
-      "Pão partido sem pressa, copos cheios sem cerimónia.",
+      "Pão partido sem pressa, uma chávena de esmalte, o pátio ainda fresco.",
       "Vinhas quietas, almoço longo, o dia estica-se sozinho.",
+      "Uma porta aberta para um corredor de azulejo, café no fogão.",
     ],
     emergence: [
       "Sol tardio num café de azulejo, um copo de vinho verde, sem hora.",
       "Falésias a cair, um barco a desenhar a baía.",
       "Pedra fresca, pátio aberto, um único limoeiro.",
       "Uma travessia de cacilheiro, o rio largo na luz da tarde.",
+      "Sardinha na grelha sobre papel oleado, pratos a passar de mão em mão.",
     ],
     reveal: [
       "Parece o teu tipo de dia — lento, com sal, generoso.",
