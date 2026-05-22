@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Intention, Mood, Pace, Who, RoutedStopUI } from "@/components/builder/types";
+import type {
+  Intention,
+  Mood,
+  Pace,
+  Who,
+  RoutedStopUI,
+  JourneyType,
+  AffinityProfile,
+} from "@/components/builder/types";
 import {
   BUILDER_REGIONS,
   type BuilderRegionKey,
