@@ -149,10 +149,10 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "#E6C892",
+              color: "#EBD0A0",
               textShadow:
-                "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
-              fontSize: "clamp(26px, 4.4vw, 48px)",
+                "0 1px 2px rgba(0,0,0,0.55), 0 2px 10px rgba(0,0,0,0.45)",
+              fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line1 ? 1 : 0,
               transform: line1 ? "translateY(0)" : "translateY(10px)",
               filter: line1 ? "blur(0px)" : "blur(6px)",
