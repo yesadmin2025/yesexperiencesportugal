@@ -145,13 +145,35 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
         />
       )}
 
+      {/* Portuguese light layer — a high warm-ivory sun pool in the upper
+          third (sun-warmed shutter / café window light) and a cooler
+          Atlantic edge fade at the bottom (sea-mist coming in). Keeps the
+          scene unmistakably Portugal, never generic Mediterranean. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 45% at 50% 18%, oklch(0.9 0.05 80 / 0.14) 0%, transparent 70%)",
+          mixBlendMode: "soft-light",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-[38%]"
+        style={{
+          background:
+            "linear-gradient(180deg, transparent 0%, oklch(0.42 0.04 220 / 0.18) 100%)",
+          mixBlendMode: "multiply",
+        }}
+      />
+
       {/* Subtle vignette for cinematic feel */}
       <div
         className="absolute inset-0"
         style={{
           background:
             "radial-gradient(ellipse at center, transparent 55%, oklch(0.15 0.02 240 / 0.22) 100%)",
-
         }}
       />
       {regionLabel && (
