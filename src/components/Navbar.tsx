@@ -64,7 +64,7 @@ export function Navbar() {
             style={transparent ? { opacity: 0.85 } : undefined}
           >
             <Logo
-              theme={transparent ? "gold-on-dark" : "teal-on-ivory"}
+              theme={transparent ? "gold-on-charcoal" : "teal-on-ivory"}
               fetchPriority="high"
               className="block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
             />
