@@ -419,7 +419,12 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
             { role: "system", content: sys },
             { role: "user", content: usr },
           ],
-          temperature: 0.8,
+          temperature:
+            data.mode === "proposal"
+              ? 0.75
+              : data.narrativeStage === "reveal"
+                ? 0.65
+                : 0.82,
           max_tokens: data.mode === "proposal" ? 80 : 60,
         }),
       });
