@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Globe } from "lucide-react";
 import { LOCALE_LABELS, type StudioLocale } from "@/hooks/useStudioLocale";
 
@@ -5,15 +6,39 @@ interface Props {
   locale: StudioLocale;
   onChange: (l: StudioLocale) => void;
   tone?: "light" | "dark";
+  /** Collapse to a single globe icon; expands on tap. Used during cinematic phases. */
+  collapsed?: boolean;
 }
 
 /**
  * Discreet floating locale switcher. PT · EN · ES · FR.
  * Tap-target ≥44px, stays out of the cinematic frame.
  */
-export function LocaleSwitcher({ locale, onChange, tone = "light" }: Props) {
+export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = false }: Props) {
   const items: StudioLocale[] = ["pt", "en", "es", "fr"];
   const isLight = tone === "light";
+  const [open, setOpen] = useState(!collapsed);
+
+  const expanded = !collapsed || open;
+
+  if (!expanded) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Language"
+        aria-expanded={false}
+        className={`inline-flex items-center justify-center min-w-[36px] min-h-[36px] rounded-full backdrop-blur border transition-colors ${
+          isLight
+            ? "bg-[color:var(--ivory)]/15 border-[color:var(--ivory)]/25 text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)]"
+            : "bg-[color:var(--charcoal)]/55 border-[color:var(--ivory)]/15 text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)]"
+        }`}
+      >
+        <Globe size={13} aria-hidden="true" />
+      </button>
+    );
+  }
+
   return (
     <div
       role="group"
@@ -31,7 +56,10 @@ export function LocaleSwitcher({ locale, onChange, tone = "light" }: Props) {
           <button
             key={l}
             type="button"
-            onClick={() => onChange(l)}
+            onClick={() => {
+              onChange(l);
+              if (collapsed) setOpen(false);
+            }}
             aria-pressed={active}
             className={`inline-flex items-center justify-center min-w-[34px] min-h-[34px] px-1.5 rounded-full text-[10.5px] uppercase tracking-[0.22em] font-bold transition-colors ${
               active

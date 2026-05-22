@@ -47,7 +47,7 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
     return () => window.clearTimeout(t);
   }, [mood, currentMood]);
 
-  const veilOpacity = veil === "light" ? 0.25 : veil === "deep" ? 0.55 : 0.4;
+  const veilOpacity = veil === "light" ? 0.16 : veil === "deep" ? 0.38 : 0.26;
 
   return (
     <div
@@ -82,7 +82,8 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
           playsInline
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] motion-reduce:transition-none"
-          style={{ opacity: 0.58, filter: "saturate(0.82) contrast(1.02) brightness(0.86)" }}
+          style={{ opacity: 0.72, filter: "saturate(0.92) contrast(1.02) brightness(0.92)" }}
+
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
@@ -112,7 +113,8 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 50%, oklch(0.15 0.02 240 / 0.35) 100%)",
+            "radial-gradient(ellipse at center, transparent 55%, oklch(0.15 0.02 240 / 0.22) 100%)",
+
         }}
       />
       {regionLabel && (
