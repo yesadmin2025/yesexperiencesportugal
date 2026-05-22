@@ -39,6 +39,7 @@ export interface StudioState {
   who: Who | null;
   intention: Intention | null;
   pace: Pace;
+  journeyType: JourneyType | null;
   regionKey: BuilderRegionKey | null;
   acceptedStops: StudioStop[];
   chapter: string | null;
@@ -53,6 +54,7 @@ const INITIAL: StudioState = {
   who: null,
   intention: null,
   pace: "balanced",
+  journeyType: null,
   regionKey: null,
   acceptedStops: [],
   chapter: null,
@@ -61,7 +63,7 @@ const INITIAL: StudioState = {
   closing: false,
 };
 
-const STORAGE_KEY = "yes.studio.state.v1";
+const STORAGE_KEY = "yes.studio.state.v2";
 
 /** Persisted subset — exclude transient UI flags (whisper, closing). */
 type PersistedState = Pick<
@@ -71,6 +73,7 @@ type PersistedState = Pick<
   | "who"
   | "intention"
   | "pace"
+  | "journeyType"
   | "regionKey"
   | "acceptedStops"
   | "chapter"
