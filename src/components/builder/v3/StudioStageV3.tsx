@@ -288,6 +288,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       const nextWho = pick.who ?? state.who;
       const nextIntention = pick.intention ?? state.intention;
       const nextPace = pick.pace ?? state.pace;
+      const nextJourneyType = pick.journeyType ?? state.journeyType;
       const regionKey = state.regionKey ?? "arrabida-setubal";
       const fullNarrative = state.narrative
         ? `${state.narrative} · ${pick.seed}`
@@ -298,16 +299,21 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         who: nextWho,
         intention: nextIntention,
         pace: nextPace,
+        journeyType: nextJourneyType,
         regionKey,
         awakened: true,
       });
-      await refreshSuggestions(regionKey, nextMood, nextWho, nextIntention, pick.seed);
+      // Skip suggestion fetch if user chose multi-day — concierge handles it.
+      if (nextJourneyType !== "multi") {
+        await refreshSuggestions(regionKey, nextMood, nextWho, nextIntention, pick.seed);
+      }
     },
     [
       state.mood,
       state.who,
       state.intention,
       state.pace,
+      state.journeyType,
       state.regionKey,
       state.narrative,
       patch,
