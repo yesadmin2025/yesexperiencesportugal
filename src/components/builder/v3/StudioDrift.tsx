@@ -50,14 +50,44 @@ type Taste =
   | "raw-honest"
   | "artisan";
 
+/**
+ * HumanTag — second hidden metadata layer. Observed human moments, not
+ * adjectives. These bias scene sequencing, ambient tint and convergence
+ * language so the world feels inhabited, not curated.
+ */
+type HumanTag =
+  | "old-men-playing-cards"
+  | "window-laughter"
+  | "late-lunch-energy"
+  | "kitchen-noise"
+  | "market-chaos"
+  | "slow-waiter"
+  | "rain-on-stone"
+  | "fisherman-fatigue"
+  | "sunburnt-tablecloth"
+  | "half-empty-wine-bottle"
+  | "cat-on-doorstep"
+  | "distant-fado-radio"
+  | "basil-on-windowsill"
+  | "paper-napkin-wind"
+  | "scratched-wine-glass"
+  | "purple-wine-stain"
+  | "table-late";
+
 type DriftScene = {
   id: string;
   videoUrl: string;
   register: Register;
   phases: Phase[];
-  /** Observational fragments (wide) — pure sensory, taste-loaded, no "you". */
+  /**
+   * Observational fragments (wide) — observed human moments, not poetry.
+   * Specific objects, gestures, sounds. Never adjectives about "beauty".
+   */
   observe: string[];
-  /** Personal fragments (intimate) — quiet address in "tu" form. */
+  /**
+   * Personal fragments (intimate) — quiet "tu", still anchored in a
+   * concrete human detail (a glass, a chair, a window left open).
+   */
   intimate: string[];
   tempo: "slow" | "fast" | "any";
   place: string;
@@ -65,6 +95,8 @@ type DriftScene = {
   signature: Signature;
   /** Supporting taste tags — accumulate silently as the world senses. */
   tastes: Taste[];
+  /** Human-presence tags — what's actually happening, not how it looks. */
+  human: HumanTag[];
 };
 
 const SCENES: DriftScene[] = [
@@ -73,115 +105,167 @@ const SCENES: DriftScene[] = [
     videoUrl: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
     register: "horizon",
     phases: [1, 2],
-    observe: ["luz de tempestade sobre o Atlântico", "linho branco e sal no ar"],
-    intimate: ["uma mesa pequena à beira de tudo", "almoça devagar, ninguém te apressa"],
+    observe: [
+      "guardanapos de papel a levantar com o vento",
+      "uma garrafa de vinho branco a meio, suada do gelo",
+    ],
+    intimate: [
+      "ninguém pediu a conta — ainda",
+      "fica. o empregado já não está com pressa",
+    ],
     tempo: "slow",
     place: "Arrábida",
     signature: "storm-atlantic-lunch",
     tastes: ["salt-on-linen", "storm-light", "long-lunch", "quiet-refined"],
+    human: ["paper-napkin-wind", "half-empty-wine-bottle", "late-lunch-energy", "slow-waiter"],
   },
   {
     id: "cabo-roca",
     videoUrl: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
     register: "horizon",
     phases: [1],
-    observe: ["o silêncio aqui sabe a mosteiro", "prata fria sobre o Atlântico"],
-    intimate: ["respira fundo, este sítio sabe esperar", "ninguém fala alto contigo aqui"],
+    observe: [
+      "um casal calado há vinte minutos, a olhar a mesma linha de mar",
+      "o vento bate nos casacos e mais nada se ouve",
+    ],
+    intimate: [
+      "respira. aqui ninguém te vai interromper",
+      "esta pedra já viu pessoas como tu sentarem-se exactamente aqui",
+    ],
     tempo: "slow",
     place: "Cabo da Roca",
     signature: "monastery-silence",
     tastes: ["monastery-silver", "storm-light", "old-world", "quiet-refined"],
+    human: ["fisherman-fatigue", "rain-on-stone"],
   },
   {
     id: "hidden-street",
     videoUrl: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
     register: "stone",
     phases: [1, 2],
-    observe: ["azulejos depois da chuva, cal nas mãos", "pátios estreitos a respirar fresco"],
-    intimate: ["esta rua não está em mapa nenhum", "alguém deixou esta porta aberta para ti"],
+    observe: [
+      "alguém a regar manjericão enquanto risos escapam de uma janela aberta",
+      "um gato a dormir num degrau morno depois da chuva",
+    ],
+    intimate: [
+      "esta rua não está em mapa nenhum — e ainda bem",
+      "alguém deixou esta porta entreaberta. entra, ou não",
+    ],
     tempo: "any",
     place: "Setúbal velha",
     signature: "tiled-courtyard-rain",
     tastes: ["cool-tile", "lime-on-stone", "old-world", "artisan"],
+    human: ["basil-on-windowsill", "window-laughter", "cat-on-doorstep", "rain-on-stone"],
   },
   {
     id: "viewpoint",
     videoUrl: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
     register: "vineyard",
     phases: [2],
-    observe: ["sombras de vinha ao fim do dia", "luz baixa, jazz devagar, copo a meio"],
-    intimate: ["fica para a luz dourada", "este é o teu lado da serra"],
+    observe: [
+      "uma nódoa roxa de vinho num lenço de mesa branco",
+      "fado baixinho num rádio velho, do outro lado da vinha",
+    ],
+    intimate: [
+      "fica para a última luz — ainda há vinho no copo",
+      "este lado da serra fica melhor sem pressa",
+    ],
     tempo: "slow",
     place: "Serra da Arrábida",
     signature: "vineyard-shadow",
     tastes: ["low-gold-light", "wine-sun-down", "quiet-refined", "weathered-wood"],
+    human: ["purple-wine-stain", "sunburnt-tablecloth", "distant-fado-radio", "late-lunch-energy"],
   },
   {
     id: "candle-table",
     videoUrl: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
     register: "table",
     phases: [2, 3],
-    observe: ["pão partido devagar, mãos antigas", "vinho da casa em copo simples"],
-    intimate: ["a mesa estava à tua espera", "fica até a vela ficar curta"],
+    observe: [
+      "copos de vinho riscados de tantas mãos antigas",
+      "barulho de cozinha, dois homens a discutir futebol em voz alta",
+    ],
+    intimate: [
+      "a mesa já tinha o teu lugar antes de tu saberes",
+      "fica até a vela ficar curta — não vão fechar por ti",
+    ],
     tempo: "slow",
     place: "Azeitão",
     signature: "candlelit-stone",
     tastes: ["candle-warmth", "weathered-wood", "bread-and-pause", "old-world"],
+    human: ["scratched-wine-glass", "kitchen-noise", "old-men-playing-cards", "late-lunch-energy"],
   },
   {
     id: "celebration",
     videoUrl: "/__l5e/assets-v1/79e74bb4-85bb-4f83-9bc7-c8bf774af5be/scene-celebration.mp4",
     register: "candle",
     phases: [2, 3],
-    observe: ["velas baixas, vozes próximas, pedra quente", "taberna pequena, fogo lento"],
-    intimate: ["foste convidado, mesmo sem o saber", "fica até a última vela apagar"],
+    observe: [
+      "uma garrafa a meio na mesa do lado, e um lugar vazio à tua espera",
+      "vozes próximas, vela quase no fim, ninguém a olhar para o relógio",
+    ],
+    intimate: [
+      "foste convidado para esta mesa — não foi engano",
+      "fica até a última vela apagar. ninguém vai notar a hora",
+    ],
     tempo: "any",
     place: "uma taberna a sul",
     signature: "candlelit-stone",
     tastes: ["candle-warmth", "cork-and-clay", "table-late", "raw-honest"],
+    human: ["half-empty-wine-bottle", "window-laughter", "distant-fado-radio", "table-late"],
   },
   {
     id: "sesimbra",
     videoUrl: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
     register: "harbour",
     phases: [1, 2, 3],
-    observe: ["pescadores ao amanhecer, redes molhadas", "café preto, mãos ásperas, mar perto"],
-    intimate: ["o porto fala devagar contigo", "fica para o primeiro barco voltar"],
+    observe: [
+      "pescadores a beber café preto sem dizer nada, redes ainda molhadas",
+      "uma praça de mercado a acordar — caixotes, gritos, peixe no gelo",
+    ],
+    intimate: [
+      "fica para o primeiro barco voltar — vais querer ver",
+      "este porto não pergunta de onde vens",
+    ],
     tempo: "fast",
     place: "Sesimbra",
     signature: "fisherman-dawn",
     tastes: ["raw-honest", "salt-on-linen", "fisherman-dawn", "artisan"],
+    human: ["fisherman-fatigue", "market-chaos", "kitchen-noise"],
   },
 ];
 
-/** Signature → arrival couplet (taste line + place line). */
+/**
+ * Signature → arrival couplet. Inevitable, simple, slightly dangerous.
+ * Never epic. Never "your soul". One observed detail + one place sentence.
+ */
 const SIGNATURE_LINES: Record<Signature, { taste: string; place: (p: string) => string }> = {
   "storm-atlantic-lunch": {
-    taste: "Almoços lentos, sal no ar, luz de tempestade sobre linho branco.",
-    place: (p) => `É para ${p} que tu vais.`,
+    taste: "Almoços que duram demais. Guardanapos a voar. Ninguém com pressa.",
+    place: (p) => `É em ${p} que tu não vais pedir a conta.`,
   },
   "monastery-silence": {
-    taste: "Silêncio de claustro, prata fria, horas que se alargam.",
-    place: (p) => `É em ${p} que tu paras.`,
+    taste: "Vento, pedra, e horas que ninguém te cobra.",
+    place: (p) => `É em ${p} que tu paras de falar.`,
   },
   "candlelit-stone": {
-    taste: "Tabernas de pedra acesas a vela, vinho da casa, conversa que se demora.",
-    place: (p) => `É em ${p} que a noite te encontra.`,
+    taste: "Vela curta, copo riscado, vozes que se demoram na mesa do lado.",
+    place: (p) => `É em ${p} que a noite te apanha.`,
   },
   "tiled-courtyard-rain": {
-    taste: "Pátios de azulejo depois da chuva, cal nas mãos, passos devagar.",
+    taste: "Manjericão na janela, risos cá fora, uma porta entreaberta.",
     place: (p) => `É em ${p} que tu te perdes — de propósito.`,
   },
   "fisherman-dawn": {
-    taste: "Cais ao amanhecer, redes molhadas, café preto, mar perto.",
-    place: (p) => `É em ${p} que o dia começa contigo.`,
+    taste: "Café preto às seis, redes molhadas, ninguém te pergunta nada.",
+    place: (p) => `É em ${p} que o dia começa antes de ti.`,
   },
   "vineyard-shadow": {
-    taste: "Sombras de vinha ao fim do dia, luz dourada, copo a meio.",
-    place: (p) => `É na ${p} que tu ficas.`,
+    taste: "Uma nódoa de vinho num lenço branco — o almoço durou demais.",
+    place: (p) => `É na ${p} que tu ficas até a luz baixar.`,
   },
   "linen-and-salt": {
-    taste: "Linho branco, sal seco, uma mesa pequena à beira do Atlântico.",
+    taste: "Linho, sal, uma mesa pequena onde já ninguém te interrompe.",
     place: (p) => `É à beira de ${p} que tu te demoras.`,
   },
 };
