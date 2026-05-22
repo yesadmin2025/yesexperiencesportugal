@@ -278,76 +278,21 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const openMemory = () => patch({ closing: true });
   const closeMemory = () => patch({ closing: false });
 
-  /* ── OPENING SCENE — pre-awakened ── */
+  /* ── OPENING SCENE — passive cinematic prologue ── */
   if (!state.awakened) {
     return (
-      <div className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)]">
-        <AmbientStage mood={null} veil="deep" />
-
-        {/* Exit affordance — discreet */}
-        {onExit && (
-          <button
-            type="button"
-            onClick={onExit}
-            className="absolute top-4 left-4 z-30 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)] transition-colors min-h-[44px] px-2"
-            aria-label="Voltar ao site"
-          >
-            <ArrowLeft size={13} />
-            voltar
-          </button>
-        )}
-
-        <div
-          className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
-          onClick={() => {
-            if (!introTouched) {
-              setIntroTouched(true);
-              setComposerCollapsed(false);
-            }
-          }}
-        >
-          <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] font-bold text-[color:var(--gold)]">
-            <Sparkles size={12} />
-            Experience Studio
-          </span>
-          <h1
-            className="mt-5 font-serif italic text-[28px] sm:text-[40px] leading-[1.12] text-[color:var(--ivory)] max-w-[18ch] drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-          >
-            Conta-me esta viagem.
-          </h1>
-          <p className="mt-4 text-[12.5px] sm:text-[14px] text-[color:var(--ivory)]/75 max-w-[32ch] leading-relaxed">
-            Narra em voz alta, escreve, ou{" "}
-            <span className="text-[color:var(--gold)] font-semibold">toca em qualquer sítio</span>{" "}
-            para começar.
-          </p>
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 z-20 p-4 pb-[max(env(safe-area-inset-bottom),1rem)]">
-          {introTouched && !composerCollapsed ? (
-            <NarrativeComposer
-              busy={composerBusy}
-              collapsed={false}
-              onExpand={() => setComposerCollapsed(false)}
-              onSubmit={handleSubmit}
-            />
-          ) : (
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIntroTouched(true);
-                  setComposerCollapsed(false);
-                }}
-                className="inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)] px-5 py-3 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] shadow-[0_8px_28px_rgba(0,0,0,0.35)] min-h-[44px] hover:bg-[color:var(--gold)] transition-colors"
-              >
-                <Sparkles size={14} className="text-[color:var(--gold)] group-hover:text-[color:var(--charcoal)]" />
-                Começar a narrar
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+      <AmbientPrologue
+        locale={locale}
+        onLocaleChange={setLocale}
+        t={t}
+        onExit={onExit}
+        onAwaken={(seed) => {
+          if (seed) setComposerSeed(seed);
+          setComposerCollapsed(false);
+          // Mark awakened so the living scene mounts; if no seed, composer waits open.
+          patch({ awakened: true });
+        }}
+      />
     );
   }
 
