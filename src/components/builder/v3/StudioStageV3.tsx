@@ -629,10 +629,27 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         mood={state.mood}
         regionLabel={regionLabel(state.regionKey)}
         videoUrl={studioClip}
-        veil={phase === "living" ? "medium" : "deep"}
+        veil={
+          narrativeStage === "reveal"
+            ? "medium"
+            : narrativeStage === "invitation"
+              ? "deep"
+              : "medium"
+        }
         journeyType={state.journeyType}
         affinity={affinityProfile}
       />
+
+      {/* Transient narrative beat — appears only at stage transitions, then
+          dissolves. Slow/intimate travellers (high affinity.pacing) get a
+          longer hold; energetic travellers get a quicker rhythm. */}
+      <NarrativeBeat
+        fragment={state.narrativeFragment}
+        at={state.narrativeFragmentAt}
+        holdMs={Math.round(4200 + affinityProfile.pacing * 2600)}
+      />
+
+
 
 
       {/* Soft header — fades in only after the world begins reacting */}
