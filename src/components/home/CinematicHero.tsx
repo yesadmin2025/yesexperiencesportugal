@@ -21,20 +21,20 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 // ─────────────────────────────────────────────────────────────────────────────
 
 const HERO_CLIP = {
-  src: "/video/hero-coast.mp4",
+  src: "/video/scene-route-portugal.mp4",
   poster: "/video/hero-coast-poster.jpg",
-  alt: "An empty coastal road at golden hour",
+  alt: "Driving an empty Portuguese coastal road at golden hour",
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Pacing — one breath
+// Pacing — one breath (intimate, observational — not promotional)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const LINE1_DELAY_MS = 1400;
-const LINE2_DELAY_MS = 3200;
-const CTA_DELAY_MS = 6200;
-const FADE_MS = 1600;
-const CTA_FADE_MS = 1400;
+const LINE1_DELAY_MS = 1800;
+const LINE2_DELAY_MS = 3800;
+const CTA_DELAY_MS = 7000;
+const FADE_MS = 1800;
+const CTA_FADE_MS = 1500;
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
@@ -273,7 +273,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
       <style>{`
         @keyframes heroBreath {
           0%   { transform: scale(1.00); }
-          100% { transform: scale(1.04); }
+          100% { transform: scale(1.03); }
         }
       `}</style>
       <video
@@ -291,7 +291,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           filter: "saturate(0.86) contrast(1.04) brightness(0.80)",
           animation: skipMotion
             ? undefined
-            : "heroBreath 22s cubic-bezier(0.22,0.61,0.36,1) both",
+            : "heroBreath 28s cubic-bezier(0.22,0.61,0.36,1) both",
           transformOrigin: "center center",
         }}
       >
