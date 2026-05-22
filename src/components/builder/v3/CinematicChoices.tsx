@@ -98,11 +98,11 @@ export function CinematicChoices({ t, active, onPick, onComplete }: Props) {
     setPhase(firstIncomplete);
   }, [firstIncomplete]);
 
-  if (phase === null) {
-    // All three chosen — let the parent take over the next moment.
-    useEffect(() => onComplete(), []);
-    return null;
-  }
+  useEffect(() => {
+    if (phase === null) onComplete();
+  }, [phase, onComplete]);
+
+  if (phase === null) return null;
 
   const options =
     phase === "mood"
