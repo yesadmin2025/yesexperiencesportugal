@@ -61,8 +61,16 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
     return () => timers.forEach(window.clearTimeout);
   }, [suggestions]);
 
-  const available = suggestions.filter((s) => !acceptedKeys.includes(s.key)).slice(0, 3);
+  // Decision-fatigue reduction: once the journey has at least 2 chosen moments,
+  // we switch to "guided curation" mode — a single hero suggestion at a time so
+  // the traveller never feels confronted with a catalog.
+  const guided = acceptedKeys.length >= 2;
+  const maxCards = guided ? 1 : 2;
+  const available = suggestions
+    .filter((s) => !acceptedKeys.includes(s.key))
+    .slice(0, maxCards);
   if (!available.length) return null;
+
 
   return (
     <ul className="flex flex-col gap-2.5 items-center" role="list">
