@@ -28,6 +28,7 @@ import { LivingMap } from "./LivingMap";
 import { ItineraryRibbon } from "./ItineraryRibbon";
 import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
+import { MultiDayConcierge } from "./MultiDayConcierge";
 
 interface CatalogEntry {
   key: string;
