@@ -87,6 +87,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const [composerSeed, setComposerSeed] = useState<string | undefined>(undefined);
   const [revealPlayed, setRevealPlayed] = useState(false);
   const lastChapterReqRef = useRef<string>("");
+  /** Session AI budget — at most 4 composeStudioMoment calls per session. */
+  const aiBudgetRef = useRef<number>(0);
+  const narrativeFiredAtRef = useRef<number>(-1);
 
   /* ── Load region catalog ── */
   useEffect(() => {
