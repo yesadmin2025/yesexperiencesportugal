@@ -56,21 +56,24 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
   en: {
     invitation: [
       "The coast keeps its mornings slow, salt drying on stone.",
-      "Pine wind moves through the afternoon, unhurried.",
+      "Pine wind moves through the afternoon, unhurried over slate roofs.",
       "Tiled façades hold the light a little longer here.",
-      "Afternoon settles over old stone like a soft breath.",
+      "Atlantic mist lifts off the quay, the day still folded in.",
+      "Whitewashed walls catch the first sun, no one in any hurry.",
     ],
     recognition: [
       "A wooden table waits in the shade of cork oaks.",
       "Salt drying on wooden boards beside the late tide.",
-      "Bread torn slowly, glasses filled without ceremony.",
+      "Bread torn slowly, an enamel cup, the courtyard still cool.",
       "Quiet vines, a long lunch, the day stretches further than expected.",
+      "A doorway open to a tiled hallway, coffee on the stove.",
     ],
     emergence: [
       "Late sun on a tiled café, a glass of green wine, no hurry.",
       "Cliffs falling away, a fishing boat tracing the line of the bay.",
       "Cool stone underfoot, an open courtyard, a single lemon tree.",
       "A ferry crossing, the river wide and soft with afternoon light.",
+      "Charcoal smoke and sardines on oil-stained paper, plates passed around.",
     ],
     reveal: [
       "This feels like your kind of day — slow, salt-edged, generous.",
