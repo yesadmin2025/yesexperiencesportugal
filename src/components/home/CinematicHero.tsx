@@ -303,7 +303,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         className="absolute inset-0 h-full w-full object-cover"
         style={{
           opacity: 1,
-          filter: "saturate(0.86) contrast(1.04) brightness(0.80)",
+          filter: "saturate(0.82) contrast(0.96) brightness(0.86)",
           animation: skipMotion
             ? undefined
             : "heroBreath 28s cubic-bezier(0.22,0.61,0.36,1) both",
