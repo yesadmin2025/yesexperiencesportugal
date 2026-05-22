@@ -69,14 +69,29 @@ export function Navbar() {
         <div className="flex items-center justify-between h-[64px] md:h-[80px] lg:h-[92px]">
           <Link
             to="/"
-            className="flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label="YES experiences PORTUGAL — Home"
-            style={transparent ? { opacity: 0.88, filter: "drop-shadow(0 1px 8px rgba(0,0,0,0.35))" } : undefined}
+            style={
+              transparent
+                ? { opacity: 1, filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.55)) drop-shadow(0 1px 2px rgba(0,0,0,0.4))" }
+                : undefined
+            }
           >
+            {transparent && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-0 -left-3 -right-3 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at center, rgba(10,8,6,0.42) 0%, rgba(10,8,6,0.22) 55%, rgba(10,8,6,0) 80%)",
+                  filter: "blur(6px)",
+                }}
+              />
+            )}
             <Logo
               theme="teal-on-ivory"
               fetchPriority="high"
-              className="block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
+              className="relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
             />
           </Link>
 

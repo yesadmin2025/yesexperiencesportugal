@@ -148,9 +148,10 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "var(--gold, #C9A96A)",
-              textShadow: "0 1px 24px rgba(0,0,0,0.45)",
-              fontSize: "clamp(24px, 4.2vw, 46px)",
+              color: "#E6C892",
+              textShadow:
+                "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
+              fontSize: "clamp(26px, 4.4vw, 48px)",
               opacity: line1 ? 1 : 0,
               transform: line1 ? "translateY(0)" : "translateY(8px)",
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
@@ -167,9 +168,10 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "var(--gold, #C9A96A)",
-              textShadow: "0 1px 24px rgba(0,0,0,0.45)",
-              fontSize: "clamp(24px, 4.2vw, 46px)",
+              color: "#E6C892",
+              textShadow:
+                "0 1px 2px rgba(0,0,0,0.55), 0 2px 28px rgba(0,0,0,0.65), 0 0 48px rgba(0,0,0,0.35)",
+              fontSize: "clamp(26px, 4.4vw, 48px)",
               opacity: line2 ? 1 : 0,
               transform: line2 ? "translateY(0)" : "translateY(8px)",
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
@@ -195,14 +197,16 @@ export function CinematicHero() {
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--charcoal-deep,#1a1816)] hover:bg-[color:var(--ivory,#FAF8F3)]/95 transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--charcoal-deep,#1a1816)] hover:bg-[color:var(--ivory,#FAF8F3)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
-              border: "1px solid color-mix(in oklab, var(--ivory, #FAF8F3) 55%, transparent)",
-              background: "rgba(250, 248, 243, 0.06)",
-              backdropFilter: "blur(2px)",
+              border: "1px solid rgba(250, 248, 243, 0.85)",
+              background: "rgba(20, 16, 12, 0.32)",
+              backdropFilter: "blur(4px)",
+              boxShadow:
+                "0 10px 30px -12px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
           >
             Begin Your Journey
@@ -210,11 +214,15 @@ export function CinematicHero() {
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[13px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)]/80 hover:text-[color:var(--gold,#C9A96A)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] hover:text-[color:var(--gold,#C9A96A)] transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.22em",
               fontFamily: "Inter, system-ui, sans-serif",
               borderRadius: 0,
+              border: "1px solid rgba(250, 248, 243, 0.45)",
+              background: "rgba(20, 16, 12, 0.18)",
+              backdropFilter: "blur(3px)",
+              textShadow: "0 1px 8px rgba(0,0,0,0.55)",
             }}
           >
             Explore Experiences
