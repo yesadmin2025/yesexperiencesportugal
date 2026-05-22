@@ -234,6 +234,57 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     setWhisper,
   ]);
 
+  /* ── Compose editorial proposal — once, when all three choices are made ── */
+  useEffect(() => {
+    if (!sessionId) return;
+    if (state.journeyType === "multi") return;
+    const hasCore = Boolean(state.mood && state.who && state.intention);
+    if (!hasCore) return;
+    if (state.proposal) return;
+    if (state.acceptedStops.length > 0) return;
+    let cancelled = false;
+    composeFn({
+      data: {
+        sessionId,
+        mode: "proposal",
+        locale,
+        mood: state.mood,
+        who: state.who,
+        intention: state.intention,
+        journeyType: state.journeyType,
+        travellerName: state.travellerName,
+        narrativeStage: "reveal",
+        confidence: 0.6,
+        acceptedCount: 0,
+      },
+    })
+      .then((r) => {
+        if (cancelled) return;
+        if (r.mode === "proposal") {
+          patch({
+            proposal: { title: r.title, subtitle: r.subtitle, generatedAt: Date.now() },
+          });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    sessionId,
+    locale,
+    state.mood,
+    state.who,
+    state.intention,
+    state.journeyType,
+    state.travellerName,
+    state.proposal,
+    state.acceptedStops.length,
+    composeFn,
+    patch,
+  ]);
+
+
   /** Shared suggestion fetch — reused by composer submit + emotion taps. */
   const refreshSuggestions = useCallback(
     async (
