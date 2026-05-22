@@ -139,6 +139,8 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     resumeContinue: "Continuar",
     resumeRestart: "Começar de novo",
     suggestionFallback: "um momento à tua espera",
+    invitationWhisper: "Respira. Escolhe o que sentes — o resto desperta sozinho.",
+    awakeningCue: "Portugal está a responder…",
   },
   en: {
     eyebrow: "Experience Studio",
