@@ -64,17 +64,17 @@ export function Navbar() {
     : "lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
   return (
-    <header className={headerClass}>
+    <header className={headerClass} style={transparentHeaderStyle}>
       <div className="container-x">
         <div className="flex items-center justify-between h-[64px] md:h-[80px] lg:h-[92px]">
           <Link
             to="/"
             className="flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label="YES experiences PORTUGAL — Home"
-            style={transparent ? { opacity: 0.85 } : undefined}
+            style={transparent ? { opacity: 0.88, filter: "drop-shadow(0 1px 8px rgba(0,0,0,0.35))" } : undefined}
           >
             <Logo
-              theme={transparent ? "gold-on-charcoal" : "teal-on-ivory"}
+              theme="teal-on-ivory"
               fetchPriority="high"
               className="block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
             />
