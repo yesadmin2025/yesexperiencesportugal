@@ -58,6 +58,7 @@ export function ReviewScreen({
   narrative,
   reviewThumbs,
   selectedElementLabels,
+  who,
   onConfirm,
   onBack,
   onReset,
