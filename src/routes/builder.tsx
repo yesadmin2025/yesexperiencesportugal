@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, Map as MapIcon, Sparkles, X } from "lucide-react";
-import { SiteLayout } from "@/components/SiteLayout";
+
 import { generateBuilderRoute, narrateBuilderRoute } from "@/server/builderEngine.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
