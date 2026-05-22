@@ -47,9 +47,15 @@ export interface StudioState {
   nameAsked: boolean;
   /** Composed editorial identity for the reveal — generated once, cached. */
   proposal: StudioProposal | null;
-  /** Most recent AI-composed sensory fragment (used as chip eyebrow). */
+  /** Most recent AI-composed sensory fragment (transient — used by NarrativeBeat). */
   narrativeFragment: string | null;
+  /** Timestamp the fragment arrived — drives the transient beat lifecycle. */
+  narrativeFragmentAt: number | null;
 }
+
+/** Derived narrative stage — controls AI voice, motion duration, and beat pacing. */
+export type NarrativeStage = "invitation" | "recognition" | "emergence" | "reveal";
+
 
 const INITIAL: StudioState = {
   narrative: "",
