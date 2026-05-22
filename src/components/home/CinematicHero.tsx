@@ -199,32 +199,40 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-5 hero-cta-group">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 hero-cta-group">
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.22em",
+              letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
+              fontWeight: 600,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">Begin Your Journey</span>
+            <span className="relative z-10 inline-flex items-center gap-2.5">
+              Begin Your Journey
+              <svg className="hero-cta__arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
           </Link>
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.22em",
+              letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
+              fontWeight: 500,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10">Explore Experiences</span>
           </Link>
         </div>
+
 
       </div>
 
