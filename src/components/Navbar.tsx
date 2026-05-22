@@ -67,19 +67,19 @@ export function Navbar() {
       {/* Soft atmospheric dissolve — editorial paper into cinema light. Felt, not noticed. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[88px] md:h-[104px] lg:h-[120px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[108px] md:h-[128px] lg:h-[144px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.92) 0%, rgba(247,243,236,0.74) 18%, rgba(247,243,236,0.50) 38%, rgba(247,243,236,0.28) 60%, rgba(247,243,236,0.10) 82%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(248,242,232,0.88) 0%, rgba(248,242,232,0.66) 22%, rgba(248,242,232,0.42) 44%, rgba(248,242,232,0.22) 66%, rgba(248,242,232,0.08) 84%, rgba(248,242,232,0) 100%)",
         }}
       />
       {/* Whisper of editorial shadow at the very edge — almost invisible. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[6px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[4px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(30,22,14,0.06) 0%, rgba(30,22,14,0) 100%)",
+            "linear-gradient(to bottom, rgba(30,22,14,0.035) 0%, rgba(30,22,14,0) 100%)",
         }}
       />
       <div className="container-x">
