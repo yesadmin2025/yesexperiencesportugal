@@ -3,47 +3,68 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 /**
  * StudioDrift — emotional seduction engine prototype.
  *
- * NOT a configurator. NOT an ambient art piece. NOT a mood gallery.
+ * Reads aesthetic taste, not categories.
  *
- * A 70–90s responsive cinematic story in three acts. Portugal arrives
- * continuously and transforms in response to the traveller's rhythm. The
- * world narrows — wide horizons soften into intimate corners, observation
- * becomes address, and the drift converges on a single named destination
- * that feels like it was waiting for them.
+ * The world transforms continuously around the traveller. Tempo (slow
+ * lingering vs fast tapping) and silent taste accumulation reshape scene
+ * affinity, light, sound and pacing. The drift converges — around 34s —
+ * on a single taste signature: a world that matches the traveller's
+ * aesthetic instincts, named in a place.
  *
- * Acts:
- *   I  · WIDE       (≈0–22s)   horizons, sea wind, observational fragments
- *   II · INTIMATE   (≈22–55s)  streets, tables, candle-light; fragments
- *                              turn personal; pacing tightens; tension lifts
- *   III · ARRIVAL   (≈55–80s)  the world converges on one place; a single
- *                              line of inevitability — "Foi para X que o
- *                              teu silêncio te levou."
- *
- * The world reads tempo (slow lingering vs fast tapping) to bias scene
- * affinity and tint, but acts always progress — there is no "freely
- * wandering forever". Something forms around them.
+ * Internal phase names (1/2/3) are NEVER exposed in the UI.
  */
 
 type Register = "horizon" | "stone" | "candle" | "table" | "vineyard" | "harbour";
 
-type Act = 1 | 2 | 3;
+/** Internal phase — wide → intimate → arrival. Code-only. */
+type Phase = 1 | 2 | 3;
+
+/** Aesthetic identities the world might converge on. Felt worlds, not categories. */
+type Signature =
+  | "storm-atlantic-lunch"
+  | "monastery-silence"
+  | "candlelit-stone"
+  | "tiled-courtyard-rain"
+  | "fisherman-dawn"
+  | "vineyard-shadow"
+  | "linen-and-salt";
+
+/** Fine-grained sensory axes — silently profile the traveller's taste. */
+type Taste =
+  | "salt-on-linen"
+  | "lime-on-stone"
+  | "cool-tile"
+  | "weathered-wood"
+  | "cork-and-clay"
+  | "storm-light"
+  | "low-gold-light"
+  | "candle-warmth"
+  | "monastery-silver"
+  | "long-lunch"
+  | "table-late"
+  | "wine-sun-down"
+  | "bread-and-pause"
+  | "fisherman-dawn"
+  | "old-world"
+  | "quiet-refined"
+  | "raw-honest"
+  | "artisan";
 
 type DriftScene = {
   id: string;
   videoUrl: string;
   register: Register;
-  /** Which act this scene is eligible for. */
-  acts: Act[];
-  /** Observational fragments (act I) — pure sensory, no "you". */
+  phases: Phase[];
+  /** Observational fragments (wide) — pure sensory, taste-loaded, no "you". */
   observe: string[];
-  /** Personal fragments (act II) — quiet address, "tu" form. */
+  /** Personal fragments (intimate) — quiet address in "tu" form. */
   intimate: string[];
-  /** Tempo affinity. */
   tempo: "slow" | "fast" | "any";
-  /** Place name used by the final convergence line. */
   place: string;
-  /** Convergence line — read at the arrival moment if this scene wins. */
-  convergence: string;
+  /** Primary taste signature this scene pulls toward. */
+  signature: Signature;
+  /** Supporting taste tags — accumulate silently as the world senses. */
+  tastes: Taste[];
 };
 
 const SCENES: DriftScene[] = [
@@ -51,102 +72,145 @@ const SCENES: DriftScene[] = [
     id: "arrabida-coast",
     videoUrl: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
     register: "horizon",
-    acts: [1, 2],
-    observe: ["o vento traz sal", "a água respira devagar"],
-    intimate: ["fica mais um pouco", "ninguém te chama de volta"],
+    phases: [1, 2],
+    observe: ["luz de tempestade sobre o Atlântico", "linho branco e sal no ar"],
+    intimate: ["uma mesa pequena à beira de tudo", "almoça devagar, ninguém te apressa"],
     tempo: "slow",
     place: "Arrábida",
-    convergence: "Foi para a Arrábida que o teu silêncio te levou.",
+    signature: "storm-atlantic-lunch",
+    tastes: ["salt-on-linen", "storm-light", "long-lunch", "quiet-refined"],
   },
   {
     id: "cabo-roca",
     videoUrl: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
     register: "horizon",
-    acts: [1],
-    observe: ["o Atlântico abre-se sem fim", "aqui acaba a terra"],
-    intimate: ["respira fundo", "este lugar guarda-te"],
+    phases: [1],
+    observe: ["o silêncio aqui sabe a mosteiro", "prata fria sobre o Atlântico"],
+    intimate: ["respira fundo, este sítio sabe esperar", "ninguém fala alto contigo aqui"],
     tempo: "slow",
     place: "Cabo da Roca",
-    convergence: "Foi até ao fim da terra que tu vieste.",
+    signature: "monastery-silence",
+    tastes: ["monastery-silver", "storm-light", "old-world", "quiet-refined"],
   },
   {
     id: "hidden-street",
     videoUrl: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
     register: "stone",
-    acts: [1, 2],
-    observe: ["azulejos antigos, cal nas paredes", "passos sobre pedra húmida"],
-    intimate: ["esta rua não está no mapa", "alguém deixou esta porta aberta para ti"],
+    phases: [1, 2],
+    observe: ["azulejos depois da chuva, cal nas mãos", "pátios estreitos a respirar fresco"],
+    intimate: ["esta rua não está em mapa nenhum", "alguém deixou esta porta aberta para ti"],
     tempo: "any",
     place: "Setúbal velha",
-    convergence: "Foi numa rua sem nome que tu te encontraste.",
+    signature: "tiled-courtyard-rain",
+    tastes: ["cool-tile", "lime-on-stone", "old-world", "artisan"],
   },
   {
     id: "viewpoint",
     videoUrl: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
     register: "vineyard",
-    acts: [2],
-    observe: ["pinheiros, sombra fresca", "luz baixa sobre a baía"],
-    intimate: ["fica para a luz da tarde", "este é o teu lado da serra"],
+    phases: [2],
+    observe: ["sombras de vinha ao fim do dia", "luz baixa, jazz devagar, copo a meio"],
+    intimate: ["fica para a luz dourada", "este é o teu lado da serra"],
     tempo: "slow",
     place: "Serra da Arrábida",
-    convergence: "Foi à sombra dos pinheiros que tu paraste.",
+    signature: "vineyard-shadow",
+    tastes: ["low-gold-light", "wine-sun-down", "quiet-refined", "weathered-wood"],
   },
   {
     id: "candle-table",
     videoUrl: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
     register: "table",
-    acts: [2, 3],
-    observe: ["pão partido devagar", "vinho da casa, copo simples"],
-    intimate: ["a mesa estava à tua espera", "senta-te, não há pressa"],
+    phases: [2, 3],
+    observe: ["pão partido devagar, mãos antigas", "vinho da casa em copo simples"],
+    intimate: ["a mesa estava à tua espera", "fica até a vela ficar curta"],
     tempo: "slow",
     place: "Azeitão",
-    convergence: "Foi para uma mesa em Azeitão que o dia te conduziu.",
+    signature: "candlelit-stone",
+    tastes: ["candle-warmth", "weathered-wood", "bread-and-pause", "old-world"],
   },
   {
     id: "celebration",
     videoUrl: "/__l5e/assets-v1/79e74bb4-85bb-4f83-9bc7-c8bf774af5be/scene-celebration.mp4",
     register: "candle",
-    acts: [2, 3],
-    observe: ["velas baixas, vozes próximas", "o fogo agrada à pedra"],
+    phases: [2, 3],
+    observe: ["velas baixas, vozes próximas, pedra quente", "taberna pequena, fogo lento"],
     intimate: ["foste convidado, mesmo sem o saber", "fica até a última vela apagar"],
     tempo: "any",
-    place: "uma noite a sul",
-    convergence: "Foi uma noite a sul que te ficou na pele.",
+    place: "uma taberna a sul",
+    signature: "candlelit-stone",
+    tastes: ["candle-warmth", "cork-and-clay", "table-late", "raw-honest"],
   },
   {
     id: "sesimbra",
     videoUrl: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
     register: "harbour",
-    acts: [1, 2, 3],
-    observe: ["barcos a regressar", "cheiro a sardinha grelhada"],
-    intimate: ["o porto fala devagar contigo", "fica para ver as luzes acenderem-se"],
+    phases: [1, 2, 3],
+    observe: ["pescadores ao amanhecer, redes molhadas", "café preto, mãos ásperas, mar perto"],
+    intimate: ["o porto fala devagar contigo", "fica para o primeiro barco voltar"],
     tempo: "fast",
     place: "Sesimbra",
-    convergence: "Foi em Sesimbra que o mar te deixou ficar.",
+    signature: "fisherman-dawn",
+    tastes: ["raw-honest", "salt-on-linen", "fisherman-dawn", "artisan"],
   },
 ];
+
+/** Signature → arrival couplet (taste line + place line). */
+const SIGNATURE_LINES: Record<Signature, { taste: string; place: (p: string) => string }> = {
+  "storm-atlantic-lunch": {
+    taste: "Almoços lentos, sal no ar, luz de tempestade sobre linho branco.",
+    place: (p) => `É para ${p} que tu vais.`,
+  },
+  "monastery-silence": {
+    taste: "Silêncio de claustro, prata fria, horas que se alargam.",
+    place: (p) => `É em ${p} que tu paras.`,
+  },
+  "candlelit-stone": {
+    taste: "Tabernas de pedra acesas a vela, vinho da casa, conversa que se demora.",
+    place: (p) => `É em ${p} que a noite te encontra.`,
+  },
+  "tiled-courtyard-rain": {
+    taste: "Pátios de azulejo depois da chuva, cal nas mãos, passos devagar.",
+    place: (p) => `É em ${p} que tu te perdes — de propósito.`,
+  },
+  "fisherman-dawn": {
+    taste: "Cais ao amanhecer, redes molhadas, café preto, mar perto.",
+    place: (p) => `É em ${p} que o dia começa contigo.`,
+  },
+  "vineyard-shadow": {
+    taste: "Sombras de vinha ao fim do dia, luz dourada, copo a meio.",
+    place: (p) => `É na ${p} que tu ficas.`,
+  },
+  "linen-and-salt": {
+    taste: "Linho branco, sal seco, uma mesa pequena à beira do Atlântico.",
+    place: (p) => `É à beira de ${p} que tu te demoras.`,
+  },
+};
 
 interface Props {
   onExit?: () => void;
 }
 
-/** Act durations (system-decided — drift always progresses). */
-const ACT_I_MS = 22000;
-const ACT_II_MS = 33000;
-const ACT_III_HOLD_MS = 9000; // arrival breath before final line
+/** Timeline — first convergence lands at ≈34s. Phase names never exposed. */
+const PHASE_I_MS = 10000;
+const PHASE_II_MS = 16000;
+const PHASE_III_HOLD_MS = 8000;
 const ARRIVAL_DURATION_MS = 14000;
 
-/** Lean (linger) thresholds — shorter in later acts so tension keeps lifting. */
-const LEAN_MS_BY_ACT: Record<Act, number> = { 1: 3600, 2: 2800, 3: 2200 };
-/** Passive advance — pace tightens act by act. */
-const PASSIVE_MS_BY_ACT: Record<Act, number> = { 1: 9000, 2: 7000, 3: 5500 };
+const LEAN_MS_BY_PHASE: Record<Phase, number> = { 1: 3200, 2: 2400, 3: 1800 };
+const PASSIVE_MS_BY_PHASE: Record<Phase, number> = { 1: 6500, 2: 5200, 3: 4600 };
 const TEMPO_WINDOW_MS = 1400;
 
+type LeanRecord = {
+  scene: DriftScene;
+  dwellMs: number;
+  phase: Phase;
+};
+
 export function StudioDrift({ onExit }: Props) {
-  const [act, setAct] = useState<Act>(1);
+  const [phase, setPhase] = useState<Phase>(1);
   const [sceneIdx, setSceneIdx] = useState(0);
   const [fragment, setFragment] = useState<string | null>(null);
-  const [leans, setLeans] = useState<Array<{ register: Register; place: string; dwellMs: number; act: Act }>>([]);
+  const [leans, setLeans] = useState<LeanRecord[]>([]);
   const [tempo, setTempo] = useState<"slow" | "fast" | "neutral">("neutral");
   const [arriving, setArriving] = useState(false);
   const [audioStarted, setAudioStarted] = useState(false);
@@ -160,6 +224,18 @@ export function StudioDrift({ onExit }: Props) {
 
   const scene = SCENES[sceneIdx % SCENES.length];
 
+  /** Live taste profile — what the world has sensed so far. */
+  const tasteProfile = useMemo(() => {
+    const map = new Map<Taste, number>();
+    for (const l of leans) {
+      const weight = l.phase === 3 ? 2.4 : l.phase === 2 ? 1.6 : 1;
+      for (const t of l.scene.tastes) {
+        map.set(t, (map.get(t) ?? 0) + weight);
+      }
+    }
+    return map;
+  }, [leans]);
+
   const clearSceneTimers = useCallback(() => {
     if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
     if (leanTimerRef.current) window.clearTimeout(leanTimerRef.current);
@@ -167,22 +243,22 @@ export function StudioDrift({ onExit }: Props) {
     leanTimerRef.current = null;
   }, []);
 
-  /** Pick the next scene biased by current act, tempo, and accumulated affinity. */
+  /** Pick next scene — biased by phase, tempo AND taste affinity. */
   const chooseNext = useCallback(
-    (currentRegister: Register, forAct: Act) => {
-      const candidates = SCENES.filter((s) => s.acts.includes(forAct) && s.register !== currentRegister);
+    (currentRegister: Register, forPhase: Phase) => {
+      const candidates = SCENES.filter((s) => s.phases.includes(forPhase) && s.register !== currentRegister);
       const pool = candidates.length > 0 ? candidates : SCENES.filter((s) => s.register !== currentRegister);
       const scored = pool.map((s) => {
         let score = 1;
-        if (tempo === "slow" && s.tempo === "slow") score += 2;
-        if (tempo === "fast" && s.tempo === "fast") score += 2;
-        if (tempo === "slow" && s.tempo === "fast") score -= 1.2;
-        // Affinity: previously leaned-on registers attract their kin.
-        const sameReg = leans.filter((l) => l.register === s.register).length;
-        score += sameReg * 0.8;
-        // Act III narrows aggressively toward intimate registers.
-        if (forAct === 3 && (s.register === "table" || s.register === "candle" || s.register === "harbour")) {
-          score += 1.4;
+        if (tempo === "slow" && s.tempo === "slow") score += 1.6;
+        if (tempo === "fast" && s.tempo === "fast") score += 1.6;
+        if (tempo === "slow" && s.tempo === "fast") score -= 1.0;
+        // Taste affinity — the world drifts toward what's resonated.
+        const tasteAffinity = s.tastes.reduce((acc, t) => acc + (tasteProfile.get(t) ?? 0), 0);
+        score += tasteAffinity * 0.6;
+        // Late phase narrows to intimate registers.
+        if (forPhase === 3 && (s.register === "table" || s.register === "candle" || s.register === "harbour")) {
+          score += 1.2;
         }
         return { scene: s, score };
       });
@@ -194,35 +270,34 @@ export function StudioDrift({ onExit }: Props) {
       }
       return SCENES.indexOf(scored[0].scene);
     },
-    [tempo, leans],
+    [tempo, tasteProfile],
   );
 
   const advance = useCallback(
-    (forAct: Act = act) => {
-      setSceneIdx((idx) => chooseNext(SCENES[idx].register, forAct));
+    (forPhase: Phase = phase) => {
+      setSceneIdx((idx) => chooseNext(SCENES[idx].register, forPhase));
     },
-    [chooseNext, act],
+    [chooseNext, phase],
   );
 
-  // Act timeline — drift always progresses. There is no infinite wander.
+  // Phase timeline — drift always progresses. Names never surfaced.
   useEffect(() => {
     const t1 = window.setTimeout(() => {
-      setAct(2);
+      setPhase(2);
       advance(2);
-    }, ACT_I_MS);
+    }, PHASE_I_MS);
     const t2 = window.setTimeout(() => {
-      setAct(3);
+      setPhase(3);
       advance(3);
-    }, ACT_I_MS + ACT_II_MS);
+    }, PHASE_I_MS + PHASE_II_MS);
     const t3 = window.setTimeout(() => {
       setArriving(true);
-    }, ACT_I_MS + ACT_II_MS + ACT_III_HOLD_MS);
+    }, PHASE_I_MS + PHASE_II_MS + PHASE_III_HOLD_MS);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       window.clearTimeout(t3);
     };
-    // Mount-once timeline.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -235,24 +310,27 @@ export function StudioDrift({ onExit }: Props) {
     clearSceneTimers();
 
     const holdMs =
-      tempo === "slow" ? PASSIVE_MS_BY_ACT[act] + 1800 : tempo === "fast" ? PASSIVE_MS_BY_ACT[act] - 1500 : PASSIVE_MS_BY_ACT[act];
+      tempo === "slow"
+        ? PASSIVE_MS_BY_PHASE[phase] + 1400
+        : tempo === "fast"
+          ? PASSIVE_MS_BY_PHASE[phase] - 1200
+          : PASSIVE_MS_BY_PHASE[phase];
 
     passiveTimerRef.current = window.setTimeout(() => {
-      if (!lingeringRef.current) advance(act);
+      if (!lingeringRef.current) advance(phase);
     }, holdMs);
 
     leanTimerRef.current = window.setTimeout(() => {
       if (lingeringRef.current) {
         const dwellMs = Date.now() - enterAtRef.current;
-        setLeans((prev) => [...prev, { register: scene.register, place: scene.place, dwellMs, act }]);
-        // Fragment register evolves with the act — observation → address.
-        const pool = act === 1 ? scene.observe : scene.intimate;
+        setLeans((prev) => [...prev, { scene, dwellMs, phase }]);
+        const pool = phase === 1 ? scene.observe : scene.intimate;
         setFragment(pool[Math.floor(Math.random() * pool.length)]);
       }
-    }, LEAN_MS_BY_ACT[act]);
+    }, LEAN_MS_BY_PHASE[phase]);
 
     return clearSceneTimers;
-  }, [sceneIdx, scene, advance, clearSceneTimers, arriving, act, tempo]);
+  }, [sceneIdx, scene, advance, clearSceneTimers, arriving, phase, tempo]);
 
   const ensureAudio = useCallback(() => {
     if (!audioStarted) setAudioStarted(true);
@@ -269,7 +347,7 @@ export function StudioDrift({ onExit }: Props) {
       if (tapBurstRef.current >= 2) setTempo("fast");
     } else {
       tapBurstRef.current = 0;
-      if (gap > 6500) setTempo("slow");
+      if (gap > 6000) setTempo("slow");
     }
     if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
   }, [ensureAudio]);
@@ -279,57 +357,62 @@ export function StudioDrift({ onExit }: Props) {
   }, []);
 
   const onSceneTap = useCallback(() => {
-    if (fragment !== null) advance(act);
-  }, [fragment, advance, act]);
+    if (fragment !== null) advance(phase);
+  }, [fragment, advance, phase]);
 
-  // Atmosphere tint — narrows act by act and shifts with tempo.
+  // Atmosphere tint — narrows phase by phase and shifts with tempo + dominant taste light.
   const atmosphereTint = useMemo(() => {
     const teal = "color-mix(in oklab, var(--teal) 18%, transparent)";
     const gold = "color-mix(in oklab, var(--gold) 18%, transparent)";
     const ivory = "color-mix(in oklab, var(--ivory) 9%, transparent)";
     const warm = "color-mix(in oklab, var(--gold-soft, var(--gold)) 22%, transparent)";
 
-    if (act === 3) {
-      // Convergence — warm, intimate.
+    // Late phase = warm intimacy. Light bias also responds to taste profile.
+    const stormWeight = tasteProfile.get("storm-light") ?? 0;
+    const goldWeight = (tasteProfile.get("low-gold-light") ?? 0) + (tasteProfile.get("candle-warmth") ?? 0);
+    const silverWeight = tasteProfile.get("monastery-silver") ?? 0;
+
+    if (phase === 3) {
       return `radial-gradient(ellipse at 50% 75%, ${warm} 0%, transparent 58%)`;
     }
-    if (act === 2) {
-      return tempo === "fast"
-        ? `radial-gradient(ellipse at 50% 78%, ${gold} 0%, transparent 55%)`
-        : `radial-gradient(ellipse at 50% 78%, ${teal} 0%, transparent 58%)`;
+    if (phase === 2) {
+      if (goldWeight > stormWeight && goldWeight > silverWeight) {
+        return `radial-gradient(ellipse at 50% 78%, ${gold} 0%, transparent 58%)`;
+      }
+      if (silverWeight > stormWeight) {
+        return `radial-gradient(ellipse at 50% 78%, ${ivory} 0%, transparent 60%)`;
+      }
+      return `radial-gradient(ellipse at 50% 78%, ${teal} 0%, transparent 58%)`;
     }
     return tempo === "slow"
       ? `radial-gradient(ellipse at 50% 80%, ${teal} 0%, transparent 60%)`
       : `radial-gradient(ellipse at 50% 80%, ${ivory} 0%, transparent 50%)`;
-  }, [act, tempo]);
+  }, [phase, tempo, tasteProfile]);
 
   if (arriving) {
-    return <DriftArrival leans={leans} scene={scene} onExit={onExit} />;
+    return <DriftArrival leans={leans} fallback={scene} onExit={onExit} />;
   }
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-black" style={{ touchAction: "manipulation" }}>
       <SceneVideo key={scene.id} src={scene.videoUrl} />
 
-      {/* Tempo/act-aware atmospheric tint — the world transforms continuously */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none transition-[background] duration-[2400ms] ease-out"
+        className="absolute inset-0 pointer-events-none transition-[background] duration-[2200ms] ease-out"
         style={{ background: atmosphereTint, mixBlendMode: "soft-light" }}
       />
 
-      {/* Vignette deepens with act — pulling the eye inward over time */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none transition-opacity duration-[2400ms]"
+        className="absolute inset-0 pointer-events-none transition-opacity duration-[2200ms]"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.35) 95%), linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.50) 100%)",
-          opacity: act === 3 ? 1 : act === 2 ? 0.85 : 0.7,
+            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.34) 95%), linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.50) 100%)",
+          opacity: phase === 3 ? 1 : phase === 2 ? 0.85 : 0.7,
         }}
       />
 
-      {/* Invisible interaction surface */}
       <button
         type="button"
         aria-label="Stay with this moment"
@@ -343,11 +426,10 @@ export function StudioDrift({ onExit }: Props) {
         onClick={onSceneTap}
       />
 
-      {/* Lean bloom — a single warm breath when the world senses presence */}
       {fragment !== null && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 z-[14] pointer-events-none animate-in fade-in duration-[1800ms]"
+          className="absolute inset-0 z-[14] pointer-events-none animate-in fade-in duration-[1600ms]"
           style={{
             background:
               "radial-gradient(ellipse at 50% 58%, color-mix(in oklab, var(--gold) 26%, transparent) 0%, transparent 55%)",
@@ -356,12 +438,11 @@ export function StudioDrift({ onExit }: Props) {
         />
       )}
 
-      {/* Sensory fragment — italic Portuguese; register evolves with act */}
       {fragment !== null && (
-        <div className="absolute inset-x-0 bottom-[16%] z-20 flex flex-col items-center px-8 text-center pointer-events-none animate-in fade-in duration-[1600ms]">
+        <div className="absolute inset-x-0 bottom-[16%] z-20 flex flex-col items-center px-8 text-center pointer-events-none animate-in fade-in duration-[1400ms]">
           <span aria-hidden="true" className="mb-4 block h-px w-6 bg-[color:var(--gold)]/70" />
           <p
-            className="italic text-[19px] sm:text-[22px] leading-[1.45] text-[color:var(--ivory)] max-w-[24ch]"
+            className="italic text-[19px] sm:text-[22px] leading-[1.45] text-[color:var(--ivory)] max-w-[26ch]"
             style={{
               fontFamily: "Georgia, 'Times New Roman', serif",
               textShadow: "0 1px 22px rgba(0,0,0,0.7)",
@@ -384,7 +465,7 @@ export function StudioDrift({ onExit }: Props) {
         </button>
       )}
 
-      {audioStarted && <AmbientAudio tempo={tempo} act={act} />}
+      {audioStarted && <AmbientAudio tempo={tempo} phase={phase} />}
     </div>
   );
 }
@@ -401,17 +482,13 @@ function SceneVideo({ src }: { src: string }) {
       loop
       playsInline
       preload="auto"
-      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[1800ms]"
+      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[1600ms]"
       style={{ filter: "saturate(0.93) contrast(1.02)" }}
     />
   );
 }
 
-/**
- * AmbientAudio — synthesised Atlantic-wind drone. Brightens with tempo and
- * warms in act III (a soft sub-bass layer wakens for arrival).
- */
-function AmbientAudio({ tempo, act }: { tempo: "slow" | "fast" | "neutral"; act: Act }) {
+function AmbientAudio({ tempo, phase }: { tempo: "slow" | "fast" | "neutral"; phase: Phase }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const filterRef = useRef<BiquadFilterNode | null>(null);
   const subGainRef = useRef<GainNode | null>(null);
@@ -440,16 +517,15 @@ function AmbientAudio({ tempo, act }: { tempo: "slow" | "fast" | "neutral"; act:
 
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 420;
+    filter.frequency.value = 440;
     filter.Q.value = 0.7;
 
     const noiseGain = ctx.createGain();
     noiseGain.gain.value = 0;
     noise.connect(filter).connect(noiseGain).connect(ctx.destination);
     noise.start();
-    noiseGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 3);
+    noiseGain.gain.linearRampToValueAtTime(0.075, ctx.currentTime + 2.5);
 
-    // Sub layer — wakens only in act III.
     const sub = ctx.createOscillator();
     sub.type = "sine";
     sub.frequency.value = 58;
@@ -483,95 +559,122 @@ function AmbientAudio({ tempo, act }: { tempo: "slow" | "fast" | "neutral"; act:
     const f = filterRef.current;
     if (!ctx || !f) return;
     const tempoBias = tempo === "slow" ? -90 : tempo === "fast" ? 280 : 0;
-    const actBias = act === 3 ? 120 : act === 2 ? 60 : 0;
-    const target = Math.max(220, 460 + tempoBias + actBias);
+    const phaseBias = phase === 3 ? 140 : phase === 2 ? 70 : 0;
+    const target = Math.max(220, 480 + tempoBias + phaseBias);
     f.frequency.cancelScheduledValues(ctx.currentTime);
-    f.frequency.linearRampToValueAtTime(target, ctx.currentTime + 2.5);
-  }, [tempo, act]);
+    f.frequency.linearRampToValueAtTime(target, ctx.currentTime + 2.2);
+  }, [tempo, phase]);
 
   useEffect(() => {
     const ctx = ctxRef.current;
     const sub = subGainRef.current;
     if (!ctx || !sub) return;
-    const target = act === 3 ? 0.035 : 0;
+    const target = phase === 3 ? 0.038 : 0;
     sub.gain.cancelScheduledValues(ctx.currentTime);
-    sub.gain.linearRampToValueAtTime(target, ctx.currentTime + 3.5);
-  }, [act]);
+    sub.gain.linearRampToValueAtTime(target, ctx.currentTime + 3);
+  }, [phase]);
 
   return null;
 }
 
 /**
- * DriftArrival — the convergence beat.
+ * DriftArrival — convergence beat.
  *
- * Picks the single place the traveller's drift converged on (heaviest dwell,
- * weighted by act — leans in act II/III count more, because that's where
- * intimacy formed). Holds on that backdrop and lands one line of
- * inevitability — "Foi para X que o teu silêncio te levou."
+ * Aggregates the traveller's silent taste profile (weighted by phase) into
+ * a single dominant signature. The world holds on the scene that best
+ * embodies that signature, and lands a two-line acknowledgement:
+ *   · a taste-identity line — the aesthetic the world sensed
+ *   · a place line of inevitability — "É em X que tu paras."
  *
  * Not a CTA. Not a proposal card. A destiny acknowledged.
  */
 function DriftArrival({
   leans,
-  scene,
+  fallback,
   onExit,
 }: {
-  leans: Array<{ register: Register; place: string; dwellMs: number; act: Act }>;
-  scene: DriftScene;
+  leans: LeanRecord[];
+  fallback: DriftScene;
   onExit?: () => void;
 }) {
-  const winner = useMemo(() => {
-    if (leans.length === 0) return scene;
-    const weighted = new Map<string, { score: number; scene: DriftScene }>();
-    for (const l of leans) {
-      const s = SCENES.find((x) => x.register === l.register && x.place === l.place);
-      if (!s) continue;
-      const actWeight = l.act === 3 ? 2.4 : l.act === 2 ? 1.6 : 1;
-      const score = l.dwellMs * actWeight;
-      const prev = weighted.get(s.id);
-      weighted.set(s.id, { score: (prev?.score ?? 0) + score, scene: s });
+  const { signature, sceneForBackdrop } = useMemo(() => {
+    if (leans.length === 0) {
+      return { signature: fallback.signature, sceneForBackdrop: fallback };
     }
-    if (weighted.size === 0) return scene;
-    return [...weighted.values()].sort((a, b) => b.score - a.score)[0].scene;
-  }, [leans, scene]);
+    // Weight each scene by phase, then sum into both signature and taste tallies.
+    const sigScore = new Map<Signature, number>();
+    const sceneScore = new Map<string, { score: number; scene: DriftScene }>();
+    for (const l of leans) {
+      const w = l.phase === 3 ? 2.6 : l.phase === 2 ? 1.7 : 1;
+      const contribution = l.dwellMs * w;
+      sigScore.set(l.scene.signature, (sigScore.get(l.scene.signature) ?? 0) + contribution);
+      const prev = sceneScore.get(l.scene.id);
+      sceneScore.set(l.scene.id, { score: (prev?.score ?? 0) + contribution, scene: l.scene });
+    }
+    const dominantSig = [...sigScore.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    // Backdrop = the scene with the strongest pull that matches the dominant signature
+    // (so the taste line and the image agree).
+    const matching = [...sceneScore.values()].filter((x) => x.scene.signature === dominantSig);
+    const backdrop =
+      matching.sort((a, b) => b.score - a.score)[0]?.scene ??
+      SCENES.find((s) => s.signature === dominantSig) ??
+      fallback;
+    return { signature: dominantSig, sceneForBackdrop: backdrop };
+  }, [leans, fallback]);
 
-  const [showLine, setShowLine] = useState(false);
+  const couplet = SIGNATURE_LINES[signature];
+
+  const [showTaste, setShowTaste] = useState(false);
+  const [showPlace, setShowPlace] = useState(false);
   const [showExit, setShowExit] = useState(false);
 
   useEffect(() => {
-    const t1 = window.setTimeout(() => setShowLine(true), 1400);
-    const t2 = window.setTimeout(() => setShowExit(true), ARRIVAL_DURATION_MS - 4000);
+    const t1 = window.setTimeout(() => setShowTaste(true), 1200);
+    const t2 = window.setTimeout(() => setShowPlace(true), 4400);
+    const t3 = window.setTimeout(() => setShowExit(true), ARRIVAL_DURATION_MS - 3800);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
     };
   }, []);
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-black">
-      <SceneVideo src={winner.videoUrl} />
+      <SceneVideo src={sceneForBackdrop.videoUrl} />
       <div
         aria-hidden="true"
         className="absolute inset-0"
         style={{
           background:
             "radial-gradient(ellipse at 50% 70%, color-mix(in oklab, var(--gold) 14%, transparent) 0%, transparent 60%), linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.48) 55%, rgba(0,0,0,0.74) 100%)",
-          mixBlendMode: "normal",
         }}
       />
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
         <span aria-hidden="true" className="mb-7 block h-px w-10 bg-[color:var(--gold)]/85" />
 
-        {showLine && (
+        {showTaste && (
           <p
-            className="italic text-[22px] sm:text-[30px] leading-[1.35] text-[color:var(--ivory)] max-w-[26ch] animate-in fade-in slide-in-from-bottom-2 duration-[2000ms]"
+            className="italic text-[19px] sm:text-[24px] leading-[1.45] text-[color:var(--ivory)] max-w-[28ch] animate-in fade-in slide-in-from-bottom-2 duration-[1800ms]"
             style={{
               fontFamily: "Georgia, 'Times New Roman', serif",
-              textShadow: "0 1px 24px rgba(0,0,0,0.65)",
+              textShadow: "0 1px 22px rgba(0,0,0,0.65)",
             }}
           >
-            {winner.convergence}
+            {couplet.taste}
+          </p>
+        )}
+
+        {showPlace && (
+          <p
+            className="mt-7 text-[20px] sm:text-[26px] font-semibold leading-[1.2] tracking-[-0.01em] text-[color:var(--ivory)] max-w-[24ch] animate-in fade-in slide-in-from-bottom-1 duration-[1600ms]"
+            style={{
+              fontFamily: "Montserrat, system-ui, sans-serif",
+              textShadow: "0 1px 22px rgba(0,0,0,0.6)",
+            }}
+          >
+            {couplet.place(sceneForBackdrop.place)}
           </p>
         )}
 
@@ -579,7 +682,7 @@ function DriftArrival({
           <button
             type="button"
             onClick={onExit}
-            className="mt-14 text-[12px] tracking-[0.14em] uppercase text-[color:var(--ivory)]/80 hover:text-[color:var(--ivory)] border-b border-[color:var(--gold)]/70 hover:border-[color:var(--gold)] pb-1 transition-colors duration-500 animate-in fade-in duration-[2200ms]"
+            className="mt-12 text-[12px] tracking-[0.14em] uppercase text-[color:var(--ivory)]/80 hover:text-[color:var(--ivory)] border-b border-[color:var(--gold)]/70 hover:border-[color:var(--gold)] pb-1 transition-colors duration-500 animate-in fade-in duration-[2000ms]"
             style={{ fontFamily: "Inter, system-ui, sans-serif" }}
           >
             quero ir
