@@ -359,60 +359,61 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           transform: translateX(4px);
         }
 
-        /* PRIMARY — solid champagne-gold, charcoal text, tactile */
+        /* PRIMARY — warm translucent ivory glass, cinematic depth */
         .hero-cta--primary {
           color: #1F1812;
-          border: 1px solid rgba(180, 142, 78, 0.9);
+          border: 1px solid rgba(255, 244, 220, 0.55);
           background:
-            linear-gradient(180deg, #E8CC92 0%, #D4B477 48%, #C9A96A 100%);
+            linear-gradient(180deg, rgba(252, 246, 232, 0.82) 0%, rgba(240, 228, 204, 0.74) 100%);
+          -webkit-backdrop-filter: blur(10px) saturate(1.05);
+          backdrop-filter: blur(10px) saturate(1.05);
           box-shadow:
-            0 1px 0 rgba(255, 240, 210, 0.55) inset,
-            0 -1px 0 rgba(120, 88, 40, 0.35) inset,
-            0 14px 32px -14px rgba(80, 56, 20, 0.55),
-            0 4px 10px -4px rgba(0, 0, 0, 0.35);
+            0 1px 0 rgba(255, 250, 235, 0.55) inset,
+            0 -1px 0 rgba(120, 90, 50, 0.12) inset,
+            0 18px 38px -22px rgba(40, 28, 12, 0.55),
+            0 4px 12px -6px rgba(0, 0, 0, 0.28);
         }
         .hero-cta--primary:hover,
         .hero-cta--primary:focus-visible {
-          border-color: rgba(200, 158, 86, 1);
+          border-color: rgba(255, 244, 220, 0.85);
           background:
-            linear-gradient(180deg, #F1D8A0 0%, #DBBD82 48%, #CDAF72 100%);
+            linear-gradient(180deg, rgba(255, 250, 238, 0.92) 0%, rgba(246, 234, 210, 0.86) 100%);
           box-shadow:
-            0 1px 0 rgba(255, 244, 218, 0.65) inset,
-            0 -1px 0 rgba(120, 88, 40, 0.4) inset,
-            0 22px 48px -16px rgba(80, 56, 20, 0.65),
-            0 6px 16px -6px rgba(0, 0, 0, 0.4),
-            0 0 0 1px rgba(255, 230, 180, 0.25);
+            0 1px 0 rgba(255, 252, 240, 0.7) inset,
+            0 -1px 0 rgba(120, 90, 50, 0.16) inset,
+            0 26px 52px -22px rgba(40, 28, 12, 0.6),
+            0 6px 18px -8px rgba(0, 0, 0, 0.32),
+            0 0 0 1px rgba(255, 240, 210, 0.22);
           transform: translateY(-2px);
         }
         .hero-cta--primary:active {
           transform: translateY(0);
           box-shadow:
-            0 1px 0 rgba(255, 240, 210, 0.4) inset,
-            0 -1px 0 rgba(120, 88, 40, 0.5) inset,
-            0 6px 14px -8px rgba(80, 56, 20, 0.6),
-            0 2px 4px -2px rgba(0, 0, 0, 0.35);
+            0 1px 0 rgba(255, 250, 235, 0.4) inset,
+            0 8px 16px -10px rgba(40, 28, 12, 0.5),
+            0 2px 4px -2px rgba(0, 0, 0, 0.3);
         }
 
-        /* GHOST — refined ivory outline, fills subtly on hover */
+        /* GHOST — thinner, softer ivory outline */
         .hero-cta--ghost {
-          border: 1px solid rgba(250, 248, 243, 0.55);
-          background: rgba(20, 16, 12, 0.22);
+          border: 1px solid rgba(250, 248, 243, 0.32);
+          background: rgba(20, 16, 12, 0.14);
           -webkit-backdrop-filter: blur(8px) saturate(1.05);
           backdrop-filter: blur(8px) saturate(1.05);
           text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
           box-shadow:
-            0 14px 30px -18px rgba(0, 0, 0, 0.55),
-            0 1px 0 rgba(255, 255, 255, 0.06) inset;
+            0 10px 24px -18px rgba(0, 0, 0, 0.5),
+            0 1px 0 rgba(255, 255, 255, 0.05) inset;
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
           color: #FAF8F3;
-          border-color: rgba(250, 248, 243, 0.85);
-          background: rgba(250, 248, 243, 0.10);
+          border-color: rgba(250, 248, 243, 0.55);
+          background: rgba(250, 248, 243, 0.07);
           box-shadow:
-            0 18px 38px -18px rgba(0, 0, 0, 0.6),
-            0 1px 0 rgba(255, 255, 255, 0.10) inset,
-            0 0 0 1px rgba(250, 248, 243, 0.18);
+            0 16px 32px -18px rgba(0, 0, 0, 0.55),
+            0 1px 0 rgba(255, 255, 255, 0.08) inset,
+            0 0 0 1px rgba(250, 248, 243, 0.12);
           transform: translateY(-2px);
         }
         .hero-cta--ghost:active {

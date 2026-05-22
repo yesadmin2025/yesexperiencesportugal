@@ -73,14 +73,16 @@ export function Navbar() {
             aria-label="YES experiences PORTUGAL — Home"
             style={
               transparent
-                ? { filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.32))" }
+                ? { filter: "drop-shadow(0 1px 10px rgba(0,0,0,0.45))" }
                 : undefined
             }
           >
             <Logo
-              theme="teal-on-ivory"
+              theme={transparent ? "gold-on-charcoal" : "teal-on-ivory"}
               fetchPriority="high"
-              className="relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
+              className={`relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none transition-opacity duration-500 ${
+                transparent ? "opacity-90" : "opacity-100"
+              }`}
             />
           </Link>
 
