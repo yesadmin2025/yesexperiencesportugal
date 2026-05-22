@@ -534,7 +534,7 @@ function BuilderPage() {
             {step === 1 && region && (
               <div key="step-1" className="builder-step-in">
                 <div className="flex items-center justify-between gap-3 flex-wrap mb-2">
-                  <StepHead num={1} eyebrow="Mood" title="What are you in the mood for?" />
+                  <StepHead num={1} totalChapters={6} eyebrow="Capítulo 01 — Mood" title="What are you in the mood for?" italicSub="Begin with feeling. The map will follow." />
                 </div>
                 <button
                   type="button"
@@ -571,7 +571,7 @@ function BuilderPage() {
 
             {step === 2 && (
               <div key="step-2" className="builder-step-in">
-                <StepHead num={2} eyebrow="Who" title="Who is this for?" onBack={() => setStep(1)} />
+                <StepHead num={2} totalChapters={6} eyebrow="Capítulo 02 — Company" title="Who is this for?" italicSub="Who you travel with quietly shapes the day." onBack={() => setStep(1)} />
                 <div className="mt-8 grid grid-cols-2 lg:grid-cols-3 gap-3">
                   {WHOS.map((w) => (
                     <ChoiceTile

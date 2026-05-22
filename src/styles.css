@@ -3978,20 +3978,20 @@ html.motion-ready [data-motion].motion-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.builder-reveal { animation: builderRevealUp 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.builder-reveal { animation: builderRevealUp 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 .builder-entry-line,
 .builder-predictive-line {
   stroke-dasharray: 6 14;
   animation: builderDashFlow 12s linear infinite;
 }
-.builder-microcopy { animation: builderMicroFade 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; display: inline-block; }
+.builder-microcopy { animation: builderMicroFade 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both; display: inline-block; }
 
-/* Step container slide+fade — keyed by step number to retrigger */
+/* Step container slide+fade — cinematic, ≤220ms per non-homepage guardrail. */
 @keyframes builderStepIn {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.builder-step-in { animation: builderStepIn 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.builder-step-in { animation: builderStepIn 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 
 /* Card press — quick scale punch on selection before advance */
 @keyframes builderCardPress {
