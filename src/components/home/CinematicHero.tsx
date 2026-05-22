@@ -217,15 +217,16 @@ export function CinematicHero() {
           className="absolute inset-0 md:hidden"
           style={{ background: "rgba(0,0,0,0.16)" }}
         />
-        {/* Subtle film grain (CSS only, ~4% opacity) */}
+        {/* Subtle film grain (CSS only, ~2% opacity) */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.04]"
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.02]"
           style={{
             backgroundImage:
               "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>\")",
           }}
         />
+
       </div>
 
       {/* ── Phrase stage ────────────────────────────────────────────── */}
