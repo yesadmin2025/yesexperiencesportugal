@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from "react";
-import { Sparkles } from "lucide-react";
 
 /**
  * NameWhisper — a single quiet step inserted between mood and depth.
@@ -31,17 +30,13 @@ export function NameWhisper({ prompt, placeholder, acceptLabel, skipLabel, onSub
   };
 
   return (
-    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[color:var(--charcoal)] animate-in fade-in duration-[700ms]">
+    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[color:var(--charcoal)] animate-in fade-in duration-[900ms]">
       <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--charcoal)] via-[color:var(--charcoal)] to-[color:var(--charcoal)]/95" />
 
-      <div className="relative z-10 w-full max-w-md px-6 text-center animate-in fade-in slide-in-from-bottom-2 duration-[800ms]">
-        <span className="inline-flex items-center justify-center gap-1.5 text-[9.5px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]">
-          <Sparkles size={11} />
-          A quiet moment
-        </span>
+      <div className="relative z-10 w-full max-w-md px-6 text-center animate-in fade-in slide-in-from-bottom-1 duration-[1100ms]">
         <h2
-          className="mt-4 text-[24px] sm:text-[30px] font-semibold leading-[1.15] text-[color:var(--ivory)]"
-          style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+          className="font-serif italic text-[24px] sm:text-[30px] leading-[1.2] text-[color:var(--ivory)]"
+          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           {prompt}
         </h2>
