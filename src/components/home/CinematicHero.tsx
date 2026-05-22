@@ -149,9 +149,9 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "#EBD0A0",
+              color: "#EFD5A6",
               textShadow:
-                "0 1px 2px rgba(0,0,0,0.55), 0 2px 10px rgba(0,0,0,0.45)",
+                "0 1px 1px rgba(0,0,0,0.45), 0 1px 6px rgba(0,0,0,0.32)",
               fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line1 ? 1 : 0,
               transform: line1 ? "translateY(0)" : "translateY(10px)",
@@ -171,9 +171,9 @@ export function CinematicHero() {
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
-              color: "#EBD0A0",
+              color: "#EFD5A6",
               textShadow:
-                "0 1px 2px rgba(0,0,0,0.55), 0 2px 10px rgba(0,0,0,0.45)",
+                "0 1px 1px rgba(0,0,0,0.45), 0 1px 6px rgba(0,0,0,0.32)",
               fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line2 ? 1 : 0,
               transform: line2 ? "translateY(0)" : "translateY(10px)",
@@ -203,7 +203,7 @@ export function CinematicHero() {
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[210px] sm:min-w-[220px] px-7 py-[12px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -213,15 +213,15 @@ export function CinematicHero() {
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
               Begin Your Journey
-              <svg className="hero-cta__arrow" width="12" height="9" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg className="hero-cta__arrow" width="11" height="8" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </span>
           </Link>
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[210px] sm:min-w-[220px] px-7 py-[12px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[200px] sm:min-w-[210px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -392,12 +392,12 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
 
         /* GHOST — clean hairline ivory, restrained */
         .hero-cta--ghost {
-          border: 1px solid rgba(250, 248, 243, 0.26);
-          background: rgba(20, 16, 12, 0.10);
+          border: 1px solid rgba(250, 248, 243, 0.22);
+          background: rgba(20, 16, 12, 0.08);
           -webkit-backdrop-filter: blur(6px) saturate(1.04);
           backdrop-filter: blur(6px) saturate(1.04);
-          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-          box-shadow: 0 6px 16px -14px rgba(0, 0, 0, 0.45);
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 4px 12px -12px rgba(0, 0, 0, 0.4);
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
