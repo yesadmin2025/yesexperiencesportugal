@@ -47,6 +47,8 @@ import {
 } from "@/components/builder/catalogue";
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
 import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
+import { StudioStageV3 } from "@/components/builder/v3/StudioStageV3";
+
 
 /** Resolve a human label for current selections, used by the live header. */
 function labelFor<T extends { id: string; label: string }>(
