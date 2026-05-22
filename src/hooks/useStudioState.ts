@@ -114,6 +114,9 @@ function savePersisted(s: StudioState) {
       acceptedStops: s.acceptedStops,
       chapter: s.chapter,
       awakened: s.awakened,
+      travellerName: s.travellerName,
+      nameAsked: s.nameAsked,
+      proposal: s.proposal,
     };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
   } catch {
