@@ -74,7 +74,9 @@ const INITIAL: StudioState = {
   nameAsked: false,
   proposal: null,
   narrativeFragment: null,
+  narrativeFragmentAt: null,
 };
+
 
 const STORAGE_KEY = "yes.studio.state.v3";
 
