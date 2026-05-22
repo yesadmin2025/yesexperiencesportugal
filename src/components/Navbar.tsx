@@ -48,7 +48,7 @@ export function Navbar() {
       style={headerStyle}
     >
       <div className="container-x">
-        <div className="flex items-center justify-between h-[64px] md:h-[80px] lg:h-[92px]">
+        <div className="flex items-center justify-between h-[76px] md:h-[88px] lg:h-[96px]">
           <Link
             to="/"
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
@@ -57,7 +57,7 @@ export function Navbar() {
             <Logo
               theme="teal-on-ivory"
               fetchPriority="high"
-              className="relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
+              className="relative block h-[58px] md:h-[64px] lg:h-[70px] w-auto select-none"
             />
           </Link>
 
