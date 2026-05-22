@@ -18,12 +18,37 @@ export type JourneyType = "day" | "multi";
  * Affinity profile — derived (not stored) from emotional selections.
  * Used to subtly tint imagery, motion duration, microcopy and suggestion
  * ranking. Each axis is normalised 0–1. Never surfaced as UI text.
+ *
+ * v5: extended for AI cinematic orchestration. `depth` kept for legacy
+ * suggestion scoring; `curiosity`, `elegance`, `spontaneity`, `pacing`
+ * shape prompt tone and motion rhythm.
  */
 export interface AffinityProfile {
   warmth: number;
   depth: number;
   energy: number;
   intimacy: number;
+  curiosity: number;
+  elegance: number;
+  spontaneity: number;
+  pacing: number;
+}
+
+/**
+ * Narrative stage — how far the emotional thread has progressed. Used to
+ * shape AI fragments from distant → intimate, and to gate visible UI.
+ */
+export type NarrativeStage = "invitation" | "recognition" | "emergence" | "reveal";
+
+/**
+ * Composed proposal identity — generated once near the reveal, then cached.
+ * Title is editorial (2–5 words), subtitle is 8–14 words and may use the
+ * traveller's name once.
+ */
+export interface StudioProposal {
+  title: string;
+  subtitle: string;
+  generatedAt: number;
 }
 
 export interface RoutedStopUI {

@@ -264,12 +264,22 @@ export function useStudioState() {
     const energyByMood: Record<string, number> = {
       energetic: 0.95, curious: 0.7, open: 0.55, romantic: 0.35, slow: 0.2,
     };
+    const curiosityByMood: Record<string, number> = {
+      curious: 0.95, energetic: 0.65, open: 0.6, romantic: 0.45, slow: 0.45,
+    };
+    const eleganceByIntention: Record<string, number> = {
+      wine: 0.85, gastronomy: 0.8, wellness: 0.75, heritage: 0.7,
+      coast: 0.6, nature: 0.5, hidden: 0.55, wonder: 0.65,
+    };
     const intimacyByWho: Record<string, number> = {
       solo: 0.85, couple: 0.95, family: 0.55, friends: 0.5, corporate: 0.25, group: 0.3,
     };
     const intentionWarmth: Record<string, number> = {
       gastronomy: 0.85, wine: 0.85, wellness: 0.75, heritage: 0.55,
       coast: 0.6, nature: 0.55, hidden: 0.6, wonder: 0.7,
+    };
+    const pacingByPace: Record<string, number> = {
+      relaxed: 0.85, balanced: 0.55, full: 0.25,
     };
     const m = state.mood ?? "open";
     const w = state.who ?? "couple";
@@ -280,8 +290,12 @@ export function useStudioState() {
       depth: depthByMood[m] ?? 0.5,
       energy: energyByMood[m] ?? 0.5,
       intimacy: intimacyByWho[w] ?? 0.5,
+      curiosity: curiosityByMood[m] ?? 0.5,
+      elegance: eleganceByIntention[it] ?? 0.55,
+      spontaneity: 1 - (pacingByPace[state.pace] ?? 0.55),
+      pacing: pacingByPace[state.pace] ?? 0.55,
     };
-  }, [state.mood, state.who, state.intention]);
+  }, [state.mood, state.who, state.intention, state.pace]);
 
   return {
     state,

@@ -1,170 +1,108 @@
-# Studio v4.1 — Cinematic Decision Engine (Refinement Pass)
+# Studio v5.1 — AI as Cinematic Orchestrator (Conversion-Calibrated)
 
-## Core principle (top of plan)
+The Studio adds an AI orchestration layer so it stops feeling like "AI copy attached to a selector" and starts feeling like one continuous emotional thread that knows the traveller. AI = tone + continuity + emotional orchestration only. The catalog still owns every real stop, price, partner, map, and checkout. No AI-generated itineraries. No invented places.
 
-The Studio is **not a form replacement**. It is an emotionally intelligent cinematic decision engine that guides high-end travelers toward booking with minimal cognitive friction.
+Core principle: when forced to choose between cinematic complexity and emotional clarity/trust, choose clarity and trust. Calm > clever.
 
-Every interaction must: reduce effort · imply intelligence · feel remembered · increase confidence toward the CTA.
+## Stack
 
-The flow gets **calmer and more curated as it progresses**, not busier.
+Single TanStack server fn `composeStudioMoment` in `src/server/studioNarrative.functions.ts`. Calls Lovable AI Gateway (`google/gemini-3-flash-preview`) with `LOVABLE_API_KEY` from `process.env`. Two modes: `narrative` and `proposal`. Build on v4.2 — do NOT rewrite existing components.
 
----
+## Changes
 
-## 1. Journey-type step (replaces JourneyDepth)
+### 1. Expanded affinity profile (`types.ts`, `useStudioState.ts`)
+Extend `AffinityProfile` to `{ warmth, intimacy, curiosity, energy, elegance, spontaneity, pacing }`. Add non-persisted refs:
+- `decisionSpeed` (median ms between picks)
+- `confidence` (0–1, grows with accepted stops and consistent affinity)
+- `narrativeStage`: `"invitation" | "recognition" | "emergence" | "reveal"`
 
-Insert after **Mood**, before **Who**.
+Confidence influences recommendation calmness and visible-choice reduction. It does **not** drive automation.
 
-- Headline: **"How do you want to experience Portugal?"**
-- Sub (one line, Georgia italic): *"every story has its own rhythm."*
-- Two cards only:
-  - **A single unforgettable day** — instant builder path
-  - **A journey over several days** — concierge path (premium, NOT fallback)
+### 2. Optional name memory (new `NameWhisper.tsx`)
+Single quiet step between `mood` and `depth`. Copy: *"What should we call you?"* + lowercase italic input + "skip" link. Stored as `travellerName`. Used at most **twice** per session, only in reveal line + proposal subtitle. Never during selection phases. Tracked via non-persisted `nameUsageCount` ref.
 
-No "disappear into Portugal" / mystical phrasing.
+### 3. Narrative AI with continuity (`studioNarrative.functions.ts`)
+Server fn `composeStudioMoment({ mode, affinity, mood, who, intention, journeyType, travellerName, lastAccepted, lastFragment, narrativeStage, confidence, acceptedCount })` → `{ fragment, sensoryAnchor }`.
 
----
+System prompt rules:
+- 1 sentence, 8–18 words.
+- MUST include at least one tangible sensory anchor: object · texture · architecture · weather · gesture · food · sound · material · movement. Returned as `sensoryAnchor`.
+- Forbidden vocabulary: "hidden gem", "off the beaten path", "luxury", "unforgettable", "journey of a lifetime", "whispers of", "soul of", any superlative or mystical phrasing.
+- AI never names real places, partners, hotels, restaurants, roads.
+- Stage shapes voice:
+  - `invitation` → distant atmosphere, open
+  - `recognition` → emotional resonance, no name
+  - `emergence` → specificity + texture
+  - `reveal` → intimacy, may use name once
+- Continuity: prompt includes `lastFragment` with instruction *"continue the same emotional thread without repeating imagery."*
+- `temperature` 0.8, `max_tokens` 60. Post-trim to last sentence ≤18 words.
+- Reference tone: Cereal Magazine, Aman Journals, Kinfolk travel essays.
 
-## 2. Multi-day = elevated, not handoff
+Failure handling (429/402/network): silent fallback to static editorial pool, no toast.
 
-When user picks multi-day, do **not** drop into the existing `TripTypeEntry` concierge sheet. Build a dedicated cinematic concierge transition inside the Studio:
+### 4. Sparsity budget
+AI fires at most **4 times per session**:
+1. recognition stage entry
+2. after second accepted stop (becomes the next chip's eyebrow)
+3. reveal line
+4. proposal title + subtitle (one call, `mode: 'proposal'`)
 
-- Same full-bleed video stage continues (no modal pop, no chrome change).
-- Headline: **"Journeys like this are shaped by hand."**
-- Sub: *"A private designer takes what you've just shared and composes the days with you."*
-- Show **emotional memory chips** of what they already chose (mood + who, as small gold-underlined pills) — proves the system *remembers*.
-- Primary CTA: **"Begin with a designer"** → opens WhatsApp prefilled with mood/who context, OR an in-Studio inline form (name + email + one-line wish) that posts to existing `builderJourneys` server fn.
-- Ghost CTA: "Or build a single day instead" (returns to flow).
-- Trust micro-row: "Hand-composed · Private call · No template itineraries."
+Tracked in session-scoped ref. `prefers-reduced-motion` → always fallback, no calls.
 
-Tone: white-glove, invitation-only, **more** premium than the instant path.
+### 5. Recommendation confidence ramp (`EmergingChips.tsx`, `StudioStageV3.tsx`)
+- **Diversity penalty**: if last two accepted stops share a tag, downweight that tag ×0.4.
+- **Card-count ramp**: as `confidence` rises, suggestions shrink 2 → 1 card.
+- **Copy ramp**: *"You might also love"* → *"This feels right next"* → *"This follows naturally"*. Never *"We've chosen this for you."*
+- **No auto-accept**. No countdown timer. No dark-pattern automation. Only quieter visual emphasis (slightly stronger gold rim, softer magnetic hover, calmer wording). User always picks.
 
----
+### 6. Editorial reveal with breathing room (`JourneyReveal.tsx`, `MemoryCard.tsx`)
+Two beats:
+- **Beat 1 (proposal arrival, ~1.5–2s)**: ONLY hero imagery + proposal title + proposal subtitle + atmosphere. No stops, no CTA, no controls, no map, no chips.
+- **Beat 2 (itinerary emerges gradually)**: Stops fade in as a quiet numbered serif list — no card chrome, no tag pills, no chips. Editorial column layout. Map stays behind a "See the route" disclosure. CTA + Adjust appear last.
 
-## 3. Emotional continuity & memory
+This is the memory-imprint moment. Cinema needs breathing room.
 
-Add a single `affinityProfile` derived in `useStudioState` from all selections:
+### 7. Proposal identity — `proposalTitle` + `proposalSubtitle`
+Generated once when entering reveal phase (`mode: 'proposal'`). Cached in state, never regenerated.
+- `proposalTitle`: 2–5 words, editorial, plausible. Shape examples: *"Between Salt and Vines"*, *"The Atlantic Table"*, *"A Slow Tide Through Alentejo"*.
+- `proposalSubtitle`: 8–14 words, may include name once.
+- Banned tone: mystical, fantasy, excessive metaphor, abstract luxury prose.
 
-```ts
-{ warmth: 0–1, depth: 0–1, energy: 0–1, intimacy: 0–1 }
-```
+### 8. Place anchoring (cultural texture)
+Without naming exact locations, fragments and fallback pools draw from a Portugal-anchored sensory vocabulary: azulejos, Atlantic cliffs, ferry crossings, pine forests, salt pans, vineyard lunches, candlelit taverns, river air, tiled markets, stone villages, tiled cafés. Added to the prompt as a "vocabulary palette" hint (not "use these names" — "this is the world").
 
-Used to influence — without new UI:
+### 9. Multi-day exclusivity (`MultiDayConcierge.tsx`)
+Separate prompt voice: private travel editor — assured, intimate, less cinematic, no superlatives. Eyebrow stays "By invitation". Closing line may use name once. Feels rare, composed by hand, quietly expensive.
 
-- **Imagery**: `CinematicChoices` cards swap video/poster based on prior Mood (mood-keyed map per card).
-- **Motion pacing**: transition duration scales with `depth` (slow mood → 720ms; energetic → 480ms).
-- **Microcopy tone**: `useStudioLocale` returns one of 2 variants per phase based on `warmth` (e.g., calm vs. vivid).
-- **Ambient overlay tint**: `AmbientStage` overlay color shifts subtly (warmer charcoal for romantic/slow; cooler for curious/energetic).
-- **Suggestion weighting**: `EmergingChips` ranking already planned — driven by `affinityProfile`, not raw tags.
+### 10. AI safety / brand (preserved)
+- AI never invents places, partners, hotels, restaurants, itineraries, prices.
+- AI provides tone, continuity, proposal identity, emotional composition only.
+- All operational truth comes from catalog data.
+- Sensory anchor logged to `console.debug` in dev for QA.
 
-No "personalization banner". The user *feels* it, never reads about it.
+## Files
 
----
+**New**
+- `src/components/builder/v3/NameWhisper.tsx`
+- `src/server/studioNarrative.functions.ts`
 
-## 4. Decision-fatigue reduction (calmer over time)
+**Edited**
+- `src/components/builder/types.ts` — extend `AffinityProfile`, add `NarrativeStage`, `StudioProposal`
+- `src/hooks/useStudioState.ts` — v3 persistence key, name + proposal persistence, decision-speed/confidence/stage derivations, AI budget ref
+- `src/hooks/useStudioLocale.ts` — name-step copy + per-stage Portugal-anchored fallback pools (PT/EN/ES/FR)
+- `src/components/builder/v3/StudioStageV3.tsx` — orchestrate NameWhisper, narrative beats, diversity + confidence ramp, fire `composeStudioMoment` at the 4 budget points, gate reveal on proposal generation, two-beat reveal sequencing
+- `src/components/builder/v3/CinematicChoices.tsx` — emit advance hook for NameWhisper insertion
+- `src/components/builder/v3/NarrativeBeat.tsx` — accept AI text + stage prop
+- `src/components/builder/v3/JourneyReveal.tsx` — Beat 1: proposal title/subtitle only on hero
+- `src/components/builder/v3/MemoryCard.tsx` — Beat 2: editorial column, no chip chrome until Adjust
+- `src/components/builder/v3/EmergingChips.tsx` — confidence-driven copy + card-count, sensory-anchor eyebrow, no auto-accept
+- `src/components/builder/v3/MultiDayConcierge.tsx` — AI body line in private-editor voice
+- `src/start.ts` — verify `attachSupabaseAuth` registered (no-op if already present)
 
-Choice density decreases monotonically:
-
-| Phase | Visible choices |
-|------|---|
-| Mood | 4 |
-| Journey type | 2 |
-| Who | 4 |
-| Intention | 3 (was 4 — drop the weakest based on affinity) |
-| Emerging suggestions (1st) | 2 |
-| Emerging suggestions (2nd+) | 1 strong recommendation + small "explore another" link |
-| Final reveal | 1 primary CTA |
-
-After the 2nd accepted stop, `EmergingChips` switches from "pick one of N" to **single hero recommendation card** with copy like *"This feels right next."* — a "guided curation" mode flagged by `state.acceptedStops.length >= 2`.
-
----
-
-## 5. Final reveal — editorial first, map on demand
-
-Rewrite `MemoryCard.tsx` order (single column, mobile-first):
-
-1. **Hero image** (first stop, full-bleed, gradient mask)
-2. **Emotional title** — e.g., *"A slow day along the Arrábida coast"* (derived from region + mood)
-3. **Editorial itinerary** — 3–5 stops as quiet typographic list: `09:30 · Name · one sensory line`. No icons, no cards, no map pins.
-4. **Sensory narrative** — one short paragraph composed from accepted blurbs (server fn already exists: `builderChapter.functions`).
-5. **Primary CTA**: "Reserve this day · €X" (Stripe embedded inline below CTA on click — no redirect, no modal).
-6. **Trust row** (single line, micro): "Instant confirmation · Local guide · Flex cancellation."
-7. **Ghost link**: "View route on map" → expands inline `LivingMap` below. Map is **never** above the CTA.
-8. **Secondary**: "Talk to concierge" (WhatsApp, ghost).
-
-Remove from this view: language switcher, narration controls, floating cards, overlay poetic text.
-
----
-
-## 6. Loading / transition copy (grounded intelligence)
-
-Replace **"Portugal está a responder…"** with rotating, phase-aware copy in `useStudioLocale`:
-
-- After mood+who+intent → **"Curating your day"**
-- After first accepted stop → **"Shaping the rhythm"**
-- Before final reveal → **"Your story is taking shape"**
-
-PT/EN/ES/FR variants. Max 3 words. No ellipsis mysticism.
-
-Transitions imply work, not waiting: subtle progress arc on the Sparkles glyph (stroke-dasharray draw), not a pulse.
-
----
-
-## 7. Quieter language switcher
-
-- Auto-detect from `navigator.language` on first mount (already partial — enforce).
-- Collapsed: single 16px globe glyph, top-right, `--ivory)/60`. No flag, no label.
-- Expand on tap to a small popover (4 codes).
-- **Hidden entirely** during `feel`, `journey-type`, `who`, `intent`, and the reveal interlude. Reappears in `journey` and `booking` phases.
-
----
-
-## 8. EmergingChips evolution (explicit → guided)
-
-Two modes inside one component:
-
-- **Mode A — Exploration** (`acceptedStops.length < 2`): up to 2 emotional cards, "tap what calls you."
-- **Mode B — Guided** (`acceptedStops.length >= 2`): one hero recommendation card, no header, copy: *"This feels right next."* + small ghost link "show another." Tapping the link rotates through the ranked list, never shows a grid.
-
-The visual language shifts from "choose" to "confirm."
-
----
-
-## 9. Transitions = intelligence, not decoration
-
-- Drop all decorative blur-only waits. Every interstitial must show a **derived artifact** (e.g., the affinity verb evolving: *"slow → quiet → coastal"*) or a **progress mark** (stroke draw).
-- `JourneyReveal` becomes shorter (1.2s, was 1.9s) and shows 2 affinity words derived from selections fading in sequentially before resolving to the loading verb.
-- Remove `backdrop-blur-2xl` from interludes; replace with `backdrop-blur-md` + a single drawn gold arc.
-
----
-
-## 10. Carry-over refinements from prior plan
-
-Still applied (unchanged): reduce overlay blur ~40% in `AmbientStage`, mobile chrome progressive reveal, tactile CTA easing + soft gold glow, minimal "YES" wordmark during cinematic phases → full lockup from `reveal` onward, auto-derived pace (no UI), `LivingMap` mounts only when explicitly invoked (now only on "View route" tap).
-
----
-
-## Files touched
-
-- `src/components/builder/types.ts` — `JourneyType = "day" | "multi"`, `AffinityProfile`
-- `src/hooks/useStudioState.ts` — `journeyType`, derived `affinityProfile`, auto-pace
-- `src/hooks/useStudioLocale.ts` — new headline, loading verbs, tone variants (×4 langs)
-- `src/components/builder/v3/CinematicChoices.tsx` — Journey-type step, mood-adaptive imagery, intention cut to 3, tactile press, motion duration from affinity
-- `src/components/builder/v3/StudioStageV3.tsx` — phase order, quiet language switcher, minimal YES, multi-day cinematic concierge branch
-- `src/components/builder/v3/MultiDayConcierge.tsx` *(new, small)* — in-Studio elevated concierge moment with memory chips
-- `src/components/builder/v3/AmbientStage.tsx` — overlay/blur reduction, affinity tint
-- `src/components/builder/v3/EmergingChips.tsx` — exploration vs guided modes, affinity ranking
-- `src/components/builder/v3/JourneyReveal.tsx` — shorter, derived affinity words, drawn arc
-- `src/components/builder/v3/MemoryCard.tsx` — editorial reveal, CTA above map, inline Stripe, on-demand map
-- `src/components/builder/v3/ItineraryRibbon.tsx` — hidden until ≥2 stops
-- `src/components/builder/v3/LivingMap.tsx` — mounts on explicit "View route" only
-- `src/components/ui/CtaButton.tsx` — tactile easing + soft gold glow
-
-## Will NOT do
-
-- No new routes, no homepage edits, no parallax/glassmorphism outside homepage.
-- No invented multi-day itineraries — multi-day stays human-composed (premium concierge, not fallback).
-- No real stop names before `reveal`.
-- No business-logic / schema / Stripe / Supabase changes.
-- No A/B testing infra, no analytics rewiring.
-
-Approve and I'll implement in one focused pass.
+## Out of scope
+- No DB schema changes — name + proposal persist in localStorage only.
+- No new tables, routes, or edge functions.
+- No streaming UI — fragments are short and awaited.
+- No new locales beyond PT/EN/ES/FR.
+- No changes to booking, pricing, catalog, or Mapbox layer.
+- No auto-accept, countdown, or pressure UX.
