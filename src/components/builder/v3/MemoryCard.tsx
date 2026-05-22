@@ -127,6 +127,9 @@ export function MemoryCard({
     `${regionLabel(regionKey)}, em ${stops.length} momentos.`;
 
   // ── Layered unfold ────────────────────────────────────────────────────
+  // Beat 1 (Arrival): ~2.2s of stillness — proposal identity alone.
+  // Beat 2 (The day emerges): editorial timeline fades in line by line.
+  // Beat 3 (Desire): single confident CTA + quiet secondary links.
   useEffect(() => {
     const reducedMotion =
       typeof window !== "undefined" &&
@@ -135,10 +138,10 @@ export function MemoryCard({
       setLayer(3);
       return;
     }
-    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 1600);
+    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 2200);
     const t3 = window.setTimeout(
       () => setLayer((l) => (l < 3 ? 3 : l)),
-      1600 + 220 * Math.max(timeline.length, 1) + 600,
+      2200 + 260 * Math.max(timeline.length, 1) + 700,
     );
     return () => {
       window.clearTimeout(t2);
