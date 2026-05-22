@@ -249,6 +249,40 @@ export function useStudioState() {
     [state.acceptedStops],
   );
 
+  /**
+   * Affinity profile — derived purely from emotional selections. Used to
+   * subtly influence imagery, motion duration, microcopy tone and suggestion
+   * ranking. The user never sees these values.
+   */
+  const affinityProfile = useMemo<AffinityProfile>(() => {
+    const warmthByMood: Record<string, number> = {
+      romantic: 0.95, slow: 0.7, open: 0.55, curious: 0.45, energetic: 0.35,
+    };
+    const depthByMood: Record<string, number> = {
+      slow: 0.95, romantic: 0.8, open: 0.55, curious: 0.4, energetic: 0.25,
+    };
+    const energyByMood: Record<string, number> = {
+      energetic: 0.95, curious: 0.7, open: 0.55, romantic: 0.35, slow: 0.2,
+    };
+    const intimacyByWho: Record<string, number> = {
+      solo: 0.85, couple: 0.95, family: 0.55, friends: 0.5, corporate: 0.25, group: 0.3,
+    };
+    const intentionWarmth: Record<string, number> = {
+      gastronomy: 0.85, wine: 0.85, wellness: 0.75, heritage: 0.55,
+      coast: 0.6, nature: 0.55, hidden: 0.6, wonder: 0.7,
+    };
+    const m = state.mood ?? "open";
+    const w = state.who ?? "couple";
+    const it = state.intention ?? "coast";
+    const warmth = ((warmthByMood[m] ?? 0.5) + (intentionWarmth[it] ?? 0.55)) / 2;
+    return {
+      warmth: Math.min(1, warmth),
+      depth: depthByMood[m] ?? 0.5,
+      energy: energyByMood[m] ?? 0.5,
+      intimacy: intimacyByWho[w] ?? 0.5,
+    };
+  }, [state.mood, state.who, state.intention]);
+
   return {
     state,
     restored,
@@ -262,5 +296,6 @@ export function useStudioState() {
     routedStops,
     regionCenter,
     totalMinutes,
+    affinityProfile,
   };
 }
