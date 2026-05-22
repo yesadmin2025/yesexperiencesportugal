@@ -199,32 +199,40 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-5 hero-cta-group">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 hero-cta-group">
           <Link
             to="/builder"
             data-hero-field="primaryCta"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.22em",
+              letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
+              fontWeight: 600,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">Begin Your Journey</span>
+            <span className="relative z-10 inline-flex items-center gap-2.5">
+              Begin Your Journey
+              <svg className="hero-cta__arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                <path d="M1 5h11M8.5 1.5L12.5 5l-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
           </Link>
           <Link
             to="/experiences"
             data-hero-field="secondaryCta"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[180px] sm:min-w-[200px] px-7 py-[14px] text-[10.5px] sm:text-[11px] uppercase font-normal text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[220px] sm:min-w-[230px] px-8 py-[16px] text-[11px] sm:text-[11.5px] uppercase text-[color:var(--ivory,#FAF8F3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.22em",
+              letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
+              fontWeight: 500,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10">Explore Experiences</span>
           </Link>
         </div>
+
 
       </div>
 
@@ -309,19 +317,20 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           0%, 100% { opacity: 0.85; }
           50%      { opacity: 1.05; }
         }
-        /* ─── Hero CTAs — quiet luxury tactility ─────────────────── */
+        /* ─── Hero CTAs — premium tactile luxury ─────────────────── */
         .hero-cta {
           position: relative;
           overflow: hidden;
-          border-radius: 0;
+          border-radius: 2px;
           isolation: isolate;
           transition:
-            background-color 700ms cubic-bezier(0.22,0.61,0.36,1),
-            border-color 700ms cubic-bezier(0.22,0.61,0.36,1),
-            box-shadow 700ms cubic-bezier(0.22,0.61,0.36,1),
-            transform 350ms cubic-bezier(0.22,0.61,0.36,1),
-            color 500ms cubic-bezier(0.22,0.61,0.36,1);
+            background 500ms cubic-bezier(0.22,0.61,0.36,1),
+            border-color 500ms cubic-bezier(0.22,0.61,0.36,1),
+            box-shadow 500ms cubic-bezier(0.22,0.61,0.36,1),
+            transform 280ms cubic-bezier(0.22,0.61,0.36,1),
+            color 400ms cubic-bezier(0.22,0.61,0.36,1);
           will-change: transform, box-shadow;
+          cursor: pointer;
         }
         .hero-cta__sheen {
           position: absolute;
@@ -329,73 +338,91 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           pointer-events: none;
           background: linear-gradient(
             115deg,
-            transparent 35%,
-            rgba(250, 248, 243, 0.10) 50%,
-            transparent 65%
+            transparent 30%,
+            rgba(255, 250, 235, 0.28) 50%,
+            transparent 70%
           );
           transform: translateX(-110%);
-          transition: transform 1400ms cubic-bezier(0.22,0.61,0.36,1);
+          transition: transform 1100ms cubic-bezier(0.22,0.61,0.36,1);
           z-index: 1;
+          mix-blend-mode: overlay;
         }
         .hero-cta:hover .hero-cta__sheen,
         .hero-cta:focus-visible .hero-cta__sheen {
           transform: translateX(110%);
         }
+        .hero-cta__arrow {
+          transition: transform 320ms cubic-bezier(0.22,0.61,0.36,1);
+        }
+        .hero-cta:hover .hero-cta__arrow,
+        .hero-cta:focus-visible .hero-cta__arrow {
+          transform: translateX(4px);
+        }
+
+        /* PRIMARY — solid champagne-gold, charcoal text, tactile */
         .hero-cta--primary {
-          border: 1px solid rgba(240, 226, 198, 0.55);
-          background: rgba(28, 22, 16, 0.34);
-          -webkit-backdrop-filter: blur(6px) saturate(1.05);
-          backdrop-filter: blur(6px) saturate(1.05);
+          color: #1F1812;
+          border: 1px solid rgba(180, 142, 78, 0.9);
+          background:
+            linear-gradient(180deg, #E8CC92 0%, #D4B477 48%, #C9A96A 100%);
           box-shadow:
-            0 18px 40px -22px rgba(0, 0, 0, 0.65),
-            0 1px 0 rgba(255, 255, 255, 0.05) inset,
-            0 0 0 rgba(230, 200, 146, 0);
+            0 1px 0 rgba(255, 240, 210, 0.55) inset,
+            0 -1px 0 rgba(120, 88, 40, 0.35) inset,
+            0 14px 32px -14px rgba(80, 56, 20, 0.55),
+            0 4px 10px -4px rgba(0, 0, 0, 0.35);
         }
         .hero-cta--primary:hover,
         .hero-cta--primary:focus-visible {
-          border-color: rgba(240, 226, 198, 0.75);
-          background: rgba(36, 28, 20, 0.42);
+          border-color: rgba(200, 158, 86, 1);
+          background:
+            linear-gradient(180deg, #F1D8A0 0%, #DBBD82 48%, #CDAF72 100%);
           box-shadow:
-            0 22px 52px -22px rgba(0, 0, 0, 0.7),
-            0 1px 0 rgba(255, 255, 255, 0.08) inset,
-            0 0 28px -4px rgba(230, 200, 146, 0.28);
-          transform: translateY(-1px);
+            0 1px 0 rgba(255, 244, 218, 0.65) inset,
+            0 -1px 0 rgba(120, 88, 40, 0.4) inset,
+            0 22px 48px -16px rgba(80, 56, 20, 0.65),
+            0 6px 16px -6px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(255, 230, 180, 0.25);
+          transform: translateY(-2px);
         }
         .hero-cta--primary:active {
-          transform: translateY(1px);
+          transform: translateY(0);
           box-shadow:
-            0 8px 18px -12px rgba(0, 0, 0, 0.7),
-            0 1px 0 rgba(255, 255, 255, 0.04) inset,
-            0 0 14px -4px rgba(230, 200, 146, 0.18);
+            0 1px 0 rgba(255, 240, 210, 0.4) inset,
+            0 -1px 0 rgba(120, 88, 40, 0.5) inset,
+            0 6px 14px -8px rgba(80, 56, 20, 0.6),
+            0 2px 4px -2px rgba(0, 0, 0, 0.35);
         }
+
+        /* GHOST — refined ivory outline, fills subtly on hover */
         .hero-cta--ghost {
-          border: 1px solid rgba(240, 226, 198, 0.28);
-          background: rgba(28, 22, 16, 0.18);
-          -webkit-backdrop-filter: blur(5px) saturate(1.02);
-          backdrop-filter: blur(5px) saturate(1.02);
-          text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+          border: 1px solid rgba(250, 248, 243, 0.55);
+          background: rgba(20, 16, 12, 0.22);
+          -webkit-backdrop-filter: blur(8px) saturate(1.05);
+          backdrop-filter: blur(8px) saturate(1.05);
+          text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
           box-shadow:
-            0 14px 32px -22px rgba(0, 0, 0, 0.55),
-            0 1px 0 rgba(255, 255, 255, 0.04) inset;
+            0 14px 30px -18px rgba(0, 0, 0, 0.55),
+            0 1px 0 rgba(255, 255, 255, 0.06) inset;
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
-          color: #E6C892;
-          border-color: rgba(230, 200, 146, 0.45);
-          background: rgba(34, 26, 18, 0.26);
+          color: #FAF8F3;
+          border-color: rgba(250, 248, 243, 0.85);
+          background: rgba(250, 248, 243, 0.10);
           box-shadow:
-            0 18px 40px -22px rgba(0, 0, 0, 0.6),
-            0 1px 0 rgba(255, 255, 255, 0.06) inset,
-            0 0 22px -6px rgba(230, 200, 146, 0.22);
-          transform: translateY(-1px);
+            0 18px 38px -18px rgba(0, 0, 0, 0.6),
+            0 1px 0 rgba(255, 255, 255, 0.10) inset,
+            0 0 0 1px rgba(250, 248, 243, 0.18);
+          transform: translateY(-2px);
         }
         .hero-cta--ghost:active {
-          transform: translateY(1px);
+          transform: translateY(0);
         }
         @media (prefers-reduced-motion: reduce) {
-          .hero-cta, .hero-cta__sheen { transition: none !important; }
+          .hero-cta, .hero-cta__sheen, .hero-cta__arrow { transition: none !important; }
           .hero-cta:hover, .hero-cta:active { transform: none !important; }
         }
+
       `}</style>
 
       <video

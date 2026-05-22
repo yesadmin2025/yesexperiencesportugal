@@ -73,7 +73,7 @@ export function Navbar() {
             aria-label="YES experiences PORTUGAL — Home"
             style={
               transparent
-                ? { filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.28))" }
+                ? { filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.32))" }
                 : undefined
             }
           >
@@ -83,6 +83,7 @@ export function Navbar() {
               className="relative block h-[44px] md:h-[54px] lg:h-[62px] w-auto select-none"
             />
           </Link>
+
 
 
           <nav
