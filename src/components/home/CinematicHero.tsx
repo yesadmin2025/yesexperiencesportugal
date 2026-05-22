@@ -1,14 +1,12 @@
 /**
- * CinematicHero — editorial luxury rebuild v2.
+ * CinematicHero — "One Breath" v4.
  *
- * A 4-clip cinematic sequence of REAL Portugal footage (no AI video),
- * crossfading slowly behind 5 editorial phrases in warm muted gold.
- * A24-meets-luxury-travel-editorial. Quiet, observational, restrained.
+ * A single held cinematic clip of an empty Portuguese coastal road at
+ * golden hour, behind one centered two-line stanza in warm muted gold.
+ * No montage. No phrase rotation. No eyebrow above the buttons.
+ * The power comes from atmosphere, light and restraint.
  *
- * Scene arc: light → land → human → path.
- * Phrase arc: presence → invitation → possibility → ownership → action.
- *
- * After the sequence resolves, two minimal CTAs land.
+ * After the stanza settles, two minimal CTAs fade up.
  *
  * All HERO_COPY SR probes preserved so byte-exact / version locks pass.
  */
@@ -19,93 +17,24 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Film sequence — real footage only, hand-curated for editorial arc
+// Single held clip — empty Atlantic coastal road, golden hour
 // ─────────────────────────────────────────────────────────────────────────────
 
-type Clip = { src: string; poster: string; alt: string };
-
-const CLIPS: readonly Clip[] = [
-  {
-    src: "/video/real/azulejo-workshop.mp4",
-    poster: "/video/real/posters/azulejo-workshop.jpg",
-    alt: "Light on hand-painted tile",
-  },
-  {
-    src: "/video/real/vineyard-walk.mp4",
-    poster: "/video/real/posters/vineyard-walk.jpg",
-    alt: "Vineyard at golden hour",
-  },
-  {
-    src: "/video/real/friends-toast.mp4",
-    poster: "/video/real/posters/friends-toast.jpg",
-    alt: "A quiet toast among friends",
-  },
-  {
-    src: "/video/real/carrasqueira-pier.mp4",
-    poster: "/video/real/posters/carrasqueira-pier.jpg",
-    alt: "Wooden pier leading to the water",
-  },
-];
-
-const CLIP_HOLD_MS = 7000;       // each clip on screen
-const CLIP_FADE_MS = 1200;       // crossfade between clips
+const HERO_CLIP = {
+  src: "/video/hero-coast.mp4",
+  poster: "/video/hero-coast-poster.jpg",
+  alt: "An empty coastal road at golden hour",
+} as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Phrase pacing
+// Pacing — one breath
 // ─────────────────────────────────────────────────────────────────────────────
 
-const FADE_IN_MS = 1600;
-const HOLD_MS = 4000;
-const LONG_HOLD_MS = 4500;
-const FADE_OUT_MS = 1200;
-const GAP_MS = 800;
-const COMPOSE_GAP_MS = 1200;
-
-type Anchor =
-  | "top-left"
-  | "top-right"
-  | "center-left"
-  | "center"
-  | "center-right"
-  | "lower-left"
-  | "lower-right";
-
-const PHRASE_ANCHORS: readonly Anchor[] = [
-  "top-left",      // Portugal is the stage.
-  "center-left",   // You write your story.
-  "center",        // Hidden chapters waiting to unfold.
-  "lower-right",   // Locals know where they begin.
-  "center",        // You decide how to live it.
-];
-
-
-function anchorClasses(a: Anchor): string {
-  switch (a) {
-    case "top-left":
-      return "items-start justify-start text-left pt-[20vh] md:pt-[18vh]";
-    case "top-right":
-      return "items-start justify-end text-right pt-[20vh] md:pt-[18vh]";
-    case "center-left":
-      return "items-center justify-start text-left";
-    case "center":
-      return "items-center justify-center text-center";
-    case "center-right":
-      return "items-center justify-end text-right";
-    case "lower-left":
-      return "items-end justify-start text-left pb-[28vh] md:pb-[24vh]";
-    case "lower-right":
-      return "items-end justify-end text-right pb-[28vh] md:pb-[24vh]";
-  }
-}
-
-function holdFor(i: number): number {
-  if (i === 1 || i === 2) return LONG_HOLD_MS;
-  return HOLD_MS;
-}
-
-function beatFor(i: number): number {
-  return FADE_IN_MS + holdFor(i) + FADE_OUT_MS;
-}
+const LINE1_DELAY_MS = 1400;
+const LINE2_DELAY_MS = 3200;
+const CTA_DELAY_MS = 6200;
+const FADE_MS = 1600;
+const CTA_FADE_MS = 1400;
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
@@ -135,53 +64,20 @@ export function CinematicHero() {
     [],
   );
 
-  const [phraseIndex, setPhraseIndex] = useState<number>(
-    skipIntro ? HERO_PHRASES.length : -1,
-  );
+  const [line1, setLine1] = useState<boolean>(skipIntro);
+  const [line2, setLine2] = useState<boolean>(skipIntro);
   const [composed, setComposed] = useState<boolean>(skipIntro);
-  const [clipIndex, setClipIndex] = useState<number>(0);
 
-  // Phrase sequence timeline
   useEffect(() => {
     if (skipIntro) return;
-    let cancelled = false;
-    const timers: number[] = [];
-
-    const start = window.setTimeout(() => {
-      if (cancelled) return;
-      let t = 0;
-      for (let i = 0; i < HERO_PHRASES.length; i++) {
-        const show = window.setTimeout(() => {
-          if (!cancelled) setPhraseIndex(i);
-        }, t);
-        timers.push(show);
-        t += beatFor(i) + GAP_MS;
-      }
-      const done = window.setTimeout(() => {
-        if (cancelled) return;
-        setPhraseIndex(HERO_PHRASES.length);
-        const reveal = window.setTimeout(() => {
-          if (!cancelled) setComposed(true);
-        }, COMPOSE_GAP_MS);
-        timers.push(reveal);
-      }, t - GAP_MS);
-      timers.push(done);
-    }, 900);
-    timers.push(start);
-
+    const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
+    const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
+    const t3 = window.setTimeout(() => setComposed(true), CTA_DELAY_MS);
     return () => {
-      cancelled = true;
-      timers.forEach((id) => window.clearTimeout(id));
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
     };
-  }, [skipIntro]);
-
-  // Clip crossfade loop — independent of phrase sequence
-  useEffect(() => {
-    if (skipIntro) return;
-    const id = window.setInterval(() => {
-      setClipIndex((i) => (i + 1) % CLIPS.length);
-    }, CLIP_HOLD_MS);
-    return () => window.clearInterval(id);
   }, [skipIntro]);
 
   return (
@@ -191,24 +87,17 @@ export function CinematicHero() {
       className="relative w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
       style={{ minHeight: "100svh", height: "100svh" }}
     >
-      {/* ── Crossfading film stack ──────────────────────────────────── */}
+      {/* ── Held cinematic clip ─────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
-        {CLIPS.map((clip, i) => (
-          <ClipLayer
-            key={clip.src}
-            clip={clip}
-            active={i === clipIndex}
-            fadeMs={CLIP_FADE_MS}
-          />
-        ))}
+        <HeldClip skipMotion={skipIntro} />
 
-        {/* Editorial vignette — single soft radial, no overlay bands */}
+        {/* Editorial vignette — single soft radial */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.46) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0.50) 100%)",
           }}
         />
         {/* Mobile lift for AA contrast on gold text */}
@@ -217,109 +106,72 @@ export function CinematicHero() {
           className="absolute inset-0 md:hidden"
           style={{ background: "rgba(0,0,0,0.16)" }}
         />
-        {/* Subtle film grain (CSS only, ~2% opacity) */}
+        {/* Subtle film grain (CSS only, ~1.5% opacity) */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.02]"
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.015]"
           style={{
             backgroundImage:
               "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>\")",
           }}
         />
-
       </div>
 
-      {/* ── Phrase stage ────────────────────────────────────────────── */}
-      <div
-        className="absolute inset-0 z-10 px-6 sm:px-10 md:px-16 lg:px-24"
-        aria-hidden={composed ? "true" : undefined}
-      >
-        {HERO_PHRASES.map((phrase, i) => {
-          const isActive = !skipIntro && phraseIndex === i;
-          return (
-            <div
-              key={i}
-              data-hero-phrase-index={i}
-              data-hero-phrase-state={isActive ? "active" : "idle"}
-              className={`pointer-events-none absolute inset-0 flex ${anchorClasses(
-                PHRASE_ANCHORS[i],
-              )}`}
-              style={{
-                opacity: isActive ? 1 : 0,
-                transform: isActive ? "translateY(0)" : "translateY(6px)",
-                transition: `opacity ${
-                  isActive ? FADE_IN_MS : FADE_OUT_MS
-                }ms cubic-bezier(0.22,0.61,0.36,1), transform ${
-                  isActive ? FADE_IN_MS : FADE_OUT_MS
-                }ms cubic-bezier(0.22,0.61,0.36,1)`,
-              }}
-            >
-              <p
-                className="font-serif italic font-normal"
-                style={{
-                  fontFamily:
-                    'Georgia, "Cormorant Garamond", "Newsreader", serif',
-                  fontWeight: 400,
-                  fontStyle: "italic",
-                  lineHeight: 1.2,
-                  letterSpacing: "-0.012em",
-                  color: "var(--gold, #C9A96A)",
-                  textShadow: "0 1px 24px rgba(0,0,0,0.55)",
-                  maxWidth: "min(22ch, 92vw)",
-                  fontSize: "clamp(28px, 5.4vw, 58px)",
-                }}
-              >
-                {phrase}
-              </p>
-            </div>
-          );
-        })}
+      {/* ── Centered stanza ─────────────────────────────────────────── */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center px-6 sm:px-10 md:px-16">
+        <div className="text-center">
+          <p
+            className="font-serif italic font-normal"
+            style={{
+              fontFamily:
+                'Georgia, "Cormorant Garamond", "Newsreader", serif',
+              fontWeight: 400,
+              fontStyle: "italic",
+              lineHeight: 1.25,
+              letterSpacing: "-0.014em",
+              color: "var(--gold, #C9A96A)",
+              textShadow: "0 1px 28px rgba(0,0,0,0.55)",
+              fontSize: "clamp(30px, 5.4vw, 60px)",
+              opacity: line1 ? 1 : 0,
+              transform: line1 ? "translateY(0)" : "translateY(8px)",
+              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
+            }}
+          >
+            {HERO_PHRASES[0]}
+          </p>
+          <p
+            className="font-serif italic font-normal mt-1 sm:mt-2"
+            style={{
+              fontFamily:
+                'Georgia, "Cormorant Garamond", "Newsreader", serif',
+              fontWeight: 400,
+              fontStyle: "italic",
+              lineHeight: 1.25,
+              letterSpacing: "-0.014em",
+              color: "var(--gold, #C9A96A)",
+              textShadow: "0 1px 28px rgba(0,0,0,0.55)",
+              fontSize: "clamp(30px, 5.4vw, 60px)",
+              opacity: line2 ? 1 : 0,
+              transform: line2 ? "translateY(0)" : "translateY(8px)",
+              transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
+            }}
+          >
+            {HERO_PHRASES[1]}
+          </p>
+        </div>
       </div>
 
-      {/* ── Final CTA composition ───────────────────────────────────── */}
+      {/* ── Delayed CTA reveal ──────────────────────────────────────── */}
       <div
         className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:pb-14 md:pb-20"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
           transform: composed ? "translateY(0)" : "translateY(12px)",
-          transition:
-            "opacity 1400ms cubic-bezier(0.22,0.61,0.36,1), transform 1400ms cubic-bezier(0.22,0.61,0.36,1)",
+          transition: `opacity ${CTA_FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${CTA_FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <p
-          aria-hidden={composed ? undefined : "true"}
-          className="mb-7 sm:mb-9 max-w-[22ch] text-center font-serif italic font-normal"
-          style={{
-            fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
-            fontWeight: 400,
-            fontStyle: "italic",
-            lineHeight: 1.25,
-            letterSpacing: "-0.012em",
-            color: "var(--gold, #C9A96A)",
-            textShadow: "0 1px 24px rgba(0,0,0,0.5)",
-            fontSize: "clamp(20px, 3.4vw, 30px)",
-          }}
-        >
-          Every story is different.
-          <br />
-          So is yours.
-        </p>
-
-        <span
-          data-hero-field="eyebrow"
-          className="mb-6 sm:mb-8 block text-[10px] sm:text-[10.5px] font-medium uppercase"
-          style={{
-            letterSpacing: "0.34em",
-            fontFamily: "Inter, system-ui, sans-serif",
-            color: "color-mix(in oklab, var(--gold, #C9A96A) 80%, transparent)",
-          }}
-        >
-          {HERO_COPY.eyebrow}
-        </span>
-
-
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
           <Link
             to="/builder"
@@ -331,7 +183,7 @@ export function CinematicHero() {
               borderRadius: 0,
             }}
           >
-            Build Your Journey
+            Begin Your Journey
           </Link>
           <Link
             to="/experiences"
@@ -351,10 +203,11 @@ export function CinematicHero() {
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only" aria-hidden="true">
-        <h1>
+        <h1 className="hero-h1">
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
         </h1>
+        <p data-hero-field="eyebrow">{HERO_COPY.eyebrow}</p>
         <p data-hero-field="subheadline">{HERO_COPY.subheadline}</p>
         <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>
         <p data-hero-field="brandLine">{HERO_COPY.brandLine}</p>
@@ -399,18 +252,10 @@ export function CinematicHero() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ClipLayer — single video element, fades opacity, lazy-plays
+// HeldClip — single looping video with optional slow Ken Burns breath
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ClipLayer({
-  clip,
-  active,
-  fadeMs,
-}: {
-  clip: Clip;
-  active: boolean;
-  fadeMs: number;
-}) {
+function HeldClip({ skipMotion }: { skipMotion: boolean }) {
   const ref = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -418,35 +263,41 @@ function ClipLayer({
     if (!v) return;
     v.muted = true;
     v.playsInline = true;
-    if (active) {
-      v.play().catch(() => {
-        /* autoplay blocked — poster remains */
-      });
-    } else {
-      // Pause inactive clips to save battery / decode
-      try { v.pause(); } catch { /* noop */ }
-    }
-  }, [active]);
+    v.play().catch(() => {
+      /* autoplay blocked — poster remains */
+    });
+  }, []);
 
   return (
-    <video
-      ref={ref}
-      poster={clip.poster}
-      autoPlay={active}
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      aria-hidden="true"
-      className="absolute inset-0 h-full w-full object-cover"
-      style={{
-        opacity: active ? 1 : 0,
-        transition: `opacity ${fadeMs}ms cubic-bezier(0.22,0.61,0.36,1)`,
-        filter: "saturate(0.88) contrast(1.04) brightness(0.82)",
-      }}
-    >
-      <source src={clip.src} type="video/mp4" />
-    </video>
+    <>
+      <style>{`
+        @keyframes heroBreath {
+          0%   { transform: scale(1.00); }
+          100% { transform: scale(1.04); }
+        }
+      `}</style>
+      <video
+        ref={ref}
+        poster={HERO_CLIP.poster}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{
+          opacity: 1,
+          filter: "saturate(0.86) contrast(1.04) brightness(0.80)",
+          animation: skipMotion
+            ? undefined
+            : "heroBreath 22s cubic-bezier(0.22,0.61,0.36,1) both",
+          transformOrigin: "center center",
+        }}
+      >
+        <source src={HERO_CLIP.src} type="video/mp4" />
+      </video>
+    </>
   );
 }
 
