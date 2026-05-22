@@ -28,9 +28,10 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setShow(true), 80);
-    // Hold longer when there is real editorial copy to land — silence is
-    // part of the rhythm; this is the inevitability beat, not a spinner.
-    const t2 = window.setTimeout(onDone, hasProposal ? 2600 : 1800);
+    // Breathing room: ~1.8s for proposal copy to land, shorter for the
+    // calm fallback cue. This beat earns its weight from silence — the
+    // backdrop atmosphere does most of the work.
+    const t2 = window.setTimeout(onDone, hasProposal ? 2800 : 1900);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
@@ -40,10 +41,13 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
   return (
     <div
       className="absolute inset-0 z-40 flex items-center justify-center animate-in fade-in duration-[900ms]"
-      style={{ background: "oklch(0.15 0.02 240 / 0.78)" }}
+      // Lighter veil — the cinematic backdrop (already painted by AmbientStage)
+      // should breathe through. A reveal should feel like raising a curtain,
+      // not lowering one.
+      style={{ background: "oklch(0.15 0.02 240 / 0.58)" }}
     >
       <div
-        className={`flex flex-col items-center gap-5 px-6 text-center transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`flex flex-col items-center gap-6 px-6 text-center transition-all duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
           show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
         }`}
       >
@@ -57,25 +61,38 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
           <>
             {title && (
               <h2
-                className="text-[26px] sm:text-[34px] font-semibold leading-[1.08] tracking-[-0.01em] text-[color:var(--ivory)] max-w-[20ch]"
-                style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+                className="text-[28px] sm:text-[38px] font-semibold leading-[1.05] tracking-[-0.012em] text-[color:var(--ivory)] max-w-[20ch]"
+                style={{
+                  fontFamily: "Montserrat, system-ui, sans-serif",
+                  textShadow: "0 1px 22px rgba(0,0,0,0.55)",
+                }}
               >
                 {title}
               </h2>
             )}
             {subtitle && (
               <p
-                className="font-serif italic text-[16px] sm:text-[19px] leading-snug text-[color:var(--ivory)]/85 max-w-[32ch]"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                className="italic text-[16.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/88 max-w-[32ch]"
+                style={{
+                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  textShadow: "0 1px 18px rgba(0,0,0,0.55)",
+                }}
               >
                 {subtitle}
               </p>
             )}
+            <span
+              aria-hidden="true"
+              className="block h-px w-6 bg-[color:var(--ivory)]/35 mt-1"
+            />
           </>
         ) : (
           <p
-            className="font-serif italic text-[22px] sm:text-[26px] leading-tight text-[color:var(--ivory)] max-w-[22ch]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            className="italic text-[22px] sm:text-[26px] leading-tight text-[color:var(--ivory)] max-w-[22ch]"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              textShadow: "0 1px 18px rgba(0,0,0,0.55)",
+            }}
           >
             {cue}
           </p>
@@ -84,3 +101,4 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
     </div>
   );
 }
+
