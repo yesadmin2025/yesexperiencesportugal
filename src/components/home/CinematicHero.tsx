@@ -59,7 +59,7 @@ const HOLD_MS = 4000;
 const LONG_HOLD_MS = 4500;
 const FADE_OUT_MS = 1200;
 const GAP_MS = 800;
-const COMPOSE_GAP_MS = 1100;
+const COMPOSE_GAP_MS = 1200;
 
 type Anchor =
   | "top-left"
