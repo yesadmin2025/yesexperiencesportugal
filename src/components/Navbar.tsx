@@ -96,10 +96,10 @@ export function Navbar() {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
                 style={{
-                  top: "46%",
+                  top: "62%",
                   bottom: 0,
                   background:
-                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.85) 8%, rgb(247,243,236) 16%)",
+                    "linear-gradient(to bottom, rgba(247,243,236,0) 0%, rgba(247,243,236,0.95) 18%, rgb(247,243,236) 32%)",
                   opacity: showMarkOnly ? 1 : 0,
                 }}
               />
