@@ -847,9 +847,10 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             fallbackPhrase={t.suggestionFallback}
             addLabel={t.composerSend}
             cues={t.emergingCues}
-            eyebrowOverride={state.narrativeFragment}
+            pacing={affinityProfile.pacing}
             onAccept={handleAccept}
           />
+
 
           <div className="flex justify-center">
             <div
