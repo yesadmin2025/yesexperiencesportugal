@@ -64,43 +64,42 @@ export function Navbar() {
       className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
       style={headerStyle}
     >
-      {/* Soft atmospheric dissolve — ivory fades down into hero footage, with no hard edge. */}
+      {/* Soft atmospheric dissolve — short, premium fade into the hero with no chunky block. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[92px] md:h-[86px] lg:h-[80px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[46px] md:h-[62px] lg:h-[74px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(247,243,236,0.92) 0%, rgba(247,243,236,0.68) 18%, rgba(247,243,236,0.38) 44%, rgba(247,243,236,0.14) 74%, rgba(247,243,236,0) 100%)",
+            "linear-gradient(to bottom, rgba(247,243,236,0.82) 0%, rgba(247,243,236,0.46) 34%, rgba(247,243,236,0.16) 68%, rgba(247,243,236,0) 100%)",
         }}
       />
       <div className="container-x">
-        <div className="flex items-center justify-between h-[76px] md:h-[88px] lg:h-[96px]">
+        <div className="flex items-center justify-between h-[64px] md:h-[84px] lg:h-[96px]">
           <Link
             to="/"
             className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
           >
-            <span className="relative inline-block h-[46px] md:h-[52px] lg:h-[58px] translate-y-[7px] md:translate-y-[8px] lg:translate-y-[9px] overflow-hidden">
-              {/* Single full logo — always rendered, never resizes. The "YES" script
-                  stays in the exact same position and size in both states. */}
+            <span className="relative inline-flex h-[54px] md:h-[58px] lg:h-[62px] w-[86px] md:w-[92px] lg:w-[98px] items-start translate-y-[4px] md:translate-y-[6px] lg:translate-y-[7px]">
+              <span
+                aria-hidden={!showMarkOnly}
+                className={`absolute left-0 top-0 block h-[36px] md:h-[38px] lg:h-[41px] w-full overflow-hidden transition-opacity duration-[650ms] ease-out ${
+                  showMarkOnly ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <Logo
+                  theme="teal-on-ivory"
+                  fetchPriority="high"
+                  alt="YES"
+                  className="block h-[54px] md:h-[58px] lg:h-[62px] w-auto select-none"
+                />
+              </span>
               <Logo
                 theme="teal-on-ivory"
                 fetchPriority="high"
-                className="block h-full w-auto select-none"
-              />
-              {/* Ivory veil — covers the "experiences PORTUGAL" lower portion of the
-                  lockup when at the top of the hero. Fades out on scroll to reveal
-                  the full brand. Clipped inside the logo box so it never creates
-                  a visible ivory block below the navbar or touches the YES descender. */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 transition-opacity duration-[800ms] ease-out"
-                style={{
-                  top: "66%",
-                  bottom: 0,
-                  background: "rgb(247, 243, 236)",
-                  opacity: showMarkOnly ? 1 : 0,
-                }}
+                className={`absolute left-0 top-0 block h-full w-auto select-none transition-opacity duration-[650ms] ease-out ${
+                  showMarkOnly ? "opacity-0" : "opacity-100"
+                }`}
               />
             </span>
           </Link>
