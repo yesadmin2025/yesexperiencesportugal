@@ -55,6 +55,8 @@ const INTENTION_CLIPS: Record<Intention, string> = {
   coast: CLIP.coast,
   nature: CLIP.viewpoint,
   heritage: CLIP.sesimbra,
+  hidden: CLIP.hiddenStreet,
+  wonder: CLIP.caboRoca,
   wellness: CLIP.hiddenCove,
 };
 
