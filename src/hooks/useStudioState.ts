@@ -318,6 +318,33 @@ export function useStudioState() {
     };
   }, [state.mood, state.who, state.intention, state.pace]);
 
+  /**
+   * Derived narrative stage — the emotional altitude of the experience.
+   * AI calls, motion durations and beat pacing all read from this single
+   * source of truth so the Studio feels like one continuous thread.
+   *
+   *   invitation  → traveller has not yet picked anything (distant, atmospheric)
+   *   recognition → first emotional pick has landed (warmer, one object enters)
+   *   emergence   → core picks complete, journey beginning to take shape
+   *   reveal      → 3+ accepted moments OR memory open (intimate, settled)
+   */
+  const narrativeStage = useMemo<NarrativeStage>(() => {
+    if (state.closing) return "reveal";
+    if (state.acceptedStops.length >= 3) return "reveal";
+    const coreCount = [state.mood, state.who, state.intention].filter(Boolean).length;
+    if (coreCount >= 3 || state.acceptedStops.length >= 1) return "emergence";
+    if (coreCount >= 1 || state.awakened) return "recognition";
+    return "invitation";
+  }, [state.closing, state.acceptedStops.length, state.mood, state.who, state.intention, state.awakened]);
+
+  const setNarrativeFragment = useCallback((fragment: string | null) => {
+    setState((s) => ({
+      ...s,
+      narrativeFragment: fragment,
+      narrativeFragmentAt: fragment ? Date.now() : null,
+    }));
+  }, []);
+
   return {
     state,
     restored,
@@ -327,10 +354,13 @@ export function useStudioState() {
     removeStop,
     reorderStops,
     setWhisper,
+    setNarrativeFragment,
     reset,
     routedStops,
     regionCenter,
     totalMinutes,
     affinityProfile,
+    narrativeStage,
   };
 }
+
