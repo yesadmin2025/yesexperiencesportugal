@@ -18,6 +18,7 @@ import type { StudioDict, StudioLocale } from "@/hooks/useStudioLocale";
 const LINE_ROTATE_MS = 4200;
 const INVITATION_DELAY_MS = 5400;
 const FRAGMENT_REVEAL_MS = 2400;
+const PROLOGUE_CLIP = "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4";
 
 interface Props {
   locale: StudioLocale;
@@ -96,8 +97,8 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         if (showInvite) awaken();
       }}
     >
-      {/* Atmospheric base — slow breathing gradient */}
-      <AmbientStage mood={null} veil="deep" />
+      {/* Atmospheric base — real Portuguese footage, slow breathing gradient underneath */}
+      <AmbientStage mood={null} veil="deep" videoUrl={PROLOGUE_CLIP} />
 
       {/* Slow breathing radial glow */}
       <div
@@ -132,7 +133,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         </div>
       </header>
 
-      {/* Drifting mood fragments — optional taps */}
+      {/* Drifting mood fragments — sparse optional taps, never a wall of words */}
       <div aria-hidden={!fragmentsReady} className="absolute inset-0 z-10 pointer-events-none">
         {fragments.map((f) => (
           <button
@@ -143,7 +144,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
               awaken(f.word);
             }}
             tabIndex={fragmentsReady ? 0 : -1}
-            className={`pointer-events-auto absolute select-none font-serif italic text-[color:var(--ivory)]/55 hover:text-[color:var(--gold)] hover:scale-[1.08] transition-all duration-300 ${
+            className={`pointer-events-auto absolute select-none font-serif italic text-[color:var(--ivory)]/38 hover:text-[color:var(--gold)] hover:scale-[1.06] transition-all duration-300 ${
               fragmentsReady ? "ambient-drift opacity-100" : "opacity-0"
             }`}
             style={{
@@ -154,7 +155,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
               fontFamily: "Georgia, 'Times New Roman', serif",
               animationDuration: `${f.driftSec}s`,
               animationDelay: `${f.delayMs}ms`,
-              textShadow: "0 1px 8px rgba(0,0,0,0.55)",
+              textShadow: "0 1px 10px rgba(0,0,0,0.65)",
             }}
             aria-label={f.word}
           >
