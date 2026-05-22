@@ -534,7 +534,7 @@ function BuilderPage() {
             {step === 1 && region && (
               <div key="step-1" className="builder-step-in">
                 <div className="flex items-center justify-between gap-3 flex-wrap mb-2">
-                  <StepHead num={1} eyebrow="Mood" title="What are you in the mood for?" />
+                  <StepHead num={1} totalChapters={6} eyebrow="Capítulo 01 — Mood" title="What are you in the mood for?" italicSub="Begin with feeling. The map will follow." />
                 </div>
                 <button
                   type="button"
