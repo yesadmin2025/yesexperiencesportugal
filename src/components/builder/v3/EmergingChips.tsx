@@ -76,8 +76,13 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
     .slice(0, maxCards);
   if (!available.length) return null;
 
-  const eyebrow = eyebrowOverride?.trim() || cues?.[stage];
-  const isAiLine = Boolean(eyebrowOverride?.trim());
+  // Graceful fallback — if the AI sensory line is absent (reduced-motion,
+  // narrative budget exhausted, fetch failure, or simply not yet composed),
+  // the static stage cue reappears. The chip eyebrow is never empty when a
+  // stage cue is provided, so the visual rhythm stays intact in every state.
+  const aiLine = eyebrowOverride?.trim();
+  const eyebrow = aiLine || cues?.[stage] || null;
+  const isAiLine = Boolean(aiLine);
 
   return (
     <ul className="flex flex-col gap-2.5 items-center" role="list">
