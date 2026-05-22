@@ -91,28 +91,43 @@ export function CinematicHero() {
       <div className="absolute inset-0 z-0">
         <HeldClip skipMotion={skipIntro} />
 
+        {/* Lifted blacks — gentle filmic fade, avoids pure black crush */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "rgba(38, 30, 22, 0.06)" }}
+        />
+        {/* Soft highlight bloom — natural lens diffusion around the sun */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none mix-blend-screen"
+          style={{
+            background:
+              "radial-gradient(ellipse 45% 32% at 38% 58%, rgba(255, 196, 130, 0.18) 0%, rgba(255, 196, 130, 0.06) 35%, transparent 70%)",
+          }}
+        />
         {/* Editorial vignette — single soft radial */}
         <div
           aria-hidden="true"
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0.50) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.42) 100%)",
           }}
         />
         {/* Mobile lift for AA contrast on gold text */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 md:hidden"
-          style={{ background: "rgba(0,0,0,0.16)" }}
+          className="absolute inset-0 md:hidden pointer-events-none"
+          style={{ background: "rgba(0,0,0,0.14)" }}
         />
-        {/* Subtle film grain (CSS only, ~1.5% opacity) */}
+        {/* Ultra-subtle film grain — fine texture, ~1% opacity */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.015]"
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.010]"
           style={{
             backgroundImage:
-              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>\")",
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>\")",
           }}
         />
       </div>
@@ -288,7 +303,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         className="absolute inset-0 h-full w-full object-cover"
         style={{
           opacity: 1,
-          filter: "saturate(0.86) contrast(1.04) brightness(0.80)",
+          filter: "saturate(0.82) contrast(0.96) brightness(0.86)",
           animation: skipMotion
             ? undefined
             : "heroBreath 28s cubic-bezier(0.22,0.61,0.36,1) both",
