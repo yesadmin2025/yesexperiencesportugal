@@ -15,6 +15,7 @@ import { suggestFromIntent } from "@/server/builderIntent.functions";
 import { listRegionStops } from "@/server/builderEngine.functions";
 import { suggestPacing } from "@/server/builderPacing.functions";
 import { generateChapter } from "@/server/builderChapter.functions";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
 
 import { AmbientStage } from "./AmbientStage";
 import { AmbientPrologue } from "./AmbientPrologue";
@@ -29,6 +30,7 @@ import { ItineraryRibbon } from "./ItineraryRibbon";
 import { WhisperLayer } from "./WhisperLayer";
 import { MemoryCard } from "./MemoryCard";
 import { MultiDayConcierge } from "./MultiDayConcierge";
+import { NameWhisper } from "./NameWhisper";
 
 interface CatalogEntry {
   key: string;
@@ -75,6 +77,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const listFn = useServerFn(listRegionStops);
   const pacingFn = useServerFn(suggestPacing);
   const chapterFn = useServerFn(generateChapter);
+  const composeFn = useServerFn(composeStudioMoment);
 
   const [composerCollapsed, setComposerCollapsed] = useState(true);
   const [composerBusy, setComposerBusy] = useState(false);
@@ -230,6 +233,57 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     pacingFn,
     setWhisper,
   ]);
+
+  /* ── Compose editorial proposal — once, when all three choices are made ── */
+  useEffect(() => {
+    if (!sessionId) return;
+    if (state.journeyType === "multi") return;
+    const hasCore = Boolean(state.mood && state.who && state.intention);
+    if (!hasCore) return;
+    if (state.proposal) return;
+    if (state.acceptedStops.length > 0) return;
+    let cancelled = false;
+    composeFn({
+      data: {
+        sessionId,
+        mode: "proposal",
+        locale,
+        mood: state.mood,
+        who: state.who,
+        intention: state.intention,
+        journeyType: state.journeyType,
+        travellerName: state.travellerName,
+        narrativeStage: "reveal",
+        confidence: 0.6,
+        acceptedCount: 0,
+      },
+    })
+      .then((r) => {
+        if (cancelled) return;
+        if (r.mode === "proposal") {
+          patch({
+            proposal: { title: r.title, subtitle: r.subtitle, generatedAt: Date.now() },
+          });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    sessionId,
+    locale,
+    state.mood,
+    state.who,
+    state.intention,
+    state.journeyType,
+    state.travellerName,
+    state.proposal,
+    state.acceptedStops.length,
+    composeFn,
+    patch,
+  ]);
+
 
   /** Shared suggestion fetch — reused by composer submit + emotion taps. */
   const refreshSuggestions = useCallback(
@@ -580,13 +634,33 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         />
       )}
 
+      {/* ── Quiet name moment — once, between depth and who.
+          Inserted only after mood + journey type are chosen so it does not
+          interrupt the very first emotional spark. Skipping is first-class. */}
+      {state.mood &&
+        state.journeyType === "day" &&
+        !state.who &&
+        !state.nameAsked && (
+          <NameWhisper
+            prompt={t.nameWhisper.prompt}
+            placeholder={t.nameWhisper.placeholder}
+            acceptLabel={t.nameWhisper.accept}
+            skipLabel={t.nameWhisper.skip}
+            onSubmit={(name) => patch({ travellerName: name, nameAsked: true })}
+            onSkip={() => patch({ nameAsked: true })}
+          />
+        )}
+
       {/* ── Reveal interlude — Portugal is responding ── */}
       {hasCoreIntent && !hasStops && !revealPlayed && (
         <JourneyReveal
           cue={t.awakeningCue}
+          title={state.proposal?.title ?? null}
+          subtitle={state.proposal?.subtitle ?? null}
           onDone={() => setRevealPlayed(true)}
         />
       )}
+
 
       {/* ── Phase: EMERGENCE ──
           Suggestions emerge softly from the atmosphere. No map yet,

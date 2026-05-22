@@ -8,6 +8,7 @@ import type {
   JourneyType,
   AffinityProfile,
 } from "@/components/builder/types";
+import type { StudioProposal } from "@/components/builder/types";
 import {
   BUILDER_REGIONS,
   type BuilderRegionKey,
@@ -15,12 +16,6 @@ import {
 
 /**
  * Unified state for the Living Atmosphere Studio (Builder v3).
- *
- * No notion of "step". The world has selections that may or may not exist,
- * and the UI reacts to whatever is present.
- *
- * State is auto-persisted to localStorage so a traveller can close the tab
- * and resume their narration + AI decisions exactly where they left off.
  */
 
 export interface StudioStop {
@@ -46,6 +41,12 @@ export interface StudioState {
   whisper: string | null;
   awakened: boolean;
   closing: boolean;
+  /** Optional emotional identity — captured at most once per session. */
+  travellerName: string | null;
+  /** Whether the NameWhisper step was already presented (asked or skipped). */
+  nameAsked: boolean;
+  /** Composed editorial identity for the reveal — generated once, cached. */
+  proposal: StudioProposal | null;
 }
 
 const INITIAL: StudioState = {
@@ -61,9 +62,12 @@ const INITIAL: StudioState = {
   whisper: null,
   awakened: false,
   closing: false,
+  travellerName: null,
+  nameAsked: false,
+  proposal: null,
 };
 
-const STORAGE_KEY = "yes.studio.state.v2";
+const STORAGE_KEY = "yes.studio.state.v3";
 
 /** Persisted subset — exclude transient UI flags (whisper, closing). */
 type PersistedState = Pick<
@@ -78,6 +82,9 @@ type PersistedState = Pick<
   | "acceptedStops"
   | "chapter"
   | "awakened"
+  | "travellerName"
+  | "nameAsked"
+  | "proposal"
 >;
 
 function loadPersisted(): Partial<StudioState> | null {
@@ -107,6 +114,9 @@ function savePersisted(s: StudioState) {
       acceptedStops: s.acceptedStops,
       chapter: s.chapter,
       awakened: s.awakened,
+      travellerName: s.travellerName,
+      nameAsked: s.nameAsked,
+      proposal: s.proposal,
     };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
   } catch {

@@ -67,6 +67,12 @@ export interface StudioDict {
   viewRoute: string;
   hideRoute: string;
   talkConcierge: string;
+  nameWhisper: {
+    prompt: string;
+    placeholder: string;
+    accept: string;
+    skip: string;
+  };
 }
 
 const DICTS: Record<StudioLocale, StudioDict> = {
@@ -170,6 +176,12 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     viewRoute: "Ver percurso no mapa",
     hideRoute: "Esconder mapa",
     talkConcierge: "Falar com um concierge",
+    nameWhisper: {
+      prompt: "Como te chamas?",
+      placeholder: "o teu primeiro nome",
+      accept: "Continuar",
+      skip: "preferir manter o silêncio",
+    },
   },
   en: {
     eyebrow: "Experience Studio",
@@ -271,6 +283,12 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     viewRoute: "View route on map",
     hideRoute: "Hide map",
     talkConcierge: "Talk to concierge",
+    nameWhisper: {
+      prompt: "What shall we call you?",
+      placeholder: "your first name",
+      accept: "Continue",
+      skip: "prefer to stay quiet",
+    },
   },
   es: {
     eyebrow: "Experience Studio",
@@ -372,6 +390,12 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     viewRoute: "Ver ruta en el mapa",
     hideRoute: "Ocultar mapa",
     talkConcierge: "Hablar con un concierge",
+    nameWhisper: {
+      prompt: "¿Cómo te llamas?",
+      placeholder: "tu primer nombre",
+      accept: "Continuar",
+      skip: "prefiero mantener el silencio",
+    },
   },
   fr: {
     eyebrow: "Experience Studio",
@@ -473,6 +497,12 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     viewRoute: "Voir l'itinéraire sur la carte",
     hideRoute: "Masquer la carte",
     talkConcierge: "Parler à un concierge",
+    nameWhisper: {
+      prompt: "Comment t'appelles-tu ?",
+      placeholder: "ton prénom",
+      accept: "Continuer",
+      skip: "préférer garder le silence",
+    },
   },
 };
 
