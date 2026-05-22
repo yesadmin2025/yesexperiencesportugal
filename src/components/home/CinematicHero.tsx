@@ -392,12 +392,12 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
 
         /* GHOST — clean hairline ivory, restrained */
         .hero-cta--ghost {
-          border: 1px solid rgba(250, 248, 243, 0.26);
-          background: rgba(20, 16, 12, 0.10);
+          border: 1px solid rgba(250, 248, 243, 0.22);
+          background: rgba(20, 16, 12, 0.08);
           -webkit-backdrop-filter: blur(6px) saturate(1.04);
           backdrop-filter: blur(6px) saturate(1.04);
-          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-          box-shadow: 0 6px 16px -14px rgba(0, 0, 0, 0.45);
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 4px 12px -12px rgba(0, 0, 0, 0.4);
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
