@@ -1,35 +1,36 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Check,
-  Copy,
-  Loader2,
-  MessageCircle,
-  Share2,
-  ShieldCheck,
-  Sparkles,
-  Clock,
-  MapPin,
-  X,
-} from "lucide-react";
+import { Check, Copy, Loader2, Share2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { createJourney } from "@/server/builderJourneys.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import type { StudioStop } from "@/hooks/useStudioState";
 import type { Pace } from "@/components/builder/types";
-import { fmtMinutes } from "@/components/builder/types";
 import { regionLabel } from "@/hooks/useStudioState";
 import type { BuilderRegionKey } from "@/components/builder/RegionStep";
+import type { StudioProposal } from "@/components/builder/types";
 
 /**
- * Closing scene — cinematic "Memory Card" that doubles as the booking close.
+ * MemoryCard — the emotional landing of the Studio (the reveal).
  *
- * Now that the traveller has shaped their journey, this is where:
- *   1. Real stop names finally appear (they're committed; names help reserve)
- *   2. A single, dominant primary CTA invites them to reserve instantly
- *   3. Trust signals reduce hesitation (instant confirmation, local guide, flex cancel)
- *   4. WhatsApp is a secondary fallback for high-touch travellers
+ * Built as a three-layer cinematic unfolding, NOT a generated trip output:
  *
- * Designed for conversion without breaking the cinematic spell.
+ *   Layer 1 · Arrival (0 → ~1.6s)
+ *     Full-bleed hero · proposal title · proposal subtitle · region whisper.
+ *     Nothing else. Editorial pause — opening a luxury travel journal spread.
+ *
+ *   Layer 2 · Editorial timeline (~1.6 → ~3.4s)
+ *     Time-coded sensory lines fade in one by one — typography only, no cards,
+ *     no borders, no icons. Real stop labels are whispered below in small caps
+ *     so committed names exist for booking without breaking the editorial spell.
+ *
+ *   Layer 3 · Subtle structure (~3.4s+)
+ *     A single confident CTA ("When you're ready") and quiet secondary text
+ *     links (concierge · view on the map · share). No trust grid, no chips,
+ *     no dashboard chrome. The interface disappears as confidence rises.
+ *
+ * Map remains hidden inside this scene by design — "View on the map" closes
+ * the card to return to the living Studio map (logistics brain stays away
+ * until the traveller asks for it).
  */
 
 interface Props {
@@ -37,8 +38,12 @@ interface Props {
   regionKey: BuilderRegionKey;
   pace: Pace;
   totalMinutes: number;
+  /** Optional region/chapter fallback subtitle if no proposal exists. */
   chapter: string | null;
+  /** Optional editorial closer line (currently mirrors chapter). */
   farewell: string | null;
+  /** Editorial identity composed once, near the reveal. Source of truth. */
+  proposal: StudioProposal | null;
   onClose: () => void;
 }
 
@@ -46,31 +51,55 @@ const HERO_CLIP = "/__l5e/assets-v1/501885a8-7399-4591-99fc-1c410b24c428/scene-r
 
 const WHATSAPP_NUMBER = "351912345678"; // placeholder — replace when live
 
-function emotionalMoment(stop: StudioStop, index: number): string {
+/* ── Editorial timeline helpers ─────────────────────────────────────────── */
+
+/** Sensory lines per intention tag — Portuguese, editorial, sensory anchor. */
+const SENSORY_BY_TAG: Record<string, string> = {
+  wine: "uma mesa longa à sombra das vinhas, vinho a chegar devagar",
+  gastronomy: "pão partido sem pressa, conversa que estica a tarde",
+  coast: "a luz a virar prata sobre o Atlântico, sem pressa de partir",
+  nature: "vento dos pinhais, pedra fresca, o tempo a abrandar",
+  heritage: "azulejos ainda mornos da manhã, a cidade a acordar devagar",
+  wellness: "silêncio, linho, o corpo a encontrar o seu próprio ritmo",
+  romantic: "um pátio com um único limoeiro, candeeiros baixos",
+  family: "uma mesa generosa, pratos a passar de mão em mão",
+};
+const SENSORY_FALLBACKS = [
+  "uma travessia tranquila, o rio largo na luz da tarde",
+  "cobre e barro à mesa, a tarde a estender-se",
+  "sombra de figueiras, conversa sem hora marcada",
+  "sardinhas em papel oleado, o cais já fresco",
+];
+
+function sensoryLine(stop: StudioStop, blurb: string | null, i: number): string {
+  // Prefer the curated blurb when it exists — it's the editorial truth.
+  if (blurb && blurb.trim().length > 0) return blurb.trim();
   const tag = stop.tag?.trim().toLowerCase();
-  const byTag: Record<string, string> = {
-    wine: "Provar devagar, sem pressa.",
-    gastronomy: "Sentar à mesa com tempo.",
-    coast: "Seguir a luz junto ao mar.",
-    nature: "Respirar onde tudo abranda.",
-    heritage: "Entrar numa história antiga.",
-    wellness: "Abrir espaço para silêncio.",
-  };
-  if (tag && byTag[tag]) return byTag[tag];
-  return [
-    "Um momento que se revela sem pressa.",
-    "Uma pausa escolhida pelo ritmo da viagem.",
-    "Uma sensação que guia o próximo gesto.",
-  ][index % 3];
+  if (tag && SENSORY_BY_TAG[tag]) return SENSORY_BY_TAG[tag];
+  return SENSORY_FALLBACKS[i % SENSORY_FALLBACKS.length];
 }
+
+/** Compute timeline anchors starting at 09:30, +20min drive between stops. */
+function buildTimeline(stops: StudioStop[]): { time: string; stop: StudioStop }[] {
+  let cursor = 9 * 60 + 30;
+  return stops.map((stop, i) => {
+    if (i > 0) cursor += 20;
+    const hh = String(Math.floor(cursor / 60)).padStart(2, "0");
+    const mm = String(cursor % 60).padStart(2, "0");
+    const time = `${hh}:${mm}`;
+    cursor += stop.duration_minutes;
+    return { time, stop };
+  });
+}
+
+/* ── Component ──────────────────────────────────────────────────────────── */
 
 export function MemoryCard({
   stops,
   regionKey,
   pace,
-  totalMinutes,
   chapter,
-  farewell,
+  proposal,
   onClose,
 }: Props) {
   const sessionId = useBuilderSessionId();
@@ -80,12 +109,44 @@ export function MemoryCard({
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [reserving, setReserving] = useState(false);
+  const [layer, setLayer] = useState<1 | 2 | 3>(1);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const shareUrl = useMemo(() => {
     if (!token || typeof window === "undefined") return null;
     return `${window.location.origin}/i/${token}`;
   }, [token]);
 
+  const timeline = useMemo(() => buildTimeline(stops), [stops]);
+
+  // Title + subtitle — proposal is the source of truth; chapter is the
+  // calm editorial fallback only when no proposal has been composed.
+  const title = proposal?.title ?? chapter ?? regionLabel(regionKey);
+  const subtitle =
+    proposal?.subtitle ??
+    `${regionLabel(regionKey)}, em ${stops.length} momentos.`;
+
+  // ── Layered unfold ────────────────────────────────────────────────────
+  useEffect(() => {
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      setLayer(3);
+      return;
+    }
+    const t2 = window.setTimeout(() => setLayer((l) => (l < 2 ? 2 : l)), 1600);
+    const t3 = window.setTimeout(
+      () => setLayer((l) => (l < 3 ? 3 : l)),
+      1600 + 220 * Math.max(timeline.length, 1) + 600,
+    );
+    return () => {
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [timeline.length]);
+
+  // ── Persist the journey (silent, for share + reserve) ────────────────
   useEffect(() => {
     if (!sessionId || stops.length === 0) {
       setBusy(false);
@@ -143,8 +204,8 @@ export function MemoryCard({
     if (typeof navigator !== "undefined" && "share" in navigator) {
       try {
         await navigator.share({
-          title: `Roteiro · ${regionLabel(regionKey)}`,
-          text: chapter ?? "O meu roteiro YES Experiences Portugal",
+          title: title,
+          text: subtitle,
           url: shareUrl,
         });
       } catch {
@@ -157,9 +218,6 @@ export function MemoryCard({
 
   const handleReserve = () => {
     setReserving(true);
-    // For now, route the user to the share page where booking flow lives.
-    // Once live Stripe embedded checkout is wired, swap this for the
-    // EmbeddedCheckout call so the user never leaves the cinematic world.
     if (shareUrl) {
       window.location.href = `${shareUrl}?reserve=1`;
     } else {
@@ -168,9 +226,7 @@ export function MemoryCard({
   };
 
   const handleWhatsApp = () => {
-    const summary = stops
-      .map((s, i) => `${i + 1}. ${s.label}`)
-      .join("%0A");
+    const summary = stops.map((s, i) => `${i + 1}. ${s.label}`).join("%0A");
     const text = encodeURIComponent(
       `Olá! Gostava de reservar este roteiro em ${regionLabel(regionKey)}:`,
     );
@@ -182,166 +238,227 @@ export function MemoryCard({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="A tua história"
-      className="absolute inset-0 z-50 overflow-y-auto animate-in fade-in duration-700"
-      style={{ background: "oklch(0.12 0.02 240 / 0.85)", backdropFilter: "blur(10px)" }}
+      aria-label={title}
+      className="absolute inset-0 z-50 overflow-y-auto animate-in fade-in duration-[900ms]"
+      style={{ background: "oklch(0.10 0.02 240 / 0.92)" }}
     >
+      {/* Quiet close — top right, low contrast, gets out of the way */}
       <button
         type="button"
         onClick={onClose}
-        className="fixed top-4 right-4 z-[60] inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full bg-[color:var(--ivory)]/15 text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/25 backdrop-blur transition-colors"
+        className="fixed top-4 right-4 z-[60] inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full bg-[color:var(--ivory)]/10 text-[color:var(--ivory)]/70 hover:bg-[color:var(--ivory)]/20 hover:text-[color:var(--ivory)] backdrop-blur transition-colors"
         aria-label="Fechar"
       >
         <X size={18} />
       </button>
 
-      <article className="w-full max-w-xl mx-auto bg-[color:var(--ivory)] rounded-[6px] shadow-[0_24px_80px_rgba(0,0,0,0.55)] overflow-hidden my-6 sm:my-10 mx-4 animate-in zoom-in-95 slide-in-from-bottom-4 duration-[700ms] ease-out">
-        {/* Cinematic hero */}
-        <div className="relative h-[200px] sm:h-[260px] overflow-hidden bg-[color:var(--charcoal)]">
-          <video
+      {/* ── LAYER 1 · ARRIVAL ───────────────────────────────────────────
+          Full-bleed hero with proposal identity. Held in silence for
+          ~1.6s before the timeline emerges. */}
+      <section
+        className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden"
+      >
+        {/* Cinematic backdrop */}
+        <video
+          aria-hidden="true"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover motion-reduce:hidden"
+          style={{ filter: "saturate(0.86) contrast(1.04) brightness(0.62)" }}
+        >
+          <source src={HERO_CLIP} type="video/mp4" />
+        </video>
+        {/* Deep gradient veil — bottom-weighted so copy sits in calm space */}
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-[color:var(--charcoal)]/55 via-[color:var(--charcoal)]/45 to-[color:var(--charcoal)]"
+        />
+
+        {/* Proposal identity — the editorial spread */}
+        <div className="relative z-10 w-full max-w-2xl px-6 pt-24 pb-10 flex flex-col items-center text-center gap-6 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms] ease-out">
+          <span
             aria-hidden="true"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "saturate(0.86) contrast(1.04) brightness(0.78)" }}
+            className="block h-px w-10 bg-[color:var(--gold)]/75"
+          />
+          <p
+            className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]"
+            style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
           >
-            <source src={HERO_CLIP} type="video/mp4" />
-          </video>
-          <span className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)] via-[color:var(--charcoal)]/40 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <p className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]">
-              <Sparkles size={11} />
-              A tua viagem
-            </p>
-            <h2
-              className="mt-2 font-serif italic text-[22px] sm:text-[28px] leading-[1.18] text-[color:var(--ivory)] max-w-[26ch]"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-            >
-              {chapter ?? `${regionLabel(regionKey)}, em ${stops.length} momentos.`}
-            </h2>
-            <p className="mt-2 inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)]/85">
-              <span className="inline-flex items-center gap-1">
-                <MapPin size={11} className="text-[color:var(--gold)]" />
-                {regionLabel(regionKey)}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <Clock size={11} className="text-[color:var(--gold)]" />
-                {fmtMinutes(totalMinutes)}
-              </span>
-            </p>
-          </div>
+            {regionLabel(regionKey)}
+          </p>
+          <h1
+            className="text-[30px] sm:text-[42px] font-semibold leading-[1.04] tracking-[-0.014em] text-[color:var(--ivory)] max-w-[20ch] text-balance"
+            style={{
+              fontFamily: "Montserrat, system-ui, sans-serif",
+              textShadow: "0 2px 26px rgba(0,0,0,0.5)",
+            }}
+          >
+            {title}
+          </h1>
+          <p
+            className="italic text-[16.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/88 max-w-[34ch] text-balance"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              textShadow: "0 1px 18px rgba(0,0,0,0.5)",
+            }}
+          >
+            {subtitle}
+          </p>
+          {/* Quiet hairline anchor */}
+          <span
+            aria-hidden="true"
+            className="block h-px w-6 bg-[color:var(--ivory)]/30 mt-2"
+          />
         </div>
 
-        {/* Moments with real names */}
-        <ol className="divide-y divide-[color:var(--charcoal)]/8">
-          {stops.map((s, i) => (
-            <li key={s.key} className="px-5 sm:px-7 py-4 flex items-start gap-4">
-              <span
-                className="font-serif italic text-[color:var(--gold)] text-[22px] leading-none min-w-[24px] pt-0.5"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                aria-hidden="true"
-              >
-                {i + 1}
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-semibold text-[color:var(--charcoal)] leading-tight">
-                  {s.label}
-                </p>
-                <p
-                  className="mt-1 text-[12.5px] italic text-[color:var(--charcoal)]/65 leading-snug"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                >
-                  {s.blurb ?? emotionalMoment(s, i)}
-                </p>
-                <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/45 font-semibold">
-                  {fmtMinutes(s.duration_minutes)}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-
-        {farewell && farewell !== chapter && (
-          <p
-            className="px-5 sm:px-7 py-4 font-serif italic text-[13px] text-[color:var(--charcoal)]/70 leading-relaxed border-t border-[color:var(--charcoal)]/10"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+        {/* ── LAYER 2 · EDITORIAL TIMELINE ────────────────────────────
+            No cards. No borders. Time + sensory line, stop label as a
+            whispered caption. Each row fades in sequentially. */}
+        {timeline.length > 0 && (
+          <ol
+            className={`relative z-10 w-full max-w-xl px-7 sm:px-10 pb-12 flex flex-col gap-9 transition-opacity duration-[1100ms] ${
+              layer >= 2 ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
-            {farewell}
-          </p>
+            {timeline.map(({ time, stop }, i) => (
+              <li
+                key={stop.key}
+                className="grid grid-cols-[64px_1fr] gap-x-4 sm:gap-x-6 transition-all duration-[800ms] ease-out motion-reduce:transition-opacity"
+                style={{
+                  opacity: layer >= 2 ? 1 : 0,
+                  transform: layer >= 2 ? "translateY(0)" : "translateY(10px)",
+                  transitionDelay: layer >= 2 ? `${i * 220}ms` : "0ms",
+                }}
+              >
+                <span
+                  className="text-[13px] tracking-[0.18em] font-semibold text-[color:var(--gold)] pt-1"
+                  style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+                  aria-hidden="true"
+                >
+                  {time}
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  <p
+                    className="italic text-[17px] sm:text-[19px] leading-[1.45] text-[color:var(--ivory)] text-balance"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  >
+                    {sensoryLine(stop, stop.blurb, i)}
+                  </p>
+                  <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/45">
+                    {stop.label}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
         )}
 
-        {/* Trust row */}
-        <ul className="px-5 sm:px-7 py-3 bg-[color:var(--sand)]/40 border-t border-[color:var(--charcoal)]/10 grid grid-cols-3 gap-2 text-center">
-          <li className="text-[10px] uppercase tracking-[0.14em] font-semibold text-[color:var(--charcoal)]/75 leading-tight">
-            <ShieldCheck size={14} className="mx-auto mb-1 text-[color:var(--teal)]" />
-            Confirmação imediata
-          </li>
-          <li className="text-[10px] uppercase tracking-[0.14em] font-semibold text-[color:var(--charcoal)]/75 leading-tight">
-            <Sparkles size={14} className="mx-auto mb-1 text-[color:var(--gold)]" />
-            Guia local
-          </li>
-          <li className="text-[10px] uppercase tracking-[0.14em] font-semibold text-[color:var(--charcoal)]/75 leading-tight">
-            <Check size={14} className="mx-auto mb-1 text-[color:var(--teal)]" />
-            Cancelamento flexível
-          </li>
-        </ul>
+        {/* ── LAYER 3 · SUBTLE STRUCTURE ──────────────────────────────
+            Single confident CTA + quiet secondary links. No trust grid,
+            no chips, no dashboard chrome. */}
+        <div
+          className={`relative z-10 w-full max-w-md px-6 pb-[max(env(safe-area-inset-bottom),2rem)] flex flex-col items-center gap-5 transition-all duration-[900ms] ease-out ${
+            layer >= 3
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-3 pointer-events-none"
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className="block h-px w-8 bg-[color:var(--ivory)]/25 mb-2"
+          />
 
-        {/* Primary CTA — single dominant action */}
-        <div className="px-5 sm:px-7 py-5 bg-[color:var(--ivory)] border-t border-[color:var(--charcoal)]/10 flex flex-col gap-2.5">
           <button
             type="button"
             onClick={handleReserve}
             disabled={busy || reserving || !shareUrl}
-            className="inline-flex items-center justify-center gap-2 min-h-[52px] rounded-[3px] bg-[color:var(--charcoal)] hover:bg-[color:var(--teal)] disabled:bg-[color:var(--charcoal)]/50 text-[color:var(--ivory)] px-5 py-3 text-[13px] uppercase tracking-[0.22em] font-bold transition-colors shadow-[0_10px_28px_rgba(0,0,0,0.3)]"
+            className="w-full inline-flex items-center justify-center min-h-[54px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] disabled:bg-[color:var(--ivory)]/60 disabled:cursor-wait text-[color:var(--charcoal)] px-6 py-3 text-[12.5px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.35)]"
+            style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
           >
-            {reserving ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} className="text-[color:var(--gold)]" />}
-            {reserving ? "A abrir reserva…" : "Reservar agora"}
+            {reserving ? (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 size={14} className="animate-spin" />
+                A abrir
+              </span>
+            ) : busy ? (
+              <span className="inline-flex items-center gap-2 text-[color:var(--charcoal)]/55">
+                <Loader2 size={14} className="animate-spin" />
+                A guardar
+              </span>
+            ) : (
+              "Quando estiveres pronto"
+            )}
           </button>
 
-          <button
-            type="button"
-            onClick={handleWhatsApp}
-            className="inline-flex items-center justify-center gap-2 min-h-[44px] rounded-[3px] border border-[color:var(--charcoal)]/20 bg-transparent text-[color:var(--charcoal)] px-4 py-2 text-[11.5px] uppercase tracking-[0.2em] font-semibold hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors"
-          >
-            <MessageCircle size={13} />
-            Falar com um concierge
-          </button>
-        </div>
+          {/* Quiet secondary actions — text links, never buttons */}
+          <div className="flex flex-col items-center gap-3 pt-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
+              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+            >
+              Ver no mapa
+            </button>
+            <button
+              type="button"
+              onClick={handleWhatsApp}
+              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
+              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+            >
+              Falar com um concierge
+            </button>
+            <button
+              type="button"
+              onClick={() => setShareOpen((o) => !o)}
+              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/40 hover:text-[color:var(--ivory)]/80 transition-colors"
+              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+              aria-expanded={shareOpen}
+            >
+              Guardar para mais tarde
+            </button>
+          </div>
 
-        {/* Share row — secondary */}
-        <footer className="px-5 sm:px-7 py-4 bg-[color:var(--sand)]/30 border-t border-[color:var(--charcoal)]/10">
-          {busy ? (
-            <p className="inline-flex items-center gap-2 text-[11.5px] text-[color:var(--charcoal)]/65 font-medium">
-              <Loader2 size={13} className="animate-spin" />
-              A guardar a tua história…
-            </p>
-          ) : error ? (
-            <p className="text-[11.5px] text-red-700/80">{error}</p>
-          ) : shareUrl ? (
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={copy}
-                className="inline-flex items-center justify-center gap-1.5 min-h-[40px] rounded-[2px] bg-transparent px-3 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)]/70 hover:text-[color:var(--charcoal)] transition-colors"
-              >
-                {copied ? <Check size={12} /> : <Copy size={12} />}
-                {copied ? "Copiado" : "Copiar link"}
-              </button>
-              <button
-                type="button"
-                onClick={nativeShare}
-                className="inline-flex items-center justify-center gap-1.5 min-h-[40px] rounded-[2px] bg-transparent px-3 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)]/70 hover:text-[color:var(--charcoal)] transition-colors"
-              >
-                <Share2 size={12} />
-                Partilhar
-              </button>
+          {/* Share drawer — only appears on explicit request */}
+          {shareOpen && (
+            <div className="w-full pt-2 flex items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-1 duration-500">
+              {busy ? (
+                <span className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-[color:var(--ivory)]/55">
+                  <Loader2 size={12} className="animate-spin" />
+                  A guardar
+                </span>
+              ) : error ? (
+                <span className="text-[11px] tracking-[0.2em] uppercase text-red-300/80">
+                  {error}
+                </span>
+              ) : shareUrl ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={copy}
+                    className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
+                  >
+                    {copied ? <Check size={12} /> : <Copy size={12} />}
+                    {copied ? "Copiado" : "Copiar link"}
+                  </button>
+                  <span aria-hidden className="h-3 w-px bg-[color:var(--ivory)]/20" />
+                  <button
+                    type="button"
+                    onClick={nativeShare}
+                    className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
+                  >
+                    <Share2 size={12} />
+                    Partilhar
+                  </button>
+                </>
+              ) : null}
             </div>
-          ) : null}
-        </footer>
-      </article>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
