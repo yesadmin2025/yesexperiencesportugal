@@ -1,11 +1,13 @@
 import { Check, MessageCircle, X } from "lucide-react";
-import { fmtMinutes, type RouteUI, type RoutedStopUI, builderWaHref } from "./types";
+import { fmtMinutes, type RouteUI, type RoutedStopUI, type Who, builderWaHref } from "./types";
 import type { BuilderImageRef } from "@/hooks/useBuilderImages";
 import { BuilderImage } from "./BuilderImage";
 import { BuilderMap } from "./BuilderMap";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { ReferenceUploader, type ToneResult } from "./ReferenceUploader";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { PacingChip } from "./PacingChip";
+import { ShareExport } from "./ShareExport";
 
 interface Props {
   route: RouteUI;
@@ -15,6 +17,8 @@ interface Props {
   reviewThumbs?: BuilderImageRef[];
   /** Labels of bounded "Add to your day" elements selected by the user. */
   selectedElementLabels?: string[];
+  /** "Who" selection — used by silent AI pacing advisor. */
+  who?: Who;
   onConfirm: () => void;
   onBack: () => void;
   onReset?: () => void;
