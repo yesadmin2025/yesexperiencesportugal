@@ -22,7 +22,8 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { NarrativeComposer } from "./NarrativeComposer";
 import { ChapterLine } from "./ChapterLine";
 import { EmergingChips } from "./EmergingChips";
-import { EmotionChips, type EmotionPick } from "./EmotionChips";
+import { CinematicChoices, type ChoicesPick } from "./CinematicChoices";
+import { JourneyReveal } from "./JourneyReveal";
 import { LivingMap } from "./LivingMap";
 import { ItineraryRibbon } from "./ItineraryRibbon";
 import { WhisperLayer } from "./WhisperLayer";
@@ -79,6 +80,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const [suggestionKeys, setSuggestionKeys] = useState<string[]>([]);
   const [ribbonOpen, setRibbonOpen] = useState(false);
   const [composerSeed, setComposerSeed] = useState<string | undefined>(undefined);
+  const [revealPlayed, setRevealPlayed] = useState(false);
   const lastChapterReqRef = useRef<string>("");
 
   /* ── Load region catalog ── */
@@ -280,7 +282,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
 
   /* ── Emotion tap (no typing required) ── */
   const handleEmotionPick = useCallback(
-    async (pick: EmotionPick) => {
+    async (pick: ChoicesPick) => {
       const nextMood = pick.mood ?? state.mood;
       const nextWho = pick.who ?? state.who;
       const nextIntention = pick.intention ?? state.intention;
@@ -511,61 +513,32 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         </div>
       )}
 
-      {/* ── Phase: INVITATION ──
-          Atmosphere dominates. A single gentle invitation appears.
-          No map, no chrome, no suggestions — only emotion. */}
-      {phase === "invitation" && (
-        <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col items-center gap-5 animate-in fade-in slide-in-from-bottom-4 duration-[900ms]">
-          <p
-            className="text-center font-serif italic text-[15px] leading-snug text-[color:var(--ivory)]/85 max-w-[28ch]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-          >
-            {t.invitationWhisper}
-          </p>
-          <EmotionChips
-            t={t}
-            tone="light"
-            active={{
-              mood: state.mood,
-              who: state.who,
-              intention: state.intention,
-              pace: state.pace,
-            }}
-            onPick={handleEmotionPick}
-          />
-        </div>
+      {/* ── Cinematic full-screen choices (mood → who → intention) ──
+          Replaces the static invitation/awakening chip layouts. One emotional
+          question per screen, with 4 video cards as protagonists. */}
+      {!hasCoreIntent && (
+        <CinematicChoices
+          t={t}
+          active={{ mood: state.mood, who: state.who, intention: state.intention }}
+          onPick={handleEmotionPick}
+          onComplete={() => {
+            /* parent re-renders; reveal overlay handles the interlude */
+          }}
+        />
       )}
 
-      {/* ── Phase: AWAKENING ──
-          The world is reacting to intention. Chapter line at top dominates.
-          A soft cue + remaining emotion chips. No map, no suggestions yet. */}
-      {phase === "awakening" && (
-        <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col items-center gap-4 animate-in fade-in duration-[900ms]">
-          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--ivory)]/65">
-            <span
-              className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)] animate-pulse"
-              aria-hidden="true"
-            />
-            {t.awakeningCue ?? "shaping your journey"}
-          </span>
-          <EmotionChips
-            t={t}
-            tone="light"
-            active={{
-              mood: state.mood,
-              who: state.who,
-              intention: state.intention,
-              pace: state.pace,
-            }}
-            onPick={handleEmotionPick}
-          />
-        </div>
+      {/* ── Reveal interlude — Portugal is responding ── */}
+      {hasCoreIntent && !hasStops && !revealPlayed && (
+        <JourneyReveal
+          cue={t.awakeningCue}
+          onDone={() => setRevealPlayed(true)}
+        />
       )}
 
       {/* ── Phase: EMERGENCE ──
           Suggestions emerge softly from the atmosphere. No map yet,
           no composer — just the cinematic reveal of curated options. */}
-      {phase === "emergence" && (
+      {phase === "emergence" && revealPlayed && (
         <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-3 duration-[900ms]">
           <EmergingChips
             suggestions={suggestionStops}

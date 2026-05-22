@@ -1,128 +1,152 @@
-# Experience Studio v3 — Living Atmosphere
+Experience Studio v4 — Cinematic Journey to Booking
 
-Reescrita do `/builder` como uma **única cena cinematográfica contínua**, sem stepper, sem cards, sem noção de "passo". O utilizador narra, a IA interpreta, o mundo (imagery + mapa + rota) emerge organicamente. Stepper técnico, ElementsShelf, ChoicesGrid, RegionSelector, ReviewScreen — tudo desaparece como UI primária e é substituído por uma camada conversacional + overlays atmosféricos contextuais.
+## Intenção
 
-Stack: zero novas dependências. Reutiliza `parseNarrative`, `suggestFromIntent`, `suggestPacing`, `BuilderMap`, `useBuilderPersistence`, `builder_stops`, `createJourney`, `ShareExport`. Brand guardrails mantidos (Montserrat / Georgia italic / Inter, tokens ivory/teal/gold/charcoal, motion ≤220ms fora da home — aqui aplicamos o mesmo critério editorial: fades suaves, sem parallax/blob/spring).
+Transformar o Studio numa **aventura cinematográfica** que a pessoa vive enquanto escolhe a viagem — e que termina numa reserva imediata, com alta taxa de conversão. Sem formulários, sem nomes técnicos no início, com imagens reais e revelação progressiva.
 
----
+## O que vou respeitar (do que já pediste)
 
-## Estrutura nova (3 camadas sobrepostas, fullscreen 100dvh)
+- **Sem nomes de locais** nas fases iniciais (chips, sugestões, ribbon, mapa) — só emoção.
+- **Imagens e vídeo permitidos** (real footage, sem stock).
+- **Sem página em branco / sem pressão para escrever**: entrada passiva, atmosfera primeiro.
+- **Progressão clara entre fases** (não estático, sem tudo a falar ao mesmo tempo).
+- **Transições cinematográficas consistentes** abrir/fechar narrador.
+- **Persistência** da narração + decisões AI (localStorage já existe).
+- **Multi-idioma** PT/EN/ES/FR.
+- **Mobile-first**, brand guardrails (ivory/charcoal/teal/gold, Montserrat+Georgia+Inter).
+- **Revelação progressiva de nomes**: só aparecem **mais tarde**, quando a pessoa já está comprometida e precisa para reservar (não no início).
+
+## As 6 fases cinemáticas (uma de cada vez)
 
 ```text
-┌─────────────────────────────────────────────────┐
-│  Layer 0 — AMBIENT STAGE (cena de fundo)        │
-│   imagem/vídeo real reativo a mood+region       │
-│   crossfade 600ms quando contexto muda          │
-│   ── ── ── ── ── ── ── ── ── ── ── ── ── ──    │
-│  Layer 1 — LIVING MAP (revela-se)               │
-│   começa hidden (opacity 0)                     │
-│   fade-in + grow ao 1º stop confirmado          │
-│   ocupa 55% direito em ≥md, 45vh bottom mobile  │
-│   pins+rota desenham-se progressivamente        │
-│   ── ── ── ── ── ── ── ── ── ── ── ── ── ──    │
-│  Layer 2 — NARRATIVE VEIL (UI principal)        │
-│   - chapter line (Georgia italic, top-left)     │
-│   - composer (input narrativo, bottom)          │
-│   - emerging chips (escolhas reais, inline)     │
-│   - itinerary ribbon (lado, scroll vertical)    │
-└─────────────────────────────────────────────────┘
+0. PROLOGUE      → vídeo full-bleed, linha poética, "entrar"
+1. SENTIR        → 4 chips de emoção visuais (cards com vídeo)
+2. COM QUEM      → cards "a dois / família / amigos / só" (ícones + footage)
+3. INTENÇÃO      → cards "descobrir / relaxar / celebrar / saborear"
+4. REVELAÇÃO     → "Portugal está a responder…" → 3 cenas surgem (vídeo, sem nomes)
+                   tap numa cena = aceita; mapa desenha-se por baixo em silêncio
+5. JORNADA       → mapa vivo (protagonista), ribbon mostra durações + blurb emocional
+                   AQUI nomes reais começam a aparecer suavemente (a pessoa já escolheu)
+6. RESERVA       → MemoryCard fecha: hero da viagem, 3 momentos com nome+imagem,
+                   preço, "Reservar agora" (Stripe embedded) + WhatsApp como fallback
 ```
 
-Nada de "Step 1/2/3". Nada de cards. Nada de SiteLayout. Só uma cena que evolui.
+Cada fase ocupa o ecrã inteiro com transição cinematográfica (fade + scale, 600–800ms, easing `cubic-bezier(.22,1,.36,1)`). Só uma camada visível de cada vez.
 
----
+## Mudanças de UX para conversão
 
-## Fluxo emocional (sem passos visíveis)
+- **CTA único e claro** no fim ("Reservar esta viagem · €X"), sem competir com outros.
+- **Trust signals discretos** no MemoryCard: "Confirmação imediata · Guia local · Cancelamento flexível".
+- **Botão "Continuar a viagem"** se houver estado guardado (já temos `restored`), aparece no prologue como segunda opção subtil.
+- **Tempo total + nº de momentos** visível na fase 5 para sensação de progresso.
+- **Reserva embebida** (Stripe `EmbeddedCheckout`) dentro do próprio Studio — sem sair do mundo cinemático.
 
-1. **Abertura — Cena ambiente**
-   Vídeo real (reutiliza `/video/real/scene-imagine.mp4` ou poster) em fullscreen, overlay charcoal 35%, frase Georgia italic centrada: *"Conta-me esta viagem…"*. Sub-linha Inter discreta: "narra em voz alta, escreve, ou deixa-me começar por ti". Sem botões salientes. Tap em qualquer sítio → composer aparece de baixo (slide-up 220ms).
+## Quando os nomes reais aparecem
 
-2. **Narrativa livre**
-   Composer ivory translúcido, textarea Georgia italic placeholder rotativo ("fim-de-semana romântico, vinho e mar…" / "um dia para celebrar com a família…"). Mic icon (Web Speech API se disponível, fallback silencioso). Enter → chama `parseNarrative`.
 
-3. **O mundo desperta**
-   Após parse: cena de fundo crossfade para imagem real da região sugerida. Chapter line aparece no topo: *"Uma história lenta no Douro, para dois."* (gerada da IA, tone-only). Composer encolhe para pill no canto.
+| Fase | Nomes visíveis?                                                                        |
+| ---- | -------------------------------------------------------------------------------------- |
+| 0–4  | **Não** — só frases emocionais (`PHRASES_BY_TAG`) e vídeo                              |
+| 5    | **Sim, suaves** — nome da paragem aparece no ribbon ao expandir + pin do mapa em hover |
+| 6    | **Sim, completos** — MemoryCard mostra cada momento com nome real, duração e imagem    |
 
-4. **Stops emergem**
-   `suggestFromIntent` devolve 2-3 stops reais. Em vez de cards numa shelf, aparecem como **emerging chips** flutuantes sobre a cena (ivory + borda gold, micro-rationale Georgia italic abaixo). Tap → chip "aterra" na itinerary ribbon (lateral direita, vertical, Georgia italic numbered) e o mapa **revela-se pela primeira vez** (fade-in 700ms + flyTo). Cada novo stop: pin desenha-se, rota anima segmento.
 
-5. **Diálogo contínuo**
-   Composer permanece sempre acessível como pill bottom-right. Cada nova frase do utilizador ("mais devagar", "adiciona algo ao pôr-do-sol", "tira o último") → IA re-interpreta, mundo reage: chips removidos com fade-out, novos chips emergem, mapa reanima. Sem confirmações modais.
+Isto resolve a tua nota: nomes acabam por aparecer, mas só depois da pessoa já estar emocionalmente comprometida.
 
-6. **Sussurros da IA (pacing/sugestões)**
-   `suggestPacing` corre em background a cada mudança. Se houver aviso → aparece como **whisper line** Georgia italic fade-in/out 4s no topo da ribbon ("o ritmo está apertado — queres respirar?"). Não é card, não é modal, não bloqueia.
+## Trabalho técnico
 
-7. **Fecho — Memória**
-   Quando o utilizador disser "estou pronto" / "guarda" / clicar no pill discreto "Guardar esta história" → cena escurece, ribbon expande para centro como **carta editorial** (Georgia italic título, lista de stops, sussurro final). Ações: copiar link / PDF / WhatsApp (reutiliza `ShareExport`). Sem "review screen".
+### Componentes novos
 
----
+- `src/components/builder/v3/JourneyPhases.tsx` — orquestrador único de fases (substitui a lógica espalhada em `StudioStageV3`).
+- `src/components/builder/v3/PhaseCard.tsx` — card visual reutilizável (vídeo + frase + ícone), usado em Sentir/Com quem/Intenção/Revelação.
+- `src/components/builder/v3/JourneyReveal.tsx` — momento "Portugal está a responder" com shimmer + reveal sequencial das cenas.
+- `src/components/builder/v3/BookingClose.tsx` — fase final: hero, momentos com nome real, preço, CTA reservar, trust row.
 
-## Componentes novos
+### Componentes a refinar
 
-| Componente | Ficheiro | Função |
-|---|---|---|
-| `AmbientStage` | `src/components/builder/v3/AmbientStage.tsx` | Layer 0: vídeo/imagem fullscreen reativa a mood+region, crossfade 600ms |
-| `NarrativeComposer` | `src/components/builder/v3/NarrativeComposer.tsx` | Layer 2: input narrativo, mic, placeholder rotativo, estados (idle/listening/parsing) |
-| `ChapterLine` | `src/components/builder/v3/ChapterLine.tsx` | Georgia italic top-left, gerada da IA |
-| `EmergingChips` | `src/components/builder/v3/EmergingChips.tsx` | Sugestões flutuantes (não cards), fade-in escalonado |
-| `ItineraryRibbon` | `src/components/builder/v3/ItineraryRibbon.tsx` | Lista vertical lateral, Georgia italic numbered, drag-to-reorder, swipe-to-remove |
-| `WhisperLayer` | `src/components/builder/v3/WhisperLayer.tsx` | Sussurros transitórios da IA (pacing, sugestões), fade in/out |
-| `LivingMap` | `src/components/builder/v3/LivingMap.tsx` | Wrapper sobre `BuilderMap` com revelação progressiva (hidden → fade-in ao 1º stop) |
-| `MemoryCard` | `src/components/builder/v3/MemoryCard.tsx` | Cena final editorial + share/export |
-| `useStudioState` | `src/hooks/useStudioState.ts` | Estado unificado (mood/who/intention/pace/region/stops/narrative/chapter), substitui `useBuilderFlow` no v3 |
+- `StudioStageV3.tsx` — simplificar para renderizar `<JourneyPhases>` e pouco mais.
+- `EmotionChips.tsx`, `EmergingChips.tsx` → consolidar dentro de `PhaseCard` (deixa de haver dois sistemas).
+- `MemoryCard.tsx` → renomear/refatorar para `BookingClose` com nomes reais + CTA reserva.
+- `LivingMap.tsx` → fase 5 only; ribbon mostra nome real ao expandir.
+- `AmbientPrologue.tsx` → manter, simplificar (já está bom), adicionar CTA "Continuar viagem" se `restored`.
 
-`BuilderMap`, `parseNarrative`, `suggestFromIntent`, `suggestPacing`, `createJourney`, `ShareExport`, `useBuilderPersistence` — **reutilizados sem alterações**.
+### Hooks / estado
 
----
+- `useStudioState.ts` → adicionar fase derivada explícita (`'prologue'|'feel'|'who'|'intent'|'reveal'|'journey'|'booking'`) em vez de inferir.
+- `useStudioLocale.ts` → adicionar copy para cada fase nas 4 línguas.
 
-## Server functions
+### Reserva
 
-Uma nova, leve, tone-only:
+- Integração `EmbeddedCheckout` no `BookingClose` usando `getStripe` e a edge function `create-builder-checkout` que já existe.
+- WhatsApp como link secundário (não primary CTA).
 
-- `generateChapter` (`src/server/builderChapter.functions.ts`) — recebe `{mood, who, intention, region, stopLabels}` → devolve 1 linha Georgia italic ≤80 chars em PT-PT (chapter line + sussurro final). Lovable AI `google/gemini-3-flash-preview`. Fallback determinístico. Nunca inventa stops/regiões.
+## O que NÃO vou fazer
 
-As outras (`parseNarrative`, `suggestFromIntent`, `suggestPacing`) já existem.
+- Não adiciono parallax/glassmorphism fora do homepage.
+- Não invento tours, paragens, preços, partners.
+- Não toco no homepage nem em rotas fora do `/builder`.
+- Não toco em `client.ts`, `types.ts`, `.env`.
 
----
+## Validação no fim
 
-## Rota
+- Mobile 393×587: cada fase ocupa viewport sem scroll forçado.
+- Transições suaves entre fases, sem flash.
+- Estado persiste e restaura.
+- Reserva abre embedded sem sair do mundo.
+- Sem nomes reais antes da fase 5.
 
-`src/routes/builder.tsx` — substituído por shell mínimo que monta `<StudioStageV3 />`. Toda a árvore antiga (`ChoicesGrid`, `ElementsShelf`, `StickyBar`, `BuilderProgressMeter`, `ReviewScreen`, `NarrativeCompanion`, `NarrativeIntro`, `PacingChip`) deixa de ser montada — ficheiros preservados no repo por enquanto (não apagados) para permitir rollback rápido. Adicionamos flag `?legacy=1` que monta a versão antiga (escape hatch durante teste).
+Após aprovação, implemento numa única passagem.
 
-`/i/$token` (landing partilhável) — mantido como está.
+&nbsp;
 
----
+**do NOT overcomplicate phase 1–3.**
 
-## Motion & A11y
+Those phases MUST feel:
 
-- Todas as transições ≤300ms (cena), ≤220ms (UI). Crossfade da Layer 0 = 600ms (atmosférico, permitido).
-- `prefers-reduced-motion`: desliga crossfades, route draw, fade-in do mapa (aparece imediatamente). Tudo continua funcional.
-- Contraste: overlay charcoal 35-45% sobre vídeo garante 4.5:1 para Georgia italic ivory.
-- Teclado: composer focável por defeito; Tab navega chips → ribbon → composer; Esc fecha overlays.
-- Screen reader: `aria-live="polite"` na chapter line e whisper layer; ribbon como `<ol>`.
-- Mobile-first (393×587 viewport do utilizador): composer ocupa bottom 30vh expandível, ribbon vira drawer inferior arrastável, mapa 40vh quando revelado.
+- effortless
+- sensual
+- fluid
+- fast
+- emotionally obvious
 
----
+Because the risk is:
 
-## Ordem de implementação
+**too much “experience” before momentum.**
 
-1. `useStudioState` + `builderChapter.functions.ts`
-2. `AmbientStage` + `NarrativeComposer` + `ChapterLine` (cena de abertura funcional)
-3. `EmergingChips` + `LivingMap` (mundo desperta)
-4. `ItineraryRibbon` + `WhisperLayer` (diálogo contínuo)
-5. `MemoryCard` + integração `ShareExport`
-6. Substituir `builder.tsx` por `StudioStageV3` + flag `?legacy=1`
+Especially American users:  
+they LOVE immersion…  
+BUT they also subconsciously need:
 
-Cada passo mergível e testável isoladamente no viewport mobile.
+**progression clarity.**
 
----
+😭
 
-## Fora de scope
+And honestly?  
+The best decision here may actually be:
 
-- Apagar componentes v1/v2 (ficam dormentes, removemos só após validação).
-- Mudar `parseNarrative`/`suggestFromIntent`/dados de `builder_stops`.
-- Voice-to-text avançado além de Web Speech API nativa.
-- Homepage, navbar, Signature, Tailored, Proposals — intocados.
-- Inventar stops, preços, partners ou copy de marketing. IA = tone only.
+**making the map protagonist only in phase 5.**
 
-Confirma para começar pelo passo 1.
+Because before, the map was competing too early.  
+Now:
+
+**it becomes a reward reveal.**
+
+That’s MUCH stronger emotionally.
+
+💀
+
+And Stripe embedded inside the cinematic world?
+
+**VERY important.**
+
+Because if the person suddenly:
+
+- opens ugly checkout
+- gets redirected
+- loses atmosphere
+
+…the spell breaks 😭
+
+This:
+
+**preserves narrative continuity into conversion.**
