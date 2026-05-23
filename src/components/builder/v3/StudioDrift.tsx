@@ -1,165 +1,160 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**
- * StudioDrift — ambient psychological Portugal.
+ * StudioDrift — a living travel world.
  *
- * Architecturally separate from the Studio builder. There are no steps,
- * no phases, no chapters, no "arrival". The world is a living attraction
- * field. Scenes are weighted by an evolving gravity vector. Lingering
- * tightens the field. Silence lets it drift. Nothing concludes.
+ * Not a quiz, not a recommendation engine, not a slideshow, not an AI
+ * poetry generator. The world exists whether the visitor moves or not.
+ * Scenes appear like accidental fragments of real places. Nothing is
+ * announced. Nothing is explained. The visitor is never asked anything.
  *
- * Core primitives:
- *   · Motif        — a recurring sensory atom (amber, salt, stone, candle,
- *                    rain, vine, harbour, basil, fado, linen, bread).
- *   · Scene        — a video, a place, and a small bouquet of motifs.
- *   · Gravity      — accumulated weight per motif. Grows when the
- *                    traveller lingers on a scene carrying that motif.
- *   · Memory       — motifs that have already pulled the traveller appear
- *                    again later as ambient tint, sound colour, and
- *                    occasional drifting word — never as captions of the
- *                    current scene.
+ * System priorities, in order:
+ *   1. silence       — the default state is quiet, long, unhurried
+ *   2. implication   — meaning leaks through texture, never captions
+ *   3. texture       — physical traces (salt, wax, stone, bread)
+ *   4. memory        — what held the eye softly returns later
+ *   5. rhythm        — breath between fragments, not pacing
+ *   6. human detail  — overheard, half-seen, never narrated
  *
- * No labels. No buttons. The world itself is the surface.
+ * The visitor is never evaluated, categorised, guided, or asked.
  */
 
 // ─────────────────────────────────────────────────────────────────────────
-// Sensory vocabulary
+// Sensory atoms
 // ─────────────────────────────────────────────────────────────────────────
 
 type Motif =
-  | "amber"     // candle, lamp, late sun
-  | "salt"      // Atlantic, linen, wind
-  | "stone"     // tiled alleys, walls, monasteries
-  | "candle"    // intimate flame, wax, table
-  | "rain"      // wet tile, umbrellas, doors entreabertas
-  | "vine"      // shadow, dusk, slow wine
-  | "harbour"   // diesel, dawn, fishermen
-  | "linen"     // long table, napkin in wind
-  | "fado"      // sound bleeding through walls
-  | "basil"     // window, kitchen warmth
-  | "bread";    // unfinished, on the table
+  | "amber"
+  | "salt"
+  | "stone"
+  | "candle"
+  | "rain"
+  | "vine"
+  | "harbour"
+  | "linen"
+  | "fado"
+  | "basil"
+  | "bread";
 
 type Scene = {
   id: string;
   video: string;
-  place: string;
   motifs: Motif[];
-  /** Fragments are drifting memory, not captions. Surfaced rarely. */
-  drift: string[];
+  /** Observed traces. Rarely surfaced. Never used as captions. */
+  traces: string[];
 };
 
 const SCENES: Scene[] = [
   {
     id: "arrabida-coast",
     video: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
-    place: "Arrábida",
     motifs: ["salt", "linen", "vine"],
-    drift: [
+    traces: [
       "sal seco no canto da boca",
-      "o linho da toalha a levantar com o vento",
-      "copo de branco já morno na mão",
-      "almoço que se arrasta até às quatro",
+      "uma toalha de linho a levantar",
+      "o copo já morno",
+      "ninguém com pressa de sair da mesa",
     ],
   },
   {
     id: "cabo-roca",
     video: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
-    place: "Cabo da Roca",
     motifs: ["salt", "stone"],
-    drift: [
+    traces: [
       "pedra rachada debaixo da mão",
-      "casaco emprestado sobre os ombros",
+      "um casaco emprestado",
       "vento que entra pela manga",
-      "dois copos pousados num muro frio",
+      "dois copos pousados no muro",
     ],
   },
   {
     id: "hidden-street",
     video: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
-    place: "Setúbal velha",
     motifs: ["rain", "stone", "basil"],
-    drift: [
-      "azulejo molhado a brilhar baixo",
-      "cheiro de manjerico de uma janela aberta",
-      "barulho de tachos lá em cima",
+    traces: [
+      "azulejo molhado",
+      "manjerico de uma janela aberta",
+      "tachos lá em cima",
       "passos a colar à calçada",
     ],
   },
   {
     id: "viewpoint",
     video: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
-    place: "Serra da Arrábida",
     motifs: ["vine", "fado", "amber"],
-    drift: [
-      "pó da vinha agarrado aos sapatos",
-      "nódoa roxa no lenço branco",
-      "fado a sair da cozinha ao lado",
-      "madeira velha a ranger debaixo da cadeira",
+    traces: [
+      "pó da vinha nos sapatos",
+      "uma nódoa roxa no lenço",
+      "fado vindo da cozinha ao lado",
+      "madeira velha a ranger",
     ],
   },
   {
     id: "candle-table",
     video: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
-    place: "Azeitão",
     motifs: ["candle", "amber", "bread"],
-    drift: [
-      "pingo de cera a descer pelo castiçal",
-      "miolo de pão quente partido à mão",
+    traces: [
+      "cera a descer pelo castiçal",
+      "miolo de pão quente",
       "chávena de barro a aquecer os dedos",
-      "uma cadeira puxada para trás sem pressa",
+      "uma cadeira puxada para trás",
     ],
   },
   {
     id: "celebration",
     video: "/__l5e/assets-v1/79e74bb4-85bb-4f83-9bc7-c8bf774af5be/scene-celebration.mp4",
-    place: "uma taberna a sul",
     motifs: ["candle", "amber", "fado", "linen"],
-    drift: [
+    traces: [
       "vidro a tocar vidro devagar",
       "batom no rebordo do copo",
-      "risos de outra sala que demoram a parar",
-      "guardanapo de linho dobrado mal",
+      "risos de outra sala",
+      "um guardanapo dobrado mal",
     ],
   },
   {
     id: "sesimbra",
     video: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
-    place: "Sesimbra",
     motifs: ["harbour", "salt", "rain"],
-    drift: [
+    traces: [
       "gasóleo e maresia no mesmo ar",
-      "mãos de mercado a embrulhar peixe em papel",
-      "vento do ferry a colar a camisa às costas",
-      "chapéu de chuva a escorrer à porta da tasca",
+      "mãos a embrulhar peixe em papel",
+      "vento do ferry na camisa",
+      "um chapéu de chuva a escorrer",
     ],
   },
 ];
 
-// Motif → ambient tint that bleeds across the entire world once
-// remembered. These are deliberately soft — they are not the scene,
-// they are the scene's afterimage.
+// Motif → ambient afterimage. Soft, never the foreground.
 const MOTIF_TINT: Record<Motif, string> = {
-  amber:   "radial-gradient(ellipse at 50% 78%, color-mix(in oklab, var(--gold) 26%, transparent) 0%, transparent 60%)",
-  candle:  "radial-gradient(ellipse at 50% 82%, color-mix(in oklab, var(--gold-soft, var(--gold)) 30%, transparent) 0%, transparent 55%)",
-  salt:    "radial-gradient(ellipse at 50% 30%, color-mix(in oklab, var(--ivory) 16%, transparent) 0%, transparent 65%)",
-  linen:   "radial-gradient(ellipse at 50% 70%, color-mix(in oklab, var(--ivory) 12%, transparent) 0%, transparent 60%)",
-  stone:   "radial-gradient(ellipse at 30% 60%, color-mix(in oklab, var(--teal) 16%, transparent) 0%, transparent 65%)",
-  rain:    "radial-gradient(ellipse at 60% 45%, color-mix(in oklab, var(--teal-2, var(--teal)) 18%, transparent) 0%, transparent 65%)",
-  vine:    "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--gold) 20%, transparent) 0%, transparent 55%)",
-  harbour: "radial-gradient(ellipse at 50% 50%, color-mix(in oklab, var(--teal) 20%, transparent) 0%, transparent 65%)",
-  fado:    "radial-gradient(ellipse at 40% 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 14%, transparent) 0%, transparent 65%)",
-  basil:   "radial-gradient(ellipse at 70% 55%, color-mix(in oklab, var(--ivory) 10%, transparent) 0%, transparent 60%)",
-  bread:   "radial-gradient(ellipse at 50% 75%, color-mix(in oklab, var(--gold) 14%, transparent) 0%, transparent 55%)",
+  amber:   "radial-gradient(ellipse at 50% 78%, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 62%)",
+  candle:  "radial-gradient(ellipse at 50% 82%, color-mix(in oklab, var(--gold-soft, var(--gold)) 26%, transparent) 0%, transparent 58%)",
+  salt:    "radial-gradient(ellipse at 50% 30%, color-mix(in oklab, var(--ivory) 14%, transparent) 0%, transparent 65%)",
+  linen:   "radial-gradient(ellipse at 50% 70%, color-mix(in oklab, var(--ivory) 10%, transparent) 0%, transparent 60%)",
+  stone:   "radial-gradient(ellipse at 30% 60%, color-mix(in oklab, var(--teal) 14%, transparent) 0%, transparent 65%)",
+  rain:    "radial-gradient(ellipse at 60% 45%, color-mix(in oklab, var(--teal-2, var(--teal)) 16%, transparent) 0%, transparent 65%)",
+  vine:    "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--gold) 18%, transparent) 0%, transparent 58%)",
+  harbour: "radial-gradient(ellipse at 50% 50%, color-mix(in oklab, var(--teal) 18%, transparent) 0%, transparent 65%)",
+  fado:    "radial-gradient(ellipse at 40% 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 12%, transparent) 0%, transparent 65%)",
+  basil:   "radial-gradient(ellipse at 70% 55%, color-mix(in oklab, var(--ivory) 9%, transparent) 0%, transparent 60%)",
+  bread:   "radial-gradient(ellipse at 50% 75%, color-mix(in oklab, var(--gold) 12%, transparent) 0%, transparent 58%)",
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Tunings
+// Rhythm
 // ─────────────────────────────────────────────────────────────────────────
 
-const PASSIVE_DRIFT_MS = 7200;     // if untouched, the world slides on
-const LINGER_TIGHTEN_MS = 1100;    // press held this long = the world notices
-const MEMORY_DECAY_PER_MS = 0.00004;
-const MEMORY_MAX = 6;              // cap so the world never saturates
+/** Long. The world is not in a hurry. */
+const SCENE_MIN_MS = 11000;
+const SCENE_MAX_MS = 16000;
+/** Just looking at one scene reinforces its motifs gently. */
+const SOFT_REINFORCE_AFTER_MS = 4200;
+/** A held gaze tightens the gravity. */
+const LINGER_TIGHTEN_MS = 1400;
+/** Memory decays slowly enough to leave an afterimage across scenes. */
+const MEMORY_DECAY_PER_MS = 0.00003;
+const MEMORY_MAX = 6;
+/** Traces are rare. Most scenes pass in silence. */
+const TRACE_APPEARANCE_PROBABILITY = 0.35;
 
 interface Props {
   onExit?: () => void;
@@ -167,28 +162,23 @@ interface Props {
 
 export function StudioDrift({ onExit }: Props) {
   const [sceneIdx, setSceneIdx] = useState(() => Math.floor(Math.random() * SCENES.length));
-  /** Drifting word — surfaces rarely, often from MEMORY rather than the current scene. */
-  const [drift, setDrift] = useState<string | null>(null);
-  const [driftAt, setDriftAt] = useState(0);
+  const [trace, setTrace] = useState<string | null>(null);
+  const [traceAt, setTraceAt] = useState(0);
   const [audioOn, setAudioOn] = useState(false);
 
-  /** Gravity vector — motif → accumulated weight. Decays with time. */
   const gravityRef = useRef<Map<Motif, number>>(new Map());
-  /** Tick to re-render when gravity changes meaningfully. */
   const [, setTick] = useState(0);
 
-  const enterAtRef = useRef<number>(Date.now());
   const pressedAtRef = useRef<number | null>(null);
   const lingeringRef = useRef(false);
   const passiveTimerRef = useRef<number | null>(null);
   const lingerTimerRef = useRef<number | null>(null);
-  const driftTimerRef = useRef<number | null>(null);
-  /** Last scene change wall-clock — used to decay gravity gracefully. */
+  const softReinforceTimerRef = useRef<number | null>(null);
+  const traceTimerRef = useRef<number | null>(null);
   const lastTickRef = useRef<number>(Date.now());
 
   const scene = SCENES[sceneIdx];
 
-  // Decay gravity continuously so old attractions soften.
   const decayGravity = useCallback(() => {
     const now = Date.now();
     const elapsed = now - lastTickRef.current;
@@ -211,26 +201,19 @@ export function StudioDrift({ onExit }: Props) {
   }, [decayGravity]);
 
   /**
-   * Pick the next scene by attraction, not by sequence.
-   * — bias toward scenes sharing motifs the world has accumulated
-   * — but never re-pick the same scene back-to-back
-   * — and keep a small chance for genuine wandering, so the world
-   *   never feels like a recommendation engine.
+   * Pick by attraction. Never the same scene twice. A small share of pure
+   * wandering keeps the world from feeling steered.
    */
   const pickNext = useCallback(() => {
     decayGravity();
     const g = gravityRef.current;
     const pool = SCENES.filter((s) => s.id !== scene.id);
-
-    // Pure wander 14% of the time — keeps freedom from feeling steered.
-    if (Math.random() < 0.14) {
+    if (Math.random() < 0.18) {
       return SCENES.indexOf(pool[Math.floor(Math.random() * pool.length)]);
     }
-
     const scored = pool.map((s) => {
       const affinity = s.motifs.reduce((acc, m) => acc + (g.get(m) ?? 0), 0);
-      // base 1 so cold-start still drifts smoothly
-      return { s, w: 1 + affinity * 1.4 };
+      return { s, w: 1 + affinity * 1.3 };
     });
     const total = scored.reduce((acc, x) => acc + x.w, 0);
     let r = Math.random() * total;
@@ -241,55 +224,9 @@ export function StudioDrift({ onExit }: Props) {
     return SCENES.indexOf(scored[0].s);
   }, [scene.id, decayGravity]);
 
-  const clearTimers = useCallback(() => {
-    if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
-    if (lingerTimerRef.current) window.clearTimeout(lingerTimerRef.current);
-    if (driftTimerRef.current) window.clearTimeout(driftTimerRef.current);
-    passiveTimerRef.current = null;
-    lingerTimerRef.current = null;
-    driftTimerRef.current = null;
-  }, []);
-
-  // Per-scene cycle. No phase logic — purely "this scene, then drift on".
-  useEffect(() => {
-    enterAtRef.current = Date.now();
-    lingeringRef.current = false;
-    pressedAtRef.current = null;
-    setDrift(null);
-
-    // The longer the world already knows you, the slower it moves.
-    const memoryWeight = [...gravityRef.current.values()].reduce((a, b) => a + b, 0);
-    const slow = Math.min(2600, memoryWeight * 220);
-    const holdMs = PASSIVE_DRIFT_MS + slow;
-
-    passiveTimerRef.current = window.setTimeout(() => {
-      if (!lingeringRef.current) setSceneIdx(pickNext());
-    }, holdMs);
-
-    // A drifting word may surface — sometimes from this scene, sometimes
-    // from a remembered motif. Never reliable, never a caption.
-    const driftDelay = 2400 + Math.random() * 2600;
-    driftTimerRef.current = window.setTimeout(() => {
-      if (Math.random() < 0.55) {
-        const fromMemory = pickMemoryDrift();
-        const line =
-          fromMemory ?? scene.drift[Math.floor(Math.random() * scene.drift.length)];
-        setDrift(line);
-        setDriftAt(Date.now());
-      }
-    }, driftDelay);
-
-    return clearTimers;
-    // pickNext changes with gravity, but we want this effect to fire only
-    // on scene change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sceneIdx]);
-
-  /** Pick a drift line from a previously-loved scene (memory recurrence). */
-  const pickMemoryDrift = useCallback((): string | null => {
+  const pickMemoryTrace = useCallback((): string | null => {
     const g = gravityRef.current;
     if (g.size === 0) return null;
-    // weight scenes by overlap with remembered motifs
     const others = SCENES.filter((s) => s.id !== scene.id);
     const scored = others
       .map((s) => ({ s, w: s.motifs.reduce((a, m) => a + (g.get(m) ?? 0), 0) }))
@@ -299,21 +236,71 @@ export function StudioDrift({ onExit }: Props) {
     let r = Math.random() * total;
     for (const x of scored) {
       r -= x.w;
-      if (r <= 0) return x.s.drift[Math.floor(Math.random() * x.s.drift.length)];
+      if (r <= 0) return x.s.traces[Math.floor(Math.random() * x.s.traces.length)];
     }
     return null;
   }, [scene.id]);
 
-  // ── Interaction: press to linger, release to let go. No taps, no swipes.
+  const clearTimers = useCallback(() => {
+    if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
+    if (lingerTimerRef.current) window.clearTimeout(lingerTimerRef.current);
+    if (softReinforceTimerRef.current) window.clearTimeout(softReinforceTimerRef.current);
+    if (traceTimerRef.current) window.clearTimeout(traceTimerRef.current);
+    passiveTimerRef.current = null;
+    lingerTimerRef.current = null;
+    softReinforceTimerRef.current = null;
+    traceTimerRef.current = null;
+  }, []);
+
+  // Per-scene rhythm. The world breathes. It does not progress.
+  useEffect(() => {
+    lingeringRef.current = false;
+    pressedAtRef.current = null;
+    setTrace(null);
+
+    // Just being there reinforces motifs softly — looking is also choosing,
+    // but invisibly, without asking.
+    softReinforceTimerRef.current = window.setTimeout(() => {
+      reinforce(scene.motifs, 0.35);
+    }, SOFT_REINFORCE_AFTER_MS);
+
+    // Hold time slows the more the world already knows you.
+    const memoryWeight = [...gravityRef.current.values()].reduce((a, b) => a + b, 0);
+    const slow = Math.min(4000, memoryWeight * 320);
+    const base = SCENE_MIN_MS + Math.random() * (SCENE_MAX_MS - SCENE_MIN_MS);
+    const holdMs = base + slow;
+
+    passiveTimerRef.current = window.setTimeout(() => {
+      if (!lingeringRef.current) setSceneIdx(pickNext());
+    }, holdMs);
+
+    // Most scenes pass without a single word. When a trace surfaces, it is
+    // often a memory of an earlier scene, not a label for this one.
+    if (Math.random() < TRACE_APPEARANCE_PROBABILITY) {
+      const traceDelay = 3600 + Math.random() * 4200;
+      traceTimerRef.current = window.setTimeout(() => {
+        const fromMemory = pickMemoryTrace();
+        const line =
+          fromMemory ?? scene.traces[Math.floor(Math.random() * scene.traces.length)];
+        setTrace(line);
+        setTraceAt(Date.now());
+      }, traceDelay);
+    }
+
+    return clearTimers;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIdx]);
+
+  // Invisible interaction. The visitor never sees a button, never taps,
+  // never swipes. If they happen to hold, the world quietly notices.
   const onPressStart = useCallback(() => {
     if (!audioOn) setAudioOn(true);
     pressedAtRef.current = Date.now();
     lingeringRef.current = true;
     if (passiveTimerRef.current) window.clearTimeout(passiveTimerRef.current);
 
-    // After LINGER_TIGHTEN_MS, the world quietly notices.
     lingerTimerRef.current = window.setTimeout(() => {
-      reinforce(scene.motifs, 1.2);
+      reinforce(scene.motifs, 1.1);
     }, LINGER_TIGHTEN_MS);
   }, [audioOn, reinforce, scene.motifs]);
 
@@ -323,28 +310,24 @@ export function StudioDrift({ onExit }: Props) {
     lingeringRef.current = false;
     if (lingerTimerRef.current) window.clearTimeout(lingerTimerRef.current);
 
-    // Short brush — partial reinforcement (curiosity, not commitment).
-    if (held > 250 && held < LINGER_TIGHTEN_MS) {
-      reinforce(scene.motifs, 0.4);
+    if (held > 300 && held < LINGER_TIGHTEN_MS) {
+      reinforce(scene.motifs, 0.35);
     }
 
-    // After a linger, the world drifts on within a beat.
     passiveTimerRef.current = window.setTimeout(() => {
       setSceneIdx(pickNext());
-    }, held > LINGER_TIGHTEN_MS ? 1800 : 3400);
+    }, held > LINGER_TIGHTEN_MS ? 2600 : 4200);
   }, [reinforce, scene.motifs, pickNext]);
 
-  // ── Ambient memory tint — top 2 remembered motifs paint the world.
   const memoryTints = useMemo(() => {
     const g = gravityRef.current;
     const sorted = [...g.entries()].sort((a, b) => b[1] - a[1]);
     return sorted.slice(0, 2).map(([motif, weight]) => ({
       bg: MOTIF_TINT[motif],
-      opacity: Math.min(0.85, 0.25 + weight * 0.18),
+      opacity: Math.min(0.78, 0.22 + weight * 0.16),
     }));
-    // tick refresh
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene.id, drift]);
+  }, [scene.id, trace]);
 
   return (
     <div
@@ -353,27 +336,24 @@ export function StudioDrift({ onExit }: Props) {
     >
       <SceneVideo key={scene.id} src={scene.video} />
 
-      {/* Memory layers — afterimage of motifs the world has already noticed. */}
       {memoryTints.map((t, i) => (
         <div
           key={i}
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none transition-opacity duration-[2600ms] ease-out"
+          className="absolute inset-0 pointer-events-none transition-opacity duration-[3200ms] ease-out"
           style={{ background: t.bg, opacity: t.opacity, mixBlendMode: "soft-light" }}
         />
       ))}
 
-      {/* Cinematic vignette — constant, anonymous. No phase logic. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.38) 96%), linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 32%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.52) 100%)",
+            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.36) 96%), linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 32%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.50) 100%)",
         }}
       />
 
-      {/* The world is the interface. */}
       <button
         type="button"
         aria-label=" "
@@ -386,12 +366,8 @@ export function StudioDrift({ onExit }: Props) {
         onTouchCancel={onPressEnd}
       />
 
-      {/* A drifting word — visible briefly, then forgotten. */}
-      {drift && (
-        <DriftWord key={driftAt} text={drift} />
-      )}
+      {trace && <Trace key={traceAt} text={trace} />}
 
-      {/* Almost invisible escape. Always present, never inviting. */}
       {onExit && (
         <button
           type="button"
@@ -407,7 +383,7 @@ export function StudioDrift({ onExit }: Props) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Internal pieces
+// Pieces
 // ─────────────────────────────────────────────────────────────────────────
 
 function SceneVideo({ src }: { src: string }) {
@@ -420,17 +396,21 @@ function SceneVideo({ src }: { src: string }) {
       loop
       playsInline
       preload="auto"
-      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[1800ms]"
-      style={{ filter: "saturate(0.93) contrast(1.02)" }}
+      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[2400ms]"
+      style={{ filter: "saturate(0.92) contrast(1.02)" }}
     />
   );
 }
 
-function DriftWord({ text }: { text: string }) {
+/**
+ * Trace — half-seen observation. Lowercase, no punctuation, brief.
+ * Never a caption of the current scene; often a memory.
+ */
+function Trace({ text }: { text: string }) {
   const [shown, setShown] = useState(false);
   useEffect(() => {
-    const t1 = window.setTimeout(() => setShown(true), 60);
-    const t2 = window.setTimeout(() => setShown(false), 4200);
+    const t1 = window.setTimeout(() => setShown(true), 80);
+    const t2 = window.setTimeout(() => setShown(false), 4600);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
@@ -439,15 +419,15 @@ function DriftWord({ text }: { text: string }) {
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-x-0 bottom-[22%] z-20 flex justify-center px-8 pointer-events-none"
+      className="absolute inset-x-0 bottom-[24%] z-20 flex justify-center px-8 pointer-events-none"
     >
       <p
-        className="italic text-[16px] sm:text-[19px] leading-[1.5] text-[color:var(--ivory)] max-w-[24ch] text-center transition-all duration-[1400ms] ease-out"
+        className="italic text-[15px] sm:text-[18px] leading-[1.55] text-[color:var(--ivory)] max-w-[22ch] text-center transition-all duration-[1800ms] ease-out"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
-          textShadow: "0 1px 22px rgba(0,0,0,0.7)",
-          opacity: shown ? 0.9 : 0,
-          transform: shown ? "translateY(0)" : "translateY(6px)",
+          textShadow: "0 1px 22px rgba(0,0,0,0.72)",
+          opacity: shown ? 0.82 : 0,
+          transform: shown ? "translateY(0)" : "translateY(8px)",
           letterSpacing: "0.005em",
         }}
       >
@@ -459,8 +439,6 @@ function DriftWord({ text }: { text: string }) {
 
 /**
  * AmbientAudio — drone whose timbre is shaped by gravity, not by phase.
- * Warm motifs (amber, candle, fado) brighten + warm the low pass.
- * Cool motifs (salt, harbour, rain, stone) cool it down.
  */
 function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
   const ctxRef = useRef<AudioContext | null>(null);
@@ -490,7 +468,7 @@ function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
 
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 420;
+    filter.frequency.value = 380;
     filter.Q.value = 0.7;
     filterRef.current = filter;
 
@@ -498,7 +476,7 @@ function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
     gain.gain.value = 0;
     noise.connect(filter).connect(gain).connect(ctx.destination);
     noise.start();
-    gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 2.6);
+    gain.gain.linearRampToValueAtTime(0.055, ctx.currentTime + 3.4);
 
     let raf = 0;
     const tick = () => {
@@ -511,10 +489,10 @@ function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
           if (m === "amber" || m === "candle" || m === "fado" || m === "vine" || m === "bread") warm += w;
           else cool += w;
         }
-        const target = Math.max(220, 420 + warm * 60 - cool * 40);
-        f.frequency.setTargetAtTime(target, c.currentTime, 1.4);
+        const target = Math.max(220, 380 + warm * 55 - cool * 38);
+        f.frequency.setTargetAtTime(target, c.currentTime, 1.8);
       }
-      raf = window.setTimeout(tick, 800) as unknown as number;
+      raf = window.setTimeout(tick, 900) as unknown as number;
     };
     tick();
 
@@ -522,11 +500,11 @@ function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
       window.clearTimeout(raf);
       try {
         gain.gain.cancelScheduledValues(ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.0);
         window.setTimeout(() => {
           noise.stop();
           void ctx.close();
-        }, 1000);
+        }, 1200);
       } catch {
         // ignore
       }
