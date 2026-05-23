@@ -1529,14 +1529,25 @@ function ConvergencePhase({
         style={{ opacity: ready ? 1 : 0 }}
       >
         <p
-          className="text-center text-[10.5px] uppercase mb-3"
+          className="text-center text-[10.5px] uppercase mb-2"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             letterSpacing: "0.22em",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          {tt("reveal.eyebrow", locale)}
+          {tName("reveal.eyebrow", locale, profile.name)}
+        </p>
+        <p
+          className="text-center text-[9.5px] uppercase mb-6"
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            letterSpacing: "0.28em",
+            color: "var(--gold)",
+            fontWeight: 600,
+          }}
+        >
+          {tt("reveal.signed_by", locale)}
         </p>
         <p className="mx-auto mb-4 max-w-[34ch] text-center italic" style={{ fontFamily: "Georgia, serif", fontSize: "17px", lineHeight: 1.55, color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
           {lead}
