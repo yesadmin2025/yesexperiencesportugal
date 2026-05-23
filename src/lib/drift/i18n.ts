@@ -61,6 +61,12 @@ const PT: Dict = {
   "cta.save": "guardar para depois",
   "cta.refine": "refinar com um local",
   "cta.explore": "explorar tudo",
+  "cta.whatsapp": "falar com um local",
+  "wa.intro": "Olá, estou a desenhar um dia em Portugal no Studio",
+  "wa.with_name": "Sou o(a) {name}",
+  "wa.region": "Partida prevista: {region}",
+  "wa.companions": "Companhia: {companions}",
+  "wa.closing": "Gostava de afinar este dia com um local.",
 
   // Encouragements (shown above progress bar at key moments)
   "enc.start": "um traço de Portugal",
@@ -120,6 +126,12 @@ const EN: Dict = {
   "cta.save": "save for later",
   "cta.refine": "refine with a local",
   "cta.explore": "explore everything",
+  "cta.whatsapp": "talk to a local",
+  "wa.intro": "Hi, I'm shaping a day in Portugal in the Studio",
+  "wa.with_name": "I'm {name}",
+  "wa.region": "Departure: {region}",
+  "wa.companions": "Company: {companions}",
+  "wa.closing": "I'd love to refine this day with a local.",
 
   "enc.start": "a trace of Portugal",
   "enc.middle": "the shape is emerging",
