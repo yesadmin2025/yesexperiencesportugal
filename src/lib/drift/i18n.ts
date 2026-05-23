@@ -68,8 +68,8 @@ const PT: Dict = {
   "reveal.no_day": "ainda não há um dia possível para este pedido — fale com um local.",
   "reveal.open_all_day": "aberto todo o dia",
   "reveal.map_label": "o seu trajecto",
-  "reveal.hero_fallback": "este é o seu Portugal.",
-  "reveal.hero_fallback_named": "{name}, este é o seu Portugal.",
+  "reveal.hero_fallback": "a sua história portuguesa está pronta.",
+  "reveal.hero_fallback_named": "{name}, a sua história portuguesa está pronta.",
 
   // Build preview (live itinerary fragment during chapters)
   "build.eyebrow": "a compor à sua volta",
@@ -146,8 +146,8 @@ const EN: Dict = {
   "reveal.no_day": "we couldn't compose a day for this request yet — speak to a local.",
   "reveal.open_all_day": "open all day",
   "reveal.map_label": "your route",
-  "reveal.hero_fallback": "this is your Portugal.",
-  "reveal.hero_fallback_named": "{name}, this is your Portugal.",
+  "reveal.hero_fallback": "your Portugal story is ready.",
+  "reveal.hero_fallback_named": "{name}, your Portugal story is ready.",
 
   "build.eyebrow": "being built around you",
 
