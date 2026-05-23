@@ -1209,6 +1209,17 @@ function Whisper({
   delay?: number;
   hold?: number;
 }) {
+  const [phase, setPhase] = useState<"hidden" | "shown" | "fading">("hidden");
+  useEffect(() => {
+    setPhase("hidden");
+    const t1 = window.setTimeout(() => setPhase("shown"), delay);
+    const t2 = window.setTimeout(() => setPhase("fading"), delay + hold);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [text, delay, hold]);
+  const visible = phase === "shown";
   return (
     <div
       key={`whisper-${text}`}
@@ -1225,7 +1236,10 @@ function Whisper({
           maxWidth: "22ch",
           textShadow:
             "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
-          opacity: 1,
+          opacity: visible ? 0.95 : 0,
+          transform: visible ? "translateY(0)" : "translateY(-6px)",
+          transition: "opacity 1200ms ease-out, transform 1200ms ease-out",
+          willChange: "opacity, transform",
         }}
       >
         {text}
