@@ -48,6 +48,7 @@ import {
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
 import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
 import { StudioStageV3 } from "@/components/builder/v3/StudioStageV3";
+import { StudioDrift } from "@/components/builder/v3/StudioDrift";
 
 
 /** Resolve a human label for current selections, used by the live header. */
@@ -87,17 +88,17 @@ export const Route = createFileRoute("/builder")({
   validateSearch: parseBuilderSearch,
   head: () => ({
     meta: [
-      { title: "Create your Portugal experience — YES" },
+      { title: "Portugal, slowly — YES" },
       {
         name: "description",
         content:
-          "Choose what feels right. We'll shape a real, achievable Portugal experience in real time — adjust everything, confirm instantly.",
+          "Drift through Portugal until something pulls. Light, stone, salt, candle — the world notices what holds you.",
       },
-      { property: "og:title", content: "Create your Portugal experience — YES" },
+      { property: "og:title", content: "Portugal, slowly — YES" },
       {
         property: "og:description",
         content:
-          "Not a form. A live experience taking shape as you choose. Real route, real stops, instant confirmation.",
+          "Not a planner. An atmosphere that reads you back. Linger where it matters; Portugal remembers.",
       },
     ],
   }),
@@ -108,13 +109,26 @@ function BuilderPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/builder" });
 
-  // Experience Studio v3 (Living Atmosphere) — fullscreen conversational stage.
-  // Escape hatch: append `?legacy=1` to fall back to the v1/v2 stepper flow.
-  // (Standalone drift prototype lives at /studio-drift — kept separate on purpose.)
-  const isLegacy =
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("legacy") === "1";
-  if (!isLegacy) {
+  // Drift is now the primary public experience. The previous Studio (v3)
+  // is preserved internally as an archival fallback — append `?legacy=1`
+  // for the v3 stage, or `?legacy=stepper` for the original v1/v2 flow.
+  // The standalone /studio-drift route remains for isolated R&D.
+  const legacyMode =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("legacy")
+      : null;
+
+  if (legacyMode === null) {
+    return (
+      <StudioDrift
+        onExit={() => {
+          void navigate({ to: "/" });
+        }}
+      />
+    );
+  }
+
+  if (legacyMode !== "stepper") {
     return (
       <StudioStageV3
         onExit={() => {
@@ -123,6 +137,7 @@ function BuilderPage() {
       />
     );
   }
+
 
 
 
