@@ -15,8 +15,10 @@ import {
   SOFT,
 } from "@/lib/drift/inference";
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
+import { EncouragementBar } from "./EncouragementBar";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction } from "@/lib/drift/predict";
+import { useDriftLocale, t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
 import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
