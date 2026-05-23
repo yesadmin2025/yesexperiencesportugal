@@ -1295,7 +1295,7 @@ function ProgressiveBuildPreview({
         </div>
         <div className="px-4 py-3">
           <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
-            {locale === "en" ? "being built around you" : "a ser construído à tua volta"}
+            {tt("build.eyebrow", locale)}
           </p>
           <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
             {last.name}
