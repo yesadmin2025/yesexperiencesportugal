@@ -674,6 +674,16 @@ export function StudioDrift({ onExit }: Props) {
     setChapterIdx((i) => {
       let next = i + 1;
       const conf = confidenceRef.current;
+      const optionalCandidates = CHAPTERS
+        .map((c, idx) => ({ c, idx }))
+        .filter(({ c }) => c.kind === "choice" && OPTIONAL_CHAPTER_IDS.includes(c.id as OptionalChapterId))
+        .filter(({ c }) => !askedOptionalChapters.has(c.id as OptionalChapterId));
+      if (i >= 6 && optionalCandidates.length > 0 && !prediction.shouldCollapseAhead) {
+        const best = optionalCandidates.sort(
+          (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
+        )[0];
+        if (best) return best.idx;
+      }
       while (next < CHAPTERS.length - 1) {
         const c = CHAPTERS[next];
         if (c.kind !== "choice") break;
@@ -682,7 +692,8 @@ export function StudioDrift({ onExit }: Props) {
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
         if (!DRIFT_DIMENSIONS.includes(dim)) break;
-        if (!top || top.confidence < 0.78) break;
+        if (!prediction.shouldCollapseAhead && (!top || top.confidence < 0.78)) break;
+        if (prediction.shouldCollapseAhead && (!top || top.confidence < 0.5)) break;
         // Skipped — synthesize an inferred answer onto the profile.
         setProfile((p) => ({ ...p, [dim]: top.value as never }));
         void recordDriftEvent("signal_captured", {
@@ -695,11 +706,14 @@ export function StudioDrift({ onExit }: Props) {
       }
       return Math.min(next, CHAPTERS.length - 1);
     });
-  }, []);
+  }, [askedOptionalChapters, prediction]);
 
   const onPick = useCallback(
     (opt: ChoiceOption, alternatives: ChoiceOption[]) => {
       if (!audioOn) setAudioOn(true);
+      if (OPTIONAL_CHAPTER_IDS.includes(chapter.id as OptionalChapterId)) {
+        setAskedOptionalChapters((prev) => new Set(prev).add(chapter.id as OptionalChapterId));
+      }
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
       // Behavior signal — chose this scene, skipped the others.
