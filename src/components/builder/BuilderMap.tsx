@@ -25,6 +25,8 @@ interface Props {
   /** When set, highlights that stop (gold pin) and pans to it — used by the
    *  Studio reveal so the map breathes with the story arc. */
   activeStopIndex?: number | null;
+  /** Hide chrome for small embedded previews inside Studio Drift. */
+  chrome?: boolean;
 }
 
 /**
@@ -36,7 +38,7 @@ interface Props {
  */
 const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
 
-export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null }: Props) {
+export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
@@ -309,17 +311,17 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
 
   return (
     <div className="relative h-full w-full">
-      <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
+      {chrome && <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
         <span className="relative inline-flex h-1.5 w-1.5">
           <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
           <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
         </span>
         {emotionalMode ? "a tomar forma" : "Live route"}
-      </div>
-      <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
+      </div>}
+      {chrome && <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
         <MapPin size={11} aria-hidden="true" />
         {emotionalMode ? `${stops.length} momento${stops.length === 1 ? "" : "s"}` : `${stops.length} stop${stops.length === 1 ? "" : "s"}`}
-      </div>
+      </div>}
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"
