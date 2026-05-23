@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
+import { REGION_ORIGIN } from "@/data/regionStops";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
 import {
@@ -13,6 +14,17 @@ import {
   EXPLICIT,
   SOFT,
 } from "@/lib/drift/inference";
+import { SceneCanvas, type SceneSource } from "./SceneCanvas";
+import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
+import { derivePrediction } from "@/lib/drift/predict";
+import wineHandImg from "@/assets/drift/wine-pour.jpg";
+import sharedTableImg from "@/assets/drift/shared-table.jpg";
+import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
+
+// Lazy-load Leaflet-based map to avoid SSR window crashes.
+const BuilderMap = lazy(() =>
+  import("../BuilderMap").then((m) => ({ default: m.BuilderMap })),
+);
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
@@ -71,45 +83,97 @@ export interface DriftProfile {
 
 type Scene = {
   id: string;
-  video: string;
+  /** Cinematic video loop OR editorial still (priority: still > video if both). */
+  video?: string;
+  still?: string;
+  ken?: "push" | "pull" | "drift";
   motifs: Motif[];
+  /** Editorial intent tag — drives the predictive scene weighting layer. */
+  mood?: SceneMood;
+  /** 1 (calm/contemplative) → 5 (charged/celebratory). */
+  intensity?: number;
 };
+
+/** Convert a Scene into a SceneSource the SceneCanvas understands. */
+function sceneSource(s: Scene): SceneSource {
+  if (s.still) return { kind: "still", src: s.still, ken: s.ken ?? "drift" };
+  return { kind: "video", src: s.video! };
+}
 
 const SCENES: Record<string, Scene> = {
   arrabidaCoast: {
     id: "arrabida-coast",
     video: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
     motifs: ["salt", "linen", "vine"],
+    mood: "arrival",
+    intensity: 3,
   },
   caboRoca: {
     id: "cabo-roca",
     video: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
     motifs: ["salt", "stone"],
+    mood: "discovery",
+    intensity: 4,
   },
   hiddenStreet: {
     id: "hidden-street",
     video: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
     motifs: ["rain", "stone", "basil"],
+    mood: "slowness",
+    intensity: 2,
   },
   viewpoint: {
     id: "viewpoint",
     video: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
     motifs: ["vine", "fado", "amber"],
+    mood: "slowness",
+    intensity: 2,
   },
   candleTable: {
     id: "candle-table",
     video: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
     motifs: ["candle", "amber", "bread"],
+    mood: "intimacy",
+    intensity: 2,
   },
   celebration: {
     id: "celebration",
     video: "/__l5e/assets-v1/79e74bb4-85bb-4f83-9bc7-c8bf774af5be/scene-celebration.mp4",
     motifs: ["candle", "amber", "fado", "linen"],
+    mood: "celebration",
+    intensity: 5,
   },
   sesimbra: {
     id: "sesimbra",
     video: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
     motifs: ["harbour", "salt", "rain"],
+    mood: "discovery",
+    intensity: 4,
+  },
+  // Premium editorial stills — cinematic Ken Burns, film-grain overlay.
+  wineHand: {
+    id: "wine-hand",
+    still: wineHandImg,
+    ken: "pull",
+    motifs: ["vine", "amber"],
+    mood: "ritual",
+    intensity: 3,
+  },
+  sharedTable: {
+    id: "shared-table",
+    still: sharedTableImg,
+    ken: "push",
+    motifs: ["candle", "amber", "bread"],
+    mood: "intimacy",
+    intensity: 3,
+  },
+  silentVineyard: {
+    id: "silent-vineyard",
+    still: silentVineyardImg,
+    ken: "drift",
+    motifs: ["vine", "amber"],
+    mood: "slowness",
+    intensity: 1,
   },
 };
 
@@ -384,6 +448,14 @@ export function StudioDrift({ onExit }: Props) {
   const confidenceRef = useRef<ConfidenceMap>({});
   const [, setTick] = useState(0);
 
+  // Predictive behavior layer — silently shapes pacing, weighting, tone.
+  const behavior = useDriftBehavior();
+  const prediction = useMemo(
+    () => derivePrediction(confidenceRef.current, behavior.state),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chapterIdx, behavior.state.decisionLatency.length, behavior.state.attractionEvents.length],
+  );
+
   const chapter = CHAPTERS[chapterIdx];
 
   /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
@@ -449,10 +521,19 @@ export function StudioDrift({ onExit }: Props) {
   }, []);
 
   const onPick = useCallback(
-    (opt: ChoiceOption) => {
+    (opt: ChoiceOption, alternatives: ChoiceOption[]) => {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
+      // Behavior signal — chose this scene, skipped the others.
+      behavior.recordChoice({
+        sceneId: opt.scene.id,
+        mood: opt.scene.mood,
+        intensity: opt.scene.intensity,
+        alternatives: alternatives
+          .filter((a) => a.scene.id !== opt.scene.id)
+          .map((a) => ({ sceneId: a.scene.id, mood: a.scene.mood, intensity: a.scene.intensity })),
+      });
       // Explicit imprint → full confidence on those dimensions.
       let conf = confidenceRef.current;
       for (const [k, v] of Object.entries(opt.imprint)) {
@@ -469,9 +550,11 @@ export function StudioDrift({ onExit }: Props) {
         chapterId: chapter.id,
         meta: { sceneId: opt.scene.id },
       });
-      window.setTimeout(advance, 850);
+      // Pacing: decisive users get a tighter snap to next chapter.
+      const snap = prediction.pacingClass === "decisive" ? 480 : 850;
+      window.setTimeout(advance, snap);
     },
-    [audioOn, reinforce, advance, chapter],
+    [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass],
   );
 
   const onNameSubmit = useCallback(
@@ -514,8 +597,12 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          holdScale={prediction.holdScale}
           onDone={advance}
-          onLinger={(motifs) => reinforce(motifs, 0.6)}
+          onLinger={(motifs, ms) => {
+            reinforce(motifs, 0.6);
+            behavior.recordLinger(ms);
+          }}
           onAudio={() => !audioOn && setAudioOn(true)}
         />
       )}
@@ -531,7 +618,22 @@ export function StudioDrift({ onExit }: Props) {
       )}
 
       {chapter.kind === "choice" && (
-        <ChoicePhase key={chapter.id} chapter={chapter} profile={profile} onPick={onPick} />
+        <ChoicePhase
+          key={chapter.id}
+          chapter={chapter}
+          profile={profile}
+          onPick={onPick}
+          sceneWeighting={prediction.sceneWeighting}
+          onSceneShown={behavior.markSceneShown}
+          onAttraction={(opt) =>
+            behavior.recordAttraction({
+              sceneId: opt.scene.id,
+              mood: opt.scene.mood,
+              intensity: opt.scene.intensity,
+              weight: 1.2,
+            })
+          }
+        />
       )}
 
       {chapter.kind === "convergence" && (
@@ -580,40 +682,44 @@ function DriftPhase({
   onDone,
   onLinger,
   onAudio,
+  holdScale = 1,
 }: {
   chapter: DriftChapter;
   profile: DriftProfile;
   onDone: () => void;
-  onLinger: (motifs: Motif[]) => void;
+  onLinger: (motifs: Motif[], ms: number) => void;
   onAudio: () => void;
+  holdScale?: number;
 }) {
   const [idx, setIdx] = useState(0);
   const scene = chapter.scenes[idx];
 
-  // Keep callbacks in refs so re-renders from parent (e.g. gravity tick)
-  // never reset the advance timer — otherwise onDone is forever rescheduled
-  // and the chapter is stuck on its first scene.
   const onDoneRef = useRef(onDone);
   const onLingerRef = useRef(onLinger);
   useEffect(() => { onDoneRef.current = onDone; }, [onDone]);
   useEffect(() => { onLingerRef.current = onLinger; }, [onLinger]);
 
   useEffect(() => {
+    const hold = Math.max(1500, chapter.holdMs * holdScale);
     const motifs = scene.motifs;
     const t = window.setTimeout(() => {
       if (idx < chapter.scenes.length - 1) setIdx((i) => i + 1);
       else onDoneRef.current();
-    }, chapter.holdMs);
-    const soft = window.setTimeout(() => onLingerRef.current(motifs), chapter.holdMs * 0.55);
+    }, hold);
+    const soft = window.setTimeout(
+      () => onLingerRef.current(motifs, hold * 0.55),
+      hold * 0.55,
+    );
     return () => {
       window.clearTimeout(t);
       window.clearTimeout(soft);
     };
-  }, [idx, chapter.id, chapter.holdMs, chapter.scenes.length, scene.motifs]);
+  }, [idx, chapter.id, chapter.holdMs, chapter.scenes.length, scene.motifs, holdScale]);
+
 
   return (
     <>
-      <SceneVideo src={scene.video} />
+      <SceneVideo scene={scene} />
       <Vignette />
       <button
         type="button"
@@ -656,7 +762,7 @@ function TextPhase({
 
   return (
     <>
-      <SceneVideo src={chapter.scene.video} />
+      <SceneVideo scene={chapter.scene} />
       <Vignette stronger />
       <form
         className="absolute inset-0 z-20 flex flex-col items-center justify-center px-8 transition-opacity duration-[1400ms]"
@@ -714,35 +820,71 @@ function ChoicePhase({
   chapter,
   profile,
   onPick,
+  sceneWeighting,
+  onAttraction,
+  onSceneShown,
 }: {
   chapter: ChoiceChapter;
   profile: DriftProfile;
-  onPick: (opt: ChoiceOption) => void;
+  onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
+  sceneWeighting?: Record<SceneMood, number>;
+  onAttraction?: (opt: ChoiceOption) => void;
+  onSceneShown?: (sceneId: string) => void;
 }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
   const [tilesIn, setTilesIn] = useState(false);
 
+  // Order by predicted affinity; drop weakest option only if at least two
+  // strong ones remain. Keeps the choice rhythm honest, never empties it.
+  const ordered = useMemo(() => {
+    const w = (o: ChoiceOption) =>
+      o.scene.mood && sceneWeighting ? sceneWeighting[o.scene.mood] ?? 0.5 : 0.5;
+    const sorted = [...chapter.options].sort((a, b) => w(b) - w(a));
+    if (sceneWeighting && sorted.length >= 3) {
+      const last = sorted[sorted.length - 1]!;
+      if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
+    }
+    return sorted;
+  }, [chapter.options, sceneWeighting]);
+
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
     const t2 = window.setTimeout(() => setShowHints(true), 1800);
+    ordered.forEach((o) => onSceneShown?.(o.scene.id));
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapter.id]);
 
   const handlePick = (opt: ChoiceOption) => {
     if (picked) return;
     setPicked(opt.scene.id);
-    onPick(opt);
+    onPick(opt, ordered);
+  };
+
+  // Long-press = strong attraction signal (≥500ms hold without release).
+  const pressRef = useRef<number | null>(null);
+  const handlePressStart = (opt: ChoiceOption) => {
+    pressRef.current = window.setTimeout(() => {
+      onAttraction?.(opt);
+      pressRef.current = null;
+    }, 520) as unknown as number;
+  };
+  const handlePressEnd = () => {
+    if (pressRef.current !== null) {
+      window.clearTimeout(pressRef.current);
+      pressRef.current = null;
+    }
   };
 
   return (
     <>
       <Whisper text={chapter.whisper(profile)} delay={500} hold={5200} />
       <div className="absolute inset-0 z-10 flex flex-col">
-        {chapter.options.map((opt, i) => {
+        {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
           return (
@@ -750,6 +892,12 @@ function ChoicePhase({
               key={opt.scene.id}
               type="button"
               onClick={() => handlePick(opt)}
+              onMouseDown={() => handlePressStart(opt)}
+              onMouseUp={handlePressEnd}
+              onMouseLeave={handlePressEnd}
+              onTouchStart={() => handlePressStart(opt)}
+              onTouchEnd={handlePressEnd}
+              onTouchCancel={handlePressEnd}
               className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/40"
               style={{
                 opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
@@ -761,16 +909,7 @@ function ChoicePhase({
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
               }}
             >
-              <video
-                src={opt.scene.video}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                className="absolute inset-0 h-full w-full object-cover motion-safe:animate-[kenburns_22s_ease-in-out_infinite_alternate]"
-                style={{ filter: "saturate(0.94) contrast(1.03)" }}
-              />
+              <SceneCanvas source={sceneSource(opt.scene)} />
               <div
                 aria-hidden="true"
                 className="absolute inset-0"
@@ -895,7 +1034,7 @@ function ConvergencePhase({
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
       <div className="relative h-[58vh] min-h-[360px] w-full overflow-hidden">
-        <SceneVideo src={heroScene.video} />
+        <SceneVideo scene={heroScene} />
         <Vignette stronger />
         <div className="absolute inset-x-0 bottom-8 z-20 px-6 text-center pointer-events-none">
           <p
@@ -1179,20 +1318,8 @@ function composeLead(p: DriftProfile): string {
 // Atoms
 // ─────────────────────────────────────────────────────────────────────────
 
-function SceneVideo({ src }: { src: string }) {
-  return (
-    <video
-      key={src}
-      src={src}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[2000ms]"
-      style={{ filter: "saturate(0.92) contrast(1.02)" }}
-    />
-  );
+function SceneVideo({ scene, tint }: { scene: Scene; tint?: string }) {
+  return <SceneCanvas source={sceneSource(scene)} tint={tint} />;
 }
 
 function Vignette({ stronger = false }: { stronger?: boolean }) {

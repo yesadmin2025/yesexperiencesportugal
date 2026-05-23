@@ -1,172 +1,115 @@
-# Plano — Drift Fase 1 (revisto)
+## Próximo nível: Imagem premium + inteligência preditiva real
 
-Três correcções aplicadas: **hybrid inference** (não tudo inferido), **whispers mínimos e operacionais**, **scoring ponderado simples** (sem bandit ainda).
-
----
-
-## 1. Modelo híbrido de inputs
-
-O profile do utilizador é construído por **três fontes combinadas**, com prioridade clara:
-
-| Fonte | O que captura | Quando |
-|---|---|---|
-| **Explicit whispers** (4 fixos) | pickup, companions, duration (day/multi), radius | Pontos-chave do flow, embutidos como cenas — não formulário |
-| **Behavioral signals** | style, energy, social, mood (tap em fragmentos, tempo em cena, swipe, hover) | Contínuo, em background |
-| **Interaction analysis** | confidence boosts, hesitação, re-watch, skip | Contínuo, ajusta scoring |
-
-**Regra:** os 4 dados operacionais **nunca são inferidos** — são sempre perguntados (de forma natural). Tudo o resto é inferido por comportamento.
-
-### Os 4 whispers fixos (locked copy)
-1. *"Where does this story begin?"* → pickup (lisbon / centro / alentejo)
-2. *"Who's coming with you?"* → companions (solo / couple / family / group)
-3. *"One day, or several?"* → duration (day / multi)
-4. *"How far would you follow the feeling today?"* → radius (near / far)
-
-Aparecem como cenas inteiras (full-screen, Georgia italic, 2–4 tiles), não como inputs num formulário. Sem labels, sem progress bar, sem "Step 2/4".
+Comparei o estado atual do Studio Drift contra a Bible e contra os teus dois pedidos. Aqui está o plano focado.
 
 ---
 
-## 2. Arquitectura simplificada
+### A — Camada visual premium (imagem + vídeo)
 
-```text
-   Drift UI ──► /drift/session/start   ──► sessionId + first scene
-              ──► /drift/scene/next    ──► próxima cena (ou whisper, ou reveal)
-              ──► /drift/scene/answer  ──► grava resposta + signals → devolve próxima
-              ──► /drift/reveal        ──► compose day + story + DNA
-```
+**Diagnóstico**
+- 7 cenas em loop (`SCENES`) — algumas são fortes (Arrábida, candle table) mas o mix tem buracos: falta movimento humano íntimo, mão a verter vinho, pão a partir, mesa de família ao entardecer, cruzamento de rua com vapor de café, passos numa adega.
+- Sem curadoria editorial por capítulo — qualquer chapter pode cair em qualquer cena, partindo o arco emocional.
+- Sem fade cinematográfico forte: corte é abrupto entre scenes (apenas `<SceneVideo>` swap).
+- Sem grain / film texture overlay → aspeto digital "stock travel".
 
-Só 4 endpoints. Tudo síncrono, sem filas, sem bandit.
+**Execução**
 
----
+1. **Curadoria por intenção (não por estilo)**
+   Cada cena ganha tags semânticas (`mood: ["arrival","intimacy","celebration","slowness","discovery","temptation","ritual"]`) e um `intensity` 1-5. O scene router escolhe por `mood + intensity + confidence`, não por `style==coast`.
 
-## 3. Bible-as-data (mantido, enxuto)
+2. **Novas cenas (criadas via imagegen premium, cinemagraph-still)**
+   8 imagens novas em src/assets/drift/ (não vídeo — fotografia editorial parada com Ken Burns subtil 1.02→1.05 over 7s). Mais barato e mais premium do que vídeo stock:
+   - mão a verter vinho tinto em copo, luz lateral âmbar
+   - pés descalços em mosaico português ao amanhecer
+   - mesa partilhada vista de cima, pão rasgado e azeitonas
+   - silhueta de pescador a recolher rede ao entardecer
+   - reflexo de elétrico em vidro embaciado
+   - vinha em silêncio, neblina baixa, sem pessoas
+   - mão a acender vela em jantar íntimo
+   - vista de janela com cortina de linho ao vento
 
-Tabelas Supabase (Fase 1):
+3. **Composição de scene = vídeo OU imagem cinemática**
+   `Scene` ganha `kind: "video" | "still"` + `still?: { src, ken: "pull" | "push" | "drift" }`. O `<SceneVideo>` torna-se `<SceneCanvas>` que faz fade entre dois layers (out: 1.4s, in: 1.6s, overlap 0.7s) — cross-dissolve cinematográfico, não cortes.
 
-- `drift_scenes` — biblioteca (id, type: `atmosphere` | `fragment` | `whisper` | `reveal`, media_url, eligible_when JSONB, signals_emitted JSONB, copy_key)
-- `drift_voice` — copy editável por chave (welcome, midway, reveal_lines, whisper prompts, completion CTAs) com slots `{name}`, `{region}`
-- `drift_dna_tokens` — tokens visuais + regra de activação simples (threshold por dimensão)
-- `drift_session_events` — telemetria (scene shown, signal, answer, drop-off, conversion) — **só grava**, ainda não re-pondera
+4. **Grain & filmstock overlay (sempre)**
+   CSS único `.drift-filmgrain` (SVG noise 4% opacity + slight vignette + warm LUT via blend-mode) aplicado por cima de qualquer scene. Único toggle: `prefers-reduced-motion` desliga grain pulse.
 
-**Não criamos** ainda: `drift_scene_rules` (regras ficam em código Fase 1), `drift_tiers` (tier inferido por composer), `drift_quality_rules` (continua em `regionRules.ts`).
-
-Migração para DB acontece na Fase 2, quando houver tráfego.
-
----
-
-## 4. Motor (server) — simples e legível
-
-`src/server/driftEngine.functions.ts`:
-
-### 4.1 `startSession()` → `{ sessionId, firstScene }`
-Cria sessão. Primeira cena = atmosfera (vídeo Portugal cinemático, sem texto), 6–8s.
-
-### 4.2 `nextScene({ sessionId })` → `Scene`
-Decide próxima cena por **regras determinísticas** (sem AI, sem bandit):
-
-```text
-Routing rules (Fase 1):
-1. Se pickup ainda desconhecido E já passaram ≥2 cenas → whisper "pickup"
-2. Se companions desconhecido E pickup conhecido → whisper "companions"
-3. Se duration desconhecido E companions conhecido → whisper "duration"
-4. Se radius desconhecido E duration conhecido → whisper "radius"
-5. Senão → atmosphere ou fragment com maior score (ver §5)
-6. Após 4 whispers + ≥3 fragments → reveal disponível
-```
-
-### 4.3 `answerScene({ sessionId, sceneId, answer })` → `{ profile, nextScene }`
-Aplica answer (whisper) ou signal (fragment tap/hover) ao profile, devolve próxima cena.
-
-### 4.4 `reveal({ sessionId })` → `{ composedDay, story, dna, cta }`
-- `composedDay` = composer actual (já existe, lê profile)
-- `story` = Lovable AI (gemini-3-flash-preview) em tool-calling mode com stops reais + voice templates → devolve `heroLine`, `microStory`, `completionLine`. **Nunca inventa stops.**
-- `dna` = tokens activados por threshold (ex.: `intimate` se `social: intimate` confidence > 0.6)
-- `cta` = único, contextual ("Reservar este dia" / "Guardar" / "Refinar com local")
+5. **Image preference behavior signal (alimenta a inferência)**
+   Tap-and-hold numa imagem (>500ms) ou double-tap = sinal forte ("attraction"). Hover/linger >2s = sinal médio. Skip rápido (<800ms) = sinal negativo (decay nesse mood). Liga à secção B.
 
 ---
 
-## 5. Scoring ponderado (Fase 1)
+### B — Motor preditivo real
 
-Para cada cena candidata (fragment/atmosphere):
+**Diagnóstico do atual**
+- `inference.ts` faz bump/decay limpo mas só recebe sinais discretos: `EXPLICIT` (1.0) em escolha, `SOFT*amount*0.45` em linger.
+- Nada lê pacing global (utilizador rápido vs lento), nada conta skips, nada deteta padrão de atração visual (ex.: 3 imagens íntimas seguidas → colapsar todas as perguntas de social/companions).
+- Sem "narrowing" — o utilizador rápido faz na mesma todos os capítulos.
 
-```text
-score(scene) =
-    affinity_match(scene.signals_target, profile) * 3
-  + freshness_bonus(scene, history)              * 2
-  + region_relevance(scene, profile.pickup)      * 2
-  + priority(scene)                              * 1
-  - already_shown_penalty                        * 5
-```
+**Execução**
 
-Pesos hardcoded, ajustáveis num único ficheiro `src/server/driftEngine.weights.ts`. Sem learning, sem A/B automático na Fase 1.
+1. **Behavior tracker (`src/lib/drift/behavior.ts`, novo)**
+   Hook `useDriftBehavior()` regista, em memória + sessionStorage:
+   - `decisionLatency[]` — ms entre scene-in e tap
+   - `lingerEvents[]` — ms parado num scene sem ação
+   - `skipEvents[]` — opções não escolhidas mas vistas
+   - `attractionEvents[]` — long-press / double-tap / re-hover em scenes
+   - `pacingClass` derivada: `decisive` (mediana <1.2s), `exploratory` (>4s), `balanced` (entre)
+   - `intensityPreference` — média de `intensity` das scenes que ganharam attraction
+
+2. **Predictive layer (`src/lib/drift/predict.ts`, novo)**
+   Função pura `derivePrediction(confidence, behavior) → Prediction` que retorna:
+   - `collapseNextChapters: string[]` — IDs de capítulos a saltar (quando `totalConfidence ≥ 0.78` OU pacingClass=`decisive` e ≥3 capítulos feitos)
+   - `pacingHint: "compress" | "linger"` — usado pelo `holdMs` e densidade de whispers
+   - `revealConfidence: 0–1` — gate para CTA final (`>0.6` = reservar direto, `<0.4` = "falar com um local")
+   - `sceneWeighting: Record<mood, number>` — pesos passados ao scene router
+   - `tonalRegister: "intimate" | "expansive" | "playful" | "ritual"` — passado ao revealJourney AI para a story final mudar de registo
+
+3. **Integração no `StudioDrift`**
+   - `holdMs` deixa de ser fixo: `chapter.holdMs * (pacingHint==="compress" ? 0.55 : pacingHint==="linger" ? 1.35 : 1)`
+   - `advance()` consulta `collapseNextChapters` e salta para a próxima permitida
+   - `ChoicePhase` ordena opções por `sceneWeighting[opt.scene.mood]` e esconde opções com peso <0.15 (quando ainda há ≥2 opções)
+   - Whispers entre capítulos só aparecem se `pacingClass !== "decisive"` OU se `intensityPreference > 3.5` (utilizador atento)
+
+4. **Server-side: `revealJourney` ganha `prediction`**
+   - Aceita `tonalRegister` no input. System prompt da Lovable AI muda de registo conforme: "intimate" = candle/breath; "expansive" = horizonte/largueza; "ritual" = repetição/sagrado.
+   - Recebe `intensityPreference` → influencia ordering dos stops no `composeDay` (mais íntimos primeiro para utilizadores `intimate`).
+   - Devolve `story.arc[3-4]` em vez de `microStory` único, com cada linha amarrada a um stop real.
+
+5. **Telemetria (`drift_behavior_events`, tabela nova)**
+   Insere por sessão: `{ session_id, pacing_class, attraction_count, skip_count, revealed_confidence, collapsed_chapters }`. Permite afinar limiares mais tarde sem deploy.
 
 ---
 
-## 6. Frontend (mudanças mínimas em StudioDrift)
+### C — Reveal final cinematográfico (consequência de A+B)
 
-`StudioDrift.tsx`:
-1. Abre sessão no mount → `startSession()`
-2. Renderiza cena devolvida (componente já existe por tipo: `Atmosphere`, `Fragment`, `Whisper`, `Reveal`)
-3. Tap/swipe/timeout → `answerScene()` → renderiza próxima
-4. Quando `scene.type === 'reveal'` → chama `reveal()` e mostra composed day + story
-
-Reaproveita: `NameWhisper`, `NarrativeComposer` (só aparece no whisper aberto opcional pós-reveal), `WhisperLayer`.
-
-**Sem nova UI.** Mesma estética.
+- `BuilderMap` aparece full-bleed no topo (50vh) com polyline teal animada
+- `story.arc[]` corre sobre o mapa, cada linha highlighta o pin correspondente
+- CTA final é único, escolhido por `revealConfidence`: alto → "reservar este dia" (teal sólido), baixo → "falar com um local" (gold outline)
+- Sem barras de progresso visíveis no reveal — o utilizador acabou de chegar, não vamos quebrar com UI
 
 ---
 
-## 7. Conversão (Fase 1)
-
-CTA único no reveal:
-- **primary:** "Reservar este dia" (test mode — confirma sem pagamento real)
-- **secondary:** "Guardar para depois" (email opcional)
-- **tertiary:** "Refinar com um local" (WhatsApp)
-
-Copy vem de `drift_voice` (editável sem deploy). Sem upsell, sem tier selector — tier é inferido e reflectido na linguagem da story, não como botão.
-
----
-
-## 8. Ficheiros (Fase 1)
+### Ficheiros
 
 **Novos**
-- `supabase/migrations/<ts>_drift_engine_phase1.sql` — `drift_scenes`, `drift_voice`, `drift_dna_tokens`, `drift_session_events` + RLS (public read em scenes/voice/dna; insert-only em session_events anon)
-- `src/server/driftEngine.functions.ts` — 4 server fns acima
-- `src/server/driftEngine.server.ts` — scoring, routing rules, story prompt
-- `src/server/driftEngine.weights.ts` — pesos isolados
-- `src/lib/drift/signals.ts` — tipos partilhados
+- `src/lib/drift/behavior.ts` — tracker + hook
+- `src/lib/drift/predict.ts` — derivação pura da prediction
+- `src/assets/drift/*.jpg` — 8 imagens editoriais geradas via `imagegen` premium
+- `src/components/builder/v3/SceneCanvas.tsx` — cross-dissolve vídeo/still + grain
+- migration: `drift_behavior_events` table
 
 **Editados**
-- `src/components/builder/v3/StudioDrift.tsx` — passa a consumir engine
-- `src/lib/drift/composer.ts` — sem alteração funcional (só recebe profile do engine)
+- `src/components/builder/v3/StudioDrift.tsx` — SCENES com tags mood/intensity/kind, ChoicePhase com weighting, holdMs dinâmico, Convergence com BuilderMap + arc
+- `src/lib/drift/inference.ts` — extender com `pacingClass` e sinais attraction (mantém retrocompat)
+- `src/server/driftEngine.functions.ts` + `.server.ts` — aceita prediction, devolve `story.arc`
+- `src/styles.css` — `.drift-filmgrain`, `.drift-arc-line`, ken-burns keyframes
 
-**Não toca**
-- `regionStops.ts`, `regionRules.ts`, `signatureTours.ts`, homepage, outras rotas
+### Fora do scope (deliberadamente)
+- i18n (próxima passada — disseste para focar nestes dois)
+- mudar Stripe/Bokun
+- mexer na homepage ou noutras rotas
 
----
-
-## 9. O que **não** entra na Fase 1
-
-- ❌ Bandit / RL / scene optimization automático
-- ❌ Re-ponderação por telemetria
-- ❌ A/B automático de cenas
-- ❌ Admin UI para editar Bible (Fase 4)
-- ❌ Bókun real / Stripe live (Fase 3)
-- ❌ Drift scene rules em DB (ficam em código)
-
-Telemetria **grava** (para a Fase 2 ter dados), mas não actua.
-
----
-
-## 10. Critério de sucesso da Fase 1
-
-Um utilizador chega ao `/studio-drift`, atravessa 4 whispers + 3–5 fragmentos atmosféricos em ~90s, recebe um dia real composto com story coerente e clica num CTA. Sem formulário, sem fricção, sem inventar nada.
-
----
-
-## Confirmação antes de avançar
-
-1. **Whispers locked?** Os 4 prompts acima ficam fixos para Fase 1 (sem variantes AI)?
-2. **Seed de cenas:** uso apenas os vídeos que já existem em `/public/video/scene-*.mp4` para a biblioteca inicial, ou queres-me passar uma lista do que falta?
-
-Se sim aos dois, avanço já com a migração + engine.
+### Riscos / decisões
+- Gerar 8 imagens editoriais usa `imagegen premium` (≠ Lovable AI Gateway). Custa mais mas é único caminho para imagens premium reais — alternativa é parar e pedires upload de fotografia real licenciada. Recomendo gerar (premium tier) e tu validares antes de eu integrar.
+- Behavior tracker mantém-se client-side; só envia agregados anonimizados para a tabela. Sem PII.
