@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
+import { composeDay, pickRegion, type ComposedDay, type ComposerProfile, type RegionKey } from "@/lib/drift/composer";
 import { REGION_ORIGIN } from "@/data/regionStops";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
