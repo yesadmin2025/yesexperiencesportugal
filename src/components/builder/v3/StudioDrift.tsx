@@ -17,7 +17,7 @@ import {
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
-import { derivePrediction } from "@/lib/drift/predict";
+import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { useDriftLocale, t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
@@ -223,6 +223,28 @@ const SCENES: Record<string, Scene> = {
     intensity: 2,
   },
 };
+
+/** Editorial still pools indexed by mood — used to upgrade a choice tile's
+ *  visual when the predictive engine's top mood matches the option's mood.
+ *  Keeps the imprint mapping intact (we only swap the visible source). */
+const MOOD_STILLS: Partial<Record<SceneMood, Scene[]>> = {
+  intimacy:    [SCENES.candleBread, SCENES.sharedTable],
+  ritual:      [SCENES.wineHand, SCENES.candleBread],
+  slowness:    [SCENES.silentVineyard, SCENES.quietChapel, SCENES.linenBreeze],
+  arrival:     [SCENES.dawnDouro],
+  discovery:   [SCENES.atlanticHands],
+  celebration: [SCENES.sharedTable],
+};
+
+/** Deterministic still pick from a pool, seeded by a stable key. */
+function pickStillForMood(mood: SceneMood | undefined, seed: string): Scene | null {
+  if (!mood) return null;
+  const pool = MOOD_STILLS[mood];
+  if (!pool || pool.length === 0) return null;
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return pool[h % pool.length];
+}
 
 const MOTIF_TINT: Record<Motif, string> = {
   amber:   "radial-gradient(ellipse at 50% 78%, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 62%)",
@@ -672,6 +694,7 @@ export function StudioDrift({ onExit }: Props) {
           profile={profile}
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
+          tonalRegister={prediction.tonalRegister}
           onSceneShown={behavior.markSceneShown}
           onAttraction={(opt) =>
             behavior.recordAttraction({
@@ -877,6 +900,7 @@ function ChoicePhase({
   profile,
   onPick,
   sceneWeighting,
+  tonalRegister,
   onAttraction,
   onSceneShown,
 }: {
@@ -884,6 +908,7 @@ function ChoicePhase({
   profile: DriftProfile;
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
+  tonalRegister?: TonalRegister;
   onAttraction?: (opt: ChoiceOption) => void;
   onSceneShown?: (sceneId: string) => void;
 }) {
@@ -943,6 +968,26 @@ function ChoicePhase({
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
+          // Upgrade visible source to a cinematic still when the option's
+          // mood aligns with the predicted tonal register (or scene already
+          // has no video). Imprint mapping is untouched.
+          const upgradeMoods: SceneMood[] = (() => {
+            switch (tonalRegister) {
+              case "intimate": return ["intimacy", "slowness"];
+              case "ritual": return ["ritual", "intimacy"];
+              case "playful": return ["celebration"];
+              case "expansive": return ["arrival", "discovery"];
+              default: return [];
+            }
+          })();
+          const shouldUpgrade =
+            !opt.scene.still &&
+            opt.scene.mood !== undefined &&
+            upgradeMoods.includes(opt.scene.mood);
+          const renderedScene =
+            (shouldUpgrade
+              ? pickStillForMood(opt.scene.mood, `${chapter.id}:${opt.scene.id}`)
+              : null) ?? opt.scene;
           return (
             <button
               key={opt.scene.id}
@@ -965,7 +1010,7 @@ function ChoicePhase({
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
               }}
             >
-              <SceneCanvas source={sceneSource(opt.scene)} />
+              <SceneCanvas source={sceneSource(renderedScene)} />
               <div
                 aria-hidden="true"
                 className="absolute inset-0"
@@ -1206,28 +1251,32 @@ function ConvergencePhase({
           </div>
         )}
 
-        {/* Story arc — 3-4 chained editorial lines, fade-in cascade. */}
+        {/* Story arc — 3-4 chained editorial lines, fade-in cascade.
+            Last line = longing pull: serif italic, larger, gold. */}
         {arc.length > 0 && (
-          <div className="mb-8 mx-auto max-w-[36ch] space-y-3 text-center">
-            {arc.map((line, i) => (
-              <p
-                key={i}
-                className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: i === arc.length - 1 ? "18px" : "16px",
-                  lineHeight: 1.55,
-                  letterSpacing: "0.005em",
-                  color:
-                    i === arc.length - 1
-                      ? "var(--teal)"
+          <div className="mb-10 mx-auto max-w-[36ch] space-y-4 text-center">
+            {arc.map((line, i) => {
+              const isPull = i === arc.length - 1 && arc.length > 1;
+              return (
+                <p
+                  key={i}
+                  className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontSize: isPull ? "24px" : "16.5px",
+                    lineHeight: isPull ? 1.35 : 1.55,
+                    letterSpacing: isPull ? "-0.005em" : "0.005em",
+                    color: isPull
+                      ? "var(--gold)"
                       : "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-                  animationDelay: `${700 + i * 320}ms`,
-                }}
-              >
-                {line}
-              </p>
-            ))}
+                    marginTop: isPull ? "8px" : undefined,
+                    animationDelay: `${700 + i * 360}ms`,
+                  }}
+                >
+                  {line}
+                </p>
+              );
+            })}
           </div>
         )}
 
