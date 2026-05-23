@@ -98,7 +98,7 @@ export async function recordDriftBehaviorEvent(
         predicted_tonal_register: opts.predictedTonalRegister ?? null,
         predicted_intensity: opts.predictedIntensity ?? null,
         reveal_confidence: opts.revealConfidence ?? null,
-        meta: opts.meta ? (JSON.parse(JSON.stringify(opts.meta)) as Json) : null,
+        meta: opts.meta ? (JSON.parse(JSON.stringify(opts.meta)) as Json) : {},
       },
     ]);
   } catch {
