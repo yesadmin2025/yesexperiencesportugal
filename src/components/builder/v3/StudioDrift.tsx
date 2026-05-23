@@ -965,10 +965,14 @@ function ChoicePhase({
 function ConvergencePhase({
   profile,
   confidence,
+  prediction,
+  locale,
   onExit,
 }: {
   profile: DriftProfile;
   confidence: ConfidenceMap;
+  prediction?: ReturnType<typeof derivePrediction>;
+  locale: DriftLocale;
   onExit?: () => void;
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
