@@ -1444,10 +1444,11 @@ function ConvergencePhase({
               to="/tours/$tourId"
               params={{ tourId: anchorTour.id }}
               onClick={() => void recordDriftEvent("cta_book", { meta: { tourId: anchorTour.id } })}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
+              className="inline-flex min-h-11 items-center justify-center rounded-[6px] px-6 py-3 text-[12px] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontWeight: 700,
+                letterSpacing: "0.18em",
                 background: "var(--teal)",
                 color: "var(--ivory)",
                 boxShadow: "0 16px 34px color-mix(in oklab, var(--teal) 28%, transparent)",
@@ -1459,11 +1460,13 @@ function ConvergencePhase({
             <Link
               to="/contact"
               onClick={() => void recordDriftEvent("cta_refine")}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
+              className="inline-flex min-h-11 items-center justify-center rounded-[6px] border px-6 py-3 text-[12px] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                background: "var(--teal)",
-                color: "var(--ivory)",
+                fontWeight: 700,
+                letterSpacing: "0.18em",
+                borderColor: "color-mix(in oklab, var(--gold) 55%, transparent)",
+                color: "var(--charcoal)",
               }}
             >
               {ctaRefine} →
