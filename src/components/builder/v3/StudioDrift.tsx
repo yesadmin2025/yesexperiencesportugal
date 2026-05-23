@@ -1202,31 +1202,35 @@ function Vignette({ stronger = false }: { stronger?: boolean }) {
 
 function Whisper({
   text,
-  delay = 600,
-  hold = 3200,
+  delay,
+  hold,
 }: {
   text: string;
   delay?: number;
   hold?: number;
 }) {
+  void delay;
+  void hold;
   return (
     <div
       key={`whisper-${text}`}
       className="absolute inset-x-0 top-[18%] z-[60] flex justify-center px-6 pointer-events-none"
+      style={{
+        animation: "whisperEnter 1400ms ease-out both",
+      }}
     >
       <p
-        className="italic text-[color:var(--ivory)] max-w-[22ch] text-center"
+        className="italic text-center"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           fontSize: "19px",
           lineHeight: 1.45,
           letterSpacing: "0.005em",
+          color: "#FAF8F3",
+          maxWidth: "22ch",
           textShadow:
             "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
-          opacity: 0,
-          animation: `whisperFade ${delay + hold + 1400}ms ease-out forwards`,
-          // delay handled inside keyframes via timing
-          animationDelay: `${Math.max(0, delay - 300)}ms`,
+          opacity: 0.95,
         }}
       >
         {text}

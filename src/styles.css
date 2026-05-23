@@ -4824,3 +4824,10 @@ html { scroll-behavior: smooth; }
   78%  { opacity: 0.95; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-4px); }
 }
+
+/* Single soft entry for the StudioDrift whisper. The text then holds
+   statically until the chapter advances (parent unmount removes it). */
+@keyframes whisperEnter {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
