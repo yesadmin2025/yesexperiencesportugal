@@ -581,6 +581,7 @@ export function StudioDrift({ onExit }: Props) {
   const [audioOn, setAudioOn] = useState(false);
   const [narrativeLine, setNarrativeLine] = useState<string | null>(null);
   const [narrativeAt, setNarrativeAt] = useState<number | null>(null);
+  const [askedOptionalChapters, setAskedOptionalChapters] = useState<Set<OptionalChapterId>>(() => new Set());
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
   const firedStagesRef = useRef<Set<string>>(new Set());
@@ -599,6 +600,42 @@ export function StudioDrift({ onExit }: Props) {
 
   const chapter = CHAPTERS[chapterIdx];
   const stage = narrativeStageFor(chapter, profile, prediction);
+
+  useEffect(() => {
+    if (!sessionId || !chapter) return;
+    const key = `${stage}:${chapter.id}`;
+    if (stage === "invitation" || firedStagesRef.current.has(key) || aiBudgetRef.current >= 4) return;
+    firedStagesRef.current.add(key);
+    aiBudgetRef.current += 1;
+    let cancelled = false;
+    composeMoment({
+      data: {
+        sessionId,
+        mode: "narrative",
+        locale,
+        mood: prediction.tonalRegister,
+        who: profile.companions ?? null,
+        intention: profile.style ?? null,
+        journeyType: profile.duration === "multi" ? "multi" : "day",
+        travellerName: stage === "reveal" ? profile.name ?? null : null,
+        narrativeStage: stage,
+        confidence: prediction.revealConfidence,
+        acceptedCount: Object.values(profile).filter(Boolean).length,
+        lastFragment: narrativeLine,
+        lastAcceptedTag: chapter.id,
+      },
+    })
+      .then((r) => {
+        if (!cancelled && r.mode === "narrative" && r.fragment) {
+          setNarrativeLine(r.fragment);
+          setNarrativeAt(Date.now());
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, chapter?.id, stage, locale, prediction.tonalRegister, prediction.revealConfidence]);
 
   /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
    *  confidence on the dimensions they correlate with. */
