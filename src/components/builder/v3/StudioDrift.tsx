@@ -794,6 +794,7 @@ export function StudioDrift({ onExit }: Props) {
 function DriftPhase({
   chapter,
   profile,
+  locale,
   onDone,
   onLinger,
   onAudio,
@@ -801,6 +802,7 @@ function DriftPhase({
 }: {
   chapter: DriftChapter;
   profile: DriftProfile;
+  locale: DriftLocale;
   onDone: () => void;
   onLinger: (motifs: Motif[], ms: number) => void;
   onAudio: () => void;
@@ -845,7 +847,7 @@ function DriftPhase({
       />
       <Whisper
         key={`w-${chapter.id}-${idx}`}
-        text={chapter.whisper(profile)}
+        text={chapter.whisper(profile, locale)}
         delay={1200}
         hold={4000}
         variant="opening"
