@@ -535,7 +535,7 @@ export function StudioDrift({ onExit }: Props) {
       )}
 
       {chapter.kind === "convergence" && (
-        <ConvergencePhase profile={profile} onExit={onExit} />
+        <ConvergencePhase profile={profile} confidence={confidenceRef.current} onExit={onExit} />
       )}
 
       {memoryTints.map((t, i) => (
