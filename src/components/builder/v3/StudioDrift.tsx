@@ -1496,21 +1496,21 @@ function pickHeroScene(profile: DriftProfile): Scene {
 function composeLead(p: DriftProfile): string {
   const who = p.name ? `${p.name}, ` : "";
   if (p.social === "intimate" && (p.companions === "couple" || p.companions === "solo")) {
-    return `${who}portugal está a guardar-vos uma mesa pequena, à luz baixa.`;
+    return `${who}a mesa certa não faz ruído.`;
   }
   if (p.social === "shared" || p.companions === "group") {
-    return `${who}há uma sala onde já se ouvem copos. portugal está a guardar-vos lugar.`;
+    return `${who}há uma sala pronta para receber o vosso ritmo.`;
   }
   if (p.style === "coast") {
-    return `${who}o mar está a desacelerar para te receber.`;
+    return `${who}o Atlântico abre espaço à medida certa.`;
   }
   if (p.style === "wine") {
-    return `${who}uma vinha em silêncio — é por aí que se entra.`;
+    return `${who}a vinha marca o compasso do dia.`;
   }
   if (p.style === "heritage") {
-    return `${who}uma rua antiga está à tua espera, mais lá para baixo.`;
+    return `${who}a pedra antiga guarda a entrada.`;
   }
-  return `${who}portugal já sabe por onde te levar.`;
+  return `${who}já há um dia a ganhar forma.`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────
