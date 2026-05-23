@@ -378,23 +378,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "companions",
-    whisper: () => "quem vem contigo",
+    whisper: (_p, locale) => tt("chapter.companions", locale),
     options: [
       {
         scene: SCENES.atlanticHands,
-        hint: "só, com espaço",
+        hintKey: "hint.companions.0",
         imprint: { companions: "solo" },
         reinforce: ["stone", "salt"],
       },
       {
         scene: SCENES.candleBread,
-        hint: "a dois, sem ruído",
+        hintKey: "hint.companions.1",
         imprint: { companions: "couple" },
         reinforce: ["candle", "amber"],
       },
       {
         scene: SCENES.sharedTable,
-        hint: "com os teus",
+        hintKey: "hint.companions.2",
         imprint: { companions: "group" },
         reinforce: ["fado", "linen"],
       },
@@ -403,23 +403,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "pickup",
-    whisper: () => "onde começa esta história",
+    whisper: (_p, locale) => tt("chapter.pickup", locale),
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "Lisboa, com a costa perto",
+        hintKey: "hint.pickup.0",
         imprint: { pickup: "lisbon" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "Centro, pedra e silêncio",
+        hintKey: "hint.pickup.1",
         imprint: { pickup: "centro" },
         reinforce: ["stone", "basil"],
       },
       {
         scene: SCENES.silentVineyard,
-        hint: "Alentejo, em voz baixa",
+        hintKey: "hint.pickup.2",
         imprint: { pickup: "alentejo" },
         reinforce: ["vine", "amber"],
       },
@@ -428,17 +428,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "duration",
-    whisper: () => "um dia, ou vários",
+    whisper: (_p, locale) => tt("chapter.duration", locale),
     options: [
       {
         scene: SCENES.candleBread,
-        hint: "um dia inteiro",
+        hintKey: "hint.duration.0",
         imprint: { duration: "day" },
         reinforce: ["candle", "bread"],
       },
       {
         scene: SCENES.dawnDouro,
-        hint: "vários dias, sem pressa",
+        hintKey: "hint.duration.1",
         imprint: { duration: "multi", radius: "anywhere" },
         reinforce: ["vine", "linen", "stone"],
       },
