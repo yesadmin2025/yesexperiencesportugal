@@ -1326,7 +1326,7 @@ function ConvergencePhase({
             {tt("reveal.no_day", locale)}
           </p>
         ) : (
-          <ol className="space-y-4">
+          <ol className="space-y-3">
             {day.stops.map((cs, i) => {
               const s = cs.stop;
               const openLabel = s.hours
@@ -1335,10 +1335,11 @@ function ConvergencePhase({
               return (
                 <li
                   key={s.id}
-                  className="relative pl-8 pr-3 py-3 bg-white rounded-md motion-safe:animate-[fade-in_0.7s_ease-out_both]"
+                  className="relative pl-9 pr-4 py-4 rounded-[7px] motion-safe:animate-[fade-in_0.7s_ease-out_both]"
                   style={{
+                    background: "color-mix(in oklab, var(--ivory) 86%, white)",
                     boxShadow:
-                      "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                      "0 1px 0 color-mix(in oklab, var(--charcoal) 9%, transparent), 0 14px 34px color-mix(in oklab, var(--charcoal) 7%, transparent)",
                     animationDelay: `${500 + i * 110}ms`,
                   }}
                 >
@@ -1350,7 +1351,7 @@ function ConvergencePhase({
                       fontFamily: "'Inter', system-ui, sans-serif",
                       fontSize: "10px",
                       color: "var(--ivory)",
-                      background: "var(--teal)",
+                      background: "var(--charcoal)",
                     }}
                   >
                     {i + 1}
@@ -1431,8 +1432,10 @@ function ConvergencePhase({
               className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
+                fontWeight: 700,
                 background: "var(--teal)",
                 color: "var(--ivory)",
+                boxShadow: "0 16px 34px color-mix(in oklab, var(--teal) 28%, transparent)",
               }}
             >
               {ctaBook} →
