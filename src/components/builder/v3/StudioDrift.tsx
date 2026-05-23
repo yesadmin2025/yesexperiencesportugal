@@ -1194,15 +1194,27 @@ function ConvergencePhase({
 
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
-      <div className="relative h-[64vh] min-h-[420px] w-full overflow-hidden">
-        <SceneVideo scene={heroScene} />
+      <div className="relative h-[54vh] min-h-[340px] w-full overflow-hidden">
+        {mapStops.length > 0 && regionCenter ? (
+          <Suspense fallback={<SceneVideo scene={heroScene} />}>
+            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
+          </Suspense>
+        ) : (
+          <SceneVideo scene={heroScene} />
+        )}
         <Vignette stronger />
-        <div className="absolute inset-x-0 bottom-10 z-20 px-7 text-center pointer-events-none">
+        <div className="absolute inset-x-0 bottom-8 z-20 px-6 pointer-events-none">
           <p
-            className="text-[color:var(--ivory)] mx-auto max-w-[16ch]"
+            className="mx-auto mb-3 text-center text-[9.5px] uppercase text-[color:var(--gold)]"
+            style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em" }}
+          >
+            {tt("reveal.map_label", locale)}
+          </p>
+          <h2
+            className="mx-auto max-w-[15ch] text-center text-[color:var(--ivory)]"
             style={{
               fontFamily: "'Montserrat', system-ui, sans-serif",
-              fontSize: "31px",
+              fontSize: "30px",
               fontWeight: 700,
               lineHeight: 1.08,
               letterSpacing: "0",
@@ -1210,8 +1222,8 @@ function ConvergencePhase({
               opacity: 0.98,
             }}
           >
-            {lead}
-          </p>
+            {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
+          </h2>
         </div>
         {onExit && (
           <button
@@ -1237,19 +1249,9 @@ function ConvergencePhase({
         >
           {tt("reveal.eyebrow", locale)}
         </p>
-        <h2
-          className="text-center mb-3"
-          style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
-            fontWeight: 700,
-            fontSize: "30px",
-            lineHeight: 1.12,
-            color: "var(--charcoal)",
-            letterSpacing: "0",
-          }}
-        >
-          {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
-        </h2>
+        <p className="mx-auto mb-4 max-w-[34ch] text-center italic" style={{ fontFamily: "Georgia, serif", fontSize: "17px", lineHeight: 1.55, color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
+          {lead}
+        </p>
         <p
           className="text-center mb-6"
           style={{
@@ -1312,26 +1314,6 @@ function ConvergencePhase({
                 </p>
               );
             })}
-          </div>
-        )}
-
-        {/* Cinematic map of the composed day. */}
-        {mapStops.length > 0 && regionCenter && (
-          <div className="mb-8">
-            <p
-              className="text-center text-[10px] tracking-[0.26em] uppercase mb-2"
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              }}
-            >
-              {tt("reveal.map_label", locale)}
-            </p>
-            <div className="h-[44vh] min-h-[280px] w-full overflow-hidden rounded-md" style={{ boxShadow: "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)" }}>
-              <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand,#efe9dc)]" />}>
-                <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
-              </Suspense>
-            </div>
           </div>
         )}
 
