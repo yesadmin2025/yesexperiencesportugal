@@ -662,8 +662,17 @@ export function StudioDrift({ onExit }: Props) {
   );
   const showBuildPreview = chapter.kind !== "convergence" && chapterIdx >= 4 && liveDay.stops.length > 0;
 
+  // Adaptation telemetry — emit `prediction_update` ONLY when the engine
+  // actually moved (top mood, itinerary, collapse list, pacing, …).
+  // This turns each row into evidence that a real user signal shifted the
+  // recommendation and keeps churn rows out of the table.
+  const lastAdaptationRef = useRef<AdaptationSnapshot | null>(null);
   useEffect(() => {
     if (!chapter || chapter.kind === "convergence") return;
+    const snapshot = snapshotAdaptation(prediction, confidenceRef.current, liveDay);
+    const diff = diffAdaptation(lastAdaptationRef.current, snapshot);
+    if (!diff.changed) return;
+    lastAdaptationRef.current = snapshot;
     void recordDriftBehaviorEvent("prediction_update", {
       chapterId: chapter.id,
       predictedTonalRegister: prediction.tonalRegister,
@@ -673,10 +682,34 @@ export function StudioDrift({ onExit }: Props) {
         pacingClass: prediction.pacingClass,
         nextBestDimensions: prediction.nextBestDimensions,
         inferredProfile,
-        collapseAhead: prediction.shouldCollapseAhead,
+        shouldCollapseAhead: prediction.shouldCollapseAhead,
+        changeReasons: diff.reasons,
+        snapshot,
+        previousSnapshot: diff.previous,
+        behaviorCounts: {
+          decisions: behavior.state.decisionLatency.length,
+          attractions: behavior.state.attractionEvents.length,
+          skips: behavior.state.skipEvents.length,
+          lingers: behavior.state.lingerEvents.length,
+        },
       },
     });
-  }, [chapter?.id, chapter?.kind, prediction.pacingClass, prediction.tonalRegister, prediction.revealConfidence]);
+  }, [
+    chapter?.id,
+    chapter?.kind,
+    prediction.pacingClass,
+    prediction.tonalRegister,
+    prediction.revealConfidence,
+    prediction.intensity,
+    prediction.shouldCollapseAhead,
+    liveDay,
+    inferredProfile,
+    behavior.state.attractionEvents.length,
+    behavior.state.decisionLatency.length,
+    behavior.state.skipEvents.length,
+    behavior.state.lingerEvents.length,
+  ]);
+
 
   useEffect(() => {
     if (!sessionId || !chapter) return;
