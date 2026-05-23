@@ -547,21 +547,28 @@ export function StudioDrift({ onExit }: Props) {
         />
       ))}
 
-      <Progress index={chapterIdx} total={CHAPTERS.length} />
+      <Meridian index={chapterIdx} total={CHAPTERS.length} />
+      <ChapterFade chapterId={chapter.id} />
 
       {onExit && chapter.kind !== "convergence" && (
         <button
           type="button"
           onClick={onExit}
           aria-label="sair"
-          className="absolute top-4 left-4 z-40 h-6 w-6 rounded-full bg-[color:var(--ivory)]/10 hover:bg-[color:var(--ivory)]/25 transition-colors"
-        />
+          className="absolute top-2 left-2 z-40 grid h-11 w-11 place-items-center rounded-full transition-colors motion-safe:hover:bg-[color:var(--ivory)]/15 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
+        >
+          <span
+            aria-hidden="true"
+            className="block h-1.5 w-1.5 rounded-full bg-[color:var(--ivory)]/55"
+          />
+        </button>
       )}
 
       {audioOn && <AmbientAudio gravity={gravityRef.current} />}
     </div>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Drift phase
