@@ -1256,7 +1256,7 @@ function ConvergencePhase({
                         color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
                       }}
                     >
-                      {cs.driveFromPrev}min de estrada
+                      {cs.driveFromPrev}{tt("reveal.drive_from_prev", locale).startsWith("min") ? "" : " "}{tt("reveal.drive_from_prev", locale)}
                     </p>
                   )}
                   <p
