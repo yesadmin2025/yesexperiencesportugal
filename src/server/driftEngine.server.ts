@@ -163,7 +163,7 @@ function fallbackStory(input: StoryInput): RevealStory {
   }
 
   const hero = fillSlots(
-    voice["reveal.hero"]?.text ?? "o seu dia em {region} está pronto.",
+    "o seu dia em {region} está pronto.",
     { region: regionLabel, name: profile.name },
   );
   const completion = voice["completion.book"]?.text ?? "reservar este dia";
