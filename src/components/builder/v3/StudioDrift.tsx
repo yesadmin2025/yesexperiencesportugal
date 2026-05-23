@@ -596,7 +596,7 @@ export function StudioDrift({ onExit }: Props) {
           "companions", "pickup", "radius", "energy", "style", "social",
         ];
         if (!owned.includes(dim)) break;
-        if (!top || top.confidence < 0.85) break;
+        if (!prediction.shouldCollapseAhead || !top || top.confidence < 0.78) break;
         // Skipped — synthesize an inferred answer onto the profile.
         setProfile((p) => ({ ...p, [dim]: top.value as never }));
         void recordDriftEvent("signal_captured", {
@@ -609,7 +609,7 @@ export function StudioDrift({ onExit }: Props) {
       }
       return Math.min(next, CHAPTERS.length - 1);
     });
-  }, []);
+  }, [prediction.shouldCollapseAhead]);
 
   const onPick = useCallback(
     (opt: ChoiceOption, alternatives: ChoiceOption[]) => {
