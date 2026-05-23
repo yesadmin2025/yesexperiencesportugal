@@ -91,6 +91,7 @@ const EN: Dict = {
   "chapter.companions": "who is coming with you",
   "chapter.pickup": "where does this story begin",
   "chapter.duration": "one day, or several",
+  "chapter.duration_multi_whisper": "time opens. slowly, without a map.",
   "chapter.radius": "how far would you follow the feeling",
   "chapter.energy": "which rhythm should stay",
   "chapter.style": "what calls before words",
