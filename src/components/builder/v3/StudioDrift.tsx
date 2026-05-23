@@ -366,6 +366,20 @@ export function StudioDrift({ onExit }: Props) {
     setTick((t) => t + 1);
   }, []);
 
+  // Telemetry: session_start once on mount.
+  useEffect(() => {
+    void recordDriftEvent("session_start", { chapterId: CHAPTERS[0]?.id });
+  }, []);
+
+  // Telemetry: scene_shown whenever the chapter changes.
+  useEffect(() => {
+    if (!chapter) return;
+    void recordDriftEvent("scene_shown", {
+      chapterId: chapter.id,
+      meta: { kind: chapter.kind, index: chapterIdx },
+    });
+  }, [chapter, chapterIdx]);
+
   const advance = useCallback(() => {
     setChapterIdx((i) => Math.min(i + 1, CHAPTERS.length - 1));
   }, []);
@@ -375,19 +389,39 @@ export function StudioDrift({ onExit }: Props) {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
+      // Telemetry: capture every imprinted signal.
+      for (const [k, v] of Object.entries(opt.imprint)) {
+        void recordDriftEvent("signal_captured", {
+          chapterId: chapter.id,
+          signalKey: k,
+          signalValue: String(v),
+        });
+      }
+      void recordDriftEvent("scene_answered", {
+        chapterId: chapter.id,
+        meta: { sceneId: opt.scene.id },
+      });
       window.setTimeout(advance, 850);
     },
-    [audioOn, reinforce, advance],
+    [audioOn, reinforce, advance, chapter],
   );
 
   const onNameSubmit = useCallback(
     (name: string) => {
       const clean = name.trim().slice(0, 32);
-      if (clean) setProfile((p) => ({ ...p, name: clean }));
+      if (clean) {
+        setProfile((p) => ({ ...p, name: clean }));
+        void recordDriftEvent("signal_captured", {
+          chapterId: chapter.id,
+          signalKey: "name",
+          signalValue: clean.slice(0, 32),
+        });
+      }
+      void recordDriftEvent("scene_answered", { chapterId: chapter.id });
       if (!audioOn) setAudioOn(true);
       window.setTimeout(advance, 700);
     },
-    [audioOn, advance],
+    [audioOn, advance, chapter],
   );
 
   const memoryTints = useMemo(() => {
