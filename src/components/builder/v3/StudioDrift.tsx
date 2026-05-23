@@ -1008,6 +1008,10 @@ function ConvergencePhase({
         style: profile.style,
         social: profile.social,
         confidence,
+        // Predictive + i18n hints — tone-only, never invents facts.
+        locale,
+        tonalRegister: prediction?.tonalRegister,
+        intensityPreference: prediction?.intensity,
       },
     })
       .then((res) => {
@@ -1018,6 +1022,7 @@ function ConvergencePhase({
             region: res.region,
             stops: res.day.stops.length,
             storySource: res.story.source,
+            tonalRegister: prediction?.tonalRegister,
           },
         });
       })
@@ -1028,7 +1033,7 @@ function ConvergencePhase({
     return () => {
       alive = false;
     };
-  }, [reveal, profile]);
+  }, [reveal, profile, locale, prediction?.tonalRegister, prediction?.intensity]);
 
   useEffect(() => {
     const t = window.setTimeout(() => setReady(true), 2400);
@@ -1036,10 +1041,32 @@ function ConvergencePhase({
   }, []);
 
   const lead = serverPayload?.story.microStory ?? localLead;
+  const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
-  const ctaBook = serverPayload?.cta.book ?? "reservar este dia";
-  const ctaSave = serverPayload?.cta.save ?? "guardar para depois";
-  const ctaRefine = serverPayload?.cta.refine ?? "refinar com um local";
+  const ctaBook = serverPayload?.cta.book ?? tt("cta.book", locale);
+  const ctaSave = serverPayload?.cta.save ?? tt("cta.save", locale);
+  const ctaRefine = serverPayload?.cta.refine ?? tt("cta.refine", locale);
+
+  // Map stops in the shape BuilderMap expects.
+  const mapStops = useMemo(
+    () =>
+      day.stops.map((cs, i) => ({
+        key: cs.stop.id,
+        region_key: region,
+        label: cs.stop.name,
+        blurb: cs.stop.blurb ?? null,
+        tag: null,
+        lat: cs.stop.lat,
+        lng: cs.stop.lng,
+        duration_minutes: cs.stop.dwellMin,
+        driveMinutesFromPrev: i === 0 ? 0 : cs.driveFromPrev,
+      })),
+    [day.stops, region],
+  );
+  const regionCenter = useMemo(() => {
+    const o = REGION_ORIGIN[region];
+    return o ? { lat: o.lat, lng: o.lng } : null;
+  }, [region]);
 
   const driveHours = Math.floor(day.totals.driveMin / 60);
   const driveMins = day.totals.driveMin % 60;
