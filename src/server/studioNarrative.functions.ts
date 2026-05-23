@@ -105,10 +105,10 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
       "Sardinha na grelha sobre papel oleado, pratos a passar de mão em mão.",
     ],
     reveal: [
-      "Parece o teu tipo de dia — lento, com sal, generoso.",
+      "Parece o seu tipo de dia — lento, com sal, generoso.",
       "O dia está desenhado: almoços longos, ar do mar, sem pressa.",
       "Mesa tranquila, tarde longa, a costa a olhar de baixo.",
-      "Um dia feito do que já amas — e um pouco de espaço para vaguear.",
+      "Um dia feito do que já aprecia — e um pouco de espaço para vaguear.",
     ],
   },
   es: {
