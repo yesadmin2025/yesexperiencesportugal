@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
-import { REGION_ORIGIN } from "@/data/regionStops";
+import { composeDay, pickRegion, type ComposedDay, type ComposerProfile } from "@/lib/drift/composer";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
 import { composeStudioMoment } from "@/server/studioNarrative.functions";
@@ -13,6 +13,7 @@ import { builderWaHref } from "@/components/builder/types";
 import {
   bump,
   topValue,
+  projectProfile,
   type ConfidenceMap,
   type DriftDimension,
   EXPLICIT,
@@ -601,6 +602,18 @@ export function StudioDrift({ onExit }: Props) {
 
   const chapter = CHAPTERS[chapterIdx];
   const stage = narrativeStageFor(chapter, profile, prediction);
+  const inferredProfile = useMemo(
+    () => ({ ...projectProfile(confidenceRef.current, 0.42), ...profile }) as DriftProfile,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [profile, chapterIdx, prediction.revealConfidence],
+  );
+  const liveRegion = useMemo(() => pickRegion(inferredProfile as ComposerProfile), [inferredProfile]);
+  const liveDay = useMemo(
+    () => composeDay(inferredProfile as ComposerProfile, liveRegion, { confidence: confidenceRef.current }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [inferredProfile, liveRegion, chapterIdx, prediction.tonalRegister],
+  );
+  const showBuildPreview = chapter.kind !== "convergence" && chapterIdx >= 4 && liveDay.stops.length > 0;
 
   useEffect(() => {
     if (!sessionId || !chapter) return;
@@ -680,9 +693,12 @@ export function StudioDrift({ onExit }: Props) {
         .filter(({ c }) => c.kind === "choice" && OPTIONAL_CHAPTER_IDS.includes(c.id as OptionalChapterId))
         .filter(({ c }) => !askedOptionalChapters.has(c.id as OptionalChapterId));
       if (i >= 6 && optionalCandidates.length > 0 && !prediction.shouldCollapseAhead) {
-        const best = optionalCandidates.sort(
-          (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
-        )[0];
+        const targetDim = prediction.nextBestDimensions.find((dim) => !askedOptionalChapters.has(dim));
+        const best = targetDim
+          ? optionalCandidates.find(({ c }) => c.id === targetDim)
+          : optionalCandidates.sort(
+            (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
+          )[0];
         if (best) return best.idx;
       }
       while (next < CHAPTERS.length - 1) {
@@ -833,14 +849,18 @@ export function StudioDrift({ onExit }: Props) {
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
           tonalRegister={prediction.tonalRegister}
+          hasBuildPreview={showBuildPreview}
           onSceneShown={behavior.markSceneShown}
           onAttraction={(opt) =>
-            behavior.recordAttraction({
-              sceneId: opt.scene.id,
-              mood: opt.scene.mood,
-              intensity: opt.scene.intensity,
-              weight: 1.2,
-            })
+            {
+              behavior.recordAttraction({
+                sceneId: opt.scene.id,
+                mood: opt.scene.mood,
+                intensity: opt.scene.intensity,
+                weight: 1.2,
+              });
+              reinforce(opt.reinforce, 0.75);
+            }
           }
         />
       )}
@@ -866,6 +886,14 @@ export function StudioDrift({ onExit }: Props) {
 
       {chapter.kind !== "convergence" && (
         <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} />
+      )}
+      {showBuildPreview && (
+        <ProgressiveBuildPreview
+          day={liveDay}
+          region={liveRegion}
+          locale={locale}
+          activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
+        />
       )}
       <ChapterFade chapterId={chapter.id} />
 
@@ -1072,6 +1100,7 @@ function ChoicePhase({
   onPick,
   sceneWeighting,
   tonalRegister,
+  hasBuildPreview = false,
   onAttraction,
   onSceneShown,
 }: {
@@ -1081,6 +1110,7 @@ function ChoicePhase({
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
   tonalRegister?: TonalRegister;
+  hasBuildPreview?: boolean;
   onAttraction?: (opt: ChoiceOption) => void;
   onSceneShown?: (sceneId: string) => void;
 }) {
@@ -1136,7 +1166,7 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
-      <div className="absolute inset-x-0 bottom-0 top-[30%] z-10 flex flex-col gap-2 px-3 pb-3">
+      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "92px" : 0 }}>
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
@@ -1217,6 +1247,59 @@ function ChoicePhase({
         })}
       </div>
     </>
+  );
+}
+
+
+function ProgressiveBuildPreview({
+  day,
+  region,
+  locale,
+  activeStopIndex,
+}: {
+  day: ComposedDay;
+  region: RegionKey;
+  locale: DriftLocale;
+  activeStopIndex: number;
+}) {
+  const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
+  const previewStops = day.stops.slice(0, visibleStops);
+  const mapStops = previewStops.map((cs, i) => ({
+    key: cs.stop.id,
+    region_key: region,
+    label: cs.stop.name,
+    blurb: cs.stop.blurb ?? null,
+    tag: null,
+    lat: cs.stop.coords.lat,
+    lng: cs.stop.coords.lng,
+    duration_minutes: cs.stop.dwellMin,
+    driveMinutesFromPrev: i === 0 ? 0 : cs.driveFromPrev,
+  }));
+  const origin = REGION_ORIGIN[region];
+  const last = previewStops[previewStops.length - 1]?.stop;
+  if (!last || !origin) return null;
+
+  return (
+    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ minHeight: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
+      <div className="grid grid-cols-[96px_1fr] items-stretch">
+        <div className="relative h-[84px] overflow-hidden">
+          <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
+            <BuilderMap stops={mapStops} regionCenter={{ lat: origin.lat, lng: origin.lng }} regionKey={region} emotionalMode activeStopIndex={mapStops.length - 1} chrome={false} />
+          </Suspense>
+        </div>
+        <div className="px-4 py-3">
+          <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
+            {locale === "en" ? "being built around you" : "a ser construído à tua volta"}
+          </p>
+          <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
+            {last.name}
+          </p>
+          <p className="mt-1 line-clamp-2" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", lineHeight: 1.35, color: "color-mix(in oklab, var(--ivory) 72%, transparent)" }}>
+            {last.blurb}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
