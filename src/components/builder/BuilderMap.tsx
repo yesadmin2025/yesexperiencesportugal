@@ -22,6 +22,9 @@ interface Props {
   candidates?: CandidatePin[];
   /** Tap a candidate pin to add it (only fired when eligible). */
   onCandidateClick?: (key: string) => void;
+  /** When set, highlights that stop (gold pin) and pans to it — used by the
+   *  Studio reveal so the map breathes with the story arc. */
+  activeStopIndex?: number | null;
 }
 
 /**
