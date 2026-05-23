@@ -48,6 +48,7 @@ import {
 import { NarrativeIntro } from "@/components/builder/NarrativeIntro";
 import { NarrativeCompanion } from "@/components/builder/NarrativeCompanion";
 import { StudioStageV3 } from "@/components/builder/v3/StudioStageV3";
+import { StudioDrift } from "@/components/builder/v3/StudioDrift";
 
 
 /** Resolve a human label for current selections, used by the live header. */
