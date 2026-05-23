@@ -1565,14 +1565,14 @@ function Whisper({
       <p
         className="text-center"
         style={{
-          fontFamily: "'Montserrat', system-ui, sans-serif",
-          fontStyle: "normal",
-          fontSize: isChoice ? "27px" : isOpening ? "28px" : "25px",
-          fontWeight: isOpening ? 700 : 700,
-          lineHeight: isChoice ? 1.12 : isOpening ? 1.08 : 1.16,
+          fontFamily: isOpening ? "Georgia, 'Times New Roman', serif" : "'Montserrat', system-ui, sans-serif",
+          fontStyle: isOpening ? "italic" : "normal",
+          fontSize: isChoice ? "27px" : isOpening ? "21px" : "25px",
+          fontWeight: isOpening ? 400 : 700,
+          lineHeight: isChoice ? 1.12 : isOpening ? 1.42 : 1.16,
           letterSpacing: "0",
           color: "var(--ivory)",
-          maxWidth: isChoice ? "14ch" : isOpening ? "13ch" : "17ch",
+          maxWidth: isChoice ? "14ch" : isOpening ? "22ch" : "17ch",
           textShadow:
             "0 1px 2px rgba(0,0,0,0.94), 0 4px 30px rgba(0,0,0,0.82)",
           opacity: isOpening ? 0.95 : 0.98,
