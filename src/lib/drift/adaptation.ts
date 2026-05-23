@@ -55,6 +55,43 @@ export interface AdaptationDiff {
   next: AdaptationSnapshot;
 }
 
+/** Soft-drift thresholds for `diffAdaptation`. All values are absolute
+ *  deltas on the rounded snapshot fields. Tune these to control how
+ *  sensitive the telemetry is to micro-movement. */
+export interface AdaptationThresholds {
+  /** Minimum absolute change in the top mood's weight to count as movement
+   *  when the mood label itself is stable. Default: 0.08. */
+  topMoodWeight: number;
+  /** Minimum absolute change in the top inferred dimension's confidence
+   *  to count as movement when the key is stable. Default: 0.1. */
+  topInferredConfidence: number;
+  /** Minimum absolute change in reveal confidence to emit a `confidence`
+   *  reason. Default: 0.06. */
+  revealConfidence: number;
+}
+
+export const DEFAULT_ADAPTATION_THRESHOLDS: AdaptationThresholds = {
+  topMoodWeight: 0.08,
+  topInferredConfidence: 0.1,
+  revealConfidence: 0.06,
+};
+
+function resolveThresholds(
+  overrides?: Partial<AdaptationThresholds>,
+): AdaptationThresholds {
+  if (!overrides) return DEFAULT_ADAPTATION_THRESHOLDS;
+  return {
+    topMoodWeight:
+      overrides.topMoodWeight ?? DEFAULT_ADAPTATION_THRESHOLDS.topMoodWeight,
+    topInferredConfidence:
+      overrides.topInferredConfidence ??
+      DEFAULT_ADAPTATION_THRESHOLDS.topInferredConfidence,
+    revealConfidence:
+      overrides.revealConfidence ??
+      DEFAULT_ADAPTATION_THRESHOLDS.revealConfidence,
+  };
+}
+
 const round = (n: number, p = 2) => Math.round(n * 10 ** p) / 10 ** p;
 
 function topMoodOf(prediction: Prediction): { mood: Mood | null; weight: number } {
