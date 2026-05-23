@@ -1327,11 +1327,15 @@ function ProgressiveBuildPreview({
   day,
   region,
   locale,
+  profile,
+  prediction,
   activeStopIndex,
 }: {
   day: ComposedDay;
   region: RegionKey;
   locale: DriftLocale;
+  profile?: DriftProfile;
+  prediction?: ReturnType<typeof derivePrediction>;
   activeStopIndex: number;
 }) {
   const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
