@@ -582,6 +582,7 @@ export function StudioDrift({ onExit }: Props) {
   const [narrativeLine, setNarrativeLine] = useState<string | null>(null);
   const [narrativeAt, setNarrativeAt] = useState<number | null>(null);
   const [askedOptionalChapters, setAskedOptionalChapters] = useState<Set<OptionalChapterId>>(() => new Set());
+  const [interludeWhisper, setInterludeWhisper] = useState<string | null>(null);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
   const firedStagesRef = useRef<Set<string>>(new Set());
@@ -746,9 +747,19 @@ export function StudioDrift({ onExit }: Props) {
       });
       // Pacing: decisive users get a tighter snap to next chapter.
       const snap = prediction.pacingClass === "decisive" ? 480 : 850;
+      // Multi-day = a dedicated cinematic interlude before the next chapter,
+      // honoring the Bible's "higher emotional tier" rule for multi-day.
+      if (chapter.id === "duration" && opt.imprint.duration === "multi") {
+        setInterludeWhisper(tt("chapter.duration_multi_whisper", locale));
+        window.setTimeout(() => {
+          setInterludeWhisper(null);
+          advance();
+        }, 2600);
+        return;
+      }
       window.setTimeout(advance, snap);
     },
-    [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass],
+    [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass, locale],
   );
 
   const onNameSubmit = useCallback(
@@ -870,6 +881,29 @@ export function StudioDrift({ onExit }: Props) {
             className="block h-1.5 w-1.5 rounded-full bg-[color:var(--ivory)]/55"
           />
         </button>
+      )}
+
+      {interludeWhisper && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-[70] flex items-center justify-center px-7 pointer-events-none motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+          style={{ background: "rgba(0,0,0,0.62)" }}
+        >
+          <p
+            className="text-center italic"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontSize: "23px",
+              lineHeight: 1.42,
+              color: "var(--ivory)",
+              maxWidth: "22ch",
+              textShadow: "0 2px 30px rgba(0,0,0,0.9)",
+              opacity: 0.96,
+            }}
+          >
+            {interludeWhisper}
+          </p>
+        </div>
       )}
 
       {audioOn && <AmbientAudio gravity={gravityRef.current} />}
@@ -1271,6 +1305,31 @@ function ConvergencePhase({
     return () => window.clearTimeout(t);
   }, []);
 
+  // Drive map highlight to follow the story arc — each line illuminates
+  // the corresponding stop on the map, so words and place breathe together.
+  const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
+  useEffect(() => {
+    if (!ready || day.stops.length === 0) return;
+    const arcLen = serverPayload?.story.arc?.length ?? 0;
+    const lineCount = arcLen > 1 ? arcLen - 1 : 0; // last arc line = longing pull, no specific stop
+    if (lineCount === 0) return;
+    const stopCount = day.stops.length;
+    const timers: number[] = [];
+    for (let i = 0; i < lineCount; i++) {
+      const stopIdx = Math.min(stopCount - 1, Math.round((i / Math.max(1, lineCount - 1)) * (stopCount - 1)));
+      timers.push(
+        window.setTimeout(() => setActiveStopIndex(stopIdx), 900 + i * 1600),
+      );
+    }
+    timers.push(
+      window.setTimeout(() => setActiveStopIndex(null), 900 + lineCount * 1600 + 2400),
+    );
+    return () => {
+      for (const t of timers) window.clearTimeout(t);
+    };
+  }, [ready, serverPayload?.story.arc, day.stops.length]);
+
+
   const lead = serverPayload?.story.microStory ?? localLead;
   const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
@@ -1338,7 +1397,7 @@ function ConvergencePhase({
       <div className="relative h-[54vh] min-h-[340px] w-full overflow-hidden">
         {mapStops.length > 0 && regionCenter ? (
           <Suspense fallback={<SceneVideo scene={heroScene} />}>
-            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
+            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode activeStopIndex={activeStopIndex} />
           </Suspense>
         ) : (
           <SceneVideo scene={heroScene} />

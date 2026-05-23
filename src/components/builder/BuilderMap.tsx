@@ -22,6 +22,9 @@ interface Props {
   candidates?: CandidatePin[];
   /** Tap a candidate pin to add it (only fired when eligible). */
   onCandidateClick?: (key: string) => void;
+  /** When set, highlights that stop (gold pin) and pans to it — used by the
+   *  Studio reveal so the map breathes with the story arc. */
+  activeStopIndex?: number | null;
 }
 
 /**
@@ -33,10 +36,12 @@ interface Props {
  */
 const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
 
-export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick }: Props) {
+export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const stopMarkersRef = useRef<L.Marker[]>([]);
+  const stopPointsRef = useRef<L.LatLng[]>([]);
   const lastBoundsRef = useRef<L.LatLngBounds | null>(null);
   const lastRegionRef = useRef<string | undefined>(undefined);
 
@@ -166,25 +171,29 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     const ivory = cs.getPropertyValue("--ivory").trim() || "var(--ivory)";
     const gold = cs.getPropertyValue("--gold").trim() || "var(--gold)";
 
-    const pin = (n: number) =>
+    const pin = (n: number, highlighted = false) =>
       L.divIcon({
         className: "yes-route-pin",
         html: `<div style="
-          width:32px;height:32px;border-radius:50% 50% 50% 0;
+          width:${highlighted ? 38 : 32}px;height:${highlighted ? 38 : 32}px;border-radius:50% 50% 50% 0;
           transform:rotate(-45deg);
-          background:${teal};border:2px solid ${ivory};
-          box-shadow:0 6px 14px rgba(0,0,0,0.3);
+          background:${highlighted ? gold : teal};border:2px solid ${ivory};
+          box-shadow:0 8px 22px ${highlighted ? "rgba(201,169,106,0.55)" : "rgba(0,0,0,0.3)"};
+          transition:all 400ms ease-out;
           display:flex;align-items:center;justify-content:center;">
-          <span style="transform:rotate(45deg);color:${ivory};font-weight:700;font-size:12px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
+          <span style="transform:rotate(45deg);color:${highlighted ? "#2E2E2E" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
         </div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
+        iconSize: [highlighted ? 38 : 32, highlighted ? 38 : 32],
+        iconAnchor: [highlighted ? 19 : 16, highlighted ? 38 : 32],
       });
 
+    stopMarkersRef.current = [];
+    stopPointsRef.current = points;
     points.forEach((p, i) => {
-      const m = L.marker(p, { icon: pin(i + 1) });
+      const m = L.marker(p, { icon: pin(i + 1, false) });
       m.bindTooltip(emotionalMode ? `momento ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
       layer.addLayer(m);
+      stopMarkersRef.current.push(m);
     });
 
     const line = L.polyline(points, {
@@ -255,6 +264,48 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
       map.setView(first, 9);
     }
   }, [stops, regionCenter, candidates, onCandidateClick, emotionalMode]);
+
+  // Active stop highlight — driven by the Studio reveal as the arc unfolds.
+  useEffect(() => {
+    const map = mapRef.current;
+    const markers = stopMarkersRef.current;
+    const points = stopPointsRef.current;
+    if (!map || markers.length === 0) return;
+    const cs = getComputedStyle(document.documentElement);
+    const teal = cs.getPropertyValue("--teal").trim() || "#295B61";
+    const ivory = cs.getPropertyValue("--ivory").trim() || "#FAF8F3";
+    const gold = cs.getPropertyValue("--gold").trim() || "#C9A96A";
+
+    const makeIcon = (n: number, highlighted: boolean) =>
+      L.divIcon({
+        className: "yes-route-pin",
+        html: `<div style="
+          width:${highlighted ? 38 : 32}px;height:${highlighted ? 38 : 32}px;border-radius:50% 50% 50% 0;
+          transform:rotate(-45deg);
+          background:${highlighted ? gold : teal};border:2px solid ${ivory};
+          box-shadow:0 8px 22px ${highlighted ? "rgba(201,169,106,0.55)" : "rgba(0,0,0,0.3)"};
+          transition:all 400ms ease-out;
+          display:flex;align-items:center;justify-content:center;">
+          <span style="transform:rotate(45deg);color:${highlighted ? "#2E2E2E" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
+        </div>`,
+        iconSize: [highlighted ? 38 : 32, highlighted ? 38 : 32],
+        iconAnchor: [highlighted ? 19 : 16, highlighted ? 38 : 32],
+      });
+
+    markers.forEach((m, i) => {
+      const active = activeStopIndex !== null && activeStopIndex === i;
+      m.setIcon(makeIcon(i + 1, active));
+    });
+
+    if (
+      activeStopIndex !== null &&
+      activeStopIndex >= 0 &&
+      activeStopIndex < points.length &&
+      map.getSize().x > 0
+    ) {
+      map.panTo(points[activeStopIndex], { animate: true, duration: 0.8 });
+    }
+  }, [activeStopIndex]);
 
   return (
     <div className="relative h-full w-full">
