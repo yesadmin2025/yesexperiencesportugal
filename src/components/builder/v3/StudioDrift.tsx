@@ -1,11 +1,15 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
 import { REGION_ORIGIN } from "@/data/regionStops";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { builderWaHref } from "@/components/builder/types";
 import {
   bump,
   topValue,
@@ -295,6 +299,8 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
 ];
 
 const ALWAYS_ASK_CHAPTERS = new Set(["companions", "pickup", "duration", "radius"]);
+const OPTIONAL_CHAPTER_IDS = ["energy", "style", "social"] as const;
+type OptionalChapterId = (typeof OPTIONAL_CHAPTER_IDS)[number];
 
 function isDriftDimension(key: string): key is DriftDimension {
   return DRIFT_DIMENSIONS.includes(key as DriftDimension);
