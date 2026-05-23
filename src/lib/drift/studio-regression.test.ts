@@ -154,7 +154,7 @@ describe("Studio Drift · inference regression", () => {
       "style:WINE": 0.5, // uppercase value disallowed
       "social:intimate": "0.7" as unknown as number, // numeric string ok
       "social:bad shared": 0.5, // space disallowed
-      __proto__: 1 as unknown as number,
+      ["__proto__"]: 1 as unknown as number,
     };
     const clean = sanitizeConfidence(dirty);
     expect(clean["style:wine"]).toBe(1);
