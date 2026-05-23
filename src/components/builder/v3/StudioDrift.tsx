@@ -83,45 +83,97 @@ export interface DriftProfile {
 
 type Scene = {
   id: string;
-  video: string;
+  /** Cinematic video loop OR editorial still (priority: still > video if both). */
+  video?: string;
+  still?: string;
+  ken?: "push" | "pull" | "drift";
   motifs: Motif[];
+  /** Editorial intent tag — drives the predictive scene weighting layer. */
+  mood?: SceneMood;
+  /** 1 (calm/contemplative) → 5 (charged/celebratory). */
+  intensity?: number;
 };
+
+/** Convert a Scene into a SceneSource the SceneCanvas understands. */
+function sceneSource(s: Scene): SceneSource {
+  if (s.still) return { kind: "still", src: s.still, ken: s.ken ?? "drift" };
+  return { kind: "video", src: s.video! };
+}
 
 const SCENES: Record<string, Scene> = {
   arrabidaCoast: {
     id: "arrabida-coast",
     video: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
     motifs: ["salt", "linen", "vine"],
+    mood: "arrival",
+    intensity: 3,
   },
   caboRoca: {
     id: "cabo-roca",
     video: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
     motifs: ["salt", "stone"],
+    mood: "discovery",
+    intensity: 4,
   },
   hiddenStreet: {
     id: "hidden-street",
     video: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
     motifs: ["rain", "stone", "basil"],
+    mood: "slowness",
+    intensity: 2,
   },
   viewpoint: {
     id: "viewpoint",
     video: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
     motifs: ["vine", "fado", "amber"],
+    mood: "slowness",
+    intensity: 2,
   },
   candleTable: {
     id: "candle-table",
     video: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
     motifs: ["candle", "amber", "bread"],
+    mood: "intimacy",
+    intensity: 2,
   },
   celebration: {
     id: "celebration",
     video: "/__l5e/assets-v1/79e74bb4-85bb-4f83-9bc7-c8bf774af5be/scene-celebration.mp4",
     motifs: ["candle", "amber", "fado", "linen"],
+    mood: "celebration",
+    intensity: 5,
   },
   sesimbra: {
     id: "sesimbra",
     video: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
     motifs: ["harbour", "salt", "rain"],
+    mood: "discovery",
+    intensity: 4,
+  },
+  // Premium editorial stills — cinematic Ken Burns, film-grain overlay.
+  wineHand: {
+    id: "wine-hand",
+    still: wineHandImg,
+    ken: "pull",
+    motifs: ["vine", "amber"],
+    mood: "ritual",
+    intensity: 3,
+  },
+  sharedTable: {
+    id: "shared-table",
+    still: sharedTableImg,
+    ken: "push",
+    motifs: ["candle", "amber", "bread"],
+    mood: "intimacy",
+    intensity: 3,
+  },
+  silentVineyard: {
+    id: "silent-vineyard",
+    still: silentVineyardImg,
+    ken: "drift",
+    motifs: ["vine", "amber"],
+    mood: "slowness",
+    intensity: 1,
   },
 };
 
