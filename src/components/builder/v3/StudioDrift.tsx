@@ -182,6 +182,46 @@ const SCENES: Record<string, Scene> = {
     mood: "slowness",
     intensity: 1,
   },
+  dawnDouro: {
+    id: "dawn-douro",
+    still: dawnDouroImg,
+    ken: "pull",
+    motifs: ["vine", "stone"],
+    mood: "arrival",
+    intensity: 2,
+  },
+  candleBread: {
+    id: "candle-bread",
+    still: candleBreadImg,
+    ken: "push",
+    motifs: ["candle", "amber", "bread"],
+    mood: "ritual",
+    intensity: 3,
+  },
+  atlanticHands: {
+    id: "atlantic-hands",
+    still: atlanticHandsImg,
+    ken: "drift",
+    motifs: ["salt", "harbour"],
+    mood: "discovery",
+    intensity: 2,
+  },
+  quietChapel: {
+    id: "quiet-chapel",
+    still: quietChapelImg,
+    ken: "drift",
+    motifs: ["stone", "linen"],
+    mood: "slowness",
+    intensity: 1,
+  },
+  linenBreeze: {
+    id: "linen-breeze",
+    still: linenBreezeImg,
+    ken: "drift",
+    motifs: ["linen", "salt"],
+    mood: "slowness",
+    intensity: 2,
+  },
 };
 
 const MOTIF_TINT: Record<Motif, string> = {
