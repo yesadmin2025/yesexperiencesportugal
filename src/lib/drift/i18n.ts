@@ -61,6 +61,12 @@ const PT: Dict = {
   "cta.save": "guardar para depois",
   "cta.refine": "refinar com um local",
   "cta.explore": "explorar tudo",
+  "cta.whatsapp": "falar com um local",
+  "wa.intro": "Olá, estou a desenhar um dia em Portugal no Studio",
+  "wa.with_name": "Sou o(a) {name}",
+  "wa.region": "Partida prevista: {region}",
+  "wa.companions": "Companhia: {companions}",
+  "wa.closing": "Gostava de afinar este dia com um local.",
 
   // Encouragements (shown above progress bar at key moments)
   "enc.start": "um traço de Portugal",
