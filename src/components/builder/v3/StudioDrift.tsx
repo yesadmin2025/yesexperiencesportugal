@@ -183,6 +183,10 @@ interface ChoiceOption {
 interface ChoiceChapter {
   kind: "choice";
   id: string;
+  /** Dimension this chapter is intended to resolve — used by the dynamic
+   *  router to skip the chapter if confidence on that dimension is already
+   *  high enough from prior soft signals. */
+  dim?: DriftDimension;
   whisper: (p: DriftProfile) => string;
   options: ChoiceOption[];
 }
