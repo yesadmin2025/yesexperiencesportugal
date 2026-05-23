@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
+import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
