@@ -735,7 +735,9 @@ function ChoicePhase({
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Convergence — real signature tours matched to the profile
+// Convergence — a composed day, assembled from the regional stops pool
+// under operational rules. Not a static tour card — a personal itinerary
+// that mixes stops across YES tours within the same region.
 // ─────────────────────────────────────────────────────────────────────────
 
 function ConvergencePhase({
@@ -745,15 +747,25 @@ function ConvergencePhase({
   profile: DriftProfile;
   onExit?: () => void;
 }) {
-  const tours = useMemo(() => matchTours(profile), [profile]);
+  const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
+  const day = useMemo(() => composeDay(profile as ComposerProfile, region), [profile, region]);
   const lead = useMemo(() => composeLead(profile), [profile]);
   const heroScene = pickHeroScene(profile);
+  const anchorTour: SignatureTour | undefined = useMemo(
+    () => (day.anchorTourId ? signatureTours.find((t) => t.id === day.anchorTourId) : undefined),
+    [day.anchorTourId],
+  );
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const t = window.setTimeout(() => setReady(true), 2400);
     return () => window.clearTimeout(t);
   }, []);
+
+  const driveHours = Math.floor(day.totals.driveMin / 60);
+  const driveMins = day.totals.driveMin % 60;
+  const driveLabel =
+    driveHours > 0 ? `${driveHours}h${String(driveMins).padStart(2, "0")}` : `${driveMins}min`;
 
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
@@ -795,10 +807,10 @@ function ConvergencePhase({
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          o que portugal te oferece
+          o teu dia, composto
         </p>
         <h2
-          className="text-center mb-8"
+          className="text-center mb-3"
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
             fontWeight: 700,
@@ -809,90 +821,141 @@ function ConvergencePhase({
         >
           {profile.name ? `Para ti, ${profile.name}` : "Para ti"}
         </h2>
+        <p
+          className="text-center mb-8"
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "12px",
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          }}
+        >
+          {day.stops.length} paragens · {driveLabel} de estrada · partida de {day.originLabel}
+        </p>
 
-        <ul className="space-y-5">
-          {tours.map((t) => (
-            <li key={t.id}>
-              <Link
-                to="/tours/$tourId"
-                params={{ tourId: t.id }}
-                className="block group rounded-md overflow-hidden bg-white"
-                style={{
-                  boxShadow: "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
-                }}
-              >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={t.img}
-                    alt={t.title}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.03]"
-                    style={{ objectPosition: t.focal ?? "50% 50%" }}
-                  />
-                </div>
-                <div className="p-4">
-                  <p
-                    className="text-[10.5px] tracking-[0.22em] uppercase mb-1.5"
+        {day.stops.length === 0 ? (
+          <p
+            className="text-center italic"
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "14px",
+              color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+            }}
+          >
+            ainda não há um dia possível para este pedido — fala com um local.
+          </p>
+        ) : (
+          <ol className="space-y-4">
+            {day.stops.map((cs, i) => {
+              const s = cs.stop;
+              const openLabel = s.hours
+                ? `${s.hours.open}–${s.hours.close}`
+                : "aberto todo o dia";
+              return (
+                <li
+                  key={s.id}
+                  className="relative pl-8 pr-3 py-3 bg-white rounded-md"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-2 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full"
                     style={{
                       fontFamily: "'Inter', system-ui, sans-serif",
-                      color: "color-mix(in oklab, var(--charcoal) 56%, transparent)",
+                      fontSize: "10px",
+                      color: "var(--ivory)",
+                      background: "var(--teal)",
                     }}
                   >
-                    {t.region} · {t.duration}
-                  </p>
-                  <h3
-                    className="mb-2"
+                    {i + 1}
+                  </span>
+                  {i > 0 && cs.driveFromPrev > 0 && (
+                    <p
+                      className="mb-1 italic"
+                      style={{
+                        fontFamily: "Georgia, serif",
+                        fontSize: "11px",
+                        color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
+                      }}
+                    >
+                      {cs.driveFromPrev}min de estrada
+                    </p>
+                  )}
+                  <p
                     style={{
                       fontFamily: "'Montserrat', system-ui, sans-serif",
                       fontWeight: 600,
-                      fontSize: "16px",
-                      lineHeight: 1.3,
+                      fontSize: "14.5px",
                       color: "var(--charcoal)",
+                      lineHeight: 1.3,
                     }}
                   >
-                    {t.title}
-                  </h3>
+                    {s.name}
+                  </p>
                   <p
-                    className="mb-3"
+                    className="mt-1"
                     style={{
                       fontFamily: "'Inter', system-ui, sans-serif",
-                      fontSize: "13px",
+                      fontSize: "12.5px",
                       lineHeight: 1.5,
-                      color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                      color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
                     }}
                   >
-                    {t.blurb}
+                    {s.blurb}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <span
-                      style={{
-                        fontFamily: "'Inter', system-ui, sans-serif",
-                        fontSize: "13px",
-                        color: "var(--charcoal)",
-                      }}
-                    >
-                      desde <strong>€{t.priceFrom}</strong> / pessoa
-                    </span>
-                    <span
-                      className="text-[11px] tracking-[0.2em] uppercase"
-                      style={{
-                        fontFamily: "'Inter', system-ui, sans-serif",
-                        color: "var(--teal)",
-                      }}
-                    >
-                      ver experiência →
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                  <p
+                    className="mt-2 text-[10.5px] tracking-[0.18em] uppercase"
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
+                    }}
+                  >
+                    {s.dwellMin}min · {openLabel}
+                  </p>
+                </li>
+              );
+            })}
+          </ol>
+        )}
 
-        <div className="mt-10 text-center">
+        {day.warnings.length > 0 && (
+          <ul className="mt-5 space-y-1">
+            {day.warnings.map((w) => (
+              <li
+                key={w}
+                className="text-center italic"
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "12px",
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                }}
+              >
+                {w}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-10 flex flex-col items-center gap-4">
+          {anchorTour && (
+            <Link
+              to="/tours/$tourId"
+              params={{ tourId: anchorTour.id }}
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                background: "var(--teal)",
+                color: "var(--ivory)",
+              }}
+            >
+              continuar com um local →
+            </Link>
+          )}
           <Link
             to="/experiences"
-            className="inline-block text-[11px] tracking-[0.22em] uppercase"
+            className="text-[11px] tracking-[0.22em] uppercase"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
@@ -905,6 +968,7 @@ function ConvergencePhase({
     </div>
   );
 }
+
 
 function pickHeroScene(profile: DriftProfile): Scene {
   if (profile.social === "intimate") return SCENES.candleTable;
