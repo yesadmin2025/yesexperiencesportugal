@@ -5,6 +5,14 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
+import {
+  bump,
+  topValue,
+  type ConfidenceMap,
+  type DriftDimension,
+  EXPLICIT,
+  SOFT,
+} from "@/lib/drift/inference";
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
