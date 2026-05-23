@@ -694,6 +694,7 @@ export function StudioDrift({ onExit }: Props) {
           profile={profile}
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
+          tonalRegister={prediction.tonalRegister}
           onSceneShown={behavior.markSceneShown}
           onAttraction={(opt) =>
             behavior.recordAttraction({
