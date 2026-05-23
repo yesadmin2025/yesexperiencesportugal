@@ -950,16 +950,17 @@ function ConvergencePhase({
 
         {serverPayload && serverPayload.dna.length > 0 && (
           <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {serverPayload.dna.map((t) => (
+            {serverPayload.dna.map((t, i) => (
               <span
                 key={t.key}
-                className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase"
+                className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase motion-safe:animate-[fade-in_0.6s_ease-out_both]"
                 style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 600,
                   background: "color-mix(in oklab, var(--gold) 14%, transparent)",
                   color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                   border: "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
+                  animationDelay: `${300 + i * 140}ms`,
                 }}
               >
                 {t.label}
@@ -967,6 +968,7 @@ function ConvergencePhase({
             ))}
           </div>
         )}
+
 
         {day.stops.length === 0 ? (
           <p
