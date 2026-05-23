@@ -126,6 +126,12 @@ const EN: Dict = {
   "cta.save": "save for later",
   "cta.refine": "refine with a local",
   "cta.explore": "explore everything",
+  "cta.whatsapp": "talk to a local",
+  "wa.intro": "Hi, I'm shaping a day in Portugal in the Studio",
+  "wa.with_name": "I'm {name}",
+  "wa.region": "Departure: {region}",
+  "wa.companions": "Company: {companions}",
+  "wa.closing": "I'd love to refine this day with a local.",
 
   "enc.start": "a trace of Portugal",
   "enc.middle": "the shape is emerging",
