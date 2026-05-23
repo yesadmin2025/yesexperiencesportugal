@@ -1,8 +1,13 @@
 import { Check, MessageCircle, X } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { fmtMinutes, type RouteUI, type RoutedStopUI, type Who, builderWaHref } from "./types";
 import type { BuilderImageRef } from "@/hooks/useBuilderImages";
 import { BuilderImage } from "./BuilderImage";
-import { BuilderMap } from "./BuilderMap";
+// Lazy: BuilderMap pulls leaflet which references `window` at module scope
+// and crashes SSR. Loading it client-only keeps the route SSR-safe.
+const BuilderMap = lazy(() =>
+  import("./BuilderMap").then((m) => ({ default: m.BuilderMap })),
+);
 import { CtaButton } from "@/components/ui/CtaButton";
 import { ReferenceUploader, type ToneResult } from "./ReferenceUploader";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
