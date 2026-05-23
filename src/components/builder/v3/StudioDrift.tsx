@@ -357,6 +357,29 @@ type Chapter = DriftChapter | TextChapter | ChoiceChapter | ConvergenceChapter;
 const greet = (p: DriftProfile, fallback: string) =>
   p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name.toLowerCase()}` : fallback;
 
+function narrativeStageFor(chapter: Chapter, profile: DriftProfile, prediction?: ReturnType<typeof derivePrediction>) {
+  if (chapter.kind === "convergence") return "reveal" as const;
+  const resolved = [profile.companions, profile.pickup, profile.radius, profile.energy, profile.style, profile.social]
+    .filter(Boolean).length;
+  if ((prediction?.revealConfidence ?? 0) >= 0.62 || resolved >= 4) return "emergence" as const;
+  if (resolved >= 1 || profile.name) return "recognition" as const;
+  return "invitation" as const;
+}
+
+function chapterSortKey(chapter: Chapter, confidence: ConfidenceMap, prediction: ReturnType<typeof derivePrediction>) {
+  if (chapter.kind !== "choice") return -1;
+  if (ALWAYS_ASK_CHAPTERS.has(chapter.id)) return -1;
+  const dim = chapter.dim ?? (chapter.id as DriftDimension);
+  if (!DRIFT_DIMENSIONS.includes(dim)) return -1;
+  const top = topValue(confidence, dim)?.confidence ?? 0;
+  const chapterMood = chapter.options
+    .map((o) => o.scene.mood)
+    .filter((m): m is SceneMood => Boolean(m))
+    .sort((a, b) => (prediction.sceneWeighting[b] ?? 0.5) - (prediction.sceneWeighting[a] ?? 0.5))[0];
+  const affinity = chapterMood ? prediction.sceneWeighting[chapterMood] ?? 0.5 : 0.5;
+  return (1 - top) * 0.72 + affinity * 0.28;
+}
+
 const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
