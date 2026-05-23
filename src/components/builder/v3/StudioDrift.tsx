@@ -787,13 +787,18 @@ function ChoicePhase({
 
 function ConvergencePhase({
   profile,
+  confidence,
   onExit,
 }: {
   profile: DriftProfile;
+  confidence: ConfidenceMap;
   onExit?: () => void;
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
-  const day = useMemo(() => composeDay(profile as ComposerProfile, region), [profile, region]);
+  const day = useMemo(
+    () => composeDay(profile as ComposerProfile, region, { confidence }),
+    [profile, region, confidence],
+  );
   const localLead = useMemo(() => composeLead(profile), [profile]);
   const heroScene = pickHeroScene(profile);
   const anchorTour: SignatureTour | undefined = useMemo(
@@ -821,6 +826,7 @@ function ConvergencePhase({
         energy: profile.energy,
         style: profile.style,
         social: profile.social,
+        confidence,
       },
     })
       .then((res) => {
