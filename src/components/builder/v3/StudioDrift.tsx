@@ -1186,9 +1186,9 @@ function ConvergencePhase({
   const lead = serverPayload?.story.microStory ?? localLead;
   const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
-  const ctaBook = serverPayload?.cta.book ?? tt("cta.book", locale);
-  const ctaSave = serverPayload?.cta.save ?? tt("cta.save", locale);
-  const ctaRefine = serverPayload?.cta.refine ?? tt("cta.refine", locale);
+  const ctaBook = locale === "en" ? tt("cta.book", locale) : (serverPayload?.cta.book ?? tt("cta.book", locale));
+  const ctaSave = locale === "en" ? tt("cta.save", locale) : (serverPayload?.cta.save ?? tt("cta.save", locale));
+  const ctaRefine = locale === "en" ? tt("cta.refine", locale) : (serverPayload?.cta.refine ?? tt("cta.refine", locale));
 
   // Map stops in the shape BuilderMap expects.
   const mapStops = useMemo(
