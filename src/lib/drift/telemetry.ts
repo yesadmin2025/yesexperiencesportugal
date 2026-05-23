@@ -51,3 +51,57 @@ export async function recordDriftEvent(
     /* swallow — telemetry must never break the experience */
   }
 }
+
+/**
+ * Predictive behavior telemetry — fire-and-forget. Captures raw signals
+ * (decision latency, linger, skip, attraction) plus the current prediction
+ * snapshot so we can later analyze how the engine adapts in real users.
+ *
+ * Schema mirror: drift_behavior_events (signal_type CHECK + length limits).
+ */
+
+export type BehaviorSignalType =
+  | "decision"
+  | "linger"
+  | "skip"
+  | "attraction"
+  | "prediction_update";
+
+export interface BehaviorEventOpts {
+  chapterId?: string;
+  decisionLatencyMs?: number;
+  lingerMs?: number;
+  attractionTarget?: string;
+  predictedArchetype?: string;
+  predictedTonalRegister?: string;
+  predictedIntensity?: string;
+  revealConfidence?: number;
+  meta?: Record<string, unknown>;
+}
+
+export async function recordDriftBehaviorEvent(
+  signalType: BehaviorSignalType,
+  opts: BehaviorEventOpts = {},
+): Promise<void> {
+  if (typeof window === "undefined") return;
+  const sessionId = getDriftSessionId();
+  try {
+    await supabase.from("drift_behavior_events").insert([
+      {
+        session_id: sessionId,
+        signal_type: signalType,
+        chapter_id: opts.chapterId ?? null,
+        decision_latency_ms: opts.decisionLatencyMs ?? null,
+        linger_ms: opts.lingerMs ?? null,
+        attraction_target: opts.attractionTarget ?? null,
+        predicted_archetype: opts.predictedArchetype ?? null,
+        predicted_tonal_register: opts.predictedTonalRegister ?? null,
+        predicted_intensity: opts.predictedIntensity ?? null,
+        reveal_confidence: opts.revealConfidence ?? null,
+        meta: opts.meta ? (JSON.parse(JSON.stringify(opts.meta)) as Json) : null,
+      },
+    ]);
+  } catch {
+    /* swallow */
+  }
+}
