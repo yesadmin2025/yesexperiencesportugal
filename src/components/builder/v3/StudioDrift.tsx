@@ -712,10 +712,15 @@ function ChoicePhase({
 }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
+  const [tilesIn, setTilesIn] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setShowHints(true), 2200);
-    return () => window.clearTimeout(t);
+    const t1 = window.setTimeout(() => setTilesIn(true), 280);
+    const t2 = window.setTimeout(() => setShowHints(true), 1800);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
   }, []);
 
   const handlePick = (opt: ChoiceOption) => {
@@ -726,9 +731,9 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper(profile)} delay={400} hold={2000} />
+      <Whisper text={chapter.whisper(profile)} delay={500} hold={5200} />
       <div className="absolute inset-0 z-10 flex flex-col">
-        {chapter.options.map((opt) => {
+        {chapter.options.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
           return (
@@ -736,10 +741,15 @@ function ChoicePhase({
               key={opt.scene.id}
               type="button"
               onClick={() => handlePick(opt)}
-              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out"
+              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/40"
               style={{
-                opacity: isDimmed ? 0.15 : 1,
-                transform: isPicked ? "scale(1.02)" : "scale(1)",
+                opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
+                transform: !tilesIn
+                  ? "translateY(14px)"
+                  : isPicked
+                    ? "scale(1.02)"
+                    : "scale(1)",
+                transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
               }}
             >
               <video
@@ -749,7 +759,7 @@ function ChoicePhase({
                 loop
                 playsInline
                 preload="auto"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover motion-safe:animate-[kenburns_22s_ease-in-out_infinite_alternate]"
                 style={{ filter: "saturate(0.94) contrast(1.03)" }}
               />
               <div
@@ -757,7 +767,7 @@ function ChoicePhase({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.46) 100%)",
+                    "linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.06) 28%, rgba(0,0,0,0.06) 72%, rgba(0,0,0,0.50) 100%)",
                 }}
               />
               <div
@@ -772,7 +782,7 @@ function ChoicePhase({
                   fontSize: "15px",
                   letterSpacing: "0.01em",
                   textShadow: "0 1px 18px rgba(0,0,0,0.7)",
-                  opacity: showHints ? 0.84 : 0,
+                  opacity: showHints ? 0.86 : 0,
                   transform: showHints ? "translateY(0)" : "translateY(6px)",
                 }}
               >
@@ -785,6 +795,7 @@ function ChoicePhase({
     </>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Convergence — a composed day, assembled from the regional stops pool
