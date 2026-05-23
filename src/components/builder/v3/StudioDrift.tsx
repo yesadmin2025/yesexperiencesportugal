@@ -1601,7 +1601,7 @@ function ConvergencePhase({
               {ctaRefine} →
             </Link>
           )}
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
             <button
               type="button"
               onClick={() => void recordDriftEvent("cta_save")}
@@ -1613,6 +1613,20 @@ function ConvergencePhase({
             >
               {ctaSave}
             </button>
+            <a
+              href={builderWaHref(waMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => void recordDriftEvent("cta_whatsapp", { meta: { stage: "reveal" } })}
+              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.22em] uppercase"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                color: "color-mix(in oklab, var(--teal) 88%, transparent)",
+              }}
+            >
+              <MessageCircle size={13} strokeWidth={1.6} aria-hidden="true" />
+              {ctaWhatsapp}
+            </a>
             <Link
               to="/experiences"
               className="text-[11px] tracking-[0.22em] uppercase"
