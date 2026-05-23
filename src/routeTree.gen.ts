@@ -36,6 +36,7 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
+import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
@@ -176,6 +177,11 @@ const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
   path: '/admin/error-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDriftBibleRoute = AdminDriftBibleRouteImport.update({
+  id: '/admin/drift-bible',
+  path: '/admin/drift-bible',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
   id: '/admin/builder-images-qa',
   path: '/admin/builder-images-qa',
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -319,6 +328,7 @@ export interface FileRouteTypes {
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
@@ -419,6 +431,7 @@ export interface RootRouteChildren {
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
+  AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
@@ -623,6 +636,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminErrorLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/drift-bible': {
+      id: '/admin/drift-bible'
+      path: '/admin/drift-bible'
+      fullPath: '/admin/drift-bible'
+      preLoaderRoute: typeof AdminDriftBibleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/builder-images-qa': {
       id: '/admin/builder-images-qa'
       path: '/admin/builder-images-qa'
@@ -686,6 +706,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
+  AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,

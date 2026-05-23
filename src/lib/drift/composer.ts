@@ -75,13 +75,54 @@ function isInSeason(stop: RegionStop, month: number): boolean {
 
 // ─── scoring ──────────────────────────────────────────────────────────────
 
-function affinityScore(stop: RegionStop, p: ComposerProfile): number {
+/** Phase 2: optional confidence map. Keys are `${dimension}:${value}`,
+ *  values in [0,1]. When supplied, affinity bonuses are scaled by the
+ *  confidence of the matching dimension instead of treated as binary. */
+export type ConfidenceMap = Record<string, number>;
+
+function dimWeight(
+  conf: ConfidenceMap | undefined,
+  dim: string,
+  value: string | undefined,
+): number {
+  if (!value) return 0;
+  if (!conf) return 1;
+  return Math.max(conf[`${dim}:${value}`] ?? 0, 1);
+}
+
+function affinityScore(
+  stop: RegionStop,
+  p: ComposerProfile,
+  conf?: ConfidenceMap,
+): number {
   let score = 0;
   const a = stop.affinity;
-  if (p.style && a.style?.includes(p.style)) score += 6;
-  if (p.energy && a.energy?.includes(p.energy)) score += 3;
-  if (p.social && a.social?.includes(p.social)) score += 2;
-  if (p.companions && a.companions?.includes(p.companions)) score += 2;
+  if (p.style && a.style?.includes(p.style)) {
+    score += 6 * dimWeight(conf, "style", p.style);
+  }
+  if (p.energy && a.energy?.includes(p.energy)) {
+    score += 3 * dimWeight(conf, "energy", p.energy);
+  }
+  if (p.social && a.social?.includes(p.social)) {
+    score += 2 * dimWeight(conf, "social", p.social);
+  }
+  if (p.companions && a.companions?.includes(p.companions)) {
+    score += 2 * dimWeight(conf, "companions", p.companions);
+  }
+  // Soft inference: if confidence map says style/energy X is likely (>0.5)
+  // even when the explicit profile field is unset, still nudge matches.
+  if (conf && !p.style) {
+    for (const s of a.style ?? []) {
+      const c = conf[`style:${s}`] ?? 0;
+      if (c >= 0.5) score += 6 * c * 0.7;
+    }
+  }
+  if (conf && !p.energy) {
+    for (const e of a.energy ?? []) {
+      const c = conf[`energy:${e}`] ?? 0;
+      if (c >= 0.5) score += 3 * c * 0.7;
+    }
+  }
   score += stop.priority * 0.6;
   return score;
 }
@@ -121,6 +162,8 @@ export interface ComposeOptions {
   weekday?: number;
   /** Month of the trip (1–12) for seasonal stops. Defaults to current month. */
   month?: number;
+  /** Phase 2: adaptive confidence map per `${dimension}:${value}`. */
+  confidence?: ConfidenceMap;
 }
 
 export function composeDay(
@@ -133,6 +176,7 @@ export function composeDay(
     return w === 0 ? 7 : w;
   })();
   const month = opts.month ?? new Date().getMonth() + 1;
+  const confidence = opts.confidence;
 
   const rules = REGION_RULES[region];
   const origin = REGION_ORIGIN[region];
@@ -147,9 +191,9 @@ export function composeDay(
     .filter((s) => isOpenOnDay(s, weekday))
     .filter((s) => isInSeason(s, month));
 
-  // 2. Score & sort by affinity.
+  // 2. Score & sort by adaptive affinity.
   const scored = candidates
-    .map((stop) => ({ stop, score: affinityScore(stop, profile) }))
+    .map((stop) => ({ stop, score: affinityScore(stop, profile, confidence) }))
     .sort((a, b) => b.score - a.score);
 
   // 3. Greedy assemble with caps + drive/dwell budgets, then order by time of day.

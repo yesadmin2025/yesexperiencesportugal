@@ -5,6 +5,14 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
+import {
+  bump,
+  topValue,
+  type ConfidenceMap,
+  type DriftDimension,
+  EXPLICIT,
+  SOFT,
+} from "@/lib/drift/inference";
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
@@ -124,10 +132,25 @@ const MOTIF_TINT: Record<Motif, string> = {
 // (category caps, opening hours, drive-time budgets). The old tour-level
 // regex matchers below were retired with that shift.
 
+// ─── Motif → dimension nudges (predictive inference) ──────────────────────
+// Soft signals: lingering on a scene with these motifs nudges the matching
+// dimension's confidence up without ever fully claiming it. Explicit picks
+// always win (EXPLICIT = 1.0); these only contribute < 0.4.
+const MOTIF_NUDGE: Partial<Record<Motif, Array<[DriftDimension, string]>>> = {
+  salt: [["style", "coast"], ["energy", "vivid"]],
+  linen: [["style", "coast"], ["social", "intimate"]],
+  harbour: [["style", "coast"], ["energy", "vivid"]],
+  stone: [["style", "heritage"], ["energy", "slow"]],
+  basil: [["style", "heritage"]],
+  rain: [["style", "heritage"], ["energy", "slow"]],
+  vine: [["style", "wine"], ["energy", "slow"]],
+  fado: [["style", "wine"], ["social", "shared"]],
+  candle: [["style", "table"], ["social", "intimate"]],
+  amber: [["social", "intimate"], ["energy", "slow"]],
+  bread: [["style", "table"]],
+};
 
-// ─────────────────────────────────────────────────────────────────────────
-// Chapter graph
-// ─────────────────────────────────────────────────────────────────────────
+// ─── Chapter graph ────────────────────────────────────────────────────────
 
 type ChapterKind = "drift" | "text" | "choice" | "convergence";
 
@@ -160,6 +183,10 @@ interface ChoiceOption {
 interface ChoiceChapter {
   kind: "choice";
   id: string;
+  /** Dimension this chapter is intended to resolve — used by the dynamic
+   *  router to skip the chapter if confidence on that dimension is already
+   *  high enough from prior soft signals. */
+  dim?: DriftDimension;
   whisper: (p: DriftProfile) => string;
   options: ChoiceOption[];
 }
@@ -354,15 +381,23 @@ export function StudioDrift({ onExit }: Props) {
   const [profile, setProfile] = useState<DriftProfile>({});
   const [audioOn, setAudioOn] = useState(false);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
+  const confidenceRef = useRef<ConfidenceMap>({});
   const [, setTick] = useState(0);
 
   const chapter = CHAPTERS[chapterIdx];
 
+  /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
+   *  confidence on the dimensions they correlate with. */
   const reinforce = useCallback((motifs: Motif[], amount: number) => {
     const g = gravityRef.current;
+    let conf = confidenceRef.current;
     for (const m of motifs) {
       g.set(m, Math.min(8, (g.get(m) ?? 0) + amount));
+      for (const [dim, val] of MOTIF_NUDGE[m] ?? []) {
+        conf = bump(conf, dim, val, SOFT * amount * 0.45);
+      }
     }
+    confidenceRef.current = conf;
     setTick((t) => t + 1);
   }, []);
 
@@ -380,8 +415,37 @@ export function StudioDrift({ onExit }: Props) {
     });
   }, [chapter, chapterIdx]);
 
+  /** Dynamic router: walk forward past any ChoiceChapter whose target
+   *  dimension is already confidently inferred (top ≥ 0.85). Keeps drift
+   *  + text + convergence chapters intact — only the "ask" steps are
+   *  skipped when the system has already learned the answer. */
   const advance = useCallback(() => {
-    setChapterIdx((i) => Math.min(i + 1, CHAPTERS.length - 1));
+    setChapterIdx((i) => {
+      let next = i + 1;
+      const conf = confidenceRef.current;
+      while (next < CHAPTERS.length - 1) {
+        const c = CHAPTERS[next];
+        if (c.kind !== "choice") break;
+        const dim = (c.dim ?? (c.id as DriftDimension));
+        const top = topValue(conf, dim);
+        // Only skip dimensions the inference engine actually owns.
+        const owned: DriftDimension[] = [
+          "companions", "pickup", "radius", "energy", "style", "social",
+        ];
+        if (!owned.includes(dim)) break;
+        if (!top || top.confidence < 0.85) break;
+        // Skipped — synthesize an inferred answer onto the profile.
+        setProfile((p) => ({ ...p, [dim]: top.value as never }));
+        void recordDriftEvent("signal_captured", {
+          chapterId: c.id,
+          signalKey: dim,
+          signalValue: top.value,
+          meta: { inferred: true, confidence: Number(top.confidence.toFixed(2)) },
+        });
+        next += 1;
+      }
+      return Math.min(next, CHAPTERS.length - 1);
+    });
   }, []);
 
   const onPick = useCallback(
@@ -389,14 +453,18 @@ export function StudioDrift({ onExit }: Props) {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
-      // Telemetry: capture every imprinted signal.
+      // Explicit imprint → full confidence on those dimensions.
+      let conf = confidenceRef.current;
       for (const [k, v] of Object.entries(opt.imprint)) {
+        if (v === undefined) continue;
+        conf = bump(conf, k as DriftDimension, String(v), EXPLICIT);
         void recordDriftEvent("signal_captured", {
           chapterId: chapter.id,
           signalKey: k,
           signalValue: String(v),
         });
       }
+      confidenceRef.current = conf;
       void recordDriftEvent("scene_answered", {
         chapterId: chapter.id,
         meta: { sceneId: opt.scene.id },
@@ -467,7 +535,7 @@ export function StudioDrift({ onExit }: Props) {
       )}
 
       {chapter.kind === "convergence" && (
-        <ConvergencePhase profile={profile} onExit={onExit} />
+        <ConvergencePhase profile={profile} confidence={confidenceRef.current} onExit={onExit} />
       )}
 
       {memoryTints.map((t, i) => (
@@ -719,13 +787,18 @@ function ChoicePhase({
 
 function ConvergencePhase({
   profile,
+  confidence,
   onExit,
 }: {
   profile: DriftProfile;
+  confidence: ConfidenceMap;
   onExit?: () => void;
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
-  const day = useMemo(() => composeDay(profile as ComposerProfile, region), [profile, region]);
+  const day = useMemo(
+    () => composeDay(profile as ComposerProfile, region, { confidence }),
+    [profile, region, confidence],
+  );
   const localLead = useMemo(() => composeLead(profile), [profile]);
   const heroScene = pickHeroScene(profile);
   const anchorTour: SignatureTour | undefined = useMemo(
@@ -753,6 +826,7 @@ function ConvergencePhase({
         energy: profile.energy,
         style: profile.style,
         social: profile.social,
+        confidence,
       },
     })
       .then((res) => {

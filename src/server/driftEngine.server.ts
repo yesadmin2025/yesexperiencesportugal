@@ -4,6 +4,7 @@ import {
   pickRegion,
   type ComposedDay,
   type ComposerProfile,
+  type ConfidenceMap,
 } from "@/lib/drift/composer";
 import { signatureTours } from "@/data/signatureTours";
 
@@ -254,11 +255,12 @@ export interface RevealPayload {
 
 export async function assembleReveal(
   rawProfile: ComposerProfile & { name?: string; social?: string },
+  confidence: ConfidenceMap = {},
 ): Promise<RevealPayload> {
   const region = pickRegion(rawProfile);
-  const day = composeDay(rawProfile, region);
+  const day = composeDay(rawProfile, region, { confidence });
   const voice = await loadVoice();
-  const dna = await activateDna(rawProfile);
+  const dna = await activateDna(rawProfile, confidence);
   const regionLabel = REGION_LABEL[region] ?? region;
   const story = await generateRevealStory({ profile: rawProfile, day, voice, regionLabel });
   const cta = {
