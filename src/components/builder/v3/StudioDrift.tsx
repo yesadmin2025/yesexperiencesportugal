@@ -863,11 +863,13 @@ function DriftPhase({
 function TextPhase({
   chapter,
   profile,
+  locale,
   onSubmit,
   onSkip,
 }: {
   chapter: TextChapter;
   profile: DriftProfile;
+  locale: DriftLocale;
   onSubmit: (value: string) => void;
   onSkip: () => void;
 }) {
@@ -903,14 +905,14 @@ function TextPhase({
             opacity: 0.96,
           }}
         >
-          {chapter.whisper(profile)}
+          {chapter.whisper(profile, locale)}
         </label>
         <input
           type="text"
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={chapter.placeholder}
+          placeholder={chapter.placeholder(locale)}
           maxLength={32}
           className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
           style={{
