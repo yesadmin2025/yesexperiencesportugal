@@ -1209,30 +1209,24 @@ function Whisper({
   delay?: number;
   hold?: number;
 }) {
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    const t1 = window.setTimeout(() => setShown(true), delay);
-    const t2 = window.setTimeout(() => setShown(false), delay + hold);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, [delay, hold]);
   return (
     <div
-      aria-hidden="true"
-      className="absolute inset-x-0 top-[14%] z-30 flex justify-center px-8 pointer-events-none"
+      key={`whisper-${text}`}
+      className="absolute inset-x-0 top-[18%] z-[60] flex justify-center px-6 pointer-events-none"
     >
       <p
-        className="italic text-[color:var(--ivory)] max-w-[24ch] text-center transition-all duration-[1500ms] ease-out"
+        className="italic text-[color:var(--ivory)] max-w-[22ch] text-center"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "16px",
-          lineHeight: 1.5,
+          fontSize: "19px",
+          lineHeight: 1.45,
           letterSpacing: "0.005em",
-          textShadow: "0 1px 22px rgba(0,0,0,0.74)",
-          opacity: shown ? 0.8 : 0,
-          transform: shown ? "translateY(0)" : "translateY(-6px)",
+          textShadow:
+            "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
+          opacity: 0,
+          animation: `whisperFade ${delay + hold + 1400}ms ease-out forwards`,
+          // delay handled inside keyframes via timing
+          animationDelay: `${Math.max(0, delay - 300)}ms`,
         }}
       >
         {text}
@@ -1276,8 +1270,13 @@ function Meridian({ index, total }: { index: number; total: number }) {
  * 420ms in, 720ms out — keeps the editing rhythm calm.
  */
 function ChapterFade({ chapterId }: { chapterId: string }) {
-  const [opacity, setOpacity] = useState(0.55);
+  const [opacity, setOpacity] = useState(0);
+  const firstRender = useRef(true);
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
     setOpacity(0.55);
     const t = window.setTimeout(() => setOpacity(0), 420);
     return () => window.clearTimeout(t);
