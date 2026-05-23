@@ -1270,8 +1270,13 @@ function Meridian({ index, total }: { index: number; total: number }) {
  * 420ms in, 720ms out — keeps the editing rhythm calm.
  */
 function ChapterFade({ chapterId }: { chapterId: string }) {
-  const [opacity, setOpacity] = useState(0.55);
+  const [opacity, setOpacity] = useState(0);
+  const firstRender = useRef(true);
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
     setOpacity(0.55);
     const t = window.setTimeout(() => setOpacity(0), 420);
     return () => window.clearTimeout(t);
