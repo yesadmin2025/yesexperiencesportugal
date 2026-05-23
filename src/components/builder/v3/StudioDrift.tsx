@@ -1202,12 +1202,12 @@ function Vignette({ stronger = false }: { stronger?: boolean }) {
 
 function Whisper({
   text,
-  delay = 600,
-  hold = 3200,
+  delay,
+  hold,
 }: {
   text: string;
-  // hold/delay kept in signature for API stability; current rendering is
-  // static visible to guarantee legibility across HMR + StrictMode edge cases.
+  delay?: number;
+  hold?: number;
 }) {
   void delay;
   void hold;
