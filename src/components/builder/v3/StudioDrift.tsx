@@ -285,6 +285,19 @@ const MOTIF_NUDGE: Partial<Record<Motif, Array<[DriftDimension, string]>>> = {
   bread: [["style", "table"]],
 };
 
+const DRIFT_DIMENSIONS: DriftDimension[] = [
+  "companions",
+  "pickup",
+  "radius",
+  "energy",
+  "style",
+  "social",
+];
+
+function isDriftDimension(key: string): key is DriftDimension {
+  return DRIFT_DIMENSIONS.includes(key as DriftDimension);
+}
+
 // ─── Chapter graph ────────────────────────────────────────────────────────
 
 type ChapterKind = "drift" | "text" | "choice" | "convergence";
@@ -592,10 +605,7 @@ export function StudioDrift({ onExit }: Props) {
         const dim = (c.dim ?? (c.id as DriftDimension));
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
-        const owned: DriftDimension[] = [
-          "companions", "pickup", "radius", "energy", "style", "social",
-        ];
-        if (!owned.includes(dim)) break;
+        if (!DRIFT_DIMENSIONS.includes(dim)) break;
         if (!prediction.shouldCollapseAhead || !top || top.confidence < 0.78) break;
         // Skipped — synthesize an inferred answer onto the profile.
         setProfile((p) => ({ ...p, [dim]: top.value as never }));
@@ -629,7 +639,9 @@ export function StudioDrift({ onExit }: Props) {
       let conf = confidenceRef.current;
       for (const [k, v] of Object.entries(opt.imprint)) {
         if (v === undefined) continue;
-        conf = bump(conf, k as DriftDimension, String(v), EXPLICIT);
+        if (isDriftDimension(k)) {
+          conf = bump(conf, k, String(v), EXPLICIT);
+        }
         void recordDriftEvent("signal_captured", {
           chapterId: chapter.id,
           signalKey: k,
