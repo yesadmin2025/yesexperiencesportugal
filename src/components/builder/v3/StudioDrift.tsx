@@ -1195,13 +1195,19 @@ function ChoicePhase({
   const ordered = useMemo(() => {
     const w = (o: ChoiceOption) =>
       o.scene.mood && sceneWeighting ? sceneWeighting[o.scene.mood] ?? 0.5 : 0.5;
-    const sorted = [...chapter.options].sort((a, b) => w(b) - w(a));
+    const sorted = [...chapter.options].sort((a, b) => {
+      if (prediction && confidence) return optionScore(b, confidence, prediction) - optionScore(a, confidence, prediction);
+      return w(b) - w(a);
+    });
+    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= 0.72) return sorted.slice(0, 2);
     if (sceneWeighting && sorted.length >= 3) {
       const last = sorted[sorted.length - 1]!;
       if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
     }
     return sorted;
-  }, [chapter.options, sceneWeighting]);
+  }, [chapter.options, sceneWeighting, prediction, confidence]);
+
+  const cue = predictiveCue(prediction?.revealConfidence ?? 0, locale);
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
@@ -1238,6 +1244,21 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
+      <p
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[23%] z-[56] px-7 text-center uppercase transition-opacity duration-[900ms]"
+        style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontSize: "9px",
+          fontWeight: 700,
+          letterSpacing: "0.22em",
+          color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
+          textShadow: "0 1px 14px rgba(0,0,0,0.72)",
+          opacity: tilesIn ? 0.78 : 0,
+        }}
+      >
+        {cue}
+      </p>
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "92px" : 0 }}>
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
