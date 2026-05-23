@@ -677,7 +677,7 @@ function DriftPhase({
 
   return (
     <>
-      <SceneVideo src={scene.video} />
+      <SceneVideo scene={scene} />
       <Vignette />
       <button
         type="button"
@@ -720,7 +720,7 @@ function TextPhase({
 
   return (
     <>
-      <SceneVideo src={chapter.scene.video} />
+      <SceneVideo scene={chapter.scene} />
       <Vignette stronger />
       <form
         className="absolute inset-0 z-20 flex flex-col items-center justify-center px-8 transition-opacity duration-[1400ms]"
@@ -959,7 +959,7 @@ function ConvergencePhase({
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
       <div className="relative h-[58vh] min-h-[360px] w-full overflow-hidden">
-        <SceneVideo src={heroScene.video} />
+        <SceneVideo scene={heroScene} />
         <Vignette stronger />
         <div className="absolute inset-x-0 bottom-8 z-20 px-6 text-center pointer-events-none">
           <p
@@ -1243,20 +1243,8 @@ function composeLead(p: DriftProfile): string {
 // Atoms
 // ─────────────────────────────────────────────────────────────────────────
 
-function SceneVideo({ src }: { src: string }) {
-  return (
-    <video
-      key={src}
-      src={src}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[2000ms]"
-      style={{ filter: "saturate(0.92) contrast(1.02)" }}
-    />
-  );
+function SceneVideo({ scene, tint }: { scene: Scene; tint?: string }) {
+  return <SceneCanvas source={sceneSource(scene)} tint={tint} />;
 }
 
 function Vignette({ stronger = false }: { stronger?: boolean }) {
