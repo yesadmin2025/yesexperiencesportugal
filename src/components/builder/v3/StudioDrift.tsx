@@ -1209,35 +1209,24 @@ function Whisper({
   delay?: number;
   hold?: number;
 }) {
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    setShown(false);
-    let raf = 0;
-    const t1 = window.setTimeout(() => {
-      raf = window.requestAnimationFrame(() => setShown(true));
-    }, delay);
-    const t2 = window.setTimeout(() => setShown(false), delay + hold);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      if (raf) window.cancelAnimationFrame(raf);
-    };
-  }, [text, delay, hold]);
   return (
     <div
-      className="absolute inset-x-0 top-[16%] z-30 flex justify-center px-6 pointer-events-none"
+      key={`whisper-${text}`}
+      className="absolute inset-x-0 top-[18%] z-[60] flex justify-center px-6 pointer-events-none"
     >
       <p
-        className="italic text-[color:var(--ivory)] max-w-[22ch] text-center transition-all duration-[1400ms] ease-out"
+        className="italic text-[color:var(--ivory)] max-w-[22ch] text-center"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           fontSize: "19px",
           lineHeight: 1.45,
           letterSpacing: "0.005em",
           textShadow:
-            "0 1px 2px rgba(0,0,0,0.92), 0 2px 26px rgba(0,0,0,0.78), 0 0 60px rgba(0,0,0,0.55)",
-          opacity: shown ? 0.95 : 0,
-          transform: shown ? "translateY(0)" : "translateY(-8px)",
+            "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
+          opacity: 0,
+          animation: `whisperFade ${delay + hold + 1400}ms ease-out forwards`,
+          // delay handled inside keyframes via timing
+          animationDelay: `${Math.max(0, delay - 300)}ms`,
         }}
       >
         {text}
