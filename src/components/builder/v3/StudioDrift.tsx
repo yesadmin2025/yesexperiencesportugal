@@ -1511,7 +1511,7 @@ function ConvergencePhase({
               opacity: 0.98,
             }}
           >
-            {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
+            {heroLine ?? tName("reveal.hero_fallback", locale, profile.name)}
           </h2>
         </div>
         {onExit && (
