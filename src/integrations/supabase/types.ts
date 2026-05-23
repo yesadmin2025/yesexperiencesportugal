@@ -622,6 +622,54 @@ export type Database = {
         }
         Relationships: []
       }
+      drift_behavior_events: {
+        Row: {
+          attraction_target: string | null
+          chapter_id: string | null
+          decision_latency_ms: number | null
+          id: string
+          linger_ms: number | null
+          meta: Json
+          occurred_at: string
+          predicted_archetype: string | null
+          predicted_intensity: string | null
+          predicted_tonal_register: string | null
+          reveal_confidence: number | null
+          session_id: string
+          signal_type: string
+        }
+        Insert: {
+          attraction_target?: string | null
+          chapter_id?: string | null
+          decision_latency_ms?: number | null
+          id?: string
+          linger_ms?: number | null
+          meta?: Json
+          occurred_at?: string
+          predicted_archetype?: string | null
+          predicted_intensity?: string | null
+          predicted_tonal_register?: string | null
+          reveal_confidence?: number | null
+          session_id: string
+          signal_type: string
+        }
+        Update: {
+          attraction_target?: string | null
+          chapter_id?: string | null
+          decision_latency_ms?: number | null
+          id?: string
+          linger_ms?: number | null
+          meta?: Json
+          occurred_at?: string
+          predicted_archetype?: string | null
+          predicted_intensity?: string | null
+          predicted_tonal_register?: string | null
+          reveal_confidence?: number | null
+          session_id?: string
+          signal_type?: string
+        }
+        Relationships: []
+      }
       drift_dna_tokens: {
         Row: {
           created_at: string

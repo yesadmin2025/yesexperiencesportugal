@@ -22,6 +22,11 @@ import { useDriftLocale, t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
 import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
+import dawnDouroImg from "@/assets/drift/dawn-douro.jpg";
+import candleBreadImg from "@/assets/drift/candle-bread.jpg";
+import atlanticHandsImg from "@/assets/drift/atlantic-hands.jpg";
+import quietChapelImg from "@/assets/drift/quiet-chapel.jpg";
+import linenBreezeImg from "@/assets/drift/linen-breeze.jpg";
 
 // Lazy-load Leaflet-based map to avoid SSR window crashes.
 const BuilderMap = lazy(() =>
@@ -176,6 +181,46 @@ const SCENES: Record<string, Scene> = {
     motifs: ["vine", "amber"],
     mood: "slowness",
     intensity: 1,
+  },
+  dawnDouro: {
+    id: "dawn-douro",
+    still: dawnDouroImg,
+    ken: "pull",
+    motifs: ["vine", "stone"],
+    mood: "arrival",
+    intensity: 2,
+  },
+  candleBread: {
+    id: "candle-bread",
+    still: candleBreadImg,
+    ken: "push",
+    motifs: ["candle", "amber", "bread"],
+    mood: "ritual",
+    intensity: 3,
+  },
+  atlanticHands: {
+    id: "atlantic-hands",
+    still: atlanticHandsImg,
+    ken: "drift",
+    motifs: ["salt", "harbour"],
+    mood: "discovery",
+    intensity: 2,
+  },
+  quietChapel: {
+    id: "quiet-chapel",
+    still: quietChapelImg,
+    ken: "drift",
+    motifs: ["stone", "linen"],
+    mood: "slowness",
+    intensity: 1,
+  },
+  linenBreeze: {
+    id: "linen-breeze",
+    still: linenBreezeImg,
+    ken: "drift",
+    motifs: ["linen", "salt"],
+    mood: "slowness",
+    intensity: 2,
   },
 };
 
