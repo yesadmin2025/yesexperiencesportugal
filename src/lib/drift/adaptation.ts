@@ -55,6 +55,43 @@ export interface AdaptationDiff {
   next: AdaptationSnapshot;
 }
 
+/** Soft-drift thresholds for `diffAdaptation`. All values are absolute
+ *  deltas on the rounded snapshot fields. Tune these to control how
+ *  sensitive the telemetry is to micro-movement. */
+export interface AdaptationThresholds {
+  /** Minimum absolute change in the top mood's weight to count as movement
+   *  when the mood label itself is stable. Default: 0.08. */
+  topMoodWeight: number;
+  /** Minimum absolute change in the top inferred dimension's confidence
+   *  to count as movement when the key is stable. Default: 0.1. */
+  topInferredConfidence: number;
+  /** Minimum absolute change in reveal confidence to emit a `confidence`
+   *  reason. Default: 0.06. */
+  revealConfidence: number;
+}
+
+export const DEFAULT_ADAPTATION_THRESHOLDS: AdaptationThresholds = {
+  topMoodWeight: 0.08,
+  topInferredConfidence: 0.1,
+  revealConfidence: 0.06,
+};
+
+function resolveThresholds(
+  overrides?: Partial<AdaptationThresholds>,
+): AdaptationThresholds {
+  if (!overrides) return DEFAULT_ADAPTATION_THRESHOLDS;
+  return {
+    topMoodWeight:
+      overrides.topMoodWeight ?? DEFAULT_ADAPTATION_THRESHOLDS.topMoodWeight,
+    topInferredConfidence:
+      overrides.topInferredConfidence ??
+      DEFAULT_ADAPTATION_THRESHOLDS.topInferredConfidence,
+    revealConfidence:
+      overrides.revealConfidence ??
+      DEFAULT_ADAPTATION_THRESHOLDS.revealConfidence,
+  };
+}
+
 const round = (n: number, p = 2) => Math.round(n * 10 ** p) / 10 ** p;
 
 function topMoodOf(prediction: Prediction): { mood: Mood | null; weight: number } {
@@ -117,22 +154,27 @@ function sameList<T>(a: readonly T[], b: readonly T[]): boolean {
 export function diffAdaptation(
   previous: AdaptationSnapshot | null,
   next: AdaptationSnapshot,
+  thresholds?: Partial<AdaptationThresholds>,
 ): AdaptationDiff {
   if (!previous) return { changed: true, reasons: [], previous: null, next };
+  const t = resolveThresholds(thresholds);
   const reasons: AdaptationReason[] = [];
   if (previous.topMood !== next.topMood) reasons.push("top_mood");
-  // Top mood weight shift > 0.08 also counts as real movement even when the
-  // top mood label is stable, otherwise we miss soft drift.
-  else if (Math.abs(previous.topMoodWeight - next.topMoodWeight) > 0.08)
+  // Top mood weight shift above threshold also counts as real movement even
+  // when the top mood label is stable, otherwise we miss soft drift.
+  else if (Math.abs(previous.topMoodWeight - next.topMoodWeight) > t.topMoodWeight)
     reasons.push("top_mood");
   if (previous.tonalRegister !== next.tonalRegister) reasons.push("tonal_register");
   if (previous.pacingClass !== next.pacingClass) reasons.push("pacing");
   if (!sameList(previous.collapseAhead, next.collapseAhead)) reasons.push("collapse_ahead");
   if (previous.topInferred !== next.topInferred) reasons.push("top_inferred");
-  else if (Math.abs(previous.topInferredConfidence - next.topInferredConfidence) > 0.1)
+  else if (
+    Math.abs(previous.topInferredConfidence - next.topInferredConfidence) >
+    t.topInferredConfidence
+  )
     reasons.push("top_inferred");
   if (!sameList(previous.dayStopIds, next.dayStopIds)) reasons.push("itinerary");
-  if (Math.abs(previous.revealConfidence - next.revealConfidence) > 0.06)
+  if (Math.abs(previous.revealConfidence - next.revealConfidence) > t.revealConfidence)
     reasons.push("confidence");
   return { changed: reasons.length > 0, reasons, previous, next };
 }
