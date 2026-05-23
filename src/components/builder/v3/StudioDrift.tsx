@@ -294,6 +294,8 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
   "social",
 ];
 
+const ALWAYS_ASK_CHAPTERS = new Set(["companions", "pickup", "duration", "radius"]);
+
 function isDriftDimension(key: string): key is DriftDimension {
   return DRIFT_DIMENSIONS.includes(key as DriftDimension);
 }
@@ -602,6 +604,7 @@ export function StudioDrift({ onExit }: Props) {
       while (next < CHAPTERS.length - 1) {
         const c = CHAPTERS[next];
         if (c.kind !== "choice") break;
+        if (ALWAYS_ASK_CHAPTERS.has(c.id)) break;
         const dim = (c.dim ?? (c.id as DriftDimension));
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
