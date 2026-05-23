@@ -23,6 +23,7 @@ const PT: Dict = {
   "chapter.companions": "quem vem contigo",
   "chapter.pickup": "onde começa esta história",
   "chapter.duration": "um dia, ou vários",
+  "chapter.duration_multi_whisper": "o tempo abre. devagar, sem mapa.",
   "chapter.radius": "até onde irias seguir esse instinto",
   "chapter.energy": "que ritmo merece ficar",
   "chapter.style": "o que te chama antes das palavras",
