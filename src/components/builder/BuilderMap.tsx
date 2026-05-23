@@ -36,10 +36,12 @@ interface Props {
  */
 const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
 
-export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick }: Props) {
+export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const stopMarkersRef = useRef<L.Marker[]>([]);
+  const stopPointsRef = useRef<L.LatLng[]>([]);
   const lastBoundsRef = useRef<L.LatLngBounds | null>(null);
   const lastRegionRef = useRef<string | undefined>(undefined);
 
