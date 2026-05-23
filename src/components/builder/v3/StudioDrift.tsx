@@ -447,23 +447,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "radius",
-    whisper: () => "até onde irias seguir esse instinto",
+    whisper: (_p, locale) => tt("chapter.radius", locale),
     options: [
       {
         scene: SCENES.candleBread,
-        hint: "perto, demorado",
+        hintKey: "hint.radius.0",
         imprint: { radius: "near" },
         reinforce: ["candle", "bread"],
       },
       {
         scene: SCENES.dawnDouro,
-        hint: "um dia inteiro fora",
+        hintKey: "hint.radius.1",
         imprint: { radius: "far" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.caboRoca,
-        hint: "longe, se valer a pena",
+        hintKey: "hint.radius.2",
         imprint: { radius: "anywhere" },
         reinforce: ["stone", "salt"],
       },
@@ -472,17 +472,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "energy",
-    whisper: () => "Que ritmo merece ficar?",
+    whisper: (_p, locale) => tt("chapter.energy", locale),
     options: [
       {
         scene: SCENES.quietChapel,
-        hint: "lento, quase secreto",
+        hintKey: "hint.energy.0",
         imprint: { energy: "slow" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.sesimbra,
-        hint: "vivo, com pele",
+        hintKey: "hint.energy.1",
         imprint: { energy: "vivid" },
         reinforce: ["harbour", "salt"],
       },
@@ -491,23 +491,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "style",
-    whisper: () => "O que te chama antes das palavras?",
+    whisper: (_p, locale) => tt("chapter.style", locale),
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "mar aberto",
+        hintKey: "hint.style.0",
         imprint: { style: "coast" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "pedra antiga",
+        hintKey: "hint.style.1",
         imprint: { style: "heritage" },
         reinforce: ["stone", "basil"],
       },
       {
         scene: SCENES.wineHand,
-        hint: "vinha e ritual",
+        hintKey: "hint.style.2",
         imprint: { style: "wine" },
         reinforce: ["vine", "fado"],
       },
