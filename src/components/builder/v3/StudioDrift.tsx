@@ -74,6 +74,7 @@ type Motif =
 type Companions = "solo" | "couple" | "family" | "group";
 type PickupRegion = "lisbon" | "centro" | "alentejo";
 type Radius = "near" | "far" | "anywhere";
+type Duration = "day" | "multi";
 type Energy = "slow" | "vivid";
 type Style = "coast" | "heritage" | "wine" | "table";
 type Social = "intimate" | "shared";
@@ -83,6 +84,7 @@ export interface DriftProfile {
   companions?: Companions;
   pickup?: PickupRegion;
   radius?: Radius;
+  duration?: Duration;
   energy?: Energy;
   style?: Style;
   social?: Social;
