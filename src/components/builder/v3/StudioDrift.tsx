@@ -1211,28 +1211,29 @@ function Whisper({
 }) {
   const [shown, setShown] = useState(false);
   useEffect(() => {
+    setShown(false);
     const t1 = window.setTimeout(() => setShown(true), delay);
     const t2 = window.setTimeout(() => setShown(false), delay + hold);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, [delay, hold]);
+  }, [text, delay, hold]);
   return (
     <div
-      aria-hidden="true"
-      className="absolute inset-x-0 top-[14%] z-30 flex justify-center px-8 pointer-events-none"
+      className="absolute inset-x-0 top-[16%] z-30 flex justify-center px-6 pointer-events-none"
     >
       <p
-        className="italic text-[color:var(--ivory)] max-w-[24ch] text-center transition-all duration-[1500ms] ease-out"
+        className="italic text-[color:var(--ivory)] max-w-[22ch] text-center transition-all duration-[1400ms] ease-out"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "16px",
-          lineHeight: 1.5,
+          fontSize: "19px",
+          lineHeight: 1.45,
           letterSpacing: "0.005em",
-          textShadow: "0 1px 22px rgba(0,0,0,0.74)",
-          opacity: shown ? 0.8 : 0,
-          transform: shown ? "translateY(0)" : "translateY(-6px)",
+          textShadow:
+            "0 1px 2px rgba(0,0,0,0.92), 0 2px 26px rgba(0,0,0,0.78), 0 0 60px rgba(0,0,0,0.55)",
+          opacity: shown ? 0.95 : 0,
+          transform: shown ? "translateY(0)" : "translateY(-8px)",
         }}
       >
         {text}
