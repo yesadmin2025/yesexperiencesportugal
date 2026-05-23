@@ -157,5 +157,6 @@ export function useDriftLocale(): DriftLocale {
 }
 
 export function t(key: string, locale: DriftLocale): string {
-  return DICTS[locale][key] ?? DICTS.pt[key] ?? key;
+  const dict = DICTS[locale] ?? DICTS.pt;
+  return dict[key] ?? DICTS.pt[key] ?? key;
 }
