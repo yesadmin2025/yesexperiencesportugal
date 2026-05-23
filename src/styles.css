@@ -4808,3 +4808,10 @@ html { scroll-behavior: smooth; }
     transform: none !important;
   }
 }
+
+/* StudioDrift — slow ken-burns drift on choice tiles. Scoped via class
+   usage in StudioDrift.tsx; reduced-motion safe via motion-safe: prefix. */
+@keyframes kenburns {
+  0% { transform: scale(1.04) translate(0, 0); }
+  100% { transform: scale(1.10) translate(-1.2%, -1.4%); }
+}
