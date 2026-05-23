@@ -448,6 +448,14 @@ export function StudioDrift({ onExit }: Props) {
   const confidenceRef = useRef<ConfidenceMap>({});
   const [, setTick] = useState(0);
 
+  // Predictive behavior layer — silently shapes pacing, weighting, tone.
+  const behavior = useDriftBehavior();
+  const prediction = useMemo(
+    () => derivePrediction(confidenceRef.current, behavior.state),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chapterIdx, behavior.state.decisionLatency.length, behavior.state.attractionEvents.length],
+  );
+
   const chapter = CHAPTERS[chapterIdx];
 
   /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
@@ -513,10 +521,19 @@ export function StudioDrift({ onExit }: Props) {
   }, []);
 
   const onPick = useCallback(
-    (opt: ChoiceOption) => {
+    (opt: ChoiceOption, alternatives: ChoiceOption[]) => {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
+      // Behavior signal — chose this scene, skipped the others.
+      behavior.recordChoice({
+        sceneId: opt.scene.id,
+        mood: opt.scene.mood,
+        intensity: opt.scene.intensity,
+        alternatives: alternatives
+          .filter((a) => a.scene.id !== opt.scene.id)
+          .map((a) => ({ sceneId: a.scene.id, mood: a.scene.mood, intensity: a.scene.intensity })),
+      });
       // Explicit imprint → full confidence on those dimensions.
       let conf = confidenceRef.current;
       for (const [k, v] of Object.entries(opt.imprint)) {
@@ -533,9 +550,11 @@ export function StudioDrift({ onExit }: Props) {
         chapterId: chapter.id,
         meta: { sceneId: opt.scene.id },
       });
-      window.setTimeout(advance, 850);
+      // Pacing: decisive users get a tighter snap to next chapter.
+      const snap = prediction.pacingClass === "decisive" ? 480 : 850;
+      window.setTimeout(advance, snap);
     },
-    [audioOn, reinforce, advance, chapter],
+    [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass],
   );
 
   const onNameSubmit = useCallback(
@@ -578,8 +597,12 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          holdScale={prediction.holdScale}
           onDone={advance}
-          onLinger={(motifs) => reinforce(motifs, 0.6)}
+          onLinger={(motifs, ms) => {
+            reinforce(motifs, 0.6);
+            behavior.recordLinger(ms);
+          }}
           onAudio={() => !audioOn && setAudioOn(true)}
         />
       )}
@@ -595,7 +618,22 @@ export function StudioDrift({ onExit }: Props) {
       )}
 
       {chapter.kind === "choice" && (
-        <ChoicePhase key={chapter.id} chapter={chapter} profile={profile} onPick={onPick} />
+        <ChoicePhase
+          key={chapter.id}
+          chapter={chapter}
+          profile={profile}
+          onPick={onPick}
+          sceneWeighting={prediction.sceneWeighting}
+          onSceneShown={behavior.markSceneShown}
+          onAttraction={(opt) =>
+            behavior.recordAttraction({
+              sceneId: opt.scene.id,
+              mood: opt.scene.mood,
+              intensity: opt.scene.intensity,
+              weight: 1.2,
+            })
+          }
+        />
       )}
 
       {chapter.kind === "convergence" && (
