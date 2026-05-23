@@ -747,9 +747,19 @@ export function StudioDrift({ onExit }: Props) {
       });
       // Pacing: decisive users get a tighter snap to next chapter.
       const snap = prediction.pacingClass === "decisive" ? 480 : 850;
+      // Multi-day = a dedicated cinematic interlude before the next chapter,
+      // honoring the Bible's "higher emotional tier" rule for multi-day.
+      if (chapter.id === "duration" && opt.imprint.duration === "multi") {
+        setInterludeWhisper(tt("chapter.duration_multi_whisper", locale));
+        window.setTimeout(() => {
+          setInterludeWhisper(null);
+          advance();
+        }, 2600);
+        return;
+      }
       window.setTimeout(advance, snap);
     },
-    [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass],
+    [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass, locale],
   );
 
   const onNameSubmit = useCallback(
