@@ -883,6 +883,29 @@ export function StudioDrift({ onExit }: Props) {
         </button>
       )}
 
+      {interludeWhisper && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-[70] flex items-center justify-center px-7 pointer-events-none motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+          style={{ background: "rgba(0,0,0,0.62)" }}
+        >
+          <p
+            className="text-center italic"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontSize: "23px",
+              lineHeight: 1.42,
+              color: "var(--ivory)",
+              maxWidth: "22ch",
+              textShadow: "0 2px 30px rgba(0,0,0,0.9)",
+              opacity: 0.96,
+            }}
+          >
+            {interludeWhisper}
+          </p>
+        </div>
+      )}
+
       {audioOn && <AmbientAudio gravity={gravityRef.current} />}
     </div>
   );
