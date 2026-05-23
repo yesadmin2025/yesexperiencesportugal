@@ -1251,28 +1251,32 @@ function ConvergencePhase({
           </div>
         )}
 
-        {/* Story arc — 3-4 chained editorial lines, fade-in cascade. */}
+        {/* Story arc — 3-4 chained editorial lines, fade-in cascade.
+            Last line = longing pull: serif italic, larger, gold. */}
         {arc.length > 0 && (
-          <div className="mb-8 mx-auto max-w-[36ch] space-y-3 text-center">
-            {arc.map((line, i) => (
-              <p
-                key={i}
-                className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: i === arc.length - 1 ? "18px" : "16px",
-                  lineHeight: 1.55,
-                  letterSpacing: "0.005em",
-                  color:
-                    i === arc.length - 1
-                      ? "var(--teal)"
+          <div className="mb-10 mx-auto max-w-[36ch] space-y-4 text-center">
+            {arc.map((line, i) => {
+              const isPull = i === arc.length - 1 && arc.length > 1;
+              return (
+                <p
+                  key={i}
+                  className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontSize: isPull ? "24px" : "16.5px",
+                    lineHeight: isPull ? 1.35 : 1.55,
+                    letterSpacing: isPull ? "-0.005em" : "0.005em",
+                    color: isPull
+                      ? "var(--gold)"
                       : "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-                  animationDelay: `${700 + i * 320}ms`,
-                }}
-              >
-                {line}
-              </p>
-            ))}
+                    marginTop: isPull ? "8px" : undefined,
+                    animationDelay: `${700 + i * 360}ms`,
+                  }}
+                >
+                  {line}
+                </p>
+              );
+            })}
           </div>
         )}
 
