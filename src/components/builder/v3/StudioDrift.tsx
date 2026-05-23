@@ -340,16 +340,16 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: () => "Deixa Portugal chegar primeiro.",
+    whisper: () => "portugal já está acordada. respira primeiro.",
     scenes: [SCENES.dawnDouro, SCENES.arrabidaCoast],
-    holdMs: 6200,
+    holdMs: 7000,
   },
   {
     kind: "text",
     id: "name",
     scene: SCENES.linenBreeze,
-    whisper: () => "Como assinas este dia?",
-    placeholder: "primeiro nome",
+    whisper: () => "como te devemos chamar",
+    placeholder: "o teu primeiro nome",
     field: "name",
   },
   {
@@ -357,15 +357,15 @@ const CHAPTERS: Chapter[] = [
     id: "settling",
     whisper: (p) =>
       p.name
-        ? `${p.name}, começamos a desenhar sem pressa.`
-        : "Começamos a desenhar sem pressa.",
+        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
+        : "portugal está a reparar em ti",
     scenes: [SCENES.quietChapel],
-    holdMs: 5000,
+    holdMs: 5400,
   },
   {
     kind: "choice",
     id: "companions",
-    whisper: () => "Quem muda a luz do teu dia?",
+    whisper: () => "quem vem contigo",
     options: [
       {
         scene: SCENES.atlanticHands,
@@ -390,7 +390,7 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "pickup",
-    whisper: () => "Onde abrimos a porta?",
+    whisper: () => "onde começa esta história",
     options: [
       {
         scene: SCENES.arrabidaCoast,
@@ -414,8 +414,27 @@ const CHAPTERS: Chapter[] = [
   },
   {
     kind: "choice",
+    id: "duration",
+    whisper: () => "um dia, ou vários",
+    options: [
+      {
+        scene: SCENES.candleBread,
+        hint: "um dia inteiro",
+        imprint: { duration: "day" },
+        reinforce: ["candle", "bread"],
+      },
+      {
+        scene: SCENES.dawnDouro,
+        hint: "vários dias, sem pressa",
+        imprint: { duration: "multi", radius: "anywhere" },
+        reinforce: ["vine", "linen", "stone"],
+      },
+    ],
+  },
+  {
+    kind: "choice",
     id: "radius",
-    whisper: () => "Que distância ainda sabe a prazer?",
+    whisper: () => "até onde irias seguir esse instinto",
     options: [
       {
         scene: SCENES.candleBread,
