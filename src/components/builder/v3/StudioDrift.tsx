@@ -1206,24 +1206,18 @@ function Whisper({
   hold = 3200,
 }: {
   text: string;
-  delay?: number;
-  hold?: number;
+  // hold/delay kept in signature for API stability; current rendering is
+  // static visible to guarantee legibility across HMR + StrictMode edge cases.
 }) {
-  const [phase, setPhase] = useState<"hidden" | "shown" | "fading">("hidden");
-  useEffect(() => {
-    setPhase("hidden");
-    const t1 = window.setTimeout(() => setPhase("shown"), delay);
-    const t2 = window.setTimeout(() => setPhase("fading"), delay + hold);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, [text, delay, hold]);
-  const visible = phase === "shown";
+  void delay;
+  void hold;
   return (
     <div
       key={`whisper-${text}`}
       className="absolute inset-x-0 top-[18%] z-[60] flex justify-center px-6 pointer-events-none"
+      style={{
+        animation: "whisperEnter 1400ms ease-out both",
+      }}
     >
       <p
         className="italic text-center"
@@ -1236,10 +1230,7 @@ function Whisper({
           maxWidth: "22ch",
           textShadow:
             "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
-          opacity: visible ? 0.95 : 0,
-          transform: visible ? "translateY(0)" : "translateY(-6px)",
-          transition: "opacity 1200ms ease-out, transform 1200ms ease-out",
-          willChange: "opacity, transform",
+          opacity: 0.95,
         }}
       >
         {text}
