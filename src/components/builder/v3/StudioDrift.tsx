@@ -449,6 +449,7 @@ export function StudioDrift({ onExit }: Props) {
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
   const [, setTick] = useState(0);
+  const locale = useDriftLocale();
 
   // Predictive behavior layer — silently shapes pacing, weighting, tone.
   const behavior = useDriftBehavior();
