@@ -932,7 +932,7 @@ function TextPhase({
           className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"
           style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
         >
-          continuar
+          {tt("text.continue", locale)}
         </button>
       </form>
     </>
@@ -1504,7 +1504,7 @@ function ConvergencePhase({
                 color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
               }}
             >
-              explorar tudo
+              {tt("cta.explore", locale)}
             </Link>
           </div>
         </div>
