@@ -103,7 +103,7 @@ export async function activateDna(
 
 // ─── AI story (tone-only, never invents stops) ────────────────────────────
 
-export type DriftLocale = "pt" | "en";
+export type DriftLocale = "pt" | "en" | "es" | "fr";
 export type TonalRegister = "intimate" | "expansive" | "playful" | "ritual";
 
 export interface RevealStory {
@@ -142,7 +142,7 @@ function fallbackStory(input: StoryInput): RevealStory {
   const stops = input.day.stops.map((s) => s.stop.name);
   const opener = profile.name ? `${profile.name}, ` : "";
 
-  if (locale === "en") {
+  if (locale !== "pt") {
     const hero = `your day in ${regionLabel} is ready.`;
     const microStory =
       stops.length === 0
@@ -212,9 +212,13 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
 
   const locale = input.hints.locale ?? "pt";
   const langClause =
-    locale === "en"
-      ? "Write in concise British English. Lowercase, no exclamation marks, no clichés."
-      : "Write in European Portuguese (pt-PT). Lowercase, no exclamation marks, no clichés.";
+    locale === "pt"
+      ? "Write in European Portuguese (pt-PT), formal address. Lowercase, no exclamation marks, no clichés."
+      : locale === "es"
+        ? "Write in formal European Spanish. Lowercase, no exclamation marks, no clichés."
+        : locale === "fr"
+          ? "Write in formal French. Lowercase, no exclamation marks, no clichés."
+          : "Write in concise American English. Lowercase, no exclamation marks, no clichés.";
 
   const profileSummary = [
     input.profile.name ? `name=${input.profile.name}` : null,
