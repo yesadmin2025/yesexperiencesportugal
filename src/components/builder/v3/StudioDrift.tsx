@@ -353,7 +353,7 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: () => "portugal já está acordada. respira primeiro.",
+    whisper: (_p, locale) => tt("chapter.opening", locale),
     scenes: [SCENES.dawnDouro, SCENES.arrabidaCoast],
     holdMs: 7000,
   },
@@ -361,17 +361,17 @@ const CHAPTERS: Chapter[] = [
     kind: "text",
     id: "name",
     scene: SCENES.linenBreeze,
-    whisper: () => "como te devemos chamar",
-    placeholder: "o teu primeiro nome",
+    whisper: (_p, locale) => tt("chapter.name", locale),
+    placeholder: (locale) => tt("chapter.name_placeholder", locale),
     field: "name",
   },
   {
     kind: "drift",
     id: "settling",
-    whisper: (p) =>
+    whisper: (p, locale) =>
       p.name
-        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
-        : "portugal está a reparar em ti",
+        ? tt("chapter.settling_named", locale).replace("{name}", p.name.toLowerCase())
+        : tt("chapter.settling", locale),
     scenes: [SCENES.quietChapel],
     holdMs: 5400,
   },
