@@ -36,6 +36,8 @@ export interface Prediction {
   revealConfidence: number;
   /** When true, the engine should collapse low-value next chapters. */
   shouldCollapseAhead: boolean;
+  /** Optional chapters the engine can skip because confidence is already high. */
+  collapseNextChapters: Array<"energy" | "style" | "social">;
   /** Ranked optional dimensions that still need a direct interaction. */
   nextBestDimensions: Array<"energy" | "style" | "social">;
 }
@@ -50,16 +52,55 @@ const DEFAULT_WEIGHTS: Record<Mood, number> = {
   ritual: 0.5,
 };
 
+const CONFIDENCE_MOOD_PULL: Record<string, Partial<Record<Mood, number>>> = {
+  "style:coast": { arrival: 0.12, discovery: 0.18, celebration: 0.06 },
+  "style:heritage": { slowness: 0.18, discovery: 0.1, ritual: 0.08 },
+  "style:wine": { ritual: 0.2, slowness: 0.12, intimacy: 0.08 },
+  "style:table": { intimacy: 0.18, ritual: 0.12, celebration: 0.08 },
+  "energy:slow": { slowness: 0.18, intimacy: 0.1, ritual: 0.06 },
+  "energy:vivid": { celebration: 0.18, discovery: 0.12, arrival: 0.06 },
+  "social:intimate": { intimacy: 0.2, slowness: 0.08, ritual: 0.06 },
+  "social:shared": { celebration: 0.16, intimacy: 0.08, discovery: 0.06 },
+  "companions:solo": { slowness: 0.12, discovery: 0.08 },
+  "companions:couple": { intimacy: 0.16, ritual: 0.08 },
+  "companions:family": { discovery: 0.12, celebration: 0.08 },
+  "companions:group": { celebration: 0.14, discovery: 0.08 },
+};
+
+function confidenceMoodWeights(confidence: ConfidenceMap): Record<Mood, number> {
+  const weights = { ...DEFAULT_WEIGHTS };
+  for (const [key, conf] of Object.entries(confidence)) {
+    const pulls = CONFIDENCE_MOOD_PULL[key];
+    if (!pulls || conf <= 0) continue;
+    for (const [mood, amount] of Object.entries(pulls) as [Mood, number][]) {
+      weights[mood] = Math.min(1, weights[mood] + amount * Math.min(1, conf));
+    }
+  }
+  return weights;
+}
+
+function blendMoodWeights(a: Record<Mood, number>, b: Record<Mood, number>, behaviorStrength: number): Record<Mood, number> {
+  const behaviorShare = Math.min(0.72, behaviorStrength);
+  const confidenceShare = 1 - behaviorShare;
+  return (Object.keys(DEFAULT_WEIGHTS) as Mood[]).reduce<Record<Mood, number>>((out, mood) => {
+    out[mood] = Math.max(0, Math.min(1, a[mood] * confidenceShare + b[mood] * behaviorShare));
+    return out;
+  }, { ...DEFAULT_WEIGHTS });
+}
+
 export function derivePrediction(
   confidence: ConfidenceMap,
   behavior: BehaviorState,
 ): Prediction {
   const pacingClass = classifyPacing(behavior);
   const intensity = intensityPreference(behavior);
-  const sceneWeighting =
-    behavior.attractionEvents.length + behavior.skipEvents.length > 0
-      ? moodAffinity(behavior)
-      : { ...DEFAULT_WEIGHTS };
+  const confidenceWeights = confidenceMoodWeights(confidence);
+  const behaviorWeights = moodAffinity(behavior);
+  const behaviorStrength = Math.min(
+    0.72,
+    behavior.attractionEvents.length * 0.18 + behavior.skipEvents.length * 0.06,
+  );
+  const sceneWeighting = blendMoodWeights(confidenceWeights, behaviorWeights, behaviorStrength);
 
   const holdScale =
     pacingClass === "decisive" ? 0.55 : pacingClass === "exploratory" ? 1.35 : 1;
@@ -83,9 +124,10 @@ export function derivePrediction(
   );
   const revealConfidence = Math.max(0, Math.min(1, tConf * 0.7 + interactionRichness * 0.3));
 
+  const optionalDims = ["energy", "style", "social"] as const;
+  const collapseNextChapters = optionalDims.filter((dim) => topConfidence(dim) >= 0.78);
   const shouldCollapseAhead =
     tConf >= 0.7 || (pacingClass === "decisive" && behavior.decisionLatency.length >= 3);
-  const optionalDims = ["energy", "style", "social"] as const;
   const nextBestDimensions = [...optionalDims].sort((a, b) => dimensionNeed(b) - dimensionNeed(a));
 
   return {
@@ -96,14 +138,19 @@ export function derivePrediction(
     tonalRegister,
     revealConfidence,
     shouldCollapseAhead,
+    collapseNextChapters,
     nextBestDimensions,
   };
 
-  function dimensionNeed(dim: (typeof optionalDims)[number]): number {
+  function topConfidence(dim: (typeof optionalDims)[number]): number {
     const prefix = `${dim}:`;
-    const top = Math.max(0, ...Object.entries(confidence)
+    return Math.max(0, ...Object.entries(confidence)
       .filter(([key]) => key.startsWith(prefix))
       .map(([, value]) => value));
+  }
+
+  function dimensionNeed(dim: (typeof optionalDims)[number]): number {
+    const top = topConfidence(dim);
     const moodPull =
       dim === "energy"
         ? Math.max(sceneWeighting.celebration, sceneWeighting.discovery, sceneWeighting.slowness)

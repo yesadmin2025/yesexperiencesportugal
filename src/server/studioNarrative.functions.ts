@@ -131,10 +131,10 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
       "Una travesía en ferry, el río ancho bajo la luz de la tarde.",
     ],
     reveal: [
-      "Parece tu tipo de día — lento, con sal, generoso.",
+      "Parece el tipo de día adecuado — lento, con sal, generoso.",
       "El día está hecho: almuerzos largos, aire de mar, sin prisas.",
       "Mesa tranquila, tarde larga, la costa observando desde abajo.",
-      "Un día hecho de lo que ya amas — con un poco de espacio para vagar.",
+      "Un día hecho de lo que usted aprecia — con espacio para vagar.",
     ],
   },
   fr: {
@@ -157,10 +157,10 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
       "Une traversée en ferry, le fleuve large dans la lumière de l'après-midi.",
     ],
     reveal: [
-      "Cela ressemble à ta journée — lente, salée, généreuse.",
+      "Cela ressemble à la bonne journée — lente, salée, généreuse.",
       "La journée est tracée : longs déjeuners, air marin, sans hâte.",
       "Table calme, après-midi long, la côte qui regarde d'en bas.",
-      "Une journée faite de ce que tu aimes déjà — avec un peu d'espace pour flâner.",
+      "Une journée faite de ce que vous aimez déjà — avec un peu d'espace.",
     ],
   },
 };

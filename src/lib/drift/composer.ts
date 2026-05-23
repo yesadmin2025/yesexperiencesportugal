@@ -99,6 +99,7 @@ function affinityScore(
   stop: RegionStop,
   p: ComposerProfile,
   conf?: ConfidenceMap,
+  opts: Pick<ComposeOptions, "tonalRegister" | "intensityPreference"> = {},
 ): number {
   let score = 0;
   const a = stop.affinity;
@@ -128,6 +129,19 @@ function affinityScore(
       if (c >= 0.5) score += 3 * c * 0.7;
     }
   }
+  if (opts.tonalRegister === "intimate") {
+    if (a.social?.includes("intimate")) score += 2.4;
+    if (a.energy?.includes("slow")) score += 1.1;
+  } else if (opts.tonalRegister === "ritual") {
+    if (a.style?.includes("wine") || stop.kind === "winery" || stop.kind === "cellar") score += 2.6;
+    if (stop.kind === "table" || stop.kind === "workshop") score += 1.1;
+  } else if (opts.tonalRegister === "playful") {
+    if (a.energy?.includes("vivid")) score += 2.2;
+    if (a.social?.includes("shared")) score += 1.2;
+  }
+  const intensity = opts.intensityPreference ?? 3;
+  if (intensity >= 3.8 && a.energy?.includes("vivid")) score += 1.4;
+  if (intensity <= 2.2 && a.energy?.includes("slow")) score += 1.4;
   score += stop.priority * 0.6;
   return score;
 }
@@ -169,6 +183,10 @@ export interface ComposeOptions {
   month?: number;
   /** Phase 2: adaptive confidence map per `${dimension}:${value}`. */
   confidence?: ConfidenceMap;
+  /** Predictive behavior hint: lets the day order and mix reflect observed taste. */
+  tonalRegister?: "intimate" | "expansive" | "playful" | "ritual";
+  /** Average intensity preference (1–5) from attraction behavior. */
+  intensityPreference?: number;
 }
 
 export function composeDay(
@@ -198,7 +216,7 @@ export function composeDay(
 
   // 2. Score & sort by adaptive affinity.
   const scored = candidates
-    .map((stop) => ({ stop, score: affinityScore(stop, profile, confidence) }))
+    .map((stop) => ({ stop, score: affinityScore(stop, profile, confidence, opts) }))
     .sort((a, b) => b.score - a.score);
 
   // 3. Greedy assemble with caps + drive/dwell budgets, then order by time of day.

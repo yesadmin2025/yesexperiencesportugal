@@ -183,7 +183,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
           box-shadow:0 8px 22px ${highlighted ? "rgba(201,169,106,0.55)" : "rgba(0,0,0,0.3)"};
           transition:all 400ms ease-out;
           display:flex;align-items:center;justify-content:center;">
-          <span style="transform:rotate(45deg);color:${highlighted ? "#2E2E2E" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
+          <span style="transform:rotate(45deg);color:${highlighted ? "var(--charcoal)" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
         </div>`,
         iconSize: [highlighted ? 38 : 32, highlighted ? 38 : 32],
         iconAnchor: [highlighted ? 19 : 16, highlighted ? 38 : 32],
@@ -274,9 +274,9 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     const points = stopPointsRef.current;
     if (!map || markers.length === 0) return;
     const cs = getComputedStyle(document.documentElement);
-    const teal = cs.getPropertyValue("--teal").trim() || "#295B61";
-    const ivory = cs.getPropertyValue("--ivory").trim() || "#FAF8F3";
-    const gold = cs.getPropertyValue("--gold").trim() || "#C9A96A";
+    const teal = cs.getPropertyValue("--teal").trim() || "var(--teal)";
+    const ivory = cs.getPropertyValue("--ivory").trim() || "var(--ivory)";
+    const gold = cs.getPropertyValue("--gold").trim() || "var(--gold)";
 
     const makeIcon = (n: number, highlighted: boolean) =>
       L.divIcon({
@@ -288,7 +288,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
           box-shadow:0 8px 22px ${highlighted ? "rgba(201,169,106,0.55)" : "rgba(0,0,0,0.3)"};
           transition:all 400ms ease-out;
           display:flex;align-items:center;justify-content:center;">
-          <span style="transform:rotate(45deg);color:${highlighted ? "#2E2E2E" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
+          <span style="transform:rotate(45deg);color:${highlighted ? "var(--charcoal)" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
         </div>`,
         iconSize: [highlighted ? 38 : 32, highlighted ? 38 : 32],
         iconAnchor: [highlighted ? 19 : 16, highlighted ? 38 : 32],
