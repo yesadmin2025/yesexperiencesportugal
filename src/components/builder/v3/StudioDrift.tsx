@@ -968,6 +968,26 @@ function ChoicePhase({
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
+          // Upgrade visible source to a cinematic still when the option's
+          // mood aligns with the predicted tonal register (or scene already
+          // has no video). Imprint mapping is untouched.
+          const upgradeMoods: SceneMood[] = (() => {
+            switch (tonalRegister) {
+              case "intimate": return ["intimacy", "slowness"];
+              case "ritual": return ["ritual", "intimacy"];
+              case "playful": return ["celebration"];
+              case "expansive": return ["arrival", "discovery"];
+              default: return [];
+            }
+          })();
+          const shouldUpgrade =
+            !opt.scene.still &&
+            opt.scene.mood !== undefined &&
+            upgradeMoods.includes(opt.scene.mood);
+          const renderedScene =
+            (shouldUpgrade
+              ? pickStillForMood(opt.scene.mood, `${chapter.id}:${opt.scene.id}`)
+              : null) ?? opt.scene;
           return (
             <button
               key={opt.scene.id}
@@ -990,7 +1010,7 @@ function ChoicePhase({
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
               }}
             >
-              <SceneCanvas source={sceneSource(opt.scene)} />
+              <SceneCanvas source={sceneSource(renderedScene)} />
               <div
                 aria-hidden="true"
                 className="absolute inset-0"
