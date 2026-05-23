@@ -1278,6 +1278,35 @@ function ConvergencePhase({
   const ctaSave = locale === "en" ? tt("cta.save", locale) : (serverPayload?.cta.save ?? tt("cta.save", locale));
   const ctaRefine = locale === "en" ? tt("cta.refine", locale) : (serverPayload?.cta.refine ?? tt("cta.refine", locale));
 
+  // Contextual WhatsApp message — optional, soft, never primary (per Bible).
+  // Threads the user's actual profile into a hand-written-feeling intro so the
+  // local on the other end already has context before they answer.
+  const waMessage = useMemo(() => {
+    const lines: string[] = [tt("wa.intro", locale)];
+    if (profile.name) lines.push(tt("wa.with_name", locale).replace("{name}", profile.name));
+    if (profile.pickup) {
+      const regionLabel =
+        profile.pickup === "lisbon" ? "Lisboa"
+          : profile.pickup === "centro" ? "Centro"
+          : "Alentejo";
+      lines.push(tt("wa.region", locale).replace("{region}", regionLabel));
+    }
+    if (profile.companions) {
+      const companionsMap: Record<string, { pt: string; en: string }> = {
+        solo: { pt: "sozinho(a)", en: "solo" },
+        couple: { pt: "a dois", en: "a couple" },
+        family: { pt: "em família", en: "family" },
+        group: { pt: "em grupo", en: "a group" },
+      };
+      const c = companionsMap[profile.companions];
+      if (c) lines.push(tt("wa.companions", locale).replace("{companions}", locale === "en" ? c.en : c.pt));
+    }
+    lines.push("");
+    lines.push(tt("wa.closing", locale));
+    return lines.join("\n");
+  }, [profile, locale]);
+  const ctaWhatsapp = tt("cta.whatsapp", locale);
+
   // Map stops in the shape BuilderMap expects.
   const mapStops = useMemo(
     () =>
