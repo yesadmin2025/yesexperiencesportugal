@@ -139,19 +139,31 @@ export function useDriftBehavior(): UseDriftBehaviorApi {
   const recordChoice = useCallback<UseDriftBehaviorApi["recordChoice"]>(
     ({ sceneId, mood, intensity, alternatives }) => {
       const shown = sceneShownAt.current.get(sceneId);
+      let dt: number | undefined;
       if (typeof shown === "number") {
-        const dt = Math.max(0, performance.now() - shown);
+        dt = Math.max(0, performance.now() - shown);
         ref.current.decisionLatency.push(dt);
       }
       if (alternatives) {
         for (const a of alternatives) {
-          if (a.sceneId !== sceneId) ref.current.skipEvents.push(a);
+          if (a.sceneId !== sceneId) {
+            ref.current.skipEvents.push(a);
+            void recordDriftBehaviorEvent("skip", {
+              chapterId: a.sceneId,
+              meta: { mood: a.mood, intensity: a.intensity },
+            });
+          }
         }
       }
       // A pick is also a mild attraction signal.
       if (mood) {
         ref.current.attractionEvents.push({ sceneId, mood, intensity, weight: 0.6 });
       }
+      void recordDriftBehaviorEvent("decision", {
+        chapterId: sceneId,
+        decisionLatencyMs: dt,
+        meta: { mood, intensity },
+      });
       persist();
     },
     [persist],
@@ -160,6 +172,11 @@ export function useDriftBehavior(): UseDriftBehaviorApi {
   const recordAttraction = useCallback<UseDriftBehaviorApi["recordAttraction"]>(
     ({ sceneId, mood, intensity, weight = 1 }) => {
       ref.current.attractionEvents.push({ sceneId, mood, intensity, weight });
+      void recordDriftBehaviorEvent("attraction", {
+        chapterId: sceneId,
+        attractionTarget: sceneId,
+        meta: { mood, intensity, weight },
+      });
       persist();
     },
     [persist],
@@ -169,6 +186,7 @@ export function useDriftBehavior(): UseDriftBehaviorApi {
     (ms: number) => {
       if (ms > 800) {
         ref.current.lingerEvents.push(ms);
+        void recordDriftBehaviorEvent("linger", { lingerMs: Math.round(ms) });
         persist();
       }
     },
