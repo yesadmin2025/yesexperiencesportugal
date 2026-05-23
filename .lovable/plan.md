@@ -1,108 +1,88 @@
-# Studio v5.1 — AI as Cinematic Orchestrator (Conversion-Calibrated)
+## What you're asking for
 
-The Studio adds an AI orchestration layer so it stops feeling like "AI copy attached to a selector" and starts feeling like one continuous emotional thread that knows the traveller. AI = tone + continuity + emotional orchestration only. The catalog still owns every real stop, price, partner, map, and checkout. No AI-generated itineraries. No invented places.
+Drift shouldn't just match a traveller to a full pre-built Signature tour. Within a region, stops should be **swappable between tours** and assembled into a unique, feasible day — respecting opening hours, weekday closures, category caps (e.g. max 3 wineries/day in Arrábida, 2 in Alentejo), and driving-time reality. The Drift profile (energy, style, social, companions) should *predictively* weight which stops surface.
 
-Core principle: when forced to choose between cinematic complexity and emotional clarity/trust, choose clarity and trust. Calm > clever.
+So the architecture shifts from:
+> "pick the best Signature tour for this profile"
 
-## Stack
+to:
+> "pick the best **region**, then compose the day from a shared pool of real stops, filtered by operational rules and ranked by emotional fit."
 
-Single TanStack server fn `composeStudioMoment` in `src/server/studioNarrative.functions.ts`. Calls Lovable AI Gateway (`google/gemini-3-flash-preview`) with `LOVABLE_API_KEY` from `process.env`. Two modes: `narrative` and `proposal`. Build on v4.2 — do NOT rewrite existing components.
+---
 
-## Changes
+## Plan
 
-### 1. Expanded affinity profile (`types.ts`, `useStudioState.ts`)
-Extend `AffinityProfile` to `{ warmth, intimacy, curiosity, energy, elegance, spontaneity, pacing }`. Add non-persisted refs:
-- `decisionSpeed` (median ms between picks)
-- `confidence` (0–1, grows with accepted stops and consistent affinity)
-- `narrativeStage`: `"invitation" | "recognition" | "emergence" | "reveal"`
+### 1. Stops catalog (single source of truth per region)
+New file `src/data/regionStops.ts` — a flat list of real, named stops we operate, each with:
 
-Confidence influences recommendation calmness and visible-choice reduction. It does **not** drive automation.
+- `id`, `region` (`arrabida` | `alentejo` | `lisbon-centro` | …)
+- `name`, `kind` (`winery` | `market` | `viewpoint` | `beach` | `table` | `village` | `heritage` | `cellar`)
+- `coords` (lat/lng) — for real drive-time estimation
+- `dwellMin` (typical time on-site)
+- `hours`: `{ open: "09:00", close: "13:00" }` or `null` (always open)
+- `closedDays`: `[1]` for Mondays, etc.
+- `affinity`: which Drift dimensions this stop pulls toward (e.g. winery → `style: "wine"`, `energy: "slow"`)
+- `seasonal?`: optional months window
+- `compatibleWith?` / `incompatibleWith?`: e.g. "long lunch" excludes a second long lunch
+- `priority`: editorial weight inside its kind
 
-### 2. Optional name memory (new `NameWhisper.tsx`)
-Single quiet step between `mood` and `depth`. Copy: *"What should we call you?"* + lowercase italic input + "skip" link. Stored as `travellerName`. Used at most **twice** per session, only in reveal line + proposal subtitle. Never during selection phases. Tracked via non-persisted `nameUsageCount` ref.
+Stops are tagged to a region, **not to a tour**. Tours become *suggested compositions* of stops, not fixed bundles.
 
-### 3. Narrative AI with continuity (`studioNarrative.functions.ts`)
-Server fn `composeStudioMoment({ mode, affinity, mood, who, intention, journeyType, travellerName, lastAccepted, lastFragment, narrativeStage, confidence, acceptedCount })` → `{ fragment, sensoryAnchor }`.
+### 2. Rules engine (`src/lib/drift/composer.ts`)
+A pure-TS function `composeDay(profile, region, dateContext) → ComposedDay`.
 
-System prompt rules:
-- 1 sentence, 8–18 words.
-- MUST include at least one tangible sensory anchor: object · texture · architecture · weather · gesture · food · sound · material · movement. Returned as `sensoryAnchor`.
-- Forbidden vocabulary: "hidden gem", "off the beaten path", "luxury", "unforgettable", "journey of a lifetime", "whispers of", "soul of", any superlative or mystical phrasing.
-- AI never names real places, partners, hotels, restaurants, roads.
-- Stage shapes voice:
-  - `invitation` → distant atmosphere, open
-  - `recognition` → emotional resonance, no name
-  - `emergence` → specificity + texture
-  - `reveal` → intimacy, may use name once
-- Continuity: prompt includes `lastFragment` with instruction *"continue the same emotional thread without repeating imagery."*
-- `temperature` 0.8, `max_tokens` 60. Post-trim to last sentence ≤18 words.
-- Reference tone: Cereal Magazine, Aman Journals, Kinfolk travel essays.
+Rules enforced:
 
-Failure handling (429/402/network): silent fallback to static editorial pool, no toast.
+- **Regional category caps** (configurable):
+  - Arrábida: max 3 wineries, max 1 market, max 1 long lunch
+  - Alentejo/Évora: max 2 wineries, max 1 cellar visit
+  - Centro: max 1 market, max 1 viewpoint cluster
+- **Opening hours / closed days** — drop any stop closed on the visit weekday or whose window doesn't fit the day budget
+- **Drive-time budget** — total drive ≤ ~3h, single hop ≤ ~50 min (haversine × 1.35 detour factor as estimate; matches what the existing builder uses)
+- **Dwell budget** — pickup + stops + drives ≤ chosen day length (`radius: near` = 6h, `far` = 9h)
+- **Compatibility** — no double-long-lunch, no two markets, etc.
 
-### 4. Sparsity budget
-AI fires at most **4 times per session**:
-1. recognition stage entry
-2. after second accepted stop (becomes the next chip's eyebrow)
-3. reveal line
-4. proposal title + subtitle (one call, `mode: 'proposal'`)
+Composition algorithm:
+1. Filter stops by region + open today + seasonal
+2. Score each stop = `affinityFit(profile) + priority + freshness`
+3. Greedy assemble respecting caps, drive budget, dwell budget, and a natural rhythm (morning market → coastal viewpoint → lunch → afternoon winery → sunset stop)
+4. If infeasible, drop lowest-score stops until feasible
+5. Return ordered itinerary + warnings
 
-Tracked in session-scoped ref. `prefers-reduced-motion` → always fallback, no calls.
+### 3. Wire into Drift convergence
+Replace the current `matchTours` in `StudioDrift.tsx`:
 
-### 5. Recommendation confidence ramp (`EmergingChips.tsx`, `StudioStageV3.tsx`)
-- **Diversity penalty**: if last two accepted stops share a tag, downweight that tag ×0.4.
-- **Card-count ramp**: as `confidence` rises, suggestions shrink 2 → 1 card.
-- **Copy ramp**: *"You might also love"* → *"This feels right next"* → *"This follows naturally"*. Never *"We've chosen this for you."*
-- **No auto-accept**. No countdown timer. No dark-pattern automation. Only quieter visual emphasis (slightly stronger gold rim, softer magnetic hover, calmer wording). User always picks.
+- Convergence still picks the **region** from the profile (Lisbon/Centro/Alentejo via `pickup` + style + motif gravity)
+- Then calls `composeDay(profile, region)` to build the actual day
+- Reveal screen shows: hero stop + 3–4 composed stops with real opening windows, total drive time, and a link to "Continue with a local" (WhatsApp / contact) — **not** a static Signature card
 
-### 6. Editorial reveal with breathing room (`JourneyReveal.tsx`, `MemoryCard.tsx`)
-Two beats:
-- **Beat 1 (proposal arrival, ~1.5–2s)**: ONLY hero imagery + proposal title + proposal subtitle + atmosphere. No stops, no CTA, no controls, no map, no chips.
-- **Beat 2 (itinerary emerges gradually)**: Stops fade in as a quiet numbered serif list — no card chrome, no tag pills, no chips. Editorial column layout. Map stays behind a "See the route" disclosure. CTA + Adjust appear last.
+We keep `signatureTours` as **editorial reference** (titles, blurbs, hero imagery) but stop treating them as the unit of recommendation.
 
-This is the memory-imprint moment. Cinema needs breathing room.
+### 4. Admin-editable later (not in this pass)
+The catalog + caps live as typed TS so we can iterate fast and keep it Git-tracked. When the catalog stabilises we move it to Supabase (`region_stops`, `region_rules`) and reuse the existing admin shell — no schema changes this turn.
 
-### 7. Proposal identity — `proposalTitle` + `proposalSubtitle`
-Generated once when entering reveal phase (`mode: 'proposal'`). Cached in state, never regenerated.
-- `proposalTitle`: 2–5 words, editorial, plausible. Shape examples: *"Between Salt and Vines"*, *"The Atlantic Table"*, *"A Slow Tide Through Alentejo"*.
-- `proposalSubtitle`: 8–14 words, may include name once.
-- Banned tone: mystical, fantasy, excessive metaphor, abstract luxury prose.
+---
 
-### 8. Place anchoring (cultural texture)
-Without naming exact locations, fragments and fallback pools draw from a Portugal-anchored sensory vocabulary: azulejos, Atlantic cliffs, ferry crossings, pine forests, salt pans, vineyard lunches, candlelit taverns, river air, tiled markets, stone villages, tiled cafés. Added to the prompt as a "vocabulary palette" hint (not "use these names" — "this is the world").
+## What I will NOT do in this turn
 
-### 9. Multi-day exclusivity (`MultiDayConcierge.tsx`)
-Separate prompt voice: private travel editor — assured, intimate, less cinematic, no superlatives. Eyebrow stays "By invitation". Closing line may use name once. Feels rare, composed by hand, quietly expensive.
+- No new DB tables (catalog stays in TS until shape is proven)
+- No real Mapbox Matrix API calls (haversine estimate now, swap to real matrix later — same interface)
+- No changes to the original `/builder` flow — Drift only
+- No invented stops: catalog seeded only with real YES Experiences stops you already operate (I'll start with Arrábida + Alentejo from existing data, mark `TODO_VERIFY` on anything I'm unsure about so you can correct)
 
-### 10. AI safety / brand (preserved)
-- AI never invents places, partners, hotels, restaurants, itineraries, prices.
-- AI provides tone, continuity, proposal identity, emotional composition only.
-- All operational truth comes from catalog data.
-- Sensory anchor logged to `console.debug` in dev for QA.
+---
 
-## Files
+## Files I will touch
 
-**New**
-- `src/components/builder/v3/NameWhisper.tsx`
-- `src/server/studioNarrative.functions.ts`
+- **new** `src/data/regionStops.ts` — stops catalog
+- **new** `src/data/regionRules.ts` — caps + drive/dwell budgets per region
+- **new** `src/lib/drift/composer.ts` — pure composition engine + tests
+- **edit** `src/components/builder/v3/StudioDrift.tsx` — convergence calls composer instead of `matchTours`
 
-**Edited**
-- `src/components/builder/types.ts` — extend `AffinityProfile`, add `NarrativeStage`, `StudioProposal`
-- `src/hooks/useStudioState.ts` — v3 persistence key, name + proposal persistence, decision-speed/confidence/stage derivations, AI budget ref
-- `src/hooks/useStudioLocale.ts` — name-step copy + per-stage Portugal-anchored fallback pools (PT/EN/ES/FR)
-- `src/components/builder/v3/StudioStageV3.tsx` — orchestrate NameWhisper, narrative beats, diversity + confidence ramp, fire `composeStudioMoment` at the 4 budget points, gate reveal on proposal generation, two-beat reveal sequencing
-- `src/components/builder/v3/CinematicChoices.tsx` — emit advance hook for NameWhisper insertion
-- `src/components/builder/v3/NarrativeBeat.tsx` — accept AI text + stage prop
-- `src/components/builder/v3/JourneyReveal.tsx` — Beat 1: proposal title/subtitle only on hero
-- `src/components/builder/v3/MemoryCard.tsx` — Beat 2: editorial column, no chip chrome until Adjust
-- `src/components/builder/v3/EmergingChips.tsx` — confidence-driven copy + card-count, sensory-anchor eyebrow, no auto-accept
-- `src/components/builder/v3/MultiDayConcierge.tsx` — AI body line in private-editor voice
-- `src/start.ts` — verify `attachSupabaseAuth` registered (no-op if already present)
+---
 
-## Out of scope
-- No DB schema changes — name + proposal persist in localStorage only.
-- No new tables, routes, or edge functions.
-- No streaming UI — fragments are short and awaited.
-- No new locales beyond PT/EN/ES/FR.
-- No changes to booking, pricing, catalog, or Mapbox layer.
-- No auto-accept, countdown, or pressure UX.
+## One question before I build
+
+Do you want me to seed the catalog **only with stops I can verify from your existing Signature tours data** (safer, smaller pool to start — maybe 12–18 stops across Arrábida + Alentejo + Centro), or do you want to **send me the canonical stop list** (names, hours, closed days, category) so the first version is operationally accurate from day one?
+
+If you say "seed from existing", I'll mark every operational field (`hours`, `closedDays`) as `TODO_VERIFY` and you can correct in one pass.
