@@ -1168,6 +1168,8 @@ function ChoicePhase({
   onPick,
   sceneWeighting,
   tonalRegister,
+  prediction,
+  confidence,
   hasBuildPreview = false,
   onAttraction,
   onSceneShown,
@@ -1178,6 +1180,8 @@ function ChoicePhase({
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
   tonalRegister?: TonalRegister;
+  prediction?: ReturnType<typeof derivePrediction>;
+  confidence?: ConfidenceMap;
   hasBuildPreview?: boolean;
   onAttraction?: (opt: ChoiceOption) => void;
   onSceneShown?: (sceneId: string) => void;
