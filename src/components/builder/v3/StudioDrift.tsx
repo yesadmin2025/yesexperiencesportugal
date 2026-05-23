@@ -23,7 +23,7 @@ import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
-import { useDriftLocale, t as tt, type DriftLocale } from "@/lib/drift/i18n";
+import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
 import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
@@ -885,7 +885,13 @@ export function StudioDrift({ onExit }: Props) {
       ))}
 
       {chapter.kind !== "convergence" && (
-        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} />
+        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+      )}
+      {/* Predictive AI whisper — personalized fragment produced by composeStudioMoment
+          for THIS user's behavior, profile and stage. Makes the predictive engine
+          visible: every traveller sees a different line at a different moment. */}
+      {chapter.kind !== "convergence" && narrativeLine && narrativeAt && (
+        <AiWhisper key={narrativeAt} text={narrativeLine} />
       )}
       {showBuildPreview && (
         <ProgressiveBuildPreview
@@ -1289,7 +1295,7 @@ function ProgressiveBuildPreview({
         </div>
         <div className="px-4 py-3">
           <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
-            {locale === "en" ? "being built around you" : "a ser construído à tua volta"}
+            {tt("build.eyebrow", locale)}
           </p>
           <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
             {last.name}
@@ -1505,7 +1511,7 @@ function ConvergencePhase({
               opacity: 0.98,
             }}
           >
-            {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
+            {heroLine ?? tName("reveal.hero_fallback", locale, profile.name)}
           </h2>
         </div>
         {onExit && (
@@ -1523,14 +1529,25 @@ function ConvergencePhase({
         style={{ opacity: ready ? 1 : 0 }}
       >
         <p
-          className="text-center text-[10.5px] uppercase mb-3"
+          className="text-center text-[10.5px] uppercase mb-2"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             letterSpacing: "0.22em",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          {tt("reveal.eyebrow", locale)}
+          {tName("reveal.eyebrow", locale, profile.name)}
+        </p>
+        <p
+          className="text-center text-[9.5px] uppercase mb-6"
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            letterSpacing: "0.28em",
+            color: "var(--gold)",
+            fontWeight: 600,
+          }}
+        >
+          {tt("reveal.signed_by", locale)}
         </p>
         <p className="mx-auto mb-4 max-w-[34ch] text-center italic" style={{ fontFamily: "Georgia, serif", fontSize: "17px", lineHeight: 1.55, color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
           {lead}
@@ -1939,6 +1956,47 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
   );
 }
 
+
+/**
+ * AiWhisper — surfaces the personalized AI fragment produced by
+ * composeStudioMoment. This is the visible proof of the predictive
+ * engine: each traveller sees a different sensory line at a different
+ * moment, threaded with their behavior, profile and stage. Auto-fades
+ * after ~5.5s so it never blocks interaction. Reduced-motion safe.
+ */
+function AiWhisper({ text }: { text: string }) {
+  const [opacity, setOpacity] = useState(0);
+  useEffect(() => {
+    const t1 = window.setTimeout(() => setOpacity(0.92), 60);
+    const t2 = window.setTimeout(() => setOpacity(0), 4800);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
+  return (
+    <div
+      aria-live="polite"
+      className="pointer-events-none absolute inset-x-0 top-[26%] z-[55] flex justify-center px-8 transition-opacity duration-[1100ms] ease-out"
+      style={{ opacity }}
+    >
+      <p
+        className="text-center italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontSize: "15.5px",
+          lineHeight: 1.55,
+          letterSpacing: "0",
+          color: "color-mix(in oklab, var(--ivory) 92%, var(--gold))",
+          maxWidth: "24ch",
+          textShadow: "0 1px 2px rgba(0,0,0,0.9), 0 4px 28px rgba(0,0,0,0.78)",
+        }}
+      >
+        {text}
+      </p>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio

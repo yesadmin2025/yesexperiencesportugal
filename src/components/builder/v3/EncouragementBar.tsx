@@ -4,21 +4,23 @@
 // middle / late / near reveal). Reduced-motion safe.
 
 import { useEffect, useState } from "react";
-import { t, type DriftLocale } from "@/lib/drift/i18n";
+import { tName, type DriftLocale } from "@/lib/drift/i18n";
 
 interface Props {
   index: number;
   total: number;
   locale: DriftLocale;
+  /** Traveller's first name — when present, encouragements address them by name. */
+  name?: string | null;
 }
 
-export function EncouragementBar({ index, total, locale }: Props) {
+export function EncouragementBar({ index, total, locale, name }: Props) {
   const pct = total <= 1 ? 1 : Math.min(1, (index + 1) / total);
   const visibility = pct > 0.78 ? Math.max(0.18, 1 - (pct - 0.78) / 0.22) : 1;
 
-  const key =
+  const baseKey =
     pct >= 0.92 ? "enc.near" : pct >= 0.7 ? "enc.late" : pct >= 0.35 ? "enc.middle" : "enc.start";
-  const label = t(key, locale);
+  const label = tName(baseKey, locale, name);
 
   // Fade the label on each change for a calm rhythm.
   const [shown, setShown] = useState(label);
