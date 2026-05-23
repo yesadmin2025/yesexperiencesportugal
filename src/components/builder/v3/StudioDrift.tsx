@@ -294,6 +294,8 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
   "social",
 ];
 
+const ALWAYS_ASK_CHAPTERS = new Set(["companions", "pickup", "duration", "radius"]);
+
 function isDriftDimension(key: string): key is DriftDimension {
   return DRIFT_DIMENSIONS.includes(key as DriftDimension);
 }
@@ -306,7 +308,7 @@ interface DriftChapter {
   kind: "drift";
   id: string;
   /** Function so we can weave the traveller name in once we know it. */
-  whisper: (p: DriftProfile) => string;
+  whisper: (p: DriftProfile, locale: DriftLocale) => string;
   scenes: Scene[];
   holdMs: number;
 }
@@ -315,15 +317,15 @@ interface TextChapter {
   kind: "text";
   id: string;
   scene: Scene;
-  whisper: (p: DriftProfile) => string;
-  placeholder: string;
+  whisper: (p: DriftProfile, locale: DriftLocale) => string;
+  placeholder: (locale: DriftLocale) => string;
   /** Where to write the answer on the profile. */
   field: "name";
 }
 
 interface ChoiceOption {
   scene: Scene;
-  hint: string;
+  hintKey: string;
   imprint: Partial<DriftProfile>;
   reinforce: Motif[];
 }
@@ -335,7 +337,7 @@ interface ChoiceChapter {
    *  router to skip the chapter if confidence on that dimension is already
    *  high enough from prior soft signals. */
   dim?: DriftDimension;
-  whisper: (p: DriftProfile) => string;
+  whisper: (p: DriftProfile, locale: DriftLocale) => string;
   options: ChoiceOption[];
 }
 
@@ -353,7 +355,7 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: () => "portugal já está acordada. respira primeiro.",
+    whisper: (_p, locale) => tt("chapter.opening", locale),
     scenes: [SCENES.dawnDouro, SCENES.arrabidaCoast],
     holdMs: 7000,
   },
@@ -361,40 +363,40 @@ const CHAPTERS: Chapter[] = [
     kind: "text",
     id: "name",
     scene: SCENES.linenBreeze,
-    whisper: () => "como te devemos chamar",
-    placeholder: "o teu primeiro nome",
+    whisper: (_p, locale) => tt("chapter.name", locale),
+    placeholder: (locale) => tt("chapter.name_placeholder", locale),
     field: "name",
   },
   {
     kind: "drift",
     id: "settling",
-    whisper: (p) =>
+    whisper: (p, locale) =>
       p.name
-        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
-        : "portugal está a reparar em ti",
+        ? tt("chapter.settling_named", locale).replace("{name}", p.name.toLowerCase())
+        : tt("chapter.settling", locale),
     scenes: [SCENES.quietChapel],
     holdMs: 5400,
   },
   {
     kind: "choice",
     id: "companions",
-    whisper: () => "quem vem contigo",
+    whisper: (_p, locale) => tt("chapter.companions", locale),
     options: [
       {
         scene: SCENES.atlanticHands,
-        hint: "só, com espaço",
+        hintKey: "hint.companions.0",
         imprint: { companions: "solo" },
         reinforce: ["stone", "salt"],
       },
       {
         scene: SCENES.candleBread,
-        hint: "a dois, sem ruído",
+        hintKey: "hint.companions.1",
         imprint: { companions: "couple" },
         reinforce: ["candle", "amber"],
       },
       {
         scene: SCENES.sharedTable,
-        hint: "com os teus",
+        hintKey: "hint.companions.2",
         imprint: { companions: "group" },
         reinforce: ["fado", "linen"],
       },
@@ -403,23 +405,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "pickup",
-    whisper: () => "onde começa esta história",
+    whisper: (_p, locale) => tt("chapter.pickup", locale),
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "Lisboa, com a costa perto",
+        hintKey: "hint.pickup.0",
         imprint: { pickup: "lisbon" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "Centro, pedra e silêncio",
+        hintKey: "hint.pickup.1",
         imprint: { pickup: "centro" },
         reinforce: ["stone", "basil"],
       },
       {
         scene: SCENES.silentVineyard,
-        hint: "Alentejo, em voz baixa",
+        hintKey: "hint.pickup.2",
         imprint: { pickup: "alentejo" },
         reinforce: ["vine", "amber"],
       },
@@ -428,17 +430,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "duration",
-    whisper: () => "um dia, ou vários",
+    whisper: (_p, locale) => tt("chapter.duration", locale),
     options: [
       {
         scene: SCENES.candleBread,
-        hint: "um dia inteiro",
+        hintKey: "hint.duration.0",
         imprint: { duration: "day" },
         reinforce: ["candle", "bread"],
       },
       {
         scene: SCENES.dawnDouro,
-        hint: "vários dias, sem pressa",
+        hintKey: "hint.duration.1",
         imprint: { duration: "multi", radius: "anywhere" },
         reinforce: ["vine", "linen", "stone"],
       },
@@ -447,23 +449,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "radius",
-    whisper: () => "até onde irias seguir esse instinto",
+    whisper: (_p, locale) => tt("chapter.radius", locale),
     options: [
       {
         scene: SCENES.candleBread,
-        hint: "perto, demorado",
+        hintKey: "hint.radius.0",
         imprint: { radius: "near" },
         reinforce: ["candle", "bread"],
       },
       {
         scene: SCENES.dawnDouro,
-        hint: "um dia inteiro fora",
+        hintKey: "hint.radius.1",
         imprint: { radius: "far" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.caboRoca,
-        hint: "longe, se valer a pena",
+        hintKey: "hint.radius.2",
         imprint: { radius: "anywhere" },
         reinforce: ["stone", "salt"],
       },
@@ -472,17 +474,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "energy",
-    whisper: () => "Que ritmo merece ficar?",
+    whisper: (_p, locale) => tt("chapter.energy", locale),
     options: [
       {
         scene: SCENES.quietChapel,
-        hint: "lento, quase secreto",
+        hintKey: "hint.energy.0",
         imprint: { energy: "slow" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.sesimbra,
-        hint: "vivo, com pele",
+        hintKey: "hint.energy.1",
         imprint: { energy: "vivid" },
         reinforce: ["harbour", "salt"],
       },
@@ -491,23 +493,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "style",
-    whisper: () => "O que te chama antes das palavras?",
+    whisper: (_p, locale) => tt("chapter.style", locale),
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "mar aberto",
+        hintKey: "hint.style.0",
         imprint: { style: "coast" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "pedra antiga",
+        hintKey: "hint.style.1",
         imprint: { style: "heritage" },
         reinforce: ["stone", "basil"],
       },
       {
         scene: SCENES.wineHand,
-        hint: "vinha e ritual",
+        hintKey: "hint.style.2",
         imprint: { style: "wine" },
         reinforce: ["vine", "fado"],
       },
@@ -516,17 +518,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "social",
-    whisper: () => "E no fim, que memória fica acesa?",
+    whisper: (_p, locale) => tt("chapter.social", locale),
     options: [
       {
         scene: SCENES.candleBread,
-        hint: "uma mesa só vossa",
+        hintKey: "hint.social.0",
         imprint: { social: "intimate" },
         reinforce: ["candle", "amber", "bread"],
       },
       {
         scene: SCENES.sharedTable,
-        hint: "copos a tocar devagar",
+        hintKey: "hint.social.1",
         imprint: { social: "shared" },
         reinforce: ["fado", "linen", "amber"],
       },
@@ -602,6 +604,7 @@ export function StudioDrift({ onExit }: Props) {
       while (next < CHAPTERS.length - 1) {
         const c = CHAPTERS[next];
         if (c.kind !== "choice") break;
+        if (ALWAYS_ASK_CHAPTERS.has(c.id)) break;
         const dim = (c.dim ?? (c.id as DriftDimension));
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
@@ -700,6 +703,7 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          locale={locale}
           holdScale={prediction.holdScale}
           onDone={advance}
           onLinger={(motifs, ms) => {
@@ -715,6 +719,7 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          locale={locale}
           onSubmit={onNameSubmit}
           onSkip={advance}
         />
@@ -725,6 +730,7 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          locale={locale}
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
           tonalRegister={prediction.tonalRegister}
@@ -791,6 +797,7 @@ export function StudioDrift({ onExit }: Props) {
 function DriftPhase({
   chapter,
   profile,
+  locale,
   onDone,
   onLinger,
   onAudio,
@@ -798,6 +805,7 @@ function DriftPhase({
 }: {
   chapter: DriftChapter;
   profile: DriftProfile;
+  locale: DriftLocale;
   onDone: () => void;
   onLinger: (motifs: Motif[], ms: number) => void;
   onAudio: () => void;
@@ -842,7 +850,7 @@ function DriftPhase({
       />
       <Whisper
         key={`w-${chapter.id}-${idx}`}
-        text={chapter.whisper(profile)}
+        text={chapter.whisper(profile, locale)}
         delay={1200}
         hold={4000}
         variant="opening"
@@ -858,11 +866,13 @@ function DriftPhase({
 function TextPhase({
   chapter,
   profile,
+  locale,
   onSubmit,
   onSkip,
 }: {
   chapter: TextChapter;
   profile: DriftProfile;
+  locale: DriftLocale;
   onSubmit: (value: string) => void;
   onSkip: () => void;
 }) {
@@ -898,14 +908,14 @@ function TextPhase({
             opacity: 0.96,
           }}
         >
-          {chapter.whisper(profile)}
+          {chapter.whisper(profile, locale)}
         </label>
         <input
           type="text"
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={chapter.placeholder}
+          placeholder={chapter.placeholder(locale)}
           maxLength={32}
           className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
           style={{
@@ -922,7 +932,7 @@ function TextPhase({
           className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"
           style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
         >
-          continuar
+          {tt("text.continue", locale)}
         </button>
       </form>
     </>
@@ -936,6 +946,7 @@ function TextPhase({
 function ChoicePhase({
   chapter,
   profile,
+  locale,
   onPick,
   sceneWeighting,
   tonalRegister,
@@ -944,6 +955,7 @@ function ChoicePhase({
 }: {
   chapter: ChoiceChapter;
   profile: DriftProfile;
+  locale: DriftLocale;
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
   tonalRegister?: TonalRegister;
@@ -1001,7 +1013,7 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper(profile)} delay={360} hold={5200} variant="choice" />
+      <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
       <div className="absolute inset-x-0 bottom-0 top-[30%] z-10 flex flex-col gap-2 px-3 pb-3">
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
@@ -1076,7 +1088,7 @@ function ChoicePhase({
                   transform: showHints ? "translateY(0)" : "translateY(8px)",
                 }}
               >
-                {opt.hint}
+                {tt(opt.hintKey, locale)}
               </span>
             </button>
           );
@@ -1174,9 +1186,9 @@ function ConvergencePhase({
   const lead = serverPayload?.story.microStory ?? localLead;
   const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
-  const ctaBook = serverPayload?.cta.book ?? tt("cta.book", locale);
-  const ctaSave = serverPayload?.cta.save ?? tt("cta.save", locale);
-  const ctaRefine = serverPayload?.cta.refine ?? tt("cta.refine", locale);
+  const ctaBook = locale === "en" ? tt("cta.book", locale) : (serverPayload?.cta.book ?? tt("cta.book", locale));
+  const ctaSave = locale === "en" ? tt("cta.save", locale) : (serverPayload?.cta.save ?? tt("cta.save", locale));
+  const ctaRefine = locale === "en" ? tt("cta.refine", locale) : (serverPayload?.cta.refine ?? tt("cta.refine", locale));
 
   // Map stops in the shape BuilderMap expects.
   const mapStops = useMemo(
@@ -1492,7 +1504,7 @@ function ConvergencePhase({
                 color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
               }}
             >
-              explorar tudo
+              {tt("cta.explore", locale)}
             </Link>
           </div>
         </div>
