@@ -36,6 +36,8 @@ export interface Prediction {
   revealConfidence: number;
   /** When true, the engine should collapse low-value next chapters. */
   shouldCollapseAhead: boolean;
+  /** Ranked optional dimensions that still need a direct interaction. */
+  nextBestDimensions: Array<"energy" | "style" | "social">;
 }
 
 const DEFAULT_WEIGHTS: Record<Mood, number> = {
@@ -83,6 +85,8 @@ export function derivePrediction(
 
   const shouldCollapseAhead =
     tConf >= 0.7 || (pacingClass === "decisive" && behavior.decisionLatency.length >= 3);
+  const optionalDims = ["energy", "style", "social"] as const;
+  const nextBestDimensions = [...optionalDims].sort((a, b) => dimensionNeed(b) - dimensionNeed(a));
 
   return {
     pacingClass,
@@ -92,5 +96,20 @@ export function derivePrediction(
     tonalRegister,
     revealConfidence,
     shouldCollapseAhead,
+    nextBestDimensions,
   };
+
+  function dimensionNeed(dim: (typeof optionalDims)[number]): number {
+    const prefix = `${dim}:`;
+    const top = Math.max(0, ...Object.entries(confidence)
+      .filter(([key]) => key.startsWith(prefix))
+      .map(([, value]) => value));
+    const moodPull =
+      dim === "energy"
+        ? Math.max(sceneWeighting.celebration, sceneWeighting.discovery, sceneWeighting.slowness)
+        : dim === "style"
+          ? Math.max(sceneWeighting.discovery, sceneWeighting.ritual, sceneWeighting.arrival)
+          : Math.max(sceneWeighting.intimacy, sceneWeighting.celebration);
+    return (1 - top) * 0.7 + moodPull * 0.3;
+  }
 }
