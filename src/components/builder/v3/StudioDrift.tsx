@@ -651,7 +651,11 @@ export function StudioDrift({ onExit }: Props) {
   );
   const liveRegion = useMemo(() => pickRegion(inferredProfile as ComposerProfile), [inferredProfile]);
   const liveDay = useMemo(
-    () => composeDay(inferredProfile as ComposerProfile, liveRegion, { confidence: confidenceRef.current }),
+    () => composeDay(inferredProfile as ComposerProfile, liveRegion, {
+      confidence: confidenceRef.current,
+      tonalRegister: prediction.tonalRegister,
+      intensityPreference: prediction.intensity,
+    }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [inferredProfile, liveRegion, chapterIdx, prediction.tonalRegister],
   );
@@ -1434,8 +1438,12 @@ function ConvergencePhase({
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
   const day = useMemo(
-    () => composeDay(profile as ComposerProfile, region, { confidence }),
-    [profile, region, confidence],
+    () => composeDay(profile as ComposerProfile, region, {
+      confidence,
+      tonalRegister: prediction?.tonalRegister,
+      intensityPreference: prediction?.intensity,
+    }),
+    [profile, region, confidence, prediction?.tonalRegister, prediction?.intensity],
   );
   const localLead = useMemo(() => composeLead(profile), [profile]);
   const heroScene = pickHeroScene(profile);
