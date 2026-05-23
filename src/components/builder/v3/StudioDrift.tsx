@@ -700,6 +700,7 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          locale={locale}
           holdScale={prediction.holdScale}
           onDone={advance}
           onLinger={(motifs, ms) => {
@@ -715,6 +716,7 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          locale={locale}
           onSubmit={onNameSubmit}
           onSkip={advance}
         />
@@ -725,6 +727,7 @@ export function StudioDrift({ onExit }: Props) {
           key={chapter.id}
           chapter={chapter}
           profile={profile}
+          locale={locale}
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
           tonalRegister={prediction.tonalRegister}
