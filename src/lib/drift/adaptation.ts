@@ -154,22 +154,27 @@ function sameList<T>(a: readonly T[], b: readonly T[]): boolean {
 export function diffAdaptation(
   previous: AdaptationSnapshot | null,
   next: AdaptationSnapshot,
+  thresholds?: Partial<AdaptationThresholds>,
 ): AdaptationDiff {
   if (!previous) return { changed: true, reasons: [], previous: null, next };
+  const t = resolveThresholds(thresholds);
   const reasons: AdaptationReason[] = [];
   if (previous.topMood !== next.topMood) reasons.push("top_mood");
-  // Top mood weight shift > 0.08 also counts as real movement even when the
-  // top mood label is stable, otherwise we miss soft drift.
-  else if (Math.abs(previous.topMoodWeight - next.topMoodWeight) > 0.08)
+  // Top mood weight shift above threshold also counts as real movement even
+  // when the top mood label is stable, otherwise we miss soft drift.
+  else if (Math.abs(previous.topMoodWeight - next.topMoodWeight) > t.topMoodWeight)
     reasons.push("top_mood");
   if (previous.tonalRegister !== next.tonalRegister) reasons.push("tonal_register");
   if (previous.pacingClass !== next.pacingClass) reasons.push("pacing");
   if (!sameList(previous.collapseAhead, next.collapseAhead)) reasons.push("collapse_ahead");
   if (previous.topInferred !== next.topInferred) reasons.push("top_inferred");
-  else if (Math.abs(previous.topInferredConfidence - next.topInferredConfidence) > 0.1)
+  else if (
+    Math.abs(previous.topInferredConfidence - next.topInferredConfidence) >
+    t.topInferredConfidence
+  )
     reasons.push("top_inferred");
   if (!sameList(previous.dayStopIds, next.dayStopIds)) reasons.push("itinerary");
-  if (Math.abs(previous.revealConfidence - next.revealConfidence) > 0.06)
+  if (Math.abs(previous.revealConfidence - next.revealConfidence) > t.revealConfidence)
     reasons.push("confidence");
   return { changed: reasons.length > 0, reasons, previous, next };
 }
