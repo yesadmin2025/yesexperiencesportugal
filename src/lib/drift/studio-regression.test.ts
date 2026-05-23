@@ -150,7 +150,7 @@ describe("Studio Drift · inference regression", () => {
       "style:wine": 1.4, // clamp up
       "energy:slow": -0.2, // clamp down
       "BAD KEY": 0.5, // wrong shape
-      "x".repeat(60) + ":y": 0.5, // too long
+      [`${"x".repeat(60)}:y`]: 0.5, // too long
       "style:WINE": 0.5, // uppercase value disallowed
       "social:intimate": "0.7" as unknown as number, // numeric string ok
       "social:bad shared": 0.5, // space disallowed
