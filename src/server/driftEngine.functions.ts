@@ -11,7 +11,8 @@ import { sanitizeConfidence } from "@/lib/drift/inference";
  *
  * Scene routing remains client-side (chapter graph), but every dimension is
  * scored against confidence so the composer/DNA layer can act on soft
- * signals collected during drift.
+ * signals collected during drift. The predictive layer (tonalRegister +
+ * intensityPreference + locale) influences AI tone and length, never facts.
  */
 
 const profileSchema = z
@@ -24,12 +25,20 @@ const profileSchema = z
     style: z.enum(["coast", "heritage", "wine", "table"]).optional(),
     social: z.enum(["intimate", "shared"]).optional(),
     confidence: z.record(z.string(), z.number()).optional(),
+    // Predictive + i18n hints (all optional, never invent facts):
+    locale: z.enum(["pt", "en"]).optional(),
+    tonalRegister: z.enum(["intimate", "expansive", "playful", "ritual"]).optional(),
+    intensityPreference: z.number().min(1).max(5).optional(),
   })
   .strict();
 
 export const revealJourney = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => profileSchema.parse(input))
   .handler(async ({ data }) => {
-    const { confidence, ...profile } = data;
-    return await assembleReveal(profile, sanitizeConfidence(confidence ?? {}));
+    const { confidence, locale, tonalRegister, intensityPreference, ...profile } = data;
+    return await assembleReveal(profile, sanitizeConfidence(confidence ?? {}), {
+      locale: locale ?? "pt",
+      tonalRegister,
+      intensityPreference,
+    });
   });
