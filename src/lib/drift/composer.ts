@@ -162,6 +162,8 @@ export interface ComposeOptions {
   weekday?: number;
   /** Month of the trip (1–12) for seasonal stops. Defaults to current month. */
   month?: number;
+  /** Phase 2: adaptive confidence map per `${dimension}:${value}`. */
+  confidence?: ConfidenceMap;
 }
 
 export function composeDay(
@@ -174,6 +176,7 @@ export function composeDay(
     return w === 0 ? 7 : w;
   })();
   const month = opts.month ?? new Date().getMonth() + 1;
+  const confidence = opts.confidence;
 
   const rules = REGION_RULES[region];
   const origin = REGION_ORIGIN[region];
@@ -188,9 +191,9 @@ export function composeDay(
     .filter((s) => isOpenOnDay(s, weekday))
     .filter((s) => isInSeason(s, month));
 
-  // 2. Score & sort by affinity.
+  // 2. Score & sort by adaptive affinity.
   const scored = candidates
-    .map((stop) => ({ stop, score: affinityScore(stop, profile) }))
+    .map((stop) => ({ stop, score: affinityScore(stop, profile, confidence) }))
     .sort((a, b) => b.score - a.score);
 
   // 3. Greedy assemble with caps + drive/dwell budgets, then order by time of day.
