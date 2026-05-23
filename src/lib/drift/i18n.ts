@@ -15,11 +15,11 @@ type Dict = Record<string, string>;
 
 const PT: Dict = {
   // Chapters — PT is canonical Studio Bible voice
-  "chapter.opening": "portugal já está acordada. respira primeiro.",
+  "chapter.opening": "a manhã abre devagar sobre pedra e sal.",
   "chapter.name": "como te devemos chamar",
   "chapter.name_placeholder": "o teu primeiro nome",
-  "chapter.settling": "portugal está a reparar em ti",
-  "chapter.settling_named": "{name}, portugal está a reparar em ti.",
+  "chapter.settling": "a primeira forma começa a aparecer",
+  "chapter.settling_named": "{name}, a primeira forma começa a aparecer.",
   "chapter.companions": "quem vem contigo",
   "chapter.pickup": "onde começa esta história",
   "chapter.duration": "um dia, ou vários",
@@ -70,10 +70,10 @@ const PT: Dict = {
   "wa.closing": "Gostava de afinar este dia com um local.",
 
   // Encouragements (shown above progress bar at key moments)
-  "enc.start": "um traço de Portugal",
-  "enc.middle": "a forma começa a aparecer",
-  "enc.late": "já há um dia a ganhar corpo",
-  "enc.near": "a revelação está pronta",
+  "enc.start": "a primeira pista entrou",
+  "enc.middle": "o mapa começa a responder",
+  "enc.late": "o dia já tem contorno",
+  "enc.near": "a composição está pronta",
 
   // Text phase
   "text.continue": "continuar",
@@ -83,11 +83,11 @@ const PT: Dict = {
 };
 
 const EN: Dict = {
-  "chapter.opening": "Portugal is already awake. Breathe first.",
+  "chapter.opening": "morning opens slowly over stone and salt.",
   "chapter.name": "what should we call you",
   "chapter.name_placeholder": "your first name",
-  "chapter.settling": "Portugal is starting to notice you",
-  "chapter.settling_named": "{name}, Portugal is starting to notice you.",
+  "chapter.settling": "the first shape is starting to appear",
+  "chapter.settling_named": "{name}, the first shape is starting to appear.",
   "chapter.companions": "who is coming with you",
   "chapter.pickup": "where does this story begin",
   "chapter.duration": "one day, or several",
@@ -135,10 +135,10 @@ const EN: Dict = {
   "wa.companions": "Company: {companions}",
   "wa.closing": "I'd love to refine this day with a local.",
 
-  "enc.start": "a trace of Portugal",
-  "enc.middle": "the shape is emerging",
-  "enc.late": "a day is taking form",
-  "enc.near": "the reveal is ready",
+  "enc.start": "the first signal is in",
+  "enc.middle": "the map is starting to respond",
+  "enc.late": "the day has a contour",
+  "enc.near": "the composition is ready",
 
   "text.continue": "continue",
 
