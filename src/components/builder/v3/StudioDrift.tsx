@@ -640,7 +640,13 @@ export function StudioDrift({ onExit }: Props) {
       )}
 
       {chapter.kind === "convergence" && (
-        <ConvergencePhase profile={profile} confidence={confidenceRef.current} onExit={onExit} />
+        <ConvergencePhase
+          profile={profile}
+          confidence={confidenceRef.current}
+          prediction={prediction}
+          locale={locale}
+          onExit={onExit}
+        />
       )}
 
       {memoryTints.map((t, i) => (
@@ -652,14 +658,16 @@ export function StudioDrift({ onExit }: Props) {
         />
       ))}
 
-      <Meridian index={chapterIdx} total={CHAPTERS.length} />
+      {chapter.kind !== "convergence" && (
+        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} />
+      )}
       <ChapterFade chapterId={chapter.id} />
 
       {onExit && chapter.kind !== "convergence" && (
         <button
           type="button"
           onClick={onExit}
-          aria-label="sair"
+          aria-label={tt("ui.exit", locale)}
           className="absolute top-2 left-2 z-40 grid h-11 w-11 place-items-center rounded-full transition-colors motion-safe:hover:bg-[color:var(--ivory)]/15 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
         >
           <span
