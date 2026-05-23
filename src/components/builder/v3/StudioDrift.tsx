@@ -74,6 +74,7 @@ type Motif =
 type Companions = "solo" | "couple" | "family" | "group";
 type PickupRegion = "lisbon" | "centro" | "alentejo";
 type Radius = "near" | "far" | "anywhere";
+type Duration = "day" | "multi";
 type Energy = "slow" | "vivid";
 type Style = "coast" | "heritage" | "wine" | "table";
 type Social = "intimate" | "shared";
@@ -83,6 +84,7 @@ export interface DriftProfile {
   companions?: Companions;
   pickup?: PickupRegion;
   radius?: Radius;
+  duration?: Duration;
   energy?: Energy;
   style?: Style;
   social?: Social;
@@ -283,6 +285,19 @@ const MOTIF_NUDGE: Partial<Record<Motif, Array<[DriftDimension, string]>>> = {
   bread: [["style", "table"]],
 };
 
+const DRIFT_DIMENSIONS: DriftDimension[] = [
+  "companions",
+  "pickup",
+  "radius",
+  "energy",
+  "style",
+  "social",
+];
+
+function isDriftDimension(key: string): key is DriftDimension {
+  return DRIFT_DIMENSIONS.includes(key as DriftDimension);
+}
+
 // ─── Chapter graph ────────────────────────────────────────────────────────
 
 type ChapterKind = "drift" | "text" | "choice" | "convergence";
@@ -338,16 +353,16 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: () => "Deixa Portugal chegar primeiro.",
+    whisper: () => "portugal já está acordada. respira primeiro.",
     scenes: [SCENES.dawnDouro, SCENES.arrabidaCoast],
-    holdMs: 6200,
+    holdMs: 7000,
   },
   {
     kind: "text",
     id: "name",
     scene: SCENES.linenBreeze,
-    whisper: () => "Como assinas este dia?",
-    placeholder: "primeiro nome",
+    whisper: () => "como te devemos chamar",
+    placeholder: "o teu primeiro nome",
     field: "name",
   },
   {
@@ -355,15 +370,15 @@ const CHAPTERS: Chapter[] = [
     id: "settling",
     whisper: (p) =>
       p.name
-        ? `${p.name}, começamos a desenhar sem pressa.`
-        : "Começamos a desenhar sem pressa.",
+        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
+        : "portugal está a reparar em ti",
     scenes: [SCENES.quietChapel],
-    holdMs: 5000,
+    holdMs: 5400,
   },
   {
     kind: "choice",
     id: "companions",
-    whisper: () => "Quem muda a luz do teu dia?",
+    whisper: () => "quem vem contigo",
     options: [
       {
         scene: SCENES.atlanticHands,
@@ -388,7 +403,7 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "pickup",
-    whisper: () => "Onde abrimos a porta?",
+    whisper: () => "onde começa esta história",
     options: [
       {
         scene: SCENES.arrabidaCoast,
@@ -412,8 +427,27 @@ const CHAPTERS: Chapter[] = [
   },
   {
     kind: "choice",
+    id: "duration",
+    whisper: () => "um dia, ou vários",
+    options: [
+      {
+        scene: SCENES.candleBread,
+        hint: "um dia inteiro",
+        imprint: { duration: "day" },
+        reinforce: ["candle", "bread"],
+      },
+      {
+        scene: SCENES.dawnDouro,
+        hint: "vários dias, sem pressa",
+        imprint: { duration: "multi", radius: "anywhere" },
+        reinforce: ["vine", "linen", "stone"],
+      },
+    ],
+  },
+  {
+    kind: "choice",
     id: "radius",
-    whisper: () => "Que distância ainda sabe a prazer?",
+    whisper: () => "até onde irias seguir esse instinto",
     options: [
       {
         scene: SCENES.candleBread,
@@ -571,11 +605,8 @@ export function StudioDrift({ onExit }: Props) {
         const dim = (c.dim ?? (c.id as DriftDimension));
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
-        const owned: DriftDimension[] = [
-          "companions", "pickup", "radius", "energy", "style", "social",
-        ];
-        if (!owned.includes(dim)) break;
-        if (!top || top.confidence < 0.85) break;
+        if (!DRIFT_DIMENSIONS.includes(dim)) break;
+        if (!top || top.confidence < 0.78) break;
         // Skipped — synthesize an inferred answer onto the profile.
         setProfile((p) => ({ ...p, [dim]: top.value as never }));
         void recordDriftEvent("signal_captured", {
@@ -608,7 +639,9 @@ export function StudioDrift({ onExit }: Props) {
       let conf = confidenceRef.current;
       for (const [k, v] of Object.entries(opt.imprint)) {
         if (v === undefined) continue;
-        conf = bump(conf, k as DriftDimension, String(v), EXPLICIT);
+        if (isDriftDimension(k)) {
+          conf = bump(conf, k, String(v), EXPLICIT);
+        }
         void recordDriftEvent("signal_captured", {
           chapterId: chapter.id,
           signalKey: k,
@@ -1173,15 +1206,27 @@ function ConvergencePhase({
 
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
-      <div className="relative h-[64vh] min-h-[420px] w-full overflow-hidden">
-        <SceneVideo scene={heroScene} />
+      <div className="relative h-[54vh] min-h-[340px] w-full overflow-hidden">
+        {mapStops.length > 0 && regionCenter ? (
+          <Suspense fallback={<SceneVideo scene={heroScene} />}>
+            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
+          </Suspense>
+        ) : (
+          <SceneVideo scene={heroScene} />
+        )}
         <Vignette stronger />
-        <div className="absolute inset-x-0 bottom-10 z-20 px-7 text-center pointer-events-none">
+        <div className="absolute inset-x-0 bottom-8 z-20 px-6 pointer-events-none">
           <p
-            className="text-[color:var(--ivory)] mx-auto max-w-[16ch]"
+            className="mx-auto mb-3 text-center text-[9.5px] uppercase text-[color:var(--gold)]"
+            style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em" }}
+          >
+            {tt("reveal.map_label", locale)}
+          </p>
+          <h2
+            className="mx-auto max-w-[15ch] text-center text-[color:var(--ivory)]"
             style={{
               fontFamily: "'Montserrat', system-ui, sans-serif",
-              fontSize: "31px",
+              fontSize: "30px",
               fontWeight: 700,
               lineHeight: 1.08,
               letterSpacing: "0",
@@ -1189,8 +1234,8 @@ function ConvergencePhase({
               opacity: 0.98,
             }}
           >
-            {lead}
-          </p>
+            {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
+          </h2>
         </div>
         {onExit && (
           <button
@@ -1216,19 +1261,9 @@ function ConvergencePhase({
         >
           {tt("reveal.eyebrow", locale)}
         </p>
-        <h2
-          className="text-center mb-3"
-          style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
-            fontWeight: 700,
-            fontSize: "30px",
-            lineHeight: 1.12,
-            color: "var(--charcoal)",
-            letterSpacing: "0",
-          }}
-        >
-          {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
-        </h2>
+        <p className="mx-auto mb-4 max-w-[34ch] text-center italic" style={{ fontFamily: "Georgia, serif", fontSize: "17px", lineHeight: 1.55, color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
+          {lead}
+        </p>
         <p
           className="text-center mb-6"
           style={{
@@ -1291,26 +1326,6 @@ function ConvergencePhase({
                 </p>
               );
             })}
-          </div>
-        )}
-
-        {/* Cinematic map of the composed day. */}
-        {mapStops.length > 0 && regionCenter && (
-          <div className="mb-8">
-            <p
-              className="text-center text-[10px] tracking-[0.26em] uppercase mb-2"
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              }}
-            >
-              {tt("reveal.map_label", locale)}
-            </p>
-            <div className="h-[44vh] min-h-[280px] w-full overflow-hidden rounded-md" style={{ boxShadow: "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)" }}>
-              <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand,#efe9dc)]" />}>
-                <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
-              </Suspense>
-            </div>
           </div>
         )}
 
@@ -1429,10 +1444,11 @@ function ConvergencePhase({
               to="/tours/$tourId"
               params={{ tourId: anchorTour.id }}
               onClick={() => void recordDriftEvent("cta_book", { meta: { tourId: anchorTour.id } })}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
+              className="inline-flex min-h-11 items-center justify-center rounded-[6px] px-6 py-3 text-[12px] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontWeight: 700,
+                letterSpacing: "0.18em",
                 background: "var(--teal)",
                 color: "var(--ivory)",
                 boxShadow: "0 16px 34px color-mix(in oklab, var(--teal) 28%, transparent)",
@@ -1444,11 +1460,13 @@ function ConvergencePhase({
             <Link
               to="/contact"
               onClick={() => void recordDriftEvent("cta_refine")}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
+              className="inline-flex min-h-11 items-center justify-center rounded-[6px] border px-6 py-3 text-[12px] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                background: "var(--teal)",
-                color: "var(--ivory)",
+                fontWeight: 700,
+                letterSpacing: "0.18em",
+                borderColor: "color-mix(in oklab, var(--gold) 55%, transparent)",
+                color: "var(--charcoal)",
               }}
             >
               {ctaRefine} →
@@ -1562,14 +1580,14 @@ function Whisper({
       <p
         className="text-center"
         style={{
-          fontFamily: "'Montserrat', system-ui, sans-serif",
-          fontStyle: "normal",
-          fontSize: isChoice ? "27px" : isOpening ? "28px" : "25px",
-          fontWeight: isOpening ? 700 : 700,
-          lineHeight: isChoice ? 1.12 : isOpening ? 1.08 : 1.16,
+          fontFamily: isOpening ? "Georgia, 'Times New Roman', serif" : "'Montserrat', system-ui, sans-serif",
+          fontStyle: isOpening ? "italic" : "normal",
+          fontSize: isChoice ? "27px" : isOpening ? "21px" : "25px",
+          fontWeight: isOpening ? 400 : 700,
+          lineHeight: isChoice ? 1.12 : isOpening ? 1.42 : 1.16,
           letterSpacing: "0",
           color: "var(--ivory)",
-          maxWidth: isChoice ? "14ch" : isOpening ? "13ch" : "17ch",
+          maxWidth: isChoice ? "14ch" : isOpening ? "22ch" : "17ch",
           textShadow:
             "0 1px 2px rgba(0,0,0,0.94), 0 4px 30px rgba(0,0,0,0.82)",
           opacity: isOpening ? 0.95 : 0.98,
