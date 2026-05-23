@@ -338,16 +338,16 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: () => "portugal já está acordada. respira primeiro.",
-    scenes: [SCENES.arrabidaCoast, SCENES.hiddenStreet],
-    holdMs: 7000,
+    whisper: () => "Antes de escolher, deixa o país chegar primeiro.",
+    scenes: [SCENES.dawnDouro, SCENES.arrabidaCoast],
+    holdMs: 6200,
   },
   {
     kind: "text",
     id: "name",
-    scene: SCENES.viewpoint,
-    whisper: () => "como te devemos chamar",
-    placeholder: "o teu primeiro nome",
+    scene: SCENES.linenBreeze,
+    whisper: () => "Como assinas este dia?",
+    placeholder: "primeiro nome",
     field: "name",
   },
   {
@@ -355,31 +355,31 @@ const CHAPTERS: Chapter[] = [
     id: "settling",
     whisper: (p) =>
       p.name
-        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
-        : "portugal está a reparar em ti",
-    scenes: [SCENES.viewpoint],
-    holdMs: 5400,
+        ? `${p.name}, começamos a desenhar sem pressa.`
+        : "Começamos a desenhar sem pressa.",
+    scenes: [SCENES.quietChapel],
+    holdMs: 5000,
   },
   {
     kind: "choice",
     id: "companions",
-    whisper: () => "quem vem contigo",
+    whisper: () => "Quem muda a luz do teu dia?",
     options: [
       {
-        scene: SCENES.caboRoca,
-        hint: "só, com o vento",
+        scene: SCENES.atlanticHands,
+        hint: "só, com espaço",
         imprint: { companions: "solo" },
         reinforce: ["stone", "salt"],
       },
       {
-        scene: SCENES.candleTable,
-        hint: "à mesa, a dois",
+        scene: SCENES.candleBread,
+        hint: "a dois, sem ruído",
         imprint: { companions: "couple" },
         reinforce: ["candle", "amber"],
       },
       {
-        scene: SCENES.celebration,
-        hint: "entre os teus",
+        scene: SCENES.sharedTable,
+        hint: "com os teus",
         imprint: { companions: "group" },
         reinforce: ["fado", "linen"],
       },
@@ -388,23 +388,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "pickup",
-    whisper: () => "onde começa esta história",
+    whisper: () => "Onde abrimos a porta?",
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "lisboa e a costa a sul",
+        hint: "Lisboa, com a costa perto",
         imprint: { pickup: "lisbon" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "o centro, mais a norte",
+        hint: "Centro, pedra e silêncio",
         imprint: { pickup: "centro" },
         reinforce: ["stone", "basil"],
       },
       {
-        scene: SCENES.viewpoint,
-        hint: "alentejo, devagar",
+        scene: SCENES.silentVineyard,
+        hint: "Alentejo, em voz baixa",
         imprint: { pickup: "alentejo" },
         reinforce: ["vine", "amber"],
       },
@@ -413,23 +413,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "radius",
-    whisper: () => "até onde irias seguir esse instinto",
+    whisper: () => "Que distância ainda sabe a prazer?",
     options: [
       {
-        scene: SCENES.candleTable,
-        hint: "perto, com calma",
+        scene: SCENES.candleBread,
+        hint: "perto, demorado",
         imprint: { radius: "near" },
         reinforce: ["candle", "bread"],
       },
       {
-        scene: SCENES.viewpoint,
+        scene: SCENES.dawnDouro,
         hint: "um dia inteiro fora",
         imprint: { radius: "far" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.caboRoca,
-        hint: "até onde for preciso",
+        hint: "longe, se valer a pena",
         imprint: { radius: "anywhere" },
         reinforce: ["stone", "salt"],
       },
@@ -438,17 +438,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "energy",
-    whisper: () => "que ritmo te assenta hoje",
+    whisper: () => "Que ritmo merece ficar?",
     options: [
       {
-        scene: SCENES.viewpoint,
-        hint: "devagar, com vista",
+        scene: SCENES.quietChapel,
+        hint: "lento, quase secreto",
         imprint: { energy: "slow" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.sesimbra,
-        hint: "vivo, com mãos",
+        hint: "vivo, com pele",
         imprint: { energy: "vivid" },
         reinforce: ["harbour", "salt"],
       },
@@ -457,23 +457,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "style",
-    whisper: () => "o que te puxa primeiro",
+    whisper: () => "O que te chama antes das palavras?",
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "a costa",
+        hint: "mar aberto",
         imprint: { style: "coast" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "as pedras antigas",
+        hint: "pedra antiga",
         imprint: { style: "heritage" },
         reinforce: ["stone", "basil"],
       },
       {
-        scene: SCENES.viewpoint,
-        hint: "a vinha",
+        scene: SCENES.wineHand,
+        hint: "vinha e ritual",
         imprint: { style: "wine" },
         reinforce: ["vine", "fado"],
       },
@@ -482,17 +482,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "social",
-    whisper: () => "e quando a noite chega",
+    whisper: () => "E no fim, que memória fica acesa?",
     options: [
       {
-        scene: SCENES.candleTable,
+        scene: SCENES.candleBread,
         hint: "uma mesa só vossa",
         imprint: { social: "intimate" },
         reinforce: ["candle", "amber", "bread"],
       },
       {
-        scene: SCENES.celebration,
-        hint: "vidro a tocar vidro",
+        scene: SCENES.sharedTable,
+        hint: "copos a tocar devagar",
         imprint: { social: "shared" },
         reinforce: ["fado", "linen", "amber"],
       },
