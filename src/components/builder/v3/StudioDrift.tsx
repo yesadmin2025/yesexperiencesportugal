@@ -900,6 +900,7 @@ function ChoicePhase({
   profile,
   onPick,
   sceneWeighting,
+  tonalRegister,
   onAttraction,
   onSceneShown,
 }: {
@@ -907,6 +908,7 @@ function ChoicePhase({
   profile: DriftProfile;
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
+  tonalRegister?: TonalRegister;
   onAttraction?: (opt: ChoiceOption) => void;
   onSceneShown?: (sceneId: string) => void;
 }) {
