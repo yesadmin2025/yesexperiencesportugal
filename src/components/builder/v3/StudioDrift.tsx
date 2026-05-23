@@ -1100,6 +1100,7 @@ function ChoicePhase({
   onPick,
   sceneWeighting,
   tonalRegister,
+  hasBuildPreview = false,
   onAttraction,
   onSceneShown,
 }: {
@@ -1109,6 +1110,7 @@ function ChoicePhase({
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
   tonalRegister?: TonalRegister;
+  hasBuildPreview?: boolean;
   onAttraction?: (opt: ChoiceOption) => void;
   onSceneShown?: (sceneId: string) => void;
 }) {
@@ -1164,7 +1166,7 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
-      <div className="absolute inset-x-0 bottom-0 top-[30%] z-10 flex flex-col gap-2 px-3 pb-3">
+      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "92px" : 0 }}>
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
