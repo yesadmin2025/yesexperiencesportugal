@@ -5,7 +5,7 @@ import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposedDay, type ComposerProfile } from "@/lib/drift/composer";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
-import { recordDriftEvent } from "@/lib/drift/telemetry";
+import { recordDriftBehaviorEvent, recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
 import { composeStudioMoment } from "@/server/studioNarrative.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
@@ -379,6 +379,48 @@ function chapterSortKey(chapter: Chapter, confidence: ConfidenceMap, prediction:
     .sort((a, b) => (prediction.sceneWeighting[b] ?? 0.5) - (prediction.sceneWeighting[a] ?? 0.5))[0];
   const affinity = chapterMood ? prediction.sceneWeighting[chapterMood] ?? 0.5 : 0.5;
   return (1 - top) * 0.72 + affinity * 0.28;
+}
+
+const PROFILE_LABELS: Record<string, Record<DriftLocale, string>> = {
+  solo: { en: "solo", pt: "a sós", es: "a solas", fr: "seul" },
+  couple: { en: "for two", pt: "a dois", es: "para dos", fr: "à deux" },
+  group: { en: "with your people", pt: "com os seus", es: "con su gente", fr: "avec vos proches" },
+  lisbon: { en: "from Lisbon", pt: "a partir de Lisboa", es: "desde Lisboa", fr: "depuis Lisbonne" },
+  centro: { en: "through Central Portugal", pt: "pelo Centro", es: "por el Centro", fr: "dans le Centre" },
+  alentejo: { en: "in Alentejo", pt: "no Alentejo", es: "en Alentejo", fr: "en Alentejo" },
+  near: { en: "close and slow", pt: "perto e devagar", es: "cerca y despacio", fr: "proche et lent" },
+  far: { en: "a full day out", pt: "um dia inteiro fora", es: "un día completo fuera", fr: "une journée entière dehors" },
+  anywhere: { en: "where it is worth it", pt: "onde valer a pena", es: "donde valga la pena", fr: "là où cela vaut le détour" },
+  slow: { en: "slow", pt: "lento", es: "lento", fr: "lent" },
+  vivid: { en: "vivid", pt: "vivo", es: "vivo", fr: "vivant" },
+  coast: { en: "Atlantic", pt: "Atlântico", es: "Atlántico", fr: "Atlantique" },
+  heritage: { en: "old stone", pt: "pedra antiga", es: "piedra antigua", fr: "pierre ancienne" },
+  wine: { en: "vineyard ritual", pt: "ritual da vinha", es: "ritual de viñedo", fr: "rituel des vignes" },
+  table: { en: "long table", pt: "mesa longa", es: "mesa larga", fr: "longue table" },
+  intimate: { en: "quietly private", pt: "discreto e privado", es: "discreto y privado", fr: "discret et privé" },
+  shared: { en: "generously shared", pt: "generosamente partilhado", es: "generosamente compartido", fr: "généreusement partagé" },
+};
+
+function labelValue(value: string | undefined, locale: DriftLocale): string | null {
+  if (!value) return null;
+  return PROFILE_LABELS[value]?.[locale] ?? PROFILE_LABELS[value]?.en ?? value;
+}
+
+function optionScore(opt: ChoiceOption, confidence: ConfidenceMap, prediction: ReturnType<typeof derivePrediction>) {
+  const moodScore = opt.scene.mood ? prediction.sceneWeighting[opt.scene.mood] ?? 0.5 : 0.5;
+  let explicitPull = 0;
+  for (const [dim, value] of Object.entries(opt.imprint)) {
+    if (!value || !isDriftDimension(dim)) continue;
+    explicitPull = Math.max(explicitPull, confidence[`${dim}:${value}`] ?? 0);
+  }
+  return moodScore * 0.58 + explicitPull * 0.42;
+}
+
+function predictiveCue(confidence: number, locale: DriftLocale): string {
+  if (locale === "pt") return confidence >= 0.72 ? "isto segue naturalmente" : confidence >= 0.48 ? "isto encaixa a seguir" : "talvez também goste disto";
+  if (locale === "es") return confidence >= 0.72 ? "esto sigue con naturalidad" : confidence >= 0.48 ? "esto encaja a continuación" : "quizá también le guste";
+  if (locale === "fr") return confidence >= 0.72 ? "cela vient naturellement" : confidence >= 0.48 ? "cela s’enchaîne bien" : "vous pourriez aussi aimer";
+  return confidence >= 0.72 ? "this follows naturally" : confidence >= 0.48 ? "this feels right next" : "you might also love";
 }
 
 const CHAPTERS: Chapter[] = [
