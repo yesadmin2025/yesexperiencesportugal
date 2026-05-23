@@ -116,71 +116,11 @@ const MOTIF_TINT: Record<Motif, string> = {
   bread:   "radial-gradient(ellipse at 50% 75%, color-mix(in oklab, var(--gold) 12%, transparent) 0%, transparent 58%)",
 };
 
-// ─────────────────────────────────────────────────────────────────────────
-// Tour matching — emotional inputs → real YES catalog
-// ─────────────────────────────────────────────────────────────────────────
+// Tour matching is now handled by `src/lib/drift/composer.ts`, which assembles
+// a personalized day from the regional stops pool under operational rules
+// (category caps, opening hours, drive-time budgets). The old tour-level
+// regex matchers below were retired with that shift.
 
-/** Map narrative pickup region → which signature tour regions are reachable. */
-const REGION_TOUR_MATCH: Record<PickupRegion, (region: string) => boolean> = {
-  lisbon: (r) =>
-    /Arr[áa]bida|Sesimbra|Azeit[ãa]o|Sint|Cascais|Lisbon|Set[úu]bal|Tr[óo]ia|Comporta/i.test(r),
-  centro: (r) => /Centro|Tomar|Coimbra|F[áa]tima|Naz[áa]r[ée]|[ÓO]bidos/i.test(r),
-  alentejo: (r) => /Alentejo|[ÉE]vora|Tr[óo]ia|Comporta/i.test(r),
-};
-
-/** Map style choice → theme keywords in `tour.theme`. */
-const STYLE_THEME: Record<Style, RegExp> = {
-  coast: /coast|boat|wild|beach/i,
-  heritage: /heritage|tiles|fatima|sintra|tomar/i,
-  wine: /wine/i,
-  table: /gastronomy|cheese|table/i,
-};
-
-function matchTours(profile: DriftProfile): SignatureTour[] {
-  const all = signatureTours;
-  // Region gate (if known). If unknown, do not exclude.
-  const regionFilter = profile.pickup
-    ? REGION_TOUR_MATCH[profile.pickup]
-    : () => true;
-  const radiusFilter = (t: SignatureTour) => {
-    if (profile.radius === "near") {
-      // Same metro / under ~2h: exclude Centro and deep Alentejo.
-      return !/Centro|[ÉE]vora|F[áa]tima|Tomar|Coimbra|Naz[áa]r[ée]/i.test(t.region);
-    }
-    return true;
-  };
-  // Score by theme alignment + small social bonus.
-  const scored = all
-    .filter((t) => regionFilter(t.region) && radiusFilter(t))
-    .map((t) => {
-      let score = 0;
-      if (profile.style && STYLE_THEME[profile.style].test(t.theme + " " + t.id)) {
-        score += 10;
-      }
-      if (profile.social === "intimate" && /cheese|table|wine|tiles/i.test(t.id)) {
-        score += 2;
-      }
-      if (profile.social === "shared" && /boat|wild|beach/i.test(t.id)) {
-        score += 2;
-      }
-      if (profile.energy === "vivid" && /boat|wild|beach|coast/i.test(t.theme + " " + t.id)) {
-        score += 2;
-      }
-      if (profile.energy === "slow" && /wine|cheese|tiles|heritage/i.test(t.theme + " " + t.id)) {
-        score += 2;
-      }
-      if (profile.companions === "family" && /cheese|tiles|sintra|wild/i.test(t.id)) {
-        score += 1;
-      }
-      return { t, score };
-    })
-    .sort((a, b) => b.score - a.score);
-
-  const top = scored.slice(0, 3).map((x) => x.t);
-  // Always return at least one fallback so convergence never goes empty.
-  if (top.length === 0) return all.slice(0, 2);
-  return top;
-}
 
 // ─────────────────────────────────────────────────────────────────────────
 // Chapter graph
