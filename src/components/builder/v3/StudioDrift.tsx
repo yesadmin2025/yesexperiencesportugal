@@ -1397,7 +1397,7 @@ function ConvergencePhase({
       <div className="relative h-[54vh] min-h-[340px] w-full overflow-hidden">
         {mapStops.length > 0 && regionCenter ? (
           <Suspense fallback={<SceneVideo scene={heroScene} />}>
-            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
+            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode activeStopIndex={activeStopIndex} />
           </Suspense>
         ) : (
           <SceneVideo scene={heroScene} />
