@@ -8,6 +8,7 @@
 // Pure client-side, in-memory + sessionStorage (anon, no PII).
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { recordDriftBehaviorEvent } from "./telemetry";
 
 export type PacingClass = "decisive" | "balanced" | "exploratory";
 
