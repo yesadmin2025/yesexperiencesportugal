@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-23T06:50:49.166Z",
+  "generatedAt": "2026-05-23T12:44:36.437Z",
   "filesScanned": 250,
   "approvedPalette": {
     "teal": "#295B61",
@@ -809,7 +809,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 132,
+      "line": 139,
       "col": 106,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -818,7 +818,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 224,
+      "line": 235,
       "col": 45,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
