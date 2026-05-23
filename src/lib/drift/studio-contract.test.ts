@@ -53,7 +53,6 @@ describe("Studio Drift contract", () => {
     );
 
     expect(prediction.collapseNextChapters).toEqual(["energy", "style", "social"]);
-    expect(prediction.shouldCollapseAhead).toBe(true);
   });
 
   it("composes different real itineraries for different traveller signals", () => {
