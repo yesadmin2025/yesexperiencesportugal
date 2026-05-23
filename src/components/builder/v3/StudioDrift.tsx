@@ -516,17 +516,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "social",
-    whisper: () => "E no fim, que memória fica acesa?",
+    whisper: (_p, locale) => tt("chapter.social", locale),
     options: [
       {
         scene: SCENES.candleBread,
-        hint: "uma mesa só vossa",
+        hintKey: "hint.social.0",
         imprint: { social: "intimate" },
         reinforce: ["candle", "amber", "bread"],
       },
       {
         scene: SCENES.sharedTable,
-        hint: "copos a tocar devagar",
+        hintKey: "hint.social.1",
         imprint: { social: "shared" },
         reinforce: ["fado", "linen", "amber"],
       },
