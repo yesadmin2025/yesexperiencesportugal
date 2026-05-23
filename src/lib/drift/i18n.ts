@@ -1,11 +1,21 @@
 // Drift i18n — auto-detects navigator.language and resolves a tiny dictionary
 // of visible UI strings (convergence labels, CTAs, encouragements, chapter
-// whispers/hints). PT is canonical; EN is a respectful translation.
+// whispers/hints).
 //
-// Override with `?lang=en` on the URL for testing. Falls back to PT.
+// LANGUAGE STRATEGY
+// ─────────────────
+// Most YES Experiences clients are international (predominantly American).
+// Default = EN. Portuguese is only chosen when navigator.language clearly
+// starts with `pt`. URL override `?lang=en|pt` always wins.
 //
-// NOTE: We intentionally keep the dictionary small. AI-generated story text
-// is locale-aware on the server side via `revealJourney({ locale })`.
+// VOICE
+// ─────
+// PT: formal address ("você" / "o seu") — tutear is considered rude with
+// premium luxury travellers. Never use "tu", "teu", "contigo", "te".
+// EN: warm, direct second person.
+//
+// AI-generated story text is locale-aware on the server via revealJourney /
+// composeStudioMoment, which handle EN + PT (and other locales) directly.
 
 import { useEffect, useState } from "react";
 
@@ -14,23 +24,23 @@ export type DriftLocale = "pt" | "en";
 type Dict = Record<string, string>;
 
 const PT: Dict = {
-  // Chapters — PT is canonical Studio Bible voice
+  // Chapters — PT formal "você" voice
   "chapter.opening": "a manhã abre devagar sobre pedra e sal.",
-  "chapter.name": "como te devemos chamar",
-  "chapter.name_placeholder": "o teu primeiro nome",
+  "chapter.name": "como o(a) podemos chamar",
+  "chapter.name_placeholder": "o seu primeiro nome",
   "chapter.settling": "a primeira forma começa a aparecer",
   "chapter.settling_named": "{name}, a primeira forma começa a aparecer.",
-  "chapter.companions": "quem vem contigo",
+  "chapter.companions": "quem o(a) acompanha",
   "chapter.pickup": "onde começa esta história",
   "chapter.duration": "um dia, ou vários",
   "chapter.duration_multi_whisper": "o tempo abre. devagar, sem mapa.",
-  "chapter.radius": "até onde irias seguir esse instinto",
+  "chapter.radius": "até onde seguiria esse instinto",
   "chapter.energy": "que ritmo merece ficar",
-  "chapter.style": "o que te chama antes das palavras",
+  "chapter.style": "o que o(a) chama antes das palavras",
   "chapter.social": "e no fim, que memória fica acesa",
   "hint.companions.0": "só, com espaço",
   "hint.companions.1": "a dois, sem ruído",
-  "hint.companions.2": "com os teus",
+  "hint.companions.2": "com os seus",
   "hint.pickup.0": "Lisboa, com a costa perto",
   "hint.pickup.1": "Centro, pedra e silêncio",
   "hint.pickup.2": "Alentejo, em voz baixa",
@@ -48,19 +58,26 @@ const PT: Dict = {
   "hint.social.1": "copos a tocar devagar",
 
   // Convergence
-  "reveal.eyebrow": "o teu dia, composto",
+  "reveal.eyebrow": "a sua história em Portugal",
+  "reveal.eyebrow_named": "{name}, a sua história em Portugal",
+  "reveal.signed_by": "composta consigo · YES Experiences",
   "reveal.stops": "paragens",
   "reveal.road": "de estrada",
   "reveal.departure": "partida de",
   "reveal.drive_from_prev": "min de estrada",
-  "reveal.no_day": "ainda não há um dia possível para este pedido — fala com um local.",
+  "reveal.no_day": "ainda não há um dia possível para este pedido — fale com um local.",
   "reveal.open_all_day": "aberto todo o dia",
-  "reveal.map_label": "o teu trajecto",
+  "reveal.map_label": "o seu trajecto",
+  "reveal.hero_fallback": "este é o seu Portugal.",
+  "reveal.hero_fallback_named": "{name}, este é o seu Portugal.",
+
+  // Build preview (live itinerary fragment during chapters)
+  "build.eyebrow": "a compor à sua volta",
 
   // CTAs (defaults if Supabase voice is empty)
   "cta.book": "reservar este dia",
   "cta.save": "guardar para depois",
-  "cta.refine": "refinar com um local",
+  "cta.refine": "afinar com um local",
   "cta.explore": "explorar tudo",
   "cta.whatsapp": "falar com um local",
   "wa.intro": "Olá, estou a desenhar um dia em Portugal no Studio",
@@ -69,11 +86,15 @@ const PT: Dict = {
   "wa.companions": "Companhia: {companions}",
   "wa.closing": "Gostava de afinar este dia com um local.",
 
-  // Encouragements (shown above progress bar at key moments)
-  "enc.start": "a primeira pista entrou",
-  "enc.middle": "o mapa começa a responder",
-  "enc.late": "o dia já tem contorno",
-  "enc.near": "a composição está pronta",
+  // Encouragements — YES-branded, name-aware (use {name} if present)
+  "enc.start": "yes · o primeiro sinal entrou",
+  "enc.start_named": "yes · {name}, o primeiro sinal entrou",
+  "enc.middle": "yes · o mapa começa a responder",
+  "enc.middle_named": "yes · {name}, o mapa começa a responder",
+  "enc.late": "yes · o dia ganha contorno",
+  "enc.late_named": "yes · {name}, o dia ganha contorno",
+  "enc.near": "yes · a composição está pronta",
+  "enc.near_named": "yes · {name}, a sua composição está pronta",
 
   // Text phase
   "text.continue": "continuar",
@@ -115,7 +136,9 @@ const EN: Dict = {
   "hint.social.0": "a table of your own",
   "hint.social.1": "glasses touching softly",
 
-  "reveal.eyebrow": "your day, composed",
+  "reveal.eyebrow": "your Portugal story",
+  "reveal.eyebrow_named": "{name}, your Portugal story",
+  "reveal.signed_by": "composed with you · YES Experiences",
   "reveal.stops": "stops",
   "reveal.road": "on the road",
   "reveal.departure": "departing from",
@@ -123,6 +146,10 @@ const EN: Dict = {
   "reveal.no_day": "we couldn't compose a day for this request yet — speak to a local.",
   "reveal.open_all_day": "open all day",
   "reveal.map_label": "your route",
+  "reveal.hero_fallback": "this is your Portugal.",
+  "reveal.hero_fallback_named": "{name}, this is your Portugal.",
+
+  "build.eyebrow": "being built around you",
 
   "cta.book": "book this day",
   "cta.save": "save for later",
@@ -135,10 +162,14 @@ const EN: Dict = {
   "wa.companions": "Company: {companions}",
   "wa.closing": "I'd love to refine this day with a local.",
 
-  "enc.start": "the first signal is in",
-  "enc.middle": "the map is starting to respond",
-  "enc.late": "the day has a contour",
-  "enc.near": "the composition is ready",
+  "enc.start": "yes · the first signal is in",
+  "enc.start_named": "yes · {name}, the first signal is in",
+  "enc.middle": "yes · the map is starting to respond",
+  "enc.middle_named": "yes · {name}, the map is starting to respond",
+  "enc.late": "yes · the day has a contour",
+  "enc.late_named": "yes · {name}, the day has a contour",
+  "enc.near": "yes · the composition is ready",
+  "enc.near_named": "yes · {name}, your composition is ready",
 
   "text.continue": "continue",
 
@@ -148,7 +179,8 @@ const EN: Dict = {
 const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN };
 
 function detect(): DriftLocale {
-  if (typeof window === "undefined") return "pt";
+  // SSR / no-window → default EN (most clients are international).
+  if (typeof window === "undefined") return "en";
   try {
     const url = new URL(window.location.href);
     const q = url.searchParams.get("lang");
@@ -156,14 +188,20 @@ function detect(): DriftLocale {
   } catch {
     /* noop */
   }
+  // Auto-detect: only choose PT when the navigator clearly says Portuguese.
+  // Anything else (en-US, en-GB, fr-FR, es-ES, de-DE, …) → EN.
   const nav =
-    typeof navigator !== "undefined" ? (navigator.language || "pt").toLowerCase() : "pt";
+    typeof navigator !== "undefined"
+      ? ((navigator.languages && navigator.languages[0]) || navigator.language || "en").toLowerCase()
+      : "en";
   if (nav.startsWith("pt")) return "pt";
   return "en";
 }
 
 export function useDriftLocale(): DriftLocale {
-  const [loc, setLoc] = useState<DriftLocale>("pt");
+  // Initial render = EN so SSR + first paint match the international default.
+  // After hydration we re-detect and may switch to PT if the browser asks.
+  const [loc, setLoc] = useState<DriftLocale>("en");
   useEffect(() => {
     setLoc(detect());
   }, []);
@@ -171,6 +209,18 @@ export function useDriftLocale(): DriftLocale {
 }
 
 export function t(key: string, locale: DriftLocale): string {
-  const dict = DICTS[locale] ?? DICTS.pt;
-  return dict[key] ?? DICTS.pt[key] ?? key;
+  const dict = DICTS[locale] ?? DICTS.en;
+  return dict[key] ?? DICTS.en[key] ?? key;
+}
+
+/** Convenience: resolve `{key}_named` if a name is present, otherwise the base key,
+ *  and interpolate `{name}` automatically. Keeps personalization visible and consistent. */
+export function tName(baseKey: string, locale: DriftLocale, name?: string | null): string {
+  if (name && name.trim().length > 0) {
+    const dict = DICTS[locale] ?? DICTS.en;
+    const namedKey = `${baseKey}_named`;
+    const tpl = dict[namedKey] ?? DICTS.en[namedKey];
+    if (tpl) return tpl.replace("{name}", name.trim());
+  }
+  return t(baseKey, locale);
 }
