@@ -306,7 +306,7 @@ interface DriftChapter {
   kind: "drift";
   id: string;
   /** Function so we can weave the traveller name in once we know it. */
-  whisper: (p: DriftProfile) => string;
+  whisper: (p: DriftProfile, locale: DriftLocale) => string;
   scenes: Scene[];
   holdMs: number;
 }
@@ -315,15 +315,15 @@ interface TextChapter {
   kind: "text";
   id: string;
   scene: Scene;
-  whisper: (p: DriftProfile) => string;
-  placeholder: string;
+  whisper: (p: DriftProfile, locale: DriftLocale) => string;
+  placeholder: (locale: DriftLocale) => string;
   /** Where to write the answer on the profile. */
   field: "name";
 }
 
 interface ChoiceOption {
   scene: Scene;
-  hint: string;
+  hintKey: string;
   imprint: Partial<DriftProfile>;
   reinforce: Motif[];
 }
@@ -335,7 +335,7 @@ interface ChoiceChapter {
    *  router to skip the chapter if confidence on that dimension is already
    *  high enough from prior soft signals. */
   dim?: DriftDimension;
-  whisper: (p: DriftProfile) => string;
+  whisper: (p: DriftProfile, locale: DriftLocale) => string;
   options: ChoiceOption[];
 }
 
