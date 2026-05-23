@@ -224,6 +224,28 @@ const SCENES: Record<string, Scene> = {
   },
 };
 
+/** Editorial still pools indexed by mood — used to upgrade a choice tile's
+ *  visual when the predictive engine's top mood matches the option's mood.
+ *  Keeps the imprint mapping intact (we only swap the visible source). */
+const MOOD_STILLS: Partial<Record<SceneMood, Scene[]>> = {
+  intimacy:    [SCENES.candleBread, SCENES.sharedTable],
+  ritual:      [SCENES.wineHand, SCENES.candleBread],
+  slowness:    [SCENES.silentVineyard, SCENES.quietChapel, SCENES.linenBreeze],
+  arrival:     [SCENES.dawnDouro],
+  discovery:   [SCENES.atlanticHands],
+  celebration: [SCENES.sharedTable],
+};
+
+/** Deterministic still pick from a pool, seeded by a stable key. */
+function pickStillForMood(mood: SceneMood | undefined, seed: string): Scene | null {
+  if (!mood) return null;
+  const pool = MOOD_STILLS[mood];
+  if (!pool || pool.length === 0) return null;
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return pool[h % pool.length];
+}
+
 const MOTIF_TINT: Record<Motif, string> = {
   amber:   "radial-gradient(ellipse at 50% 78%, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 62%)",
   candle:  "radial-gradient(ellipse at 50% 82%, color-mix(in oklab, var(--gold-soft, var(--gold)) 26%, transparent) 0%, transparent 58%)",
