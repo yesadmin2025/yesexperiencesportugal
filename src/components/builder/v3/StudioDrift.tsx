@@ -381,15 +381,23 @@ export function StudioDrift({ onExit }: Props) {
   const [profile, setProfile] = useState<DriftProfile>({});
   const [audioOn, setAudioOn] = useState(false);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
+  const confidenceRef = useRef<ConfidenceMap>({});
   const [, setTick] = useState(0);
 
   const chapter = CHAPTERS[chapterIdx];
 
+  /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
+   *  confidence on the dimensions they correlate with. */
   const reinforce = useCallback((motifs: Motif[], amount: number) => {
     const g = gravityRef.current;
+    let conf = confidenceRef.current;
     for (const m of motifs) {
       g.set(m, Math.min(8, (g.get(m) ?? 0) + amount));
+      for (const [dim, val] of MOTIF_NUDGE[m] ?? []) {
+        conf = bump(conf, dim, val, SOFT * amount * 0.45);
+      }
     }
+    confidenceRef.current = conf;
     setTick((t) => t + 1);
   }, []);
 
@@ -407,8 +415,37 @@ export function StudioDrift({ onExit }: Props) {
     });
   }, [chapter, chapterIdx]);
 
+  /** Dynamic router: walk forward past any ChoiceChapter whose target
+   *  dimension is already confidently inferred (top ≥ 0.85). Keeps drift
+   *  + text + convergence chapters intact — only the "ask" steps are
+   *  skipped when the system has already learned the answer. */
   const advance = useCallback(() => {
-    setChapterIdx((i) => Math.min(i + 1, CHAPTERS.length - 1));
+    setChapterIdx((i) => {
+      let next = i + 1;
+      const conf = confidenceRef.current;
+      while (next < CHAPTERS.length - 1) {
+        const c = CHAPTERS[next];
+        if (c.kind !== "choice") break;
+        const dim = (c.dim ?? (c.id as DriftDimension));
+        const top = topValue(conf, dim);
+        // Only skip dimensions the inference engine actually owns.
+        const owned: DriftDimension[] = [
+          "companions", "pickup", "radius", "energy", "style", "social",
+        ];
+        if (!owned.includes(dim)) break;
+        if (!top || top.confidence < 0.85) break;
+        // Skipped — synthesize an inferred answer onto the profile.
+        setProfile((p) => ({ ...p, [dim]: top.value as never }));
+        void recordDriftEvent("signal_captured", {
+          chapterId: c.id,
+          signalKey: dim,
+          signalValue: top.value,
+          meta: { inferred: true, confidence: Number(top.confidence.toFixed(2)) },
+        });
+        next += 1;
+      }
+      return Math.min(next, CHAPTERS.length - 1);
+    });
   }, []);
 
   const onPick = useCallback(
@@ -416,14 +453,18 @@ export function StudioDrift({ onExit }: Props) {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
-      // Telemetry: capture every imprinted signal.
+      // Explicit imprint → full confidence on those dimensions.
+      let conf = confidenceRef.current;
       for (const [k, v] of Object.entries(opt.imprint)) {
+        if (v === undefined) continue;
+        conf = bump(conf, k as DriftDimension, String(v), EXPLICIT);
         void recordDriftEvent("signal_captured", {
           chapterId: chapter.id,
           signalKey: k,
           signalValue: String(v),
         });
       }
+      confidenceRef.current = conf;
       void recordDriftEvent("scene_answered", {
         chapterId: chapter.id,
         meta: { sceneId: opt.scene.id },
