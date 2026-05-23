@@ -968,8 +968,8 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper(profile)} delay={500} hold={5200} />
-      <div className="absolute inset-0 z-10 flex flex-col">
+      <Whisper text={chapter.whisper(profile)} delay={360} hold={5200} variant="choice" />
+      <div className="absolute inset-x-0 bottom-0 top-[30%] z-10 flex flex-col gap-2 px-3 pb-3">
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
@@ -1004,7 +1004,7 @@ function ChoicePhase({
               onTouchStart={() => handlePressStart(opt)}
               onTouchEnd={handlePressEnd}
               onTouchCancel={handlePressEnd}
-              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/40"
+              className="relative flex-1 overflow-hidden rounded-[7px] outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/55"
               style={{
                 opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
                 transform: !tilesIn
@@ -1013,6 +1013,7 @@ function ChoicePhase({
                     ? "scale(1.02)"
                     : "scale(1)",
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
+                boxShadow: "0 16px 42px rgba(0,0,0,0.34)",
               }}
             >
               <SceneCanvas source={sceneSource(renderedScene)} />
@@ -1021,7 +1022,7 @@ function ChoicePhase({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.06) 28%, rgba(0,0,0,0.06) 72%, rgba(0,0,0,0.50) 100%)",
+                    "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 36%, rgba(0,0,0,0.10) 62%, rgba(0,0,0,0.72) 100%)",
                 }}
               />
               <div
@@ -1030,14 +1031,16 @@ function ChoicePhase({
                 style={{ background: "color-mix(in oklab, var(--ivory) 18%, transparent)" }}
               />
               <span
-                className="absolute inset-x-0 bottom-6 z-10 block text-center italic text-[color:var(--ivory)] transition-all duration-[1500ms]"
+                className="absolute inset-x-0 bottom-5 z-10 block px-5 text-center text-[color:var(--ivory)] transition-all duration-[1500ms]"
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "15px",
-                  letterSpacing: "0.01em",
-                  textShadow: "0 1px 18px rgba(0,0,0,0.7)",
-                  opacity: showHints ? 0.86 : 0,
-                  transform: showHints ? "translateY(0)" : "translateY(6px)",
+                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  lineHeight: 1.18,
+                  letterSpacing: "0",
+                  textShadow: "0 2px 22px rgba(0,0,0,0.86)",
+                  opacity: showHints ? 0.94 : 0,
+                  transform: showHints ? "translateY(0)" : "translateY(8px)",
                 }}
               >
                 {opt.hint}
