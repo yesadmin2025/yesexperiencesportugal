@@ -5,8 +5,8 @@
 // LANGUAGE STRATEGY
 // ─────────────────
 // Most YES Experiences clients are international (predominantly American).
-// Default = EN. Portuguese is only chosen when navigator.language clearly
-// starts with `pt`. URL override `?lang=en|pt` always wins.
+// Default = EN. Portuguese/Spanish/French are chosen only when the browser
+// clearly asks for them. URL override `?lang=en|pt|es|fr` always wins.
 //
 // VOICE
 // ─────
@@ -19,7 +19,7 @@
 
 import { useEffect, useState } from "react";
 
-export type DriftLocale = "pt" | "en";
+export type DriftLocale = "pt" | "en" | "es" | "fr";
 
 type Dict = Record<string, string>;
 
@@ -33,7 +33,7 @@ const PT: Dict = {
   "chapter.companions": "quem o(a) acompanha",
   "chapter.pickup": "onde começa esta história",
   "chapter.duration": "um dia, ou vários",
-  "chapter.duration_multi_whisper": "o tempo abre. devagar, sem mapa.",
+  "chapter.duration_multi_whisper": "o tempo abre devagar, com mais silêncio e intenção.",
   "chapter.radius": "até onde seguiria esse instinto",
   "chapter.energy": "que ritmo merece ficar",
   "chapter.style": "o que o(a) chama antes das palavras",
@@ -68,8 +68,8 @@ const PT: Dict = {
   "reveal.no_day": "ainda não há um dia possível para este pedido — fale com um local.",
   "reveal.open_all_day": "aberto todo o dia",
   "reveal.map_label": "o seu trajecto",
-  "reveal.hero_fallback": "este é o seu Portugal.",
-  "reveal.hero_fallback_named": "{name}, este é o seu Portugal.",
+  "reveal.hero_fallback": "a sua história portuguesa está pronta.",
+  "reveal.hero_fallback_named": "{name}, a sua história portuguesa está pronta.",
 
   // Build preview (live itinerary fragment during chapters)
   "build.eyebrow": "a compor à sua volta",
@@ -146,8 +146,8 @@ const EN: Dict = {
   "reveal.no_day": "we couldn't compose a day for this request yet — speak to a local.",
   "reveal.open_all_day": "open all day",
   "reveal.map_label": "your route",
-  "reveal.hero_fallback": "this is your Portugal.",
-  "reveal.hero_fallback_named": "{name}, this is your Portugal.",
+  "reveal.hero_fallback": "your Portugal story is ready.",
+  "reveal.hero_fallback_named": "{name}, your Portugal story is ready.",
 
   "build.eyebrow": "being built around you",
 
@@ -176,7 +176,141 @@ const EN: Dict = {
   "ui.exit": "exit",
 };
 
-const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN };
+const ES: Dict = {
+  "chapter.opening": "la mañana se abre despacio sobre piedra y sal.",
+  "chapter.name": "cómo deberíamos llamarle",
+  "chapter.name_placeholder": "su nombre",
+  "chapter.settling": "la primera forma empieza a aparecer",
+  "chapter.settling_named": "{name}, la primera forma empieza a aparecer.",
+  "chapter.companions": "quién viene con usted",
+  "chapter.pickup": "dónde empieza esta historia",
+  "chapter.duration": "un día, o varios",
+  "chapter.duration_multi_whisper": "el tiempo se abre despacio, con más silencio e intención.",
+  "chapter.radius": "hasta dónde seguiría esa intuición",
+  "chapter.energy": "qué ritmo debería quedarse",
+  "chapter.style": "qué llama antes de las palabras",
+  "chapter.social": "y al final, qué memoria permanece cálida",
+  "hint.companions.0": "a solas, con espacio",
+  "hint.companions.1": "dos personas, sin ruido",
+  "hint.companions.2": "con su gente",
+  "hint.pickup.0": "Lisboa, cerca de la costa",
+  "hint.pickup.1": "Centro de Portugal, piedra y calma",
+  "hint.pickup.2": "Alentejo, en voz baja",
+  "hint.duration.0": "un día completo",
+  "hint.duration.1": "varios días, sin prisa",
+  "hint.radius.0": "cerca, con calma",
+  "hint.radius.1": "todo un día fuera",
+  "hint.radius.2": "lejos, si merece la pena",
+  "hint.energy.0": "lento, casi secreto",
+  "hint.energy.1": "vivo, con textura",
+  "hint.style.0": "Atlántico abierto",
+  "hint.style.1": "piedra antigua",
+  "hint.style.2": "viñedo y ritual",
+  "hint.social.0": "una mesa propia",
+  "hint.social.1": "copas que se tocan suavemente",
+  "reveal.eyebrow": "su historia de Portugal",
+  "reveal.eyebrow_named": "{name}, su historia de Portugal",
+  "reveal.signed_by": "compuesta con usted · YES Experiences",
+  "reveal.stops": "paradas",
+  "reveal.road": "en ruta",
+  "reveal.departure": "salida desde",
+  "reveal.drive_from_prev": "min en coche",
+  "reveal.no_day": "aún no podemos componer un día para esta petición — hable con un local.",
+  "reveal.open_all_day": "abierto todo el día",
+  "reveal.map_label": "su ruta",
+  "reveal.hero_fallback": "esta es su historia portuguesa.",
+  "reveal.hero_fallback_named": "{name}, esta es su historia portuguesa.",
+  "build.eyebrow": "tomando forma alrededor de usted",
+  "cta.book": "reservar este día",
+  "cta.save": "guardar para después",
+  "cta.refine": "afinar con un local",
+  "cta.explore": "explorar todo",
+  "cta.whatsapp": "hablar con un local",
+  "wa.intro": "Hola, estoy dando forma a un día en Portugal en el Studio",
+  "wa.with_name": "Soy {name}",
+  "wa.region": "Salida prevista: {region}",
+  "wa.companions": "Compañía: {companions}",
+  "wa.closing": "Me gustaría afinar este día con un local.",
+  "enc.start": "yes · la primera señal ha entrado",
+  "enc.start_named": "yes · {name}, la primera señal ha entrado",
+  "enc.middle": "yes · el mapa empieza a responder",
+  "enc.middle_named": "yes · {name}, el mapa empieza a responder",
+  "enc.late": "yes · el día gana contorno",
+  "enc.late_named": "yes · {name}, el día gana contorno",
+  "enc.near": "yes · la composición está lista",
+  "enc.near_named": "yes · {name}, su composición está lista",
+  "text.continue": "continuar",
+  "ui.exit": "salir",
+};
+
+const FR: Dict = {
+  "chapter.opening": "le matin s'ouvre lentement sur la pierre et le sel.",
+  "chapter.name": "comment devrions-nous vous appeler",
+  "chapter.name_placeholder": "votre prénom",
+  "chapter.settling": "la première forme commence à apparaître",
+  "chapter.settling_named": "{name}, la première forme commence à apparaître.",
+  "chapter.companions": "qui vous accompagne",
+  "chapter.pickup": "où commence cette histoire",
+  "chapter.duration": "un jour, ou plusieurs",
+  "chapter.duration_multi_whisper": "le temps s'ouvre lentement, avec plus de silence et d'intention.",
+  "chapter.radius": "jusqu'où suivriez-vous cette intuition",
+  "chapter.energy": "quel rythme doit rester",
+  "chapter.style": "ce qui appelle avant les mots",
+  "chapter.social": "et à la fin, quelle mémoire reste chaude",
+  "hint.companions.0": "seul, avec de l'espace",
+  "hint.companions.1": "à deux, sans bruit",
+  "hint.companions.2": "avec vos proches",
+  "hint.pickup.0": "Lisbonne, près de la côte",
+  "hint.pickup.1": "Centre du Portugal, pierre et calme",
+  "hint.pickup.2": "Alentejo, à voix basse",
+  "hint.duration.0": "une journée complète",
+  "hint.duration.1": "plusieurs jours, sans hâte",
+  "hint.radius.0": "proche, lentement",
+  "hint.radius.1": "toute une journée dehors",
+  "hint.radius.2": "loin, si cela en vaut la peine",
+  "hint.energy.0": "lent, presque secret",
+  "hint.energy.1": "vivant, texturé",
+  "hint.style.0": "Atlantique ouvert",
+  "hint.style.1": "pierre ancienne",
+  "hint.style.2": "vigne et rituel",
+  "hint.social.0": "une table à vous",
+  "hint.social.1": "des verres qui se touchent doucement",
+  "reveal.eyebrow": "votre histoire portugaise",
+  "reveal.eyebrow_named": "{name}, votre histoire portugaise",
+  "reveal.signed_by": "composée avec vous · YES Experiences",
+  "reveal.stops": "arrêts",
+  "reveal.road": "sur la route",
+  "reveal.departure": "départ de",
+  "reveal.drive_from_prev": "min de route",
+  "reveal.no_day": "nous ne pouvons pas encore composer ce jour — parlez à un local.",
+  "reveal.open_all_day": "ouvert toute la journée",
+  "reveal.map_label": "votre itinéraire",
+  "reveal.hero_fallback": "voici votre histoire portugaise.",
+  "reveal.hero_fallback_named": "{name}, voici votre histoire portugaise.",
+  "build.eyebrow": "en train de prendre forme autour de vous",
+  "cta.book": "réserver cette journée",
+  "cta.save": "garder pour plus tard",
+  "cta.refine": "affiner avec un local",
+  "cta.explore": "tout explorer",
+  "cta.whatsapp": "parler à un local",
+  "wa.intro": "Bonjour, je façonne une journée au Portugal dans le Studio",
+  "wa.with_name": "Je suis {name}",
+  "wa.region": "Départ prévu : {region}",
+  "wa.companions": "Compagnie : {companions}",
+  "wa.closing": "J'aimerais affiner cette journée avec un local.",
+  "enc.start": "yes · le premier signal est entré",
+  "enc.start_named": "yes · {name}, le premier signal est entré",
+  "enc.middle": "yes · la carte commence à répondre",
+  "enc.middle_named": "yes · {name}, la carte commence à répondre",
+  "enc.late": "yes · la journée prend forme",
+  "enc.late_named": "yes · {name}, la journée prend forme",
+  "enc.near": "yes · la composition est prête",
+  "enc.near_named": "yes · {name}, votre composition est prête",
+  "text.continue": "continuer",
+  "ui.exit": "sortir",
+};
+
+const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN, es: ES, fr: FR };
 
 function detect(): DriftLocale {
   // SSR / no-window → default EN (most clients are international).
@@ -184,17 +318,19 @@ function detect(): DriftLocale {
   try {
     const url = new URL(window.location.href);
     const q = url.searchParams.get("lang");
-    if (q === "en" || q === "pt") return q;
+    if (q === "en" || q === "pt" || q === "es" || q === "fr") return q;
   } catch {
     /* noop */
   }
-  // Auto-detect: only choose PT when the navigator clearly says Portuguese.
-  // Anything else (en-US, en-GB, fr-FR, es-ES, de-DE, …) → EN.
+  // Auto-detect: use the visitor's supported browser language. Anything else
+  // (including de-DE, it-IT, nl-NL, …) falls back to EN for the US-heavy audience.
   const nav =
     typeof navigator !== "undefined"
       ? ((navigator.languages && navigator.languages[0]) || navigator.language || "en").toLowerCase()
       : "en";
   if (nav.startsWith("pt")) return "pt";
+  if (nav.startsWith("es")) return "es";
+  if (nav.startsWith("fr")) return "fr";
   return "en";
 }
 

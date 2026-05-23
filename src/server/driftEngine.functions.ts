@@ -26,7 +26,7 @@ const profileSchema = z
     social: z.enum(["intimate", "shared"]).optional(),
     confidence: z.record(z.string(), z.number()).optional(),
     // Predictive + i18n hints (all optional, never invent facts):
-    locale: z.enum(["pt", "en"]).optional(),
+    locale: z.enum(["pt", "en", "es", "fr"]).optional(),
     tonalRegister: z.enum(["intimate", "expansive", "playful", "ritual"]).optional(),
     intensityPreference: z.number().min(1).max(5).optional(),
   })
@@ -37,7 +37,7 @@ export const revealJourney = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { confidence, locale, tonalRegister, intensityPreference, ...profile } = data;
     return await assembleReveal(profile, sanitizeConfidence(confidence ?? {}), {
-      locale: locale ?? "pt",
+      locale: locale ?? "en",
       tonalRegister,
       intensityPreference,
     });

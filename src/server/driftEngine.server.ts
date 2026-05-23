@@ -103,7 +103,7 @@ export async function activateDna(
 
 // ─── AI story (tone-only, never invents stops) ────────────────────────────
 
-export type DriftLocale = "pt" | "en";
+export type DriftLocale = "pt" | "en" | "es" | "fr";
 export type TonalRegister = "intimate" | "expansive" | "playful" | "ritual";
 
 export interface RevealStory {
@@ -142,7 +142,7 @@ function fallbackStory(input: StoryInput): RevealStory {
   const stops = input.day.stops.map((s) => s.stop.name);
   const opener = profile.name ? `${profile.name}, ` : "";
 
-  if (locale === "en") {
+  if (locale !== "pt") {
     const hero = `your day in ${regionLabel} is ready.`;
     const microStory =
       stops.length === 0
@@ -163,13 +163,13 @@ function fallbackStory(input: StoryInput): RevealStory {
   }
 
   const hero = fillSlots(
-    voice["reveal.hero"]?.text ?? "o teu dia em {region} está pronto.",
+    voice["reveal.hero"]?.text ?? "o seu dia em {region} está pronto.",
     { region: regionLabel, name: profile.name },
   );
   const completion = voice["completion.book"]?.text ?? "reservar este dia";
   const microStory =
     stops.length === 0
-      ? `${opener}há um dia desenhado em ${regionLabel}, à tua medida.`
+      ? `${opener}há um dia desenhado em ${regionLabel}, à sua medida.`
       : `${opener}começamos perto, paramos em ${stops.slice(0, 2).join(" e ")}, e deixamos a tarde respirar.`;
   const arc =
     stops.length === 0
@@ -179,8 +179,8 @@ function fallbackStory(input: StoryInput): RevealStory {
           stops[1] ? `o meio-dia abranda em ${stops[1]}.` : "o meio-dia abranda, sem pressa.",
           stops[stops.length - 1] && stops.length > 2
             ? `a noite pousa em ${stops[stops.length - 1]}.`
-            : "a noite pousa, mais devagar do que esperavas.",
-          "queres viver este dia?",
+            : "a noite pousa, mais devagar do que esperado.",
+          "gostaria de viver este dia?",
         ];
   return { hero, microStory, arc, completion, source: "fallback" };
 }
@@ -212,9 +212,13 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
 
   const locale = input.hints.locale ?? "pt";
   const langClause =
-    locale === "en"
-      ? "Write in concise British English. Lowercase, no exclamation marks, no clichés."
-      : "Write in European Portuguese (pt-PT). Lowercase, no exclamation marks, no clichés.";
+    locale === "pt"
+      ? "Write in European Portuguese (pt-PT), formal address. Lowercase, no exclamation marks, no clichés."
+      : locale === "es"
+        ? "Write in formal European Spanish. Lowercase, no exclamation marks, no clichés."
+        : locale === "fr"
+          ? "Write in formal French. Lowercase, no exclamation marks, no clichés."
+          : "Write in concise American English. Lowercase, no exclamation marks, no clichés.";
 
   const profileSummary = [
     input.profile.name ? `name=${input.profile.name}` : null,

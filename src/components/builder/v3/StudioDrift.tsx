@@ -5,7 +5,7 @@ import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposedDay, type ComposerProfile } from "@/lib/drift/composer";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
-import { recordDriftEvent } from "@/lib/drift/telemetry";
+import { recordDriftBehaviorEvent, recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
 import { composeStudioMoment } from "@/server/studioNarrative.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
@@ -381,6 +381,48 @@ function chapterSortKey(chapter: Chapter, confidence: ConfidenceMap, prediction:
   return (1 - top) * 0.72 + affinity * 0.28;
 }
 
+const PROFILE_LABELS: Record<string, Record<DriftLocale, string>> = {
+  solo: { en: "solo", pt: "a sós", es: "a solas", fr: "seul" },
+  couple: { en: "for two", pt: "a dois", es: "para dos", fr: "à deux" },
+  group: { en: "with your people", pt: "com os seus", es: "con su gente", fr: "avec vos proches" },
+  lisbon: { en: "from Lisbon", pt: "a partir de Lisboa", es: "desde Lisboa", fr: "depuis Lisbonne" },
+  centro: { en: "through Central Portugal", pt: "pelo Centro", es: "por el Centro", fr: "dans le Centre" },
+  alentejo: { en: "in Alentejo", pt: "no Alentejo", es: "en Alentejo", fr: "en Alentejo" },
+  near: { en: "close and slow", pt: "perto e devagar", es: "cerca y despacio", fr: "proche et lent" },
+  far: { en: "a full day out", pt: "um dia inteiro fora", es: "un día completo fuera", fr: "une journée entière dehors" },
+  anywhere: { en: "where it is worth it", pt: "onde valer a pena", es: "donde valga la pena", fr: "là où cela vaut le détour" },
+  slow: { en: "slow", pt: "lento", es: "lento", fr: "lent" },
+  vivid: { en: "vivid", pt: "vivo", es: "vivo", fr: "vivant" },
+  coast: { en: "Atlantic", pt: "Atlântico", es: "Atlántico", fr: "Atlantique" },
+  heritage: { en: "old stone", pt: "pedra antiga", es: "piedra antigua", fr: "pierre ancienne" },
+  wine: { en: "vineyard ritual", pt: "ritual da vinha", es: "ritual de viñedo", fr: "rituel des vignes" },
+  table: { en: "long table", pt: "mesa longa", es: "mesa larga", fr: "longue table" },
+  intimate: { en: "quietly private", pt: "discreto e privado", es: "discreto y privado", fr: "discret et privé" },
+  shared: { en: "generously shared", pt: "generosamente partilhado", es: "generosamente compartido", fr: "généreusement partagé" },
+};
+
+function labelValue(value: string | undefined, locale: DriftLocale): string | null {
+  if (!value) return null;
+  return PROFILE_LABELS[value]?.[locale] ?? PROFILE_LABELS[value]?.en ?? value;
+}
+
+function optionScore(opt: ChoiceOption, confidence: ConfidenceMap, prediction: ReturnType<typeof derivePrediction>) {
+  const moodScore = opt.scene.mood ? prediction.sceneWeighting[opt.scene.mood] ?? 0.5 : 0.5;
+  let explicitPull = 0;
+  for (const [dim, value] of Object.entries(opt.imprint)) {
+    if (!value || !isDriftDimension(dim)) continue;
+    explicitPull = Math.max(explicitPull, confidence[`${dim}:${value}`] ?? 0);
+  }
+  return moodScore * 0.58 + explicitPull * 0.42;
+}
+
+function predictiveCue(confidence: number, locale: DriftLocale): string {
+  if (locale === "pt") return confidence >= 0.72 ? "isto segue naturalmente" : confidence >= 0.48 ? "isto encaixa a seguir" : "talvez também goste disto";
+  if (locale === "es") return confidence >= 0.72 ? "esto sigue con naturalidad" : confidence >= 0.48 ? "esto encaja a continuación" : "quizá también le guste";
+  if (locale === "fr") return confidence >= 0.72 ? "cela vient naturellement" : confidence >= 0.48 ? "cela s’enchaîne bien" : "vous pourriez aussi aimer";
+  return confidence >= 0.72 ? "this follows naturally" : confidence >= 0.48 ? "this feels right next" : "you might also love";
+}
+
 const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
@@ -616,6 +658,22 @@ export function StudioDrift({ onExit }: Props) {
   const showBuildPreview = chapter.kind !== "convergence" && chapterIdx >= 4 && liveDay.stops.length > 0;
 
   useEffect(() => {
+    if (!chapter || chapter.kind === "convergence") return;
+    void recordDriftBehaviorEvent("prediction_update", {
+      chapterId: chapter.id,
+      predictedTonalRegister: prediction.tonalRegister,
+      predictedIntensity: String(Number(prediction.intensity.toFixed(2))),
+      revealConfidence: Number(prediction.revealConfidence.toFixed(3)),
+      meta: {
+        pacingClass: prediction.pacingClass,
+        nextBestDimensions: prediction.nextBestDimensions,
+        inferredProfile,
+        collapseAhead: prediction.shouldCollapseAhead,
+      },
+    });
+  }, [chapter?.id, chapter?.kind, prediction.pacingClass, prediction.tonalRegister, prediction.revealConfidence]);
+
+  useEffect(() => {
     if (!sessionId || !chapter) return;
     const key = `${stage}:${chapter.id}`;
     if (stage === "invitation" || firedStagesRef.current.has(key) || aiBudgetRef.current >= 4) return;
@@ -849,6 +907,8 @@ export function StudioDrift({ onExit }: Props) {
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
           tonalRegister={prediction.tonalRegister}
+          prediction={prediction}
+          confidence={confidenceRef.current}
           hasBuildPreview={showBuildPreview}
           onSceneShown={behavior.markSceneShown}
           onAttraction={(opt) =>
@@ -898,6 +958,8 @@ export function StudioDrift({ onExit }: Props) {
           day={liveDay}
           region={liveRegion}
           locale={locale}
+          profile={inferredProfile}
+          prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
         />
       )}
@@ -1106,6 +1168,8 @@ function ChoicePhase({
   onPick,
   sceneWeighting,
   tonalRegister,
+  prediction,
+  confidence,
   hasBuildPreview = false,
   onAttraction,
   onSceneShown,
@@ -1116,6 +1180,8 @@ function ChoicePhase({
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
   tonalRegister?: TonalRegister;
+  prediction?: ReturnType<typeof derivePrediction>;
+  confidence?: ConfidenceMap;
   hasBuildPreview?: boolean;
   onAttraction?: (opt: ChoiceOption) => void;
   onSceneShown?: (sceneId: string) => void;
@@ -1129,13 +1195,19 @@ function ChoicePhase({
   const ordered = useMemo(() => {
     const w = (o: ChoiceOption) =>
       o.scene.mood && sceneWeighting ? sceneWeighting[o.scene.mood] ?? 0.5 : 0.5;
-    const sorted = [...chapter.options].sort((a, b) => w(b) - w(a));
+    const sorted = [...chapter.options].sort((a, b) => {
+      if (prediction && confidence) return optionScore(b, confidence, prediction) - optionScore(a, confidence, prediction);
+      return w(b) - w(a);
+    });
+    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= 0.72) return sorted.slice(0, 2);
     if (sceneWeighting && sorted.length >= 3) {
       const last = sorted[sorted.length - 1]!;
       if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
     }
     return sorted;
-  }, [chapter.options, sceneWeighting]);
+  }, [chapter.options, sceneWeighting, prediction, confidence]);
+
+  const cue = predictiveCue(prediction?.revealConfidence ?? 0, locale);
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
@@ -1172,6 +1244,21 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
+      <p
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[23%] z-[56] px-7 text-center uppercase transition-opacity duration-[900ms]"
+        style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontSize: "9px",
+          fontWeight: 700,
+          letterSpacing: "0.22em",
+          color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
+          textShadow: "0 1px 14px rgba(0,0,0,0.72)",
+          opacity: tilesIn ? 0.78 : 0,
+        }}
+      >
+        {cue}
+      </p>
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "92px" : 0 }}>
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
@@ -1261,11 +1348,15 @@ function ProgressiveBuildPreview({
   day,
   region,
   locale,
+  profile,
+  prediction,
   activeStopIndex,
 }: {
   day: ComposedDay;
   region: RegionKey;
   locale: DriftLocale;
+  profile?: DriftProfile;
+  prediction?: ReturnType<typeof derivePrediction>;
   activeStopIndex: number;
 }) {
   const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
@@ -1285,6 +1376,13 @@ function ProgressiveBuildPreview({
   const last = previewStops[previewStops.length - 1]?.stop;
   if (!last || !origin) return null;
 
+  const signals = [
+    labelValue(profile?.companions, locale),
+    labelValue(profile?.style, locale),
+    labelValue(profile?.energy, locale),
+  ].filter(Boolean).slice(0, 2).join(" · ");
+  const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
+
   return (
     <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ minHeight: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
       <div className="grid grid-cols-[96px_1fr] items-stretch">
@@ -1295,7 +1393,7 @@ function ProgressiveBuildPreview({
         </div>
         <div className="px-4 py-3">
           <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
-            {tt("build.eyebrow", locale)}
+            {tt("build.eyebrow", locale)}{confidencePct > 0 ? ` · ${confidencePct}%` : ""}
           </p>
           <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
             {last.name}
@@ -1303,6 +1401,11 @@ function ProgressiveBuildPreview({
           <p className="mt-1 line-clamp-2" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", lineHeight: 1.35, color: "color-mix(in oklab, var(--ivory) 72%, transparent)" }}>
             {last.blurb}
           </p>
+          {signals && (
+            <p className="mt-1 truncate" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9.5px", lineHeight: 1.25, color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))" }}>
+              {signals}
+            </p>
+          )}
         </div>
       </div>
     </div>
