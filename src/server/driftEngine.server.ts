@@ -147,7 +147,7 @@ function fallbackStory(input: StoryInput): RevealStory {
     const microStory =
       stops.length === 0
         ? `${opener}a day is being drawn in ${regionLabel}, to your measure.`
-        : `${opener}we begin close, we pause at ${stops.slice(0, 2).join(" and ")}, and we let the afternoon breathe.`;
+        : `${opener}we begin close, pause at ${stops.slice(0, 2).join(" and ")}, and leave the afternoon open.`;
     const arc =
       stops.length === 0
         ? [microStory]
@@ -170,7 +170,7 @@ function fallbackStory(input: StoryInput): RevealStory {
   const microStory =
     stops.length === 0
       ? `${opener}há um dia desenhado em ${regionLabel}, à sua medida.`
-      : `${opener}começamos perto, paramos em ${stops.slice(0, 2).join(" e ")}, e deixamos a tarde respirar.`;
+      : `${opener}começamos perto, paramos em ${stops.slice(0, 2).join(" e ")}, e deixamos a tarde em aberto.`;
   const arc =
     stops.length === 0
       ? [microStory]
@@ -356,15 +356,25 @@ export async function assembleReveal(
   hints: StoryHints = {},
 ): Promise<RevealPayload> {
   const region = pickRegion(rawProfile);
-  const day = composeDay(rawProfile, region, { confidence });
+  const day = composeDay(rawProfile, region, {
+    confidence,
+    tonalRegister: hints.tonalRegister,
+    intensityPreference: hints.intensityPreference,
+  });
   const voice = await loadVoice();
   const dna = await activateDna(rawProfile, confidence);
   const regionLabel = REGION_LABEL[region] ?? region;
   const story = await generateRevealStory({ profile: rawProfile, day, voice, regionLabel, hints });
+  const ctaFallback = {
+    en: { book: "book this day", save: "save for later", refine: "refine with a local" },
+    pt: { book: "reservar este dia", save: "guardar para depois", refine: "afinar com um local" },
+    es: { book: "reservar este día", save: "guardar para después", refine: "afinar con un local" },
+    fr: { book: "réserver cette journée", save: "garder pour plus tard", refine: "affiner avec un local" },
+  }[hints.locale ?? "en"];
   const cta = {
-    book: voice["completion.book"]?.text ?? "reservar este dia",
-    save: voice["completion.save"]?.text ?? "guardar para depois",
-    refine: voice["completion.refine"]?.text ?? "refinar com um local",
+    book: hints.locale === "pt" ? voice["completion.book"]?.text ?? ctaFallback.book : ctaFallback.book,
+    save: hints.locale === "pt" ? voice["completion.save"]?.text ?? ctaFallback.save : ctaFallback.save,
+    refine: hints.locale === "pt" ? voice["completion.refine"]?.text ?? ctaFallback.refine : ctaFallback.refine,
   };
   const anchor = day.anchorTourId
     ? signatureTours.find((t) => t.id === day.anchorTourId)
