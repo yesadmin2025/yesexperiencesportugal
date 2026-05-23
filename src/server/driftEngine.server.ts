@@ -163,13 +163,13 @@ function fallbackStory(input: StoryInput): RevealStory {
   }
 
   const hero = fillSlots(
-    voice["reveal.hero"]?.text ?? "o teu dia em {region} está pronto.",
+    voice["reveal.hero"]?.text ?? "o seu dia em {region} está pronto.",
     { region: regionLabel, name: profile.name },
   );
   const completion = voice["completion.book"]?.text ?? "reservar este dia";
   const microStory =
     stops.length === 0
-      ? `${opener}há um dia desenhado em ${regionLabel}, à tua medida.`
+      ? `${opener}há um dia desenhado em ${regionLabel}, à sua medida.`
       : `${opener}começamos perto, paramos em ${stops.slice(0, 2).join(" e ")}, e deixamos a tarde respirar.`;
   const arc =
     stops.length === 0
@@ -179,8 +179,8 @@ function fallbackStory(input: StoryInput): RevealStory {
           stops[1] ? `o meio-dia abranda em ${stops[1]}.` : "o meio-dia abranda, sem pressa.",
           stops[stops.length - 1] && stops.length > 2
             ? `a noite pousa em ${stops[stops.length - 1]}.`
-            : "a noite pousa, mais devagar do que esperavas.",
-          "queres viver este dia?",
+            : "a noite pousa, mais devagar do que esperado.",
+          "gostaria de viver este dia?",
         ];
   return { hero, microStory, arc, completion, source: "fallback" };
 }
