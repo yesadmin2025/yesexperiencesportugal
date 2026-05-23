@@ -22,6 +22,11 @@ import { useDriftLocale, t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
 import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
+import dawnDouroImg from "@/assets/drift/dawn-douro.jpg";
+import candleBreadImg from "@/assets/drift/candle-bread.jpg";
+import atlanticHandsImg from "@/assets/drift/atlantic-hands.jpg";
+import quietChapelImg from "@/assets/drift/quiet-chapel.jpg";
+import linenBreezeImg from "@/assets/drift/linen-breeze.jpg";
 
 // Lazy-load Leaflet-based map to avoid SSR window crashes.
 const BuilderMap = lazy(() =>
