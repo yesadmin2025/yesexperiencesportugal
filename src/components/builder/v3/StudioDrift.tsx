@@ -885,7 +885,13 @@ export function StudioDrift({ onExit }: Props) {
       ))}
 
       {chapter.kind !== "convergence" && (
-        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} />
+        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+      )}
+      {/* Predictive AI whisper — personalized fragment produced by composeStudioMoment
+          for THIS user's behavior, profile and stage. Makes the predictive engine
+          visible: every traveller sees a different line at a different moment. */}
+      {chapter.kind !== "convergence" && narrativeLine && narrativeAt && (
+        <AiWhisper key={narrativeAt} text={narrativeLine} />
       )}
       {showBuildPreview && (
         <ProgressiveBuildPreview
