@@ -1212,11 +1212,15 @@ function Whisper({
   const [shown, setShown] = useState(false);
   useEffect(() => {
     setShown(false);
-    const t1 = window.setTimeout(() => setShown(true), delay);
+    let raf = 0;
+    const t1 = window.setTimeout(() => {
+      raf = window.requestAnimationFrame(() => setShown(true));
+    }, delay);
     const t2 = window.setTimeout(() => setShown(false), delay + hold);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      if (raf) window.cancelAnimationFrame(raf);
     };
   }, [text, delay, hold]);
   return (
