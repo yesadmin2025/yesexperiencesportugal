@@ -547,21 +547,28 @@ export function StudioDrift({ onExit }: Props) {
         />
       ))}
 
-      <Progress index={chapterIdx} total={CHAPTERS.length} />
+      <Meridian index={chapterIdx} total={CHAPTERS.length} />
+      <ChapterFade chapterId={chapter.id} />
 
       {onExit && chapter.kind !== "convergence" && (
         <button
           type="button"
           onClick={onExit}
           aria-label="sair"
-          className="absolute top-4 left-4 z-40 h-6 w-6 rounded-full bg-[color:var(--ivory)]/10 hover:bg-[color:var(--ivory)]/25 transition-colors"
-        />
+          className="absolute top-2 left-2 z-40 grid h-11 w-11 place-items-center rounded-full transition-colors motion-safe:hover:bg-[color:var(--ivory)]/15 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
+        >
+          <span
+            aria-hidden="true"
+            className="block h-1.5 w-1.5 rounded-full bg-[color:var(--ivory)]/55"
+          />
+        </button>
       )}
 
       {audioOn && <AmbientAudio gravity={gravityRef.current} />}
     </div>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Drift phase
@@ -705,10 +712,15 @@ function ChoicePhase({
 }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
+  const [tilesIn, setTilesIn] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setShowHints(true), 2200);
-    return () => window.clearTimeout(t);
+    const t1 = window.setTimeout(() => setTilesIn(true), 280);
+    const t2 = window.setTimeout(() => setShowHints(true), 1800);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
   }, []);
 
   const handlePick = (opt: ChoiceOption) => {
@@ -719,9 +731,9 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper(profile)} delay={400} hold={2000} />
+      <Whisper text={chapter.whisper(profile)} delay={500} hold={5200} />
       <div className="absolute inset-0 z-10 flex flex-col">
-        {chapter.options.map((opt) => {
+        {chapter.options.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
           return (
@@ -729,10 +741,15 @@ function ChoicePhase({
               key={opt.scene.id}
               type="button"
               onClick={() => handlePick(opt)}
-              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out"
+              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/40"
               style={{
-                opacity: isDimmed ? 0.15 : 1,
-                transform: isPicked ? "scale(1.02)" : "scale(1)",
+                opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
+                transform: !tilesIn
+                  ? "translateY(14px)"
+                  : isPicked
+                    ? "scale(1.02)"
+                    : "scale(1)",
+                transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
               }}
             >
               <video
@@ -742,7 +759,7 @@ function ChoicePhase({
                 loop
                 playsInline
                 preload="auto"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover motion-safe:animate-[kenburns_22s_ease-in-out_infinite_alternate]"
                 style={{ filter: "saturate(0.94) contrast(1.03)" }}
               />
               <div
@@ -750,7 +767,7 @@ function ChoicePhase({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.46) 100%)",
+                    "linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.06) 28%, rgba(0,0,0,0.06) 72%, rgba(0,0,0,0.50) 100%)",
                 }}
               />
               <div
@@ -765,7 +782,7 @@ function ChoicePhase({
                   fontSize: "15px",
                   letterSpacing: "0.01em",
                   textShadow: "0 1px 18px rgba(0,0,0,0.7)",
-                  opacity: showHints ? 0.84 : 0,
+                  opacity: showHints ? 0.86 : 0,
                   transform: showHints ? "translateY(0)" : "translateY(6px)",
                 }}
               >
@@ -778,6 +795,7 @@ function ChoicePhase({
     </>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Convergence — a composed day, assembled from the regional stops pool
@@ -932,16 +950,17 @@ function ConvergencePhase({
 
         {serverPayload && serverPayload.dna.length > 0 && (
           <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {serverPayload.dna.map((t) => (
+            {serverPayload.dna.map((t, i) => (
               <span
                 key={t.key}
-                className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase"
+                className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase motion-safe:animate-[fade-in_0.6s_ease-out_both]"
                 style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 600,
                   background: "color-mix(in oklab, var(--gold) 14%, transparent)",
                   color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                   border: "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
+                  animationDelay: `${300 + i * 140}ms`,
                 }}
               >
                 {t.label}
@@ -949,6 +968,7 @@ function ConvergencePhase({
             ))}
           </div>
         )}
+
 
         {day.stops.length === 0 ? (
           <p
@@ -971,12 +991,14 @@ function ConvergencePhase({
               return (
                 <li
                   key={s.id}
-                  className="relative pl-8 pr-3 py-3 bg-white rounded-md"
+                  className="relative pl-8 pr-3 py-3 bg-white rounded-md motion-safe:animate-[fade-in_0.7s_ease-out_both]"
                   style={{
                     boxShadow:
                       "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                    animationDelay: `${500 + i * 110}ms`,
                   }}
                 >
+
                   <span
                     aria-hidden="true"
                     className="absolute left-2 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full"
@@ -1219,25 +1241,56 @@ function Whisper({
   );
 }
 
-function Progress({ index, total }: { index: number; total: number }) {
+/**
+ * A single hairline meridian at the top, filling left→right as the journey
+ * advances. Replaces the old dot strip — same information, less interface.
+ * Fades out in the final third (philosophy: interface disappears as
+ * confidence rises). Reduced-motion safe.
+ */
+function Meridian({ index, total }: { index: number; total: number }) {
+  const pct = total <= 1 ? 1 : Math.min(1, (index + 1) / total);
+  const visibility = pct > 0.7 ? Math.max(0.18, 1 - (pct - 0.7) / 0.3) : 1;
   return (
-    <div aria-hidden="true" className="absolute top-4 right-4 z-40 flex gap-1.5">
-      {Array.from({ length: total }).map((_, i) => (
-        <span
-          key={i}
-          className="block h-px transition-all duration-700"
-          style={{
-            width: i === index ? "18px" : "10px",
-            background:
-              i <= index
-                ? "color-mix(in oklab, var(--ivory) 70%, transparent)"
-                : "color-mix(in oklab, var(--ivory) 18%, transparent)",
-          }}
-        />
-      ))}
+    <div
+      aria-hidden="true"
+      className="absolute top-0 left-0 right-0 z-40 h-px"
+      style={{
+        background: "color-mix(in oklab, var(--ivory) 8%, transparent)",
+        opacity: visibility,
+      }}
+    >
+      <div
+        className="h-full origin-left transition-[transform,opacity] duration-[1400ms] ease-out"
+        style={{
+          transform: `scaleX(${pct})`,
+          background:
+            "linear-gradient(90deg, color-mix(in oklab, var(--ivory) 35%, transparent) 0%, color-mix(in oklab, var(--gold) 60%, transparent) 100%)",
+        }}
+      />
     </div>
   );
 }
+
+/**
+ * Brief black wash that pulses between chapters to mask the video swap.
+ * 420ms in, 720ms out — keeps the editing rhythm calm.
+ */
+function ChapterFade({ chapterId }: { chapterId: string }) {
+  const [opacity, setOpacity] = useState(0.55);
+  useEffect(() => {
+    setOpacity(0.55);
+    const t = window.setTimeout(() => setOpacity(0), 420);
+    return () => window.clearTimeout(t);
+  }, [chapterId]);
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-40 bg-black transition-opacity duration-[720ms] ease-out motion-reduce:hidden"
+      style={{ opacity }}
+    />
+  );
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio
