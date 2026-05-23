@@ -21,6 +21,7 @@ export type DriftEvent =
   | "cta_book"
   | "cta_save"
   | "cta_refine"
+  | "cta_whatsapp"
   | "session_drop";
 
 interface RecordOpts {
