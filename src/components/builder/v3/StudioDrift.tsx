@@ -991,12 +991,14 @@ function ConvergencePhase({
               return (
                 <li
                   key={s.id}
-                  className="relative pl-8 pr-3 py-3 bg-white rounded-md"
+                  className="relative pl-8 pr-3 py-3 bg-white rounded-md motion-safe:animate-[fade-in_0.7s_ease-out_both]"
                   style={{
                     boxShadow:
                       "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                    animationDelay: `${500 + i * 110}ms`,
                   }}
                 >
+
                   <span
                     aria-hidden="true"
                     className="absolute left-2 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full"
