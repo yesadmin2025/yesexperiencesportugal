@@ -13,6 +13,7 @@ import { builderWaHref } from "@/components/builder/types";
 import {
   bump,
   topValue,
+  projectProfile,
   type ConfidenceMap,
   type DriftDimension,
   EXPLICIT,
@@ -601,6 +602,18 @@ export function StudioDrift({ onExit }: Props) {
 
   const chapter = CHAPTERS[chapterIdx];
   const stage = narrativeStageFor(chapter, profile, prediction);
+  const inferredProfile = useMemo(
+    () => ({ ...projectProfile(confidenceRef.current, 0.42), ...profile }) as DriftProfile,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [profile, chapterIdx, prediction.revealConfidence],
+  );
+  const liveRegion = useMemo(() => pickRegion(inferredProfile as ComposerProfile), [inferredProfile]);
+  const liveDay = useMemo(
+    () => composeDay(inferredProfile as ComposerProfile, liveRegion, { confidence: confidenceRef.current }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [inferredProfile, liveRegion, chapterIdx, prediction.tonalRegister],
+  );
+  const showBuildPreview = chapter.kind !== "convergence" && chapterIdx >= 4 && liveDay.stops.length > 0;
 
   useEffect(() => {
     if (!sessionId || !chapter) return;
@@ -680,9 +693,12 @@ export function StudioDrift({ onExit }: Props) {
         .filter(({ c }) => c.kind === "choice" && OPTIONAL_CHAPTER_IDS.includes(c.id as OptionalChapterId))
         .filter(({ c }) => !askedOptionalChapters.has(c.id as OptionalChapterId));
       if (i >= 6 && optionalCandidates.length > 0 && !prediction.shouldCollapseAhead) {
-        const best = optionalCandidates.sort(
-          (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
-        )[0];
+        const targetDim = prediction.nextBestDimensions.find((dim) => !askedOptionalChapters.has(dim));
+        const best = targetDim
+          ? optionalCandidates.find(({ c }) => c.id === targetDim)
+          : optionalCandidates.sort(
+            (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
+          )[0];
         if (best) return best.idx;
       }
       while (next < CHAPTERS.length - 1) {
@@ -833,14 +849,18 @@ export function StudioDrift({ onExit }: Props) {
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
           tonalRegister={prediction.tonalRegister}
+          hasBuildPreview={showBuildPreview}
           onSceneShown={behavior.markSceneShown}
           onAttraction={(opt) =>
-            behavior.recordAttraction({
-              sceneId: opt.scene.id,
-              mood: opt.scene.mood,
-              intensity: opt.scene.intensity,
-              weight: 1.2,
-            })
+            {
+              behavior.recordAttraction({
+                sceneId: opt.scene.id,
+                mood: opt.scene.mood,
+                intensity: opt.scene.intensity,
+                weight: 1.2,
+              });
+              reinforce(opt.reinforce, 0.75);
+            }
           }
         />
       )}
@@ -866,6 +886,14 @@ export function StudioDrift({ onExit }: Props) {
 
       {chapter.kind !== "convergence" && (
         <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} />
+      )}
+      {showBuildPreview && (
+        <ProgressiveBuildPreview
+          day={liveDay}
+          region={liveRegion}
+          locale={locale}
+          activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
+        />
       )}
       <ChapterFade chapterId={chapter.id} />
 
