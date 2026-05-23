@@ -1305,6 +1305,31 @@ function ConvergencePhase({
     return () => window.clearTimeout(t);
   }, []);
 
+  // Drive map highlight to follow the story arc — each line illuminates
+  // the corresponding stop on the map, so words and place breathe together.
+  const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
+  useEffect(() => {
+    if (!ready || day.stops.length === 0) return;
+    const arcLen = serverPayload?.story.arc?.length ?? 0;
+    const lineCount = arcLen > 1 ? arcLen - 1 : 0; // last arc line = longing pull, no specific stop
+    if (lineCount === 0) return;
+    const stopCount = day.stops.length;
+    const timers: number[] = [];
+    for (let i = 0; i < lineCount; i++) {
+      const stopIdx = Math.min(stopCount - 1, Math.round((i / Math.max(1, lineCount - 1)) * (stopCount - 1)));
+      timers.push(
+        window.setTimeout(() => setActiveStopIndex(stopIdx), 900 + i * 1600),
+      );
+    }
+    timers.push(
+      window.setTimeout(() => setActiveStopIndex(null), 900 + lineCount * 1600 + 2400),
+    );
+    return () => {
+      for (const t of timers) window.clearTimeout(t);
+    };
+  }, [ready, serverPayload?.story.arc, day.stops.length]);
+
+
   const lead = serverPayload?.story.microStory ?? localLead;
   const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
