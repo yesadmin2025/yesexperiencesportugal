@@ -1,18 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assembleReveal } from "./driftEngine.server";
+import { sanitizeConfidence } from "@/lib/drift/inference";
 
 /**
- * Drift engine — Phase 1 server functions.
+ * Drift engine — Phase 2 server functions.
  *
- * Single endpoint surface for now: `revealJourney`. The frontend still
- * owns scene routing (deterministic Chapter graph), but the final reveal
- * is composed server-side so we can:
- *   - generate tone-only AI copy without leaking the API key
- *   - activate DNA tokens from editable Supabase config
- *   - swap voice/copy without redeploying
+ *   - revealJourney: compose final day + AI story + DNA, now powered by the
+ *     adaptive confidence map (not just explicit profile fields).
  *
- * Phase 2 will add `nextScene` + scoring server-side.
+ * Scene routing remains client-side (chapter graph), but every dimension is
+ * scored against confidence so the composer/DNA layer can act on soft
+ * signals collected during drift.
  */
 
 const profileSchema = z
@@ -24,11 +23,13 @@ const profileSchema = z
     energy: z.enum(["slow", "vivid"]).optional(),
     style: z.enum(["coast", "heritage", "wine", "table"]).optional(),
     social: z.enum(["intimate", "shared"]).optional(),
+    confidence: z.record(z.string(), z.number()).optional(),
   })
   .strict();
 
 export const revealJourney = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => profileSchema.parse(input))
   .handler(async ({ data }) => {
-    return await assembleReveal(data);
+    const { confidence, ...profile } = data;
+    return await assembleReveal(profile, sanitizeConfidence(confidence ?? {}));
   });
