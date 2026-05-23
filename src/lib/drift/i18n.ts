@@ -31,10 +31,10 @@ const PT: Dict = {
   "cta.explore": "explorar tudo",
 
   // Encouragements (shown above progress bar at key moments)
-  "enc.start": "respira primeiro",
-  "enc.middle": "a aproximar-te",
-  "enc.late": "quase a ver-te lá",
-  "enc.near": "o teu dia está pronto",
+  "enc.start": "um traço de Portugal",
+  "enc.middle": "a forma começa a aparecer",
+  "enc.late": "já há um dia a ganhar corpo",
+  "enc.near": "a revelação está pronta",
 
   // Text phase
   "text.continue": "continuar",
@@ -58,10 +58,10 @@ const EN: Dict = {
   "cta.refine": "refine with a local",
   "cta.explore": "explore everything",
 
-  "enc.start": "breathe first",
-  "enc.middle": "drawing closer",
-  "enc.late": "almost there",
-  "enc.near": "your day is ready",
+  "enc.start": "a trace of Portugal",
+  "enc.middle": "the shape is emerging",
+  "enc.late": "a day is taking form",
+  "enc.near": "the reveal is ready",
 
   "text.continue": "continue",
 

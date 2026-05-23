@@ -53,14 +53,15 @@ export function EncouragementBar({ index, total, locale }: Props) {
       </div>
       {/* encouragement whisper */}
       <p
-        className="mt-3 text-center italic transition-opacity duration-[700ms] ease-out"
+        className="mt-3 text-center uppercase transition-opacity duration-[700ms] ease-out"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "11.5px",
-          letterSpacing: "0.04em",
-          color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
-          textShadow: "0 1px 12px rgba(0,0,0,0.6)",
-          opacity: opacity * visibility,
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontSize: "9.5px",
+          fontWeight: 700,
+          letterSpacing: "0.2em",
+          color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
+          textShadow: "0 1px 14px rgba(0,0,0,0.72)",
+          opacity: opacity * visibility * 0.86,
         }}
       >
         {shown}

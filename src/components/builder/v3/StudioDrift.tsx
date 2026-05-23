@@ -338,16 +338,16 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: () => "portugal já está acordada. respira primeiro.",
-    scenes: [SCENES.arrabidaCoast, SCENES.hiddenStreet],
-    holdMs: 7000,
+    whisper: () => "Deixa Portugal chegar primeiro.",
+    scenes: [SCENES.dawnDouro, SCENES.arrabidaCoast],
+    holdMs: 6200,
   },
   {
     kind: "text",
     id: "name",
-    scene: SCENES.viewpoint,
-    whisper: () => "como te devemos chamar",
-    placeholder: "o teu primeiro nome",
+    scene: SCENES.linenBreeze,
+    whisper: () => "Como assinas este dia?",
+    placeholder: "primeiro nome",
     field: "name",
   },
   {
@@ -355,31 +355,31 @@ const CHAPTERS: Chapter[] = [
     id: "settling",
     whisper: (p) =>
       p.name
-        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
-        : "portugal está a reparar em ti",
-    scenes: [SCENES.viewpoint],
-    holdMs: 5400,
+        ? `${p.name}, começamos a desenhar sem pressa.`
+        : "Começamos a desenhar sem pressa.",
+    scenes: [SCENES.quietChapel],
+    holdMs: 5000,
   },
   {
     kind: "choice",
     id: "companions",
-    whisper: () => "quem vem contigo",
+    whisper: () => "Quem muda a luz do teu dia?",
     options: [
       {
-        scene: SCENES.caboRoca,
-        hint: "só, com o vento",
+        scene: SCENES.atlanticHands,
+        hint: "só, com espaço",
         imprint: { companions: "solo" },
         reinforce: ["stone", "salt"],
       },
       {
-        scene: SCENES.candleTable,
-        hint: "à mesa, a dois",
+        scene: SCENES.candleBread,
+        hint: "a dois, sem ruído",
         imprint: { companions: "couple" },
         reinforce: ["candle", "amber"],
       },
       {
-        scene: SCENES.celebration,
-        hint: "entre os teus",
+        scene: SCENES.sharedTable,
+        hint: "com os teus",
         imprint: { companions: "group" },
         reinforce: ["fado", "linen"],
       },
@@ -388,23 +388,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "pickup",
-    whisper: () => "onde começa esta história",
+    whisper: () => "Onde abrimos a porta?",
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "lisboa e a costa a sul",
+        hint: "Lisboa, com a costa perto",
         imprint: { pickup: "lisbon" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "o centro, mais a norte",
+        hint: "Centro, pedra e silêncio",
         imprint: { pickup: "centro" },
         reinforce: ["stone", "basil"],
       },
       {
-        scene: SCENES.viewpoint,
-        hint: "alentejo, devagar",
+        scene: SCENES.silentVineyard,
+        hint: "Alentejo, em voz baixa",
         imprint: { pickup: "alentejo" },
         reinforce: ["vine", "amber"],
       },
@@ -413,23 +413,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "radius",
-    whisper: () => "até onde irias seguir esse instinto",
+    whisper: () => "Que distância ainda sabe a prazer?",
     options: [
       {
-        scene: SCENES.candleTable,
-        hint: "perto, com calma",
+        scene: SCENES.candleBread,
+        hint: "perto, demorado",
         imprint: { radius: "near" },
         reinforce: ["candle", "bread"],
       },
       {
-        scene: SCENES.viewpoint,
+        scene: SCENES.dawnDouro,
         hint: "um dia inteiro fora",
         imprint: { radius: "far" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.caboRoca,
-        hint: "até onde for preciso",
+        hint: "longe, se valer a pena",
         imprint: { radius: "anywhere" },
         reinforce: ["stone", "salt"],
       },
@@ -438,17 +438,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "energy",
-    whisper: () => "que ritmo te assenta hoje",
+    whisper: () => "Que ritmo merece ficar?",
     options: [
       {
-        scene: SCENES.viewpoint,
-        hint: "devagar, com vista",
+        scene: SCENES.quietChapel,
+        hint: "lento, quase secreto",
         imprint: { energy: "slow" },
         reinforce: ["vine", "amber"],
       },
       {
         scene: SCENES.sesimbra,
-        hint: "vivo, com mãos",
+        hint: "vivo, com pele",
         imprint: { energy: "vivid" },
         reinforce: ["harbour", "salt"],
       },
@@ -457,23 +457,23 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "style",
-    whisper: () => "o que te puxa primeiro",
+    whisper: () => "O que te chama antes das palavras?",
     options: [
       {
         scene: SCENES.arrabidaCoast,
-        hint: "a costa",
+        hint: "mar aberto",
         imprint: { style: "coast" },
         reinforce: ["salt", "linen"],
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "as pedras antigas",
+        hint: "pedra antiga",
         imprint: { style: "heritage" },
         reinforce: ["stone", "basil"],
       },
       {
-        scene: SCENES.viewpoint,
-        hint: "a vinha",
+        scene: SCENES.wineHand,
+        hint: "vinha e ritual",
         imprint: { style: "wine" },
         reinforce: ["vine", "fado"],
       },
@@ -482,17 +482,17 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "social",
-    whisper: () => "e quando a noite chega",
+    whisper: () => "E no fim, que memória fica acesa?",
     options: [
       {
-        scene: SCENES.candleTable,
+        scene: SCENES.candleBread,
         hint: "uma mesa só vossa",
         imprint: { social: "intimate" },
         reinforce: ["candle", "amber", "bread"],
       },
       {
-        scene: SCENES.celebration,
-        hint: "vidro a tocar vidro",
+        scene: SCENES.sharedTable,
+        hint: "copos a tocar devagar",
         imprint: { social: "shared" },
         reinforce: ["fado", "linen", "amber"],
       },
@@ -812,6 +812,7 @@ function DriftPhase({
         text={chapter.whisper(profile)}
         delay={1200}
         hold={4000}
+        variant="opening"
       />
     </>
   );
@@ -844,7 +845,7 @@ function TextPhase({
       <SceneVideo scene={chapter.scene} />
       <Vignette stronger />
       <form
-        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-8 transition-opacity duration-[1400ms]"
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-7 transition-opacity duration-[1400ms]"
         style={{ opacity: shown ? 1 : 0 }}
         onSubmit={(e) => {
           e.preventDefault();
@@ -853,13 +854,15 @@ function TextPhase({
         }}
       >
         <label
-          className="italic text-[color:var(--ivory)] text-center mb-6"
+          className="text-[color:var(--ivory)] text-center mb-8"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "18px",
-            letterSpacing: "0.005em",
-            textShadow: "0 1px 22px rgba(0,0,0,0.74)",
-            opacity: 0.86,
+            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontSize: "25px",
+            fontWeight: 700,
+            lineHeight: 1.16,
+            letterSpacing: "0",
+            textShadow: "0 2px 28px rgba(0,0,0,0.84)",
+            opacity: 0.96,
           }}
         >
           {chapter.whisper(profile)}
@@ -871,18 +874,20 @@ function TextPhase({
           onChange={(e) => setValue(e.target.value)}
           placeholder={chapter.placeholder}
           maxLength={32}
-          className="w-full max-w-[20ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-2"
+          className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "20px",
-            borderBottomColor: "color-mix(in oklab, var(--ivory) 38%, transparent)",
+            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontSize: "21px",
+            fontWeight: 600,
+            letterSpacing: "0",
+            borderBottomColor: "color-mix(in oklab, var(--gold) 54%, transparent)",
             caretColor: "var(--gold)",
           }}
         />
         <button
           type="submit"
-          className="mt-8 text-[11px] tracking-[0.22em] uppercase text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+          className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"
+          style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
         >
           continuar
         </button>
@@ -963,8 +968,8 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper(profile)} delay={500} hold={5200} />
-      <div className="absolute inset-0 z-10 flex flex-col">
+      <Whisper text={chapter.whisper(profile)} delay={360} hold={5200} variant="choice" />
+      <div className="absolute inset-x-0 bottom-0 top-[30%] z-10 flex flex-col gap-2 px-3 pb-3">
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
@@ -999,7 +1004,7 @@ function ChoicePhase({
               onTouchStart={() => handlePressStart(opt)}
               onTouchEnd={handlePressEnd}
               onTouchCancel={handlePressEnd}
-              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/40"
+              className="relative flex-1 overflow-hidden rounded-[7px] outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/55"
               style={{
                 opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
                 transform: !tilesIn
@@ -1008,6 +1013,7 @@ function ChoicePhase({
                     ? "scale(1.02)"
                     : "scale(1)",
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
+                boxShadow: "0 16px 42px rgba(0,0,0,0.34)",
               }}
             >
               <SceneCanvas source={sceneSource(renderedScene)} />
@@ -1016,7 +1022,7 @@ function ChoicePhase({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.06) 28%, rgba(0,0,0,0.06) 72%, rgba(0,0,0,0.50) 100%)",
+                    "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.08) 36%, rgba(0,0,0,0.10) 62%, rgba(0,0,0,0.72) 100%)",
                 }}
               />
               <div
@@ -1025,14 +1031,16 @@ function ChoicePhase({
                 style={{ background: "color-mix(in oklab, var(--ivory) 18%, transparent)" }}
               />
               <span
-                className="absolute inset-x-0 bottom-6 z-10 block text-center italic text-[color:var(--ivory)] transition-all duration-[1500ms]"
+                className="absolute inset-x-0 bottom-5 z-10 block px-5 text-center text-[color:var(--ivory)] transition-all duration-[1500ms]"
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "15px",
-                  letterSpacing: "0.01em",
-                  textShadow: "0 1px 18px rgba(0,0,0,0.7)",
-                  opacity: showHints ? 0.86 : 0,
-                  transform: showHints ? "translateY(0)" : "translateY(6px)",
+                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  lineHeight: 1.18,
+                  letterSpacing: "0",
+                  textShadow: "0 2px 22px rgba(0,0,0,0.86)",
+                  opacity: showHints ? 0.94 : 0,
+                  transform: showHints ? "translateY(0)" : "translateY(8px)",
                 }}
               >
                 {opt.hint}
@@ -1165,19 +1173,20 @@ function ConvergencePhase({
 
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
-      <div className="relative h-[58vh] min-h-[360px] w-full overflow-hidden">
+      <div className="relative h-[64vh] min-h-[420px] w-full overflow-hidden">
         <SceneVideo scene={heroScene} />
         <Vignette stronger />
-        <div className="absolute inset-x-0 bottom-8 z-20 px-6 text-center pointer-events-none">
+        <div className="absolute inset-x-0 bottom-10 z-20 px-7 text-center pointer-events-none">
           <p
-            className="italic text-[color:var(--ivory)] mx-auto max-w-[24ch]"
+            className="text-[color:var(--ivory)] mx-auto max-w-[16ch]"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontSize: "22px",
-              lineHeight: 1.45,
-              letterSpacing: "0.01em",
-              textShadow: "0 1px 22px rgba(0,0,0,0.78)",
-              opacity: 0.95,
+              fontFamily: "'Montserrat', system-ui, sans-serif",
+              fontSize: "31px",
+              fontWeight: 700,
+              lineHeight: 1.08,
+              letterSpacing: "0",
+              textShadow: "0 2px 34px rgba(0,0,0,0.9)",
+              opacity: 0.98,
             }}
           >
             {lead}
@@ -1194,13 +1203,14 @@ function ConvergencePhase({
       </div>
 
       <div
-        className="relative bg-[color:var(--ivory)] px-5 pt-10 pb-16 transition-opacity duration-[1400ms]"
+        className="relative bg-[color:var(--ivory)] px-5 pt-12 pb-16 transition-opacity duration-[1400ms]"
         style={{ opacity: ready ? 1 : 0 }}
       >
         <p
-          className="text-center text-[10.5px] tracking-[0.26em] uppercase mb-2"
+          className="text-center text-[10.5px] uppercase mb-3"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
+            letterSpacing: "0.22em",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
@@ -1211,10 +1221,10 @@ function ConvergencePhase({
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
             fontWeight: 700,
-            fontSize: "26px",
-            lineHeight: 1.18,
+            fontSize: "30px",
+            lineHeight: 1.12,
             color: "var(--charcoal)",
-            letterSpacing: "-0.015em",
+            letterSpacing: "0",
           }}
         >
           {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
@@ -1254,22 +1264,26 @@ function ConvergencePhase({
         {/* Story arc — 3-4 chained editorial lines, fade-in cascade.
             Last line = longing pull: serif italic, larger, gold. */}
         {arc.length > 0 && (
-          <div className="mb-10 mx-auto max-w-[36ch] space-y-4 text-center">
+          <div className="mb-10 mx-auto max-w-[34ch] space-y-5 text-center">
             {arc.map((line, i) => {
               const isPull = i === arc.length - 1 && arc.length > 1;
               return (
                 <p
                   key={i}
-                  className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+                  className="motion-safe:animate-[fade-in_0.9s_ease-out_both]"
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                    fontSize: isPull ? "24px" : "16.5px",
-                    lineHeight: isPull ? 1.35 : 1.55,
-                    letterSpacing: isPull ? "-0.005em" : "0.005em",
+                    fontFamily: isPull
+                      ? "Georgia, 'Times New Roman', serif"
+                      : "'Inter', system-ui, sans-serif",
+                    fontStyle: isPull ? "italic" : "normal",
+                    fontSize: isPull ? "25px" : "15px",
+                    fontWeight: isPull ? 400 : 500,
+                    lineHeight: isPull ? 1.34 : 1.7,
+                    letterSpacing: "0",
                     color: isPull
                       ? "var(--gold)"
-                      : "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-                    marginTop: isPull ? "8px" : undefined,
+                      : "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                    marginTop: isPull ? "10px" : undefined,
                     animationDelay: `${700 + i * 360}ms`,
                   }}
                 >
@@ -1312,7 +1326,7 @@ function ConvergencePhase({
             {tt("reveal.no_day", locale)}
           </p>
         ) : (
-          <ol className="space-y-4">
+          <ol className="space-y-3">
             {day.stops.map((cs, i) => {
               const s = cs.stop;
               const openLabel = s.hours
@@ -1321,10 +1335,11 @@ function ConvergencePhase({
               return (
                 <li
                   key={s.id}
-                  className="relative pl-8 pr-3 py-3 bg-white rounded-md motion-safe:animate-[fade-in_0.7s_ease-out_both]"
+                  className="relative pl-9 pr-4 py-4 rounded-[7px] motion-safe:animate-[fade-in_0.7s_ease-out_both]"
                   style={{
+                    background: "color-mix(in oklab, var(--ivory) 86%, white)",
                     boxShadow:
-                      "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                      "0 1px 0 color-mix(in oklab, var(--charcoal) 9%, transparent), 0 14px 34px color-mix(in oklab, var(--charcoal) 7%, transparent)",
                     animationDelay: `${500 + i * 110}ms`,
                   }}
                 >
@@ -1336,7 +1351,7 @@ function ConvergencePhase({
                       fontFamily: "'Inter', system-ui, sans-serif",
                       fontSize: "10px",
                       color: "var(--ivory)",
-                      background: "var(--teal)",
+                      background: "var(--charcoal)",
                     }}
                   >
                     {i + 1}
@@ -1417,8 +1432,10 @@ function ConvergencePhase({
               className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
+                fontWeight: 700,
                 background: "var(--teal)",
                 color: "var(--ivory)",
+                boxShadow: "0 16px 34px color-mix(in oklab, var(--teal) 28%, transparent)",
               }}
             >
               {ctaBook} →
@@ -1479,21 +1496,21 @@ function pickHeroScene(profile: DriftProfile): Scene {
 function composeLead(p: DriftProfile): string {
   const who = p.name ? `${p.name}, ` : "";
   if (p.social === "intimate" && (p.companions === "couple" || p.companions === "solo")) {
-    return `${who}portugal está a guardar-vos uma mesa pequena, à luz baixa.`;
+    return `${who}a mesa certa não faz ruído.`;
   }
   if (p.social === "shared" || p.companions === "group") {
-    return `${who}há uma sala onde já se ouvem copos. portugal está a guardar-vos lugar.`;
+    return `${who}há uma sala pronta para receber o vosso ritmo.`;
   }
   if (p.style === "coast") {
-    return `${who}o mar está a desacelerar para te receber.`;
+    return `${who}o Atlântico abre espaço à medida certa.`;
   }
   if (p.style === "wine") {
-    return `${who}uma vinha em silêncio — é por aí que se entra.`;
+    return `${who}a vinha marca o compasso do dia.`;
   }
   if (p.style === "heritage") {
-    return `${who}uma rua antiga está à tua espera, mais lá para baixo.`;
+    return `${who}a pedra antiga guarda a entrada.`;
   }
-  return `${who}portugal já sabe por onde te levar.`;
+  return `${who}já há um dia a ganhar forma.`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -1522,33 +1539,40 @@ function Whisper({
   text,
   delay,
   hold,
+  variant = "default",
 }: {
   text: string;
   delay?: number;
   hold?: number;
+  variant?: "default" | "opening" | "choice";
 }) {
   void delay;
   void hold;
+  const isOpening = variant === "opening";
+  const isChoice = variant === "choice";
   return (
     <div
       key={`whisper-${text}`}
-      className="absolute inset-x-0 top-[18%] z-[60] flex justify-center px-6 pointer-events-none"
+      className="absolute inset-x-0 z-[60] flex justify-center px-7 pointer-events-none"
       style={{
         animation: "whisperEnter 1400ms ease-out both",
+        top: isChoice ? "10%" : isOpening ? "17%" : "18%",
       }}
     >
       <p
-        className="italic text-center"
+        className="text-center"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "19px",
-          lineHeight: 1.45,
-          letterSpacing: "0.005em",
+          fontFamily: "'Montserrat', system-ui, sans-serif",
+          fontStyle: "normal",
+          fontSize: isChoice ? "27px" : isOpening ? "28px" : "25px",
+          fontWeight: isOpening ? 700 : 700,
+          lineHeight: isChoice ? 1.12 : isOpening ? 1.08 : 1.16,
+          letterSpacing: "0",
           color: "var(--ivory)",
-          maxWidth: "22ch",
+          maxWidth: isChoice ? "14ch" : isOpening ? "13ch" : "17ch",
           textShadow:
-            "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
-          opacity: 0.95,
+            "0 1px 2px rgba(0,0,0,0.94), 0 4px 30px rgba(0,0,0,0.82)",
+          opacity: isOpening ? 0.95 : 0.98,
         }}
       >
         {text}
