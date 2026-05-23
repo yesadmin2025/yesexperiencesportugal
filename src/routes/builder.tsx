@@ -88,17 +88,17 @@ export const Route = createFileRoute("/builder")({
   validateSearch: parseBuilderSearch,
   head: () => ({
     meta: [
-      { title: "Create your Portugal experience — YES" },
+      { title: "Portugal, slowly — YES" },
       {
         name: "description",
         content:
-          "Choose what feels right. We'll shape a real, achievable Portugal experience in real time — adjust everything, confirm instantly.",
+          "Drift through Portugal until something pulls. Light, stone, salt, candle — the world notices what holds you.",
       },
-      { property: "og:title", content: "Create your Portugal experience — YES" },
+      { property: "og:title", content: "Portugal, slowly — YES" },
       {
         property: "og:description",
         content:
-          "Not a form. A live experience taking shape as you choose. Real route, real stops, instant confirmation.",
+          "Not a planner. An atmosphere that reads you back. Linger where it matters; Portugal remembers.",
       },
     ],
   }),
