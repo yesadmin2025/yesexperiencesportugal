@@ -943,6 +943,7 @@ function TextPhase({
 function ChoicePhase({
   chapter,
   profile,
+  locale,
   onPick,
   sceneWeighting,
   tonalRegister,
@@ -951,6 +952,7 @@ function ChoicePhase({
 }: {
   chapter: ChoiceChapter;
   profile: DriftProfile;
+  locale: DriftLocale;
   onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
   sceneWeighting?: Record<SceneMood, number>;
   tonalRegister?: TonalRegister;
@@ -1008,7 +1010,7 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper(profile)} delay={360} hold={5200} variant="choice" />
+      <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
       <div className="absolute inset-x-0 bottom-0 top-[30%] z-10 flex flex-col gap-2 px-3 pb-3">
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
@@ -1083,7 +1085,7 @@ function ChoicePhase({
                   transform: showHints ? "translateY(0)" : "translateY(8px)",
                 }}
               >
-                {opt.hint}
+                {tt(opt.hintKey, locale)}
               </span>
             </button>
           );
