@@ -1,4 +1,4 @@
-import { Outlet, Link, Navigate, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, Navigate, redirect, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 
@@ -98,6 +98,11 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
+  beforeLoad: ({ location }) => {
+    if (location.pathname === "/index") {
+      throw redirect({ to: "/", replace: true });
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
