@@ -1957,6 +1957,47 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
 }
 
 
+/**
+ * AiWhisper — surfaces the personalized AI fragment produced by
+ * composeStudioMoment. This is the visible proof of the predictive
+ * engine: each traveller sees a different sensory line at a different
+ * moment, threaded with their behavior, profile and stage. Auto-fades
+ * after ~5.5s so it never blocks interaction. Reduced-motion safe.
+ */
+function AiWhisper({ text }: { text: string }) {
+  const [opacity, setOpacity] = useState(0);
+  useEffect(() => {
+    const t1 = window.setTimeout(() => setOpacity(0.92), 60);
+    const t2 = window.setTimeout(() => setOpacity(0), 4800);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
+  return (
+    <div
+      aria-live="polite"
+      className="pointer-events-none absolute inset-x-0 top-[26%] z-[55] flex justify-center px-8 transition-opacity duration-[1100ms] ease-out"
+      style={{ opacity }}
+    >
+      <p
+        className="text-center italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontSize: "15.5px",
+          lineHeight: 1.55,
+          letterSpacing: "0",
+          color: "color-mix(in oklab, var(--ivory) 92%, var(--gold))",
+          maxWidth: "24ch",
+          textShadow: "0 1px 2px rgba(0,0,0,0.9), 0 4px 28px rgba(0,0,0,0.78)",
+        }}
+      >
+        {text}
+      </p>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio
 // ─────────────────────────────────────────────────────────────────────────
