@@ -15,8 +15,10 @@ import {
   SOFT,
 } from "@/lib/drift/inference";
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
+import { EncouragementBar } from "./EncouragementBar";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction } from "@/lib/drift/predict";
+import { useDriftLocale, t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
 import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
@@ -447,6 +449,7 @@ export function StudioDrift({ onExit }: Props) {
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
   const [, setTick] = useState(0);
+  const locale = useDriftLocale();
 
   // Predictive behavior layer — silently shapes pacing, weighting, tone.
   const behavior = useDriftBehavior();
@@ -637,7 +640,13 @@ export function StudioDrift({ onExit }: Props) {
       )}
 
       {chapter.kind === "convergence" && (
-        <ConvergencePhase profile={profile} confidence={confidenceRef.current} onExit={onExit} />
+        <ConvergencePhase
+          profile={profile}
+          confidence={confidenceRef.current}
+          prediction={prediction}
+          locale={locale}
+          onExit={onExit}
+        />
       )}
 
       {memoryTints.map((t, i) => (
@@ -649,14 +658,16 @@ export function StudioDrift({ onExit }: Props) {
         />
       ))}
 
-      <Meridian index={chapterIdx} total={CHAPTERS.length} />
+      {chapter.kind !== "convergence" && (
+        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} />
+      )}
       <ChapterFade chapterId={chapter.id} />
 
       {onExit && chapter.kind !== "convergence" && (
         <button
           type="button"
           onClick={onExit}
-          aria-label="sair"
+          aria-label={tt("ui.exit", locale)}
           className="absolute top-2 left-2 z-40 grid h-11 w-11 place-items-center rounded-full transition-colors motion-safe:hover:bg-[color:var(--ivory)]/15 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
         >
           <span
@@ -954,10 +965,14 @@ function ChoicePhase({
 function ConvergencePhase({
   profile,
   confidence,
+  prediction,
+  locale,
   onExit,
 }: {
   profile: DriftProfile;
   confidence: ConfidenceMap;
+  prediction?: ReturnType<typeof derivePrediction>;
+  locale: DriftLocale;
   onExit?: () => void;
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
@@ -993,6 +1008,10 @@ function ConvergencePhase({
         style: profile.style,
         social: profile.social,
         confidence,
+        // Predictive + i18n hints — tone-only, never invents facts.
+        locale,
+        tonalRegister: prediction?.tonalRegister,
+        intensityPreference: prediction?.intensity,
       },
     })
       .then((res) => {
@@ -1003,6 +1022,7 @@ function ConvergencePhase({
             region: res.region,
             stops: res.day.stops.length,
             storySource: res.story.source,
+            tonalRegister: prediction?.tonalRegister,
           },
         });
       })
@@ -1013,7 +1033,7 @@ function ConvergencePhase({
     return () => {
       alive = false;
     };
-  }, [reveal, profile]);
+  }, [reveal, profile, locale, prediction?.tonalRegister, prediction?.intensity]);
 
   useEffect(() => {
     const t = window.setTimeout(() => setReady(true), 2400);
@@ -1021,10 +1041,32 @@ function ConvergencePhase({
   }, []);
 
   const lead = serverPayload?.story.microStory ?? localLead;
+  const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
-  const ctaBook = serverPayload?.cta.book ?? "reservar este dia";
-  const ctaSave = serverPayload?.cta.save ?? "guardar para depois";
-  const ctaRefine = serverPayload?.cta.refine ?? "refinar com um local";
+  const ctaBook = serverPayload?.cta.book ?? tt("cta.book", locale);
+  const ctaSave = serverPayload?.cta.save ?? tt("cta.save", locale);
+  const ctaRefine = serverPayload?.cta.refine ?? tt("cta.refine", locale);
+
+  // Map stops in the shape BuilderMap expects.
+  const mapStops = useMemo(
+    () =>
+      day.stops.map((cs, i) => ({
+        key: cs.stop.id,
+        region_key: region,
+        label: cs.stop.name,
+        blurb: cs.stop.blurb ?? null,
+        tag: null,
+        lat: cs.stop.coords.lat,
+        lng: cs.stop.coords.lng,
+        duration_minutes: cs.stop.dwellMin,
+        driveMinutesFromPrev: i === 0 ? 0 : cs.driveFromPrev,
+      })),
+    [day.stops, region],
+  );
+  const regionCenter = useMemo(() => {
+    const o = REGION_ORIGIN[region];
+    return o ? { lat: o.lat, lng: o.lng } : null;
+  }, [region]);
 
   const driveHours = Math.floor(day.totals.driveMin / 60);
   const driveMins = day.totals.driveMin % 60;
@@ -1041,10 +1083,11 @@ function ConvergencePhase({
             className="italic text-[color:var(--ivory)] mx-auto max-w-[24ch]"
             style={{
               fontFamily: "Georgia, 'Times New Roman', serif",
-              fontSize: "19px",
-              lineHeight: 1.5,
+              fontSize: "22px",
+              lineHeight: 1.45,
+              letterSpacing: "0.01em",
               textShadow: "0 1px 22px rgba(0,0,0,0.78)",
-              opacity: 0.94,
+              opacity: 0.95,
             }}
           >
             {lead}
@@ -1054,7 +1097,7 @@ function ConvergencePhase({
           <button
             type="button"
             onClick={onExit}
-            aria-label="sair"
+            aria-label={tt("ui.exit", locale)}
             className="absolute top-4 left-4 z-30 h-6 w-6 rounded-full bg-[color:var(--ivory)]/15 hover:bg-[color:var(--ivory)]/30 transition-colors"
           />
         )}
@@ -1071,16 +1114,17 @@ function ConvergencePhase({
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          o teu dia, composto
+          {tt("reveal.eyebrow", locale)}
         </p>
         <h2
           className="text-center mb-3"
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
             fontWeight: 700,
-            fontSize: "22px",
+            fontSize: "26px",
+            lineHeight: 1.18,
             color: "var(--charcoal)",
-            letterSpacing: "-0.005em",
+            letterSpacing: "-0.015em",
           }}
         >
           {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
@@ -1093,7 +1137,7 @@ function ConvergencePhase({
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          {day.stops.length} paragens · {driveLabel} de estrada · partida de {day.originLabel}
+          {day.stops.length} {tt("reveal.stops", locale)} · {driveLabel} {tt("reveal.road", locale)} · {tt("reveal.departure", locale)} {day.originLabel}
         </p>
 
         {serverPayload && serverPayload.dna.length > 0 && (
@@ -1117,6 +1161,50 @@ function ConvergencePhase({
           </div>
         )}
 
+        {/* Story arc — 3-4 chained editorial lines, fade-in cascade. */}
+        {arc.length > 0 && (
+          <div className="mb-8 mx-auto max-w-[36ch] space-y-3 text-center">
+            {arc.map((line, i) => (
+              <p
+                key={i}
+                className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+                style={{
+                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontSize: i === arc.length - 1 ? "18px" : "16px",
+                  lineHeight: 1.55,
+                  letterSpacing: "0.005em",
+                  color:
+                    i === arc.length - 1
+                      ? "var(--teal)"
+                      : "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+                  animationDelay: `${700 + i * 320}ms`,
+                }}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {/* Cinematic map of the composed day. */}
+        {mapStops.length > 0 && regionCenter && (
+          <div className="mb-8">
+            <p
+              className="text-center text-[10px] tracking-[0.26em] uppercase mb-2"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              }}
+            >
+              {tt("reveal.map_label", locale)}
+            </p>
+            <div className="h-[44vh] min-h-[280px] w-full overflow-hidden rounded-md" style={{ boxShadow: "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)" }}>
+              <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand,#efe9dc)]" />}>
+                <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode />
+              </Suspense>
+            </div>
+          </div>
+        )}
 
         {day.stops.length === 0 ? (
           <p
@@ -1127,7 +1215,7 @@ function ConvergencePhase({
               color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             }}
           >
-            ainda não há um dia possível para este pedido — fala com um local.
+            {tt("reveal.no_day", locale)}
           </p>
         ) : (
           <ol className="space-y-4">
@@ -1135,7 +1223,7 @@ function ConvergencePhase({
               const s = cs.stop;
               const openLabel = s.hours
                 ? `${s.hours.open}–${s.hours.close}`
-                : "aberto todo o dia";
+                : tt("reveal.open_all_day", locale);
               return (
                 <li
                   key={s.id}
@@ -1168,7 +1256,7 @@ function ConvergencePhase({
                         color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
                       }}
                     >
-                      {cs.driveFromPrev}min de estrada
+                      {cs.driveFromPrev}{tt("reveal.drive_from_prev", locale).startsWith("min") ? "" : " "}{tt("reveal.drive_from_prev", locale)}
                     </p>
                   )}
                   <p
