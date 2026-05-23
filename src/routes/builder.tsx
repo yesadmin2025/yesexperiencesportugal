@@ -109,13 +109,26 @@ function BuilderPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/builder" });
 
-  // Experience Studio v3 (Living Atmosphere) — fullscreen conversational stage.
-  // Escape hatch: append `?legacy=1` to fall back to the v1/v2 stepper flow.
-  // (Standalone drift prototype lives at /studio-drift — kept separate on purpose.)
-  const isLegacy =
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("legacy") === "1";
-  if (!isLegacy) {
+  // Drift is now the primary public experience. The previous Studio (v3)
+  // is preserved internally as an archival fallback — append `?legacy=1`
+  // for the v3 stage, or `?legacy=stepper` for the original v1/v2 flow.
+  // The standalone /studio-drift route remains for isolated R&D.
+  const legacyMode =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("legacy")
+      : null;
+
+  if (legacyMode === null) {
+    return (
+      <StudioDrift
+        onExit={() => {
+          void navigate({ to: "/" });
+        }}
+      />
+    );
+  }
+
+  if (legacyMode !== "stepper") {
     return (
       <StudioStageV3
         onExit={() => {
@@ -124,6 +137,7 @@ function BuilderPage() {
       />
     );
   }
+
 
 
 
