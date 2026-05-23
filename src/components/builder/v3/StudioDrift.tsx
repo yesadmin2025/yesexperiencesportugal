@@ -1226,25 +1226,56 @@ function Whisper({
   );
 }
 
-function Progress({ index, total }: { index: number; total: number }) {
+/**
+ * A single hairline meridian at the top, filling left→right as the journey
+ * advances. Replaces the old dot strip — same information, less interface.
+ * Fades out in the final third (philosophy: interface disappears as
+ * confidence rises). Reduced-motion safe.
+ */
+function Meridian({ index, total }: { index: number; total: number }) {
+  const pct = total <= 1 ? 1 : Math.min(1, (index + 1) / total);
+  const visibility = pct > 0.7 ? Math.max(0.18, 1 - (pct - 0.7) / 0.3) : 1;
   return (
-    <div aria-hidden="true" className="absolute top-4 right-4 z-40 flex gap-1.5">
-      {Array.from({ length: total }).map((_, i) => (
-        <span
-          key={i}
-          className="block h-px transition-all duration-700"
-          style={{
-            width: i === index ? "18px" : "10px",
-            background:
-              i <= index
-                ? "color-mix(in oklab, var(--ivory) 70%, transparent)"
-                : "color-mix(in oklab, var(--ivory) 18%, transparent)",
-          }}
-        />
-      ))}
+    <div
+      aria-hidden="true"
+      className="absolute top-0 left-0 right-0 z-40 h-px"
+      style={{
+        background: "color-mix(in oklab, var(--ivory) 8%, transparent)",
+        opacity: visibility,
+      }}
+    >
+      <div
+        className="h-full origin-left transition-[transform,opacity] duration-[1400ms] ease-out"
+        style={{
+          transform: `scaleX(${pct})`,
+          background:
+            "linear-gradient(90deg, color-mix(in oklab, var(--ivory) 35%, transparent) 0%, color-mix(in oklab, var(--gold) 60%, transparent) 100%)",
+        }}
+      />
     </div>
   );
 }
+
+/**
+ * Brief black wash that pulses between chapters to mask the video swap.
+ * 420ms in, 720ms out — keeps the editing rhythm calm.
+ */
+function ChapterFade({ chapterId }: { chapterId: string }) {
+  const [opacity, setOpacity] = useState(0.55);
+  useEffect(() => {
+    setOpacity(0.55);
+    const t = window.setTimeout(() => setOpacity(0), 420);
+    return () => window.clearTimeout(t);
+  }, [chapterId]);
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-40 bg-black transition-opacity duration-[720ms] ease-out motion-reduce:hidden"
+      style={{ opacity }}
+    />
+  );
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio
