@@ -1530,33 +1530,40 @@ function Whisper({
   text,
   delay,
   hold,
+  variant = "default",
 }: {
   text: string;
   delay?: number;
   hold?: number;
+  variant?: "default" | "opening" | "choice";
 }) {
   void delay;
   void hold;
+  const isOpening = variant === "opening";
+  const isChoice = variant === "choice";
   return (
     <div
       key={`whisper-${text}`}
-      className="absolute inset-x-0 top-[18%] z-[60] flex justify-center px-6 pointer-events-none"
+      className="absolute inset-x-0 z-[60] flex justify-center px-7 pointer-events-none"
       style={{
         animation: "whisperEnter 1400ms ease-out both",
+        top: isChoice ? "10%" : isOpening ? "17%" : "18%",
       }}
     >
       <p
-        className="italic text-center"
+        className="text-center"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "19px",
-          lineHeight: 1.45,
-          letterSpacing: "0.005em",
+          fontFamily: isOpening ? "Georgia, 'Times New Roman', serif" : "'Montserrat', system-ui, sans-serif",
+          fontStyle: isOpening ? "italic" : "normal",
+          fontSize: isChoice ? "27px" : isOpening ? "24px" : "25px",
+          fontWeight: isOpening ? 400 : 700,
+          lineHeight: isChoice ? 1.12 : isOpening ? 1.34 : 1.16,
+          letterSpacing: "0",
           color: "var(--ivory)",
-          maxWidth: "22ch",
+          maxWidth: isChoice ? "14ch" : isOpening ? "19ch" : "17ch",
           textShadow:
-            "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
-          opacity: 0.95,
+            "0 1px 2px rgba(0,0,0,0.94), 0 4px 30px rgba(0,0,0,0.82)",
+          opacity: isOpening ? 0.95 : 0.98,
         }}
       >
         {text}
