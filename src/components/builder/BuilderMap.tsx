@@ -265,6 +265,48 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     }
   }, [stops, regionCenter, candidates, onCandidateClick, emotionalMode]);
 
+  // Active stop highlight — driven by the Studio reveal as the arc unfolds.
+  useEffect(() => {
+    const map = mapRef.current;
+    const markers = stopMarkersRef.current;
+    const points = stopPointsRef.current;
+    if (!map || markers.length === 0) return;
+    const cs = getComputedStyle(document.documentElement);
+    const teal = cs.getPropertyValue("--teal").trim() || "#295B61";
+    const ivory = cs.getPropertyValue("--ivory").trim() || "#FAF8F3";
+    const gold = cs.getPropertyValue("--gold").trim() || "#C9A96A";
+
+    const makeIcon = (n: number, highlighted: boolean) =>
+      L.divIcon({
+        className: "yes-route-pin",
+        html: `<div style="
+          width:${highlighted ? 38 : 32}px;height:${highlighted ? 38 : 32}px;border-radius:50% 50% 50% 0;
+          transform:rotate(-45deg);
+          background:${highlighted ? gold : teal};border:2px solid ${ivory};
+          box-shadow:0 8px 22px ${highlighted ? "rgba(201,169,106,0.55)" : "rgba(0,0,0,0.3)"};
+          transition:all 400ms ease-out;
+          display:flex;align-items:center;justify-content:center;">
+          <span style="transform:rotate(45deg);color:${highlighted ? "#2E2E2E" : ivory};font-weight:700;font-size:${highlighted ? 13 : 12}px;font-family:Inter,ui-sans-serif,system-ui;">${n}</span>
+        </div>`,
+        iconSize: [highlighted ? 38 : 32, highlighted ? 38 : 32],
+        iconAnchor: [highlighted ? 19 : 16, highlighted ? 38 : 32],
+      });
+
+    markers.forEach((m, i) => {
+      const active = activeStopIndex !== null && activeStopIndex === i;
+      m.setIcon(makeIcon(i + 1, active));
+    });
+
+    if (
+      activeStopIndex !== null &&
+      activeStopIndex >= 0 &&
+      activeStopIndex < points.length &&
+      map.getSize().x > 0
+    ) {
+      map.panTo(points[activeStopIndex], { animate: true, duration: 0.8 });
+    }
+  }, [activeStopIndex]);
+
   return (
     <div className="relative h-full w-full">
       <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
