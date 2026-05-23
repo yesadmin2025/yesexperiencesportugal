@@ -658,6 +658,22 @@ export function StudioDrift({ onExit }: Props) {
   const showBuildPreview = chapter.kind !== "convergence" && chapterIdx >= 4 && liveDay.stops.length > 0;
 
   useEffect(() => {
+    if (!chapter || chapter.kind === "convergence") return;
+    void recordDriftBehaviorEvent("prediction_update", {
+      chapterId: chapter.id,
+      predictedTonalRegister: prediction.tonalRegister,
+      predictedIntensity: String(Number(prediction.intensity.toFixed(2))),
+      revealConfidence: Number(prediction.revealConfidence.toFixed(3)),
+      meta: {
+        pacingClass: prediction.pacingClass,
+        nextBestDimensions: prediction.nextBestDimensions,
+        inferredProfile,
+        collapseAhead: prediction.shouldCollapseAhead,
+      },
+    });
+  }, [chapter?.id, chapter?.kind, prediction.pacingClass, prediction.tonalRegister, prediction.revealConfidence]);
+
+  useEffect(() => {
     if (!sessionId || !chapter) return;
     const key = `${stage}:${chapter.id}`;
     if (stage === "invitation" || firedStagesRef.current.has(key) || aiBudgetRef.current >= 4) return;
@@ -891,6 +907,8 @@ export function StudioDrift({ onExit }: Props) {
           onPick={onPick}
           sceneWeighting={prediction.sceneWeighting}
           tonalRegister={prediction.tonalRegister}
+          prediction={prediction}
+          confidence={confidenceRef.current}
           hasBuildPreview={showBuildPreview}
           onSceneShown={behavior.markSceneShown}
           onAttraction={(opt) =>
@@ -940,6 +958,8 @@ export function StudioDrift({ onExit }: Props) {
           day={liveDay}
           region={liveRegion}
           locale={locale}
+          profile={inferredProfile}
+          prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
         />
       )}
