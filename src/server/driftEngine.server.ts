@@ -4,6 +4,7 @@ import {
   pickRegion,
   type ComposedDay,
   type ComposerProfile,
+  type ConfidenceMap,
 } from "@/lib/drift/composer";
 import { signatureTours } from "@/data/signatureTours";
 
