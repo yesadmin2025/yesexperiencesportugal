@@ -575,13 +575,19 @@ interface Props {
 }
 
 export function StudioDrift({ onExit }: Props) {
+  const sessionId = useBuilderSessionId();
   const [chapterIdx, setChapterIdx] = useState(0);
   const [profile, setProfile] = useState<DriftProfile>({});
   const [audioOn, setAudioOn] = useState(false);
+  const [narrativeLine, setNarrativeLine] = useState<string | null>(null);
+  const [narrativeAt, setNarrativeAt] = useState<number | null>(null);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
+  const firedStagesRef = useRef<Set<string>>(new Set());
+  const aiBudgetRef = useRef(0);
   const [, setTick] = useState(0);
   const locale = useDriftLocale();
+  const composeMoment = useServerFn(composeStudioMoment);
 
   // Predictive behavior layer — silently shapes pacing, weighting, tone.
   const behavior = useDriftBehavior();
@@ -592,6 +598,7 @@ export function StudioDrift({ onExit }: Props) {
   );
 
   const chapter = CHAPTERS[chapterIdx];
+  const stage = narrativeStageFor(chapter, profile, prediction);
 
   /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
    *  confidence on the dimensions they correlate with. */
