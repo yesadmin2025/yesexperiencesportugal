@@ -103,11 +103,22 @@ export async function activateDna(
 
 // ─── AI story (tone-only, never invents stops) ────────────────────────────
 
+export type DriftLocale = "pt" | "en";
+export type TonalRegister = "intimate" | "expansive" | "playful" | "ritual";
+
 export interface RevealStory {
   hero: string;
   microStory: string;
+  /** 3–4 chained editorial lines (morning · midday · evening · pull). */
+  arc: string[];
   completion: string;
   source: "ai" | "fallback";
+}
+
+export interface StoryHints {
+  locale?: DriftLocale;
+  tonalRegister?: TonalRegister;
+  intensityPreference?: number;
 }
 
 interface StoryInput {
@@ -115,6 +126,7 @@ interface StoryInput {
   day: ComposedDay;
   voice: Record<string, VoiceLine>;
   regionLabel: string;
+  hints: StoryHints;
 }
 
 const REGION_LABEL: Record<string, string> = {
@@ -125,19 +137,70 @@ const REGION_LABEL: Record<string, string> = {
 };
 
 function fallbackStory(input: StoryInput): RevealStory {
-  const { voice, profile, regionLabel } = input;
+  const { voice, profile, regionLabel, hints } = input;
+  const locale = hints.locale ?? "pt";
+  const stops = input.day.stops.map((s) => s.stop.name);
+  const opener = profile.name ? `${profile.name}, ` : "";
+
+  if (locale === "en") {
+    const hero = `your day in ${regionLabel} is ready.`;
+    const microStory =
+      stops.length === 0
+        ? `${opener}a day is being drawn in ${regionLabel}, to your measure.`
+        : `${opener}we begin close, we pause at ${stops.slice(0, 2).join(" and ")}, and we let the afternoon breathe.`;
+    const arc =
+      stops.length === 0
+        ? [microStory]
+        : [
+            `${opener}morning opens at ${stops[0]}.`,
+            stops[1] ? `midday slows at ${stops[1]}.` : "midday slows, unhurried.",
+            stops[stops.length - 1] && stops.length > 2
+              ? `evening lands at ${stops[stops.length - 1]}.`
+              : "evening lands, softer than expected.",
+            "do you want to live this day?",
+          ];
+    return { hero, microStory, arc, completion: "book this day", source: "fallback" };
+  }
+
   const hero = fillSlots(
     voice["reveal.hero"]?.text ?? "o teu dia em {region} está pronto.",
     { region: regionLabel, name: profile.name },
   );
   const completion = voice["completion.book"]?.text ?? "reservar este dia";
-  const stops = input.day.stops.map((s) => s.stop.name);
-  const opener = profile.name ? `${profile.name}, ` : "";
   const microStory =
     stops.length === 0
       ? `${opener}há um dia desenhado em ${regionLabel}, à tua medida.`
       : `${opener}começamos perto, paramos em ${stops.slice(0, 2).join(" e ")}, e deixamos a tarde respirar.`;
-  return { hero, microStory, completion, source: "fallback" };
+  const arc =
+    stops.length === 0
+      ? [microStory]
+      : [
+          `${opener}a manhã abre em ${stops[0]}.`,
+          stops[1] ? `o meio-dia abranda em ${stops[1]}.` : "o meio-dia abranda, sem pressa.",
+          stops[stops.length - 1] && stops.length > 2
+            ? `a noite pousa em ${stops[stops.length - 1]}.`
+            : "a noite pousa, mais devagar do que esperavas.",
+          "queres viver este dia?",
+        ];
+  return { hero, microStory, arc, completion, source: "fallback" };
+}
+
+function toneClause(hints: StoryHints): string {
+  const t = hints.tonalRegister ?? "expansive";
+  const i = hints.intensityPreference ?? 3;
+  const toneMap: Record<TonalRegister, string> = {
+    intimate: "Tone: hushed, close-up, candlelit. Prefer single-clause lines.",
+    expansive: "Tone: wide horizon, slow gaze, weather-aware.",
+    playful: "Tone: light-footed, warm, a hint of laughter — never frivolous.",
+    ritual: "Tone: ceremonial, attentive to gesture, almost liturgical restraint.",
+  };
+  const intensityClause =
+    i >= 4
+      ? "Pacing: slightly charged, but never loud."
+      : i <= 2
+        ? "Pacing: very calm, long breaths between images."
+        : "Pacing: balanced, unhurried.";
+  return `${toneMap[t]} ${intensityClause}`;
 }
 
 export async function generateRevealStory(input: StoryInput): Promise<RevealStory> {
@@ -146,6 +209,12 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
 
   const realStopNames = input.day.stops.map((s) => s.stop.name);
   if (realStopNames.length === 0) return fallbackStory(input);
+
+  const locale = input.hints.locale ?? "pt";
+  const langClause =
+    locale === "en"
+      ? "Write in concise British English. Lowercase, no exclamation marks, no clichés."
+      : "Write in European Portuguese (pt-PT). Lowercase, no exclamation marks, no clichés.";
 
   const profileSummary = [
     input.profile.name ? `name=${input.profile.name}` : null,
@@ -171,14 +240,20 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
           {
             role: "system",
             content:
-              "You write tone-only Portuguese lines for a luxury Portugal travel studio. " +
+              "You write tone-only lines for a luxury Portugal travel studio. " +
               "STRICT RULES: never invent stops, prices, partners, hours. Only reference the REAL stop names provided. " +
-              "Lowercase, Georgia-italic register, intimate, restrained, no exclamation marks, no clichés. " +
-              "European Portuguese (pt-PT), under 22 words per line.",
+              "Georgia-italic register, intimate, restrained. " +
+              `${langClause} ${toneClause(input.hints)} ` +
+              "Each line under 18 words.",
           },
           {
             role: "user",
-            content: `Profile: ${profileSummary}\nReal stops in the composed day (ordered): ${realStopNames.join(" | ")}\n\nWrite a hero line, a micro-story (1-2 sentences using ONLY the real stops above), and a single completion CTA in lowercase.`,
+            content:
+              `Profile: ${profileSummary}\n` +
+              `Real stops in the composed day (ordered): ${realStopNames.join(" | ")}\n\n` +
+              `Write: a hero line; a single micro-story sentence; an "arc" of EXACTLY 4 chained lines ` +
+              `(morning · midday · evening · a final pull-line that opens longing without being a CTA, ` +
+              `using ONLY the real stops above); and a short completion CTA in lowercase.`,
           },
         ],
         tools: [
@@ -186,15 +261,23 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
             type: "function",
             function: {
               name: "compose_reveal",
-              description: "Return tone-only Portuguese copy referencing only the real stops provided.",
+              description:
+                "Return tone-only copy referencing only the real stops provided. arc has exactly 4 strings.",
               parameters: {
                 type: "object",
                 properties: {
                   hero: { type: "string", description: "Single editorial line, ≤14 words." },
-                  microStory: { type: "string", description: "1–2 sentences using ONLY real stop names." },
+                  microStory: { type: "string", description: "1 sentence using ONLY real stop names." },
+                  arc: {
+                    type: "array",
+                    items: { type: "string" },
+                    minItems: 4,
+                    maxItems: 4,
+                    description: "Four chained lines: morning, midday, evening, longing-pull.",
+                  },
                   completion: { type: "string", description: "Short CTA, ≤6 words, lowercase." },
                 },
-                required: ["hero", "microStory", "completion"],
+                required: ["hero", "microStory", "arc", "completion"],
                 additionalProperties: false,
               },
             },
@@ -213,26 +296,36 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
     const parsed = JSON.parse(argsStr) as {
       hero?: string;
       microStory?: string;
+      arc?: string[];
       completion?: string;
     };
 
-    // Guardrail: if the micro-story references a name not in real stops AND not a
-    // common Portuguese word, fall back. Simple heuristic — keeps AI honest.
-    const story = (parsed.microStory ?? "").toLowerCase();
+    // Guardrail: if the micro-story or arc references a proper noun NOT in the
+    // real stops list, fall back. Keeps AI honest.
     const allowedTokens = new Set(realStopNames.map((n) => n.toLowerCase()));
-    const suspiciousProperNoun = /\b([A-ZÁÉÍÓÚ][a-zà-ÿ]+)\b/.exec(parsed.microStory ?? "");
+    const checkText = [parsed.microStory ?? "", ...(parsed.arc ?? [])].join(" ");
+    const suspiciousProperNoun = /\b([A-ZÁÉÍÓÚ][a-zà-ÿ]+)\b/.exec(checkText);
     if (suspiciousProperNoun) {
       const candidate = suspiciousProperNoun[1].toLowerCase();
-      const matched = [...allowedTokens].some((t) => t.includes(candidate) || candidate.includes(t.split(" ")[0] ?? ""));
+      const matched = [...allowedTokens].some(
+        (tok) => tok.includes(candidate) || candidate.includes(tok.split(" ")[0] ?? ""),
+      );
       if (!matched && candidate.length > 4) {
         return fallbackStory(input);
       }
     }
 
+    const fb = fallbackStory(input);
+    const arc =
+      Array.isArray(parsed.arc) && parsed.arc.length === 4
+        ? parsed.arc.map((s) => s.trim()).filter(Boolean)
+        : fb.arc;
+
     return {
-      hero: (parsed.hero ?? "").trim() || fallbackStory(input).hero,
-      microStory: (parsed.microStory ?? "").trim() || fallbackStory(input).microStory,
-      completion: (parsed.completion ?? "").trim() || fallbackStory(input).completion,
+      hero: (parsed.hero ?? "").trim() || fb.hero,
+      microStory: (parsed.microStory ?? "").trim() || fb.microStory,
+      arc: arc.length === 4 ? arc : fb.arc,
+      completion: (parsed.completion ?? "").trim() || fb.completion,
       source: "ai",
     };
   } catch {
@@ -256,13 +349,14 @@ export interface RevealPayload {
 export async function assembleReveal(
   rawProfile: ComposerProfile & { name?: string; social?: string },
   confidence: ConfidenceMap = {},
+  hints: StoryHints = {},
 ): Promise<RevealPayload> {
   const region = pickRegion(rawProfile);
   const day = composeDay(rawProfile, region, { confidence });
   const voice = await loadVoice();
   const dna = await activateDna(rawProfile, confidence);
   const regionLabel = REGION_LABEL[region] ?? region;
-  const story = await generateRevealStory({ profile: rawProfile, day, voice, regionLabel });
+  const story = await generateRevealStory({ profile: rawProfile, day, voice, regionLabel, hints });
   const cta = {
     book: voice["completion.book"]?.text ?? "reservar este dia",
     save: voice["completion.save"]?.text ?? "guardar para depois",
@@ -282,3 +376,4 @@ export async function assembleReveal(
     anchorTourTitle: anchor?.title,
   };
 }
+
