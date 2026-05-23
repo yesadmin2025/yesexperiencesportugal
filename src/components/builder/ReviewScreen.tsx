@@ -77,11 +77,13 @@ export function ReviewScreen({
     <section className="bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
       {/* Full-bleed map hero — leads the review with the actual route */}
       <div className="relative h-[52vh] min-h-[360px] w-full overflow-hidden border-b border-[color:var(--charcoal)]/10">
-        <BuilderMap
-          stops={stops}
-          regionCenter={{ lat: route.region.lat, lng: route.region.lng }}
-          regionKey={route.region.key}
-        />
+        <Suspense fallback={<div className="absolute inset-0 bg-[color:var(--sand)]/40" />}>
+          <BuilderMap
+            stops={stops}
+            regionCenter={{ lat: route.region.lat, lng: route.region.lng }}
+            regionKey={route.region.key}
+          />
+        </Suspense>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[color:var(--ivory)] via-[color:var(--ivory)]/70 to-transparent h-24" />
         <div className="absolute left-0 right-0 bottom-3 px-4 sm:px-6">
           <div className="container-x">
