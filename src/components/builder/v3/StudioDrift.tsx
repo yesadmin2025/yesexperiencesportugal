@@ -1,36 +1,26 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 
 /**
- * StudioDrift — an adaptive emotional travel narrative.
+ * StudioDrift — an emotionally intelligent discovery engine for real
+ * YES Experiences journeys.
  *
- * Drift is a living story unfolding around the traveller while the system
- * progressively learns who they are. It is not a film, not a quiz, not a
- * configurator. It is a guided drift through Portugal that quietly gathers
- * a profile from atmosphere choices, pauses, attractions and micro
- * decisions — and slowly narrows toward something inevitable.
+ * Drift is a guided narrative that quietly gathers the practical signals
+ * a real itinerary needs — name, pickup region, group size, travel
+ * radius, energy, intensity, social register — and converges onto real
+ * tours from the YES catalog. The story is never decorative: every
+ * answer feeds match logic against `signatureTours`.
  *
  * Architecture
  * ────────────
- *   The experience moves through six chapters. Each chapter combines:
- *     · an ambient drift moment (passive, atmospheric, no demand)
- *     · a soft prompt where two or three scenes pull the eye, and the
- *       chosen one teaches the system one explicit dimension of the
- *       traveller (companionship, energy, style, social register)
- *     · whispered narration that evolves from distant to intimate
+ *   · DRIFT     — passive atmospheric moment (whisper, no demand)
+ *   · TEXT      — single whispered question with one input (name)
+ *   · CHOICE    — 2–3 scene tiles with soft hints; tap = imprint + advance
+ *   · CONVERGE  — matched signature tours, presented as editorial cards
+ *                 with a real link to the tour page
  *
- *   Underneath, motif gravity decays and reinforces from every interaction
- *   — taps, holds, dwell time — so the world slowly tints toward what the
- *   traveller actually responds to, not what they say.
- *
- *   The final chapter is a convergence: one scene composed from everything
- *   the system noticed, with a hint that the next door is waiting.
- *
- * Constraints
- * ───────────
- *   · Mobile-first (393px target). Two-up scene tiles, large tap areas.
- *   · No form fields, no chips, no labels on the tiles themselves.
- *   · Portuguese microcopy, lowercase, italic Georgia, brief.
- *   · Respect prefers-reduced-motion (callers may gate).
+ * Mobile-first (393px). Lowercase italic microcopy. No form chrome.
  */
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -50,13 +40,18 @@ type Motif =
   | "basil"
   | "bread";
 
-type Companions = "solo" | "couple" | "group";
+type Companions = "solo" | "couple" | "family" | "group";
+type PickupRegion = "lisbon" | "centro" | "alentejo";
+type Radius = "near" | "far" | "anywhere";
 type Energy = "slow" | "vivid";
 type Style = "coast" | "heritage" | "wine" | "table";
 type Social = "intimate" | "shared";
 
-interface Profile {
+export interface DriftProfile {
+  name?: string;
   companions?: Companions;
+  pickup?: PickupRegion;
+  radius?: Radius;
   energy?: Energy;
   style?: Style;
   social?: Social;
@@ -66,8 +61,6 @@ type Scene = {
   id: string;
   video: string;
   motifs: Motif[];
-  /** Half-seen physical traces. Surface rarely, never as a caption. */
-  traces: string[];
 };
 
 const SCENES: Record<string, Scene> = {
@@ -75,43 +68,36 @@ const SCENES: Record<string, Scene> = {
     id: "arrabida-coast",
     video: "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
     motifs: ["salt", "linen", "vine"],
-    traces: ["sal seco no canto da boca", "uma toalha de linho a levantar"],
   },
   caboRoca: {
     id: "cabo-roca",
     video: "/__l5e/assets-v1/7a39b0d5-f6c2-4fb6-9333-0ceb9bc2a7f0/scene-cabo-da-roca.mp4",
     motifs: ["salt", "stone"],
-    traces: ["pedra rachada debaixo da mão", "vento que entra pela manga"],
   },
   hiddenStreet: {
     id: "hidden-street",
     video: "/__l5e/assets-v1/dc013d32-5691-419e-84ad-06099bf3631e/scene-hidden-street.mp4",
     motifs: ["rain", "stone", "basil"],
-    traces: ["azulejo molhado", "manjerico de uma janela aberta"],
   },
   viewpoint: {
     id: "viewpoint",
     video: "/__l5e/assets-v1/5a4d8176-1104-47c8-9ab7-f7324c5c16eb/scene-arrabida-viewpoint.mp4",
     motifs: ["vine", "fado", "amber"],
-    traces: ["pó da vinha nos sapatos", "fado vindo da cozinha ao lado"],
   },
   candleTable: {
     id: "candle-table",
     video: "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
     motifs: ["candle", "amber", "bread"],
-    traces: ["cera a descer pelo castiçal", "miolo de pão quente"],
   },
   celebration: {
     id: "celebration",
     video: "/__l5e/assets-v1/79e74bb4-85bb-4f83-9bc7-c8bf774af5be/scene-celebration.mp4",
     motifs: ["candle", "amber", "fado", "linen"],
-    traces: ["vidro a tocar vidro devagar", "risos de outra sala"],
   },
   sesimbra: {
     id: "sesimbra",
     video: "/__l5e/assets-v1/f205739c-b223-4db4-9ffb-ce15539d73c3/scene-sesimbra-street.mp4",
     motifs: ["harbour", "salt", "rain"],
-    traces: ["gasóleo e maresia no mesmo ar", "mãos a embrulhar peixe em papel"],
   },
 };
 
@@ -130,39 +116,107 @@ const MOTIF_TINT: Record<Motif, string> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Chapter graph — narrative spine of the drift
+// Tour matching — emotional inputs → real YES catalog
 // ─────────────────────────────────────────────────────────────────────────
 
-type ChapterKind = "drift" | "choice" | "convergence";
+/** Map narrative pickup region → which signature tour regions are reachable. */
+const REGION_TOUR_MATCH: Record<PickupRegion, (region: string) => boolean> = {
+  lisbon: (r) =>
+    /Arr[áa]bida|Sesimbra|Azeit[ãa]o|Sint|Cascais|Lisbon|Set[úu]bal|Tr[óo]ia|Comporta/i.test(r),
+  centro: (r) => /Centro|Tomar|Coimbra|F[áa]tima|Naz[áa]r[ée]|[ÓO]bidos/i.test(r),
+  alentejo: (r) => /Alentejo|[ÉE]vora|Tr[óo]ia|Comporta/i.test(r),
+};
+
+/** Map style choice → theme keywords in `tour.theme`. */
+const STYLE_THEME: Record<Style, RegExp> = {
+  coast: /coast|boat|wild|beach/i,
+  heritage: /heritage|tiles|fatima|sintra|tomar/i,
+  wine: /wine/i,
+  table: /gastronomy|cheese|table/i,
+};
+
+function matchTours(profile: DriftProfile): SignatureTour[] {
+  const all = signatureTours;
+  // Region gate (if known). If unknown, do not exclude.
+  const regionFilter = profile.pickup
+    ? REGION_TOUR_MATCH[profile.pickup]
+    : () => true;
+  const radiusFilter = (t: SignatureTour) => {
+    if (profile.radius === "near") {
+      // Same metro / under ~2h: exclude Centro and deep Alentejo.
+      return !/Centro|[ÉE]vora|F[áa]tima|Tomar|Coimbra|Naz[áa]r[ée]/i.test(t.region);
+    }
+    return true;
+  };
+  // Score by theme alignment + small social bonus.
+  const scored = all
+    .filter((t) => regionFilter(t.region) && radiusFilter(t))
+    .map((t) => {
+      let score = 0;
+      if (profile.style && STYLE_THEME[profile.style].test(t.theme + " " + t.id)) {
+        score += 10;
+      }
+      if (profile.social === "intimate" && /cheese|table|wine|tiles/i.test(t.id)) {
+        score += 2;
+      }
+      if (profile.social === "shared" && /boat|wild|beach/i.test(t.id)) {
+        score += 2;
+      }
+      if (profile.energy === "vivid" && /boat|wild|beach|coast/i.test(t.theme + " " + t.id)) {
+        score += 2;
+      }
+      if (profile.energy === "slow" && /wine|cheese|tiles|heritage/i.test(t.theme + " " + t.id)) {
+        score += 2;
+      }
+      if (profile.companions === "family" && /cheese|tiles|sintra|wild/i.test(t.id)) {
+        score += 1;
+      }
+      return { t, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const top = scored.slice(0, 3).map((x) => x.t);
+  // Always return at least one fallback so convergence never goes empty.
+  if (top.length === 0) return all.slice(0, 2);
+  return top;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Chapter graph
+// ─────────────────────────────────────────────────────────────────────────
+
+type ChapterKind = "drift" | "text" | "choice" | "convergence";
 
 interface DriftChapter {
   kind: "drift";
   id: string;
-  /** Distant → intimate. Whispered, lowercase, never imperative. */
-  whisper: string;
-  /** Scenes that play in soft succession. */
+  /** Function so we can weave the traveller name in once we know it. */
+  whisper: (p: DriftProfile) => string;
   scenes: Scene[];
-  /** Auto-advance after this many ms unless held. */
   holdMs: number;
+}
+
+interface TextChapter {
+  kind: "text";
+  id: string;
+  scene: Scene;
+  whisper: (p: DriftProfile) => string;
+  placeholder: string;
+  /** Where to write the answer on the profile. */
+  field: "name";
 }
 
 interface ChoiceOption {
   scene: Scene;
-  /** Soft hint that fades in after a beat. Lowercase, italic, brief. */
   hint: string;
-  /** What this choice teaches the system. */
-  imprint: Partial<Profile>;
-  /** Extra motif gravity gained by picking this. */
+  imprint: Partial<DriftProfile>;
   reinforce: Motif[];
 }
 
 interface ChoiceChapter {
   kind: "choice";
   id: string;
-  /** Question never appears as text. This is the inner question. */
-  inner: string;
-  /** Whisper shown briefly before options resolve. */
-  whisper: string;
+  whisper: (p: DriftProfile) => string;
   options: ChoiceOption[];
 }
 
@@ -171,21 +225,41 @@ interface ConvergenceChapter {
   id: string;
 }
 
-type Chapter = DriftChapter | ChoiceChapter | ConvergenceChapter;
+type Chapter = DriftChapter | TextChapter | ChoiceChapter | ConvergenceChapter;
+
+const greet = (p: DriftProfile, fallback: string) =>
+  p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name.toLowerCase()}` : fallback;
 
 const CHAPTERS: Chapter[] = [
   {
     kind: "drift",
     id: "opening",
-    whisper: "portugal já está acordada. respira primeiro.",
+    whisper: () => "portugal já está acordada. respira primeiro.",
     scenes: [SCENES.arrabidaCoast, SCENES.hiddenStreet],
-    holdMs: 7800,
+    holdMs: 7000,
+  },
+  {
+    kind: "text",
+    id: "name",
+    scene: SCENES.viewpoint,
+    whisper: () => "como te devemos chamar",
+    placeholder: "o teu primeiro nome",
+    field: "name",
+  },
+  {
+    kind: "drift",
+    id: "settling",
+    whisper: (p) =>
+      p.name
+        ? `${p.name.toLowerCase()}, portugal está a reparar em ti.`
+        : "portugal está a reparar em ti",
+    scenes: [SCENES.viewpoint],
+    holdMs: 5400,
   },
   {
     kind: "choice",
-    id: "companionship",
-    inner: "companhia",
-    whisper: "onde te imaginas, agora",
+    id: "companions",
+    whisper: () => "quem vem contigo",
     options: [
       {
         scene: SCENES.caboRoca,
@@ -208,17 +282,59 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
-    kind: "drift",
-    id: "settling",
-    whisper: "portugal está a reparar em ti",
-    scenes: [SCENES.viewpoint],
-    holdMs: 6200,
+    kind: "choice",
+    id: "pickup",
+    whisper: () => "onde começa esta história",
+    options: [
+      {
+        scene: SCENES.arrabidaCoast,
+        hint: "lisboa e a costa a sul",
+        imprint: { pickup: "lisbon" },
+        reinforce: ["salt", "linen"],
+      },
+      {
+        scene: SCENES.hiddenStreet,
+        hint: "o centro, mais a norte",
+        imprint: { pickup: "centro" },
+        reinforce: ["stone", "basil"],
+      },
+      {
+        scene: SCENES.viewpoint,
+        hint: "alentejo, devagar",
+        imprint: { pickup: "alentejo" },
+        reinforce: ["vine", "amber"],
+      },
+    ],
+  },
+  {
+    kind: "choice",
+    id: "radius",
+    whisper: () => "até onde irias seguir esse instinto",
+    options: [
+      {
+        scene: SCENES.candleTable,
+        hint: "perto, com calma",
+        imprint: { radius: "near" },
+        reinforce: ["candle", "bread"],
+      },
+      {
+        scene: SCENES.viewpoint,
+        hint: "um dia inteiro fora",
+        imprint: { radius: "far" },
+        reinforce: ["vine", "amber"],
+      },
+      {
+        scene: SCENES.caboRoca,
+        hint: "até onde for preciso",
+        imprint: { radius: "anywhere" },
+        reinforce: ["stone", "salt"],
+      },
+    ],
   },
   {
     kind: "choice",
     id: "energy",
-    inner: "ritmo",
-    whisper: "que ritmo te assenta hoje",
+    whisper: () => "que ritmo te assenta hoje",
     options: [
       {
         scene: SCENES.viewpoint,
@@ -237,8 +353,7 @@ const CHAPTERS: Chapter[] = [
   {
     kind: "choice",
     id: "style",
-    inner: "tropismo",
-    whisper: "o que te puxa primeiro",
+    whisper: () => "o que te puxa primeiro",
     options: [
       {
         scene: SCENES.arrabidaCoast,
@@ -248,7 +363,7 @@ const CHAPTERS: Chapter[] = [
       },
       {
         scene: SCENES.hiddenStreet,
-        hint: "as ruas antigas",
+        hint: "as pedras antigas",
         imprint: { style: "heritage" },
         reinforce: ["stone", "basil"],
       },
@@ -261,17 +376,9 @@ const CHAPTERS: Chapter[] = [
     ],
   },
   {
-    kind: "drift",
-    id: "narrowing",
-    whisper: "a paisagem está a apertar à tua volta",
-    scenes: [SCENES.viewpoint, SCENES.candleTable],
-    holdMs: 6800,
-  },
-  {
     kind: "choice",
     id: "social",
-    inner: "registo",
-    whisper: "e quando a noite chega",
+    whisper: () => "e quando a noite chega",
     options: [
       {
         scene: SCENES.candleTable,
@@ -296,13 +403,11 @@ const CHAPTERS: Chapter[] = [
 
 interface Props {
   onExit?: () => void;
-  /** Fired when the convergence reveals and the traveller asks to continue. */
-  onContinue?: (profile: Profile) => void;
 }
 
-export function StudioDrift({ onExit, onContinue }: Props) {
+export function StudioDrift({ onExit }: Props) {
   const [chapterIdx, setChapterIdx] = useState(0);
-  const [profile, setProfile] = useState<Profile>({});
+  const [profile, setProfile] = useState<DriftProfile>({});
   const [audioOn, setAudioOn] = useState(false);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const [, setTick] = useState(0);
@@ -326,9 +431,19 @@ export function StudioDrift({ onExit, onContinue }: Props) {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
-      window.setTimeout(advance, 900);
+      window.setTimeout(advance, 850);
     },
     [audioOn, reinforce, advance],
+  );
+
+  const onNameSubmit = useCallback(
+    (name: string) => {
+      const clean = name.trim().slice(0, 32);
+      if (clean) setProfile((p) => ({ ...p, name: clean }));
+      if (!audioOn) setAudioOn(true);
+      window.setTimeout(advance, 700);
+    },
+    [audioOn, advance],
   );
 
   const memoryTints = useMemo(() => {
@@ -352,26 +467,29 @@ export function StudioDrift({ onExit, onContinue }: Props) {
         <DriftPhase
           key={chapter.id}
           chapter={chapter}
+          profile={profile}
           onDone={advance}
           onLinger={(motifs) => reinforce(motifs, 0.6)}
           onAudio={() => !audioOn && setAudioOn(true)}
         />
       )}
 
-      {chapter.kind === "choice" && (
-        <ChoicePhase
+      {chapter.kind === "text" && (
+        <TextPhase
           key={chapter.id}
           chapter={chapter}
-          onPick={onPick}
+          profile={profile}
+          onSubmit={onNameSubmit}
+          onSkip={advance}
         />
       )}
 
+      {chapter.kind === "choice" && (
+        <ChoicePhase key={chapter.id} chapter={chapter} profile={profile} onPick={onPick} />
+      )}
+
       {chapter.kind === "convergence" && (
-        <ConvergencePhase
-          profile={profile}
-          gravity={gravityRef.current}
-          onContinue={() => onContinue?.(profile)}
-        />
+        <ConvergencePhase profile={profile} onExit={onExit} />
       )}
 
       {memoryTints.map((t, i) => (
@@ -383,10 +501,9 @@ export function StudioDrift({ onExit, onContinue }: Props) {
         />
       ))}
 
-      {/* progress — almost invisible, four dashes that slowly fill */}
       <Progress index={chapterIdx} total={CHAPTERS.length} />
 
-      {onExit && (
+      {onExit && chapter.kind !== "convergence" && (
         <button
           type="button"
           onClick={onExit}
@@ -401,16 +518,18 @@ export function StudioDrift({ onExit, onContinue }: Props) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Drift phase — passive atmosphere with a whisper
+// Drift phase
 // ─────────────────────────────────────────────────────────────────────────
 
 function DriftPhase({
   chapter,
+  profile,
   onDone,
   onLinger,
   onAudio,
 }: {
   chapter: DriftChapter;
+  profile: DriftProfile;
   onDone: () => void;
   onLinger: (motifs: Motif[]) => void;
   onAudio: () => void;
@@ -441,27 +560,108 @@ function DriftPhase({
         onMouseDown={onAudio}
         onTouchStart={onAudio}
       />
-      <Whisper key={`w-${chapter.id}-${idx}`} text={chapter.whisper} delay={1400} hold={4200} />
+      <Whisper
+        key={`w-${chapter.id}-${idx}`}
+        text={chapter.whisper(profile)}
+        delay={1200}
+        hold={4000}
+      />
     </>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Choice phase — two or three scene tiles, no labels, soft hints
+// Text phase — one whispered question, one slim input
+// ─────────────────────────────────────────────────────────────────────────
+
+function TextPhase({
+  chapter,
+  profile,
+  onSubmit,
+  onSkip,
+}: {
+  chapter: TextChapter;
+  profile: DriftProfile;
+  onSubmit: (value: string) => void;
+  onSkip: () => void;
+}) {
+  const [value, setValue] = useState("");
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setShown(true), 900);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  return (
+    <>
+      <SceneVideo src={chapter.scene.video} />
+      <Vignette stronger />
+      <form
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-8 transition-opacity duration-[1400ms]"
+        style={{ opacity: shown ? 1 : 0 }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (value.trim()) onSubmit(value);
+          else onSkip();
+        }}
+      >
+        <label
+          className="italic text-[color:var(--ivory)] text-center mb-6"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: "18px",
+            letterSpacing: "0.005em",
+            textShadow: "0 1px 22px rgba(0,0,0,0.74)",
+            opacity: 0.86,
+          }}
+        >
+          {chapter.whisper(profile)}
+        </label>
+        <input
+          type="text"
+          autoFocus
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={chapter.placeholder}
+          maxLength={32}
+          className="w-full max-w-[20ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-2"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: "20px",
+            borderBottomColor: "color-mix(in oklab, var(--ivory) 38%, transparent)",
+            caretColor: "var(--gold)",
+          }}
+        />
+        <button
+          type="submit"
+          className="mt-8 text-[11px] tracking-[0.22em] uppercase text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
+          style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+        >
+          continuar
+        </button>
+      </form>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Choice phase — 2–3 scene tiles
 // ─────────────────────────────────────────────────────────────────────────
 
 function ChoicePhase({
   chapter,
+  profile,
   onPick,
 }: {
   chapter: ChoiceChapter;
+  profile: DriftProfile;
   onPick: (opt: ChoiceOption) => void;
 }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setShowHints(true), 2400);
+    const t = window.setTimeout(() => setShowHints(true), 2200);
     return () => window.clearTimeout(t);
   }, []);
 
@@ -473,7 +673,7 @@ function ChoicePhase({
 
   return (
     <>
-      <Whisper text={chapter.whisper} delay={400} hold={2200} />
+      <Whisper text={chapter.whisper(profile)} delay={400} hold={2000} />
       <div className="absolute inset-0 z-10 flex flex-col">
         {chapter.options.map((opt) => {
           const isPicked = picked === opt.scene.id;
@@ -483,7 +683,7 @@ function ChoicePhase({
               key={opt.scene.id}
               type="button"
               onClick={() => handlePick(opt)}
-              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1100ms] ease-out group"
+              className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out"
               style={{
                 opacity: isDimmed ? 0.15 : 1,
                 transform: isPicked ? "scale(1.02)" : "scale(1)",
@@ -501,26 +701,25 @@ function ChoicePhase({
               />
               <div
                 aria-hidden="true"
-                className="absolute inset-0 transition-opacity duration-700"
+                className="absolute inset-0"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.46) 100%)",
                 }}
               />
-              {/* soft hairline between tiles */}
               <div
                 aria-hidden="true"
                 className="absolute inset-x-0 bottom-0 h-px"
                 style={{ background: "color-mix(in oklab, var(--ivory) 18%, transparent)" }}
               />
               <span
-                className="absolute inset-x-0 bottom-6 z-10 block text-center italic text-[color:var(--ivory)] transition-all duration-[1600ms]"
+                className="absolute inset-x-0 bottom-6 z-10 block text-center italic text-[color:var(--ivory)] transition-all duration-[1500ms]"
                 style={{
                   fontFamily: "Georgia, 'Times New Roman', serif",
                   fontSize: "15px",
                   letterSpacing: "0.01em",
                   textShadow: "0 1px 18px rgba(0,0,0,0.7)",
-                  opacity: showHints ? 0.82 : 0,
+                  opacity: showHints ? 0.84 : 0,
                   transform: showHints ? "translateY(0)" : "translateY(6px)",
                 }}
               >
@@ -535,109 +734,204 @@ function ChoicePhase({
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Convergence — one composed scene + a door
+// Convergence — real signature tours matched to the profile
 // ─────────────────────────────────────────────────────────────────────────
 
 function ConvergencePhase({
   profile,
-  gravity,
-  onContinue,
+  onExit,
 }: {
-  profile: Profile;
-  gravity: Map<Motif, number>;
-  onContinue?: () => void;
+  profile: DriftProfile;
+  onExit?: () => void;
 }) {
-  const scene = useMemo(() => pickConvergenceScene(profile, gravity), [profile, gravity]);
-  const line = useMemo(() => composeReveal(profile), [profile]);
+  const tours = useMemo(() => matchTours(profile), [profile]);
+  const lead = useMemo(() => composeLead(profile), [profile]);
+  const heroScene = pickHeroScene(profile);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setReady(true), 3800);
+    const t = window.setTimeout(() => setReady(true), 2400);
     return () => window.clearTimeout(t);
   }, []);
 
   return (
-    <>
-      <SceneVideo src={scene.video} />
-      <Vignette stronger />
-      <div className="absolute inset-x-0 bottom-[26%] z-20 px-8 text-center pointer-events-none">
-        <p
-          className="italic text-[color:var(--ivory)] mx-auto max-w-[24ch]"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "19px",
-            lineHeight: 1.55,
-            letterSpacing: "0.005em",
-            textShadow: "0 1px 22px rgba(0,0,0,0.78)",
-            opacity: 0.92,
-          }}
-        >
-          {line}
-        </p>
-      </div>
-      {onContinue && (
-        <div
-          className="absolute inset-x-0 bottom-10 z-30 flex justify-center transition-opacity duration-[1600ms]"
-          style={{ opacity: ready ? 1 : 0, pointerEvents: ready ? "auto" : "none" }}
-        >
+    <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
+      <div className="relative h-[58vh] min-h-[360px] w-full overflow-hidden">
+        <SceneVideo src={heroScene.video} />
+        <Vignette stronger />
+        <div className="absolute inset-x-0 bottom-8 z-20 px-6 text-center pointer-events-none">
+          <p
+            className="italic text-[color:var(--ivory)] mx-auto max-w-[24ch]"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontSize: "19px",
+              lineHeight: 1.5,
+              textShadow: "0 1px 22px rgba(0,0,0,0.78)",
+              opacity: 0.94,
+            }}
+          >
+            {lead}
+          </p>
+        </div>
+        {onExit && (
           <button
             type="button"
-            onClick={onContinue}
-            className="px-6 py-3 rounded-full text-[13px] tracking-[0.18em] uppercase text-[color:var(--ivory)] border border-[color:var(--ivory)]/40 hover:border-[color:var(--ivory)]/80 hover:bg-[color:var(--ivory)]/5 transition-all duration-500"
-            style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+            onClick={onExit}
+            aria-label="sair"
+            className="absolute top-4 left-4 z-30 h-6 w-6 rounded-full bg-[color:var(--ivory)]/15 hover:bg-[color:var(--ivory)]/30 transition-colors"
+          />
+        )}
+      </div>
+
+      <div
+        className="relative bg-[color:var(--ivory)] px-5 pt-10 pb-16 transition-opacity duration-[1400ms]"
+        style={{ opacity: ready ? 1 : 0 }}
+      >
+        <p
+          className="text-center text-[10.5px] tracking-[0.26em] uppercase mb-2"
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          }}
+        >
+          o que portugal te oferece
+        </p>
+        <h2
+          className="text-center mb-8"
+          style={{
+            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: "22px",
+            color: "var(--charcoal)",
+            letterSpacing: "-0.005em",
+          }}
+        >
+          {profile.name ? `Para ti, ${profile.name}` : "Para ti"}
+        </h2>
+
+        <ul className="space-y-5">
+          {tours.map((t) => (
+            <li key={t.id}>
+              <Link
+                to="/tours/$tourId"
+                params={{ tourId: t.id }}
+                className="block group rounded-md overflow-hidden bg-white"
+                style={{
+                  boxShadow: "0 1px 0 color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                }}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={t.img}
+                    alt={t.title}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.03]"
+                    style={{ objectPosition: t.focal ?? "50% 50%" }}
+                  />
+                </div>
+                <div className="p-4">
+                  <p
+                    className="text-[10.5px] tracking-[0.22em] uppercase mb-1.5"
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      color: "color-mix(in oklab, var(--charcoal) 56%, transparent)",
+                    }}
+                  >
+                    {t.region} · {t.duration}
+                  </p>
+                  <h3
+                    className="mb-2"
+                    style={{
+                      fontFamily: "'Montserrat', system-ui, sans-serif",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      lineHeight: 1.3,
+                      color: "var(--charcoal)",
+                    }}
+                  >
+                    {t.title}
+                  </h3>
+                  <p
+                    className="mb-3"
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: "13px",
+                      lineHeight: 1.5,
+                      color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                    }}
+                  >
+                    {t.blurb}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: "13px",
+                        color: "var(--charcoal)",
+                      }}
+                    >
+                      desde <strong>€{t.priceFrom}</strong> / pessoa
+                    </span>
+                    <span
+                      className="text-[11px] tracking-[0.2em] uppercase"
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        color: "var(--teal)",
+                      }}
+                    >
+                      ver experiência →
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-10 text-center">
+          <Link
+            to="/experiences"
+            className="inline-block text-[11px] tracking-[0.22em] uppercase"
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
+            }}
           >
-            continuar
-          </button>
+            ou explora todas as experiências
+          </Link>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }
 
-function pickConvergenceScene(profile: Profile, gravity: Map<Motif, number>): Scene {
-  // Prefer the scene whose motifs align most with accumulated gravity, but
-  // honour explicit choices first.
+function pickHeroScene(profile: DriftProfile): Scene {
   if (profile.social === "intimate") return SCENES.candleTable;
   if (profile.social === "shared") return SCENES.celebration;
   if (profile.style === "coast") return SCENES.arrabidaCoast;
   if (profile.style === "heritage") return SCENES.hiddenStreet;
   if (profile.style === "wine") return SCENES.viewpoint;
-  // Fallback by gravity.
-  const all = Object.values(SCENES);
-  const scored = all.map((s) => ({
-    s,
-    w: s.motifs.reduce((a, m) => a + (gravity.get(m) ?? 0), 0),
-  }));
-  scored.sort((a, b) => b.w - a.w);
-  return scored[0].s;
+  return SCENES.viewpoint;
 }
 
-function composeReveal(profile: Profile): string {
-  // Brief, lowercase, never a list. Hints at a shape, doesn't name it.
-  const c = profile.companions;
-  const e = profile.energy;
-  const s = profile.style;
-  const so = profile.social;
-
-  if (so === "intimate" && (c === "couple" || c === "solo")) {
-    return "uma mesa pequena, à luz baixa, está quase pronta para vocês.";
+function composeLead(p: DriftProfile): string {
+  const who = p.name ? `${p.name}, ` : "";
+  if (p.social === "intimate" && (p.companions === "couple" || p.companions === "solo")) {
+    return `${who}portugal está a guardar-vos uma mesa pequena, à luz baixa.`;
   }
-  if (so === "shared" || c === "group") {
-    return "há uma sala onde já se ouvem copos. portugal está a guardar-vos lugar.";
+  if (p.social === "shared" || p.companions === "group") {
+    return `${who}há uma sala onde já se ouvem copos. portugal está a guardar-vos lugar.`;
   }
-  if (s === "coast" && e === "slow") {
-    return "o mar de arrábida está a desacelerar para te receber.";
+  if (p.style === "coast") {
+    return `${who}o mar está a desacelerar para te receber.`;
   }
-  if (s === "wine") {
-    return "uma vinha em silêncio, ao fim da tarde — é por aí que se entra.";
+  if (p.style === "wine") {
+    return `${who}uma vinha em silêncio — é por aí que se entra.`;
   }
-  if (s === "heritage") {
-    return "uma rua antiga, ainda molhada, está à tua espera mais lá para baixo.";
+  if (p.style === "heritage") {
+    return `${who}uma rua antiga está à tua espera, mais lá para baixo.`;
   }
-  if (e === "vivid") {
-    return "o porto está vivo, com mãos a trabalhar. portugal está pronto para ti.";
-  }
-  return "portugal já sabe por onde te levar. basta abrir a próxima porta.";
+  return `${who}portugal já sabe por onde te levar.`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -654,7 +948,7 @@ function SceneVideo({ src }: { src: string }) {
       loop
       playsInline
       preload="auto"
-      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[2200ms]"
+      className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-[2000ms]"
       style={{ filter: "saturate(0.92) contrast(1.02)" }}
     />
   );
@@ -677,7 +971,7 @@ function Vignette({ stronger = false }: { stronger?: boolean }) {
 function Whisper({
   text,
   delay = 600,
-  hold = 3600,
+  hold = 3200,
 }: {
   text: string;
   delay?: number;
@@ -698,14 +992,14 @@ function Whisper({
       className="absolute inset-x-0 top-[14%] z-30 flex justify-center px-8 pointer-events-none"
     >
       <p
-        className="italic text-[color:var(--ivory)] max-w-[24ch] text-center transition-all duration-[1600ms] ease-out"
+        className="italic text-[color:var(--ivory)] max-w-[24ch] text-center transition-all duration-[1500ms] ease-out"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           fontSize: "16px",
           lineHeight: 1.5,
           letterSpacing: "0.005em",
           textShadow: "0 1px 22px rgba(0,0,0,0.74)",
-          opacity: shown ? 0.78 : 0,
+          opacity: shown ? 0.8 : 0,
           transform: shown ? "translateY(0)" : "translateY(-6px)",
         }}
       >
@@ -717,10 +1011,7 @@ function Whisper({
 
 function Progress({ index, total }: { index: number; total: number }) {
   return (
-    <div
-      aria-hidden="true"
-      className="absolute top-4 right-4 z-40 flex gap-1.5"
-    >
+    <div aria-hidden="true" className="absolute top-4 right-4 z-40 flex gap-1.5">
       {Array.from({ length: total }).map((_, i) => (
         <span
           key={i}
@@ -739,7 +1030,7 @@ function Progress({ index, total }: { index: number; total: number }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Ambient audio — drone whose timbre is shaped by motif gravity
+// Ambient audio
 // ─────────────────────────────────────────────────────────────────────────
 
 function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
