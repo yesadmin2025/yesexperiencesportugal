@@ -1251,6 +1251,59 @@ function ChoicePhase({
 }
 
 
+function ProgressiveBuildPreview({
+  day,
+  region,
+  locale,
+  activeStopIndex,
+}: {
+  day: ComposedDay;
+  region: RegionKey;
+  locale: DriftLocale;
+  activeStopIndex: number;
+}) {
+  const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
+  const previewStops = day.stops.slice(0, visibleStops);
+  const mapStops = previewStops.map((cs, i) => ({
+    key: cs.stop.id,
+    region_key: region,
+    label: cs.stop.name,
+    blurb: cs.stop.blurb ?? null,
+    tag: null,
+    lat: cs.stop.coords.lat,
+    lng: cs.stop.coords.lng,
+    duration_minutes: cs.stop.dwellMin,
+    driveMinutesFromPrev: i === 0 ? 0 : cs.driveFromPrev,
+  }));
+  const origin = REGION_ORIGIN[region];
+  const last = previewStops[previewStops.length - 1]?.stop;
+  if (!last || !origin) return null;
+
+  return (
+    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ minHeight: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
+      <div className="grid grid-cols-[96px_1fr] items-stretch">
+        <div className="relative h-[84px] overflow-hidden">
+          <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
+            <BuilderMap stops={mapStops} regionCenter={{ lat: origin.lat, lng: origin.lng }} regionKey={region} emotionalMode activeStopIndex={mapStops.length - 1} chrome={false} />
+          </Suspense>
+        </div>
+        <div className="px-4 py-3">
+          <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
+            {locale === "en" ? "being built around you" : "a ser construído à tua volta"}
+          </p>
+          <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
+            {last.name}
+          </p>
+          <p className="mt-1 line-clamp-2" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", lineHeight: 1.35, color: "color-mix(in oklab, var(--ivory) 72%, transparent)" }}>
+            {last.blurb}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 // ─────────────────────────────────────────────────────────────────────────
 // Convergence — a composed day, assembled from the regional stops pool
 // under operational rules. Not a static tour card — a personal itinerary
