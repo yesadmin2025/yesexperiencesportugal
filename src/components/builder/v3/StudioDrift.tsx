@@ -1,11 +1,15 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
 import { REGION_ORIGIN } from "@/data/regionStops";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { builderWaHref } from "@/components/builder/types";
 import {
   bump,
   topValue,
@@ -295,6 +299,8 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
 ];
 
 const ALWAYS_ASK_CHAPTERS = new Set(["companions", "pickup", "duration", "radius"]);
+const OPTIONAL_CHAPTER_IDS = ["energy", "style", "social"] as const;
+type OptionalChapterId = (typeof OPTIONAL_CHAPTER_IDS)[number];
 
 function isDriftDimension(key: string): key is DriftDimension {
   return DRIFT_DIMENSIONS.includes(key as DriftDimension);
@@ -350,6 +356,29 @@ type Chapter = DriftChapter | TextChapter | ChoiceChapter | ConvergenceChapter;
 
 const greet = (p: DriftProfile, fallback: string) =>
   p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name.toLowerCase()}` : fallback;
+
+function narrativeStageFor(chapter: Chapter, profile: DriftProfile, prediction?: ReturnType<typeof derivePrediction>) {
+  if (chapter.kind === "convergence") return "reveal" as const;
+  const resolved = [profile.companions, profile.pickup, profile.radius, profile.energy, profile.style, profile.social]
+    .filter(Boolean).length;
+  if ((prediction?.revealConfidence ?? 0) >= 0.62 || resolved >= 4) return "emergence" as const;
+  if (resolved >= 1 || profile.name) return "recognition" as const;
+  return "invitation" as const;
+}
+
+function chapterSortKey(chapter: Chapter, confidence: ConfidenceMap, prediction: ReturnType<typeof derivePrediction>) {
+  if (chapter.kind !== "choice") return -1;
+  if (ALWAYS_ASK_CHAPTERS.has(chapter.id)) return -1;
+  const dim = chapter.dim ?? (chapter.id as DriftDimension);
+  if (!DRIFT_DIMENSIONS.includes(dim)) return -1;
+  const top = topValue(confidence, dim)?.confidence ?? 0;
+  const chapterMood = chapter.options
+    .map((o) => o.scene.mood)
+    .filter((m): m is SceneMood => Boolean(m))
+    .sort((a, b) => (prediction.sceneWeighting[b] ?? 0.5) - (prediction.sceneWeighting[a] ?? 0.5))[0];
+  const affinity = chapterMood ? prediction.sceneWeighting[chapterMood] ?? 0.5 : 0.5;
+  return (1 - top) * 0.72 + affinity * 0.28;
+}
 
 const CHAPTERS: Chapter[] = [
   {
@@ -546,13 +575,20 @@ interface Props {
 }
 
 export function StudioDrift({ onExit }: Props) {
+  const sessionId = useBuilderSessionId();
   const [chapterIdx, setChapterIdx] = useState(0);
   const [profile, setProfile] = useState<DriftProfile>({});
   const [audioOn, setAudioOn] = useState(false);
+  const [narrativeLine, setNarrativeLine] = useState<string | null>(null);
+  const [narrativeAt, setNarrativeAt] = useState<number | null>(null);
+  const [askedOptionalChapters, setAskedOptionalChapters] = useState<Set<OptionalChapterId>>(() => new Set());
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
+  const firedStagesRef = useRef<Set<string>>(new Set());
+  const aiBudgetRef = useRef(0);
   const [, setTick] = useState(0);
   const locale = useDriftLocale();
+  const composeMoment = useServerFn(composeStudioMoment);
 
   // Predictive behavior layer — silently shapes pacing, weighting, tone.
   const behavior = useDriftBehavior();
@@ -563,6 +599,43 @@ export function StudioDrift({ onExit }: Props) {
   );
 
   const chapter = CHAPTERS[chapterIdx];
+  const stage = narrativeStageFor(chapter, profile, prediction);
+
+  useEffect(() => {
+    if (!sessionId || !chapter) return;
+    const key = `${stage}:${chapter.id}`;
+    if (stage === "invitation" || firedStagesRef.current.has(key) || aiBudgetRef.current >= 4) return;
+    firedStagesRef.current.add(key);
+    aiBudgetRef.current += 1;
+    let cancelled = false;
+    composeMoment({
+      data: {
+        sessionId,
+        mode: "narrative",
+        locale,
+        mood: prediction.tonalRegister,
+        who: profile.companions ?? null,
+        intention: profile.style ?? null,
+        journeyType: profile.duration === "multi" ? "multi" : "day",
+        travellerName: stage === "reveal" ? profile.name ?? null : null,
+        narrativeStage: stage,
+        confidence: prediction.revealConfidence,
+        acceptedCount: Object.values(profile).filter(Boolean).length,
+        lastFragment: narrativeLine,
+        lastAcceptedTag: chapter.id,
+      },
+    })
+      .then((r) => {
+        if (!cancelled && r.mode === "narrative" && r.fragment) {
+          setNarrativeLine(r.fragment);
+          setNarrativeAt(Date.now());
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, chapter?.id, stage, locale, prediction.tonalRegister, prediction.revealConfidence]);
 
   /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
    *  confidence on the dimensions they correlate with. */
@@ -601,6 +674,16 @@ export function StudioDrift({ onExit }: Props) {
     setChapterIdx((i) => {
       let next = i + 1;
       const conf = confidenceRef.current;
+      const optionalCandidates = CHAPTERS
+        .map((c, idx) => ({ c, idx }))
+        .filter(({ c }) => c.kind === "choice" && OPTIONAL_CHAPTER_IDS.includes(c.id as OptionalChapterId))
+        .filter(({ c }) => !askedOptionalChapters.has(c.id as OptionalChapterId));
+      if (i >= 6 && optionalCandidates.length > 0 && !prediction.shouldCollapseAhead) {
+        const best = optionalCandidates.sort(
+          (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
+        )[0];
+        if (best) return best.idx;
+      }
       while (next < CHAPTERS.length - 1) {
         const c = CHAPTERS[next];
         if (c.kind !== "choice") break;
@@ -609,7 +692,9 @@ export function StudioDrift({ onExit }: Props) {
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
         if (!DRIFT_DIMENSIONS.includes(dim)) break;
-        if (!top || top.confidence < 0.78) break;
+        if (!prediction.shouldCollapseAhead && (!top || top.confidence < 0.78)) break;
+        if (prediction.shouldCollapseAhead && (!top || top.confidence < 0.5)) break;
+        if (!top) break;
         // Skipped — synthesize an inferred answer onto the profile.
         setProfile((p) => ({ ...p, [dim]: top.value as never }));
         void recordDriftEvent("signal_captured", {
@@ -622,11 +707,14 @@ export function StudioDrift({ onExit }: Props) {
       }
       return Math.min(next, CHAPTERS.length - 1);
     });
-  }, []);
+  }, [askedOptionalChapters, prediction]);
 
   const onPick = useCallback(
     (opt: ChoiceOption, alternatives: ChoiceOption[]) => {
       if (!audioOn) setAudioOn(true);
+      if (OPTIONAL_CHAPTER_IDS.includes(chapter.id as OptionalChapterId)) {
+        setAskedOptionalChapters((prev) => new Set(prev).add(chapter.id as OptionalChapterId));
+      }
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
       // Behavior signal — chose this scene, skipped the others.
