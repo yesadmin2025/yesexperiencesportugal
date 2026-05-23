@@ -132,10 +132,25 @@ const MOTIF_TINT: Record<Motif, string> = {
 // (category caps, opening hours, drive-time budgets). The old tour-level
 // regex matchers below were retired with that shift.
 
+// ─── Motif → dimension nudges (predictive inference) ──────────────────────
+// Soft signals: lingering on a scene with these motifs nudges the matching
+// dimension's confidence up without ever fully claiming it. Explicit picks
+// always win (EXPLICIT = 1.0); these only contribute < 0.4.
+const MOTIF_NUDGE: Partial<Record<Motif, Array<[DriftDimension, string]>>> = {
+  salt: [["style", "coast"], ["energy", "vivid"]],
+  linen: [["style", "coast"], ["social", "intimate"]],
+  harbour: [["style", "coast"], ["energy", "vivid"]],
+  stone: [["style", "heritage"], ["energy", "slow"]],
+  basil: [["style", "heritage"]],
+  rain: [["style", "heritage"], ["energy", "slow"]],
+  vine: [["style", "wine"], ["energy", "slow"]],
+  fado: [["style", "wine"], ["social", "shared"]],
+  candle: [["style", "table"], ["social", "intimate"]],
+  amber: [["social", "intimate"], ["energy", "slow"]],
+  bread: [["style", "table"]],
+};
 
-// ─────────────────────────────────────────────────────────────────────────
-// Chapter graph
-// ─────────────────────────────────────────────────────────────────────────
+// ─── Chapter graph ────────────────────────────────────────────────────────
 
 type ChapterKind = "drift" | "text" | "choice" | "convergence";
 
