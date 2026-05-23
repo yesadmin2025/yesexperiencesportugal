@@ -682,36 +682,40 @@ function DriftPhase({
   onDone,
   onLinger,
   onAudio,
+  holdScale = 1,
 }: {
   chapter: DriftChapter;
   profile: DriftProfile;
   onDone: () => void;
-  onLinger: (motifs: Motif[]) => void;
+  onLinger: (motifs: Motif[], ms: number) => void;
   onAudio: () => void;
+  holdScale?: number;
 }) {
   const [idx, setIdx] = useState(0);
   const scene = chapter.scenes[idx];
 
-  // Keep callbacks in refs so re-renders from parent (e.g. gravity tick)
-  // never reset the advance timer — otherwise onDone is forever rescheduled
-  // and the chapter is stuck on its first scene.
   const onDoneRef = useRef(onDone);
   const onLingerRef = useRef(onLinger);
   useEffect(() => { onDoneRef.current = onDone; }, [onDone]);
   useEffect(() => { onLingerRef.current = onLinger; }, [onLinger]);
 
   useEffect(() => {
+    const hold = Math.max(1500, chapter.holdMs * holdScale);
     const motifs = scene.motifs;
     const t = window.setTimeout(() => {
       if (idx < chapter.scenes.length - 1) setIdx((i) => i + 1);
       else onDoneRef.current();
-    }, chapter.holdMs);
-    const soft = window.setTimeout(() => onLingerRef.current(motifs), chapter.holdMs * 0.55);
+    }, hold);
+    const soft = window.setTimeout(
+      () => onLingerRef.current(motifs, hold * 0.55),
+      hold * 0.55,
+    );
     return () => {
       window.clearTimeout(t);
       window.clearTimeout(soft);
     };
-  }, [idx, chapter.id, chapter.holdMs, chapter.scenes.length, scene.motifs]);
+  }, [idx, chapter.id, chapter.holdMs, chapter.scenes.length, scene.motifs, holdScale]);
+
 
   return (
     <>
