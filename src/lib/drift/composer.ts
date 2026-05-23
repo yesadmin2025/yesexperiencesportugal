@@ -87,7 +87,12 @@ function dimWeight(
 ): number {
   if (!value) return 0;
   if (!conf) return 1;
-  return Math.max(conf[`${dim}:${value}`] ?? 0, 1);
+  const c = conf[`${dim}:${value}`];
+  // Explicit profile values remain strong, but confidence now matters:
+  // a fresh explicit pick scores at 1.0, while a soft inferred value can shape
+  // the itinerary without pretending certainty. The previous Math.max(..., 1)
+  // flattened every traveller into the same route weight.
+  return typeof c === "number" ? Math.max(0.35, Math.min(1, c)) : 1;
 }
 
 function affinityScore(
