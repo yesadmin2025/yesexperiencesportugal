@@ -622,6 +622,114 @@ export type Database = {
         }
         Relationships: []
       }
+      drift_dna_tokens: {
+        Row: {
+          created_at: string
+          dimension: string
+          id: string
+          is_active: boolean
+          key: string
+          label: string
+          priority: number
+          threshold: number
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          dimension: string
+          id?: string
+          is_active?: boolean
+          key: string
+          label: string
+          priority?: number
+          threshold?: number
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          dimension?: string
+          id?: string
+          is_active?: boolean
+          key?: string
+          label?: string
+          priority?: number
+          threshold?: number
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      drift_session_events: {
+        Row: {
+          chapter_id: string | null
+          event: string
+          id: string
+          meta: Json | null
+          occurred_at: string
+          session_id: string
+          signal_key: string | null
+          signal_value: string | null
+        }
+        Insert: {
+          chapter_id?: string | null
+          event: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          session_id: string
+          signal_key?: string | null
+          signal_value?: string | null
+        }
+        Update: {
+          chapter_id?: string | null
+          event?: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          session_id?: string
+          signal_key?: string | null
+          signal_value?: string | null
+        }
+        Relationships: []
+      }
+      drift_voice: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          locale: string
+          notes: string | null
+          slot: string
+          slots: string[]
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          notes?: string | null
+          slot: string
+          slots?: string[]
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          notes?: string | null
+          slot?: string
+          slots?: string[]
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       experience_images: {
         Row: {
           alt_text: string

@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
+import { recordDriftEvent } from "@/lib/drift/telemetry";
+import { revealJourney } from "@/server/driftEngine.functions";
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
@@ -363,6 +366,20 @@ export function StudioDrift({ onExit }: Props) {
     setTick((t) => t + 1);
   }, []);
 
+  // Telemetry: session_start once on mount.
+  useEffect(() => {
+    void recordDriftEvent("session_start", { chapterId: CHAPTERS[0]?.id });
+  }, []);
+
+  // Telemetry: scene_shown whenever the chapter changes.
+  useEffect(() => {
+    if (!chapter) return;
+    void recordDriftEvent("scene_shown", {
+      chapterId: chapter.id,
+      meta: { kind: chapter.kind, index: chapterIdx },
+    });
+  }, [chapter, chapterIdx]);
+
   const advance = useCallback(() => {
     setChapterIdx((i) => Math.min(i + 1, CHAPTERS.length - 1));
   }, []);
@@ -372,19 +389,39 @@ export function StudioDrift({ onExit }: Props) {
       if (!audioOn) setAudioOn(true);
       setProfile((p) => ({ ...p, ...opt.imprint }));
       reinforce(opt.reinforce, 1.4);
+      // Telemetry: capture every imprinted signal.
+      for (const [k, v] of Object.entries(opt.imprint)) {
+        void recordDriftEvent("signal_captured", {
+          chapterId: chapter.id,
+          signalKey: k,
+          signalValue: String(v),
+        });
+      }
+      void recordDriftEvent("scene_answered", {
+        chapterId: chapter.id,
+        meta: { sceneId: opt.scene.id },
+      });
       window.setTimeout(advance, 850);
     },
-    [audioOn, reinforce, advance],
+    [audioOn, reinforce, advance, chapter],
   );
 
   const onNameSubmit = useCallback(
     (name: string) => {
       const clean = name.trim().slice(0, 32);
-      if (clean) setProfile((p) => ({ ...p, name: clean }));
+      if (clean) {
+        setProfile((p) => ({ ...p, name: clean }));
+        void recordDriftEvent("signal_captured", {
+          chapterId: chapter.id,
+          signalKey: "name",
+          signalValue: clean.slice(0, 32),
+        });
+      }
+      void recordDriftEvent("scene_answered", { chapterId: chapter.id });
       if (!audioOn) setAudioOn(true);
       window.setTimeout(advance, 700);
     },
-    [audioOn, advance],
+    [audioOn, advance, chapter],
   );
 
   const memoryTints = useMemo(() => {
@@ -689,7 +726,7 @@ function ConvergencePhase({
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
   const day = useMemo(() => composeDay(profile as ComposerProfile, region), [profile, region]);
-  const lead = useMemo(() => composeLead(profile), [profile]);
+  const localLead = useMemo(() => composeLead(profile), [profile]);
   const heroScene = pickHeroScene(profile);
   const anchorTour: SignatureTour | undefined = useMemo(
     () => (day.anchorTourId ? signatureTours.find((t) => t.id === day.anchorTourId) : undefined),
@@ -697,10 +734,57 @@ function ConvergencePhase({
   );
   const [ready, setReady] = useState(false);
 
+  // Server-driven reveal — fetches AI tone-only story + editable voice CTAs.
+  // Falls back gracefully to local composition if the call fails.
+  const reveal = useServerFn(revealJourney);
+  const [serverPayload, setServerPayload] = useState<Awaited<ReturnType<typeof revealJourney>> | null>(
+    null,
+  );
+
+  useEffect(() => {
+    let alive = true;
+    void recordDriftEvent("drift_complete");
+    reveal({
+      data: {
+        name: profile.name,
+        companions: profile.companions,
+        pickup: profile.pickup,
+        radius: profile.radius,
+        energy: profile.energy,
+        style: profile.style,
+        social: profile.social,
+      },
+    })
+      .then((res) => {
+        if (!alive) return;
+        setServerPayload(res);
+        void recordDriftEvent("reveal_shown", {
+          meta: {
+            region: res.region,
+            stops: res.day.stops.length,
+            storySource: res.story.source,
+          },
+        });
+      })
+      .catch(() => {
+        if (!alive) return;
+        void recordDriftEvent("reveal_shown", { meta: { fallback: true } });
+      });
+    return () => {
+      alive = false;
+    };
+  }, [reveal, profile]);
+
   useEffect(() => {
     const t = window.setTimeout(() => setReady(true), 2400);
     return () => window.clearTimeout(t);
   }, []);
+
+  const lead = serverPayload?.story.microStory ?? localLead;
+  const heroLine = serverPayload?.story.hero;
+  const ctaBook = serverPayload?.cta.book ?? "reservar este dia";
+  const ctaSave = serverPayload?.cta.save ?? "guardar para depois";
+  const ctaRefine = serverPayload?.cta.refine ?? "refinar com um local";
 
   const driveHours = Math.floor(day.totals.driveMin / 60);
   const driveMins = day.totals.driveMin % 60;
@@ -759,10 +843,10 @@ function ConvergencePhase({
             letterSpacing: "-0.005em",
           }}
         >
-          {profile.name ? `Para ti, ${profile.name}` : "Para ti"}
+          {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
         </h2>
         <p
-          className="text-center mb-8"
+          className="text-center mb-6"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: "12px",
@@ -771,6 +855,26 @@ function ConvergencePhase({
         >
           {day.stops.length} paragens · {driveLabel} de estrada · partida de {day.originLabel}
         </p>
+
+        {serverPayload && serverPayload.dna.length > 0 && (
+          <div className="mb-8 flex flex-wrap justify-center gap-2">
+            {serverPayload.dna.map((t) => (
+              <span
+                key={t.key}
+                className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase"
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontWeight: 600,
+                  background: "color-mix(in oklab, var(--gold) 14%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
+                }}
+              >
+                {t.label}
+              </span>
+            ))}
+          </div>
+        )}
 
         {day.stops.length === 0 ? (
           <p
@@ -879,10 +983,11 @@ function ConvergencePhase({
         )}
 
         <div className="mt-10 flex flex-col items-center gap-4">
-          {anchorTour && (
+          {anchorTour ? (
             <Link
               to="/tours/$tourId"
               params={{ tourId: anchorTour.id }}
+              onClick={() => void recordDriftEvent("cta_book", { meta: { tourId: anchorTour.id } })}
               className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
@@ -890,19 +995,45 @@ function ConvergencePhase({
                 color: "var(--ivory)",
               }}
             >
-              continuar com um local →
+              {ctaBook} →
+            </Link>
+          ) : (
+            <Link
+              to="/contact"
+              onClick={() => void recordDriftEvent("cta_refine")}
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full text-[12px] tracking-[0.22em] uppercase"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                background: "var(--teal)",
+                color: "var(--ivory)",
+              }}
+            >
+              {ctaRefine} →
             </Link>
           )}
-          <Link
-            to="/experiences"
-            className="text-[11px] tracking-[0.22em] uppercase"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
-            }}
-          >
-            ou explora todas as experiências
-          </Link>
+          <div className="flex items-center gap-6">
+            <button
+              type="button"
+              onClick={() => void recordDriftEvent("cta_save")}
+              className="text-[11px] tracking-[0.22em] uppercase"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
+              }}
+            >
+              {ctaSave}
+            </button>
+            <Link
+              to="/experiences"
+              className="text-[11px] tracking-[0.22em] uppercase"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
+              }}
+            >
+              explorar tudo
+            </Link>
+          </div>
         </div>
       </div>
     </div>
