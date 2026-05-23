@@ -1235,7 +1235,7 @@ function Whisper({
           fontSize: "19px",
           lineHeight: 1.45,
           letterSpacing: "0.005em",
-          color: "#FAF8F3",
+          color: "var(--ivory)",
           maxWidth: "22ch",
           textShadow:
             "0 1px 2px rgba(0,0,0,0.92), 0 2px 18px rgba(0,0,0,0.78)",
