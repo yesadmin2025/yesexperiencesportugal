@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-23T04:30:38.869Z",
+  "generatedAt": "2026-05-23T06:50:49.166Z",
   "filesScanned": 250,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 196,
+    "total": 195,
     "approved": 41,
     "allowlisted": 26,
-    "mismatch": 129
+    "mismatch": 128
   },
   "findings": [
     {
@@ -832,15 +832,6 @@
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
       "snippet": "<span className=\"inline-flex items-center gap-1.5\"><span className=\"inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60\" /> Out of range</span>",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/builder/v3/StudioDrift.tsx",
-      "line": 1247,
-      "col": 86,
-      "raw": "#efe9dc",
-      "normalized": "#efe9dc",
-      "snippet": "<Suspense fallback={<div className=\"h-full w-full bg-[color:var(--sand,#efe9dc)]\" />}>",
       "status": "mismatch"
     },
     {
