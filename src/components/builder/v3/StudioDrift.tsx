@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposerProfile } from "@/lib/drift/composer";
+import { REGION_ORIGIN } from "@/data/regionStops";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/server/driftEngine.functions";
 import {
@@ -13,6 +14,17 @@ import {
   EXPLICIT,
   SOFT,
 } from "@/lib/drift/inference";
+import { SceneCanvas, type SceneSource } from "./SceneCanvas";
+import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
+import { derivePrediction } from "@/lib/drift/predict";
+import wineHandImg from "@/assets/drift/wine-pour.jpg";
+import sharedTableImg from "@/assets/drift/shared-table.jpg";
+import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
+
+// Lazy-load Leaflet-based map to avoid SSR window crashes.
+const BuilderMap = lazy(() =>
+  import("../BuilderMap").then((m) => ({ default: m.BuilderMap })),
+);
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
