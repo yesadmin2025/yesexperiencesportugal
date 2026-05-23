@@ -694,6 +694,7 @@ export function StudioDrift({ onExit }: Props) {
         if (!DRIFT_DIMENSIONS.includes(dim)) break;
         if (!prediction.shouldCollapseAhead && (!top || top.confidence < 0.78)) break;
         if (prediction.shouldCollapseAhead && (!top || top.confidence < 0.5)) break;
+        if (!top) break;
         // Skipped — synthesize an inferred answer onto the profile.
         setProfile((p) => ({ ...p, [dim]: top.value as never }));
         void recordDriftEvent("signal_captured", {
