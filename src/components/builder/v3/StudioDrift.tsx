@@ -812,6 +812,7 @@ function DriftPhase({
         text={chapter.whisper(profile)}
         delay={1200}
         hold={4000}
+        variant="opening"
       />
     </>
   );
@@ -844,7 +845,7 @@ function TextPhase({
       <SceneVideo scene={chapter.scene} />
       <Vignette stronger />
       <form
-        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-8 transition-opacity duration-[1400ms]"
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-7 transition-opacity duration-[1400ms]"
         style={{ opacity: shown ? 1 : 0 }}
         onSubmit={(e) => {
           e.preventDefault();
@@ -853,13 +854,15 @@ function TextPhase({
         }}
       >
         <label
-          className="italic text-[color:var(--ivory)] text-center mb-6"
+          className="text-[color:var(--ivory)] text-center mb-8"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "18px",
-            letterSpacing: "0.005em",
-            textShadow: "0 1px 22px rgba(0,0,0,0.74)",
-            opacity: 0.86,
+            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontSize: "25px",
+            fontWeight: 700,
+            lineHeight: 1.16,
+            letterSpacing: "0",
+            textShadow: "0 2px 28px rgba(0,0,0,0.84)",
+            opacity: 0.96,
           }}
         >
           {chapter.whisper(profile)}
@@ -871,18 +874,20 @@ function TextPhase({
           onChange={(e) => setValue(e.target.value)}
           placeholder={chapter.placeholder}
           maxLength={32}
-          className="w-full max-w-[20ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-2"
+          className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "20px",
-            borderBottomColor: "color-mix(in oklab, var(--ivory) 38%, transparent)",
+            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontSize: "21px",
+            fontWeight: 600,
+            letterSpacing: "0",
+            borderBottomColor: "color-mix(in oklab, var(--gold) 54%, transparent)",
             caretColor: "var(--gold)",
           }}
         />
         <button
           type="submit"
-          className="mt-8 text-[11px] tracking-[0.22em] uppercase text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+          className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"
+          style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
         >
           continuar
         </button>
