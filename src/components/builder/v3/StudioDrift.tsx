@@ -1264,22 +1264,26 @@ function ConvergencePhase({
         {/* Story arc — 3-4 chained editorial lines, fade-in cascade.
             Last line = longing pull: serif italic, larger, gold. */}
         {arc.length > 0 && (
-          <div className="mb-10 mx-auto max-w-[36ch] space-y-4 text-center">
+          <div className="mb-10 mx-auto max-w-[34ch] space-y-5 text-center">
             {arc.map((line, i) => {
               const isPull = i === arc.length - 1 && arc.length > 1;
               return (
                 <p
                   key={i}
-                  className="italic motion-safe:animate-[fade-in_0.9s_ease-out_both]"
+                  className="motion-safe:animate-[fade-in_0.9s_ease-out_both]"
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                    fontSize: isPull ? "24px" : "16.5px",
-                    lineHeight: isPull ? 1.35 : 1.55,
-                    letterSpacing: isPull ? "-0.005em" : "0.005em",
+                    fontFamily: isPull
+                      ? "Georgia, 'Times New Roman', serif"
+                      : "'Inter', system-ui, sans-serif",
+                    fontStyle: isPull ? "italic" : "normal",
+                    fontSize: isPull ? "25px" : "15px",
+                    fontWeight: isPull ? 400 : 500,
+                    lineHeight: isPull ? 1.34 : 1.7,
+                    letterSpacing: "0",
                     color: isPull
                       ? "var(--gold)"
-                      : "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-                    marginTop: isPull ? "8px" : undefined,
+                      : "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                    marginTop: isPull ? "10px" : undefined,
                     animationDelay: `${700 + i * 360}ms`,
                   }}
                 >
