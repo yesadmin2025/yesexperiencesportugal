@@ -778,35 +778,71 @@ function ChoicePhase({
   chapter,
   profile,
   onPick,
+  sceneWeighting,
+  onAttraction,
+  onSceneShown,
 }: {
   chapter: ChoiceChapter;
   profile: DriftProfile;
-  onPick: (opt: ChoiceOption) => void;
+  onPick: (opt: ChoiceOption, alternatives: ChoiceOption[]) => void;
+  sceneWeighting?: Record<SceneMood, number>;
+  onAttraction?: (opt: ChoiceOption) => void;
+  onSceneShown?: (sceneId: string) => void;
 }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
   const [tilesIn, setTilesIn] = useState(false);
 
+  // Order by predicted affinity; drop weakest option only if at least two
+  // strong ones remain. Keeps the choice rhythm honest, never empties it.
+  const ordered = useMemo(() => {
+    const w = (o: ChoiceOption) =>
+      o.scene.mood && sceneWeighting ? sceneWeighting[o.scene.mood] ?? 0.5 : 0.5;
+    const sorted = [...chapter.options].sort((a, b) => w(b) - w(a));
+    if (sceneWeighting && sorted.length >= 3) {
+      const last = sorted[sorted.length - 1]!;
+      if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
+    }
+    return sorted;
+  }, [chapter.options, sceneWeighting]);
+
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
     const t2 = window.setTimeout(() => setShowHints(true), 1800);
+    ordered.forEach((o) => onSceneShown?.(o.scene.id));
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapter.id]);
 
   const handlePick = (opt: ChoiceOption) => {
     if (picked) return;
     setPicked(opt.scene.id);
-    onPick(opt);
+    onPick(opt, ordered);
+  };
+
+  // Long-press = strong attraction signal (≥500ms hold without release).
+  const pressRef = useRef<number | null>(null);
+  const handlePressStart = (opt: ChoiceOption) => {
+    pressRef.current = window.setTimeout(() => {
+      onAttraction?.(opt);
+      pressRef.current = null;
+    }, 520) as unknown as number;
+  };
+  const handlePressEnd = () => {
+    if (pressRef.current !== null) {
+      window.clearTimeout(pressRef.current);
+      pressRef.current = null;
+    }
   };
 
   return (
     <>
       <Whisper text={chapter.whisper(profile)} delay={500} hold={5200} />
       <div className="absolute inset-0 z-10 flex flex-col">
-        {chapter.options.map((opt, i) => {
+        {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
           return (
@@ -814,6 +850,12 @@ function ChoicePhase({
               key={opt.scene.id}
               type="button"
               onClick={() => handlePick(opt)}
+              onMouseDown={() => handlePressStart(opt)}
+              onMouseUp={handlePressEnd}
+              onMouseLeave={handlePressEnd}
+              onTouchStart={() => handlePressStart(opt)}
+              onTouchEnd={handlePressEnd}
+              onTouchCancel={handlePressEnd}
               className="relative flex-1 overflow-hidden outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/40"
               style={{
                 opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
@@ -825,16 +867,7 @@ function ChoicePhase({
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
               }}
             >
-              <video
-                src={opt.scene.video}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                className="absolute inset-0 h-full w-full object-cover motion-safe:animate-[kenburns_22s_ease-in-out_infinite_alternate]"
-                style={{ filter: "saturate(0.94) contrast(1.03)" }}
-              />
+              <SceneCanvas source={sceneSource(opt.scene)} />
               <div
                 aria-hidden="true"
                 className="absolute inset-0"
