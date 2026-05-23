@@ -1376,6 +1376,13 @@ function ProgressiveBuildPreview({
   const last = previewStops[previewStops.length - 1]?.stop;
   if (!last || !origin) return null;
 
+  const signals = [
+    labelValue(profile?.companions, locale),
+    labelValue(profile?.style, locale),
+    labelValue(profile?.energy, locale),
+  ].filter(Boolean).slice(0, 2).join(" · ");
+  const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
+
   return (
     <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ minHeight: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
       <div className="grid grid-cols-[96px_1fr] items-stretch">
@@ -1386,7 +1393,7 @@ function ProgressiveBuildPreview({
         </div>
         <div className="px-4 py-3">
           <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
-            {tt("build.eyebrow", locale)}
+            {tt("build.eyebrow", locale)}{confidencePct > 0 ? ` · ${confidencePct}%` : ""}
           </p>
           <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
             {last.name}
@@ -1394,6 +1401,11 @@ function ProgressiveBuildPreview({
           <p className="mt-1 line-clamp-2" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", lineHeight: 1.35, color: "color-mix(in oklab, var(--ivory) 72%, transparent)" }}>
             {last.blurb}
           </p>
+          {signals && (
+            <p className="mt-1 truncate" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9.5px", lineHeight: 1.25, color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))" }}>
+              {signals}
+            </p>
+          )}
         </div>
       </div>
     </div>
