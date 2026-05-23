@@ -1173,19 +1173,20 @@ function ConvergencePhase({
 
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-black">
-      <div className="relative h-[58vh] min-h-[360px] w-full overflow-hidden">
+      <div className="relative h-[64vh] min-h-[420px] w-full overflow-hidden">
         <SceneVideo scene={heroScene} />
         <Vignette stronger />
-        <div className="absolute inset-x-0 bottom-8 z-20 px-6 text-center pointer-events-none">
+        <div className="absolute inset-x-0 bottom-10 z-20 px-7 text-center pointer-events-none">
           <p
-            className="italic text-[color:var(--ivory)] mx-auto max-w-[24ch]"
+            className="text-[color:var(--ivory)] mx-auto max-w-[16ch]"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontSize: "22px",
-              lineHeight: 1.45,
-              letterSpacing: "0.01em",
-              textShadow: "0 1px 22px rgba(0,0,0,0.78)",
-              opacity: 0.95,
+              fontFamily: "'Montserrat', system-ui, sans-serif",
+              fontSize: "31px",
+              fontWeight: 700,
+              lineHeight: 1.08,
+              letterSpacing: "0",
+              textShadow: "0 2px 34px rgba(0,0,0,0.9)",
+              opacity: 0.98,
             }}
           >
             {lead}
@@ -1202,13 +1203,14 @@ function ConvergencePhase({
       </div>
 
       <div
-        className="relative bg-[color:var(--ivory)] px-5 pt-10 pb-16 transition-opacity duration-[1400ms]"
+        className="relative bg-[color:var(--ivory)] px-5 pt-12 pb-16 transition-opacity duration-[1400ms]"
         style={{ opacity: ready ? 1 : 0 }}
       >
         <p
-          className="text-center text-[10.5px] tracking-[0.26em] uppercase mb-2"
+          className="text-center text-[10.5px] uppercase mb-3"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
+            letterSpacing: "0.22em",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
@@ -1219,10 +1221,10 @@ function ConvergencePhase({
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
             fontWeight: 700,
-            fontSize: "26px",
-            lineHeight: 1.18,
+            fontSize: "30px",
+            lineHeight: 1.12,
             color: "var(--charcoal)",
-            letterSpacing: "-0.015em",
+            letterSpacing: "0",
           }}
         >
           {heroLine ?? (profile.name ? `Para ti, ${profile.name}` : "Para ti")}
