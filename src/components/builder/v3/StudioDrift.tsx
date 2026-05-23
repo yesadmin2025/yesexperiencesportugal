@@ -582,6 +582,7 @@ export function StudioDrift({ onExit }: Props) {
   const [narrativeLine, setNarrativeLine] = useState<string | null>(null);
   const [narrativeAt, setNarrativeAt] = useState<number | null>(null);
   const [askedOptionalChapters, setAskedOptionalChapters] = useState<Set<OptionalChapterId>>(() => new Set());
+  const [interludeWhisper, setInterludeWhisper] = useState<string | null>(null);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
   const firedStagesRef = useRef<Set<string>>(new Set());
