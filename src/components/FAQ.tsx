@@ -125,6 +125,28 @@ const FAQS: { q: string; a: ReactNode }[] = [
       </>
     ),
   },
+  {
+    q: "Can I adjust the experience after booking?",
+    a: (
+      <>
+        Yes — small adjustments are part of the process. Pickup time, pace,
+        a stop you'd like to add or skip, lunch preferences: align them with
+        your local host before the day, by message or call. Bigger changes
+        we'll always look at with you, honestly.
+      </>
+    ),
+  },
+  {
+    q: "What if my plans change?",
+    a: (
+      <>
+        Talk to us as early as you can — the sooner we know, the more room
+        we have to reshape, reschedule or refund within the conditions
+        shared at confirmation. No automated bots, no scripted replies:
+        always a real person from our local team.
+      </>
+    ),
+  },
 ];
 
 const DEFAULT_OPEN = "item-0";

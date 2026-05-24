@@ -630,39 +630,54 @@ function HomePage() {
               </p>
             </div>
             <ol
-              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 list-none p-0"
-              aria-label="Three paths to shape your Portugal experience"
+              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 list-none p-0"
+              aria-label="Four paths to shape your Portugal experience"
             >
               {[
                 {
                   num: "01",
                   label: "Signature",
                   body: "Ready-to-book private experiences.",
+                  to: "/experiences",
                 },
                 {
                   num: "02",
                   label: "Tailored",
                   body: "Adjust selected details inside a Signature.",
+                  to: "/experiences",
                 },
                 {
                   num: "03",
                   label: "Studio",
                   body: "Create from scratch in real time.",
+                  to: "/builder",
+                },
+                {
+                  num: "04",
+                  label: "Proposals",
+                  body: "Bigger moments, planned with care.",
+                  to: "/proposals",
                 },
               ].map((p) => (
                 <li
                   key={p.num}
-                  className="reveal-stagger relative flex items-start gap-3.5 rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] px-4 py-3.5 md:px-5 md:py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/45"
+                  className="reveal-stagger relative"
                 >
-                  <span className="shrink-0 serif text-[1.5rem] md:text-[1.7rem] leading-none text-[color:var(--gold)] font-light tabular-nums">{p.num}</span>
-                  <div className="flex flex-col">
-                    <span className="text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
-                      {p.label}
-                    </span>
-                    <p className="mt-1 text-[13px] md:text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">
-                      {p.body}
-                    </p>
-                  </div>
+                  <Link
+                    to={p.to}
+                    aria-label={`${p.label} — ${p.body}`}
+                    className="flex items-start gap-3.5 rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] px-4 py-3.5 md:px-5 md:py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                  >
+                    <span className="shrink-0 serif italic text-[1.55rem] md:text-[1.75rem] leading-none text-[color:var(--gold)] tabular-nums">{p.num}</span>
+                    <div className="flex flex-col">
+                      <span className="text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
+                        {p.label}
+                      </span>
+                      <p className="mt-1 text-[13px] md:text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">
+                        {p.body}
+                      </p>
+                    </div>
+                  </Link>
                 </li>
               ))}
             </ol>
