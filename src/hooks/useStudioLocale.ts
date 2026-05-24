@@ -102,6 +102,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     ],
     arrivalLine: "Há lugares para visitar.\nPortugal é para sentir.",
     arrivalContinue: "entrar",
+    arrivalFast: "em 60 segundos",
     openingPrompt: "Que tipo de dia fica contigo?",
     openingScenes: [
       { value: "open", label: "Atlântico do nascer ao pôr" },
@@ -222,6 +223,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     ],
     arrivalLine: "Some places ask to be visited.\nPortugal asks to be felt.",
     arrivalContinue: "enter",
+    arrivalFast: "in 60 seconds",
     openingPrompt: "What kind of day stays with you?",
     openingScenes: [
       { value: "open", label: "Atlantic all day" },
@@ -342,6 +344,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     ],
     arrivalLine: "Hay lugares para visitar.\nA Portugal se le siente.",
     arrivalContinue: "entrar",
+    arrivalFast: "en 60 segundos",
     openingPrompt: "¿Qué tipo de día se queda contigo?",
     openingScenes: [
       { value: "open", label: "Atlántico de sol a sol" },
@@ -462,6 +465,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     ],
     arrivalLine: "Certains lieux se visitent.\nLe Portugal se ressent.",
     arrivalContinue: "entrer",
+    arrivalFast: "en 60 secondes",
     openingPrompt: "Quel genre de journée te marque ?",
     openingScenes: [
       { value: "open", label: "L'Atlantique du matin au soir" },
