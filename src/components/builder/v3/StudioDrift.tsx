@@ -671,7 +671,15 @@ export function StudioDrift({ onExit }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [inferredProfile, liveRegion, chapterIdx, prediction.tonalRegister],
   );
-  const showBuildPreview = chapter.kind !== "convergence" && chapterIdx >= 4 && liveDay.stops.length > 0;
+  // Sticky build-preview must only surface AFTER the traveller has chosen
+  // a pickup region — otherwise we display a fabricated stop ("Livramento
+  // market, Setúbal") for someone who hasn't said where they want to start.
+  // That breaks the no-invention rule and confuses the rhythm.
+  const showBuildPreview =
+    chapter.kind !== "convergence" &&
+    Boolean(profile.pickup) &&
+    chapterIdx >= 4 &&
+    liveDay.stops.length > 0;
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
   // actually moved (top mood, itinerary, collapse list, pacing, …).
@@ -1267,7 +1275,12 @@ function ChoicePhase({
     return sorted;
   }, [chapter.options, sceneWeighting, prediction, confidence]);
 
-  const cue = predictiveCue(prediction?.revealConfidence ?? 0, locale);
+  // Predictive cue is only meaningful once the AI has a real read on the
+  // traveller. Before confidence ≥ 0.48 ("this feels right next") the line
+  // becomes meaningless filler ("you might also love" with no context), so
+  // we suppress it entirely and let the atmosphere breathe.
+  const rawCue = predictiveCue(prediction?.revealConfidence ?? 0, locale);
+  const cue = (prediction?.revealConfidence ?? 0) >= 0.48 ? rawCue : null;
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
@@ -1304,21 +1317,24 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
-      <p
-        aria-hidden="true"
-        className="absolute inset-x-0 top-[23%] z-[56] px-7 text-center uppercase transition-opacity duration-[900ms]"
-        style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: "9px",
-          fontWeight: 700,
-          letterSpacing: "0.22em",
-          color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
-          textShadow: "0 1px 14px rgba(0,0,0,0.72)",
-          opacity: tilesIn ? 0.78 : 0,
-        }}
-      >
-        {cue}
-      </p>
+      {cue && (
+        <p
+          aria-hidden="true"
+          className="absolute inset-x-0 top-[23%] z-[56] px-7 text-center transition-opacity duration-[900ms]"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: "12px",
+            fontStyle: "italic",
+            fontWeight: 400,
+            letterSpacing: "0.005em",
+            color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))",
+            textShadow: "0 1px 14px rgba(0,0,0,0.72)",
+            opacity: tilesIn ? 0.78 : 0,
+          }}
+        >
+          {cue}
+        </p>
+      )}
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "92px" : 0 }}>
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
