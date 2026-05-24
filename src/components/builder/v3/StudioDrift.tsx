@@ -361,11 +361,20 @@ type Chapter = DriftChapter | TextChapter | ChoiceChapter | ConvergenceChapter;
 const greet = (p: DriftProfile, fallback: string) =>
   p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name.toLowerCase()}` : fallback;
 
+/** Two-pace entry: travellers who chose "60 segundos" reveal faster. */
+const isFastPace = (): boolean => {
+  if (typeof window === "undefined") return false;
+  try { return window.sessionStorage.getItem("studio.fastPace") === "1"; } catch { return false; }
+};
+
 function narrativeStageFor(chapter: Chapter, profile: DriftProfile, prediction?: ReturnType<typeof derivePrediction>) {
   if (chapter.kind === "convergence") return "reveal" as const;
   const resolved = [profile.companions, profile.pickup, profile.radius, profile.energy, profile.style, profile.social]
     .filter(Boolean).length;
-  if ((prediction?.revealConfidence ?? 0) >= 0.62 || resolved >= 4) return "emergence" as const;
+  const fast = isFastPace();
+  const emergenceThreshold = fast ? 0.42 : 0.62;
+  const minResolved = fast ? 2 : 4;
+  if ((prediction?.revealConfidence ?? 0) >= emergenceThreshold || resolved >= minResolved) return "emergence" as const;
   if (resolved >= 1 || profile.name) return "recognition" as const;
   return "invitation" as const;
 }
@@ -1250,7 +1259,7 @@ function ChoicePhase({
       if (prediction && confidence) return optionScore(b, confidence, prediction) - optionScore(a, confidence, prediction);
       return w(b) - w(a);
     });
-    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= 0.72) return sorted.slice(0, 2);
+    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= (isFastPace() ? 0.5 : 0.72)) return sorted.slice(0, 2);
     if (sceneWeighting && sorted.length >= 3) {
       const last = sorted[sorted.length - 1]!;
       if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
