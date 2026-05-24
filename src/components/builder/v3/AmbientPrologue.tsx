@@ -34,9 +34,13 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
     return () => window.clearTimeout(tm);
   }, []);
 
-  const awaken = () => {
+  const awaken = (fast = false) => {
     if (interactedRef.current) return;
     interactedRef.current = true;
+    try {
+      if (fast) sessionStorage.setItem("studio.fastPace", "1");
+      else sessionStorage.removeItem("studio.fastPace");
+    } catch {}
     onAwaken();
   };
 
@@ -47,7 +51,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
     <div
       className="relative h-[100dvh] w-full overflow-hidden bg-[color:var(--charcoal)] cursor-pointer"
       onClick={() => {
-        if (showContinue) awaken();
+        if (showContinue) awaken(false);
       }}
       role="button"
       tabIndex={0}
@@ -104,12 +108,12 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
       </div>
 
       {/* Quiet bottom continue — appears only after a long pause. No pulse, no chip. */}
-      <div className="absolute inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom),2rem)] flex justify-center">
+      <div className="absolute inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom),2rem)] flex flex-col items-center gap-3">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            awaken();
+            awaken(false);
           }}
           className={`group inline-flex flex-col items-center gap-2 px-4 py-2 min-h-[44px] transition-opacity duration-[1100ms] ease-out ${
             showContinue ? "opacity-90 hover:opacity-100" : "opacity-0 pointer-events-none"
@@ -127,6 +131,23 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
             aria-hidden="true"
             className="block h-px w-8 bg-[color:var(--ivory)]/55 group-hover:bg-[color:var(--gold)] transition-colors"
           />
+        </button>
+
+        {/* Two-pace entry — discreet faster path for travellers who want to see quickly */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            awaken(true);
+          }}
+          className={`inline-flex items-center min-h-[36px] px-2 text-[10px] tracking-[0.32em] uppercase font-medium text-[color:var(--ivory)]/55 hover:text-[color:var(--gold)] transition-[opacity,color] duration-[1100ms] ease-out ${
+            showContinue ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          aria-hidden={!showContinue}
+          tabIndex={showContinue ? 0 : -1}
+          style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+        >
+          {t.arrivalFast}
         </button>
       </div>
 
