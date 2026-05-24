@@ -1,80 +1,86 @@
 ## Objectivo
 
-Trazer da versão `customwebsitedesigns.org` os ganhos reais de UX/clareza/conversão, **mantendo o nosso hero, paleta, tipografia, motion e regra de não-invenção**. Tudo é só frontend/conteúdo — sem mexer em business logic, sem inventar tours, stops, preços ou parceiros.
+Adicionar página `/journal` (histórias reais) e adoptar 4 padrões do site alternativo no Studio — sem violar guardrails (sem inventar factos, stock, superlativos, ou tornar o Studio num configurador).
 
 ---
 
-## 1. Homepage — "Três formas de começar" (01 / 02 / 03 / 04)
+## 1. `/journal` — Local Stories (página editorial)
 
-Logo a seguir ao hero, antes do bloco actual de caminhos, adicionar uma secção editorial numerada que torna os 4 caminhos legíveis em 5 segundos.
+**Rota nova:** `src/routes/journal.tsx` (lista) + `src/routes/journal.$slug.tsx` (post).
 
-- Layout: 4 cards em coluna (mobile) / grid 2×2 (≥md), cada um com:
-  - Numeral grande em Georgia italic gold (01 · 02 · 03 · 04)
-  - Eyebrow (Signature · Tailored · Studio · Proposals)
-  - Frase curta funcional + CTA ghost
-- Sem imagens novas (usa só tipografia + linha gold) — zero risco de stock.
-- Substitui (não duplica) a actual introdução dos caminhos se existir versão fraca.
+**Arquitectura:**
+- Tabela Supabase `journal_posts` (slug, title, excerpt, body markdown, hero_image, region, signature_slug FK opcional, author_name, published_at, status). RLS: leitura pública só `status='published'`, escrita restrita.
+- Loader via `createServerFn` + TanStack Query (`ensureQueryData` + `useSuspenseQuery`).
+- `head()` próprio por post (title, description, og:image = hero do post).
+- Card de "ligar a uma Signature" no fim de cada post (quando `signature_slug` definido) → CTA para a página da Signature real.
 
-## 2. Homepage — FAQ operacional
+**Visual:** layout editorial em coluna única, Montserrat headlines + Georgia italic para pull-quotes + Inter body. Hero 16:9 real. Sem stock — começa **vazia com estado "Em breve"** até teres conteúdo a publicar. Eu não invento posts.
 
-Adicionar 4 perguntas reais de compra ao bloco FAQ existente (não substituir as actuais):
+**SEO:** sitemap actualizado, JSON-LD `Article` por post.
 
-1. Posso reservar directamente sem formulários?
-2. O que acontece depois de confirmar?
-3. Posso ajustar a experiência depois de reservar?
-4. E se mudar de planos?
-
-Respostas em sentence case, curtas, alinhadas com TEST MODE ("Reserva instantânea, confirmação imediata. Ajustes feitos com o teu local host antes do dia."). Sem inventar políticas — fraseado conservador.
-
-## 3. Homepage — "What we handle" nos cards de Moments
-
-Nos 4 cards (Proposals / Celebrations / Corporate / Multi-day), adicionar uma mini-lista de 3 bullets ✓ concretos do que está incluído (planeamento, host local, logística no dia). Texto factual, sem superlativos.
-
-## 4. StudioDrift — toggle persistente `story · timeline · map`
-
-No topo do StudioDrift, segmented control minimalista (3 estados), scoped à v3:
-- `story` (default) — vista actual cinematográfica
-- `timeline` — mostra o `ItineraryRibbon` em modo expandido
-- `map` — força o `LivingMap` a aparecer cedo (sem esperar reveal)
-
-Estado guardado em `useStudioState` ou local. Respeita reduced-motion. Não altera o engine — só lentes de visualização do mesmo estado.
-
-## 5. StudioDrift — estimativa de preço quando confidence ≥ 0.6
-
-Mostrar discretamente, no `StickyBar` ou abaixo do ChapterLine, "≈ €X / pessoa" assim que `revealConfidence` do drift atinge 0.6. Antes disso fica escondido (preserva o ritmo cinematográfico). Cálculo já existe no `StickyBar` — só precisa de gating por confiança.
-
-## 6. StudioDrift — chips de tema emergentes
-
-Pequena fila de chips (Wine · Coast · Heritage · Ease …) derivada do `sceneWeighting` actual, abaixo do `EncouragementBar`. Aparecem quando o peso ultrapassa threshold; somem se baixa. Liga o motor preditivo à percepção do utilizador sem expor números.
+**Nav:** entrada discreta no footer (não na nav principal, para não poluir até teres ≥3 posts).
 
 ---
 
-## O que NÃO se faz
+## 2. Two-pace entry no Studio
 
-- Não toca no hero (copy, vídeo, CTAs, microcopy, brand line — todos locked).
-- Não adiciona barra "Step 1 of 11 / 9% Complete" (configurator feel, contra studio-philosophy).
-- Não adiciona "Experience Quality Score 92%" (número inventado — viola truth pass).
-- Não usa imagens Unsplash nem stock.
-- Não introduz superlativos ("elite", "premium class", "architected for").
-- Não muda paleta, tipografia v3, motion contract.
+**Ficheiro:** `src/components/builder/v3/EntryScreen.tsx`.
 
----
+Adiciona terceiro CTA ghost: **"Mostra-me em 60 segundos"**. Quando escolhido, define um `pace='fast'` no contexto do Studio que:
+- baixa threshold de revelação (`revealConfidence` 0.6 → 0.4),
+- reduz duração de motion para 60%,
+- mostra `EmergingThemes` e `PriceWhisper` mais cedo.
 
-## Ficheiros previstos
-
-- `src/routes/index.tsx` (ou componente de homepage) — secção 01/02/03/04, FAQ, bullets Moments
-- `src/components/builder/v3/StudioDrift.tsx` — toggle de vista, gating de preço, chips de tema
-- `src/components/builder/v3/ViewToggle.tsx` (novo) — segmented control
-- `src/components/builder/v3/EmergingThemes.tsx` (novo) — chips
-- `src/components/builder/StickyBar.tsx` — prop opcional `showPrice` controlada por confidence
-- Testes regressão: `studio-contract.test.ts` (verificar que toggle não quebra drift)
+Respeita escolha do utilizador; não é imposição. Estado guardado em sessionStorage.
 
 ---
 
-## Ordem sugerida de execução
+## 3. Lift-the-curtain no LivingMap
 
-1. Homepage 01/02/03/04 + FAQ + bullets Moments (1 PR mental — só conteúdo/layout)
-2. Studio toggle de vista (estrutural mas isolado)
-3. Studio price-when-confident + chips de tema (liga ao engine que já existe)
+**Ficheiro:** `src/components/builder/v3/LivingMap.tsx` (+ `ItineraryRibbon.tsx`).
 
-Avanço por esta ordem e paro entre cada um se preferires rever?
+Pega subtil de 24px (linha gold-soft + chevron) na base do mapa. Drag/tap expande o `ItineraryRibbon` em overlay, sem nav persistente, sem step counters. Fecha por swipe-down ou tap fora. Respeita `prefers-reduced-motion` (sem drag, só toggle).
+
+**Não vira configurador:** sem números de passo, sem "X of Y".
+
+---
+
+## 4. Smart Recommendation (Add in 1-Click) — **só dados Signature reais**
+
+**Ficheiro novo:** `src/components/builder/v3/SmartSuggestion.tsx`.
+
+Aparece **uma só vez** por sessão, quando `revealConfidence ≥ 0.5` e há match claro entre `sceneWeighting` e um upgrade **existente** numa Signature real (ex.: "tasting + scenic lunch" da Arrábida). 
+
+**Regra dura:** o upgrade é puxado de `src/data/signature-upgrades.ts` (mapa real Signature→upgrade), nunca gerado. Se não houver match real, componente não renderiza. Sem "Most couples add" (invenção estatística) — copy factual: *"Inside the Arrábida day, you can add: …"*.
+
+CTA "Add" liga ao tailored flow real da Signature correspondente.
+
+---
+
+## 5. Estimated Experience Investment — bloco no reveal
+
+**Ficheiro:** `src/components/builder/v3/RevealInvestment.tsx` (substitui `PriceWhisper` **só na fase convergence**; PriceWhisper continua como sussurro intermédio).
+
+Mostra na convergência final:
+- **Indicative range €X–€Y / guest** (não número fechado),
+- **Party total** (range × guests),
+- **What this includes** (3 bullets factuais: private host, vehicle logistics, selected tastings),
+- **What it doesn't include** (1 linha: gratuities, optional extras),
+- Nota: *"Final price confirmed at booking based on date and partner availability."*
+
+**Sem** "Quality Score 92%", **sem** "Premium Class", **sem** "Total Experience Value" inflacionado. Range derivado do mapa Signature→price-range real (`src/data/signature-pricing.ts`).
+
+---
+
+## Ordem de execução (proponho fazer por fases, paro entre cada)
+
+1. **Fase A** — `/journal` (migration + rotas + estado vazio + footer link). Pausa para review.
+2. **Fase B** — Two-pace entry + Lift-the-curtain (só UI no Studio, sem dados novos). Pausa.
+3. **Fase C** — Smart Recommendation + RevealInvestment (requerem ficheiros de dados reais `signature-upgrades.ts` e `signature-pricing.ts` que tens de validar antes de eu publicar).
+
+## Decisões que preciso de ti antes da Fase C
+
+- Confirmas que posso criar os ficheiros `signature-upgrades.ts` e `signature-pricing.ts` a partir das Signatures actuais (Arrábida, Sintra, etc.) e tu revês antes de irem live? Ou preferes preencher tu?
+- O `/journal` fica como rota com estado "Em breve" até teres ≥1 post, ou só crio a infra e adiciono a rota quando tiveres o primeiro post escrito?
+
+Se concordas com tudo, começo pela Fase A.
