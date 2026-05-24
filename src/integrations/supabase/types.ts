@@ -1048,6 +1048,57 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_posts: {
+        Row: {
+          author_name: string | null
+          body: string
+          created_at: string
+          excerpt: string | null
+          hero_image_alt: string | null
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          region: string | null
+          signature_slug: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          excerpt?: string | null
+          hero_image_alt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          region?: string | null
+          signature_slug?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          excerpt?: string | null
+          hero_image_alt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          region?: string | null
+          signature_slug?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
