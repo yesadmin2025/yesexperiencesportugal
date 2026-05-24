@@ -87,6 +87,7 @@ export function Footer() {
             title="Company"
             links={[
               { to: "/about", label: "About YES" },
+              { to: "/local-stories", label: "Local Stories" },
               { to: "/contact", label: "Contact" },
             ]}
           />

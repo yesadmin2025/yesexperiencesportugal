@@ -28,6 +28,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
+import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as ITokenRouteImport } from './routes/i.$token'
 import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
 import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
@@ -138,6 +139,11 @@ const QaHeroRoute = QaHeroRouteImport.update({
   path: '/qa/hero',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => LocalStoriesRoute,
+} as any)
 const ITokenRoute = ITokenRouteImport.update({
   id: '/i/$token',
   path: '/i/$token',
@@ -220,7 +226,7 @@ export interface FileRoutesByFullPath {
   '/day-tours': typeof DayToursRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRoute
+  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
@@ -239,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/api/verify-hero': typeof ApiVerifyHeroRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/i/$token': typeof ITokenRoute
+  '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
@@ -255,7 +262,7 @@ export interface FileRoutesByTo {
   '/day-tours': typeof DayToursRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRoute
+  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
@@ -274,6 +281,7 @@ export interface FileRoutesByTo {
   '/api/verify-hero': typeof ApiVerifyHeroRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/i/$token': typeof ITokenRoute
+  '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
@@ -291,7 +299,7 @@ export interface FileRoutesById {
   '/day-tours': typeof DayToursRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRoute
+  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   '/api/verify-hero': typeof ApiVerifyHeroRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/i/$token': typeof ITokenRoute
+  '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/api/verify-hero'
     | '/e2e/postmessage-probe'
     | '/i/$token'
+    | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
     | '/tours/$tourId'
@@ -382,6 +392,7 @@ export interface FileRouteTypes {
     | '/api/verify-hero'
     | '/e2e/postmessage-probe'
     | '/i/$token'
+    | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
     | '/tours/$tourId'
@@ -417,6 +428,7 @@ export interface FileRouteTypes {
     | '/api/verify-hero'
     | '/e2e/postmessage-probe'
     | '/i/$token'
+    | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
     | '/tours/$tourId'
@@ -434,7 +446,7 @@ export interface RootRouteChildren {
   DayToursRoute: typeof DayToursRoute
   ExperiencesRoute: typeof ExperiencesRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
-  LocalStoriesRoute: typeof LocalStoriesRoute
+  LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   MultiDayRoute: typeof MultiDayRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   ProposalsRoute: typeof ProposalsRoute
@@ -593,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaHeroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/local-stories/$slug': {
+      id: '/local-stories/$slug'
+      path: '/$slug'
+      fullPath: '/local-stories/$slug'
+      preLoaderRoute: typeof LocalStoriesSlugRouteImport
+      parentRoute: typeof LocalStoriesRoute
+    }
     '/i/$token': {
       id: '/i/$token'
       path: '/i/$token'
@@ -694,6 +713,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface LocalStoriesRouteChildren {
+  LocalStoriesSlugRoute: typeof LocalStoriesSlugRoute
+}
+
+const LocalStoriesRouteChildren: LocalStoriesRouteChildren = {
+  LocalStoriesSlugRoute: LocalStoriesSlugRoute,
+}
+
+const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
+  LocalStoriesRouteChildren,
+)
+
 interface ToursTourIdRouteChildren {
   ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
 }
@@ -717,7 +748,7 @@ const rootRouteChildren: RootRouteChildren = {
   DayToursRoute: DayToursRoute,
   ExperiencesRoute: ExperiencesRoute,
   HeroVerifyRoute: HeroVerifyRoute,
-  LocalStoriesRoute: LocalStoriesRoute,
+  LocalStoriesRoute: LocalStoriesRouteWithChildren,
   MultiDayRoute: MultiDayRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   ProposalsRoute: ProposalsRoute,
