@@ -1,102 +1,130 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
-import editCoastal from "@/assets/edit-coastal-road.jpg";
-import editWinery from "@/assets/edit-winery.jpg";
-import editMarket from "@/assets/edit-market.jpg";
-import editViewpoint from "@/assets/edit-viewpoint.jpg";
+import { supabase } from "@/integrations/supabase/client";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 
+type JournalPost = {
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  hero_image_url: string | null;
+  hero_image_alt: string | null;
+  region: string | null;
+  author_name: string | null;
+  published_at: string | null;
+};
+
 export const Route = createFileRoute("/local-stories")({
   head: () => ({
     meta: [
-      { title: "Local Stories & Hidden Gems — YES experiences Portugal" },
+      { title: "Local Stories — YES experiences Portugal" },
       {
         name: "description",
         content:
-          "Notes from the road. Hidden corners of Portugal we keep returning to — written by the locals who design our private experiences.",
+          "Notes from the road, written by the locals who design our private Portugal experiences.",
       },
-      { property: "og:title", content: "Local Stories & Hidden Gems — YES experiences Portugal" },
+      { property: "og:title", content: "Local Stories — YES experiences Portugal" },
       {
         property: "og:description",
-        content:
-          "Hidden corners, family wineries, secret viewpoints — the Portugal we travel ourselves.",
+        content: "Notes from the road, written by the locals who design our experiences.",
       },
-      { property: "og:image", content: editCoastal },
     ],
   }),
   component: Page,
 });
 
-const stories = [
-  {
-    title: "Hidden Coastal Roads",
-    line: "The drive from Sintra to Cabo da Roca that no guidebook quite gets right — pine-scented bends, an empty cove, a shack where the fishermen eat lunch.",
-    img: editCoastal,
-  },
-  {
-    title: "Family Wineries",
-    line: "Three generations, one cellar door, a glass poured by the winemaker himself. No tasting menu, no script — just the year's vintage and an unhurried afternoon.",
-    img: editWinery,
-  },
-  {
-    title: "Local Markets at Dawn",
-    line: "Where breakfast is a pastel de nata and the day's plan is written on a napkin. We know the bakers, the cheesemakers, the woman who still salts her own olives.",
-    img: editMarket,
-  },
-  {
-    title: "Secret Viewpoints",
-    line: "A bend in the road. A stone wall. The whole valley below — and nobody else. The kind of place you only find if someone who lives here points the way.",
-    img: editViewpoint,
-  },
-];
+async function fetchPosts(): Promise<JournalPost[]> {
+  const { data, error } = await supabase
+    .from("journal_posts")
+    .select("slug,title,excerpt,hero_image_url,hero_image_alt,region,author_name,published_at")
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []) as JournalPost[];
+}
 
 function Page() {
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ["journal_posts", "published"],
+    queryFn: fetchPosts,
+    staleTime: 60_000,
+  });
+
+  const hasPosts = !isLoading && posts && posts.length > 0;
+
   return (
     <SiteLayout>
       {/* Header */}
       <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>Local Stories &amp; Hidden Gems</Eyebrow>
+          <Eyebrow flank>Local Stories</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             The Portugal{" "}
             <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75] font-light">
-            Notes from the road — written by the locals who design our private experiences. Hidden
-            places, family kitchens, quiet corners of a country we know by heart.
+          <p className="mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+            Notes from the road — written by the locals who design our private experiences.
           </p>
         </div>
       </section>
 
-      {/* Stories */}
+      {/* Body */}
       <section className="py-24 md:py-32 bg-[color:var(--ivory)]">
         <div className="container-x">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-14">
-            {stories.map((s) => (
-              <article key={s.title} className="group reveal-stagger">
-                <div className="relative overflow-hidden aspect-[4/3] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
-                  <img
-                    src={s.img}
-                    alt={s.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/70 via-transparent to-transparent" />
-                  <div className="absolute left-5 right-5 bottom-5">
-                    <span className="block h-px w-8 bg-[color:var(--gold)] mb-3 opacity-90" />
-                    <h2 className="serif text-2xl md:text-[1.7rem] leading-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-                      {s.title}
-                    </h2>
-                  </div>
-                </div>
-                <p className="text-[15.5px] text-[color:var(--charcoal)] leading-[1.75] font-light max-w-[52ch]">
-                  {s.line}
-                </p>
-              </article>
-            ))}
-          </div>
+          {hasPosts ? (
+            <div className="grid md:grid-cols-2 gap-10 md:gap-14">
+              {posts!.map((p) => (
+                <article key={p.slug} className="group reveal-stagger">
+                  <Link
+                    to="/local-stories/$slug"
+                    params={{ slug: p.slug }}
+                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+                  >
+                    {p.hero_image_url ? (
+                      <div className="relative overflow-hidden aspect-[4/5] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
+                        <img
+                          src={p.hero_image_url}
+                          alt={p.hero_image_alt ?? p.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/55 via-transparent to-transparent" />
+                        <span className="absolute left-5 bottom-5 block h-px w-8 bg-[color:var(--gold)] opacity-90" />
+                      </div>
+                    ) : (
+                      <div className="aspect-[4/5] mb-6 bg-[color:var(--sand)]" />
+                    )}
+                    <div>
+                      {p.region && (
+                        <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+                          {p.region}
+                        </span>
+                      )}
+                      <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
+                        {p.title}
+                      </h2>
+                      {p.excerpt && (
+                        <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
+                          {p.excerpt}
+                        </p>
+                      )}
+                      {p.author_name && (
+                        <p className="mt-4 text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                          By {p.author_name}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <EmptyState loading={isLoading} />
+          )}
 
           <div className="reveal mt-20 text-center">
             <CtaButton to="/builder" variant="primary">
@@ -106,5 +134,22 @@ function Page() {
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+function EmptyState({ loading }: { loading: boolean }) {
+  return (
+    <div className="max-w-xl mx-auto text-center py-16 md:py-24">
+      <span className="block mx-auto h-px w-12 bg-[color:var(--gold)] mb-8" />
+      <p className="font-serif italic text-[1.35rem] md:text-[1.6rem] leading-[1.45] text-[color:var(--charcoal)]">
+        {loading ? "Loading…" : "Quietly being written."}
+      </p>
+      {!loading && (
+        <p className="mt-6 text-[14.5px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+          Our first local stories are on the way. In the meantime, the same voices that will write
+          them are already designing private days across Portugal.
+        </p>
+      )}
+    </div>
   );
 }
