@@ -31,6 +31,8 @@ export interface StudioDict {
   arrivalContinue: string;
   /** Discreet faster-pace affordance shown alongside `arrivalContinue` (BEAT 1). */
   arrivalFast: string;
+  /** Discreet "pro / agent" entry for travel agents and power users (BEAT 1). */
+  arrivalPro: string;
   /** Single emotional framing question for the opening scene picker (BEAT 2). */
   openingPrompt: string;
   /** 3 full-bleed cinematic scenes for the opening pull (BEAT 2). Each maps to a Mood. */
