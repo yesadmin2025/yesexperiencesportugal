@@ -21,6 +21,8 @@ import {
 } from "@/lib/drift/inference";
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
+import { EmergingThemes } from "./EmergingThemes";
+import { PriceWhisper } from "./PriceWhisper";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
@@ -983,7 +985,18 @@ export function StudioDrift({ onExit }: Props) {
       ))}
 
       {chapter.kind !== "convergence" && (
-        <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+        <>
+          <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+          <EmergingThemes
+            sceneWeighting={prediction.sceneWeighting}
+            locale={locale}
+            hasSignal={Boolean(profile.companions || profile.pickup || profile.energy || profile.style)}
+          />
+          <PriceWhisper
+            revealConfidence={prediction.revealConfidence}
+            locale={locale}
+          />
+        </>
       )}
       {/* Predictive AI whisper — personalized fragment produced by composeStudioMoment
           for THIS user's behavior, profile and stage. Makes the predictive engine
