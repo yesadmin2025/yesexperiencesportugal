@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-24T22:58:08.977Z",
-  "filesScanned": 255,
+  "generatedAt": "2026-05-24T23:30:06.173Z",
+  "filesScanned": 257,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1502,16 +1502,16 @@
     },
     {
       "file": "src/routes/index.tsx",
-      "line": 655,
-      "col": 108,
+      "line": 669,
+      "col": 86,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
-      "snippet": "className=\"reveal-stagger relative flex items-start gap-3.5 rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] px-4 py-3.5 md:px-5 md:py-4 transition",
+      "snippet": "className=\"flex items-start gap-3.5 rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] px-4 py-3.5 md:px-5 md:py-4 transition-all duration-200 hover:",
       "status": "mismatch"
     },
     {
       "file": "src/routes/index.tsx",
-      "line": 809,
+      "line": 824,
       "col": 114,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
