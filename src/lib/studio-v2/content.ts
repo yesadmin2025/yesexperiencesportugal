@@ -85,3 +85,64 @@ export function revealFraming(
     default:                   return `A considered day across ${place}.`;
   }
 }
+
+// ─── journey story beats — concise, intelligent, premium ────────────────
+import type { GroupProfile } from "./profile";
+
+export function storyOpener(name?: string): string {
+  const trimmed = name?.trim();
+  if (trimmed) return `Let's begin writing ${trimmed}'s Portugal story.`;
+  return "Let's begin writing your Portugal story.";
+}
+
+export function storyAfterIntent(intent: IntentAtmosphere): string {
+  switch (intent) {
+    case "relaxed_scenic":     return "A slow, scenic thread starts to take shape.";
+    case "elegant_cultural":   return "An elegant cultural arc begins to form.";
+    case "food_local":         return "A food-led day is being shaped.";
+    case "social_celebratory": return "A celebratory rhythm is emerging.";
+    case "romantic_intimate":  return "An intimate route is being drawn.";
+    case "coastal_cinematic":  return "A cinematic coastal route is forming.";
+  }
+}
+
+export function storyAfterPace(pace: PaceV2): string {
+  switch (pace) {
+    case "light":    return "Three considered stops. Room to breathe.";
+    case "balanced": return "Four stops, a natural rhythm.";
+    case "rich":     return "Five stops — full, yet still elegant.";
+    case "full":     return "A dense day, edited with care.";
+  }
+}
+
+export function storyAfterGroup(g: GroupProfile | undefined): string {
+  if (!g) return "Designed around your group.";
+  const total = g.adults + g.teens + g.children;
+  if (g.occasion === "honeymoon")    return "Designed for two, unhurried.";
+  if (g.occasion === "anniversary")  return "Composed to mark the occasion.";
+  if (g.occasion === "corporate")    return "Calibrated for a private group.";
+  if (g.children + g.teens > 0)      return `Built around ${total}, with younger guests in mind.`;
+  if (total === 2)                   return "Shaped for two.";
+  return `Shaped for ${total} guests.`;
+}
+
+export function storyFinalLines(p: {
+  name?: string;
+  intent?: IntentAtmosphere;
+  pace?: PaceV2;
+  group?: GroupProfile;
+}, region: string): string[] {
+  const who = p.name?.trim() ? `${p.name.trim()}'s` : "your";
+  const place =
+    region === "arrabida"     ? "the Arrábida" :
+    region === "lisbon-coast" ? "the Atlantic edge" :
+    region === "alentejo"     ? "the Alentejo" :
+    region === "centro"       ? "the Centro" :
+                                "Portugal";
+  return [
+    `${who.charAt(0).toUpperCase() + who.slice(1)} day across ${place}.`,
+    p.intent ? storyAfterIntent(p.intent) : "A considered arc, edited with care.",
+    p.pace   ? storyAfterPace(p.pace)     : "A balanced rhythm.",
+    p.group  ? storyAfterGroup(p.group)   : "Built around your group.",
+  ];
+}
