@@ -12,7 +12,7 @@ import {
   type ComposerProfile,
   type ConfidenceMap,
 } from "@/lib/drift/composer";
-import type { RegionKey, RegionStop } from "@/data/regionStops";
+import { REGION_STOPS, type RegionKey, type RegionStop } from "@/data/regionStops";
 import { REGION_RULES } from "@/data/regionRules";
 import {
   deriveArchetype,
