@@ -3,6 +3,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Loader2, Map as MapIcon, Sparkles, X } from "lucide-react";
 
 import { generateBuilderRoute, narrateBuilderRoute } from "@/server/builderEngine.functions";
+import { createJourney } from "@/server/builderJourneys.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
@@ -279,6 +280,40 @@ function BuilderPage() {
   const [mobileTab, setMobileTab] = useState<MobileTab>("build");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
+  // Pro Mode — shareable proposal state
+  const [shareState, setShareState] = useState<
+    | { status: "idle" }
+    | { status: "loading" }
+    | { status: "ready"; url: string; copied: boolean }
+    | { status: "error"; message: string }
+  >({ status: "idle" });
+
+  const handleGenerateShare = useCallback(async () => {
+    setShareState({ status: "loading" });
+    try {
+      const sid =
+        (typeof window !== "undefined" && window.localStorage.getItem("yes_session_id")) ||
+        crypto.randomUUID();
+      if (typeof window !== "undefined") window.localStorage.setItem("yes_session_id", sid);
+      const result = await createJourney({
+        data: { state: md.state, sessionId: sid },
+      });
+      const url = `${window.location.origin}/i/${result.shareToken}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareState({ status: "ready", url, copied: true });
+      } catch {
+        setShareState({ status: "ready", url, copied: false });
+      }
+      void trackBuilderEvent("pro_share_created", { shareToken: result.shareToken });
+    } catch (e) {
+      setShareState({
+        status: "error",
+        message: e instanceof Error ? e.message : "Falhou. Tenta novamente.",
+      });
+    }
+  }, [md.state]);
+
   const toggleElement = useCallback(
     (key: ElementKey) => {
       setPersisted((p) => ({
@@ -497,21 +532,73 @@ function BuilderPage() {
     <div className="builder-stage min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
       {proMode && (
         <div className="sticky top-0 z-[55] border-b border-[color:var(--gold)]/30 bg-[color:var(--ivory)]/95 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--ivory)]/80">
-          <div className="container-x flex items-center justify-between gap-3 py-2">
+          <div className="container-x flex flex-col gap-2 py-2 sm:flex-row sm:items-center sm:justify-between">
             <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] font-semibold text-[color:var(--charcoal)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" aria-hidden="true" />
               Pro mode
-              <span className="hidden sm:inline text-[color:var(--charcoal)]/55 normal-case tracking-normal font-normal">
-                · transparência total, preço por pax visível
+              <span className="hidden md:inline text-[color:var(--charcoal)]/55 normal-case tracking-normal font-normal">
+                · agentes & viajantes exigentes
               </span>
             </span>
-            <a
-              href="/builder"
-              className="text-[10px] uppercase tracking-[0.28em] font-medium text-[color:var(--charcoal)]/55 hover:text-[color:var(--charcoal)] transition-colors min-h-[36px] inline-flex items-center"
-            >
-              Sair
-            </a>
+
+            <div className="flex items-center gap-3 sm:gap-4">
+              {/* Multi-pax slider */}
+              <label className="flex items-center gap-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
+                <span className="hidden sm:inline">Pax</span>
+                <input
+                  type="range"
+                  min={1}
+                  max={8}
+                  step={1}
+                  value={guests}
+                  onChange={(e) => setGuests(Number(e.target.value))}
+                  aria-label="Número de pessoas"
+                  className="h-1 w-20 sm:w-28 accent-[color:var(--gold)] cursor-pointer"
+                />
+                <span className="tabular-nums text-[color:var(--charcoal)] min-w-[1.4ch] text-right">
+                  {guests}
+                </span>
+              </label>
+
+              {/* Share proposal */}
+              <button
+                type="button"
+                onClick={handleGenerateShare}
+                disabled={shareState.status === "loading"}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/50 bg-[color:var(--ivory)] px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)] hover:bg-[color:var(--gold)]/10 transition-colors disabled:opacity-50 min-h-[36px]"
+              >
+                {shareState.status === "loading" ? (
+                  <>
+                    <Loader2 size={12} className="animate-spin" />
+                    A gerar
+                  </>
+                ) : shareState.status === "ready" ? (
+                  shareState.copied ? "Link copiado" : "Copiar link"
+                ) : (
+                  "Partilhar proposta"
+                )}
+              </button>
+
+              <a
+                href="/builder"
+                className="text-[10px] uppercase tracking-[0.28em] font-medium text-[color:var(--charcoal)]/55 hover:text-[color:var(--charcoal)] transition-colors min-h-[36px] inline-flex items-center"
+              >
+                Sair
+              </a>
+            </div>
           </div>
+          {shareState.status === "ready" && (
+            <div className="container-x pb-2 -mt-1">
+              <p className="text-[11px] text-[color:var(--charcoal)]/65 break-all">
+                {shareState.url}
+              </p>
+            </div>
+          )}
+          {shareState.status === "error" && (
+            <div className="container-x pb-2 -mt-1">
+              <p className="text-[11px] text-red-600">{shareState.message}</p>
+            </div>
+          )}
         </div>
       )}
       <article className="bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
