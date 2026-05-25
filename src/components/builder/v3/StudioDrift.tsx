@@ -23,6 +23,7 @@ import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
+import { RevealInvestment } from "./RevealInvestment";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
@@ -1909,7 +1910,17 @@ function ConvergencePhase({
           </ul>
         )}
 
+        {anchorTour && (
+          <RevealInvestment
+            anchor={anchorTour}
+            companions={profile.companions}
+            locale={locale}
+            stopsCount={day.stops.length}
+          />
+        )}
+
         <div className="mt-10 flex flex-col items-center gap-4">
+
           {anchorTour ? (
             <Link
               to="/tours/$tourId"
