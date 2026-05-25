@@ -1466,7 +1466,7 @@ function ProgressiveBuildPreview({
       <div className="grid grid-cols-[96px_1fr] items-stretch">
         <div className="relative h-[84px] overflow-hidden">
           <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
-            <BuilderMap stops={mapStops} regionCenter={{ lat: origin.lat, lng: origin.lng }} regionKey={region} emotionalMode activeStopIndex={mapStops.length - 1} chrome={false} />
+            <BuilderMap stops={mapStops} regionCenter={{ lat: origin.lat, lng: origin.lng }} regionKey={region} emotionalMode activeStopIndex={mapStops.length - 1} chrome={false} locale={locale} />
           </Suspense>
         </div>
         <div className="px-4 py-3">
