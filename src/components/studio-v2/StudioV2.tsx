@@ -672,6 +672,7 @@ function Reveal({ result }: { result: DesignResult }) {
         >
           {day.warnings.join(" · ")}
         </div>
+      )}
 
       {result.upsells.length > 0 && (
         <div className="mt-10">
