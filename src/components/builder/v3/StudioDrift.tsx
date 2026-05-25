@@ -29,7 +29,9 @@ import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
 import { shouldShowBuildPreview } from "@/lib/drift/build-preview-visibility";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
+
 
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
@@ -679,27 +681,32 @@ export function StudioDrift({ onExit }: Props) {
   // a pickup region — otherwise we display a fabricated stop ("Livramento
   // market, Setúbal") for someone who hasn't said where they want to start.
   // That breaks the no-invention rule and confuses the rhythm.
-  // Track viewport height so we can hide BuildPreview when there's no room
-  // to stack it under 3 choice cards without overlap (~600px and below).
-  const [vh, setVh] = useState<number>(() => (typeof window !== "undefined" ? window.innerHeight : 900));
-  useEffect(() => {
-    const onR = () => setVh(window.innerHeight);
-    window.addEventListener("resize", onR);
-    return () => window.removeEventListener("resize", onR);
-  }, []);
+  // Drive the BuildPreview gate from CSS height breakpoints (matchMedia)
+  // rather than raw `window.innerHeight`. This:
+  //   • fires only when the breakpoint is actually crossed (no resize churn);
+  //   • naturally accounts for CSS px / DPR / browser chrome / soft keyboard;
+  //   • mirrors the `@media (max-height: …)` defense rule in styles.css so
+  //     JS and CSS agree on the threshold.
+  const fitsBasicHeight = useMediaQuery("(min-height: 640px)", true);
+  const fitsDenseHeight = useMediaQuery("(min-height: 720px)", true);
   // BuildPreview is 84px + 12px inset + ~108px reserve. On short viewports
   // with 3 choice cards it bleeds over the 3rd option. The pure rule lives
   // in `build-preview-visibility.ts` so it can be unit-tested across
-  // resize/rotation scenarios without mounting React.
+  // resize/rotation scenarios without mounting React. We collapse the
+  // matchMedia booleans back into a representative vh value to keep the
+  // pure-function API single-shaped.
   const choiceCount = chapter.kind === "choice" ? chapter.options.length : 0;
+  const breakpointVh = fitsDenseHeight ? 720 : fitsBasicHeight ? 640 : 0;
   const showBuildPreview = shouldShowBuildPreview({
     chapterKind: chapter.kind,
     choiceCount,
     hasPickup: Boolean(profile.pickup),
     chapterIdx,
     liveStopsCount: liveDay.stops.length,
-    vh,
+    vh: breakpointVh,
   });
+  const buildPreviewIsDense = choiceCount >= 3;
+
 
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
@@ -1050,8 +1057,10 @@ export function StudioDrift({ onExit }: Props) {
           profile={inferredProfile}
           prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
+          dense={buildPreviewIsDense}
         />
       )}
+
       <ChapterFade chapterId={chapter.id} />
 
       {onExit && chapter.kind !== "convergence" && (
@@ -1448,6 +1457,7 @@ function ProgressiveBuildPreview({
   profile,
   prediction,
   activeStopIndex,
+  dense = false,
 }: {
   day: ComposedDay;
   region: RegionKey;
@@ -1455,6 +1465,9 @@ function ProgressiveBuildPreview({
   profile?: DriftProfile;
   prediction?: ReturnType<typeof derivePrediction>;
   activeStopIndex: number;
+  /** Set when the active chapter renders 3+ choice cards.
+   *  Pairs with the `@media (max-height: 719.98px)` rule in styles.css. */
+  dense?: boolean;
 }) {
   const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
   const previewStops = day.stops.slice(0, visibleStops);
@@ -1481,7 +1494,8 @@ function ProgressiveBuildPreview({
   const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
 
   return (
-    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ height: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
+    <div className={`studio-build-preview${dense ? " is-dense" : ""} absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]`} style={{ height: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
+
       <div className="grid grid-cols-[96px_1fr] items-stretch">
         <div className="relative h-[84px] overflow-hidden">
           <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
