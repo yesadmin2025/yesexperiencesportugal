@@ -1987,8 +1987,13 @@ function ConvergencePhase({
             type="button"
             onClick={onExit}
             aria-label={tt("ui.exit", locale)}
-            className="absolute top-4 left-4 z-30 h-6 w-6 rounded-full bg-[color:var(--ivory)]/15 hover:bg-[color:var(--ivory)]/30 transition-colors"
-          />
+            className="absolute top-2 left-2 z-30 grid h-11 w-11 place-items-center rounded-full transition-colors motion-safe:hover:bg-[color:var(--ivory)]/15 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
+          >
+            <span
+              aria-hidden="true"
+              className="block h-1.5 w-1.5 rounded-full bg-[color:var(--ivory)]/55"
+            />
+          </button>
         )}
       </div>
 
