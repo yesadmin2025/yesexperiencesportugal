@@ -117,6 +117,18 @@ const PT: Dict = {
   "preview.min_stay": "min no local",
   "preview.indicative": "indicativo",
   "build.region_label": "O seu dia · pré-visualização ao vivo",
+  "reco.eyebrow": "Também combina consigo",
+  "reco.open": "Abrir",
+  "quality.eyebrow": "Qualidade do dia",
+  "quality.aria": "Pontuação de qualidade do dia composto",
+  "quality.summary_high": "Excelente ritmo e equilíbrio entre paragens.",
+  "quality.summary_mid": "Bom ritmo — afine mais um sinal para subir.",
+  "quality.summary_low": "Composição inicial — continue para afinar.",
+  "quality.wine": "Vinho",
+  "quality.coast": "Costa",
+  "quality.heritage": "Património",
+  "quality.table": "Mesa",
+  "quality.of_five": "em 5",
 };
 
 const EN: Dict = {
