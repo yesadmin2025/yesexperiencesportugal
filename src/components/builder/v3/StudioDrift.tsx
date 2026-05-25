@@ -1417,16 +1417,23 @@ function TextPhase({
         )}
         <button
           type="submit"
-          className="mt-9 inline-flex h-11 items-center justify-center rounded-full px-7 text-[11px] uppercase font-semibold tracking-[0.22em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] hover:translate-y-[-1px]"
+          className="group mt-10 inline-flex h-11 items-center justify-center gap-2 rounded-full px-7 text-[11px] uppercase font-medium tracking-[0.26em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] hover:translate-y-[-1px]"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
-            background: "color-mix(in oklab, var(--gold) 92%, var(--ivory))",
+            background: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
             color: "var(--charcoal)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.34), 0 0 0 1px color-mix(in oklab, var(--gold) 35%, transparent)",
+            boxShadow: "0 10px 28px rgba(0,0,0,0.30), 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent)",
             minWidth: "168px",
           }}
         >
-          {tt("text.continue", locale)}
+          <span>{(tt("text.continue", locale) || "continue").toLowerCase()}</span>
+          <span
+            aria-hidden="true"
+            className="inline-block transition-transform duration-300 group-hover:translate-x-[3px]"
+            style={{ fontSize: "13px", lineHeight: 1, letterSpacing: 0 }}
+          >
+            ›
+          </span>
         </button>
       </form>
     </>
