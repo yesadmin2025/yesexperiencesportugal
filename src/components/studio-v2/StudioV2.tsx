@@ -34,7 +34,26 @@ const BuilderMap = lazy(() =>
 );
 
 type Stage = "intent" | "refine" | "reveal";
-type RefineSection = "group" | "pace" | "priorities" | "ops";
+type RefineStep = "pace" | "priorities" | "group" | "ops";
+const REFINE_ORDER: RefineStep[] = ["pace", "priorities", "group", "ops"];
+const REFINE_TITLE: Record<RefineStep, string> = {
+  pace:       "Set the rhythm.",
+  priorities: "What pulls you in?",
+  group:      "Who is travelling.",
+  ops:        "A few practicalities.",
+};
+const REFINE_EYEBROW: Record<RefineStep, string> = {
+  pace:       "Rhythm",
+  priorities: "Priorities",
+  group:      "Guests",
+  ops:        "Logistics",
+};
+const REFINE_HELPER: Record<RefineStep, string> = {
+  pace:       "How dense should the day feel?",
+  priorities: "Tap to add. Tap again to mark essential.",
+  group:      "We tailor pacing and comfort to the group.",
+  ops:        "Optional. Sensible defaults stand in.",
+};
 
 interface StudioV2Props {
   onExit: () => void;
