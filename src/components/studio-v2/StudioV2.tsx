@@ -262,29 +262,37 @@ export function StudioV2({ onExit }: StudioV2Props) {
             />
 
             <div className="px-5 sm:px-8 mt-6">
-              <Eyebrow>Refine</Eyebrow>
-              <Headline>The journey reacts as you decide.</Headline>
-              <Helper>
-                Every choice reshapes the route above. Skip what you like — sensible defaults stand in,
-                and the concierge confirms before booking.
-              </Helper>
+              <RefineProgress current={refineStep} />
 
-              <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
-                <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"} defaultOpen>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
+              <div
+                key={refineStep}
+                className="studio-v2-reveal mt-5"
+                style={{ opacity: stepAdvancing ? 0.35 : 1, transition: "opacity 360ms ease-out" }}
+                aria-busy={stepAdvancing}
+              >
+                <Eyebrow>{REFINE_EYEBROW[refineStep]}</Eyebrow>
+                <Headline>{REFINE_TITLE[refineStep]}</Headline>
+                <Helper>{REFINE_HELPER[refineStep]}</Helper>
+
+                {refineStep === "pace" && (
+                  <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {PACE_OPTIONS.map((opt) => (
                       <OptionCard
                         key={opt.id}
                         active={profile.pace === opt.id}
                         label={opt.label}
                         sub={opt.sub}
-                        onClick={() => update(applyPace(profile, opt.id as PaceV2), "pace")}
+                        onClick={() => {
+                          update(applyPace(profile, opt.id as PaceV2), "pace");
+                          advanceStep();
+                        }}
                       />
                     ))}
                   </div>
-                </Accordion>
-                <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                )}
+
+                {refineStep === "priorities" && (
+                  <div className="mt-6 flex flex-wrap gap-2">
                     {PRIORITY_OPTIONS.map((opt) => {
                       const w = profile.priorityWeights[opt.id as PriorityKey];
                       const next =
@@ -306,24 +314,31 @@ export function StudioV2({ onExit }: StudioV2Props) {
                       );
                     })}
                   </div>
-                </Accordion>
-                <Accordion title="Who is travelling" summary={groupSummary(profile)}>
+                )}
+
+                {refineStep === "group" && (
                   <GroupForm value={profile.group} onChange={(g) => update({ group: g }, "group")} />
-                </Accordion>
-                <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
+                )}
+
+                {refineStep === "ops" && (
                   <OpsForm value={profile.ops} onChange={(ops) => update({ ops }, "ops")} />
-                </Accordion>
+                )}
               </div>
 
-              <StageFooter
-                disabled={false}
-                helper="Designing your day."
-                ctaLabel="Design my day"
-                onContinue={finalize}
+              <RefineNav
+                current={refineStep}
+                onBack={() => goStep(-1)}
+                onNext={() => {
+                  if (refineStep === "ops") finalize();
+                  else advanceStep();
+                }}
+                isLast={refineStep === "ops"}
               />
             </div>
           </section>
         )}
+
+
 
         {stage === "reveal" && result && (
           <section key="reveal" className="studio-v2-reveal">
