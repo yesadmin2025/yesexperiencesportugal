@@ -48,7 +48,7 @@ const CHIP_I18N = {
  */
 const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
 
-export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true }: Props) {
+export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true, locale = "en" }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
