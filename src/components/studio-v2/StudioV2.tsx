@@ -753,12 +753,16 @@ function ContinueButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="group inline-flex items-center gap-2 rounded-[2px] px-6 py-3 text-[12px] tracking-[0.24em] lowercase transition-all disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2"
+      className="group inline-flex items-center gap-2.5 rounded-[2px] px-7 py-3.5 text-[12.5px] tracking-[0.22em] transition-all disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2"
       style={{
         background: "var(--charcoal)",
         color: "var(--ivory)",
         minHeight: 48,
         minWidth: 184,
+        fontFamily: "var(--font-sans, Inter), sans-serif",
+        fontWeight: 600,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
       }}
     >
       {label}
