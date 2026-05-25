@@ -1631,8 +1631,24 @@ function ChoicePhase({
                   transform: showHints ? "translateY(0)" : "translateY(8px)",
                 }}
               >
-                {tt(opt.hintKey, locale)}
+                {optionLabel.split(/(\*[^*]+\*)/g).map((seg, i) =>
+                  seg.startsWith("*") && seg.endsWith("*") && seg.length > 2 ? (
+                    <em
+                      key={i}
+                      style={{
+                        fontFamily: "Georgia, 'Times New Roman', serif",
+                        fontStyle: "italic",
+                        fontWeight: 400,
+                      }}
+                    >
+                      {seg.slice(1, -1)}
+                    </em>
+                  ) : (
+                    <span key={i}>{seg}</span>
+                  ),
+                )}
               </span>
+
             </button>
           );
         })}
