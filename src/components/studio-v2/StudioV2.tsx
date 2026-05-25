@@ -13,6 +13,7 @@ import {
 } from "@/lib/studio-v2/profile";
 import {
   INTENT_OPTIONS,
+  INTENT_ATMOSPHERE,
   PACE_OPTIONS,
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
