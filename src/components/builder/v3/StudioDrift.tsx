@@ -1062,7 +1062,7 @@ export function StudioDrift({ onExit }: Props) {
         <AiWhisper key={narrativeAt} text={narrativeLine} />
       )}
       {showBuildPreview && (
-        <ProgressiveBuildPreview
+        <StudioLivePreview
           day={liveDay}
           region={liveRegion}
           locale={locale}
