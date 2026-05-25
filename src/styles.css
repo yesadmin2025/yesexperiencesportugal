@@ -4857,3 +4857,27 @@ html { scroll-behavior: smooth; }
 .drift-arc-line {
   animation: drift-arc-line 1.1s ease-out both;
 }
+
+/* ─────────────────────────────────────────────────────────────
+ * BuildPreview overlap guard (Studio / Drift)
+ * ─────────────────────────────────────────────────────────────
+ * Defense layer: even if the JS gate slips, CSS @media height
+ * breakpoints hide the floating preview card before it can
+ * overlap the 3rd choice option on short viewports
+ * (landscape phones, split-screen tablets, soft-keyboard open).
+ *
+ * - .studio-build-preview            → never below 640px tall
+ * - .studio-build-preview.is-dense   → never below 720px tall
+ *   (`is-dense` is set when the current chapter renders 3+
+ *    options, where the cards take more vertical space).
+ *
+ * The JS gate (use-media-query + shouldShowBuildPreview) still
+ * owns the truth — this rule is purely belt-and-braces so the
+ * card cannot leak through during a resize/rotation frame.
+ */
+@media (max-height: 639.98px) {
+  .studio-build-preview { display: none !important; }
+}
+@media (max-height: 719.98px) {
+  .studio-build-preview.is-dense { display: none !important; }
+}
