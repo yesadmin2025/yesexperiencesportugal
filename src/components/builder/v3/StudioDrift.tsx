@@ -1522,21 +1522,46 @@ function ProgressiveBuildPreview({
             <BuilderMap stops={mapStops} regionCenter={{ lat: origin.lat, lng: origin.lng }} regionKey={region} emotionalMode activeStopIndex={mapStops.length - 1} chrome={false} locale={locale} />
           </Suspense>
         </div>
-        <div className="px-4 py-3">
-          <p className="mb-1 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
-            {tt("build.eyebrow", locale)}{confidencePct > 0 ? ` · ${confidencePct}%` : ""}
-          </p>
-          <p style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "13px", fontWeight: 700, lineHeight: 1.25, color: "var(--ivory)", letterSpacing: 0 }}>
-            {last.name}
-          </p>
-          <p className="mt-1 line-clamp-2" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", lineHeight: 1.35, color: "color-mix(in oklab, var(--ivory) 72%, transparent)" }}>
-            {last.blurb}
-          </p>
-          {signals && (
-            <p className="mt-1 truncate" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9.5px", lineHeight: 1.25, color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))" }}>
-              {signals}
-            </p>
-          )}
+        <div className="relative px-3 py-2">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 flex-1">
+              <p className="mb-0.5 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
+                {tt("build.eyebrow", locale)}{confidencePct > 0 ? ` · ${confidencePct}%` : ""}
+              </p>
+              <p className="truncate" style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "12.5px", fontWeight: 700, lineHeight: 1.2, color: "var(--ivory)", letterSpacing: 0 }}>
+                {last.name}
+              </p>
+              {signals && (
+                <p className="mt-0.5 truncate" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9.5px", lineHeight: 1.25, color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))" }}>
+                  {signals}
+                </p>
+              )}
+            </div>
+            <Link
+              to="/builder"
+              search={{ legacy: "stepper" } as never}
+              className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--gold)]/55 bg-[color:var(--gold)]/12 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--gold)] transition-colors hover:bg-[color:var(--gold)]/22 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
+              aria-label="Continue this draft in the full builder"
+            >
+              Reserve →
+            </Link>
+          </div>
+          {/* progressive dots — visible steps composed so far */}
+          <div className="mt-1 flex items-center gap-1" aria-hidden="true">
+            {Array.from({ length: Math.min(day.stops.length, 6) }, (_, i) => (
+              <span
+                key={i}
+                className="block h-[2px] flex-1 rounded-full"
+                style={{
+                  background:
+                    i < visibleStops
+                      ? "var(--gold)"
+                      : "color-mix(in oklab, var(--ivory) 22%, transparent)",
+                  transition: "background 360ms ease",
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
