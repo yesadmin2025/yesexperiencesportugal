@@ -1,200 +1,188 @@
-# Plano — O Melhor Builder de Sempre (YES Studio v4)
 
-## Objetivo 
+# Studio Builder → Intelligent Luxury Configurator
 
-Unir o **Studio Drift** atual (cinematic, emocional, narrativo) com os elementos fortes do **configurador do site de referência** (`yesexperiences.customwebsitedesigns.org/#builder`) — story/timeline/map, Smart Recommendations, Quality Score, Estimated Investment, Step X of 11, Continue — num só produto que **converte**, é **único**, **dinâmico** e **faz sentido**.
+Goal: turn the current Studio from a decorative, mood-led flow into a guided consultation that captures meaningful traveler data, scores it into a structured profile, and produces operationally feasible, premium itineraries — without losing the cinematic restraint of the brand.
 
-Substituir o copy demasiado poético (e por vezes vazio) por linguagem **clara, sensorial, decisiva**, sem perder a alma cinemática.
-
-## Diagnóstico cruzado
-
-
-| Eixo              | Studio Drift (nosso)                      | Configurador (referência)                                      | O que fica no v4                    |
-| ----------------- | ----------------------------------------- | -------------------------------------------------------------- | ----------------------------------- |
-| Emoção            | ★★★★★ cinematic, scenes, vídeo            | ★★ frio, plano                                                 | **Cinematic mantém-se**             |
-| Clareza/progresso | ★★ HUD fininho recente                    | ★★★★★ "Step 1 of 11", Continue, %                              | **Progresso visível adopt.**        |
-| Trust/prova       | ★ ausente                                 | ★★★★ Quality Score, "700+ 5★"                                  | **Trust band adopt.**               |
-| Conversão $$      | ★ whisper de preço                        | ★★★★ "€145/guest · Party of 2"                                 | **Investment chip live**            |
-| Recomendação      | ★ Smart Reco no reveal                    | ★★★★ "Most couples add: …" inline                              | **Reco contextual em cada chapter** |
-| Mapa real         | ★ só no reveal                            | ★★★ tabs story/timeline/map                                    | **Live preview: 3 vistas**          |
-| Copy              | ★★ poético demais ("a quietness arrives") | ★★★ funcional ("YES — outline your basic traveler statistics") | **Híbrido: sensorial mas concreto** |
-| Velocidade        | ★ 11 chapters longos                      | ★★★★ "60 Sec Fast" mode                                        | **Dual pace mantém-se + reforço**   |
-
-
-## Princípio-mestre
-
-> Cada chapter é um **micro-momento cinematic** que **resolve uma decisão concreta** e **mostra imediatamente o que mudou** no quote, no mapa e na confiança. O utilizador nunca se pergunta "porquê estou a responder isto?".
-
-## Arquitetura v4
-
-```text
-┌────────────────────────────────────────────────────────────┐
-│  TOP HUD (sempre visível, ~36px)                           │
-│  Drift ●●●●○○○○○○○  4/11  ·  Match 62%  ·  €145/guest ▴   │
-│                                                  Reserve → │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│   CINEMATIC STAGE  (scene + question)                      │
-│   — single sensorial line (max 12 words)                   │
-│   — 2–3 choice cards com benefit concreto                  │
-│                                                            │
-├────────────────────────────────────────────────────────────┤
-│  LIVE PREVIEW DRAWER  (collapsible, default peek)          │
-│  [story] [timeline] [map]                                  │
-│  ★ Smart Reco: "Most couples add boutique tasting +€38"   │
-│                                            [Add 1-click]   │
-├────────────────────────────────────────────────────────────┤
-│  BOTTOM BAR                                                │
-│  ◀ Back        ●●●●○○○○○○○        Continue ▶              │
-└────────────────────────────────────────────────────────────┘
-```
-
-Três camadas vivem em **simultâneo** e respondem a cada escolha em <300ms.
-
-## Fases de execução
-
-### Fase 1 — Copy reset (o que mais dói hoje)
-
-- Auditar `src/lib/drift/i18n.ts` + scenes em `StudioDrift.tsx`: substituir frases poéticas vazias ("a quietness arrives", "the road remembers you") por **sensoriais-concretas** ("Slow morning in Arrábida — 3 vineyards, no queues") em PT/EN/ES/FR.
-- Regra de copy v4: cada linha tem **1 sensação + 1 facto + 1 verbo**. Sem metáforas órfãs.
-- Manter Georgia italic para emoção, mas reduzir ratio italic/sans de 60/40 para 30/70.
-- Lock: escrever `src/content/studio-v4-copy.ts` como single source-of-truth, com testes que falham se reaparecer vocab banido ("whisper", "drift", "arrives", "remembers", "linger").
-
-### Fase 2 — Live Preview Drawer (story / timeline / map)
-
-- Novo componente `src/components/builder/v3/StudioLivePreview.tsx` (collapsible bottom-sheet em mobile, side-rail em ≥lg).
-- 3 tabs como na referência:
-  - **story** — narrative paragraph gerada por `composeStudioMoment` + bullets (real stops já compostos).
-  - **timeline** — chips hora-a-hora (09:30 Pickup · 10:30 Quinta · 13:00 Almoço…) a partir do `ComposedDay`.
-  - **map** — `BuilderMap` real com stops pinados, draw da rota Mapbox; respeita zoom-per-region (já em memory).
-- Atualiza em cada `bump()` de confiança, sem refetch full — usa deltas locais.
-- Mobile: peek 84px com header "Your day is forming · 4 stops · €145/guest". Tap → expande full-height com swipe-down close.
-
-### Fase 3 — Conversion HUD reforçado
-
-- Evoluir `StudioConversionHud.tsx` para incluir:
-  - Stepper `Step 4 of 11` em vez de `4/11` (mais legível, igual à referência).
-  - **Investment chip live**: `€145/guest · party of 2` clicável → expande breakdown (host + vehicle + tastings + lunch, "no hidden fees").
-  - **Match %** com tooltip "based on your last 4 answers".
-  - **Reserve →** mantém-se como CTA gold (skip-to-stepper para agents/decisores).
-- Esconder em `convergence` (já reveal final).
-
-### Fase 4 — Smart Recommendations contextuais
-
-- Hoje só aparecem no reveal. Levar para **dentro do drawer** após cada chapter onde haja upgrade plausível.
-- Fonte: `src/data/signatureTours.ts` upgrades + co-occurrence real ("most couples who chose Arrábida added X").
-- UI: card slim no topo do drawer, "★ Most couples add — boutique tasting +€38 · [Add in 1-click]".
-- Add em 1 clique → bump confidence + atualiza Investment chip + flash gold no HUD (200ms).
-- Nunca inventar upgrades fora do catálogo (regra YES).
-
-### Fase 5 — Quality Score band (trust)
-
-- Após chapter 6+ (≥50% confidence), mostrar **abaixo do drawer**:
-  - "Experience Quality 92% — excellent flow & pacing" + 4 chips (Wine · Coast · Heritage · Ease) com barras de afinidade.
-  - Cálculo real: pondera `confidence` map + cobertura de dimensões + balanço de stops.
-  - Copy funcional, não inventado ("Pacing balances 2 active + 1 slow window").
-- Componente: `src/components/builder/v3/StudioQualityBand.tsx`.
-
-### Fase 6 — Trust strip permanente (mini)
-
-- Linha de 18px abaixo do HUD: `700+ ★★★★★ · Google · Tripadvisor · Viator · GetYourGuide`.
-- Aparece só quando o drawer está colapsado (não compete com o preview).
-- Reaproveita assets `src/assets/platform-trustpilot.svg` + adicionar logos restantes (SVG inline, ivory 60% opacity).
-
-### Fase 7 — Fast Mode (60 sec) reforçado
-
-- O entry "Build my experience fast" da referência já existe via `studio.fastPace=1`.
-- v4: badge persistente no HUD "⚡ Fast — 60s" + cortar de 11 → 5 chapters (Mood · Who · Region · Energy · Resolve) — saltar dimensões que adaptation marca como "implied".
-- Preço/pax visível desde o chapter 1 (não só convergence) — já planeado em `.lovable/plan.md` Fase C, fazer agora.
-
-### Fase 8 — Continue/Back explícitos
-
-- A referência usa "Continue" como CTA. O Drift atual avança em tap-on-choice (bom) mas falta o **safety net** de Back.
-- Bottom bar: `◀ Back` (subtil ivory 50%) + dots + `Continue ▶` que aparece quando a escolha já está feita mas o user fica parado >2s (nudge sem pressionar).
-- Tap em qualquer dot já completado = jump back (mesmo padrão do `BuilderStepper.tsx`).
-
-### Fase 9 — Reveal final upgrade
-
-- Manter cinematic mas adicionar **stack convertente** estilo referência:
-  1. Hero scene + headline ("Your Portugal — Arrábida, slow, for 2")
-  2. Story paragraph (composeStudioMoment)
-  3. Timeline real
-  4. Map real com rota
-  5. **Investment breakdown completo** + "*includes private host, premium vehicle, tastings, lunch — no hidden fees*"
-  6. **Smart Reco final** (1-2 upgrades top)
-  7. Trust band (4 platforms + "700+ 5★ reviews")
-  8. CTAs duplos: **Reserve now** (gold, primary) + **Save / share proposal** (ghost, gera `builder_journeys` token → `/i/$token`)
-  9. Whatsapp ghost link (suporte, nunca primário).
-
-### Fase 10 — Telemetry + A/B
-
-- Eventos novos: `studio_v4_drawer_open`, `studio_v4_reco_add`, `studio_v4_investment_expand`, `studio_v4_reserve_skip`.
-- A/B: drawer aberto-por-default vs peek; copy poético-residual vs zero-poesia; HUD com €/guest vs sem.
-- Tabela já existe (`hero_ab_assignments` pattern) — replicar para `studio_ab_assignments`.
-
-## Detalhes técnicos
-
-- Sem novas dependências. Tudo com Tailwind + Motion (já no projeto) + Mapbox/Leaflet existente.
-- Tokens: ivory/charcoal/gold/teal — sem cores novas.
-- Acessibilidade: HUD `role="region" aria-label`, drawer `aria-expanded`, Continue button focável com keyboard (Enter/Space), drawer fecha com Esc.
-- Reduced-motion: drawer abre instantâneo, sem sheen sweep, sem parallax.
-- Mobile 393px é o canvas primário; ≥lg adapta drawer para side-rail 380px à direita.
-- Server: reusa `revealJourney`, `composeStudioMoment`, `composeDay` — adicionar `previewDay` server fn leve (sem AI, só composer) para updates rápidos no drawer a cada bump.
-- Performance: drawer rerender memoized por `ComposedDay` hash; map só monta quando tab `map` ativa pela 1ª vez.
-
-## Ordem de implementação recomendada
-
-1. **Fase 1 (copy)** — sozinha, sem código novo, alta sensação de melhoria imediata.
-2. **Fase 3 (HUD)** + **Fase 6 (trust strip)** — pequenas, alto sinal de conversão.
-3. **Fase 2 (Live Preview Drawer)** — core, maior peça.
-4. **Fase 4 (Smart Reco)** + **Fase 5 (Quality band)** — dentro do drawer, vivem juntas.
-5. **Fase 7 (Fast)** + **Fase 8 (Back/Continue)** — polish de fluxo.
-6. **Fase 9 (Reveal v2)** — fecha o ciclo de conversão.
-7. **Fase 10 (Telemetry/AB)** — instrumenta tudo, valida.
-
-## Princípios não-negociáveis
-
-1. **Nunca inventar tours, stops, preços, inclusões** — tudo lê de `signatureTours.ts` / `regionStops.ts` / `signature-pricing`.
-2. **Copy sensorial mas concreto** — banir poesia vazia; cada linha justifica-se com 1 facto.
-3. **Cinematic preserved** — scenes, vídeo, encouragement, fade transitions ficam. Adicionamos clareza, não removemos alma.
-4. **Mobile-first 393px** — todas as fases testadas neste viewport antes de desktop.
-5. **Conversão visível sempre** — Step X/11, €/guest, Match %, Reserve → nunca escondidos.
-6. **No competitor copy, no invented superlatives** — "Designed in real time, with you" tipo de linguagem.
-7. **Skip-to-stepper sempre disponível** — para agents e decisores via Reserve no HUD.
-
-## Métricas de sucesso
-
-- Drawer open rate ≥ 65% por sessão Studio.
-- Smart Reco add rate ≥ 18% (vs 0% atual — não existe).
-- Tap em Investment chip ≥ 30% (sinal de intenção comercial).
-- Reveal → Reserve CTR ≥ 12% (baseline atual ~4-6%).
-- Fast mode conclusão ≤ 75 segundos média.
+This plan re-architects the Studio in 5 stages, adds a real scoring + recommendation engine on top of existing region/stop data, and keeps AI scoped to where it actually adds value (profile inference, suggestion copy, draft assembly) — never as a chatbot or generic prose generator.
 
 ---
 
-**Pronto para começar pela Fase 1 (copy reset) assim que aprovares.** Posso ir direto à Fase 1+3+6 num primeiro batch (alto impacto, baixo risco), depois Fase 2 num segundo batch (peça grande do drawer). 
+## 1. Principles (non-negotiable)
 
-&nbsp;
+- Studio = guided consultation, not form, not quiz, not Typeform.
+- Tone: calm, intelligent, editorial, concierge — never poetic, never SaaS.
+- AI is invisible and operational: it scores, weights, drafts. It does not narrate emotions.
+- Every selection must produce structured data, not just visuals.
+- Every recommendation must be feasibility-checked (drive time, caps, opening days, season).
+- Mobile-first (393px). One decision per screen, max 5–6 options.
+- Motion: soft fades, layered reveals, ≤220ms. No bounce, no parallax, no flashy hover.
+- Honors existing guardrails: brand palette, Typography v3, brand guardrails, booking truth model (TEST MODE), no-invention rule.
 
-Approved direction.
+---
 
-Prioritize phased implementation to preserve clarity and emotional pacing.
+## 2. Five-stage flow (replaces current Drift sequence)
 
-Start with:
+Each stage = one screen, progressive reveal, with a compact "consultation rail" on the side showing what's been understood so far (chip summary, not a form recap).
 
-1. Copy reset
-2. Persistent conversion HUD
-3. Trust strip
-4. Continue/back navigation
+### Stage 1 — Travel Intent
+Q: *How should Portugal feel?*
+Options (image-led cards, single-select with optional secondary): Relaxed & scenic · Elegant & cultural · Food-led & local · Social & celebratory · Romantic & intimate · Coastal & cinematic.
+→ writes `intent.atmosphere`, seeds `pace`, `social_energy`, `culture_interest`, `food_interest`.
 
-Then move into:
+### Stage 2 — Group Profile
+Q: *Who is this experience designed for?*
+Collect: group composition (adults/children/teens), occasion (none, anniversary, birthday, honeymoon, corporate, celebration), mobility/accessibility, decision style (decisive / collaborative / surprise-me), luxury expectation (refined / elevated / ultra).
+→ writes `group.*`, `comfort.*`, `occasion`.
 
-- Live Preview Drawer (story first)
-- Smart Recommendations
-- Timeline/map tabs
+### Stage 3 — Rhythm & Flow
+Q: *How full should the day feel?*
+Options: Light & spacious · Balanced · Rich but relaxed · Maximize the day.
+→ writes `pacing.stopDensity`, `pacing.driveTolerance`, `pacing.lunchDuration`, `pacing.transitionBuffer`.
 
-Preserve cinematic feel at all costs.  
-Avoid dashboard overload.  
-Every UI layer must feel effortless, premium and emotionally guided.
+### Stage 4 — Experience Priorities
+Q: *What would make the experience feel complete?*
+Multi-select with weighting (drag to rank OR tap-twice = "must"): Vineyard lunch · Coastal scenery · Architecture · Hidden villages · Photography · Quiet luxury · Wellness · Boat · Local gastronomy · Wine cellar · Heritage.
+→ writes `priorities[]` with weights 0–100.
 
-The system should feel like a luxury concierge shaping a journey in real-time — not a technical configurator.
+### Stage 5 — Operational Constraints
+Compact, elegant: pickup location, accommodation area (autocomplete on Lisbon/Cascais/Comporta/Évora/etc.), cruise window if any, dietary, hard time constraints, accessibility.
+→ writes `ops.*`. Required before reveal.
+
+Transition copy (between stages): short, professional.
+- After Stage 1: *Understood. Let's shape the rhythm.*
+- After Stage 2: *Now balancing pace, comfort and flow.*
+- After Stage 3: *Aligning priorities to that rhythm.*
+- After Stage 4: *Final logistics, then the design.*
+
+---
+
+## 3. Profile Engine (structured output)
+
+Single normalized object built progressively, persisted via existing `useStudioState` / Drift session.
+
+```ts
+TravelerProfile {
+  archetype: 'slow_luxury_couple' | 'celebration_group' | 'cultural_explorer'
+           | 'food_led_duo' | 'family_refined' | 'corporate_curated' | ...
+  pace: 'relaxed' | 'balanced' | 'rich' | 'full'
+  social_energy: 0–100
+  culture_interest: 0–100
+  food_interest: 0–100
+  coastal_affinity: 0–100
+  wellness_affinity: 0–100
+  driveToleranceMin: number          // hard cap per hop
+  stopDensityTarget: number          // stops/day
+  group: { adults, children, teens, mobility, occasion, decisionStyle, luxuryTier }
+  priorityWeights: Record<PriorityKey, number>
+  ops: { pickup, accommodationArea, cruiseWindow?, dietary[], hardConstraints[], accessibility[] }
+  confidence: Record<string, number> // already supported by composer
+}
+```
+
+Archetype is derived (not asked) from intent + group + pacing. Used to tint copy, sort suggestions, and prefill upsells.
+
+---
+
+## 4. Recommendation + Itinerary Engine
+
+Build on top of existing `composer.ts` / `REGION_STOPS` / `REGION_RULES` — do NOT replace them.
+
+1. **Region selection** — extend `pickRegion()` to use `priorityWeights` (wine→Arrábida/Alentejo, heritage→Lisbon-coast/Centro, coastal→Arrábida/Comporta, etc.) instead of mood-only.
+2. **Stop scoring** — extend `affinityScore()` to consume `priorityWeights` and `archetype` (not just style/energy/social/companions). Confidence map already supported.
+3. **Feasibility pass** — already enforced (kindCaps, maxHop, dayBudget). Add: respect `ops.cruiseWindow`, `ops.pickup`, `accessibility` (filter stops with `accessibility: 'limited'`).
+4. **Match score per itinerary** — return 0–100 with breakdown (fit, pacing, logistics) shown discreetly in the reveal.
+5. **Smart suggestions** — generate 2–3 contextual upsells with rationale, e.g.
+   *"Most relaxed couples in Arrábida add a vineyard lunch at golden hour."*
+   Pulled from `REGION_STOPS` tagged `upsell_tags`, not invented.
+6. **Alternatives** — produce one "lighter" and one "richer" variant of the same day, swappable in the reveal.
+
+### Experience metadata extension
+Add (additive, non-breaking) to `RegionStop`:
+```ts
+upsellTags?: ('boat'|'sunset'|'private-lunch'|'photographer'|'sommelier'|...)[]
+luxuryTier?: 'refined'|'elevated'|'ultra'
+idealFor?: ('couple'|'family'|'group'|'corporate'|'solo')[]
+```
+Backfill on the existing curated stops only — never invent new stops.
+
+---
+
+## 5. AI usage (scoped, structured)
+
+Used ONLY in these 4 places, all via existing `driftEngine.functions.ts` / `studioNarrative.functions.ts` patterns with structured JSON outputs (tool calling, no free prose):
+
+1. **Profile inference** — when answers are ambiguous, infer missing dimensions + confidence (already partially in place via `inference.ts`).
+2. **Archetype labeling** — short internal label, never shown raw.
+3. **Suggestion rationale copy** — one sentence, ≤120 chars, professional. Schema-enforced.
+4. **Reveal subtitle** — one sentence summarizing the design (e.g. *"A coastal, slow-paced day around Arrábida with a vineyard lunch."*). NOT poetic.
+
+Hard bans: no chatbot, no generated multi-paragraph stories, no emotional narration, no invented stops/partners/prices.
+
+---
+
+## 6. Final reveal (replaces current reveal final)
+
+Editorial, one screen, no scroll-jacking. Sections:
+
+1. **Title + one-line summary** (AI-generated, schema-enforced).
+2. **Itinerary timeline** — real stops with timing, drive minutes, dwell, total day length. Re-uses `PremiumMap` / `BuilderMap`.
+3. **Match score + breakdown** (Fit · Pacing · Logistics).
+4. **Smart upsells** (2–3, with rationale and concierge-confirm pricing per booking-truth-model).
+5. **Lighter / Richer variants** toggle.
+6. **CTAs (already polished)**: book · save · refine. WhatsApp optional, not primary.
+
+Internal structured output (saved + sent to ops):
+```json
+{
+  "archetype": "slow_luxury_couple",
+  "pace": "relaxed",
+  "priorityWeights": { "wine": 88, "coastal": 70 },
+  "recommendedRegions": ["arrabida"],
+  "maxDriveBetweenStops": 45,
+  "itinerary": [...],
+  "matchScore": 87,
+  "upsells": [...]
+}
+```
+
+---
+
+## 7. Implementation phases
+
+**Phase A — Engine + data (no UI change)**
+- Extend `TravelerProfile` types + `useStudioState`.
+- Extend `RegionStop` metadata (additive fields, backfill curated stops).
+- Extend `composer.ts`: priority-weighted scoring, archetype boost, ops constraints, match-score breakdown, alternatives generator.
+- Unit tests under `src/lib/drift/__tests__` (extend existing suite).
+
+**Phase B — 5-stage flow refactor**
+- Refactor `StudioDrift.tsx` into 5 named stages backed by the new profile object. Keep existing motion primitives, headline/eyebrow components, and brand tokens. No new design system.
+- Add consultation rail (compact chip summary, right side on desktop, top on mobile).
+- Replace mood-only Stage 1 with the 6-option intent grid; rewrite copy per spec.
+- Add Stage 5 (operational constraints) — currently missing.
+
+**Phase C — Reveal v2**
+- Rebuild reveal final around itinerary timeline + match score + upsells + variants.
+- Wire AI subtitle + suggestion rationale via structured serverFn (extend `studioNarrative.functions.ts`).
+
+**Phase D — Polish + QA**
+- Mobile pass at 393px for every stage.
+- Reduced-motion pass.
+- A11y: 44×44 targets, visible focus, 4.5:1.
+- Telemetry: extend `telemetry.ts` with stage completion + match score.
+
+---
+
+## 8. Out of scope (explicit)
+
+- No new tours/stops/partners invented.
+- No payments changes (TEST MODE stays).
+- No homepage / Signature / Tailored changes.
+- No replacement of Mapbox, Supabase, or the existing builder engine — only extensions.
+- No chatbot UI.
+
+---
+
+## 9. Open question (1)
+
+Should the 5-stage flow REPLACE the current `/studio-drift` prototype in place, or ship as `/studio-drift-v2` for A/B against current Drift before swapping? Recommendation: ship as v2 behind the existing variant hook (`useStudioVariant`) so we can compare conversion before retiring v1.
