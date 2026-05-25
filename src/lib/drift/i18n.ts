@@ -367,6 +367,16 @@ const FR: Dict = {
   "ui.back": "Retour",
   "ui.choose": "Choisir : {label}",
   "trust.reviews": "avis",
+  "preview.expand": "Ouvrir l'aperçu de votre journée",
+  "preview.dialog": "Votre journée — aperçu en direct",
+  "preview.tap_to_open": "toucher pour ouvrir",
+  "preview.tab_story": "Récit",
+  "preview.tab_timeline": "Horaire",
+  "preview.tab_map": "Carte",
+  "preview.story_intro": "votre journée prend forme avec des étapes réelles, choisies pour le rythme que vous avez décrit.",
+  "preview.min_drive": "min de route",
+  "preview.min_stay": "min sur place",
+  "preview.indicative": "indicatif",
   "build.region_label": "Votre journée · aperçu en direct",
 };
 
