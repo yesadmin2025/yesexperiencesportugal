@@ -692,7 +692,7 @@ function HomePage() {
             aria-hidden="true"
             className="scroll-mt-24 md:scroll-mt-28"
           />
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
             {/* On mobile: text rail (with the headline) renders FIRST so
                 the user reads "Create it live." before seeing the
                 device. On desktop the rail returns to the left so the
