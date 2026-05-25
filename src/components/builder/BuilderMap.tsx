@@ -155,7 +155,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         for (const c of candidates) {
           if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
           const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
-          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? (CHIP_I18N[locale] ?? CHIP_I18N.en).outOfRange}`, {
+          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`, {
             direction: "top",
             offset: [0, -10],
           });
