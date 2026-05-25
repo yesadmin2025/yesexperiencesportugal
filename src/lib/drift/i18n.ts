@@ -406,6 +406,7 @@ const FR: Dict = {
   "ui.back": "Retour",
   "ui.choose": "Choisir : {label}",
   "trust.reviews": "avis",
+  "choice.idle_hint": "Touchez une image pour choisir — ou prenez votre temps.",
   "preview.expand": "Ouvrir l'aperçu de votre journée",
   "preview.dialog": "Votre journée — aperçu en direct",
   "preview.tap_to_open": "toucher pour ouvrir",
