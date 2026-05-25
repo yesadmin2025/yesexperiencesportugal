@@ -59,3 +59,29 @@ export const INTENT_ATMOSPHERE: Record<
   romantic_intimate:  { tintA: "var(--gold-soft)", tintB: "var(--ivory)", mix: 50, whisper: "Two, the coast, dusk." },
   coastal_cinematic:  { tintA: "var(--teal-2)", tintB: "var(--ivory)",    mix: 35, whisper: "Cliffs, salt, Atlantic gold." },
 };
+
+/**
+ * Reveal framing — a single Georgia-italic phrase shown above the itinerary.
+ * Tone-only, deterministic, no facts invented. Keyed by intent; region-aware
+ * variants stay rare so we don't drift toward marketing copy.
+ */
+export function revealFraming(
+  intent: IntentAtmosphere | undefined,
+  region: string,
+): string {
+  const place =
+    region === "arrabida"     ? "the Arrábida" :
+    region === "lisbon-coast" ? "the Atlantic edge" :
+    region === "alentejo"     ? "the Alentejo" :
+    region === "centro"       ? "the Centro" :
+                                "Portugal";
+  switch (intent) {
+    case "relaxed_scenic":     return `A slow arc through ${place} — light, distance, breath.`;
+    case "elegant_cultural":   return `${place.charAt(0).toUpperCase() + place.slice(1)}, read through stone and quiet rooms.`;
+    case "food_local":         return `${place.charAt(0).toUpperCase() + place.slice(1)}, tasted unhurriedly.`;
+    case "social_celebratory": return `A day in ${place} that lifts the occasion.`;
+    case "romantic_intimate":  return `${place.charAt(0).toUpperCase() + place.slice(1)} — designed for two.`;
+    case "coastal_cinematic":  return `Cliffs, salt and slow gold along ${place}.`;
+    default:                   return `A considered day across ${place}.`;
+  }
+}
