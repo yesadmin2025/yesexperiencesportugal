@@ -548,7 +548,7 @@ function RewardImageBeat({
   intent, onSkip,
 }: { intent: IntentAtmosphere; onSkip: () => void }) {
   const atmo = INTENT_ATMOSPHERE[intent];
-  const bg = `radial-gradient(120% 90% at 50% 30%, color-mix(in oklab, ${atmo.tintA} 80%, var(--ivory)) 0%, color-mix(in oklab, ${atmo.tintB} 60%, var(--sand)) 55%, var(--charcoal) 130%)`;
+  const img = INTENT_IMAGE[intent];
   return (
     <button
       type="button"
@@ -556,19 +556,29 @@ function RewardImageBeat({
       aria-label="Continue"
       className="block w-full focus-visible:outline-none"
     >
-      <div
+      <figure
         className="studio-v2-reveal relative -mx-5 sm:-mx-8 overflow-hidden"
-        style={{ height: "62vh", minHeight: 360, background: bg }}
+        style={{ height: "62vh", minHeight: 360, background: "var(--sand)" }}
       >
+        <img
+          src={img.src}
+          alt={img.alt}
+          width={1024}
+          height={1024}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ filter: "saturate(0.92)" }}
+        />
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 35%, color-mix(in oklab, var(--charcoal) 65%, transparent) 100%)",
+              "linear-gradient(to bottom, transparent 40%, color-mix(in oklab, var(--charcoal) 70%, transparent) 100%)",
           }}
         />
-        <div className="absolute inset-x-5 bottom-6 sm:inset-x-8">
+        <figcaption className="absolute inset-x-5 bottom-6 sm:inset-x-8">
           <p
             className="text-[10.5px] uppercase tracking-[0.32em]"
             style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))" }}
@@ -585,8 +595,8 @@ function RewardImageBeat({
           >
             {atmo.whisper}
           </p>
-        </div>
-      </div>
+        </figcaption>
+      </figure>
       <p
         className="studio-v2-reveal delay-2 mt-4 text-[11px] uppercase tracking-[0.28em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
