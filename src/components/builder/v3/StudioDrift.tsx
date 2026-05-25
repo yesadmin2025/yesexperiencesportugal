@@ -710,6 +710,8 @@ export function StudioDrift({ onExit }: Props) {
     vh: breakpointVh,
   });
   const buildPreviewIsDense = choiceCount >= 3;
+  const studioAb = useStudioVariant();
+
 
 
 
@@ -1072,6 +1074,8 @@ export function StudioDrift({ onExit }: Props) {
           prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
           dense={buildPreviewIsDense}
+          defaultOpen={studioAb.variant === "open"}
+          onCtaBook={() => studioAb.trackEvent("cta_book")}
         />
       )}
 
