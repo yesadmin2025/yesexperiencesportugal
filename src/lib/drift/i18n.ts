@@ -103,7 +103,9 @@ const PT: Dict = {
 
   // Exit
   "ui.exit": "Sair",
+  "ui.back": "Voltar",
   "ui.choose": "Escolher: {label}",
+  "trust.reviews": "avaliações",
   "build.region_label": "O seu dia · pré-visualização ao vivo",
 };
 
