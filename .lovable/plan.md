@@ -1,86 +1,60 @@
-## Objectivo
+# Plano — Combinação Studio + Builder Clássico para Conversão Real
 
-Adicionar página `/journal` (histórias reais) e adoptar 4 padrões do site alternativo no Studio — sem violar guardrails (sem inventar factos, stock, superlativos, ou tornar o Studio num configurador).
+## Diagnóstico
 
----
+**Studio v3 (cinematic):** converte *dreamers* e gera desejo, mas falha com decisores e travel agents que precisam de velocidade, transparência e controlo.
 
-## 1. `/journal` — Local Stories (página editorial)
+**Builder clássico /builder (1412 linhas):** rápido, transparente, mapa+stops+preço, mas genérico e sem percepção de luxo.
 
-**Rota nova:** `src/routes/journal.tsx` (lista) + `src/routes/journal.$slug.tsx` (post).
+## Estratégia — 3 modos, 1 motor de dados
 
-**Arquitectura:**
-- Tabela Supabase `journal_posts` (slug, title, excerpt, body markdown, hero_image, region, signature_slug FK opcional, author_name, published_at, status). RLS: leitura pública só `status='published'`, escrita restrita.
-- Loader via `createServerFn` + TanStack Query (`ensureQueryData` + `useSuspenseQuery`).
-- `head()` próprio por post (title, description, og:image = hero do post).
-- Card de "ligar a uma Signature" no fim de cada post (quando `signature_slug` definido) → CTA para a página da Signature real.
+| Modo | Rota | Persona | CTA principal | Status |
+|---|---|---|---|---|
+| STUDIO (cinematic) | `/studio-drift` | Dreamer mobile | "Começar a sonhar" | ✅ Existe |
+| FAST (60s) | `/studio-drift` + `studio.fastPace` | Decisor mobile | Continua no Studio mais rápido | ✅ Existe — falta reforçar (Phase C) |
+| PRO MODE | `/builder?mode=pro` | Travel agent / power user | Constrói, partilha, cota | ⏳ Entry adicionado, lógica em fases |
 
-**Visual:** layout editorial em coluna única, Montserrat headlines + Georgia italic para pull-quotes + Inter body. Hero 16:9 real. Sem stock — começa **vazia com estado "Em breve"** até teres conteúdo a publicar. Eu não invento posts.
+## Fase A — Entry point (✅ feito agora)
+- Adicionado link discreto "sou agente de viagens" no AmbientPrologue (PT/EN/ES/FR).
+- Liga para `/builder?mode=pro`.
+- Validação imediata: vemos no analytics quantos cliques recebe antes de investir em UI.
 
-**SEO:** sitemap actualizado, JSON-LD `Article` por post.
+## Fase B — Pro Mode visual no /builder (próximo)
+Quando `?mode=pro` está activo no /builder:
+- **Skip narrativa:** entra direto em mapa + grid de stops (RegionStep + ElementsShelf visíveis lado a lado).
+- **Preço por pax visível desde início** (não whisper) — usa `signature-pricing` real.
+- **Multi-pax slider 1–8** no topo, recalcula em real-time.
+- **Header com badge "Pro mode"** + toggle para sair para Studio normal.
+- **Esconde:** PredictiveMoment, NarrativeCompanion, EncouragementBar emocional.
 
-**Nav:** entrada discreta no footer (não na nav principal, para não poluir até teres ≥3 posts).
+## Fase C — Shareable proposal + reforço Fast
+1. **Shareable link** no /builder?mode=pro:
+   - Botão "Gerar proposta partilhável" usa `builder_journeys` (tabela já existe com `share_token` + `owner_token_hash`).
+   - Rota `/i/$token` (já existe) renderiza proposta read-only com branding YES + CTA "Reservar".
+2. **Fast reforçado no Studio:** mostra preço/pax no estágio `resolved` (não só `convergence`) quando `studio.fastPace=1`.
 
----
+## Fase D — Power features para agents (futuro)
+- Toggle "Margem do agent" (slider 0–25%) que adiciona linha "comissão" no quote.
+- Export PDF com co-branding (agent logo + YES).
+- "Save & duplicate" para fazer múltiplas propostas para o mesmo cliente.
+- Modo multi-cliente (lista de propostas geradas).
 
-## 2. Two-pace entry no Studio
+## Princípios não-negociáveis
+1. **Studio nunca vira configurador.** Pro Mode é rota separada `/builder?mode=pro`, não polui `/studio-drift`.
+2. **Dados reais sempre.** Pro Mode usa `builder_stops`, `signature-upgrades`, `signature-pricing` — nunca inventa.
+3. **Sem comparações.** Copy do Pro Mode é function-led ("Constrói com transparência total"), não competitive.
+4. **Entry discreta.** Link "sou agente de viagens" nunca compete visualmente com o Studio.
+5. **Mobile first** sempre — Pro Mode tem layout mobile-first (mapa colapsável + lista scroll).
 
-**Ficheiro:** `src/components/builder/v3/EntryScreen.tsx`.
-
-Adiciona terceiro CTA ghost: **"Mostra-me em 60 segundos"**. Quando escolhido, define um `pace='fast'` no contexto do Studio que:
-- baixa threshold de revelação (`revealConfidence` 0.6 → 0.4),
-- reduz duração de motion para 60%,
-- mostra `EmergingThemes` e `PriceWhisper` mais cedo.
-
-Respeita escolha do utilizador; não é imposição. Estado guardado em sessionStorage.
-
----
-
-## 3. Lift-the-curtain no LivingMap
-
-**Ficheiro:** `src/components/builder/v3/LivingMap.tsx` (+ `ItineraryRibbon.tsx`).
-
-Pega subtil de 24px (linha gold-soft + chevron) na base do mapa. Drag/tap expande o `ItineraryRibbon` em overlay, sem nav persistente, sem step counters. Fecha por swipe-down ou tap fora. Respeita `prefers-reduced-motion` (sem drag, só toggle).
-
-**Não vira configurador:** sem números de passo, sem "X of Y".
-
----
-
-## 4. Smart Recommendation (Add in 1-Click) — **só dados Signature reais**
-
-**Ficheiro novo:** `src/components/builder/v3/SmartSuggestion.tsx`.
-
-Aparece **uma só vez** por sessão, quando `revealConfidence ≥ 0.5` e há match claro entre `sceneWeighting` e um upgrade **existente** numa Signature real (ex.: "tasting + scenic lunch" da Arrábida). 
-
-**Regra dura:** o upgrade é puxado de `src/data/signature-upgrades.ts` (mapa real Signature→upgrade), nunca gerado. Se não houver match real, componente não renderiza. Sem "Most couples add" (invenção estatística) — copy factual: *"Inside the Arrábida day, you can add: …"*.
-
-CTA "Add" liga ao tailored flow real da Signature correspondente.
+## Métricas de validação
+- CTR no link "sou agente de viagens" (target: ≥3% dos visitantes do Studio).
+- Taxa de geração de proposta partilhável em Pro Mode (target: ≥30% dos que entram).
+- Booking rate Pro vs Studio (Pro deve ter 2–3× a taxa do Studio).
 
 ---
 
-## 5. Estimated Experience Investment — bloco no reveal
+## Próximos passos imediatos (aguarda OK)
+1. **Phase B** (visual Pro Mode em /builder) — 1 turn, requer ler builder.tsx completo.
+2. **Phase C** original (Smart Reco + Investment detalhado no Studio reveal) — também pendente.
 
-**Ficheiro:** `src/components/builder/v3/RevealInvestment.tsx` (substitui `PriceWhisper` **só na fase convergence**; PriceWhisper continua como sussurro intermédio).
-
-Mostra na convergência final:
-- **Indicative range €X–€Y / guest** (não número fechado),
-- **Party total** (range × guests),
-- **What this includes** (3 bullets factuais: private host, vehicle logistics, selected tastings),
-- **What it doesn't include** (1 linha: gratuities, optional extras),
-- Nota: *"Final price confirmed at booking based on date and partner availability."*
-
-**Sem** "Quality Score 92%", **sem** "Premium Class", **sem** "Total Experience Value" inflacionado. Range derivado do mapa Signature→price-range real (`src/data/signature-pricing.ts`).
-
----
-
-## Ordem de execução (proponho fazer por fases, paro entre cada)
-
-1. **Fase A** — `/journal` (migration + rotas + estado vazio + footer link). Pausa para review.
-2. **Fase B** — Two-pace entry + Lift-the-curtain (só UI no Studio, sem dados novos). Pausa.
-3. **Fase C** — Smart Recommendation + RevealInvestment (requerem ficheiros de dados reais `signature-upgrades.ts` e `signature-pricing.ts` que tens de validar antes de eu publicar).
-
-## Decisões que preciso de ti antes da Fase C
-
-- Confirmas que posso criar os ficheiros `signature-upgrades.ts` e `signature-pricing.ts` a partir das Signatures actuais (Arrábida, Sintra, etc.) e tu revês antes de irem live? Ou preferes preencher tu?
-- O `/journal` fica como rota com estado "Em breve" até teres ≥1 post, ou só crio a infra e adiciono a rota quando tiveres o primeiro post escrito?
-
-Se concordas com tudo, começo pela Fase A.
+Recomendo: fazer Phase B **antes** da Phase C, porque Pro Mode tem ROI B2B imediato e validável.
