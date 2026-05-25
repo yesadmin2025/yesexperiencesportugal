@@ -81,7 +81,21 @@ export function StudioConversionHud({
           <span className="opacity-60"> {ofLabel} </span>
           {total}
         </span>
+        {fast && (
+          <span
+            className="inline-flex items-center gap-0.5 rounded-full px-1.5 py-[2px] text-[8.5px] uppercase tracking-[0.18em] font-bold whitespace-nowrap"
+            style={{
+              background: "color-mix(in oklab, var(--gold) 90%, transparent)",
+              color: "var(--charcoal)",
+            }}
+            aria-label="Fast mode — about 60 seconds"
+          >
+            <Zap size={9} strokeWidth={2.6} aria-hidden="true" />
+            60s
+          </span>
+        )}
         <span className="flex items-center gap-[3px]" aria-hidden="true">
+
           {Array.from({ length: dots }, (_, i) => (
             <span
               key={i}
