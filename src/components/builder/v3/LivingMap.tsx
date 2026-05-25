@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { ChevronUp } from "lucide-react";
-import { mergeLocale } from "@/lib/i18n-fallback";
 import type { RoutedStopUI } from "@/components/builder/types";
 
 const BuilderMap = lazy(() =>
