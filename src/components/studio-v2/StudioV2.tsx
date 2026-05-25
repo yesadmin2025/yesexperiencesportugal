@@ -359,6 +359,104 @@ function Accordion({
 }
 
 
+// ─── live journey layer ───────────────────────────────────────────────────
+//
+// Sticky cinematic map that reflects the current profile in real time.
+// The InsightStrip floats over its lower edge during transitions.
+
+function JourneyLayer({
+  preview, insight, insightVisible,
+}: { preview: JourneyPreview; insight: string; insightVisible: boolean }) {
+  return (
+    <div
+      className="relative w-full h-[42vh] min-h-[260px] max-h-[420px] overflow-hidden border-y"
+      style={{
+        borderColor: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
+        background: "var(--sand)",
+      }}
+      aria-label="Live journey preview"
+    >
+      <Suspense
+        fallback={
+          <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+            shaping route…
+          </div>
+        }
+      >
+        <BuilderMap
+          stops={preview.stops}
+          regionCenter={preview.regionCenter}
+          regionKey={preview.region}
+          emotionalMode
+          chrome={false}
+        />
+      </Suspense>
+
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-1/2"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in oklab, var(--ivory) 55%, transparent), transparent)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3"
+        style={{
+          background:
+            "linear-gradient(to top, color-mix(in oklab, var(--ivory) 92%, transparent) 8%, transparent 70%)",
+        }}
+      />
+
+      <div
+        className="absolute top-3 left-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] font-semibold"
+        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+      >
+        <span className="relative inline-flex h-1.5 w-1.5">
+          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
+          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+        </span>
+        {regionShort(preview.region)} · {preview.stops.length} stops
+      </div>
+
+      <div
+        className="absolute inset-x-4 bottom-4 transition-all duration-[520ms] ease-out motion-reduce:transition-none"
+        style={{
+          opacity: insightVisible ? 1 : 0,
+          transform: insightVisible ? "translateY(0)" : "translateY(8px)",
+        }}
+        aria-live="polite"
+      >
+        <div
+          className="rounded-[2px] border px-3.5 py-2.5 text-[12.5px] leading-snug backdrop-blur-md"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
+            background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
+            color: "var(--charcoal)",
+            boxShadow: "0 6px 20px color-mix(in oklab, var(--charcoal) 12%, transparent)",
+          }}
+        >
+          {insight}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function regionShort(r: string): string {
+  switch (r) {
+    case "arrabida":     return "Arrábida";
+    case "lisbon-coast": return "Atlantic edge";
+    case "alentejo":     return "Alentejo";
+    case "centro":       return "Centro";
+    default:             return r;
+  }
+}
+
+
+
+
 // ─── primitives ───────────────────────────────────────────────────────────
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
