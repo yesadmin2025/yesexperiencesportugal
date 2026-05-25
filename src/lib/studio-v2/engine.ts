@@ -171,6 +171,12 @@ export function scoreDay(day: ComposedDay, p: TravelerProfile): MatchScore {
 
 // ─── public API ───────────────────────────────────────────────────────────
 
+export interface UpsellSuggestion {
+  stop: RegionStop;
+  reason: string;
+  priorityKey: PriorityKey;
+}
+
 export interface DesignResult {
   profile: TravelerProfile;
   archetype: Archetype;
@@ -178,6 +184,7 @@ export interface DesignResult {
   day: ComposedDay;
   score: MatchScore;
   variants: { lighter: ComposedDay; richer: ComposedDay };
+  upsells: UpsellSuggestion[];
 }
 
 export function designExperience(input: TravelerProfile): DesignResult {
