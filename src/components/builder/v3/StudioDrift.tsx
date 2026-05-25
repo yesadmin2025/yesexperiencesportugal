@@ -99,6 +99,8 @@ type Social = "intimate" | "shared";
 
 export interface DriftProfile {
   name?: string;
+  /** Number of travellers — REAL data used for pricing. */
+  guests?: number;
   companions?: Companions;
   pickup?: PickupRegion;
   radius?: Radius;
@@ -106,6 +108,10 @@ export interface DriftProfile {
   energy?: Energy;
   style?: Style;
   social?: Social;
+  /** Optional upgrade (Bible §9 Enhancements). */
+  enhancement?: "none" | "lunch" | "sunset";
+  /** Experience tier (Bible §4.2 step 10). */
+  tier?: "essential" | "signature" | "bespoke";
 }
 
 type Scene = {
