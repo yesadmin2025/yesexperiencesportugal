@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, Zap } from "lucide-react";
 
 /**
  * StudioConversionHud — thin, always-visible conversion band sitting at
