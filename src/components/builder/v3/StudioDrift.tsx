@@ -1413,13 +1413,13 @@ function ChoicePhase({
           aria-live="polite"
           className="absolute inset-x-0 z-[55] px-7 text-center pointer-events-none motion-safe:animate-[fade-in_0.6s_ease-out_both]"
           style={{
-            bottom: hasBuildPreview ? "120px" : "16px",
+            top: hasBuildPreview ? "22%" : "26%",
             fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "10.5px",
-            letterSpacing: "0.14em",
+            fontSize: "10px",
+            letterSpacing: "0.18em",
             textTransform: "uppercase",
             fontWeight: 600,
-            color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+            color: "color-mix(in oklab, var(--gold) 70%, var(--ivory))",
             textShadow: "0 1px 10px rgba(0,0,0,0.7)",
           }}
         >
