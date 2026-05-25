@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, X } from "lucide-react";
 import {
   emptyProfile,
@@ -17,11 +17,21 @@ import {
   PACE_OPTIONS,
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
-  TRANSITION_COPY,
   revealFraming,
 } from "@/lib/studio-v2/content";
-import { designExperience, type DesignResult } from "@/lib/studio-v2/engine";
+import {
+  designExperience,
+  previewJourney,
+  previewInsight,
+  type DesignResult,
+  type InsightReason,
+  type JourneyPreview,
+} from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
+
+const BuilderMap = lazy(() =>
+  import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
+);
 
 type Stage = "intent" | "refine" | "reveal";
 type RefineSection = "group" | "pace" | "priorities" | "ops";
