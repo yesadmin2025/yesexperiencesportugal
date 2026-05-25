@@ -1143,7 +1143,11 @@ export function StudioDrift({ onExit }: Props) {
               reviewsLabel={tt("trust.reviews", locale) || "reviews"}
             />
           )}
-          {chapter.kind !== "choice" && (
+          {/* EncouragementBar only on text-input chapters. On drift chapters
+              the cinematic headline already carries the same idea (e.g.
+              "your day is starting to take shape") — surfacing the bar there
+              creates duplicate copy and breaks rhythm. */}
+          {chapter.kind === "text" && (
             <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           )}
           <EmergingThemes
