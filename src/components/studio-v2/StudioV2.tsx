@@ -145,26 +145,32 @@ export function StudioV2({ onExit }: StudioV2Props) {
             key="intent"
             className="min-h-[70vh] flex flex-col justify-center"
           >
+            <p
+              className="studio-v2-reveal text-[10.5px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+            >
+              Portugal — designed for you
+            </p>
             <h1
-              className="text-[28px] leading-[1.15] sm:text-[40px]"
+              className="studio-v2-reveal delay-1 mt-4 text-[28px] leading-[1.15] sm:text-[40px]"
               style={{
                 fontFamily: "var(--font-display, Montserrat), sans-serif",
                 fontWeight: 700,
               }}
             >
-              How should Portugal{" "}
+              How should it{" "}
               <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
                 feel
               </span>
               ?
             </h1>
             <p
-              className="mt-3 text-[14px] leading-relaxed"
+              className="studio-v2-reveal delay-2 mt-3 text-[14px] leading-relaxed"
               style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
             >
               Choose the atmosphere closest to what you have in mind.
             </p>
-            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="studio-v2-reveal delay-3 mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {INTENT_OPTIONS.map((opt) => (
                 <OptionCard
                   key={opt.id}
@@ -177,13 +183,14 @@ export function StudioV2({ onExit }: StudioV2Props) {
             </div>
             {profile.intent && (
               <p
-                className="mt-6 text-[12.5px] italic"
+                key={profile.intent}
+                className="studio-v2-reveal mt-6 text-[13px] italic"
                 style={{
                   fontFamily: "Georgia, 'Times New Roman', serif",
-                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                {TRANSITION_COPY.afterIntent}
+                {INTENT_ATMOSPHERE[profile.intent].whisper}
               </p>
             )}
           </section>
