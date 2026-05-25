@@ -378,7 +378,71 @@ function groupSummary(p: TravelerProfile): string {
 function prioritiesSummary(p: TravelerProfile): string {
   const n = Object.keys(p.priorityWeights).length;
   return n === 0 ? "AI will infer from intent" : `${n} selected`;
+
+// ─── refine progression chrome ───────────────────────────────────────────
+
+function RefineProgress({ current }: { current: RefineStep }) {
+  const idx = REFINE_ORDER.indexOf(current);
+  return (
+    <div className="flex items-center gap-2" aria-label={`Step ${idx + 1} of ${REFINE_ORDER.length}`}>
+      {REFINE_ORDER.map((s, i) => {
+        const state = i < idx ? "done" : i === idx ? "active" : "todo";
+        return (
+          <span
+            key={s}
+            aria-hidden
+            className="h-[2px] flex-1 rounded-full transition-all duration-500"
+            style={{
+              background:
+                state === "active" ? "var(--gold)" :
+                state === "done"   ? "color-mix(in oklab, var(--gold) 55%, transparent)" :
+                                     "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+              transform: state === "active" ? "scaleY(1.6)" : "scaleY(1)",
+              transformOrigin: "center",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
 }
+
+function RefineNav({
+  current, onBack, onNext, isLast,
+}: { current: RefineStep; onBack: () => void; onNext: () => void; isLast: boolean }) {
+  const idx = REFINE_ORDER.indexOf(current);
+  return (
+    <div className="mt-10 flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={onBack}
+        disabled={idx === 0}
+        className="text-[11.5px] uppercase tracking-[0.28em] min-h-[44px] px-2 disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+      >
+        ← back
+      </button>
+      <button
+        type="button"
+        onClick={onNext}
+        className="group inline-flex items-center gap-2 rounded-[2px] px-6 py-3 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          background: "var(--charcoal)",
+          color: "var(--ivory)",
+          minHeight: 48,
+          minWidth: 184,
+        }}
+      >
+        {isLast ? "design my day" : "continue"}
+        <ArrowRight
+          className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
+          aria-hidden
+        />
+      </button>
+    </div>
+  );
+}
+
 
 function Accordion({
   title, summary, children, defaultOpen = false,
