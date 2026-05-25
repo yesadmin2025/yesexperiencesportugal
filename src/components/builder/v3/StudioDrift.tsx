@@ -1167,7 +1167,7 @@ export function StudioDrift({ onExit }: Props) {
           overlapped the third card on mobile. Per Studio Bible §5: never
           stack text on top of choice tiles. */}
       {chapter.kind !== "convergence" && chapter.kind !== "choice" && narrativeLine && narrativeAt && (
-        <AiWhisper key={narrativeAt} text={narrativeLine} />
+        <AiWhisper key={narrativeAt} text={narrativeLine} locale={locale} />
       )}
       {showBuildPreview && (
         <StudioLivePreview
