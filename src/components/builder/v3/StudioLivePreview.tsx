@@ -269,7 +269,10 @@ export function StudioLivePreview(props: Props) {
                     type="button"
                     role="tab"
                     aria-selected={active}
-                    onClick={() => setTab(id)}
+                    onClick={() => {
+                      setTab(id);
+                      void recordDriftEvent("v4_drawer_tab", { meta: { tab: id } });
+                    }}
                     className="flex-1 rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
                     style={{
                       background: active ? "var(--charcoal)" : "transparent",
