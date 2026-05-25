@@ -1162,7 +1162,7 @@ function PriorityChip({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-full border px-3 py-1.5 text-[12.5px] transition-all min-h-[36px]"
+      className="inline-flex items-center rounded-full border px-4 text-[13px] transition-all min-h-[44px] focus-visible:outline-none focus-visible:ring-2"
       style={{
         borderColor:
           state === "must" ? "color-mix(in oklab, var(--gold) 80%, transparent)" :
