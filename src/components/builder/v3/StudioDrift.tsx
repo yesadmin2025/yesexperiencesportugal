@@ -28,7 +28,9 @@ import { SmartRecommendations } from "./SmartRecommendations";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
+import { shouldShowBuildPreview } from "@/lib/drift/build-preview-visibility";
 import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
+
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
 import silentVineyardImg from "@/assets/drift/silent-vineyard.jpg";
@@ -686,17 +688,19 @@ export function StudioDrift({ onExit }: Props) {
     return () => window.removeEventListener("resize", onR);
   }, []);
   // BuildPreview is 84px + 12px inset + ~108px reserve. On short viewports
-  // with 3 choice cards it bleeds over the 3rd option. Use a generous floor
-  // (720px) so the preview only appears when there's real room to stack it
-  // under all three cards without overlap.
+  // with 3 choice cards it bleeds over the 3rd option. The pure rule lives
+  // in `build-preview-visibility.ts` so it can be unit-tested across
+  // resize/rotation scenarios without mounting React.
   const choiceCount = chapter.kind === "choice" ? chapter.options.length : 0;
-  const vhFloor = choiceCount >= 3 ? 720 : 640;
-  const showBuildPreview =
-    chapter.kind !== "convergence" &&
-    Boolean(profile.pickup) &&
-    chapterIdx >= 4 &&
-    liveDay.stops.length > 0 &&
-    vh >= vhFloor;
+  const showBuildPreview = shouldShowBuildPreview({
+    chapterKind: chapter.kind,
+    choiceCount,
+    hasPickup: Boolean(profile.pickup),
+    chapterIdx,
+    liveStopsCount: liveDay.stops.length,
+    vh,
+  });
+
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
   // actually moved (top mood, itinerary, collapse list, pacing, …).
