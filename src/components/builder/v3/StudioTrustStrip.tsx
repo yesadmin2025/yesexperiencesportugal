@@ -22,13 +22,13 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
     <div
       role="note"
       aria-label={`700+ five-star reviews across Google, Tripadvisor, Viator and GetYourGuide`}
-      className="absolute top-[64px] inset-x-0 z-[44] flex items-center justify-center px-3 pointer-events-none motion-safe:animate-[fade-in_1.1s_ease-out_both]"
+      className="absolute top-[66px] inset-x-0 z-[44] flex items-center justify-center px-3 pointer-events-none motion-safe:animate-[fade-in_1.1s_ease-out_both]"
     >
       <span
         className="inline-flex items-center gap-1 text-[8.5px] tracking-[0.12em] uppercase font-semibold whitespace-nowrap"
         style={{
-          color: "color-mix(in oklab, var(--ivory) 62%, transparent)",
-          textShadow: "0 1px 2px rgba(0,0,0,0.55)",
+          color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+          textShadow: "0 1px 3px rgba(0,0,0,0.75), 0 0 8px rgba(0,0,0,0.45)",
         }}
       >
         <span aria-hidden="true" style={{ color: "var(--gold)", letterSpacing: "0.02em" }}>
