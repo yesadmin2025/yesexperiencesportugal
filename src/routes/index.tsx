@@ -706,10 +706,10 @@ function HomePage() {
                 id="studio-title"
                 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
               >
-                Create it <span className="italic font-normal text-[color:var(--teal)]">live.</span>
+                Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
               <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                Choose your <span className="kw">mood</span>, rhythm and intention. Watch your private experience take shape in <span className="kw">real time</span>.
+                Pick a <span className="kw">mood</span>, who's coming and your rhythm. We draft a private day with <span className="kw">real stops</span>, real timing and a live price — ready to confirm.
               </p>
 
               {/* Three Studio inputs — small index, signposts the
@@ -727,24 +727,20 @@ function HomePage() {
 
               <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
                 <CtaButton to="/builder" variant="primary">
-                  Open the Studio
+                  Start designing
                 </CtaButton>
               </div>
 
-              {/* Starting-point microcopy — sits just under the CTA so
-                  the user reads "this is a draft, designed for you"
-                  before the reassurance line. Italic Georgia per
-                  Typography v3, gold detail to keep it editorial. */}
-              <p className="mt-4 inline-flex items-center gap-2 text-[12.5px] md:text-[13px] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-md">
+              {/* Conversion microcopy — under-CTA trust trio. */}
+              <p className="mt-4 inline-flex items-center gap-2 text-[12.5px] md:text-[13px] leading-[1.55] text-[color:var(--charcoal)] max-w-md">
                 <span aria-hidden="true" className="block h-px w-5 bg-[color:var(--gold)]" />
-                <span className="serif italic">A starting point, shaped around you.</span>
+                <span className="font-medium">About 90 seconds · 11 quick steps · no forms.</span>
               </p>
 
-              {/* Reassurance line — three short reassurances. "A local is
-                  one message away" matches the approved brief copy. */}
+              {/* Reassurance line — direct conversion language. */}
               <p className="mt-3 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
                 <MessageCircle size={13} aria-hidden="true" className="mt-[3px] shrink-0 text-[color:var(--teal)]" />
-                <span>About a minute. No form. <span className="font-medium text-[color:var(--charcoal)]">A local is one message away.</span></span>
+                <span>Instant confirmation · cancel free up to 48h · <span className="font-medium text-[color:var(--charcoal)]">a local replies on WhatsApp.</span></span>
               </p>
             </div>
 

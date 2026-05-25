@@ -55,11 +55,11 @@ export function Footer() {
             />
           </Link>
           <p
-            className="mt-5 text-[14px] text-[color:var(--ivory)]/80 leading-[1.65] max-w-md"
-            style={{ fontWeight: 320, letterSpacing: "0.005em" }}
+            className="mt-5 text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
+            style={{ fontWeight: 350, letterSpacing: "0.005em" }}
           >
-            Private, designed Portugal experiences — crafted around your story by passionate local
-            experts.
+            Private Portugal experiences, designed with you and confirmed in minutes —
+            700+ five-star reviews, real local hosts, instant booking.
           </p>
         </div>
 
@@ -126,12 +126,15 @@ export function Footer() {
             className="flex flex-col md:flex-row justify-between items-center gap-3 text-[12px] text-[color:var(--ivory)]/70"
             style={{ fontWeight: 350 }}
           >
-            <p>© {new Date().getFullYear()} YES experiences Portugal. All rights reserved.</p>
+            <p>
+              © {new Date().getFullYear()} YES experiences Portugal · Licensed tour operator (RNAVT)
+              · Lisbon, Portugal
+            </p>
             <p
               className="tracking-[0.32em] uppercase text-[color:var(--gold-warm)]"
               style={{ fontWeight: 500 }}
             >
-              Designed in Portugal
+              Private · Local · Instant booking
             </p>
           </div>
         </div>
