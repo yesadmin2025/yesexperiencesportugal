@@ -59,7 +59,7 @@ export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, cu
       <Suspense
         fallback={
           <div className="absolute inset-0 grid place-items-center bg-[color:var(--sand)] text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/60 font-semibold">
-            Mapa a despertar…
+            {FALLBACK_I18N[locale] ?? FALLBACK_I18N.en}
           </div>
         }
       >
