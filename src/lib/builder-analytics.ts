@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { getOrCreateAnonId } from "@/lib/ab-testing";
 
-export type BuilderEvent = "reset" | "review_reset";
+export type BuilderEvent = "reset" | "review_reset" | "pro_share_created";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(
