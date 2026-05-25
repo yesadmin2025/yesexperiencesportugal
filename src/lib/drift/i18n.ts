@@ -117,6 +117,18 @@ const PT: Dict = {
   "preview.min_stay": "min no local",
   "preview.indicative": "indicativo",
   "build.region_label": "O seu dia · pré-visualização ao vivo",
+  "reco.eyebrow": "Também combina consigo",
+  "reco.open": "Abrir",
+  "quality.eyebrow": "Qualidade do dia",
+  "quality.aria": "Pontuação de qualidade do dia composto",
+  "quality.summary_high": "Excelente ritmo e equilíbrio entre paragens.",
+  "quality.summary_mid": "Bom ritmo — afine mais um sinal para subir.",
+  "quality.summary_low": "Composição inicial — continue para afinar.",
+  "quality.wine": "Vinho",
+  "quality.coast": "Costa",
+  "quality.heritage": "Património",
+  "quality.table": "Mesa",
+  "quality.of_five": "em 5",
 };
 
 const EN: Dict = {
@@ -204,6 +216,18 @@ const EN: Dict = {
   "preview.min_stay": "min stay",
   "preview.indicative": "indicative",
   "build.region_label": "Your day · live preview",
+  "reco.eyebrow": "Also fits you",
+  "reco.open": "Open",
+  "quality.eyebrow": "Day quality",
+  "quality.aria": "Quality score for the composed day",
+  "quality.summary_high": "Excellent flow and balance between stops.",
+  "quality.summary_mid": "Good rhythm — one more signal lifts it further.",
+  "quality.summary_low": "Early composition — keep going to refine.",
+  "quality.wine": "Wine",
+  "quality.coast": "Coast",
+  "quality.heritage": "Heritage",
+  "quality.table": "Table",
+  "quality.of_five": "of 5",
 };
 
 const ES: Dict = {
@@ -291,6 +315,18 @@ const ES: Dict = {
   "preview.min_stay": "min en el lugar",
   "preview.indicative": "indicativo",
   "build.region_label": "Su día · vista en vivo",
+  "reco.eyebrow": "También encaja con usted",
+  "reco.open": "Abrir",
+  "quality.eyebrow": "Calidad del día",
+  "quality.aria": "Puntuación de calidad del día compuesto",
+  "quality.summary_high": "Excelente ritmo y equilibrio entre paradas.",
+  "quality.summary_mid": "Buen ritmo — una señal más lo eleva.",
+  "quality.summary_low": "Composición inicial — siga para afinar.",
+  "quality.wine": "Vino",
+  "quality.coast": "Costa",
+  "quality.heritage": "Patrimonio",
+  "quality.table": "Mesa",
+  "quality.of_five": "de 5",
 };
 
 const FR: Dict = {
@@ -378,6 +414,18 @@ const FR: Dict = {
   "preview.min_stay": "min sur place",
   "preview.indicative": "indicatif",
   "build.region_label": "Votre journée · aperçu en direct",
+  "reco.eyebrow": "Vous correspond aussi",
+  "reco.open": "Ouvrir",
+  "quality.eyebrow": "Qualité du jour",
+  "quality.aria": "Score de qualité de la journée composée",
+  "quality.summary_high": "Excellent rythme et équilibre entre les étapes.",
+  "quality.summary_mid": "Bon rythme — un signal de plus l'élève.",
+  "quality.summary_low": "Composition initiale — continuez pour affiner.",
+  "quality.wine": "Vin",
+  "quality.coast": "Côte",
+  "quality.heritage": "Patrimoine",
+  "quality.table": "Table",
+  "quality.of_five": "sur 5",
 };
 
 const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN, es: ES, fr: FR };

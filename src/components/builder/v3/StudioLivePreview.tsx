@@ -6,6 +6,8 @@ import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import type { DriftProfile } from "./StudioDrift";
 import type { derivePrediction } from "@/lib/drift/predict";
+import { StudioDrawerReco } from "./StudioDrawerReco";
+import { StudioQualityBand } from "./StudioQualityBand";
 
 const BuilderMap = lazy(() =>
   import("../BuilderMap").then((m) => ({ default: m.BuilderMap })),
@@ -277,7 +279,13 @@ export function StudioLivePreview(props: Props) {
             {/* content */}
             <div className="flex-1 overflow-y-auto px-4 pb-4">
               {tab === "story" && (
-                <StoryTab day={day} profile={profile} locale={locale} />
+                <StoryTab
+                  day={day}
+                  profile={profile}
+                  locale={locale}
+                  confidence={prediction?.revealConfidence ?? 0}
+                  anchorId={day.anchorTourId}
+                />
               )}
               {tab === "timeline" && <TimelineTab items={timeline} locale={locale} />}
               {tab === "map" && (
@@ -331,13 +339,28 @@ function StoryTab({
   day,
   profile,
   locale,
+  confidence,
+  anchorId,
 }: {
   day: ComposedDay;
   profile?: DriftProfile;
   locale: DriftLocale;
+  confidence: number;
+  anchorId?: string;
 }) {
   return (
-    <div className="space-y-3 pt-1">
+    <div className="space-y-1 pt-1">
+      {profile && (
+        <StudioDrawerReco
+          profile={profile}
+          locale={locale}
+          confidence={confidence}
+          excludeId={anchorId}
+        />
+      )}
+      {profile && (
+        <StudioQualityBand day={day} profile={profile} confidence={confidence} locale={locale} />
+      )}
       <p
         style={{
           fontFamily: "'Inter', system-ui, sans-serif",

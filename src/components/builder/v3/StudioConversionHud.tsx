@@ -45,7 +45,7 @@ export function StudioConversionHud({
   const stepNumber = Math.min(total, Math.max(1, index + 1));
   const pct = Math.max(0, Math.min(1, (index + 1) / Math.max(1, total)));
   const matchPct = Math.round(confidence * 100);
-  const dots = Math.min(11, total);
+  const dots = Math.min(7, total);
   const showMatch = matchPct >= 10;
   const showPrice = typeof pricePerGuestFrom === "number" && confidence >= 0.4;
 
