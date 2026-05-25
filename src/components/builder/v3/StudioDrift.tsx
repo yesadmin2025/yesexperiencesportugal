@@ -677,11 +677,20 @@ export function StudioDrift({ onExit }: Props) {
   // a pickup region — otherwise we display a fabricated stop ("Livramento
   // market, Setúbal") for someone who hasn't said where they want to start.
   // That breaks the no-invention rule and confuses the rhythm.
+  // Track viewport height so we can hide BuildPreview when there's no room
+  // to stack it under 3 choice cards without overlap (~600px and below).
+  const [vh, setVh] = useState<number>(() => (typeof window !== "undefined" ? window.innerHeight : 900));
+  useEffect(() => {
+    const onR = () => setVh(window.innerHeight);
+    window.addEventListener("resize", onR);
+    return () => window.removeEventListener("resize", onR);
+  }, []);
   const showBuildPreview =
     chapter.kind !== "convergence" &&
     Boolean(profile.pickup) &&
     chapterIdx >= 4 &&
-    liveDay.stops.length > 0;
+    liveDay.stops.length > 0 &&
+    vh >= 640;
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
   // actually moved (top mood, itinerary, collapse list, pacing, …).
@@ -1337,7 +1346,7 @@ function ChoicePhase({
           {cue}
         </p>
       )}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "92px" : 0 }}>
+      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "108px" : 0 }}>
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
@@ -1462,7 +1471,7 @@ function ProgressiveBuildPreview({
   const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
 
   return (
-    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ minHeight: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
+    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ height: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
       <div className="grid grid-cols-[96px_1fr] items-stretch">
         <div className="relative h-[84px] overflow-hidden">
           <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>

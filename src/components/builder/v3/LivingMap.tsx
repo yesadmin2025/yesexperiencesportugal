@@ -22,9 +22,17 @@ interface Props {
   revealed: boolean;
   ribbon?: ReactNode;
   curtainLabel?: string;
+  locale?: "pt" | "en" | "es" | "fr";
 }
 
-export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, curtainLabel = "ver percurso" }: Props) {
+const FALLBACK_I18N = {
+  pt: "Mapa a despertar…",
+  en: "Map awakening…",
+  es: "Mapa despertando…",
+  fr: "Carte qui s'éveille…",
+} as const;
+
+export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, curtainLabel = "ver percurso", locale = "en" }: Props) {
   const [mounted, setMounted] = useState(revealed);
   const [visible, setVisible] = useState(false);
   const [curtainOpen, setCurtainOpen] = useState(false);
@@ -51,11 +59,11 @@ export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, cu
       <Suspense
         fallback={
           <div className="absolute inset-0 grid place-items-center bg-[color:var(--sand)] text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/60 font-semibold">
-            Mapa a despertar…
+            {FALLBACK_I18N[locale] ?? FALLBACK_I18N.en}
           </div>
         }
       >
-        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} emotionalMode />
+        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} emotionalMode locale={locale} />
       </Suspense>
 
       {ribbon ? (

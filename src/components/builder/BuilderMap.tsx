@@ -32,10 +32,10 @@ interface Props {
 }
 
 const CHIP_I18N = {
-  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens" },
-  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops" },
-  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas" },
-  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts" },
+  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens", mapAria: "Mapa do percurso", outOfRange: "fora de alcance" },
+  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops", mapAria: "Live route map", outOfRange: "out of range" },
+  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas", mapAria: "Mapa del recorrido", outOfRange: "fuera de alcance" },
+  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts", mapAria: "Carte de l'itinéraire", outOfRange: "hors de portée" },
 } as const;
 
 
@@ -154,7 +154,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         for (const c of candidates) {
           if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
           const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
-          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? "out of range"}`, {
+          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? (CHIP_I18N[locale] ?? CHIP_I18N.en).outOfRange}`, {
             direction: "top",
             offset: [0, -10],
           });
@@ -203,7 +203,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     stopPointsRef.current = points;
     points.forEach((p, i) => {
       const m = L.marker(p, { icon: pin(i + 1, false) });
-      m.bindTooltip(emotionalMode ? `momento ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
+      m.bindTooltip(emotionalMode ? `${(CHIP_I18N[locale] ?? CHIP_I18N.en).stop} ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
       layer.addLayer(m);
       stopMarkersRef.current.push(m);
     });
@@ -254,7 +254,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
         const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
         m.bindTooltip(
-          c.eligible ? c.label : `${c.label} — ${c.reason ?? "out of range"}`,
+          c.eligible ? c.label : `${c.label} — ${c.reason ?? (CHIP_I18N[locale] ?? CHIP_I18N.en).outOfRange}`,
           { direction: "top", offset: [0, -10] },
         );
         if (c.eligible && onCandidateClick) {
@@ -347,7 +347,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"
-        aria-label="Live route map"
+        aria-label={(CHIP_I18N[locale] ?? CHIP_I18N.en).mapAria}
       />
     </div>
   );
