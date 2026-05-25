@@ -1320,6 +1320,7 @@ function ChoicePhase({
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
   const [tilesIn, setTilesIn] = useState(false);
+  const [idle, setIdle] = useState(false);
 
   // Order by predicted affinity; drop weakest option only if at least two
   // strong ones remain. Keeps the choice rhythm honest, never empties it.
