@@ -987,28 +987,35 @@ function OptionCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex min-h-[88px] flex-col items-start gap-1 rounded-[2px] border px-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2"
+      className="group relative flex min-h-[92px] flex-col items-start gap-1.5 px-5 py-5 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2"
       style={{
-        borderColor: active
-          ? "color-mix(in oklab, var(--gold) 75%, transparent)"
-          : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
         background: active
-          ? "color-mix(in oklab, var(--sand) 65%, transparent)"
-          : "var(--ivory)",
+          ? "color-mix(in oklab, var(--sand) 70%, transparent)"
+          : "color-mix(in oklab, var(--ivory) 60%, transparent)",
+        borderLeft: active
+          ? "2px solid var(--gold)"
+          : "2px solid color-mix(in oklab, var(--charcoal) 8%, transparent)",
         boxShadow: active
-          ? "inset 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent)"
+          ? "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent)"
           : "none",
       }}
     >
       <span
-        className="text-[15px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+        className="text-[16px] leading-snug transition-colors duration-300"
+        style={{
+          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontWeight: active ? 700 : 600,
+          color: "var(--charcoal)",
+        }}
       >
         {label}
       </span>
       <span
         className="text-[12.5px] leading-snug"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+        style={{
+          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+        }}
       >
         {sub}
       </span>
