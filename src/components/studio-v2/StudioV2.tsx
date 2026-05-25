@@ -5,8 +5,11 @@ import {
   applyIntent,
   applyPace,
   deriveArchetype,
+  type DurationKey,
+  type EnhancementKey,
   type GroupProfile,
   type IntentAtmosphere,
+  type LuxuryTier,
   type PaceV2,
   type PriorityKey,
   type TravelerProfile,
@@ -17,6 +20,9 @@ import {
   PACE_OPTIONS,
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
+  DURATION_OPTIONS,
+  ENHANCEMENT_OPTIONS,
+  TIER_OPTIONS,
   revealFraming,
   storyOpener,
   storyAfterIntent,
@@ -54,30 +60,39 @@ type Beat =
   | "intro"
   | "name"
   | "story-opener"
-  | "choice-intent"
-  | "reward-image"
-  | "choice-pace"
-  | "reward-insight"
-  | "choice-priorities"
-  | "reward-map"
   | "choice-group"
   | "story-group"
+  | "choice-duration"
+  | "choice-intent"
+  | "reward-image"
+  | "choice-priorities"
+  | "reward-map"
+  | "choice-pace"
+  | "reward-insight"
+  | "choice-enhancements"
+  | "choice-tier"
   | "choice-ops"
   | "thinking"
   | "reveal";
 
+// Bible-aligned order:
+// Welcome → Name → Group + Guests → Duration → Style (intent) →
+// Highlights (priorities) → Pace → Enhancements → Tier → Ops → Reveal.
 const SEQUENCE: Beat[] = [
   "intro",
   "name",
   "story-opener",
-  "choice-intent",
-  "reward-image",
-  "choice-pace",
-  "reward-insight",
-  "choice-priorities",
-  "reward-map",
   "choice-group",
   "story-group",
+  "choice-duration",
+  "choice-intent",
+  "reward-image",
+  "choice-priorities",
+  "reward-map",
+  "choice-pace",
+  "reward-insight",
+  "choice-enhancements",
+  "choice-tier",
   "choice-ops",
   "thinking",
   "reveal",
@@ -93,10 +108,13 @@ const REWARD_BEATS = new Set<Beat>([
 ]);
 
 const CHOICE_BEATS = new Set<Beat>([
-  "choice-intent",
-  "choice-pace",
-  "choice-priorities",
   "choice-group",
+  "choice-duration",
+  "choice-intent",
+  "choice-priorities",
+  "choice-pace",
+  "choice-enhancements",
+  "choice-tier",
   "choice-ops",
 ]);
 
@@ -348,6 +366,105 @@ export function StudioV2({ onExit }: StudioV2Props) {
 
         {beat === "story-group" && (
           <StoryBeat line={storyAfterGroup(profile.group)} onSkip={next} />
+        )}
+
+        {beat === "choice-duration" && (
+          <ChoiceBeat
+            eyebrow="Duration"
+            title={<>How long should it <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>last</span>?</>}
+            helper="A focused chapter, a full arc, or a woven journey."
+            onBack={back}
+          >
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {DURATION_OPTIONS.map((opt) => (
+                <OptionCard
+                  key={opt.id}
+                  active={profile.duration === opt.id}
+                  label={opt.label}
+                  sub={opt.sub}
+                  onClick={() => {
+                    update({
+                      duration: opt.id,
+                      durationDays: opt.id === "multi-day" ? (profile.durationDays ?? 3) : undefined,
+                    });
+                    window.setTimeout(next, 280);
+                  }}
+                />
+              ))}
+            </div>
+            {profile.duration === "multi-day" && (
+              <div className="mt-6 flex items-center justify-between rounded-[2px] border px-4 py-3"
+                   style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}>
+                <span className="text-[13px]" style={{ color: "var(--charcoal)" }}>How many days?</span>
+                <div className="flex items-center gap-3">
+                  <StepBtn label="−" onClick={() => update({ durationDays: Math.max(2, (profile.durationDays ?? 3) - 1) })} />
+                  <span className="w-6 text-center text-[15px] tabular-nums">{profile.durationDays ?? 3}</span>
+                  <StepBtn label="+" onClick={() => update({ durationDays: Math.min(10, (profile.durationDays ?? 3) + 1) })} />
+                </div>
+              </div>
+            )}
+          </ChoiceBeat>
+        )}
+
+        {beat === "choice-enhancements" && (
+          <ChoiceBeat
+            eyebrow="Enhancements"
+            title={<>Add a <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>signature</span> touch.</>}
+            helper="Optional layers, confirmed by a local before booking."
+            onBack={back}
+            footer={<ContinueButton label="Continue" onClick={next} />}
+          >
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {ENHANCEMENT_OPTIONS.map((opt) => {
+                const active = profile.enhancements.includes(opt.id);
+                return (
+                  <OptionCard
+                    key={opt.id}
+                    active={active}
+                    label={opt.label}
+                    sub={opt.sub}
+                    onClick={() => {
+                      const set = new Set(profile.enhancements);
+                      if (active) set.delete(opt.id);
+                      else set.add(opt.id);
+                      update({ enhancements: Array.from(set) as EnhancementKey[] });
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </ChoiceBeat>
+        )}
+
+        {beat === "choice-tier" && (
+          <ChoiceBeat
+            eyebrow="Experience tier"
+            title={<>Choose your <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>level</span>.</>}
+            helper="Pricing is confirmed at reveal — no surprises."
+            onBack={back}
+          >
+            <div className="grid grid-cols-1 gap-3">
+              {TIER_OPTIONS.map((opt) => {
+                const active = (profile.group?.luxuryTier ?? "elevated") === opt.id;
+                return (
+                  <OptionCard
+                    key={opt.id}
+                    active={active}
+                    label={opt.label}
+                    sub={opt.sub}
+                    onClick={() => {
+                      const g: GroupProfile = profile.group ?? {
+                        adults: 2, children: 0, teens: 0, mobility: "none",
+                        occasion: "none", decisionStyle: "collaborative", luxuryTier: opt.id as LuxuryTier,
+                      };
+                      update({ group: { ...g, luxuryTier: opt.id as LuxuryTier } });
+                      window.setTimeout(next, 280);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </ChoiceBeat>
         )}
 
         {beat === "choice-ops" && (
@@ -1259,12 +1376,6 @@ function GroupForm({
         value={g.mobility}
         onChange={(v) => set({ mobility: v as GroupProfile["mobility"] })}
         options={[["none", "No constraints"], ["limited", "Some limitations"], ["wheelchair", "Wheelchair"]]}
-      />
-      <SelectRow
-        label="Luxury expectation"
-        value={g.luxuryTier}
-        onChange={(v) => set({ luxuryTier: v as GroupProfile["luxuryTier"] })}
-        options={[["refined", "Refined"], ["elevated", "Elevated"], ["ultra", "Ultra"]]}
       />
     </div>
   );

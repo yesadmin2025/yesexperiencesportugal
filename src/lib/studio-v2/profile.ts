@@ -72,11 +72,25 @@ export interface OpsConstraints {
   accessibility?: string[];
 }
 
+export type DurationKey = "half-day" | "full-day" | "multi-day";
+
+export type EnhancementKey =
+  | "sunset_boat"
+  | "private_chef"
+  | "helicopter"
+  | "fado_night"
+  | "private_cellar"
+  | "spa_ritual";
+
 export interface TravelerProfile {
   /** Optional traveller name — personalises the written story. */
   name?: string;
   intent?: IntentAtmosphere;
   pace?: PaceV2;
+  /** Bible step: Duration (half-day · full-day · multi-day). */
+  duration?: DurationKey;
+  /** Multi-day length, only when duration === "multi-day". */
+  durationDays?: number;
   // 0–100 normalized signals (derived from intent + priorities)
   socialEnergy: number;
   cultureInterest: number;
@@ -87,6 +101,8 @@ export interface TravelerProfile {
   stopDensityTarget: number;
   group?: GroupProfile;
   priorityWeights: Partial<Record<PriorityKey, number>>;
+  /** Bible step: Enhancements (sunset boat, private chef, helicopter…). */
+  enhancements: EnhancementKey[];
   ops: OpsConstraints;
   archetype?: Archetype;
   confidence: Record<string, number>;
@@ -102,6 +118,7 @@ export function emptyProfile(): TravelerProfile {
     driveToleranceMin: 50,
     stopDensityTarget: 4,
     priorityWeights: {},
+    enhancements: [],
     ops: {},
     confidence: {},
   };
