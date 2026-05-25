@@ -794,48 +794,66 @@ function RevealActions({ name }: { name?: string }) {
     <div className="mt-12 flex flex-col gap-3">
       <button
         type="button"
-        className="group inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
-        style={{ background: "var(--charcoal)", color: "var(--ivory)", minHeight: 48 }}
+        className="group inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          background: "var(--charcoal)",
+          color: "var(--ivory)",
+          minHeight: 52,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 600,
+          fontSize: 12.5,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+        }}
       >
-        Reserve instantly
+        Secure my experience
         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
       </button>
       <a
         href={whatsappHref(waMsg)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
           background: "var(--teal)",
           color: "var(--ivory)",
-          minHeight: 48,
+          minHeight: 52,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 600,
+          fontSize: 12.5,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
         }}
       >
         <MessageCircle className="h-4 w-4" aria-hidden />
-        Talk to a local
+        Refine with a local
       </a>
       <button
         type="button"
         onClick={onSave}
-        className="inline-flex items-center justify-center gap-2 rounded-[2px] border px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-3.5 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
-          borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-          color: "var(--charcoal)",
+          color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
           background: "transparent",
           minHeight: 48,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 600,
+          fontSize: 11.5,
+          letterSpacing: "0.24em",
+          textTransform: "uppercase",
         }}
       >
-        <Bookmark className="h-4 w-4" aria-hidden />
-        {saved ? "Saved" : "Save my story"}
+        <Bookmark className="h-3.5 w-3.5" aria-hidden />
+        {saved ? "Saved" : "Save my experience"}
       </button>
       <p
-        className="mt-1 text-center text-[11.5px] italic"
+        className="mt-2 text-center text-[12px] italic"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
         }}
       >
-        A human concierge confirms timings before booking.
+        A local designer confirms timings before booking.
       </p>
     </div>
   );
