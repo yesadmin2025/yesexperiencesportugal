@@ -106,6 +106,16 @@ const PT: Dict = {
   "ui.back": "Voltar",
   "ui.choose": "Escolher: {label}",
   "trust.reviews": "avaliações",
+  "preview.expand": "Abrir pré-visualização do seu dia",
+  "preview.dialog": "O seu dia — pré-visualização ao vivo",
+  "preview.tap_to_open": "toque para abrir",
+  "preview.tab_story": "História",
+  "preview.tab_timeline": "Horário",
+  "preview.tab_map": "Mapa",
+  "preview.story_intro": "o seu dia está a tomar forma com paragens reais, escolhidas para o ritmo que descreveu.",
+  "preview.min_drive": "min de carro",
+  "preview.min_stay": "min no local",
+  "preview.indicative": "indicativo",
   "build.region_label": "O seu dia · pré-visualização ao vivo",
 };
 
