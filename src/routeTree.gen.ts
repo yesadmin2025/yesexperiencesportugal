@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
+import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
@@ -47,6 +48,11 @@ import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.ta
 const TypographyAuditRoute = TypographyAuditRouteImport.update({
   id: '/typography-audit',
   path: '/typography-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioV2Route = StudioV2RouteImport.update({
+  id: '/studio-v2',
+  path: '/studio-v2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioDriftRoute = StudioDriftRouteImport.update({
@@ -231,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
   '/studio-drift': typeof StudioDriftRoute
+  '/studio-v2': typeof StudioV2Route
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -267,6 +274,7 @@ export interface FileRoutesByTo {
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
   '/studio-drift': typeof StudioDriftRoute
+  '/studio-v2': typeof StudioV2Route
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -304,6 +312,7 @@ export interface FileRoutesById {
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
   '/studio-drift': typeof StudioDriftRoute
+  '/studio-v2': typeof StudioV2Route
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -342,6 +351,7 @@ export interface FileRouteTypes {
     | '/preview-check'
     | '/proposals'
     | '/studio-drift'
+    | '/studio-v2'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -378,6 +388,7 @@ export interface FileRouteTypes {
     | '/preview-check'
     | '/proposals'
     | '/studio-drift'
+    | '/studio-v2'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -414,6 +425,7 @@ export interface FileRouteTypes {
     | '/preview-check'
     | '/proposals'
     | '/studio-drift'
+    | '/studio-v2'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -451,6 +463,7 @@ export interface RootRouteChildren {
   PreviewCheckRoute: typeof PreviewCheckRoute
   ProposalsRoute: typeof ProposalsRoute
   StudioDriftRoute: typeof StudioDriftRoute
+  StudioV2Route: typeof StudioV2Route
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/typography-audit'
       fullPath: '/typography-audit'
       preLoaderRoute: typeof TypographyAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio-v2': {
+      id: '/studio-v2'
+      path: '/studio-v2'
+      fullPath: '/studio-v2'
+      preLoaderRoute: typeof StudioV2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio-drift': {
@@ -753,6 +773,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreviewCheckRoute: PreviewCheckRoute,
   ProposalsRoute: ProposalsRoute,
   StudioDriftRoute: StudioDriftRoute,
+  StudioV2Route: StudioV2Route,
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
