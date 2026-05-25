@@ -321,17 +321,29 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
 
   return (
     <div className="relative h-full w-full">
-      {chrome && <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
-        <span className="relative inline-flex h-1.5 w-1.5">
-          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
-          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
-        </span>
-        {emotionalMode ? "a tomar forma" : "Live route"}
-      </div>}
-      {chrome && <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
-        <MapPin size={11} aria-hidden="true" />
-        {emotionalMode ? `${stops.length} momento${stops.length === 1 ? "" : "s"}` : `${stops.length} stop${stops.length === 1 ? "" : "s"}`}
-      </div>}
+      {chrome && (() => {
+        const tr = CHIP_I18N[locale] ?? CHIP_I18N.en;
+        const n = stops.length;
+        const liveLabel = emotionalMode ? tr.live : tr.liveStatic;
+        const stopWord = emotionalMode
+          ? (n === 1 ? tr.stop : tr.stops)
+          : (n === 1 ? tr.stopStatic : tr.stopsStatic);
+        return (
+          <>
+            <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
+              <span className="relative inline-flex h-1.5 w-1.5">
+                <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
+                <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+              </span>
+              {liveLabel}
+            </div>
+            <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
+              <MapPin size={11} aria-hidden="true" />
+              {n} {stopWord}
+            </div>
+          </>
+        );
+      })()}
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"
