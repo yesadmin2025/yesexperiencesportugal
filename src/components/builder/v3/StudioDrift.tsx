@@ -2228,69 +2228,99 @@ function ConvergencePhase({
               to="/tours/$tourId"
               params={{ tourId: anchorTour.id }}
               onClick={() => void recordDriftEvent("cta_book", { meta: { tourId: anchorTour.id } })}
-              className="inline-flex min-h-11 items-center justify-center rounded-[6px] px-6 py-3 text-[12px] uppercase"
+              className="group inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-[2px] px-7 py-3.5 text-[12.5px] lowercase transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                fontWeight: 700,
-                letterSpacing: "0.18em",
+                fontWeight: 500,
+                letterSpacing: "0.26em",
                 background: "var(--teal)",
                 color: "var(--ivory)",
-                boxShadow: "0 16px 34px color-mix(in oklab, var(--teal) 28%, transparent)",
+                minWidth: 184,
+                border: "1px solid color-mix(in oklab, var(--gold-deep) 50%, transparent)",
+                boxShadow:
+                  "inset 0 0 0 1px color-mix(in oklab, var(--gold) 20%, transparent), 0 12px 28px -12px color-mix(in oklab, var(--teal) 40%, transparent)",
               }}
             >
-              {ctaBook} →
+              <span>{ctaBook.toLowerCase()}</span>
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-300 group-hover:translate-x-[3px]"
+                style={{ color: "color-mix(in oklab, var(--gold-soft) 90%, transparent)" }}
+              >
+                ›
+              </span>
             </Link>
           ) : (
             <Link
               to="/contact"
               onClick={() => void recordDriftEvent("cta_refine")}
-              className="inline-flex min-h-11 items-center justify-center rounded-[6px] border px-6 py-3 text-[12px] uppercase"
+              className="group inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-[2px] border px-7 py-3.5 text-[12.5px] lowercase transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                fontWeight: 700,
-                letterSpacing: "0.18em",
-                borderColor: "color-mix(in oklab, var(--gold) 55%, transparent)",
+                fontWeight: 500,
+                letterSpacing: "0.26em",
+                borderColor: "color-mix(in oklab, var(--gold) 50%, transparent)",
                 color: "var(--charcoal)",
+                minWidth: 184,
               }}
             >
-              {ctaRefine} →
+              <span>{ctaRefine.toLowerCase()}</span>
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-300 group-hover:translate-x-[3px]"
+                style={{ color: "var(--gold)" }}
+              >
+                ›
+              </span>
             </Link>
           )}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
             <button
               type="button"
               onClick={() => void recordDriftEvent("cta_save")}
-              className="text-[11px] tracking-[0.22em] uppercase"
+              className="min-h-[44px] italic transition-opacity duration-200 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]/60 focus-visible:rounded-[2px]"
               style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: 1.4,
+                color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+                opacity: 0.82,
               }}
             >
-              {ctaSave}
+              {ctaSave.toLowerCase()}
             </button>
             <a
               href={builderWaHref(waMessage)}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => void recordDriftEvent("cta_whatsapp", { meta: { stage: "reveal" } })}
-              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.22em] uppercase"
+              className="inline-flex min-h-[44px] items-center gap-1.5 italic transition-opacity duration-200 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]/60 focus-visible:rounded-[2px]"
               style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                color: "color-mix(in oklab, var(--teal) 88%, transparent)",
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: 1.4,
+                color: "color-mix(in oklab, var(--teal) 90%, transparent)",
+                opacity: 0.9,
               }}
             >
               <MessageCircle size={13} strokeWidth={1.6} aria-hidden="true" />
-              {ctaWhatsapp}
+              {ctaWhatsapp.toLowerCase()}
             </a>
             <Link
               to="/experiences"
-              className="text-[11px] tracking-[0.22em] uppercase"
+              className="min-h-[44px] inline-flex items-center italic transition-opacity duration-200 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]/60 focus-visible:rounded-[2px]"
               style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                color: "color-mix(in oklab, var(--charcoal) 64%, transparent)",
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: 1.4,
+                color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+                opacity: 0.82,
               }}
             >
-              {tt("cta.explore", locale)}
+              {tt("cta.explore", locale).toLowerCase()}
             </Link>
           </div>
         </div>
