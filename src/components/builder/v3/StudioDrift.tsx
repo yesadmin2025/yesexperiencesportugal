@@ -1497,25 +1497,10 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
-      {cue && (
-        <p
-          aria-hidden="true"
-          className="absolute inset-x-0 top-[23%] z-[56] px-7 text-center transition-opacity duration-[900ms]"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "12px",
-            fontStyle: "italic",
-            fontWeight: 400,
-            letterSpacing: "0.005em",
-            color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))",
-            textShadow: "0 1px 14px rgba(0,0,0,0.72)",
-            opacity: tilesIn ? 0.78 : 0,
-          }}
-        >
-          {cue}
-        </p>
-      )}
-      {idle && !picked && !cue && (
+      {/* Predictive cue removed — AiWhisper (rendered by the parent at the
+          bottom band) now owns the AI commentary slot. Keeping both
+          caused stacked italic lines in the top band. */}
+      {idle && !picked && (
         <p
           aria-live="polite"
           className="absolute inset-x-0 z-[55] px-7 text-center pointer-events-none motion-safe:animate-[fade-in_0.6s_ease-out_both]"
