@@ -1389,6 +1389,7 @@ function ChoicePhase({
             (shouldUpgrade
               ? pickStillForMood(opt.scene.mood, `${chapter.id}:${opt.scene.id}`)
               : null) ?? opt.scene;
+          const optionLabel = tt(opt.hintKey, locale);
           return (
             <button
               key={opt.scene.id}
@@ -1400,7 +1401,15 @@ function ChoicePhase({
               onTouchStart={() => handlePressStart(opt)}
               onTouchEnd={handlePressEnd}
               onTouchCancel={handlePressEnd}
-              className="relative flex-1 overflow-hidden rounded-[7px] outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/55"
+              // A11y:
+              //  • explicit aria-label so the option is announced even when
+              //    the visible hint is opacity:0 during the reveal cadence;
+              //  • aria-pressed mirrors the picked state;
+              //  • min-h-11 keeps each card ≥ 44px tap target even when the
+              //    container squeezes to fit 3 cards in a short viewport.
+              aria-label={tt("ui.choose", locale).replace("{label}", optionLabel)}
+              aria-pressed={isPicked}
+              className="relative flex-1 min-h-11 overflow-hidden rounded-[7px] outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
               style={{
                 opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
                 transform: !tilesIn
@@ -1412,6 +1421,7 @@ function ChoicePhase({
                 boxShadow: "0 16px 42px rgba(0,0,0,0.34)",
               }}
             >
+
               <SceneCanvas source={sceneSource(renderedScene)} />
               <div
                 aria-hidden="true"
