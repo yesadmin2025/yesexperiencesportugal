@@ -33,6 +33,7 @@ import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
 import { shouldShowBuildPreview } from "@/lib/drift/build-preview-visibility";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useStudioVariant } from "@/hooks/useStudioVariant";
 import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
 
 
