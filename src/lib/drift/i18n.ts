@@ -196,9 +196,9 @@ const EN: Dict = {
 
   "build.eyebrow": "Your day so far",
 
-  "cta.book": "Reserve this day",
-  "cta.save": "Save for later",
-  "cta.refine": "Refine with a local",
+  "cta.book": "Secure Your Experience",
+  "cta.save": "Save My Experience",
+  "cta.refine": "Refine with a Local Designer",
   "cta.explore": "Explore everything",
   "cta.whatsapp": "Talk to a local",
   "wa.intro": "Hi, I'm shaping a day in Portugal in the Studio",
