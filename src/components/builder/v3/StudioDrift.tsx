@@ -1920,6 +1920,19 @@ function ConvergencePhase({
           />
         )}
 
+        {anchorTour && (
+          <SmartRecommendations
+            anchor={anchorTour}
+            profile={{
+              pickup: profile.pickup,
+              radius: profile.radius,
+              energy: profile.energy,
+              style: profile.style,
+            }}
+            locale={locale}
+          />
+        )}
+
         <div className="mt-10 flex flex-col items-center gap-4">
 
           {anchorTour ? (
