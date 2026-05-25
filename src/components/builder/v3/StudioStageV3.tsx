@@ -732,6 +732,19 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           regionCenter={regionCenter}
           regionKey={state.regionKey ?? undefined}
           revealed={showMap}
+          curtainLabel={t.yourDay}
+          ribbon={
+            state.acceptedStops.length > 0 ? (
+              <ItineraryRibbon
+                stops={state.acceptedStops}
+                totalMinutes={totalMinutes}
+                fallbackPhrase={t.suggestionFallback}
+                removeLabel={t.resumeRestart}
+                titleLabel={t.yourDay}
+                onRemove={removeStop}
+              />
+            ) : null
+          }
         />
       </div>
 

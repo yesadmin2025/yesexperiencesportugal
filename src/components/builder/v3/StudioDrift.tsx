@@ -373,8 +373,8 @@ function narrativeStageFor(chapter: Chapter, profile: DriftProfile, prediction?:
   const resolved = [profile.companions, profile.pickup, profile.radius, profile.energy, profile.style, profile.social]
     .filter(Boolean).length;
   const fast = isFastPace();
-  const emergenceThreshold = fast ? 0.42 : 0.62;
-  const minResolved = fast ? 2 : 4;
+  const emergenceThreshold = fast ? 0.32 : 0.62;
+  const minResolved = fast ? 1 : 4;
   if ((prediction?.revealConfidence ?? 0) >= emergenceThreshold || resolved >= minResolved) return "emergence" as const;
   if (resolved >= 1 || profile.name) return "recognition" as const;
   return "invitation" as const;
@@ -1268,7 +1268,7 @@ function ChoicePhase({
       if (prediction && confidence) return optionScore(b, confidence, prediction) - optionScore(a, confidence, prediction);
       return w(b) - w(a);
     });
-    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= (isFastPace() ? 0.5 : 0.72)) return sorted.slice(0, 2);
+    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= (isFastPace() ? 0.38 : 0.72)) return sorted.slice(0, 2);
     if (sceneWeighting && sorted.length >= 3) {
       const last = sorted[sorted.length - 1]!;
       if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
