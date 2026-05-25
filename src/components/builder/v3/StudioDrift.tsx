@@ -1349,10 +1349,12 @@ function ChoicePhase({
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
     const t2 = window.setTimeout(() => setShowHints(true), 1800);
+    const t3 = window.setTimeout(() => setIdle(true), 6000);
     ordered.forEach((o) => onSceneShown?.(o.scene.id));
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter.id]);
