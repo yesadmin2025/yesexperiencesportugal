@@ -203,7 +203,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     stopPointsRef.current = points;
     points.forEach((p, i) => {
       const m = L.marker(p, { icon: pin(i + 1, false) });
-      m.bindTooltip(emotionalMode ? `momento ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
+      m.bindTooltip(emotionalMode ? `${(CHIP_I18N[locale] ?? CHIP_I18N.en).stop} ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
       layer.addLayer(m);
       stopMarkersRef.current.push(m);
     });
