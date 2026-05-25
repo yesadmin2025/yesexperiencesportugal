@@ -1,7 +1,36 @@
 // Studio v2 — content for the 5-stage guided consultation.
 // Copy is intentionally professional, concierge tone. Edit here, not in components.
 
-import type { IntentAtmosphere, PaceV2, PriorityKey } from "./profile";
+import type { IntentAtmosphere, PaceV2, PriorityKey, DurationKey, EnhancementKey, LuxuryTier } from "./profile";
+
+export const DURATION_OPTIONS: { id: DurationKey; label: string; sub: string }[] = [
+  { id: "half-day",  label: "Half day",       sub: "About 4 hours — a focused chapter" },
+  { id: "full-day",  label: "Full day",       sub: "A complete arc, sunrise feel to dusk" },
+  { id: "multi-day", label: "Multi-day",      sub: "Two or more days, woven together" },
+];
+
+export const ENHANCEMENT_OPTIONS: { id: EnhancementKey; label: string; sub: string }[] = [
+  { id: "sunset_boat",     label: "Sunset boat",     sub: "Private vessel, golden hour" },
+  { id: "private_chef",    label: "Private chef",    sub: "A table set just for you" },
+  { id: "helicopter",      label: "Helicopter",      sub: "An aerial chapter" },
+  { id: "fado_night",      label: "Fado night",      sub: "Intimate Lisbon evening" },
+  { id: "private_cellar",  label: "Private cellar",  sub: "Doors-closed tasting" },
+  { id: "spa_ritual",      label: "Spa ritual",      sub: "Quiet hour before or after" },
+];
+
+export const TIER_OPTIONS: { id: LuxuryTier; label: string; sub: string }[] = [
+  { id: "refined",  label: "Refined",  sub: "Carefully curated · excellent value" },
+  { id: "elevated", label: "Elevated", sub: "Signature comfort · private throughout" },
+  { id: "ultra",    label: "Ultra",    sub: "No compromise · the very best of Portugal" },
+];
+
+export function tierLabel(t: LuxuryTier | undefined): string {
+  if (t === "ultra")    return "Ultra";
+  if (t === "elevated") return "Elevated";
+  if (t === "refined")  return "Refined";
+  return "Shaped";
+}
+
 
 export const INTENT_OPTIONS: { id: IntentAtmosphere; label: string; sub: string }[] = [
   { id: "relaxed_scenic",     label: "Relaxed & scenic",      sub: "Slow roads, long views, breathing room" },
