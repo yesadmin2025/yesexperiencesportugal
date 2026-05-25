@@ -508,6 +508,19 @@ const CHAPTERS: Chapter[] = [
       },
     ],
   },
+  // GUESTS — real bookable data per Bible §4.2 step 4. Numeric input.
+  {
+    kind: "text",
+    id: "guests",
+    scene: SCENES.linenBreeze,
+    whisper: (_p, locale) => tt("chapter.guests", locale),
+    placeholder: (locale) => tt("chapter.guests_placeholder", locale),
+    help: (locale) => tt("chapter.guests_help", locale),
+    field: "guests",
+    inputType: "number",
+    min: 1,
+    max: 20,
+  },
   {
     kind: "choice",
     id: "pickup",
