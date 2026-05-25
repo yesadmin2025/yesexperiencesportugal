@@ -27,12 +27,8 @@ interface StudioV2Props {
   onExit: () => void;
 }
 
-const fade = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit:    { opacity: 0, y: -8 },
-  transition: { duration: 0.22, ease: "easeOut" as const },
-};
+
+
 
 /**
  * Five-stage guided consultation. Each stage writes structured data into
