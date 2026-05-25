@@ -86,11 +86,20 @@ export function StudioV2({ onExit }: StudioV2Props) {
 
   const chromeVisible = stage !== "intent";
 
+  // Atmospheric backdrop — Portugal felt before any text. Defaults to a soft
+  // ivory wash; once an intent is chosen the hue shifts to match.
+  const atmo = profile.intent ? INTENT_ATMOSPHERE[profile.intent] : null;
+  const atmosphereBg = atmo
+    ? `radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, ${atmo.tintA} ${atmo.mix}%, var(--ivory)) 0%, var(--ivory) 55%), radial-gradient(80% 60% at 80% 100%, color-mix(in oklab, ${atmo.tintB} 35%, transparent) 0%, transparent 60%)`
+    : `radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--sand) 35%, var(--ivory)) 0%, var(--ivory) 60%)`;
+
   return (
     <div
-      className="min-h-screen w-full"
+      className="studio-v2 min-h-screen w-full"
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
+      <div className="studio-v2__atmosphere" aria-hidden style={{ background: atmosphereBg }} />
+
       <header className="flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
         {chromeVisible ? (
           <span
