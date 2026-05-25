@@ -27,7 +27,17 @@ interface Props {
   activeStopIndex?: number | null;
   /** Hide chrome for small embedded previews inside Studio Drift. */
   chrome?: boolean;
+  /** Locale for the on-map chip labels ("a tomar forma" / "shaping" etc.). */
+  locale?: "pt" | "en" | "es" | "fr";
 }
+
+const CHIP_I18N = {
+  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens" },
+  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops" },
+  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas" },
+  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts" },
+} as const;
+
 
 /**
  * Premium Leaflet route map — branded numbered pins, animated gold polyline,
@@ -38,7 +48,7 @@ interface Props {
  */
 const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
 
-export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true }: Props) {
+export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true, locale = "en" }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
@@ -58,7 +68,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     });
     const map = L.map(ref.current, {
       zoomControl: false,
-      attributionControl: true,
+      attributionControl: chrome,
       scrollWheelZoom: false,
       center: [38.72, -9.14],
       zoom: 9,
@@ -311,17 +321,29 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
 
   return (
     <div className="relative h-full w-full">
-      {chrome && <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
-        <span className="relative inline-flex h-1.5 w-1.5">
-          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
-          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
-        </span>
-        {emotionalMode ? "a tomar forma" : "Live route"}
-      </div>}
-      {chrome && <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
-        <MapPin size={11} aria-hidden="true" />
-        {emotionalMode ? `${stops.length} momento${stops.length === 1 ? "" : "s"}` : `${stops.length} stop${stops.length === 1 ? "" : "s"}`}
-      </div>}
+      {chrome && (() => {
+        const tr = CHIP_I18N[locale] ?? CHIP_I18N.en;
+        const n = stops.length;
+        const liveLabel = emotionalMode ? tr.live : tr.liveStatic;
+        const stopWord = emotionalMode
+          ? (n === 1 ? tr.stop : tr.stops)
+          : (n === 1 ? tr.stopStatic : tr.stopsStatic);
+        return (
+          <>
+            <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
+              <span className="relative inline-flex h-1.5 w-1.5">
+                <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
+                <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+              </span>
+              {liveLabel}
+            </div>
+            <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
+              <MapPin size={11} aria-hidden="true" />
+              {n} {stopWord}
+            </div>
+          </>
+        );
+      })()}
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"
