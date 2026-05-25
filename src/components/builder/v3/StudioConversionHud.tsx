@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, Zap } from "lucide-react";
 
 /**
  * StudioConversionHud — thin, always-visible conversion band sitting at
@@ -32,6 +32,8 @@ interface Props {
   /** Optional label like "Step" so we can localise later. */
   stepLabel?: string;
   ofLabel?: string;
+  /** When true, shows a small ⚡ Fast badge — Studio v4 / Fase 7. */
+  fast?: boolean;
 }
 
 export function StudioConversionHud({
@@ -41,6 +43,7 @@ export function StudioConversionHud({
   pricePerGuestFrom,
   stepLabel = "Step",
   ofLabel = "of",
+  fast = false,
 }: Props) {
   const stepNumber = Math.min(total, Math.max(1, index + 1));
   const pct = Math.max(0, Math.min(1, (index + 1) / Math.max(1, total)));
@@ -78,7 +81,21 @@ export function StudioConversionHud({
           <span className="opacity-60"> {ofLabel} </span>
           {total}
         </span>
+        {fast && (
+          <span
+            className="inline-flex items-center gap-0.5 rounded-full px-1.5 py-[2px] text-[8.5px] uppercase tracking-[0.18em] font-bold whitespace-nowrap"
+            style={{
+              background: "color-mix(in oklab, var(--gold) 90%, transparent)",
+              color: "var(--charcoal)",
+            }}
+            aria-label="Fast mode — about 60 seconds"
+          >
+            <Zap size={9} strokeWidth={2.6} aria-hidden="true" />
+            60s
+          </span>
+        )}
         <span className="flex items-center gap-[3px]" aria-hidden="true">
+
           {Array.from({ length: dots }, (_, i) => (
             <span
               key={i}

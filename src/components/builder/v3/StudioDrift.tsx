@@ -1039,6 +1039,7 @@ export function StudioDrift({ onExit }: Props) {
             total={CHAPTERS.length}
             confidence={prediction.revealConfidence}
             pricePerGuestFrom={145}
+            fast={isFastPace()}
           />
           <StudioTrustStrip
             reviewsLabel={tt("trust.reviews", locale) || "reviews"}

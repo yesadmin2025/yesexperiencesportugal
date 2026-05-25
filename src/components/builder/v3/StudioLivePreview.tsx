@@ -4,6 +4,7 @@ import { X, ChevronUp } from "lucide-react";
 import type { ComposedDay } from "@/lib/drift/composer";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { t as tt, type DriftLocale } from "@/lib/drift/i18n";
+import { recordDriftEvent } from "@/lib/drift/telemetry";
 import type { DriftProfile } from "./StudioDrift";
 import type { derivePrediction } from "@/lib/drift/predict";
 import { StudioDrawerReco } from "./StudioDrawerReco";
@@ -88,7 +89,12 @@ export function StudioLivePreview(props: Props) {
       {/* Peek — same footprint as legacy preview, now a button */}
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          void recordDriftEvent("v4_drawer_open", {
+            meta: { stops: day.stops.length, confidence: confidencePct },
+          });
+        }}
         aria-expanded={open}
         aria-label={tt("preview.expand", locale) || "Open live preview of your day"}
         className={`studio-build-preview${dense ? " is-dense" : ""} absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both] text-left transition-transform active:scale-[0.99]`}
@@ -263,7 +269,10 @@ export function StudioLivePreview(props: Props) {
                     type="button"
                     role="tab"
                     aria-selected={active}
-                    onClick={() => setTab(id)}
+                    onClick={() => {
+                      setTab(id);
+                      void recordDriftEvent("v4_drawer_tab", { meta: { tab: id } });
+                    }}
                     className="flex-1 rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
                     style={{
                       background: active ? "var(--charcoal)" : "transparent",

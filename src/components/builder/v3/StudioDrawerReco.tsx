@@ -83,11 +83,12 @@ export function StudioDrawerReco({ profile, locale, confidence, excludeId }: Pro
         params={{ tourId: pick.id }}
         target="_blank"
         rel="noopener"
-        onClick={() =>
+        onClick={() => {
+          void recordDriftEvent("v4_reco_add", { meta: { tourId: pick.id } });
           void recordDriftEvent("cta_book", {
             meta: { kind: "drawer_reco_click", tourId: pick.id },
-          })
-        }
+          });
+        }}
         className="flex items-center gap-3 px-3 py-2.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
       >
         <span
