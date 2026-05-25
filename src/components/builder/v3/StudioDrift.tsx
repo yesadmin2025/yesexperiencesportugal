@@ -685,12 +685,18 @@ export function StudioDrift({ onExit }: Props) {
     window.addEventListener("resize", onR);
     return () => window.removeEventListener("resize", onR);
   }, []);
+  // BuildPreview is 84px + 12px inset + ~108px reserve. On short viewports
+  // with 3 choice cards it bleeds over the 3rd option. Use a generous floor
+  // (720px) so the preview only appears when there's real room to stack it
+  // under all three cards without overlap.
+  const choiceCount = chapter.choices?.length ?? 0;
+  const vhFloor = choiceCount >= 3 ? 720 : 640;
   const showBuildPreview =
     chapter.kind !== "convergence" &&
     Boolean(profile.pickup) &&
     chapterIdx >= 4 &&
     liveDay.stops.length > 0 &&
-    vh >= 640;
+    vh >= vhFloor;
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
   // actually moved (top mood, itinerary, collapse list, pacing, …).
