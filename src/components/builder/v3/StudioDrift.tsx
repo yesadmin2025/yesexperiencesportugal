@@ -1036,6 +1036,7 @@ export function StudioDrift({ onExit }: Props) {
             index={chapterIdx}
             total={CHAPTERS.length}
             confidence={prediction.revealConfidence}
+            pricePerGuestFrom={145}
           />
           <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           <EmergingThemes
