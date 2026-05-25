@@ -1057,8 +1057,10 @@ export function StudioDrift({ onExit }: Props) {
           profile={inferredProfile}
           prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
+          dense={buildPreviewIsDense}
         />
       )}
+
       <ChapterFade chapterId={chapter.id} />
 
       {onExit && chapter.kind !== "convergence" && (
