@@ -374,6 +374,10 @@ export function StudioV2({ onExit }: StudioV2Props) {
         )}
       </main>
 
+      {CHOICE_BEATS.has(beat) && beatIndex > 1 && (
+        <LivingStoryStrip profile={profile} preview={preview} />
+      )}
+
       <PersistentChatFab profile={profile} />
     </div>
   );
