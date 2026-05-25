@@ -42,3 +42,20 @@ export const TRANSITION_COPY = {
 
 /** Tap-twice weighting: single = 50, double (must) = 100. */
 export const PRIORITY_WEIGHTS = { single: 50, must: 100 } as const;
+
+/**
+ * Atmospheric backdrops per intent. Token-based radial washes — no imagery.
+ * Used by Studio v2 to let Portugal be *felt* before any configuration.
+ * `tintA` = dominant warm/cool wash; `tintB` = secondary lift; `mix` = strength %.
+ */
+export const INTENT_ATMOSPHERE: Record<
+  IntentAtmosphere,
+  { tintA: string; tintB: string; mix: number; whisper: string }
+> = {
+  relaxed_scenic:     { tintA: "var(--sand)",  tintB: "var(--gold-soft)", mix: 55, whisper: "Wide horizons, slow light." },
+  elegant_cultural:   { tintA: "var(--ivory)", tintB: "var(--sand)",      mix: 70, whisper: "Stone, shadow, quiet rooms." },
+  food_local:         { tintA: "var(--gold-soft)", tintB: "var(--sand)",  mix: 60, whisper: "Cellars, copper light, long lunches." },
+  social_celebratory: { tintA: "var(--gold)",  tintB: "var(--gold-soft)", mix: 35, whisper: "A day that lifts the room." },
+  romantic_intimate:  { tintA: "var(--gold-soft)", tintB: "var(--ivory)", mix: 50, whisper: "Two, the coast, dusk." },
+  coastal_cinematic:  { tintA: "var(--teal-2)", tintB: "var(--ivory)",    mix: 35, whisper: "Cliffs, salt, Atlantic gold." },
+};
