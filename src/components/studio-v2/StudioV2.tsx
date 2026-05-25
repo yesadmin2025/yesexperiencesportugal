@@ -233,65 +233,74 @@ export function StudioV2({ onExit }: StudioV2Props) {
         )}
 
         {stage === "refine" && (
-          <section key="refine" className="studio-v2-reveal">
-            <Eyebrow>Refine</Eyebrow>
-            <Headline>A few details — all optional.</Headline>
-            <Helper>
-              Skip anything. We use sensible defaults and the concierge confirms before booking.
-            </Helper>
-
-            <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
-              <Accordion title="Who is travelling" summary={groupSummary(profile)}>
-                <GroupForm value={profile.group} onChange={(g) => update({ group: g })} />
-              </Accordion>
-              <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"}>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
-                  {PACE_OPTIONS.map((opt) => (
-                    <OptionCard
-                      key={opt.id}
-                      active={profile.pace === opt.id}
-                      label={opt.label}
-                      sub={opt.sub}
-                      onClick={() => update(applyPace(profile, opt.id as PaceV2))}
-                    />
-                  ))}
-                </div>
-              </Accordion>
-              <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {PRIORITY_OPTIONS.map((opt) => {
-                    const w = profile.priorityWeights[opt.id as PriorityKey];
-                    const next =
-                      w === undefined ? PRIORITY_WEIGHTS.single :
-                      w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
-                      undefined;
-                    return (
-                      <PriorityChip
-                        key={opt.id}
-                        label={opt.label}
-                        weight={w}
-                        onClick={() => {
-                          const pw = { ...profile.priorityWeights };
-                          if (next === undefined) delete pw[opt.id as PriorityKey];
-                          else pw[opt.id as PriorityKey] = next;
-                          update({ priorityWeights: pw });
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </Accordion>
-              <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
-                <OpsForm value={profile.ops} onChange={(ops) => update({ ops })} />
-              </Accordion>
-            </div>
-
-            <StageFooter
-              disabled={false}
-              helper="Designing your day."
-              ctaLabel="Design my day"
-              onContinue={finalize}
+          <section key="refine" className="studio-v2-reveal -mx-5 sm:-mx-8">
+            <JourneyLayer
+              preview={preview}
+              insight={insightText}
+              insightVisible={insightVisible}
             />
+
+            <div className="px-5 sm:px-8 mt-6">
+              <Eyebrow>Refine</Eyebrow>
+              <Headline>The journey reacts as you decide.</Headline>
+              <Helper>
+                Every choice reshapes the route above. Skip what you like — sensible defaults stand in,
+                and the concierge confirms before booking.
+              </Helper>
+
+              <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+                <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"} defaultOpen>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
+                    {PACE_OPTIONS.map((opt) => (
+                      <OptionCard
+                        key={opt.id}
+                        active={profile.pace === opt.id}
+                        label={opt.label}
+                        sub={opt.sub}
+                        onClick={() => update(applyPace(profile, opt.id as PaceV2), "pace")}
+                      />
+                    ))}
+                  </div>
+                </Accordion>
+                <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {PRIORITY_OPTIONS.map((opt) => {
+                      const w = profile.priorityWeights[opt.id as PriorityKey];
+                      const next =
+                        w === undefined ? PRIORITY_WEIGHTS.single :
+                        w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
+                        undefined;
+                      return (
+                        <PriorityChip
+                          key={opt.id}
+                          label={opt.label}
+                          weight={w}
+                          onClick={() => {
+                            const pw = { ...profile.priorityWeights };
+                            if (next === undefined) delete pw[opt.id as PriorityKey];
+                            else pw[opt.id as PriorityKey] = next;
+                            update({ priorityWeights: pw }, "priority");
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </Accordion>
+                <Accordion title="Who is travelling" summary={groupSummary(profile)}>
+                  <GroupForm value={profile.group} onChange={(g) => update({ group: g }, "group")} />
+                </Accordion>
+                <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
+                  <OpsForm value={profile.ops} onChange={(ops) => update({ ops }, "ops")} />
+                </Accordion>
+              </div>
+
+              <StageFooter
+                disabled={false}
+                helper="Designing your day."
+                ctaLabel="Design my day"
+                onContinue={finalize}
+              />
+            </div>
           </section>
         )}
 
