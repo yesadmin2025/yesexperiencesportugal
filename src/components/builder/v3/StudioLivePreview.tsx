@@ -279,7 +279,13 @@ export function StudioLivePreview(props: Props) {
             {/* content */}
             <div className="flex-1 overflow-y-auto px-4 pb-4">
               {tab === "story" && (
-                <StoryTab day={day} profile={profile} locale={locale} />
+                <StoryTab
+                  day={day}
+                  profile={profile}
+                  locale={locale}
+                  confidence={prediction?.revealConfidence ?? 0}
+                  anchorId={day.anchorTourId}
+                />
               )}
               {tab === "timeline" && <TimelineTab items={timeline} locale={locale} />}
               {tab === "map" && (
