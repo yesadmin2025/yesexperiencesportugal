@@ -241,14 +241,16 @@ export function StudioV2({ onExit }: StudioV2Props) {
           >
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {INTENT_OPTIONS.map((opt) => (
-                <OptionCard
+                <PhotoOptionCard
                   key={opt.id}
                   active={profile.intent === opt.id}
                   label={opt.label}
                   sub={opt.sub}
+                  image={INTENT_IMAGE[opt.id].src}
+                  alt={INTENT_IMAGE[opt.id].alt}
                   onClick={() => {
                     update(applyIntent(profile, opt.id as IntentAtmosphere));
-                    window.setTimeout(next, 280);
+                    window.setTimeout(next, 320);
                   }}
                 />
               ))}
