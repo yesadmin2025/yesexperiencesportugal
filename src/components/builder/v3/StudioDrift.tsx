@@ -2448,7 +2448,7 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
  * moment, threaded with their behavior, profile and stage. Auto-fades
  * after ~5.5s so it never blocks interaction. Reduced-motion safe.
  */
-function AiWhisper({ text }: { text: string }) {
+function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
   const [opacity, setOpacity] = useState(0);
   useEffect(() => {
     // Delay entry so the chapter headline lands first — prevents
@@ -2460,6 +2460,7 @@ function AiWhisper({ text }: { text: string }) {
       window.clearTimeout(t2);
     };
   }, []);
+  const sensingLabel = locale ? tt("ui.sensing", locale) : "sensing";
   return (
     <div
       aria-live="polite"
@@ -2481,7 +2482,7 @@ function AiWhisper({ text }: { text: string }) {
           className="h-1 w-1 rounded-full motion-safe:animate-pulse"
           style={{ background: "var(--gold)", boxShadow: "0 0 6px var(--gold)" }}
         />
-        sensing
+        {sensingLabel}
       </span>
       <p
         className="text-center italic"
@@ -2500,6 +2501,7 @@ function AiWhisper({ text }: { text: string }) {
     </div>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio
