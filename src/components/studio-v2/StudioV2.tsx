@@ -646,6 +646,16 @@ function Reveal({ result }: { result: DesignResult }) {
     <div>
       <Eyebrow>Your experience</Eyebrow>
       <Headline>A {paceLabel(result.profile.pace)} day in {regionLabel(region)}.</Headline>
+      <p
+        className="mt-4 text-[14.5px] leading-relaxed"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontStyle: "italic",
+          color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+        }}
+      >
+        {revealFraming(result.profile.intent, region)}
+      </p>
       <Helper>
         {day.stops.length} stops · about {fmtMinutes(day.totals.dayMin)} total.
       </Helper>
