@@ -35,27 +35,13 @@ export function EncouragementBar({ index, total, locale, name }: Props) {
   }, [label]);
 
   return (
-    <div aria-hidden="true" className="absolute top-0 left-0 right-0 z-40 pointer-events-none">
-      {/* meridian */}
-      <div
-        className="h-px"
-        style={{
-          background: "color-mix(in oklab, var(--ivory) 8%, transparent)",
-          opacity: visibility,
-        }}
-      >
-        <div
-          className="h-full origin-left transition-[transform,opacity] duration-[1400ms] ease-out"
-          style={{
-            transform: `scaleX(${pct})`,
-            background:
-              "linear-gradient(90deg, color-mix(in oklab, var(--ivory) 35%, transparent) 0%, color-mix(in oklab, var(--gold) 60%, transparent) 100%)",
-          }}
-        />
-      </div>
+    <div
+      aria-hidden="true"
+      className="absolute top-[108px] left-0 right-0 z-40 pointer-events-none px-4"
+    >
       {/* encouragement whisper — poetic line, sentence case (NOT uppercased) */}
       <p
-        className="mt-3 text-center transition-opacity duration-[700ms] ease-out"
+        className="text-center transition-opacity duration-[700ms] ease-out"
         style={{
           fontFamily: "'Inter', system-ui, sans-serif",
           fontSize: "11px",
