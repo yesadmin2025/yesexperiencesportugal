@@ -22,7 +22,12 @@ export type DriftEvent =
   | "cta_save"
   | "cta_refine"
   | "cta_whatsapp"
-  | "session_drop";
+  | "session_drop"
+  // Studio v4 — drawer & conversion telemetry
+  | "v4_drawer_open"
+  | "v4_drawer_tab"
+  | "v4_reco_add"
+  | "v4_fast_mode_on";
 
 interface RecordOpts {
   chapterId?: string;
