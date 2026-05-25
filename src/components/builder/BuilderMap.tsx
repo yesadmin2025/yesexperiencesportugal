@@ -32,10 +32,10 @@ interface Props {
 }
 
 const CHIP_I18N = {
-  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens" },
-  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops" },
-  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas" },
-  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts" },
+  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens", mapAria: "Mapa do percurso", outOfRange: "fora de alcance" },
+  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops", mapAria: "Live route map", outOfRange: "out of range" },
+  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas", mapAria: "Mapa del recorrido", outOfRange: "fuera de alcance" },
+  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts", mapAria: "Carte de l'itinéraire", outOfRange: "hors de portée" },
 } as const;
 
 
