@@ -73,6 +73,8 @@ export interface OpsConstraints {
 }
 
 export interface TravelerProfile {
+  /** Optional traveller name — personalises the written story. */
+  name?: string;
   intent?: IntentAtmosphere;
   pace?: PaceV2;
   // 0–100 normalized signals (derived from intent + priorities)
@@ -104,6 +106,7 @@ export function emptyProfile(): TravelerProfile {
     confidence: {},
   };
 }
+
 
 // ─── derivations ───────────────────────────────────────────────────────────
 
