@@ -1032,6 +1032,11 @@ export function StudioDrift({ onExit }: Props) {
 
       {chapter.kind !== "convergence" && (
         <>
+          <StudioConversionHud
+            index={chapterIdx}
+            total={CHAPTERS.length}
+            confidence={prediction.revealConfidence}
+          />
           <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           <EmergingThemes
             sceneWeighting={prediction.sceneWeighting}
