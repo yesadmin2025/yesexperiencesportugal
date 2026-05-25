@@ -33,6 +33,7 @@ import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
 import { shouldShowBuildPreview } from "@/lib/drift/build-preview-visibility";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useStudioVariant } from "@/hooks/useStudioVariant";
 import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
 
 
@@ -709,6 +710,8 @@ export function StudioDrift({ onExit }: Props) {
     vh: breakpointVh,
   });
   const buildPreviewIsDense = choiceCount >= 3;
+  const studioAb = useStudioVariant();
+
 
 
 
@@ -1071,6 +1074,8 @@ export function StudioDrift({ onExit }: Props) {
           prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
           dense={buildPreviewIsDense}
+          defaultOpen={studioAb.variant === "open"}
+          onCtaBook={() => studioAb.trackEvent("cta_book")}
         />
       )}
 

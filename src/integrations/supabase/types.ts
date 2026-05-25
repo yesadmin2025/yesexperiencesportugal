@@ -1099,6 +1099,69 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_ab_assignments: {
+        Row: {
+          anonymous_id: string
+          assigned_at: string
+          experiment_key: string
+          id: string
+          user_agent: string | null
+          variant: string
+        }
+        Insert: {
+          anonymous_id: string
+          assigned_at?: string
+          experiment_key: string
+          id?: string
+          user_agent?: string | null
+          variant: string
+        }
+        Update: {
+          anonymous_id?: string
+          assigned_at?: string
+          experiment_key?: string
+          id?: string
+          user_agent?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
+      studio_ab_events: {
+        Row: {
+          anonymous_id: string
+          event: string
+          experiment_key: string
+          id: string
+          meta: Json | null
+          occurred_at: string
+          route: string | null
+          scene_id: string | null
+          variant: string
+        }
+        Insert: {
+          anonymous_id: string
+          event: string
+          experiment_key: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+          scene_id?: string | null
+          variant: string
+        }
+        Update: {
+          anonymous_id?: string
+          event?: string
+          experiment_key?: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+          scene_id?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
