@@ -24,6 +24,7 @@ import { EncouragementBar } from "./EncouragementBar";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
 import { RevealInvestment } from "./RevealInvestment";
+import { SmartRecommendations } from "./SmartRecommendations";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
@@ -1916,6 +1917,19 @@ function ConvergencePhase({
             companions={profile.companions}
             locale={locale}
             stopsCount={day.stops.length}
+          />
+        )}
+
+        {anchorTour && (
+          <SmartRecommendations
+            anchor={anchorTour}
+            profile={{
+              pickup: profile.pickup,
+              radius: profile.radius,
+              energy: profile.energy,
+              style: profile.style,
+            }}
+            locale={locale}
           />
         )}
 
