@@ -653,6 +653,58 @@ const CHAPTERS: Chapter[] = [
       },
     ],
   },
+  // ENHANCEMENTS — Bible §4.2 step 9. Single optional upgrade per session.
+  {
+    kind: "choice",
+    id: "enhancements",
+    whisper: (_p, locale) => tt("chapter.enhancements", locale),
+    options: [
+      {
+        scene: SCENES.linenBreeze,
+        hintKey: "hint.enh.0",
+        imprint: { enhancement: "none" },
+        reinforce: ["linen"],
+      },
+      {
+        scene: SCENES.candleBread,
+        hintKey: "hint.enh.1",
+        imprint: { enhancement: "lunch" },
+        reinforce: ["candle", "bread", "amber"],
+      },
+      {
+        scene: SCENES.viewpoint,
+        hintKey: "hint.enh.2",
+        imprint: { enhancement: "sunset" },
+        reinforce: ["amber", "vine"],
+      },
+    ],
+  },
+  // TIER — Bible §4.2 step 10. Drives premium positioning, not invented pricing.
+  {
+    kind: "choice",
+    id: "tier",
+    whisper: (_p, locale) => tt("chapter.tier", locale),
+    options: [
+      {
+        scene: SCENES.quietChapel,
+        hintKey: "hint.tier.0",
+        imprint: { tier: "essential" },
+        reinforce: ["linen", "stone"],
+      },
+      {
+        scene: SCENES.sharedTable,
+        hintKey: "hint.tier.1",
+        imprint: { tier: "signature" },
+        reinforce: ["candle", "amber"],
+      },
+      {
+        scene: SCENES.dawnDouro,
+        hintKey: "hint.tier.2",
+        imprint: { tier: "bespoke" },
+        reinforce: ["amber", "vine", "fado"],
+      },
+    ],
+  },
   { kind: "convergence", id: "convergence" },
 ];
 
