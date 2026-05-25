@@ -31,6 +31,8 @@ export interface StudioDict {
   arrivalContinue: string;
   /** Discreet faster-pace affordance shown alongside `arrivalContinue` (BEAT 1). */
   arrivalFast: string;
+  /** Discreet "pro / agent" entry for travel agents and power users (BEAT 1). */
+  arrivalPro: string;
   /** Single emotional framing question for the opening scene picker (BEAT 2). */
   openingPrompt: string;
   /** 3 full-bleed cinematic scenes for the opening pull (BEAT 2). Each maps to a Mood. */
@@ -103,6 +105,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     arrivalLine: "Há lugares para visitar.\nPortugal é para sentir.",
     arrivalContinue: "entrar",
     arrivalFast: "em 60 segundos",
+    arrivalPro: "sou agente de viagens",
     openingPrompt: "Que tipo de dia fica contigo?",
     openingScenes: [
       { value: "open", label: "Atlântico do nascer ao pôr" },
@@ -224,6 +227,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     arrivalLine: "Some places ask to be visited.\nPortugal asks to be felt.",
     arrivalContinue: "enter",
     arrivalFast: "in 60 seconds",
+    arrivalPro: "i'm a travel agent",
     openingPrompt: "What kind of day stays with you?",
     openingScenes: [
       { value: "open", label: "Atlantic all day" },
@@ -345,6 +349,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     arrivalLine: "Hay lugares para visitar.\nA Portugal se le siente.",
     arrivalContinue: "entrar",
     arrivalFast: "en 60 segundos",
+    arrivalPro: "soy agente de viajes",
     openingPrompt: "¿Qué tipo de día se queda contigo?",
     openingScenes: [
       { value: "open", label: "Atlántico de sol a sol" },
@@ -466,6 +471,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
     arrivalLine: "Certains lieux se visitent.\nLe Portugal se ressent.",
     arrivalContinue: "entrer",
     arrivalFast: "en 60 secondes",
+    arrivalPro: "je suis agent de voyages",
     openingPrompt: "Quel genre de journée te marque ?",
     openingScenes: [
       { value: "open", label: "L'Atlantique du matin au soir" },

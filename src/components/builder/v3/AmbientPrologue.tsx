@@ -149,6 +149,23 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         >
           {t.arrivalFast}
         </button>
+
+        {/* Pro / Travel agent entry — bypasses the cinematic studio and opens the
+            production builder with full transparency (real stops, price per pax,
+            shareable link). Intentionally tiny and at the very bottom. */}
+        <a
+          href="/builder?mode=pro"
+          onClick={(e) => e.stopPropagation()}
+          className={`inline-flex items-center min-h-[32px] px-2 text-[9.5px] tracking-[0.32em] uppercase font-medium text-[color:var(--ivory)]/40 hover:text-[color:var(--gold)] transition-[opacity,color] duration-[1100ms] ease-out ${
+            showContinue ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          aria-hidden={!showContinue}
+          tabIndex={showContinue ? 0 : -1}
+          style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+        >
+          {t.arrivalPro} →
+        </a>
+
       </div>
 
       <style>{`
