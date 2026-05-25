@@ -13,6 +13,7 @@ import {
 } from "@/lib/studio-v2/profile";
 import {
   INTENT_OPTIONS,
+  INTENT_ATMOSPHERE,
   PACE_OPTIONS,
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
@@ -85,11 +86,20 @@ export function StudioV2({ onExit }: StudioV2Props) {
 
   const chromeVisible = stage !== "intent";
 
+  // Atmospheric backdrop — Portugal felt before any text. Defaults to a soft
+  // ivory wash; once an intent is chosen the hue shifts to match.
+  const atmo = profile.intent ? INTENT_ATMOSPHERE[profile.intent] : null;
+  const atmosphereBg = atmo
+    ? `radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, ${atmo.tintA} ${atmo.mix}%, var(--ivory)) 0%, var(--ivory) 55%), radial-gradient(80% 60% at 80% 100%, color-mix(in oklab, ${atmo.tintB} 35%, transparent) 0%, transparent 60%)`
+    : `radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--sand) 35%, var(--ivory)) 0%, var(--ivory) 60%)`;
+
   return (
     <div
-      className="min-h-screen w-full"
+      className="studio-v2 min-h-screen w-full"
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
+      <div className="studio-v2__atmosphere" aria-hidden style={{ background: atmosphereBg }} />
+
       <header className="flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
         {chromeVisible ? (
           <span
@@ -135,26 +145,32 @@ export function StudioV2({ onExit }: StudioV2Props) {
             key="intent"
             className="min-h-[70vh] flex flex-col justify-center"
           >
+            <p
+              className="studio-v2-reveal text-[10.5px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+            >
+              Portugal — designed for you
+            </p>
             <h1
-              className="text-[28px] leading-[1.15] sm:text-[40px]"
+              className="studio-v2-reveal delay-1 mt-4 text-[28px] leading-[1.15] sm:text-[40px]"
               style={{
                 fontFamily: "var(--font-display, Montserrat), sans-serif",
                 fontWeight: 700,
               }}
             >
-              How should Portugal{" "}
+              How should it{" "}
               <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
                 feel
               </span>
               ?
             </h1>
             <p
-              className="mt-3 text-[14px] leading-relaxed"
+              className="studio-v2-reveal delay-2 mt-3 text-[14px] leading-relaxed"
               style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
             >
               Choose the atmosphere closest to what you have in mind.
             </p>
-            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="studio-v2-reveal delay-3 mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {INTENT_OPTIONS.map((opt) => (
                 <OptionCard
                   key={opt.id}
@@ -167,20 +183,21 @@ export function StudioV2({ onExit }: StudioV2Props) {
             </div>
             {profile.intent && (
               <p
-                className="mt-6 text-[12.5px] italic"
+                key={profile.intent}
+                className="studio-v2-reveal mt-6 text-[13px] italic"
                 style={{
                   fontFamily: "Georgia, 'Times New Roman', serif",
-                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                {TRANSITION_COPY.afterIntent}
+                {INTENT_ATMOSPHERE[profile.intent].whisper}
               </p>
             )}
           </section>
         )}
 
         {stage === "refine" && (
-          <section key="refine">
+          <section key="refine" className="studio-v2-reveal">
             <Eyebrow>Refine</Eyebrow>
             <Headline>A few details — all optional.</Headline>
             <Helper>
@@ -243,7 +260,7 @@ export function StudioV2({ onExit }: StudioV2Props) {
         )}
 
         {stage === "reveal" && result && (
-          <section key="reveal">
+          <section key="reveal" className="studio-v2-reveal">
             <Reveal result={result} />
           </section>
         )}

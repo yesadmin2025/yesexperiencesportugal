@@ -4881,3 +4881,40 @@ html { scroll-behavior: smooth; }
 @media (max-height: 719.98px) {
   .studio-build-preview.is-dense { display: none !important; }
 }
+
+/* ─── Studio v2: cinematic backdrop + sequenced reveal ────────────────────
+ * Scoped utilities for /studio-v2. Atmospheric tint shifts hue with the
+ * chosen intent; sequenced reveal lets the first screen breathe before
+ * showing choices. Reduced-motion safe.
+ */
+.studio-v2 {
+  position: relative;
+  isolation: isolate;
+}
+.studio-v2__atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 1200ms ease, background 1200ms ease;
+  opacity: 1;
+}
+.studio-v2 > * { position: relative; z-index: 1; }
+
+@keyframes studioV2FadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.studio-v2-reveal {
+  opacity: 0;
+  animation: studioV2FadeUp 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.studio-v2-reveal.delay-1 { animation-delay: 120ms; }
+.studio-v2-reveal.delay-2 { animation-delay: 320ms; }
+.studio-v2-reveal.delay-3 { animation-delay: 560ms; }
+.studio-v2-reveal.delay-4 { animation-delay: 820ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-v2__atmosphere { transition: none; }
+  .studio-v2-reveal { animation: none; opacity: 1; transform: none; }
+}
