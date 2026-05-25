@@ -1047,7 +1047,9 @@ export function StudioDrift({ onExit }: Props) {
           <StudioTrustStrip
             reviewsLabel={tt("trust.reviews", locale) || "reviews"}
           />
-          <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+          {chapter.kind !== "choice" && (
+            <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+          )}
           <EmergingThemes
             sceneWeighting={prediction.sceneWeighting}
             locale={locale}
