@@ -378,8 +378,10 @@ function groupSummary(p: TravelerProfile): string {
 function prioritiesSummary(p: TravelerProfile): string {
   const n = Object.keys(p.priorityWeights).length;
   return n === 0 ? "AI will infer from intent" : `${n} selected`;
+}
 
 // ─── refine progression chrome ───────────────────────────────────────────
+
 
 function RefineProgress({ current }: { current: RefineStep }) {
   const idx = REFINE_ORDER.indexOf(current);
