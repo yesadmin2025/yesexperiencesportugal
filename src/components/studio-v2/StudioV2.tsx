@@ -622,62 +622,15 @@ function Reveal({ result }: { result: DesignResult }) {
     variant === "richer"  ? result.variants.richer  :
     result.day;
 
+  const [reasoningOpen, setReasoningOpen] = useState(false);
+
   return (
     <div>
       <Eyebrow>Your experience</Eyebrow>
       <Headline>A {paceLabel(result.profile.pace)} day in {regionLabel(region)}.</Headline>
       <Helper>
-        Designed for the {archetypeLabel(archetype)} · {day.stops.length} stops · about{" "}
-        {fmtMinutes(day.totals.dayMin)} total.
+        {day.stops.length} stops · about {fmtMinutes(day.totals.dayMin)} total.
       </Helper>
-
-      <div
-        className="mt-6 rounded-[2px] border p-5"
-        style={{
-          borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
-          background: "color-mix(in oklab, var(--sand) 35%, transparent)",
-        }}
-      >
-        <ScoreRow label="Overall match" value={score.total} primary />
-        <ScoreRow label="Fit"        value={score.fit} />
-        <ScoreRow label="Pacing"     value={score.pacing} />
-        <ScoreRow label="Logistics"  value={score.logistics} />
-      </div>
-
-      <div className="mt-6">
-        <p
-          className="mb-2 text-[10.5px] uppercase tracking-[0.28em]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-        >
-          Day intensity
-        </p>
-        <div
-          className="inline-flex rounded-full border p-1"
-          style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
-          role="tablist"
-          aria-label="Day intensity"
-        >
-          {(["lighter", "signature", "richer"] as VariantKey[]).map((v) => {
-            const active = variant === v;
-            return (
-              <button
-                key={v}
-                role="tab"
-                aria-selected={active}
-                onClick={() => setVariant(v)}
-                className="rounded-full px-4 py-1.5 text-[12px] tracking-[0.18em] lowercase transition min-h-[36px]"
-                style={{
-                  background: active ? "var(--charcoal)" : "transparent",
-                  color: active ? "var(--ivory)" : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-                  fontWeight: active ? 600 : 500,
-                }}
-              >
-                {v}
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       <ol className="mt-8 space-y-4">
         {day.stops.map(({ stop, driveFromPrev }, i) => (
@@ -723,50 +676,124 @@ function Reveal({ result }: { result: DesignResult }) {
         </div>
       )}
 
-      {result.upsells.length > 0 && (
-        <div className="mt-10">
-          <p
-            className="text-[10.5px] uppercase tracking-[0.32em]"
-            style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+      <button
+        type="button"
+        onClick={() => setReasoningOpen((o) => !o)}
+        className="mt-8 flex items-center gap-2 text-[11.5px] uppercase tracking-[0.28em] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        aria-expanded={reasoningOpen}
+      >
+        {reasoningOpen ? "Hide" : "See"} the reasoning
+        <ChevronDown
+          className="h-3.5 w-3.5 transition-transform duration-200"
+          style={{ transform: reasoningOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+          aria-hidden
+        />
+      </button>
+
+      {reasoningOpen && (
+        <div className="mt-4 space-y-6">
+          <div
+            className="rounded-[2px] border p-5"
+            style={{
+              borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
+              background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+            }}
           >
-            Worth considering
-          </p>
-          <ul className="mt-3 space-y-3">
-            {result.upsells.map((u) => (
-              <li
-                key={u.stop.id}
-                className="rounded-[2px] border p-4"
-                style={{
-                  borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
-                  background: "color-mix(in oklab, var(--sand) 30%, transparent)",
-                }}
+            <p
+              className="mb-3 text-[11px] uppercase tracking-[0.28em]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+            >
+              Designed for the {archetypeLabel(archetype)}
+            </p>
+            <ScoreRow label="Overall match" value={score.total} primary />
+            <ScoreRow label="Fit"        value={score.fit} />
+            <ScoreRow label="Pacing"     value={score.pacing} />
+            <ScoreRow label="Logistics"  value={score.logistics} />
+          </div>
+
+          <div>
+            <p
+              className="mb-2 text-[10.5px] uppercase tracking-[0.28em]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+            >
+              Day intensity
+            </p>
+            <div
+              className="inline-flex rounded-full border p-1"
+              style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+              role="tablist"
+              aria-label="Day intensity"
+            >
+              {(["lighter", "signature", "richer"] as VariantKey[]).map((v) => {
+                const active = variant === v;
+                return (
+                  <button
+                    key={v}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setVariant(v)}
+                    className="rounded-full px-4 py-1.5 text-[12px] tracking-[0.18em] lowercase transition min-h-[36px]"
+                    style={{
+                      background: active ? "var(--charcoal)" : "transparent",
+                      color: active ? "var(--ivory)" : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                      fontWeight: active ? 600 : 500,
+                    }}
+                  >
+                    {v}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {result.upsells.length > 0 && (
+            <div>
+              <p
+                className="text-[10.5px] uppercase tracking-[0.32em]"
+                style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
               >
-                <p
-                  className="text-[14px]"
-                  style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
-                >
-                  {u.stop.name}
-                </p>
-                <p
-                  className="mt-1 text-[12.5px] italic"
-                  style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                    color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-                  }}
-                >
-                  {u.reason}
-                </p>
-                <p
-                  className="mt-1.5 text-[11px] uppercase tracking-[0.22em]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                >
-                  {fmtMinutes(u.stop.dwellMin)} on site
-                </p>
-              </li>
-            ))}
-          </ul>
+                Worth considering
+              </p>
+              <ul className="mt-3 space-y-3">
+                {result.upsells.map((u) => (
+                  <li
+                    key={u.stop.id}
+                    className="rounded-[2px] border p-4"
+                    style={{
+                      borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                      background: "color-mix(in oklab, var(--sand) 30%, transparent)",
+                    }}
+                  >
+                    <p
+                      className="text-[14px]"
+                      style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+                    >
+                      {u.stop.name}
+                    </p>
+                    <p
+                      className="mt-1 text-[12.5px] italic"
+                      style={{
+                        fontFamily: "Georgia, 'Times New Roman', serif",
+                        color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                      }}
+                    >
+                      {u.reason}
+                    </p>
+                    <p
+                      className="mt-1.5 text-[11px] uppercase tracking-[0.22em]"
+                      style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                    >
+                      {fmtMinutes(u.stop.dwellMin)} on site
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
+
 
 
       <div className="mt-12 flex flex-col gap-3">
