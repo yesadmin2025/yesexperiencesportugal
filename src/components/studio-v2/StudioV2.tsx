@@ -734,10 +734,10 @@ function ChoiceBeat({
         <button
           type="button"
           onClick={onBack}
-          className="text-[11.5px] uppercase tracking-[0.28em] min-h-[44px] px-2 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          className="text-[11px] uppercase tracking-[0.28em] min-h-[44px] px-2 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
         >
-          ← back
+          ← Back
         </button>
         {footer}
       </div>
