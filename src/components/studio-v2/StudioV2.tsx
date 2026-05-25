@@ -703,12 +703,22 @@ function RevealStory({
     <section className="mb-10">
       <p
         className="text-[10.5px] uppercase tracking-[0.36em]"
-        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+        style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
-        {who} Portugal story
+        {who} signature Portugal experience
       </p>
+      <h2
+        className="mt-4 text-[28px] leading-[1.1] sm:text-[34px]"
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
+      >
+        YES — your day{" "}
+        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          is ready
+        </span>
+        .
+      </h2>
       <p
-        className="mt-4 text-[20px] leading-[1.35] sm:text-[24px]"
+        className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           fontStyle: "italic",
@@ -718,8 +728,8 @@ function RevealStory({
         {revealFraming(profile.intent, region)}
       </p>
       <ul
-        className="mt-5 space-y-1.5 text-[14px] leading-relaxed"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+        className="mt-6 space-y-2 text-[14px] leading-relaxed"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
       >
         {profile.intent && <li>· {storyAfterIntent(profile.intent)}</li>}
         {profile.pace   && <li>· {storyAfterPace(profile.pace)}</li>}
