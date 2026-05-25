@@ -155,7 +155,7 @@ export function StudioLivePreview() {
       </div>
 
       {/* ── Map stage ─────────────────────────────────────────────── */}
-      <div className="relative aspect-[5/4] sm:aspect-[5/4] md:aspect-[16/11] w-full">
+      <div className="relative aspect-[4/3] sm:aspect-[5/4] md:aspect-[16/11] w-full overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[radial-gradient(120%_90%_at_28%_18%,rgba(201,169,106,0.10)_0%,transparent_55%),radial-gradient(110%_80%_at_72%_82%,rgba(41,91,97,0.50)_0%,transparent_60%)]"
@@ -276,26 +276,33 @@ export function StudioLivePreview() {
           ))}
         </svg>
         <ul aria-hidden="true" className="pointer-events-none absolute inset-0 m-0 list-none p-0">
-          {STOPS.map((s) => (
-            <li
-              key={s.id}
-              className="absolute"
-              style={{
-                left: `${(s.x / 200) * 100}%`,
-                top: `${(s.y / 260) * 100}%`,
-                transform: "translate(10px, -50%)",
-                opacity: renderedActive ? 1 : 0,
-                transition: `opacity 600ms ease ${s.delay + 250}ms`,
-              }}
-            >
-              <span className="block text-[10.5px] md:text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
-                {s.label}
-              </span>
-              <span className="mt-0.5 block text-[9.5px] md:text-[10px] tracking-[0.06em] text-[color:var(--ivory)]/75 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                {s.caption}
-              </span>
-            </li>
-          ))}
+          {STOPS.map((s) => {
+            const xPct = (s.x / 200) * 100;
+            const flipLeft = xPct > 55; // keep labels inside the frame
+            return (
+              <li
+                key={s.id}
+                className="absolute max-w-[44%]"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${(s.y / 260) * 100}%`,
+                  transform: flipLeft
+                    ? "translate(calc(-100% - 10px), -50%)"
+                    : "translate(10px, -50%)",
+                  textAlign: flipLeft ? "right" : "left",
+                  opacity: renderedActive ? 1 : 0,
+                  transition: `opacity 600ms ease ${s.delay + 250}ms`,
+                }}
+              >
+                <span className="block text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                  {s.label}
+                </span>
+                <span className="mt-0.5 block text-[9px] md:text-[10px] tracking-[0.04em] text-[color:var(--ivory)]/75 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] truncate">
+                  {s.caption}
+                </span>
+              </li>
+            );
+          })}
         </ul>
 
         {/* Quality badge — small trust signal sitting on the map */}
@@ -347,44 +354,44 @@ export function StudioLivePreview() {
       </button>
 
       {/* ── Investment + CTA band ─────────────────────────────────── */}
-      <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-4">
-        <div className="flex items-end justify-between gap-3">
+      <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-3.5">
+        <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
             <span className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
               Draft investment
             </span>
             <div className="mt-1 flex items-baseline gap-1.5">
-              <span className="font-display text-[1.6rem] md:text-[1.85rem] leading-none font-semibold text-[color:var(--charcoal)] tabular-nums">
+              <span className="font-display text-[1.5rem] md:text-[1.85rem] leading-none font-semibold text-[color:var(--charcoal)] tabular-nums">
                 €{DRAFT_INVESTMENT_EUR}
               </span>
-              <span className="text-[12px] text-[color:var(--charcoal-soft)]">/ guest</span>
+              <span className="text-[11.5px] text-[color:var(--charcoal-soft)]">/ guest</span>
             </div>
-            <span className="mt-1 block text-[10.5px] text-[color:var(--charcoal-soft)] tabular-nums">
+            <span className="mt-1 block text-[10px] text-[color:var(--charcoal-soft)] tabular-nums">
               Party of {DRAFT_PARTY} · concierge confirms
             </span>
           </div>
-          <div className="flex flex-col items-stretch gap-1.5">
-            <Link
-              to="/builder"
-              className="inline-flex items-center justify-center gap-1.5 rounded-[3px] bg-[color:var(--teal)] px-3.5 py-2 text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] shadow-[0_4px_14px_-6px_rgba(41,91,97,0.55)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
-            >
-              Continue draft
-              <ArrowRight size={12} aria-hidden="true" />
-            </Link>
-            <Link
-              to="/experiences"
-              className="inline-flex items-center justify-center gap-1 text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors duration-200"
-            >
-              See sample day
-            </Link>
-          </div>
+          <Link
+            to="/builder"
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[3px] bg-[color:var(--teal)] px-3.5 py-2 text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)] shadow-[0_4px_14px_-6px_rgba(41,91,97,0.55)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+          >
+            Continue draft
+            <ArrowRight size={12} aria-hidden="true" />
+          </Link>
         </div>
 
         {/* Reassurance row — instant-confirmation signal */}
-        <p className="mt-3 inline-flex items-center gap-1.5 text-[11px] text-[color:var(--charcoal-soft)]">
-          <MapPin size={11} aria-hidden="true" className="text-[color:var(--teal)]" />
-          Instant confirmation · cancel up to 48h before
-        </p>
+        <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <p className="inline-flex items-center gap-1.5 text-[10.5px] text-[color:var(--charcoal-soft)]">
+            <MapPin size={11} aria-hidden="true" className="text-[color:var(--teal)]" />
+            Instant confirmation · cancel 48h
+          </p>
+          <Link
+            to="/experiences"
+            className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors duration-200"
+          >
+            See sample day
+          </Link>
+        </div>
       </div>
     </div>
   );
