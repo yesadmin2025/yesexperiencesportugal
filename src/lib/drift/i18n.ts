@@ -130,6 +130,22 @@ const PT: Dict = {
   "quality.heritage": "Património",
   "quality.table": "Mesa",
   "quality.of_five": "em 5",
+
+  // Guests · Enhancements · Tier (Bible alignment)
+  "chapter.guests": "Quantos vão viajar?",
+  "chapter.guests_placeholder": "2",
+  "chapter.guests_help": "usado para calcular o investimento por pessoa",
+  "chapter.enhancements": "Quer juntar algum momento especial?",
+  "hint.enh.0": "Nada extra — ritmo natural",
+  "hint.enh.1": "Almoço privado num produtor",
+  "hint.enh.2": "Hora extra ao pôr do sol",
+  "chapter.tier": "Que nível de cuidado prefere?",
+  "hint.tier.0": "Essential — privado, simples",
+  "hint.tier.1": "Signature — guia sénior, mesa reservada",
+  "hint.tier.2": "Bespoke — anfitrião dedicado, tudo orquestrado",
+
+  // Trust (contextual)
+  "trust.midflow": "700+ avaliações 5★ · Google · Tripadvisor · Viator",
 };
 
 const EN: Dict = {
