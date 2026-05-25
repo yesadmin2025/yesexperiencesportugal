@@ -674,6 +674,52 @@ function Reveal({ result }: { result: DesignResult }) {
         </div>
       )}
 
+      {result.upsells.length > 0 && (
+        <div className="mt-10">
+          <p
+            className="text-[10.5px] uppercase tracking-[0.32em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+          >
+            Worth considering
+          </p>
+          <ul className="mt-3 space-y-3">
+            {result.upsells.map((u) => (
+              <li
+                key={u.stop.id}
+                className="rounded-[2px] border p-4"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                  background: "color-mix(in oklab, var(--sand) 30%, transparent)",
+                }}
+              >
+                <p
+                  className="text-[14px]"
+                  style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+                >
+                  {u.stop.name}
+                </p>
+                <p
+                  className="mt-1 text-[12.5px] italic"
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                  }}
+                >
+                  {u.reason}
+                </p>
+                <p
+                  className="mt-1.5 text-[11px] uppercase tracking-[0.22em]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  {fmtMinutes(u.stop.dwellMin)} on site
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+
       <details className="mt-8 text-[12px]" style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}>
         <summary className="cursor-pointer">Operational data</summary>
         <pre className="mt-2 overflow-x-auto rounded-[2px] border p-3 text-[11px]" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }}>

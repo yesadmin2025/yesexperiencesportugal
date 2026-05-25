@@ -12,7 +12,7 @@ import {
   type ComposerProfile,
   type ConfidenceMap,
 } from "@/lib/drift/composer";
-import type { RegionKey, RegionStop } from "@/data/regionStops";
+import { REGION_STOPS, type RegionKey, type RegionStop } from "@/data/regionStops";
 import { REGION_RULES } from "@/data/regionRules";
 import {
   deriveArchetype,
@@ -171,6 +171,12 @@ export function scoreDay(day: ComposedDay, p: TravelerProfile): MatchScore {
 
 // ─── public API ───────────────────────────────────────────────────────────
 
+export interface UpsellSuggestion {
+  stop: RegionStop;
+  reason: string;
+  priorityKey: PriorityKey;
+}
+
 export interface DesignResult {
   profile: TravelerProfile;
   archetype: Archetype;
@@ -178,6 +184,7 @@ export interface DesignResult {
   day: ComposedDay;
   score: MatchScore;
   variants: { lighter: ComposedDay; richer: ComposedDay };
+  upsells: UpsellSuggestion[];
 }
 
 export function designExperience(input: TravelerProfile): DesignResult {
@@ -209,6 +216,8 @@ export function designExperience(input: TravelerProfile): DesignResult {
     intensityPreference: Math.min(5, intensityPreference + 1.2),
   });
 
+  const upsells = computeUpsells(day, region, profile);
+
   return {
     profile,
     archetype,
@@ -216,7 +225,58 @@ export function designExperience(input: TravelerProfile): DesignResult {
     day,
     score: scoreDay(day, profile),
     variants: { lighter, richer },
+    upsells,
   };
+}
+
+// ─── upsells ──────────────────────────────────────────────────────────────
+
+const PRIORITY_LABEL: Record<PriorityKey, string> = {
+  vineyard_lunch:   "vineyard lunch",
+  wine_cellar:      "wine cellar",
+  coastal_scenery:  "coastal scenery",
+  hidden_villages:  "hidden village",
+  architecture:     "architecture",
+  heritage:         "heritage",
+  local_gastronomy: "local gastronomy",
+  photography:      "photography",
+  quiet_luxury:     "quiet luxury",
+  wellness:         "wellness",
+  boat:             "coastal boat",
+};
+
+function computeUpsells(
+  day: ComposedDay,
+  region: RegionKey,
+  profile: TravelerProfile,
+): UpsellSuggestion[] {
+  const inDay = new Set(day.stops.map((s) => s.stop.id));
+  const regionStops = REGION_STOPS.filter((s) => s.region === region && !inDay.has(s.id));
+
+  // Priorities ranked by weight, "must" first.
+  const ranked = Object.entries(profile.priorityWeights)
+    .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))
+    .map(([k]) => k as PriorityKey);
+
+  const seen = new Set<string>();
+  const out: UpsellSuggestion[] = [];
+
+  for (const key of ranked) {
+    if (out.length >= 2) break;
+    const matches = regionStops
+      .filter((s) => !seen.has(s.id) && stopMatchesPriority(s, key))
+      .sort((a, b) => b.priority - a.priority);
+    const pick = matches[0];
+    if (!pick) continue;
+    seen.add(pick.id);
+    out.push({
+      stop: pick,
+      priorityKey: key,
+      reason: `Adds a ${PRIORITY_LABEL[key]} moment that fits this day.`,
+    });
+  }
+
+  return out;
 }
 
 // Exposed so tests / debug surfaces can see what cap each region enforces.
