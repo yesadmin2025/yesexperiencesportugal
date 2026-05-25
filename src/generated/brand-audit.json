@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-25T01:23:11.670Z",
-  "filesScanned": 260,
+  "generatedAt": "2026-05-25T02:11:22.582Z",
+  "filesScanned": 261,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -809,7 +809,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 149,
+      "line": 150,
       "col": 106,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -818,7 +818,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 245,
+      "line": 246,
       "col": 45,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
