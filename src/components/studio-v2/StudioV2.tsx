@@ -835,8 +835,33 @@ function RevealStory({
   profile, region,
 }: { profile: TravelerProfile; region: string }) {
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
+  const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
+  const tier = tierLabel(profile.group?.luxuryTier);
   return (
     <section className="mb-10">
+      {/* Hero image — real, editorial, no overlay text */}
+      {hero && (
+        <div
+          className="studio-v2-reveal relative -mx-5 sm:-mx-8 mb-8 overflow-hidden"
+          style={{ aspectRatio: "18 / 10" }}
+        >
+          <img
+            src={hero.src}
+            alt={hero.alt}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 55%, color-mix(in oklab, var(--charcoal) 28%, transparent) 100%)",
+            }}
+          />
+        </div>
+      )}
+
       <p
         className="text-[10.5px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
@@ -844,14 +869,14 @@ function RevealStory({
         {who} signature Portugal experience
       </p>
       <h2
-        className="mt-4 text-[28px] leading-[1.1] sm:text-[34px]"
+        className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
         style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
       >
-        YES — your day{" "}
+        YES —{" "}
         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-          is ready
-        </span>
-        .
+          you have just created
+        </span>{" "}
+        your Signature Portugal Experience.
       </h2>
       <p
         className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
@@ -871,6 +896,52 @@ function RevealStory({
         {profile.pace   && <li>· {storyAfterPace(profile.pace)}</li>}
         {profile.group  && <li>· {storyAfterGroup(profile.group)}</li>}
       </ul>
+
+      {/* Experience Investment — no invented prices, tier label only */}
+      <div
+        className="mt-8 rounded-[2px] border p-5"
+        style={{
+          borderColor: "color-mix(in oklab, var(--gold) 32%, transparent)",
+          background: "color-mix(in oklab, var(--sand) 40%, transparent)",
+        }}
+      >
+        <p
+          className="text-[10.5px] uppercase tracking-[0.32em]"
+          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 600 }}
+        >
+          Experience investment
+        </p>
+        <p
+          className="mt-2 text-[17px] leading-[1.3]"
+          style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600, color: "var(--charcoal)" }}
+        >
+          {tier} tier · all-inclusive · private throughout
+        </p>
+        <p
+          className="mt-1 text-[12.5px] italic"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+          }}
+        >
+          Final investment is confirmed at reveal — no surprises.
+        </p>
+      </div>
+
+      {/* Trust band — micro, factual */}
+      <div
+        className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-center"
+      >
+        {["500+ travellers", "Private only", "Designed by locals", "Instant confirmation"].map((t) => (
+          <span
+            key={t}
+            className="text-[10.5px] uppercase tracking-[0.28em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+          >
+            {t}
+          </span>
+        ))}
+      </div>
     </section>
   );
 }
