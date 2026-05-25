@@ -180,7 +180,9 @@ const EN: Dict = {
   "text.continue": "Continue",
 
   "ui.exit": "Exit",
+  "ui.back": "Back",
   "ui.choose": "Choose: {label}",
+  "trust.reviews": "reviews",
   "build.region_label": "Your day · live preview",
 };
 
