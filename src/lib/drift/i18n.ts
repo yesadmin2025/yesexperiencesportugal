@@ -248,14 +248,14 @@ const EN: Dict = {
   "quality.of_five": "of 5",
 
   // Guests · Enhancements · Tier (Bible alignment)
-  "chapter.guests": "How many of you are travelling?",
+  "chapter.guests": "*How many* of you are travelling?",
   "chapter.guests_placeholder": "2",
   "chapter.guests_help": "used to price your experience per person",
-  "chapter.enhancements": "Add a special moment?",
+  "chapter.enhancements": "Add a *special* moment?",
   "hint.enh.0": "Nothing extra — keep the natural rhythm",
   "hint.enh.1": "Private lunch with a producer",
   "hint.enh.2": "Extra sunset hour",
-  "chapter.tier": "Which level of care suits you?",
+  "chapter.tier": "Which level of *care* suits you?",
   "hint.tier.0": "Essential — private, simple",
   "hint.tier.1": "Signature — senior guide, reserved table",
   "hint.tier.2": "Bespoke — dedicated host, fully orchestrated",
