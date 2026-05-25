@@ -1095,7 +1095,7 @@ export function StudioDrift({ onExit }: Props) {
           type="button"
           onClick={() => setChapterIdx((i) => Math.max(0, i - 1))}
           aria-label={tt("ui.back", locale) || "Back"}
-          className="absolute bottom-3 left-3 z-[46] inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
+          className="absolute bottom-[100px] left-3 z-[46] inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
           style={{
             color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
             background: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
