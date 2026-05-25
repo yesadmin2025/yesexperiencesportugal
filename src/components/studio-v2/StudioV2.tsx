@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { ArrowRight, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, ChevronDown, X } from "lucide-react";
 import {
   emptyProfile,
   applyIntent,
