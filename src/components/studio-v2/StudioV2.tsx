@@ -21,7 +21,8 @@ import {
 import { designExperience, type DesignResult } from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
 
-type Stage = "intent" | "group" | "pace" | "priorities" | "ops" | "reveal";
+type Stage = "intent" | "refine" | "reveal";
+type RefineSection = "group" | "pace" | "priorities" | "ops";
 
 interface StudioV2Props {
   onExit: () => void;
