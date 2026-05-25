@@ -414,6 +414,18 @@ const FR: Dict = {
   "preview.min_stay": "min sur place",
   "preview.indicative": "indicatif",
   "build.region_label": "Votre journée · aperçu en direct",
+  "reco.eyebrow": "Vous correspond aussi",
+  "reco.open": "Ouvrir",
+  "quality.eyebrow": "Qualité du jour",
+  "quality.aria": "Score de qualité de la journée composée",
+  "quality.summary_high": "Excellent rythme et équilibre entre les étapes.",
+  "quality.summary_mid": "Bon rythme — un signal de plus l'élève.",
+  "quality.summary_low": "Composition initiale — continuez pour affiner.",
+  "quality.wine": "Vin",
+  "quality.coast": "Côte",
+  "quality.heritage": "Patrimoine",
+  "quality.table": "Table",
+  "quality.of_five": "sur 5",
 };
 
 const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN, es: ES, fr: FR };
