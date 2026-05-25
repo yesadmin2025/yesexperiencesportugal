@@ -1135,9 +1135,14 @@ export function StudioDrift({ onExit }: Props) {
             pricePerGuestFrom={145}
             fast={isFastPace()}
           />
-          <StudioTrustStrip
-            reviewsLabel={tt("trust.reviews", locale) || "reviews"}
-          />
+          {/* Trust strip — CONTEXTUAL only. Bible says no static OTA-chrome.
+              Show during the mid-flow doubt window (chapters 6-9: duration→style)
+              where travellers most often stall before committing to a tier. */}
+          {chapterIdx >= 6 && chapterIdx <= 9 && (
+            <StudioTrustStrip
+              reviewsLabel={tt("trust.reviews", locale) || "reviews"}
+            />
+          )}
           {chapter.kind !== "choice" && (
             <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           )}
