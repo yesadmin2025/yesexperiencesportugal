@@ -221,6 +221,7 @@ const EN: Dict = {
 
   "ui.exit": "Exit",
   "ui.back": "Back",
+  "ui.sensing": "sensing",
   "ui.choose": "Choose: {label}",
   "trust.reviews": "reviews",
   "choice.idle_hint": "Tap any image to choose — or take all the time you need.",
