@@ -24,6 +24,7 @@ import { EncouragementBar } from "./EncouragementBar";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
 import { RevealInvestment } from "./RevealInvestment";
+import { SmartRecommendations } from "./SmartRecommendations";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
