@@ -280,6 +280,16 @@ const ES: Dict = {
   "ui.back": "Volver",
   "ui.choose": "Elegir: {label}",
   "trust.reviews": "reseñas",
+  "preview.expand": "Abrir vista previa de su día",
+  "preview.dialog": "Su día — vista previa en vivo",
+  "preview.tap_to_open": "toque para abrir",
+  "preview.tab_story": "Historia",
+  "preview.tab_timeline": "Horario",
+  "preview.tab_map": "Mapa",
+  "preview.story_intro": "su día se está formando con paradas reales, elegidas para el ritmo que describió.",
+  "preview.min_drive": "min de coche",
+  "preview.min_stay": "min en el lugar",
+  "preview.indicative": "indicativo",
   "build.region_label": "Su día · vista en vivo",
 };
 
