@@ -126,7 +126,26 @@ export function StudioV2({ onExit }: StudioV2Props) {
     setStage("reveal");
   };
 
-  // Auto-advance from intent → refine ~700ms after a choice (cinematic feel).
+  // Cinematic step pacing inside Refine — choice → map reacts → settle → next.
+  const stepTimer = useRef<number | null>(null);
+  const goStep = (delta: number) => {
+    const i = REFINE_ORDER.indexOf(refineStep);
+    const ni = Math.max(0, Math.min(REFINE_ORDER.length - 1, i + delta));
+    setRefineStep(REFINE_ORDER[ni]);
+  };
+  const advanceStep = () => {
+    const i = REFINE_ORDER.indexOf(refineStep);
+    if (i >= REFINE_ORDER.length - 1) return;
+    if (stepTimer.current) window.clearTimeout(stepTimer.current);
+    setStepAdvancing(true);
+    stepTimer.current = window.setTimeout(() => {
+      setRefineStep(REFINE_ORDER[i + 1]);
+      setStepAdvancing(false);
+    }, 1100); // long enough to feel the map move + insight settle
+  };
+  useEffect(() => () => { if (stepTimer.current) window.clearTimeout(stepTimer.current); }, []);
+
+
   const intentTimer = useRef<number | null>(null);
   useEffect(() => {
     if (stage === "intent" && profile.intent) {
