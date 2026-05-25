@@ -1320,6 +1320,7 @@ function ChoicePhase({
   const [picked, setPicked] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
   const [tilesIn, setTilesIn] = useState(false);
+  const [idle, setIdle] = useState(false);
 
   // Order by predicted affinity; drop weakest option only if at least two
   // strong ones remain. Keeps the choice rhythm honest, never empties it.
@@ -1348,10 +1349,12 @@ function ChoicePhase({
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
     const t2 = window.setTimeout(() => setShowHints(true), 1800);
+    const t3 = window.setTimeout(() => setIdle(true), 6000);
     ordered.forEach((o) => onSceneShown?.(o.scene.id));
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter.id]);
@@ -1396,6 +1399,24 @@ function ChoicePhase({
           }}
         >
           {cue}
+        </p>
+      )}
+      {idle && !picked && (
+        <p
+          aria-live="polite"
+          className="absolute inset-x-0 z-[55] px-7 text-center pointer-events-none motion-safe:animate-[fade-in_0.6s_ease-out_both]"
+          style={{
+            bottom: hasBuildPreview ? "120px" : "16px",
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "10.5px",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            fontWeight: 600,
+            color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+            textShadow: "0 1px 10px rgba(0,0,0,0.7)",
+          }}
+        >
+          {tt("choice.idle_hint", locale)}
         </p>
       )}
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "108px" : 0 }}>
