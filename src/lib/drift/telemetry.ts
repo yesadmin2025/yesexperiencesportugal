@@ -86,18 +86,20 @@ export async function recordDriftBehaviorEvent(
 ): Promise<void> {
   if (typeof window === "undefined") return;
   const sessionId = getDriftSessionId();
+  const cap = (v: string | undefined | null, n: number) =>
+    v == null ? null : String(v).slice(0, n);
   try {
     await supabase.from("drift_behavior_events").insert([
       {
         session_id: sessionId,
         signal_type: signalType,
-        chapter_id: opts.chapterId ?? null,
+        chapter_id: cap(opts.chapterId, 64),
         decision_latency_ms: opts.decisionLatencyMs ?? null,
         linger_ms: opts.lingerMs ?? null,
-        attraction_target: opts.attractionTarget ?? null,
-        predicted_archetype: opts.predictedArchetype ?? null,
-        predicted_tonal_register: opts.predictedTonalRegister ?? null,
-        predicted_intensity: opts.predictedIntensity ?? null,
+        attraction_target: cap(opts.attractionTarget, 96),
+        predicted_archetype: cap(opts.predictedArchetype, 32),
+        predicted_tonal_register: cap(opts.predictedTonalRegister, 32),
+        predicted_intensity: cap(opts.predictedIntensity, 32),
         reveal_confidence: opts.revealConfidence ?? null,
         meta: opts.meta ? (JSON.parse(JSON.stringify(opts.meta)) as Json) : {},
       },
