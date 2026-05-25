@@ -478,7 +478,7 @@ const CHAPTERS: Chapter[] = [
     id: "settling",
     whisper: (p, locale) =>
       p.name
-        ? tt("chapter.settling_named", locale).replace("{name}", p.name.toLowerCase())
+        ? tt("chapter.settling_named", locale).replace("{name}", p.name)
         : tt("chapter.settling", locale),
     scenes: [SCENES.quietChapel],
     holdMs: 5400,
