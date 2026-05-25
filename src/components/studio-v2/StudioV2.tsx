@@ -23,6 +23,7 @@ import {
   storyAfterPace,
   storyAfterGroup,
 } from "@/lib/studio-v2/content";
+import { INTENT_IMAGE } from "@/lib/studio-v2/images";
 import {
   designExperience,
   previewJourney,
@@ -240,14 +241,16 @@ export function StudioV2({ onExit }: StudioV2Props) {
           >
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {INTENT_OPTIONS.map((opt) => (
-                <OptionCard
+                <PhotoOptionCard
                   key={opt.id}
                   active={profile.intent === opt.id}
                   label={opt.label}
                   sub={opt.sub}
+                  image={INTENT_IMAGE[opt.id].src}
+                  alt={INTENT_IMAGE[opt.id].alt}
                   onClick={() => {
                     update(applyIntent(profile, opt.id as IntentAtmosphere));
-                    window.setTimeout(next, 280);
+                    window.setTimeout(next, 320);
                   }}
                 />
               ))}
@@ -545,7 +548,7 @@ function RewardImageBeat({
   intent, onSkip,
 }: { intent: IntentAtmosphere; onSkip: () => void }) {
   const atmo = INTENT_ATMOSPHERE[intent];
-  const bg = `radial-gradient(120% 90% at 50% 30%, color-mix(in oklab, ${atmo.tintA} 80%, var(--ivory)) 0%, color-mix(in oklab, ${atmo.tintB} 60%, var(--sand)) 55%, var(--charcoal) 130%)`;
+  const img = INTENT_IMAGE[intent];
   return (
     <button
       type="button"
@@ -553,19 +556,29 @@ function RewardImageBeat({
       aria-label="Continue"
       className="block w-full focus-visible:outline-none"
     >
-      <div
+      <figure
         className="studio-v2-reveal relative -mx-5 sm:-mx-8 overflow-hidden"
-        style={{ height: "62vh", minHeight: 360, background: bg }}
+        style={{ height: "62vh", minHeight: 360, background: "var(--sand)" }}
       >
+        <img
+          src={img.src}
+          alt={img.alt}
+          width={1024}
+          height={1024}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ filter: "saturate(0.92)" }}
+        />
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 35%, color-mix(in oklab, var(--charcoal) 65%, transparent) 100%)",
+              "linear-gradient(to bottom, transparent 40%, color-mix(in oklab, var(--charcoal) 70%, transparent) 100%)",
           }}
         />
-        <div className="absolute inset-x-5 bottom-6 sm:inset-x-8">
+        <figcaption className="absolute inset-x-5 bottom-6 sm:inset-x-8">
           <p
             className="text-[10.5px] uppercase tracking-[0.32em]"
             style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))" }}
@@ -582,8 +595,8 @@ function RewardImageBeat({
           >
             {atmo.whisper}
           </p>
-        </div>
-      </div>
+        </figcaption>
+      </figure>
       <p
         className="studio-v2-reveal delay-2 mt-4 text-[11px] uppercase tracking-[0.28em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
@@ -1068,6 +1081,79 @@ function OptionCard({
   );
 }
 
+function PhotoOptionCard({
+  active, label, sub, image, alt, onClick,
+}: {
+  active: boolean;
+  label: string;
+  sub: string;
+  image: string;
+  alt: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className="group relative block w-full overflow-hidden text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2"
+      style={{
+        aspectRatio: "16 / 10",
+        outline: active
+          ? "2px solid var(--gold)"
+          : "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+        outlineOffset: 0,
+      }}
+    >
+      <img
+        src={image}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+        style={{ filter: active ? "saturate(1)" : "saturate(0.88)" }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to top, color-mix(in oklab, var(--charcoal) 78%, transparent) 0%, color-mix(in oklab, var(--charcoal) 18%, transparent) 55%, transparent 100%)",
+        }}
+      />
+      <div className="absolute inset-x-4 bottom-3">
+        <span
+          className="block text-[15px] leading-tight"
+          style={{
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontWeight: active ? 700 : 600,
+            color: "var(--ivory)",
+            letterSpacing: "-0.005em",
+          }}
+        >
+          {label}
+        </span>
+        <span
+          className="mt-1 block text-[11.5px] leading-snug"
+          style={{
+            color: "color-mix(in oklab, var(--ivory) 82%, transparent)",
+            fontFamily: "var(--font-sans, Inter), sans-serif",
+          }}
+        >
+          {sub}
+        </span>
+      </div>
+      {active && (
+        <span
+          aria-hidden
+          className="absolute right-3 top-3 inline-flex h-2.5 w-2.5 rounded-full"
+          style={{ background: "var(--gold)", boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 30%, transparent)" }}
+        />
+      )}
+    </button>
+  );
+}
+
 function PriorityChip({
   label, weight, onClick,
 }: { label: string; weight: number | undefined; onClick: () => void }) {
@@ -1076,7 +1162,7 @@ function PriorityChip({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-full border px-3 py-1.5 text-[12.5px] transition-all min-h-[36px]"
+      className="inline-flex items-center rounded-full border px-4 text-[13px] transition-all min-h-[44px] focus-visible:outline-none focus-visible:ring-2"
       style={{
         borderColor:
           state === "must" ? "color-mix(in oklab, var(--gold) 80%, transparent)" :

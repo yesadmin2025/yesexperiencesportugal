@@ -1,111 +1,112 @@
-## Objetivo
 
-Transformar o `/studio-v2` de um questionário linear (intent → refine steps → reveal) numa **journey cinematográfica intercalada**: escolha → recompensa (story / imagem / mapa) → escolha → recompensa. Cada decisão alimenta a história escrita final.
+## 1. Audit — Studio v2 vs. YES Brand Bible
 
-## Princípios
+Testei o flow completo no mobile (393×844). Confirmações principais:
 
-- Não parece formulário. Parece uma história a ser escrita em tempo real.
-- Cada escolha é seguida por uma "recompensa" visual ou narrativa antes da próxima escolha.
-- Variedade de formatos: cards, input de nome, imagens cheias, mapa, chapter title, "AI is thinking…".
-- Balão de WhatsApp **sempre visível** durante toda a journey.
-- Resultado final: história escrita personalizada (com nome se dado) + mapa + 3 CTAs (Reserve · Talk to a Local · Save).
+### Críticas (quebram o bible)
+| # | Problema | O que o bible exige |
+|---|---|---|
+| 1 | **Sem imagens reais em nenhum beat.** O "reward image" é apenas um gradient de cor com uma frase. Sente-se como questionário. | "Every major experience type ships with 1 hero + 3–5 supporting story images. Editorial, cinematic, candid. Soft fades on transitions." |
+| 2 | **Sem painel de história viva.** Cada step substitui o anterior; não há story contínua a crescer com cada escolha. | "Live story updates with each selection. Editorial, skimmable, adapts to the user's name." |
+| 3 | **Sem Experience DNA visível, sem Experience Investment, sem timeline.** | Painel direito DEVE mostrar story + imagery + timeline + Investment + DNA — todos atualizando live. |
+| 4 | **Ordem de steps fora do bible.** Atual: Name → Atmosphere → Pace → Priorities → Group → Ops. Bible: Welcome → Name → Group type → Guests → Duration (1-day/multi-day) → Style → Highlights → Pace → Enhancements → Tier → Reveal. Falta Duration, Enhancements e Tier. | Step flow não-negociável. |
+| 5 | **CTAs e voz fora da library.** "Begin", "Continue", "Design my day" em vez de "Design From Scratch", "Start Designing", "Secure Your Experience". O padrão `YES — …` está ausente nas confirmações intermédias. | CTA library §9. Voice §5. |
+| 6 | **Reveal sem o moment YES.** Sem "YES — you have just created your Signature Portugal Experience", sem trio Secure / Save / Refine, sem "Experience Investment". | §8 §9 §10. |
+| 7 | **Mobile-first sim, mas tap targets dos chips de Priorities < 44px.** | §14. |
 
-## Estrutura da journey (sequência de beats)
+### Pontos a manter
+- A ideia intercalada Choice → Reward é correta na direção (matches "cinematic discovery, interface disappears").
+- Atmosphere backdrop por intent é boa base.
+- Persistent chat fab pequeno e teal cumpre "WhatsApp = optional support only".
 
-```text
-1.  intro          → graphic hero, "Begin your Portugal story" + CTA
-2.  name           → input opcional "What should we call this story?"
-3.  reward:story   → "Let's begin writing Maria's story." (fade-in editorial)
-4.  intent         → 6 cards (atmosfera) — escolha
-5.  reward:image   → full-bleed cinematic image do intent escolhido + 1 linha
-6.  pace           → 4 cards rhythm
-7.  reward:insight → "A slower coastal arc is forming." (1 linha AI)
-8.  priorities     → tap-twice priorities (mantém o padrão actual)
-9.  reward:map     → mini map preview com pins a aparecerem em sequência
-10. group          → guests count + tipo
-11. reward:story   → próxima frase da história ("Designed for two, unhurried.")
-12. ops            → data + região (logistics)
-13. reward:thinking → "Composing your journey…" 1.5s
-14. reveal         → história escrita completa + mapa + 3 CTAs
-```
+---
 
-## Componentes
+## 2. Plano de correção (faseado, mobile-first)
 
-Refatorar `StudioV2.tsx` (1205 linhas) em sub-componentes na pasta `src/components/studio-v2/`:
+### Fase A — Tornar visível e cinematográfico (corrige a queixa principal)
 
-- `StudioV2.tsx` — orquestrador (machine de beats + transições).
-- `beats/IntroBeat.tsx` — hero gráfico de abertura.
-- `beats/NameBeat.tsx` — input opcional do nome.
-- `beats/ChoiceBeat.tsx` — wrapper genérico para passos de escolha (recebe `eyebrow`, `title`, `helper`, `options`, `onPick`).
-- `beats/RewardStoryBeat.tsx` — frase editorial (Georgia italic) com fade.
-- `beats/RewardImageBeat.tsx` — imagem full-bleed com legenda 1 linha.
-- `beats/RewardMapBeat.tsx` — `BuilderMap` com pins sequenciais.
-- `beats/RewardThinkingBeat.tsx` — "Composing…" com shimmer ténue (não decoração, indica progresso).
-- `beats/RevealBeat.tsx` — história escrita + mapa + 3 CTAs (reutiliza o reveal actual, polido).
-- `PersistentChatFab.tsx` — balão WhatsApp fixo (reusa `whatsappHref` do `WhatsAppFab` existente, mas visível em todos os viewports e em todos os beats, com mensagem pré-preenchida que reflecte o progresso).
+1. **Imagery real, editorial, por atmosphere.** Gerar 6 hero images (Relaxed & scenic, Elegant & cultural, Food-led & local, Social & celebratory, Romantic & intimate, Coastal & cinematic) — 4:5 mobile-first, golden hour, sem texto, sem logos. Substituir o gradient do `RewardImageBeat` por imagem real com overlay charcoal 35% e whisper em italic Georgia.
+2. **Option cards fotográficos.** Cada `OptionCard` em Atmosphere e Priorities passa a ser um tile com micro-imagem 16:10 + label sobreposto. Soft crossfade ao seleccionar. Tap target 44px garantido.
+3. **Backdrop com imagem (não só gradient).** O `atmosphere` global ganha uma camada `<img>` desaturated 18% opacity sob o gradient — diferente por intent.
 
-## Máquina de beats
+### Fase B — Story viva + DNA + Investment (corrige sensação de "form")
 
-```ts
-type Beat =
-  | { kind: "intro" }
-  | { kind: "name" }
-  | { kind: "reward-story", line: string }
-  | { kind: "choice-intent" }
-  | { kind: "reward-image", intent: IntentAtmosphere }
-  | { kind: "choice-pace" }
-  | { kind: "reward-insight", line: string }
-  | { kind: "choice-priorities" }
-  | { kind: "reward-map" }
-  | { kind: "choice-group" }
-  | { kind: "choice-ops" }
-  | { kind: "reward-thinking" }
-  | { kind: "reveal" };
-```
+4. **Living Story Strip (bottom sheet mobile).** Componente fixo no fundo, 64px collapsed → 60vh expanded. Mostra:
+   - DNA pills a aparecer uma a uma (`Romantic · Slow · Coastal · Wine-led`)
+   - Linha narrativa que cresce parágrafo a parágrafo (cada escolha adiciona uma frase, nunca apaga)
+   - Mini-mapa com pins a cair em sequência
+   - Experience Investment a contar visualmente (€X from)
+   - Expansível com um swipe ↑
+5. **Linha narrativa adaptativa.** Helper em `lib/studio-v2/content.ts` que devolve a frase incremental por (intent, pace, priorities, group). Phase 1 = rule-based; Phase 2 = chamada OpenAI (tone-only) numa server function.
 
-Lista de beats gerada dinamicamente a partir do profile (cada reward lê o último valor). Avanço com `next()`; reward beats auto-advance após 1.8–2.4s (skippable com tap). Choice beats avançam ao seleccionar.
+### Fase C — Step flow alinhado ao bible
 
-## Conteúdo (copy)
+6. **Reordenar para:** Welcome → Name → **Group type → Guests** → **Duration (1-day / multi-day)** → Atmosphere/Style → Priorities/Highlights → Pace → **Enhancements** (sunset boat, private chef, helicopter — checkboxes com preço) → **Tier** (Curated · Signature · Bespoke) → Thinking → Reveal.
+7. **Smart defaults.** Se Group = couple, saltar "guests" (default 2). Se intent = "coastal", pré-seleccionar 2 priorities relevantes (utilizador pode mudar).
 
-Adicionar em `src/lib/studio-v2/content.ts`:
+### Fase D — Reveal de alta conversão
 
-- `storyOpener(name?: string)` → "Let's begin writing your Portugal story." / "Let's begin writing Maria's story."
-- `storyAfterIntent(intent)` → "A coastal, cinematic thread takes shape."
-- `storyAfterPace(pace)` → "Three considered stops. Room to breathe."
-- `storyAfterGroup(group)` → "Designed for two, unhurried."
-- `storyFinal(profile)` → 3–4 frases editoriais que compõem a "história escrita" final.
+8. **YES Moment headline:** `YES — you have just created your Signature Portugal Experience.`
+9. **Layout reveal:**
+   - Hero da viagem (imagem do stop principal) com nome personalizado: *"Maria's Coastal Portugal Story"*
+   - Story escrita de ponta a ponta (3–4 parágrafos editoriais)
+   - Mapa final com rota desenhada (Mapbox, reutiliza `BuilderMap`)
+   - Timeline horizontal com timestamps reais
+   - **Experience Investment** card: `from €X per person · all-inclusive · instant confirmation`
+   - DNA pills finais
+   - **Trust band micro:** 500+ travellers · Private only · Designed by locals
+10. **CTA trio (ordem do bible):**
+    1. `Secure Your Experience` (primary gold)
+    2. `Save My Experience` (secondary ghost, gera link partilhável + email opt-in opcional)
+    3. `Refine with a Local Designer` (tertiary text, abre o chat fab com contexto pré-preenchido)
+11. **Conversion boosters:**
+    - Scarcity real: query Supabase `availability` para a região nos próximos 30 dias → "3 dates available this month"
+    - Badge "Instant confirmation" (test mode allowed)
+    - Share story link → SSR OG card com o título personalizado
 
-Tom: conciso, inteligente, premium, operacionalmente fundado. Sem poesia/fantasia.
+### Fase E — Diferenciadores únicos (o que ninguém mais faz)
 
-## WhatsApp persistente
+12. **Memory deck.** No topo, uma pilha horizontal de "cards memória" — cada escolha que o utilizador faz vira um card 56×76px que se empilha à direita. Tocar num card volta àquele beat. Substitui o progress bar abstracto por algo tangível.
+13. **Ambient mode toggle.** Pequeno ícone discreto no header: ondas do Atlântico / fado leve / silêncio. Off por default, respeita prefers-reduced-motion. Cria uma camada sensorial que nenhum operador português tem.
+14. **Live route drawing.** No `RewardMapBeat` e no reveal, a linha do percurso desenha-se com `stroke-dasharray` animation (≤700ms, dentro das guardrails do homepage motion mas aqui justificado pela natureza do builder).
+15. **AI tone layer (OpenAI gemini-2.5-flash via Lovable AI Gateway).** Server function `studioNarrative.functions.ts` recebe `TravelerProfile`, devolve 1 headline + 3 parágrafos editoriais no tom YES. Cache por hash do profile. Inputs/outputs validados com Zod. Nunca inventa stops/preços (esses vêm do `designExperience` engine).
+16. **Save = link assinado.** `i.$token.tsx` já existe — gerar token Supabase, devolver URL curta `/i/abc123`. Abre o reveal exacto, retomável.
 
-`PersistentChatFab.tsx` — bolha discreta bottom-right, `z-50`, visível em todos os beats da Studio v2 (override da regra que esconde o `WhatsAppFab` em mobile, porque aqui é uma feature do builder, não navegação geral). Mensagem dinâmica reflectindo o progresso ("Olá! Estou a desenhar uma experiência [intent] para [N] pessoas — gostaria de ajuda.").
+### Fase F — Polimento e A11y
 
-## CTAs finais (reveal)
+17. Tap targets ≥44px em todos os chips e botões (Priorities atual ~32px).
+18. Visible focus ring gold em todos os interactivos.
+19. Contrast pass: texto sobre imagens com overlay charcoal mínimo de 35%.
+20. `prefers-reduced-motion` desliga route draw + memory deck flip + ambient mode.
 
-1. **Reserve instantly** (primário — teal)
-2. **Talk to a Local** (secundário — abre WhatsApp com contexto completo)
-3. **Save my story** (terciário — guarda em localStorage, link partilhável depois)
+---
 
-## Motion
+## 3. Sugestão estratégica
 
-Cada beat entra com fade + translateY 12px @ 220ms. Reward beats têm uma duração mínima visível (não passar antes do utilizador conseguir ler). `prefers-reduced-motion` → sem translate, só fade.
+O builder deve deixar de parecer "uma sequência de perguntas com recompensas" e passar a parecer **um filme curto em que o utilizador é o protagonista e cada escolha estende a cena**. Os três pilares para o tornar único no mercado português:
 
-## Imagens
+- **Sensorial** (imagery editorial + ambient sound opcional + route drawing) → emoção.
+- **Tangível** (memory deck + living story + DNA pills + investment counter) → sensação de estar a *desenhar* algo real.
+- **Inteligente** (smart defaults + tone AI + scarcity real + share token) → conversão sem fricção.
 
-Para `reward-image` por intent, usar as imagens reais já existentes em `src/assets/hero-clips/` ou tour assets. Não inventar nem gerar novas se possível.
+---
 
-## Fora de scope
+## 4. Detalhes técnicos
 
-- Não tocar no `/builder` clássico nem no `/studio-drift`.
-- Não tocar no `WhatsAppFab` global da homepage.
-- Sem alterações de schema / Supabase.
-- Sem mudanças no engine de matching (continua a usar `designExperience`).
+- **Stack:** Supabase (availability, save tokens, narrative cache), Mapbox (route draw — reutiliza `BuilderMap`), Lovable AI Gateway (`google/gemini-2.5-flash` para tom), `createServerFn` para narrative + availability + save-token.
+- **Imagens:** geradas com `imagegen` quality `standard`, importadas como ES6 em `src/assets/studio/`, alt text descritivo.
+- **Componentes novos:** `LivingStoryStrip.tsx`, `MemoryDeck.tsx`, `PhotoOptionCard.tsx`, `AmbientToggle.tsx`, `RevealHero.tsx`, `InvestmentCard.tsx`.
+- **Server fns novas:** `studioNarrative.functions.ts`, `studioAvailability.functions.ts`, `studioSaveToken.functions.ts`.
+- **Tabelas Supabase novas:** `studio_saves (token, profile_json, created_at, expires_at)`, `studio_availability_cache (region, date, slots)`.
+- **Sem alterações fora do `/studio-v2`**: o resto do site fica intacto.
 
-## Verificação
+## 5. Ordem de execução proposta
 
-Abrir `/studio-v2` no mobile preview (393×587), percorrer toda a journey, confirmar:
-- Alternância choice ↔ reward funciona.
-- Chat fab sempre visível.
-- Reveal final tem história + mapa + 3 CTAs.
-- Sem layout shift, sem clipping no viewport mobile.
+1. Fase A (imagens + photo option cards) — desbloqueia a queixa actual.
+2. Fase B (living story + DNA + investment) — desfaz a sensação de form.
+3. Fase C (step flow bible) — alinha estrutura.
+4. Fase D (reveal de alta conversão) — fecha o funil.
+5. Fase E (diferenciadores) — torna-o único.
+6. Fase F (polish + a11y) — pronto a publicar.
+
+Cada fase é entregável e testável isoladamente. Posso começar pela Fase A já se aprovares.
