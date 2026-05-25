@@ -21,6 +21,7 @@ import {
 } from "@/lib/drift/inference";
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
+import { StudioConversionHud } from "./StudioConversionHud";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
 import { RevealInvestment } from "./RevealInvestment";
