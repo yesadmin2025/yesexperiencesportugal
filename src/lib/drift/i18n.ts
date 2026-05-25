@@ -106,6 +106,7 @@ const PT: Dict = {
   "ui.back": "Voltar",
   "ui.choose": "Escolher: {label}",
   "trust.reviews": "avaliações",
+  "choice.idle_hint": "Toque numa imagem para escolher — ou demore o tempo que precisar.",
   "preview.expand": "Abrir pré-visualização do seu dia",
   "preview.dialog": "O seu dia — pré-visualização ao vivo",
   "preview.tap_to_open": "toque para abrir",
