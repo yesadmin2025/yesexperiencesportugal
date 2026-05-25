@@ -1039,6 +1039,9 @@ export function StudioDrift({ onExit }: Props) {
             confidence={prediction.revealConfidence}
             pricePerGuestFrom={145}
           />
+          <StudioTrustStrip
+            reviewsLabel={tt("trust.reviews", locale) || "reviews"}
+          />
           <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           <EmergingThemes
             sceneWeighting={prediction.sceneWeighting}
