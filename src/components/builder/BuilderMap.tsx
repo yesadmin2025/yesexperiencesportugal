@@ -2,6 +2,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import { MapPin } from "lucide-react";
+import { mergeLocale } from "@/lib/i18n-fallback";
 import type { RoutedStopUI } from "./types";
 
 interface CandidatePin {
