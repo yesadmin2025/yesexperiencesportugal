@@ -4914,7 +4914,13 @@ html { scroll-behavior: smooth; }
 .studio-v2-reveal.delay-3 { animation-delay: 560ms; }
 .studio-v2-reveal.delay-4 { animation-delay: 820ms; }
 
+@keyframes studioV2Pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .studio-v2__atmosphere { transition: none; }
   .studio-v2-reveal { animation: none; opacity: 1; transform: none; }
 }
+
