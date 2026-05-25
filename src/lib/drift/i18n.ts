@@ -257,7 +257,9 @@ const ES: Dict = {
   "text.continue": "Continuar",
 
   "ui.exit": "Salir",
+  "ui.back": "Volver",
   "ui.choose": "Elegir: {label}",
+  "trust.reviews": "reseñas",
   "build.region_label": "Su día · vista en vivo",
 };
 
