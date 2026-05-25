@@ -206,6 +206,7 @@ const EN: Dict = {
   "ui.back": "Back",
   "ui.choose": "Choose: {label}",
   "trust.reviews": "reviews",
+  "choice.idle_hint": "Tap any image to choose — or take all the time you need.",
   "preview.expand": "Open live preview of your day",
   "preview.dialog": "Your day — live preview",
   "preview.tap_to_open": "tap to open",
