@@ -22,6 +22,7 @@ import {
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
 import { StudioConversionHud } from "./StudioConversionHud";
+import { StudioTrustStrip } from "./StudioTrustStrip";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
 import { RevealInvestment } from "./RevealInvestment";
@@ -1038,6 +1039,9 @@ export function StudioDrift({ onExit }: Props) {
             confidence={prediction.revealConfidence}
             pricePerGuestFrom={145}
           />
+          <StudioTrustStrip
+            reviewsLabel={tt("trust.reviews", locale) || "reviews"}
+          />
           <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           <EmergingThemes
             sceneWeighting={prediction.sceneWeighting}
@@ -1081,6 +1085,26 @@ export function StudioDrift({ onExit }: Props) {
             aria-hidden="true"
             className="block h-1.5 w-1.5 rounded-full bg-[color:var(--ivory)]/55"
           />
+        </button>
+      )}
+
+      {chapter.kind !== "convergence" && chapterIdx > 0 && (
+        <button
+          type="button"
+          onClick={() => setChapterIdx((i) => Math.max(0, i - 1))}
+          aria-label={tt("ui.back", locale) || "Back"}
+          className="absolute bottom-3 left-3 z-[46] inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
+          style={{
+            color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
+            background: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+            border: "1px solid color-mix(in oklab, var(--ivory) 10%, transparent)",
+            opacity: 0.78,
+          }}
+        >
+          <span aria-hidden="true">‹</span>
+          {tt("ui.back", locale) || "Back"}
         </button>
       )}
 

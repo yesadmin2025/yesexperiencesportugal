@@ -103,7 +103,9 @@ const PT: Dict = {
 
   // Exit
   "ui.exit": "Sair",
+  "ui.back": "Voltar",
   "ui.choose": "Escolher: {label}",
+  "trust.reviews": "avaliações",
   "build.region_label": "O seu dia · pré-visualização ao vivo",
 };
 
@@ -178,7 +180,9 @@ const EN: Dict = {
   "text.continue": "Continue",
 
   "ui.exit": "Exit",
+  "ui.back": "Back",
   "ui.choose": "Choose: {label}",
+  "trust.reviews": "reviews",
   "build.region_label": "Your day · live preview",
 };
 
@@ -253,7 +257,9 @@ const ES: Dict = {
   "text.continue": "Continuar",
 
   "ui.exit": "Salir",
+  "ui.back": "Volver",
   "ui.choose": "Elegir: {label}",
+  "trust.reviews": "reseñas",
   "build.region_label": "Su día · vista en vivo",
 };
 
@@ -328,7 +334,9 @@ const FR: Dict = {
   "text.continue": "Continuer",
 
   "ui.exit": "Sortir",
+  "ui.back": "Retour",
   "ui.choose": "Choisir : {label}",
+  "trust.reviews": "avis",
   "build.region_label": "Votre journée · aperçu en direct",
 };
 
