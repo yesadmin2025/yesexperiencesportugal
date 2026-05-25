@@ -155,7 +155,7 @@ export function StudioLivePreview() {
       </div>
 
       {/* ── Map stage ─────────────────────────────────────────────── */}
-      <div className="relative aspect-[5/4] sm:aspect-[5/4] md:aspect-[16/11] w-full">
+      <div className="relative aspect-[4/3] sm:aspect-[5/4] md:aspect-[16/11] w-full overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[radial-gradient(120%_90%_at_28%_18%,rgba(201,169,106,0.10)_0%,transparent_55%),radial-gradient(110%_80%_at_72%_82%,rgba(41,91,97,0.50)_0%,transparent_60%)]"
