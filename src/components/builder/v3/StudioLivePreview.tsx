@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { X, ChevronUp } from "lucide-react";
 import type { ComposedDay } from "@/lib/drift/composer";
@@ -24,6 +24,9 @@ interface Props {
   prediction?: ReturnType<typeof derivePrediction>;
   activeStopIndex: number;
   dense?: boolean;
+  /** A/B variant: when "open", auto-expand drawer once on mount. */
+  defaultOpen?: boolean;
+  onCtaBook?: () => void;
 }
 
 /**
@@ -41,9 +44,17 @@ interface Props {
  * Closes on tap-outside, X, or Escape. Reduced-motion safe.
  */
 export function StudioLivePreview(props: Props) {
-  const { day, region, locale, profile, prediction, activeStopIndex, dense = false } = props;
+  const { day, region, locale, profile, prediction, activeStopIndex, dense = false, defaultOpen = false, onCtaBook } = props;
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("story");
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (defaultOpen && !autoOpenedRef.current) {
+      autoOpenedRef.current = true;
+      setOpen(true);
+      void recordDriftEvent("v4_drawer_open", { meta: { auto: true } });
+    }
+  }, [defaultOpen]);
 
   const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
   const previewStops = day.stops.slice(0, visibleStops);
@@ -330,7 +341,10 @@ export function StudioLivePreview(props: Props) {
               <Link
                 to="/builder"
                 search={{ legacy: "stepper" } as never}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  onCtaBook?.();
+                  setOpen(false);
+                }}
                 className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.18em] font-bold transition-transform active:scale-[0.98]"
                 style={{ background: "var(--gold)", color: "var(--charcoal)" }}
               >
