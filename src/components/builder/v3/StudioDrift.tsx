@@ -23,6 +23,7 @@ import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
 import { StudioConversionHud } from "./StudioConversionHud";
 import { StudioTrustStrip } from "./StudioTrustStrip";
+import { StudioLivePreview } from "./StudioLivePreview";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
 import { RevealInvestment } from "./RevealInvestment";
