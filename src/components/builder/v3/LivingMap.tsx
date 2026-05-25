@@ -63,7 +63,7 @@ export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, cu
           </div>
         }
       >
-        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} emotionalMode />
+        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} emotionalMode locale={locale} />
       </Suspense>
 
       {ribbon ? (
