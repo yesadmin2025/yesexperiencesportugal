@@ -260,7 +260,7 @@ export function StudioV2({ onExit }: StudioV2Props) {
         )}
 
         {stage === "reveal" && result && (
-          <section key="reveal">
+          <section key="reveal" className="studio-v2-reveal">
             <Reveal result={result} />
           </section>
         )}
