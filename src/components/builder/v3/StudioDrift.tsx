@@ -1172,7 +1172,7 @@ export function StudioDrift({ onExit }: Props) {
           prediction={prediction}
           activeStopIndex={Math.min(liveDay.stops.length - 1, Math.max(0, chapterIdx - 4))}
           dense={buildPreviewIsDense}
-          defaultOpen={studioAb.variant === "open"}
+          defaultOpen={false}
           onCtaBook={() => studioAb.trackEvent("cta_book")}
         />
       )}
@@ -1515,7 +1515,7 @@ function ChoicePhase({
           {cue}
         </p>
       )}
-      {idle && !picked && (
+      {idle && !picked && !cue && (
         <p
           aria-live="polite"
           className="absolute inset-x-0 z-[55] px-7 text-center pointer-events-none motion-safe:animate-[fade-in_0.6s_ease-out_both]"
@@ -2431,17 +2431,28 @@ function AiWhisper({ text }: { text: string }) {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none absolute inset-x-0 top-[26%] z-[55] flex justify-center px-8 transition-opacity duration-[1100ms] ease-out"
+      className="pointer-events-none absolute inset-x-0 top-[19%] z-[55] flex flex-col items-center justify-center px-8 transition-opacity duration-[1100ms] ease-out"
       style={{ opacity }}
     >
+      <span
+        aria-hidden="true"
+        className="mb-1 inline-flex items-center gap-1.5 text-[8.5px] uppercase tracking-[0.22em] font-semibold"
+        style={{ color: "color-mix(in oklab, var(--gold) 88%, transparent)" }}
+      >
+        <span
+          className="h-1 w-1 rounded-full"
+          style={{ background: "var(--gold)", boxShadow: "0 0 6px var(--gold)" }}
+        />
+        sensing
+      </span>
       <p
         className="text-center italic"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "15.5px",
-          lineHeight: 1.55,
+          fontSize: "14.5px",
+          lineHeight: 1.5,
           letterSpacing: "0",
-          color: "color-mix(in oklab, var(--ivory) 92%, var(--gold))",
+          color: "color-mix(in oklab, var(--ivory) 94%, var(--gold))",
           maxWidth: "24ch",
           textShadow: "0 1px 2px rgba(0,0,0,0.9), 0 4px 28px rgba(0,0,0,0.78)",
         }}
