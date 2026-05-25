@@ -6,6 +6,8 @@ import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import type { DriftProfile } from "./StudioDrift";
 import type { derivePrediction } from "@/lib/drift/predict";
+import { StudioDrawerReco } from "./StudioDrawerReco";
+import { StudioQualityBand } from "./StudioQualityBand";
 
 const BuilderMap = lazy(() =>
   import("../BuilderMap").then((m) => ({ default: m.BuilderMap })),
