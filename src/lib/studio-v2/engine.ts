@@ -12,7 +12,8 @@ import {
   type ComposerProfile,
   type ConfidenceMap,
 } from "@/lib/drift/composer";
-import { REGION_STOPS, type RegionKey, type RegionStop } from "@/data/regionStops";
+import { REGION_STOPS, REGION_ORIGIN, type RegionKey, type RegionStop } from "@/data/regionStops";
+import type { RoutedStopUI } from "@/components/builder/types";
 import { REGION_RULES } from "@/data/regionRules";
 import {
   deriveArchetype,
