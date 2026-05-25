@@ -1374,7 +1374,7 @@ function TextPhase({
           onChange={(e) => setValue(e.target.value)}
           placeholder={chapter.placeholder(locale)}
           maxLength={chapter.inputType === "number" ? 3 : 32}
-          className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
+          className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0"
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
             fontSize: "21px",
@@ -1394,8 +1394,14 @@ function TextPhase({
         )}
         <button
           type="submit"
-          className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
+          className="mt-9 inline-flex h-11 items-center justify-center rounded-full px-7 text-[11px] uppercase font-semibold tracking-[0.22em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] hover:translate-y-[-1px]"
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            background: "color-mix(in oklab, var(--gold) 92%, var(--ivory))",
+            color: "var(--charcoal)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.34), 0 0 0 1px color-mix(in oklab, var(--gold) 35%, transparent)",
+            minWidth: "168px",
+          }}
         >
           {tt("text.continue", locale)}
         </button>
