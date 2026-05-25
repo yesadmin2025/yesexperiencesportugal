@@ -68,7 +68,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     });
     const map = L.map(ref.current, {
       zoomControl: false,
-      attributionControl: true,
+      attributionControl: chrome,
       scrollWheelZoom: false,
       center: [38.72, -9.14],
       zoom: 9,
