@@ -99,6 +99,8 @@ type Social = "intimate" | "shared";
 
 export interface DriftProfile {
   name?: string;
+  /** Number of travellers — REAL data used for pricing. */
+  guests?: number;
   companions?: Companions;
   pickup?: PickupRegion;
   radius?: Radius;
@@ -106,6 +108,10 @@ export interface DriftProfile {
   energy?: Energy;
   style?: Style;
   social?: Social;
+  /** Optional upgrade (Bible §9 Enhancements). */
+  enhancement?: "none" | "lunch" | "sunset";
+  /** Experience tier (Bible §4.2 step 10). */
+  tier?: "essential" | "signature" | "bespoke";
 }
 
 type Scene = {
@@ -312,7 +318,7 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
   "social",
 ];
 
-const ALWAYS_ASK_CHAPTERS = new Set(["companions", "pickup", "duration", "radius"]);
+const ALWAYS_ASK_CHAPTERS = new Set(["companions", "guests", "pickup", "duration", "radius", "enhancements", "tier"]);
 const OPTIONAL_CHAPTER_IDS = ["energy", "style", "social"] as const;
 type OptionalChapterId = (typeof OPTIONAL_CHAPTER_IDS)[number];
 
@@ -340,7 +346,13 @@ interface TextChapter {
   whisper: (p: DriftProfile, locale: DriftLocale) => string;
   placeholder: (locale: DriftLocale) => string;
   /** Where to write the answer on the profile. */
-  field: "name";
+  field: "name" | "guests";
+  /** Input semantics — defaults to "text". `number` adds numeric keyboard + parsing. */
+  inputType?: "text" | "number";
+  min?: number;
+  max?: number;
+  /** Optional small help line under the input. */
+  help?: (locale: DriftLocale) => string;
 }
 
 interface ChoiceOption {
@@ -496,6 +508,19 @@ const CHAPTERS: Chapter[] = [
       },
     ],
   },
+  // GUESTS — real bookable data per Bible §4.2 step 4. Numeric input.
+  {
+    kind: "text",
+    id: "guests",
+    scene: SCENES.linenBreeze,
+    whisper: (_p, locale) => tt("chapter.guests", locale),
+    placeholder: (locale) => tt("chapter.guests_placeholder", locale),
+    help: (locale) => tt("chapter.guests_help", locale),
+    field: "guests",
+    inputType: "number",
+    min: 1,
+    max: 20,
+  },
   {
     kind: "choice",
     id: "pickup",
@@ -625,6 +650,58 @@ const CHAPTERS: Chapter[] = [
         hintKey: "hint.social.1",
         imprint: { social: "shared" },
         reinforce: ["fado", "linen", "amber"],
+      },
+    ],
+  },
+  // ENHANCEMENTS — Bible §4.2 step 9. Single optional upgrade per session.
+  {
+    kind: "choice",
+    id: "enhancements",
+    whisper: (_p, locale) => tt("chapter.enhancements", locale),
+    options: [
+      {
+        scene: SCENES.linenBreeze,
+        hintKey: "hint.enh.0",
+        imprint: { enhancement: "none" },
+        reinforce: ["linen"],
+      },
+      {
+        scene: SCENES.candleBread,
+        hintKey: "hint.enh.1",
+        imprint: { enhancement: "lunch" },
+        reinforce: ["candle", "bread", "amber"],
+      },
+      {
+        scene: SCENES.viewpoint,
+        hintKey: "hint.enh.2",
+        imprint: { enhancement: "sunset" },
+        reinforce: ["amber", "vine"],
+      },
+    ],
+  },
+  // TIER — Bible §4.2 step 10. Drives premium positioning, not invented pricing.
+  {
+    kind: "choice",
+    id: "tier",
+    whisper: (_p, locale) => tt("chapter.tier", locale),
+    options: [
+      {
+        scene: SCENES.quietChapel,
+        hintKey: "hint.tier.0",
+        imprint: { tier: "essential" },
+        reinforce: ["linen", "stone"],
+      },
+      {
+        scene: SCENES.sharedTable,
+        hintKey: "hint.tier.1",
+        imprint: { tier: "signature" },
+        reinforce: ["candle", "amber"],
+      },
+      {
+        scene: SCENES.dawnDouro,
+        hintKey: "hint.tier.2",
+        imprint: { tier: "bespoke" },
+        reinforce: ["amber", "vine", "fado"],
       },
     ],
   },
@@ -927,16 +1004,30 @@ export function StudioDrift({ onExit }: Props) {
     [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass, locale],
   );
 
-  const onNameSubmit = useCallback(
-    (name: string) => {
-      const clean = name.trim().slice(0, 32);
+  const onTextSubmit = useCallback(
+    (raw: string) => {
+      if (chapter.kind !== "text") return;
+      const field = chapter.field;
+      const clean = raw.trim().slice(0, 32);
       if (clean) {
-        setProfile((p) => ({ ...p, name: clean }));
-        void recordDriftEvent("signal_captured", {
-          chapterId: chapter.id,
-          signalKey: "name",
-          signalValue: clean.slice(0, 32),
-        });
+        if (field === "guests") {
+          const n = Math.max(chapter.min ?? 1, Math.min(chapter.max ?? 20, Number.parseInt(clean, 10) || 0));
+          if (n > 0) {
+            setProfile((p) => ({ ...p, guests: n }));
+            void recordDriftEvent("signal_captured", {
+              chapterId: chapter.id,
+              signalKey: "guests",
+              signalValue: String(n),
+            });
+          }
+        } else {
+          setProfile((p) => ({ ...p, [field]: clean } as DriftProfile));
+          void recordDriftEvent("signal_captured", {
+            chapterId: chapter.id,
+            signalKey: field,
+            signalValue: clean.slice(0, 32),
+          });
+        }
       }
       void recordDriftEvent("scene_answered", { chapterId: chapter.id });
       if (!audioOn) setAudioOn(true);
@@ -984,7 +1075,7 @@ export function StudioDrift({ onExit }: Props) {
           chapter={chapter}
           profile={profile}
           locale={locale}
-          onSubmit={onNameSubmit}
+          onSubmit={onTextSubmit}
           onSkip={advance}
         />
       )}
@@ -1044,9 +1135,14 @@ export function StudioDrift({ onExit }: Props) {
             pricePerGuestFrom={145}
             fast={isFastPace()}
           />
-          <StudioTrustStrip
-            reviewsLabel={tt("trust.reviews", locale) || "reviews"}
-          />
+          {/* Trust strip — CONTEXTUAL only. Bible says no static OTA-chrome.
+              Show during the mid-flow doubt window (chapters 6-9: duration→style)
+              where travellers most often stall before committing to a tier. */}
+          {chapterIdx >= 6 && chapterIdx <= 9 && (
+            <StudioTrustStrip
+              reviewsLabel={tt("trust.reviews", locale) || "reviews"}
+            />
+          )}
           {chapter.kind !== "choice" && (
             <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           )}
@@ -1267,12 +1363,15 @@ function TextPhase({
           {chapter.whisper(profile, locale)}
         </label>
         <input
-          type="text"
+          type={chapter.inputType === "number" ? "number" : "text"}
+          inputMode={chapter.inputType === "number" ? "numeric" : "text"}
+          min={chapter.min}
+          max={chapter.max}
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={chapter.placeholder(locale)}
-          maxLength={32}
+          maxLength={chapter.inputType === "number" ? 3 : 32}
           className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
@@ -1283,6 +1382,14 @@ function TextPhase({
             caretColor: "var(--gold)",
           }}
         />
+        {chapter.help && (
+          <p
+            className="mt-3 text-[10.5px] uppercase text-[color:var(--ivory)]/55 text-center"
+            style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
+          >
+            {chapter.help(locale)}
+          </p>
+        )}
         <button
           type="submit"
           className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"

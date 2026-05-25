@@ -130,6 +130,22 @@ const PT: Dict = {
   "quality.heritage": "Património",
   "quality.table": "Mesa",
   "quality.of_five": "em 5",
+
+  // Guests · Enhancements · Tier (Bible alignment)
+  "chapter.guests": "Quantos vão viajar?",
+  "chapter.guests_placeholder": "2",
+  "chapter.guests_help": "usado para calcular o investimento por pessoa",
+  "chapter.enhancements": "Quer juntar algum momento especial?",
+  "hint.enh.0": "Nada extra — ritmo natural",
+  "hint.enh.1": "Almoço privado num produtor",
+  "hint.enh.2": "Hora extra ao pôr do sol",
+  "chapter.tier": "Que nível de cuidado prefere?",
+  "hint.tier.0": "Essential — privado, simples",
+  "hint.tier.1": "Signature — guia sénior, mesa reservada",
+  "hint.tier.2": "Bespoke — anfitrião dedicado, tudo orquestrado",
+
+  // Trust (contextual)
+  "trust.midflow": "700+ avaliações 5★ · Google · Tripadvisor · Viator",
 };
 
 const EN: Dict = {
@@ -180,9 +196,9 @@ const EN: Dict = {
 
   "build.eyebrow": "Your day so far",
 
-  "cta.book": "Reserve this day",
-  "cta.save": "Save for later",
-  "cta.refine": "Refine with a local",
+  "cta.book": "Secure Your Experience",
+  "cta.save": "Save My Experience",
+  "cta.refine": "Refine with a Local Designer",
   "cta.explore": "Explore everything",
   "cta.whatsapp": "Talk to a local",
   "wa.intro": "Hi, I'm shaping a day in Portugal in the Studio",
@@ -230,6 +246,22 @@ const EN: Dict = {
   "quality.heritage": "Heritage",
   "quality.table": "Table",
   "quality.of_five": "of 5",
+
+  // Guests · Enhancements · Tier (Bible alignment)
+  "chapter.guests": "How many of you are travelling?",
+  "chapter.guests_placeholder": "2",
+  "chapter.guests_help": "used to price your experience per person",
+  "chapter.enhancements": "Add a special moment?",
+  "hint.enh.0": "Nothing extra — keep the natural rhythm",
+  "hint.enh.1": "Private lunch with a producer",
+  "hint.enh.2": "Extra sunset hour",
+  "chapter.tier": "Which level of care suits you?",
+  "hint.tier.0": "Essential — private, simple",
+  "hint.tier.1": "Signature — senior guide, reserved table",
+  "hint.tier.2": "Bespoke — dedicated host, fully orchestrated",
+
+  // Trust (contextual)
+  "trust.midflow": "700+ five-star reviews · Google · Tripadvisor · Viator",
 };
 
 const ES: Dict = {
