@@ -381,7 +381,7 @@ interface ConvergenceChapter {
 type Chapter = DriftChapter | TextChapter | ChoiceChapter | ConvergenceChapter;
 
 const greet = (p: DriftProfile, fallback: string) =>
-  p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name.toLowerCase()}` : fallback;
+  p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name}` : fallback;
 
 /** Two-pace entry: travellers who chose "60 segundos" reveal faster. */
 const isFastPace = (): boolean => {
@@ -478,7 +478,7 @@ const CHAPTERS: Chapter[] = [
     id: "settling",
     whisper: (p, locale) =>
       p.name
-        ? tt("chapter.settling_named", locale).replace("{name}", p.name.toLowerCase())
+        ? tt("chapter.settling_named", locale).replace("{name}", p.name)
         : tt("chapter.settling", locale),
     scenes: [SCENES.quietChapel],
     holdMs: 5400,
@@ -1143,7 +1143,11 @@ export function StudioDrift({ onExit }: Props) {
               reviewsLabel={tt("trust.reviews", locale) || "reviews"}
             />
           )}
-          {chapter.kind !== "choice" && (
+          {/* EncouragementBar only on text-input chapters. On drift chapters
+              the cinematic headline already carries the same idea (e.g.
+              "your day is starting to take shape") — surfacing the bar there
+              creates duplicate copy and breaks rhythm. */}
+          {chapter.kind === "text" && (
             <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           )}
           <EmergingThemes
