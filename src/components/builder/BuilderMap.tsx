@@ -2,6 +2,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import { MapPin } from "lucide-react";
+import { mergeLocale } from "@/lib/i18n-fallback";
 import type { RoutedStopUI } from "./types";
 
 interface CandidatePin {
@@ -154,7 +155,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         for (const c of candidates) {
           if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
           const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
-          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? (CHIP_I18N[locale] ?? CHIP_I18N.en).outOfRange}`, {
+          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`, {
             direction: "top",
             offset: [0, -10],
           });
@@ -203,7 +204,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     stopPointsRef.current = points;
     points.forEach((p, i) => {
       const m = L.marker(p, { icon: pin(i + 1, false) });
-      m.bindTooltip(emotionalMode ? `${(CHIP_I18N[locale] ?? CHIP_I18N.en).stop} ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
+      m.bindTooltip(emotionalMode ? `${mergeLocale(CHIP_I18N, locale).stop} ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
       layer.addLayer(m);
       stopMarkersRef.current.push(m);
     });
@@ -254,7 +255,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
         const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
         m.bindTooltip(
-          c.eligible ? c.label : `${c.label} — ${c.reason ?? (CHIP_I18N[locale] ?? CHIP_I18N.en).outOfRange}`,
+          c.eligible ? c.label : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`,
           { direction: "top", offset: [0, -10] },
         );
         if (c.eligible && onCandidateClick) {
@@ -322,7 +323,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
   return (
     <div className="relative h-full w-full">
       {chrome && (() => {
-        const tr = CHIP_I18N[locale] ?? CHIP_I18N.en;
+        const tr = mergeLocale(CHIP_I18N, locale);
         const n = stops.length;
         const liveLabel = emotionalMode ? tr.live : tr.liveStatic;
         const stopWord = emotionalMode
@@ -347,7 +348,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"
-        aria-label={(CHIP_I18N[locale] ?? CHIP_I18N.en).mapAria}
+        aria-label={mergeLocale(CHIP_I18N, locale).mapAria}
       />
     </div>
   );
