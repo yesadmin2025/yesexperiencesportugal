@@ -677,11 +677,20 @@ export function StudioDrift({ onExit }: Props) {
   // a pickup region — otherwise we display a fabricated stop ("Livramento
   // market, Setúbal") for someone who hasn't said where they want to start.
   // That breaks the no-invention rule and confuses the rhythm.
+  // Track viewport height so we can hide BuildPreview when there's no room
+  // to stack it under 3 choice cards without overlap (~600px and below).
+  const [vh, setVh] = useState<number>(() => (typeof window !== "undefined" ? window.innerHeight : 900));
+  useEffect(() => {
+    const onR = () => setVh(window.innerHeight);
+    window.addEventListener("resize", onR);
+    return () => window.removeEventListener("resize", onR);
+  }, []);
   const showBuildPreview =
     chapter.kind !== "convergence" &&
     Boolean(profile.pickup) &&
     chapterIdx >= 4 &&
-    liveDay.stops.length > 0;
+    liveDay.stops.length > 0 &&
+    vh >= 640;
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
   // actually moved (top mood, itinerary, collapse list, pacing, …).
