@@ -33,7 +33,7 @@ export function StudioConversionHud({ index, total, confidence }: Props) {
     <div
       role="region"
       aria-label="Studio progress and quick reserve"
-      className="absolute top-2 inset-x-2 z-[45] flex items-center justify-between gap-2 rounded-full px-3 py-1.5 pointer-events-auto"
+      className="absolute top-9 inset-x-2 z-[45] flex items-center justify-between gap-2 rounded-full px-3 py-1.5 pointer-events-auto motion-safe:animate-[fade-in_0.7s_ease-out_both]"
       style={{
         background: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
         backdropFilter: "blur(6px)",
