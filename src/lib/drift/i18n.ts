@@ -104,6 +104,7 @@ const PT: Dict = {
   // Exit
   "ui.exit": "Sair",
   "ui.back": "Voltar",
+  "ui.sensing": "a sentir",
   "ui.choose": "Escolher: {label}",
   "trust.reviews": "avaliações",
   "choice.idle_hint": "Toque numa imagem para escolher — ou demore o tempo que precisar.",
