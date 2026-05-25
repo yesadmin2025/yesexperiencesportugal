@@ -2528,20 +2528,27 @@ function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
     >
       <span
         aria-hidden="true"
-        className="mb-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[8.5px] uppercase tracking-[0.22em] font-semibold"
-        style={{
-          color: "color-mix(in oklab, var(--gold) 92%, transparent)",
-          background: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-          backdropFilter: "blur(6px)",
-          WebkitBackdropFilter: "blur(6px)",
-          border: "1px solid color-mix(in oklab, var(--gold) 22%, transparent)",
-        }}
+        className="mb-2 inline-flex items-center gap-2"
       >
         <span
           className="h-1 w-1 rounded-full motion-safe:animate-pulse"
           style={{ background: "var(--gold)", boxShadow: "0 0 6px var(--gold)" }}
         />
-        {sensingLabel}
+        <span
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontStyle: "italic",
+            fontSize: "11.5px",
+            fontWeight: 400,
+            lineHeight: 1,
+            letterSpacing: "0",
+            color: "color-mix(in oklab, var(--gold-soft) 92%, var(--ivory))",
+            opacity: 0.88,
+            textShadow: "0 1px 8px rgba(0,0,0,0.6)",
+          }}
+        >
+          {sensingLabel}
+        </span>
       </span>
       <p
         className="text-center italic"
