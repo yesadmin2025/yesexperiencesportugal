@@ -32,6 +32,8 @@ interface Props {
   /** Optional label like "Step" so we can localise later. */
   stepLabel?: string;
   ofLabel?: string;
+  /** When true, shows a small ⚡ Fast badge — Studio v4 / Fase 7. */
+  fast?: boolean;
 }
 
 export function StudioConversionHud({
@@ -41,6 +43,7 @@ export function StudioConversionHud({
   pricePerGuestFrom,
   stepLabel = "Step",
   ofLabel = "of",
+  fast = false,
 }: Props) {
   const stepNumber = Math.min(total, Math.max(1, index + 1));
   const pct = Math.max(0, Math.min(1, (index + 1) / Math.max(1, total)));
