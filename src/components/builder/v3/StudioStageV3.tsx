@@ -733,6 +733,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           regionKey={state.regionKey ?? undefined}
           revealed={showMap}
           curtainLabel={t.yourDay}
+          locale={locale}
           ribbon={
             state.acceptedStops.length > 0 ? (
               <ItineraryRibbon
