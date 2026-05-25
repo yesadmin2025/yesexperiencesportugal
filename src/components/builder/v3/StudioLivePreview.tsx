@@ -339,13 +339,28 @@ function StoryTab({
   day,
   profile,
   locale,
+  confidence,
+  anchorId,
 }: {
   day: ComposedDay;
   profile?: DriftProfile;
   locale: DriftLocale;
+  confidence: number;
+  anchorId?: string;
 }) {
   return (
-    <div className="space-y-3 pt-1">
+    <div className="space-y-1 pt-1">
+      {profile && (
+        <StudioDrawerReco
+          profile={profile}
+          locale={locale}
+          confidence={confidence}
+          excludeId={anchorId}
+        />
+      )}
+      {profile && (
+        <StudioQualityBand day={day} profile={profile} confidence={confidence} locale={locale} />
+      )}
       <p
         style={{
           fontFamily: "'Inter', system-ui, sans-serif",
