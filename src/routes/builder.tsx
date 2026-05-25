@@ -495,7 +495,27 @@ function BuilderPage() {
 
   return (
     <div className="builder-stage min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
+      {proMode && (
+        <div className="sticky top-0 z-[55] border-b border-[color:var(--gold)]/30 bg-[color:var(--ivory)]/95 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--ivory)]/80">
+          <div className="container-x flex items-center justify-between gap-3 py-2">
+            <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] font-semibold text-[color:var(--charcoal)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" aria-hidden="true" />
+              Pro mode
+              <span className="hidden sm:inline text-[color:var(--charcoal)]/55 normal-case tracking-normal font-normal">
+                · transparência total, preço por pax visível
+              </span>
+            </span>
+            <a
+              href="/builder"
+              className="text-[10px] uppercase tracking-[0.28em] font-medium text-[color:var(--charcoal)]/55 hover:text-[color:var(--charcoal)] transition-colors min-h-[36px] inline-flex items-center"
+            >
+              Sair
+            </a>
+          </div>
+        </div>
+      )}
       <article className="bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
+
         <BuilderDebugPanel
           state={{
             urlStep: step,
