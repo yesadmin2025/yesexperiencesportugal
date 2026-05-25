@@ -379,16 +379,25 @@ export function StudioV2({ onExit }: StudioV2Props) {
 
 function IntroBeat({ onBegin }: { onBegin: () => void }) {
   return (
-    <section className="min-h-[78vh] flex flex-col justify-center">
+    <section className="relative min-h-[78vh] flex flex-col justify-center">
+      {/* Cinematic ambient layer — subtle warm gold wash, no imagery, brand-safe */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-[-2rem] -top-10 -bottom-10"
+        style={{
+          background:
+            "radial-gradient(70% 55% at 50% 32%, color-mix(in oklab, var(--gold-soft) 45%, transparent) 0%, transparent 70%), radial-gradient(80% 50% at 100% 100%, color-mix(in oklab, var(--teal-2) 22%, transparent) 0%, transparent 65%)",
+        }}
+      />
       <p
-        className="studio-v2-reveal text-[10.5px] uppercase tracking-[0.36em]"
-        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+        className="studio-v2-reveal relative text-[10.5px] uppercase tracking-[0.36em]"
+        style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
         Portugal — designed for you
       </p>
       <h1
-        className="studio-v2-reveal delay-1 mt-4 text-[32px] leading-[1.1] sm:text-[48px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
+        className="studio-v2-reveal delay-1 relative mt-5 text-[36px] leading-[1.05] sm:text-[54px]"
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
       >
         Begin your Portugal{" "}
         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
@@ -397,15 +406,23 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
         .
       </h1>
       <p
-        className="studio-v2-reveal delay-2 mt-4 text-[14.5px] leading-relaxed"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        className="studio-v2-reveal delay-2 relative mt-5 text-[15px] leading-[1.55] max-w-[28ch]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
       >
-        Each choice writes the next line. By the end you'll have a day shaped
-        around you — with the map, the rhythm and the moments already in place.
+        Each choice writes the next line. By the end you'll have a day shaped around you — map, rhythm and moments already in place.
       </p>
-      <div className="studio-v2-reveal delay-3 mt-10">
+      <div className="studio-v2-reveal delay-3 relative mt-10">
         <ContinueButton label="Begin" onClick={onBegin} />
       </div>
+      <p
+        className="studio-v2-reveal delay-4 relative mt-6 text-[11px] italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+        }}
+      >
+        Designed with a local. Signed by you.
+      </p>
     </section>
   );
 }
@@ -686,12 +703,22 @@ function RevealStory({
     <section className="mb-10">
       <p
         className="text-[10.5px] uppercase tracking-[0.36em]"
-        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+        style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
-        {who} Portugal story
+        {who} signature Portugal experience
       </p>
+      <h2
+        className="mt-4 text-[28px] leading-[1.1] sm:text-[34px]"
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
+      >
+        YES — your day{" "}
+        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          is ready
+        </span>
+        .
+      </h2>
       <p
-        className="mt-4 text-[20px] leading-[1.35] sm:text-[24px]"
+        className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           fontStyle: "italic",
@@ -701,8 +728,8 @@ function RevealStory({
         {revealFraming(profile.intent, region)}
       </p>
       <ul
-        className="mt-5 space-y-1.5 text-[14px] leading-relaxed"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+        className="mt-6 space-y-2 text-[14px] leading-relaxed"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
       >
         {profile.intent && <li>· {storyAfterIntent(profile.intent)}</li>}
         {profile.pace   && <li>· {storyAfterPace(profile.pace)}</li>}
@@ -734,10 +761,10 @@ function ChoiceBeat({
         <button
           type="button"
           onClick={onBack}
-          className="text-[11.5px] uppercase tracking-[0.28em] min-h-[44px] px-2 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          className="text-[11px] uppercase tracking-[0.28em] min-h-[44px] px-2 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
         >
-          ← back
+          ← Back
         </button>
         {footer}
       </div>
@@ -753,12 +780,16 @@ function ContinueButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="group inline-flex items-center gap-2 rounded-[2px] px-6 py-3 text-[12px] tracking-[0.24em] lowercase transition-all disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2"
+      className="group inline-flex items-center gap-2.5 rounded-[2px] px-7 py-3.5 text-[12.5px] tracking-[0.22em] transition-all disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2"
       style={{
         background: "var(--charcoal)",
         color: "var(--ivory)",
         minHeight: 48,
         minWidth: 184,
+        fontFamily: "var(--font-sans, Inter), sans-serif",
+        fontWeight: 600,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
       }}
     >
       {label}
@@ -790,48 +821,66 @@ function RevealActions({ name }: { name?: string }) {
     <div className="mt-12 flex flex-col gap-3">
       <button
         type="button"
-        className="group inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
-        style={{ background: "var(--charcoal)", color: "var(--ivory)", minHeight: 48 }}
+        className="group inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          background: "var(--charcoal)",
+          color: "var(--ivory)",
+          minHeight: 52,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 600,
+          fontSize: 12.5,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+        }}
       >
-        Reserve instantly
+        Secure my experience
         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
       </button>
       <a
         href={whatsappHref(waMsg)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
           background: "var(--teal)",
           color: "var(--ivory)",
-          minHeight: 48,
+          minHeight: 52,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 600,
+          fontSize: 12.5,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
         }}
       >
         <MessageCircle className="h-4 w-4" aria-hidden />
-        Talk to a local
+        Refine with a local
       </a>
       <button
         type="button"
         onClick={onSave}
-        className="inline-flex items-center justify-center gap-2 rounded-[2px] border px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-3.5 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
-          borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-          color: "var(--charcoal)",
+          color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
           background: "transparent",
           minHeight: 48,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 600,
+          fontSize: 11.5,
+          letterSpacing: "0.24em",
+          textTransform: "uppercase",
         }}
       >
-        <Bookmark className="h-4 w-4" aria-hidden />
-        {saved ? "Saved" : "Save my story"}
+        <Bookmark className="h-3.5 w-3.5" aria-hidden />
+        {saved ? "Saved" : "Save my experience"}
       </button>
       <p
-        className="mt-1 text-center text-[11.5px] italic"
+        className="mt-2 text-center text-[12px] italic"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
           color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
         }}
       >
-        A human concierge confirms timings before booking.
+        A local designer confirms timings before booking.
       </p>
     </div>
   );
@@ -983,28 +1032,35 @@ function OptionCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex min-h-[88px] flex-col items-start gap-1 rounded-[2px] border px-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2"
+      className="group relative flex min-h-[92px] flex-col items-start gap-1.5 px-5 py-5 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2"
       style={{
-        borderColor: active
-          ? "color-mix(in oklab, var(--gold) 75%, transparent)"
-          : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
         background: active
-          ? "color-mix(in oklab, var(--sand) 65%, transparent)"
-          : "var(--ivory)",
+          ? "color-mix(in oklab, var(--sand) 70%, transparent)"
+          : "color-mix(in oklab, var(--ivory) 60%, transparent)",
+        borderLeft: active
+          ? "2px solid var(--gold)"
+          : "2px solid color-mix(in oklab, var(--charcoal) 8%, transparent)",
         boxShadow: active
-          ? "inset 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent)"
+          ? "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent)"
           : "none",
       }}
     >
       <span
-        className="text-[15px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+        className="text-[16px] leading-snug transition-colors duration-300"
+        style={{
+          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontWeight: active ? 700 : 600,
+          color: "var(--charcoal)",
+        }}
       >
         {label}
       </span>
       <span
         className="text-[12.5px] leading-snug"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+        style={{
+          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+        }}
       >
         {sub}
       </span>
