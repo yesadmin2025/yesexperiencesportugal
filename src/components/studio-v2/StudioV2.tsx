@@ -562,8 +562,17 @@ function TextRow({
 
 // ─── reveal ───────────────────────────────────────────────────────────────
 
+type VariantKey = "lighter" | "signature" | "richer";
+
 function Reveal({ result }: { result: DesignResult }) {
-  const { day, score, archetype, region } = result;
+  const { score, archetype, region } = result;
+  const [variant, setVariant] = useState<VariantKey>("signature");
+
+  const day =
+    variant === "lighter" ? result.variants.lighter :
+    variant === "richer"  ? result.variants.richer  :
+    result.day;
+
   return (
     <div>
       <Eyebrow>Your experience</Eyebrow>
@@ -584,6 +593,41 @@ function Reveal({ result }: { result: DesignResult }) {
         <ScoreRow label="Fit"        value={score.fit} />
         <ScoreRow label="Pacing"     value={score.pacing} />
         <ScoreRow label="Logistics"  value={score.logistics} />
+      </div>
+
+      <div className="mt-6">
+        <p
+          className="mb-2 text-[10.5px] uppercase tracking-[0.28em]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        >
+          Day intensity
+        </p>
+        <div
+          className="inline-flex rounded-full border p-1"
+          style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+          role="tablist"
+          aria-label="Day intensity"
+        >
+          {(["lighter", "signature", "richer"] as VariantKey[]).map((v) => {
+            const active = variant === v;
+            return (
+              <button
+                key={v}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setVariant(v)}
+                className="rounded-full px-4 py-1.5 text-[12px] tracking-[0.18em] lowercase transition min-h-[36px]"
+                style={{
+                  background: active ? "var(--charcoal)" : "transparent",
+                  color: active ? "var(--ivory)" : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                  fontWeight: active ? 600 : 500,
+                }}
+              >
+                {v}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <ol className="mt-8 space-y-4">
