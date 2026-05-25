@@ -4,6 +4,7 @@ import { X, ChevronUp } from "lucide-react";
 import type { ComposedDay } from "@/lib/drift/composer";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { t as tt, type DriftLocale } from "@/lib/drift/i18n";
+import { recordDriftEvent } from "@/lib/drift/telemetry";
 import type { DriftProfile } from "./StudioDrift";
 import type { derivePrediction } from "@/lib/drift/predict";
 import { StudioDrawerReco } from "./StudioDrawerReco";
