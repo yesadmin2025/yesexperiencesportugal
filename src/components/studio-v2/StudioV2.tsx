@@ -1022,54 +1022,60 @@ function RevealActions({ name }: { name?: string }) {
     }
   };
   const waMsg = name?.trim()
-    ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de falar com um local.`
-    : "Olá! Acabei de desenhar uma experiência no Studio. Gostaria de falar com um local.";
+    ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de a refinar com um local designer.`
+    : "Olá! Acabei de desenhar uma experiência no Studio. Gostaria de a refinar com um local designer.";
   return (
     <div className="mt-12 flex flex-col gap-3">
+      {/* 1 — Primary: Secure Your Experience (gold) */}
       <button
         type="button"
         className="group inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
-          background: "var(--charcoal)",
-          color: "var(--ivory)",
-          minHeight: 52,
+          background: "color-mix(in oklab, var(--gold) 92%, var(--charcoal))",
+          color: "var(--charcoal)",
+          minHeight: 56,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 700,
+          fontSize: 13,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--gold) 60%, transparent)",
+        }}
+      >
+        Secure your experience
+        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+      </button>
+
+      {/* 2 — Secondary: Save My Experience (ghost) */}
+      <button
+        type="button"
+        onClick={onSave}
+        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] border px-6 py-3.5 transition-all focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          background: "transparent",
+          color: "var(--charcoal)",
+          borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+          minHeight: 48,
           fontFamily: "var(--font-sans, Inter), sans-serif",
           fontWeight: 600,
-          fontSize: 12.5,
-          letterSpacing: "0.18em",
+          fontSize: 12,
+          letterSpacing: "0.22em",
           textTransform: "uppercase",
         }}
       >
-        Secure my experience
-        <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+        <Bookmark className="h-3.5 w-3.5" aria-hidden />
+        {saved ? "Saved" : "Save my experience"}
       </button>
+
+      {/* 3 — Tertiary: Refine with a Local Designer (text) */}
       <a
         href={whatsappHref(waMsg)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+        className="inline-flex items-center justify-center gap-2 px-2 py-3 transition-all focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
         style={{
-          background: "var(--teal)",
-          color: "var(--ivory)",
-          minHeight: 52,
-          fontFamily: "var(--font-sans, Inter), sans-serif",
-          fontWeight: 600,
-          fontSize: 12.5,
-          letterSpacing: "0.18em",
-          textTransform: "uppercase",
-        }}
-      >
-        <MessageCircle className="h-4 w-4" aria-hidden />
-        Refine with a local
-      </a>
-      <button
-        type="button"
-        onClick={onSave}
-        className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-3.5 transition-all focus-visible:outline-none focus-visible:ring-2"
-        style={{
-          color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
-          background: "transparent",
-          minHeight: 48,
+          color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+          minHeight: 44,
           fontFamily: "var(--font-sans, Inter), sans-serif",
           fontWeight: 600,
           fontSize: 11.5,
@@ -1077,9 +1083,10 @@ function RevealActions({ name }: { name?: string }) {
           textTransform: "uppercase",
         }}
       >
-        <Bookmark className="h-3.5 w-3.5" aria-hidden />
-        {saved ? "Saved" : "Save my experience"}
-      </button>
+        <MessageCircle className="h-3.5 w-3.5" aria-hidden />
+        Refine with a local designer
+      </a>
+
       <p
         className="mt-2 text-center text-[12px] italic"
         style={{
@@ -1087,7 +1094,7 @@ function RevealActions({ name }: { name?: string }) {
           color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
         }}
       >
-        A local designer confirms timings before booking.
+        A local designer confirms every timing before booking.
       </p>
     </div>
   );
