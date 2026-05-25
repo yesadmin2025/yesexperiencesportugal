@@ -720,9 +720,46 @@ function Reveal({ result }: { result: DesignResult }) {
       )}
 
 
-      <details className="mt-8 text-[12px]" style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}>
-        <summary className="cursor-pointer">Operational data</summary>
-        <pre className="mt-2 overflow-x-auto rounded-[2px] border p-3 text-[11px]" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }}>
+      <div className="mt-12 flex flex-col gap-3">
+        <button
+          type="button"
+          className="group inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+          style={{
+            background: "var(--charcoal)",
+            color: "var(--ivory)",
+            minHeight: 48,
+          }}
+        >
+          Reserve this day
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center justify-center gap-2 rounded-[2px] border px-6 py-3.5 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+          style={{
+            borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+            color: "var(--charcoal)",
+            background: "transparent",
+            minHeight: 48,
+          }}
+        >
+          Refine the day
+        </button>
+        <p
+          className="mt-1 text-center text-[11.5px] italic"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          }}
+        >
+          A human concierge confirms timings before booking.
+        </p>
+      </div>
+
+      {import.meta.env.DEV && (
+        <details className="mt-10 text-[12px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <summary className="cursor-pointer">Operational data (dev)</summary>
+          <pre className="mt-2 overflow-x-auto rounded-[2px] border p-3 text-[11px]" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }}>
 {JSON.stringify(
   {
     archetype,
@@ -739,8 +776,9 @@ function Reveal({ result }: { result: DesignResult }) {
   null,
   2,
 )}
-        </pre>
-      </details>
+          </pre>
+        </details>
+      )}
     </div>
   );
 }
