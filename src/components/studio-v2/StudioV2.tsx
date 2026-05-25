@@ -71,18 +71,34 @@ export function StudioV2({ onExit }: StudioV2Props) {
     setStage("reveal");
   };
 
+  // Auto-advance from intent → refine ~700ms after a choice (cinematic feel).
+  const intentTimer = useRef<number | null>(null);
+  useEffect(() => {
+    if (stage === "intent" && profile.intent) {
+      if (intentTimer.current) window.clearTimeout(intentTimer.current);
+      intentTimer.current = window.setTimeout(() => setStage("refine"), 700);
+    }
+    return () => {
+      if (intentTimer.current) window.clearTimeout(intentTimer.current);
+    };
+  }, [stage, profile.intent]);
+
+  const chromeVisible = stage !== "intent";
+
   return (
     <div
       className="min-h-screen w-full"
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
       <header className="flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
-        <span
-          className="text-[11px] uppercase tracking-[0.32em]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
-        >
-          Studio · consultation
-        </span>
+        {chromeVisible ? (
+          <span
+            className="text-[11px] uppercase tracking-[0.32em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
+            Studio
+          </span>
+        ) : <span />}
         <button
           onClick={onExit}
           aria-label="Exit studio"
@@ -92,7 +108,7 @@ export function StudioV2({ onExit }: StudioV2Props) {
         </button>
       </header>
 
-      {summaryChips.length > 0 && stage !== "reveal" && (
+      {chromeVisible && summaryChips.length > 0 && stage !== "reveal" && (
         <div
           className="mx-auto flex w-full max-w-3xl flex-wrap gap-2 px-5 pb-2 sm:px-8"
           aria-label="Consultation summary"
@@ -114,140 +130,172 @@ export function StudioV2({ onExit }: StudioV2Props) {
       )}
 
       <main className="mx-auto w-full max-w-3xl px-5 pb-24 pt-6 sm:px-8 sm:pt-10">
-        
-          {stage === "intent" && (
-            <section key="intent" >
-              <Eyebrow>Stage 1 · Travel intent</Eyebrow>
-              <Headline>How should Portugal feel?</Headline>
-              <Helper>Select the atmosphere closest to what you have in mind.</Helper>
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {INTENT_OPTIONS.map((opt) => {
-                  const active = profile.intent === opt.id;
-                  return (
+        {stage === "intent" && (
+          <section
+            key="intent"
+            className="min-h-[70vh] flex flex-col justify-center"
+          >
+            <h1
+              className="text-[28px] leading-[1.15] sm:text-[40px]"
+              style={{
+                fontFamily: "var(--font-display, Montserrat), sans-serif",
+                fontWeight: 700,
+              }}
+            >
+              How should Portugal{" "}
+              <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+                feel
+              </span>
+              ?
+            </h1>
+            <p
+              className="mt-3 text-[14px] leading-relaxed"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+            >
+              Choose the atmosphere closest to what you have in mind.
+            </p>
+            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {INTENT_OPTIONS.map((opt) => (
+                <OptionCard
+                  key={opt.id}
+                  active={profile.intent === opt.id}
+                  label={opt.label}
+                  sub={opt.sub}
+                  onClick={() => update(applyIntent(profile, opt.id as IntentAtmosphere))}
+                />
+              ))}
+            </div>
+            {profile.intent && (
+              <p
+                className="mt-6 text-[12.5px] italic"
+                style={{
+                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                }}
+              >
+                {TRANSITION_COPY.afterIntent}
+              </p>
+            )}
+          </section>
+        )}
+
+        {stage === "refine" && (
+          <section key="refine">
+            <Eyebrow>Refine</Eyebrow>
+            <Headline>A few details — all optional.</Headline>
+            <Helper>
+              Skip anything. We use sensible defaults and the concierge confirms before booking.
+            </Helper>
+
+            <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+              <Accordion title="Who is travelling" summary={groupSummary(profile)}>
+                <GroupForm value={profile.group} onChange={(g) => update({ group: g })} />
+              </Accordion>
+              <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"}>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
+                  {PACE_OPTIONS.map((opt) => (
                     <OptionCard
                       key={opt.id}
-                      active={active}
+                      active={profile.pace === opt.id}
                       label={opt.label}
                       sub={opt.sub}
-                      onClick={() => update(applyIntent(profile, opt.id as IntentAtmosphere))}
+                      onClick={() => update(applyPace(profile, opt.id as PaceV2))}
                     />
-                  );
-                })}
-              </div>
-              <StageFooter
-                disabled={!profile.intent}
-                helper={profile.intent ? TRANSITION_COPY.afterIntent : undefined}
-                onContinue={() => setStage("group")}
-              />
-            </section>
-          )}
+                  ))}
+                </div>
+              </Accordion>
+              <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {PRIORITY_OPTIONS.map((opt) => {
+                    const w = profile.priorityWeights[opt.id as PriorityKey];
+                    const next =
+                      w === undefined ? PRIORITY_WEIGHTS.single :
+                      w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
+                      undefined;
+                    return (
+                      <PriorityChip
+                        key={opt.id}
+                        label={opt.label}
+                        weight={w}
+                        onClick={() => {
+                          const pw = { ...profile.priorityWeights };
+                          if (next === undefined) delete pw[opt.id as PriorityKey];
+                          else pw[opt.id as PriorityKey] = next;
+                          update({ priorityWeights: pw });
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </Accordion>
+              <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
+                <OpsForm value={profile.ops} onChange={(ops) => update({ ops })} />
+              </Accordion>
+            </div>
 
-          {stage === "group" && (
-            <section key="group" >
-              <Eyebrow>Stage 2 · Group profile</Eyebrow>
-              <Headline>Who is this experience designed for?</Headline>
-              <Helper>Composition shapes pacing, comfort and choice of place.</Helper>
-              <GroupForm
-                value={profile.group}
-                onChange={(g) => update({ group: g })}
-              />
-              <StageFooter
-                disabled={!profile.group}
-                helper={profile.group ? TRANSITION_COPY.afterGroup : undefined}
-                onContinue={() => setStage("pace")}
-              />
-            </section>
-          )}
+            <StageFooter
+              disabled={false}
+              helper="Designing your day."
+              ctaLabel="Design my day"
+              onContinue={finalize}
+            />
+          </section>
+        )}
 
-          {stage === "pace" && (
-            <section key="pace" >
-              <Eyebrow>Stage 3 · Rhythm & flow</Eyebrow>
-              <Headline>How full should the day feel?</Headline>
-              <Helper>Pacing decides stop density, drive tolerance and lunch length.</Helper>
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {PACE_OPTIONS.map((opt) => (
-                  <OptionCard
-                    key={opt.id}
-                    active={profile.pace === opt.id}
-                    label={opt.label}
-                    sub={opt.sub}
-                    onClick={() => update(applyPace(profile, opt.id as PaceV2))}
-                  />
-                ))}
-              </div>
-              <StageFooter
-                disabled={!profile.pace}
-                helper={profile.pace ? TRANSITION_COPY.afterPace : undefined}
-                onContinue={() => setStage("priorities")}
-              />
-            </section>
-          )}
-
-          {stage === "priorities" && (
-            <section key="priorities" >
-              <Eyebrow>Stage 4 · Experience priorities</Eyebrow>
-              <Headline>What would make the experience feel complete?</Headline>
-              <Helper>
-                Tap to include. Tap again to mark as essential.
-              </Helper>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {PRIORITY_OPTIONS.map((opt) => {
-                  const w = profile.priorityWeights[opt.id as PriorityKey];
-                  const next =
-                    w === undefined ? PRIORITY_WEIGHTS.single :
-                    w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
-                    undefined;
-                  return (
-                    <PriorityChip
-                      key={opt.id}
-                      label={opt.label}
-                      weight={w}
-                      onClick={() => {
-                        const pw = { ...profile.priorityWeights };
-                        if (next === undefined) delete pw[opt.id as PriorityKey];
-                        else pw[opt.id as PriorityKey] = next;
-                        update({ priorityWeights: pw });
-                      }}
-                    />
-                  );
-                })}
-              </div>
-              <StageFooter
-                disabled={Object.keys(profile.priorityWeights).length === 0}
-                helper={Object.keys(profile.priorityWeights).length > 0 ? TRANSITION_COPY.afterPrios : undefined}
-                onContinue={() => setStage("ops")}
-              />
-            </section>
-          )}
-
-          {stage === "ops" && (
-            <section key="ops" >
-              <Eyebrow>Stage 5 · Logistics</Eyebrow>
-              <Headline>A few practical details.</Headline>
-              <Helper>Used for pickup, timing and any constraints we must respect.</Helper>
-              <OpsForm
-                value={profile.ops}
-                onChange={(ops) => update({ ops })}
-              />
-              <StageFooter
-                disabled={!profile.ops.pickup}
-                helper="Designing your day."
-                ctaLabel="Design my experience"
-                onContinue={finalize}
-              />
-            </section>
-          )}
-
-          {stage === "reveal" && result && (
-            <section key="reveal" >
-              <Reveal result={result} />
-            </section>
-          )}
-        
+        {stage === "reveal" && result && (
+          <section key="reveal">
+            <Reveal result={result} />
+          </section>
+        )}
       </main>
     </div>
   );
 }
+
+function groupSummary(p: TravelerProfile): string {
+  const g = p.group;
+  if (!g) return "2 adults (default)";
+  const total = g.adults + g.children + g.teens;
+  return `${total} guest${total === 1 ? "" : "s"}${g.occasion && g.occasion !== "none" ? ` · ${g.occasion}` : ""}`;
+}
+function prioritiesSummary(p: TravelerProfile): string {
+  const n = Object.keys(p.priorityWeights).length;
+  return n === 0 ? "AI will infer from intent" : `${n} selected`;
+}
+
+function Accordion({
+  title, summary, children,
+}: { title: string; summary: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="py-4">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-3 text-left min-h-[44px] focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
+        aria-expanded={open}
+      >
+        <span>
+          <span className="block text-[14px]" style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}>
+            {title}
+          </span>
+          {!open && (
+            <span className="block text-[12.5px] mt-0.5" style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}>
+              {summary}
+            </span>
+          )}
+        </span>
+        <ChevronDown
+          className="h-4 w-4 shrink-0 transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+          aria-hidden
+        />
+      </button>
+      {open && <div className="mt-3">{children}</div>}
+    </div>
+  );
+}
+
 
 // ─── primitives ───────────────────────────────────────────────────────────
 
