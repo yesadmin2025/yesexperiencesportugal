@@ -60,30 +60,39 @@ type Beat =
   | "intro"
   | "name"
   | "story-opener"
-  | "choice-intent"
-  | "reward-image"
-  | "choice-pace"
-  | "reward-insight"
-  | "choice-priorities"
-  | "reward-map"
   | "choice-group"
   | "story-group"
+  | "choice-duration"
+  | "choice-intent"
+  | "reward-image"
+  | "choice-priorities"
+  | "reward-map"
+  | "choice-pace"
+  | "reward-insight"
+  | "choice-enhancements"
+  | "choice-tier"
   | "choice-ops"
   | "thinking"
   | "reveal";
 
+// Bible-aligned order:
+// Welcome → Name → Group + Guests → Duration → Style (intent) →
+// Highlights (priorities) → Pace → Enhancements → Tier → Ops → Reveal.
 const SEQUENCE: Beat[] = [
   "intro",
   "name",
   "story-opener",
-  "choice-intent",
-  "reward-image",
-  "choice-pace",
-  "reward-insight",
-  "choice-priorities",
-  "reward-map",
   "choice-group",
   "story-group",
+  "choice-duration",
+  "choice-intent",
+  "reward-image",
+  "choice-priorities",
+  "reward-map",
+  "choice-pace",
+  "reward-insight",
+  "choice-enhancements",
+  "choice-tier",
   "choice-ops",
   "thinking",
   "reveal",
@@ -99,10 +108,13 @@ const REWARD_BEATS = new Set<Beat>([
 ]);
 
 const CHOICE_BEATS = new Set<Beat>([
-  "choice-intent",
-  "choice-pace",
-  "choice-priorities",
   "choice-group",
+  "choice-duration",
+  "choice-intent",
+  "choice-priorities",
+  "choice-pace",
+  "choice-enhancements",
+  "choice-tier",
   "choice-ops",
 ]);
 
