@@ -1453,12 +1453,10 @@ function ChoicePhase({
     return sorted;
   }, [chapter.options, sceneWeighting, prediction, confidence]);
 
-  // Predictive cue is only meaningful once the AI has a real read on the
-  // traveller. Before confidence ≥ 0.48 ("this feels right next") the line
-  // becomes meaningless filler ("you might also love" with no context), so
-  // we suppress it entirely and let the atmosphere breathe.
-  const rawCue = predictiveCue(prediction?.revealConfidence ?? 0, locale);
-  const cue = (prediction?.revealConfidence ?? 0) >= 0.48 ? rawCue : null;
+  // Predictive cue retired: the AI personalised line (AiWhisper, rendered
+  // by the parent) now owns this slot, with a delayed entry so it never
+  // overlaps the chapter headline.
+  void predictiveCue;
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
