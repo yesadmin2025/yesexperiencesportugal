@@ -117,9 +117,9 @@ export function StudioV2({ onExit }: StudioV2Props) {
       )}
 
       <main className="mx-auto w-full max-w-3xl px-5 pb-24 pt-6 sm:px-8 sm:pt-10">
-        <AnimatePresence mode="wait">
+        
           {stage === "intent" && (
-            <motion.section key="intent" {...fade}>
+            <section key="intent" >
               <Eyebrow>Stage 1 · Travel intent</Eyebrow>
               <Headline>How should Portugal feel?</Headline>
               <Helper>Select the atmosphere closest to what you have in mind.</Helper>
@@ -142,11 +142,11 @@ export function StudioV2({ onExit }: StudioV2Props) {
                 helper={profile.intent ? TRANSITION_COPY.afterIntent : undefined}
                 onContinue={() => setStage("group")}
               />
-            </motion.section>
+            </section>
           )}
 
           {stage === "group" && (
-            <motion.section key="group" {...fade}>
+            <section key="group" >
               <Eyebrow>Stage 2 · Group profile</Eyebrow>
               <Headline>Who is this experience designed for?</Headline>
               <Helper>Composition shapes pacing, comfort and choice of place.</Helper>
@@ -159,11 +159,11 @@ export function StudioV2({ onExit }: StudioV2Props) {
                 helper={profile.group ? TRANSITION_COPY.afterGroup : undefined}
                 onContinue={() => setStage("pace")}
               />
-            </motion.section>
+            </section>
           )}
 
           {stage === "pace" && (
-            <motion.section key="pace" {...fade}>
+            <section key="pace" >
               <Eyebrow>Stage 3 · Rhythm & flow</Eyebrow>
               <Headline>How full should the day feel?</Headline>
               <Helper>Pacing decides stop density, drive tolerance and lunch length.</Helper>
@@ -183,11 +183,11 @@ export function StudioV2({ onExit }: StudioV2Props) {
                 helper={profile.pace ? TRANSITION_COPY.afterPace : undefined}
                 onContinue={() => setStage("priorities")}
               />
-            </motion.section>
+            </section>
           )}
 
           {stage === "priorities" && (
-            <motion.section key="priorities" {...fade}>
+            <section key="priorities" >
               <Eyebrow>Stage 4 · Experience priorities</Eyebrow>
               <Headline>What would make the experience feel complete?</Headline>
               <Helper>
@@ -220,11 +220,11 @@ export function StudioV2({ onExit }: StudioV2Props) {
                 helper={Object.keys(profile.priorityWeights).length > 0 ? TRANSITION_COPY.afterPrios : undefined}
                 onContinue={() => setStage("ops")}
               />
-            </motion.section>
+            </section>
           )}
 
           {stage === "ops" && (
-            <motion.section key="ops" {...fade}>
+            <section key="ops" >
               <Eyebrow>Stage 5 · Logistics</Eyebrow>
               <Headline>A few practical details.</Headline>
               <Helper>Used for pickup, timing and any constraints we must respect.</Helper>
@@ -238,15 +238,15 @@ export function StudioV2({ onExit }: StudioV2Props) {
                 ctaLabel="Design my experience"
                 onContinue={finalize}
               />
-            </motion.section>
+            </section>
           )}
 
           {stage === "reveal" && result && (
-            <motion.section key="reveal" {...fade}>
+            <section key="reveal" >
               <Reveal result={result} />
-            </motion.section>
+            </section>
           )}
-        </AnimatePresence>
+        
       </main>
     </div>
   );
