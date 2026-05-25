@@ -1075,7 +1075,7 @@ export function StudioDrift({ onExit }: Props) {
           chapter={chapter}
           profile={profile}
           locale={locale}
-          onSubmit={onNameSubmit}
+          onSubmit={onTextSubmit}
           onSkip={advance}
         />
       )}
