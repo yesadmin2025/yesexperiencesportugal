@@ -1363,12 +1363,15 @@ function TextPhase({
           {chapter.whisper(profile, locale)}
         </label>
         <input
-          type="text"
+          type={chapter.inputType === "number" ? "number" : "text"}
+          inputMode={chapter.inputType === "number" ? "numeric" : "text"}
+          min={chapter.min}
+          max={chapter.max}
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={chapter.placeholder(locale)}
-          maxLength={32}
+          maxLength={chapter.inputType === "number" ? 3 : 32}
           className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
@@ -1379,6 +1382,14 @@ function TextPhase({
             caretColor: "var(--gold)",
           }}
         />
+        {chapter.help && (
+          <p
+            className="mt-3 text-[10.5px] uppercase text-[color:var(--ivory)]/55 text-center"
+            style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
+          >
+            {chapter.help(locale)}
+          </p>
+        )}
         <button
           type="submit"
           className="mt-8 text-[11px] uppercase text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] transition-colors"
