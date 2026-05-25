@@ -323,7 +323,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
   return (
     <div className="relative h-full w-full">
       {chrome && (() => {
-        const tr = CHIP_I18N[locale] ?? CHIP_I18N.en;
+        const tr = mergeLocale(CHIP_I18N, locale);
         const n = stops.length;
         const liveLabel = emotionalMode ? tr.live : tr.liveStatic;
         const stopWord = emotionalMode
