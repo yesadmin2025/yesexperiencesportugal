@@ -73,6 +73,8 @@ interface StudioV2Props {
 export function StudioV2({ onExit }: StudioV2Props) {
   const [profile, setProfile] = useState<TravelerProfile>(() => emptyProfile());
   const [stage, setStage] = useState<Stage>("intent");
+  const [refineStep, setRefineStep] = useState<RefineStep>("pace");
+  const [stepAdvancing, setStepAdvancing] = useState(false);
   const [result, setResult] = useState<DesignResult | null>(null);
 
   const update = (patch: Partial<TravelerProfile>, reason: InsightReason = "none") => {
