@@ -23,6 +23,7 @@ import {
   storyAfterPace,
   storyAfterGroup,
 } from "@/lib/studio-v2/content";
+import { INTENT_IMAGE } from "@/lib/studio-v2/images";
 import {
   designExperience,
   previewJourney,
