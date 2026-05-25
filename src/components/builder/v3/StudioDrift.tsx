@@ -346,7 +346,13 @@ interface TextChapter {
   whisper: (p: DriftProfile, locale: DriftLocale) => string;
   placeholder: (locale: DriftLocale) => string;
   /** Where to write the answer on the profile. */
-  field: "name";
+  field: "name" | "guests";
+  /** Input semantics — defaults to "text". `number` adds numeric keyboard + parsing. */
+  inputType?: "text" | "number";
+  min?: number;
+  max?: number;
+  /** Optional small help line under the input. */
+  help?: (locale: DriftLocale) => string;
 }
 
 interface ChoiceOption {
