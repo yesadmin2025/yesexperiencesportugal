@@ -354,20 +354,6 @@ export function StudioLivePreview() {
       </button>
 
       {/* ── Investment + CTA band ─────────────────────────────────── */}
-      <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-4">
-        <div className="flex items-end justify-between gap-3">
-          <div className="min-w-0">
-            <span className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
-              Draft investment
-            </span>
-            <div className="mt-1 flex items-baseline gap-1.5">
-              <span className="font-display text-[1.6rem] md:text-[1.85rem] leading-none font-semibold text-[color:var(--charcoal)] tabular-nums">
-                €{DRAFT_INVESTMENT_EUR}
-              </span>
-              <span className="text-[12px] text-[color:var(--charcoal-soft)]">/ guest</span>
-            </div>
-            <span className="mt-1 block text-[10.5px] text-[color:var(--charcoal-soft)] tabular-nums">
-      {/* ── Investment + CTA band ─────────────────────────────────── */}
       <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-3.5">
         <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
