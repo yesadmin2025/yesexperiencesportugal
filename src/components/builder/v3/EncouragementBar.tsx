@@ -37,19 +37,21 @@ export function EncouragementBar({ index, total, locale, name }: Props) {
   return (
     <div
       aria-hidden="true"
-      className="absolute top-[108px] left-0 right-0 z-40 pointer-events-none px-4"
+      className="absolute bottom-[64px] left-0 right-0 z-40 pointer-events-none px-4"
     >
-      {/* encouragement whisper — poetic line, sentence case (NOT uppercased) */}
+      {/* encouragement whisper — poetic line, sentence case (NOT uppercased).
+          Anchored to the bottom band, well clear of the HUD and choice tiles,
+          so it never reads as garbage text above the headline. */}
       <p
         className="text-center transition-opacity duration-[700ms] ease-out"
         style={{
           fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: "11px",
+          fontSize: "10.5px",
           fontWeight: 500,
-          letterSpacing: "0.04em",
-          color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
-          textShadow: "0 1px 14px rgba(0,0,0,0.72)",
-          opacity: opacity * visibility * 0.86,
+          letterSpacing: "0.08em",
+          color: "color-mix(in oklab, var(--gold) 70%, var(--ivory))",
+          textShadow: "0 1px 14px rgba(0,0,0,0.78)",
+          opacity: opacity * visibility * 0.7,
         }}
       >
         {shown}

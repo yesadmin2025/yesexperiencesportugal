@@ -131,19 +131,18 @@ export function StudioConversionHud({
         )}
       </div>
 
-      <Link
-        to="/builder"
-        search={{ legacy: "stepper" } as never}
-        aria-label="Skip to reserve in the full builder"
-        className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] font-bold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
-        style={{
-          background: "var(--gold)",
-          color: "var(--charcoal)",
-        }}
-      >
-        Reserve
-        <ArrowRight size={10} aria-hidden="true" />
-      </Link>
+      {/* Reserve CTA removed per Studio Bible: the interface progressively
+          disappears, never asks for the booking before the reveal. The user
+          has nothing to reserve at step 2 of 14; surfacing it breaks the
+          cinematic frame and reads as OTA chrome. Reserve lives at the
+          convergence/reveal moment only. */}
+      <span aria-hidden="true" />
+      {/* Unused imports kept for future opt-in; tree-shaken when not rendered. */}
+      {false && (
+        <Link to="/builder" search={{ legacy: "stepper" } as never}>
+          <ArrowRight />
+        </Link>
+      )}
     </div>
   );
 }

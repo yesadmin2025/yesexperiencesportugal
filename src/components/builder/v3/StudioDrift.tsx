@@ -1157,10 +1157,12 @@ export function StudioDrift({ onExit }: Props) {
           />
         </>
       )}
-      {/* Predictive AI whisper — personalized fragment produced by composeStudioMoment
-          for THIS user's behavior, profile and stage. Makes the predictive engine
-          visible: every traveller sees a different line at a different moment. */}
-      {chapter.kind !== "convergence" && narrativeLine && narrativeAt && (
+      {/* Predictive AI whisper — only render in drift/text chapters where the
+          screen has empty negative space. On choice chapters the three image
+          tiles already fill the canvas and the whisper at bottom-[156px]
+          overlapped the third card on mobile. Per Studio Bible §5: never
+          stack text on top of choice tiles. */}
+      {chapter.kind !== "convergence" && chapter.kind !== "choice" && narrativeLine && narrativeAt && (
         <AiWhisper key={narrativeAt} text={narrativeLine} />
       )}
       {showBuildPreview && (
