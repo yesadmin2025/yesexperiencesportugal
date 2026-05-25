@@ -280,6 +280,40 @@ function BuilderPage() {
   const [mobileTab, setMobileTab] = useState<MobileTab>("build");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
+  // Pro Mode — shareable proposal state
+  const [shareState, setShareState] = useState<
+    | { status: "idle" }
+    | { status: "loading" }
+    | { status: "ready"; url: string; copied: boolean }
+    | { status: "error"; message: string }
+  >({ status: "idle" });
+
+  const handleGenerateShare = useCallback(async () => {
+    setShareState({ status: "loading" });
+    try {
+      const sid =
+        (typeof window !== "undefined" && window.localStorage.getItem("yes_session_id")) ||
+        crypto.randomUUID();
+      if (typeof window !== "undefined") window.localStorage.setItem("yes_session_id", sid);
+      const result = await createJourney({
+        data: { state: md.state, sessionId: sid },
+      });
+      const url = `${window.location.origin}/i/${result.shareToken}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareState({ status: "ready", url, copied: true });
+      } catch {
+        setShareState({ status: "ready", url, copied: false });
+      }
+      void trackBuilderEvent("pro_share_created", { shareToken: result.shareToken });
+    } catch (e) {
+      setShareState({
+        status: "error",
+        message: e instanceof Error ? e.message : "Falhou. Tenta novamente.",
+      });
+    }
+  }, [md.state]);
+
   const toggleElement = useCallback(
     (key: ElementKey) => {
       setPersisted((p) => ({
