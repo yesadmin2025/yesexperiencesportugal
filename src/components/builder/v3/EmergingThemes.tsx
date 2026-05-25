@@ -65,27 +65,37 @@ export function EmergingThemes({ sceneWeighting, locale, hasSignal }: Props) {
   return (
     <div
       aria-hidden="true"
-      className="absolute top-9 left-0 right-0 z-40 pointer-events-none flex justify-center gap-1.5 px-6"
+      className="absolute top-9 left-0 right-0 z-40 pointer-events-none flex justify-center items-center gap-2 px-6"
     >
-      {active.map((mood) => {
+      {active.map((mood, i) => {
         const label = THEME_LABELS[mood]?.[locale] ?? THEME_LABELS[mood]?.en ?? mood;
         return (
           <span
             key={mood}
-            className="motion-safe:animate-[fade-in_0.7s_ease-out_both] inline-flex items-center rounded-full px-2.5 py-[3px]"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: "9px",
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "color-mix(in oklab, var(--gold) 70%, var(--ivory))",
-              background: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              border: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
-              backdropFilter: "blur(4px)",
-            }}
+            className="motion-safe:animate-[fade-in_0.7s_ease-out_both] inline-flex items-center gap-2"
           >
-            {label}
+            {i > 0 && (
+              <span
+                aria-hidden="true"
+                className="block h-[3px] w-[3px] rounded-full"
+                style={{ background: "color-mix(in oklab, var(--gold) 60%, transparent)" }}
+              />
+            )}
+            <span
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontStyle: "italic",
+                fontSize: "12px",
+                fontWeight: 400,
+                lineHeight: 1,
+                letterSpacing: "0",
+                color: "color-mix(in oklab, var(--ivory) 90%, var(--gold))",
+                textShadow: "0 1px 10px rgba(0,0,0,0.65)",
+                opacity: 0.86,
+              }}
+            >
+              {label}
+            </span>
           </span>
         );
       })}
