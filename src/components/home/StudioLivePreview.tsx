@@ -276,26 +276,33 @@ export function StudioLivePreview() {
           ))}
         </svg>
         <ul aria-hidden="true" className="pointer-events-none absolute inset-0 m-0 list-none p-0">
-          {STOPS.map((s) => (
-            <li
-              key={s.id}
-              className="absolute"
-              style={{
-                left: `${(s.x / 200) * 100}%`,
-                top: `${(s.y / 260) * 100}%`,
-                transform: "translate(10px, -50%)",
-                opacity: renderedActive ? 1 : 0,
-                transition: `opacity 600ms ease ${s.delay + 250}ms`,
-              }}
-            >
-              <span className="block text-[10.5px] md:text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
-                {s.label}
-              </span>
-              <span className="mt-0.5 block text-[9.5px] md:text-[10px] tracking-[0.06em] text-[color:var(--ivory)]/75 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                {s.caption}
-              </span>
-            </li>
-          ))}
+          {STOPS.map((s) => {
+            const xPct = (s.x / 200) * 100;
+            const flipLeft = xPct > 55; // keep labels inside the frame
+            return (
+              <li
+                key={s.id}
+                className="absolute max-w-[44%]"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${(s.y / 260) * 100}%`,
+                  transform: flipLeft
+                    ? "translate(calc(-100% - 10px), -50%)"
+                    : "translate(10px, -50%)",
+                  textAlign: flipLeft ? "right" : "left",
+                  opacity: renderedActive ? 1 : 0,
+                  transition: `opacity 600ms ease ${s.delay + 250}ms`,
+                }}
+              >
+                <span className="block text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                  {s.label}
+                </span>
+                <span className="mt-0.5 block text-[9px] md:text-[10px] tracking-[0.04em] text-[color:var(--ivory)]/75 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] truncate">
+                  {s.caption}
+                </span>
+              </li>
+            );
+          })}
         </ul>
 
         {/* Quality badge — small trust signal sitting on the map */}
