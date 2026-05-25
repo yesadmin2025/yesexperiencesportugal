@@ -21,6 +21,7 @@ import {
 } from "@/lib/drift/inference";
 import { SceneCanvas, type SceneSource } from "./SceneCanvas";
 import { EncouragementBar } from "./EncouragementBar";
+import { StudioConversionHud } from "./StudioConversionHud";
 import { EmergingThemes } from "./EmergingThemes";
 import { PriceWhisper } from "./PriceWhisper";
 import { RevealInvestment } from "./RevealInvestment";
@@ -1031,6 +1032,11 @@ export function StudioDrift({ onExit }: Props) {
 
       {chapter.kind !== "convergence" && (
         <>
+          <StudioConversionHud
+            index={chapterIdx}
+            total={CHAPTERS.length}
+            confidence={prediction.revealConfidence}
+          />
           <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
           <EmergingThemes
             sceneWeighting={prediction.sceneWeighting}
