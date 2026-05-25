@@ -689,7 +689,7 @@ export function StudioDrift({ onExit }: Props) {
   // with 3 choice cards it bleeds over the 3rd option. Use a generous floor
   // (720px) so the preview only appears when there's real room to stack it
   // under all three cards without overlap.
-  const choiceCount = chapter.choices?.length ?? 0;
+  const choiceCount = chapter.kind === "choice" ? chapter.options.length : 0;
   const vhFloor = choiceCount >= 3 ? 720 : 640;
   const showBuildPreview =
     chapter.kind !== "convergence" &&
