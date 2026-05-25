@@ -23,6 +23,7 @@ import {
   DURATION_OPTIONS,
   ENHANCEMENT_OPTIONS,
   TIER_OPTIONS,
+  tierLabel,
   revealFraming,
   storyOpener,
   storyAfterIntent,
