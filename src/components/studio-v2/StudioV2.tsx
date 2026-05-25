@@ -109,7 +109,12 @@ export function StudioV2({ onExit }: StudioV2Props) {
   };
 
   const next = useCallback(() => {
-    setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
+    console.log("[studio-v2] next() called");
+    setBeatIndex((i) => {
+      const ni = Math.min(SEQUENCE.length - 1, i + 1);
+      console.log("[studio-v2] beat", i, "->", ni, SEQUENCE[ni]);
+      return ni;
+    });
   }, []);
   const back = useCallback(() => {
     setBeatIndex((i) => Math.max(0, i - 1));
