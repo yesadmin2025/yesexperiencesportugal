@@ -348,7 +348,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"
-        aria-label={(CHIP_I18N[locale] ?? CHIP_I18N.en).mapAria}
+        aria-label={mergeLocale(CHIP_I18N, locale).mapAria}
       />
     </div>
   );
