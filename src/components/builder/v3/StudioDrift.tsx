@@ -1417,7 +1417,7 @@ function TextPhase({
         )}
         <button
           type="submit"
-          className="group mt-10 inline-flex h-11 items-center justify-center gap-2 rounded-full px-7 text-[11px] uppercase font-medium tracking-[0.26em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] hover:translate-y-[-1px]"
+          className="group mt-10 inline-flex h-11 items-center justify-center gap-2 rounded-full px-7 text-[12px] lowercase font-medium tracking-[0.26em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] hover:translate-y-[-1px]"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             background: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
