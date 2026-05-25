@@ -216,6 +216,18 @@ const EN: Dict = {
   "preview.min_stay": "min stay",
   "preview.indicative": "indicative",
   "build.region_label": "Your day · live preview",
+  "reco.eyebrow": "Also fits you",
+  "reco.open": "Open",
+  "quality.eyebrow": "Day quality",
+  "quality.aria": "Quality score for the composed day",
+  "quality.summary_high": "Excellent flow and balance between stops.",
+  "quality.summary_mid": "Good rhythm — one more signal lifts it further.",
+  "quality.summary_low": "Early composition — keep going to refine.",
+  "quality.wine": "Wine",
+  "quality.coast": "Coast",
+  "quality.heritage": "Heritage",
+  "quality.table": "Table",
+  "quality.of_five": "of 5",
 };
 
 const ES: Dict = {
