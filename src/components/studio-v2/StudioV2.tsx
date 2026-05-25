@@ -379,16 +379,25 @@ export function StudioV2({ onExit }: StudioV2Props) {
 
 function IntroBeat({ onBegin }: { onBegin: () => void }) {
   return (
-    <section className="min-h-[78vh] flex flex-col justify-center">
+    <section className="relative min-h-[78vh] flex flex-col justify-center">
+      {/* Cinematic ambient layer — subtle warm gold wash, no imagery, brand-safe */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-[-2rem] -top-10 -bottom-10"
+        style={{
+          background:
+            "radial-gradient(70% 55% at 50% 32%, color-mix(in oklab, var(--gold-soft) 45%, transparent) 0%, transparent 70%), radial-gradient(80% 50% at 100% 100%, color-mix(in oklab, var(--teal-2) 22%, transparent) 0%, transparent 65%)",
+        }}
+      />
       <p
-        className="studio-v2-reveal text-[10.5px] uppercase tracking-[0.36em]"
-        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+        className="studio-v2-reveal relative text-[10.5px] uppercase tracking-[0.36em]"
+        style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
         Portugal — designed for you
       </p>
       <h1
-        className="studio-v2-reveal delay-1 mt-4 text-[32px] leading-[1.1] sm:text-[48px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
+        className="studio-v2-reveal delay-1 relative mt-5 text-[36px] leading-[1.05] sm:text-[54px]"
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
       >
         Begin your Portugal{" "}
         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
@@ -397,15 +406,23 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
         .
       </h1>
       <p
-        className="studio-v2-reveal delay-2 mt-4 text-[14.5px] leading-relaxed"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        className="studio-v2-reveal delay-2 relative mt-5 text-[15px] leading-[1.55] max-w-[28ch]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
       >
-        Each choice writes the next line. By the end you'll have a day shaped
-        around you — with the map, the rhythm and the moments already in place.
+        Each choice writes the next line. By the end you'll have a day shaped around you — map, rhythm and moments already in place.
       </p>
-      <div className="studio-v2-reveal delay-3 mt-10">
+      <div className="studio-v2-reveal delay-3 relative mt-10">
         <ContinueButton label="Begin" onClick={onBegin} />
       </div>
+      <p
+        className="studio-v2-reveal delay-4 relative mt-6 text-[11px] italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+        }}
+      >
+        Designed with a local. Signed by you.
+      </p>
     </section>
   );
 }
