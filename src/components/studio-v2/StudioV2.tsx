@@ -18,6 +18,7 @@ import {
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
   TRANSITION_COPY,
+  revealFraming,
 } from "@/lib/studio-v2/content";
 import { designExperience, type DesignResult } from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
