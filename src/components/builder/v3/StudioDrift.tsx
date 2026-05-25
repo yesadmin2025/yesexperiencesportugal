@@ -29,7 +29,9 @@ import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
 import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
 import { shouldShowBuildPreview } from "@/lib/drift/build-preview-visibility";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
+
 
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
@@ -679,27 +681,32 @@ export function StudioDrift({ onExit }: Props) {
   // a pickup region — otherwise we display a fabricated stop ("Livramento
   // market, Setúbal") for someone who hasn't said where they want to start.
   // That breaks the no-invention rule and confuses the rhythm.
-  // Track viewport height so we can hide BuildPreview when there's no room
-  // to stack it under 3 choice cards without overlap (~600px and below).
-  const [vh, setVh] = useState<number>(() => (typeof window !== "undefined" ? window.innerHeight : 900));
-  useEffect(() => {
-    const onR = () => setVh(window.innerHeight);
-    window.addEventListener("resize", onR);
-    return () => window.removeEventListener("resize", onR);
-  }, []);
+  // Drive the BuildPreview gate from CSS height breakpoints (matchMedia)
+  // rather than raw `window.innerHeight`. This:
+  //   • fires only when the breakpoint is actually crossed (no resize churn);
+  //   • naturally accounts for CSS px / DPR / browser chrome / soft keyboard;
+  //   • mirrors the `@media (max-height: …)` defense rule in styles.css so
+  //     JS and CSS agree on the threshold.
+  const fitsBasicHeight = useMediaQuery("(min-height: 640px)", true);
+  const fitsDenseHeight = useMediaQuery("(min-height: 720px)", true);
   // BuildPreview is 84px + 12px inset + ~108px reserve. On short viewports
   // with 3 choice cards it bleeds over the 3rd option. The pure rule lives
   // in `build-preview-visibility.ts` so it can be unit-tested across
-  // resize/rotation scenarios without mounting React.
+  // resize/rotation scenarios without mounting React. We collapse the
+  // matchMedia booleans back into a representative vh value to keep the
+  // pure-function API single-shaped.
   const choiceCount = chapter.kind === "choice" ? chapter.options.length : 0;
+  const breakpointVh = fitsDenseHeight ? 720 : fitsBasicHeight ? 640 : 0;
   const showBuildPreview = shouldShowBuildPreview({
     chapterKind: chapter.kind,
     choiceCount,
     hasPickup: Boolean(profile.pickup),
     chapterIdx,
     liveStopsCount: liveDay.stops.length,
-    vh,
+    vh: breakpointVh,
   });
+  const buildPreviewIsDense = choiceCount >= 3;
+
 
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
