@@ -338,6 +338,7 @@ const ES: Dict = {
 
   "ui.exit": "Salir",
   "ui.back": "Volver",
+  "ui.sensing": "sintiendo",
   "ui.choose": "Elegir: {label}",
   "trust.reviews": "reseñas",
   "choice.idle_hint": "Toque una imagen para elegir — o tómese el tiempo que necesite.",
