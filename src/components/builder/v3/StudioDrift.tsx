@@ -1004,16 +1004,30 @@ export function StudioDrift({ onExit }: Props) {
     [audioOn, reinforce, advance, chapter, behavior, prediction.pacingClass, locale],
   );
 
-  const onNameSubmit = useCallback(
-    (name: string) => {
-      const clean = name.trim().slice(0, 32);
+  const onTextSubmit = useCallback(
+    (raw: string) => {
+      if (chapter.kind !== "text") return;
+      const field = chapter.field;
+      const clean = raw.trim().slice(0, 32);
       if (clean) {
-        setProfile((p) => ({ ...p, name: clean }));
-        void recordDriftEvent("signal_captured", {
-          chapterId: chapter.id,
-          signalKey: "name",
-          signalValue: clean.slice(0, 32),
-        });
+        if (field === "guests") {
+          const n = Math.max(chapter.min ?? 1, Math.min(chapter.max ?? 20, Number.parseInt(clean, 10) || 0));
+          if (n > 0) {
+            setProfile((p) => ({ ...p, guests: n }));
+            void recordDriftEvent("signal_captured", {
+              chapterId: chapter.id,
+              signalKey: "guests",
+              signalValue: String(n),
+            });
+          }
+        } else {
+          setProfile((p) => ({ ...p, [field]: clean } as DriftProfile));
+          void recordDriftEvent("signal_captured", {
+            chapterId: chapter.id,
+            signalKey: field,
+            signalValue: clean.slice(0, 32),
+          });
+        }
       }
       void recordDriftEvent("scene_answered", { chapterId: chapter.id });
       if (!audioOn) setAudioOn(true);
