@@ -197,7 +197,7 @@ export function StudioV2({ onExit }: StudioV2Props) {
         )}
 
         {stage === "refine" && (
-          <section key="refine">
+          <section key="refine" className="studio-v2-reveal">
             <Eyebrow>Refine</Eyebrow>
             <Headline>A few details — all optional.</Headline>
             <Helper>
