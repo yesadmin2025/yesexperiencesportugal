@@ -32,6 +32,7 @@ import {
 } from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
 import { PersistentChatFab } from "./PersistentChatFab";
+import { LivingStoryStrip } from "./LivingStoryStrip";
 import { whatsappHref } from "@/components/WhatsAppFab";
 
 const BuilderMap = lazy(() =>
@@ -372,6 +373,10 @@ export function StudioV2({ onExit }: StudioV2Props) {
           </section>
         )}
       </main>
+
+      {CHOICE_BEATS.has(beat) && beatIndex > 1 && (
+        <LivingStoryStrip profile={profile} preview={preview} />
+      )}
 
       <PersistentChatFab profile={profile} />
     </div>
