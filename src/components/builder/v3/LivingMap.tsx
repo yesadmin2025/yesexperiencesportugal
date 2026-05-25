@@ -22,9 +22,17 @@ interface Props {
   revealed: boolean;
   ribbon?: ReactNode;
   curtainLabel?: string;
+  locale?: "pt" | "en" | "es" | "fr";
 }
 
-export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, curtainLabel = "ver percurso" }: Props) {
+const FALLBACK_I18N = {
+  pt: "Mapa a despertar…",
+  en: "Map awakening…",
+  es: "Mapa despertando…",
+  fr: "Carte qui s'éveille…",
+} as const;
+
+export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, curtainLabel = "ver percurso", locale = "en" }: Props) {
   const [mounted, setMounted] = useState(revealed);
   const [visible, setVisible] = useState(false);
   const [curtainOpen, setCurtainOpen] = useState(false);
