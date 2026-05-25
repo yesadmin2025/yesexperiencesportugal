@@ -306,6 +306,7 @@ const ES: Dict = {
   "ui.back": "Volver",
   "ui.choose": "Elegir: {label}",
   "trust.reviews": "reseñas",
+  "choice.idle_hint": "Toque una imagen para elegir — o tómese el tiempo que necesite.",
   "preview.expand": "Abrir vista previa de su día",
   "preview.dialog": "Su día — vista previa en vivo",
   "preview.tap_to_open": "toque para abrir",
