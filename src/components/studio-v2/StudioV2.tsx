@@ -34,7 +34,26 @@ const BuilderMap = lazy(() =>
 );
 
 type Stage = "intent" | "refine" | "reveal";
-type RefineSection = "group" | "pace" | "priorities" | "ops";
+type RefineStep = "pace" | "priorities" | "group" | "ops";
+const REFINE_ORDER: RefineStep[] = ["pace", "priorities", "group", "ops"];
+const REFINE_TITLE: Record<RefineStep, string> = {
+  pace:       "Set the rhythm.",
+  priorities: "What pulls you in?",
+  group:      "Who is travelling.",
+  ops:        "A few practicalities.",
+};
+const REFINE_EYEBROW: Record<RefineStep, string> = {
+  pace:       "Rhythm",
+  priorities: "Priorities",
+  group:      "Guests",
+  ops:        "Logistics",
+};
+const REFINE_HELPER: Record<RefineStep, string> = {
+  pace:       "How dense should the day feel?",
+  priorities: "Tap to add. Tap again to mark essential.",
+  group:      "We tailor pacing and comfort to the group.",
+  ops:        "Optional. Sensible defaults stand in.",
+};
 
 interface StudioV2Props {
   onExit: () => void;
@@ -54,6 +73,8 @@ interface StudioV2Props {
 export function StudioV2({ onExit }: StudioV2Props) {
   const [profile, setProfile] = useState<TravelerProfile>(() => emptyProfile());
   const [stage, setStage] = useState<Stage>("intent");
+  const [refineStep, setRefineStep] = useState<RefineStep>("pace");
+  const [stepAdvancing, setStepAdvancing] = useState(false);
   const [result, setResult] = useState<DesignResult | null>(null);
 
   const update = (patch: Partial<TravelerProfile>, reason: InsightReason = "none") => {
@@ -105,7 +126,26 @@ export function StudioV2({ onExit }: StudioV2Props) {
     setStage("reveal");
   };
 
-  // Auto-advance from intent → refine ~700ms after a choice (cinematic feel).
+  // Cinematic step pacing inside Refine — choice → map reacts → settle → next.
+  const stepTimer = useRef<number | null>(null);
+  const goStep = (delta: number) => {
+    const i = REFINE_ORDER.indexOf(refineStep);
+    const ni = Math.max(0, Math.min(REFINE_ORDER.length - 1, i + delta));
+    setRefineStep(REFINE_ORDER[ni]);
+  };
+  const advanceStep = () => {
+    const i = REFINE_ORDER.indexOf(refineStep);
+    if (i >= REFINE_ORDER.length - 1) return;
+    if (stepTimer.current) window.clearTimeout(stepTimer.current);
+    setStepAdvancing(true);
+    stepTimer.current = window.setTimeout(() => {
+      setRefineStep(REFINE_ORDER[i + 1]);
+      setStepAdvancing(false);
+    }, 1100); // long enough to feel the map move + insight settle
+  };
+  useEffect(() => () => { if (stepTimer.current) window.clearTimeout(stepTimer.current); }, []);
+
+
   const intentTimer = useRef<number | null>(null);
   useEffect(() => {
     if (stage === "intent" && profile.intent) {
@@ -241,29 +281,37 @@ export function StudioV2({ onExit }: StudioV2Props) {
             />
 
             <div className="px-5 sm:px-8 mt-6">
-              <Eyebrow>Refine</Eyebrow>
-              <Headline>The journey reacts as you decide.</Headline>
-              <Helper>
-                Every choice reshapes the route above. Skip what you like — sensible defaults stand in,
-                and the concierge confirms before booking.
-              </Helper>
+              <RefineProgress current={refineStep} />
 
-              <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
-                <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"} defaultOpen>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
+              <div
+                key={refineStep}
+                className="studio-v2-reveal mt-5"
+                style={{ opacity: stepAdvancing ? 0.35 : 1, transition: "opacity 360ms ease-out" }}
+                aria-busy={stepAdvancing}
+              >
+                <Eyebrow>{REFINE_EYEBROW[refineStep]}</Eyebrow>
+                <Headline>{REFINE_TITLE[refineStep]}</Headline>
+                <Helper>{REFINE_HELPER[refineStep]}</Helper>
+
+                {refineStep === "pace" && (
+                  <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {PACE_OPTIONS.map((opt) => (
                       <OptionCard
                         key={opt.id}
                         active={profile.pace === opt.id}
                         label={opt.label}
                         sub={opt.sub}
-                        onClick={() => update(applyPace(profile, opt.id as PaceV2), "pace")}
+                        onClick={() => {
+                          update(applyPace(profile, opt.id as PaceV2), "pace");
+                          advanceStep();
+                        }}
                       />
                     ))}
                   </div>
-                </Accordion>
-                <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                )}
+
+                {refineStep === "priorities" && (
+                  <div className="mt-6 flex flex-wrap gap-2">
                     {PRIORITY_OPTIONS.map((opt) => {
                       const w = profile.priorityWeights[opt.id as PriorityKey];
                       const next =
@@ -285,24 +333,31 @@ export function StudioV2({ onExit }: StudioV2Props) {
                       );
                     })}
                   </div>
-                </Accordion>
-                <Accordion title="Who is travelling" summary={groupSummary(profile)}>
+                )}
+
+                {refineStep === "group" && (
                   <GroupForm value={profile.group} onChange={(g) => update({ group: g }, "group")} />
-                </Accordion>
-                <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
+                )}
+
+                {refineStep === "ops" && (
                   <OpsForm value={profile.ops} onChange={(ops) => update({ ops }, "ops")} />
-                </Accordion>
+                )}
               </div>
 
-              <StageFooter
-                disabled={false}
-                helper="Designing your day."
-                ctaLabel="Design my day"
-                onContinue={finalize}
+              <RefineNav
+                current={refineStep}
+                onBack={() => goStep(-1)}
+                onNext={() => {
+                  if (refineStep === "ops") finalize();
+                  else advanceStep();
+                }}
+                isLast={refineStep === "ops"}
               />
             </div>
           </section>
         )}
+
+
 
         {stage === "reveal" && result && (
           <section key="reveal" className="studio-v2-reveal">
@@ -324,6 +379,72 @@ function prioritiesSummary(p: TravelerProfile): string {
   const n = Object.keys(p.priorityWeights).length;
   return n === 0 ? "AI will infer from intent" : `${n} selected`;
 }
+
+// ─── refine progression chrome ───────────────────────────────────────────
+
+
+function RefineProgress({ current }: { current: RefineStep }) {
+  const idx = REFINE_ORDER.indexOf(current);
+  return (
+    <div className="flex items-center gap-2" aria-label={`Step ${idx + 1} of ${REFINE_ORDER.length}`}>
+      {REFINE_ORDER.map((s, i) => {
+        const state = i < idx ? "done" : i === idx ? "active" : "todo";
+        return (
+          <span
+            key={s}
+            aria-hidden
+            className="h-[2px] flex-1 rounded-full transition-all duration-500"
+            style={{
+              background:
+                state === "active" ? "var(--gold)" :
+                state === "done"   ? "color-mix(in oklab, var(--gold) 55%, transparent)" :
+                                     "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+              transform: state === "active" ? "scaleY(1.6)" : "scaleY(1)",
+              transformOrigin: "center",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function RefineNav({
+  current, onBack, onNext, isLast,
+}: { current: RefineStep; onBack: () => void; onNext: () => void; isLast: boolean }) {
+  const idx = REFINE_ORDER.indexOf(current);
+  return (
+    <div className="mt-10 flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={onBack}
+        disabled={idx === 0}
+        className="text-[11.5px] uppercase tracking-[0.28em] min-h-[44px] px-2 disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+      >
+        ← back
+      </button>
+      <button
+        type="button"
+        onClick={onNext}
+        className="group inline-flex items-center gap-2 rounded-[2px] px-6 py-3 text-[12px] tracking-[0.24em] lowercase transition-all focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          background: "var(--charcoal)",
+          color: "var(--ivory)",
+          minHeight: 48,
+          minWidth: 184,
+        }}
+      >
+        {isLast ? "design my day" : "continue"}
+        <ArrowRight
+          className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
+          aria-hidden
+        />
+      </button>
+    </div>
+  );
+}
+
 
 function Accordion({
   title, summary, children, defaultOpen = false,
