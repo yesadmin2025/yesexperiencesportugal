@@ -1471,7 +1471,7 @@ function ProgressiveBuildPreview({
   const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
 
   return (
-    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ minHeight: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
+    <div className="absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]" style={{ height: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}>
       <div className="grid grid-cols-[96px_1fr] items-stretch">
         <div className="relative h-[84px] overflow-hidden">
           <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
