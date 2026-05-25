@@ -1515,7 +1515,7 @@ function ChoicePhase({
           {cue}
         </p>
       )}
-      {idle && !picked && (
+      {idle && !picked && !cue && (
         <p
           aria-live="polite"
           className="absolute inset-x-0 z-[55] px-7 text-center pointer-events-none motion-safe:animate-[fade-in_0.6s_ease-out_both]"
