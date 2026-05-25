@@ -109,16 +109,20 @@ function BuilderPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/builder" });
 
-  // Drift is now the primary public experience. The previous Studio (v3)
-  // is preserved internally as an archival fallback — append `?legacy=1`
-  // for the v3 stage, or `?legacy=stepper` for the original v1/v2 flow.
+  // Drift is the primary public experience. Append `?legacy=1` for the
+  // archived StudioStageV3, or `?legacy=stepper` for the original stepper.
   // The standalone /studio-drift route remains for isolated R&D.
-  const legacyMode =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("legacy")
-      : null;
+  //
+  // `?mode=pro` is the dedicated travel-agent / power-user entry: it skips
+  // the cinematic Studio and lands directly in the transparent stepper
+  // (real stops, mapa, preço visível). Linked discreetly from the Studio
+  // prologue so emotional discovery stays the default.
+  const urlParams =
+    typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const legacyMode = urlParams?.get("legacy") ?? null;
+  const proMode = urlParams?.get("mode") === "pro";
 
-  if (legacyMode === null) {
+  if (!proMode && legacyMode === null) {
     return (
       <StudioDrift
         onExit={() => {
@@ -128,7 +132,7 @@ function BuilderPage() {
     );
   }
 
-  if (legacyMode !== "stepper") {
+  if (!proMode && legacyMode !== "stepper") {
     return (
       <StudioStageV3
         onExit={() => {
@@ -138,10 +142,7 @@ function BuilderPage() {
     );
   }
 
-
-
-
-
+  // ---- Stepper / Pro Mode ----
 
   const step = search.step ?? 0;
   const region = search.region;
@@ -149,6 +150,7 @@ function BuilderPage() {
   const who = search.who;
   const intention = search.intention;
   const pace: Pace = search.pace ?? "balanced";
+
 
   const setSearch = useCallback(
     (patch: Partial<BuilderSearch>) => {
@@ -161,6 +163,14 @@ function BuilderPage() {
   );
 
   const setStep = useCallback((s: Step) => setSearch({ step: s }), [setSearch]);
+
+  // Pro Mode: skip the emotional trip-type entry and land directly on region
+  // selection (real map + real stops + price visible). Agents arrive ready to
+  // build, not to be onboarded.
+  useEffect(() => {
+    if (proMode && step === 0) setSearch({ step: 1 });
+  }, [proMode, step, setSearch]);
+
   const setRegion = useCallback(
     (r: BuilderRegionKey) => setSearch({ region: r }),
     [setSearch],
@@ -485,7 +495,27 @@ function BuilderPage() {
 
   return (
     <div className="builder-stage min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
+      {proMode && (
+        <div className="sticky top-0 z-[55] border-b border-[color:var(--gold)]/30 bg-[color:var(--ivory)]/95 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--ivory)]/80">
+          <div className="container-x flex items-center justify-between gap-3 py-2">
+            <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] font-semibold text-[color:var(--charcoal)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" aria-hidden="true" />
+              Pro mode
+              <span className="hidden sm:inline text-[color:var(--charcoal)]/55 normal-case tracking-normal font-normal">
+                · transparência total, preço por pax visível
+              </span>
+            </span>
+            <a
+              href="/builder"
+              className="text-[10px] uppercase tracking-[0.28em] font-medium text-[color:var(--charcoal)]/55 hover:text-[color:var(--charcoal)] transition-colors min-h-[36px] inline-flex items-center"
+            >
+              Sair
+            </a>
+          </div>
+        </div>
+      )}
       <article className="bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
+
         <BuilderDebugPanel
           state={{
             urlStep: step,
