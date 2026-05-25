@@ -1366,7 +1366,25 @@ function TextPhase({
             opacity: 0.96,
           }}
         >
-          {chapter.whisper(profile, locale)}
+          {chapter
+            .whisper(profile, locale)
+            .split(/(\*[^*]+\*)/g)
+            .map((seg, i) =>
+              seg.startsWith("*") && seg.endsWith("*") && seg.length > 2 ? (
+                <em
+                  key={i}
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                  }}
+                >
+                  {seg.slice(1, -1)}
+                </em>
+              ) : (
+                <span key={i}>{seg}</span>
+              ),
+            )}
         </label>
         <input
           type={chapter.inputType === "number" ? "number" : "text"}
@@ -2344,7 +2362,24 @@ function Whisper({
           opacity: isOpening ? 0.95 : 0.98,
         }}
       >
-        {text}
+        {isOpening
+          ? text
+          : text.split(/(\*[^*]+\*)/g).map((seg, i) =>
+              seg.startsWith("*") && seg.endsWith("*") && seg.length > 2 ? (
+                <em
+                  key={i}
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                  }}
+                >
+                  {seg.slice(1, -1)}
+                </em>
+              ) : (
+                <span key={i}>{seg}</span>
+              ),
+            )}
       </p>
     </div>
   );
