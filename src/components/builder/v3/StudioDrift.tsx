@@ -1374,7 +1374,7 @@ function TextPhase({
           onChange={(e) => setValue(e.target.value)}
           placeholder={chapter.placeholder(locale)}
           maxLength={chapter.inputType === "number" ? 3 : 32}
-          className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3"
+          className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0"
           style={{
             fontFamily: "'Montserrat', system-ui, sans-serif",
             fontSize: "21px",
