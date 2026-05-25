@@ -101,6 +101,9 @@ const PT: Dict = {
 
   // Exit
   "ui.exit": "sair",
+  "ui.choose": "escolher: {label}",
+  "build.region_label": "pré-visualização do seu dia",
+
 };
 
 const EN: Dict = {
@@ -174,6 +177,9 @@ const EN: Dict = {
   "text.continue": "continue",
 
   "ui.exit": "exit",
+  "ui.choose": "choose: {label}",
+  "build.region_label": "live preview of your day",
+
 };
 
 const ES: Dict = {
@@ -241,6 +247,9 @@ const ES: Dict = {
   "enc.near_named": "yes · {name}, su composición está lista",
   "text.continue": "continuar",
   "ui.exit": "salir",
+  "ui.choose": "elegir: {label}",
+  "build.region_label": "vista en vivo de su día",
+
 };
 
 const FR: Dict = {
@@ -308,6 +317,9 @@ const FR: Dict = {
   "enc.near_named": "yes · {name}, votre composition est prête",
   "text.continue": "continuer",
   "ui.exit": "sortir",
+  "ui.choose": "choisir : {label}",
+  "build.region_label": "aperçu de votre journée",
+
 };
 
 const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN, es: ES, fr: FR };
