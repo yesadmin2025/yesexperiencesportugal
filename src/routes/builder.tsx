@@ -163,6 +163,14 @@ function BuilderPage() {
   );
 
   const setStep = useCallback((s: Step) => setSearch({ step: s }), [setSearch]);
+
+  // Pro Mode: skip the emotional trip-type entry and land directly on region
+  // selection (real map + real stops + price visible). Agents arrive ready to
+  // build, not to be onboarded.
+  useEffect(() => {
+    if (proMode && step === 0) setSearch({ step: 1 });
+  }, [proMode, step, setSearch]);
+
   const setRegion = useCallback(
     (r: BuilderRegionKey) => setSearch({ region: r }),
     [setSearch],
