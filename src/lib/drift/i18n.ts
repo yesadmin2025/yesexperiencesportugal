@@ -193,6 +193,16 @@ const EN: Dict = {
   "ui.back": "Back",
   "ui.choose": "Choose: {label}",
   "trust.reviews": "reviews",
+  "preview.expand": "Open live preview of your day",
+  "preview.dialog": "Your day — live preview",
+  "preview.tap_to_open": "tap to open",
+  "preview.tab_story": "Story",
+  "preview.tab_timeline": "Timeline",
+  "preview.tab_map": "Map",
+  "preview.story_intro": "your day is forming around real stops, chosen for the rhythm you described.",
+  "preview.min_drive": "min drive",
+  "preview.min_stay": "min stay",
+  "preview.indicative": "indicative",
   "build.region_label": "Your day · live preview",
 };
 
