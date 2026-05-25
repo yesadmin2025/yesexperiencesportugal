@@ -56,8 +56,30 @@ export function StudioV2({ onExit }: StudioV2Props) {
   const [stage, setStage] = useState<Stage>("intent");
   const [result, setResult] = useState<DesignResult | null>(null);
 
-  const update = (patch: Partial<TravelerProfile>) =>
+  const update = (patch: Partial<TravelerProfile>, reason: InsightReason = "none") => {
     setProfile((p) => ({ ...p, ...patch }));
+    if (reason !== "none") pulse(reason);
+  };
+
+  // ─── live preview (drives map + insight) ─────────────────────────────
+  const preview: JourneyPreview = useMemo(() => previewJourney(profile), [profile]);
+
+  // Insight strip: surfaces briefly between meaningful choices, then settles.
+  const [insightReason, setInsightReason] = useState<InsightReason>("none");
+  const [insightVisible, setInsightVisible] = useState(false);
+  const insightTimer = useRef<number | null>(null);
+  const pulse = (reason: InsightReason) => {
+    setInsightReason(reason);
+    setInsightVisible(true);
+    if (insightTimer.current) window.clearTimeout(insightTimer.current);
+    insightTimer.current = window.setTimeout(() => setInsightVisible(false), 2600);
+  };
+  useEffect(() => () => { if (insightTimer.current) window.clearTimeout(insightTimer.current); }, []);
+
+  const insightText = useMemo(
+    () => previewInsight(profile, preview, insightReason === "none" ? "intent" : insightReason),
+    [profile, preview, insightReason],
+  );
 
   const summaryChips = useMemo(() => {
     const chips: string[] = [];
@@ -88,7 +110,10 @@ export function StudioV2({ onExit }: StudioV2Props) {
   useEffect(() => {
     if (stage === "intent" && profile.intent) {
       if (intentTimer.current) window.clearTimeout(intentTimer.current);
-      intentTimer.current = window.setTimeout(() => setStage("refine"), 700);
+      intentTimer.current = window.setTimeout(() => {
+        pulse("intent");
+        setStage("refine");
+      }, 700);
     }
     return () => {
       if (intentTimer.current) window.clearTimeout(intentTimer.current);
