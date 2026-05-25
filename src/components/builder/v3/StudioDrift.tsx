@@ -1167,7 +1167,7 @@ export function StudioDrift({ onExit }: Props) {
           overlapped the third card on mobile. Per Studio Bible §5: never
           stack text on top of choice tiles. */}
       {chapter.kind !== "convergence" && chapter.kind !== "choice" && narrativeLine && narrativeAt && (
-        <AiWhisper key={narrativeAt} text={narrativeLine} />
+        <AiWhisper key={narrativeAt} text={narrativeLine} locale={locale} />
       )}
       {showBuildPreview && (
         <StudioLivePreview
@@ -1204,20 +1204,21 @@ export function StudioDrift({ onExit }: Props) {
           type="button"
           onClick={() => setChapterIdx((i) => Math.max(0, i - 1))}
           aria-label={tt("ui.back", locale) || "Back"}
-          className="absolute bottom-[100px] left-3 z-[46] inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
+          className="absolute bottom-[100px] left-3 z-[46] inline-flex items-center gap-1.5 px-2 py-1.5 italic transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
           style={{
-            color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
-            background: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            border: "1px solid color-mix(in oklab, var(--ivory) 10%, transparent)",
-            opacity: 0.78,
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: "13px",
+            fontWeight: 400,
+            color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+            textShadow: "0 1px 12px rgba(0,0,0,0.7)",
+            opacity: 0.82,
           }}
         >
-          <span aria-hidden="true">‹</span>
-          {tt("ui.back", locale) || "Back"}
+          <span aria-hidden="true" style={{ fontSize: "15px", lineHeight: 1 }}>‹</span>
+          {(tt("ui.back", locale) || "Back").toLowerCase()}
         </button>
       )}
+
 
       {interludeWhisper && (
         <div
@@ -1630,8 +1631,24 @@ function ChoicePhase({
                   transform: showHints ? "translateY(0)" : "translateY(8px)",
                 }}
               >
-                {tt(opt.hintKey, locale)}
+                {optionLabel.split(/(\*[^*]+\*)/g).map((seg, i) =>
+                  seg.startsWith("*") && seg.endsWith("*") && seg.length > 2 ? (
+                    <em
+                      key={i}
+                      style={{
+                        fontFamily: "Georgia, 'Times New Roman', serif",
+                        fontStyle: "italic",
+                        fontWeight: 400,
+                      }}
+                    >
+                      {seg.slice(1, -1)}
+                    </em>
+                  ) : (
+                    <span key={i}>{seg}</span>
+                  ),
+                )}
               </span>
+
             </button>
           );
         })}
@@ -2448,7 +2465,7 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
  * moment, threaded with their behavior, profile and stage. Auto-fades
  * after ~5.5s so it never blocks interaction. Reduced-motion safe.
  */
-function AiWhisper({ text }: { text: string }) {
+function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
   const [opacity, setOpacity] = useState(0);
   useEffect(() => {
     // Delay entry so the chapter headline lands first — prevents
@@ -2460,6 +2477,7 @@ function AiWhisper({ text }: { text: string }) {
       window.clearTimeout(t2);
     };
   }, []);
+  const sensingLabel = locale ? tt("ui.sensing", locale) : "sensing";
   return (
     <div
       aria-live="polite"
@@ -2481,7 +2499,7 @@ function AiWhisper({ text }: { text: string }) {
           className="h-1 w-1 rounded-full motion-safe:animate-pulse"
           style={{ background: "var(--gold)", boxShadow: "0 0 6px var(--gold)" }}
         />
-        sensing
+        {sensingLabel}
       </span>
       <p
         className="text-center italic"
@@ -2500,6 +2518,7 @@ function AiWhisper({ text }: { text: string }) {
     </div>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio

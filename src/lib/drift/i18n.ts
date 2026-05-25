@@ -104,6 +104,7 @@ const PT: Dict = {
   // Exit
   "ui.exit": "Sair",
   "ui.back": "Voltar",
+  "ui.sensing": "a sentir",
   "ui.choose": "Escolher: {label}",
   "trust.reviews": "avaliações",
   "choice.idle_hint": "Toque numa imagem para escolher — ou demore o tempo que precisar.",
@@ -220,6 +221,7 @@ const EN: Dict = {
 
   "ui.exit": "Exit",
   "ui.back": "Back",
+  "ui.sensing": "sensing",
   "ui.choose": "Choose: {label}",
   "trust.reviews": "reviews",
   "choice.idle_hint": "Tap any image to choose — or take all the time you need.",
@@ -336,6 +338,7 @@ const ES: Dict = {
 
   "ui.exit": "Salir",
   "ui.back": "Volver",
+  "ui.sensing": "sintiendo",
   "ui.choose": "Elegir: {label}",
   "trust.reviews": "reseñas",
   "choice.idle_hint": "Toque una imagen para elegir — o tómese el tiempo que necesite.",
@@ -436,6 +439,7 @@ const FR: Dict = {
 
   "ui.exit": "Sortir",
   "ui.back": "Retour",
+  "ui.sensing": "à l'écoute",
   "ui.choose": "Choisir : {label}",
   "trust.reviews": "avis",
   "choice.idle_hint": "Touchez une image pour choisir — ou prenez votre temps.",
