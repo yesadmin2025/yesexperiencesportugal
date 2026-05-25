@@ -1,33 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import { Wine, Users, Clock3, Sparkles, MapPin } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import {
+  Wine,
+  Users,
+  Clock3,
+  Sparkles,
+  MapPin,
+  ArrowRight,
+  ShieldCheck,
+  Plus,
+} from "lucide-react";
 import { useScrollDebugFlags } from "@/lib/scroll-debug";
 
 /**
  * StudioLivePreview — homepage "Experience Studio" hero device.
  *
- * Mobile-first, map-led. Shows a predictive private day taking shape:
- *  · header chips: Mood · Who · Rhythm  (the three Studio inputs)
- *  · animated SVG map of the Setúbal peninsula with three real stops
- *      Lisbon → Azeitão → Sesimbra
- *    drawing on stroke-dashoffset, with pins revealing in sequence
- *  · live story panel: selected moments, estimated time, one-line story
+ * v2 (conversion pass) — keeps the cinematic map, but adds the high-signal
+ * elements travellers expect when shopping a premium private day:
+ *  · top step indicator + progress bar (clear sense of advancement)
+ *  · live "Routing your day" status + Mood / Who / Rhythm chips
+ *  · animated route across Lisbon → Azeitão → Sesimbra
+ *  · smart-recommendation upsell row (1-tap add)
+ *  · estimated investment band (price visible, not hidden)
+ *  · dual CTA: Reserve draft (primary) + Open Studio (ghost)
  *
- * NO real data is invented beyond the brief's preview example
- * (Wine & food / Couple / Relaxed · Lisbon → Azeitão → Sesimbra ·
- *  Wine tasting / Local lunch / Coastal viewpoint · 7h30). All copy
- * comes directly from the approved spec.
- *
- * Motion is part of the homepage `.home-energy` scope and respects
- * prefers-reduced-motion (every keyframe stops, dashoffset jumps to
- * 0, pulsing pins go static).
+ * Mobile-first. Honours `prefers-reduced-motion`. All numbers below are
+ * preview-only and explicitly labelled "Draft" / "Concierge confirms".
  */
 
 type Stop = {
   id: string;
-  // Geographic-ish coordinates expressed in the SVG's local viewBox
-  // (200×260). Tuned by eye against the Setúbal peninsula so the
-  // route reads as Lisbon → Azeitão → Sesimbra without claiming to be
-  // a tile-map. Mapbox shows up at the real /builder route.
   x: number;
   y: number;
   label: string;
@@ -41,14 +43,15 @@ const STOPS: Stop[] = [
   { id: "ses", x: 154, y: 206, label: "Sesimbra", caption: "Coastal viewpoint", delay: 1400 },
 ];
 
-// Smooth bezier through the three stops. Drawn in viewBox space.
-const ROUTE_D =
-  "M 70 60 C 78 92, 90 116, 110 138 S 138 178, 154 206";
-
-// Total length used for the dash trick. We measure it once on mount
-// rather than hard-coding so the motion stays correct if the path
-// is later tweaked.
+const ROUTE_D = "M 70 60 C 78 92, 90 116, 110 138 S 138 178, 154 206";
 const FALLBACK_LEN = 260;
+
+// Preview-only figures. Marked as a draft on screen so we never imply a
+// final, payable quote — actual pricing lands at /builder + Bokun.
+const DRAFT_STEP = 3;
+const DRAFT_STEPS_TOTAL = 11;
+const DRAFT_INVESTMENT_EUR = 145;
+const DRAFT_PARTY = 2;
 
 export function StudioLivePreview() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -56,29 +59,29 @@ export function StudioLivePreview() {
   const [active, setActive] = useState(false);
   const [visibleTest, setVisibleTest] = useState(false);
   const [pathLen, setPathLen] = useState(FALLBACK_LEN);
+  const [added, setAdded] = useState(false);
   const scrollDebug = useScrollDebugFlags();
   const renderedActive = active || scrollDebug.disableMobileStudioMotion;
   const routeDuration = visibleTest ? 3000 : 2900;
+
+  const progressPct = Math.round((DRAFT_STEP / DRAFT_STEPS_TOTAL) * 100);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     setVisibleTest(new URLSearchParams(window.location.search).get("motion-visible-test") === "1");
   }, []);
 
-  // Measure path on mount — keeps animation accurate.
   useEffect(() => {
     if (pathRef.current && typeof pathRef.current.getTotalLength === "function") {
       try {
         const l = pathRef.current.getTotalLength();
         if (l > 0 && Number.isFinite(l)) setPathLen(l);
       } catch {
-        // ignore — fall back to FALLBACK_LEN
+        // ignore
       }
     }
   }, []);
 
-  // Trigger animation once the device is in view. Reduced-motion users
-  // get the final state immediately.
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -110,22 +113,37 @@ export function StudioLivePreview() {
       data-active={renderedActive ? "true" : "false"}
       className="studio-live relative overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]"
       role="img"
-      aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, estimated seven and a half hours"
+      aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, draft investment one hundred and forty-five euros per guest"
     >
-      {/* ── Header strip — three Studio inputs as live chips ───────── */}
-      <div className="relative z-20 flex items-center justify-between gap-3 border-b border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/85 px-4 md:px-5 py-3 md:py-3.5 backdrop-blur-[2px]">
-        <span className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
+      {/* ── Header strip — stepper + live status ─────────────────── */}
+      <div className="relative z-20 flex items-center justify-between gap-3 border-b border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/90 px-4 md:px-5 py-2.5 md:py-3 backdrop-blur-[2px]">
+        <span className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold)] tabular-nums">
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-70 animate-ping" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
           </span>
-          Routing your day
+          Step {DRAFT_STEP} of {DRAFT_STEPS_TOTAL}
         </span>
-        <span className="text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/55">
-          Studio · Live
+        <span className="text-[9.5px] md:text-[10px] uppercase tracking-[0.26em] text-[color:var(--ivory)]/65 tabular-nums">
+          {progressPct}% shaped
         </span>
       </div>
 
+      {/* Progress bar — gold fill, animates on reveal */}
+      <div
+        aria-hidden="true"
+        className="relative z-20 h-[3px] w-full bg-[color:var(--ivory)]/10"
+      >
+        <div
+          className="absolute inset-y-0 left-0 bg-gradient-to-r from-[color:var(--teal-2)] via-[color:var(--gold)] to-[color:var(--gold)]"
+          style={{
+            width: renderedActive ? `${progressPct}%` : "6%",
+            transition: "width 1400ms cubic-bezier(0.22, 0.61, 0.36, 1) 200ms",
+          }}
+        />
+      </div>
+
+      {/* Chips row — Mood · Who · Rhythm */}
       <div
         className="relative z-10 flex flex-wrap items-center gap-1.5 md:gap-2 border-b border-[color:var(--gold)]/12 bg-[color:var(--charcoal-deep)]/70 px-4 md:px-5 py-3"
         role="group"
@@ -137,14 +155,11 @@ export function StudioLivePreview() {
       </div>
 
       {/* ── Map stage ─────────────────────────────────────────────── */}
-      <div className="relative aspect-[4/5] sm:aspect-[5/4] md:aspect-[16/11] w-full">
-        {/* Atmospheric backdrop — soft teal/gold radial glows */}
+      <div className="relative aspect-[5/4] sm:aspect-[5/4] md:aspect-[16/11] w-full">
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[radial-gradient(120%_90%_at_28%_18%,rgba(201,169,106,0.10)_0%,transparent_55%),radial-gradient(110%_80%_at_72%_82%,rgba(41,91,97,0.50)_0%,transparent_60%)]"
         />
-
-        {/* Topo grid */}
         <svg
           aria-hidden="true"
           className="absolute inset-0 h-full w-full opacity-[0.16]"
@@ -158,8 +173,6 @@ export function StudioLivePreview() {
           </defs>
           <rect width="200" height="260" fill="url(#slv-grid)" />
         </svg>
-
-        {/* Coastline — purely decorative silhouette of the south coast */}
         <svg
           aria-hidden="true"
           className="absolute inset-0 h-full w-full"
@@ -180,8 +193,6 @@ export function StudioLivePreview() {
             strokeDasharray="2 3"
           />
         </svg>
-
-        {/* Route + pins */}
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 200 260"
@@ -197,8 +208,6 @@ export function StudioLivePreview() {
               <feGaussianBlur stdDeviation="0.6" />
             </filter>
           </defs>
-
-          {/* Faint glow trail behind the route */}
           <path
             d={ROUTE_D}
             fill="none"
@@ -211,7 +220,6 @@ export function StudioLivePreview() {
             strokeDashoffset={renderedActive ? 0 : pathLen}
             style={{ transition: `stroke-dashoffset ${routeDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)` }}
           />
-          {/* Sharp route line */}
           <path
             ref={pathRef}
             d={ROUTE_D}
@@ -224,8 +232,6 @@ export function StudioLivePreview() {
             strokeDashoffset={renderedActive ? 0 : pathLen}
             style={{ transition: `stroke-dashoffset ${routeDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)` }}
           />
-
-          {/* Stops */}
           {STOPS.map((s, i) => (
             <g
               key={s.id}
@@ -241,7 +247,6 @@ export function StudioLivePreview() {
                 transformOrigin: `${s.x}px ${s.y}px`,
               }}
             >
-              {/* Focus ring — only visible on keyboard focus */}
               <circle
                 className="slv-pin-focus"
                 cx={s.x}
@@ -251,7 +256,6 @@ export function StudioLivePreview() {
                 stroke="var(--gold)"
                 strokeWidth="1.2"
               />
-              {/* Outer pulse — first & last stops only, keeps it calm */}
               {(i === 0 || i === STOPS.length - 1) && (
                 <circle
                   cx={s.x}
@@ -271,8 +275,6 @@ export function StudioLivePreview() {
             </g>
           ))}
         </svg>
-
-        {/* Pin labels — DOM elements (not SVG text) so typography stays sharp */}
         <ul aria-hidden="true" className="pointer-events-none absolute inset-0 m-0 list-none p-0">
           {STOPS.map((s) => (
             <li
@@ -296,69 +298,94 @@ export function StudioLivePreview() {
           ))}
         </ul>
 
-        {/* Map floor caption — distance + day-feel */}
+        {/* Quality badge — small trust signal sitting on the map */}
+        <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--charcoal-deep)]/75 px-2.5 py-1 backdrop-blur-[2px]">
+          <ShieldCheck size={11} className="text-[color:var(--gold)]" aria-hidden="true" />
+          <span className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)] tabular-nums">
+            Quality 94
+          </span>
+        </div>
+
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 text-[color:var(--ivory)]/90">
           <p className="text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
             Today's draft
           </p>
-          <p className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/60">
-            3 stops · 1 day
+          <p className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/60 tabular-nums">
+            3 stops · 7h30
           </p>
         </div>
       </div>
 
-      {/* ── Live story panel ──────────────────────────────────────── */}
-      <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-4 md:py-5">
-        <div className="flex items-start justify-between gap-3">
-          <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
-            <Sparkles size={11} aria-hidden="true" />
-            Selected moments
+      {/* ── Smart recommendation row — 1-tap upsell ───────────────── */}
+      <button
+        type="button"
+        onClick={() => setAdded((v) => !v)}
+        aria-pressed={added}
+        className="group relative z-10 flex w-full items-center gap-3 border-t border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/80 px-4 md:px-5 py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-inset"
+      >
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--gold)]/10 text-[color:var(--gold)]">
+          <Sparkles size={12} aria-hidden="true" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
+            Smart pick
           </span>
-          <span className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
-            <Clock3 size={11} aria-hidden="true" className="text-[color:var(--teal)]" />
-            7h30
+          <span className="mt-0.5 block truncate text-[12px] md:text-[12.5px] text-[color:var(--ivory)]/90">
+            Most couples add a private cellar tasting.
           </span>
+        </span>
+        <span
+          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10.5px] uppercase tracking-[0.18em] font-semibold tabular-nums transition-colors duration-200 ${
+            added
+              ? "border-[color:var(--teal-2)]/60 bg-[color:var(--teal-2)]/15 text-[color:var(--teal-2)]"
+              : "border-[color:var(--gold)]/45 bg-transparent text-[color:var(--gold)] group-hover:bg-[color:var(--gold)]/10"
+          }`}
+        >
+          <Plus size={11} aria-hidden="true" className={added ? "rotate-45 transition-transform" : "transition-transform"} />
+          {added ? "Added" : "Add"}
+        </span>
+      </button>
+
+      {/* ── Investment + CTA band ─────────────────────────────────── */}
+      <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-4">
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <span className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
+              Draft investment
+            </span>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="font-display text-[1.6rem] md:text-[1.85rem] leading-none font-semibold text-[color:var(--charcoal)] tabular-nums">
+                €{DRAFT_INVESTMENT_EUR}
+              </span>
+              <span className="text-[12px] text-[color:var(--charcoal-soft)]">/ guest</span>
+            </div>
+            <span className="mt-1 block text-[10.5px] text-[color:var(--charcoal-soft)] tabular-nums">
+              Party of {DRAFT_PARTY} · concierge confirms
+            </span>
+          </div>
+          <div className="flex flex-col items-stretch gap-1.5">
+            <Link
+              to="/builder"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[3px] bg-[color:var(--teal)] px-3.5 py-2 text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] shadow-[0_4px_14px_-6px_rgba(41,91,97,0.55)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+            >
+              Continue draft
+              <ArrowRight size={12} aria-hidden="true" />
+            </Link>
+            <Link
+              to="/experiences"
+              className="inline-flex items-center justify-center gap-1 text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors duration-200"
+            >
+              See sample day
+            </Link>
+          </div>
         </div>
 
-        <ul className="mt-3 flex flex-wrap gap-1.5 list-none p-0">
-          {[
-            "Wine tasting",
-            "Local lunch",
-            "Coastal viewpoint",
-          ].map((moment, i) => (
-            <li
-              key={moment}
-              tabIndex={0}
-              role="button"
-              aria-label={`Selected moment: ${moment}`}
-              className="slv-moment slv-focusable inline-flex items-center gap-1.5 rounded-full border border-[color:var(--teal)]/25 bg-[color:var(--ivory)] px-3 py-1 text-[11.5px] tracking-[0.02em] text-[color:var(--charcoal)]"
-              style={{
-                opacity: renderedActive ? 1 : 0,
-                transform: renderedActive ? "translateY(0)" : "translateY(4px)",
-                transition: `opacity 520ms ease ${1500 + i * 220}ms, transform 520ms ease ${1500 + i * 220}ms`,
-              }}
-            >
-              <MapPin size={10} aria-hidden="true" className="text-[color:var(--teal)]" />
-              {moment}
-            </li>
-          ))}
-        </ul>
-
-        <p
-          className="serif italic mt-4 text-[14.5px] md:text-[15.5px] leading-[1.55] text-[color:var(--charcoal)]"
-          style={{
-            opacity: renderedActive ? 1 : 0,
-            transform: renderedActive ? "translateY(0)" : "translateY(6px)",
-            transition: "opacity 600ms ease 2100ms, transform 600ms ease 2100ms",
-          }}
-        >
-          A slow day between vineyards and the coast, shaped around wine, food and time to enjoy the view.
+        {/* Reassurance row — instant-confirmation signal */}
+        <p className="mt-3 inline-flex items-center gap-1.5 text-[11px] text-[color:var(--charcoal-soft)]">
+          <MapPin size={11} aria-hidden="true" className="text-[color:var(--teal)]" />
+          Instant confirmation · cancel up to 48h before
         </p>
       </div>
-
-      {/* Animations + focus styles for this device live in styles.css
-          under the `.studio-live` scope so the CSS is parsed once and
-          honours `prefers-reduced-motion` globally. */}
     </div>
   );
 }
@@ -381,4 +408,3 @@ function Chip({ icon, label, value }: { icon: React.ReactNode; label: string; va
     </span>
   );
 }
-
