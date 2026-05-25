@@ -27,7 +27,17 @@ interface Props {
   activeStopIndex?: number | null;
   /** Hide chrome for small embedded previews inside Studio Drift. */
   chrome?: boolean;
+  /** Locale for the on-map chip labels ("a tomar forma" / "shaping" etc.). */
+  locale?: "pt" | "en" | "es" | "fr";
 }
+
+const CHIP_I18N = {
+  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens" },
+  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops" },
+  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas" },
+  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts" },
+} as const;
+
 
 /**
  * Premium Leaflet route map — branded numbered pins, animated gold polyline,
