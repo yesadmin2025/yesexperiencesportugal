@@ -3,6 +3,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Loader2, Map as MapIcon, Sparkles, X } from "lucide-react";
 
 import { generateBuilderRoute, narrateBuilderRoute } from "@/server/builderEngine.functions";
+import { createJourney } from "@/server/builderJourneys.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
