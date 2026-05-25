@@ -318,7 +318,7 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
   "social",
 ];
 
-const ALWAYS_ASK_CHAPTERS = new Set(["companions", "pickup", "duration", "radius"]);
+const ALWAYS_ASK_CHAPTERS = new Set(["companions", "guests", "pickup", "duration", "radius", "enhancements", "tier"]);
 const OPTIONAL_CHAPTER_IDS = ["energy", "style", "social"] as const;
 type OptionalChapterId = (typeof OPTIONAL_CHAPTER_IDS)[number];
 
