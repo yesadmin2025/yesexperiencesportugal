@@ -1377,12 +1377,6 @@ function GroupForm({
         onChange={(v) => set({ mobility: v as GroupProfile["mobility"] })}
         options={[["none", "No constraints"], ["limited", "Some limitations"], ["wheelchair", "Wheelchair"]]}
       />
-      <SelectRow
-        label="Luxury expectation"
-        value={g.luxuryTier}
-        onChange={(v) => set({ luxuryTier: v as GroupProfile["luxuryTier"] })}
-        options={[["refined", "Refined"], ["elevated", "Elevated"], ["ultra", "Ultra"]]}
-      />
     </div>
   );
 }
