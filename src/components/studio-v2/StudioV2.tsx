@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, X } from "lucide-react";
 import {
   emptyProfile,
@@ -17,11 +17,21 @@ import {
   PACE_OPTIONS,
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
-  TRANSITION_COPY,
   revealFraming,
 } from "@/lib/studio-v2/content";
-import { designExperience, type DesignResult } from "@/lib/studio-v2/engine";
+import {
+  designExperience,
+  previewJourney,
+  previewInsight,
+  type DesignResult,
+  type InsightReason,
+  type JourneyPreview,
+} from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
+
+const BuilderMap = lazy(() =>
+  import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
+);
 
 type Stage = "intent" | "refine" | "reveal";
 type RefineSection = "group" | "pace" | "priorities" | "ops";
@@ -46,8 +56,30 @@ export function StudioV2({ onExit }: StudioV2Props) {
   const [stage, setStage] = useState<Stage>("intent");
   const [result, setResult] = useState<DesignResult | null>(null);
 
-  const update = (patch: Partial<TravelerProfile>) =>
+  const update = (patch: Partial<TravelerProfile>, reason: InsightReason = "none") => {
     setProfile((p) => ({ ...p, ...patch }));
+    if (reason !== "none") pulse(reason);
+  };
+
+  // ─── live preview (drives map + insight) ─────────────────────────────
+  const preview: JourneyPreview = useMemo(() => previewJourney(profile), [profile]);
+
+  // Insight strip: surfaces briefly between meaningful choices, then settles.
+  const [insightReason, setInsightReason] = useState<InsightReason>("none");
+  const [insightVisible, setInsightVisible] = useState(false);
+  const insightTimer = useRef<number | null>(null);
+  const pulse = (reason: InsightReason) => {
+    setInsightReason(reason);
+    setInsightVisible(true);
+    if (insightTimer.current) window.clearTimeout(insightTimer.current);
+    insightTimer.current = window.setTimeout(() => setInsightVisible(false), 2600);
+  };
+  useEffect(() => () => { if (insightTimer.current) window.clearTimeout(insightTimer.current); }, []);
+
+  const insightText = useMemo(
+    () => previewInsight(profile, preview, insightReason === "none" ? "intent" : insightReason),
+    [profile, preview, insightReason],
+  );
 
   const summaryChips = useMemo(() => {
     const chips: string[] = [];
@@ -78,7 +110,10 @@ export function StudioV2({ onExit }: StudioV2Props) {
   useEffect(() => {
     if (stage === "intent" && profile.intent) {
       if (intentTimer.current) window.clearTimeout(intentTimer.current);
-      intentTimer.current = window.setTimeout(() => setStage("refine"), 700);
+      intentTimer.current = window.setTimeout(() => {
+        pulse("intent");
+        setStage("refine");
+      }, 700);
     }
     return () => {
       if (intentTimer.current) window.clearTimeout(intentTimer.current);
@@ -198,65 +233,74 @@ export function StudioV2({ onExit }: StudioV2Props) {
         )}
 
         {stage === "refine" && (
-          <section key="refine" className="studio-v2-reveal">
-            <Eyebrow>Refine</Eyebrow>
-            <Headline>A few details — all optional.</Headline>
-            <Helper>
-              Skip anything. We use sensible defaults and the concierge confirms before booking.
-            </Helper>
-
-            <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
-              <Accordion title="Who is travelling" summary={groupSummary(profile)}>
-                <GroupForm value={profile.group} onChange={(g) => update({ group: g })} />
-              </Accordion>
-              <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"}>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
-                  {PACE_OPTIONS.map((opt) => (
-                    <OptionCard
-                      key={opt.id}
-                      active={profile.pace === opt.id}
-                      label={opt.label}
-                      sub={opt.sub}
-                      onClick={() => update(applyPace(profile, opt.id as PaceV2))}
-                    />
-                  ))}
-                </div>
-              </Accordion>
-              <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {PRIORITY_OPTIONS.map((opt) => {
-                    const w = profile.priorityWeights[opt.id as PriorityKey];
-                    const next =
-                      w === undefined ? PRIORITY_WEIGHTS.single :
-                      w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
-                      undefined;
-                    return (
-                      <PriorityChip
-                        key={opt.id}
-                        label={opt.label}
-                        weight={w}
-                        onClick={() => {
-                          const pw = { ...profile.priorityWeights };
-                          if (next === undefined) delete pw[opt.id as PriorityKey];
-                          else pw[opt.id as PriorityKey] = next;
-                          update({ priorityWeights: pw });
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </Accordion>
-              <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
-                <OpsForm value={profile.ops} onChange={(ops) => update({ ops })} />
-              </Accordion>
-            </div>
-
-            <StageFooter
-              disabled={false}
-              helper="Designing your day."
-              ctaLabel="Design my day"
-              onContinue={finalize}
+          <section key="refine" className="studio-v2-reveal -mx-5 sm:-mx-8">
+            <JourneyLayer
+              preview={preview}
+              insight={insightText}
+              insightVisible={insightVisible}
             />
+
+            <div className="px-5 sm:px-8 mt-6">
+              <Eyebrow>Refine</Eyebrow>
+              <Headline>The journey reacts as you decide.</Headline>
+              <Helper>
+                Every choice reshapes the route above. Skip what you like — sensible defaults stand in,
+                and the concierge confirms before booking.
+              </Helper>
+
+              <div className="mt-6 divide-y" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+                <Accordion title="Rhythm" summary={profile.pace ? PACE_OPTIONS.find((o) => o.id === profile.pace)?.label ?? "" : "Balanced (default)"} defaultOpen>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
+                    {PACE_OPTIONS.map((opt) => (
+                      <OptionCard
+                        key={opt.id}
+                        active={profile.pace === opt.id}
+                        label={opt.label}
+                        sub={opt.sub}
+                        onClick={() => update(applyPace(profile, opt.id as PaceV2), "pace")}
+                      />
+                    ))}
+                  </div>
+                </Accordion>
+                <Accordion title="Priorities" summary={prioritiesSummary(profile)}>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {PRIORITY_OPTIONS.map((opt) => {
+                      const w = profile.priorityWeights[opt.id as PriorityKey];
+                      const next =
+                        w === undefined ? PRIORITY_WEIGHTS.single :
+                        w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
+                        undefined;
+                      return (
+                        <PriorityChip
+                          key={opt.id}
+                          label={opt.label}
+                          weight={w}
+                          onClick={() => {
+                            const pw = { ...profile.priorityWeights };
+                            if (next === undefined) delete pw[opt.id as PriorityKey];
+                            else pw[opt.id as PriorityKey] = next;
+                            update({ priorityWeights: pw }, "priority");
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </Accordion>
+                <Accordion title="Who is travelling" summary={groupSummary(profile)}>
+                  <GroupForm value={profile.group} onChange={(g) => update({ group: g }, "group")} />
+                </Accordion>
+                <Accordion title="Logistics" summary={profile.ops.pickup || "Concierge will confirm"}>
+                  <OpsForm value={profile.ops} onChange={(ops) => update({ ops }, "ops")} />
+                </Accordion>
+              </div>
+
+              <StageFooter
+                disabled={false}
+                helper="Designing your day."
+                ctaLabel="Design my day"
+                onContinue={finalize}
+              />
+            </div>
           </section>
         )}
 
@@ -282,9 +326,9 @@ function prioritiesSummary(p: TravelerProfile): string {
 }
 
 function Accordion({
-  title, summary, children,
-}: { title: string; summary: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
+  title, summary, children, defaultOpen = false,
+}: { title: string; summary: string; children: React.ReactNode; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="py-4">
       <button
@@ -313,6 +357,104 @@ function Accordion({
     </div>
   );
 }
+
+
+// ─── live journey layer ───────────────────────────────────────────────────
+//
+// Sticky cinematic map that reflects the current profile in real time.
+// The InsightStrip floats over its lower edge during transitions.
+
+function JourneyLayer({
+  preview, insight, insightVisible,
+}: { preview: JourneyPreview; insight: string; insightVisible: boolean }) {
+  return (
+    <div
+      className="relative w-full h-[42vh] min-h-[260px] max-h-[420px] overflow-hidden border-y"
+      style={{
+        borderColor: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
+        background: "var(--sand)",
+      }}
+      aria-label="Live journey preview"
+    >
+      <Suspense
+        fallback={
+          <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+            shaping route…
+          </div>
+        }
+      >
+        <BuilderMap
+          stops={preview.stops}
+          regionCenter={preview.regionCenter}
+          regionKey={preview.region}
+          emotionalMode
+          chrome={false}
+        />
+      </Suspense>
+
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-1/2"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in oklab, var(--ivory) 55%, transparent), transparent)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3"
+        style={{
+          background:
+            "linear-gradient(to top, color-mix(in oklab, var(--ivory) 92%, transparent) 8%, transparent 70%)",
+        }}
+      />
+
+      <div
+        className="absolute top-3 left-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] font-semibold"
+        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+      >
+        <span className="relative inline-flex h-1.5 w-1.5">
+          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
+          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+        </span>
+        {regionShort(preview.region)} · {preview.stops.length} stops
+      </div>
+
+      <div
+        className="absolute inset-x-4 bottom-4 transition-all duration-[520ms] ease-out motion-reduce:transition-none"
+        style={{
+          opacity: insightVisible ? 1 : 0,
+          transform: insightVisible ? "translateY(0)" : "translateY(8px)",
+        }}
+        aria-live="polite"
+      >
+        <div
+          className="rounded-[2px] border px-3.5 py-2.5 text-[12.5px] leading-snug backdrop-blur-md"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
+            background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
+            color: "var(--charcoal)",
+            boxShadow: "0 6px 20px color-mix(in oklab, var(--charcoal) 12%, transparent)",
+          }}
+        >
+          {insight}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function regionShort(r: string): string {
+  switch (r) {
+    case "arrabida":     return "Arrábida";
+    case "lisbon-coast": return "Atlantic edge";
+    case "alentejo":     return "Alentejo";
+    case "centro":       return "Centro";
+    default:             return r;
+  }
+}
+
+
 
 
 // ─── primitives ───────────────────────────────────────────────────────────

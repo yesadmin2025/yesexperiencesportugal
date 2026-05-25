@@ -12,7 +12,8 @@ import {
   type ComposerProfile,
   type ConfidenceMap,
 } from "@/lib/drift/composer";
-import { REGION_STOPS, type RegionKey, type RegionStop } from "@/data/regionStops";
+import { REGION_STOPS, REGION_ORIGIN, type RegionKey, type RegionStop } from "@/data/regionStops";
+import type { RoutedStopUI } from "@/components/builder/types";
 import { REGION_RULES } from "@/data/regionRules";
 import {
   deriveArchetype,
@@ -282,4 +283,125 @@ function computeUpsells(
 // Exposed so tests / debug surfaces can see what cap each region enforces.
 export function regionCaps(region: RegionKey) {
   return REGION_RULES[region];
+}
+
+// ─── live preview (used by Studio v2 cinematic refine) ───────────────────
+//
+// Runs the composer against whatever partial profile we have so the map and
+// the insight strip can react after every meaningful choice. Safe to call
+// every render — pure & cheap.
+
+export interface JourneyPreview {
+  region: RegionKey;
+  regionCenter: { lat: number; lng: number };
+  stops: RoutedStopUI[];
+  density: number;
+  driveBudgetMin: number;
+}
+
+function regionLabelShort(r: RegionKey): string {
+  switch (r) {
+    case "arrabida":     return "Arrábida";
+    case "lisbon-coast": return "Sintra & the Atlantic edge";
+    case "alentejo":     return "Alentejo";
+    case "centro":       return "Centro";
+  }
+}
+
+export function previewJourney(profile: TravelerProfile): JourneyPreview {
+  const composer = toComposerProfile(profile);
+  const region = pickRegion(composer);
+  const day = composeDay(composer, region, {
+    confidence: buildConfidenceMap(profile),
+    intensityPreference: intensityFromPaceSafe(profile),
+  });
+  const target = profile.stopDensityTarget || 4;
+  const trimmed = day.stops.slice(0, Math.max(2, Math.min(target, day.stops.length)));
+
+  const stops: RoutedStopUI[] = trimmed.map((s, i) => ({
+    key: s.stop.id,
+    region_key: region,
+    label: s.stop.name,
+    blurb: s.stop.blurb ?? null,
+    tag: s.stop.kind,
+    lat: s.stop.coords.lat,
+    lng: s.stop.coords.lng,
+    duration_minutes: s.stop.dwellMin,
+    driveMinutesFromPrev: i === 0 ? 0 : s.driveFromPrev,
+  }));
+
+  return {
+    region,
+    regionCenter: { lat: REGION_ORIGIN[region].lat, lng: REGION_ORIGIN[region].lng },
+    stops,
+    density: stops.length,
+    driveBudgetMin: stops.reduce((a, s) => a + s.driveMinutesFromPrev, 0),
+  };
+}
+
+function intensityFromPaceSafe(p: TravelerProfile): number {
+  return intensityFromPace(p);
+}
+
+// ─── insight phrasing — concise, operational, no poetry ──────────────────
+
+export type InsightReason =
+  | "intent" | "pace" | "priority" | "group" | "ops" | "none";
+
+export function previewInsight(
+  profile: TravelerProfile,
+  preview: JourneyPreview,
+  reason: InsightReason,
+): string {
+  const region = regionLabelShort(preview.region);
+  const paceWord =
+    profile.pace === "light"    ? "spacious" :
+    profile.pace === "rich"     ? "fuller" :
+    profile.pace === "full"     ? "intensive" :
+                                  "balanced";
+  const stops = preview.density;
+  const drive = preview.driveBudgetMin;
+
+  switch (reason) {
+    case "intent":
+      return `Shaping a ${paceWord} ${atmosphereWord(profile)} route across ${region}.`;
+    case "pace":
+      return `Rhythm set: ${stops} stops, about ${drive} min driving.`;
+    case "priority": {
+      const last = lastPriorityLabel(profile);
+      return last
+        ? `${last} added — pulling the route toward ${region}.`
+        : `Priorities recalibrated. ${stops} stops across ${region}.`;
+    }
+    case "group": {
+      const g = profile.group;
+      const n = g ? g.adults + g.teens + g.children : 2;
+      return `Calibrating comfort for ${n} guest${n === 1 ? "" : "s"}.`;
+    }
+    case "ops":
+      return `Logistics noted. Concierge will confirm timings.`;
+    default:
+      return `${stops} stops in ${region}, ${drive} min on the road.`;
+  }
+}
+
+function atmosphereWord(p: TravelerProfile): string {
+  switch (p.intent) {
+    case "relaxed_scenic":     return "scenic";
+    case "elegant_cultural":   return "cultural";
+    case "food_local":         return "gastronomic";
+    case "social_celebratory": return "celebratory";
+    case "romantic_intimate":  return "intimate";
+    case "coastal_cinematic":  return "Atlantic coastal";
+    default:                   return "considered";
+  }
+}
+
+function lastPriorityLabel(p: TravelerProfile): string | null {
+  const entries = Object.entries(p.priorityWeights);
+  if (!entries.length) return null;
+  // Highest weight wins; if tied, lexical last for determinism.
+  const top = [...entries].sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))[0];
+  const key = top[0] as PriorityKey;
+  return PRIORITY_LABEL[key] ?? null;
 }
