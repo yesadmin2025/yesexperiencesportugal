@@ -18,6 +18,7 @@ import {
   PRIORITY_OPTIONS,
   PRIORITY_WEIGHTS,
   TRANSITION_COPY,
+  revealFraming,
 } from "@/lib/studio-v2/content";
 import { designExperience, type DesignResult } from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
@@ -645,6 +646,16 @@ function Reveal({ result }: { result: DesignResult }) {
     <div>
       <Eyebrow>Your experience</Eyebrow>
       <Headline>A {paceLabel(result.profile.pace)} day in {regionLabel(region)}.</Headline>
+      <p
+        className="mt-4 text-[14.5px] leading-relaxed"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontStyle: "italic",
+          color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+        }}
+      >
+        {revealFraming(result.profile.intent, region)}
+      </p>
       <Helper>
         {day.stops.length} stops · about {fmtMinutes(day.totals.dayMin)} total.
       </Helper>
