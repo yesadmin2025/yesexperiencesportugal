@@ -326,9 +326,9 @@ function prioritiesSummary(p: TravelerProfile): string {
 }
 
 function Accordion({
-  title, summary, children,
-}: { title: string; summary: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
+  title, summary, children, defaultOpen = false,
+}: { title: string; summary: string; children: React.ReactNode; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="py-4">
       <button
