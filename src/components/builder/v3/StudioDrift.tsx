@@ -1453,12 +1453,10 @@ function ChoicePhase({
     return sorted;
   }, [chapter.options, sceneWeighting, prediction, confidence]);
 
-  // Predictive cue is only meaningful once the AI has a real read on the
-  // traveller. Before confidence ≥ 0.48 ("this feels right next") the line
-  // becomes meaningless filler ("you might also love" with no context), so
-  // we suppress it entirely and let the atmosphere breathe.
-  const rawCue = predictiveCue(prediction?.revealConfidence ?? 0, locale);
-  const cue = (prediction?.revealConfidence ?? 0) >= 0.48 ? rawCue : null;
+  // Predictive cue retired: the AI personalised line (AiWhisper, rendered
+  // by the parent) now owns this slot, with a delayed entry so it never
+  // overlaps the chapter headline.
+  void predictiveCue;
 
   useEffect(() => {
     const t1 = window.setTimeout(() => setTilesIn(true), 280);
@@ -1497,25 +1495,10 @@ function ChoicePhase({
   return (
     <>
       <Whisper text={chapter.whisper(profile, locale)} delay={360} hold={5200} variant="choice" />
-      {cue && (
-        <p
-          aria-hidden="true"
-          className="absolute inset-x-0 top-[23%] z-[56] px-7 text-center transition-opacity duration-[900ms]"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "12px",
-            fontStyle: "italic",
-            fontWeight: 400,
-            letterSpacing: "0.005em",
-            color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))",
-            textShadow: "0 1px 14px rgba(0,0,0,0.72)",
-            opacity: tilesIn ? 0.78 : 0,
-          }}
-        >
-          {cue}
-        </p>
-      )}
-      {idle && !picked && !cue && (
+      {/* Predictive cue removed — AiWhisper (rendered by the parent at the
+          bottom band) now owns the AI commentary slot. Keeping both
+          caused stacked italic lines in the top band. */}
+      {idle && !picked && (
         <p
           aria-live="polite"
           className="absolute inset-x-0 z-[55] px-7 text-center pointer-events-none motion-safe:animate-[fade-in_0.6s_ease-out_both]"
@@ -2421,8 +2404,10 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
 function AiWhisper({ text }: { text: string }) {
   const [opacity, setOpacity] = useState(0);
   useEffect(() => {
-    const t1 = window.setTimeout(() => setOpacity(0.92), 60);
-    const t2 = window.setTimeout(() => setOpacity(0), 4800);
+    // Delay entry so the chapter headline lands first — prevents
+    // the personalised line from overlapping the question.
+    const t1 = window.setTimeout(() => setOpacity(0.96), 2400);
+    const t2 = window.setTimeout(() => setOpacity(0), 8200);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
@@ -2431,16 +2416,22 @@ function AiWhisper({ text }: { text: string }) {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none absolute inset-x-0 top-[19%] z-[55] flex flex-col items-center justify-center px-8 transition-opacity duration-[1100ms] ease-out"
+      className="pointer-events-none absolute inset-x-0 bottom-[156px] z-[55] flex flex-col items-center justify-center px-7 transition-opacity duration-[1100ms] ease-out"
       style={{ opacity }}
     >
       <span
         aria-hidden="true"
-        className="mb-1 inline-flex items-center gap-1.5 text-[8.5px] uppercase tracking-[0.22em] font-semibold"
-        style={{ color: "color-mix(in oklab, var(--gold) 88%, transparent)" }}
+        className="mb-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[8.5px] uppercase tracking-[0.22em] font-semibold"
+        style={{
+          color: "color-mix(in oklab, var(--gold) 92%, transparent)",
+          background: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
+          border: "1px solid color-mix(in oklab, var(--gold) 22%, transparent)",
+        }}
       >
         <span
-          className="h-1 w-1 rounded-full"
+          className="h-1 w-1 rounded-full motion-safe:animate-pulse"
           style={{ background: "var(--gold)", boxShadow: "0 0 6px var(--gold)" }}
         />
         sensing
@@ -2449,12 +2440,12 @@ function AiWhisper({ text }: { text: string }) {
         className="text-center italic"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: "14.5px",
+          fontSize: "13.5px",
           lineHeight: 1.5,
           letterSpacing: "0",
-          color: "color-mix(in oklab, var(--ivory) 94%, var(--gold))",
-          maxWidth: "24ch",
-          textShadow: "0 1px 2px rgba(0,0,0,0.9), 0 4px 28px rgba(0,0,0,0.78)",
+          color: "color-mix(in oklab, var(--ivory) 96%, var(--gold))",
+          maxWidth: "26ch",
+          textShadow: "0 1px 2px rgba(0,0,0,0.92), 0 6px 28px rgba(0,0,0,0.82)",
         }}
       >
         {text}
