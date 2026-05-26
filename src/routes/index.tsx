@@ -1282,7 +1282,7 @@ function HomePage() {
                   Start in the Studio, explore a Signature, or talk to a local.
                 </p>
                 <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
-                  <CtaButton to="/builder" variant="primary">
+                  <CtaButton to="/studio-v2" variant="primary">
                     Create Your Story
                   </CtaButton>
                   <CtaButton to="/contact" variant="ghost">
