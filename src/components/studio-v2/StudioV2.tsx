@@ -1878,7 +1878,13 @@ function Reveal({ result }: { result: DesignResult }) {
 
 
 
-      <RevealActions name={result.profile.name} />
+      <RevealActions
+        name={result.profile.name}
+        profile={result.profile}
+        region={result.region}
+        archetype={result.archetype}
+      />
+
 
 
       {import.meta.env.DEV && (
