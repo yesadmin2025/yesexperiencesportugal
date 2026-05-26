@@ -34,7 +34,7 @@ import { fmtMinutes } from "@/components/builder/types";
 import { type RefineStop } from "./RefineStage";
 import { LivingItinerary } from "./LivingItinerary";
 import { whatsappHref } from "@/components/WhatsAppFab";
-import { Bookmark } from "lucide-react";
+import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
