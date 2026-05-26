@@ -13,7 +13,11 @@
 
 import { useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, RefreshCw, X } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { getOrCreateAnonId } from "@/lib/ab-testing";
+import { recordSignal } from "@/lib/studio-v2/predictions.functions";
+import type { GestureSignal } from "@/lib/studio-v2/predictions";
 
 export interface RefineStop {
   key: string;
@@ -61,9 +65,22 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
 export function RefineStage({ stops, alternates, onChange, caps }: Props) {
   // Tracks which alternate index we're on per slot (for cycling Swap).
   const [swapIdx, setSwapIdx] = useState<Record<string, number>>({});
+  const sendSignal = useServerFn(recordSignal);
+
+  // Fire-and-forget — predictive engine update should never block UX.
+  const emitSignal = (signal: GestureSignal) => {
+    if (typeof window === "undefined") return;
+    const sessionId = getOrCreateAnonId();
+    if (!sessionId) return;
+    void trackBuilderEvent("studio_v2_predict_signal", { type: signal.type });
+    sendSignal({ data: { sessionId, signal } }).catch(() => {
+      void trackBuilderEvent("studio_v2_predict_signal_error", { type: signal.type });
+    });
+  };
 
   const remove = (key: string) => {
     void trackBuilderEvent("studio_v2_refine_remove", { stopKey: key });
+    emitSignal({ type: "remove", stopKey: key });
     onChange(stops.filter((s) => s.key !== key));
   };
 
@@ -75,6 +92,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
     const copy = [...stops];
     [copy[i], copy[j]] = [copy[j], copy[i]];
     void trackBuilderEvent("studio_v2_refine_reorder", { stopKey: key, dir });
+    emitSignal({ type: "reorder", stopKey: key });
     onChange(copy);
   };
 
@@ -89,6 +107,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
     const updated = stops.map((s) => (s.key === slotKey ? { ...replacement } : s));
     setSwapIdx((m) => ({ ...m, [slotKey]: next }));
     void trackBuilderEvent("studio_v2_refine_swap", { from: slotKey, to: replacement.key });
+    emitSignal({ type: "swap", fromKey: slotKey, toKey: replacement.key });
     onChange(updated);
   };
 

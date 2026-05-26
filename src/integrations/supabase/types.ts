@@ -1261,6 +1261,36 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_v2_predictions: {
+        Row: {
+          created_at: string
+          mood_vector: Json
+          pace_confidence: number
+          session_id: string
+          signal_count: number
+          updated_at: string
+          weights: Json
+        }
+        Insert: {
+          created_at?: string
+          mood_vector?: Json
+          pace_confidence?: number
+          session_id: string
+          signal_count?: number
+          updated_at?: string
+          weights?: Json
+        }
+        Update: {
+          created_at?: string
+          mood_vector?: Json
+          pace_confidence?: number
+          session_id?: string
+          signal_count?: number
+          updated_at?: string
+          weights?: Json
+        }
+        Relationships: []
+      }
       studio_v2_sessions: {
         Row: {
           archetype: string | null

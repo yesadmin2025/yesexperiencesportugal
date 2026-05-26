@@ -89,18 +89,16 @@ Secrets needed: `MAPBOX_ACCESS_TOKEN` (already used elsewhere — confirm before
 
 ## Suggested order (incremental, each ship-able)
 
-1. **F.6** Move 3 (real routes + cache) — biggest truth upgrade, unblocks feasibility honesty
-2. **F.7** Move 2 (predictive engine + persistence) — invisible intelligence layer
-3. **F.8** Move 1 (Living Itinerary replaces Refine) — the visible cinematic shift
-4. **F.9** Move 4 (map as co-protagonist + Reveal moment)
-5. **F.10** Move 5 (multi-day as apex)
-6. **F.11** Move 6 (warm memory + invitation route)
+1. **F.6 ✅** Move 3 — real OSRM driving routes + `builder_route_cache`
+2. **F.7 ✅** Move 2 — predictive engine (`studio_v2_predictions` table, `applySignal`, `forecastNext`, signal wiring on swap/remove/reorder)
+3. **F.8** Move 1 — Living Itinerary replaces Refine (cinematic, gestures-first, current buttons kept as A11y escape hatch)
+4. **F.9** Move 4 — map as co-protagonist + Reveal moment
+5. **F.10** Move 5 — multi-day as apex (pricing stays silent until human composer confirms)
+6. **F.11** Move 6 — warm memory + invitation route
 
-## Open questions for you
+## Answers locked
 
-1. **Mapbox Directions** — OK to add now (small per-call cost, cached) or prefer OSRM/free alternative?
-2. **Gestures-only Refine** — comfortable killing the explicit Swap/Remove/Reorder buttons entirely, or want a hidden "show controls" escape hatch for accessibility?
-3. **Multi-day pricing** — should the engine show indicative range per night, or stay silent until human composer confirms?
-4. **Ship order** — start with F.6 (real routes) as proposed, or jump straight to F.8 (visible Living Itinerary) for faster perceived impact?
+1. Gestures-only Refine — **both**: ship cinematic gesture layer + keep existing Swap/Remove/Reorder buttons as a visible A11y escape hatch.
+2. Multi-day pricing — **silent until human composer confirms**. No engine-shown ranges.
+3. Routing — **OSRM** (free, already operational).
 
-Say which questions to lock and I'll start with the chosen tranche.
