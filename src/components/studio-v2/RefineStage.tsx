@@ -92,19 +92,31 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
     onChange(updated);
   };
 
-  const metrics = useMemo(() => {
+  const { metrics, warnings } = useMemo(() => {
     let km = 0;
     let exp = 0;
+    let maxLeg = 0;
     for (let i = 0; i < stops.length; i++) {
       exp += stops[i].duration_minutes ?? 60;
-      if (i > 0) km += haversineKm(stops[i - 1], stops[i]);
+      if (i > 0) {
+        const leg = haversineKm(stops[i - 1], stops[i]);
+        km += leg;
+        if (leg > maxLeg) maxLeg = leg;
+      }
     }
-    return {
-      km: Math.round(km),
-      driveMin: Math.round((km / 55) * 60),
-      experienceMin: exp,
-    };
-  }, [stops]);
+    const driveMin = Math.round((km / 55) * 60);
+    const m = { km: Math.round(km), driveMin, experienceMin: exp, maxLeg: Math.round(maxLeg) };
+    const w: string[] = [];
+    if (caps) {
+      if (stops.length < caps.minStops) w.push(`At least ${caps.minStops} stops recommended.`);
+      if (stops.length > caps.maxStops) w.push(`More than ${caps.maxStops} stops will feel rushed.`);
+      if (m.km > caps.maxTotalKmPerDay) w.push(`Long day on the road — ${m.km} km exceeds ${caps.maxTotalKmPerDay} km.`);
+      if (driveMin > caps.maxDrivingHours * 60) w.push(`Driving exceeds ${caps.maxDrivingHours} h.`);
+      if (exp > caps.maxExperienceHours * 60) w.push(`Experience time over ${caps.maxExperienceHours} h.`);
+      if (maxLeg > caps.maxKmBetweenStops) w.push(`A leg is ${m.maxLeg} km — over ${caps.maxKmBetweenStops} km cap.`);
+    }
+    return { metrics: m, warnings: w };
+  }, [stops, caps]);
 
   const inUse = new Set(stops.map((s) => s.key));
   const hasSwapPool = alternates.some((a) => !inUse.has(a.key));
