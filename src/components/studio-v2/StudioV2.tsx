@@ -668,77 +668,117 @@ function LogisticsCard({
 // ─── conviction moment — the "we read you" reveal ───────────────────────
 
 function ConvictionMoment({
-  line, onContinue,
+  topIntent, line, onContinue,
 }: {
+  topIntent: IntentAtmosphere;
   line: { lead: string; body: string };
   onContinue: () => void;
 }) {
-  const [showLead, setShowLead] = useState(false);
-  const [showBody, setShowBody] = useState(false);
+  const [stage, setStage] = useState(0);
   useEffect(() => {
-    const a = window.setTimeout(() => setShowLead(true), 350);
-    const b = window.setTimeout(() => setShowBody(true), 1700);
-    return () => { window.clearTimeout(a); window.clearTimeout(b); };
+    const t1 = window.setTimeout(() => setStage(1), 350);
+    const t2 = window.setTimeout(() => setStage(2), 2100);
+    const t3 = window.setTimeout(() => setStage(3), 2900);
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
   }, []);
+
+  const img = INTENT_IMAGE[topIntent] ?? INTENT_IMAGE.relaxed_scenic;
+  const leadWords = line.lead.split(" ");
+
   return (
-    <section className="relative mx-auto flex min-h-[100svh] w-full max-w-xl flex-col justify-center px-6 sm:px-8">
-      <div
-        className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.36em]"
-        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 600 }}
-      >
-        <span className="relative inline-flex h-1.5 w-1.5">
-          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
-          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
-        </span>
-        What we read
+    <section
+      className="studio-v2-grain studio-v2-vignette relative h-[100svh] w-full overflow-hidden"
+      aria-label="What we read"
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src={img.src}
+          alt={img.alt}
+          className="studio-v2-kenburns-alt absolute inset-0 h-full w-full object-cover"
+          style={{ filter: "saturate(0.85) contrast(1.06) brightness(0.78)" }}
+        />
       </div>
-      <p
-        className="mt-7 text-[26px] leading-[1.2] sm:text-[34px] transition-all duration-1000"
-        style={{
-          opacity: showLead ? 1 : 0,
-          transform: showLead ? "translateY(0)" : "translateY(10px)",
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontStyle: "italic",
-          color: "var(--charcoal)",
-        }}
-      >
-        {line.lead}
-      </p>
-      <p
-        className="mt-5 text-[16px] leading-[1.55] transition-all duration-1000"
-        style={{
-          opacity: showBody ? 1 : 0,
-          transform: showBody ? "translateY(0)" : "translateY(10px)",
-          fontFamily: "var(--font-sans, Inter), sans-serif",
-          color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-        }}
-      >
-        {line.body}
-      </p>
-      <div className="mt-12 transition-opacity duration-1000" style={{ opacity: showBody ? 1 : 0 }}>
-        <button
-          type="button"
-          onClick={onContinue}
-          className="group inline-flex items-center gap-2.5 rounded-[2px] px-7 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+
+      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
+        <span
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
+          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
+        >
+          <span className="studio-v2-rule" /> Chapter V · What we read
+        </span>
+        <span
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.36em]"
+          style={{ color: "color-mix(in oklab, var(--ivory) 75%, transparent)", fontWeight: 600 }}
+        >
+          <span
+            className="inline-block h-1.5 w-1.5 rounded-full"
+            style={{ background: "var(--gold)", animation: "studioV2Pulse 1.6s ease-in-out infinite" }}
+          />
+          Reading
+        </span>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[14vh] sm:px-10 sm:pb-[16vh]">
+        <h2
+          className="studio-v2-typeon text-[30px] leading-[1.12] sm:text-[44px]"
           style={{
-            background: "var(--charcoal)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontStyle: "italic",
+            fontWeight: 400,
             color: "var(--ivory)",
-            minHeight: 52, minWidth: 200,
-            fontFamily: "var(--font-sans, Inter), sans-serif",
-            fontWeight: 600, fontSize: 12.5,
-            letterSpacing: "0.22em", textTransform: "uppercase",
+            maxWidth: "20ch",
+            textShadow: "0 2px 24px rgba(0,0,0,0.5)",
+            letterSpacing: "-0.005em",
+            opacity: stage >= 1 ? 1 : 0,
           }}
         >
-          Show me
-          <ArrowRight
-            className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
-            aria-hidden
-          />
-        </button>
+          {leadWords.map((w, i) => (
+            <span key={i} style={{ animationDelay: `${i * 120}ms`, marginRight: "0.28em" }}>{w}</span>
+          ))}
+        </h2>
+
+        <p
+          className="mt-6 text-[14.5px] leading-[1.6] transition-all duration-1000"
+          style={{
+            opacity: stage >= 2 ? 0.92 : 0,
+            transform: stage >= 2 ? "translateY(0)" : "translateY(8px)",
+            color: "color-mix(in oklab, var(--ivory) 90%, transparent)",
+            maxWidth: "34ch",
+          }}
+        >
+          {line.body}
+        </p>
+
+        <div
+          className="mt-10 transition-opacity duration-1000"
+          style={{ opacity: stage >= 3 ? 1 : 0 }}
+        >
+          <button
+            type="button"
+            onClick={onContinue}
+            className="studio-v2-sheen group inline-flex items-center gap-3 rounded-[2px] px-8 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 96%, transparent)",
+              color: "var(--charcoal)",
+              minHeight: 56, minWidth: 220,
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+              fontWeight: 600, fontSize: 12.5,
+              letterSpacing: "0.26em", textTransform: "uppercase",
+              border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+            }}
+          >
+            <span className="relative z-[1]">Show me the day</span>
+            <ArrowRight
+              className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
+              aria-hidden
+            />
+          </button>
+        </div>
       </div>
     </section>
   );
 }
+
 
 
 
