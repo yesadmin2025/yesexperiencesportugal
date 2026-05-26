@@ -23,14 +23,28 @@ interface Props {
   stops: RoutedStopUI[];
   regionCenter: { lat: number; lng: number } | null;
   regionKey?: string;
-  /** Auto-dismiss after this many ms. Default 4200. */
+  /** Eyebrow label above the day-summary lines. */
+  eyebrow?: string;
+  /** Sequenced narrative lines that summarize the day. */
+  lines?: string[];
+  /** Final italic closer ("The country has arranged itself around you."). */
+  closer?: string;
+  /** Auto-dismiss after this many ms. Default scales with lines. */
   dwellMs?: number;
   onClose: () => void;
 }
 
 export function MapReveal({
-  open, stops, regionCenter, regionKey, dwellMs = 4200, onClose,
+  open, stops, regionCenter, regionKey,
+  eyebrow = "Your day, in one breath",
+  lines,
+  closer = "The country has arranged itself around you.",
+  dwellMs,
+  onClose,
 }: Props) {
+  const narrative = lines && lines.length > 0 ? lines : [closer];
+  const effectiveDwell = dwellMs ?? Math.max(4200, 1800 + narrative.length * 1100);
+  const [visibleLines, setVisibleLines] = useState(0);
   const [phase, setPhase] = useState<"hidden" | "in" | "hold" | "out">("hidden");
   const closedRef = useRef(false);
 
