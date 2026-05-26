@@ -21,6 +21,7 @@ import {
   PICKUP_CITIES,
   inferProfile,
   convictionLine,
+  convictionScript,
   type SceneSignal,
 } from "@/lib/studio-v2/intent-infer";
 import { INTENT_IMAGE } from "@/lib/studio-v2/images";
