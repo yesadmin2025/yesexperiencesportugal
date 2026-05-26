@@ -42,7 +42,8 @@ import { PersistentChatFab } from "./PersistentChatFab";
 import { LivingStoryStrip } from "./LivingStoryStrip";
 import { MemoryDeck } from "./MemoryDeck";
 import { AmbientToggle } from "./AmbientToggle";
-import { RefineStage, type RefineStop } from "./RefineStage";
+import { type RefineStop } from "./RefineStage";
+import { LivingItinerary } from "./LivingItinerary";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
@@ -994,11 +995,12 @@ function RevealStory({
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
         <>
-          <RefineStage
+          <LivingItinerary
             stops={editedStops}
             alternates={real.alternates}
             caps={real.caps}
             onChange={setEditedStops}
+            intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
           />
           <BespokeSecureCTA
             profile={profile}
