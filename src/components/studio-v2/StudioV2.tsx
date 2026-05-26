@@ -301,21 +301,31 @@ void previewJourney; void emptyProfile;
 
 // ─── opening scene — editorial cold open ────────────────────────────────
 
-function OpeningScene({ onTap }: { onTap: () => void }) {
+function OpeningScene({
+  onTap,
+  resumable,
+  onResume,
+  onDeclineResume,
+}: {
+  onTap: () => void;
+  resumable?: PersistedSession | null;
+  onResume?: () => void;
+  onDeclineResume?: () => void;
+}) {
   const [stage, setStage] = useState(0); // 0 silence, 1 eyebrow, 2 phrase, 3 hint
   useEffect(() => {
-    const t1 = window.setTimeout(() => setStage(1), 600);
-    const t2 = window.setTimeout(() => setStage(2), 1400);
-    const t3 = window.setTimeout(() => setStage(3), 3000);
+    const t1 = window.setTimeout(() => setStage(1), 700);
+    const t2 = window.setTimeout(() => setStage(2), 1700);
+    const t3 = window.setTimeout(() => setStage(3), 3400);
     return () => { window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
   }, []);
+
+  // When a resume card is shown, suppress the full-bleed tap-to-begin so the
+  // user has to make a deliberate choice (resume vs. start fresh).
+  const showResume = !!resumable;
+
   return (
-    <button
-      type="button"
-      onClick={onTap}
-      aria-label="Begin"
-      className="studio-v2-grain studio-v2-vignette relative block h-[100svh] w-full overflow-hidden text-left focus-visible:outline-none"
-    >
+    <div className="studio-v2-grain studio-v2-vignette relative block h-[100svh] w-full overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <img
           src={INTENT_IMAGE.coastal_cinematic.src}
@@ -325,8 +335,19 @@ function OpeningScene({ onTap }: { onTap: () => void }) {
         />
       </div>
 
+      {/* Full-bleed tap-to-begin layer — sits behind editorial overlays so
+          a tap anywhere advances, unless a resume card is shown. */}
+      {!showResume && (
+        <button
+          type="button"
+          onClick={onTap}
+          aria-label="Begin"
+          className="absolute inset-0 z-[1] block w-full bg-transparent focus-visible:outline-none"
+        />
+      )}
+
       {/* Top frame: brand mark + chapter */}
-      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
         <span
           className="text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
@@ -350,7 +371,7 @@ function OpeningScene({ onTap }: { onTap: () => void }) {
       </div>
 
       {/* Bottom-left editorial: phrase + author line */}
-      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
         <p
           className="mb-5 text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
@@ -378,23 +399,86 @@ function OpeningScene({ onTap }: { onTap: () => void }) {
           Let instinct<br/>guide the way.
         </h1>
 
-        <div
-          className="mt-10 flex items-center gap-4 transition-opacity duration-1000"
-          style={{ opacity: stage >= 3 ? 1 : 0 }}
-        >
-          <span
-            className="studio-v2-tap-indicator inline-block h-7 w-px"
-            style={{ background: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}
-          />
-          <span
-            className="text-[10.5px] uppercase tracking-[0.36em]"
-            style={{ color: "color-mix(in oklab, var(--ivory) 80%, transparent)", fontWeight: 600 }}
+        {!showResume && (
+          <div
+            className="mt-10 flex items-center gap-4 transition-opacity duration-1000"
+            style={{ opacity: stage >= 3 ? 1 : 0 }}
           >
-            tap to begin
-          </span>
-        </div>
+            <span
+              className="studio-v2-tap-indicator inline-block h-7 w-px"
+              style={{ background: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}
+            />
+            <span
+              className="text-[10.5px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--ivory) 80%, transparent)", fontWeight: 600 }}
+            >
+              tap to begin
+            </span>
+          </div>
+        )}
       </div>
-    </button>
+
+      {/* Resume card — Layer 3 "continue where you left off". Editorial,
+          restrained, gold rule + two clear choices. Sits above the tap layer. */}
+      {showResume && (
+        <div className="absolute inset-x-0 bottom-[18vh] z-20 flex justify-center px-6 sm:px-10">
+          <div
+            className="w-full max-w-[34rem] rounded-[2px] border px-6 py-6 text-center"
+            style={{
+              borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
+              background: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              opacity: stage >= 2 ? 1 : 0,
+              transform: stage >= 2 ? "translateY(0)" : "translateY(10px)",
+              transition: "opacity 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1)",
+            }}
+          >
+            <p
+              className="text-[10.5px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 700 }}
+            >
+              Welcome back
+            </p>
+            <p
+              className="mt-3 text-[18px] leading-[1.3] sm:text-[20px]"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontStyle: "italic",
+                color: "var(--ivory)",
+              }}
+            >
+              Your day was almost composed.
+            </p>
+            <div className="mt-5 flex flex-col items-center gap-2.5">
+              <button
+                type="button"
+                onClick={onResume}
+                className="inline-flex h-11 min-w-[18rem] items-center justify-center gap-2 px-6 text-[11.5px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
+                  color: "var(--charcoal)",
+                  fontWeight: 700,
+                }}
+              >
+                Continue where you left off
+              </button>
+              <button
+                type="button"
+                onClick={() => { onDeclineResume?.(); onTap(); }}
+                className="h-10 px-4 text-[10.5px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                  fontWeight: 600,
+                }}
+              >
+                Start a new story
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
