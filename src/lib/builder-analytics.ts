@@ -10,7 +10,10 @@ export type BuilderEvent =
   | "studio_v2_save_success"
   | "studio_v2_save_error"
   | "studio_v2_secure_click"
-  | "studio_v2_refine_click";
+  | "studio_v2_refine_click"
+  | "studio_v2_refine_swap"
+  | "studio_v2_refine_remove"
+  | "studio_v2_refine_reorder";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(
