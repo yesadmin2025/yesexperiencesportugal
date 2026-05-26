@@ -31,10 +31,20 @@ export interface RefineAlternate extends RefineStop {
   score: number;
 }
 
+export interface RefineCaps {
+  minStops: number;
+  maxStops: number;
+  maxKmBetweenStops: number;
+  maxTotalKmPerDay: number;
+  maxDrivingHours: number;
+  maxExperienceHours: number;
+}
+
 interface Props {
   stops: RefineStop[];
   alternates: RefineAlternate[];
   onChange: (next: RefineStop[]) => void;
+  caps?: RefineCaps;
 }
 
 function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
