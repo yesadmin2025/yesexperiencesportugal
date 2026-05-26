@@ -112,7 +112,7 @@ function clearPersistedSession() {
 
 export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
   // Resume payload — read once on mount, before any state is initialized.
-  const resumeRef = useRef<PersistedSession | null>(
+  const [resumable, setResumable] = useState<PersistedSession | null>(() =>
     !startAtReveal && !initialProfile ? readPersistedSession() : null,
   );
   const [beatIndex, setBeatIndex] = useState(() =>
