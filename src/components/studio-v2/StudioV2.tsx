@@ -514,7 +514,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         {beat === "reveal" && result && (
           <section key="reveal">
             <RevealStory profile={profile} region={result.region} />
-            <RevealActions name={profile.name} profile={profile} region={result.region} archetype={result.archetype} />
+
 
             <Reveal result={result} />
           </section>
