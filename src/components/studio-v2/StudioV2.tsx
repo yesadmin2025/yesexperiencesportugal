@@ -197,7 +197,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
 }
 
 // Suppress "unused" warnings for retained legacy types/helpers.
-void previewJourney; void emptyProfile; void GroupProfile;
+void previewJourney; void emptyProfile;
 
 // ─── opening scene — silence + Portugal breathing ───────────────────────
 
