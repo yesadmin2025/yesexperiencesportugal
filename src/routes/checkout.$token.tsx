@@ -198,6 +198,19 @@ function CheckoutPage() {
         {draft.total_drive_minutes} min driving · {draft.total_km} km
       </p>
 
+      <button
+        type="button"
+        onClick={() => {
+          void trackBuilderEvent("studio_v2_checkout_back_to_refine", { draftToken: token });
+          if (window.history.length > 1) window.history.back();
+          else navigate({ to: "/" });
+        }}
+        className="mt-4 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] underline-offset-4 hover:underline"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)", fontWeight: 600 }}
+      >
+        ← Back to refine
+      </button>
+
       {/* Itinerary recap */}
       <ol
         className="mt-6 space-y-2 border-l pl-4"

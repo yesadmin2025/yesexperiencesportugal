@@ -256,6 +256,18 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
         </ul>
       )}
 
+      {!hasSwapPool && (
+        <p
+          className="mt-3 text-center text-[11.5px] italic"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          }}
+        >
+          No more alternates in this region — every real stop is already on your day.
+        </p>
+      )}
+
       {stops.length < 2 && (
         <p
           className="mt-3 text-center text-[12px] italic"
