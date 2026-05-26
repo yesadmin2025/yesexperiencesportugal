@@ -217,14 +217,38 @@ export function LivingItinerary({
   const revealShown = useRef(false);
   const signalCount = useRef(0);
   const sendSignal = useServerFn(recordSignal);
+  const loadWarm = useServerFn(loadPredictions);
+  const [warmMood, setWarmMood] = useState<MoodVector | null>(null);
 
   // Telemetry: surface mounted.
   useEffect(() => {
     void trackBuilderEvent("studio_v2_refine_click", { surface: "living_itinerary" });
   }, []);
 
+  // F.11 — warm memory: pull prior mood vector for this anon visitor.
+  // If the engine already learned something from past visits, surface it
+  // by re-sorting the alternate pool so substitutions feel pre-tuned.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sessionId = getOrCreateAnonId();
+    if (!sessionId) return;
+    let cancelled = false;
+    loadWarm({ data: { sessionId } })
+      .then((r) => {
+        if (cancelled) return;
+        if (!r?.state || r.state.signalCount <= 0) return;
+        setWarmMood(r.state.moodVector);
+        void trackBuilderEvent("studio_v2_warm_resume", {
+          signals: r.state.signalCount,
+        });
+      })
+      .catch(() => { /* silent — warm memory is optional */ });
+    return () => { cancelled = true; };
+  }, [loadWarm]);
+
   const { days } = useMemo(() => composeDays(stops), [stops]);
   const isMultiDay = days.length > 1;
+
 
   // Telemetry: multi-day composition + day-break beats.
   useEffect(() => {
