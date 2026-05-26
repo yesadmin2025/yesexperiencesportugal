@@ -18,6 +18,7 @@ import {
   type DbStop,
   type RoutingCaps,
 } from "./itinerary.server";
+import { resolveLegs, type Leg } from "./routing.server";
 
 // Loose profile schema — same shape as session save; we only read fields we need.
 const profileSchema = z
@@ -103,6 +104,46 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const itinerary = composeItinerary(pool, data.profile as any, target, caps);
 
+    // --- Real driving legs (OSRM-backed, cached). Replaces haversine totals.
+    let legs: Leg[] = [];
+    let realDriveMin = itinerary.totalDriveMin;
+    let realTotalKm = itinerary.totalKm;
+    if (itinerary.stops.length >= 2) {
+      try {
+        legs = await resolveLegs(
+          itinerary.stops.map((s) => ({ key: s.key, lat: s.lat, lng: s.lng })),
+        );
+        if (legs.length > 0) {
+          realDriveMin = legs.reduce((a, l) => a + l.drive_minutes, 0);
+          realTotalKm = legs.reduce((a, l) => a + l.distance_km, 0);
+        }
+      } catch {
+        // Stay with haversine estimate — never break the response.
+      }
+    }
+
+    // Attach real driveMinutesFromPrev per stop where we have a leg.
+    const stopsWithRealDrive = itinerary.stops.map((s, i) => {
+      if (i === 0 || legs[i - 1]?.to_key !== s.key) return s;
+      return { ...s, driveMinutesFromPrev: legs[i - 1].drive_minutes };
+    });
+
+    // Re-evaluate feasibility against the truthful totals.
+    const realWarnings: string[] = [];
+    let realFeasible = true;
+    if (realTotalKm > caps.maxTotalKmPerDay) {
+      realFeasible = false;
+      realWarnings.push(
+        `Total ${Math.round(realTotalKm)} km exceeds daily cap (${caps.maxTotalKmPerDay} km).`,
+      );
+    }
+    if (realDriveMin / 60 > caps.maxDrivingHours) {
+      realFeasible = false;
+      realWarnings.push(
+        `Driving time ${Math.round(realDriveMin / 60)} h exceeds cap (${caps.maxDrivingHours} h).`,
+      );
+    }
+
     // Pre-compute alternates: top-scored stops not currently chosen, so the
     // client-side Refine stage can offer "Swap" without an extra round trip.
     const chosenKeys = new Set(itinerary.stops.map((s) => s.key));
@@ -137,14 +178,16 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
     return {
       region,
       regionCenter: center,
-      stops: itinerary.stops,
+      stops: stopsWithRealDrive,
+      legs, // real driving geometry per leg (encoded polyline + km + minutes)
       alternates,
       density: itinerary.stops.length,
-      driveBudgetMin: itinerary.totalDriveMin,
-      totalKm: Math.round(itinerary.totalKm),
+      driveBudgetMin: realDriveMin,
+      totalKm: Math.round(realTotalKm),
       totalExperienceMin: itinerary.totalExperienceMin,
-      feasible: itinerary.feasible,
-      warnings: itinerary.warnings,
+      feasible: realFeasible,
+      warnings: realWarnings.length > 0 ? realWarnings : itinerary.warnings,
       caps,
+      routingProvider: legs[0]?.provider ?? "haversine",
     };
   });

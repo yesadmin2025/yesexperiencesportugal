@@ -350,6 +350,42 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_route_cache: {
+        Row: {
+          created_at: string
+          distance_km: number
+          drive_minutes: number
+          from_key: string
+          id: string
+          polyline: string
+          provider: string
+          refreshed_at: string
+          to_key: string
+        }
+        Insert: {
+          created_at?: string
+          distance_km: number
+          drive_minutes: number
+          from_key: string
+          id?: string
+          polyline: string
+          provider?: string
+          refreshed_at?: string
+          to_key: string
+        }
+        Update: {
+          created_at?: string
+          distance_km?: number
+          drive_minutes?: number
+          from_key?: string
+          id?: string
+          polyline?: string
+          provider?: string
+          refreshed_at?: string
+          to_key?: string
+        }
+        Relationships: []
+      }
       builder_routing_rules: {
         Row: {
           base_price_per_person_eur: number
