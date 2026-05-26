@@ -133,7 +133,7 @@ export function MapReveal({
           transition: "transform 520ms cubic-bezier(.22,.61,.36,1)",
         }}
       >
-        {/* Editorial caption — restraint, no UI noise */}
+        {/* Editorial caption — sequenced day summary */}
         <div className="pointer-events-none absolute inset-x-0 top-8 z-10 flex flex-col items-center px-6 text-center">
           <p
             className="text-[10.5px] uppercase tracking-[0.36em]"
@@ -142,20 +142,47 @@ export function MapReveal({
               fontWeight: 700,
             }}
           >
-            Your day, in one breath
+            {eyebrow}
           </p>
+          <div className="mt-4 flex flex-col items-center gap-2" style={{ maxWidth: "34ch" }}>
+            {narrative.map((line, i) => {
+              const shown = i < visibleLines;
+              const isHeadline = i === 0;
+              return (
+                <p
+                  key={`${i}-${line}`}
+                  className={isHeadline ? "text-[19px] leading-[1.25] sm:text-[24px]" : "text-[15px] leading-[1.35] sm:text-[17px]"}
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontStyle: "italic",
+                    color: isHeadline ? "var(--ivory)" : "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                    opacity: shown ? 1 : 0,
+                    transform: shown ? "translateY(0)" : "translateY(6px)",
+                    transition: "opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1)",
+                  }}
+                >
+                  {line}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Closer — bottom, gold whisper, appears after lines settle */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-6 text-center">
           <p
-            className="mt-3 text-[18px] leading-[1.3] sm:text-[22px]"
+            className="text-[12px] uppercase tracking-[0.32em]"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              color: "var(--ivory)",
-              maxWidth: "32ch",
+              color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
+              fontWeight: 600,
+              opacity: visibleLines >= narrative.length ? 1 : 0,
+              transition: "opacity 620ms cubic-bezier(.22,.61,.36,1)",
             }}
           >
-            The country has arranged itself around you.
+            {closer}
           </p>
         </div>
+
 
         {/* Map — full-bleed */}
         <div className="absolute inset-0">
