@@ -81,7 +81,40 @@ const SEQUENCE: Beat[] = [
   "logistics", "conviction", "thinking", "reveal",
 ];
 
+const SESSION_KEY = "yes.studio-v2.session";
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+
+interface PersistedSession {
+  beatIndex: number;
+  profile: TravelerProfile;
+  signals: SceneSignal[];
+  pax: number;
+  pickup: string;
+  savedAt: number;
+}
+
+function readPersistedSession(): PersistedSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw) as PersistedSession;
+    if (!s || typeof s.beatIndex !== "number") return null;
+    if (Date.now() - s.savedAt > SESSION_TTL_MS) return null;
+    if (s.beatIndex <= 0) return null;
+    return s;
+  } catch { return null; }
+}
+
+function clearPersistedSession() {
+  try { window.localStorage.removeItem(SESSION_KEY); } catch { /* */ }
+}
+
 export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
+  // Resume payload — read once on mount, before any state is initialized.
+  const resumeRef = useRef<PersistedSession | null>(
+    !startAtReveal && !initialProfile ? readPersistedSession() : null,
+  );
   const [beatIndex, setBeatIndex] = useState(() =>
     startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
   );
