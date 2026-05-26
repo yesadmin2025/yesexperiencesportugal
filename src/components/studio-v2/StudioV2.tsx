@@ -1101,8 +1101,45 @@ function ContinueButton({
 
 // ─── reveal action trio ──────────────────────────────────────────────────
 
-function RevealActions({ name }: { name?: string }) {
-  const [saved, setSaved] = useState(false);
+function RevealActions({
+  name,
+  profile,
+  region,
+  archetype,
+}: {
+  name?: string;
+  profile?: TravelerProfile;
+  region?: string;
+  archetype?: string;
+}) {
+  const saveSession = useServerFn(createStudioSession);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const onSave = async () => {
+    if (saveState === "saving") return;
+    setSaveState("saving");
+    try {
+      if (profile) {
+        const r = await saveSession({
+          data: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            profile: profile as any,
+            region,
+            archetype,
+          },
+        });
+        const url = `${window.location.origin}/s/${r.shareToken}`;
+        setShareUrl(url);
+        try { await navigator.clipboard.writeText(url); } catch { /* ignore */ }
+        try { window.localStorage.setItem("yes.studio-v2.last-share", url); } catch { /* */ }
+      }
+      setSaveState("saved");
+    } catch {
+      setSaveState("error");
+    }
+  };
+  const saved = saveState === "saved";
+
   const onSave = () => {
     try {
       const payload = { name: name ?? null, savedAt: new Date().toISOString() };
