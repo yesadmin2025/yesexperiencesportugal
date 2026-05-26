@@ -47,6 +47,7 @@ import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
+import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 
 
