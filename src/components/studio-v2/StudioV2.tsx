@@ -870,7 +870,7 @@ function RevealStory({
 
   // AI narrative layer removed (server module path blocked by client import-protection).
   // Static editorial framing carries the reveal.
-  const ai: { title: string; subtitle: string } | null = null;
+  const ai = null as { title: string; subtitle: string } | null;
 
 
   return (
