@@ -874,6 +874,8 @@ function RevealStory({
   const syntheticPreview = useMemo(() => previewJourney(profile), [profile]);
   const composeReal = useServerFn(composeRealItinerary);
   const [real, setReal] = useState<Awaited<ReturnType<typeof composeReal>> | null>(null);
+  // Editable copy of stops — Refine stage mutates this client-side.
+  const [editedStops, setEditedStops] = useState<RefineStop[] | null>(null);
   useEffect(() => {
     let cancelled = false;
     composeReal({
@@ -884,18 +886,48 @@ function RevealStory({
         targetStops: profile.stopDensityTarget ?? 4,
       },
     })
-      .then((r) => { if (!cancelled) setReal(r); })
+      .then((r) => {
+        if (cancelled) return;
+        setReal(r);
+        setEditedStops(r.stops.map((s) => ({
+          key: s.key,
+          region_key: s.region_key,
+          label: s.label,
+          blurb: s.blurb,
+          tag: s.tag,
+          lat: s.lat,
+          lng: s.lng,
+          duration_minutes: s.duration_minutes,
+          source_tour_keys: s.source_tour_keys,
+        })));
+      })
       .catch(() => { /* fall back to synthetic */ });
     return () => { cancelled = true; };
   }, [composeReal, profile, region]);
 
-  const livePreview = real
+  // Map source: editedStops (real, mutable) when available, else synthetic.
+  const livePreview = editedStops && editedStops.length >= 2 && real
     ? {
         region: real.region,
-        regionCenter: real.regionCenter,
-        stops: real.stops,
-        density: real.density,
-        driveBudgetMin: real.driveBudgetMin,
+        regionCenter: {
+          lat: editedStops.reduce((a, s) => a + s.lat, 0) / editedStops.length,
+          lng: editedStops.reduce((a, s) => a + s.lng, 0) / editedStops.length,
+        },
+        stops: editedStops.map((s) => ({
+          key: s.key,
+          region_key: s.region_key,
+          label: s.label,
+          blurb: s.blurb,
+          tag: s.tag,
+          lat: s.lat,
+          lng: s.lng,
+          duration_minutes: s.duration_minutes,
+          driveMinutesFromPrev: 0,
+          source_tour_keys: s.source_tour_keys,
+          score: 0,
+        })),
+        density: editedStops.length,
+        driveBudgetMin: 0,
       }
     : syntheticPreview;
 
@@ -929,7 +961,7 @@ function RevealStory({
         </div>
       )}
 
-      {/* Live route — real stops, drawn on map */}
+      {/* Live route — real stops, drawn on map, redraws as user refines */}
       {livePreview.stops.length >= 2 && (
         <div
           className="studio-v2-reveal -mx-5 sm:-mx-8 mb-8 overflow-hidden relative w-full h-[36vh] min-h-[240px] max-h-[360px] border-y"
@@ -958,17 +990,15 @@ function RevealStory({
         </div>
       )}
 
-      {/* Real-stops chip — proves these are drawn from existing Viator tours */}
-      {real && real.stops.length > 0 && (
-        <div className="mb-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
-          <span
-            className="text-[10px] uppercase tracking-[0.3em]"
-            style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
-          >
-            {real.stops.length} real stops · {Math.round(real.totalExperienceMin / 60 * 10) / 10} h experience · {real.driveBudgetMin} min driving
-          </span>
-        </div>
+      {/* Refine stage — Swap / Remove / Reorder real stops */}
+      {real && editedStops && (
+        <RefineStage
+          stops={editedStops}
+          alternates={real.alternates}
+          onChange={setEditedStops}
+        />
       )}
+
 
 
 
