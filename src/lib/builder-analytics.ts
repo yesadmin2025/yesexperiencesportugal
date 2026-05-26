@@ -23,7 +23,10 @@ export type BuilderEvent =
   | "studio_v2_checkout_back_to_refine"
   | "studio_v2_map_reveal"
   | "studio_v2_daybreak_shown"
-  | "studio_v2_multiday_composed";
+  | "studio_v2_multiday_composed"
+  | "studio_v2_warm_resume"
+  | "studio_v2_invitation_view"
+  | "studio_v2_invitation_accept";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(
