@@ -866,6 +866,8 @@ function RevealStory({
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
+  const livePreview = useMemo(() => previewJourney(profile), [profile]);
+
 
   // AI tone layer — one editorial title + subtitle from Lovable Gateway.
   // Fails silently to the static framing if anything goes wrong.
