@@ -1244,6 +1244,9 @@ function RevealStory({
   const [real, setReal] = useState<Awaited<ReturnType<typeof composeReal>> | null>(null);
   // Editable copy of stops — Refine stage mutates this client-side.
   const [editedStops, setEditedStops] = useState<RefineStop[] | null>(null);
+  // Cinematic map reveal — fires once when real stops first arrive.
+  const [mapRevealOpen, setMapRevealOpen] = useState(false);
+  const [mapRevealShown, setMapRevealShown] = useState(false);
   useEffect(() => {
     let cancelled = false;
     composeReal({
