@@ -31,10 +31,20 @@ export interface RefineAlternate extends RefineStop {
   score: number;
 }
 
+export interface RefineCaps {
+  minStops: number;
+  maxStops: number;
+  maxKmBetweenStops: number;
+  maxTotalKmPerDay: number;
+  maxDrivingHours: number;
+  maxExperienceHours: number;
+}
+
 interface Props {
   stops: RefineStop[];
   alternates: RefineAlternate[];
   onChange: (next: RefineStop[]) => void;
+  caps?: RefineCaps;
 }
 
 function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
@@ -48,7 +58,7 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-export function RefineStage({ stops, alternates, onChange }: Props) {
+export function RefineStage({ stops, alternates, onChange, caps }: Props) {
   // Tracks which alternate index we're on per slot (for cycling Swap).
   const [swapIdx, setSwapIdx] = useState<Record<string, number>>({});
 
@@ -82,19 +92,31 @@ export function RefineStage({ stops, alternates, onChange }: Props) {
     onChange(updated);
   };
 
-  const metrics = useMemo(() => {
+  const { metrics, warnings } = useMemo(() => {
     let km = 0;
     let exp = 0;
+    let maxLeg = 0;
     for (let i = 0; i < stops.length; i++) {
       exp += stops[i].duration_minutes ?? 60;
-      if (i > 0) km += haversineKm(stops[i - 1], stops[i]);
+      if (i > 0) {
+        const leg = haversineKm(stops[i - 1], stops[i]);
+        km += leg;
+        if (leg > maxLeg) maxLeg = leg;
+      }
     }
-    return {
-      km: Math.round(km),
-      driveMin: Math.round((km / 55) * 60),
-      experienceMin: exp,
-    };
-  }, [stops]);
+    const driveMin = Math.round((km / 55) * 60);
+    const m = { km: Math.round(km), driveMin, experienceMin: exp, maxLeg: Math.round(maxLeg) };
+    const w: string[] = [];
+    if (caps) {
+      if (stops.length < caps.minStops) w.push(`At least ${caps.minStops} stops recommended.`);
+      if (stops.length > caps.maxStops) w.push(`More than ${caps.maxStops} stops will feel rushed.`);
+      if (m.km > caps.maxTotalKmPerDay) w.push(`Long day on the road — ${m.km} km exceeds ${caps.maxTotalKmPerDay} km.`);
+      if (driveMin > caps.maxDrivingHours * 60) w.push(`Driving exceeds ${caps.maxDrivingHours} h.`);
+      if (exp > caps.maxExperienceHours * 60) w.push(`Experience time over ${caps.maxExperienceHours} h.`);
+      if (maxLeg > caps.maxKmBetweenStops) w.push(`A leg is ${m.maxLeg} km — over ${caps.maxKmBetweenStops} km cap.`);
+    }
+    return { metrics: m, warnings: w };
+  }, [stops, caps]);
 
   const inUse = new Set(stops.map((s) => s.key));
   const hasSwapPool = alternates.some((a) => !inUse.has(a.key));
@@ -212,6 +234,27 @@ export function RefineStage({ stops, alternates, onChange }: Props) {
           {stops.length} stops · {Math.round((metrics.experienceMin / 60) * 10) / 10} h experience · {metrics.driveMin} min driving · {metrics.km} km
         </span>
       </div>
+
+      {warnings.length > 0 && (
+        <ul
+          className="mt-3 space-y-1.5 rounded-[2px] border px-4 py-3"
+          aria-label="Feasibility warnings"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 50%, transparent)",
+            background: "color-mix(in oklab, var(--gold) 8%, transparent)",
+          }}
+        >
+          {warnings.map((w) => (
+            <li
+              key={w}
+              className="text-[12px] leading-snug"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+            >
+              · {w}
+            </li>
+          ))}
+        </ul>
+      )}
 
       {stops.length < 2 && (
         <p

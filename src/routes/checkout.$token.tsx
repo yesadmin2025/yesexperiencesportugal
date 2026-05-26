@@ -63,6 +63,10 @@ function CheckoutPage() {
           const d = r.draft as DraftRow;
           setDraft(d);
           if (d.guests) setGuests(d.guests);
+          void trackBuilderEvent("studio_v2_checkout_view", {
+            draftToken: token,
+            stops: d.stops?.length ?? 0,
+          });
         }
         setLoading(false);
       })
@@ -73,6 +77,20 @@ function CheckoutPage() {
       });
     return () => { cancelled = true; };
   }, [getDraft, token]);
+
+  // Drop-off telemetry — fires once if the user leaves before submitting.
+  useEffect(() => {
+    if (!draft || done) return;
+    const onLeave = () => {
+      void trackBuilderEvent("studio_v2_checkout_abandon", {
+        draftToken: token,
+        hadName: Boolean(name.trim()),
+        hadEmail: Boolean(email.trim()),
+      });
+    };
+    window.addEventListener("pagehide", onLeave, { once: true });
+    return () => window.removeEventListener("pagehide", onLeave);
+  }, [draft, done, token, name, email]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

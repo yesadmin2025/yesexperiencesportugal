@@ -15,7 +15,9 @@ export type BuilderEvent =
   | "studio_v2_refine_remove"
   | "studio_v2_refine_reorder"
   | "studio_v2_booking_draft_create"
-  | "studio_v2_booking_submit";
+  | "studio_v2_booking_submit"
+  | "studio_v2_checkout_view"
+  | "studio_v2_checkout_abandon";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(

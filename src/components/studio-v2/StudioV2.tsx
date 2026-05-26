@@ -997,6 +997,7 @@ function RevealStory({
           <RefineStage
             stops={editedStops}
             alternates={real.alternates}
+            caps={real.caps}
             onChange={setEditedStops}
           />
           <BespokeSecureCTA
