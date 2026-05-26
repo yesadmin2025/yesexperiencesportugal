@@ -172,6 +172,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         )}
         {beat === "conviction" && inferred && (
           <ConvictionMoment
+            topIntent={inferred.topIntent}
             line={convictionLine(
               inferred.topIntent,
               inferred.profile.pace ?? "balanced",
@@ -181,7 +182,10 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             onContinue={next}
           />
         )}
-        {beat === "thinking" && <ThinkingBeat />}
+        {beat === "thinking" && (
+          <ThinkingBeat topIntent={inferred?.topIntent ?? "relaxed_scenic"} />
+        )}
+
         {beat === "reveal" && result && (
           <section
             key="reveal"
