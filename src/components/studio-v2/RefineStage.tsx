@@ -235,6 +235,27 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
         </span>
       </div>
 
+      {warnings.length > 0 && (
+        <ul
+          className="mt-3 space-y-1.5 rounded-[2px] border px-4 py-3"
+          aria-label="Feasibility warnings"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 50%, transparent)",
+            background: "color-mix(in oklab, var(--gold) 8%, transparent)",
+          }}
+        >
+          {warnings.map((w) => (
+            <li
+              key={w}
+              className="text-[12px] leading-snug"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+            >
+              · {w}
+            </li>
+          ))}
+        </ul>
+      )}
+
       {stops.length < 2 && (
         <p
           className="mt-3 text-center text-[12px] italic"
