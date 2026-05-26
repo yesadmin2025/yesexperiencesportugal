@@ -13,6 +13,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   composeItinerary,
   dbRegionsFor,
+  scoreStop,
   DEFAULT_CAPS,
   type DbStop,
   type RoutingCaps,
@@ -102,6 +103,28 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const itinerary = composeItinerary(pool, data.profile as any, target, caps);
 
+    // Pre-compute alternates: top-scored stops not currently chosen, so the
+    // client-side Refine stage can offer "Swap" without an extra round trip.
+    const chosenKeys = new Set(itinerary.stops.map((s) => s.key));
+    const alternates = pool
+      .filter((s) => !chosenKeys.has(s.key))
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((s) => ({ stop: s, score: scoreStop(s, data.profile as any) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 12)
+      .map((c) => ({
+        key: c.stop.key,
+        region_key: c.stop.region_key,
+        label: c.stop.label,
+        blurb: c.stop.blurb,
+        tag: c.stop.tag,
+        lat: c.stop.lat,
+        lng: c.stop.lng,
+        duration_minutes: c.stop.duration_minutes ?? 60,
+        source_tour_keys: c.stop.source_tour_keys ?? [],
+        score: Math.round(c.score),
+      }));
+
     // Region centre for the map default zoom (average of chosen stops, fallback to region origin).
     const center =
       itinerary.stops.length > 0
@@ -115,11 +138,13 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       region,
       regionCenter: center,
       stops: itinerary.stops,
+      alternates,
       density: itinerary.stops.length,
       driveBudgetMin: itinerary.totalDriveMin,
       totalKm: Math.round(itinerary.totalKm),
       totalExperienceMin: itinerary.totalExperienceMin,
       feasible: itinerary.feasible,
       warnings: itinerary.warnings,
+      caps,
     };
   });
