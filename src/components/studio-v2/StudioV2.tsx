@@ -14,6 +14,7 @@ import {
   storyAfterIntent,
   storyAfterPace,
   storyAfterGroup,
+  storyFinalLines,
   tierLabel,
 } from "@/lib/studio-v2/content";
 import {
@@ -34,6 +35,7 @@ import {
 import { fmtMinutes } from "@/components/builder/types";
 import { type RefineStop } from "./RefineStage";
 import { LivingItinerary } from "./LivingItinerary";
+import { MapReveal } from "./MapReveal";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
@@ -1242,6 +1244,9 @@ function RevealStory({
   const [real, setReal] = useState<Awaited<ReturnType<typeof composeReal>> | null>(null);
   // Editable copy of stops — Refine stage mutates this client-side.
   const [editedStops, setEditedStops] = useState<RefineStop[] | null>(null);
+  // Cinematic map reveal — fires once when real stops first arrive.
+  const [mapRevealOpen, setMapRevealOpen] = useState(false);
+  const [mapRevealShown, setMapRevealShown] = useState(false);
   useEffect(() => {
     let cancelled = false;
     composeReal({
@@ -1266,6 +1271,10 @@ function RevealStory({
           duration_minutes: s.duration_minutes,
           source_tour_keys: s.source_tour_keys,
         })));
+        if (!mapRevealShown) {
+          setMapRevealOpen(true);
+          setMapRevealShown(true);
+        }
       })
       .catch(() => { /* fall back to synthetic */ });
     return () => { cancelled = true; };
@@ -1304,6 +1313,22 @@ function RevealStory({
 
   return (
     <section className="mb-10">
+      {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
+          Map draws the day; sequenced narrative summarizes it in one breath. */}
+      <MapReveal
+        open={mapRevealOpen}
+        stops={livePreview.stops as unknown as import("@/components/builder/types").RoutedStopUI[]}
+        regionCenter={livePreview.regionCenter}
+        regionKey={livePreview.region}
+        eyebrow={profile.name?.trim() ? `${profile.name.trim()}'s day` : "Your day, in one breath"}
+        lines={storyFinalLines(
+          { name: profile.name, intent: profile.intent, pace: profile.pace, group: profile.group },
+          region,
+        )}
+        closer="The country has arranged itself around you."
+        onClose={() => setMapRevealOpen(false)}
+      />
+
       {/* Hero image — real, editorial, no overlay text */}
       {hero && (
         <div

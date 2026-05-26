@@ -23,33 +23,59 @@ interface Props {
   stops: RoutedStopUI[];
   regionCenter: { lat: number; lng: number } | null;
   regionKey?: string;
-  /** Auto-dismiss after this many ms. Default 4200. */
+  /** Eyebrow label above the day-summary lines. */
+  eyebrow?: string;
+  /** Sequenced narrative lines that summarize the day. */
+  lines?: string[];
+  /** Final italic closer ("The country has arranged itself around you."). */
+  closer?: string;
+  /** Auto-dismiss after this many ms. Default scales with lines. */
   dwellMs?: number;
   onClose: () => void;
 }
 
 export function MapReveal({
-  open, stops, regionCenter, regionKey, dwellMs = 4200, onClose,
+  open, stops, regionCenter, regionKey,
+  eyebrow = "Your day, in one breath",
+  lines,
+  closer = "The country has arranged itself around you.",
+  dwellMs,
+  onClose,
 }: Props) {
+  const narrative = lines && lines.length > 0 ? lines : [closer];
+  const effectiveDwell = dwellMs ?? Math.max(4200, 1800 + narrative.length * 1100);
+  const [visibleLines, setVisibleLines] = useState(0);
   const [phase, setPhase] = useState<"hidden" | "in" | "hold" | "out">("hidden");
   const closedRef = useRef(false);
 
   useEffect(() => {
     if (!open) {
       setPhase("hidden");
+      setVisibleLines(0);
       closedRef.current = false;
       return;
     }
     closedRef.current = false;
     setPhase("in");
+    setVisibleLines(0);
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const inMs = reduced ? 0 : 520;
-    const holdMs = reduced ? Math.min(2200, dwellMs) : dwellMs;
+    const holdMs = reduced ? Math.min(2600, effectiveDwell) : effectiveDwell;
     const outMs = reduced ? 0 : 460;
 
     const t1 = window.setTimeout(() => setPhase("hold"), inMs);
+    const lineTimers: number[] = [];
+    if (reduced) {
+      setVisibleLines(narrative.length);
+    } else {
+      narrative.forEach((_, i) => {
+        lineTimers.push(
+          window.setTimeout(() => setVisibleLines((v) => Math.max(v, i + 1)), inMs + 600 + i * 950),
+        );
+      });
+    }
     const t2 = window.setTimeout(() => setPhase("out"), inMs + holdMs);
     const t3 = window.setTimeout(() => {
       if (!closedRef.current) {
@@ -61,8 +87,9 @@ export function MapReveal({
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       window.clearTimeout(t3);
+      lineTimers.forEach((t) => window.clearTimeout(t));
     };
-  }, [open, dwellMs, onClose]);
+  }, [open, effectiveDwell, narrative, onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -106,7 +133,7 @@ export function MapReveal({
           transition: "transform 520ms cubic-bezier(.22,.61,.36,1)",
         }}
       >
-        {/* Editorial caption — restraint, no UI noise */}
+        {/* Editorial caption — sequenced day summary */}
         <div className="pointer-events-none absolute inset-x-0 top-8 z-10 flex flex-col items-center px-6 text-center">
           <p
             className="text-[10.5px] uppercase tracking-[0.36em]"
@@ -115,20 +142,47 @@ export function MapReveal({
               fontWeight: 700,
             }}
           >
-            Your day, in one breath
+            {eyebrow}
           </p>
+          <div className="mt-4 flex flex-col items-center gap-2" style={{ maxWidth: "34ch" }}>
+            {narrative.map((line, i) => {
+              const shown = i < visibleLines;
+              const isHeadline = i === 0;
+              return (
+                <p
+                  key={`${i}-${line}`}
+                  className={isHeadline ? "text-[19px] leading-[1.25] sm:text-[24px]" : "text-[15px] leading-[1.35] sm:text-[17px]"}
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontStyle: "italic",
+                    color: isHeadline ? "var(--ivory)" : "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                    opacity: shown ? 1 : 0,
+                    transform: shown ? "translateY(0)" : "translateY(6px)",
+                    transition: "opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1)",
+                  }}
+                >
+                  {line}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Closer — bottom, gold whisper, appears after lines settle */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-6 text-center">
           <p
-            className="mt-3 text-[18px] leading-[1.3] sm:text-[22px]"
+            className="text-[12px] uppercase tracking-[0.32em]"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              color: "var(--ivory)",
-              maxWidth: "32ch",
+              color: "color-mix(in oklab, var(--gold) 78%, var(--ivory))",
+              fontWeight: 600,
+              opacity: visibleLines >= narrative.length ? 1 : 0,
+              transition: "opacity 620ms cubic-bezier(.22,.61,.36,1)",
             }}
           >
-            The country has arranged itself around you.
+            {closer}
           </p>
         </div>
+
 
         {/* Map — full-bleed */}
         <div className="absolute inset-0">
