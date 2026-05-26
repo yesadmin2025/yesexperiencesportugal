@@ -13,7 +13,11 @@
 
 import { useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, RefreshCw, X } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { getOrCreateAnonId } from "@/lib/ab-testing";
+import { recordSignal } from "@/lib/studio-v2/predictions.functions";
+import type { GestureSignal } from "@/lib/studio-v2/predictions";
 
 export interface RefineStop {
   key: string;
