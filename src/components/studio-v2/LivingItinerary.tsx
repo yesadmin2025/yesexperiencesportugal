@@ -87,6 +87,37 @@ function prioritiesFromTag(tag: string | null): PriorityKey[] {
   }
 }
 
+// Warm-resume: priority → mood contribution mirror of predictions.ts.
+// Kept local to avoid a server-only import. Used only to score alternates
+// against a returning visitor's stored mood vector.
+const PRIORITY_TO_MOOD_LOCAL: Record<string, string[]> = {
+  vineyard_lunch:   ["food", "social"],
+  wine_cellar:      ["culture", "quiet"],
+  coastal_scenery:  ["coastal", "quiet"],
+  hidden_villages:  ["culture", "quiet"],
+  architecture:     ["culture"],
+  heritage:         ["culture"],
+  local_gastronomy: ["food", "social"],
+  photography:      ["coastal", "culture"],
+  quiet_luxury:     ["quiet", "wellness"],
+  wellness:         ["wellness", "quiet"],
+  boat:             ["coastal", "social"],
+};
+
+function moodAffinity(tag: string | null, mood: MoodVector | null): number {
+  if (!mood) return 0;
+  const priorities = prioritiesFromTag(tag);
+  if (priorities.length === 0) return 0;
+  let score = 0;
+  for (const p of priorities) {
+    const moods = PRIORITY_TO_MOOD_LOCAL[p] ?? [];
+    for (const m of moods) {
+      score += (mood as Record<string, number>)[m] ?? 0;
+    }
+  }
+  return score;
+}
+
 // ─── atmospheric line by tag (one line, sentence case, no poetry overreach)
 
 function atmosphericLine(tag: string | null): string {
