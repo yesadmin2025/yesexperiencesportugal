@@ -36,6 +36,7 @@ import { fmtMinutes } from "@/components/builder/types";
 import { type RefineStop } from "./RefineStage";
 import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
+import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
@@ -80,7 +81,40 @@ const SEQUENCE: Beat[] = [
   "logistics", "conviction", "thinking", "reveal",
 ];
 
+const SESSION_KEY = "yes.studio-v2.session";
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+
+interface PersistedSession {
+  beatIndex: number;
+  profile: TravelerProfile;
+  signals: SceneSignal[];
+  pax: number;
+  pickup: string;
+  savedAt: number;
+}
+
+function readPersistedSession(): PersistedSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw) as PersistedSession;
+    if (!s || typeof s.beatIndex !== "number") return null;
+    if (Date.now() - s.savedAt > SESSION_TTL_MS) return null;
+    if (s.beatIndex <= 0) return null;
+    return s;
+  } catch { return null; }
+}
+
+function clearPersistedSession() {
+  try { window.localStorage.removeItem(SESSION_KEY); } catch { /* */ }
+}
+
 export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
+  // Resume payload — read once on mount, before any state is initialized.
+  const [resumable, setResumable] = useState<PersistedSession | null>(() =>
+    !startAtReveal && !initialProfile ? readPersistedSession() : null,
+  );
   const [beatIndex, setBeatIndex] = useState(() =>
     startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
   );
@@ -121,12 +155,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   useEffect(() => {
     if (beat !== "thinking") return;
     if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
+    // Longer pause — Layer 3 "ritmo": confidence reads as restraint, not lag.
     thinkingTimer.current = window.setTimeout(() => {
       const archetype = deriveArchetype(profile);
       const r = designExperience({ ...profile, archetype });
       setResult(r);
       setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
-    }, 2200);
+    }, 3400);
     return () => {
       if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
     };
@@ -139,12 +174,56 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     return inferProfile(signals, { pax, pickup: pickup || "Lisboa" });
   }, [signals, pax, pickup]);
 
+  // Persist session for "continue where you left off" — write after any
+  // meaningful state change past the opening. Cleared on reveal.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (startAtReveal) return; // shared-token resume isn't local progress
+    if (beat === "opening") return;
+    if (beat === "reveal") { clearPersistedSession(); return; }
+    const payload: PersistedSession = {
+      beatIndex, profile, signals, pax, pickup, savedAt: Date.now(),
+    };
+    try { window.localStorage.setItem(SESSION_KEY, JSON.stringify(payload)); } catch { /* */ }
+  }, [beat, beatIndex, profile, signals, pax, pickup, startAtReveal]);
+
+  const onResume = useCallback(() => {
+    const s = resumable;
+    if (!s) return;
+    setProfile(s.profile);
+    setSignals(s.signals ?? []);
+    setPax(s.pax ?? 2);
+    setPickup(s.pickup ?? "");
+    const safeBeat = SEQUENCE[s.beatIndex] === "thinking"
+      ? SEQUENCE.indexOf("conviction")
+      : s.beatIndex;
+    setBeatIndex(Math.max(0, safeBeat));
+    setResumable(null);
+  }, [resumable]);
+
+  const onDeclineResume = useCallback(() => {
+    clearPersistedSession();
+    setResumable(null);
+  }, []);
+
   return (
     <div
       className="studio-v2 relative min-h-screen w-full overflow-x-hidden"
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
-      <header className="absolute right-0 top-0 z-30 flex items-center px-4 py-4 sm:px-6">
+      <header className="absolute right-0 top-0 z-30 flex items-center gap-1.5 px-4 py-4 sm:px-6">
+        {/* Ambient sound — opt-in, gold/ivory; Layer 3 */}
+        <div
+          className="rounded-full"
+          style={{
+            background: showChrome
+              ? "color-mix(in oklab, var(--ivory) 70%, transparent)"
+              : "color-mix(in oklab, var(--charcoal) 28%, transparent)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <AmbientToggle />
+        </div>
         <button
           onClick={onExit}
           aria-label="Exit studio"
@@ -162,7 +241,14 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       </header>
 
       <main key={beat} className="studio-v2-reveal relative z-10">
-        {beat === "opening" && <OpeningScene onTap={next} />}
+        {beat === "opening" && (
+          <OpeningScene
+            onTap={next}
+            resumable={resumable}
+            onResume={onResume}
+            onDeclineResume={onDeclineResume}
+          />
+        )}
         {beat === "mood-1" && <MoodSceneView scene={MOOD_SCENES[0]} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <MoodSceneView scene={MOOD_SCENES[1]} onSignal={onSceneSignal} />}
         {beat === "mood-3" && <MoodSceneView scene={MOOD_SCENES[2]} onSignal={onSceneSignal} />}
@@ -215,21 +301,31 @@ void previewJourney; void emptyProfile;
 
 // ─── opening scene — editorial cold open ────────────────────────────────
 
-function OpeningScene({ onTap }: { onTap: () => void }) {
+function OpeningScene({
+  onTap,
+  resumable,
+  onResume,
+  onDeclineResume,
+}: {
+  onTap: () => void;
+  resumable?: PersistedSession | null;
+  onResume?: () => void;
+  onDeclineResume?: () => void;
+}) {
   const [stage, setStage] = useState(0); // 0 silence, 1 eyebrow, 2 phrase, 3 hint
   useEffect(() => {
-    const t1 = window.setTimeout(() => setStage(1), 600);
-    const t2 = window.setTimeout(() => setStage(2), 1400);
-    const t3 = window.setTimeout(() => setStage(3), 3000);
+    const t1 = window.setTimeout(() => setStage(1), 700);
+    const t2 = window.setTimeout(() => setStage(2), 1700);
+    const t3 = window.setTimeout(() => setStage(3), 3400);
     return () => { window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
   }, []);
+
+  // When a resume card is shown, suppress the full-bleed tap-to-begin so the
+  // user has to make a deliberate choice (resume vs. start fresh).
+  const showResume = !!resumable;
+
   return (
-    <button
-      type="button"
-      onClick={onTap}
-      aria-label="Begin"
-      className="studio-v2-grain studio-v2-vignette relative block h-[100svh] w-full overflow-hidden text-left focus-visible:outline-none"
-    >
+    <div className="studio-v2-grain studio-v2-vignette relative block h-[100svh] w-full overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <img
           src={INTENT_IMAGE.coastal_cinematic.src}
@@ -239,8 +335,19 @@ function OpeningScene({ onTap }: { onTap: () => void }) {
         />
       </div>
 
+      {/* Full-bleed tap-to-begin layer — sits behind editorial overlays so
+          a tap anywhere advances, unless a resume card is shown. */}
+      {!showResume && (
+        <button
+          type="button"
+          onClick={onTap}
+          aria-label="Begin"
+          className="absolute inset-0 z-[1] block w-full bg-transparent focus-visible:outline-none"
+        />
+      )}
+
       {/* Top frame: brand mark + chapter */}
-      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
         <span
           className="text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
@@ -264,7 +371,7 @@ function OpeningScene({ onTap }: { onTap: () => void }) {
       </div>
 
       {/* Bottom-left editorial: phrase + author line */}
-      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
         <p
           className="mb-5 text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
@@ -292,23 +399,86 @@ function OpeningScene({ onTap }: { onTap: () => void }) {
           Let instinct<br/>guide the way.
         </h1>
 
-        <div
-          className="mt-10 flex items-center gap-4 transition-opacity duration-1000"
-          style={{ opacity: stage >= 3 ? 1 : 0 }}
-        >
-          <span
-            className="studio-v2-tap-indicator inline-block h-7 w-px"
-            style={{ background: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}
-          />
-          <span
-            className="text-[10.5px] uppercase tracking-[0.36em]"
-            style={{ color: "color-mix(in oklab, var(--ivory) 80%, transparent)", fontWeight: 600 }}
+        {!showResume && (
+          <div
+            className="mt-10 flex items-center gap-4 transition-opacity duration-1000"
+            style={{ opacity: stage >= 3 ? 1 : 0 }}
           >
-            tap to begin
-          </span>
-        </div>
+            <span
+              className="studio-v2-tap-indicator inline-block h-7 w-px"
+              style={{ background: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}
+            />
+            <span
+              className="text-[10.5px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--ivory) 80%, transparent)", fontWeight: 600 }}
+            >
+              tap to begin
+            </span>
+          </div>
+        )}
       </div>
-    </button>
+
+      {/* Resume card — Layer 3 "continue where you left off". Editorial,
+          restrained, gold rule + two clear choices. Sits above the tap layer. */}
+      {showResume && (
+        <div className="absolute inset-x-0 bottom-[18vh] z-20 flex justify-center px-6 sm:px-10">
+          <div
+            className="w-full max-w-[34rem] rounded-[2px] border px-6 py-6 text-center"
+            style={{
+              borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
+              background: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              opacity: stage >= 2 ? 1 : 0,
+              transform: stage >= 2 ? "translateY(0)" : "translateY(10px)",
+              transition: "opacity 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1)",
+            }}
+          >
+            <p
+              className="text-[10.5px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 700 }}
+            >
+              Welcome back
+            </p>
+            <p
+              className="mt-3 text-[18px] leading-[1.3] sm:text-[20px]"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontStyle: "italic",
+                color: "var(--ivory)",
+              }}
+            >
+              Your day was almost composed.
+            </p>
+            <div className="mt-5 flex flex-col items-center gap-2.5">
+              <button
+                type="button"
+                onClick={onResume}
+                className="inline-flex h-11 min-w-[18rem] items-center justify-center gap-2 px-6 text-[11.5px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
+                  color: "var(--charcoal)",
+                  fontWeight: 700,
+                }}
+              >
+                Continue where you left off
+              </button>
+              <button
+                type="button"
+                onClick={() => { onDeclineResume?.(); onTap(); }}
+                className="h-10 px-4 text-[10.5px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                  fontWeight: 600,
+                }}
+              >
+                Start a new story
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
