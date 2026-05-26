@@ -21,6 +21,7 @@ import {
   PICKUP_CITIES,
   inferProfile,
   convictionLine,
+  convictionScript,
   type SceneSignal,
 } from "@/lib/studio-v2/intent-infer";
 import { INTENT_IMAGE } from "@/lib/studio-v2/images";
@@ -174,6 +175,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
           <ConvictionMoment
             topIntent={inferred.topIntent}
             line={convictionLine(
+              inferred.topIntent,
+              inferred.profile.pace ?? "balanced",
+              pickup || "Lisboa",
+              pax,
+            )}
+            script={convictionScript(
+              signals,
               inferred.topIntent,
               inferred.profile.pace ?? "balanced",
               pickup || "Lisboa",
@@ -668,26 +676,43 @@ function LogisticsCard({
 // ─── conviction moment — the "we read you" reveal ───────────────────────
 
 function ConvictionMoment({
-  topIntent, line, onContinue,
+  topIntent, line, script, onContinue,
 }: {
   topIntent: IntentAtmosphere;
   line: { lead: string; body: string };
+  script: import("@/lib/studio-v2/intent-infer").ConvictionScript;
   onContinue: () => void;
 }) {
-  const [stage, setStage] = useState(0);
+  // Stage choreography: each noticed line lands one after the other,
+  // then the synthesis "reading", then the decision, then the CTA.
+  // The single-line `line` prop is kept for analytics / fallback only.
+  void line;
+  const noticedCount = script.noticed.length;
+  // Per-line delay (ms) so each "Toward X — past Y." gets its own beat.
+  const PER_LINE = 900;
+  const READING_DELAY = 400 + noticedCount * PER_LINE;
+  const DECISION_DELAY = READING_DELAY + 900;
+  const CTA_DELAY = DECISION_DELAY + 900;
+
+  const [stage, setStage] = useState({ noticed: 0, reading: false, decision: false, cta: false });
   useEffect(() => {
-    const t1 = window.setTimeout(() => setStage(1), 350);
-    const t2 = window.setTimeout(() => setStage(2), 2100);
-    const t3 = window.setTimeout(() => setStage(3), 2900);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
-  }, []);
+    const timers: number[] = [];
+    for (let i = 0; i < noticedCount; i++) {
+      timers.push(window.setTimeout(() => {
+        setStage((s) => ({ ...s, noticed: Math.max(s.noticed, i + 1) }));
+      }, 350 + i * PER_LINE));
+    }
+    timers.push(window.setTimeout(() => setStage((s) => ({ ...s, reading: true })), READING_DELAY));
+    timers.push(window.setTimeout(() => setStage((s) => ({ ...s, decision: true })), DECISION_DELAY));
+    timers.push(window.setTimeout(() => setStage((s) => ({ ...s, cta: true })), CTA_DELAY));
+    return () => { timers.forEach((t) => window.clearTimeout(t)); };
+  }, [noticedCount, READING_DELAY, DECISION_DELAY, CTA_DELAY]);
 
   const img = INTENT_IMAGE[topIntent] ?? INTENT_IMAGE.relaxed_scenic;
-  const leadWords = line.lead.split(" ");
 
   return (
     <section
-      className="studio-v2-grain studio-v2-vignette relative h-[100svh] w-full overflow-hidden"
+      className="studio-v2-grain studio-v2-vignette relative min-h-[100svh] w-full overflow-hidden"
       aria-label="What we read"
     >
       <div className="absolute inset-0 overflow-hidden">
@@ -695,7 +720,16 @@ function ConvictionMoment({
           src={img.src}
           alt={img.alt}
           className="studio-v2-kenburns-alt absolute inset-0 h-full w-full object-cover"
-          style={{ filter: "saturate(0.85) contrast(1.06) brightness(0.78)" }}
+          style={{ filter: "saturate(0.82) contrast(1.06) brightness(0.62)" }}
+        />
+        {/* extra bottom gradient for legibility of the layered text block */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-[72%]"
+          style={{
+            background:
+              "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.35) 38%, rgba(0,0,0,0.72) 100%)",
+          }}
         />
       </div>
 
@@ -718,40 +752,91 @@ function ConvictionMoment({
         </span>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[14vh] sm:px-10 sm:pb-[16vh]">
-        <h2
-          className="studio-v2-typeon text-[30px] leading-[1.12] sm:text-[44px]"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            fontStyle: "italic",
-            fontWeight: 400,
-            color: "var(--ivory)",
-            maxWidth: "20ch",
-            textShadow: "0 2px 24px rgba(0,0,0,0.5)",
-            letterSpacing: "-0.005em",
-            opacity: stage >= 1 ? 1 : 0,
-          }}
-        >
-          {leadWords.map((w, i) => (
-            <span key={i} style={{ animationDelay: `${i * 120}ms`, marginRight: "0.28em" }}>{w}</span>
-          ))}
-        </h2>
+      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
+        {/* Noticed lines — one per scene, each a "Toward X — past Y." beat. */}
+        <ul className="space-y-3 sm:space-y-4" aria-label="What you chose">
+          {script.noticed.map((text, i) => {
+            const shown = stage.noticed > i;
+            return (
+              <li
+                key={i}
+                className="transition-all duration-700"
+                style={{
+                  opacity: shown ? 1 : 0,
+                  transform: shown ? "translateY(0)" : "translateY(10px)",
+                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  color: "var(--ivory)",
+                  fontSize: "21px",
+                  lineHeight: 1.32,
+                  letterSpacing: "-0.005em",
+                  textShadow: "0 2px 18px rgba(0,0,0,0.55)",
+                  maxWidth: "26ch",
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="mr-3 inline-block align-middle"
+                  style={{
+                    width: shown ? 22 : 0,
+                    height: 1,
+                    background: "color-mix(in oklab, var(--gold) 85%, transparent)",
+                    transition: "width 700ms cubic-bezier(0.22,1,0.36,1)",
+                  }}
+                />
+                {text}
+              </li>
+            );
+          })}
+        </ul>
 
-        <p
-          className="mt-6 text-[14.5px] leading-[1.6] transition-all duration-1000"
+        {/* Reading — the synthesis line, in sans, smaller, gold-tinted eyebrow. */}
+        <div
+          className="mt-8 transition-all duration-700"
           style={{
-            opacity: stage >= 2 ? 0.92 : 0,
-            transform: stage >= 2 ? "translateY(0)" : "translateY(8px)",
-            color: "color-mix(in oklab, var(--ivory) 90%, transparent)",
-            maxWidth: "34ch",
+            opacity: stage.reading ? 1 : 0,
+            transform: stage.reading ? "translateY(0)" : "translateY(8px)",
           }}
         >
-          {line.body}
+          <p
+            className="text-[11px] uppercase tracking-[0.32em]"
+            style={{
+              color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
+              fontWeight: 600,
+            }}
+          >
+            What this means
+          </p>
+          <p
+            className="mt-2 text-[14.5px] leading-[1.55]"
+            style={{
+              color: "color-mix(in oklab, var(--ivory) 94%, transparent)",
+              maxWidth: "36ch",
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+            }}
+          >
+            {script.reading}
+          </p>
+        </div>
+
+        {/* Decision — the design move announced. */}
+        <p
+          className="mt-5 text-[14.5px] leading-[1.6] transition-all duration-700"
+          style={{
+            opacity: stage.decision ? 0.95 : 0,
+            transform: stage.decision ? "translateY(0)" : "translateY(8px)",
+            color: "color-mix(in oklab, var(--ivory) 90%, transparent)",
+            maxWidth: "38ch",
+            fontFamily: "var(--font-sans, Inter), sans-serif",
+          }}
+        >
+          {script.decision}
         </p>
 
         <div
-          className="mt-10 transition-opacity duration-1000"
-          style={{ opacity: stage >= 3 ? 1 : 0 }}
+          className="mt-9 transition-opacity duration-700"
+          style={{ opacity: stage.cta ? 1 : 0 }}
         >
           <button
             type="button"
