@@ -188,25 +188,22 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   }, [beat, beatIndex, profile, signals, pax, pickup, startAtReveal]);
 
   const onResume = useCallback(() => {
-    const s = resumeRef.current;
+    const s = resumable;
     if (!s) return;
     setProfile(s.profile);
     setSignals(s.signals ?? []);
     setPax(s.pax ?? 2);
     setPickup(s.pickup ?? "");
-    // Skip thinking on resume — re-enter from the last cognitive beat.
     const safeBeat = SEQUENCE[s.beatIndex] === "thinking"
       ? SEQUENCE.indexOf("conviction")
       : s.beatIndex;
     setBeatIndex(Math.max(0, safeBeat));
-    resumeRef.current = null;
-  }, []);
+    setResumable(null);
+  }, [resumable]);
 
   const onDeclineResume = useCallback(() => {
     clearPersistedSession();
-    resumeRef.current = null;
-    // Force re-render so the resume overlay disappears.
-    setBeatIndex((i) => i);
+    setResumable(null);
   }, []);
 
   return (
