@@ -200,13 +200,16 @@ export function StudioV2({ onExit }: StudioV2Props) {
         ) : (
           <span />
         )}
-        <button
-          onClick={onExit}
-          aria-label="Exit studio"
-          className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-[color:var(--sand)] focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:outline-none"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {showChrome && <AmbientToggle />}
+          <button
+            onClick={onExit}
+            aria-label="Exit studio"
+            className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-[color:var(--sand)] focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:outline-none"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </header>
 
       {showChrome && (
@@ -218,6 +221,13 @@ export function StudioV2({ onExit }: StudioV2Props) {
             <div
               className="h-full rounded-full transition-all duration-700 ease-out"
               style={{ width: `${progress}%`, background: "var(--gold)" }}
+            />
+          </div>
+          <div className="mt-3">
+            <MemoryDeck
+              profile={profile}
+              onJump={(idx) => setBeatIndex(idx)}
+              beatIndexFor={(key) => Math.max(0, SEQUENCE.indexOf(key as Beat))}
             />
           </div>
         </div>
