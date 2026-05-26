@@ -963,34 +963,9 @@ function RevealStory({
         </div>
       )}
 
-      {/* Live route — real stops, drawn on map, redraws as user refines */}
-      {livePreview.stops.length >= 2 && (
-        <div
-          className="studio-v2-reveal -mx-5 sm:-mx-8 mb-8 overflow-hidden relative w-full h-[36vh] min-h-[240px] max-h-[360px] border-y"
-          style={{
-            borderColor: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
-            background: "var(--sand)",
-          }}
-        >
-          <Suspense fallback={<div className="absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}>Drawing your route…</div>}>
-            <BuilderMap
-              stops={livePreview.stops}
-              regionCenter={livePreview.regionCenter}
-              regionKey={livePreview.region}
-              emotionalMode
-              chrome={false}
-            />
-          </Suspense>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
-            style={{
-              background:
-                "linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--ivory) 70%, transparent) 100%)",
-            }}
-          />
-        </div>
-      )}
+      {/* The ambient map now lives inside LivingItinerary (sticky, behind
+          the scenes). The standalone route panel above is intentionally
+          omitted — map is co-protagonist, not chrome. */}
 
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
@@ -1001,6 +976,8 @@ function RevealStory({
             caps={real.caps}
             onChange={setEditedStops}
             intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
+            regionKey={livePreview.region}
+            regionCenter={livePreview.regionCenter}
           />
           <BespokeSecureCTA
             profile={profile}
