@@ -12,12 +12,18 @@
  *   - swipe LEFT on a scene  → silently substitute next best-fit alternate
  *   - long-press on a scene  → "more like this" signal to the predictive engine
  *
+ * F.9 additions — map as co-protagonist:
+ *   - Ambient sticky map sits BEHIND the scroll, panning to the active scene
+ *   - One-shot Reveal moment when the engine reaches confidence ≥ threshold
+ *     (4 micro-signals): scene fades, map blooms full-screen for ~4s, collapses
+ *
  * The classic editor (Swap / Remove / Reorder buttons) is preserved behind a
  * "Show all controls" escape hatch button for A11y / power users.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Settings2 } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { getOrCreateAnonId } from "@/lib/ab-testing";
@@ -27,6 +33,11 @@ import type { PriorityKey } from "@/lib/studio-v2/profile";
 import { INTENT_IMAGE } from "@/lib/studio-v2/images";
 import type { IntentAtmosphere } from "@/lib/studio-v2/profile";
 import { RefineStage, type RefineStop, type RefineAlternate, type RefineCaps } from "./RefineStage";
+import { MapReveal } from "./MapReveal";
+
+const BuilderMap = lazy(() =>
+  import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
+);
 
 interface Props {
   stops: RefineStop[];
@@ -35,7 +46,14 @@ interface Props {
   onChange: (next: RefineStop[]) => void;
   /** Default backdrop when a tag isn't recognised. Comes from the profile intent. */
   intent?: IntentAtmosphere;
+  /** Region key for the ambient + reveal map. */
+  regionKey?: string;
+  /** Region centre for the ambient + reveal map. */
+  regionCenter?: { lat: number; lng: number } | null;
 }
+
+// Reveal moment fires once per session when signalCount crosses this threshold.
+const REVEAL_SIGNAL_THRESHOLD = 4;
 
 // ─── tag → atmosphere + priority hints ───────────────────────────────────
 
@@ -135,10 +153,16 @@ function computeArrivals(stops: RefineStop[]): number[] {
 
 // ─── component ───────────────────────────────────────────────────────────
 
-export function LivingItinerary({ stops, alternates, caps, onChange, intent }: Props) {
+export function LivingItinerary({
+  stops, alternates, caps, onChange, intent, regionKey, regionCenter,
+}: Props) {
   const fallback: IntentAtmosphere = intent ?? "relaxed_scenic";
   const [showControls, setShowControls] = useState(false);
   const [swapIdx, setSwapIdx] = useState<Record<string, number>>({});
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [revealOpen, setRevealOpen] = useState(false);
+  const revealShown = useRef(false);
+  const signalCount = useRef(0);
   const sendSignal = useServerFn(recordSignal);
 
   // Telemetry: surface mounted.
@@ -154,8 +178,45 @@ export function LivingItinerary({ stops, alternates, caps, onChange, intent }: P
     [alternates, inUse],
   );
 
+  // Ambient map source — RoutedStopUI-compatible shape from RefineStops.
+  const mapStops = useMemo(
+    () =>
+      stops.map((s) => ({
+        key: s.key,
+        region_key: s.region_key,
+        label: s.label,
+        blurb: s.blurb,
+        tag: s.tag,
+        lat: s.lat,
+        lng: s.lng,
+        duration_minutes: s.duration_minutes,
+        driveMinutesFromPrev: 0,
+        source_tour_keys: s.source_tour_keys,
+        score: 0,
+      })),
+    [stops],
+  );
+  const computedCenter = useMemo(() => {
+    if (regionCenter) return regionCenter;
+    if (stops.length === 0) return null;
+    return {
+      lat: stops.reduce((a, s) => a + s.lat, 0) / stops.length,
+      lng: stops.reduce((a, s) => a + s.lng, 0) / stops.length,
+    };
+  }, [regionCenter, stops]);
+
+  const maybeTriggerReveal = () => {
+    if (revealShown.current) return;
+    if (signalCount.current < REVEAL_SIGNAL_THRESHOLD) return;
+    if (stops.length < 2) return;
+    revealShown.current = true;
+    void trackBuilderEvent("studio_v2_map_reveal", { signals: signalCount.current, stops: stops.length });
+    setRevealOpen(true);
+  };
+
   // ── fire-and-forget signals
   const emitSignal = (signal: GestureSignal) => {
+    signalCount.current += 1;
     if (typeof window === "undefined") return;
     const sessionId = getOrCreateAnonId();
     if (!sessionId) return;
@@ -163,6 +224,8 @@ export function LivingItinerary({ stops, alternates, caps, onChange, intent }: P
     sendSignal({ data: { sessionId, signal } }).catch(() => {
       void trackBuilderEvent("studio_v2_predict_signal_error", { type: signal.type });
     });
+    // Defer reveal check to allow the current gesture animation to settle.
+    window.setTimeout(maybeTriggerReveal, 320);
   };
 
   // ── swap (silent substitution)
@@ -234,8 +297,47 @@ export function LivingItinerary({ stops, alternates, caps, onChange, intent }: P
         </button>
       </div>
 
+      {/* Ambient sticky map — co-protagonist, not chrome.
+          Faint, lightly blurred, sits behind the scenes and breathes with
+          the active scene index. No controls. */}
+      {computedCenter && stops.length >= 2 && (
+        <div
+          aria-hidden
+          className="sticky -mx-5 sm:-mx-8 mb-4 overflow-hidden"
+          style={{
+            top: "8vh",
+            height: "34vh",
+            minHeight: 220,
+            maxHeight: 320,
+            zIndex: 0,
+            opacity: 0.55,
+            filter: "blur(1.5px) saturate(0.85)",
+            pointerEvents: "none",
+          }}
+        >
+          <Suspense fallback={<div className="absolute inset-0" style={{ background: "var(--sand)" }} />}>
+            <BuilderMap
+              stops={mapStops}
+              regionCenter={computedCenter}
+              regionKey={regionKey}
+              emotionalMode
+              chrome={false}
+              activeStopIndex={activeIdx}
+            />
+          </Suspense>
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 35%, transparent) 0%, color-mix(in oklab, var(--ivory) 80%, transparent) 100%)",
+            }}
+          />
+        </div>
+      )}
+
       <ol
-        className="space-y-3"
+        className="relative space-y-3"
+        style={{ zIndex: 1 }}
         aria-label="Itinerary scenes — swipe a scene left to substitute, long-press to anchor its mood"
       >
         {stops.map((s, i) => {
@@ -264,6 +366,7 @@ export function LivingItinerary({ stops, alternates, caps, onChange, intent }: P
               onDwell={(ms) => {
                 emitSignal({ type: "dwell", stopKey: s.key, ms, priorities });
               }}
+              onActive={() => setActiveIdx(i)}
             />
           );
         })}
@@ -278,6 +381,15 @@ export function LivingItinerary({ stops, alternates, caps, onChange, intent }: P
       >
         swipe a scene left to let the day substitute · long-press to anchor its mood
       </p>
+
+      {/* Engine-triggered map reveal — one shot per session. */}
+      <MapReveal
+        open={revealOpen}
+        stops={mapStops}
+        regionCenter={computedCenter}
+        regionKey={regionKey}
+        onClose={() => setRevealOpen(false)}
+      />
     </section>
   );
 }
@@ -296,11 +408,12 @@ interface SceneProps {
   onSwipeLeft: () => void;
   onLongPress: () => void;
   onDwell: (ms: number) => void;
+  onActive: () => void;
 }
 
 function Scene({
   index, stop, imgSrc, imgAlt, arrivalLabel, line,
-  isLast, hasSwapPool, onSwipeLeft, onLongPress, onDwell,
+  isLast, hasSwapPool, onSwipeLeft, onLongPress, onDwell, onActive,
 }: SceneProps) {
   const ref = useRef<HTMLLIElement>(null);
   const startX = useRef<number | null>(null);
@@ -310,7 +423,7 @@ function Scene({
   const dragX = useRef<number>(0);
   const [translate, setTranslate] = useState(0);
 
-  // Dwell tracking via IntersectionObserver — emit on exit if visible >800ms.
+  // Dwell tracking + active-scene reporting via IntersectionObserver.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const el = ref.current;
@@ -321,6 +434,7 @@ function Scene({
         for (const e of entries) {
           if (e.isIntersecting && e.intersectionRatio >= 0.5) {
             enteredAt = performance.now();
+            onActive();
           } else if (enteredAt != null) {
             const dur = performance.now() - enteredAt;
             enteredAt = null;
@@ -332,7 +446,7 @@ function Scene({
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [onDwell]);
+  }, [onDwell, onActive]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
