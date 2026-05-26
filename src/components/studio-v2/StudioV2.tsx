@@ -1133,11 +1133,7 @@ function BespokeSecureCTA({
   archetype?: string;
   stops: RefineStop[];
 }) {
-  const createDraft = useServerFn(
-    // dynamic import to keep the route's protected-import chain happy
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    (require("@/lib/studio-v2/bookings.functions") as typeof import("@/lib/studio-v2/bookings.functions")).createCustomBookingDraft,
-  );
+  const createDraft = useServerFn(createCustomBookingDraft);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
