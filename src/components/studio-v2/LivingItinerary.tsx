@@ -27,8 +27,8 @@ import { lazy, Suspense } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { getOrCreateAnonId } from "@/lib/ab-testing";
-import { recordSignal } from "@/lib/studio-v2/predictions.functions";
-import type { GestureSignal } from "@/lib/studio-v2/predictions";
+import { recordSignal, loadPredictions } from "@/lib/studio-v2/predictions.functions";
+import type { GestureSignal, MoodVector } from "@/lib/studio-v2/predictions";
 import type { PriorityKey } from "@/lib/studio-v2/profile";
 import { INTENT_IMAGE } from "@/lib/studio-v2/images";
 import type { IntentAtmosphere } from "@/lib/studio-v2/profile";
@@ -85,6 +85,37 @@ function prioritiesFromTag(tag: string | null): PriorityKey[] {
     case "workshop":   return ["local_gastronomy"];
     default:           return [];
   }
+}
+
+// Warm-resume: priority → mood contribution mirror of predictions.ts.
+// Kept local to avoid a server-only import. Used only to score alternates
+// against a returning visitor's stored mood vector.
+const PRIORITY_TO_MOOD_LOCAL: Record<string, string[]> = {
+  vineyard_lunch:   ["food", "social"],
+  wine_cellar:      ["culture", "quiet"],
+  coastal_scenery:  ["coastal", "quiet"],
+  hidden_villages:  ["culture", "quiet"],
+  architecture:     ["culture"],
+  heritage:         ["culture"],
+  local_gastronomy: ["food", "social"],
+  photography:      ["coastal", "culture"],
+  quiet_luxury:     ["quiet", "wellness"],
+  wellness:         ["wellness", "quiet"],
+  boat:             ["coastal", "social"],
+};
+
+function moodAffinity(tag: string | null, mood: MoodVector | null): number {
+  if (!mood) return 0;
+  const priorities = prioritiesFromTag(tag);
+  if (priorities.length === 0) return 0;
+  let score = 0;
+  for (const p of priorities) {
+    const moods = PRIORITY_TO_MOOD_LOCAL[p] ?? [];
+    for (const m of moods) {
+      score += (mood as Record<string, number>)[m] ?? 0;
+    }
+  }
+  return score;
 }
 
 // ─── atmospheric line by tag (one line, sentence case, no poetry overreach)
@@ -186,14 +217,38 @@ export function LivingItinerary({
   const revealShown = useRef(false);
   const signalCount = useRef(0);
   const sendSignal = useServerFn(recordSignal);
+  const loadWarm = useServerFn(loadPredictions);
+  const [warmMood, setWarmMood] = useState<MoodVector | null>(null);
 
   // Telemetry: surface mounted.
   useEffect(() => {
     void trackBuilderEvent("studio_v2_refine_click", { surface: "living_itinerary" });
   }, []);
 
+  // F.11 — warm memory: pull prior mood vector for this anon visitor.
+  // If the engine already learned something from past visits, surface it
+  // by re-sorting the alternate pool so substitutions feel pre-tuned.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sessionId = getOrCreateAnonId();
+    if (!sessionId) return;
+    let cancelled = false;
+    loadWarm({ data: { sessionId } })
+      .then((r) => {
+        if (cancelled) return;
+        if (!r?.state || r.state.signalCount <= 0) return;
+        setWarmMood(r.state.moodVector);
+        void trackBuilderEvent("studio_v2_warm_resume", {
+          signals: r.state.signalCount,
+        });
+      })
+      .catch(() => { /* silent — warm memory is optional */ });
+    return () => { cancelled = true; };
+  }, [loadWarm]);
+
   const { days } = useMemo(() => composeDays(stops), [stops]);
   const isMultiDay = days.length > 1;
+
 
   // Telemetry: multi-day composition + day-break beats.
   useEffect(() => {
@@ -263,8 +318,15 @@ export function LivingItinerary({
 
   // ── swap (silent substitution)
   const performSwap = (slotKey: string, tag: string | null) => {
-    const pool = alternates.filter((a) => !inUse.has(a.key));
+    let pool = alternates.filter((a) => !inUse.has(a.key));
     if (pool.length === 0) return;
+    // F.11 — warm-resume sort: if we know this visitor's mood, float the
+    // closest matches to the front so the silent substitution feels inevitable.
+    if (warmMood) {
+      pool = [...pool].sort(
+        (a, b) => moodAffinity(b.tag ?? null, warmMood) - moodAffinity(a.tag ?? null, warmMood),
+      );
+    }
     const cur = swapIdx[slotKey] ?? -1;
     const next = (cur + 1) % pool.length;
     const replacement = pool[next];
