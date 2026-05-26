@@ -868,42 +868,10 @@ function RevealStory({
   const livePreview = useMemo(() => previewJourney(profile), [profile]);
 
 
-  // AI tone layer — one editorial title + subtitle from Lovable Gateway.
-  // Fails silently to the static framing if anything goes wrong.
-  const sessionId = useBuilderSessionId();
-  const compose = useServerFn(composeStudioMoment);
-  const [ai, setAi] = useState<{ title: string; subtitle: string } | null>(null);
-  useEffect(() => {
-    if (!sessionId) return;
-    let cancelled = false;
-    const topPriority = Object.keys(profile.priorityWeights)[0] ?? null;
-    const groupShape = profile.group
-      ? profile.group.adults <= 2 && profile.group.children === 0 && profile.group.teens === 0
-        ? "couple"
-        : (profile.group.children + profile.group.teens > 0 ? "family" : "group")
-      : null;
-    compose({
-      data: {
-        sessionId,
-        mode: "proposal",
-        locale: "en",
-        mood: profile.intent ?? null,
-        who: groupShape,
-        intention: topPriority,
-        journeyType: profile.duration === "multi-day" ? "multi" : "day",
-        travellerName: profile.name?.trim() || null,
-        narrativeStage: "reveal",
-        confidence: 1,
-        acceptedCount: Object.keys(profile.priorityWeights).length,
-      },
-    })
-      .then((r) => {
-        if (cancelled || r.mode !== "proposal") return;
-        setAi({ title: r.title, subtitle: r.subtitle });
-      })
-      .catch(() => { /* silent — static framing remains */ });
-    return () => { cancelled = true; };
-  }, [sessionId, compose, profile]);
+  // AI narrative layer removed (server module path blocked by client import-protection).
+  // Static editorial framing carries the reveal.
+  const ai: { title: string; subtitle: string } | null = null;
+
 
   return (
     <section className="mb-10">
