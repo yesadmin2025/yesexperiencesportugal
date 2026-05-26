@@ -1313,6 +1313,22 @@ function RevealStory({
 
   return (
     <section className="mb-10">
+      {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
+          Map draws the day; sequenced narrative summarizes it in one breath. */}
+      <MapReveal
+        open={mapRevealOpen}
+        stops={livePreview.stops as unknown as import("@/components/builder/types").RoutedStopUI[]}
+        regionCenter={livePreview.regionCenter}
+        regionKey={livePreview.region}
+        eyebrow={profile.name?.trim() ? `${profile.name.trim()}'s day` : "Your day, in one breath"}
+        lines={storyFinalLines(
+          { name: profile.name, intent: profile.intent, pace: profile.pace, group: profile.group },
+          region,
+        )}
+        closer="The country has arranged itself around you."
+        onClose={() => setMapRevealOpen(false)}
+      />
+
       {/* Hero image — real, editorial, no overlay text */}
       {hero && (
         <div
