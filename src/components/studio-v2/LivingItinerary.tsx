@@ -363,37 +363,44 @@ export function LivingItinerary({
         style={{ zIndex: 1 }}
         aria-label="Itinerary scenes — swipe a scene left to substitute, long-press to anchor its mood"
       >
-        {stops.map((s, i) => {
-          const atm = atmosphereFromTag(s.tag, fallback);
-          const img = INTENT_IMAGE[atm];
-          const arrival = arrivals[i] ?? 10 * 60;
-          const priorities = prioritiesFromTag(s.tag);
-          const isLast = i === stops.length - 1;
-
-          return (
-            <Scene
-              key={s.key}
-              index={i}
-              stop={s}
-              imgSrc={img.src}
-              imgAlt={img.alt}
-              arrivalLabel={`${periodLabel(arrival)} · ${fmtClock(arrival)}`}
-              line={atmosphericLine(s.tag)}
-              isLast={isLast}
-              hasSwapPool={hasSwapPool && stops.length > 2}
-              onSwipeLeft={() => performSwap(s.key, s.tag)}
-              onLongPress={() => {
-                void trackBuilderEvent("studio_v2_refine_click", { gesture: "longpress" });
-                emitSignal({ type: "longpress", stopKey: s.key, priorities });
-              }}
-              onDwell={(ms) => {
-                emitSignal({ type: "dwell", stopKey: s.key, ms, priorities });
-              }}
-              onActive={() => setActiveIdx(i)}
-            />
-          );
-        })}
+        {days.map((day, dayIdx) => (
+          <li key={`day-${dayIdx}`} className="contents">
+            {dayIdx > 0 && <DayBreakScene dayNumber={dayIdx + 1} />}
+            {day.stops.map((s, j) => {
+              const i = day.indices[j];
+              const atm = atmosphereFromTag(s.tag, fallback);
+              const img = INTENT_IMAGE[atm];
+              const arrival = day.arrivals[j];
+              const priorities = prioritiesFromTag(s.tag);
+              const isLast = i === stops.length - 1;
+              return (
+                <Scene
+                  key={s.key}
+                  index={i}
+                  stop={s}
+                  imgSrc={img.src}
+                  imgAlt={img.alt}
+                  arrivalLabel={`${periodLabel(arrival)} · ${fmtClock(arrival)}`}
+                  line={atmosphericLine(s.tag)}
+                  isLast={isLast}
+                  hasSwapPool={hasSwapPool && stops.length > 2}
+                  onSwipeLeft={() => performSwap(s.key, s.tag)}
+                  onLongPress={() => {
+                    void trackBuilderEvent("studio_v2_refine_click", { gesture: "longpress" });
+                    emitSignal({ type: "longpress", stopKey: s.key, priorities });
+                  }}
+                  onDwell={(ms) => {
+                    emitSignal({ type: "dwell", stopKey: s.key, ms, priorities });
+                  }}
+                  onActive={() => setActiveIdx(i)}
+                />
+              );
+            })}
+          </li>
+        ))}
       </ol>
+
+      {isMultiDay && <ComposedPrivatelyMark />}
 
       <p
         className="mt-6 text-center text-[11.5px] italic"
@@ -404,6 +411,7 @@ export function LivingItinerary({
       >
         swipe a scene left to let the day substitute · long-press to anchor its mood
       </p>
+
 
       {/* Engine-triggered map reveal — one shot per session. */}
       <MapReveal
