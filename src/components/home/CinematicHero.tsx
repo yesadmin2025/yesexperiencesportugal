@@ -201,7 +201,7 @@ export function CinematicHero() {
       >
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 hero-cta-group">
           <Link
-            to="/builder"
+            to="/studio-v2"
             data-hero-field="primaryCta"
             className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[8px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
