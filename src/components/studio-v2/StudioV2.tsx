@@ -957,6 +957,20 @@ function RevealStory({
         </div>
       )}
 
+      {/* Real-stops chip — proves these are drawn from existing Viator tours */}
+      {real && real.stops.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
+          <span
+            className="text-[10px] uppercase tracking-[0.3em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+          >
+            {real.stops.length} real stops · {Math.round(real.totalExperienceMin / 60 * 10) / 10} h experience · {real.driveBudgetMin} min driving
+          </span>
+        </div>
+      )}
+
+
+
 
       <p
         className="text-[10.5px] uppercase tracking-[0.36em]"
