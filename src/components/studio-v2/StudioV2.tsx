@@ -852,6 +852,44 @@ function RevealStory({
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
+
+  // AI tone layer — one editorial title + subtitle from Lovable Gateway.
+  // Fails silently to the static framing if anything goes wrong.
+  const sessionId = useBuilderSessionId();
+  const compose = useServerFn(composeStudioMoment);
+  const [ai, setAi] = useState<{ title: string; subtitle: string } | null>(null);
+  useEffect(() => {
+    if (!sessionId) return;
+    let cancelled = false;
+    const topPriority = Object.keys(profile.priorityWeights)[0] ?? null;
+    const groupShape = profile.group
+      ? profile.group.adults <= 2 && profile.group.children === 0 && profile.group.teens === 0
+        ? "couple"
+        : (profile.group.children + profile.group.teens > 0 ? "family" : "group")
+      : null;
+    compose({
+      data: {
+        sessionId,
+        mode: "proposal",
+        locale: "en",
+        mood: profile.intent ?? null,
+        who: groupShape,
+        intention: topPriority,
+        journeyType: profile.duration === "multi-day" ? "multi" : "day",
+        travellerName: profile.name?.trim() || null,
+        narrativeStage: "reveal",
+        confidence: 1,
+        acceptedCount: Object.keys(profile.priorityWeights).length,
+      },
+    })
+      .then((r) => {
+        if (cancelled || r.mode !== "proposal") return;
+        setAi({ title: r.title, subtitle: r.subtitle });
+      })
+      .catch(() => { /* silent — static framing remains */ });
+    return () => { cancelled = true; };
+  }, [sessionId, compose, profile]);
+
   return (
     <section className="mb-10">
       {/* Hero image — real, editorial, no overlay text */}
@@ -883,26 +921,50 @@ function RevealStory({
       >
         {who} signature Portugal experience
       </p>
-      <h2
-        className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
-      >
-        YES —{" "}
-        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-          you have just created
-        </span>{" "}
-        your Signature Portugal Experience.
-      </h2>
-      <p
-        className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
-        style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontStyle: "italic",
-          color: "var(--charcoal)",
-        }}
-      >
-        {revealFraming(profile.intent, region)}
-      </p>
+      {ai ? (
+        <>
+          <h2
+            className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
+            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
+          >
+            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>YES —</span>{" "}
+            {ai.title}.
+          </h2>
+          <p
+            className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontStyle: "italic",
+              color: "var(--charcoal)",
+            }}
+          >
+            {ai.subtitle}
+          </p>
+        </>
+      ) : (
+        <>
+          <h2
+            className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
+            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
+          >
+            YES —{" "}
+            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+              you have just created
+            </span>{" "}
+            your Signature Portugal Experience.
+          </h2>
+          <p
+            className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontStyle: "italic",
+              color: "var(--charcoal)",
+            }}
+          >
+            {revealFraming(profile.intent, region)}
+          </p>
+        </>
+      )}
       <ul
         className="mt-6 space-y-2 text-[14px] leading-relaxed"
         style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
