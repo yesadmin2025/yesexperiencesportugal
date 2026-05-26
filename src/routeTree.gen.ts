@@ -33,6 +33,7 @@ import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as ITokenRouteImport } from './routes/i.$token'
 import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
+import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
 import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
@@ -166,6 +167,11 @@ const E2ePostmessageProbeRoute = E2ePostmessageProbeRouteImport.update({
   path: '/e2e/postmessage-probe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutTokenRoute = CheckoutTokenRouteImport.update({
+  id: '/checkout/$token',
+  path: '/checkout/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiVerifyHeroRoute = ApiVerifyHeroRouteImport.update({
   id: '/api/verify-hero',
   path: '/api/verify-hero',
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
+  '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/i/$token': typeof ITokenRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
@@ -294,6 +301,7 @@ export interface FileRoutesByTo {
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
+  '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/i/$token': typeof ITokenRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
+  '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/i/$token': typeof ITokenRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
+    | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/i/$token'
     | '/local-stories/$slug'
@@ -411,6 +421,7 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
+    | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/i/$token'
     | '/local-stories/$slug'
@@ -449,6 +460,7 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
+    | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/i/$token'
     | '/local-stories/$slug'
@@ -488,6 +500,7 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   ApiImgRoute: typeof ApiImgRoute
   ApiVerifyHeroRoute: typeof ApiVerifyHeroRoute
+  CheckoutTokenRoute: typeof CheckoutTokenRoute
   E2ePostmessageProbeRoute: typeof E2ePostmessageProbeRoute
   ITokenRoute: typeof ITokenRoute
   QaHeroRoute: typeof QaHeroRoute
@@ -666,6 +679,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof E2ePostmessageProbeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/$token': {
+      id: '/checkout/$token'
+      path: '/checkout/$token'
+      fullPath: '/checkout/$token'
+      preLoaderRoute: typeof CheckoutTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/verify-hero': {
       id: '/api/verify-hero'
       path: '/api/verify-hero'
@@ -806,6 +826,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   ApiImgRoute: ApiImgRoute,
   ApiVerifyHeroRoute: ApiVerifyHeroRoute,
+  CheckoutTokenRoute: CheckoutTokenRoute,
   E2ePostmessageProbeRoute: E2ePostmessageProbeRoute,
   ITokenRoute: ITokenRoute,
   QaHeroRoute: QaHeroRoute,
