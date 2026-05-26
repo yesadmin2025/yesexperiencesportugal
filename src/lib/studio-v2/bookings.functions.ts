@@ -72,8 +72,9 @@ export const getCustomBookingDraft = createServerFn({ method: "POST" })
       .eq("draft_token", data.draftToken)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!row) return { draft: null as null | Record<string, unknown> };
-    return { draft: row as Record<string, unknown> };
+    if (!row) return { draft: null };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return { draft: row as any };
   });
 
 const confirmSchema = z.object({
