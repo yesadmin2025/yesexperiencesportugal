@@ -45,11 +45,13 @@ import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
 import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
 );
+
 
 interface StudioV2Props {
   onExit: () => void;
