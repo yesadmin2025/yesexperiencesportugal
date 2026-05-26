@@ -42,6 +42,7 @@ import { PersistentChatFab } from "./PersistentChatFab";
 import { LivingStoryStrip } from "./LivingStoryStrip";
 import { MemoryDeck } from "./MemoryDeck";
 import { AmbientToggle } from "./AmbientToggle";
+import { RefineStage, type RefineStop } from "./RefineStage";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
