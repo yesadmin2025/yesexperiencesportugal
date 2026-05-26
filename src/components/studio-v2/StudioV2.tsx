@@ -44,16 +44,22 @@ import { MemoryDeck } from "./MemoryDeck";
 import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
-import { composeStudioMoment } from "@/server/studioNarrative.functions";
-import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
+
 
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
 );
 
+
 interface StudioV2Props {
   onExit: () => void;
+  /** Optional pre-filled profile (e.g. resuming a saved share token). */
+  initialProfile?: TravelerProfile;
+  /** When true, jumps straight to the reveal beat using initialProfile. */
+  startAtReveal?: boolean;
 }
+
 
 // ─── beat sequence ───────────────────────────────────────────────────────
 //
@@ -124,11 +130,16 @@ const CHOICE_BEATS = new Set<Beat>([
   "choice-ops",
 ]);
 
-export function StudioV2({ onExit }: StudioV2Props) {
-  const [profile, setProfile] = useState<TravelerProfile>(() => emptyProfile());
-  const [beatIndex, setBeatIndex] = useState(0);
-  const [result, setResult] = useState<DesignResult | null>(null);
+export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
+  const [profile, setProfile] = useState<TravelerProfile>(() => initialProfile ?? emptyProfile());
+  const [beatIndex, setBeatIndex] = useState(() =>
+    startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
+  );
+  const [result, setResult] = useState<DesignResult | null>(() =>
+    startAtReveal && initialProfile ? designExperience(initialProfile) : null,
+  );
   const beat = SEQUENCE[beatIndex];
+
 
   const update = (patch: Partial<TravelerProfile>) => {
     setProfile((p) => ({ ...p, ...patch }));
@@ -502,6 +513,8 @@ export function StudioV2({ onExit }: StudioV2Props) {
         {beat === "reveal" && result && (
           <section key="reveal">
             <RevealStory profile={profile} region={result.region} />
+
+
             <Reveal result={result} />
           </section>
         )}
@@ -852,43 +865,13 @@ function RevealStory({
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
+  const livePreview = useMemo(() => previewJourney(profile), [profile]);
 
-  // AI tone layer — one editorial title + subtitle from Lovable Gateway.
-  // Fails silently to the static framing if anything goes wrong.
-  const sessionId = useBuilderSessionId();
-  const compose = useServerFn(composeStudioMoment);
-  const [ai, setAi] = useState<{ title: string; subtitle: string } | null>(null);
-  useEffect(() => {
-    if (!sessionId) return;
-    let cancelled = false;
-    const topPriority = Object.keys(profile.priorityWeights)[0] ?? null;
-    const groupShape = profile.group
-      ? profile.group.adults <= 2 && profile.group.children === 0 && profile.group.teens === 0
-        ? "couple"
-        : (profile.group.children + profile.group.teens > 0 ? "family" : "group")
-      : null;
-    compose({
-      data: {
-        sessionId,
-        mode: "proposal",
-        locale: "en",
-        mood: profile.intent ?? null,
-        who: groupShape,
-        intention: topPriority,
-        journeyType: profile.duration === "multi-day" ? "multi" : "day",
-        travellerName: profile.name?.trim() || null,
-        narrativeStage: "reveal",
-        confidence: 1,
-        acceptedCount: Object.keys(profile.priorityWeights).length,
-      },
-    })
-      .then((r) => {
-        if (cancelled || r.mode !== "proposal") return;
-        setAi({ title: r.title, subtitle: r.subtitle });
-      })
-      .catch(() => { /* silent — static framing remains */ });
-    return () => { cancelled = true; };
-  }, [sessionId, compose, profile]);
+
+  // AI narrative layer removed (server module path blocked by client import-protection).
+  // Static editorial framing carries the reveal.
+  const ai = null as { title: string; subtitle: string } | null;
+
 
   return (
     <section className="mb-10">
@@ -914,6 +897,36 @@ function RevealStory({
           />
         </div>
       )}
+
+      {/* Live route — real stops, drawn on map */}
+      {livePreview.stops.length >= 2 && (
+        <div
+          className="studio-v2-reveal -mx-5 sm:-mx-8 mb-8 overflow-hidden relative w-full h-[36vh] min-h-[240px] max-h-[360px] border-y"
+          style={{
+            borderColor: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
+            background: "var(--sand)",
+          }}
+        >
+          <Suspense fallback={<div className="absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}>Drawing your route…</div>}>
+            <BuilderMap
+              stops={livePreview.stops}
+              regionCenter={livePreview.regionCenter}
+              regionKey={livePreview.region}
+              emotionalMode
+              chrome={false}
+            />
+          </Suspense>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--ivory) 70%, transparent) 100%)",
+            }}
+          />
+        </div>
+      )}
+
 
       <p
         className="text-[10.5px] uppercase tracking-[0.36em]"
@@ -1087,17 +1100,45 @@ function ContinueButton({
 
 // ─── reveal action trio ──────────────────────────────────────────────────
 
-function RevealActions({ name }: { name?: string }) {
-  const [saved, setSaved] = useState(false);
-  const onSave = () => {
+function RevealActions({
+  name,
+  profile,
+  region,
+  archetype,
+}: {
+  name?: string;
+  profile?: TravelerProfile;
+  region?: string;
+  archetype?: string;
+}) {
+  const saveSession = useServerFn(createStudioSession);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const onSave = async () => {
+    if (saveState === "saving") return;
+    setSaveState("saving");
     try {
-      const payload = { name: name ?? null, savedAt: new Date().toISOString() };
-      window.localStorage.setItem("yes.studio-v2.saved", JSON.stringify(payload));
-      setSaved(true);
+      if (profile) {
+        const r = await saveSession({
+          data: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            profile: profile as any,
+            region,
+            archetype,
+          },
+        });
+        const url = `${window.location.origin}/s/${r.shareToken}`;
+        setShareUrl(url);
+        try { await navigator.clipboard.writeText(url); } catch { /* ignore */ }
+        try { window.localStorage.setItem("yes.studio-v2.last-share", url); } catch { /* */ }
+      }
+      setSaveState("saved");
     } catch {
-      setSaved(true);
+      setSaveState("error");
     }
   };
+  const saved = saveState === "saved";
+
   const waMsg = name?.trim()
     ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de a refinar com um local designer.`
     : "Olá! Acabei de desenhar uma experiência no Studio. Gostaria de a refinar com um local designer.";
@@ -1141,8 +1182,23 @@ function RevealActions({ name }: { name?: string }) {
         }}
       >
         <Bookmark className="h-3.5 w-3.5" aria-hidden />
-        {saved ? "Saved" : "Save my experience"}
+        {saveState === "saving"
+          ? "Saving…"
+          : saved
+          ? (shareUrl ? "Saved · link copied" : "Saved")
+          : saveState === "error"
+          ? "Try again"
+          : "Save my experience"}
       </button>
+      {saved && shareUrl && (
+        <p
+          className="text-center text-[11px] tracking-[0.18em] uppercase break-all"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+        >
+          {shareUrl.replace(/^https?:\/\//, "")}
+        </p>
+      )}
+
 
       {/* 3 — Tertiary: Refine with a Local Designer (text) */}
       <a
@@ -1864,7 +1920,13 @@ function Reveal({ result }: { result: DesignResult }) {
 
 
 
-      <RevealActions name={result.profile.name} />
+      <RevealActions
+        name={result.profile.name}
+        profile={result.profile}
+        region={result.region}
+        archetype={result.archetype}
+      />
+
 
 
       {import.meta.env.DEV && (

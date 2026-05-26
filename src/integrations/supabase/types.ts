@@ -1162,6 +1162,39 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_v2_sessions: {
+        Row: {
+          archetype: string | null
+          created_at: string
+          id: string
+          profile: Json
+          region: string | null
+          revoked_at: string | null
+          share_token: string
+          updated_at: string
+        }
+        Insert: {
+          archetype?: string | null
+          created_at?: string
+          id?: string
+          profile: Json
+          region?: string | null
+          revoked_at?: string | null
+          share_token: string
+          updated_at?: string
+        }
+        Update: {
+          archetype?: string | null
+          created_at?: string
+          id?: string
+          profile?: Json
+          region?: string | null
+          revoked_at?: string | null
+          share_token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
