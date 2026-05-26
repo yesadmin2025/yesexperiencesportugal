@@ -135,20 +135,42 @@ function periodLabel(min: number): string {
   return "evening";
 }
 
-// Computes arrival clock per stop assuming a 10:00 start, 55 km/h average drive.
-function computeArrivals(stops: RefineStop[]): number[] {
-  const out: number[] = [];
-  let t = 10 * 60;
+// Day-break threshold — once a day pushes past this clock, the next stop
+// becomes the opening beat of a new day (silence, then resume).
+const DAY_END_MIN = 19 * 60;       // 19:00
+const DAY_START_MIN = 10 * 60;     // 10:00 — next day resumes here
+
+// Computes arrival clock per stop and groups stops into days. When cumulative
+// time pushes past DAY_END_MIN, a new day starts and the clock resets.
+// Returns one array per day, in original stop order.
+function composeDays(stops: RefineStop[]): {
+  days: { stops: RefineStop[]; arrivals: number[]; indices: number[] }[];
+} {
+  const days: { stops: RefineStop[]; arrivals: number[]; indices: number[] }[] = [];
+  let cur: { stops: RefineStop[]; arrivals: number[]; indices: number[] } = {
+    stops: [], arrivals: [], indices: [],
+  };
+  let t = DAY_START_MIN;
   for (let i = 0; i < stops.length; i++) {
-    if (i > 0) {
-      const km = haversineKm(stops[i - 1], stops[i]);
+    if (cur.stops.length > 0) {
+      const km = haversineKm(cur.stops[cur.stops.length - 1], stops[i]);
       const drive = (km / 55) * 60;
-      t += drive;
+      const candidateArrival = t + drive;
+      if (candidateArrival > DAY_END_MIN) {
+        days.push(cur);
+        cur = { stops: [], arrivals: [], indices: [] };
+        t = DAY_START_MIN;
+      } else {
+        t += drive;
+      }
     }
-    out.push(t);
+    cur.stops.push(stops[i]);
+    cur.arrivals.push(t);
+    cur.indices.push(i);
     t += stops[i].duration_minutes ?? 60;
   }
-  return out;
+  if (cur.stops.length > 0) days.push(cur);
+  return { days };
 }
 
 // ─── component ───────────────────────────────────────────────────────────
@@ -170,7 +192,18 @@ export function LivingItinerary({
     void trackBuilderEvent("studio_v2_refine_click", { surface: "living_itinerary" });
   }, []);
 
-  const arrivals = useMemo(() => computeArrivals(stops), [stops]);
+  const { days } = useMemo(() => composeDays(stops), [stops]);
+  const isMultiDay = days.length > 1;
+
+  // Telemetry: multi-day composition + day-break beats.
+  useEffect(() => {
+    if (!isMultiDay) return;
+    void trackBuilderEvent("studio_v2_multiday_composed", { days: days.length, stops: stops.length });
+    for (let i = 1; i < days.length; i++) {
+      void trackBuilderEvent("studio_v2_daybreak_shown", { day: i + 1 });
+    }
+  }, [isMultiDay, days.length, stops.length]);
+
 
   const inUse = useMemo(() => new Set(stops.map((s) => s.key)), [stops]);
   const hasSwapPool = useMemo(
@@ -340,37 +373,44 @@ export function LivingItinerary({
         style={{ zIndex: 1 }}
         aria-label="Itinerary scenes — swipe a scene left to substitute, long-press to anchor its mood"
       >
-        {stops.map((s, i) => {
-          const atm = atmosphereFromTag(s.tag, fallback);
-          const img = INTENT_IMAGE[atm];
-          const arrival = arrivals[i] ?? 10 * 60;
-          const priorities = prioritiesFromTag(s.tag);
-          const isLast = i === stops.length - 1;
-
-          return (
-            <Scene
-              key={s.key}
-              index={i}
-              stop={s}
-              imgSrc={img.src}
-              imgAlt={img.alt}
-              arrivalLabel={`${periodLabel(arrival)} · ${fmtClock(arrival)}`}
-              line={atmosphericLine(s.tag)}
-              isLast={isLast}
-              hasSwapPool={hasSwapPool && stops.length > 2}
-              onSwipeLeft={() => performSwap(s.key, s.tag)}
-              onLongPress={() => {
-                void trackBuilderEvent("studio_v2_refine_click", { gesture: "longpress" });
-                emitSignal({ type: "longpress", stopKey: s.key, priorities });
-              }}
-              onDwell={(ms) => {
-                emitSignal({ type: "dwell", stopKey: s.key, ms, priorities });
-              }}
-              onActive={() => setActiveIdx(i)}
-            />
-          );
-        })}
+        {days.map((day, dayIdx) => (
+          <li key={`day-${dayIdx}`} className="contents">
+            {dayIdx > 0 && <DayBreakScene dayNumber={dayIdx + 1} />}
+            {day.stops.map((s, j) => {
+              const i = day.indices[j];
+              const atm = atmosphereFromTag(s.tag, fallback);
+              const img = INTENT_IMAGE[atm];
+              const arrival = day.arrivals[j];
+              const priorities = prioritiesFromTag(s.tag);
+              const isLast = i === stops.length - 1;
+              return (
+                <Scene
+                  key={s.key}
+                  index={i}
+                  stop={s}
+                  imgSrc={img.src}
+                  imgAlt={img.alt}
+                  arrivalLabel={`${periodLabel(arrival)} · ${fmtClock(arrival)}`}
+                  line={atmosphericLine(s.tag)}
+                  isLast={isLast}
+                  hasSwapPool={hasSwapPool && stops.length > 2}
+                  onSwipeLeft={() => performSwap(s.key, s.tag)}
+                  onLongPress={() => {
+                    void trackBuilderEvent("studio_v2_refine_click", { gesture: "longpress" });
+                    emitSignal({ type: "longpress", stopKey: s.key, priorities });
+                  }}
+                  onDwell={(ms) => {
+                    emitSignal({ type: "dwell", stopKey: s.key, ms, priorities });
+                  }}
+                  onActive={() => setActiveIdx(i)}
+                />
+              );
+            })}
+          </li>
+        ))}
       </ol>
+
+      {isMultiDay && <ComposedPrivatelyMark />}
 
       <p
         className="mt-6 text-center text-[11.5px] italic"
@@ -381,6 +421,7 @@ export function LivingItinerary({
       >
         swipe a scene left to let the day substitute · long-press to anchor its mood
       </p>
+
 
       {/* Engine-triggered map reveal — one shot per session. */}
       <MapReveal
@@ -603,5 +644,92 @@ function Scene({
         </div>
       )}
     </li>
+  );
+}
+
+// ─── day-break scene ─────────────────────────────────────────────────────
+// A single full-bleed beat of silence between days. No "Day N of M" badge,
+// no chrome — just an atmospheric line and a faint horizon. The bible's
+// "the day exhales — tomorrow begins in stone" beat.
+
+function DayBreakScene({ dayNumber }: { dayNumber: number }) {
+  return (
+    <li
+      className="relative overflow-hidden rounded-[2px]"
+      style={{
+        minHeight: 200,
+        background:
+          "linear-gradient(180deg, color-mix(in oklab, var(--teal) 35%, var(--charcoal)) 0%, color-mix(in oklab, var(--charcoal) 92%, var(--teal)) 100%)",
+      }}
+      aria-label={`Day ${dayNumber} begins`}
+    >
+      {/* faint horizon line */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0"
+        style={{
+          top: "58%",
+          height: 1,
+          background: "color-mix(in oklab, var(--gold) 55%, transparent)",
+          opacity: 0.6,
+        }}
+      />
+      <div className="relative z-10 flex h-full min-h-[200px] flex-col items-center justify-center px-6 text-center">
+        <p
+          className="text-[10.5px] uppercase tracking-[0.36em]"
+          style={{
+            color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+            fontWeight: 700,
+          }}
+        >
+          the day exhales
+        </p>
+        <p
+          className="mt-4 text-[17px] leading-snug italic"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "var(--ivory)",
+            maxWidth: "26ch",
+          }}
+        >
+          Tomorrow begins in stone, with the light still low.
+        </p>
+      </div>
+    </li>
+  );
+}
+
+// ─── "Composed privately" mark ───────────────────────────────────────────
+// The only acknowledgment that this journey reached the rarefied tier.
+// Appears once per multi-day itinerary, restrained, gold-on-ivory.
+
+function ComposedPrivatelyMark() {
+  return (
+    <div className="mt-8 flex flex-col items-center text-center">
+      <div
+        aria-hidden
+        className="h-px w-10"
+        style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+      />
+      <p
+        className="mt-3 text-[10px] uppercase tracking-[0.42em]"
+        style={{
+          color: "color-mix(in oklab, var(--gold) 88%, var(--charcoal))",
+          fontWeight: 700,
+        }}
+      >
+        Composed privately
+      </p>
+      <p
+        className="mt-2 text-[11.5px] italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+          maxWidth: "32ch",
+        }}
+      >
+        A multi-day composition. Final routing confirmed in person — never by algorithm alone.
+      </p>
+    </div>
   );
 }

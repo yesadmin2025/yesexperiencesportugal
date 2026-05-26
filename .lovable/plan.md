@@ -92,8 +92,8 @@ Secrets needed: `MAPBOX_ACCESS_TOKEN` (already used elsewhere — confirm before
 1. **F.6 ✅** Move 3 — real OSRM driving routes + `builder_route_cache`
 2. **F.7 ✅** Move 2 — predictive engine (`studio_v2_predictions`, `applySignal`, `forecastNext`, signal wiring)
 3. **F.8 ✅** Move 1 — `LivingItinerary` replaces Refine surface: full-bleed cinematic scenes per stop, swipe-left = silent substitution, long-press = mood anchor, dwell observer feeds engine. Classic Refine kept behind "Controls" escape hatch.
-4. **F.9** Move 4 — map as co-protagonist + Reveal moment
-5. **F.10** Move 5 — multi-day as apex (pricing stays silent until human composer confirms)
+4. **F.9 ✅** Move 4 — map as co-protagonist + Reveal moment
+5. **F.10 ✅** Move 5 — multi-day as apex: `composeDays()` splits cinematic scroll when arrivals push past 19:00, `DayBreakScene` renders silence between days, `ComposedPrivatelyMark` appears once per multi-day. Pricing stays silent until human composer confirms.
 6. **F.11** Move 6 — warm memory + invitation route
 
 ## Answers locked
