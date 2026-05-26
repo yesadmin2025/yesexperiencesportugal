@@ -1225,59 +1225,13 @@ function RevealActions({
   };
   const saved = saveState === "saved";
 
-  const [secureNote, setSecureNote] = useState<string | null>(null);
-  const onSecure = () => {
-    void trackBuilderEvent("studio_v2_secure_click", {
-      archetype,
-      region,
-      intent: profile?.intent,
-    });
-    // F.3 will wire this to a custom-itinerary checkout. Until then we keep
-    // travellers on-screen and prompt them to refine or contact a local
-    // designer — never bounce them to the Signature catalogue, this is a
-    // bespoke day, not a packaged tour.
-    setSecureNote(
-      "Your bespoke day is ready. A local designer will confirm timings and finalise booking — refine below or message us to lock it in.",
-    );
-  };
-
   const waMsg = name?.trim()
     ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de a refinar com um local designer.`
     : "Olá! Acabei de desenhar uma experiência no Studio. Gostaria de a refinar com um local designer.";
   return (
     <div className="mt-12 flex flex-col gap-3">
-      {/* 1 — Primary: Secure Your Experience (gold) */}
-      <button
-        type="button"
-        onClick={onSecure}
-        className="group inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
-        style={{
-          background: "color-mix(in oklab, var(--gold) 92%, var(--charcoal))",
-          color: "var(--charcoal)",
-          minHeight: 56,
-          fontFamily: "var(--font-sans, Inter), sans-serif",
-          fontWeight: 700,
-          fontSize: 13,
-          letterSpacing: "0.2em",
-          textTransform: "uppercase",
-          boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--gold) 60%, transparent)",
-        }}
-      >
-        Secure your experience
-        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
-      </button>
-      {secureNote && (
-        <p
-          className="text-center text-[12.5px] italic px-2"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
-          }}
-          role="status"
-        >
-          {secureNote}
-        </p>
-      )}
+      {/* Primary Secure CTA now lives in RevealStory (uses real edited stops). */}
+
 
       {/* 2 — Secondary: Save My Experience (ghost) */}
       <button
