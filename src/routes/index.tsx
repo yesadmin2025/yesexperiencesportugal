@@ -657,7 +657,7 @@ function HomePage() {
                   num: "03",
                   label: "Studio",
                   body: "Create from scratch in real time.",
-                  to: "/builder",
+                  to: "/studio-v2",
                 },
                 {
                   num: "04",
