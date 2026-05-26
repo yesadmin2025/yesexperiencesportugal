@@ -155,12 +155,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   useEffect(() => {
     if (beat !== "thinking") return;
     if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
+    // Longer pause — Layer 3 "ritmo": confidence reads as restraint, not lag.
     thinkingTimer.current = window.setTimeout(() => {
       const archetype = deriveArchetype(profile);
       const r = designExperience({ ...profile, archetype });
       setResult(r);
       setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
-    }, 2200);
+    }, 3400);
     return () => {
       if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
     };
@@ -172,6 +173,41 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     if (signals.length === 0) return null;
     return inferProfile(signals, { pax, pickup: pickup || "Lisboa" });
   }, [signals, pax, pickup]);
+
+  // Persist session for "continue where you left off" — write after any
+  // meaningful state change past the opening. Cleared on reveal.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (startAtReveal) return; // shared-token resume isn't local progress
+    if (beat === "opening") return;
+    if (beat === "reveal") { clearPersistedSession(); return; }
+    const payload: PersistedSession = {
+      beatIndex, profile, signals, pax, pickup, savedAt: Date.now(),
+    };
+    try { window.localStorage.setItem(SESSION_KEY, JSON.stringify(payload)); } catch { /* */ }
+  }, [beat, beatIndex, profile, signals, pax, pickup, startAtReveal]);
+
+  const onResume = useCallback(() => {
+    const s = resumeRef.current;
+    if (!s) return;
+    setProfile(s.profile);
+    setSignals(s.signals ?? []);
+    setPax(s.pax ?? 2);
+    setPickup(s.pickup ?? "");
+    // Skip thinking on resume — re-enter from the last cognitive beat.
+    const safeBeat = SEQUENCE[s.beatIndex] === "thinking"
+      ? SEQUENCE.indexOf("conviction")
+      : s.beatIndex;
+    setBeatIndex(Math.max(0, safeBeat));
+    resumeRef.current = null;
+  }, []);
+
+  const onDeclineResume = useCallback(() => {
+    clearPersistedSession();
+    resumeRef.current = null;
+    // Force re-render so the resume overlay disappears.
+    setBeatIndex((i) => i);
+  }, []);
 
   return (
     <div
