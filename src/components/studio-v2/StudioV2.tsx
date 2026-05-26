@@ -45,6 +45,7 @@ import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
+import { trackBuilderEvent } from "@/lib/builder-analytics";
 
 
 const BuilderMap = lazy(() =>
