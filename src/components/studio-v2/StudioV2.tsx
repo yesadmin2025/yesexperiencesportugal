@@ -1,5 +1,6 @@
-import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, X } from "lucide-react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, Bookmark, ChevronDown, MessageCircle, X } from "lucide-react";
+
 import {
   emptyProfile,
   deriveArchetype,
