@@ -1,35 +1,28 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Bookmark, ChevronDown, MessageCircle, X } from "lucide-react";
+
 import {
   emptyProfile,
-  applyIntent,
-  applyPace,
   deriveArchetype,
-  type DurationKey,
-  type EnhancementKey,
   type GroupProfile,
   type IntentAtmosphere,
-  type LuxuryTier,
   type PaceV2,
-  type PriorityKey,
   type TravelerProfile,
 } from "@/lib/studio-v2/profile";
 import {
-  INTENT_OPTIONS,
-  INTENT_ATMOSPHERE,
-  PACE_OPTIONS,
-  PRIORITY_OPTIONS,
-  PRIORITY_WEIGHTS,
-  DURATION_OPTIONS,
-  ENHANCEMENT_OPTIONS,
-  TIER_OPTIONS,
-  tierLabel,
   revealFraming,
-  storyOpener,
   storyAfterIntent,
   storyAfterPace,
   storyAfterGroup,
+  tierLabel,
 } from "@/lib/studio-v2/content";
+import {
+  MOOD_SCENES,
+  PICKUP_CITIES,
+  inferProfile,
+  convictionLine,
+  type SceneSignal,
+} from "@/lib/studio-v2/intent-infer";
 import { INTENT_IMAGE } from "@/lib/studio-v2/images";
 import {
   designExperience,
@@ -38,24 +31,21 @@ import {
   type JourneyPreview,
 } from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
-import { PersistentChatFab } from "./PersistentChatFab";
-import { LivingStoryStrip } from "./LivingStoryStrip";
-import { MemoryDeck } from "./MemoryDeck";
-import { AmbientToggle } from "./AmbientToggle";
 import { type RefineStop } from "./RefineStage";
 import { LivingItinerary } from "./LivingItinerary";
 import { whatsappHref } from "@/components/WhatsAppFab";
+import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 
-
+// Kept for type-compat with helpers below that still reference it.
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
 );
-
+void BuilderMap;
 
 interface StudioV2Props {
   onExit: () => void;
@@ -65,474 +55,518 @@ interface StudioV2Props {
   startAtReveal?: boolean;
 }
 
-
-// ─── beat sequence ───────────────────────────────────────────────────────
+// ─── cinematic flow ──────────────────────────────────────────────────────
 //
-// The Studio v2 journey alternates Choice → Reward → Choice → Reward …
-// Reward beats auto-advance after a short pause (tap to skip). Choice
-// beats advance when the traveller makes a selection (or, for multi-input
-// beats like Group/Ops, when they tap Continue).
+// Studio Bible north star: interface progressively disappears, guided not
+// asked, Portugal felt early, AI orchestrates. Eight quiz screens replaced
+// by 5 momentos: opening silence → 3 mood scenes (signal capture, no
+// questions) → 1 logistics card (pax + pickup only) → conviction → reveal.
 
 type Beat =
-  | "intro"
-  | "name"
-  | "story-opener"
-  | "choice-group"
-  | "story-group"
-  | "choice-duration"
-  | "choice-intent"
-  | "reward-image"
-  | "choice-priorities"
-  | "reward-map"
-  | "choice-pace"
-  | "reward-insight"
-  | "choice-enhancements"
-  | "choice-tier"
-  | "choice-ops"
+  | "opening"
+  | "mood-1"
+  | "mood-2"
+  | "mood-3"
+  | "logistics"
+  | "conviction"
   | "thinking"
   | "reveal";
 
-// Bible-aligned order:
-// Welcome → Name → Group + Guests → Duration → Style (intent) →
-// Highlights (priorities) → Pace → Enhancements → Tier → Ops → Reveal.
 const SEQUENCE: Beat[] = [
-  "intro",
-  "name",
-  "story-opener",
-  "choice-group",
-  "story-group",
-  "choice-duration",
-  "choice-intent",
-  "reward-image",
-  "choice-priorities",
-  "reward-map",
-  "choice-pace",
-  "reward-insight",
-  "choice-enhancements",
-  "choice-tier",
-  "choice-ops",
-  "thinking",
-  "reveal",
+  "opening", "mood-1", "mood-2", "mood-3",
+  "logistics", "conviction", "thinking", "reveal",
 ];
 
-const REWARD_BEATS = new Set<Beat>([
-  "story-opener",
-  "reward-image",
-  "reward-insight",
-  "reward-map",
-  "story-group",
-  "thinking",
-]);
-
-const CHOICE_BEATS = new Set<Beat>([
-  "choice-group",
-  "choice-duration",
-  "choice-intent",
-  "choice-priorities",
-  "choice-pace",
-  "choice-enhancements",
-  "choice-tier",
-  "choice-ops",
-]);
-
 export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
-  const [profile, setProfile] = useState<TravelerProfile>(() => initialProfile ?? emptyProfile());
   const [beatIndex, setBeatIndex] = useState(() =>
     startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
   );
+  const [profile, setProfile] = useState<TravelerProfile>(() => initialProfile ?? emptyProfile());
   const [result, setResult] = useState<DesignResult | null>(() =>
     startAtReveal && initialProfile ? designExperience(initialProfile) : null,
   );
+  const [signals, setSignals] = useState<SceneSignal[]>([]);
+  const [pax, setPax] = useState(2);
+  const [pickup, setPickup] = useState<string>("");
+
   const beat = SEQUENCE[beatIndex];
-
-
-  const update = (patch: Partial<TravelerProfile>) => {
-    setProfile((p) => ({ ...p, ...patch }));
-  };
-
   const next = useCallback(() => {
     setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
   }, []);
-  const back = useCallback(() => {
-    setBeatIndex((i) => Math.max(0, i - 1));
-  }, []);
 
-  // Auto-advance reward beats (skippable by tap).
-  const rewardTimer = useRef<number | null>(null);
+  const onSceneSignal = useCallback((sig: SceneSignal) => {
+    setSignals((prev) => [...prev, sig]);
+    void trackBuilderEvent("studio_v2_predict_signal", {
+      sceneId: sig.sceneId,
+      tappedFragmentId: sig.tappedFragmentId,
+      lingerMs: sig.lingerMs,
+    });
+    next();
+  }, [next]);
+
+  const onLogisticsSubmit = useCallback(() => {
+    const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
+    setProfile(p);
+    void trackBuilderEvent("studio_v2_predict_signal", {
+      stage: "intent_inferred",
+      topIntent, confidence: Math.round(confidence * 100), pax, pickup,
+    });
+    next();
+  }, [signals, pax, pickup, next]);
+
+  const thinkingTimer = useRef<number | null>(null);
   useEffect(() => {
-    if (!REWARD_BEATS.has(beat)) return;
-    const ms =
-      beat === "thinking"       ? 1500 :
-      beat === "reward-map"     ? 2600 :
-      beat === "reward-image"   ? 2100 :
-      beat === "reward-insight" ? 1900 :
-      beat === "story-opener"   ? 2000 :
-      beat === "story-group"    ? 1800 :
-                                  2000;
-    if (rewardTimer.current) window.clearTimeout(rewardTimer.current);
-    rewardTimer.current = window.setTimeout(() => {
-      if (beat === "thinking") {
-        // Compose the final result at the very last moment.
-        const archetype = deriveArchetype(profile);
-        const r = designExperience({ ...profile, archetype });
-        setResult(r);
-      }
+    if (beat !== "thinking") return;
+    if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
+    thinkingTimer.current = window.setTimeout(() => {
+      const archetype = deriveArchetype(profile);
+      const r = designExperience({ ...profile, archetype });
+      setResult(r);
       setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
-    }, ms);
+    }, 2200);
     return () => {
-      if (rewardTimer.current) window.clearTimeout(rewardTimer.current);
+      if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [beat]);
+  }, [beat, profile]);
 
-  // Live preview drives reward-map beat.
-  const preview: JourneyPreview = useMemo(() => previewJourney(profile), [profile]);
+  const showChrome = beat !== "opening" && beat !== "reveal";
 
-  // Atmospheric backdrop — shifts with intent.
-  const atmo = profile.intent ? INTENT_ATMOSPHERE[profile.intent] : null;
-  const atmosphereBg = atmo
-    ? `radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, ${atmo.tintA} ${atmo.mix}%, var(--ivory)) 0%, var(--ivory) 55%), radial-gradient(80% 60% at 80% 100%, color-mix(in oklab, ${atmo.tintB} 35%, transparent) 0%, transparent 60%)`
-    : `radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--sand) 35%, var(--ivory)) 0%, var(--ivory) 60%)`;
-
-  const totalBeats = SEQUENCE.length;
-  const progress = Math.round((beatIndex / (totalBeats - 1)) * 100);
-  const showChrome = beat !== "intro" && beat !== "reveal";
+  const inferred = useMemo(() => {
+    if (signals.length === 0) return null;
+    return inferProfile(signals, { pax, pickup: pickup || "Lisboa" });
+  }, [signals, pax, pickup]);
 
   return (
     <div
       className="studio-v2 relative min-h-screen w-full overflow-x-hidden"
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
-      <div className="studio-v2__atmosphere" aria-hidden style={{ background: atmosphereBg }} />
-
-      <header className="relative z-10 flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
-        {showChrome ? (
-          <span
-            className="text-[11px] uppercase tracking-[0.32em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
-          >
-            Studio · your journey
-          </span>
-        ) : (
-          <span />
-        )}
-        <div className="flex items-center gap-1">
-          {showChrome && <AmbientToggle />}
-          <button
-            onClick={onExit}
-            aria-label="Exit studio"
-            className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-[color:var(--sand)] focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:outline-none"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+      <header className="absolute right-0 top-0 z-30 flex items-center px-4 py-4 sm:px-6">
+        <button
+          onClick={onExit}
+          aria-label="Exit studio"
+          className="grid h-11 w-11 place-items-center rounded-full transition focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:outline-none"
+          style={{
+            background: showChrome
+              ? "color-mix(in oklab, var(--ivory) 70%, transparent)"
+              : "color-mix(in oklab, var(--charcoal) 28%, transparent)",
+            color: showChrome ? "var(--charcoal)" : "var(--ivory)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <X className="h-4 w-4" />
+        </button>
       </header>
 
-      {showChrome && (
-        <div className="relative z-10 px-5 sm:px-8" aria-hidden>
-          <div
-            className="h-[2px] w-full rounded-full"
-            style={{ background: "color-mix(in oklab, var(--charcoal) 8%, transparent)" }}
-          >
-            <div
-              className="h-full rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${progress}%`, background: "var(--gold)" }}
-            />
-          </div>
-          <div className="mt-3">
-            <MemoryDeck
-              profile={profile}
-              onJump={(idx) => setBeatIndex(idx)}
-              beatIndexFor={(key) => Math.max(0, SEQUENCE.indexOf(key as Beat))}
-            />
-          </div>
-        </div>
-      )}
-
-      <main
-        key={beat}
-        className="studio-v2-reveal relative z-10 mx-auto w-full max-w-3xl px-5 pb-28 pt-6 sm:px-8 sm:pt-10"
-      >
-        {beat === "intro" && (
-          <IntroBeat onBegin={next} />
-        )}
-
-        {beat === "name" && (
-          <NameBeat
-            initial={profile.name ?? ""}
-            onSubmit={(name) => {
-              update({ name: name.trim() || undefined });
-              next();
-            }}
-            onSkip={next}
+      <main key={beat} className="studio-v2-reveal relative z-10">
+        {beat === "opening" && <OpeningScene onTap={next} />}
+        {beat === "mood-1" && <MoodSceneView scene={MOOD_SCENES[0]} onSignal={onSceneSignal} />}
+        {beat === "mood-2" && <MoodSceneView scene={MOOD_SCENES[1]} onSignal={onSceneSignal} />}
+        {beat === "mood-3" && <MoodSceneView scene={MOOD_SCENES[2]} onSignal={onSceneSignal} />}
+        {beat === "logistics" && (
+          <LogisticsCard
+            pax={pax} setPax={setPax}
+            pickup={pickup} setPickup={setPickup}
+            onSubmit={onLogisticsSubmit}
           />
         )}
-
-        {beat === "story-opener" && (
-          <StoryBeat
-            line={storyOpener(profile.name)}
-            onSkip={next}
-          />
-        )}
-
-        {beat === "choice-intent" && (
-          <ChoiceBeat
-            eyebrow="Atmosphere"
-            title={
-              <>
-                How should it{" "}
-                <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-                  feel
-                </span>
-                ?
-              </>
-            }
-            helper="Choose the atmosphere closest to what you have in mind."
-            onBack={back}
-          >
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {INTENT_OPTIONS.map((opt) => (
-                <PhotoOptionCard
-                  key={opt.id}
-                  active={profile.intent === opt.id}
-                  label={opt.label}
-                  sub={opt.sub}
-                  image={INTENT_IMAGE[opt.id].src}
-                  alt={INTENT_IMAGE[opt.id].alt}
-                  onClick={() => {
-                    update(applyIntent(profile, opt.id as IntentAtmosphere));
-                    window.setTimeout(next, 320);
-                  }}
-                />
-              ))}
-            </div>
-          </ChoiceBeat>
-        )}
-
-        {beat === "reward-image" && profile.intent && (
-          <RewardImageBeat intent={profile.intent} onSkip={next} />
-        )}
-
-        {beat === "choice-pace" && (
-          <ChoiceBeat
-            eyebrow="Rhythm"
-            title="Set the rhythm."
-            helper="How dense should the day feel?"
-            onBack={back}
-          >
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {PACE_OPTIONS.map((opt) => (
-                <OptionCard
-                  key={opt.id}
-                  active={profile.pace === opt.id}
-                  label={opt.label}
-                  sub={opt.sub}
-                  onClick={() => {
-                    update(applyPace(profile, opt.id as PaceV2));
-                    window.setTimeout(next, 280);
-                  }}
-                />
-              ))}
-            </div>
-          </ChoiceBeat>
-        )}
-
-        {beat === "reward-insight" && (
-          <InsightBeat line={profile.pace ? storyAfterPace(profile.pace) : "A rhythm is forming."} onSkip={next} />
-        )}
-
-        {beat === "choice-priorities" && (
-          <ChoiceBeat
-            eyebrow="Priorities"
-            title="What pulls you in?"
-            helper="Tap to add. Tap again to mark essential."
-            onBack={back}
-            footer={
-              <ContinueButton
-                label="Continue"
-                onClick={next}
-                disabled={Object.keys(profile.priorityWeights).length === 0}
-              />
-            }
-          >
-            <div className="flex flex-wrap gap-2">
-              {PRIORITY_OPTIONS.map((opt) => {
-                const w = profile.priorityWeights[opt.id as PriorityKey];
-                const nextW =
-                  w === undefined ? PRIORITY_WEIGHTS.single :
-                  w === PRIORITY_WEIGHTS.single ? PRIORITY_WEIGHTS.must :
-                  undefined;
-                return (
-                  <PriorityChip
-                    key={opt.id}
-                    label={opt.label}
-                    weight={w}
-                    onClick={() => {
-                      const pw = { ...profile.priorityWeights };
-                      if (nextW === undefined) delete pw[opt.id as PriorityKey];
-                      else pw[opt.id as PriorityKey] = nextW;
-                      update({ priorityWeights: pw });
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </ChoiceBeat>
-        )}
-
-        {beat === "reward-map" && (
-          <RewardMapBeat preview={preview} onSkip={next} />
-        )}
-
-        {beat === "choice-group" && (
-          <ChoiceBeat
-            eyebrow="Guests"
-            title="Who is travelling."
-            helper="We tailor pacing and comfort to the group."
-            onBack={back}
-            footer={<ContinueButton label="Continue" onClick={next} />}
-          >
-            <GroupForm value={profile.group} onChange={(g) => update({ group: g })} />
-          </ChoiceBeat>
-        )}
-
-        {beat === "story-group" && (
-          <StoryBeat line={storyAfterGroup(profile.group)} onSkip={next} />
-        )}
-
-        {beat === "choice-duration" && (
-          <ChoiceBeat
-            eyebrow="Duration"
-            title={<>How long should it <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>last</span>?</>}
-            helper="A focused chapter, a full arc, or a woven journey."
-            onBack={back}
-          >
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {DURATION_OPTIONS.map((opt) => (
-                <OptionCard
-                  key={opt.id}
-                  active={profile.duration === opt.id}
-                  label={opt.label}
-                  sub={opt.sub}
-                  onClick={() => {
-                    update({
-                      duration: opt.id,
-                      durationDays: opt.id === "multi-day" ? (profile.durationDays ?? 3) : undefined,
-                    });
-                    window.setTimeout(next, 280);
-                  }}
-                />
-              ))}
-            </div>
-            {profile.duration === "multi-day" && (
-              <div className="mt-6 flex items-center justify-between rounded-[2px] border px-4 py-3"
-                   style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}>
-                <span className="text-[13px]" style={{ color: "var(--charcoal)" }}>How many days?</span>
-                <div className="flex items-center gap-3">
-                  <StepBtn label="−" onClick={() => update({ durationDays: Math.max(2, (profile.durationDays ?? 3) - 1) })} />
-                  <span className="w-6 text-center text-[15px] tabular-nums">{profile.durationDays ?? 3}</span>
-                  <StepBtn label="+" onClick={() => update({ durationDays: Math.min(10, (profile.durationDays ?? 3) + 1) })} />
-                </div>
-              </div>
+        {beat === "conviction" && inferred && (
+          <ConvictionMoment
+            line={convictionLine(
+              inferred.topIntent,
+              inferred.profile.pace ?? "balanced",
+              pickup || "Lisboa",
+              pax,
             )}
-          </ChoiceBeat>
+            onContinue={next}
+          />
         )}
-
-        {beat === "choice-enhancements" && (
-          <ChoiceBeat
-            eyebrow="Enhancements"
-            title={<>Add a <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>signature</span> touch.</>}
-            helper="Optional layers, confirmed by a local before booking."
-            onBack={back}
-            footer={<ContinueButton label="Continue" onClick={next} />}
-          >
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {ENHANCEMENT_OPTIONS.map((opt) => {
-                const active = profile.enhancements.includes(opt.id);
-                return (
-                  <OptionCard
-                    key={opt.id}
-                    active={active}
-                    label={opt.label}
-                    sub={opt.sub}
-                    onClick={() => {
-                      const set = new Set(profile.enhancements);
-                      if (active) set.delete(opt.id);
-                      else set.add(opt.id);
-                      update({ enhancements: Array.from(set) as EnhancementKey[] });
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </ChoiceBeat>
-        )}
-
-        {beat === "choice-tier" && (
-          <ChoiceBeat
-            eyebrow="Experience tier"
-            title={<>Choose your <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>level</span>.</>}
-            helper="Pricing is confirmed at reveal — no surprises."
-            onBack={back}
-          >
-            <div className="grid grid-cols-1 gap-3">
-              {TIER_OPTIONS.map((opt) => {
-                const active = (profile.group?.luxuryTier ?? "elevated") === opt.id;
-                return (
-                  <OptionCard
-                    key={opt.id}
-                    active={active}
-                    label={opt.label}
-                    sub={opt.sub}
-                    onClick={() => {
-                      const g: GroupProfile = profile.group ?? {
-                        adults: 2, children: 0, teens: 0, mobility: "none",
-                        occasion: "none", decisionStyle: "collaborative", luxuryTier: opt.id as LuxuryTier,
-                      };
-                      update({ group: { ...g, luxuryTier: opt.id as LuxuryTier } });
-                      window.setTimeout(next, 280);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </ChoiceBeat>
-        )}
-
-        {beat === "choice-ops" && (
-          <ChoiceBeat
-            eyebrow="Logistics"
-            title="A few practicalities."
-            helper="Optional. Sensible defaults stand in."
-            onBack={back}
-            footer={<ContinueButton label="Design my day" onClick={next} />}
-          >
-            <OpsForm value={profile.ops} onChange={(ops) => update({ ops })} />
-          </ChoiceBeat>
-        )}
-
-        {beat === "thinking" && (
-          <ThinkingBeat />
-        )}
-
+        {beat === "thinking" && <ThinkingBeat />}
         {beat === "reveal" && result && (
-          <section key="reveal">
+          <section
+            key="reveal"
+            className="relative mx-auto w-full max-w-3xl px-5 pb-28 pt-10 sm:px-8 sm:pt-14"
+          >
             <RevealStory profile={profile} region={result.region} />
-
-
             <Reveal result={result} />
           </section>
         )}
       </main>
-
-      {CHOICE_BEATS.has(beat) && beatIndex > 1 && (
-        <LivingStoryStrip profile={profile} preview={preview} />
-      )}
-
-      <PersistentChatFab profile={profile} />
     </div>
   );
 }
+
+// Suppress "unused" warnings for retained legacy types/helpers.
+void previewJourney; void emptyProfile;
+
+// ─── opening scene — silence + Portugal breathing ───────────────────────
+
+function OpeningScene({ onTap }: { onTap: () => void }) {
+  const [showLine, setShowLine] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setShowLine(true), 900);
+    return () => window.clearTimeout(t);
+  }, []);
+  return (
+    <button
+      type="button"
+      onClick={onTap}
+      aria-label="Begin"
+      className="relative block h-[100svh] w-full overflow-hidden text-left focus-visible:outline-none"
+    >
+      <img
+        src={INTENT_IMAGE.relaxed_scenic.src}
+        alt={INTENT_IMAGE.relaxed_scenic.alt}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ animation: "studioV2OpeningZoom 14s ease-out forwards", filter: "saturate(0.92)" }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, color-mix(in oklab, var(--charcoal) 18%, transparent) 0%, transparent 35%, color-mix(in oklab, var(--charcoal) 55%, transparent) 100%)",
+        }}
+      />
+      <div className="absolute inset-x-6 bottom-[18vh] sm:inset-x-12">
+        <p
+          className="text-[11px] uppercase tracking-[0.36em] transition-opacity duration-1000"
+          style={{
+            opacity: showLine ? 1 : 0,
+            color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
+            fontWeight: 600,
+          }}
+        >
+          Portugal · written for you
+        </p>
+        <p
+          className="mt-5 text-[26px] leading-[1.2] sm:text-[34px] transition-all duration-1000"
+          style={{
+            opacity: showLine ? 1 : 0,
+            transform: showLine ? "translateY(0)" : "translateY(10px)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontStyle: "italic",
+            color: "var(--ivory)",
+            maxWidth: "20ch",
+          }}
+        >
+          Let your instinct guide.
+        </p>
+        <p
+          className="mt-8 text-[11px] uppercase tracking-[0.32em] transition-opacity duration-1000 delay-500"
+          style={{
+            opacity: showLine ? 0.75 : 0,
+            color: "color-mix(in oklab, var(--ivory) 80%, transparent)",
+            fontWeight: 600,
+          }}
+        >
+          tap anywhere to begin
+        </p>
+      </div>
+    </button>
+  );
+}
+
+// ─── mood scene — silent signal capture ─────────────────────────────────
+
+function MoodSceneView({
+  scene, onSignal,
+}: {
+  scene: (typeof MOOD_SCENES)[number];
+  onSignal: (sig: SceneSignal) => void;
+}) {
+  const startedAt = useRef<number>(Date.now());
+  useEffect(() => { startedAt.current = Date.now(); }, [scene.id]);
+  const handle = (fragmentId: string) => {
+    onSignal({
+      sceneId: scene.id,
+      tappedFragmentId: fragmentId,
+      lingerMs: Date.now() - startedAt.current,
+    });
+  };
+  return (
+    <section
+      className="relative grid h-[100svh] w-full grid-rows-2 overflow-hidden"
+      aria-label={scene.eyebrow}
+    >
+      {scene.fragments.map((frag, idx) => (
+        <button
+          key={frag.id}
+          type="button"
+          onClick={() => handle(frag.id)}
+          aria-label={frag.whisper}
+          className="group relative block w-full overflow-hidden text-left transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        >
+          <img
+            src={frag.image}
+            alt={frag.alt}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.04] group-active:scale-[1.02]"
+            style={{ filter: "saturate(0.9)" }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-70"
+            style={{
+              background:
+                idx === 0
+                  ? "linear-gradient(180deg, color-mix(in oklab, var(--charcoal) 28%, transparent) 0%, transparent 55%, color-mix(in oklab, var(--charcoal) 60%, transparent) 100%)"
+                  : "linear-gradient(0deg, color-mix(in oklab, var(--charcoal) 28%, transparent) 0%, transparent 55%, color-mix(in oklab, var(--charcoal) 60%, transparent) 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-x-6 sm:inset-x-12"
+            style={{ [idx === 0 ? "bottom" : "top"]: "8vh" } as React.CSSProperties}
+          >
+            {idx === 0 && (
+              <p
+                className="mb-3 text-[10px] uppercase tracking-[0.36em]"
+                style={{
+                  color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
+                  fontWeight: 600,
+                }}
+              >
+                {scene.eyebrow}
+              </p>
+            )}
+            <p
+              className="text-[22px] leading-[1.25] sm:text-[28px]"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontStyle: "italic",
+                color: "var(--ivory)",
+                maxWidth: "18ch",
+                textShadow: "0 1px 12px rgba(0,0,0,0.25)",
+              }}
+            >
+              {frag.whisper}
+            </p>
+          </div>
+        </button>
+      ))}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
+        style={{ background: "color-mix(in oklab, var(--ivory) 35%, transparent)" }}
+      />
+    </section>
+  );
+}
+
+// ─── logistics card — only explicit inputs ──────────────────────────────
+
+function LogisticsCard({
+  pax, setPax, pickup, setPickup, onSubmit,
+}: {
+  pax: number; setPax: (n: number) => void;
+  pickup: string; setPickup: (s: string) => void;
+  onSubmit: () => void;
+}) {
+  const ready = pickup.trim().length > 0;
+  return (
+    <section className="relative mx-auto flex min-h-[100svh] w-full max-w-xl flex-col justify-center px-6 py-12 sm:px-8">
+      <p
+        className="text-[10.5px] uppercase tracking-[0.36em]"
+        style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
+      >
+        Two practicalities
+      </p>
+      <h2
+        className="mt-4 text-[26px] leading-[1.15] sm:text-[32px]"
+        style={{
+          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontWeight: 700, letterSpacing: "-0.01em",
+        }}
+      >
+        Only what we{" "}
+        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          cannot guess
+        </span>.
+      </h2>
+      <p
+        className="mt-3 text-[13.5px] leading-relaxed"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+      >
+        Everything else is being shaped from the way you looked.
+      </p>
+
+      <div className="mt-10 space-y-8">
+        <div>
+          <p
+            className="mb-3 text-[10.5px] uppercase tracking-[0.28em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+          >
+            How many travelling?
+          </p>
+          <div
+            className="flex items-center justify-between rounded-[2px] border px-5 py-4"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+          >
+            <button
+              type="button"
+              onClick={() => setPax(Math.max(1, pax - 1))}
+              aria-label="Decrease guests"
+              className="grid h-11 w-11 place-items-center rounded-full border text-[18px]"
+              style={{
+                borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                background: "var(--ivory)",
+              }}
+            >−</button>
+            <span
+              className="text-[22px] tabular-nums"
+              style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
+            >
+              {pax} {pax === 1 ? "guest" : "guests"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPax(Math.min(20, pax + 1))}
+              aria-label="Increase guests"
+              className="grid h-11 w-11 place-items-center rounded-full border text-[18px]"
+              style={{
+                borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                background: "var(--ivory)",
+              }}
+            >+</button>
+          </div>
+        </div>
+
+        <div>
+          <p
+            className="mb-3 text-[10.5px] uppercase tracking-[0.28em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+          >
+            Where shall we collect you?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {PICKUP_CITIES.map((c) => {
+              const active = pickup === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setPickup(c)}
+                  className="rounded-full border px-4 text-[13px] min-h-[44px] transition-all focus-visible:outline-none focus-visible:ring-2"
+                  style={{
+                    borderColor: active
+                      ? "color-mix(in oklab, var(--gold) 75%, transparent)"
+                      : "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                    background: active
+                      ? "color-mix(in oklab, var(--gold) 18%, transparent)"
+                      : "transparent",
+                    color: "var(--charcoal)",
+                    fontWeight: active ? 600 : 500,
+                  }}
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <button
+          type="button"
+          onClick={onSubmit}
+          disabled={!ready}
+          className="group inline-flex items-center gap-2.5 rounded-[2px] px-7 py-4 transition-all disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2"
+          style={{
+            background: "var(--charcoal)",
+            color: "var(--ivory)",
+            minHeight: 52, minWidth: 220,
+            fontFamily: "var(--font-sans, Inter), sans-serif",
+            fontWeight: 600, fontSize: 12.5,
+            letterSpacing: "0.22em", textTransform: "uppercase",
+          }}
+        >
+          See what was read
+          <ArrowRight
+            className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
+            aria-hidden
+          />
+        </button>
+      </div>
+    </section>
+  );
+}
+
+// ─── conviction moment — the "we read you" reveal ───────────────────────
+
+function ConvictionMoment({
+  line, onContinue,
+}: {
+  line: { lead: string; body: string };
+  onContinue: () => void;
+}) {
+  const [showLead, setShowLead] = useState(false);
+  const [showBody, setShowBody] = useState(false);
+  useEffect(() => {
+    const a = window.setTimeout(() => setShowLead(true), 350);
+    const b = window.setTimeout(() => setShowBody(true), 1700);
+    return () => { window.clearTimeout(a); window.clearTimeout(b); };
+  }, []);
+  return (
+    <section className="relative mx-auto flex min-h-[100svh] w-full max-w-xl flex-col justify-center px-6 sm:px-8">
+      <div
+        className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.36em]"
+        style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 600 }}
+      >
+        <span className="relative inline-flex h-1.5 w-1.5">
+          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
+          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+        </span>
+        What we read
+      </div>
+      <p
+        className="mt-7 text-[26px] leading-[1.2] sm:text-[34px] transition-all duration-1000"
+        style={{
+          opacity: showLead ? 1 : 0,
+          transform: showLead ? "translateY(0)" : "translateY(10px)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontStyle: "italic",
+          color: "var(--charcoal)",
+        }}
+      >
+        {line.lead}
+      </p>
+      <p
+        className="mt-5 text-[16px] leading-[1.55] transition-all duration-1000"
+        style={{
+          opacity: showBody ? 1 : 0,
+          transform: showBody ? "translateY(0)" : "translateY(10px)",
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+        }}
+      >
+        {line.body}
+      </p>
+      <div className="mt-12 transition-opacity duration-1000" style={{ opacity: showBody ? 1 : 0 }}>
+        <button
+          type="button"
+          onClick={onContinue}
+          className="group inline-flex items-center gap-2.5 rounded-[2px] px-7 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+          style={{
+            background: "var(--charcoal)",
+            color: "var(--ivory)",
+            minHeight: 52, minWidth: 200,
+            fontFamily: "var(--font-sans, Inter), sans-serif",
+            fontWeight: 600, fontSize: 12.5,
+            letterSpacing: "0.22em", textTransform: "uppercase",
+          }}
+        >
+          Show me
+          <ArrowRight
+            className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
+            aria-hidden
+          />
+        </button>
+      </div>
+    </section>
+  );
+}
+
+
 
 // ─── beat components ─────────────────────────────────────────────────────
 
