@@ -18,6 +18,7 @@ import {
   type DbStop,
   type RoutingCaps,
 } from "./itinerary.server";
+import { resolveLegs, type Leg } from "./routing.server";
 
 // Loose profile schema — same shape as session save; we only read fields we need.
 const profileSchema = z
