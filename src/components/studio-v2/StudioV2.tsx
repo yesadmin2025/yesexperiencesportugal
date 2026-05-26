@@ -867,8 +867,36 @@ function RevealStory({
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
-  const livePreview = useMemo(() => previewJourney(profile), [profile]);
 
+  // Synthetic preview = cinematic atmosphere during exploration.
+  // Real preview = actual Viator stops, fetched once on reveal.
+  const syntheticPreview = useMemo(() => previewJourney(profile), [profile]);
+  const composeReal = useServerFn(composeRealItinerary);
+  const [real, setReal] = useState<Awaited<ReturnType<typeof composeReal>> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    composeReal({
+      data: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        profile: profile as any,
+        region: region as "arrabida" | "lisbon-coast" | "alentejo" | "centro",
+        targetStops: profile.stopDensityTarget ?? 4,
+      },
+    })
+      .then((r) => { if (!cancelled) setReal(r); })
+      .catch(() => { /* fall back to synthetic */ });
+    return () => { cancelled = true; };
+  }, [composeReal, profile, region]);
+
+  const livePreview = real
+    ? {
+        region: real.region,
+        regionCenter: real.regionCenter,
+        stops: real.stops,
+        density: real.density,
+        driveBudgetMin: real.driveBudgetMin,
+      }
+    : syntheticPreview;
 
   // AI narrative layer removed (server module path blocked by client import-protection).
   // Static editorial framing carries the reveal.
