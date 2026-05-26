@@ -1140,15 +1140,6 @@ function RevealActions({
   };
   const saved = saveState === "saved";
 
-  const onSave = () => {
-    try {
-      const payload = { name: name ?? null, savedAt: new Date().toISOString() };
-      window.localStorage.setItem("yes.studio-v2.saved", JSON.stringify(payload));
-      setSaved(true);
-    } catch {
-      setSaved(true);
-    }
-  };
   const waMsg = name?.trim()
     ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de a refinar com um local designer.`
     : "Olá! Acabei de desenhar uma experiência no Studio. Gostaria de a refinar com um local designer.";
@@ -1192,8 +1183,23 @@ function RevealActions({
         }}
       >
         <Bookmark className="h-3.5 w-3.5" aria-hidden />
-        {saved ? "Saved" : "Save my experience"}
+        {saveState === "saving"
+          ? "Saving…"
+          : saved
+          ? (shareUrl ? "Saved · link copied" : "Saved")
+          : saveState === "error"
+          ? "Try again"
+          : "Save my experience"}
       </button>
+      {saved && shareUrl && (
+        <p
+          className="text-center text-[11px] tracking-[0.18em] uppercase break-all"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+        >
+          {shareUrl.replace(/^https?:\/\//, "")}
+        </p>
+      )}
+
 
       {/* 3 — Tertiary: Refine with a Local Designer (text) */}
       <a
