@@ -318,8 +318,15 @@ export function LivingItinerary({
 
   // ── swap (silent substitution)
   const performSwap = (slotKey: string, tag: string | null) => {
-    const pool = alternates.filter((a) => !inUse.has(a.key));
+    let pool = alternates.filter((a) => !inUse.has(a.key));
     if (pool.length === 0) return;
+    // F.11 — warm-resume sort: if we know this visitor's mood, float the
+    // closest matches to the front so the silent substitution feels inevitable.
+    if (warmMood) {
+      pool = [...pool].sort(
+        (a, b) => moodAffinity(b.tag ?? null, warmMood) - moodAffinity(a.tag ?? null, warmMood),
+      );
+    }
     const cur = swapIdx[slotKey] ?? -1;
     const next = (cur + 1) % pool.length;
     const replacement = pool[next];
