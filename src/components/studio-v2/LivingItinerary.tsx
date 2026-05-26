@@ -195,6 +195,16 @@ export function LivingItinerary({
   const { days } = useMemo(() => composeDays(stops), [stops]);
   const isMultiDay = days.length > 1;
 
+  // Telemetry: multi-day composition + day-break beats.
+  useEffect(() => {
+    if (!isMultiDay) return;
+    void trackBuilderEvent("studio_v2_multiday_composed", { days: days.length, stops: stops.length });
+    for (let i = 1; i < days.length; i++) {
+      void trackBuilderEvent("studio_v2_daybreak_shown", { day: i + 1 });
+    }
+  }, [isMultiDay, days.length, stops.length]);
+
+
   const inUse = useMemo(() => new Set(stops.map((s) => s.key)), [stops]);
   const hasSwapPool = useMemo(
     () => alternates.some((a) => !inUse.has(a.key)),
