@@ -192,7 +192,8 @@ export function LivingItinerary({
     void trackBuilderEvent("studio_v2_refine_click", { surface: "living_itinerary" });
   }, []);
 
-  const arrivals = useMemo(() => computeArrivals(stops), [stops]);
+  const { days } = useMemo(() => composeDays(stops), [stops]);
+  const isMultiDay = days.length > 1;
 
   const inUse = useMemo(() => new Set(stops.map((s) => s.key)), [stops]);
   const hasSwapPool = useMemo(
