@@ -13,6 +13,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   composeItinerary,
   dbRegionsFor,
+  scoreStop,
   DEFAULT_CAPS,
   type DbStop,
   type RoutingCaps,
