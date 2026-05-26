@@ -257,6 +257,69 @@ export function convictionLine(
   };
 }
 
+// ─── conviction script — layered, references actual choices ───────────────
+//
+// Goes beyond a single line: shows the traveller exactly which fragments
+// they chose vs rejected, then synthesises and announces the design move.
+// All copy is template-based, never AI-generated.
+
+/** Short, evocative shorthand for each fragment, used in "noticed" lines. */
+const FRAGMENT_SHORTHAND: Record<string, string> = {
+  "long-table":     "the long table",
+  "open-horizon":   "the open road",
+  "atlantic-edge":  "Atlantic light",
+  "quiet-stone":    "stone and shadow",
+  "two-at-dusk":    "dusk, for two",
+  "raised-glasses": "a day that lifts",
+};
+
+/** Region/element anchor per dominant atmosphere — grounded, never invented. */
+const INTENT_ANCHOR: Record<IntentAtmosphere, string> = {
+  relaxed_scenic:     "open coastal roads and slow afternoon light",
+  elegant_cultural:   "stone villages and quiet interiors",
+  food_local:         "long tables and unhurried tasting",
+  social_celebratory: "a rhythm that lifts the occasion",
+  romantic_intimate:  "golden-hour coast and intimate corners",
+  coastal_cinematic:  "Atlantic edges at the hour the light turns gold",
+};
+
+export interface ConvictionScript {
+  /** One per scene: "Toward X — past Y." Renders as poetic noticed lines. */
+  noticed: string[];
+  /** Synthesis line — what the engine read overall. */
+  reading: string;
+  /** Decision line — where/how the day will be designed. */
+  decision: string;
+}
+
+export function convictionScript(
+  signals: SceneSignal[],
+  topIntent: IntentAtmosphere,
+  pace: PaceV2,
+  pickup: string,
+  pax: number,
+): ConvictionScript {
+  const noticed: string[] = [];
+  for (const sig of signals) {
+    const scene = MOOD_SCENES.find((s) => s.id === sig.sceneId);
+    if (!scene) continue;
+    const chosen = scene.fragments.find((f) => f.id === sig.tappedFragmentId);
+    const rejected = scene.fragments.find((f) => f.id !== sig.tappedFragmentId);
+    if (!chosen || !rejected) continue;
+    const cShort = FRAGMENT_SHORTHAND[chosen.id] ?? chosen.whisper;
+    const rShort = FRAGMENT_SHORTHAND[rejected.id] ?? rejected.whisper;
+    noticed.push(`Toward ${cShort} — past ${rShort}.`);
+  }
+
+  const reading = `Reading you: ${INTENT_NOUN[topIntent]}, at a ${PACE_WORD[pace]} rhythm.`;
+
+  const anchor = INTENT_ANCHOR[topIntent];
+  const guests = pax === 1 ? "one guest" : `${pax} guests`;
+  const decision = `Designing the day around ${anchor}, leaving from ${pickup}, for ${guests}.`;
+
+  return { noticed, reading, decision };
+}
+
 // ─── pickup cities ────────────────────────────────────────────────────────
 // Curated list of operational pickup origins. Never freeform — autocomplete
 // only over these, so routing stays feasible.
