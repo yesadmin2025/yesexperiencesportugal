@@ -106,8 +106,6 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
     // Pre-compute alternates: top-scored stops not currently chosen, so the
     // client-side Refine stage can offer "Swap" without an extra round trip.
     const chosenKeys = new Set(itinerary.stops.map((s) => s.key));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { scoreStop } = await import("./itinerary.server");
     const alternates = pool
       .filter((s) => !chosenKeys.has(s.key))
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
