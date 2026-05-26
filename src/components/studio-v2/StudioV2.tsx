@@ -129,11 +129,16 @@ const CHOICE_BEATS = new Set<Beat>([
   "choice-ops",
 ]);
 
-export function StudioV2({ onExit }: StudioV2Props) {
-  const [profile, setProfile] = useState<TravelerProfile>(() => emptyProfile());
-  const [beatIndex, setBeatIndex] = useState(0);
-  const [result, setResult] = useState<DesignResult | null>(null);
+export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
+  const [profile, setProfile] = useState<TravelerProfile>(() => initialProfile ?? emptyProfile());
+  const [beatIndex, setBeatIndex] = useState(() =>
+    startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
+  );
+  const [result, setResult] = useState<DesignResult | null>(() =>
+    startAtReveal && initialProfile ? designExperience(initialProfile) : null,
+  );
   const beat = SEQUENCE[beatIndex];
+
 
   const update = (patch: Partial<TravelerProfile>) => {
     setProfile((p) => ({ ...p, ...patch }));
