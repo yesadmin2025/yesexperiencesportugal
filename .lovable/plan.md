@@ -1,134 +1,106 @@
+# Studio v2 — The best builder we've ever made
 
-# Studio v2 → Builder real de itinerário único
+## North star (Studio Bible re-read)
 
-## Visão (norte)
+The Studio is **cinematic discovery**, not a configurator. Today's Refine stage edges back toward "panel UI" (cards + buttons + swap drawer). To honor the bible *and* deliver a truly interactive, intelligent, real, predictive builder, the engine must become **the protagonist** — the traveller barely touches controls, and Portugal composes itself in front of them.
 
-O cliente desenha **o seu dia**, não escolhe uma Signature pronta. O itinerário final é só dele, composto por **paragens reais** que já existem nos nossos tours Viator (tabela `builder_stops`, com `source_tour_keys` a provar a origem). Continua cinematográfico (philosophy v6), mas no fim o cliente tem **controlo editorial total** antes de reservar.
+Pre-flight checks applied to every item below:
+- Removes UI before adding it
+- Engine decides — never asks
+- Real Portuguese sensory anchors, never labels
+- Confidence escalates, choices compress
+- Cinema beats software
 
-Reverto a decisão da última tranche: a CTA "Secure your experience" **não vai para `/experiences`** — passa a reservar este itinerário específico.
+---
 
-## Fluxo final
+## What's wrong today
 
-```text
-Imagine → Atmosphere → Pace → Group → Priorities → Duration
-        ↓
-[Living Reveal cinematográfico]  ← já existe
-        ↓
-[Refine — editor do itinerário]  ← NOVO, o coração desta tranche
-   • mapa real com rota desenhada
-   • cards de paragens (swap, remove, reorder, ver alternativas)
-   • re-otimização automática quando muda algo
-   • respeita max_stops, max_km, drive time, compatibilidade
-        ↓
-[Secure — booking do itinerário custom]
-   • envia o conjunto exato de paragens reais para Bokun no fim
-```
+1. `RefineStage` is the most "software-like" surface in the whole flow — explicit Swap / Remove / Reorder buttons, warning lists, empty states. Violates principles 1, 7, 9.
+2. The engine returns a static ranked list once. There's no **predictive** layer reading user micro-behavior (hover, dwell, undo, re-enter).
+3. Routes are computed as straight haversine lines — not "real". No actual drive geometry, no time-of-day awareness, no light/weather mood.
+4. The map is decorative — it doesn't react, anticipate, or reveal.
+5. Multi-day is hidden behind a separate fallback — should feel like the **highest tier**, not an escape hatch.
+6. No memory across visits — every session restarts cold.
 
-## O que muda
+---
 
-### 1. Engine real (em vez de `previewJourney` decorativo)
+## The plan — 6 moves, ordered by impact
 
-Novo `src/lib/studio-v2/itinerary.functions.ts` (server fn):
+### Move 1 — Replace Refine with **Living Itinerary** (cinematic, gesture-first)
+Kill cards + Swap/Remove/Reorder buttons. Replace with a **single vertical scroll** of full-bleed scenes, each anchored to one real stop:
 
-- Input: `TravelerProfile` (intent, pace, group, priorities, duration, region opcional).
-- Lê `builder_stops` ativos da Supabase + `builder_compatibility_rules` + `builder_routing_rules`.
-- **Scoring por paragem**:
-  - `intent` ↔ `intention_tags` (peso alto)
-  - `priorityWeights` (food/culture/coastal/wellness/social) ↔ `mood_tags`
-  - `pace` ↔ `pace_tags` + `duration_minutes`
-  - `group` ↔ `who_tags`
-  - bonus de compatibilidade com paragens já selecionadas
-  - penaliza paragens fora do raio de drive (haversine entre `lat/lng`)
-- **Routing** respeitando `builder_routing_rules`: min/max stops, max km dia, max km entre stops, max hours, pace multiplier.
-- Output: array ordenado de paragens reais (com `source_tour_keys` preservadas como prova).
+- One scene = real image + 2-line atmospheric line + faint time-of-day strip ("late light · 17:40")
+- Gestures only: **swipe left = "not this one"** (engine quietly substitutes the next best-fit real stop), **long-press = "more like this"** (engine tightens around that mood), **pinch the timeline ribbon at top = compress/expand the day**.
+- No visible buttons. No warning banners. If a swap breaks feasibility, the engine **silently re-routes** and shows a one-line atmospheric note ("the day breathes better starting from the coast").
+- Reorder via drag on the thin left-side ribbon (one finger). No arrows.
 
-### 2. Refine — editor editorial (a peça nova)
+This collapses Refine from "editor" to "conversation with the day".
 
-Novo `src/components/studio-v2/RefineStage.tsx`, inserido entre Reveal e Secure.
+### Move 2 — **Predictive engine** (the intelligence layer)
+Promote `engine.ts` from one-shot ranker to a live predictor running on every micro-signal:
 
-Por paragem (card mobile-first):
-- imagem real (via `useBuilderRouteImages` que já temos)
-- duração, micro-blurb, tags
-- **3 ações**: `Swap` (drawer com alternativas top-scored compatíveis), `Remove`, `Reorder` (long-press / setinhas — sem libs pesadas).
+- **Inputs**: profile + every gesture (swipe direction, dwell ms per scene, long-press, scrub speed on timeline, re-entry to a previous scene, swap acceptance rate per mood tag).
+- **Model** (server fn, no extra deps): online Bayesian update of `priorityWeights` + `paceConfidence` + `moodVector` (food/coastal/culture/wellness/social/quiet). Each gesture nudges weights; engine recomposes the tail of the day in the background.
+- **Output**: a *forecasted next stop* prefetched (image, route geometry, drive time) **before** the user swipes — so substitutions feel instant and inevitable, not algorithmic.
+- Persisted per `share_token` so returning visitors resume with a sharpened profile, not from zero.
 
-Estado:
-- "Refinements" passam pelo mesmo engine para recalcular drive time/feasibilidade.
-- Banner discreto quando uma alteração quebra regras (`Drive time excede X min — sugerimos remover Y`).
-- Botão "Reset to YES design" repõe a sugestão original (já temos `trackBuilderEvent("review_reset")`).
+### Move 3 — **Real routes**, not haversine
+Replace straight lines with real driving geometry + truthful timing:
 
-Mapa: `BuilderMap` no topo, sticky, redesenha rota a cada mudança (já temos `previewJourney` — vou trocar pelo novo engine).
+- Add Mapbox Directions API call inside `itinerary.server.ts` (key already in secrets pattern). Cache responses keyed by `(from_stop, to_stop)` in a new `builder_route_cache` table — keeps cost flat.
+- Compute real `drive_minutes`, `distance_km`, and a polyline. Use these for feasibility checks (replacing the current haversine + warnings).
+- Map redraws the **actual road**, animated as a gold line tracing on each recomposition. Camera eases between stops on swipe.
+- Time-of-day: each stop gets a predicted arrival clock based on real drive times + dwell — feeds the atmospheric line ("golden hour over the Douro").
 
-### 3. Secure → booking real, não bounce
+### Move 4 — **Map as co-protagonist**, not chrome
+The map stops being a sticky panel above cards. Two states only:
+- **Ambient mode** (default during Living Itinerary scroll): map is a faint, blurred layer *behind* the scene, slowly panning between current and next stop. No controls visible.
+- **Reveal mode** (engine-triggered once `revealConfidence ≥ 0.75`): scene fades, map blooms full-screen for ~4s with the full traced day, then collapses back. This is the emotional payoff — never user-triggered.
 
-- Remove `window.location.href = "/experiences"`.
-- Nova server fn `createCustomBookingDraft` grava o itinerário (paragens + perfil) numa tabela `studio_v2_bookings` (draft status), retorna `draftId`.
-- CTA passa a abrir `/builder/checkout?draft=<id>` (página fina que mostra resumo + chama o endpoint Bokun/Stripe que já existe — `create-builder-checkout`).
-- Mantém telemetria `studio_v2_secure_click`.
+No persistent zoom/pan/recenter controls. Region-zoom memory (existing rule) still applies internally.
 
-### 4. Persistência + voltar atrás
+### Move 5 — **Multi-day as the apex tier**, not a fallback
+When the engine detects (a) duration > 1 day, or (b) priority spread that can't fit one day truthfully, the flow elevates instead of escalating to "contact":
 
-Já existe `studio_v2_sessions` + `/s/$token`. Estendo:
-- Botões "Editar atmosfera / ritmo / grupo / prioridades" no topo do Refine — saltam ao beat correspondente mantendo as paragens já refinadas (merge, não reset).
-- `MemoryDeck` já permite jump; adapto para incluir "Refine" como último card.
+- The Living Itinerary scroll extends — day-break is a single full-bleed scene of **silence**: an Atlantic horizon, one line ("the day exhales — tomorrow begins in stone"). No "Day 2 of 3" badge.
+- A discreet `Composed privately` mark appears once per multi-day journey — the only acknowledgment that this is the rarefied tier.
+- Secure CTA copy shifts to "Reserve this private composition" only on multi-day.
 
-### 5. Limpeza / coerência
+### Move 6 — **Memory across visits + share = invitation**
+- Returning visitors (cookie `studio_anon_id`) load with prior `moodVector` already warmed → first scene is sharper, fewer beats needed.
+- Share token URL renders as a **received invitation**, not "view itinerary": named composer line ("Composed for you by YES, Tuesday afternoon"), no edit chrome until they explicitly choose to make it theirs.
 
-- Re-pontar telemetria: `studio_v2_refine_swap`, `studio_v2_refine_remove`, `studio_v2_refine_reorder`, `studio_v2_draft_created`.
-- Remove o destino `/experiences` na CTA Secure (correção da tranche anterior).
+---
 
-## Detalhes técnicos
+## Technical plan (mapped to files)
 
-```text
-src/lib/studio-v2/
-  ├── itinerary.functions.ts   NEW  server fn: scoreStops + composeItinerary
-  ├── itinerary.server.ts      NEW  pure scoring/feasibility helpers
-  └── engine.ts                EDIT previewJourney delegates to itinerary engine
+| Move | Files |
+|---|---|
+| 1 | rewrite `RefineStage.tsx` → `LivingItinerary.tsx`; remove Swap drawer; add `useGestureEngine` hook |
+| 2 | extend `engine.ts` with `updateWeights(signal)` + `forecastNext(state)`; new `engine.server.ts` for persistence; new table `studio_v2_predictions` (session_id, weights jsonb, updated_at) |
+| 3 | new `routing.server.ts` calling Mapbox Directions; new table `builder_route_cache` (from_key, to_key, polyline, drive_minutes, distance_km); update `PremiumMap`/`BuilderMap` to consume polylines |
+| 4 | `LivingItinerary` owns map state; remove sticky map wrapper; add `RevealMapMoment` component |
+| 5 | engine returns `days[]` instead of `stops[]`; `LivingItinerary` renders DayBreakScene between days |
+| 6 | extend `sessions.functions.ts` with `loadWarmProfile(anonId)`; new `/i/$token` invitation route distinct from `/s/$token` editor |
 
-src/components/studio-v2/
-  ├── RefineStage.tsx          NEW  editor cards + sticky map + warnings
-  ├── StopSwapDrawer.tsx       NEW  alternative-stops bottom sheet
-  └── StudioV2.tsx             EDIT inserir beat "refine" entre reveal e secure
+Telemetry additions: `studio_v2_gesture_swipe`, `studio_v2_gesture_longpress`, `studio_v2_forecast_hit` (forecasted stop accepted), `studio_v2_reveal_moment_shown`, `studio_v2_daybreak_shown`.
 
-supabase migrations
-  └── studio_v2_bookings       NEW  draft itineraries (jsonb stops + profile)
-```
+Secrets needed: `MAPBOX_ACCESS_TOKEN` (already used elsewhere — confirm before Move 3).
 
-Tabela nova (mínima, RLS estrita):
+## Suggested order (incremental, each ship-able)
 
-```sql
-create table public.studio_v2_bookings (
-  id uuid primary key default gen_random_uuid(),
-  share_token text not null unique,
-  profile jsonb not null,
-  stops jsonb not null,        -- snapshot das paragens reais
-  total_minutes int,
-  total_km numeric,
-  status text not null default 'draft',
-  created_at timestamptz not null default now()
-);
-grant insert, select on public.studio_v2_bookings to anon, authenticated;
-grant all on public.studio_v2_bookings to service_role;
-alter table public.studio_v2_bookings enable row level security;
--- só leitura por share_token (passado no path, não em PII)
-create policy "read by token" on public.studio_v2_bookings
-  for select using (true);  -- token é o segredo, como já fazemos em studio_v2_sessions
-```
+1. **F.6** Move 3 (real routes + cache) — biggest truth upgrade, unblocks feasibility honesty
+2. **F.7** Move 2 (predictive engine + persistence) — invisible intelligence layer
+3. **F.8** Move 1 (Living Itinerary replaces Refine) — the visible cinematic shift
+4. **F.9** Move 4 (map as co-protagonist + Reveal moment)
+5. **F.10** Move 5 (multi-day as apex)
+6. **F.11** Move 6 (warm memory + invitation route)
 
-## Guardrails respeitados
+## Open questions for you
 
-- **Paragens reais apenas** (nada inventado — tudo de `builder_stops` com `source_tour_keys`).
-- AI continua só para tom narrativo (já implementado), nunca inventa factos.
-- Mobile-first (cards, drawers, long-press > drag libs).
-- Sem libs novas pesadas — reuso `BuilderMap`, `useBuilderRouteImages`, motion já permitido (fade+translateY ≤220ms).
-- Bokun/Stripe no fim — reusa `create-builder-checkout` existente.
+1. **Mapbox Directions** — OK to add now (small per-call cost, cached) or prefer OSRM/free alternative?
+2. **Gestures-only Refine** — comfortable killing the explicit Swap/Remove/Reorder buttons entirely, or want a hidden "show controls" escape hatch for accessibility?
+3. **Multi-day pricing** — should the engine show indicative range per night, or stay silent until human composer confirms?
+4. **Ship order** — start with F.6 (real routes) as proposed, or jump straight to F.8 (visible Living Itinerary) for faster perceived impact?
 
-## Plano de execução
-
-| Tranche | Entrega |
-|--------:|---------|
-| **F.1** | Engine real (`itinerary.functions.ts` + `.server.ts`), `previewJourney` passa a usar dados reais. Reveal já mostra paragens reais no mapa. |
-| **F.2** | `RefineStage` com swap/remove/reorder, drawer de alternativas, re-otimização live, warnings de feasibilidade. |
-| **F.3** | Migração `studio_v2_bookings` + `createCustomBookingDraft` + CTA Secure passa a abrir checkout do draft (reverte `/experiences`). |
-| **F.4** | Voltar-atrás merge (editar beats sem perder refinamentos), telemetria completa, polish copy + a11y. |
-
-Confirma e arranco pela **F.1** (engine real). Se preferires que ataque primeiro a F.3 (corrigir já a CTA Secure que ficou errada), também posso inverter a ordem.
+Say which questions to lock and I'll start with the chosen tranche.
