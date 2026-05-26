@@ -468,7 +468,7 @@ function MoodSceneView({
 }
 
 
-// ─── logistics card — only explicit inputs ──────────────────────────────
+// ─── logistics card — editorial pause, sand surface, gold detail ───────
 
 function LogisticsCard({
   pax, setPax, pickup, setPickup, onSubmit,
@@ -479,81 +479,119 @@ function LogisticsCard({
 }) {
   const ready = pickup.trim().length > 0;
   return (
-    <section className="relative mx-auto flex min-h-[100svh] w-full max-w-xl flex-col justify-center px-6 py-12 sm:px-8">
-      <p
-        className="text-[10.5px] uppercase tracking-[0.36em]"
-        style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
-      >
-        Two practicalities
-      </p>
-      <h2
-        className="mt-4 text-[26px] leading-[1.15] sm:text-[32px]"
+    <section
+      className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
+      style={{ background: "var(--sand)" }}
+    >
+      {/* Ambient atmosphere wash + grain */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
-          fontWeight: 700, letterSpacing: "-0.01em",
+          background:
+            "radial-gradient(60% 45% at 80% 8%, color-mix(in oklab, var(--gold-soft) 55%, transparent) 0%, transparent 65%), radial-gradient(70% 50% at 0% 100%, color-mix(in oklab, var(--teal-2) 18%, transparent) 0%, transparent 60%)",
         }}
-      >
-        Only what we{" "}
-        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-          cannot guess
-        </span>.
-      </h2>
-      <p
-        className="mt-3 text-[13.5px] leading-relaxed"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-      >
-        Everything else is being shaped from the way you looked.
-      </p>
+      />
+      <div className="studio-v2-grain absolute inset-0 pointer-events-none" aria-hidden />
 
-      <div className="mt-10 space-y-8">
-        <div>
-          <p
-            className="mb-3 text-[10.5px] uppercase tracking-[0.28em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+      <div className="relative mx-auto w-full max-w-xl px-6 py-14 sm:px-8">
+        <div className="studio-v2-reveal flex items-center gap-3">
+          <span className="studio-v2-rule" />
+          <span
+            className="text-[10px] uppercase tracking-[0.42em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
           >
-            How many travelling?
-          </p>
+            Chapter IV · Practicalities
+          </span>
+        </div>
+
+        <h2
+          className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
+          style={{
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontWeight: 700, letterSpacing: "-0.012em",
+            color: "var(--charcoal)",
+          }}
+        >
+          Only what we{" "}
+          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+            cannot guess
+          </span>.
+        </h2>
+
+        <p
+          className="studio-v2-reveal delay-2 mt-4 text-[14px] leading-[1.6]"
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+            maxWidth: "32ch",
+            fontStyle: "italic",
+            fontFamily: "Georgia, serif",
+          }}
+        >
+          The rest is already being shaped — quietly — from the way you looked.
+        </p>
+
+        {/* Pax — typographic numeral */}
+        <div className="studio-v2-reveal delay-3 mt-12">
+          <div className="flex items-baseline justify-between">
+            <span
+              className="text-[10px] uppercase tracking-[0.36em]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+            >
+              Guests
+            </span>
+            <span
+              className="text-[10px] uppercase tracking-[0.32em]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 40%, transparent)" }}
+            >
+              {pax === 1 ? "private" : pax <= 4 ? "intimate" : pax <= 8 ? "small group" : "group"}
+            </span>
+          </div>
           <div
-            className="flex items-center justify-between rounded-[2px] border px-5 py-4"
-            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+            className="mt-2 flex items-center justify-between border-b pb-3"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)" }}
           >
             <button
               type="button"
               onClick={() => setPax(Math.max(1, pax - 1))}
               aria-label="Decrease guests"
-              className="grid h-11 w-11 place-items-center rounded-full border text-[18px]"
-              style={{
-                borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-                background: "var(--ivory)",
-              }}
+              className="grid h-11 w-11 place-items-center text-[22px] transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)", opacity: pax > 1 ? 0.8 : 0.3 }}
+              disabled={pax <= 1}
             >−</button>
             <span
-              className="text-[22px] tabular-nums"
-              style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
+              className="tabular-nums leading-none"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontStyle: "italic",
+                fontWeight: 400,
+                fontSize: 64,
+                color: "var(--charcoal)",
+                letterSpacing: "-0.02em",
+              }}
             >
-              {pax} {pax === 1 ? "guest" : "guests"}
+              {pax}
             </span>
             <button
               type="button"
               onClick={() => setPax(Math.min(20, pax + 1))}
               aria-label="Increase guests"
-              className="grid h-11 w-11 place-items-center rounded-full border text-[18px]"
-              style={{
-                borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-                background: "var(--ivory)",
-              }}
+              className="grid h-11 w-11 place-items-center text-[22px] transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)", opacity: pax < 20 ? 0.8 : 0.3 }}
+              disabled={pax >= 20}
             >+</button>
           </div>
         </div>
 
-        <div>
+        {/* Pickup */}
+        <div className="studio-v2-reveal delay-4 mt-10">
           <p
-            className="mb-3 text-[10.5px] uppercase tracking-[0.28em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+            className="mb-4 text-[10px] uppercase tracking-[0.36em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
           >
-            Where shall we collect you?
+            Departing from
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-x-5 gap-y-3">
             {PICKUP_CITIES.map((c) => {
               const active = pickup === c;
               return (
@@ -561,51 +599,67 @@ function LogisticsCard({
                   key={c}
                   type="button"
                   onClick={() => setPickup(c)}
-                  className="rounded-full border px-4 text-[13px] min-h-[44px] transition-all focus-visible:outline-none focus-visible:ring-2"
+                  className="group relative min-h-[44px] text-[15px] transition-all focus-visible:outline-none"
                   style={{
-                    borderColor: active
-                      ? "color-mix(in oklab, var(--gold) 75%, transparent)"
-                      : "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-                    background: active
-                      ? "color-mix(in oklab, var(--gold) 18%, transparent)"
-                      : "transparent",
-                    color: "var(--charcoal)",
+                    color: active ? "var(--charcoal)" : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                     fontWeight: active ? 600 : 500,
+                    fontFamily: "var(--font-sans, Inter), sans-serif",
                   }}
                 >
                   {c}
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-1 left-0 h-px transition-all duration-500"
+                    style={{
+                      width: active ? "100%" : "0%",
+                      background: "color-mix(in oklab, var(--gold) 85%, transparent)",
+                    }}
+                  />
                 </button>
               );
             })}
           </div>
         </div>
-      </div>
 
-      <div className="mt-12">
-        <button
-          type="button"
-          onClick={onSubmit}
-          disabled={!ready}
-          className="group inline-flex items-center gap-2.5 rounded-[2px] px-7 py-4 transition-all disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2"
+        {/* CTA */}
+        <div className="mt-14 flex items-center gap-5">
+          <button
+            type="button"
+            onClick={onSubmit}
+            disabled={!ready}
+            className="studio-v2-sheen group inline-flex items-center gap-3 rounded-[2px] px-8 py-4 transition-all disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2"
+            style={{
+              background: "var(--charcoal)",
+              color: "var(--ivory)",
+              minHeight: 56, minWidth: 240,
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+              fontWeight: 600, fontSize: 12.5,
+              letterSpacing: "0.26em", textTransform: "uppercase",
+              border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+            }}
+          >
+            <span className="relative z-[1]">Read me</span>
+            <ArrowRight
+              className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
+              aria-hidden
+            />
+          </button>
+        </div>
+
+        <p
+          className="mt-6 text-[11px] italic"
           style={{
-            background: "var(--charcoal)",
-            color: "var(--ivory)",
-            minHeight: 52, minWidth: 220,
-            fontFamily: "var(--font-sans, Inter), sans-serif",
-            fontWeight: 600, fontSize: 12.5,
-            letterSpacing: "0.22em", textTransform: "uppercase",
+            fontFamily: "Georgia, serif",
+            color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
-          See what was read
-          <ArrowRight
-            className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
-            aria-hidden
-          />
-        </button>
+          No filters. No quiz. Just two facts we cannot read from a glance.
+        </p>
       </div>
     </section>
   );
 }
+
 
 // ─── conviction moment — the "we read you" reveal ───────────────────────
 
