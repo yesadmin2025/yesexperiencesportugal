@@ -1186,15 +1186,20 @@ function RevealActions({
   };
   const saved = saveState === "saved";
 
+  const [secureNote, setSecureNote] = useState<string | null>(null);
   const onSecure = () => {
     void trackBuilderEvent("studio_v2_secure_click", {
       archetype,
       region,
       intent: profile?.intent,
     });
-    // Route to Signature experiences — the editorial source-of-truth
-    // catalogue where the traveller can confirm a real bookable tour.
-    window.location.href = "/experiences";
+    // F.3 will wire this to a custom-itinerary checkout. Until then we keep
+    // travellers on-screen and prompt them to refine or contact a local
+    // designer — never bounce them to the Signature catalogue, this is a
+    // bespoke day, not a packaged tour.
+    setSecureNote(
+      "Your bespoke day is ready. A local designer will confirm timings and finalise booking — refine below or message us to lock it in.",
+    );
   };
 
   const waMsg = name?.trim()
