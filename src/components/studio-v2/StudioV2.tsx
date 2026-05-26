@@ -1148,7 +1148,6 @@ function RevealActions({
       archetype,
       region,
       intent: profile?.intent,
-      tier: profile?.ops?.tier,
     });
     // Route to Signature experiences — the editorial source-of-truth
     // catalogue where the traveller can confirm a real bookable tour.
