@@ -180,6 +180,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
               pickup || "Lisboa",
               pax,
             )}
+            script={convictionScript(
+              signals,
+              inferred.topIntent,
+              inferred.profile.pace ?? "balanced",
+              pickup || "Lisboa",
+              pax,
+            )}
             onContinue={next}
           />
         )}
