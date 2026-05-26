@@ -51,19 +51,31 @@ export function MapReveal({
   useEffect(() => {
     if (!open) {
       setPhase("hidden");
+      setVisibleLines(0);
       closedRef.current = false;
       return;
     }
     closedRef.current = false;
     setPhase("in");
+    setVisibleLines(0);
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const inMs = reduced ? 0 : 520;
-    const holdMs = reduced ? Math.min(2200, dwellMs) : dwellMs;
+    const holdMs = reduced ? Math.min(2600, effectiveDwell) : effectiveDwell;
     const outMs = reduced ? 0 : 460;
 
     const t1 = window.setTimeout(() => setPhase("hold"), inMs);
+    const lineTimers: number[] = [];
+    if (reduced) {
+      setVisibleLines(narrative.length);
+    } else {
+      narrative.forEach((_, i) => {
+        lineTimers.push(
+          window.setTimeout(() => setVisibleLines((v) => Math.max(v, i + 1)), inMs + 600 + i * 950),
+        );
+      });
+    }
     const t2 = window.setTimeout(() => setPhase("out"), inMs + holdMs);
     const t3 = window.setTimeout(() => {
       if (!closedRef.current) {
@@ -75,8 +87,9 @@ export function MapReveal({
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       window.clearTimeout(t3);
+      lineTimers.forEach((t) => window.clearTimeout(t));
     };
-  }, [open, dwellMs, onClose]);
+  }, [open, effectiveDwell, narrative, onClose]);
 
   useEffect(() => {
     if (!open) return;
