@@ -36,6 +36,7 @@ import { fmtMinutes } from "@/components/builder/types";
 import { type RefineStop } from "./RefineStage";
 import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
+import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
