@@ -21,7 +21,9 @@ export type BuilderEvent =
   | "studio_v2_checkout_view"
   | "studio_v2_checkout_abandon"
   | "studio_v2_checkout_back_to_refine"
-  | "studio_v2_map_reveal";
+  | "studio_v2_map_reveal"
+  | "studio_v2_daybreak_shown"
+  | "studio_v2_multiday_composed";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(
