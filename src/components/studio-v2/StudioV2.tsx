@@ -1227,6 +1227,18 @@ function RevealActions({
         Secure your experience
         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
       </button>
+      {secureNote && (
+        <p
+          className="text-center text-[12.5px] italic px-2"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+          }}
+          role="status"
+        >
+          {secureNote}
+        </p>
+      )}
 
       {/* 2 — Secondary: Save My Experience (ghost) */}
       <button
