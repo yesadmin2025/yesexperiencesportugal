@@ -211,7 +211,19 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       className="studio-v2 relative min-h-screen w-full overflow-x-hidden"
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
-      <header className="absolute right-0 top-0 z-30 flex items-center px-4 py-4 sm:px-6">
+      <header className="absolute right-0 top-0 z-30 flex items-center gap-1.5 px-4 py-4 sm:px-6">
+        {/* Ambient sound — opt-in, gold/ivory; Layer 3 */}
+        <div
+          className="rounded-full"
+          style={{
+            background: showChrome
+              ? "color-mix(in oklab, var(--ivory) 70%, transparent)"
+              : "color-mix(in oklab, var(--charcoal) 28%, transparent)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <AmbientToggle />
+        </div>
         <button
           onClick={onExit}
           aria-label="Exit studio"
@@ -229,7 +241,14 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       </header>
 
       <main key={beat} className="studio-v2-reveal relative z-10">
-        {beat === "opening" && <OpeningScene onTap={next} />}
+        {beat === "opening" && (
+          <OpeningScene
+            onTap={next}
+            resumable={resumable}
+            onResume={onResume}
+            onDeclineResume={onDeclineResume}
+          />
+        )}
         {beat === "mood-1" && <MoodSceneView scene={MOOD_SCENES[0]} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <MoodSceneView scene={MOOD_SCENES[1]} onSignal={onSceneSignal} />}
         {beat === "mood-3" && <MoodSceneView scene={MOOD_SCENES[2]} onSignal={onSceneSignal} />}
