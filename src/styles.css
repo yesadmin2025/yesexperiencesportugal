@@ -4919,8 +4919,111 @@ html { scroll-behavior: smooth; }
   50%      { opacity: 1;    transform: scale(1.1); }
 }
 
+/* ─── Studio v2 cinematic primitives ─────────────────────────────────── */
+@keyframes studioV2KenBurns {
+  0%   { transform: scale(1.06) translate(0, 0); }
+  100% { transform: scale(1.18) translate(-1.2%, -0.8%); }
+}
+@keyframes studioV2KenBurnsAlt {
+  0%   { transform: scale(1.08) translate(0.8%, 0.4%); }
+  100% { transform: scale(1.2) translate(-0.6%, -1%); }
+}
+.studio-v2-kenburns { animation: studioV2KenBurns 22s ease-out forwards; will-change: transform; }
+.studio-v2-kenburns-alt { animation: studioV2KenBurnsAlt 26s ease-out forwards; will-change: transform; }
+
+/* Film grain overlay */
+.studio-v2-grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 2;
+  opacity: 0.16; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Cinematic vignette top + bottom */
+.studio-v2-vignette::before {
+  content: ""; position: absolute; inset: 0;
+  pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--charcoal) 55%, transparent) 0%,
+    color-mix(in oklab, var(--charcoal) 8%, transparent) 18%,
+    transparent 38%, transparent 55%,
+    color-mix(in oklab, var(--charcoal) 20%, transparent) 75%,
+    color-mix(in oklab, var(--charcoal) 78%, transparent) 100%);
+}
+
+/* Thin gold hairline */
+.studio-v2-rule {
+  display: inline-block; height: 1px; width: 28px;
+  background: color-mix(in oklab, var(--gold) 70%, transparent);
+  vertical-align: middle;
+}
+
+/* Gold sheen sweep for CTAs */
+@keyframes studioV2Sheen {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  20%  { opacity: 0.7; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+.studio-v2-sheen { position: relative; overflow: hidden; }
+.studio-v2-sheen::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%,
+    color-mix(in oklab, var(--gold) 55%, transparent) 50%, transparent 100%);
+  transform: translateX(-120%) skewX(-18deg);
+}
+.studio-v2-sheen:hover::after,
+.studio-v2-sheen:focus-visible::after {
+  animation: studioV2Sheen 1100ms ease-out forwards;
+}
+
+/* Tap indicator pulse */
+@keyframes studioV2SoftPulse {
+  0%, 100% { opacity: 0.45; transform: translateY(0); }
+  50%      { opacity: 1;    transform: translateY(3px); }
+}
+.studio-v2-tap-indicator { animation: studioV2SoftPulse 2.2s ease-in-out infinite; }
+
+/* Word-by-word type-on */
+@keyframes studioV2WordIn {
+  from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+}
+.studio-v2-typeon > span {
+  display: inline-block; opacity: 0;
+  animation: studioV2WordIn 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Thinking scan line */
+@keyframes studioV2Scan {
+  0%   { transform: translateY(-12%); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(112%); opacity: 0; }
+}
+.studio-v2-scan {
+  position: absolute; inset-inline: 0; height: 38%; pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%,
+    color-mix(in oklab, var(--gold) 18%, transparent) 50%, transparent 100%);
+  animation: studioV2Scan 3.4s ease-in-out infinite;
+}
+
+/* Editorial inset card */
+.studio-v2-inset {
+  background: color-mix(in oklab, var(--ivory) 92%, transparent);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border: 1px solid color-mix(in oklab, var(--gold) 35%, transparent);
+  box-shadow: 0 18px 40px -22px rgba(20, 20, 20, 0.45);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .studio-v2__atmosphere { transition: none; }
   .studio-v2-reveal { animation: none; opacity: 1; transform: none; }
+  .studio-v2-kenburns, .studio-v2-kenburns-alt { animation: none; transform: none; }
+  .studio-v2-typeon > span { animation: none; opacity: 1; transform: none; filter: none; }
+  .studio-v2-scan { animation: none; opacity: 0; }
+  .studio-v2-tap-indicator { animation: none; }
 }
+
 
