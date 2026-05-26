@@ -27,6 +27,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
+import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
@@ -133,6 +134,11 @@ const IndexRoute = IndexRouteImport.update({
 const ToursTourIdRoute = ToursTourIdRouteImport.update({
   id: '/tours/$tourId',
   path: '/tours/$tourId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const STokenRoute = STokenRouteImport.update({
+  id: '/s/$token',
+  path: '/s/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QaMobileRoute = QaMobileRouteImport.update({
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
 }
@@ -292,6 +299,7 @@ export interface FileRoutesByTo {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
 }
@@ -330,6 +338,7 @@ export interface FileRoutesById {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
 }
@@ -369,6 +378,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/s/$token'
     | '/tours/$tourId'
     | '/tours/$tourId/tailor'
   fileRoutesByTo: FileRoutesByTo
@@ -406,6 +416,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/s/$token'
     | '/tours/$tourId'
     | '/tours/$tourId/tailor'
   id:
@@ -443,6 +454,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/s/$token'
     | '/tours/$tourId'
     | '/tours/$tourId/tailor'
   fileRoutesById: FileRoutesById
@@ -480,6 +492,7 @@ export interface RootRouteChildren {
   ITokenRoute: typeof ITokenRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
+  STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
 }
 
@@ -609,6 +622,13 @@ declare module '@tanstack/react-router' {
       path: '/tours/$tourId'
       fullPath: '/tours/$tourId'
       preLoaderRoute: typeof ToursTourIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$token': {
+      id: '/s/$token'
+      path: '/s/$token'
+      fullPath: '/s/$token'
+      preLoaderRoute: typeof STokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qa/mobile': {
@@ -790,6 +810,7 @@ const rootRouteChildren: RootRouteChildren = {
   ITokenRoute: ITokenRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
+  STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport

@@ -52,13 +52,15 @@ export const createStudioSession = createServerFn({ method: "POST" })
       .from("studio_v2_sessions")
       .insert({
         share_token: shareToken,
-        profile: data.profile,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        profile: data.profile as any,
         region: data.region ?? null,
         archetype: data.archetype ?? null,
       });
     if (error) throw new Error(error.message);
     return { shareToken };
   });
+
 
 export const loadStudioSession = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
@@ -75,9 +77,11 @@ export const loadStudioSession = createServerFn({ method: "POST" })
     if (row.revoked_at) return { found: false as const, revoked: true as const };
     return {
       found: true as const,
-      profile: row.profile as Record<string, unknown>,
-      region: row.region as string | null,
-      archetype: row.archetype as string | null,
-      updatedAt: row.updated_at,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      profile: row.profile as any,
+      region: (row.region as string | null) ?? null,
+      archetype: (row.archetype as string | null) ?? null,
+      updatedAt: row.updated_at as string,
     };
   });
+

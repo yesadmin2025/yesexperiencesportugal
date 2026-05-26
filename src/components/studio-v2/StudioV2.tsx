@@ -53,7 +53,12 @@ const BuilderMap = lazy(() =>
 
 interface StudioV2Props {
   onExit: () => void;
+  /** Optional pre-filled profile (e.g. resuming a saved share token). */
+  initialProfile?: TravelerProfile;
+  /** When true, jumps straight to the reveal beat using initialProfile. */
+  startAtReveal?: boolean;
 }
+
 
 // ─── beat sequence ───────────────────────────────────────────────────────
 //
