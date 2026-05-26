@@ -1271,6 +1271,10 @@ function RevealStory({
           duration_minutes: s.duration_minutes,
           source_tour_keys: s.source_tour_keys,
         })));
+        if (!mapRevealShown) {
+          setMapRevealOpen(true);
+          setMapRevealShown(true);
+        }
       })
       .catch(() => { /* fall back to synthetic */ });
     return () => { cancelled = true; };
