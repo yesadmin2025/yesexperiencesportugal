@@ -992,11 +992,19 @@ function RevealStory({
 
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
-        <RefineStage
-          stops={editedStops}
-          alternates={real.alternates}
-          onChange={setEditedStops}
-        />
+        <>
+          <RefineStage
+            stops={editedStops}
+            alternates={real.alternates}
+            onChange={setEditedStops}
+          />
+          <BespokeSecureCTA
+            profile={profile}
+            region={region}
+            archetype={(profile.archetype as string | undefined) ?? undefined}
+            stops={editedStops}
+          />
+        </>
       )}
 
 
