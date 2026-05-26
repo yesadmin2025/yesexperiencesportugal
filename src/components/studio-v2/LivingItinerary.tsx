@@ -646,3 +646,90 @@ function Scene({
     </li>
   );
 }
+
+// ─── day-break scene ─────────────────────────────────────────────────────
+// A single full-bleed beat of silence between days. No "Day N of M" badge,
+// no chrome — just an atmospheric line and a faint horizon. The bible's
+// "the day exhales — tomorrow begins in stone" beat.
+
+function DayBreakScene({ dayNumber }: { dayNumber: number }) {
+  return (
+    <li
+      className="relative overflow-hidden rounded-[2px]"
+      style={{
+        minHeight: 200,
+        background:
+          "linear-gradient(180deg, color-mix(in oklab, var(--teal) 35%, var(--charcoal)) 0%, color-mix(in oklab, var(--charcoal) 92%, var(--teal)) 100%)",
+      }}
+      aria-label={`Day ${dayNumber} begins`}
+    >
+      {/* faint horizon line */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0"
+        style={{
+          top: "58%",
+          height: 1,
+          background: "color-mix(in oklab, var(--gold) 55%, transparent)",
+          opacity: 0.6,
+        }}
+      />
+      <div className="relative z-10 flex h-full min-h-[200px] flex-col items-center justify-center px-6 text-center">
+        <p
+          className="text-[10.5px] uppercase tracking-[0.36em]"
+          style={{
+            color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+            fontWeight: 700,
+          }}
+        >
+          the day exhales
+        </p>
+        <p
+          className="mt-4 text-[17px] leading-snug italic"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "var(--ivory)",
+            maxWidth: "26ch",
+          }}
+        >
+          Tomorrow begins in stone, with the light still low.
+        </p>
+      </div>
+    </li>
+  );
+}
+
+// ─── "Composed privately" mark ───────────────────────────────────────────
+// The only acknowledgment that this journey reached the rarefied tier.
+// Appears once per multi-day itinerary, restrained, gold-on-ivory.
+
+function ComposedPrivatelyMark() {
+  return (
+    <div className="mt-8 flex flex-col items-center text-center">
+      <div
+        aria-hidden
+        className="h-px w-10"
+        style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+      />
+      <p
+        className="mt-3 text-[10px] uppercase tracking-[0.42em]"
+        style={{
+          color: "color-mix(in oklab, var(--gold) 88%, var(--charcoal))",
+          fontWeight: 700,
+        }}
+      >
+        Composed privately
+      </p>
+      <p
+        className="mt-2 text-[11.5px] italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+          maxWidth: "32ch",
+        }}
+      >
+        A multi-day composition. Final routing confirmed in person — never by algorithm alone.
+      </p>
+    </div>
+  );
+}
