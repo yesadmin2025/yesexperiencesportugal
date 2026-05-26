@@ -1,0 +1,125 @@
+/**
+ * Studio v2 — itinerary composition server function.
+ *
+ * Thin wrapper: loads real `builder_stops` rows + routing caps from Supabase,
+ * delegates to pure scoring/composition helpers in `itinerary.server.ts`,
+ * returns a serialisation-safe DTO that matches the existing
+ * `JourneyPreview` shape consumed by the BuilderMap.
+ */
+
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import {
+  composeItinerary,
+  dbRegionsFor,
+  DEFAULT_CAPS,
+  type DbStop,
+  type RoutingCaps,
+} from "./itinerary.server";
+
+// Loose profile schema — same shape as session save; we only read fields we need.
+const profileSchema = z
+  .object({
+    intent: z.string().max(40).optional(),
+    pace: z.string().max(20).optional(),
+    socialEnergy: z.number().min(0).max(100).optional(),
+    cultureInterest: z.number().min(0).max(100).optional(),
+    foodInterest: z.number().min(0).max(100).optional(),
+    coastalAffinity: z.number().min(0).max(100).optional(),
+    wellnessAffinity: z.number().min(0).max(100).optional(),
+    driveToleranceMin: z.number().min(0).max(240).optional(),
+    stopDensityTarget: z.number().min(1).max(10).optional(),
+    group: z.record(z.string(), z.any()).optional(),
+    priorityWeights: z.record(z.string(), z.number()).optional(),
+  })
+  .passthrough();
+
+// Engine region keys (must match REGION_MAP in itinerary.server.ts).
+const ENGINE_REGIONS = ["arrabida", "lisbon-coast", "alentejo", "centro"] as const;
+
+const inputSchema = z.object({
+  profile: profileSchema,
+  region: z.enum(ENGINE_REGIONS).optional(),
+  targetStops: z.number().int().min(2).max(8).optional(),
+});
+
+export const composeRealItinerary = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => inputSchema.parse(input))
+  .handler(async ({ data }) => {
+    const region = data.region ?? "arrabida"; // safe default — most coverage
+    const dbRegions = dbRegionsFor(region);
+
+    // Load active stops in the relevant DB regions.
+    const { data: stopRows, error: stopErr } = await supabaseAdmin
+      .from("builder_stops")
+      .select(
+        "key, region_key, label, blurb, tag, lat, lng, duration_minutes, mood_tags, pace_tags, intention_tags, who_tags, weight, source_tour_keys",
+      )
+      .eq("is_active", true)
+      .in("region_key", dbRegions);
+    if (stopErr) throw new Error(stopErr.message);
+
+    // Load active routing caps (single active row).
+    const { data: rules } = await supabaseAdmin
+      .from("builder_routing_rules")
+      .select(
+        "min_stops, max_stops, max_km_between_stops, max_total_km_per_day, max_driving_hours, max_experience_hours",
+      )
+      .eq("is_active", true)
+      .limit(1)
+      .maybeSingle();
+
+    const caps: RoutingCaps = rules
+      ? {
+          minStops: rules.min_stops,
+          maxStops: rules.max_stops,
+          maxKmBetweenStops: Number(rules.max_km_between_stops),
+          maxTotalKmPerDay: Number(rules.max_total_km_per_day),
+          maxDrivingHours: Number(rules.max_driving_hours),
+          maxExperienceHours: Number(rules.max_experience_hours),
+        }
+      : DEFAULT_CAPS;
+
+    const pool: DbStop[] = (stopRows ?? []).map((r) => ({
+      key: r.key as string,
+      region_key: r.region_key as string,
+      label: r.label as string,
+      blurb: (r.blurb as string | null) ?? null,
+      tag: (r.tag as string | null) ?? null,
+      lat: Number(r.lat),
+      lng: Number(r.lng),
+      duration_minutes: r.duration_minutes ?? 60,
+      mood_tags: (r.mood_tags as string[] | null) ?? [],
+      pace_tags: (r.pace_tags as string[] | null) ?? [],
+      intention_tags: (r.intention_tags as string[] | null) ?? [],
+      who_tags: (r.who_tags as string[] | null) ?? [],
+      weight: (r.weight as number | null) ?? 50,
+      source_tour_keys: (r.source_tour_keys as string[] | null) ?? [],
+    }));
+
+    const target = data.targetStops ?? data.profile.stopDensityTarget ?? 4;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const itinerary = composeItinerary(pool, data.profile as any, target, caps);
+
+    // Region centre for the map default zoom (average of chosen stops, fallback to region origin).
+    const center =
+      itinerary.stops.length > 0
+        ? {
+            lat: itinerary.stops.reduce((a, s) => a + s.lat, 0) / itinerary.stops.length,
+            lng: itinerary.stops.reduce((a, s) => a + s.lng, 0) / itinerary.stops.length,
+          }
+        : { lat: 38.5, lng: -9.0 };
+
+    return {
+      region,
+      regionCenter: center,
+      stops: itinerary.stops,
+      density: itinerary.stops.length,
+      driveBudgetMin: itinerary.totalDriveMin,
+      totalKm: Math.round(itinerary.totalKm),
+      totalExperienceMin: itinerary.totalExperienceMin,
+      feasible: itinerary.feasible,
+      warnings: itinerary.warnings,
+    };
+  });

@@ -45,6 +45,7 @@ import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
+import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 
 
@@ -866,8 +867,36 @@ function RevealStory({
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
-  const livePreview = useMemo(() => previewJourney(profile), [profile]);
 
+  // Synthetic preview = cinematic atmosphere during exploration.
+  // Real preview = actual Viator stops, fetched once on reveal.
+  const syntheticPreview = useMemo(() => previewJourney(profile), [profile]);
+  const composeReal = useServerFn(composeRealItinerary);
+  const [real, setReal] = useState<Awaited<ReturnType<typeof composeReal>> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    composeReal({
+      data: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        profile: profile as any,
+        region: region as "arrabida" | "lisbon-coast" | "alentejo" | "centro",
+        targetStops: profile.stopDensityTarget ?? 4,
+      },
+    })
+      .then((r) => { if (!cancelled) setReal(r); })
+      .catch(() => { /* fall back to synthetic */ });
+    return () => { cancelled = true; };
+  }, [composeReal, profile, region]);
+
+  const livePreview = real
+    ? {
+        region: real.region,
+        regionCenter: real.regionCenter,
+        stops: real.stops,
+        density: real.density,
+        driveBudgetMin: real.driveBudgetMin,
+      }
+    : syntheticPreview;
 
   // AI narrative layer removed (server module path blocked by client import-protection).
   // Static editorial framing carries the reveal.
@@ -927,6 +956,20 @@ function RevealStory({
           />
         </div>
       )}
+
+      {/* Real-stops chip — proves these are drawn from existing Viator tours */}
+      {real && real.stops.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
+          <span
+            className="text-[10px] uppercase tracking-[0.3em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+          >
+            {real.stops.length} real stops · {Math.round(real.totalExperienceMin / 60 * 10) / 10} h experience · {real.driveBudgetMin} min driving
+          </span>
+        </div>
+      )}
+
+
 
 
       <p
@@ -1143,15 +1186,20 @@ function RevealActions({
   };
   const saved = saveState === "saved";
 
+  const [secureNote, setSecureNote] = useState<string | null>(null);
   const onSecure = () => {
     void trackBuilderEvent("studio_v2_secure_click", {
       archetype,
       region,
       intent: profile?.intent,
     });
-    // Route to Signature experiences — the editorial source-of-truth
-    // catalogue where the traveller can confirm a real bookable tour.
-    window.location.href = "/experiences";
+    // F.3 will wire this to a custom-itinerary checkout. Until then we keep
+    // travellers on-screen and prompt them to refine or contact a local
+    // designer — never bounce them to the Signature catalogue, this is a
+    // bespoke day, not a packaged tour.
+    setSecureNote(
+      "Your bespoke day is ready. A local designer will confirm timings and finalise booking — refine below or message us to lock it in.",
+    );
   };
 
   const waMsg = name?.trim()
@@ -1179,6 +1227,18 @@ function RevealActions({
         Secure your experience
         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
       </button>
+      {secureNote && (
+        <p
+          className="text-center text-[12.5px] italic px-2"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+          }}
+          role="status"
+        >
+          {secureNote}
+        </p>
+      )}
 
       {/* 2 — Secondary: Save My Experience (ghost) */}
       <button
