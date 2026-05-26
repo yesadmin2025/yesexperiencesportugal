@@ -995,11 +995,12 @@ function RevealStory({
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
         <>
-          <RefineStage
+          <LivingItinerary
             stops={editedStops}
             alternates={real.alternates}
             caps={real.caps}
             onChange={setEditedStops}
+            intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
           />
           <BespokeSecureCTA
             profile={profile}
