@@ -1218,6 +1218,7 @@ function RevealActions({
 
       {/* 3 — Tertiary: Refine with a Local Designer (text) */}
       <a
+        onClick={() => void trackBuilderEvent("studio_v2_refine_click", { archetype, region, intent: profile?.intent })}
         href={whatsappHref(waMsg)}
         target="_blank"
         rel="noopener noreferrer"
