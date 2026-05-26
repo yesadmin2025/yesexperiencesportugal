@@ -1118,6 +1118,7 @@ function RevealActions({
   const onSave = async () => {
     if (saveState === "saving") return;
     setSaveState("saving");
+    void trackBuilderEvent("studio_v2_save_click", { archetype, region, intent: profile?.intent });
     try {
       if (profile) {
         const r = await saveSession({
@@ -1132,13 +1133,27 @@ function RevealActions({
         setShareUrl(url);
         try { await navigator.clipboard.writeText(url); } catch { /* ignore */ }
         try { window.localStorage.setItem("yes.studio-v2.last-share", url); } catch { /* */ }
+        void trackBuilderEvent("studio_v2_save_success", { shareToken: r.shareToken });
       }
       setSaveState("saved");
     } catch {
       setSaveState("error");
+      void trackBuilderEvent("studio_v2_save_error", {});
     }
   };
   const saved = saveState === "saved";
+
+  const onSecure = () => {
+    void trackBuilderEvent("studio_v2_secure_click", {
+      archetype,
+      region,
+      intent: profile?.intent,
+      tier: profile?.ops?.tier,
+    });
+    // Route to Signature experiences — the editorial source-of-truth
+    // catalogue where the traveller can confirm a real bookable tour.
+    window.location.href = "/experiences";
+  };
 
   const waMsg = name?.trim()
     ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de a refinar com um local designer.`
@@ -1148,6 +1163,7 @@ function RevealActions({
       {/* 1 — Primary: Secure Your Experience (gold) */}
       <button
         type="button"
+        onClick={onSecure}
         className="group inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
           background: "color-mix(in oklab, var(--gold) 92%, var(--charcoal))",
