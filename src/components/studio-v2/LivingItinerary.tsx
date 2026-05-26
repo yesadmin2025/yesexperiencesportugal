@@ -135,20 +135,42 @@ function periodLabel(min: number): string {
   return "evening";
 }
 
-// Computes arrival clock per stop assuming a 10:00 start, 55 km/h average drive.
-function computeArrivals(stops: RefineStop[]): number[] {
-  const out: number[] = [];
-  let t = 10 * 60;
+// Day-break threshold — once a day pushes past this clock, the next stop
+// becomes the opening beat of a new day (silence, then resume).
+const DAY_END_MIN = 19 * 60;       // 19:00
+const DAY_START_MIN = 10 * 60;     // 10:00 — next day resumes here
+
+// Computes arrival clock per stop and groups stops into days. When cumulative
+// time pushes past DAY_END_MIN, a new day starts and the clock resets.
+// Returns one array per day, in original stop order.
+function composeDays(stops: RefineStop[]): {
+  days: { stops: RefineStop[]; arrivals: number[]; indices: number[] }[];
+} {
+  const days: { stops: RefineStop[]; arrivals: number[]; indices: number[] }[] = [];
+  let cur: { stops: RefineStop[]; arrivals: number[]; indices: number[] } = {
+    stops: [], arrivals: [], indices: [],
+  };
+  let t = DAY_START_MIN;
   for (let i = 0; i < stops.length; i++) {
-    if (i > 0) {
-      const km = haversineKm(stops[i - 1], stops[i]);
+    if (cur.stops.length > 0) {
+      const km = haversineKm(cur.stops[cur.stops.length - 1], stops[i]);
       const drive = (km / 55) * 60;
-      t += drive;
+      const candidateArrival = t + drive;
+      if (candidateArrival > DAY_END_MIN) {
+        days.push(cur);
+        cur = { stops: [], arrivals: [], indices: [] };
+        t = DAY_START_MIN;
+      } else {
+        t += drive;
+      }
     }
-    out.push(t);
+    cur.stops.push(stops[i]);
+    cur.arrivals.push(t);
+    cur.indices.push(i);
     t += stops[i].duration_minutes ?? 60;
   }
-  return out;
+  if (cur.stops.length > 0) days.push(cur);
+  return { days };
 }
 
 // ─── component ───────────────────────────────────────────────────────────
