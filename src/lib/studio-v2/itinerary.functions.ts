@@ -139,11 +139,13 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       region,
       regionCenter: center,
       stops: itinerary.stops,
+      alternates,
       density: itinerary.stops.length,
       driveBudgetMin: itinerary.totalDriveMin,
       totalKm: Math.round(itinerary.totalKm),
       totalExperienceMin: itinerary.totalExperienceMin,
       feasible: itinerary.feasible,
       warnings: itinerary.warnings,
+      caps,
     };
   });
