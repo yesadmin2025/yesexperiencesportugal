@@ -58,7 +58,7 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-export function RefineStage({ stops, alternates, onChange }: Props) {
+export function RefineStage({ stops, alternates, onChange, caps }: Props) {
   // Tracks which alternate index we're on per slot (for cycling Swap).
   const [swapIdx, setSwapIdx] = useState<Record<string, number>>({});
 
