@@ -1072,32 +1072,63 @@ function RewardMapBeat({
   );
 }
 
-function ThinkingBeat() {
+function ThinkingBeat({ topIntent }: { topIntent: IntentAtmosphere }) {
+  const img = INTENT_IMAGE[topIntent] ?? INTENT_IMAGE.relaxed_scenic;
+  const lines = [
+    "Matching atmosphere…",
+    "Pacing the day…",
+    "Tracing the route…",
+  ];
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const t = window.setInterval(() => setIdx((i) => (i + 1) % lines.length), 750);
+    return () => window.clearInterval(t);
+  }, [lines.length]);
   return (
-    <section className="min-h-[55vh] flex flex-col justify-center">
-      <div className="flex items-center gap-2">
-        <ShimmerDot delay={0} />
-        <ShimmerDot delay={120} />
-        <ShimmerDot delay={240} />
+    <section
+      className="studio-v2-grain studio-v2-vignette relative h-[100svh] w-full overflow-hidden"
+      aria-label="Composing your day"
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src={img.src}
+          alt=""
+          className="studio-v2-kenburns absolute inset-0 h-full w-full object-cover"
+          style={{ filter: "saturate(0.75) contrast(1.05) brightness(0.62) blur(2px)" }}
+          aria-hidden
+        />
       </div>
-      <p
-        className="studio-v2-reveal delay-1 mt-5 text-[22px] leading-[1.3]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 500 }}
-      >
-        Composing your journey…
-      </p>
-      <p
-        className="studio-v2-reveal delay-2 mt-2 text-[13px] italic"
-        style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
-        }}
-      >
-        Matching atmosphere, pace and priorities to a feasible day.
-      </p>
+      <span className="studio-v2-scan" aria-hidden />
+
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
+        <span
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
+          style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 600 }}
+        >
+          <span className="studio-v2-rule" /> Composing
+        </span>
+        <p
+          key={idx}
+          className="studio-v2-reveal mt-6 text-[22px] leading-[1.3] sm:text-[28px]"
+          style={{
+            fontFamily: "Georgia, serif",
+            fontStyle: "italic",
+            color: "var(--ivory)",
+            textShadow: "0 2px 16px rgba(0,0,0,0.5)",
+          }}
+        >
+          {lines[idx]}
+        </p>
+        <div className="mt-8 flex items-center gap-2">
+          <ShimmerDot delay={0} />
+          <ShimmerDot delay={140} />
+          <ShimmerDot delay={280} />
+        </div>
+      </div>
     </section>
   );
 }
+
 
 function ShimmerDot({ delay }: { delay: number }) {
   return (
