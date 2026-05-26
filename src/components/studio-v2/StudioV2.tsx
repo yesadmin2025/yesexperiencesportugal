@@ -44,8 +44,8 @@ import { MemoryDeck } from "./MemoryDeck";
 import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { useServerFn } from "@tanstack/react-start";
-import { studioNarrative } from "@/server/studioNarrative.functions";
-import { useStudioSessionId } from "@/hooks/useBuilderSessionId";
+import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
