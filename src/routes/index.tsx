@@ -733,7 +733,7 @@ function HomePage() {
               </ol>
 
               <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                <CtaButton to="/builder" variant="primary">
+                <CtaButton to="/studio-v2" variant="primary">
                   Start designing
                 </CtaButton>
               </div>
