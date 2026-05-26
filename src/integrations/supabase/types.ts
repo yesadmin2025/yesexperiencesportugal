@@ -1162,6 +1162,69 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_v2_bookings: {
+        Row: {
+          archetype: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          draft_token: string
+          guests: number | null
+          id: string
+          notes: string | null
+          preferred_date: string | null
+          profile: Json
+          region: string | null
+          status: string
+          stops: Json
+          total_drive_minutes: number
+          total_km: number
+          total_minutes: number
+          updated_at: string
+        }
+        Insert: {
+          archetype?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          draft_token: string
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          profile: Json
+          region?: string | null
+          status?: string
+          stops?: Json
+          total_drive_minutes?: number
+          total_km?: number
+          total_minutes?: number
+          updated_at?: string
+        }
+        Update: {
+          archetype?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          draft_token?: string
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          profile?: Json
+          region?: string | null
+          status?: string
+          stops?: Json
+          total_drive_minutes?: number
+          total_km?: number
+          total_minutes?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_v2_sessions: {
         Row: {
           archetype: string | null
