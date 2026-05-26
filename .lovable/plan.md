@@ -94,7 +94,7 @@ Secrets needed: `MAPBOX_ACCESS_TOKEN` (already used elsewhere — confirm before
 3. **F.8 ✅** Move 1 — `LivingItinerary` replaces Refine surface: full-bleed cinematic scenes per stop, swipe-left = silent substitution, long-press = mood anchor, dwell observer feeds engine. Classic Refine kept behind "Controls" escape hatch.
 4. **F.9 ✅** Move 4 — map as co-protagonist + Reveal moment
 5. **F.10 ✅** Move 5 — multi-day as apex: `composeDays()` splits cinematic scroll when arrivals push past 19:00, `DayBreakScene` renders silence between days, `ComposedPrivatelyMark` appears once per multi-day. Pricing stays silent until human composer confirms.
-6. **F.11** Move 6 — warm memory + invitation route
+6. **F.11 ✅** Move 6 — warm memory + invitation route: `LivingItinerary` warm-loads the visitor's stored mood vector (via `loadPredictions(anonId)`) and re-sorts the alternate pool so silent substitutions feel pre-tuned. New `/studio-v2/i/$token` invitation surface — cinematic, read-only, composer line + region whisper + single "make it mine" CTA → `/s/$token`. Telemetry: `studio_v2_warm_resume`, `studio_v2_invitation_view`, `studio_v2_invitation_accept`.
 
 ## Answers locked
 

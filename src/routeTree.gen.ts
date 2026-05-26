@@ -46,6 +46,7 @@ import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
+import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 
 const TypographyAuditRoute = TypographyAuditRouteImport.update({
   id: '/typography-audit',
@@ -232,6 +233,11 @@ const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
   path: '/tailor',
   getParentRoute: () => ToursTourIdRoute,
 } as any)
+const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
+  id: '/i/$token',
+  path: '/i/$token',
+  getParentRoute: () => StudioV2Route,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -249,7 +255,7 @@ export interface FileRoutesByFullPath {
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
   '/studio-drift': typeof StudioDriftRoute
-  '/studio-v2': typeof StudioV2Route
+  '/studio-v2': typeof StudioV2RouteWithChildren
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -270,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/qa/mobile': typeof QaMobileRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
 }
 export interface FileRoutesByTo {
@@ -288,7 +295,7 @@ export interface FileRoutesByTo {
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
   '/studio-drift': typeof StudioDriftRoute
-  '/studio-v2': typeof StudioV2Route
+  '/studio-v2': typeof StudioV2RouteWithChildren
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -309,6 +316,7 @@ export interface FileRoutesByTo {
   '/qa/mobile': typeof QaMobileRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
 }
 export interface FileRoutesById {
@@ -328,7 +336,7 @@ export interface FileRoutesById {
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
   '/studio-drift': typeof StudioDriftRoute
-  '/studio-v2': typeof StudioV2Route
+  '/studio-v2': typeof StudioV2RouteWithChildren
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -349,6 +357,7 @@ export interface FileRoutesById {
   '/qa/mobile': typeof QaMobileRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
 }
 export interface FileRouteTypes {
@@ -390,6 +399,7 @@ export interface FileRouteTypes {
     | '/qa/mobile'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -429,6 +439,7 @@ export interface FileRouteTypes {
     | '/qa/mobile'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
   id:
     | '__root__'
@@ -468,6 +479,7 @@ export interface FileRouteTypes {
     | '/qa/mobile'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
   fileRoutesById: FileRoutesById
 }
@@ -487,7 +499,7 @@ export interface RootRouteChildren {
   PreviewCheckRoute: typeof PreviewCheckRoute
   ProposalsRoute: typeof ProposalsRoute
   StudioDriftRoute: typeof StudioDriftRoute
-  StudioV2Route: typeof StudioV2Route
+  StudioV2Route: typeof StudioV2RouteWithChildren
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
@@ -770,6 +782,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToursTourIdTailorRouteImport
       parentRoute: typeof ToursTourIdRoute
     }
+    '/studio-v2/i/$token': {
+      id: '/studio-v2/i/$token'
+      path: '/i/$token'
+      fullPath: '/studio-v2/i/$token'
+      preLoaderRoute: typeof StudioV2ITokenRouteImport
+      parentRoute: typeof StudioV2Route
+    }
   }
 }
 
@@ -783,6 +802,18 @@ const LocalStoriesRouteChildren: LocalStoriesRouteChildren = {
 
 const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
   LocalStoriesRouteChildren,
+)
+
+interface StudioV2RouteChildren {
+  StudioV2ITokenRoute: typeof StudioV2ITokenRoute
+}
+
+const StudioV2RouteChildren: StudioV2RouteChildren = {
+  StudioV2ITokenRoute: StudioV2ITokenRoute,
+}
+
+const StudioV2RouteWithChildren = StudioV2Route._addFileChildren(
+  StudioV2RouteChildren,
 )
 
 interface ToursTourIdRouteChildren {
@@ -813,7 +844,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreviewCheckRoute: PreviewCheckRoute,
   ProposalsRoute: ProposalsRoute,
   StudioDriftRoute: StudioDriftRoute,
-  StudioV2Route: StudioV2Route,
+  StudioV2Route: StudioV2RouteWithChildren,
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
