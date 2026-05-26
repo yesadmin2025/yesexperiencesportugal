@@ -1119,7 +1119,129 @@ function RevealStory({
   );
 }
 
+// ─── bespoke Secure CTA ─────────────────────────────────────────────────
+// Creates a bespoke draft from the edited real stops and navigates to the
+// custom checkout. NEVER points at /experiences — this is a custom day,
+// not a packaged Signature tour.
+
+function BespokeSecureCTA({
+  profile, region, archetype, stops,
+}: {
+  profile: TravelerProfile;
+  region: string;
+  archetype?: string;
+  stops: RefineStop[];
+}) {
+  const createDraft = useServerFn(
+    // dynamic import to keep the route's protected-import chain happy
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    (require("@/lib/studio-v2/bookings.functions") as typeof import("@/lib/studio-v2/bookings.functions")).createCustomBookingDraft,
+  );
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const totals = useMemo(() => {
+    const toRad = (d: number) => (d * Math.PI) / 180;
+    const hav = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
+      const R = 6371;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const la1 = toRad(a.lat);
+      const la2 = toRad(b.lat);
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(h));
+    };
+    let km = 0;
+    let exp = 0;
+    for (let i = 0; i < stops.length; i++) {
+      exp += stops[i].duration_minutes ?? 60;
+      if (i > 0) km += hav(stops[i - 1], stops[i]);
+    }
+    return {
+      km: Math.round(km),
+      drive: Math.round((km / 55) * 60),
+      experience: exp,
+    };
+  }, [stops]);
+
+  const onClick = async () => {
+    if (busy || stops.length < 2) return;
+    setBusy(true);
+    setErr(null);
+    void trackBuilderEvent("studio_v2_secure_click", {
+      archetype, region, intent: profile.intent, stopCount: stops.length,
+    });
+    try {
+      const r = await createDraft({
+        data: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          profile: profile as any,
+          region,
+          archetype,
+          stops: stops.map((s) => ({
+            key: s.key,
+            region_key: s.region_key,
+            label: s.label,
+            blurb: s.blurb ?? null,
+            tag: s.tag ?? null,
+            lat: s.lat,
+            lng: s.lng,
+            duration_minutes: s.duration_minutes,
+            source_tour_keys: s.source_tour_keys ?? [],
+          })),
+          totalMinutes: totals.experience,
+          totalDriveMinutes: totals.drive,
+          totalKm: totals.km,
+        },
+      });
+      void trackBuilderEvent("studio_v2_booking_draft_create", { draftToken: r.draftToken });
+      window.location.href = `/checkout/${r.draftToken}`;
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not secure your day.");
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="mt-10 flex flex-col gap-3">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={busy || stops.length < 2}
+        className="group inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-4 transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          background: "color-mix(in oklab, var(--gold) 92%, var(--charcoal))",
+          color: "var(--charcoal)",
+          minHeight: 56,
+          fontFamily: "var(--font-sans, Inter), sans-serif",
+          fontWeight: 700,
+          fontSize: 13,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--gold) 60%, transparent)",
+        }}
+      >
+        {busy ? "Securing…" : "Secure my bespoke day"}
+        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+      </button>
+      {err && (
+        <p className="text-center text-[12.5px]" style={{ color: "var(--charcoal)" }}>{err}</p>
+      )}
+      <p
+        className="text-center text-[12px] italic"
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+        }}
+      >
+        A local designer confirms every timing before any charge.
+      </p>
+    </div>
+  );
+}
+
 // ─── reusable chrome ─────────────────────────────────────────────────────
+
 
 function ChoiceBeat({
   eyebrow, title, helper, children, onBack, footer,
