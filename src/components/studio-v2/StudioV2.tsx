@@ -199,75 +199,106 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
 // Suppress "unused" warnings for retained legacy types/helpers.
 void previewJourney; void emptyProfile;
 
-// ─── opening scene — silence + Portugal breathing ───────────────────────
+// ─── opening scene — editorial cold open ────────────────────────────────
 
 function OpeningScene({ onTap }: { onTap: () => void }) {
-  const [showLine, setShowLine] = useState(false);
+  const [stage, setStage] = useState(0); // 0 silence, 1 eyebrow, 2 phrase, 3 hint
   useEffect(() => {
-    const t = window.setTimeout(() => setShowLine(true), 900);
-    return () => window.clearTimeout(t);
+    const t1 = window.setTimeout(() => setStage(1), 600);
+    const t2 = window.setTimeout(() => setStage(2), 1400);
+    const t3 = window.setTimeout(() => setStage(3), 3000);
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
   }, []);
   return (
     <button
       type="button"
       onClick={onTap}
       aria-label="Begin"
-      className="relative block h-[100svh] w-full overflow-hidden text-left focus-visible:outline-none"
+      className="studio-v2-grain studio-v2-vignette relative block h-[100svh] w-full overflow-hidden text-left focus-visible:outline-none"
     >
-      <img
-        src={INTENT_IMAGE.relaxed_scenic.src}
-        alt={INTENT_IMAGE.relaxed_scenic.alt}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ animation: "studioV2OpeningZoom 14s ease-out forwards", filter: "saturate(0.92)" }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, color-mix(in oklab, var(--charcoal) 18%, transparent) 0%, transparent 35%, color-mix(in oklab, var(--charcoal) 55%, transparent) 100%)",
-        }}
-      />
-      <div className="absolute inset-x-6 bottom-[18vh] sm:inset-x-12">
-        <p
-          className="text-[11px] uppercase tracking-[0.36em] transition-opacity duration-1000"
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src={INTENT_IMAGE.coastal_cinematic.src}
+          alt={INTENT_IMAGE.coastal_cinematic.alt}
+          className="studio-v2-kenburns absolute inset-0 h-full w-full object-cover"
+          style={{ filter: "saturate(0.88) contrast(1.05) brightness(0.92)" }}
+        />
+      </div>
+
+      {/* Top frame: brand mark + chapter */}
+      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
+        <span
+          className="text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
-            opacity: showLine ? 1 : 0,
-            color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
+            opacity: stage >= 1 ? 0.85 : 0,
+            color: "var(--ivory)",
             fontWeight: 600,
           }}
         >
-          Portugal · written for you
-        </p>
-        <p
-          className="mt-5 text-[26px] leading-[1.2] sm:text-[34px] transition-all duration-1000"
+          YES · Portugal
+        </span>
+        <span
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
-            opacity: showLine ? 1 : 0,
-            transform: showLine ? "translateY(0)" : "translateY(10px)",
+            opacity: stage >= 1 ? 0.85 : 0,
+            color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+            fontWeight: 600,
+          }}
+        >
+          <span className="studio-v2-rule" /> 00 / Arrival
+        </span>
+      </div>
+
+      {/* Bottom-left editorial: phrase + author line */}
+      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
+        <p
+          className="mb-5 text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
+          style={{
+            opacity: stage >= 1 ? 0.85 : 0,
+            color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+            fontWeight: 600,
+          }}
+        >
+          A film, not a form
+        </p>
+        <h1
+          className="text-[34px] leading-[1.04] sm:text-[52px] transition-all duration-[1400ms]"
+          style={{
+            opacity: stage >= 2 ? 1 : 0,
+            transform: stage >= 2 ? "translateY(0)" : "translateY(14px)",
             fontFamily: "Georgia, 'Times New Roman', serif",
             fontStyle: "italic",
+            fontWeight: 400,
             color: "var(--ivory)",
-            maxWidth: "20ch",
+            maxWidth: "16ch",
+            textShadow: "0 2px 28px rgba(0,0,0,0.35)",
+            letterSpacing: "-0.005em",
           }}
         >
-          Let your instinct guide.
-        </p>
-        <p
-          className="mt-8 text-[11px] uppercase tracking-[0.32em] transition-opacity duration-1000 delay-500"
-          style={{
-            opacity: showLine ? 0.75 : 0,
-            color: "color-mix(in oklab, var(--ivory) 80%, transparent)",
-            fontWeight: 600,
-          }}
+          Let instinct<br/>guide the way.
+        </h1>
+
+        <div
+          className="mt-10 flex items-center gap-4 transition-opacity duration-1000"
+          style={{ opacity: stage >= 3 ? 1 : 0 }}
         >
-          tap anywhere to begin
-        </p>
+          <span
+            className="studio-v2-tap-indicator inline-block h-7 w-px"
+            style={{ background: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}
+          />
+          <span
+            className="text-[10.5px] uppercase tracking-[0.36em]"
+            style={{ color: "color-mix(in oklab, var(--ivory) 80%, transparent)", fontWeight: 600 }}
+          >
+            tap to begin
+          </span>
+        </div>
       </div>
     </button>
   );
 }
 
-// ─── mood scene — silent signal capture ─────────────────────────────────
+// ─── mood scene — magazine spread, dominant + inset alternative ────────
 
 function MoodSceneView({
   scene, onSignal,
@@ -276,81 +307,166 @@ function MoodSceneView({
   onSignal: (sig: SceneSignal) => void;
 }) {
   const startedAt = useRef<number>(Date.now());
-  useEffect(() => { startedAt.current = Date.now(); }, [scene.id]);
-  const handle = (fragmentId: string) => {
+  const [dominantIdx, setDominantIdx] = useState<0 | 1>(0);
+  useEffect(() => {
+    startedAt.current = Date.now();
+    setDominantIdx(0);
+  }, [scene.id]);
+
+  const sceneNum = MOOD_SCENES.findIndex((s) => s.id === scene.id) + 1;
+  const sceneRoman = ["I", "II", "III"][sceneNum - 1] ?? String(sceneNum);
+  const dominant = scene.fragments[dominantIdx];
+  const alternative = scene.fragments[dominantIdx === 0 ? 1 : 0];
+
+  const choose = (fragmentId: string) => {
     onSignal({
       sceneId: scene.id,
       tappedFragmentId: fragmentId,
       lingerMs: Date.now() - startedAt.current,
     });
   };
+
   return (
     <section
-      className="relative grid h-[100svh] w-full grid-rows-2 overflow-hidden"
+      key={scene.id}
+      className="studio-v2-grain studio-v2-vignette relative h-[100svh] w-full overflow-hidden"
       aria-label={scene.eyebrow}
     >
-      {scene.fragments.map((frag, idx) => (
-        <button
-          key={frag.id}
-          type="button"
-          onClick={() => handle(frag.id)}
-          aria-label={frag.whisper}
-          className="group relative block w-full overflow-hidden text-left transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      {/* Dominant cinematic image — tap to choose */}
+      <button
+        type="button"
+        onClick={() => choose(dominant.id)}
+        aria-label={dominant.whisper}
+        className="absolute inset-0 block w-full overflow-hidden text-left focus-visible:outline-none"
+      >
+        <img
+          key={`${scene.id}-${dominant.id}`}
+          src={dominant.image}
+          alt={dominant.alt}
+          className="studio-v2-kenburns absolute inset-0 h-full w-full object-cover"
+          style={{ filter: "saturate(0.9) contrast(1.04) brightness(0.94)" }}
+        />
+      </button>
+
+      {/* Top frame: chapter + progress */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
+        <span
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
+          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
         >
-          <img
-            src={frag.image}
-            alt={frag.alt}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.04] group-active:scale-[1.02]"
-            style={{ filter: "saturate(0.9)" }}
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-70"
+          <span className="studio-v2-rule" /> Chapter {sceneRoman} · {scene.eyebrow}
+        </span>
+        <span className="flex items-center gap-1.5" aria-hidden>
+          {MOOD_SCENES.map((s, i) => (
+            <span
+              key={s.id}
+              className="block h-px transition-all duration-500"
+              style={{
+                width: i + 1 === sceneNum ? 22 : 10,
+                background: i + 1 <= sceneNum
+                  ? "color-mix(in oklab, var(--gold) 85%, var(--ivory))"
+                  : "color-mix(in oklab, var(--ivory) 40%, transparent)",
+              }}
+            />
+          ))}
+        </span>
+      </div>
+
+      {/* Center-left whisper over dominant image */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-[28vh] z-10 px-6 sm:px-10">
+        <p
+          key={`${scene.id}-${dominant.id}-whisper`}
+          className="studio-v2-reveal text-[26px] leading-[1.18] sm:text-[34px]"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontStyle: "italic",
+            color: "var(--ivory)",
+            maxWidth: "16ch",
+            textShadow: "0 2px 24px rgba(0,0,0,0.45)",
+          }}
+        >
+          {dominant.whisper}
+        </p>
+      </div>
+
+      {/* Bottom dock: choose dominant + inset for the alternative */}
+      <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-7 sm:px-10 sm:pb-10">
+        <div className="flex items-end gap-3">
+          {/* Primary: confirm dominant */}
+          <button
+            type="button"
+            onClick={() => choose(dominant.id)}
+            className="studio-v2-sheen group flex-1 rounded-[2px] px-5 py-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2"
             style={{
-              background:
-                idx === 0
-                  ? "linear-gradient(180deg, color-mix(in oklab, var(--charcoal) 28%, transparent) 0%, transparent 55%, color-mix(in oklab, var(--charcoal) 60%, transparent) 100%)"
-                  : "linear-gradient(0deg, color-mix(in oklab, var(--charcoal) 28%, transparent) 0%, transparent 55%, color-mix(in oklab, var(--charcoal) 60%, transparent) 100%)",
+              background: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              border: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
+              color: "var(--ivory)",
+              minHeight: 56,
             }}
-          />
-          <div
-            className="absolute inset-x-6 sm:inset-x-12"
-            style={{ [idx === 0 ? "bottom" : "top"]: "8vh" } as React.CSSProperties}
           >
-            {idx === 0 && (
-              <p
-                className="mb-3 text-[10px] uppercase tracking-[0.36em]"
+            <span
+              className="block text-[9.5px] uppercase tracking-[0.34em]"
+              style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
+            >
+              choose this
+            </span>
+            <span
+              className="mt-1 flex items-center justify-between gap-2 text-[12.5px] uppercase tracking-[0.22em]"
+              style={{ fontWeight: 600 }}
+            >
+              <span className="truncate">continue</span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+            </span>
+          </button>
+
+          {/* Inset: switch to alternative */}
+          <button
+            type="button"
+            onClick={() => setDominantIdx(dominantIdx === 0 ? 1 : 0)}
+            aria-label={`Switch to: ${alternative.whisper}`}
+            className="studio-v2-inset group relative w-[34%] max-w-[160px] overflow-hidden rounded-[2px] text-left transition-all focus-visible:outline-none focus-visible:ring-2"
+            style={{ minHeight: 86 }}
+          >
+            <img
+              src={alternative.image}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+              style={{ filter: "saturate(0.85) brightness(0.82)" }}
+              aria-hidden
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--charcoal) 75%, transparent) 100%)" }}
+            />
+            <span className="relative flex h-full flex-col justify-between p-2.5">
+              <span
+                className="text-[8.5px] uppercase tracking-[0.32em]"
+                style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 600 }}
+              >
+                or
+              </span>
+              <span
+                className="text-[11px] leading-[1.25]"
                 style={{
-                  color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
-                  fontWeight: 600,
+                  fontFamily: "Georgia, serif",
+                  fontStyle: "italic",
+                  color: "var(--ivory)",
+                  textShadow: "0 1px 6px rgba(0,0,0,0.5)",
                 }}
               >
-                {scene.eyebrow}
-              </p>
-            )}
-            <p
-              className="text-[22px] leading-[1.25] sm:text-[28px]"
-              style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                fontStyle: "italic",
-                color: "var(--ivory)",
-                maxWidth: "18ch",
-                textShadow: "0 1px 12px rgba(0,0,0,0.25)",
-              }}
-            >
-              {frag.whisper}
-            </p>
-          </div>
-        </button>
-      ))}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
-        style={{ background: "color-mix(in oklab, var(--ivory) 35%, transparent)" }}
-      />
+                {alternative.whisper}
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
     </section>
   );
 }
+
 
 // ─── logistics card — only explicit inputs ──────────────────────────────
 
