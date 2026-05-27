@@ -85,6 +85,22 @@ const SEQUENCE: Beat[] = [
 const SESSION_KEY = "yes.studio-v2.session";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
 
+/** Editorial one-liner per region — used in the postcard headline. */
+function regionWhisper(region: string | null | undefined): string {
+  if (!region) return "a private composition, shaped to your rhythm";
+  const key = region.toLowerCase();
+  if (key.includes("douro")) return "the Douro, slow light over terraced wine";
+  if (key.includes("alentejo")) return "the Alentejo, long horizons and quiet tables";
+  if (key.includes("arrabida") || key.includes("setubal"))
+    return "Arrábida, the Atlantic close enough to taste";
+  if (key.includes("sintra")) return "Sintra, granite and salt mist on the same breath";
+  if (key.includes("lisbon") || key.includes("lisboa"))
+    return "Lisbon, hidden streets after the crowds";
+  if (key.includes("centro")) return "central Portugal, slow villages and stone light";
+  if (key.includes("porto")) return "Porto, granite light and river-quiet cellars";
+  return "a private composition, shaped to your rhythm";
+}
+
 interface PersistedSession {
   beatIndex: number;
   profile: TravelerProfile;
