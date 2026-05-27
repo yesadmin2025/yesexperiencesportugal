@@ -1621,23 +1621,15 @@ function RevealStory({
 
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
-        <>
-          <LivingItinerary
-            stops={editedStops}
-            alternates={real.alternates}
-            caps={real.caps}
-            onChange={setEditedStops}
-            intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
-            regionKey={livePreview.region}
-            regionCenter={livePreview.regionCenter}
-          />
-          <BespokeSecureCTA
-            profile={profile}
-            region={region}
-            archetype={(profile.archetype as string | undefined) ?? undefined}
-            stops={editedStops}
-          />
-        </>
+        <LivingItinerary
+          stops={editedStops}
+          alternates={real.alternates}
+          caps={real.caps}
+          onChange={setEditedStops}
+          intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
+          regionKey={livePreview.region}
+          regionCenter={livePreview.regionCenter}
+        />
       )}
 
 
