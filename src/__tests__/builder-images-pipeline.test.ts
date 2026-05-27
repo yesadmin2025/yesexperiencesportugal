@@ -21,7 +21,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { extractImageUrlsFromHtml } from "@/server/builderImages.server";
+import { extractImageUrlsFromHtml } from "@/lib/builderImages.server";
 
 describe("extractImageUrlsFromHtml — happy path", () => {
   it("extracts a single Viator jpg URL from minimal HTML", () => {
