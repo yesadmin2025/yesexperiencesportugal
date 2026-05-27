@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Check, MapPin, Printer } from "lucide-react";
 
 import { loadJourney } from "@/lib/builderJourneys.functions";
-import { buildDayRoute } from "@/server/builderEngine.functions";
+import { buildDayRoute } from "@/lib/builderEngine.functions";
 import { fmtMinutes } from "@/components/builder/types";
 
 export const Route = createFileRoute("/i/$token")({
