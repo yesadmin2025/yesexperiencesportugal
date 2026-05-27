@@ -1518,8 +1518,63 @@ function RevealStory({
           region,
         )}
         closer="The country has arranged itself around you."
-        onClose={() => setMapRevealOpen(false)}
+        onClose={() => {
+          setMapRevealOpen(false);
+          // Hand the moment over to the postcard — keepsake + share, once.
+          if (!postcardShown) {
+            // Short beat so the map fade-out can settle before the postcard rises.
+            window.setTimeout(() => {
+              setPostcardOpen(true);
+              setPostcardShown(true);
+              void trackBuilderEvent("studio_v2_postcard_open", {
+                region,
+                intent: profile.intent,
+                hasToken: Boolean(postcardToken),
+              });
+            }, 240);
+          }
+        }}
       />
+
+      {/* Postcard — keepsake frame between the cinematic reveal and the
+          editable itinerary. Carries the share surface (invitation URL). */}
+      <Postcard
+        open={postcardOpen}
+        onClose={() => setPostcardOpen(false)}
+        onContinue={() => {
+          void trackBuilderEvent("studio_v2_postcard_continue", { region });
+        }}
+        hero={hero}
+        headlineOwner={profile.name?.trim() ? `${profile.name.trim()}'s` : "Your"}
+        headlineWhisper={regionWhisper(region)}
+        lines={storyFinalLines(
+          { name: profile.name, intent: profile.intent, pace: profile.pace, group: profile.group },
+          region,
+        )}
+        stops={livePreview.stops.map((s) => ({
+          key: s.key,
+          label: s.label,
+          duration_minutes: s.duration_minutes,
+        }))}
+        shareUrl={
+          postcardToken && typeof window !== "undefined"
+            ? `${window.location.origin}/studio-v2/i/${postcardToken}`
+            : null
+        }
+        whatsappHref={whatsappHref(
+          profile.name?.trim()
+            ? `Olá! Sou ${profile.name.trim()} e acabei de desenhar um dia em ${regionWhisper(region)}. Gostaria de o refinar com um local designer.`
+            : `Olá! Acabei de desenhar um dia em Portugal no Studio. Gostaria de o refinar com um local designer.`,
+        )}
+        onShare={(channel) =>
+          void trackBuilderEvent("studio_v2_postcard_share", {
+            channel,
+            region,
+            hasToken: Boolean(postcardToken),
+          })
+        }
+      />
+
 
       {/* Hero image — real, editorial, no overlay text */}
       {hero && (
