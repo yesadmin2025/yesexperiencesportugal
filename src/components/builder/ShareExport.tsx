@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Check, Copy, Download, ExternalLink, Loader2, Share2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { createJourney } from "@/server/builderJourneys.functions";
+import { createJourney } from "@/lib/builderJourneys.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import type { RouteUI, RoutedStopUI } from "./types";
 

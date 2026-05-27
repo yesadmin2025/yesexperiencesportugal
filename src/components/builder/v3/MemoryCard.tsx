@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, Copy, Loader2, Share2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { createJourney } from "@/server/builderJourneys.functions";
+import { createJourney } from "@/lib/builderJourneys.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import type { StudioStop } from "@/hooks/useStudioState";
 import type { Pace } from "@/components/builder/types";

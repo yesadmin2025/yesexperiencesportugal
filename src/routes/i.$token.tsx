@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, MapPin, Printer } from "lucide-react";
 
-import { loadJourney } from "@/server/builderJourneys.functions";
+import { loadJourney } from "@/lib/builderJourneys.functions";
 import { buildDayRoute } from "@/server/builderEngine.functions";
 import { fmtMinutes } from "@/components/builder/types";
 

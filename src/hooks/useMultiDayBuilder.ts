@@ -7,7 +7,7 @@ import {
   rotateShareToken,
   revokeShareToken,
   saveJourney,
-} from "@/server/builderJourneys.functions";
+} from "@/lib/builderJourneys.functions";
 
 const KEY = "yes.builder.multiday.v1";
 const TOKEN_KEY_PREFIX = "yes.builder.owner.";
