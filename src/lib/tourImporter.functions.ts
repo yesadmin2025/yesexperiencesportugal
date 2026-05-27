@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { importAllTours } from "@/server/tourImporter.server";
+import { importAllTours } from "@/lib/tourImporter.server";
 
 /**
  * Admin-gated server function: kicks off a fresh tour import run.
