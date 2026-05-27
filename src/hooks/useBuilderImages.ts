@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { pickImagesForRoute, pickMoodCardImages } from "@/server/builderImages.functions";
+import { pickImagesForRoute, pickMoodCardImages } from "@/lib/builderImages.functions";
 import type { Mood } from "@/components/builder/types";
 
 export interface BuilderImageRef {

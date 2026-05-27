@@ -18,7 +18,7 @@ import {
   setExperienceImageActive,
   updateExperienceImageAlt,
   rescrapeStopImages,
-} from "@/server/builderImages.functions";
+} from "@/lib/builderImages.functions";
 
 export const Route = createFileRoute("/admin/builder-images-qa")({
   head: () => ({ meta: [{ title: "Builder image QA — Studio Admin" }] }),

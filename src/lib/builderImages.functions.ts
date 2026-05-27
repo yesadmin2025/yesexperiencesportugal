@@ -10,7 +10,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { scrapeViatorImagesForStop } from "./builderImages.server";
+import { scrapeViatorImagesForStop } from "@/server/builderImages.server";
 
 async function assertAdmin(
   supabase: { from: (t: string) => any },
