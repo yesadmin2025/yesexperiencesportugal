@@ -4,9 +4,9 @@ import {
   buildDayRoute,
   computeAddStopEligibility,
   listRegionStops,
-} from "@/server/builderEngine.functions";
+} from "@/lib/builderEngine.functions";
 import { suggestFromIntent } from "@/server/builderIntent.functions";
-import { narrateBuilderRoute } from "@/server/builderEngine.functions";
+import { narrateBuilderRoute } from "@/lib/builderEngine.functions";
 import { fmtMinutes, type Pace, type RouteUI, type RoutedStopUI, type Mood, type Who, type Intention } from "@/components/builder/types";
 import { AddStopSheet, type RegionStop, type StopEligibility } from "@/components/builder/AddStopSheet";
 import { CtaButton } from "@/components/ui/CtaButton";
