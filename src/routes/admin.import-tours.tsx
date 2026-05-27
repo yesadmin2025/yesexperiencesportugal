@@ -10,7 +10,7 @@ import {
   listMappingRules,
   saveMappingRules,
   deleteMappingRules,
-} from "@/server/mappingRules.functions";
+} from "@/lib/mappingRules.functions";
 import {
   fetchViatorArrabida,
   saveViatorArrabida,
