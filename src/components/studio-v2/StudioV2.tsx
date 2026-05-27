@@ -1418,6 +1418,11 @@ function RevealStory({
   // Cinematic map reveal — fires once when real stops first arrive.
   const [mapRevealOpen, setMapRevealOpen] = useState(false);
   const [mapRevealShown, setMapRevealShown] = useState(false);
+  // Postcard — opens once after MapReveal collapses. Keepsake + share surface.
+  const [postcardOpen, setPostcardOpen] = useState(false);
+  const [postcardShown, setPostcardShown] = useState(false);
+  const [postcardToken, setPostcardToken] = useState<string | null>(null);
+  const createSessionFn = useServerFn(createStudioSession);
   useEffect(() => {
     let cancelled = false;
     composeReal({
@@ -1446,9 +1451,25 @@ function RevealStory({
           setMapRevealOpen(true);
           setMapRevealShown(true);
         }
+        // Pre-create the share session silently so the postcard's
+        // "Share" button has a live invitation URL ready the moment
+        // the postcard opens. Best-effort — never blocks the flow.
+        if (!postcardToken) {
+          createSessionFn({
+            data: {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              profile: profile as any,
+              region,
+              archetype: profile.archetype,
+            },
+          })
+            .then((s) => { if (!cancelled) setPostcardToken(s.shareToken); })
+            .catch(() => { /* postcard still works, share button just stays disabled */ });
+        }
       })
       .catch(() => { /* fall back to synthetic */ });
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [composeReal, profile, region]);
 
   // Map source: editedStops (real, mutable) when available, else synthetic.
