@@ -36,6 +36,7 @@ import { fmtMinutes } from "@/components/builder/types";
 import { type RefineStop } from "./RefineStage";
 import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
+import { Postcard } from "./Postcard";
 import { AmbientToggle } from "./AmbientToggle";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
@@ -83,6 +84,22 @@ const SEQUENCE: Beat[] = [
 
 const SESSION_KEY = "yes.studio-v2.session";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+
+/** Editorial one-liner per region — used in the postcard headline. */
+function regionWhisper(region: string | null | undefined): string {
+  if (!region) return "a private composition, shaped to your rhythm";
+  const key = region.toLowerCase();
+  if (key.includes("douro")) return "the Douro, slow light over terraced wine";
+  if (key.includes("alentejo")) return "the Alentejo, long horizons and quiet tables";
+  if (key.includes("arrabida") || key.includes("setubal"))
+    return "Arrábida, the Atlantic close enough to taste";
+  if (key.includes("sintra")) return "Sintra, granite and salt mist on the same breath";
+  if (key.includes("lisbon") || key.includes("lisboa"))
+    return "Lisbon, hidden streets after the crowds";
+  if (key.includes("centro")) return "central Portugal, slow villages and stone light";
+  if (key.includes("porto")) return "Porto, granite light and river-quiet cellars";
+  return "a private composition, shaped to your rhythm";
+}
 
 interface PersistedSession {
   beatIndex: number;
@@ -1417,6 +1434,11 @@ function RevealStory({
   // Cinematic map reveal — fires once when real stops first arrive.
   const [mapRevealOpen, setMapRevealOpen] = useState(false);
   const [mapRevealShown, setMapRevealShown] = useState(false);
+  // Postcard — opens once after MapReveal collapses. Keepsake + share surface.
+  const [postcardOpen, setPostcardOpen] = useState(false);
+  const [postcardShown, setPostcardShown] = useState(false);
+  const [postcardToken, setPostcardToken] = useState<string | null>(null);
+  const createSessionFn = useServerFn(createStudioSession);
   useEffect(() => {
     let cancelled = false;
     composeReal({
@@ -1445,9 +1467,25 @@ function RevealStory({
           setMapRevealOpen(true);
           setMapRevealShown(true);
         }
+        // Pre-create the share session silently so the postcard's
+        // "Share" button has a live invitation URL ready the moment
+        // the postcard opens. Best-effort — never blocks the flow.
+        if (!postcardToken) {
+          createSessionFn({
+            data: {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              profile: profile as any,
+              region,
+              archetype: profile.archetype,
+            },
+          })
+            .then((s) => { if (!cancelled) setPostcardToken(s.shareToken); })
+            .catch(() => { /* postcard still works, share button just stays disabled */ });
+        }
       })
       .catch(() => { /* fall back to synthetic */ });
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [composeReal, profile, region]);
 
   // Map source: editedStops (real, mutable) when available, else synthetic.
@@ -1496,8 +1534,63 @@ function RevealStory({
           region,
         )}
         closer="The country has arranged itself around you."
-        onClose={() => setMapRevealOpen(false)}
+        onClose={() => {
+          setMapRevealOpen(false);
+          // Hand the moment over to the postcard — keepsake + share, once.
+          if (!postcardShown) {
+            // Short beat so the map fade-out can settle before the postcard rises.
+            window.setTimeout(() => {
+              setPostcardOpen(true);
+              setPostcardShown(true);
+              void trackBuilderEvent("studio_v2_postcard_open", {
+                region,
+                intent: profile.intent,
+                hasToken: Boolean(postcardToken),
+              });
+            }, 240);
+          }
+        }}
       />
+
+      {/* Postcard — keepsake frame between the cinematic reveal and the
+          editable itinerary. Carries the share surface (invitation URL). */}
+      <Postcard
+        open={postcardOpen}
+        onClose={() => setPostcardOpen(false)}
+        onContinue={() => {
+          void trackBuilderEvent("studio_v2_postcard_continue", { region });
+        }}
+        hero={hero}
+        headlineOwner={profile.name?.trim() ? `${profile.name.trim()}'s` : "Your"}
+        headlineWhisper={regionWhisper(region)}
+        lines={storyFinalLines(
+          { name: profile.name, intent: profile.intent, pace: profile.pace, group: profile.group },
+          region,
+        )}
+        stops={livePreview.stops.map((s) => ({
+          key: s.key,
+          label: s.label,
+          duration_minutes: s.duration_minutes,
+        }))}
+        shareUrl={
+          postcardToken && typeof window !== "undefined"
+            ? `${window.location.origin}/studio-v2/i/${postcardToken}`
+            : null
+        }
+        whatsappHref={whatsappHref(
+          profile.name?.trim()
+            ? `Olá! Sou ${profile.name.trim()} e acabei de desenhar um dia em ${regionWhisper(region)}. Gostaria de o refinar com um local designer.`
+            : `Olá! Acabei de desenhar um dia em Portugal no Studio. Gostaria de o refinar com um local designer.`,
+        )}
+        onShare={(channel) =>
+          void trackBuilderEvent("studio_v2_postcard_share", {
+            channel,
+            region,
+            hasToken: Boolean(postcardToken),
+          })
+        }
+      />
+
 
       {/* Hero image — real, editorial, no overlay text */}
       {hero && (
