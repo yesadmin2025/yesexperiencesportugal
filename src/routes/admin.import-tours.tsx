@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
-import { runTourImport } from "@/server/tourImporter.functions";
+import { runTourImport } from "@/lib/tourImporter.functions";
 import {
   listMappingRules,
   saveMappingRules,
