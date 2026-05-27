@@ -29,7 +29,8 @@ export type BuilderEvent =
   | "studio_v2_invitation_accept"
   | "studio_v2_postcard_open"
   | "studio_v2_postcard_continue"
-  | "studio_v2_postcard_share";
+  | "studio_v2_postcard_share"
+  | "studio_v2_secure_whatsapp_fallback";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(

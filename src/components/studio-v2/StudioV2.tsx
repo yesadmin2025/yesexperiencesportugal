@@ -1621,23 +1621,15 @@ function RevealStory({
 
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
-        <>
-          <LivingItinerary
-            stops={editedStops}
-            alternates={real.alternates}
-            caps={real.caps}
-            onChange={setEditedStops}
-            intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
-            regionKey={livePreview.region}
-            regionCenter={livePreview.regionCenter}
-          />
-          <BespokeSecureCTA
-            profile={profile}
-            region={region}
-            archetype={(profile.archetype as string | undefined) ?? undefined}
-            stops={editedStops}
-          />
-        </>
+        <LivingItinerary
+          stops={editedStops}
+          alternates={real.alternates}
+          caps={real.caps}
+          onChange={setEditedStops}
+          intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
+          regionKey={livePreview.region}
+          regionCenter={livePreview.regionCenter}
+        />
       )}
 
 
@@ -1748,6 +1740,19 @@ function RevealStory({
           </span>
         ))}
       </div>
+
+      {/* Primary conversion moment — climax of the reveal.
+          Bespoke day → draft → human-confirmed checkout.
+          Per brand: no invented prices, final quote confirmed by a local
+          designer before any charge. WhatsApp is a secondary fallback. */}
+      {real && editedStops && editedStops.length >= 2 && (
+        <BespokeSecureCTA
+          profile={profile}
+          region={region}
+          archetype={(profile.archetype as string | undefined) ?? undefined}
+          stops={editedStops}
+        />
+      )}
     </section>
   );
 }
@@ -1831,8 +1836,12 @@ function BespokeSecureCTA({
     }
   };
 
+  const waMsg = profile.name?.trim()
+    ? `Olá! Sou ${profile.name.trim()} e acabei de desenhar um dia em Portugal no Studio. Gostaria de falar com um local designer antes de reservar.`
+    : `Olá! Acabei de desenhar um dia em Portugal no Studio. Gostaria de falar com um local designer antes de reservar.`;
+
   return (
-    <div className="mt-10 flex flex-col gap-3">
+    <div className="mt-12 flex flex-col gap-4">
       <button
         type="button"
         onClick={onClick}
@@ -1850,21 +1859,37 @@ function BespokeSecureCTA({
           boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--gold) 60%, transparent)",
         }}
       >
-        {busy ? "Securing…" : "Secure my bespoke day"}
+        {busy ? "Securing…" : "Reserve this day"}
         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
       </button>
       {err && (
         <p className="text-center text-[12.5px]" style={{ color: "var(--charcoal)" }}>{err}</p>
       )}
       <p
-        className="text-center text-[12px] italic"
+        className="text-center text-[12.5px] italic"
         style={{
           fontFamily: "Georgia, 'Times New Roman', serif",
-          color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
         }}
       >
-        A local designer confirms every timing before any charge.
+        A local designer confirms every timing and the final investment before any charge.
       </p>
+      <div className="mt-1 flex items-center justify-center">
+        <a
+          href={whatsappHref(waMsg)}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() =>
+            void trackBuilderEvent("studio_v2_secure_whatsapp_fallback", {
+              archetype, region, intent: profile.intent,
+            })
+          }
+          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] underline-offset-4 hover:underline min-h-[44px] px-2"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+        >
+          Prefer to talk first? Chat with a local designer
+        </a>
+      </div>
     </div>
   );
 }
