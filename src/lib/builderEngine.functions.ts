@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { hashConfig, logAiUsage } from "@/server/aiAuditLog.server";
+import { hashConfig, logAiUsage } from "@/lib/aiAuditLog.server";
 import {
   type BuilderInput,
   type BuilderRoute,
@@ -17,7 +17,7 @@ import {
   computeDayEligibility,
   fallbackNarrative,
   generateRoute,
-} from "@/server/builderEngine.server";
+} from "@/lib/builderEngine.server";
 
 const inputSchema = z.object({
   mood: z.enum(["slow", "curious", "romantic", "open", "energetic"]),
