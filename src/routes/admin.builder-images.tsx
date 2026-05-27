@@ -9,7 +9,7 @@ import {
   bulkScrapeViatorImages,
   listExperienceImages,
   setExperienceImageActive,
-} from "@/server/builderImages.functions";
+} from "@/lib/builderImages.functions";
 
 export const Route = createFileRoute("/admin/builder-images")({
   head: () => ({ meta: [{ title: "Builder images — Studio Admin" }] }),
