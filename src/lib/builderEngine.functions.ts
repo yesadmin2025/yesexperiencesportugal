@@ -176,7 +176,7 @@ export const narrateBuilderRoute = createServerFn({ method: "POST" })
 
     try {
       const stopList = route.stops
-        .map((s, i) => `${i + 1}. ${s.label}${s.tag ? ` (${s.tag})` : ""} — ${s.blurb ?? ""}`)
+        .map((s: { label: string; tag?: string; blurb?: string }, i: number) => `${i + 1}. ${s.label}${s.tag ? ` (${s.tag})` : ""} — ${s.blurb ?? ""}`)
         .join("\n");
 
       const url = useOpenAI
