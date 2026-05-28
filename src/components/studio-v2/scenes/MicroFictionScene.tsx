@@ -112,7 +112,7 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
       </div>
 
 
-      <div className="mx-auto mt-14 max-w-[34ch] flex-1">
+      <div className="relative z-10 mx-auto mt-14 max-w-[34ch] flex-1">
         <p
           className="text-[22px] leading-[1.28] sm:text-[26px]"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
