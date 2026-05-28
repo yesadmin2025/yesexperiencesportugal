@@ -75,6 +75,7 @@ interface StudioV2Props {
 // questions) → 1 logistics card (pax + pickup only) → conviction → reveal.
 
 type Beat =
+  | "prologue"
   | "opening"
   | "mood-1"
   | "mood-2"
@@ -88,7 +89,7 @@ type Beat =
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "prologue", "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
   "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
 
