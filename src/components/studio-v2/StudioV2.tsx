@@ -854,7 +854,7 @@ function LogisticsCard({
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
-          No filters. No quiz. Just two facts we cannot read from a glance.
+          No filters. No quiz. Just two facts we cannot guess on your behalf.
         </p>
       </div>
     </section>
