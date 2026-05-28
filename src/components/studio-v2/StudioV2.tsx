@@ -191,6 +191,22 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     });
   }, [signals, pax, pickup]);
 
+  const onWhoRhythmComplete = useCallback(
+    (out: { pax: number; who: string; signal: SceneSignal }) => {
+      setPax(out.pax);
+      setSignals((prev) => [...prev, out.signal]);
+      void trackBuilderEvent("studio_v2_predict_signal", {
+        sceneId: out.signal.sceneId,
+        tappedFragmentId: out.signal.tappedFragmentId,
+        lingerMs: out.signal.lingerMs,
+        who: out.who,
+        pax: out.pax,
+      });
+      setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
+    },
+    [],
+  );
+
   const onLogisticsSubmit = useCallback(() => {
     const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
     setProfile((prev) => ({ ...p, name: prev.name, ops: { ...p.ops, preferredDate: prev.ops?.preferredDate } }));
