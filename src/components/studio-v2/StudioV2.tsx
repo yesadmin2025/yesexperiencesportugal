@@ -996,7 +996,7 @@ function TastesPicker({
             className="text-[10px] uppercase tracking-[0.42em]"
             style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
           >
-            Chapter V · Tastes
+            Tastes
           </span>
         </div>
 
