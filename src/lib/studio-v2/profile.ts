@@ -70,6 +70,10 @@ export interface OpsConstraints {
   dietary?: string[];
   hardConstraints?: string[];
   accessibility?: string[];
+  /** ISO date string (YYYY-MM-DD) — captured in the logistics card. */
+  preferredDate?: string;
+  /** Free-form tastes/likes chips selected by the traveller. */
+  tastes?: string[];
 }
 
 export type DurationKey = "half-day" | "full-day" | "multi-day";
