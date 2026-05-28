@@ -44,6 +44,7 @@ import { PrologueScene } from "./scenes/PrologueScene";
 import { WhoRhythmScene } from "./scenes/WhoRhythmScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
+import { RevelationScene } from "./scenes/RevelationScene";
 // NameBeat external component reserved for the upcoming name-capture beat.
 // Currently the inline NameBeat() below remains the source of truth.
 import { StoryOpener } from "./StoryOpener";
