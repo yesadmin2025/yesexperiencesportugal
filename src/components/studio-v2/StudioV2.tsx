@@ -80,12 +80,13 @@ type Beat =
   | "mood-3"
   | "logistics"
   | "conviction"
+  | "name"
   | "thinking"
   | "reveal";
 
 const SEQUENCE: Beat[] = [
   "opening", "mood-1", "mood-2", "mood-3",
-  "logistics", "conviction", "thinking", "reveal",
+  "logistics", "conviction", "name", "thinking", "reveal",
 ];
 
 const SESSION_KEY = "yes.studio-v2.session";
