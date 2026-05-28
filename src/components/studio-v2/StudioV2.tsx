@@ -41,6 +41,7 @@ import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
 import { FeelingScene } from "./scenes/FeelingScene";
 import { PrologueScene } from "./scenes/PrologueScene";
+import { WhoRhythmScene } from "./scenes/WhoRhythmScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
 // NameBeat external component reserved for the upcoming name-capture beat.
@@ -80,6 +81,7 @@ type Beat =
   | "prologue"
   | "opening"
   | "feeling"
+  | "who-rhythm"
   | "mood-1"
   | "mood-2"
   | "mood-3"
@@ -92,7 +94,8 @@ type Beat =
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "prologue", "opening", "feeling", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "prologue", "opening", "feeling", "who-rhythm",
+  "mood-1", "mood-2", "mood-3", "mood-rhythm",
   "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
 
@@ -187,6 +190,22 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       return Math.min(SEQUENCE.length - 1, i + 1);
     });
   }, [signals, pax, pickup]);
+
+  const onWhoRhythmComplete = useCallback(
+    (out: { pax: number; who: string; signal: SceneSignal }) => {
+      setPax(out.pax);
+      setSignals((prev) => [...prev, out.signal]);
+      void trackBuilderEvent("studio_v2_predict_signal", {
+        sceneId: out.signal.sceneId,
+        tappedFragmentId: out.signal.tappedFragmentId,
+        lingerMs: out.signal.lingerMs,
+        who: out.who,
+        pax: out.pax,
+      });
+      setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
+    },
+    [],
+  );
 
   const onLogisticsSubmit = useCallback(() => {
     const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
@@ -307,6 +326,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
           />
         )}
         {beat === "feeling" && <FeelingScene onSignal={onSceneSignal} />}
+        {beat === "who-rhythm" && <WhoRhythmScene onComplete={onWhoRhythmComplete} />}
         {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
         {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} />}

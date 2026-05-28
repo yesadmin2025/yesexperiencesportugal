@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-28T04:18:56.013Z",
-  "filesScanned": 302,
+  "generatedAt": "2026-05-28T04:41:03.249Z",
+  "filesScanned": 308,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 195,
-    "approved": 41,
+    "total": 204,
+    "approved": 50,
     "allowlisted": 26,
     "mismatch": 128
   },
@@ -1220,6 +1220,87 @@
       "normalized": "#5bb0ba",
       "snippet": "<span className=\"h-1.5 w-2.5\" style={{ background: \"#5BB0BA\" }} />",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 45,
+      "col": 95,
+      "raw": "#6b6b6b",
+      "normalized": "#6b6b6b",
+      "snippet": "\"mb-6 text-center text-[11px] uppercase tracking-[0.32em] text-[var(--charcoal-soft,#6b6b6b)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 54,
+      "col": 114,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"mb-8 text-center font-display text-[24px] font-bold leading-tight tracking-tight text-[var(--charcoal,#2E2E2E)] sm:text-[30px]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 75,
+      "col": 48,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 75,
+      "col": 140,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 79,
+      "col": 55,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "isPicked ? \"ring-2 ring-[var(--gold,#C9A96A)]\" : \"\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 93,
+      "col": 154,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "<span className=\"absolute inset-x-4 bottom-4 block font-display text-[17px] font-semibold leading-tight tracking-tight text-[var(--ivory,#FAF8F3)] sm:text-[19px",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/PrologueScene.tsx",
+      "line": 39,
+      "col": 96,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "className=\"fixed inset-0 z-30 block h-[100dvh] w-full overflow-hidden bg-[var(--charcoal,#2E2E2E)] text-[var(--ivory,#FAF8F3)] focus:outline-none\"",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/PrologueScene.tsx",
+      "line": 39,
+      "col": 124,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"fixed inset-0 z-30 block h-[100dvh] w-full overflow-hidden bg-[var(--charcoal,#2E2E2E)] text-[var(--ivory,#FAF8F3)] focus:outline-none\"",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/PrologueScene.tsx",
+      "line": 58,
+      "col": 32,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "\"text-[var(--ivory,#FAF8F3)]/85 transition-all duration-[1100ms] ease-out\",",
+      "status": "approved"
     },
     {
       "file": "src/lib/brand-tokens.test.ts",

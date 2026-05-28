@@ -209,6 +209,51 @@ export const MOOD_SCENES: MoodScene[] = [
       },
     ],
   },
+  // Phase 2 RHYTHM — the second half of the WHO & RHYTHM beat. Four
+  // tempo cards, each nudges pace + light intent. WHO sets pax directly
+  // and does not need an entry here.
+  {
+    id: "scene-who-rhythm",
+    eyebrow: "Rhythm",
+    fragments: [
+      {
+        id: "rhythm-slow",
+        image: INTENT_IMAGE.romantic_intimate.src,
+        alt: INTENT_IMAGE.romantic_intimate.alt,
+        whisper: "Slow",
+        intent: "romantic_intimate",
+        paceNudge: -1,
+        priorities: ["quiet_luxury", "wellness"],
+      },
+      {
+        id: "rhythm-relaxed",
+        image: INTENT_IMAGE.relaxed_scenic.src,
+        alt: INTENT_IMAGE.relaxed_scenic.alt,
+        whisper: "Relaxed",
+        intent: "relaxed_scenic",
+        paceNudge: -1,
+        priorities: ["coastal_scenery", "quiet_luxury"],
+      },
+      {
+        id: "rhythm-discovery",
+        image: INTENT_IMAGE.elegant_cultural.src,
+        alt: INTENT_IMAGE.elegant_cultural.alt,
+        whisper: "Discovery",
+        intent: "elegant_cultural",
+        paceNudge: 0,
+        priorities: ["heritage", "architecture", "hidden_villages"],
+      },
+      {
+        id: "rhythm-adventurous",
+        image: INTENT_IMAGE.coastal_cinematic.src,
+        alt: INTENT_IMAGE.coastal_cinematic.alt,
+        whisper: "Adventurous",
+        intent: "coastal_cinematic",
+        paceNudge: 1,
+        priorities: ["coastal_scenery", "boat", "photography"],
+      },
+    ],
+  },
 ];
 
 // ─── signals ──────────────────────────────────────────────────────────────
