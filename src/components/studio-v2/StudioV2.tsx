@@ -772,9 +772,9 @@ function LogisticsCard({
             color: "var(--charcoal)",
           }}
         >
-          Only what we{" "}
+          A few{" "}
           <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-            cannot guess
+            practical details
           </span>.
         </h2>
 
@@ -787,7 +787,7 @@ function LogisticsCard({
             fontFamily: "Georgia, serif",
           }}
         >
-          The rest is already being shaped — quietly — from the way you looked.
+          So we can route the day around you — pickup, party size, and when.
         </p>
 
         {/* Pax — typographic numeral */}
