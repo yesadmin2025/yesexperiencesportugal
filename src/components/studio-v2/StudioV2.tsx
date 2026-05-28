@@ -39,6 +39,7 @@ import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
 import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
+import { FeelingScene } from "./scenes/FeelingScene";
 import { PrologueScene } from "./scenes/PrologueScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
@@ -78,6 +79,7 @@ interface StudioV2Props {
 type Beat =
   | "prologue"
   | "opening"
+  | "feeling"
   | "mood-1"
   | "mood-2"
   | "mood-3"
@@ -90,7 +92,7 @@ type Beat =
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "prologue", "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "prologue", "opening", "feeling", "mood-1", "mood-2", "mood-3", "mood-rhythm",
   "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
 
@@ -304,6 +306,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             onDeclineResume={onDeclineResume}
           />
         )}
+        {beat === "feeling" && <FeelingScene onSignal={onSceneSignal} />}
         {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
         {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} />}

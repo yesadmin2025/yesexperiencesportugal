@@ -43,7 +43,8 @@ export interface MoodScene {
   id: string;
   /** Tiny chapter eyebrow shown above the fragments (no question). */
   eyebrow: string;
-  fragments: [MoodFragment, MoodFragment];
+  /** 2–6 fragments. Diptych scenes use 2; the FEELING scene uses 6. */
+  fragments: MoodFragment[];
 }
 
 export const MOOD_SCENES: MoodScene[] = [
@@ -143,6 +144,68 @@ export const MOOD_SCENES: MoodScene[] = [
         intent: "coastal_cinematic",
         paceNudge: 1,
         priorities: ["vineyard_lunch", "photography"],
+      },
+    ],
+  },
+  // Phase 1 FEELING — 6 emotion cards. Earliest signal, before the diptychs.
+  // No place names. Pure atmosphere.
+  {
+    id: "scene-feeling",
+    eyebrow: "Feeling",
+    fragments: [
+      {
+        id: "feeling-slow-romantic",
+        image: INTENT_IMAGE.romantic_intimate.src,
+        alt: INTENT_IMAGE.romantic_intimate.alt,
+        whisper: "Slow & romantic",
+        intent: "romantic_intimate",
+        paceNudge: -1,
+        priorities: ["quiet_luxury", "wellness", "coastal_scenery"],
+      },
+      {
+        id: "feeling-wild-coast",
+        image: INTENT_IMAGE.coastal_cinematic.src,
+        alt: INTENT_IMAGE.coastal_cinematic.alt,
+        whisper: "Wild coast",
+        intent: "coastal_cinematic",
+        paceNudge: 0,
+        priorities: ["coastal_scenery", "boat", "photography"],
+      },
+      {
+        id: "feeling-hidden",
+        image: INTENT_IMAGE.elegant_cultural.src,
+        alt: INTENT_IMAGE.elegant_cultural.alt,
+        whisper: "Hidden Portugal",
+        intent: "elegant_cultural",
+        paceNudge: -1,
+        priorities: ["hidden_villages", "heritage", "architecture"],
+      },
+      {
+        id: "feeling-celebration",
+        image: INTENT_IMAGE.social_celebratory.src,
+        alt: INTENT_IMAGE.social_celebratory.alt,
+        whisper: "Celebration",
+        intent: "social_celebratory",
+        paceNudge: 1,
+        priorities: ["vineyard_lunch", "local_gastronomy", "boat"],
+      },
+      {
+        id: "feeling-food-wine",
+        image: INTENT_IMAGE.food_local.src,
+        alt: INTENT_IMAGE.food_local.alt,
+        whisper: "Soulful food & wine",
+        intent: "food_local",
+        paceNudge: 0,
+        priorities: ["vineyard_lunch", "local_gastronomy", "wine_cellar"],
+      },
+      {
+        id: "feeling-peaceful",
+        image: INTENT_IMAGE.relaxed_scenic.src,
+        alt: INTENT_IMAGE.relaxed_scenic.alt,
+        whisper: "Peaceful escape",
+        intent: "relaxed_scenic",
+        paceNudge: -1,
+        priorities: ["quiet_luxury", "coastal_scenery", "wellness"],
       },
     ],
   },
