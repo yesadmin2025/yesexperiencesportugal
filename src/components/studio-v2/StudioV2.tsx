@@ -730,10 +730,11 @@ function MoodSceneView({
 // ─── logistics card — editorial pause, sand surface, gold detail ───────
 
 function LogisticsCard({
-  pax, setPax, pickup, setPickup, onSubmit,
+  pax, setPax, pickup, setPickup, preferredDate, setPreferredDate, onSubmit,
 }: {
   pax: number; setPax: (n: number) => void;
   pickup: string; setPickup: (s: string) => void;
+  preferredDate: string; setPreferredDate: (d: string) => void;
   onSubmit: () => void;
 }) {
   const ready = pickup.trim().length > 0;
