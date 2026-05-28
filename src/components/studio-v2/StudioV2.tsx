@@ -162,24 +162,45 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   }, []);
 
   const onSceneSignal = useCallback((sig: SceneSignal) => {
-    setSignals((prev) => [...prev, sig]);
+    const updated = [...signals, sig];
+    setSignals(updated);
     void trackBuilderEvent("studio_v2_predict_signal", {
       sceneId: sig.sceneId,
       tappedFragmentId: sig.tappedFragmentId,
       lingerMs: sig.lingerMs,
     });
-    next();
-  }, [next]);
+    setBeatIndex((i) => {
+      const current = SEQUENCE[i];
+      // Adaptive Rhythm clarifier: only fire after mood-3 if confidence
+      // hasn't reached the floor. Otherwise jump straight to logistics.
+      if (current === "mood-3") {
+        const provisional = inferProfile(updated, { pax, pickup: pickup || "Lisboa" });
+        if (provisional.confidence >= CONFIDENCE_FLOOR) {
+          return SEQUENCE.indexOf("logistics");
+        }
+      }
+      return Math.min(SEQUENCE.length - 1, i + 1);
+    });
+  }, [signals, pax, pickup]);
 
   const onLogisticsSubmit = useCallback(() => {
     const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
-    setProfile(p);
+    setProfile((prev) => ({ ...p, name: prev.name, ops: { ...p.ops, preferredDate: prev.ops?.preferredDate } }));
     void trackBuilderEvent("studio_v2_predict_signal", {
       stage: "intent_inferred",
       topIntent, confidence: Math.round(confidence * 100), pax, pickup,
     });
     next();
   }, [signals, pax, pickup, next]);
+
+  const onTastesSubmit = useCallback((tastes: string[], extraWeights: Partial<Record<string, number>>) => {
+    setProfile((prev) => ({
+      ...prev,
+      ops: { ...prev.ops, tastes },
+      priorityWeights: { ...prev.priorityWeights, ...(extraWeights as TravelerProfile["priorityWeights"]) },
+    }));
+    next();
+  }, [next]);
 
   const thinkingTimer = useRef<number | null>(null);
   useEffect(() => {
