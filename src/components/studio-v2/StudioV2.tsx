@@ -78,6 +78,7 @@ interface StudioV2Props {
 type Beat =
   | "prologue"
   | "opening"
+  | "feeling"
   | "mood-1"
   | "mood-2"
   | "mood-3"
@@ -90,7 +91,7 @@ type Beat =
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "prologue", "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "prologue", "opening", "feeling", "mood-1", "mood-2", "mood-3", "mood-rhythm",
   "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
 
