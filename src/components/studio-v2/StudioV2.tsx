@@ -41,7 +41,7 @@ import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
-import { NameBeat } from "./NameBeat";
+import { NameBeat as NameCapture } from "./NameBeat";
 import { StoryOpener } from "./StoryOpener";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
