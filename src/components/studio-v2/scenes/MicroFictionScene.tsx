@@ -8,11 +8,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { MoodScene, SceneSignal } from "@/lib/studio-v2/intent-infer";
+import type { IntentAtmosphere } from "@/lib/studio-v2/profile";
+import { getMoodTint } from "@/lib/studio-v2/mood-tint";
 
 interface Props {
   scene: MoodScene;
   index: number;
   onSignal: (sig: SceneSignal) => void;
+  /** Dominant atmosphere inferred so far — drives the soft backdrop tint. */
+  topIntent?: IntentAtmosphere | null;
 }
 
 const ROMAN = ["I", "II", "III", "IV"];
@@ -39,7 +43,7 @@ const ENDINGS: Record<string, string> = {
   "late-shadow":    "…push lunch toward the long shadows.",
 };
 
-export function MicroFictionScene({ scene, index, onSignal }: Props) {
+export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) {
   const [a, b] = scene.fragments;
   const enteredAt = useRef<number>(Date.now());
   const [chosen, setChosen] = useState<string | null>(null);
@@ -49,6 +53,12 @@ export function MicroFictionScene({ scene, index, onSignal }: Props) {
   const opener = OPENERS[scene.id] ?? "The day opens, and we…";
   const endA = ENDINGS[a.id] ?? a.whisper;
   const endB = ENDINGS[b.id] ?? b.whisper;
+
+  // Tint resolves from the dominant inferred intent so far; if a choice is
+  // being made, lean into the just-tapped fragment's intent for an immediate
+  // emotional response before the engine reruns inference.
+  const tappedFrag = chosen ? scene.fragments.find((f) => f.id === chosen) : null;
+  const tint = getMoodTint(tappedFrag?.intent ?? topIntent ?? null);
 
   const choose = (fragId: string) => {
     if (chosen) return;
@@ -69,8 +79,31 @@ export function MicroFictionScene({ scene, index, onSignal }: Props) {
       aria-label={scene.eyebrow}
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
+      {/* Soft atmospheric backdrop — shifts with the dominant intent. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <img
+          key={tint.image}
+          src={tint.image}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[1100ms] ease-out"
+          style={{ opacity: tint.imageOpacity, filter: "saturate(0.85) blur(1px)" }}
+        />
+        <div
+          className="absolute inset-0 transition-[background] duration-[1100ms] ease-out"
+          style={{ background: tint.tintHex, opacity: tint.tintOpacity }}
+        />
+        {/* Ivory veil keeps body legible; vignette pushes focus to centre. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(120% 80% at 50% 50%, color-mix(in oklab, var(--ivory) 55%, transparent) 0%, color-mix(in oklab, var(--ivory) 85%, transparent) 70%, var(--ivory) 100%)",
+          }}
+        />
+      </div>
+
       <div
-        className="mx-auto flex items-center gap-3 text-[10.5px] font-bold uppercase tracking-[0.32em]"
+        className="relative z-10 mx-auto flex items-center gap-3 text-[10.5px] font-bold uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
       >
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />
@@ -78,7 +111,8 @@ export function MicroFictionScene({ scene, index, onSignal }: Props) {
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />
       </div>
 
-      <div className="mx-auto mt-14 max-w-[34ch] flex-1">
+
+      <div className="relative z-10 mx-auto mt-14 max-w-[34ch] flex-1">
         <p
           className="text-[22px] leading-[1.28] sm:text-[26px]"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
@@ -123,7 +157,7 @@ export function MicroFictionScene({ scene, index, onSignal }: Props) {
       </div>
 
       <p
-        className="mx-auto mt-6 text-center text-[9.5px] uppercase tracking-[0.36em]"
+        className="relative z-10 mx-auto mt-6 text-center text-[9.5px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
       >
         Finish the sentence
