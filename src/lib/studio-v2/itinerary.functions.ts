@@ -56,7 +56,7 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
     const { data: stopRows, error: stopErr } = await supabaseAdmin
       .from("builder_stops")
       .select(
-        "key, region_key, label, blurb, tag, lat, lng, duration_minutes, mood_tags, pace_tags, intention_tags, who_tags, weight, source_tour_keys",
+        "key, canonical_key, region_key, label, blurb, tag, lat, lng, duration_minutes, mood_tags, pace_tags, intention_tags, who_tags, weight, source_tour_keys",
       )
       .eq("is_active", true)
       .in("region_key", dbRegions);
@@ -83,8 +83,13 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
         }
       : DEFAULT_CAPS;
 
-    const pool: DbStop[] = (stopRows ?? []).map((r) => ({
+    // Dedupe: many builder_stops rows are duration variants (--short / --deep)
+    // or different tour-pulls of the SAME physical place. The composer must
+    // never place two of them on the same day. Collapse by canonical_key (or
+    // label + coarse coords as fallback), keep the highest-weighted variant.
+    const rawPool = (stopRows ?? []).map((r) => ({
       key: r.key as string,
+      canonical_key: (r.canonical_key as string | null) ?? null,
       region_key: r.region_key as string,
       label: r.label as string,
       blurb: (r.blurb as string | null) ?? null,
@@ -99,6 +104,18 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       weight: (r.weight as number | null) ?? 50,
       source_tour_keys: (r.source_tour_keys as string[] | null) ?? [],
     }));
+    const dedupeMap = new Map<string, (typeof rawPool)[number]>();
+    for (const s of rawPool) {
+      const identity =
+        s.canonical_key ??
+        `${s.label.toLowerCase().trim()}@${s.lat.toFixed(3)},${s.lng.toFixed(3)}`;
+      const prev = dedupeMap.get(identity);
+      if (!prev || s.weight > prev.weight) dedupeMap.set(identity, s);
+    }
+    const pool: DbStop[] = Array.from(dedupeMap.values()).map(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ({ canonical_key, ...rest }) => rest,
+    );
 
     const target = data.targetStops ?? data.profile.stopDensityTarget ?? 4;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
