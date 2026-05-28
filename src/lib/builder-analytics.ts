@@ -30,7 +30,13 @@ export type BuilderEvent =
   | "studio_v2_postcard_open"
   | "studio_v2_postcard_continue"
   | "studio_v2_postcard_share"
-  | "studio_v2_secure_whatsapp_fallback";
+  | "studio_v2_secure_whatsapp_fallback"
+  | "studio_v2_conversion_decision"
+  | "studio_v2_instant_open"
+  | "studio_v2_instant_sheet_open"
+  | "studio_v2_instant_confirm"
+  | "studio_v2_host_handoff_click"
+  | "studio_v2_host_handoff_draft";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(
