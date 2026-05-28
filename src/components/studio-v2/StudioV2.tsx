@@ -295,6 +295,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       </header>
 
       <main key={beat} className="studio-v2-reveal relative z-10">
+        {beat === "prologue" && <PrologueScene onContinue={next} />}
         {beat === "opening" && (
           <OpeningScene
             onTap={next}
