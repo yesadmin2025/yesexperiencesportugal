@@ -22,32 +22,32 @@ interface StoryInput {
 }
 
 const FALLBACK_INTENT_LINE: Record<string, string> = {
-  relaxed_scenic:     "you leaned toward open roads and slow afternoon light",
-  elegant_cultural:   "you leaned toward stone, shadow and quiet rooms",
-  food_local:         "you leaned toward long tables and unhurried tasting",
-  social_celebratory: "you leaned toward a day that lifts the room",
-  romantic_intimate:  "you leaned toward the coast at dusk, just the two of you",
-  coastal_cinematic:  "you leaned toward Atlantic light and the hour the air turns gold",
+  relaxed_scenic:     "a day built around open roads and slow afternoon light",
+  elegant_cultural:   "a day built around stone, shadow and quiet rooms",
+  food_local:         "a day built around long tables and unhurried tasting",
+  social_celebratory: "a day built to lift the room and hold the moment",
+  romantic_intimate:  "a day built for two — the coast, the quiet, the dusk",
+  coastal_cinematic:  "a day built around Atlantic light and the hour the air turns gold",
 };
 
 const REGION_PORTRAIT: Record<string, string> = {
-  arrabida:       "the Arrábida — vineyards, cliffs, an Atlantic close enough to taste",
-  "lisbon-coast": "Sintra and the Atlantic edge — granite, mist, ocean shoulder",
-  alentejo:       "the Alentejo — long horizons, slow tables, stone villages",
-  centro:         "central Portugal — old roads, quiet stone, late light",
+  arrabida:       "set in the Arrábida — vineyards, cliffs, an Atlantic close enough to taste",
+  "lisbon-coast": "set along Sintra and the Atlantic edge — granite, mist, ocean shoulder",
+  alentejo:       "set across the Alentejo — long horizons, slow tables, stone villages",
+  centro:         "set across central Portugal — old roads, quiet stone, late light",
 };
 
 function fallback(input: StoryInput): { story: string } {
-  const who = input.name ? `${input.name},` : "Quietly,";
-  const lean = FALLBACK_INTENT_LINE[input.intent] ?? "you leaned toward something quieter and unhurried";
-  const region = REGION_PORTRAIT[input.region] ?? "a corner of Portugal that fits your rhythm";
+  const who = input.name ? `${input.name},` : "For you,";
+  const lean = FALLBACK_INTENT_LINE[input.intent] ?? "a day built around something quieter and unhurried";
+  const region = REGION_PORTRAIT[input.region] ?? "set in the corner of Portugal that fits your rhythm";
   const closing =
     input.pace === "light"
-      ? "So we composed a day with room to breathe."
+      ? "Designed with room to breathe — nothing rushed, nothing filler."
       : input.pace === "rich"
-      ? "So we composed a day with more in its hands."
-      : "So we composed a day with the right weight.";
-  return { story: `${who} ${lean}. We're shaping ${region}. ${closing}` };
+      ? "Designed with more in its hands — full, but never hurried."
+      : "Designed with the right weight — exactly what you wanted, nothing you didn't.";
+  return { story: `${who} ${lean}, ${region}. ${closing}` };
 }
 
 export const generateStoryOpener = createServerFn({ method: "POST" })
