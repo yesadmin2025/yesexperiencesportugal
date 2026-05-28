@@ -1438,8 +1438,8 @@ function ShimmerDot({ delay }: { delay: number }) {
 }
 
 function RevealStory({
-  profile, region,
-}: { profile: TravelerProfile; region: string }) {
+  profile, region, signals,
+}: { profile: TravelerProfile; region: string; signals?: SceneSignal[] }) {
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
