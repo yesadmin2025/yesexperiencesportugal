@@ -39,6 +39,7 @@ import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
 import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
+import { PrologueScene } from "./scenes/PrologueScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
 // NameBeat external component reserved for the upcoming name-capture beat.
