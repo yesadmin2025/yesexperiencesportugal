@@ -927,7 +927,7 @@ function ConvictionMoment({
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
         >
-          <span className="studio-v2-rule" /> Chapter V · What we read
+          <span className="studio-v2-rule" /> Chapter V · Your story so far
         </span>
         <span
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.36em]"
