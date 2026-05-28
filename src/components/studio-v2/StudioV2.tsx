@@ -329,9 +329,9 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         {beat === "who-rhythm" && <WhoRhythmScene onComplete={onWhoRhythmComplete} />}
         {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
-        {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} />}
+        {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} topIntent={inferred?.topIntent ?? null} />}
         {beat === "mood-rhythm" && (
-          <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} />
+          <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} topIntent={inferred?.topIntent ?? null} />
         )}
         {beat === "logistics" && (
           <LogisticsCard
