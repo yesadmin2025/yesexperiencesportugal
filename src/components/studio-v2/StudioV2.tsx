@@ -41,6 +41,7 @@ import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
 import { FeelingScene } from "./scenes/FeelingScene";
 import { PrologueScene } from "./scenes/PrologueScene";
+import { WhoRhythmScene } from "./scenes/WhoRhythmScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
 // NameBeat external component reserved for the upcoming name-capture beat.
