@@ -78,16 +78,22 @@ type Beat =
   | "mood-1"
   | "mood-2"
   | "mood-3"
+  | "mood-rhythm"
   | "logistics"
+  | "tastes"
   | "conviction"
   | "name"
   | "thinking"
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "opening", "mood-1", "mood-2", "mood-3",
-  "logistics", "conviction", "name", "thinking", "reveal",
+  "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
+
+/** Confidence threshold (0–1). Below this, the adaptive Rhythm scene fires
+ *  to disambiguate intent before we commit to a composition. */
+const CONFIDENCE_FLOOR = 0.55;
 
 const SESSION_KEY = "yes.studio-v2.session";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
