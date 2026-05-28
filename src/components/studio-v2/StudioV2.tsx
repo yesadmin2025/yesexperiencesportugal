@@ -881,6 +881,28 @@ function LogisticsCard({
           </div>
         </div>
 
+        {/* Preferred date — optional, helps us hold the day */}
+        <div className="studio-v2-reveal delay-5 mt-10">
+          <p
+            className="mb-3 text-[10px] uppercase tracking-[0.36em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+          >
+            When <span className="lowercase" style={{ letterSpacing: "0.18em" }}>(optional)</span>
+          </p>
+          <input
+            type="date"
+            value={preferredDate}
+            onChange={(e) => setPreferredDate(e.target.value)}
+            min={new Date().toISOString().slice(0, 10)}
+            className="w-full max-w-[16rem] border-b bg-transparent py-2 text-[16px] focus:outline-none"
+            style={{
+              borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+              color: "var(--charcoal)",
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+            }}
+          />
+        </div>
+
         {/* CTA */}
         <div className="mt-14 flex items-center gap-5">
           <button
@@ -898,7 +920,7 @@ function LogisticsCard({
               border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
             }}
           >
-            <span className="relative z-[1]">Compose my day</span>
+            <span className="relative z-[1]">Continue</span>
             <ArrowRight
               className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
               aria-hidden
@@ -913,7 +935,157 @@ function LogisticsCard({
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
-          No filters. No quiz. Just two facts we cannot guess on your behalf.
+          A few details from you — the day is then designed around exactly what you want.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ─── tastes picker — chip selection, lifts priorityWeights ──────────────
+
+const TASTE_CHIPS: Array<{
+  key: string;
+  label: string;
+  weights: Partial<Record<string, number>>;
+}> = [
+  { key: "wine",         label: "Wine & cellars",     weights: { wine_cellar: 70, vineyard_lunch: 60 } },
+  { key: "sea",          label: "Coast & sea air",    weights: { coastal_scenery: 70, boat: 60 } },
+  { key: "long_lunch",   label: "Long lunch",         weights: { vineyard_lunch: 70, local_gastronomy: 70 } },
+  { key: "heritage",     label: "Heritage & stone",   weights: { heritage: 70, architecture: 60 } },
+  { key: "hidden",       label: "Hidden villages",    weights: { hidden_villages: 70 } },
+  { key: "photo",        label: "Photographic light", weights: { photography: 70 } },
+  { key: "quiet",        label: "Quiet luxury",       weights: { quiet_luxury: 70, wellness: 50 } },
+  { key: "boat",         label: "On the water",       weights: { boat: 80 } },
+  { key: "local_food",   label: "Local table",        weights: { local_gastronomy: 80 } },
+  { key: "sunset",       label: "Sunset hour",        weights: { coastal_scenery: 50, photography: 50 } },
+];
+
+function TastesPicker({
+  initial, onSubmit,
+}: {
+  initial: string[];
+  onSubmit: (tastes: string[], weights: Partial<Record<string, number>>) => void;
+}) {
+  const [selected, setSelected] = useState<string[]>(initial);
+  const toggle = (k: string) =>
+    setSelected((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k].slice(0, 6)));
+
+  const submit = () => {
+    const merged: Record<string, number> = {};
+    for (const k of selected) {
+      const chip = TASTE_CHIPS.find((c) => c.key === k);
+      if (!chip) continue;
+      for (const [pk, pv] of Object.entries(chip.weights)) {
+        merged[pk] = Math.max(merged[pk] ?? 0, pv ?? 0);
+      }
+    }
+    onSubmit(selected, merged);
+  };
+
+  return (
+    <section
+      className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
+      style={{ background: "var(--ivory)" }}
+    >
+      <div className="studio-v2-grain absolute inset-0 pointer-events-none" aria-hidden />
+      <div className="relative mx-auto w-full max-w-xl px-6 py-14 sm:px-8">
+        <div className="studio-v2-reveal flex items-center gap-3">
+          <span className="studio-v2-rule" />
+          <span
+            className="text-[10px] uppercase tracking-[0.42em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
+          >
+            Chapter V · Tastes
+          </span>
+        </div>
+
+        <h2
+          className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
+          style={{
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontWeight: 700, letterSpacing: "-0.012em",
+            color: "var(--charcoal)",
+          }}
+        >
+          What you{" "}
+          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+            actually love
+          </span>.
+        </h2>
+
+        <p
+          className="studio-v2-reveal delay-2 mt-4 text-[14px] leading-[1.6]"
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+            maxWidth: "34ch",
+            fontStyle: "italic",
+            fontFamily: "Georgia, serif",
+          }}
+        >
+          Pick up to six. Each one shapes the stops we choose — no guesswork, just what matters to you.
+        </p>
+
+        <div className="studio-v2-reveal delay-3 mt-10 flex flex-wrap gap-2.5">
+          {TASTE_CHIPS.map((c) => {
+            const active = selected.includes(c.key);
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => toggle(c.key)}
+                className="min-h-[44px] rounded-full border px-4 py-2 text-[14px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  borderColor: active
+                    ? "var(--gold)"
+                    : "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                  background: active
+                    ? "color-mix(in oklab, var(--gold) 18%, transparent)"
+                    : "transparent",
+                  color: active ? "var(--charcoal)" : "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+                  fontWeight: active ? 600 : 500,
+                  fontFamily: "var(--font-sans, Inter), sans-serif",
+                }}
+              >
+                {c.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-12 flex items-center gap-5">
+          <button
+            type="button"
+            onClick={submit}
+            className="studio-v2-sheen group inline-flex items-center gap-3 rounded-[2px] px-8 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+            style={{
+              background: "var(--charcoal)",
+              color: "var(--ivory)",
+              minHeight: 56, minWidth: 240,
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+              fontWeight: 600, fontSize: 12.5,
+              letterSpacing: "0.26em", textTransform: "uppercase",
+              border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+            }}
+          >
+            <span className="relative z-[1]">
+              {selected.length === 0 ? "Skip · compose my day" : "Compose my day"}
+            </span>
+            <ArrowRight
+              className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
+              aria-hidden
+            />
+          </button>
+        </div>
+
+        <p
+          className="mt-6 text-[11px] italic"
+          style={{
+            fontFamily: "Georgia, serif",
+            color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
+          }}
+        >
+          Skip if nothing fits — we'll lean on the atmosphere we read from you.
         </p>
       </div>
     </section>
