@@ -367,16 +367,29 @@ export function LivingItinerary({
 
   return (
     <section className="mt-10" aria-label="Your day, scene by scene">
-      <div className="mb-4 flex items-baseline justify-between gap-3">
-        <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
-          style={{
-            color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
-            fontWeight: 700,
-          }}
-        >
-          The day, scene by scene
-        </p>
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <div>
+          {/* Chapter II — marks the shift from intent-gathering into the
+              living journey. Subtle, surfaces only here (Phase 5+). */}
+          <p
+            className="text-[9.5px] uppercase tracking-[0.42em]"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 42%, transparent)",
+              fontWeight: 600,
+            }}
+          >
+            Chapter II
+          </p>
+          <p
+            className="mt-1.5 text-[10.5px] uppercase tracking-[0.32em]"
+            style={{
+              color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
+              fontWeight: 700,
+            }}
+          >
+            The day, scene by scene
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => setShowControls(true)}
@@ -392,21 +405,22 @@ export function LivingItinerary({
         </button>
       </div>
 
-      {/* Ambient sticky map — co-protagonist, not chrome.
-          Faint, lightly blurred, sits behind the scenes and breathes with
-          the active scene index. No controls. */}
+      {/* Protagonist map (Phase 5) — the country, now fully present. Sits
+          sticky behind the scenes and breathes with the active scene index.
+          Full opacity, no blur, no controls: cinematic, not a configurator.
+          A soft ivory veil at the edges keeps the editorial text legible. */}
       {computedCenter && stops.length >= 2 && (
         <div
           aria-hidden
-          className="sticky -mx-5 sm:-mx-8 mb-4 overflow-hidden"
+          className="studio-v2-reveal sticky -mx-5 sm:-mx-8 mb-4 overflow-hidden"
           style={{
-            top: "8vh",
-            height: "34vh",
-            minHeight: 220,
-            maxHeight: 320,
+            top: "7vh",
+            height: "42vh",
+            minHeight: 260,
+            maxHeight: 380,
             zIndex: 0,
-            opacity: 0.55,
-            filter: "blur(1.5px) saturate(0.85)",
+            opacity: 1,
+            filter: "saturate(0.92)",
             pointerEvents: "none",
           }}
         >
@@ -420,11 +434,13 @@ export function LivingItinerary({
               activeStopIndex={activeIdx}
             />
           </Suspense>
+          {/* Edge veil — gentle top + stronger base so scenes float over the
+              map without a hard panel edge. */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 35%, transparent) 0%, color-mix(in oklab, var(--ivory) 80%, transparent) 100%)",
+                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 30%, transparent) 0%, transparent 22%, transparent 60%, color-mix(in oklab, var(--ivory) 88%, transparent) 100%)",
             }}
           />
         </div>
