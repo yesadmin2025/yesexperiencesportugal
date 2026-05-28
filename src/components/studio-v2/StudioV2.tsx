@@ -303,11 +303,22 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
         {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} />}
+        {beat === "mood-rhythm" && (
+          <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} />
+        )}
         {beat === "logistics" && (
           <LogisticsCard
             pax={pax} setPax={setPax}
             pickup={pickup} setPickup={setPickup}
+            preferredDate={profile.ops?.preferredDate ?? ""}
+            setPreferredDate={(d) => setProfile((p) => ({ ...p, ops: { ...p.ops, preferredDate: d || undefined } }))}
             onSubmit={onLogisticsSubmit}
+          />
+        )}
+        {beat === "tastes" && (
+          <TastesPicker
+            initial={profile.ops?.tastes ?? []}
+            onSubmit={onTastesSubmit}
           />
         )}
         {beat === "conviction" && inferred && (
