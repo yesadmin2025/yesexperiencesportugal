@@ -298,6 +298,8 @@ const FRAGMENT_SHORTHAND: Record<string, string> = {
   "quiet-stone":    "stone and shadow",
   "two-at-dusk":    "dusk, for two",
   "raised-glasses": "a day that lifts",
+  "morning-light":  "a slow morning",
+  "late-shadow":    "long afternoon shadows",
 };
 
 /** Region/element anchor per dominant atmosphere — grounded, never invented. */

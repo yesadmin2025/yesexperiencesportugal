@@ -761,7 +761,7 @@ function LogisticsCard({
             className="text-[10px] uppercase tracking-[0.42em]"
             style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
           >
-            Chapter IV · Practicalities
+            Practicalities
           </span>
         </div>
 
@@ -996,7 +996,7 @@ function TastesPicker({
             className="text-[10px] uppercase tracking-[0.42em]"
             style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
           >
-            Chapter V · Tastes
+            Tastes
           </span>
         </div>
 
@@ -1023,7 +1023,7 @@ function TastesPicker({
             fontFamily: "Georgia, serif",
           }}
         >
-          Pick up to six. Each one shapes the stops we choose — no guesswork, just what matters to you.
+          Pick up to six. Each one shapes the stops we choose — and what we leave aside.
         </p>
 
         <div className="studio-v2-reveal delay-3 mt-10 flex flex-wrap gap-2.5">
@@ -1158,7 +1158,7 @@ function ConvictionMoment({
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
         >
-          <span className="studio-v2-rule" /> Chapter V · Your story so far
+          <span className="studio-v2-rule" /> Your story so far
         </span>
         <span
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.36em]"
