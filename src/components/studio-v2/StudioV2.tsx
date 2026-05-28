@@ -78,16 +78,22 @@ type Beat =
   | "mood-1"
   | "mood-2"
   | "mood-3"
+  | "mood-rhythm"
   | "logistics"
+  | "tastes"
   | "conviction"
   | "name"
   | "thinking"
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "opening", "mood-1", "mood-2", "mood-3",
-  "logistics", "conviction", "name", "thinking", "reveal",
+  "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
+
+/** Confidence threshold (0–1). Below this, the adaptive Rhythm scene fires
+ *  to disambiguate intent before we commit to a composition. */
+const CONFIDENCE_FLOOR = 0.55;
 
 const SESSION_KEY = "yes.studio-v2.session";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
@@ -156,24 +162,45 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   }, []);
 
   const onSceneSignal = useCallback((sig: SceneSignal) => {
-    setSignals((prev) => [...prev, sig]);
+    const updated = [...signals, sig];
+    setSignals(updated);
     void trackBuilderEvent("studio_v2_predict_signal", {
       sceneId: sig.sceneId,
       tappedFragmentId: sig.tappedFragmentId,
       lingerMs: sig.lingerMs,
     });
-    next();
-  }, [next]);
+    setBeatIndex((i) => {
+      const current = SEQUENCE[i];
+      // Adaptive Rhythm clarifier: only fire after mood-3 if confidence
+      // hasn't reached the floor. Otherwise jump straight to logistics.
+      if (current === "mood-3") {
+        const provisional = inferProfile(updated, { pax, pickup: pickup || "Lisboa" });
+        if (provisional.confidence >= CONFIDENCE_FLOOR) {
+          return SEQUENCE.indexOf("logistics");
+        }
+      }
+      return Math.min(SEQUENCE.length - 1, i + 1);
+    });
+  }, [signals, pax, pickup]);
 
   const onLogisticsSubmit = useCallback(() => {
     const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
-    setProfile(p);
+    setProfile((prev) => ({ ...p, name: prev.name, ops: { ...p.ops, preferredDate: prev.ops?.preferredDate } }));
     void trackBuilderEvent("studio_v2_predict_signal", {
       stage: "intent_inferred",
       topIntent, confidence: Math.round(confidence * 100), pax, pickup,
     });
     next();
   }, [signals, pax, pickup, next]);
+
+  const onTastesSubmit = useCallback((tastes: string[], extraWeights: Partial<Record<string, number>>) => {
+    setProfile((prev) => ({
+      ...prev,
+      ops: { ...prev.ops, tastes },
+      priorityWeights: { ...prev.priorityWeights, ...(extraWeights as TravelerProfile["priorityWeights"]) },
+    }));
+    next();
+  }, [next]);
 
   const thinkingTimer = useRef<number | null>(null);
   useEffect(() => {
@@ -276,11 +303,22 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
         {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
         {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} />}
+        {beat === "mood-rhythm" && (
+          <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} />
+        )}
         {beat === "logistics" && (
           <LogisticsCard
             pax={pax} setPax={setPax}
             pickup={pickup} setPickup={setPickup}
+            preferredDate={profile.ops?.preferredDate ?? ""}
+            setPreferredDate={(d) => setProfile((p) => ({ ...p, ops: { ...p.ops, preferredDate: d || undefined } }))}
             onSubmit={onLogisticsSubmit}
+          />
+        )}
+        {beat === "tastes" && (
+          <TastesPicker
+            initial={profile.ops?.tastes ?? []}
+            onSubmit={onTastesSubmit}
           />
         )}
         {beat === "conviction" && inferred && (
@@ -417,7 +455,7 @@ function OpeningScene({
             fontWeight: 600,
           }}
         >
-          A film, not a form
+          Composed for you
         </p>
         <h1
           className="text-[34px] leading-[1.04] sm:text-[52px] transition-all duration-[1400ms]"
@@ -692,10 +730,11 @@ function MoodSceneView({
 // ─── logistics card — editorial pause, sand surface, gold detail ───────
 
 function LogisticsCard({
-  pax, setPax, pickup, setPickup, onSubmit,
+  pax, setPax, pickup, setPickup, preferredDate, setPreferredDate, onSubmit,
 }: {
   pax: number; setPax: (n: number) => void;
   pickup: string; setPickup: (s: string) => void;
+  preferredDate: string; setPreferredDate: (d: string) => void;
   onSubmit: () => void;
 }) {
   const ready = pickup.trim().length > 0;
@@ -734,9 +773,9 @@ function LogisticsCard({
             color: "var(--charcoal)",
           }}
         >
-          Only what we{" "}
+          A few{" "}
           <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-            cannot guess
+            practical details
           </span>.
         </h2>
 
@@ -749,7 +788,7 @@ function LogisticsCard({
             fontFamily: "Georgia, serif",
           }}
         >
-          The rest is already being shaped — quietly — from the way you looked.
+          So we can route the day around you — pickup, party size, and when.
         </p>
 
         {/* Pax — typographic numeral */}
@@ -842,6 +881,28 @@ function LogisticsCard({
           </div>
         </div>
 
+        {/* Preferred date — optional, helps us hold the day */}
+        <div className="studio-v2-reveal delay-5 mt-10">
+          <p
+            className="mb-3 text-[10px] uppercase tracking-[0.36em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+          >
+            When <span className="lowercase" style={{ letterSpacing: "0.18em" }}>(optional)</span>
+          </p>
+          <input
+            type="date"
+            value={preferredDate}
+            onChange={(e) => setPreferredDate(e.target.value)}
+            min={new Date().toISOString().slice(0, 10)}
+            className="w-full max-w-[16rem] border-b bg-transparent py-2 text-[16px] focus:outline-none"
+            style={{
+              borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+              color: "var(--charcoal)",
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+            }}
+          />
+        </div>
+
         {/* CTA */}
         <div className="mt-14 flex items-center gap-5">
           <button
@@ -859,7 +920,7 @@ function LogisticsCard({
               border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
             }}
           >
-            <span className="relative z-[1]">Compose my day</span>
+            <span className="relative z-[1]">Continue</span>
             <ArrowRight
               className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
               aria-hidden
@@ -874,7 +935,157 @@ function LogisticsCard({
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
-          No filters. No quiz. Just two facts we cannot guess on your behalf.
+          A few details from you — the day is then designed around exactly what you want.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ─── tastes picker — chip selection, lifts priorityWeights ──────────────
+
+const TASTE_CHIPS: Array<{
+  key: string;
+  label: string;
+  weights: Partial<Record<string, number>>;
+}> = [
+  { key: "wine",         label: "Wine & cellars",     weights: { wine_cellar: 70, vineyard_lunch: 60 } },
+  { key: "sea",          label: "Coast & sea air",    weights: { coastal_scenery: 70, boat: 60 } },
+  { key: "long_lunch",   label: "Long lunch",         weights: { vineyard_lunch: 70, local_gastronomy: 70 } },
+  { key: "heritage",     label: "Heritage & stone",   weights: { heritage: 70, architecture: 60 } },
+  { key: "hidden",       label: "Hidden villages",    weights: { hidden_villages: 70 } },
+  { key: "photo",        label: "Photographic light", weights: { photography: 70 } },
+  { key: "quiet",        label: "Quiet luxury",       weights: { quiet_luxury: 70, wellness: 50 } },
+  { key: "boat",         label: "On the water",       weights: { boat: 80 } },
+  { key: "local_food",   label: "Local table",        weights: { local_gastronomy: 80 } },
+  { key: "sunset",       label: "Sunset hour",        weights: { coastal_scenery: 50, photography: 50 } },
+];
+
+function TastesPicker({
+  initial, onSubmit,
+}: {
+  initial: string[];
+  onSubmit: (tastes: string[], weights: Partial<Record<string, number>>) => void;
+}) {
+  const [selected, setSelected] = useState<string[]>(initial);
+  const toggle = (k: string) =>
+    setSelected((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k].slice(0, 6)));
+
+  const submit = () => {
+    const merged: Record<string, number> = {};
+    for (const k of selected) {
+      const chip = TASTE_CHIPS.find((c) => c.key === k);
+      if (!chip) continue;
+      for (const [pk, pv] of Object.entries(chip.weights)) {
+        merged[pk] = Math.max(merged[pk] ?? 0, pv ?? 0);
+      }
+    }
+    onSubmit(selected, merged);
+  };
+
+  return (
+    <section
+      className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
+      style={{ background: "var(--ivory)" }}
+    >
+      <div className="studio-v2-grain absolute inset-0 pointer-events-none" aria-hidden />
+      <div className="relative mx-auto w-full max-w-xl px-6 py-14 sm:px-8">
+        <div className="studio-v2-reveal flex items-center gap-3">
+          <span className="studio-v2-rule" />
+          <span
+            className="text-[10px] uppercase tracking-[0.42em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
+          >
+            Chapter V · Tastes
+          </span>
+        </div>
+
+        <h2
+          className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
+          style={{
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontWeight: 700, letterSpacing: "-0.012em",
+            color: "var(--charcoal)",
+          }}
+        >
+          What you{" "}
+          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+            actually love
+          </span>.
+        </h2>
+
+        <p
+          className="studio-v2-reveal delay-2 mt-4 text-[14px] leading-[1.6]"
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+            maxWidth: "34ch",
+            fontStyle: "italic",
+            fontFamily: "Georgia, serif",
+          }}
+        >
+          Pick up to six. Each one shapes the stops we choose — no guesswork, just what matters to you.
+        </p>
+
+        <div className="studio-v2-reveal delay-3 mt-10 flex flex-wrap gap-2.5">
+          {TASTE_CHIPS.map((c) => {
+            const active = selected.includes(c.key);
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => toggle(c.key)}
+                className="min-h-[44px] rounded-full border px-4 py-2 text-[14px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  borderColor: active
+                    ? "var(--gold)"
+                    : "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                  background: active
+                    ? "color-mix(in oklab, var(--gold) 18%, transparent)"
+                    : "transparent",
+                  color: active ? "var(--charcoal)" : "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+                  fontWeight: active ? 600 : 500,
+                  fontFamily: "var(--font-sans, Inter), sans-serif",
+                }}
+              >
+                {c.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-12 flex items-center gap-5">
+          <button
+            type="button"
+            onClick={submit}
+            className="studio-v2-sheen group inline-flex items-center gap-3 rounded-[2px] px-8 py-4 transition-all focus-visible:outline-none focus-visible:ring-2"
+            style={{
+              background: "var(--charcoal)",
+              color: "var(--ivory)",
+              minHeight: 56, minWidth: 240,
+              fontFamily: "var(--font-sans, Inter), sans-serif",
+              fontWeight: 600, fontSize: 12.5,
+              letterSpacing: "0.26em", textTransform: "uppercase",
+              border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+            }}
+          >
+            <span className="relative z-[1]">
+              {selected.length === 0 ? "Skip · compose my day" : "Compose my day"}
+            </span>
+            <ArrowRight
+              className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
+              aria-hidden
+            />
+          </button>
+        </div>
+
+        <p
+          className="mt-6 text-[11px] italic"
+          style={{
+            fontFamily: "Georgia, serif",
+            color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
+          }}
+        >
+          Skip if nothing fits — we'll lean on the atmosphere we read from you.
         </p>
       </div>
     </section>
