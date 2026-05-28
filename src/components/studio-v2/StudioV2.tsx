@@ -455,7 +455,7 @@ function OpeningScene({
             fontWeight: 600,
           }}
         >
-          A film, not a form
+          Composed for you
         </p>
         <h1
           className="text-[34px] leading-[1.04] sm:text-[52px] transition-all duration-[1400ms]"
