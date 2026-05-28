@@ -937,7 +937,7 @@ function ConvictionMoment({
             className="inline-block h-1.5 w-1.5 rounded-full"
             style={{ background: "var(--gold)", animation: "studioV2Pulse 1.6s ease-in-out infinite" }}
           />
-          Reading
+          Composing
         </span>
       </div>
 
