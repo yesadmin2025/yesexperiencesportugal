@@ -4919,6 +4919,11 @@ html { scroll-behavior: smooth; }
   50%      { opacity: 1;    transform: scale(1.1); }
 }
 
+@keyframes studioV2RevealUp {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── Studio v2 cinematic primitives ─────────────────────────────────── */
 @keyframes studioV2KenBurns {
   0%   { transform: scale(1.06) translate(0, 0); }

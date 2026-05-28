@@ -44,6 +44,7 @@ import { PrologueScene } from "./scenes/PrologueScene";
 import { WhoRhythmScene } from "./scenes/WhoRhythmScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
+import { RevelationScene } from "./scenes/RevelationScene";
 // NameBeat external component reserved for the upcoming name-capture beat.
 // Currently the inline NameBeat() below remains the source of truth.
 import { StoryOpener } from "./StoryOpener";
@@ -226,21 +227,15 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     next();
   }, [next]);
 
-  const thinkingTimer = useRef<number | null>(null);
+  // Entering "thinking" (Phase 4 Revelation): synchronously derive the
+  // engine result so the scene knows the region for its real-stops fetch.
+  // The scene itself controls the dwell + advance via onContinue.
   useEffect(() => {
     if (beat !== "thinking") return;
-    if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
-    // Longer pause — Layer 3 "ritmo": confidence reads as restraint, not lag.
-    thinkingTimer.current = window.setTimeout(() => {
-      const archetype = deriveArchetype(profile);
-      const r = designExperience({ ...profile, archetype });
-      setResult(r);
-      setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
-    }, 3400);
-    return () => {
-      if (thinkingTimer.current) window.clearTimeout(thinkingTimer.current);
-    };
-  }, [beat, profile]);
+    if (result) return;
+    const archetype = deriveArchetype(profile);
+    setResult(designExperience({ ...profile, archetype }));
+  }, [beat, profile, result]);
 
   const showChrome = beat !== "opening" && beat !== "reveal";
 
@@ -380,8 +375,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             }}
           />
         )}
-        {beat === "thinking" && (
-          <ThinkingBeat topIntent={inferred?.topIntent ?? "relaxed_scenic"} />
+        {beat === "thinking" && result && (
+          <RevelationScene
+            profile={profile}
+            region={result.region as "arrabida" | "lisbon-coast" | "alentejo" | "centro"}
+            topIntent={inferred?.topIntent ?? "relaxed_scenic"}
+            onContinue={next}
+          />
         )}
 
         {beat === "reveal" && result && (
