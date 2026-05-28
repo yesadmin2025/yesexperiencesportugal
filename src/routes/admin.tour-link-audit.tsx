@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { auditTourLinks } from "@/server/tourLinkAudit.functions";
-import type { TourLinkAuditReport } from "@/server/tourLinkAudit.server";
+import { auditTourLinks } from "@/lib/tourLinkAudit.functions";
+import type { TourLinkAuditReport } from "@/lib/tourLinkAudit.server";
 import { checkRouteFile, type RouteFileCheckResult } from "@/server/routeFileCheck.functions";
 import { getLastCrawlerError, type CrawlerErrorInfo, type CrawlerErrorStrategy } from "@/server/crawlerError.functions";
 import { SiteLayout } from "@/components/SiteLayout";
