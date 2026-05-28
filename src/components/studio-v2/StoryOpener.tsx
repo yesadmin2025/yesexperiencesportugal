@@ -18,21 +18,21 @@ interface Props {
 }
 
 function deterministic(profile: TravelerProfile, region: string): string {
-  const who = profile.name?.trim() ? `${profile.name.trim()},` : "Quietly,";
+  const who = profile.name?.trim() ? `${profile.name.trim()},` : "For you,";
   const lean =
-    profile.intent === "coastal_cinematic" ? "you leaned toward Atlantic light and the hour gold turns" :
-    profile.intent === "romantic_intimate" ? "you leaned toward the coast at dusk, just the two of you" :
-    profile.intent === "food_local"        ? "you leaned toward long tables and unhurried tasting" :
-    profile.intent === "elegant_cultural"  ? "you leaned toward stone, shadow and quiet rooms" :
-    profile.intent === "social_celebratory"? "you leaned toward a day that lifts the room" :
-                                             "you leaned toward open roads and slow afternoon light";
+    profile.intent === "coastal_cinematic" ? "a day built around Atlantic light and the hour gold turns" :
+    profile.intent === "romantic_intimate" ? "a day built for two — the coast, the quiet, the dusk" :
+    profile.intent === "food_local"        ? "a day built around long tables and unhurried tasting" :
+    profile.intent === "elegant_cultural"  ? "a day built around stone, shadow and quiet rooms" :
+    profile.intent === "social_celebratory"? "a day built to lift the room and hold the moment" :
+                                             "a day built around open roads and slow afternoon light";
   const r = region.toLowerCase();
   const place =
-    r.includes("arrabida") ? "the Arrábida — vineyards and the Atlantic close enough to taste" :
-    r.includes("lisbon")   ? "Sintra and the Atlantic edge — granite, mist, ocean shoulder" :
-    r.includes("alentejo") ? "the Alentejo — long horizons and slow tables" :
-                             "a corner of Portugal that fits your rhythm";
-  return `${who} ${lean}. We're shaping ${place}. So we composed a day with the right weight.`;
+    r.includes("arrabida") ? "set in the Arrábida — vineyards and the Atlantic close enough to taste" :
+    r.includes("lisbon")   ? "set along Sintra and the Atlantic edge — granite, mist, ocean shoulder" :
+    r.includes("alentejo") ? "set across the Alentejo — long horizons and slow tables" :
+                             "set in the corner of Portugal that fits your rhythm";
+  return `${who} ${lean}, ${place}. Designed around what you actually want — nothing generic, nothing filler.`;
 }
 
 export function StoryOpener({ profile, region, signals }: Props) {
