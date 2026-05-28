@@ -43,7 +43,8 @@ export interface MoodScene {
   id: string;
   /** Tiny chapter eyebrow shown above the fragments (no question). */
   eyebrow: string;
-  fragments: [MoodFragment, MoodFragment];
+  /** 2–6 fragments. Diptych scenes use 2; the FEELING scene uses 6. */
+  fragments: MoodFragment[];
 }
 
 export const MOOD_SCENES: MoodScene[] = [
