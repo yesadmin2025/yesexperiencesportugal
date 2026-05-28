@@ -204,12 +204,21 @@ export function composeItinerary(
 
   const want = Math.max(caps.minStops, Math.min(caps.maxStops, targetCount));
   const chosen: typeof scored = [];
+  const chosenKeys = new Set<string>();
+  const chosenIdentities = new Set<string>();
+  const identityOf = (s: DbStop) =>
+    `${s.label.toLowerCase().trim()}@${s.lat.toFixed(3)},${s.lng.toFixed(3)}`;
   chosen.push(scored[0]);
+  chosenKeys.add(scored[0].stop.key);
+  chosenIdentities.add(identityOf(scored[0].stop));
 
-  while (chosen.length < want && chosen.length < scored.length) {
+  while (chosen.length < want) {
     const last = chosen[chosen.length - 1].stop;
-    // Re-rank remaining candidates: score minus distance penalty.
-    const remaining = scored.filter((c) => !chosen.includes(c));
+    // Re-rank remaining candidates by stop key + identity (prevents the same
+    // physical place being added twice when DB rows duplicate it across tours).
+    const remaining = scored.filter(
+      (c) => !chosenKeys.has(c.stop.key) && !chosenIdentities.has(identityOf(c.stop)),
+    );
     if (remaining.length === 0) break;
     const ranked = remaining
       .map((c) => {
@@ -221,6 +230,8 @@ export function composeItinerary(
     const next = ranked[0];
     if (!next || next.adjusted <= -1000) break;
     chosen.push({ stop: next.stop, score: next.score });
+    chosenKeys.add(next.stop.key);
+    chosenIdentities.add(identityOf(next.stop));
   }
 
   // Nearest-neighbour ordering from first chosen for sensible driving order.
