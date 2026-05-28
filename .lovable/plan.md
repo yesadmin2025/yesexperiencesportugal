@@ -1,146 +1,111 @@
 
-# Studio v2 — "Adivinhar o pensamento"
+# Experience Studio — Cinematic Hybrid Refactor
 
-Reescrever o Studio v2 para que o cliente sinta que o sistema lê o gosto dele em vez de o interrogar. Cumpre a Studio Bible: interface desaparece, guiado não perguntado, Portugal sentido cedo, AI orquestra, ritmo > features, revelação cria desejo.
+Reshape `/studio-v2` from a guided consultation stepper into a 6-phase cinematic journey with two intelligent completion paths. This is a structural rewrite of the Studio shell, not the engine — the existing itinerary engine, profile model, real-stops data, and `studio_v2_bookings` persistence stay. The shell, pacing, and conversion layer change.
 
-## Princípio central
+## Scope (in this pass)
 
-O cliente NUNCA escolhe região, ritmo, prioridades, intensidade ou tier. Só fornece o que é **logisticamente impossível adivinhar**: número de pessoas e cidade de pickup. Tudo o resto é inferido em silêncio através de comportamento em cenas atmosféricas reais.
+1. **New phase-based shell** replacing the current SEQUENCE/step model
+2. **Dual-path conversion** (Instant Booking vs Refine With a Local Host) with AI confidence routing
+3. **Embedded Stripe checkout in-scene** (no redirect break) for instant path
+4. **Premium WhatsApp handoff** for refine path, emotionally continuous (not "support escalation")
+5. Visual + motion polish per cinematic principles (one emotional layer at a time)
 
-## Fluxo (5 momentos, ~90s)
+Out of scope: changes to Signature/Tailored/Builder pages, brand palette, homepage motion, or the underlying scoring engine.
+
+## Phase Architecture
+
+Replace current `SEQUENCE` array in `StudioV2.tsx` with a `PhaseController` driving 6 phases:
 
 ```text
-1. ABERTURA (silêncio + Portugal a respirar)
-   Full-bleed real (Arrábida ao amanhecer). Sem copy de boas-vindas.
-   Uma frase aparece devagar: "Deixa o teu instinto guiar-te."
-   Tap em qualquer sítio → entra.
-
-2. TRÊS CENAS (mood reading invisível)
-   Full-bleed, real Portugal. Sem perguntas, sem botões "escolher".
-   Cada cena tem 2 micro-fragmentos sobreponíveis (ex: "mesa partilhada" vs
-   "miradouro vazio"). O sistema lê: linger time, qual fragmento foi tocado,
-   swipe direction, scroll velocity. Zero quizz framing.
-
-   Cenas sorteadas dos 4 eixos da DB (mood/pace/intention/who) para cobrir
-   espectro: gastronomia↔natureza, social↔íntimo, costa↔interior,
-   cultural↔sensorial.
-
-3. DOIS DADOS LOGÍSTICOS (única "pergunta" do flow)
-   Card único, minimal, ivory:
-   • Quantos vão? [stepper -/+, default 2]
-   • De onde partem? [autocomplete: Lisboa, Cascais, Setúbal, Évora, Porto…]
-   Continuar → fade.
-
-4. MOMENTO DE CONVICÇÃO ("acertei")
-   3-4s de processamento invisível, com frase que se monta:
-   "Sente-se que procuras [mood inferido] perto de [região inferida].
-    Vou desenhar um dia [pace] para [n] pessoas, a partir de [pickup]."
-   Sem "queres confirmar?". Botão único: "Mostra-me".
-
-5. REVELAÇÃO (Living Itinerary)
-   Mapa Mapbox + paragens reais de builder_stops (combinadas dos
-   source_tour_keys da mesma região). Tempo de drive real via builder_route_cache.
-   Imagens reais. Drive time honesto. Refine discreto (long-press swap),
-   nunca em cima. CTA "Reservar" só aparece após scroll do itinerário.
+Phase 0 PROLOGUE     → existing StoryOpener + DriftScene atmosphere, no CTAs for ~3s
+Phase 1 FEELING      → 6 emotion cards (slow & romantic / wild coast / hidden / celebration /
+                       soulful food & wine / peaceful escape) over real footage. NO place names.
+Phase 2 WHO & RHYTHM → couple|family|solo|friends + slow|adventurous|relaxed|discovery
+                       via SensePair-style visual diptychs, not form fields
+Phase 3 INTENTION    → MicroFictionScene variants; imagery & overlay tint shift with answers
+Phase 4 REVELATION   → "Portugal is responding…" beat, map fades in at 8% opacity,
+                       stops surface one-by-one from real builder_stops data
+Phase 5 LIVING JOURNEY → existing real itinerary + BuilderMap promoted to protagonist,
+                       ribbon timeline, drag-to-reorder kept, no chrome
+Phase 6 CONVERSION   → dual-path decision (see below)
 ```
 
-## Motor invisível — `inferStudioIntent`
+Each phase = single dominant emotional layer. Hard rule enforced by `<PhaseStage>` wrapper that fades out previous layer fully before next mounts (no overlap chrome).
 
-Server fn nova `inferStudioIntent` (em `src/lib/studio-v2/intent.functions.ts`):
+## Dual-Path Conversion Logic
 
-**Inputs:** array de signals capturados nas 3 cenas:
+New file: `src/lib/studio-v2/conversion-router.ts`
+
 ```ts
-{ sceneId, lingerMs, tappedFragmentId, swipeDir, dwellBeforeAdvance }
+type ConversionPath = 'instant' | 'refine' | 'both';
+
+decideConversionPath(profile, itinerary) → ConversionPath
+  instant  if: confidence ≥ 0.7 AND all stops are real AND group ≤ 8
+              AND no luxury_tier='ultra' AND no hardConstraints
+  refine   if: confidence < 0.55 OR ultra tier OR corporate occasion
+              OR group > 8 OR hardConstraints present
+  both     otherwise
 ```
 
-**Output:**
-```ts
-{ region, mood, pace, intent, confidence,
-  convictionLine: string  // "Sente-se que procuras…"
-}
-```
+Phase 6 component branches:
+- `InstantBookingScene` — preserves itinerary canvas, slides Stripe Embedded Checkout up as a sheet over the dimmed map. Uses existing `create-builder-checkout` edge function (already does server-side pricing). Success → cinematic "Your journey is set" coda, not a redirect.
+- `RefineWithLocalScene` — introduces a named host ("Mariana, your local in Lisbon") with portrait, hands draft to WhatsApp pre-filled with the full real itinerary + profile summary. Persists draft via existing `createCustomBookingDraft` so the host can open `/checkout/$token`.
+- `DualOfferScene` — presents both as equal cinematic choices, not primary/secondary.
 
-**Lógica:**
-- Cada fragmento mapeia a `mood_tags + intention_tags` reais da DB.
-- Mood vector = soma ponderada (linger × 1.0, tap × 1.5, swipe-toward × 0.7).
-- Região = a que tem maior cobertura de stops com mood ∩ inferred_mood
-  (query a `builder_stops` agregando por `region_key`).
-- Pace inferido do ritmo de interacção: dwell rápido → "rich/full",
-  contemplativo → "light/balanced".
-- Intent derivado do par mood+pace dominante.
+## Files
 
-## Composição da itinerário (mantém realismo)
+**New**
+- `src/components/studio-v2/PhaseController.tsx` — phase state machine + transitions
+- `src/components/studio-v2/PhaseStage.tsx` — single-layer enforcement wrapper
+- `src/components/studio-v2/phases/PrologueScene.tsx`
+- `src/components/studio-v2/phases/FeelingScene.tsx`
+- `src/components/studio-v2/phases/WhoRhythmScene.tsx`
+- `src/components/studio-v2/phases/IntentionScene.tsx`
+- `src/components/studio-v2/phases/RevelationScene.tsx`
+- `src/components/studio-v2/phases/LivingJourneyScene.tsx`
+- `src/components/studio-v2/phases/conversion/InstantBookingScene.tsx`
+- `src/components/studio-v2/phases/conversion/RefineWithLocalScene.tsx`
+- `src/components/studio-v2/phases/conversion/DualOfferScene.tsx`
+- `src/components/studio-v2/phases/conversion/EmbeddedCheckoutSheet.tsx`
+- `src/lib/studio-v2/conversion-router.ts`
 
-Reusar `composeRealItinerary` já existente, agora alimentado pelo perfil
-inferido + `pax` e `pickup` reais:
-- `pickup` define **stop 0** (ponto de partida) → reordena nearest-neighbour
-  a partir daí, não do score-leader.
-- Paragens só de `builder_stops` activas da região inferida, combinando
-  `source_tour_keys` de vários Signature tours dessa região.
-- Drive times via `builder_route_cache` (OSRM) — já implementado.
-- Nada inventado.
+**Refactored**
+- `src/components/studio-v2/StudioV2.tsx` — becomes thin host that mounts `<PhaseController>`. All existing scene logic moves into phase files. Profile/engine wiring preserved.
+- `src/components/studio-v2/PersistentChatFab.tsx` — hidden in Phase 0–4 (would compete with atmosphere), surfaces in Phase 5 only.
 
-## O que sai
+**Reused as-is**
+- `src/lib/studio-v2/engine.ts`, `profile.ts`, `intent-infer.ts`, `itinerary.functions.ts`, `story.functions.ts`
+- `src/lib/studio-v2/bookings.functions.ts` (already supports the draft → host workflow)
+- `supabase/functions/create-builder-checkout/index.ts` (already validates & prices server-side)
+- `BuilderMap` / `PremiumMap` for Phase 5
 
-Remove dos sequence de StudioV2.tsx: `choice-group`, `choice-duration`,
-`choice-priorities`, `choice-pace`, `choice-enhancements`, `choice-tier`,
-`choice-ops`, `MemoryDeck`, progress bar, eyebrows numerados, region picker.
+## Cinematic Rules (enforced)
 
-## O que entra
+- One emotional layer visible at any time (`PhaseStage` unmounts predecessor)
+- No stepper, no progress bar, no breadcrumbs in Phase 0–4
+- Subtle "Chapter II" eyebrow only from Phase 5 onward
+- All transitions: 600–900ms fade + 12–16px translate, respects `prefers-reduced-motion`
+- Map opacity progression: 0% (P0–P3) → 8% (P4) → 100% (P5+)
+- Stripe checkout never opens in a new tab; embedded sheet with cinematic backdrop
+- Refine handoff uses host portrait + name + locale, not generic "contact us" copy
 
-- `OpeningScene.tsx` — full-bleed silêncio.
-- `MoodScene.tsx` — cena cinematográfica com 2 fragmentos overlay + signal capture.
-- `LogisticsCard.tsx` — único card de inputs (pax + pickup).
-- `ConvictionMoment.tsx` — frase que se monta + botão único.
-- `LivingItinerary.tsx` (já existe) — alimentado pelo perfil inferido.
+## Technical Notes
 
-## Telemetria (manter, expandir)
+- Conversion routing is pure & deterministic — easy to unit test
+- Stripe Embedded uses existing `getStripe()` + `clientSecret` flow from `create-builder-checkout`; new component just wraps `<EmbeddedCheckoutProvider>` in a sheet
+- WhatsApp message builder extends existing `whatsappHref` helper with itinerary summary
+- No DB migration needed — `studio_v2_bookings` already has `status: 'draft' | 'submitted'` and all fields required for the refine handoff
+- No new env vars; no new edge functions
 
-Novos eventos em `builder-analytics.ts`:
-- `studio_v2_scene_signal` (sceneId, lingerMs, tappedFragmentId)
-- `studio_v2_intent_inferred` (region, mood, pace, confidence)
-- `studio_v2_logistics_submitted` (pax, pickupCity)
-- `studio_v2_conviction_shown` (line, confidence)
-- `studio_v2_reveal_shown` já existe (`studio_v2_map_reveal`).
+## Acceptance
 
-## Realismo / guardrails
+- Entering `/studio-v2` shows fullscreen footage with no CTAs for ~3s
+- Choosing a feeling never reveals a place name in Phase 1–2
+- Map remains hidden until Phase 4
+- High-confidence test profile (couple, balanced, 2 adults, no constraints) routes to Instant; ultra-tier or 10-person celebration routes to Refine; mid-confidence presents both
+- Stripe checkout opens inline (sheet), not via redirect
+- Refine path opens WhatsApp with the actual real itinerary (stop names from `builder_stops`) prefilled and persists a draft retrievable at `/checkout/$token`
+- `tsc --noEmit` passes; no new console errors in the flow
 
-- Zero invenção: paragens, blurbs, durações e imagens vêm de `builder_stops`.
-- Pickup é texto livre com autocomplete sobre cidades reais (lista curada
-  de origens operacionais, não freeform sem validação).
-- Frase de convicção é template com slots, nunca AI-generated marketing copy.
-- Mood/intent inferidos têm fallback "balanced/scenic" quando confidence < 0.4.
-- Reduce-motion: cross-fades em vez de parallax.
-- A11y: cada cena tem alt + skip button discreto canto inferior.
-
-## Out of scope (deste loop)
-
-- Visual da checkout sheet (mantém actual).
-- Multi-dia (apenas single day por agora).
-- Pricing dinâmico (mostrar "from €X p/p" só na sheet, já existe).
-- Tradução EN (PT primeiro, EN num loop seguinte).
-- Builder clássico em `/builder` (intocado).
-- Homepage e Signature pages (intocado).
-
-## Ficheiros tocados
-
-- `src/lib/studio-v2/intent.functions.ts` (NEW) — server fn de inferência.
-- `src/lib/studio-v2/intent.server.ts` (NEW) — scoring puro, testável.
-- `src/lib/studio-v2/content.ts` — adiciona `MOOD_SCENES` (3 cenas reais com 2 fragmentos cada, mapeados a tags da DB).
-- `src/lib/studio-v2/itinerary.functions.ts` — aceita `pickup` para sequência.
-- `src/components/studio-v2/StudioV2.tsx` — sequence reescrita (5 momentos).
-- `src/components/studio-v2/OpeningScene.tsx` (NEW)
-- `src/components/studio-v2/MoodScene.tsx` (NEW)
-- `src/components/studio-v2/LogisticsCard.tsx` (NEW)
-- `src/components/studio-v2/ConvictionMoment.tsx` (NEW)
-- `src/components/studio-v2/LivingItinerary.tsx` — props ajustados ao perfil inferido.
-- `src/lib/builder-analytics.ts` — novos eventos.
-
-## Validação contra a Bible
-
-✓ Interface desaparece (silêncio → cenas full-bleed → 1 card → revelação)
-✓ Guiado, não perguntado (2 dados logísticos só, resto inferido)
-✓ Portugal sentido cedo (3 cenas atmosféricas reais antes de qualquer input)
-✓ AI orquestra (motor invisível, sem chat, sem decoração)
-✓ Restraint (zero filtros, zero sliders, zero tier picker)
-✓ Adivinhação genuína (momento de convicção mostra que o sistema "leu")
+Approve to proceed, or tell me which phase to cut/expand.
