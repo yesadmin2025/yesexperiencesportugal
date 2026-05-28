@@ -8,11 +8,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { MoodScene, SceneSignal } from "@/lib/studio-v2/intent-infer";
+import type { IntentAtmosphere } from "@/lib/studio-v2/profile";
+import { getMoodTint } from "@/lib/studio-v2/mood-tint";
 
 interface Props {
   scene: MoodScene;
   index: number;
   onSignal: (sig: SceneSignal) => void;
+  /** Dominant atmosphere inferred so far — drives the soft backdrop tint. */
+  topIntent?: IntentAtmosphere | null;
 }
 
 const ROMAN = ["I", "II", "III", "IV"];
