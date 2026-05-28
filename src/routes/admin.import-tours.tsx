@@ -15,7 +15,7 @@ import {
   fetchViatorArrabida,
   saveViatorArrabida,
   bulkImportViatorTours,
-} from "@/server/viatorTour.functions";
+} from "@/lib/viatorTour.functions";
 import { DEFAULT_MAPPING_RULES } from "@/data/defaultMappingRules";
 import { signatureTours } from "@/data/signatureTours";
 import { checkViatorUrlMatchesTour, type UrlMatchResult } from "@/lib/viatorUrlMatch";

@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { extractViatorTour, type ViatorExtraction } from "@/server/viatorTour.server";
+import { extractViatorTour, type ViatorExtraction } from "@/lib/viatorTour.server";
 
 /**
  * Hard-coded for the "Arrábida P3" Signature tour. Generic flow can come
