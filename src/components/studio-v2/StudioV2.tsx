@@ -902,7 +902,7 @@ function ConvictionMoment({
   return (
     <section
       className="studio-v2-grain studio-v2-vignette relative min-h-[100svh] w-full overflow-hidden"
-      aria-label="What we read"
+      aria-label="Your story so far"
     >
       <div className="absolute inset-0 overflow-hidden">
         <img
