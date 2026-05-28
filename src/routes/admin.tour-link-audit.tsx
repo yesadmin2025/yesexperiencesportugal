@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { auditTourLinks } from "@/lib/tourLinkAudit.functions";
 import type { TourLinkAuditReport } from "@/lib/tourLinkAudit.server";
 import { checkRouteFile, type RouteFileCheckResult } from "@/lib/routeFileCheck.functions";
-import { getLastCrawlerError, type CrawlerErrorInfo, type CrawlerErrorStrategy } from "@/server/crawlerError.functions";
+import { getLastCrawlerError, type CrawlerErrorInfo, type CrawlerErrorStrategy } from "@/lib/crawlerError.functions";
 import { SiteLayout } from "@/components/SiteLayout";
 import { AlertTriangle, Check, RefreshCw, FileSearch, Link2Off, HelpCircle, FileCode2, Zap, Copy, ExternalLink, Bug, RotateCcw } from "lucide-react";
 
