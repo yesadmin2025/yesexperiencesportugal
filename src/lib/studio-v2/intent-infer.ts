@@ -119,6 +119,33 @@ export const MOOD_SCENES: MoodScene[] = [
       },
     ],
   },
+  // Adaptive clarifier — only shown when confidence after scenes I–III is low.
+  // Targets the pace/rhythm axis (morning vs evening), the one most often
+  // ambiguous after atmosphere-only signals.
+  {
+    id: "scene-pace-clarify",
+    eyebrow: "Rhythm",
+    fragments: [
+      {
+        id: "morning-light",
+        image: INTENT_IMAGE.relaxed_scenic.src,
+        alt: "A shuttered Portuguese window catching first morning light.",
+        whisper: "Slow morning, the day still ahead.",
+        intent: "relaxed_scenic",
+        paceNudge: -1,
+        priorities: ["quiet_luxury", "coastal_scenery"],
+      },
+      {
+        id: "late-shadow",
+        image: INTENT_IMAGE.coastal_cinematic.src,
+        alt: "Long warm shadows on Portuguese tile at the end of the afternoon.",
+        whisper: "Long shadows, the evening unhurried.",
+        intent: "coastal_cinematic",
+        paceNudge: 1,
+        priorities: ["vineyard_lunch", "photography"],
+      },
+    ],
+  },
 ];
 
 // ─── signals ──────────────────────────────────────────────────────────────
