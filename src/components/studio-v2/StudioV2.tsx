@@ -39,6 +39,7 @@ import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
 import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
+import { PrologueScene } from "./scenes/PrologueScene";
 import { SensePairScene } from "./scenes/SensePairScene";
 import { MicroFictionScene } from "./scenes/MicroFictionScene";
 // NameBeat external component reserved for the upcoming name-capture beat.
@@ -75,6 +76,7 @@ interface StudioV2Props {
 // questions) → 1 logistics card (pax + pickup only) → conviction → reveal.
 
 type Beat =
+  | "prologue"
   | "opening"
   | "mood-1"
   | "mood-2"
@@ -88,7 +90,7 @@ type Beat =
   | "reveal";
 
 const SEQUENCE: Beat[] = [
-  "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  "prologue", "opening", "mood-1", "mood-2", "mood-3", "mood-rhythm",
   "logistics", "tastes", "conviction", "name", "thinking", "reveal",
 ];
 
@@ -293,6 +295,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       </header>
 
       <main key={beat} className="studio-v2-reveal relative z-10">
+        {beat === "prologue" && <PrologueScene onContinue={next} />}
         {beat === "opening" && (
           <OpeningScene
             onTap={next}
