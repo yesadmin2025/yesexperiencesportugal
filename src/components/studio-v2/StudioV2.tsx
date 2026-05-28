@@ -1654,6 +1654,51 @@ function RevealStory({
         />
       )}
 
+      {/* Withheld stop — one final beat we keep as silhouette until booking.
+          Creates longing (Bible §6). Purely presentational, never invents a
+          stop name. Hidden if itinerary is too short to support a "one more". */}
+      {real && editedStops && editedStops.length >= 3 && (
+        <div
+          className="mt-6 rounded-[2px] border px-5 py-5 sm:px-6 sm:py-6"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 55%, transparent)",
+          }}
+        >
+          <p
+            className="text-[10.5px] uppercase tracking-[0.32em]"
+            style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 700 }}
+          >
+            One more
+          </p>
+          <p
+            className="mt-3 text-[17px] leading-[1.35] sm:text-[19px]"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
+          >
+            {profile.name?.trim() ? `${profile.name.trim()}, we're` : "We're"} keeping the closing
+            moment of your day quiet — it reveals itself only when you reserve.
+          </p>
+          <div
+            aria-hidden
+            className="mt-4 flex items-center gap-3 opacity-70"
+          >
+            <span
+              className="inline-block h-8 w-8 rounded-full"
+              style={{
+                background: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                filter: "blur(1px)",
+              }}
+            />
+            <span
+              className="inline-block h-2 flex-1 rounded-full"
+              style={{
+                background: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+              }}
+            />
+          </div>
+        </div>
+      )}
+
 
 
 
