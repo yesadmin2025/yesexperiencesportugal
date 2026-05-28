@@ -80,12 +80,13 @@ type Beat =
   | "mood-3"
   | "logistics"
   | "conviction"
+  | "name"
   | "thinking"
   | "reveal";
 
 const SEQUENCE: Beat[] = [
   "opening", "mood-1", "mood-2", "mood-3",
-  "logistics", "conviction", "thinking", "reveal",
+  "logistics", "conviction", "name", "thinking", "reveal",
 ];
 
 const SESSION_KEY = "yes.studio-v2.session";
@@ -301,6 +302,19 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             onContinue={next}
           />
         )}
+        {beat === "name" && (
+          <NameBeat
+            initial={profile.name ?? ""}
+            onSubmit={(name) => {
+              setProfile((p) => ({ ...p, name: name.trim().slice(0, 40) }));
+              next();
+            }}
+            onSkip={() => {
+              setProfile((p) => ({ ...p, name: undefined }));
+              next();
+            }}
+          />
+        )}
         {beat === "thinking" && (
           <ThinkingBeat topIntent={inferred?.topIntent ?? "relaxed_scenic"} />
         )}
@@ -310,7 +324,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             key="reveal"
             className="relative mx-auto w-full max-w-3xl px-5 pb-28 pt-10 sm:px-8 sm:pt-14"
           >
-            <RevealStory profile={profile} region={result.region} />
+            <RevealStory profile={profile} region={result.region} signals={signals} />
             <Reveal result={result} />
           </section>
         )}
@@ -1424,8 +1438,8 @@ function ShimmerDot({ delay }: { delay: number }) {
 }
 
 function RevealStory({
-  profile, region,
-}: { profile: TravelerProfile; region: string }) {
+  profile, region, signals,
+}: { profile: TravelerProfile; region: string; signals?: SceneSignal[] }) {
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
@@ -1527,6 +1541,8 @@ function RevealStory({
 
   return (
     <section className="mb-10">
+      <StoryOpener profile={profile} region={region} signals={signals ?? []} />
+
       {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
           Map draws the day; sequenced narrative summarizes it in one breath. */}
       <MapReveal
