@@ -302,6 +302,19 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             onContinue={next}
           />
         )}
+        {beat === "name" && (
+          <NameBeat
+            initial={profile.name ?? ""}
+            onSubmit={(name) => {
+              setProfile((p) => ({ ...p, name: name.trim().slice(0, 40) }));
+              next();
+            }}
+            onSkip={() => {
+              setProfile((p) => ({ ...p, name: undefined }));
+              next();
+            }}
+          />
+        )}
         {beat === "thinking" && (
           <ThinkingBeat topIntent={inferred?.topIntent ?? "relaxed_scenic"} />
         )}
@@ -311,7 +324,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             key="reveal"
             className="relative mx-auto w-full max-w-3xl px-5 pb-28 pt-10 sm:px-8 sm:pt-14"
           >
-            <RevealStory profile={profile} region={result.region} />
+            <RevealStory profile={profile} region={result.region} signals={signals} />
             <Reveal result={result} />
           </section>
         )}
