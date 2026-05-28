@@ -1023,7 +1023,7 @@ function TastesPicker({
             fontFamily: "Georgia, serif",
           }}
         >
-          Pick up to six. Each one shapes the stops we choose — no guesswork, just what matters to you.
+          Pick up to six. Each one shapes the stops we choose — and what we leave aside.
         </p>
 
         <div className="studio-v2-reveal delay-3 mt-10 flex flex-wrap gap-2.5">
