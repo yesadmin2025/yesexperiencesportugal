@@ -157,7 +157,7 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
       </div>
 
       <p
-        className="mx-auto mt-6 text-center text-[9.5px] uppercase tracking-[0.36em]"
+        className="relative z-10 mx-auto mt-6 text-center text-[9.5px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
       >
         Finish the sentence
