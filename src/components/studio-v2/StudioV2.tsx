@@ -995,7 +995,7 @@ function ConvictionMoment({
               fontWeight: 600,
             }}
           >
-            What this means
+            Where your story is going
           </p>
           <p
             className="mt-2 text-[14.5px] leading-[1.55]"
