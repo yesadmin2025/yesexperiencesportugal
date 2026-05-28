@@ -6,7 +6,7 @@ import type { Intention, Mood, Who } from "@/components/builder/types";
 import { BUILDER_WA_NUMBER } from "@/components/builder/types";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import { useStudioLocale } from "@/hooks/useStudioLocale";
-import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { composeStudioMoment } from "@/lib/studioNarrative.functions";
 
 /**
  * MultiDayConcierge — the deeper Portugal. NOT a fallback, NOT a contact

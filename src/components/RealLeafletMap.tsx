@@ -5,7 +5,7 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import { Map as MapIcon } from "lucide-react";
-import { getAllImportedStops, type TourStopRef } from "@/server/tourStops.functions";
+import { getAllImportedStops, type TourStopRef } from "@/lib/tourStops.functions";
 import { STOP_LATLNG, lookupStop, geocodeStop, type StopLatLng } from "@/data/stopGeo";
 
 // Fix default marker icon paths (Leaflet's defaults break under bundlers)

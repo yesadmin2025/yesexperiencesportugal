@@ -10,7 +10,7 @@
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { REGION_CENTROIDS } from "@/data/stopCoords";
-import { applyRules } from "@/server/applyMappingRules.server";
+import { applyRules } from "@/lib/applyMappingRules.server";
 import { DEFAULT_MAPPING_RULES, safeParseRules, type MappingRules } from "@/data/defaultMappingRules";
 
 const CATALOG_URL = "https://yesexperiences.pt/our-experiences/";

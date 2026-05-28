@@ -6,8 +6,8 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { composeDay, pickRegion, type ComposedDay, type ComposerProfile } from "@/lib/drift/composer";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { recordDriftBehaviorEvent, recordDriftEvent } from "@/lib/drift/telemetry";
-import { revealJourney } from "@/server/driftEngine.functions";
-import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { revealJourney } from "@/lib/driftEngine.functions";
+import { composeStudioMoment } from "@/lib/studioNarrative.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import { builderWaHref } from "@/components/builder/types";
 import {
