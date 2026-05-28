@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Sparkles, X, MessageCircle } from "lucide-react";
-import { parseNarrative } from "@/server/builderNarrative.functions";
+import { parseNarrative } from "@/lib/builderNarrative.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import type { Intention, Mood, Pace, Who } from "./types";
 

@@ -10,12 +10,12 @@ import {
   type StudioStop,
 } from "@/hooks/useStudioState";
 import { useStudioLocale } from "@/hooks/useStudioLocale";
-import { parseNarrative } from "@/server/builderNarrative.functions";
-import { suggestFromIntent } from "@/server/builderIntent.functions";
+import { parseNarrative } from "@/lib/builderNarrative.functions";
+import { suggestFromIntent } from "@/lib/builderIntent.functions";
 import { listRegionStops } from "@/lib/builderEngine.functions";
-import { suggestPacing } from "@/server/builderPacing.functions";
-import { generateChapter } from "@/server/builderChapter.functions";
-import { composeStudioMoment } from "@/server/studioNarrative.functions";
+import { suggestPacing } from "@/lib/builderPacing.functions";
+import { generateChapter } from "@/lib/builderChapter.functions";
+import { composeStudioMoment } from "@/lib/studioNarrative.functions";
 
 import { AmbientStage } from "./AmbientStage";
 import { AmbientPrologue } from "./AmbientPrologue";

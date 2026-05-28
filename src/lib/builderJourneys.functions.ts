@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import crypto from "crypto";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { rateLimit } from "@/server/rateLimit.server";
+import { rateLimit } from "@/lib/rateLimit.server";
 
 /* ───────── persisted state schema (mirrors useMultiDayBuilder) ───────── */
 

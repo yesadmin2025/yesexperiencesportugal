@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { suggestPacing } from "@/server/builderPacing.functions";
+import { suggestPacing } from "@/lib/builderPacing.functions";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import type { RouteUI, Who } from "./types";
 
