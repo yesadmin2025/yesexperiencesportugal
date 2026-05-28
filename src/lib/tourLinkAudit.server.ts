@@ -50,7 +50,7 @@ const IGNORED_DIRS = new Set([
 // Files whose tour-id literals are catalog definitions, not link references.
 const SELF_DEFINING_FILES = new Set([
   "src/data/signatureTours.ts",
-  "src/server/tourLinkAudit.server.ts",
+  "src/lib/tourLinkAudit.server.ts",
 ]);
 
 /** Walk a directory and yield candidate source files. */
