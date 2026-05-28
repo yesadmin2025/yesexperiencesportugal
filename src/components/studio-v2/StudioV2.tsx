@@ -1541,6 +1541,8 @@ function RevealStory({
 
   return (
     <section className="mb-10">
+      <StoryOpener profile={profile} region={region} signals={signals ?? []} />
+
       {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
           Map draws the day; sequenced narrative summarizes it in one breath. */}
       <MapReveal
