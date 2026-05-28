@@ -374,8 +374,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             }}
           />
         )}
-        {beat === "thinking" && (
-          <ThinkingBeat topIntent={inferred?.topIntent ?? "relaxed_scenic"} />
+        {beat === "thinking" && result && (
+          <RevelationScene
+            profile={profile}
+            region={result.region as "arrabida" | "lisbon-coast" | "alentejo" | "centro"}
+            topIntent={inferred?.topIntent ?? "relaxed_scenic"}
+            onContinue={next}
+          />
         )}
 
         {beat === "reveal" && result && (
