@@ -839,7 +839,7 @@ function LogisticsCard({
               border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
             }}
           >
-            <span className="relative z-[1]">Read me</span>
+            <span className="relative z-[1]">Compose my day</span>
             <ArrowRight
               className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
               aria-hidden
