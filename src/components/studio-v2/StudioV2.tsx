@@ -839,7 +839,7 @@ function LogisticsCard({
               border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
             }}
           >
-            <span className="relative z-[1]">Read me</span>
+            <span className="relative z-[1]">Compose my day</span>
             <ArrowRight
               className="relative z-[1] h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[4px]"
               aria-hidden
@@ -854,7 +854,7 @@ function LogisticsCard({
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
-          No filters. No quiz. Just two facts we cannot read from a glance.
+          No filters. No quiz. Just two facts we cannot guess on your behalf.
         </p>
       </div>
     </section>
@@ -902,7 +902,7 @@ function ConvictionMoment({
   return (
     <section
       className="studio-v2-grain studio-v2-vignette relative min-h-[100svh] w-full overflow-hidden"
-      aria-label="What we read"
+      aria-label="Your story so far"
     >
       <div className="absolute inset-0 overflow-hidden">
         <img
@@ -927,7 +927,7 @@ function ConvictionMoment({
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
         >
-          <span className="studio-v2-rule" /> Chapter V · What we read
+          <span className="studio-v2-rule" /> Chapter V · Your story so far
         </span>
         <span
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.36em]"
@@ -937,7 +937,7 @@ function ConvictionMoment({
             className="inline-block h-1.5 w-1.5 rounded-full"
             style={{ background: "var(--gold)", animation: "studioV2Pulse 1.6s ease-in-out infinite" }}
           />
-          Reading
+          Composing
         </span>
       </div>
 
@@ -995,7 +995,7 @@ function ConvictionMoment({
               fontWeight: 600,
             }}
           >
-            What this means
+            Where your story is going
           </p>
           <p
             className="mt-2 text-[14.5px] leading-[1.55]"

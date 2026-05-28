@@ -311,7 +311,7 @@ export function convictionScript(
     noticed.push(`Toward ${cShort} — past ${rShort}.`);
   }
 
-  const reading = `Reading you: ${INTENT_NOUN[topIntent]}, at a ${PACE_WORD[pace]} rhythm.`;
+  const reading = `Your story leans toward ${INTENT_NOUN[topIntent]}, at a ${PACE_WORD[pace]} rhythm.`;
 
   const anchor = INTENT_ANCHOR[topIntent];
   const guests = pax === 1 ? "one guest" : `${pax} guests`;
