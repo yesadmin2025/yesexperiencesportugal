@@ -257,11 +257,11 @@ export function composeDay(
   // 5. Warnings.
   if (picked.length < rules.minStops) {
     warnings.push(
-      `Apenas ${picked.length} paragens cabem — talvez estender o dia ou trocar de região.`,
+      `Only ${picked.length} stops fit comfortably — consider extending the day or changing region.`,
     );
   }
   if (fit.drive + fit.dwell + overheadMin > dayBudget * 0.95) {
-    warnings.push("Dia cheio — sem margem para imprevistos.");
+    warnings.push("Full day — no margin for the unexpected.");
   }
 
   // 6. Build per-stop drive-from-prev.
