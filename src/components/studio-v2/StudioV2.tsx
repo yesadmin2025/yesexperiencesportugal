@@ -2020,11 +2020,13 @@ function RevealStory({
       </div>
 
       {/* Primary conversion moment — climax of the reveal.
-          Bespoke day → draft → human-confirmed checkout.
-          Per brand: no invented prices, final quote confirmed by a local
-          designer before any charge. WhatsApp is a secondary fallback. */}
+          ConversionStage routes to Instant / Refine / Both based on
+          AI confidence + itinerary shape. Emotional momentum is
+          preserved on every path: instant uses an in-place sheet
+          (no redirect), refine introduces a named local in a single
+          continuous gesture. */}
       {real && editedStops && editedStops.length >= 2 && (
-        <BespokeSecureCTA
+        <ConversionStage
           profile={profile}
           region={region}
           archetype={(profile.archetype as string | undefined) ?? undefined}
