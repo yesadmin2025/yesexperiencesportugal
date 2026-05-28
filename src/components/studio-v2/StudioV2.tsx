@@ -38,6 +38,12 @@ import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
 import { AmbientToggle } from "./AmbientToggle";
+import { DriftScene } from "./scenes/DriftScene";
+import { SensePairScene } from "./scenes/SensePairScene";
+import { MicroFictionScene } from "./scenes/MicroFictionScene";
+// NameBeat external component reserved for the upcoming name-capture beat.
+// Currently the inline NameBeat() below remains the source of truth.
+import { StoryOpener } from "./StoryOpener";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
@@ -266,9 +272,9 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
             onDeclineResume={onDeclineResume}
           />
         )}
-        {beat === "mood-1" && <MoodSceneView scene={MOOD_SCENES[0]} onSignal={onSceneSignal} />}
-        {beat === "mood-2" && <MoodSceneView scene={MOOD_SCENES[1]} onSignal={onSceneSignal} />}
-        {beat === "mood-3" && <MoodSceneView scene={MOOD_SCENES[2]} onSignal={onSceneSignal} />}
+        {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
+        {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
+        {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} />}
         {beat === "logistics" && (
           <LogisticsCard
             pax={pax} setPax={setPax}
