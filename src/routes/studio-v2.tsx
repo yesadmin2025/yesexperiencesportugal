@@ -87,16 +87,6 @@ export const Route = createFileRoute("/studio-v2")({
   component: StudioV2Page,
 });
 
-interface HydratedDraft {
-  beatIndex: number;
-  profile: Parameters<typeof StudioV2>[0]["initialProfile"] extends infer P
-    ? NonNullable<P>
-    : never;
-  signals: unknown[];
-  pax: number;
-  pickup: string;
-  savedAt: number;
-}
 
 function StudioV2Page() {
   const navigate = useNavigate({ from: "/studio-v2" });
