@@ -5038,6 +5038,7 @@ html { scroll-behavior: smooth; }
   .studio-v2__atmosphere { transition: none; }
   .studio-v2-reveal { animation: none; opacity: 1; transform: none; }
   .studio-v2-kenburns, .studio-v2-kenburns-alt { animation: none; transform: none; }
+  .studio-v2-map-enter { animation: none; opacity: 1; transform: none; }
   .studio-v2-typeon > span { animation: none; opacity: 1; transform: none; filter: none; }
   .studio-v2-scan { animation: none; opacity: 0; }
   .studio-v2-tap-indicator { animation: none; }
