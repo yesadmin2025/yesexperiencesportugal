@@ -66,7 +66,7 @@ function atmosphereFromTag(tag: string | null, fallback: IntentAtmosphere): Inte
     case "workshop":   return "food_local";
     case "beach":      return "coastal_cinematic";
     case "viewpoint":  return "relaxed_scenic";
-    case "village":    return "romantic_intimate";
+    case "village":    return "elegant_cultural";
     case "heritage":   return "elegant_cultural";
     default:           return fallback;
   }
