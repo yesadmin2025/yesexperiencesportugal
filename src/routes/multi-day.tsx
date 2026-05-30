@@ -23,9 +23,14 @@ export const Route = createFileRoute("/multi-day")({
         content:
           "More than one day. One coherent journey — built with realistic timing and local flow.",
       },
-      { property: "og:image", content: imgTroiaBeach },
-      { property: "twitter:image", content: imgTroiaBeach },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
+      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" },
+    ],
+
   }),
   component: MultiDayPage,
 });

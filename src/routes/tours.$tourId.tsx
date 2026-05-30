@@ -34,20 +34,33 @@ export const Route = createFileRoute("/tours/$tourId")({
     if (!tour) throw notFound();
     return { tour };
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
+    const url = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
     const t = loaderData?.tour;
-    if (!t) return { meta: [{ title: "Signature Experience — YES experiences Portugal" }] };
+    if (!t)
+      return {
+        meta: [
+          { title: "Signature Experience — YES experiences Portugal" },
+          { property: "og:url", content: url },
+        ],
+        links: [{ rel: "canonical", href: url }],
+      };
+    const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
     return {
       meta: [
         { title: `${t.title} — YES experiences Portugal` },
         { name: "description", content: t.blurb },
         { property: "og:title", content: `${t.title} — YES experiences Portugal` },
         { property: "og:description", content: t.blurb },
-        { property: "og:image", content: t.img },
-        { property: "twitter:image", content: t.img },
+        { property: "og:image", content: img },
+        { property: "twitter:image", content: img },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "product" },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
+
   notFoundComponent: () => (
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">

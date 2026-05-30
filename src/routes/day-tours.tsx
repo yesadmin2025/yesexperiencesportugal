@@ -17,8 +17,15 @@ export const Route = createFileRoute("/day-tours")({
         content:
           "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more. Reserve instantly, with real-time confirmation.",
       },
+      { property: "og:title", content: "Day Tours — YES experiences Portugal" },
+      { property: "og:description", content: "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more." },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/day-tours" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/day-tours" },
     ],
   }),
+
   component: DayToursPage,
 });
 

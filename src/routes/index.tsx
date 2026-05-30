@@ -254,10 +254,12 @@ export const Route = createFileRoute("/")({
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
       { property: "twitter:description", content: HERO_COPY.subheadline },
-      { property: "og:image", content: heroImg },
-      { property: "twitter:image", content: heroImg },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
+      { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/" },
     ],
     links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/" },
       // Preload the hero film poster — it's the LCP element on the
       // homepage. Marking it fetchpriority=high lets the browser pull
       // the bytes in parallel with critical CSS instead of waiting for
@@ -269,6 +271,7 @@ export const Route = createFileRoute("/")({
         fetchPriority: "high",
       },
     ],
+
   }),
   component: HomePage,
 });

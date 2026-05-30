@@ -23,9 +23,14 @@ export const Route = createFileRoute("/corporate")({
         content:
           "Private group days, designed end to end by a local team — never the generic formula.",
       },
-      { property: "og:image", content: imgFatimaNazare },
-      { property: "twitter:image", content: imgFatimaNazare },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/corporate" },
+    ],
+
   }),
   component: CorporatePage,
 });

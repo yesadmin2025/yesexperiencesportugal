@@ -13,8 +13,15 @@ export const Route = createFileRoute("/contact")({
         name: "description",
         content: "Speak directly with our YES Portugal experience designers.",
       },
+      { property: "og:title", content: "Contact — YES experiences Portugal" },
+      { property: "og:description", content: "Speak directly with our YES Portugal experience designers." },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/contact" },
     ],
   }),
+
   component: Page,
 });
 

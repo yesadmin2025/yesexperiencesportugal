@@ -30,9 +30,18 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
     if (!tour) throw notFound();
     return { tour };
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
+    const url = `https://yesexperiencesportugal.com/tours/${params.tourId}/tailor`;
     const t = loaderData?.tour;
-    if (!t) return { meta: [{ title: "Tailor a Signature — YES experiences Portugal" }] };
+    if (!t)
+      return {
+        meta: [
+          { title: "Tailor a Signature — YES experiences Portugal" },
+          { property: "og:url", content: url },
+        ],
+        links: [{ rel: "canonical", href: url }],
+      };
+    const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
     return {
       meta: [
         { title: `Tailor "${t.title.split("—")[0].trim()}" — YES experiences Portugal` },
@@ -46,10 +55,14 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
           content:
             "Keep the heart of this journey, adjust selected details to match your rhythm.",
         },
-        { property: "og:image", content: t.img },
+        { property: "og:image", content: img },
+        { property: "twitter:image", content: img },
+        { property: "og:url", content: url },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
+
   notFoundComponent: () => (
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">

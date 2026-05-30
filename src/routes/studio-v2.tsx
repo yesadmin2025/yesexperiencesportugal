@@ -12,12 +12,27 @@ import { StudioV2 } from "@/components/studio-v2/StudioV2";
 export const Route = createFileRoute("/studio-v2")({
   head: () => ({
     meta: [
-      { title: "Studio — guided consultation (v2 preview)" },
-      { name: "robots", content: "noindex,nofollow" },
+      { title: "Studio — YES experiences Portugal" },
+      {
+        name: "description",
+        content:
+          "Design your Portugal journey in real time with the YES Studio — a guided, cinematic consultation.",
+      },
+      { property: "og:title", content: "Studio — YES experiences Portugal" },
+      {
+        property: "og:description",
+        content:
+          "Design your Portugal journey in real time with the YES Studio — a guided, cinematic consultation.",
+      },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/studio-v2" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/studio-v2" },
     ],
   }),
   component: StudioV2Page,
 });
+
 
 function StudioV2Page() {
   const navigate = useNavigate({ from: "/studio-v2" });

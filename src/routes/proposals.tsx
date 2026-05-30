@@ -23,9 +23,14 @@ export const Route = createFileRoute("/proposals")({
         content:
           "Private moments, shaped with care. Local knowledge behind every detail.",
       },
-      { property: "og:image", content: imgArrabidaWineLunch },
-      { property: "twitter:image", content: imgArrabidaWineLunch },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}` },
+      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}` },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/proposals" },
     ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/proposals" },
+    ],
+
   }),
   component: ProposalsPage,
 });

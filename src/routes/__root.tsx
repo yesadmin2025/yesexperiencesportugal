@@ -111,40 +111,27 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "YES Experiences Portugal is a premium platform for booking and customizing unique travel experiences.",
+          "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
       },
-      { name: "author", content: "Lovable" },
+      { name: "author", content: "YES experiences Portugal" },
+      { property: "og:site_name", content: "YES experiences Portugal" },
       { property: "og:title", content: "YesExperiences Portugal" },
       {
         property: "og:description",
         content:
-          "YES Experiences Portugal is a premium platform for booking and customizing unique travel experiences.",
+          "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@yesexperiencespt" },
       { name: "twitter:title", content: "YesExperiences Portugal" },
       {
         name: "twitter:description",
         content:
-          "YES Experiences Portugal is a premium platform for booking and customizing unique travel experiences.",
+          "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
       },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2670b86d-71c2-4642-b31c-a8a73881bac5/id-preview-c5c14dbf--5351efc5-c55a-4e41-b282-a4a019690d38.lovable.app-1777108965507.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2670b86d-71c2-4642-b31c-a8a73881bac5/id-preview-c5c14dbf--5351efc5-c55a-4e41-b282-a4a019690d38.lovable.app-1777108965507.png",
-      },
-      { name: "description", content: "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling." },
-      { property: "og:description", content: "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling." },
-      { name: "twitter:description", content: "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/e9e60a59-89f2-4ed5-b299-4288879a8674" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/e9e60a59-89f2-4ed5-b299-4288879a8674" },
     ],
+
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },

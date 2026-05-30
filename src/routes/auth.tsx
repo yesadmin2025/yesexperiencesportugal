@@ -7,8 +7,15 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
-    meta: [{ title: "Sign in — YES experiences Portugal" }],
+    meta: [
+      { title: "Sign in — YES experiences Portugal" },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/auth" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/auth" },
+    ],
   }),
+
   component: AuthPage,
 });
 

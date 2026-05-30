@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
@@ -61,6 +62,11 @@ const StudioV2Route = StudioV2RouteImport.update({
 const StudioDriftRoute = StudioDriftRouteImport.update({
   id: '/studio-drift',
   path: '/studio-drift',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProposalsRoute = ProposalsRouteImport.update({
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/typography-audit': typeof TypographyAuditRoute
@@ -294,6 +301,7 @@ export interface FileRoutesByTo {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/typography-audit': typeof TypographyAuditRoute
@@ -335,6 +343,7 @@ export interface FileRoutesById {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/proposals': typeof ProposalsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/typography-audit': typeof TypographyAuditRoute
@@ -377,6 +386,7 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/proposals'
+    | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
     | '/typography-audit'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/proposals'
+    | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
     | '/typography-audit'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/proposals'
+    | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
     | '/typography-audit'
@@ -498,6 +510,7 @@ export interface RootRouteChildren {
   MultiDayRoute: typeof MultiDayRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   ProposalsRoute: typeof ProposalsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
   StudioV2Route: typeof StudioV2RouteWithChildren
   TypographyAuditRoute: typeof TypographyAuditRoute
@@ -542,6 +555,13 @@ declare module '@tanstack/react-router' {
       path: '/studio-drift'
       fullPath: '/studio-drift'
       preLoaderRoute: typeof StudioDriftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/proposals': {
@@ -843,6 +863,7 @@ const rootRouteChildren: RootRouteChildren = {
   MultiDayRoute: MultiDayRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   ProposalsRoute: ProposalsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
   StudioV2Route: StudioV2RouteWithChildren,
   TypographyAuditRoute: TypographyAuditRoute,
