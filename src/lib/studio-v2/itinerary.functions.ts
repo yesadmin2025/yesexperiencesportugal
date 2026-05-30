@@ -44,6 +44,10 @@ const inputSchema = z.object({
   profile: profileSchema,
   region: z.enum(ENGINE_REGIONS).optional(),
   targetStops: z.number().int().min(2).max(8).optional(),
+  /** When provided, restricts the pool to `builder_stops` whose
+   *  `source_tour_keys` overlaps any of these keys — i.e. anchors the
+   *  day to ONE real Signature tour (Tailored rule). */
+  blueprintFilter: z.array(z.string().min(1).max(64)).max(8).optional(),
 });
 
 export const composeRealItinerary = createServerFn({ method: "POST" })
@@ -112,10 +116,27 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       const prev = dedupeMap.get(identity);
       if (!prev || s.weight > prev.weight) dedupeMap.set(identity, s);
     }
-    const pool: DbStop[] = Array.from(dedupeMap.values()).map(
+    const fullPool: DbStop[] = Array.from(dedupeMap.values()).map(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ({ canonical_key, ...rest }) => rest,
     );
+
+    // Blueprint filter — anchor day to ONE real Signature tour. Stops are
+    // kept only if their source_tour_keys overlap any blueprint key. If the
+    // filter would empty the pool (data drift), gracefully fall back to the
+    // full region pool so the reveal never breaks.
+    let pool: DbStop[] = fullPool;
+    let anchored = false;
+    if (data.blueprintFilter && data.blueprintFilter.length > 0) {
+      const filterSet = new Set(data.blueprintFilter);
+      const filtered = fullPool.filter((s) =>
+        s.source_tour_keys.some((k) => filterSet.has(k)),
+      );
+      if (filtered.length >= caps.minStops) {
+        pool = filtered;
+        anchored = true;
+      }
+    }
 
     const target = data.targetStops ?? data.profile.stopDensityTarget ?? 4;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -206,5 +227,9 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       warnings: realWarnings.length > 0 ? realWarnings : itinerary.warnings,
       caps,
       routingProvider: legs[0]?.provider ?? "haversine",
+      /** True when the day was composed from a Signature-anchored subset
+       *  of the pool (Tailored rule applied). False when we fell back to
+       *  the full region pool. Internal — never rendered as a label. */
+      anchored,
     };
   });
