@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-28T04:41:03.249Z",
-  "filesScanned": 308,
+  "generatedAt": "2026-05-30T00:58:46.866Z",
+  "filesScanned": 311,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 204,
-    "approved": 50,
+    "total": 216,
+    "approved": 62,
     "allowlisted": 26,
     "mismatch": 128
   },
@@ -1303,6 +1303,60 @@
       "status": "approved"
     },
     {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 172,
+      "col": 95,
+      "raw": "#6b6b6b",
+      "normalized": "#6b6b6b",
+      "snippet": "\"mb-6 text-center text-[11px] uppercase tracking-[0.32em] text-[var(--charcoal-soft,#6b6b6b)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 181,
+      "col": 114,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"mb-8 text-center font-display text-[24px] font-bold leading-tight tracking-tight text-[var(--charcoal,#2E2E2E)] sm:text-[30px]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 206,
+      "col": 48,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 206,
+      "col": 140,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 210,
+      "col": 55,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "isPicked ? \"ring-2 ring-[var(--gold,#C9A96A)]\" : \"\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 225,
+      "col": 128,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "<span className=\"block font-display text-[18px] font-semibold leading-tight tracking-tight text-[var(--ivory,#FAF8F3)] sm:text-[20px]\">",
+      "status": "approved"
+    },
+    {
       "file": "src/lib/brand-tokens.test.ts",
       "line": 49,
       "col": 30,
@@ -1427,6 +1481,60 @@
       "normalized": "#1f1f1f",
       "snippet": "\"charcoal-deep\": \"#1F1F1F\",",
       "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 25,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\", // warm gold",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 32,
+      "col": 15,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "tintHex: \"#295B61\", // teal",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 39,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 46,
+      "col": 15,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "tintHex: \"#2E2E2E\", // charcoal — quiet stone",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 53,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 60,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\",",
+      "status": "approved"
     },
     {
       "file": "src/routes/brand-qa.tsx",
