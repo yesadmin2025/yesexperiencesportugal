@@ -70,6 +70,12 @@ interface StudioV2Props {
   initialProfile?: TravelerProfile;
   /** When true, jumps straight to the reveal beat using initialProfile. */
   startAtReveal?: boolean;
+  /**
+   * Optional hydrated draft (from `?resume=<token>` → loadStudioDraft).
+   * When present, fully replaces the local persisted-session resume and
+   * boots the Studio straight into the saved beat.
+   */
+  hydratedDraft?: PersistedSession;
 }
 
 // ─── cinematic flow ──────────────────────────────────────────────────────
@@ -125,7 +131,7 @@ function regionWhisper(region: string | null | undefined): string {
   return "a private composition, shaped to your rhythm";
 }
 
-interface PersistedSession {
+export interface PersistedSession {
   beatIndex: number;
   profile: TravelerProfile;
   signals: SceneSignal[];
@@ -151,11 +157,15 @@ function clearPersistedSession() {
   try { window.localStorage.removeItem(SESSION_KEY); } catch { /* */ }
 }
 
-export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Props) {
+export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft }: StudioV2Props) {
   // Resume payload — read once on mount, before any state is initialized.
-  const [resumable, setResumable] = useState<PersistedSession | null>(() =>
-    !startAtReveal && !initialProfile ? readPersistedSession() : null,
-  );
+  // A `hydratedDraft` (from ?resume=<token>) wins over the local persisted
+  // session, so a shared/email resume link always trumps any half-finished
+  // local progress on the same device.
+  const [resumable, setResumable] = useState<PersistedSession | null>(() => {
+    if (startAtReveal || initialProfile) return null;
+    return hydratedDraft ?? readPersistedSession();
+  });
   const [beatIndex, setBeatIndex] = useState(() =>
     startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
   );

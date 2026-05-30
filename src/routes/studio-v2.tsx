@@ -1,5 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { StudioV2 } from "@/components/studio-v2/StudioV2";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { StudioV2, type PersistedSession } from "@/components/studio-v2/StudioV2";
+import { loadStudioDraft } from "@/lib/studio-v2/draft.functions";
 
 /**
  * /studio-v2 — guided consultation prototype.
@@ -52,6 +56,10 @@ const FAQ_JSONLD = {
 };
 
 export const Route = createFileRoute("/studio-v2")({
+  validateSearch: (search) =>
+    z
+      .object({ resume: z.string().min(8).max(64).optional() })
+      .parse(search),
   head: () => ({
     meta: [
       { title: "Studio — YES experiences Portugal" },
@@ -79,8 +87,61 @@ export const Route = createFileRoute("/studio-v2")({
   component: StudioV2Page,
 });
 
+
 function StudioV2Page() {
   const navigate = useNavigate({ from: "/studio-v2" });
+  const { resume } = Route.useSearch();
+  const load = useServerFn(loadStudioDraft);
+  const [hydrated, setHydrated] = useState<PersistedSession | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "missing">(
+    resume ? "loading" : "ready",
+  );
+
+  useEffect(() => {
+    if (!resume) return;
+    let cancelled = false;
+    load({ data: { token: resume } })
+      .then((r) => {
+        if (cancelled) return;
+        if (!r.ok || !r.draftJson) {
+          setStatus("missing");
+          return;
+        }
+        try {
+          const parsed = JSON.parse(r.draftJson) as PersistedSession;
+          if (typeof parsed?.beatIndex !== "number") {
+            setStatus("missing");
+            return;
+          }
+          setHydrated(parsed);
+          setStatus("ready");
+        } catch {
+          setStatus("missing");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("missing");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [resume, load]);
+
+  if (status === "loading") {
+    return (
+      <div
+        className="min-h-[100dvh] flex items-center justify-center"
+        style={{ background: "var(--ivory)" }}
+      >
+        <p
+          className="text-[11px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        >
+          Opening your saved draft…
+        </p>
+      </div>
+    );
+  }
   return (
     <>
       {/* ─────────────────────────────────────────────────────────────
@@ -138,10 +199,24 @@ function StudioV2Page() {
         </section>
       </header>
 
+      {status === "missing" && (
+        <div
+          role="status"
+          className="fixed top-3 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-[11px] uppercase tracking-[0.22em] font-semibold rounded-[2px]"
+          style={{
+            background: "var(--charcoal)",
+            color: "var(--ivory)",
+          }}
+        >
+          That resume link is no longer available — starting fresh.
+        </div>
+      )}
+
       <StudioV2
         onExit={() => {
           void navigate({ to: "/" });
         }}
+        hydratedDraft={hydrated ?? undefined}
       />
     </>
   );
