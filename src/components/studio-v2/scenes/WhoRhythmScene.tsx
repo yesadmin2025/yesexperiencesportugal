@@ -73,8 +73,8 @@ const RHYTHM: RhythmCard[] = [
     id: "rhythm-slow",
     label: "Slow",
     hint: "few things, savoured",
-    image: INTENT_IMAGE.romantic_intimate.src,
-    alt: INTENT_IMAGE.romantic_intimate.alt,
+    image: INTENT_IMAGE.elegant_cultural.src,
+    alt: INTENT_IMAGE.elegant_cultural.alt,
   },
   {
     id: "rhythm-relaxed",
