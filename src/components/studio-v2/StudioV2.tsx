@@ -58,6 +58,7 @@ import { pickBlueprint, type StudioBlueprint, type EngineRegion } from "@/lib/st
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { ConversionStage } from "./conversion/ConversionStage";
+import { FinalBookingPanel } from "./conversion/FinalBookingPanel";
 
 // Kept for type-compat with helpers below that still reference it.
 const BuilderMap = lazy(() =>
