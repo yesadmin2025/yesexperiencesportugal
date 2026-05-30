@@ -102,7 +102,7 @@ function StudioV2Page() {
   const navigate = useNavigate({ from: "/studio-v2" });
   const { resume } = Route.useSearch();
   const load = useServerFn(loadStudioDraft);
-  const [hydrated, setHydrated] = useState<HydratedDraft | null>(null);
+  const [hydrated, setHydrated] = useState<PersistedSession | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "missing">(
     resume ? "loading" : "ready",
   );
