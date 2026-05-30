@@ -1760,7 +1760,7 @@ function RevealStory({
       .catch(() => { /* fall back to synthetic */ });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [composeReal, profile, region]);
+  }, [composeReal, profile, region, blueprint]);
 
   // Map source: editedStops (real, mutable) when available, else synthetic.
   const livePreview = editedStops && editedStops.length >= 2 && real
