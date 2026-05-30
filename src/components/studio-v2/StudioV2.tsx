@@ -202,15 +202,31 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   // (legacy logistics/tastes beats were removed per Studio philosophy).
   void CONFIDENCE_FLOOR;
 
-  // Entering "thinking" (Phase 4 Revelation): synchronously derive the
-  // engine result so the scene knows the region for its real-stops fetch.
-  // The scene itself controls the dwell + advance via onContinue.
+  // Entering "thinking" (Phase 4 Revelation): infer the profile from the
+  // cinematic signals (no quiz step does this anymore), then synchronously
+  // derive the engine result so the scene knows the region for its
+  // real-stops fetch. The scene itself controls the dwell + advance.
   useEffect(() => {
     if (beat !== "thinking") return;
     if (result) return;
-    const archetype = deriveArchetype(profile);
-    setResult(designExperience({ ...profile, archetype }));
-  }, [beat, profile, result]);
+    const { profile: inferredProfile, topIntent, confidence } = inferProfile(
+      signals,
+      { pax, pickup: pickup || "Lisboa" },
+    );
+    const merged: TravelerProfile = {
+      ...inferredProfile,
+      name: profile.name,
+      ops: { ...inferredProfile.ops, preferredDate: profile.ops?.preferredDate },
+    };
+    const archetype = deriveArchetype(merged);
+    setProfile(merged);
+    setResult(designExperience({ ...merged, archetype }));
+    void trackBuilderEvent("studio_v2_predict_signal", {
+      stage: "intent_inferred",
+      topIntent, confidence: Math.round(confidence * 100), pax,
+      pickup: pickup || "Lisboa",
+    });
+  }, [beat, profile, result, signals, pax, pickup]);
 
   const showChrome = beat !== "opening" && beat !== "reveal";
 
