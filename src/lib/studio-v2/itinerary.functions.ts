@@ -227,5 +227,9 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       warnings: realWarnings.length > 0 ? realWarnings : itinerary.warnings,
       caps,
       routingProvider: legs[0]?.provider ?? "haversine",
+      /** True when the day was composed from a Signature-anchored subset
+       *  of the pool (Tailored rule applied). False when we fell back to
+       *  the full region pool. Internal — never rendered as a label. */
+      anchored,
     };
   });
