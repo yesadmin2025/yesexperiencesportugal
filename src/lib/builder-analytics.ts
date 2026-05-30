@@ -36,7 +36,9 @@ export type BuilderEvent =
   | "studio_v2_instant_sheet_open"
   | "studio_v2_instant_confirm"
   | "studio_v2_host_handoff_click"
-  | "studio_v2_host_handoff_draft";
+  | "studio_v2_host_handoff_draft"
+  | "studio_v2_say_yes_click"
+  | "studio_v2_refine_with_local_click";
 
 /** Fire-and-forget builder analytics. Never blocks UX. */
 export async function trackBuilderEvent(
