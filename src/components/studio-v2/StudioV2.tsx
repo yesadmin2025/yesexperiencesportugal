@@ -131,7 +131,7 @@ function regionWhisper(region: string | null | undefined): string {
   return "a private composition, shaped to your rhythm";
 }
 
-interface PersistedSession {
+export interface PersistedSession {
   beatIndex: number;
   profile: TravelerProfile;
   signals: SceneSignal[];
