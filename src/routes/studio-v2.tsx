@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { StudioV2 } from "@/components/studio-v2/StudioV2";
+import { StudioV2, type PersistedSession } from "@/components/studio-v2/StudioV2";
 import { loadStudioDraft } from "@/lib/studio-v2/draft.functions";
 
 /**
