@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-30T02:25:30.308Z",
-  "filesScanned": 313,
+  "generatedAt": "2026-05-30T02:52:49.331Z",
+  "filesScanned": 316,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 216,
+    "total": 217,
     "approved": 62,
     "allowlisted": 26,
-    "mismatch": 128
+    "mismatch": 129
   },
   "findings": [
     {
@@ -1219,6 +1219,15 @@
       "raw": "#5BB0BA",
       "normalized": "#5bb0ba",
       "snippet": "<span className=\"h-1.5 w-2.5\" style={{ background: \"#5BB0BA\" }} />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/StudioBuilderChrome.tsx",
+      "line": 315,
+      "col": 59,
+      "raw": "#b3261e",
+      "normalized": "#b3261e",
+      "snippet": "<p className=\"text-[12px]\" style={{ color: \"#b3261e\" }}>{errorMsg}</p>",
       "status": "mismatch"
     },
     {
