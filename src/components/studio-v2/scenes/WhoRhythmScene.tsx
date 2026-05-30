@@ -38,8 +38,8 @@ const WHO: WhoCard[] = [
     id: "couple",
     label: "Two of us",
     hint: "a private rhythm, just the two",
-    image: INTENT_IMAGE.romantic_intimate.src,
-    alt: INTENT_IMAGE.romantic_intimate.alt,
+    image: INTENT_IMAGE_ALT.romantic_intimate.src,
+    alt: INTENT_IMAGE_ALT.romantic_intimate.alt,
     pax: 2,
   },
   {
