@@ -3194,3 +3194,127 @@ function regionLabel(r: string): string {
 function archetypeLabel(a: string): string {
   return a.replace(/_/g, " ");
 }
+
+// ─── Logistics strip (reveal) ─────────────────────────────────────────────
+// Concrete day facts — pickup (editable), party size, duration window,
+// guide price per guest. Pulled from the anchoring Signature blueprint;
+// the Signature title is never shown so the day stays "yours".
+const PICKUP_PRESETS = ["Lisboa — hotel", "Lisboa — centro", "Cascais", "Setúbal"];
+
+function LogisticsStrip({
+  pax, pickup, onPickupChange, durationHours, pricePerGuestFrom, pickupNote,
+}: {
+  pax: number;
+  pickup: string;
+  onPickupChange: (next: string) => void;
+  durationHours: [number, number];
+  pricePerGuestFrom: number;
+  pickupNote?: string;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(pickup);
+  const commit = (next: string) => {
+    const trimmed = next.trim();
+    if (trimmed) onPickupChange(trimmed);
+    setEditing(false);
+  };
+
+  return (
+    <div
+      className="mt-8 rounded-[2px] border px-5 py-5 sm:px-6 sm:py-6"
+      style={{
+        borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+        background: "color-mix(in oklab, var(--sand) 38%, var(--ivory))",
+      }}
+    >
+      <p
+        className="text-[10.5px] uppercase tracking-[0.32em]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+      >
+        Your day, in concrete terms
+      </p>
+
+      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
+        <div>
+          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+            Pickup
+          </dt>
+          {editing ? (
+            <div className="mt-1 flex flex-col gap-1.5">
+              <input
+                autoFocus
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onBlur={() => commit(draft)}
+                onKeyDown={(e) => { if (e.key === "Enter") commit(draft); if (e.key === "Escape") { setDraft(pickup); setEditing(false); } }}
+                className="w-full border-b bg-transparent py-1 text-[14px] outline-none"
+                style={{ borderColor: "color-mix(in oklab, var(--gold) 60%, transparent)", color: "var(--charcoal)" }}
+              />
+              <div className="flex flex-wrap gap-1.5">
+                {PICKUP_PRESETS.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => commit(p)}
+                    className="rounded-full border px-2.5 py-1 text-[10.5px]"
+                    style={{
+                      borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                      color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+                    }}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { setDraft(pickup); setEditing(true); }}
+              className="mt-1 block text-left text-[14px] leading-tight underline decoration-dotted underline-offset-4"
+              style={{ color: "var(--charcoal)" }}
+            >
+              {pickup}
+            </button>
+          )}
+        </div>
+
+        <div>
+          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+            Guests
+          </dt>
+          <dd className="mt-1 text-[14px]" style={{ color: "var(--charcoal)" }}>
+            {pax} {pax === 1 ? "guest" : "guests"}
+          </dd>
+        </div>
+
+        <div>
+          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+            Duration
+          </dt>
+          <dd className="mt-1 text-[14px]" style={{ color: "var(--charcoal)" }}>
+            {durationHours[0]}–{durationHours[1]} h
+          </dd>
+        </div>
+
+        <div>
+          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+            From
+          </dt>
+          <dd className="mt-1 text-[14px]" style={{ color: "var(--charcoal)" }}>
+            €{pricePerGuestFrom} <span className="text-[11px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>/ guest</span>
+          </dd>
+        </div>
+      </dl>
+
+      {pickupNote && (
+        <p
+          className="mt-4 text-[11px] italic"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        >
+          {pickupNote}. Final price confirmed at booking.
+        </p>
+      )}
+    </div>
+  );
+}
