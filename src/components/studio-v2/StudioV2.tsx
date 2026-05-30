@@ -70,6 +70,12 @@ interface StudioV2Props {
   initialProfile?: TravelerProfile;
   /** When true, jumps straight to the reveal beat using initialProfile. */
   startAtReveal?: boolean;
+  /**
+   * Optional hydrated draft (from `?resume=<token>` → loadStudioDraft).
+   * When present, fully replaces the local persisted-session resume and
+   * boots the Studio straight into the saved beat.
+   */
+  hydratedDraft?: PersistedSession;
 }
 
 // ─── cinematic flow ──────────────────────────────────────────────────────
