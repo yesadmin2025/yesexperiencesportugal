@@ -87,17 +87,18 @@ type Beat =
   | "mood-2"
   | "mood-3"
   | "mood-rhythm"
-  | "logistics"
-  | "tastes"
-  | "conviction"
-  | "name"
   | "thinking"
   | "reveal";
 
+// Cinematic arc only — legacy quiz beats (logistics/tastes/conviction/name)
+// were cut per the Studio philosophy: "guided not asked, interface
+// progressively disappears". pax is captured by Who-Rhythm, pickup defaults
+// to Lisboa, intent is inferred from the cinematic signals. Naming and taste
+// fine-tuning can still happen on the Postcard / refine paths post-reveal.
 const SEQUENCE: Beat[] = [
   "prologue", "opening", "feeling", "who-rhythm",
   "mood-1", "mood-2", "mood-3", "mood-rhythm",
-  "logistics", "tastes", "conviction", "name", "thinking", "reveal",
+  "thinking", "reveal",
 ];
 
 /** Confidence threshold (0–1). Below this, the adaptive Rhythm scene fires
@@ -178,19 +179,8 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       tappedFragmentId: sig.tappedFragmentId,
       lingerMs: sig.lingerMs,
     });
-    setBeatIndex((i) => {
-      const current = SEQUENCE[i];
-      // Adaptive Rhythm clarifier: only fire after mood-3 if confidence
-      // hasn't reached the floor. Otherwise jump straight to logistics.
-      if (current === "mood-3") {
-        const provisional = inferProfile(updated, { pax, pickup: pickup || "Lisboa" });
-        if (provisional.confidence >= CONFIDENCE_FLOOR) {
-          return SEQUENCE.indexOf("logistics");
-        }
-      }
-      return Math.min(SEQUENCE.length - 1, i + 1);
-    });
-  }, [signals, pax, pickup]);
+    setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
+  }, [signals]);
 
   const onWhoRhythmComplete = useCallback(
     (out: { pax: number; who: string; signal: SceneSignal }) => {
@@ -208,34 +198,35 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     [],
   );
 
-  const onLogisticsSubmit = useCallback(() => {
-    const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
-    setProfile((prev) => ({ ...p, name: prev.name, ops: { ...p.ops, preferredDate: prev.ops?.preferredDate } }));
-    void trackBuilderEvent("studio_v2_predict_signal", {
-      stage: "intent_inferred",
-      topIntent, confidence: Math.round(confidence * 100), pax, pickup,
-    });
-    next();
-  }, [signals, pax, pickup, next]);
+  // CONFIDENCE_FLOOR retained for analytics — no longer gates a quiz branch
+  // (legacy logistics/tastes beats were removed per Studio philosophy).
+  void CONFIDENCE_FLOOR;
 
-  const onTastesSubmit = useCallback((tastes: string[], extraWeights: Partial<Record<string, number>>) => {
-    setProfile((prev) => ({
-      ...prev,
-      ops: { ...prev.ops, tastes },
-      priorityWeights: { ...prev.priorityWeights, ...(extraWeights as TravelerProfile["priorityWeights"]) },
-    }));
-    next();
-  }, [next]);
-
-  // Entering "thinking" (Phase 4 Revelation): synchronously derive the
-  // engine result so the scene knows the region for its real-stops fetch.
-  // The scene itself controls the dwell + advance via onContinue.
+  // Entering "thinking" (Phase 4 Revelation): infer the profile from the
+  // cinematic signals (no quiz step does this anymore), then synchronously
+  // derive the engine result so the scene knows the region for its
+  // real-stops fetch. The scene itself controls the dwell + advance.
   useEffect(() => {
     if (beat !== "thinking") return;
     if (result) return;
-    const archetype = deriveArchetype(profile);
-    setResult(designExperience({ ...profile, archetype }));
-  }, [beat, profile, result]);
+    const { profile: inferredProfile, topIntent, confidence } = inferProfile(
+      signals,
+      { pax, pickup: pickup || "Lisboa" },
+    );
+    const merged: TravelerProfile = {
+      ...inferredProfile,
+      name: profile.name,
+      ops: { ...inferredProfile.ops, preferredDate: profile.ops?.preferredDate },
+    };
+    const archetype = deriveArchetype(merged);
+    setProfile(merged);
+    setResult(designExperience({ ...merged, archetype }));
+    void trackBuilderEvent("studio_v2_predict_signal", {
+      stage: "intent_inferred",
+      topIntent, confidence: Math.round(confidence * 100), pax,
+      pickup: pickup || "Lisboa",
+    });
+  }, [beat, profile, result, signals, pax, pickup]);
 
   const showChrome = beat !== "opening" && beat !== "reveal";
 
@@ -265,7 +256,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     setPax(s.pax ?? 2);
     setPickup(s.pickup ?? "");
     const safeBeat = SEQUENCE[s.beatIndex] === "thinking"
-      ? SEQUENCE.indexOf("conviction")
+      ? SEQUENCE.indexOf("mood-rhythm")
       : s.beatIndex;
     setBeatIndex(Math.max(0, safeBeat));
     setResumable(null);
@@ -328,53 +319,8 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         {beat === "mood-rhythm" && (
           <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} topIntent={inferred?.topIntent ?? null} />
         )}
-        {beat === "logistics" && (
-          <LogisticsCard
-            pax={pax} setPax={setPax}
-            pickup={pickup} setPickup={setPickup}
-            preferredDate={profile.ops?.preferredDate ?? ""}
-            setPreferredDate={(d) => setProfile((p) => ({ ...p, ops: { ...p.ops, preferredDate: d || undefined } }))}
-            onSubmit={onLogisticsSubmit}
-          />
-        )}
-        {beat === "tastes" && (
-          <TastesPicker
-            initial={profile.ops?.tastes ?? []}
-            onSubmit={onTastesSubmit}
-          />
-        )}
-        {beat === "conviction" && inferred && (
-          <ConvictionMoment
-            topIntent={inferred.topIntent}
-            line={convictionLine(
-              inferred.topIntent,
-              inferred.profile.pace ?? "balanced",
-              pickup || "Lisboa",
-              pax,
-            )}
-            script={convictionScript(
-              signals,
-              inferred.topIntent,
-              inferred.profile.pace ?? "balanced",
-              pickup || "Lisboa",
-              pax,
-            )}
-            onContinue={next}
-          />
-        )}
-        {beat === "name" && (
-          <NameBeat
-            initial={profile.name ?? ""}
-            onSubmit={(name) => {
-              setProfile((p) => ({ ...p, name: name.trim().slice(0, 40) }));
-              next();
-            }}
-            onSkip={() => {
-              setProfile((p) => ({ ...p, name: undefined }));
-              next();
-            }}
-          />
-        )}
+        {/* Legacy quiz beats (logistics / tastes / conviction / name) were
+            removed — Chapter III · Tone now hands directly to Revelation. */}
         {beat === "thinking" && result && (
           <RevelationScene
             profile={profile}
