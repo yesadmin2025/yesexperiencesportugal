@@ -226,7 +226,9 @@ function EmailDraftModal({
     setState("sending");
     setErrorMsg(null);
     try {
-      const res = await sendFn({ data: { email, draft } });
+      const res = await sendFn({
+        data: { email, draftJson: JSON.stringify(draft) },
+      });
       setResumeUrl(res.resumeUrl);
       setState("done");
     } catch (err) {
