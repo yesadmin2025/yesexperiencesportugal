@@ -121,21 +121,23 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       ({ canonical_key, ...rest }) => rest,
     );
 
-    // Blueprint filter — anchor day to ONE real Signature tour. Stops are
-    // kept only if their source_tour_keys overlap any blueprint key. If the
-    // filter would empty the pool (data drift), gracefully fall back to the
-    // full region pool so the reveal never breaks.
+    // Blueprint anchoring — bias the day toward ONE real Signature tour,
+    // but ALLOW stops from other tours in the same region when they fit
+    // the profile and make geographic sense. We keep the full regional
+    // pool and apply a weight bonus to anchored stops so they tend to
+    // seed and dominate the itinerary, while leaving room for sensible
+    // cross-tour additions.
     let pool: DbStop[] = fullPool;
     let anchored = false;
     if (data.blueprintFilter && data.blueprintFilter.length > 0) {
       const filterSet = new Set(data.blueprintFilter);
-      const filtered = fullPool.filter((s) =>
+      pool = fullPool.map((s) => {
+        const isAnchor = s.source_tour_keys.some((k) => filterSet.has(k));
+        return isAnchor ? { ...s, weight: (s.weight ?? 50) + 40 } : s;
+      });
+      anchored = pool.some((s) =>
         s.source_tour_keys.some((k) => filterSet.has(k)),
       );
-      if (filtered.length >= caps.minStops) {
-        pool = filtered;
-        anchored = true;
-      }
     }
 
     const target = data.targetStops ?? data.profile.stopDensityTarget ?? 4;
