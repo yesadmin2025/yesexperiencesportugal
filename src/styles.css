@@ -4936,6 +4936,18 @@ html { scroll-behavior: smooth; }
 .studio-v2-kenburns { animation: studioV2KenBurns 22s ease-out forwards; will-change: transform; }
 .studio-v2-kenburns-alt { animation: studioV2KenBurnsAlt 26s ease-out forwards; will-change: transform; }
 
+/* Protagonist-map entry: announces the country with a confident, restrained
+   reveal the first time the Living Itinerary mounts. Scoped — no parallax,
+   no infinite motion. */
+@keyframes studioV2MapEnter {
+  0%   { opacity: 0; transform: scale(1.035); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.studio-v2-map-enter {
+  animation: studioV2MapEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}
+
 /* Film grain overlay */
 .studio-v2-grain::after {
   content: "";
@@ -5026,6 +5038,7 @@ html { scroll-behavior: smooth; }
   .studio-v2__atmosphere { transition: none; }
   .studio-v2-reveal { animation: none; opacity: 1; transform: none; }
   .studio-v2-kenburns, .studio-v2-kenburns-alt { animation: none; transform: none; }
+  .studio-v2-map-enter { animation: none; opacity: 1; transform: none; }
   .studio-v2-typeon > span { animation: none; opacity: 1; transform: none; filter: none; }
   .studio-v2-scan { animation: none; opacity: 0; }
   .studio-v2-tap-indicator { animation: none; }

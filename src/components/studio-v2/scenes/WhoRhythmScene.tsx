@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { INTENT_IMAGE } from "@/lib/studio-v2/images";
+import { INTENT_IMAGE, INTENT_IMAGE_ALT } from "@/lib/studio-v2/images";
 import type { SceneSignal } from "@/lib/studio-v2/intent-infer";
 
 /**
@@ -38,8 +38,8 @@ const WHO: WhoCard[] = [
     id: "couple",
     label: "Two of us",
     hint: "a private rhythm, just the two",
-    image: INTENT_IMAGE.romantic_intimate.src,
-    alt: INTENT_IMAGE.romantic_intimate.alt,
+    image: INTENT_IMAGE_ALT.romantic_intimate.src,
+    alt: INTENT_IMAGE_ALT.romantic_intimate.alt,
     pax: 2,
   },
   {
@@ -73,8 +73,8 @@ const RHYTHM: RhythmCard[] = [
     id: "rhythm-slow",
     label: "Slow",
     hint: "few things, savoured",
-    image: INTENT_IMAGE.romantic_intimate.src,
-    alt: INTENT_IMAGE.romantic_intimate.alt,
+    image: INTENT_IMAGE.food_local.src,
+    alt: INTENT_IMAGE.food_local.alt,
   },
   {
     id: "rhythm-relaxed",
