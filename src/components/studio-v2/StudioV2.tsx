@@ -1675,11 +1675,27 @@ function ShimmerDot({ delay }: { delay: number }) {
 }
 
 function RevealStory({
-  profile, region, signals,
-}: { profile: TravelerProfile; region: string; signals?: SceneSignal[] }) {
+  profile, region, signals, pax, pickup, onPickupChange,
+}: {
+  profile: TravelerProfile;
+  region: string;
+  signals?: SceneSignal[];
+  pax: number;
+  pickup: string;
+  onPickupChange: (next: string) => void;
+}) {
   const who = profile.name?.trim() ? `${profile.name.trim()}'s` : "Your";
   const hero = profile.intent ? INTENT_IMAGE[profile.intent] : undefined;
   const tier = tierLabel(profile.group?.luxuryTier);
+
+  // Pick the Signature blueprint that anchors this day (internal only —
+  // the client never sees the Signature title/id). Drives:
+  //   - the pool filter (Tailored rule: stops from ONE real Signature)
+  //   - the logistics strip price + duration shown to the user
+  const blueprint = useMemo<StudioBlueprint | null>(
+    () => pickBlueprint(profile, region as EngineRegion),
+    [profile, region],
+  );
 
   // Synthetic preview = cinematic atmosphere during exploration.
   // Real preview = actual Viator stops, fetched once on reveal.
@@ -1704,6 +1720,7 @@ function RevealStory({
         profile: profile as any,
         region: region as "arrabida" | "lisbon-coast" | "alentejo" | "centro",
         targetStops: profile.stopDensityTarget ?? 4,
+        blueprintFilter: blueprint?.sourceTourKeys,
       },
     })
       .then((r) => {
