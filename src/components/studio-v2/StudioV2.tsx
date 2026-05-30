@@ -54,6 +54,7 @@ import { INTENT_ATMOSPHERE, INTENT_OPTIONS } from "@/lib/studio-v2/content";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
+import { pickBlueprint, type StudioBlueprint, type EngineRegion } from "@/lib/studio-v2/blueprints";
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { ConversionStage } from "./conversion/ConversionStage";
