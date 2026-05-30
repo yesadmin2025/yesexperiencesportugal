@@ -108,7 +108,7 @@ function StudioV2Page() {
           return;
         }
         try {
-          const parsed = JSON.parse(r.draftJson) as HydratedDraft;
+          const parsed = JSON.parse(r.draftJson) as PersistedSession;
           if (typeof parsed?.beatIndex !== "number") {
             setStatus("missing");
             return;
