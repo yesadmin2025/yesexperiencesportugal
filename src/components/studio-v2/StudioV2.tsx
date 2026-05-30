@@ -179,19 +179,8 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       tappedFragmentId: sig.tappedFragmentId,
       lingerMs: sig.lingerMs,
     });
-    setBeatIndex((i) => {
-      const current = SEQUENCE[i];
-      // Adaptive Rhythm clarifier: only fire after mood-3 if confidence
-      // hasn't reached the floor. Otherwise jump straight to logistics.
-      if (current === "mood-3") {
-        const provisional = inferProfile(updated, { pax, pickup: pickup || "Lisboa" });
-        if (provisional.confidence >= CONFIDENCE_FLOOR) {
-          return SEQUENCE.indexOf("logistics");
-        }
-      }
-      return Math.min(SEQUENCE.length - 1, i + 1);
-    });
-  }, [signals, pax, pickup]);
+    setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
+  }, [signals]);
 
   const onWhoRhythmComplete = useCallback(
     (out: { pax: number; who: string; signal: SceneSignal }) => {
@@ -209,24 +198,9 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     [],
   );
 
-  const onLogisticsSubmit = useCallback(() => {
-    const { profile: p, confidence, topIntent } = inferProfile(signals, { pax, pickup });
-    setProfile((prev) => ({ ...p, name: prev.name, ops: { ...p.ops, preferredDate: prev.ops?.preferredDate } }));
-    void trackBuilderEvent("studio_v2_predict_signal", {
-      stage: "intent_inferred",
-      topIntent, confidence: Math.round(confidence * 100), pax, pickup,
-    });
-    next();
-  }, [signals, pax, pickup, next]);
-
-  const onTastesSubmit = useCallback((tastes: string[], extraWeights: Partial<Record<string, number>>) => {
-    setProfile((prev) => ({
-      ...prev,
-      ops: { ...prev.ops, tastes },
-      priorityWeights: { ...prev.priorityWeights, ...(extraWeights as TravelerProfile["priorityWeights"]) },
-    }));
-    next();
-  }, [next]);
+  // CONFIDENCE_FLOOR retained for analytics — no longer gates a quiz branch
+  // (legacy logistics/tastes beats were removed per Studio philosophy).
+  void CONFIDENCE_FLOOR;
 
   // Entering "thinking" (Phase 4 Revelation): synchronously derive the
   // engine result so the scene knows the region for its real-stops fetch.
