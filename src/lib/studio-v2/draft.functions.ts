@@ -54,7 +54,9 @@ export const loadStudioDraft = createServerFn({ method: "POST" })
       .eq("resume_token", data.token)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!row) return { ok: false as const };
-    if (new Date(row.expires_at).getTime() < Date.now()) return { ok: false as const };
-    return { ok: true as const, draft: row.draft as Record<string, unknown> };
+    if (!row) return { ok: false as const, draft: null };
+    if (new Date(row.expires_at).getTime() < Date.now())
+      return { ok: false as const, draft: null };
+    // Cast to JSON-safe shape — payload was stored as jsonb so it round-trips.
+    return { ok: true as const, draft: row.draft as Record<string, unknown> | null };
   });
