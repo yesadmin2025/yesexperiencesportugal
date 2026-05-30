@@ -56,6 +56,10 @@ const FAQ_JSONLD = {
 };
 
 export const Route = createFileRoute("/studio-v2")({
+  validateSearch: (search) =>
+    z
+      .object({ resume: z.string().min(8).max(64).optional() })
+      .parse(search),
   head: () => ({
     meta: [
       { title: "Studio — YES experiences Portugal" },
@@ -83,8 +87,71 @@ export const Route = createFileRoute("/studio-v2")({
   component: StudioV2Page,
 });
 
+interface HydratedDraft {
+  beatIndex: number;
+  profile: Parameters<typeof StudioV2>[0]["initialProfile"] extends infer P
+    ? NonNullable<P>
+    : never;
+  signals: unknown[];
+  pax: number;
+  pickup: string;
+  savedAt: number;
+}
+
 function StudioV2Page() {
   const navigate = useNavigate({ from: "/studio-v2" });
+  const { resume } = Route.useSearch();
+  const load = useServerFn(loadStudioDraft);
+  const [hydrated, setHydrated] = useState<HydratedDraft | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "missing">(
+    resume ? "loading" : "ready",
+  );
+
+  useEffect(() => {
+    if (!resume) return;
+    let cancelled = false;
+    load({ data: { token: resume } })
+      .then((r) => {
+        if (cancelled) return;
+        if (!r.ok || !r.draftJson) {
+          setStatus("missing");
+          return;
+        }
+        try {
+          const parsed = JSON.parse(r.draftJson) as HydratedDraft;
+          if (typeof parsed?.beatIndex !== "number") {
+            setStatus("missing");
+            return;
+          }
+          setHydrated(parsed);
+          setStatus("ready");
+        } catch {
+          setStatus("missing");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("missing");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [resume, load]);
+
+  if (status === "loading") {
+    return (
+      <div
+        className="min-h-[100dvh] flex items-center justify-center"
+        style={{ background: "var(--ivory)" }}
+      >
+        <p
+          className="text-[11px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        >
+          Opening your saved draft…
+        </p>
+      </div>
+    );
+  }
   return (
     <>
       {/* ─────────────────────────────────────────────────────────────
