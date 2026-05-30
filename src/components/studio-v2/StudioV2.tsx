@@ -1895,6 +1895,22 @@ function RevealStory({
           the scenes). The standalone route panel above is intentionally
           omitted — map is co-protagonist, not chrome. */}
 
+      {/* Logistics strip — concrete info the client needs to feel certain:
+          pickup (editable inline), party size, duration window and a
+          guide price per guest pulled from the anchoring Signature.
+          Never names the Signature — the day stays "yours". */}
+      {real && (
+        <LogisticsStrip
+          pax={pax}
+          pickup={pickup}
+          onPickupChange={onPickupChange}
+          durationHours={blueprint?.durationHours ?? [7, 9]}
+          pricePerGuestFrom={blueprint?.pricePerGuestFrom ?? 145}
+          pickupNote={blueprint?.pickupNote}
+        />
+      )}
+
+
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
         <LivingItinerary
