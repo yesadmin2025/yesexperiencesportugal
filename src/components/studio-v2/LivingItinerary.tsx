@@ -412,16 +412,17 @@ export function LivingItinerary({
       {computedCenter && stops.length >= 2 && (
         <div
           aria-hidden
-          className="studio-v2-reveal sticky -mx-5 sm:-mx-8 mb-4 overflow-hidden"
+          className="studio-v2-reveal studio-v2-map-enter sticky -mx-5 sm:-mx-8 mb-5 overflow-hidden"
           style={{
-            top: "7vh",
-            height: "42vh",
-            minHeight: 260,
-            maxHeight: 380,
+            top: "6vh",
+            height: "46vh",
+            minHeight: 300,
+            maxHeight: 420,
             zIndex: 0,
-            opacity: 1,
-            filter: "saturate(0.92)",
+            filter: "saturate(0.94)",
             pointerEvents: "none",
+            boxShadow:
+              "0 18px 40px -22px color-mix(in oklab, var(--charcoal) 35%, transparent)",
           }}
         >
           <Suspense fallback={<div className="absolute inset-0" style={{ background: "var(--sand)" }} />}>
@@ -434,13 +435,13 @@ export function LivingItinerary({
               activeStopIndex={activeIdx}
             />
           </Suspense>
-          {/* Edge veil — gentle top + stronger base so scenes float over the
-              map without a hard panel edge. */}
+          {/* Edge veil — soft top fade-out + stronger base so scenes float over
+              the map without a hard panel edge. */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 30%, transparent) 0%, transparent 22%, transparent 60%, color-mix(in oklab, var(--ivory) 88%, transparent) 100%)",
+                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 18%, transparent) 0%, transparent 26%, transparent 58%, color-mix(in oklab, var(--ivory) 92%, transparent) 100%)",
             }}
           />
         </div>
