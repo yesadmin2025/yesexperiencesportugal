@@ -2,13 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
 import { HERO_COPY_SPEC } from "@/content/hero-copy.spec";
 
-const PUBLISHED_URL = "https://dreamscape-builder-co.lovable.app";
+const PUBLISHED_URL = "https://yesexperiencesportugal.com";
 
 /**
  * Allowlist of origins permitted as `?url=` overrides. Any value outside this
  * set is rejected before a fetch is issued (SSRF defence). HTTPS-only.
  */
-const ALLOWED_ORIGINS = new Set<string>([new URL(PUBLISHED_URL).origin]);
+const ALLOWED_ORIGINS = new Set<string>([
+  new URL(PUBLISHED_URL).origin,
+  "https://dreamscape-builder-co.lovable.app",
+  "https://id-preview--5351efc5-c55a-4e41-b282-a4a019690d38.lovable.app",
+]);
+
 
 /**
  * Validate a caller-supplied base URL. Must parse, must be https, and must
