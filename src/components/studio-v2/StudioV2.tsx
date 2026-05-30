@@ -256,7 +256,7 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     setPax(s.pax ?? 2);
     setPickup(s.pickup ?? "");
     const safeBeat = SEQUENCE[s.beatIndex] === "thinking"
-      ? SEQUENCE.indexOf("conviction")
+      ? SEQUENCE.indexOf("mood-rhythm")
       : s.beatIndex;
     setBeatIndex(Math.max(0, safeBeat));
     setResumable(null);
