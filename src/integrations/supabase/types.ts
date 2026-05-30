@@ -1198,6 +1198,36 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_drafts: {
+        Row: {
+          created_at: string
+          draft: Json
+          email: string | null
+          expires_at: string
+          id: string
+          resume_token: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          draft: Json
+          email?: string | null
+          expires_at?: string
+          id?: string
+          resume_token: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          draft?: Json
+          email?: string | null
+          expires_at?: string
+          id?: string
+          resume_token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_v2_bookings: {
         Row: {
           archetype: string | null

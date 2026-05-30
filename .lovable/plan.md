@@ -1,111 +1,85 @@
+# Studio v2 Builder Flow Upgrades
 
-# Experience Studio — Cinematic Hybrid Refactor
+Scope: `/studio-v2` only. Frontend-first, with one Supabase table + one server function for the resumable email draft.
 
-Reshape `/studio-v2` from a guided consultation stepper into a 6-phase cinematic journey with two intelligent completion paths. This is a structural rewrite of the Studio shell, not the engine — the existing itinerary engine, profile model, real-stops data, and `studio_v2_bookings` persistence stay. The shell, pacing, and conversion layer change.
+## 1. Progress bar — start at 20%
 
-## Scope (in this pass)
+- In the Studio v2 stepper (StudioV2 + `StudioConversionHud`), clamp the progress so step 1 reads as 20% minimum.
+- Implementation: change the percent calc from `step / total` to `0.2 + 0.8 * ((step - 1) / (total - 1))` (still 100% at the end).
+- Keep ARIA `aria-valuenow` aligned with the displayed %.
 
-1. **New phase-based shell** replacing the current SEQUENCE/step model
-2. **Dual-path conversion** (Instant Booking vs Refine With a Local Host) with AI confidence routing
-3. **Embedded Stripe checkout in-scene** (no redirect break) for instant path
-4. **Premium WhatsApp handoff** for refine path, emotionally continuous (not "support escalation")
-5. Visual + motion polish per cinematic principles (one emotional layer at a time)
+## 2. Persistent builder chrome (every step)
 
-Out of scope: changes to Signature/Tailored/Builder pages, brand palette, homepage motion, or the underlying scoring engine.
+Add a single `StudioBuilderChrome` component rendered by `StudioV2` around the active scene:
 
-## Phase Architecture
+- **Host card** (`HostCard`): small round avatar + "Your host in Sesimbra — Tiago" + WhatsApp link.
+  - Desktop ≥ md: pinned right rail (sticky, top of content area).
+  - Mobile: collapsible strip pinned just under the top bar.
+- **WhatsApp CTA** (always visible): `https://wa.me/351911889992?text=...` — uses brand gold pill button, accessible label.
+- **Price strip** (`LivePriceStrip`): sticky bottom bar showing "from €<X> / guest" derived live from current draft (mood, region, duration, group size, add-ons). Updates on every state change. Reduced-motion safe.
 
-Replace current `SEQUENCE` array in `StudioV2.tsx` with a `PhaseController` driving 6 phases:
+Tokens only — `--gold`, `--charcoal`, `--ivory`. Mobile-first (393px verified).
 
-```text
-Phase 0 PROLOGUE     → existing StoryOpener + DriftScene atmosphere, no CTAs for ~3s
-Phase 1 FEELING      → 6 emotion cards (slow & romantic / wild coast / hidden / celebration /
-                       soulful food & wine / peaceful escape) over real footage. NO place names.
-Phase 2 WHO & RHYTHM → couple|family|solo|friends + slow|adventurous|relaxed|discovery
-                       via SensePair-style visual diptychs, not form fields
-Phase 3 INTENTION    → MicroFictionScene variants; imagery & overlay tint shift with answers
-Phase 4 REVELATION   → "Portugal is responding…" beat, map fades in at 8% opacity,
-                       stops surface one-by-one from real builder_stops data
-Phase 5 LIVING JOURNEY → existing real itinerary + BuilderMap promoted to protagonist,
-                       ribbon timeline, drag-to-reorder kept, no chrome
-Phase 6 CONVERSION   → dual-path decision (see below)
-```
+## 3. Autosave to localStorage
 
-Each phase = single dominant emotional layer. Hard rule enforced by `<PhaseStage>` wrapper that fades out previous layer fully before next mounts (no overlap chrome).
+- New hook `useStudioDraft()` wrapping the existing studio state (`useStudioState`).
+- Debounced (250ms) write of the full draft to `localStorage` under key `yes:studio-v2:draft:v1`.
+- On mount, hydrate from localStorage if present and no server-loaded draft.
+- Clear key after successful booking/handoff.
 
-## Dual-Path Conversion Logic
+## 4. "Email me my draft" (step 3+)
 
-New file: `src/lib/studio-v2/conversion-router.ts`
+- New Supabase table `studio_drafts` (id uuid PK, email text, draft jsonb, resume_token text unique, created_at, expires_at default now()+30 days).
+- RLS: insert/select via service role only; resume endpoint is a server function that reads by token.
+- Server function `emailStudioDraft` (TanStack `createServerFn`): validates email + draft, inserts row, generates token, sends transactional email containing `https://yesexperiencesportugal.com/studio?resume=<token>`.
+- Email setup: scaffold app emails infra + `studio-draft-resume` template.
+- Studio v2 reads `?resume=` on mount; if present, calls `loadStudioDraft({token})` server fn to hydrate state.
+- Button visible from step index ≥ 2 (third step), inline in chrome.
 
-```ts
-type ConversionPath = 'instant' | 'refine' | 'both';
+## 5. Real-catalogue Studio output
 
-decideConversionPath(profile, itinerary) → ConversionPath
-  instant  if: confidence ≥ 0.7 AND all stops are real AND group ≤ 8
-              AND no luxury_tier='ultra' AND no hardConstraints
-  refine   if: confidence < 0.55 OR ultra tier OR corporate occasion
-              OR group > 8 OR hardConstraints present
-  both     otherwise
-```
+Create `src/lib/studio-v2/catalogueMapping.ts` mapping `(mood, region, duration)` → a canonical Signature tour blueprint pulled from `src/data/signatureTours.ts`, with these mappings:
 
-Phase 6 component branches:
-- `InstantBookingScene` — preserves itinerary canvas, slides Stripe Embedded Checkout up as a sheet over the dimmed map. Uses existing `create-builder-checkout` edge function (already does server-side pricing). Success → cinematic "Your journey is set" coda, not a redirect.
-- `RefineWithLocalScene` — introduces a named host ("Mariana, your local in Lisbon") with portrait, hands draft to WhatsApp pre-filled with the full real itinerary + profile summary. Persists draft via existing `createCustomBookingDraft` so the host can open `/checkout/$token`.
-- `DualOfferScene` — presents both as equal cinematic choices, not primary/secondary.
+| Mood | Region | Base tour | Add-ons |
+|---|---|---|---|
+| Wine & food | Arrábida / Setúbal | Arrábida Private Wine Tour (3 wineries + market + Sesimbra view + traditional lunch) | tile-painting workshop, extra tasting |
+| Coastal & beaches | Arrábida | Arrábida & Sesimbra Boat Tour | — |
+| Coastal & beaches | Comporta / Tróia | Tróia & Comporta Tour | dolphin-watching |
+| Active | Arrábida | Arrábida coastal active tour | — |
+| Hands-on culture | (any) | Azeitão cheese & tiles workshop + wine tasting + Sesimbra | — |
 
-## Files
+- Half-day: condense to 4–5h, ~60% of full-day price, drop last 1–2 chapters, keep core anchor.
+- Output renders chapter-by-chapter with real stop names (Azeitão, Sesimbra, Portinho da Arrábida) and realistic timing windows (e.g. 09:30–11:00 Azeitão market).
+- Refine stage stays: user can swap/remove chapters, toggle add-ons; price strip recomputes.
+
+## 6. Files
 
 **New**
-- `src/components/studio-v2/PhaseController.tsx` — phase state machine + transitions
-- `src/components/studio-v2/PhaseStage.tsx` — single-layer enforcement wrapper
-- `src/components/studio-v2/phases/PrologueScene.tsx`
-- `src/components/studio-v2/phases/FeelingScene.tsx`
-- `src/components/studio-v2/phases/WhoRhythmScene.tsx`
-- `src/components/studio-v2/phases/IntentionScene.tsx`
-- `src/components/studio-v2/phases/RevelationScene.tsx`
-- `src/components/studio-v2/phases/LivingJourneyScene.tsx`
-- `src/components/studio-v2/phases/conversion/InstantBookingScene.tsx`
-- `src/components/studio-v2/phases/conversion/RefineWithLocalScene.tsx`
-- `src/components/studio-v2/phases/conversion/DualOfferScene.tsx`
-- `src/components/studio-v2/phases/conversion/EmbeddedCheckoutSheet.tsx`
-- `src/lib/studio-v2/conversion-router.ts`
+- `src/components/studio-v2/chrome/StudioBuilderChrome.tsx`
+- `src/components/studio-v2/chrome/HostCard.tsx`
+- `src/components/studio-v2/chrome/LivePriceStrip.tsx`
+- `src/components/studio-v2/chrome/WhatsappCta.tsx`
+- `src/components/studio-v2/chrome/EmailDraftButton.tsx`
+- `src/hooks/useStudioDraft.ts`
+- `src/lib/studio-v2/catalogueMapping.ts`
+- `src/lib/studio-v2/pricing.ts`
+- `src/lib/studio-v2/draft.functions.ts` (emailStudioDraft, loadStudioDraft)
+- `src/lib/email-templates/studio-draft-resume.tsx`
 
-**Refactored**
-- `src/components/studio-v2/StudioV2.tsx` — becomes thin host that mounts `<PhaseController>`. All existing scene logic moves into phase files. Profile/engine wiring preserved.
-- `src/components/studio-v2/PersistentChatFab.tsx` — hidden in Phase 0–4 (would compete with atmosphere), surfaces in Phase 5 only.
+**Edited**
+- `src/components/studio-v2/StudioV2.tsx` — mount chrome, wire draft hook, resume param
+- `src/components/builder/v3/StudioConversionHud.tsx` — 20% floor on progress
+- `src/components/studio-v2/LivingItinerary.tsx` — consume catalogueMapping
+- `src/lib/email-templates/registry.ts` — register new template
+- Asset: small host avatar JPG in `src/assets/studio/host-tiago.jpg`
 
-**Reused as-is**
-- `src/lib/studio-v2/engine.ts`, `profile.ts`, `intent-infer.ts`, `itinerary.functions.ts`, `story.functions.ts`
-- `src/lib/studio-v2/bookings.functions.ts` (already supports the draft → host workflow)
-- `supabase/functions/create-builder-checkout/index.ts` (already validates & prices server-side)
-- `BuilderMap` / `PremiumMap` for Phase 5
+**Migration**
+- `studio_drafts` table + RLS + grants (service_role only).
 
-## Cinematic Rules (enforced)
+## 7. Out of scope
 
-- One emotional layer visible at any time (`PhaseStage` unmounts predecessor)
-- No stepper, no progress bar, no breadcrumbs in Phase 0–4
-- Subtle "Chapter II" eyebrow only from Phase 5 onward
-- All transitions: 600–900ms fade + 12–16px translate, respects `prefers-reduced-motion`
-- Map opacity progression: 0% (P0–P3) → 8% (P4) → 100% (P5+)
-- Stripe checkout never opens in a new tab; embedded sheet with cinematic backdrop
-- Refine handoff uses host portrait + name + locale, not generic "contact us" copy
+- Real payments/booking truth — site stays in test mode.
+- Marketing emails — only the single transactional resume email.
+- Desktop-first redesign — mobile remains source of truth (393px), desktop adapted.
 
-## Technical Notes
-
-- Conversion routing is pure & deterministic — easy to unit test
-- Stripe Embedded uses existing `getStripe()` + `clientSecret` flow from `create-builder-checkout`; new component just wraps `<EmbeddedCheckoutProvider>` in a sheet
-- WhatsApp message builder extends existing `whatsappHref` helper with itinerary summary
-- No DB migration needed — `studio_v2_bookings` already has `status: 'draft' | 'submitted'` and all fields required for the refine handoff
-- No new env vars; no new edge functions
-
-## Acceptance
-
-- Entering `/studio-v2` shows fullscreen footage with no CTAs for ~3s
-- Choosing a feeling never reveals a place name in Phase 1–2
-- Map remains hidden until Phase 4
-- High-confidence test profile (couple, balanced, 2 adults, no constraints) routes to Instant; ultra-tier or 10-person celebration routes to Refine; mid-confidence presents both
-- Stripe checkout opens inline (sheet), not via redirect
-- Refine path opens WhatsApp with the actual real itinerary (stop names from `builder_stops`) prefilled and persists a draft retrievable at `/checkout/$token`
-- `tsc --noEmit` passes; no new console errors in the flow
-
-Approve to proceed, or tell me which phase to cut/expand.
+Confirm and I'll ship it.
