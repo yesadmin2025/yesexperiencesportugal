@@ -87,17 +87,18 @@ type Beat =
   | "mood-2"
   | "mood-3"
   | "mood-rhythm"
-  | "logistics"
-  | "tastes"
-  | "conviction"
-  | "name"
   | "thinking"
   | "reveal";
 
+// Cinematic arc only — legacy quiz beats (logistics/tastes/conviction/name)
+// were cut per the Studio philosophy: "guided not asked, interface
+// progressively disappears". pax is captured by Who-Rhythm, pickup defaults
+// to Lisboa, intent is inferred from the cinematic signals. Naming and taste
+// fine-tuning can still happen on the Postcard / refine paths post-reveal.
 const SEQUENCE: Beat[] = [
   "prologue", "opening", "feeling", "who-rhythm",
   "mood-1", "mood-2", "mood-3", "mood-rhythm",
-  "logistics", "tastes", "conviction", "name", "thinking", "reveal",
+  "thinking", "reveal",
 ];
 
 /** Confidence threshold (0–1). Below this, the adaptive Rhythm scene fires
