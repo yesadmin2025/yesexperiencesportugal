@@ -4,11 +4,53 @@ import { StudioV2 } from "@/components/studio-v2/StudioV2";
 /**
  * /studio-v2 — guided consultation prototype.
  *
- * Coexists with /studio-drift. Five-stage flow backed by the v2 engine
- * (priority-weighted scoring, archetype derivation, match score). Not yet
- * linked from the main navigation — internal preview while we validate
- * against the cinematic Drift prototype.
+ * SSR note: the page renders a server-visible <header> with the H1,
+ * subtitle, host trust strip and FAQ block BEFORE the cinematic splash,
+ * so crawlers (and users with JS disabled) get the full intent of the
+ * page from the raw HTML source — not only after the React app boots.
  */
+
+const CANONICAL_URL = "https://yesexperiencesportugal.com/studio";
+
+const FAQ_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How does the YES Studio work?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "You pick a mood, tell us who's coming and your rhythm. The Studio builds a real private itinerary with stops, timing and a live price you can see and adjust before booking.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I book the itinerary directly?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Once the day looks right, you can reserve instantly with a single click — no forms, no waiting. You receive your confirmation and full details immediately.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can a local designer help me refine it?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Always. A local designer based in Portugal is one message away on WhatsApp and replies within the hour. They can refine stops, pace, lunch, pickup and anything else before you confirm.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the cancellation policy?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Free changes and full refund up to 48 hours before your experience. After that, reach out to your host directly and we'll do everything we can to reshape, reschedule or refund within the conditions shared at confirmation.",
+      },
+    },
+  ],
+};
+
 export const Route = createFileRoute("/studio-v2")({
   head: () => ({
     meta: [
@@ -16,31 +58,91 @@ export const Route = createFileRoute("/studio-v2")({
       {
         name: "description",
         content:
-          "Design your Portugal journey in real time with the YES Studio — a guided, cinematic consultation.",
+          "Design your private Portugal day in real time — pick a mood, who's coming and your rhythm. Real itinerary, live price, book instantly or refine with a local.",
       },
-      { property: "og:title", content: "Studio — YES experiences Portugal" },
+      { property: "og:title", content: "Design your private Portugal day." },
       {
         property: "og:description",
         content:
-          "Design your Portugal journey in real time with the YES Studio — a guided, cinematic consultation.",
+          "Pick a mood, who's coming and your rhythm — we build a real itinerary with stops, timing and a live price.",
       },
-      { property: "og:url", content: "https://yesexperiencesportugal.com/studio-v2" },
+      { property: "og:url", content: CANONICAL_URL },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/studio-v2" },
+    links: [{ rel: "canonical", href: CANONICAL_URL }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(FAQ_JSONLD),
+      },
     ],
   }),
   component: StudioV2Page,
 });
 
-
 function StudioV2Page() {
   const navigate = useNavigate({ from: "/studio-v2" });
   return (
-    <StudioV2
-      onExit={() => {
-        void navigate({ to: "/" });
-      }}
-    />
+    <>
+      {/* ─────────────────────────────────────────────────────────────
+          SSR-visible intent block. Rendered in the server HTML so
+          crawlers and no-JS users see the full proposition above the
+          cinematic splash. Visually hidden in the browser because the
+          splash takes the full viewport — the content is preserved
+          for accessibility and SEO via the .sr-only utility.
+          ───────────────────────────────────────────────────────────── */}
+      <header className="sr-only">
+        <h1>Design your private Portugal day.</h1>
+        <p>
+          Pick a mood, who's coming and your rhythm — we build a real
+          itinerary with stops, timing and a live price. Book it instantly,
+          or refine it with a local designer first.
+        </p>
+        <figure>
+          <img
+            src="/brand/svg/yes-experiences-portugal-centered-mono-dark.svg"
+            alt="Your host in Portugal, a YES local designer"
+            width={64}
+            height={64}
+          />
+          <figcaption>
+            Your host in Portugal — replies on WhatsApp within the hour.
+          </figcaption>
+        </figure>
+
+        <section aria-label="Frequently asked questions">
+          <h2>How the Studio works</h2>
+          <dl>
+            <dt>How does the YES Studio work?</dt>
+            <dd>
+              You pick a mood, tell us who's coming and your rhythm. The Studio
+              builds a real private itinerary with stops, timing and a live
+              price you can see and adjust before booking.
+            </dd>
+            <dt>Can I book the itinerary directly?</dt>
+            <dd>
+              Yes. Once the day looks right, you can reserve instantly with a
+              single click — no forms, no waiting.
+            </dd>
+            <dt>Can a local designer help me refine it?</dt>
+            <dd>
+              Always. A local designer based in Portugal is one message away on
+              WhatsApp and replies within the hour.
+            </dd>
+            <dt>What is the cancellation policy?</dt>
+            <dd>
+              Free changes and full refund up to 48 hours before your
+              experience. After that, your host will do everything possible to
+              reshape, reschedule or refund within the confirmation conditions.
+            </dd>
+          </dl>
+        </section>
+      </header>
+
+      <StudioV2
+        onExit={() => {
+          void navigate({ to: "/" });
+        }}
+      />
+    </>
   );
 }
