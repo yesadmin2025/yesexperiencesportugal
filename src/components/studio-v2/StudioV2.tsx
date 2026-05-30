@@ -328,6 +328,15 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
       </header>
 
       <main key={beat} className="studio-v2-reveal relative z-10">
+        {showBuilderChrome && (
+          <StudioBuilderChrome
+            step={captureStepIndex}
+            total={CAPTURE_BEATS.length}
+            pricePerGuestFrom={livePricePerGuest}
+            canEmailDraft={captureStepIndex >= 2}
+            draftSnapshot={draftSnapshot}
+          />
+        )}
         {beat === "prologue" && <PrologueScene onContinue={next} />}
         {beat === "opening" && (
           <OpeningScene
