@@ -57,7 +57,7 @@ import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
 import { pickBlueprint, type StudioBlueprint, type EngineRegion } from "@/lib/studio-v2/blueprints";
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
-import { ConversionStage } from "./conversion/ConversionStage";
+import { FinalBookingPanel } from "./conversion/FinalBookingPanel";
 
 // Kept for type-compat with helpers below that still reference it.
 const BuilderMap = lazy(() =>
@@ -2078,18 +2078,20 @@ function RevealStory({
         ))}
       </div>
 
-      {/* Primary conversion moment — climax of the reveal.
-          ConversionStage routes to Instant / Refine / Both based on
-          AI confidence + itinerary shape. Emotional momentum is
-          preserved on every path: instant uses an in-place sheet
-          (no redirect), refine introduces a named local in a single
-          continuous gesture. */}
+      {/* Final booking panel — "Your day is ready."
+          Two-path closer: PRIMARY "Ready to say yes?" (Stripe checkout — demo
+          modal until enabled) + SECONDARY "Refine with a local designer first"
+          (WhatsApp pre-filled with the full draft). Replaces the older
+          ConversionStage three-path router on this surface. */}
       {real && editedStops && editedStops.length >= 2 && (
-        <ConversionStage
+        <FinalBookingPanel
           profile={profile}
           region={region}
           archetype={(profile.archetype as string | undefined) ?? undefined}
           stops={editedStops}
+          pax={pax}
+          pickup={pickup}
+          blueprint={blueprint}
         />
       )}
     </section>
