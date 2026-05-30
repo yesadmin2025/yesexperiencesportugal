@@ -231,6 +231,11 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
 
   const showChrome = beat !== "opening" && beat !== "reveal";
 
+  const inferred = useMemo(() => {
+    if (signals.length === 0) return null;
+    return inferProfile(signals, { pax, pickup: pickup || "Lisboa" });
+  }, [signals, pax, pickup]);
+
   // Capture beats where the persistent builder chrome (host chip + price
   // strip + email-draft) is appropriate. Stays out of the cinematic
   // prologue/opening, the silent "thinking" beat and the final Reveal so
@@ -255,11 +260,6 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
     () => ({ beatIndex, profile, signals, pax, pickup, savedAt: Date.now() }),
     [beatIndex, profile, signals, pax, pickup],
   );
-
-  const inferred = useMemo(() => {
-    if (signals.length === 0) return null;
-    return inferProfile(signals, { pax, pickup: pickup || "Lisboa" });
-  }, [signals, pax, pickup]);
 
   // Persist session for "continue where you left off" — write after any
   // meaningful state change past the opening. Cleared on reveal.
