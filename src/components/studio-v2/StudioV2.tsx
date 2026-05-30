@@ -2078,18 +2078,20 @@ function RevealStory({
         ))}
       </div>
 
-      {/* Primary conversion moment — climax of the reveal.
-          ConversionStage routes to Instant / Refine / Both based on
-          AI confidence + itinerary shape. Emotional momentum is
-          preserved on every path: instant uses an in-place sheet
-          (no redirect), refine introduces a named local in a single
-          continuous gesture. */}
+      {/* Final booking panel — "Your day is ready."
+          Two-path closer: PRIMARY "Ready to say yes?" (Stripe checkout — demo
+          modal until enabled) + SECONDARY "Refine with a local designer first"
+          (WhatsApp pre-filled with the full draft). Replaces the older
+          ConversionStage three-path router on this surface. */}
       {real && editedStops && editedStops.length >= 2 && (
-        <ConversionStage
+        <FinalBookingPanel
           profile={profile}
           region={region}
           archetype={(profile.archetype as string | undefined) ?? undefined}
           stops={editedStops}
+          pax={pax}
+          pickup={pickup}
+          blueprint={blueprint}
         />
       )}
     </section>
