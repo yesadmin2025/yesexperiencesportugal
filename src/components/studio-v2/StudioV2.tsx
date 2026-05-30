@@ -34,6 +34,7 @@ import {
 } from "@/lib/studio-v2/engine";
 import { fmtMinutes } from "@/components/builder/types";
 import { type RefineStop } from "./RefineStage";
+import { StudioBuilderChrome } from "./StudioBuilderChrome";
 import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
@@ -229,6 +230,31 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
   }, [beat, profile, result, signals, pax, pickup]);
 
   const showChrome = beat !== "opening" && beat !== "reveal";
+
+  // Capture beats where the persistent builder chrome (host chip + price
+  // strip + email-draft) is appropriate. Stays out of the cinematic
+  // prologue/opening, the silent "thinking" beat and the final Reveal so
+  // the interface still "progressively disappears" per Studio philosophy.
+  const CAPTURE_BEATS: Beat[] = [
+    "feeling", "who-rhythm", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+  ];
+  const showBuilderChrome = CAPTURE_BEATS.includes(beat);
+  const captureStepIndex = Math.max(0, CAPTURE_BEATS.indexOf(beat));
+  // Live "from €" price per guest: base 145 (Arrábida Wine half-day floor),
+  // shaved by group size and lifted by pace. Updates as the user reveals
+  // signals — never invents add-ons.
+  const livePricePerGuest = useMemo(() => {
+    const base = 145;
+    const groupAdj = pax <= 2 ? 30 : pax <= 4 ? 10 : pax <= 8 ? -10 : -25;
+    const paceAdj =
+      inferred?.topIntent === "elegant_cultural" ? 25 :
+      inferred?.topIntent === "food_local" ? 15 : 0;
+    return Math.max(95, Math.round((base + groupAdj + paceAdj) / 5) * 5);
+  }, [pax, inferred]);
+  const draftSnapshot = useMemo(
+    () => ({ beatIndex, profile, signals, pax, pickup, savedAt: Date.now() }),
+    [beatIndex, profile, signals, pax, pickup],
+  );
 
   const inferred = useMemo(() => {
     if (signals.length === 0) return null;
