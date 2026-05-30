@@ -31,15 +31,22 @@ async function fetchPost(slug: string): Promise<JournalPostFull | null> {
 }
 
 export const Route = createFileRoute("/local-stories/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Local Story — YES experiences Portugal` },
-      {
-        name: "description",
-        content: `A local story from Portugal · ${params.slug}`,
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const url = `https://yesexperiencesportugal.com/local-stories/${params.slug}`;
+    return {
+      meta: [
+        { title: `Local Story — YES experiences Portugal` },
+        {
+          name: "description",
+          content: `A local story from Portugal · ${params.slug}`,
+        },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
+
   errorComponent: ErrorView,
   notFoundComponent: NotFoundView,
   component: Page,
