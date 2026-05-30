@@ -57,7 +57,6 @@ import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
 import { pickBlueprint, type StudioBlueprint, type EngineRegion } from "@/lib/studio-v2/blueprints";
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
-import { ConversionStage } from "./conversion/ConversionStage";
 import { FinalBookingPanel } from "./conversion/FinalBookingPanel";
 
 // Kept for type-compat with helpers below that still reference it.
