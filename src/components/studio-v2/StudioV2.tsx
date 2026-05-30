@@ -381,7 +381,14 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
             key="reveal"
             className="relative mx-auto w-full max-w-3xl px-5 pb-28 pt-10 sm:px-8 sm:pt-14"
           >
-            <RevealStory profile={profile} region={result.region} signals={signals} />
+            <RevealStory
+              profile={profile}
+              region={result.region}
+              signals={signals}
+              pax={pax}
+              pickup={pickup || "Lisboa"}
+              onPickupChange={setPickup}
+            />
             <Reveal result={result} />
           </section>
         )}
