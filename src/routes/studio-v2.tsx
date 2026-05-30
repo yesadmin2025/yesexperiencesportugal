@@ -209,10 +209,24 @@ function StudioV2Page() {
         </section>
       </header>
 
+      {status === "missing" && (
+        <div
+          role="status"
+          className="fixed top-3 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-[11px] uppercase tracking-[0.22em] font-semibold rounded-[2px]"
+          style={{
+            background: "var(--charcoal)",
+            color: "var(--ivory)",
+          }}
+        >
+          That resume link is no longer available — starting fresh.
+        </div>
+      )}
+
       <StudioV2
         onExit={() => {
           void navigate({ to: "/" });
         }}
+        hydratedDraft={hydrated ?? undefined}
       />
     </>
   );
