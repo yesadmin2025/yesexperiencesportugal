@@ -23,9 +23,13 @@ export const Route = createFileRoute("/experiences")({
         property: "og:description",
         content:
           "Complete, curated private experiences. Reserve instantly — or adjust a few details within the experience to match your rhythm.",
-      },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" },
     ],
   }),
+
   component: ExperiencesPage,
 });
 
