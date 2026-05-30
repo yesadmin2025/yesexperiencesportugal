@@ -319,53 +319,8 @@ export function StudioV2({ onExit, initialProfile, startAtReveal }: StudioV2Prop
         {beat === "mood-rhythm" && (
           <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} topIntent={inferred?.topIntent ?? null} />
         )}
-        {beat === "logistics" && (
-          <LogisticsCard
-            pax={pax} setPax={setPax}
-            pickup={pickup} setPickup={setPickup}
-            preferredDate={profile.ops?.preferredDate ?? ""}
-            setPreferredDate={(d) => setProfile((p) => ({ ...p, ops: { ...p.ops, preferredDate: d || undefined } }))}
-            onSubmit={onLogisticsSubmit}
-          />
-        )}
-        {beat === "tastes" && (
-          <TastesPicker
-            initial={profile.ops?.tastes ?? []}
-            onSubmit={onTastesSubmit}
-          />
-        )}
-        {beat === "conviction" && inferred && (
-          <ConvictionMoment
-            topIntent={inferred.topIntent}
-            line={convictionLine(
-              inferred.topIntent,
-              inferred.profile.pace ?? "balanced",
-              pickup || "Lisboa",
-              pax,
-            )}
-            script={convictionScript(
-              signals,
-              inferred.topIntent,
-              inferred.profile.pace ?? "balanced",
-              pickup || "Lisboa",
-              pax,
-            )}
-            onContinue={next}
-          />
-        )}
-        {beat === "name" && (
-          <NameBeat
-            initial={profile.name ?? ""}
-            onSubmit={(name) => {
-              setProfile((p) => ({ ...p, name: name.trim().slice(0, 40) }));
-              next();
-            }}
-            onSkip={() => {
-              setProfile((p) => ({ ...p, name: undefined }));
-              next();
-            }}
-          />
-        )}
+        {/* Legacy quiz beats (logistics / tastes / conviction / name) were
+            removed — Chapter III · Tone now hands directly to Revelation. */}
         {beat === "thinking" && result && (
           <RevelationScene
             profile={profile}
