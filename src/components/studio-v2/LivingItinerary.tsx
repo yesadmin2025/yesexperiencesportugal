@@ -485,7 +485,7 @@ export function LivingItinerary({
                 />
               );
             })}
-          </li>
+          </Fragment>
         ))}
       </ol>
 
