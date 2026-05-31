@@ -21,7 +21,7 @@
  * "Show all controls" escape hatch button for A11y / power users.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Settings2 } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -453,7 +453,7 @@ export function LivingItinerary({
         aria-label="Itinerary scenes — swipe a scene left to substitute, long-press to anchor its mood"
       >
         {days.map((day, dayIdx) => (
-          <li key={`day-${dayIdx}`} className="contents">
+          <Fragment key={`day-${dayIdx}`}>
             {dayIdx > 0 && <DayBreakScene dayNumber={dayIdx + 1} />}
             {day.stops.map((s, j) => {
               const i = day.indices[j];
@@ -485,7 +485,7 @@ export function LivingItinerary({
                 />
               );
             })}
-          </li>
+          </Fragment>
         ))}
       </ol>
 
