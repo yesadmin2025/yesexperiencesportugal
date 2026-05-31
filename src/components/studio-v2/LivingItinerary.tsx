@@ -453,7 +453,7 @@ export function LivingItinerary({
         aria-label="Itinerary scenes — swipe a scene left to substitute, long-press to anchor its mood"
       >
         {days.map((day, dayIdx) => (
-          <li key={`day-${dayIdx}`} className="contents">
+          <Fragment key={`day-${dayIdx}`}>
             {dayIdx > 0 && <DayBreakScene dayNumber={dayIdx + 1} />}
             {day.stops.map((s, j) => {
               const i = day.indices[j];
