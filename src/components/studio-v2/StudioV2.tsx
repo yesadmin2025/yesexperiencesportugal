@@ -1747,10 +1747,9 @@ function RevealStory({
           duration_minutes: s.duration_minutes,
           source_tour_keys: s.source_tour_keys,
         })));
-        if (!mapRevealShown) {
-          setMapRevealOpen(true);
-          setMapRevealShown(true);
-        }
+        // Cinematic full-bleed MapReveal disabled by request — the builder
+        // now shows the real draft inline via DraftMapPreview instead.
+        void mapRevealShown; void setMapRevealOpen; void setMapRevealShown;
         // Pre-create the share session silently so the postcard's
         // "Share" button has a live invitation URL ready the moment
         // the postcard opens. Best-effort — never blocks the flow.
