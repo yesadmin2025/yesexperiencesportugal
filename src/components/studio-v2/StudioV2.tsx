@@ -351,14 +351,8 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
           />
         )}
         {beat === "prologue" && <PrologueScene onContinue={next} />}
-        {beat === "opening" && (
-          <OpeningScene
-            onTap={next}
-            resumable={resumable}
-            onResume={onResume}
-            onDeclineResume={onDeclineResume}
-          />
-        )}
+        {beat === "opening" && <OpeningScene onTap={next} />}
+
         {beat === "feeling" && <FeelingScene onSignal={onSceneSignal} />}
         {beat === "who-rhythm" && <WhoRhythmScene onComplete={onWhoRhythmComplete} />}
         {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
