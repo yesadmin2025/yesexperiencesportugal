@@ -1821,19 +1821,6 @@ function RevealStory({
         closer="The country has arranged itself around you."
         onClose={() => {
           setMapRevealOpen(false);
-          // Hand the moment over to the postcard — keepsake + share, once.
-          if (!postcardShown) {
-            // Short beat so the map fade-out can settle before the postcard rises.
-            window.setTimeout(() => {
-              setPostcardOpen(true);
-              setPostcardShown(true);
-              void trackBuilderEvent("studio_v2_postcard_open", {
-                region,
-                intent: profile.intent,
-                hasToken: Boolean(postcardToken),
-              });
-            }, 240);
-          }
         }}
       />
 
