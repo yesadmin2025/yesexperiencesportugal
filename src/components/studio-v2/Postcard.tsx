@@ -22,7 +22,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, MessageCircle, Share2, X } from "lucide-react";
+import { ArrowRight, Share2, X } from "lucide-react";
 
 interface PostcardStop {
   key: string;
