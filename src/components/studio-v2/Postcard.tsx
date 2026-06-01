@@ -317,37 +317,38 @@ export function Postcard({
             <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </button>
 
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={handleShare}
-              disabled={!shareUrl}
-              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[2px] border px-4 py-3 text-[11.5px] font-semibold uppercase tracking-[0.22em] transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50"
-              style={{
-                background: "transparent",
-                color: "var(--charcoal)",
-                borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
-              }}
-            >
-              <Share2 className="h-3.5 w-3.5" aria-hidden />
-              {copied ? "Link copied" : shareUrl ? "Share" : "Preparing…"}
-            </button>
+          <button
+            type="button"
+            onClick={handleShare}
+            disabled={!shareUrl}
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[2px] border px-4 py-3 text-[11.5px] font-semibold uppercase tracking-[0.22em] transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50"
+            style={{
+              background: "transparent",
+              color: "var(--charcoal)",
+              borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+            }}
+          >
+            <Share2 className="h-3.5 w-3.5" aria-hidden />
+            {copied ? "Link copied" : shareUrl ? "Share this draft" : "Preparing…"}
+          </button>
+
+          <p
+            className="mt-1 text-center text-[11px] leading-[1.5]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            A local designer is one tap away on the next screen —{" "}
             <a
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => onShare?.("whatsapp")}
-              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[2px] border px-4 py-3 text-[11.5px] font-semibold uppercase tracking-[0.22em] transition-colors focus-visible:outline-none focus-visible:ring-2"
-              style={{
-                background: "transparent",
-                color: "var(--charcoal)",
-                borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
-              }}
+              className="underline-offset-2 hover:underline"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
             >
-              <MessageCircle className="h-3.5 w-3.5" aria-hidden />
-              Refine with us
+              or message now
             </a>
-          </div>
+            .
+          </p>
         </div>
       </article>
     </div>
