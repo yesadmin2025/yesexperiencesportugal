@@ -163,20 +163,33 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
   // A `hydratedDraft` (from ?resume=<token>) wins over the local persisted
   // session, so a shared/email resume link always trumps any half-finished
   // local progress on the same device.
-  const [resumable, setResumable] = useState<PersistedSession | null>(() => {
+  const initialResume = useMemo<PersistedSession | null>(() => {
     if (startAtReveal || initialProfile) return null;
     return hydratedDraft ?? readPersistedSession();
+  }, [startAtReveal, initialProfile, hydratedDraft]);
+  // Auto-resume: skip prologue + opening when there's a saved draft. The
+  // cinematic opener only fires on a true first visit — reloads jump back
+  // to the saved beat with a discreet "Resuming…" toast instead.
+  const [autoResumed, setAutoResumed] = useState<boolean>(() => !!initialResume);
+  const [beatIndex, setBeatIndex] = useState(() => {
+    if (startAtReveal) return SEQUENCE.indexOf("reveal");
+    if (initialResume) {
+      const safeBeat = SEQUENCE[initialResume.beatIndex] === "thinking"
+        ? SEQUENCE.indexOf("mood-rhythm")
+        : initialResume.beatIndex;
+      return Math.max(0, safeBeat);
+    }
+    return 0;
   });
-  const [beatIndex, setBeatIndex] = useState(() =>
-    startAtReveal ? SEQUENCE.indexOf("reveal") : 0,
+  const [profile, setProfile] = useState<TravelerProfile>(
+    () => initialProfile ?? initialResume?.profile ?? emptyProfile(),
   );
-  const [profile, setProfile] = useState<TravelerProfile>(() => initialProfile ?? emptyProfile());
   const [result, setResult] = useState<DesignResult | null>(() =>
     startAtReveal && initialProfile ? designExperience(initialProfile) : null,
   );
-  const [signals, setSignals] = useState<SceneSignal[]>([]);
-  const [pax, setPax] = useState(2);
-  const [pickup, setPickup] = useState<string>("");
+  const [signals, setSignals] = useState<SceneSignal[]>(() => initialResume?.signals ?? []);
+  const [pax, setPax] = useState(() => initialResume?.pax ?? 2);
+  const [pickup, setPickup] = useState<string>(() => initialResume?.pickup ?? "");
 
   const beat = SEQUENCE[beatIndex];
   const next = useCallback(() => {
