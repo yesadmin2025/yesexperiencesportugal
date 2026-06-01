@@ -1947,15 +1947,17 @@ function RevealStory({
 
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
-        <LivingItinerary
-          stops={editedStops}
-          alternates={real.alternates}
-          caps={real.caps}
-          onChange={setEditedStops}
-          intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
-          regionKey={livePreview.region}
-          regionCenter={livePreview.regionCenter}
-        />
+        <div id="studio-v2-itinerary">
+          <LivingItinerary
+            stops={editedStops}
+            alternates={real.alternates}
+            caps={real.caps}
+            onChange={setEditedStops}
+            intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
+            regionKey={livePreview.region}
+            regionCenter={livePreview.regionCenter}
+          />
+        </div>
       )}
 
       {/* Withheld stop — one final beat we keep as silhouette until booking.
