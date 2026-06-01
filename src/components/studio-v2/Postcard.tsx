@@ -161,7 +161,7 @@ export function Postcard({
       </button>
 
       <article
-        className="mx-auto flex min-h-[100dvh] w-full max-w-[640px] flex-col px-6 pb-16 pt-14"
+        className="mx-auto flex w-full max-w-[640px] flex-col px-6 pb-10 pt-14"
         style={{
           transform: visible ? "translateY(0)" : "translateY(12px)",
           transition: "transform 520ms cubic-bezier(.22,.61,.36,1)",
