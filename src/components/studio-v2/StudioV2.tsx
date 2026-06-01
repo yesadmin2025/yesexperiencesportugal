@@ -38,6 +38,7 @@ import { StudioBuilderChrome } from "./StudioBuilderChrome";
 import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
+import { DraftMapPreview } from "./DraftMapPreview";
 import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
 import { FeelingScene } from "./scenes/FeelingScene";
@@ -1746,10 +1747,9 @@ function RevealStory({
           duration_minutes: s.duration_minutes,
           source_tour_keys: s.source_tour_keys,
         })));
-        if (!mapRevealShown) {
-          setMapRevealOpen(true);
-          setMapRevealShown(true);
-        }
+        // Cinematic full-bleed MapReveal disabled by request — the builder
+        // now shows the real draft inline via DraftMapPreview instead.
+        void mapRevealShown; void setMapRevealOpen; void setMapRevealShown;
         // Pre-create the share session silently so the postcard's
         // "Share" button has a live invitation URL ready the moment
         // the postcard opens. Best-effort — never blocks the flow.
@@ -1804,7 +1804,45 @@ function RevealStory({
 
   return (
     <section className="mb-10">
-      <StoryOpener profile={profile} region={region} signals={signals ?? []} />
+      {/* Concrete header — the builder shows what it just built, no riddle. */}
+      <div className="mb-6">
+        <p className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}>
+          Your draft is ready
+        </p>
+        <h2 className="mt-3 text-[26px] leading-[1.1] sm:text-[32px] font-display"
+          style={{ fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}>
+          {profile.name?.trim() ? `${profile.name.trim()}, here's ` : "Here's "}
+          your private day in Portugal.
+        </h2>
+        <p className="mt-2 text-[14px] leading-[1.5]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
+          Edit any stop below, change pickup, or share with a local designer.
+        </p>
+      </div>
+
+      {/* Inline draft preview — same map language as the homepage demo,
+          bound to the real edited stops. The builder visibly produces. */}
+      {real && editedStops && editedStops.length >= 2 && (
+        <div className="mb-8">
+          <DraftMapPreview
+            stops={editedStops}
+            pax={pax}
+            pickup={pickup || "Lisboa"}
+            durationHours={blueprint?.durationHours ?? [7, 9]}
+            pricePerGuestFrom={blueprint?.pricePerGuestFrom ?? 145}
+            onEdit={() => {
+              if (typeof window === "undefined") return;
+              const el = document.getElementById("studio-v2-itinerary");
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          />
+        </div>
+      )}
+
+      {/* StoryOpener kept on a hidden flag — restore later if cinematic
+          opener is reinstated. */}
+      {false && <StoryOpener profile={profile} region={region} signals={signals ?? []} />}
 
       {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
           Map draws the day; sequenced narrative summarizes it in one breath. */}
@@ -1821,19 +1859,6 @@ function RevealStory({
         closer="The country has arranged itself around you."
         onClose={() => {
           setMapRevealOpen(false);
-          // Hand the moment over to the postcard — keepsake + share, once.
-          if (!postcardShown) {
-            // Short beat so the map fade-out can settle before the postcard rises.
-            window.setTimeout(() => {
-              setPostcardOpen(true);
-              setPostcardShown(true);
-              void trackBuilderEvent("studio_v2_postcard_open", {
-                region,
-                intent: profile.intent,
-                hasToken: Boolean(postcardToken),
-              });
-            }, 240);
-          }
         }}
       />
 
@@ -1922,116 +1947,61 @@ function RevealStory({
 
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
-        <LivingItinerary
-          stops={editedStops}
-          alternates={real.alternates}
-          caps={real.caps}
-          onChange={setEditedStops}
-          intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
-          regionKey={livePreview.region}
-          regionCenter={livePreview.regionCenter}
-        />
+        <div id="studio-v2-itinerary">
+          <LivingItinerary
+            stops={editedStops}
+            alternates={real.alternates}
+            caps={real.caps}
+            onChange={setEditedStops}
+            intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
+            regionKey={livePreview.region}
+            regionCenter={livePreview.regionCenter}
+          />
+        </div>
       )}
 
-      {/* Withheld stop — one final beat we keep as silhouette until booking.
-          Creates longing (Bible §6). Purely presentational, never invents a
-          stop name. Hidden if itinerary is too short to support a "one more". */}
+      {/* Closing-moment teaser — concrete, no riddle. */}
       {real && editedStops && editedStops.length >= 3 && (
         <div
           className="mt-6 rounded-[2px] border px-5 py-5 sm:px-6 sm:py-6"
           style={{
-            borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
-            background: "color-mix(in oklab, var(--sand) 55%, transparent)",
+            borderColor: "color-mix(in oklab, var(--gold) 30%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 45%, transparent)",
           }}
         >
           <p
             className="text-[10.5px] uppercase tracking-[0.32em]"
             style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 700 }}
           >
-            One more
+            Closing moment
           </p>
           <p
-            className="mt-3 text-[17px] leading-[1.35] sm:text-[19px]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
+            className="mt-2 text-[14px] leading-[1.5]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
           >
-            {profile.name?.trim() ? `${profile.name.trim()}, we're` : "We're"} keeping the closing
-            moment of your day quiet — it reveals itself only when you reserve.
+            Your designer will add a final sunset stop matched to the day's rhythm — confirmed once you reserve.
           </p>
-          <div
-            aria-hidden
-            className="mt-4 flex items-center gap-3 opacity-70"
-          >
-            <span
-              className="inline-block h-8 w-8 rounded-full"
-              style={{
-                background: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-                filter: "blur(1px)",
-              }}
-            />
-            <span
-              className="inline-block h-2 flex-1 rounded-full"
-              style={{
-                background: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
-              }}
-            />
-          </div>
         </div>
       )}
 
-
-
-
-
       <p
-        className="text-[10.5px] uppercase tracking-[0.36em]"
+        className="mt-10 text-[10.5px] uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
-        {who} signature Portugal experience
+        {who} private day · summary
       </p>
-      {ai ? (
-        <>
-          <h2
-            className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
-            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
-          >
-            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>YES —</span>{" "}
-            {ai.title}.
-          </h2>
-          <p
-            className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              color: "var(--charcoal)",
-            }}
-          >
-            {ai.subtitle}
-          </p>
-        </>
-      ) : (
-        <>
-          <h2
-            className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
-            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
-          >
-            YES —{" "}
-            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-              you have just created
-            </span>{" "}
-            your Signature Portugal Experience.
-          </h2>
-          <p
-            className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              color: "var(--charcoal)",
-            }}
-          >
-            {revealFraming(profile.intent, region)}
-          </p>
-        </>
-      )}
+      <h2
+        className="mt-3 text-[24px] leading-[1.15] sm:text-[28px]"
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}
+      >
+        {ai?.title ?? "A private Portugal day, designed around you."}
+      </h2>
+      <p
+        className="mt-3 text-[14.5px] leading-[1.55]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
+      >
+        {ai?.subtitle ?? revealFraming(profile.intent, region)}
+      </p>
       <ul
         className="mt-6 space-y-2 text-[14px] leading-relaxed"
         style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
