@@ -1804,7 +1804,45 @@ function RevealStory({
 
   return (
     <section className="mb-10">
-      <StoryOpener profile={profile} region={region} signals={signals ?? []} />
+      {/* Concrete header — the builder shows what it just built, no riddle. */}
+      <div className="mb-6">
+        <p className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}>
+          Your draft is ready
+        </p>
+        <h2 className="mt-3 text-[26px] leading-[1.1] sm:text-[32px] font-display"
+          style={{ fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}>
+          {profile.name?.trim() ? `${profile.name.trim()}, here's ` : "Here's "}
+          your private day in Portugal.
+        </h2>
+        <p className="mt-2 text-[14px] leading-[1.5]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
+          Edit any stop below, change pickup, or share with a local designer.
+        </p>
+      </div>
+
+      {/* Inline draft preview — same map language as the homepage demo,
+          bound to the real edited stops. The builder visibly produces. */}
+      {real && editedStops && editedStops.length >= 2 && (
+        <div className="mb-8">
+          <DraftMapPreview
+            stops={editedStops}
+            pax={pax}
+            pickup={pickup || "Lisboa"}
+            durationHours={blueprint?.durationHours ?? [7, 9]}
+            pricePerGuestFrom={blueprint?.pricePerGuestFrom ?? 145}
+            onEdit={() => {
+              if (typeof window === "undefined") return;
+              const el = document.getElementById("studio-v2-itinerary");
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          />
+        </div>
+      )}
+
+      {/* StoryOpener kept on a hidden flag — restore later if cinematic
+          opener is reinstated. */}
+      {false && <StoryOpener profile={profile} region={region} signals={signals ?? []} />}
 
       {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
           Map draws the day; sequenced narrative summarizes it in one breath. */}
