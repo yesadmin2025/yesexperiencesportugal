@@ -298,24 +298,13 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
     try { window.localStorage.setItem(SESSION_KEY, JSON.stringify(payload)); } catch { /* */ }
   }, [beat, beatIndex, profile, signals, pax, pickup, startAtReveal]);
 
-  const onResume = useCallback(() => {
-    const s = resumable;
-    if (!s) return;
-    setProfile(s.profile);
-    setSignals(s.signals ?? []);
-    setPax(s.pax ?? 2);
-    setPickup(s.pickup ?? "");
-    const safeBeat = SEQUENCE[s.beatIndex] === "thinking"
-      ? SEQUENCE.indexOf("mood-rhythm")
-      : s.beatIndex;
-    setBeatIndex(Math.max(0, safeBeat));
-    setResumable(null);
-  }, [resumable]);
+  // Auto-resume toast — dismisses itself after a few seconds.
+  useEffect(() => {
+    if (!autoResumed) return;
+    const t = window.setTimeout(() => setAutoResumed(false), 3200);
+    return () => window.clearTimeout(t);
+  }, [autoResumed]);
 
-  const onDeclineResume = useCallback(() => {
-    clearPersistedSession();
-    setResumable(null);
-  }, []);
 
   return (
     <div
