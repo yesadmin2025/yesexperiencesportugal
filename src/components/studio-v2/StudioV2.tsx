@@ -340,6 +340,19 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
         </button>
       </header>
 
+      {autoResumed && (
+        <div
+          role="status"
+          className="fixed top-3 left-1/2 -translate-x-1/2 z-40 px-4 py-2 text-[11px] uppercase tracking-[0.22em] font-semibold rounded-[2px] pointer-events-none"
+          style={{
+            background: "color-mix(in oklab, var(--charcoal) 92%, transparent)",
+            color: "var(--ivory)",
+          }}
+        >
+          Resuming where you left off…
+        </div>
+      )}
+
       <main key={beat} className="studio-v2-reveal relative z-10">
         {showBuilderChrome && (
           <StudioBuilderChrome
