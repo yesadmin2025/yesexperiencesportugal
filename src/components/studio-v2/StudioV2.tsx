@@ -38,6 +38,7 @@ import { StudioBuilderChrome } from "./StudioBuilderChrome";
 import { LivingItinerary } from "./LivingItinerary";
 import { MapReveal } from "./MapReveal";
 import { Postcard } from "./Postcard";
+import { DraftMapPreview } from "./DraftMapPreview";
 import { AmbientToggle } from "./AmbientToggle";
 import { DriftScene } from "./scenes/DriftScene";
 import { FeelingScene } from "./scenes/FeelingScene";
