@@ -1960,105 +1960,48 @@ function RevealStory({
         </div>
       )}
 
-      {/* Withheld stop — one final beat we keep as silhouette until booking.
-          Creates longing (Bible §6). Purely presentational, never invents a
-          stop name. Hidden if itinerary is too short to support a "one more". */}
+      {/* Closing-moment teaser — concrete, no riddle. */}
       {real && editedStops && editedStops.length >= 3 && (
         <div
           className="mt-6 rounded-[2px] border px-5 py-5 sm:px-6 sm:py-6"
           style={{
-            borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
-            background: "color-mix(in oklab, var(--sand) 55%, transparent)",
+            borderColor: "color-mix(in oklab, var(--gold) 30%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 45%, transparent)",
           }}
         >
           <p
             className="text-[10.5px] uppercase tracking-[0.32em]"
             style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 700 }}
           >
-            One more
+            Closing moment
           </p>
           <p
-            className="mt-3 text-[17px] leading-[1.35] sm:text-[19px]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
+            className="mt-2 text-[14px] leading-[1.5]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
           >
-            {profile.name?.trim() ? `${profile.name.trim()}, we're` : "We're"} keeping the closing
-            moment of your day quiet — it reveals itself only when you reserve.
+            Your designer will add a final sunset stop matched to the day's rhythm — confirmed once you reserve.
           </p>
-          <div
-            aria-hidden
-            className="mt-4 flex items-center gap-3 opacity-70"
-          >
-            <span
-              className="inline-block h-8 w-8 rounded-full"
-              style={{
-                background: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-                filter: "blur(1px)",
-              }}
-            />
-            <span
-              className="inline-block h-2 flex-1 rounded-full"
-              style={{
-                background: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
-              }}
-            />
-          </div>
         </div>
       )}
 
-
-
-
-
       <p
-        className="text-[10.5px] uppercase tracking-[0.36em]"
+        className="mt-10 text-[10.5px] uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
-        {who} signature Portugal experience
+        {who} private day · summary
       </p>
-      {ai ? (
-        <>
-          <h2
-            className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
-            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
-          >
-            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>YES —</span>{" "}
-            {ai.title}.
-          </h2>
-          <p
-            className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              color: "var(--charcoal)",
-            }}
-          >
-            {ai.subtitle}
-          </p>
-        </>
-      ) : (
-        <>
-          <h2
-            className="mt-4 text-[28px] leading-[1.05] sm:text-[36px]"
-            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
-          >
-            YES —{" "}
-            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
-              you have just created
-            </span>{" "}
-            your Signature Portugal Experience.
-          </h2>
-          <p
-            className="mt-5 text-[19px] leading-[1.4] sm:text-[22px]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              color: "var(--charcoal)",
-            }}
-          >
-            {revealFraming(profile.intent, region)}
-          </p>
-        </>
-      )}
+      <h2
+        className="mt-3 text-[24px] leading-[1.15] sm:text-[28px]"
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}
+      >
+        {ai?.title ?? "A private Portugal day, designed around you."}
+      </h2>
+      <p
+        className="mt-3 text-[14.5px] leading-[1.55]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
+      >
+        {ai?.subtitle ?? revealFraming(profile.intent, region)}
+      </p>
       <ul
         className="mt-6 space-y-2 text-[14px] leading-relaxed"
         style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
