@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-01T05:43:36.050Z",
-  "filesScanned": 317,
+  "generatedAt": "2026-06-02T20:32:39.182Z",
+  "filesScanned": 318,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 217,
+    "total": 219,
     "approved": 62,
     "allowlisted": 26,
-    "mismatch": 129
+    "mismatch": 131
   },
   "findings": [
     {
@@ -1219,6 +1219,24 @@
       "raw": "#5BB0BA",
       "normalized": "#5bb0ba",
       "snippet": "<span className=\"h-1.5 w-2.5\" style={{ background: \"#5BB0BA\" }} />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/DraftMapPreview.tsx",
+      "line": 98,
+      "col": 43,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "background: \"var(--charcoal-deep, #1a1a1a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/DraftMapPreview.tsx",
+      "line": 164,
+      "col": 76,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "<circle cx={s.x} cy={s.y} r=\"3.4\" fill=\"var(--charcoal-deep, #1a1a1a)\" />",
       "status": "mismatch"
     },
     {
