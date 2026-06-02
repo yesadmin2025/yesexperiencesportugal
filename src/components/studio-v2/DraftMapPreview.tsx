@@ -292,7 +292,32 @@ export function DraftMapPreview({
             </button>
           )}
         </div>
+
+        {/* Reassurance row — matches homepage */}
+        <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <p className="inline-flex items-center gap-1.5 text-[10.5px]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+            <MapPin size={11} aria-hidden style={{ color: "var(--teal)" }} />
+            Instant confirmation · cancel 48h
+          </p>
+        </div>
       </div>
+
+      <style>{`
+        @keyframes dmp-pulse {
+          0%   { transform: scale(0.6); opacity: 0.55; }
+          70%  { transform: scale(2.4); opacity: 0; }
+          100% { transform: scale(2.4); opacity: 0; }
+        }
+        .dmp-pulse {
+          transform-origin: center;
+          transform-box: fill-box;
+          animation: dmp-pulse 2400ms cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .dmp-pulse { animation: none !important; }
+        }
+      `}</style>
     </div>
   );
 }
