@@ -1839,12 +1839,12 @@ function RevealStory({
 
       {/* Inline draft preview — same map language as the homepage demo,
           bound to the real edited stops. The builder visibly produces. */}
-      {real && editedStops && editedStops.length >= 2 && (
+      {revealReady && revealValidation.ok && (
         <div className="mb-8">
           <DraftMapPreview
-            stops={editedStops}
-            pax={pax}
-            pickup={pickup || "Lisboa"}
+            stops={revealValidation.data.stops}
+            pax={revealValidation.data.pax}
+            pickup={revealValidation.data.pickup}
             durationHours={blueprint?.durationHours ?? [7, 9]}
             pricePerGuestFrom={blueprint?.pricePerGuestFrom ?? 145}
             onEdit={() => {
@@ -1855,6 +1855,24 @@ function RevealStory({
           />
         </div>
       )}
+
+      {/* Dev-only notice when the Reveal contract fails. Silent in prod. */}
+      {!revealValidation.ok && import.meta.env.DEV && real && (
+        <div
+          role="status"
+          className="mb-6 rounded-[2px] border px-4 py-3 text-[12px]"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 50%, transparent)",
+            color: "var(--charcoal)",
+          }}
+        >
+          <strong>Reveal props invalid (dev only).</strong> Map and booking
+          surface skipped — fix the upstream payload. Issues:{" "}
+          {revealValidation.issues.join(" · ")}
+        </div>
+      )}
+
 
       {/* StoryOpener kept on a hidden flag — restore later if cinematic
           opener is reinstated. */}
