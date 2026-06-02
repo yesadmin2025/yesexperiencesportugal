@@ -2096,14 +2096,14 @@ function RevealStory({
           modal until enabled) + SECONDARY "Refine with a local designer first"
           (WhatsApp pre-filled with the full draft). Replaces the older
           ConversionStage three-path router on this surface. */}
-      {real && editedStops && editedStops.length >= 2 && (
+      {revealReady && revealValidation.ok && (
         <FinalBookingPanel
           profile={profile}
           region={region}
           archetype={(profile.archetype as string | undefined) ?? undefined}
-          stops={editedStops}
-          pax={pax}
-          pickup={pickup}
+          stops={revealValidation.data.stops}
+          pax={revealValidation.data.pax}
+          pickup={revealValidation.data.pickup}
           blueprint={blueprint}
         />
       )}
