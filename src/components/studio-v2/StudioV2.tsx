@@ -1802,6 +1802,21 @@ function RevealStory({
   // Static editorial framing carries the reveal.
   const ai = null as { title: string; subtitle: string } | null;
 
+  // Runtime guard for the Reveal contract. The map / itinerary / booking
+  // panel all assume real geocoded stops + a non-empty pickup + sane pax.
+  // Anything else is a regression — fail closed and let the static fallback
+  // handle the surface (see RevealValidationNotice below).
+  const revealValidation = useMemo(
+    () =>
+      validateRevealProps({
+        stops: editedStops ?? null,
+        pax,
+        pickup,
+      }),
+    [editedStops, pax, pickup],
+  );
+  const revealReady = real != null && revealValidation.ok;
+
 
   return (
     <section className="mb-10">
