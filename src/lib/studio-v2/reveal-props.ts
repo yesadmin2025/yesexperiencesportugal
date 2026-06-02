@@ -14,9 +14,8 @@ import type { RefineStop } from "@/components/studio-v2/RefineStage";
  * `issues` surface in the console during dev so regressions are visible.
  */
 
-const FINITE_NUMBER = z.number().refine((n) => Number.isFinite(n), {
-  message: "must be a finite number",
-});
+const FINITE = (msg = "must be a finite number") =>
+  z.number().refine((n) => Number.isFinite(n), { message: msg });
 
 export const RefineStopSchema = z.object({
   key: z.string().trim().min(1).max(120),
@@ -24,8 +23,8 @@ export const RefineStopSchema = z.object({
   label: z.string().trim().min(1).max(200),
   blurb: z.string().max(2000).nullable(),
   tag: z.string().max(120).nullable(),
-  lat: FINITE_NUMBER.min(-90).max(90),
-  lng: FINITE_NUMBER.min(-180).max(180),
+  lat: z.number().min(-90).max(90).pipe(FINITE("lat must be finite")),
+  lng: z.number().min(-180).max(180).pipe(FINITE("lng must be finite")),
   duration_minutes: z.number().int().min(0).max(24 * 60),
   source_tour_keys: z.array(z.string().min(1).max(120)).max(50),
 });
