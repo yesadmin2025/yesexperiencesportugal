@@ -57,6 +57,7 @@ import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
 import { pickBlueprint, type StudioBlueprint, type EngineRegion } from "@/lib/studio-v2/blueprints";
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
+import { validateRevealProps } from "@/lib/studio-v2/reveal-props";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { FinalBookingPanel } from "./conversion/FinalBookingPanel";
 
