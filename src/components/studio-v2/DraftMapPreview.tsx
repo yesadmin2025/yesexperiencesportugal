@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MapPin, Users, Clock3, ArrowRight } from "lucide-react";
+import { MapPin, Users, Clock3, ArrowRight, ShieldCheck } from "lucide-react";
 import type { RefineStop } from "./RefineStage";
 
 /**
