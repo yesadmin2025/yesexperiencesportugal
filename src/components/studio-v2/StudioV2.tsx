@@ -57,6 +57,7 @@ import { createStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { composeRealItinerary } from "@/lib/studio-v2/itinerary.functions";
 import { pickBlueprint, type StudioBlueprint, type EngineRegion } from "@/lib/studio-v2/blueprints";
 import { createCustomBookingDraft } from "@/lib/studio-v2/bookings.functions";
+import { validateRevealProps } from "@/lib/studio-v2/reveal-props";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { FinalBookingPanel } from "./conversion/FinalBookingPanel";
 
@@ -1801,6 +1802,21 @@ function RevealStory({
   // Static editorial framing carries the reveal.
   const ai = null as { title: string; subtitle: string } | null;
 
+  // Runtime guard for the Reveal contract. The map / itinerary / booking
+  // panel all assume real geocoded stops + a non-empty pickup + sane pax.
+  // Anything else is a regression — fail closed and let the static fallback
+  // handle the surface (see RevealValidationNotice below).
+  const revealValidation = useMemo(
+    () =>
+      validateRevealProps({
+        stops: editedStops ?? null,
+        pax,
+        pickup,
+      }),
+    [editedStops, pax, pickup],
+  );
+  const revealReady = real != null && revealValidation.ok;
+
 
   return (
     <section className="mb-10">
@@ -1823,12 +1839,12 @@ function RevealStory({
 
       {/* Inline draft preview — same map language as the homepage demo,
           bound to the real edited stops. The builder visibly produces. */}
-      {real && editedStops && editedStops.length >= 2 && (
+      {revealReady && revealValidation.ok && (
         <div className="mb-8">
           <DraftMapPreview
-            stops={editedStops}
-            pax={pax}
-            pickup={pickup || "Lisboa"}
+            stops={revealValidation.data.stops}
+            pax={revealValidation.data.pax}
+            pickup={revealValidation.data.pickup}
             durationHours={blueprint?.durationHours ?? [7, 9]}
             pricePerGuestFrom={blueprint?.pricePerGuestFrom ?? 145}
             onEdit={() => {
@@ -1839,6 +1855,24 @@ function RevealStory({
           />
         </div>
       )}
+
+      {/* Dev-only notice when the Reveal contract fails. Silent in prod. */}
+      {!revealValidation.ok && import.meta.env.DEV && real && (
+        <div
+          role="status"
+          className="mb-6 rounded-[2px] border px-4 py-3 text-[12px]"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 50%, transparent)",
+            color: "var(--charcoal)",
+          }}
+        >
+          <strong>Reveal props invalid (dev only).</strong> Map and booking
+          surface skipped — fix the upstream payload. Issues:{" "}
+          {revealValidation.issues.join(" · ")}
+        </div>
+      )}
+
 
       {/* StoryOpener kept on a hidden flag — restore later if cinematic
           opener is reinstated. */}
@@ -2062,14 +2096,14 @@ function RevealStory({
           modal until enabled) + SECONDARY "Refine with a local designer first"
           (WhatsApp pre-filled with the full draft). Replaces the older
           ConversionStage three-path router on this surface. */}
-      {real && editedStops && editedStops.length >= 2 && (
+      {revealReady && revealValidation.ok && (
         <FinalBookingPanel
           profile={profile}
           region={region}
           archetype={(profile.archetype as string | undefined) ?? undefined}
-          stops={editedStops}
-          pax={pax}
-          pickup={pickup}
+          stops={revealValidation.data.stops}
+          pax={revealValidation.data.pax}
+          pickup={revealValidation.data.pickup}
           blueprint={blueprint}
         />
       )}
