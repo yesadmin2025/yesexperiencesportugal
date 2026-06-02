@@ -136,6 +136,23 @@ export function DraftMapPreview({
           <rect width={VB_W} height={VB_H} fill="url(#dmp-grid)" />
         </svg>
 
+        {/* Coastline silhouette underlay — matches homepage StudioLivePreview */}
+        <svg aria-hidden className="absolute inset-0 h-full w-full" viewBox={`0 0 ${VB_W} ${VB_H}`} preserveAspectRatio="xMidYMid slice">
+          <path
+            d="M 0 70 C 30 78, 60 96, 90 120 S 130 168, 160 190 S 188 220, 200 232 L 200 260 L 0 260 Z"
+            fill="rgba(41,91,97,0.22)"
+            stroke="rgba(201,169,106,0.18)"
+            strokeWidth="0.6"
+          />
+          <path
+            d="M 0 60 C 28 70, 56 88, 86 112 S 126 158, 156 178 S 188 208, 200 220"
+            fill="none"
+            stroke="rgba(201,169,106,0.20)"
+            strokeWidth="0.5"
+            strokeDasharray="2 3"
+          />
+        </svg>
+
         <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${VB_W} ${VB_H}`} preserveAspectRatio="xMidYMid slice">
           <defs>
             <linearGradient id="dmp-route" x1="0" y1="0" x2="1" y2="1">
@@ -153,18 +170,37 @@ export function DraftMapPreview({
           <path ref={pathRef} d={routeD} fill="none" stroke="url(#dmp-route)" strokeOpacity="1" strokeWidth="1.95" strokeLinecap="round" strokeLinejoin="round"
             strokeDasharray={pathLen} strokeDashoffset={active ? 0 : pathLen}
             style={{ transition: "stroke-dashoffset 2400ms cubic-bezier(0.22, 0.61, 0.36, 1)" }} />
-          {projected.map((s, i) => (
-            <g key={s.id}
-              style={{
-                opacity: active ? 1 : 0,
-                transform: active ? "translateY(0)" : "translateY(4px)",
-                transition: `opacity 520ms ease ${i * 220}ms, transform 520ms ease ${i * 220}ms`,
-              }}>
-              <circle cx={s.x} cy={s.y} r="8" fill="none" stroke="var(--gold)" strokeWidth="1.2" />
-              <circle cx={s.x} cy={s.y} r="3.4" fill="var(--charcoal-deep, #1a1a1a)" />
-              <circle cx={s.x} cy={s.y} r="2.6" fill={i === 0 ? "var(--teal-2)" : "var(--gold)"} />
-            </g>
-          ))}
+          {projected.map((s, i) => {
+            const isEnd = i === 0 || i === projected.length - 1;
+            return (
+              <g key={s.id}
+                style={{
+                  opacity: active ? 1 : 0,
+                  transform: active ? "translateY(0)" : "translateY(4px)",
+                  transition: `opacity 520ms ease ${i * 220}ms, transform 520ms ease ${i * 220}ms`,
+                  transformBox: "fill-box",
+                  transformOrigin: `${s.x}px ${s.y}px`,
+                }}>
+                <circle cx={s.x} cy={s.y} r="8" fill="none" stroke="var(--gold)" strokeWidth="1.2" />
+                {isEnd && (
+                  <circle
+                    cx={s.x}
+                    cy={s.y}
+                    r="6"
+                    fill="var(--gold)"
+                    opacity="0.18"
+                    className={active ? "dmp-pulse" : ""}
+                    style={{ animationDelay: `${i * 220 + 600}ms` }}
+                  />
+                )}
+                <circle cx={s.x} cy={s.y} r="3.4" fill="var(--charcoal-deep, #1a1a1a)" />
+                <circle cx={s.x} cy={s.y} r="2.6" fill={i === 0 ? "var(--teal-2)" : "var(--gold)"} />
+                {i === projected.length - 1 && (
+                  <circle cx={s.x} cy={s.y} r="1.1" fill="var(--ivory)" opacity="0.95" />
+                )}
+              </g>
+            );
+          })}
         </svg>
 
         <ul aria-hidden className="pointer-events-none absolute inset-0 m-0 list-none p-0">
@@ -193,7 +229,32 @@ export function DraftMapPreview({
             );
           })}
         </ul>
+
+        {/* Quality badge — trust signal mirroring homepage */}
+        <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 backdrop-blur-[2px]"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
+            background: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+          }}>
+          <ShieldCheck size={11} aria-hidden style={{ color: "var(--gold)" }} />
+          <span className="text-[9.5px] uppercase tracking-[0.24em] font-semibold tabular-nums" style={{ color: "var(--ivory)" }}>
+            Quality 94
+          </span>
+        </div>
+
+        {/* Caption overlay — same anchor as homepage */}
+        <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3"
+          style={{ color: "color-mix(in oklab, var(--ivory) 90%, transparent)" }}>
+          <p className="text-[10px] uppercase tracking-[0.32em]" style={{ color: "var(--gold)" }}>
+            Your draft
+          </p>
+          <p className="text-[10px] uppercase tracking-[0.28em] tabular-nums"
+            style={{ color: "color-mix(in oklab, var(--ivory) 60%, transparent)" }}>
+            {stops.length} stops · {hrs}h
+          </p>
+        </div>
       </div>
+
 
       {/* Investment + CTA band */}
       <div className="relative z-10 border-t px-4 md:px-5 py-3.5"
