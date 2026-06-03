@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-03T19:38:21.152Z",
-  "filesScanned": 319,
+  "generatedAt": "2026-06-03T20:55:45.080Z",
+  "filesScanned": 322,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,9 +18,9 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 219,
+    "total": 220,
     "approved": 62,
-    "allowlisted": 26,
+    "allowlisted": 27,
     "mismatch": 131
   },
   "findings": [
@@ -683,7 +683,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 57,
+      "line": 46,
       "col": 293,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +692,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 60,
+      "line": 49,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 89,
+      "line": 78,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,11 +710,11 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 164,
-      "col": 317,
+      "line": 154,
+      "col": 318,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
+      "snippet": "className={`text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outli",
       "status": "approved"
     },
     {
@@ -1016,7 +1016,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 88,
+      "line": 89,
       "col": 80,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -1025,7 +1025,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 152,
+      "line": 153,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1034,7 +1034,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 174,
+      "line": 175,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1043,7 +1043,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 206,
+      "line": 207,
       "col": 266,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1052,7 +1052,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 224,
+      "line": 225,
       "col": 203,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1061,7 +1061,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 224,
+      "line": 225,
       "col": 298,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1070,7 +1070,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 364,
+      "line": 368,
       "col": 18,
       "raw": "#2A1F14",
       "normalized": "#2a1f14",
@@ -1220,6 +1220,15 @@
       "normalized": "#5bb0ba",
       "snippet": "<span className=\"h-1.5 w-2.5\" style={{ background: \"#5BB0BA\" }} />",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/ShapeYourDay.tsx",
+      "line": 106,
+      "col": 23,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "background: #FFFFFF;",
+      "status": "allowlisted"
     },
     {
       "file": "src/components/studio-v2/DraftMapPreview.tsx",
@@ -1718,7 +1727,7 @@
     },
     {
       "file": "src/routes/index.tsx",
-      "line": 679,
+      "line": 667,
       "col": 86,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1727,7 +1736,7 @@
     },
     {
       "file": "src/routes/index.tsx",
-      "line": 830,
+      "line": 818,
       "col": 114,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
