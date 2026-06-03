@@ -23,6 +23,7 @@ import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { ThreePathsSection } from "@/components/home/ThreePathsSection";
+import { RecentJourney } from "@/components/home/RecentJourney";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
