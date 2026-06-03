@@ -1,25 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Facebook, Youtube, Linkedin } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 /**
- * Footer — 4-column nav with logo + tagline on desktop,
- * stacked on mobile. Per v3 homepage spec:
- *   col 1: Experiences
- *   col 2: Occasions
- *   col 3: Company
- *   col 4: Connect (social icons)
- *
- * Logo + tagline sit ABOVE the column grid so the 4 columns get
- * proportionate space at desktop instead of being squeezed beside
- * a logo block. On mobile everything stacks vertically.
+ * Footer — 3-column nav with logo + tagline on desktop, stacked on
+ * mobile. Per Phase 1 ajuste: Connect column removed (no confirmed
+ * social handles yet). Cols: Experiences · Occasions · Company.
  */
-const SOCIALS = [
-  { href: "https://instagram.com/", label: "Instagram", Icon: Instagram },
-  { href: "https://facebook.com/", label: "Facebook", Icon: Facebook },
-  { href: "https://youtube.com/", label: "YouTube", Icon: Youtube },
-  { href: "https://linkedin.com/", label: "LinkedIn", Icon: Linkedin },
-];
+
 
 export function Footer() {
   return (
