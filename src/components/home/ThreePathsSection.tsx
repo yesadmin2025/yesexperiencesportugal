@@ -90,32 +90,6 @@ export function ThreePathsSection() {
           margin: 0 auto;
           padding: 0 20px;
         }
-        .three-paths-title {
-          font-family: var(--font-serif);
-          color: var(--charcoal);
-          font-weight: 500;
-          font-size: 2rem;
-          line-height: 1.1;
-          letter-spacing: -0.018em;
-          text-align: center;
-          max-width: 640px;
-          margin: 0 auto 40px auto;
-        }
-        .three-paths-title em {
-          font-style: italic;
-          font-weight: 400;
-          color: var(--teal);
-        }
-        @media (min-width: 640px) {
-          .three-paths-title { font-size: 2.4rem; }
-        }
-        @media (min-width: 768px) {
-          .three-paths-title {
-            font-size: 3.6rem;
-            line-height: 1.0;
-            margin: 0 auto 56px auto;
-          }
-        }
         .three-paths-grid {
           display: grid;
           grid-template-columns: 1fr;
@@ -149,7 +123,7 @@ export function ThreePathsSection() {
           .path-card:hover { transform: none; }
         }
         .path-label {
-          font-family: var(--font-sans, Inter), system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 10px;
           text-transform: uppercase;
           letter-spacing: 2.5px;
@@ -157,21 +131,9 @@ export function ThreePathsSection() {
           margin-bottom: 14px;
           font-weight: 500;
         }
-        .path-title {
-          font-family: var(--font-serif);
-          color: var(--charcoal);
-          font-size: 1.5rem;
-          font-weight: 500;
-          line-height: 1.2;
-          letter-spacing: -0.015em;
-          margin-bottom: 14px;
-        }
-        @media (min-width: 768px) {
-          .path-title { font-size: 1.75rem; }
-        }
 
         .path-body {
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 15px;
           line-height: 1.65;
           color: rgba(46, 46, 46, 0.72);
@@ -179,9 +141,10 @@ export function ThreePathsSection() {
           flex-grow: 1;
         }
         .path-cta {
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 13px;
           font-weight: 500;
+
           color: #295B61;
           background: none;
           border: none;
@@ -206,8 +169,14 @@ export function ThreePathsSection() {
       `}</style>
 
       <div className="three-paths-inner">
-        <h2 id="three-paths-title" className="three-paths-title">
-          However you want <em>to experience Portugal.</em>
+        <h2
+          id="three-paths-title"
+          className="serif text-center max-w-[640px] mx-auto mb-10 md:mb-14 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+        >
+          However you want{" "}
+          <span className="italic font-normal text-[color:var(--teal)]">
+            to experience Portugal.
+          </span>
         </h2>
 
 
@@ -218,7 +187,10 @@ export function ThreePathsSection() {
             const Inner = (
               <>
                 <div className="path-label">{p.label}</div>
-                <h3 className="path-title">{p.title}</h3>
+                <h3 className="serif text-[1.6rem] md:text-[2.1rem] leading-[1.14] md:leading-[1.08] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium mb-3.5">
+                  {p.title}
+                </h3>
+
                 <p className="path-body">{p.body}</p>
                 <span className="path-cta">
                   {p.cta} <span className="path-cta__arrow" aria-hidden="true">→</span>
