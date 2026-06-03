@@ -814,10 +814,10 @@ function HomePage() {
               {
                 Icon: MapPin,
                 num: "04",
-                label: "Three ways to shape it",
-                title: (<>Three ways to <span className="italic">shape it.</span></>),
-                body: (<>Start with a Signature, tailor details, or build from scratch in the Studio.</>),
-                pull: "Choose, tailor, or build.",
+                label: "Your pace",
+                title: (<>Slow or <span className="italic">full.</span></>),
+                body: (<>You set the rhythm — we make it work, whether that's one relaxed stop or a complete day.</>),
+                pull: "You set the rhythm.",
               },
             ].map((b) => (
               <li
