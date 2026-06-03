@@ -244,17 +244,17 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "YES experiences Portugal — Portugal is the stage. You write the story." },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
-      { name: "description", content: HERO_COPY.subheadline },
+      { name: "description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
       {
         property: "og:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "og:description", content: HERO_COPY.subheadline },
+      { property: "og:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
       {
         property: "twitter:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "twitter:description", content: HERO_COPY.subheadline },
+      { property: "twitter:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
