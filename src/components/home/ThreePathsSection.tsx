@@ -9,6 +9,7 @@
 import { Link } from "@tanstack/react-router";
 
 type Path = {
+  num: string;
   label: string;
   title: React.ReactNode;
   body: string;
@@ -23,6 +24,7 @@ const BESPOKE_WHATSAPP =
 
 const PATHS: Path[] = [
   {
+    num: "01",
     label: "Day experiences",
     title: (
       <>
@@ -38,6 +40,7 @@ const PATHS: Path[] = [
     variant: "default",
   },
   {
+    num: "02",
     label: "Bespoke travel designer",
     title: (
       <>
@@ -54,6 +57,7 @@ const PATHS: Path[] = [
     variant: "bespoke",
   },
   {
+    num: "03",
     label: "Occasions",
     title: (
       <>
@@ -74,11 +78,11 @@ export function ThreePathsSection() {
   return (
     <section
       aria-labelledby="three-paths-title"
-      style={{ background: "#FAF8F3" }}
       className="three-paths-section"
     >
       <style>{`
         .three-paths-section {
+          background: var(--ivory);
           padding: 56px 0;
         }
         @media (min-width: 768px) {
@@ -93,56 +97,101 @@ export function ThreePathsSection() {
         .three-paths-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 20px;
+          gap: 14px;
         }
         @media (min-width: 900px) {
           .three-paths-grid {
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            gap: 16px;
           }
         }
         .path-card {
-          padding: 36px 32px;
-          border-radius: 10px;
-          border-left: 3px solid var(--gold);
-          background: #FFFFFF;
-          transition: transform 250ms ease, box-shadow 250ms ease;
+          position: relative;
+          overflow: hidden;
+          padding: 24px 20px 22px;
+          min-height: 254px;
+          border-radius: 6px;
+          border: 1px solid color-mix(in oklab, var(--gold-soft) 62%, transparent);
+          background: var(--ivory);
+          color: var(--charcoal);
+          box-shadow: 0 1px 2px rgba(46, 46, 46, 0.04);
+          transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
           display: flex;
           flex-direction: column;
+          text-decoration: none;
+        }
+        .path-card::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: var(--gold);
         }
         .path-card--bespoke {
           background: var(--sand);
-          border-left-color: var(--teal);
+          border-color: color-mix(in oklab, var(--teal) 42%, var(--gold-soft));
+        }
+        .path-card--bespoke::before {
+          background: var(--teal);
         }
         .path-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+          transform: translateY(-2px);
+          border-color: color-mix(in oklab, var(--gold) 62%, transparent);
+          box-shadow: 0 16px 36px rgba(20, 21, 24, 0.08);
+        }
+        .path-card:focus-visible {
+          outline: 2px solid var(--teal);
+          outline-offset: 3px;
+        }
+        .path-card--bespoke:hover {
+          border-color: color-mix(in oklab, var(--teal) 58%, var(--gold-soft));
         }
         @media (prefers-reduced-motion: reduce) {
           .path-card { transition: none; }
           .path-card:hover { transform: none; }
         }
         .path-label {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
           font-family: var(--font-sans);
           font-size: 10.5px;
           text-transform: uppercase;
-          letter-spacing: 0.22em;
+          letter-spacing: 0.24em;
           color: var(--charcoal);
-          margin-bottom: 14px;
+          margin-bottom: 16px;
           font-weight: 600;
+        }
+        .path-label__text {
+          min-width: 0;
+        }
+        .path-label__num {
+          flex: 0 0 auto;
+          font-family: var(--font-serif);
+          font-size: 1.45rem;
+          line-height: 1;
+          font-style: italic;
+          font-weight: 400;
+          letter-spacing: 0;
+          color: var(--gold);
         }
         .path-body {
           font-family: var(--font-sans);
-          font-size: 15px;
+          font-size: 14.5px;
           line-height: 1.65;
           color: var(--charcoal-soft);
-          margin-bottom: 24px;
+          margin: 0 0 24px;
           flex-grow: 1;
         }
         .path-cta {
           font-family: var(--font-sans);
-          font-size: 13px;
-          font-weight: 600;
+          font-size: 11.5px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
           color: var(--teal);
           background: none;
           border: none;
@@ -153,6 +202,10 @@ export function ThreePathsSection() {
           text-decoration: none;
           transition: color 200ms ease;
           align-self: flex-start;
+        }
+        @media (min-width: 768px) {
+          .path-card { padding: 28px 24px 26px; min-height: 294px; }
+          .path-body { font-size: 15px; line-height: 1.7; }
         }
         .path-cta__arrow {
           display: inline-block;
@@ -183,14 +236,17 @@ export function ThreePathsSection() {
 
 
 
-        <div className="three-paths-grid">
+        <div className="three-paths-grid he-stagger">
           {PATHS.map((p) => {
             const cardClass =
-              p.variant === "bespoke" ? "path-card path-card--bespoke" : "path-card";
+              p.variant === "bespoke" ? "path-card path-card--bespoke reveal-stagger" : "path-card reveal-stagger";
             const Inner = (
               <>
-                <div className="path-label">{p.label}</div>
-                <h3 className="serif text-[1.6rem] md:text-[2.1rem] leading-[1.14] md:leading-[1.08] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium mb-3.5">
+                <div className="path-label">
+                  <span className="path-label__text">{p.label}</span>
+                  <span className="path-label__num" aria-hidden="true">{p.num}</span>
+                </div>
+                <h3 className="serif text-[1.35rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium mb-3.5">
                   {p.title}
                 </h3>
 
