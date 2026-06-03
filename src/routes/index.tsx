@@ -600,6 +600,8 @@ function HomePage() {
         </div>
       </section>
 
+      <ThreePathsSection />
+
       {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
           innovation, not just another tile. The section opens with a
