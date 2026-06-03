@@ -117,9 +117,10 @@ export function Navbar() {
                 {n.label}
               </Link>
             ))}
-            <CtaButton to="/builder" variant="primary" size="sm" className="ml-2">
-              Design &amp; Secure
+            <CtaButton to="/studio-v2" variant="primary" size="sm" className="ml-2">
+              Design &amp; Book
             </CtaButton>
+
           </nav>
 
           <button
