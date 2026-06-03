@@ -77,10 +77,10 @@ export interface ApprovedSection {
  * Order:
  *   1.  Hero
  *   2.  Trust strip (reviews + private guide line)
- *   3.  Three paths primer + Experience Studio (promoted)
- *   4.  Why YES (4 manifesto cards)
+ *   3.  Three paths (Day / Bespoke / Occasions cards)
+ *   4.  Experience Studio (promoted)
  *   5.  Signature experiences preview
- *   6.  Occasions band (Proposals + Celebrations + Corporate + Multi-day)
+ *   6.  Occasions band (Proposals + Celebrations + Corporate)
  *   7.  FAQ
  *   8.  Final CTA — talk to a local
  */
@@ -100,15 +100,17 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 3,
-    name: "Three paths primer + Experience Studio (promoted)",
-    ariaLabelledBy: "studio-title",
-    requiredSpacing: { kind: "py", minScale: 20 },
+    name: "Three paths — Day / Bespoke / Occasions",
+    componentTag: "ThreePathsSection",
+    inComponent: true,
+    ariaLabelledBy: "three-paths-title",
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 4,
-    name: "Why YES — editorial manifesto (4 cards)",
-    ariaLabelledBy: "why-yes-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
+    name: "Experience Studio (promoted)",
+    ariaLabelledBy: "studio-title",
+    requiredSpacing: { kind: "py", minScale: 20 },
   },
   {
     order: 5,
@@ -118,8 +120,14 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 6,
-    name: "Occasions band — proposals + celebrations + corporate + multi-day",
+    name: "Occasions band — proposals + celebrations + corporate",
     ariaLabelledBy: "groups-title",
+    requiredSpacing: { kind: "py", minScale: 16 },
+  },
+  {
+    order: 7,
+    name: "FAQ — visible helpful answers",
+    ariaLabelledBy: "faq-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {

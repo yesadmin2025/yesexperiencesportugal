@@ -14,16 +14,10 @@ import heroImg from "@/assets/hero-coast.jpg";
 import imgArrabidaViewpoint from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraCaboDaRoca from "@/assets/tours/sintra-cascais/cabo-da-roca.jpg";
-import imgTomarCoimbra from "@/assets/tours/tomar-coimbra/hero.jpg";
 
 import {
-  ArrowRight,
   Star,
-  Sparkles,
-  MapPin,
   MessageCircle,
-  Compass,
-  Feather,
 } from "lucide-react";
 import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
@@ -203,28 +197,6 @@ const groupsAndCelebrations = [
     to: "/corporate",
     img: imgSintraCaboDaRoca,
   },
-  {
-    id: "multi-day",
-    eyebrow: "Multi-day",
-    title: "More than one day. One coherent journey.",
-    line: (
-      <>
-        Build Portugal across regions with realistic timing and{" "}
-        <span className="kw">local flow</span>.
-      </>
-    ),
-    pull: "A real journey, not a checklist.",
-    detail: "Any length · local-designed",
-    handles: [
-      "Route planning across regions",
-      "Curated overnight stops",
-      "Daily local support",
-    ],
-    trust: "Designed in conversation with a local team.",
-    cta: "Plan a Multi-Day Journey",
-    to: "/multi-day",
-    img: imgTomarCoimbra,
-  },
 ] as const;
 
 
@@ -331,9 +303,9 @@ function HomePage() {
 
   const TRACKED_IDS = [
     "reviews",
+    "three-paths",
     "builder",
     "studio",
-    "why-yes",
     "signatures",
     "occasions",
     "faq",
@@ -341,10 +313,6 @@ function HomePage() {
   ] as const;
 
   const HASH_ALIASES: Record<string, string> = {
-    // Why YES
-    "why-yes": "why-yes",
-    whyyes: "why-yes",
-    why: "why-yes",
     // Builder / Studio — Studio is its own anchor inside the builder section
     build: "builder",
     builder: "builder",
@@ -619,71 +587,6 @@ function HomePage() {
         aria-labelledby="studio-title"
       >
         <div className="container-x">
-          {/* Three paths primer — compact horizontal strip on desktop,
-              stacked on mobile. No images, no large surfaces; numbered
-              labels + a one-line definition each. Establishes the
-              vocabulary used everywhere downstream. */}
-          <div className="reveal max-w-5xl mx-auto mb-10 md:mb-14">
-            <div className="text-center">
-              <span className="he-eyebrow-bar mb-5">Three ways in</span>
-              <h2
-                id="paths-title"
-                className="serif mt-3 text-[1.7rem] sm:text-[1.95rem] md:text-[2.4rem] leading-[1.18] md:leading-[1.1] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium"
-              >
-                Three ways to <span className="italic font-normal text-[color:var(--teal)]">begin.</span>
-              </h2>
-              <p className="mt-4 text-[14.5px] md:text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-md mx-auto">
-                Choose a ready-made Signature, tailor the details, or build from scratch.
-              </p>
-            </div>
-            <ol
-              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 list-none p-0"
-              aria-label="Three paths to shape your Portugal experience"
-            >
-              {[
-                {
-                  num: "01",
-                  label: "Signature",
-                  body: "Ready-to-book private experiences.",
-                  to: "/experiences",
-                },
-                {
-                  num: "02",
-                  label: "Tailored",
-                  body: "Adjust selected details inside a Signature.",
-                  to: "/experiences",
-                },
-                {
-                  num: "03",
-                  label: "Studio",
-                  body: "Create from scratch in real time.",
-                  to: "/studio-v2",
-                },
-              ].map((p) => (
-                <li
-                  key={p.num}
-                  className="reveal-stagger relative"
-                >
-                  <Link
-                    to={p.to}
-                    aria-label={`${p.label} — ${p.body}`}
-                    className="flex items-start gap-3.5 rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] px-4 py-3.5 md:px-5 md:py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-                  >
-                    <span className="shrink-0 serif italic text-[1.55rem] md:text-[1.75rem] leading-none text-[color:var(--gold)] tabular-nums">{p.num}</span>
-                    <div className="flex flex-col">
-                      <span className="text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
-                        {p.label}
-                      </span>
-                      <p className="mt-1 text-[13px] md:text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">
-                        {p.body}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </div>
-
           {/* Inner anchor target for /#studio — sits right before the
               "Create it live." rail so deep-links land on the Studio
               block, not the wider builder eyebrow. scroll-mt matches
@@ -752,114 +655,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 4 — WHY YES
-          Editorial manifesto — 4 modular cards (down from 5 per the
-          approved consolidation). Each card carries a number, icon,
-          label, serif headline, body and one strategic phrase.
-          Closing microline keeps the "a local is always one message
-          away" reassurance. */}
-      <section
-        id="why-yes"
-        className="he-section-rule section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-        aria-labelledby="why-yes-title"
-      >
-        <div className="container-x">
-          <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
-            <span className="he-eyebrow-bar mb-5">Why YES</span>
-            <h2
-              id="why-yes-title"
-              className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
-            >
-              Portugal feels different to <span className="italic font-normal text-[color:var(--teal)]">everyone.</span>
-            </h2>
-            <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-xl mx-auto">
-              That's why YES lets you choose, shape and book private experiences around your <span className="kw">rhythm</span>, occasion and intention.
-            </p>
-            <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
-          </div>
 
-          {/* 4-card editorial grid (consolidated from 5). 2-col desktop,
-              stacked mobile. Each card: number, icon, label, serif
-              headline, body, strategic phrase. */}
-          <ul className="he-stagger max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3.5 md:gap-4 list-none p-0">
-            {[
-              {
-                Icon: Feather,
-                num: "01",
-                label: "You decide",
-                title: (<>You shape the <span className="italic">story.</span></>),
-                body: (<>Choose the rhythm, places and feeling you want to take home.</>),
-                pull: "Designed around you, not a template.",
-              },
-              {
-                Icon: Compass,
-                num: "02",
-                label: "Local from the start",
-                title: (<>Local <span className="italic">from the start.</span></>),
-                body: (<>Real <span className="kw">local knowledge</span> guides the route, timing and hidden details.</>),
-                pull: "Locals on the ground, not call-centres.",
-              },
-              {
-                Icon: Sparkles,
-                num: "03",
-                label: "Any occasion",
-                title: (<>Any <span className="italic">occasion.</span></>),
-                body: (<>Private days, proposals, celebrations, corporate moments or full journeys.</>),
-                pull: "The intention shapes the day.",
-              },
-              {
-                Icon: MapPin,
-                num: "04",
-                label: "Your pace",
-                title: (<>Slow or <span className="italic">full.</span></>),
-                body: (<>You set the rhythm — we make it work, whether that's one relaxed stop or a complete day.</>),
-                pull: "You set the rhythm.",
-              },
-            ].map((b) => (
-              <li
-                key={b.num}
-                className="reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_rgba(46,46,46,0.04)] overflow-hidden"
-              >
-                <span aria-hidden="true" className="gold-rule absolute left-0 top-0" />
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-0 bottom-0 h-px w-full origin-left scale-x-0 bg-[color:var(--gold)]/55 transition-transform duration-500 ease-out group-hover:scale-x-100"
-                />
-                <div className="flex items-start justify-between gap-4 pr-1">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--ivory)] transition-all duration-300 group-hover:border-[color:var(--gold)]/60 group-hover:scale-[1.05]">
-                    <b.Icon
-                      size={16}
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                      className="text-[color:var(--teal)] transition-transform duration-300 ease-out group-hover:translate-x-0.5"
-                    />
-                  </span>
-                  <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-light tabular-nums">
-                    {b.num}
-                  </span>
-                </div>
-                <span className="mt-4 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
-                  {b.label}
-                </span>
-                <h3 className="serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
-                  {b.title}
-                </h3>
-                <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6]">
-                  {b.body}
-                </p>
-                <p className="he-pull mt-4 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)]">
-                  {b.pull}
-                </p>
-              </li>
-            ))}
-          </ul>
 
-          <p className="reveal mt-10 md:mt-12 text-center inline-flex flex-wrap w-full items-center justify-center gap-x-2 gap-y-1 px-4 text-[14px] md:text-[15px] leading-[1.6] tracking-[0.005em] text-[color:var(--charcoal-soft)]">
-            <MessageCircle size={14} aria-hidden="true" className="shrink-0 text-[color:var(--teal)]" />
-            <span className="text-balance">Need help shaping it? <span className="text-[color:var(--charcoal)]">A local is one message away.</span></span>
-          </p>
-        </div>
-        </section>
 
 
       {/* 5a — PathfinderQuiz removed from homepage (file kept). */}
@@ -1122,7 +919,6 @@ function HomePage() {
                         m.id === "proposals" ? "var(--gold)" :
                         m.id === "celebrations" ? "var(--teal-2)" :
                         m.id === "corporate" ? "var(--teal)" :
-                        m.id === "multi-day" ? "var(--gold-soft)" :
                         "var(--charcoal)";
                       return (
                         <>
