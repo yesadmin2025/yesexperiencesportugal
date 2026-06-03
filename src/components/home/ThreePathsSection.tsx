@@ -9,6 +9,7 @@
 import { Link } from "@tanstack/react-router";
 
 type Path = {
+  num: string;
   label: string;
   title: React.ReactNode;
   body: string;
@@ -23,6 +24,7 @@ const BESPOKE_WHATSAPP =
 
 const PATHS: Path[] = [
   {
+    num: "01",
     label: "Day experiences",
     title: (
       <>
@@ -38,6 +40,7 @@ const PATHS: Path[] = [
     variant: "default",
   },
   {
+    num: "02",
     label: "Bespoke travel designer",
     title: (
       <>
@@ -54,6 +57,7 @@ const PATHS: Path[] = [
     variant: "bespoke",
   },
   {
+    num: "03",
     label: "Occasions",
     title: (
       <>
