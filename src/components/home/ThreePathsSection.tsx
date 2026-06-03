@@ -104,15 +104,15 @@ export function ThreePathsSection() {
         .path-card {
           padding: 36px 32px;
           border-radius: 10px;
-          border-left: 3px solid #C9A96A;
+          border-left: 3px solid var(--gold);
           background: #FFFFFF;
           transition: transform 250ms ease, box-shadow 250ms ease;
           display: flex;
           flex-direction: column;
         }
         .path-card--bespoke {
-          background: #F4EFE7;
-          border-left-color: #295B61;
+          background: var(--sand);
+          border-left-color: var(--teal);
         }
         .path-card:hover {
           transform: translateY(-4px);
@@ -124,28 +124,26 @@ export function ThreePathsSection() {
         }
         .path-label {
           font-family: var(--font-sans);
-          font-size: 10px;
+          font-size: 10.5px;
           text-transform: uppercase;
-          letter-spacing: 2.5px;
-          color: #C9A96A;
+          letter-spacing: 0.22em;
+          color: var(--charcoal);
           margin-bottom: 14px;
-          font-weight: 500;
+          font-weight: 600;
         }
-
         .path-body {
           font-family: var(--font-sans);
           font-size: 15px;
           line-height: 1.65;
-          color: rgba(46, 46, 46, 0.72);
+          color: var(--charcoal-soft);
           margin-bottom: 24px;
           flex-grow: 1;
         }
         .path-cta {
           font-family: var(--font-sans);
           font-size: 13px;
-          font-weight: 500;
-
-          color: #295B61;
+          font-weight: 600;
+          color: var(--teal);
           background: none;
           border: none;
           padding: 0;
@@ -160,12 +158,13 @@ export function ThreePathsSection() {
           display: inline-block;
           transition: transform 200ms ease;
         }
-        .path-cta:hover { color: #C9A96A; }
+        .path-cta:hover { color: var(--gold); }
         .path-cta:hover .path-cta__arrow { transform: translateX(4px); }
         @media (prefers-reduced-motion: reduce) {
           .path-cta, .path-cta__arrow { transition: none; }
           .path-cta:hover .path-cta__arrow { transform: none; }
         }
+
       `}</style>
 
       <div className="three-paths-inner">
