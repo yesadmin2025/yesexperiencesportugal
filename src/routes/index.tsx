@@ -303,9 +303,9 @@ function HomePage() {
 
   const TRACKED_IDS = [
     "reviews",
+    "three-paths",
     "builder",
     "studio",
-    "why-yes",
     "signatures",
     "occasions",
     "faq",
@@ -313,10 +313,6 @@ function HomePage() {
   ] as const;
 
   const HASH_ALIASES: Record<string, string> = {
-    // Why YES
-    "why-yes": "why-yes",
-    whyyes: "why-yes",
-    why: "why-yes",
     // Builder / Studio — Studio is its own anchor inside the builder section
     build: "builder",
     builder: "builder",
