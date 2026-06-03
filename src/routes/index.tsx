@@ -28,6 +28,7 @@ import {
 import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
+import { ThreePathsSection } from "@/components/home/ThreePathsSection";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -598,6 +599,8 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      <ThreePathsSection />
 
       {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
