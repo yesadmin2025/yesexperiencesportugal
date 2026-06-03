@@ -24,6 +24,7 @@ import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
+import { Route as BespokeRouteImport } from './routes/bespoke'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -122,6 +123,11 @@ const BuilderRoute = BuilderRouteImport.update({
 const BrandQaRoute = BrandQaRouteImport.update({
   id: '/brand-qa',
   path: '/brand-qa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BespokeRoute = BespokeRouteImport.update({
+  id: '/bespoke',
+  path: '/bespoke',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -249,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/bespoke': typeof BespokeRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
@@ -290,6 +297,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/bespoke': typeof BespokeRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
@@ -332,6 +340,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/bespoke': typeof BespokeRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
@@ -375,6 +384,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/bespoke'
     | '/brand-qa'
     | '/builder'
     | '/contact'
@@ -416,6 +426,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/bespoke'
     | '/brand-qa'
     | '/builder'
     | '/contact'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/bespoke'
     | '/brand-qa'
     | '/builder'
     | '/contact'
@@ -499,6 +511,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  BespokeRoute: typeof BespokeRoute
   BrandQaRoute: typeof BrandQaRoute
   BuilderRoute: typeof BuilderRoute
   ContactRoute: typeof ContactRoute
@@ -639,6 +652,13 @@ declare module '@tanstack/react-router' {
       path: '/brand-qa'
       fullPath: '/brand-qa'
       preLoaderRoute: typeof BrandQaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bespoke': {
+      id: '/bespoke'
+      path: '/bespoke'
+      fullPath: '/bespoke'
+      preLoaderRoute: typeof BespokeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -852,6 +872,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  BespokeRoute: BespokeRoute,
   BrandQaRoute: BrandQaRoute,
   BuilderRoute: BuilderRoute,
   ContactRoute: ContactRoute,
@@ -889,12 +910,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
