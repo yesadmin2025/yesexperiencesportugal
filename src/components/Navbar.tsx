@@ -159,14 +159,15 @@ export function Navbar() {
               </Link>
             ))}
             <CtaButton
-              to="/builder"
+              to="/studio-v2"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"
               className="mt-3"
             >
-              Design &amp; Secure Your Experience
+              Design &amp; Book Your Experience
             </CtaButton>
+
           </div>
         </div>
       )}
