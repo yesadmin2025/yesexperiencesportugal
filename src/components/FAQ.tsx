@@ -38,26 +38,11 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What is the difference between Signature, Tailored and Studio?",
     a: (
       <>
-        <strong className="font-semibold text-[color:var(--charcoal)]">
-          Signature
-        </strong>{" "}
-        — a complete day, ready as it is, designed end to end by our local
-        team.
+        Signature is a ready-to-book private experience — confirmed as it is, with everything included.
         <br />
-        <strong className="font-semibold text-[color:var(--charcoal)]">
-          Tailored
-        </strong>{" "}
-        — that same Signature, with a few details adjusted: pace, timing,
-        optional stops, lunch, group needs. Same heart, your rhythm.
+        Tailored lets you adjust selected details inside a Signature: pickup location, language, group size or add-ons.
         <br />
-        <strong className="font-semibold text-[color:var(--charcoal)]">
-          Studio
-        </strong>{" "}
-        — design a day from scratch, live, with a local guiding you as you
-        build.
-        <br />
-        Pick the path that matches how you like to plan — there's no wrong
-        one.
+        Studio lets you build from scratch in real time — choose your mood, who's coming and your rhythm, and we draft a private day with real stops and a live price in about 90 seconds.
       </>
     ),
   },
@@ -65,10 +50,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can I speak with a local?",
     a: (
       <>
-        Whenever you want. A local is one message away while you browse,
-        while you build in the Studio, or before you confirm anything. Real
-        people, based here, who know how each day actually runs on the
-        ground.
+        Yes. After every confirmation — Signature, Tailored or Studio — a local from our team reaches out within one working day via WhatsApp to align the final details. For Bespoke Journeys, the conversation starts before anything is confirmed.
       </>
     ),
   },
@@ -76,9 +58,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Are experiences private?",
     a: (
       <>
-        Yes — always. Every experience is just you, your people and your
-        local guide. No mixing with other travellers, no fixed group
-        departures, no scripted commentary.
+        Yes. Every YES experience is private — your group only. We do not combine groups or run shared tours.
       </>
     ),
   },
@@ -86,10 +66,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can I plan proposals or celebrations?",
     a: (
       <>
-        Yes. Proposals, anniversaries, honeymoons, birthdays and family
-        moments — shaped quietly with you, with full discretion and local
-        knowledge behind every detail. These are arranged with our team
-        directly so nothing is left to chance.
+        Yes. We plan the location, timing and details discreetly with local knowledge. Get in touch and we handle everything — from a quiet cliffside moment to a full celebration for a larger group.
       </>
     ),
   },
@@ -97,10 +74,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Do you handle corporate and private groups?",
     a: (
       <>
-        Yes. For teams, incentives and private groups, we combine local
-        experiences, transport, timing and logistics into a day that feels
-        effortless. Invoicing and DMC support included — handled end to end
-        by a local team.
+        Yes — from small executive groups to larger incentive programmes. Full logistics, transport coordination, invoice and DMC support included.
       </>
     ),
   },
@@ -108,9 +82,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can I create multi-day journeys?",
     a: (
       <>
-        Yes. Two to seven days across regions, with realistic driving times,
-        curated overnight stops and daily local support. Designed in
-        conversation with our team — never a copy-paste itinerary.
+        Yes. Multi-day journeys are designed in conversation with our local team — properties confirmed, routes mapped, every day planned with real timing. You receive a complete private travel file before departure.
       </>
     ),
   },
@@ -118,10 +90,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What happens after I confirm?",
     a: (
       <>
-        You receive your confirmation and full details immediately. A local
-        gets in touch within one working day to align pickup, timing and
-        anything else worth confirming before the day. From that point on,
-        you're never on your own.
+        You receive your booking confirmation and full experience details immediately. A local from our team reaches out within one working day via WhatsApp to confirm pickup, align any final details and answer any questions.
       </>
     ),
   },
@@ -129,10 +98,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can I adjust the experience after booking?",
     a: (
       <>
-        Yes — small adjustments are part of the process. Pickup time, pace,
-        a stop you'd like to add or skip, lunch preferences: align them with
-        your local host before the day, by message or call. Bigger changes
-        we'll always look at with you, honestly.
+        Yes, within reason. Contact us via WhatsApp and we will do our best to accommodate changes. Significant changes to itinerary or group size may affect pricing.
       </>
     ),
   },
@@ -140,10 +106,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What if my plans change?",
     a: (
       <>
-        Talk to us as early as you can — the sooner we know, the more room
-        we have to reshape, reschedule or refund within the conditions
-        shared at confirmation. No automated bots, no scripted replies:
-        always a real person from our local team.
+        Free cancellation up to 48 hours before your experience for Signature and Studio bookings. Bespoke Journeys and group bookings have their own terms, shared at the time of confirmation.
       </>
     ),
   },
