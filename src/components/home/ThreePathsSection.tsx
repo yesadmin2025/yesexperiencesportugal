@@ -122,7 +122,15 @@ export function ThreePathsSection() {
           .path-card { transition: none; }
           .path-card:hover { transform: none; }
         }
-
+        .path-label {
+          font-family: var(--font-sans);
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 2.5px;
+          color: #C9A96A;
+          margin-bottom: 14px;
+          font-weight: 500;
+        }
 
         .path-body {
           font-family: var(--font-sans);
