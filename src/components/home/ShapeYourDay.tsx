@@ -211,7 +211,7 @@ export function ShapeYourDay() {
 
       {/* ── Desktop (lg+) — anchored bottom-left card ─────────────── */}
       <div
-        className="hidden lg:flex absolute z-20 left-8 bottom-8"
+        className="hidden lg:block absolute z-20 left-8 bottom-8"
         style={{ width: 340 }}
         aria-label="Shape your day"
       >
