@@ -237,8 +237,7 @@ export function CinematicHero() {
 
       </div>
 
-      {/* ── Shape Your Day — intent-capture overlay ───────────────── */}
-      <ShapeYourDay />
+      {/* ShapeYourDay removed from hero per design brief. */}
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only" aria-hidden="true">
