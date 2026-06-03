@@ -168,15 +168,19 @@ export function ThreePathsSection() {
       `}</style>
 
       <div className="three-paths-inner">
-        <h2
-          id="three-paths-title"
-          className="serif text-center max-w-[640px] mx-auto mb-10 md:mb-14 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
-        >
-          However you want{" "}
-          <span className="italic font-normal text-[color:var(--teal)]">
-            to experience Portugal.
-          </span>
-        </h2>
+        <div className="text-center max-w-[640px] mx-auto mb-10 md:mb-14">
+          <span className="he-eyebrow-bar mb-5">Ways to experience</span>
+          <h2
+            id="three-paths-title"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+          >
+            However you want{" "}
+            <span className="italic font-normal text-[color:var(--teal)]">
+              to experience Portugal.
+            </span>
+          </h2>
+        </div>
+
 
 
         <div className="three-paths-grid">
