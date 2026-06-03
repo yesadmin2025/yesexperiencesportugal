@@ -308,6 +308,7 @@ function HomePage() {
     "builder",
     "studio",
     "signatures",
+    "multi-day",
     "occasions",
     "faq",
     "final-cta",
