@@ -28,6 +28,7 @@ import {
 import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
+import { PathfinderQuiz } from "@/components/home/PathfinderQuiz";
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
@@ -869,6 +870,13 @@ function HomePage() {
           </p>
         </div>
         </section>
+
+
+      {/* 5a — PATHFINDER QUIZ
+          3-question gated quiz routing visitors to the right product
+          (Arrábida / Tróia / Sintra Signature, Studio v2 or Bespoke).
+          State is local-only; resets on reload by design. */}
+      <PathfinderQuiz />
 
 
       {/* 5 — SIGNATURE EXPERIENCES PREVIEW

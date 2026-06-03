@@ -15,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
+import { ShapeYourDay } from "@/components/home/ShapeYourDay";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Single held clip — empty Atlantic coastal road, golden hour
@@ -235,6 +236,9 @@ export function CinematicHero() {
 
 
       </div>
+
+      {/* ── Shape Your Day — intent-capture overlay ───────────────── */}
+      <ShapeYourDay />
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only" aria-hidden="true">
