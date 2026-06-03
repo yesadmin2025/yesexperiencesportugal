@@ -323,7 +323,10 @@ function HomePage() {
     // Signatures
     signature: "signatures",
     signatures: "signatures",
-    // Occasions / Groups (legacy aliases preserved)
+    "multi-day": "multi-day",
+    multiday: "multi-day",
+    journey: "multi-day",
+    journeys: "multi-day",
     occasion: "occasions",
     occasions: "occasions",
     groups: "occasions",
