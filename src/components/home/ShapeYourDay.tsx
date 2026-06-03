@@ -228,7 +228,7 @@ export function ShapeYourDay() {
 
       {/* ── Mobile / tablet (<lg) — collapsed trigger above safe area ─ */}
       <div
-        className="flex lg:hidden absolute z-20 inset-x-4 flex-col"
+        className="block lg:hidden absolute z-20 inset-x-4"
         style={{
           bottom: "max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem))",
         }}
