@@ -7,24 +7,13 @@ import { CtaButton } from "@/components/ui/CtaButton";
 
 const desktopLinks = [
   { to: "/experiences", label: "Experiences" },
-  { to: "/builder", label: "Experience Studio" },
-  { to: "/multi-day", label: "Multi-Day Journeys" },
-  { to: "/corporate", label: "Corporate" },
-  { to: "/proposals", label: "Proposals & Celebrations" },
-  { to: "/local-stories", label: "Local Stories" },
-  { to: "/about", label: "About Us" },
+  { to: "/multi-day", label: "Bespoke Journeys" },
+  { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
 
-const mobileLinks = [
-  { to: "/experiences", label: "Experiences" },
-  { to: "/builder", label: "Design Your Experience" },
-  { to: "/multi-day", label: "Multi-Day Journeys" },
-  { to: "/corporate", label: "Corporate" },
-  { to: "/proposals", label: "Proposals & Celebrations" },
-  { to: "/about", label: "About Us" },
-  { to: "/contact", label: "Contact" },
-];
+const mobileLinks = desktopLinks;
+
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
