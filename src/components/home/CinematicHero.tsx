@@ -364,9 +364,9 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
 
         /* PRIMARY — filled gold, charcoal text */
         .hero-cta--primary {
-          color: #2E2E2E;
-          border: 1px solid #C9A96A;
-          background: #C9A96A;
+          color: var(--charcoal);
+          border: 1px solid var(--gold);
+          background: var(--gold);
           box-shadow:
             0 10px 24px -16px rgba(30, 20, 8, 0.45),
             0 2px 6px -3px rgba(0, 0, 0, 0.18);
@@ -375,7 +375,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         .hero-cta--primary:focus-visible {
           background: #B8985A;
           border-color: #B8985A;
-          color: #2E2E2E;
+          color: var(--charcoal);
           box-shadow:
             0 16px 32px -16px rgba(30, 20, 8, 0.55),
             0 4px 10px -4px rgba(0, 0, 0, 0.25);
@@ -385,16 +385,16 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
 
         /* GHOST — ivory outline, ivory text; hover fills ivory with teal text */
         .hero-cta--ghost {
-          color: #FAF8F3;
-          border: 1px solid #FAF8F3;
+          color: var(--ivory);
+          border: 1px solid var(--ivory);
           background: transparent;
           text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }
         .hero-cta--ghost:hover,
         .hero-cta--ghost:focus-visible {
-          color: #295B61;
-          background: #FAF8F3;
-          border-color: #FAF8F3;
+          color: var(--teal);
+          background: var(--ivory);
+          border-color: var(--ivory);
           text-shadow: none;
           transform: translateY(-1px);
         }

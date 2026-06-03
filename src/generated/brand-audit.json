@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-03T21:38:15.808Z",
-  "filesScanned": 322,
+  "generatedAt": "2026-06-03T23:06:33.573Z",
+  "filesScanned": 323,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 220,
-    "approved": 62,
+    "total": 221,
+    "approved": 61,
     "allowlisted": 27,
-    "mismatch": 131
+    "mismatch": 133
   },
   "findings": [
     {
@@ -1044,37 +1044,37 @@
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 207,
-      "col": 266,
+      "col": 265,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[8px] text-[11px] sm:text-[11.5px] up",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] upp",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 225,
-      "col": 203,
-      "raw": "#FAF8F3",
-      "normalized": "#faf8f3",
-      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[8px] text-[11px] sm:text-[11.5px] uppe",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 225,
-      "col": 298,
+      "line": 220,
+      "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[8px] text-[11px] sm:text-[11.5px] uppe",
+      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] u",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 368,
-      "col": 18,
-      "raw": "#2A1F14",
-      "normalized": "#2a1f14",
-      "snippet": "color: #2A1F14;",
+      "line": 376,
+      "col": 23,
+      "raw": "#B8985A",
+      "normalized": "#b8985a",
+      "snippet": "background: #B8985A;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 377,
+      "col": 25,
+      "raw": "#B8985A",
+      "normalized": "#b8985a",
+      "snippet": "border-color: #B8985A;",
       "status": "mismatch"
     },
     {
@@ -1229,6 +1229,15 @@
       "normalized": "#ffffff",
       "snippet": "background: #FFFFFF;",
       "status": "allowlisted"
+    },
+    {
+      "file": "src/components/home/ThreePathsSection.tsx",
+      "line": 107,
+      "col": 102,
+      "raw": "#EAE2D6",
+      "normalized": "#eae2d6",
+      "snippet": "\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_rgba(46,46,",
+      "status": "mismatch"
     },
     {
       "file": "src/components/studio-v2/DraftMapPreview.tsx",
@@ -1727,7 +1736,7 @@
     },
     {
       "file": "src/routes/index.tsx",
-      "line": 667,
+      "line": 670,
       "col": 86,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1736,7 +1745,7 @@
     },
     {
       "file": "src/routes/index.tsx",
-      "line": 818,
+      "line": 821,
       "col": 114,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
