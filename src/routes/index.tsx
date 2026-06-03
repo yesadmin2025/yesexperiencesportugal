@@ -244,17 +244,17 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "YES experiences Portugal — Portugal is the stage. You write the story." },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
-      { name: "description", content: HERO_COPY.subheadline },
+      { name: "description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
       {
         property: "og:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "og:description", content: HERO_COPY.subheadline },
+      { property: "og:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
       {
         property: "twitter:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "twitter:description", content: HERO_COPY.subheadline },
+      { property: "twitter:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
@@ -641,8 +641,8 @@ function HomePage() {
               </p>
             </div>
             <ol
-              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 list-none p-0"
-              aria-label="Four paths to shape your Portugal experience"
+              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 list-none p-0"
+              aria-label="Three paths to shape your Portugal experience"
             >
               {[
                 {
@@ -662,12 +662,6 @@ function HomePage() {
                   label: "Studio",
                   body: "Create from scratch in real time.",
                   to: "/studio-v2",
-                },
-                {
-                  num: "04",
-                  label: "Proposals",
-                  body: "Bigger moments, planned with care.",
-                  to: "/proposals",
                 },
               ].map((p) => (
                 <li
@@ -820,10 +814,10 @@ function HomePage() {
               {
                 Icon: MapPin,
                 num: "04",
-                label: "Three ways to shape it",
-                title: (<>Three ways to <span className="italic">shape it.</span></>),
-                body: (<>Start with a Signature, tailor details, or build from scratch in the Studio.</>),
-                pull: "Choose, tailor, or build.",
+                label: "Your pace",
+                title: (<>Slow or <span className="italic">full.</span></>),
+                body: (<>You set the rhythm — we make it work, whether that's one relaxed stop or a complete day.</>),
+                pull: "You set the rhythm.",
               },
             ].map((b) => (
               <li

@@ -7,24 +7,13 @@ import { CtaButton } from "@/components/ui/CtaButton";
 
 const desktopLinks = [
   { to: "/experiences", label: "Experiences" },
-  { to: "/builder", label: "Experience Studio" },
-  { to: "/multi-day", label: "Multi-Day Journeys" },
-  { to: "/corporate", label: "Corporate" },
-  { to: "/proposals", label: "Proposals & Celebrations" },
-  { to: "/local-stories", label: "Local Stories" },
-  { to: "/about", label: "About Us" },
+  { to: "/multi-day", label: "Bespoke Journeys" },
+  { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
 
-const mobileLinks = [
-  { to: "/experiences", label: "Experiences" },
-  { to: "/builder", label: "Design Your Experience" },
-  { to: "/multi-day", label: "Multi-Day Journeys" },
-  { to: "/corporate", label: "Corporate" },
-  { to: "/proposals", label: "Proposals & Celebrations" },
-  { to: "/about", label: "About Us" },
-  { to: "/contact", label: "Contact" },
-];
+const mobileLinks = desktopLinks;
+
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -128,9 +117,10 @@ export function Navbar() {
                 {n.label}
               </Link>
             ))}
-            <CtaButton to="/builder" variant="primary" size="sm" className="ml-2">
-              Design &amp; Secure
+            <CtaButton to="/studio-v2" variant="primary" size="sm" className="ml-2">
+              Design &amp; Book
             </CtaButton>
+
           </nav>
 
           <button
@@ -169,14 +159,15 @@ export function Navbar() {
               </Link>
             ))}
             <CtaButton
-              to="/builder"
+              to="/studio-v2"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"
               className="mt-3"
             >
-              Design &amp; Secure Your Experience
+              Design &amp; Book Your Experience
             </CtaButton>
+
           </div>
         </div>
       )}

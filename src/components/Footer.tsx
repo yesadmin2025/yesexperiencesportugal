@@ -1,25 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Facebook, Youtube, Linkedin } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 /**
- * Footer — 4-column nav with logo + tagline on desktop,
- * stacked on mobile. Per v3 homepage spec:
- *   col 1: Experiences
- *   col 2: Occasions
- *   col 3: Company
- *   col 4: Connect (social icons)
- *
- * Logo + tagline sit ABOVE the column grid so the 4 columns get
- * proportionate space at desktop instead of being squeezed beside
- * a logo block. On mobile everything stacks vertically.
+ * Footer — 3-column nav with logo + tagline on desktop, stacked on
+ * mobile. Per Phase 1 ajuste: Connect column removed (no confirmed
+ * social handles yet). Cols: Experiences · Occasions · Company.
  */
-const SOCIALS = [
-  { href: "https://instagram.com/", label: "Instagram", Icon: Instagram },
-  { href: "https://facebook.com/", label: "Facebook", Icon: Facebook },
-  { href: "https://youtube.com/", label: "YouTube", Icon: Youtube },
-  { href: "https://linkedin.com/", label: "LinkedIn", Icon: Linkedin },
-];
+
 
 export function Footer() {
   return (
@@ -65,7 +52,7 @@ export function Footer() {
 
         {/* 4-column nav grid — gap tightened (gap-10 → gap-8) so the column
             cluster reads as a single block, not four separate posters. */}
-        <div className="mt-9 md:mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-8">
+        <div className="mt-9 md:mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-8">
           <FooterCol
             title="Experiences"
             links={[
@@ -92,32 +79,6 @@ export function Footer() {
             ]}
           />
 
-          {/* Connect column — social icons rendered inline as part of
-              the 4-column grid. Each icon is a 44×44 hit target on
-              mobile to satisfy A11y. */}
-          <div>
-            <h4
-              className="font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
-              style={{ fontWeight: 500 }}
-            >
-              Connect
-            </h4>
-            <ul className="flex flex-wrap items-center gap-3 list-none p-0 m-0">
-              {SOCIALS.map(({ href, label, Icon }) => (
-                <li key={label}>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="inline-flex items-center justify-center h-11 w-11 rounded-sm border border-[color:var(--ivory)]/40 text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-warm)] hover:border-[color:var(--gold-warm)]/70 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
-                  >
-                    <Icon size={18} strokeWidth={1.5} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         {/* Bottom bar — copyright + tagline. Quiet, single line. */}
