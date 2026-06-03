@@ -1100,7 +1100,6 @@ function HomePage() {
                         m.id === "proposals" ? "var(--gold)" :
                         m.id === "celebrations" ? "var(--teal-2)" :
                         m.id === "corporate" ? "var(--teal)" :
-                        m.id === "multi-day" ? "var(--gold-soft)" :
                         "var(--charcoal)";
                       return (
                         <>
