@@ -1,22 +1,24 @@
 /**
  * ThreePathsSection — homepage path-choice surface.
  *
- * Three calm cards introducing the ways to experience Portugal:
- * Day experiences, Bespoke Travel Designer (highlighted), Occasions.
- * No prices, no "book/buy" copy — confident, restrained, brand-true.
+ * Three cards mirroring the WhyYes editorial card pattern for full
+ * homepage uniformity: number + icon row, eyebrow label, serif headline
+ * with italic emphasis, body, and a strategic CTA line. No bespoke
+ * styling — all canonical tokens and shared classes.
  */
 
 import { Link } from "@tanstack/react-router";
+import { CalendarDays, Compass, Sparkles, type LucideIcon } from "lucide-react";
 
 type Path = {
   num: string;
+  Icon: LucideIcon;
   label: string;
   title: React.ReactNode;
-  body: string;
+  body: React.ReactNode;
   cta: string;
   href: string;
   external?: boolean;
-  variant: "default" | "bespoke";
 };
 
 const BESPOKE_WHATSAPP =
@@ -25,258 +27,149 @@ const BESPOKE_WHATSAPP =
 const PATHS: Path[] = [
   {
     num: "01",
+    Icon: CalendarDays,
     label: "Day experiences",
     title: (
       <>
-        A private day,
-        <br />
-        shaped around you.
+        A private day, <span className="italic">shaped around you.</span>
       </>
     ),
-    body:
-      "Choose a ready-made Signature, or design your own day from scratch. Private, local, and yours from the first hour to the last.",
+    body: (
+      <>
+        Choose a ready-made Signature, or design your own day from scratch. Private, local, and yours from the first hour to the last.
+      </>
+    ),
     cta: "Explore days",
     href: "/experiences",
-    variant: "default",
   },
   {
     num: "02",
+    Icon: Compass,
     label: "Bespoke travel designer",
     title: (
       <>
-        Some stories need
-        <br />
-        more than one day.
+        Some stories need <span className="italic">more than one day.</span>
       </>
     ),
-    body:
-      "A local shapes your Portugal — region by region, at your pace. It starts with a conversation, and ends with a journey that feels like it was made for you.",
+    body: (
+      <>
+        A local shapes your Portugal — region by region, at your pace. It starts with a conversation, and ends with a journey made for you.
+      </>
+    ),
     cta: "Start the conversation",
     href: BESPOKE_WHATSAPP,
     external: true,
-    variant: "bespoke",
   },
   {
     num: "03",
+    Icon: Sparkles,
     label: "Occasions",
     title: (
       <>
-        Proposals, celebrations
-        <br />
-        and private groups.
+        Proposals, celebrations <span className="italic">and private groups.</span>
       </>
     ),
-    body:
-      "From a quiet moment by the sea to a day for a group of twenty — planned with local care, and complete discretion.",
+    body: (
+      <>
+        From a quiet moment by the sea to a day for a group of twenty — planned with local care, and complete discretion.
+      </>
+    ),
     cta: "Tell us what you have in mind",
     href: "/proposals",
-    variant: "default",
   },
 ];
 
 export function ThreePathsSection() {
   return (
     <section
+      id="three-paths"
       aria-labelledby="three-paths-title"
-      className="three-paths-section"
+      className="he-section-rule section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
-      <style>{`
-        .three-paths-section {
-          background: var(--ivory);
-          padding: 56px 0;
-        }
-        @media (min-width: 768px) {
-          .three-paths-section { padding: 88px 0; }
-        }
-        .three-paths-inner {
-          width: 100%;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 20px;
-        }
-        .three-paths-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 14px;
-        }
-        @media (min-width: 900px) {
-          .three-paths-grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-          }
-        }
-        .path-card {
-          position: relative;
-          overflow: hidden;
-          padding: 24px 20px 22px;
-          min-height: 254px;
-          border-radius: 6px;
-          border: 1px solid color-mix(in oklab, var(--gold-soft) 62%, transparent);
-          background: var(--ivory);
-          color: var(--charcoal);
-          box-shadow: 0 1px 2px rgba(46, 46, 46, 0.04);
-          transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
-          display: flex;
-          flex-direction: column;
-          text-decoration: none;
-        }
-        .path-card::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: var(--gold);
-        }
-        .path-card--bespoke {
-          background: var(--sand);
-          border-color: color-mix(in oklab, var(--teal) 42%, var(--gold-soft));
-        }
-        .path-card--bespoke::before {
-          background: var(--teal);
-        }
-        .path-card:hover {
-          transform: translateY(-2px);
-          border-color: color-mix(in oklab, var(--gold) 62%, transparent);
-          box-shadow: 0 16px 36px rgba(20, 21, 24, 0.08);
-        }
-        .path-card:focus-visible {
-          outline: 2px solid var(--teal);
-          outline-offset: 3px;
-        }
-        .path-card--bespoke:hover {
-          border-color: color-mix(in oklab, var(--teal) 58%, var(--gold-soft));
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .path-card { transition: none; }
-          .path-card:hover { transform: none; }
-        }
-        .path-label {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          font-family: var(--font-sans);
-          font-size: 10.5px;
-          text-transform: uppercase;
-          letter-spacing: 0.24em;
-          color: var(--charcoal);
-          margin-bottom: 16px;
-          font-weight: 600;
-        }
-        .path-label__text {
-          min-width: 0;
-        }
-        .path-label__num {
-          flex: 0 0 auto;
-          font-family: var(--font-serif);
-          font-size: 1.45rem;
-          line-height: 1;
-          font-style: italic;
-          font-weight: 400;
-          letter-spacing: 0;
-          color: var(--gold);
-        }
-        .path-body {
-          font-family: var(--font-sans);
-          font-size: 14.5px;
-          line-height: 1.65;
-          color: var(--charcoal-soft);
-          margin: 0 0 24px;
-          flex-grow: 1;
-        }
-        .path-cta {
-          font-family: var(--font-sans);
-          font-size: 11.5px;
-          font-weight: 700;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: var(--teal);
-          background: none;
-          border: none;
-          padding: 0;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          text-decoration: none;
-          transition: color 200ms ease;
-          align-self: flex-start;
-        }
-        @media (min-width: 768px) {
-          .path-card { padding: 28px 24px 26px; min-height: 294px; }
-          .path-body { font-size: 15px; line-height: 1.7; }
-        }
-        .path-cta__arrow {
-          display: inline-block;
-          transition: transform 200ms ease;
-        }
-        .path-cta:hover { color: var(--gold); }
-        .path-cta:hover .path-cta__arrow { transform: translateX(4px); }
-        @media (prefers-reduced-motion: reduce) {
-          .path-cta, .path-cta__arrow { transition: none; }
-          .path-cta:hover .path-cta__arrow { transform: none; }
-        }
-
-      `}</style>
-
-      <div className="three-paths-inner">
-        <div className="text-center max-w-[640px] mx-auto mb-10 md:mb-14">
+      <div className="container-x">
+        <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
           <span className="he-eyebrow-bar mb-5">Ways to experience</span>
           <h2
             id="three-paths-title"
-            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             However you want{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               to experience Portugal.
             </span>
           </h2>
+          <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 
-
-
-        <div className="three-paths-grid he-stagger">
+        <ul className="he-stagger max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-3.5 md:gap-4 list-none p-0">
           {PATHS.map((p) => {
             const cardClass =
-              p.variant === "bespoke" ? "path-card path-card--bespoke reveal-stagger" : "path-card reveal-stagger";
+              "reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_rgba(46,46,46,0.04)] overflow-hidden no-underline";
+
             const Inner = (
               <>
-                <div className="path-label">
-                  <span className="path-label__text">{p.label}</span>
-                  <span className="path-label__num" aria-hidden="true">{p.num}</span>
+                <span aria-hidden="true" className="gold-rule absolute left-0 top-0" />
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-0 bottom-0 h-px w-full origin-left scale-x-0 bg-[color:var(--gold)]/55 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                />
+                <div className="flex items-start justify-between gap-4 pr-1">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--ivory)] transition-all duration-300 group-hover:border-[color:var(--gold)]/60 group-hover:scale-[1.05]">
+                    <p.Icon
+                      size={16}
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                      className="text-[color:var(--teal)] transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                    />
+                  </span>
+                  <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-light tabular-nums">
+                    {p.num}
+                  </span>
                 </div>
-                <h3 className="serif text-[1.35rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium mb-3.5">
+                <span className="mt-4 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+                  {p.label}
+                </span>
+                <h3 className="serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
                   {p.title}
                 </h3>
-
-                <p className="path-body">{p.body}</p>
-                <span className="path-cta">
-                  {p.cta} <span className="path-cta__arrow" aria-hidden="true">→</span>
+                <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">
+                  {p.body}
+                </p>
+                <span className="he-pull mt-4 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
+                  {p.cta}
+                  <span
+                    aria-hidden="true"
+                    className="not-italic transition-transform duration-300 ease-out group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
                 </span>
               </>
             );
 
             if (p.external) {
               return (
-                <a
-                  key={p.label}
-                  href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cardClass}
-                >
-                  {Inner}
-                </a>
+                <li key={p.label} className="contents">
+                  <a
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cardClass}
+                  >
+                    {Inner}
+                  </a>
+                </li>
               );
             }
             return (
-              <Link key={p.label} to={p.href} className={cardClass}>
-                {Inner}
-              </Link>
+              <li key={p.label} className="contents">
+                <Link to={p.href} className={cardClass}>
+                  {Inner}
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </section>
   );
