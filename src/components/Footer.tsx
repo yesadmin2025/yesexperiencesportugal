@@ -52,7 +52,7 @@ export function Footer() {
 
         {/* 4-column nav grid — gap tightened (gap-10 → gap-8) so the column
             cluster reads as a single block, not four separate posters. */}
-        <div className="mt-9 md:mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-8">
+        <div className="mt-9 md:mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-8">
           <FooterCol
             title="Experiences"
             links={[
