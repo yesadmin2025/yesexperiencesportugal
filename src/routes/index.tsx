@@ -203,28 +203,6 @@ const groupsAndCelebrations = [
     to: "/corporate",
     img: imgSintraCaboDaRoca,
   },
-  {
-    id: "multi-day",
-    eyebrow: "Multi-day",
-    title: "More than one day. One coherent journey.",
-    line: (
-      <>
-        Build Portugal across regions with realistic timing and{" "}
-        <span className="kw">local flow</span>.
-      </>
-    ),
-    pull: "A real journey, not a checklist.",
-    detail: "Any length · local-designed",
-    handles: [
-      "Route planning across regions",
-      "Curated overnight stops",
-      "Daily local support",
-    ],
-    trust: "Designed in conversation with a local team.",
-    cta: "Plan a Multi-Day Journey",
-    to: "/multi-day",
-    img: imgTomarCoimbra,
-  },
 ] as const;
 
 
