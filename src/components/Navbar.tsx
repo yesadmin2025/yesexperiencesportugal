@@ -7,7 +7,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 
 const desktopLinks = [
   { to: "/experiences", label: "Experiences", hidden: false },
-  { to: "/multi-day", label: "Bespoke Journeys", hidden: true },
+  { to: "/multi-day", label: "Bespoke Journeys", hidden: false },
   { to: "/about", label: "About Us", hidden: false },
   { to: "/contact", label: "Contact", hidden: false },
 ];
