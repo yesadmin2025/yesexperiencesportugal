@@ -23,6 +23,7 @@ import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { ThreePathsSection } from "@/components/home/ThreePathsSection";
+import { RecentJourney } from "@/components/home/RecentJourney";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -307,6 +308,7 @@ function HomePage() {
     "builder",
     "studio",
     "signatures",
+    "multi-day",
     "occasions",
     "faq",
     "final-cta",
@@ -321,7 +323,10 @@ function HomePage() {
     // Signatures
     signature: "signatures",
     signatures: "signatures",
-    // Occasions / Groups (legacy aliases preserved)
+    "multi-day": "multi-day",
+    multiday: "multi-day",
+    journey: "multi-day",
+    journeys: "multi-day",
     occasion: "occasions",
     occasions: "occasions",
     groups: "occasions",
@@ -828,6 +833,15 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 5b — RECENT JOURNEY (multi-day proof)
+          Real anonymized 15-day private journey from Lisbon to the
+          Costa Vicentina — proof, not promise. Lives right after
+          Signatures so multi-day appears naturally as the next scale
+          up from a Signature day. */}
+      <RecentJourney />
+
+
 
       {/* 6 — PROPOSALS / CELEBRATIONS / CORPORATE / MULTI-DAY
           One combined editorial band — Proposals, Celebrations,
