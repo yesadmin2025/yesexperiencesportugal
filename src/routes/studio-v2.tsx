@@ -58,7 +58,15 @@ const FAQ_JSONLD = {
 export const Route = createFileRoute("/studio-v2")({
   validateSearch: (search) =>
     z
-      .object({ resume: z.string().min(8).max(64).optional() })
+      .object({
+        resume: z.string().min(8).max(64).optional(),
+        // Intent params from the homepage ShapeYourDay widget.
+        // Accepted at the route level so the URL validates; the builder
+        // can opt-in to read them later without breaking older links.
+        intent: z.string().max(32).optional(),
+        group: z.string().max(32).optional(),
+        pickup: z.string().max(32).optional(),
+      })
       .parse(search),
   head: () => ({
     meta: [
