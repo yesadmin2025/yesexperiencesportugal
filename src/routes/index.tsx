@@ -14,16 +14,10 @@ import heroImg from "@/assets/hero-coast.jpg";
 import imgArrabidaViewpoint from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraCaboDaRoca from "@/assets/tours/sintra-cascais/cabo-da-roca.jpg";
-import imgTomarCoimbra from "@/assets/tours/tomar-coimbra/hero.jpg";
 
 import {
-  ArrowRight,
   Star,
-  Sparkles,
-  MapPin,
   MessageCircle,
-  Compass,
-  Feather,
 } from "lucide-react";
 import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
