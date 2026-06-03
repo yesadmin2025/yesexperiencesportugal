@@ -91,7 +91,7 @@ export function ThreePathsSection() {
           padding: 0 20px;
         }
         .three-paths-title {
-          font-family: Georgia, "Cormorant Garamond", serif;
+          font-family: var(--font-serif);
           color: #295B61;
           font-weight: 400;
           font-size: 26px;
@@ -148,7 +148,7 @@ export function ThreePathsSection() {
           font-weight: 500;
         }
         .path-title {
-          font-family: Georgia, "Cormorant Garamond", serif;
+          font-family: var(--font-serif);
           color: #295B61;
           font-size: 23px;
           font-weight: 500;
