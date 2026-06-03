@@ -125,7 +125,7 @@ export function ThreePathsSection() {
 
 
         .path-body {
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 15px;
           line-height: 1.65;
           color: rgba(46, 46, 46, 0.72);
@@ -133,9 +133,10 @@ export function ThreePathsSection() {
           flex-grow: 1;
         }
         .path-cta {
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 13px;
           font-weight: 500;
+
           color: #295B61;
           background: none;
           border: none;
