@@ -74,11 +74,11 @@ export function ThreePathsSection() {
   return (
     <section
       aria-labelledby="three-paths-title"
-      style={{ background: "#FAF8F3" }}
       className="three-paths-section"
     >
       <style>{`
         .three-paths-section {
+          background: var(--ivory);
           padding: 56px 0;
         }
         @media (min-width: 768px) {
@@ -136,6 +136,10 @@ export function ThreePathsSection() {
           transform: translateY(-2px);
           border-color: color-mix(in oklab, var(--gold) 62%, transparent);
           box-shadow: 0 16px 36px rgba(20, 21, 24, 0.08);
+        }
+        .path-card:focus-visible {
+          outline: 2px solid var(--teal);
+          outline-offset: 3px;
         }
         .path-card--bespoke:hover {
           border-color: color-mix(in oklab, var(--teal) 58%, var(--gold-soft));
