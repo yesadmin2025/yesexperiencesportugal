@@ -207,8 +207,9 @@ export function ThreePathsSection() {
 
       <div className="three-paths-inner">
         <h2 id="three-paths-title" className="three-paths-title">
-          However you want to experience Portugal.
+          However you want <em>to experience Portugal.</em>
         </h2>
+
 
         <div className="three-paths-grid">
           {PATHS.map((p) => {
