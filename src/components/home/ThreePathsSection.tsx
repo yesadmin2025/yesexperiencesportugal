@@ -90,32 +90,6 @@ export function ThreePathsSection() {
           margin: 0 auto;
           padding: 0 20px;
         }
-        .three-paths-title {
-          font-family: var(--font-serif);
-          color: var(--charcoal);
-          font-weight: 500;
-          font-size: 2rem;
-          line-height: 1.1;
-          letter-spacing: -0.018em;
-          text-align: center;
-          max-width: 640px;
-          margin: 0 auto 40px auto;
-        }
-        .three-paths-title em {
-          font-style: italic;
-          font-weight: 400;
-          color: var(--teal);
-        }
-        @media (min-width: 640px) {
-          .three-paths-title { font-size: 2.4rem; }
-        }
-        @media (min-width: 768px) {
-          .three-paths-title {
-            font-size: 3.6rem;
-            line-height: 1.0;
-            margin: 0 auto 56px auto;
-          }
-        }
         .three-paths-grid {
           display: grid;
           grid-template-columns: 1fr;
@@ -148,27 +122,7 @@ export function ThreePathsSection() {
           .path-card { transition: none; }
           .path-card:hover { transform: none; }
         }
-        .path-label {
-          font-family: var(--font-sans, Inter), system-ui, sans-serif;
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: 2.5px;
-          color: #C9A96A;
-          margin-bottom: 14px;
-          font-weight: 500;
-        }
-        .path-title {
-          font-family: var(--font-serif);
-          color: var(--charcoal);
-          font-size: 1.5rem;
-          font-weight: 500;
-          line-height: 1.2;
-          letter-spacing: -0.015em;
-          margin-bottom: 14px;
-        }
-        @media (min-width: 768px) {
-          .path-title { font-size: 1.75rem; }
-        }
+
 
         .path-body {
           font-family: Inter, system-ui, sans-serif;
