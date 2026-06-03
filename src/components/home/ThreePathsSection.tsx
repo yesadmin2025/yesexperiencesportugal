@@ -169,8 +169,14 @@ export function ThreePathsSection() {
       `}</style>
 
       <div className="three-paths-inner">
-        <h2 id="three-paths-title" className="three-paths-title">
-          However you want <em>to experience Portugal.</em>
+        <h2
+          id="three-paths-title"
+          className="serif text-center max-w-[640px] mx-auto mb-10 md:mb-14 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+        >
+          However you want{" "}
+          <span className="italic font-normal text-[color:var(--teal)]">
+            to experience Portugal.
+          </span>
         </h2>
 
 
@@ -181,7 +187,10 @@ export function ThreePathsSection() {
             const Inner = (
               <>
                 <div className="path-label">{p.label}</div>
-                <h3 className="path-title">{p.title}</h3>
+                <h3 className="serif text-[1.6rem] md:text-[2.1rem] leading-[1.14] md:leading-[1.08] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium mb-3.5">
+                  {p.title}
+                </h3>
+
                 <p className="path-body">{p.body}</p>
                 <span className="path-cta">
                   {p.cta} <span className="path-cta__arrow" aria-hidden="true">→</span>
