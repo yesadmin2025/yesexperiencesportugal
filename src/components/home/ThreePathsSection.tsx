@@ -108,8 +108,8 @@ export function ThreePathsSection() {
         .path-card {
           position: relative;
           overflow: hidden;
-          padding: 24px 22px 22px;
-          min-height: 272px;
+          padding: 24px 20px 22px;
+          min-height: 254px;
           border-radius: 6px;
           border: 1px solid color-mix(in oklab, var(--gold-soft) 62%, transparent);
           background: var(--ivory);
@@ -153,27 +153,30 @@ export function ThreePathsSection() {
           .path-card:hover { transform: none; }
         }
         .path-label {
-          display: inline-flex;
+          display: flex;
           align-items: center;
-          gap: 10px;
+          justify-content: space-between;
+          gap: 16px;
           font-family: var(--font-sans);
           font-size: 10.5px;
           text-transform: uppercase;
           letter-spacing: 0.24em;
-          color: var(--charcoal-soft);
-          margin-bottom: 18px;
+          color: var(--charcoal);
+          margin-bottom: 16px;
           font-weight: 600;
         }
-        .path-label::before {
-          content: "";
-          width: 6px;
-          height: 6px;
-          border-radius: 999px;
-          background: var(--gold);
-          flex: 0 0 auto;
+        .path-label__text {
+          min-width: 0;
         }
-        .path-card--bespoke .path-label::before {
-          background: var(--teal);
+        .path-label__num {
+          flex: 0 0 auto;
+          font-family: var(--font-serif);
+          font-size: 1.45rem;
+          line-height: 1;
+          font-style: italic;
+          font-weight: 400;
+          letter-spacing: 0;
+          color: var(--gold);
         }
         .path-body {
           font-family: var(--font-sans);
@@ -201,7 +204,7 @@ export function ThreePathsSection() {
           align-self: flex-start;
         }
         @media (min-width: 768px) {
-          .path-card { padding: 28px 26px 26px; min-height: 318px; }
+          .path-card { padding: 28px 24px 26px; min-height: 294px; }
           .path-body { font-size: 15px; line-height: 1.7; }
         }
         .path-cta__arrow {
