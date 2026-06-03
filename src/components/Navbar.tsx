@@ -111,7 +111,7 @@ export function Navbar() {
               <Link
                 key={n.to}
                 to={n.to}
-                className={linkClass}
+                className={`${linkClass}${n.hidden ? " hidden" : ""}`}
                 activeProps={{ className: "text-[color:var(--teal)]" }}
               >
                 {n.label}
