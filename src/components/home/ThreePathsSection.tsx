@@ -225,14 +225,14 @@ export function ThreePathsSection() {
 
 
 
-        <div className="three-paths-grid">
+        <div className="three-paths-grid he-stagger">
           {PATHS.map((p) => {
             const cardClass =
-              p.variant === "bespoke" ? "path-card path-card--bespoke" : "path-card";
+              p.variant === "bespoke" ? "path-card path-card--bespoke reveal-stagger" : "path-card reveal-stagger";
             const Inner = (
               <>
                 <div className="path-label">{p.label}</div>
-                <h3 className="serif text-[1.6rem] md:text-[2.1rem] leading-[1.14] md:leading-[1.08] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium mb-3.5">
+                <h3 className="serif text-[1.45rem] md:text-[1.7rem] leading-[1.18] md:leading-[1.13] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium mb-4">
                   {p.title}
                 </h3>
 
