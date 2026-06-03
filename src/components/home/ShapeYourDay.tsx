@@ -209,9 +209,9 @@ export function ShapeYourDay() {
         }
       `}</style>
 
-      {/* ── Desktop / tablet — anchored bottom-left card ─────────── */}
+      {/* ── Desktop (lg+) — anchored bottom-left card ─────────────── */}
       <div
-        className="hidden md:block absolute z-20 left-8 bottom-8"
+        className="hidden lg:block absolute z-20 left-8 bottom-8"
         style={{ width: 340 }}
         aria-label="Shape your day"
       >
@@ -226,9 +226,9 @@ export function ShapeYourDay() {
         />
       </div>
 
-      {/* ── Mobile — collapsed trigger above safe area ───────────── */}
+      {/* ── Mobile / tablet (<lg) — collapsed trigger above safe area ─ */}
       <div
-        className="md:hidden absolute z-20 inset-x-4"
+        className="block lg:hidden absolute z-20 inset-x-4"
         style={{
           bottom: "max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem))",
         }}
