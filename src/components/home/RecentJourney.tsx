@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 import imgCascais from "@/assets/tours/sintra-cascais/cascais.jpg";
 import imgObidos from "@/assets/tours/fatima-nazare-obidos/obidos.jpg";
 import imgNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import imgCostaVicentina from "@/assets/wild-beaches-picnic.jpg";
+import imgCostaVicentina from "@/assets/exp-coastal.jpg";
 
 /**
  * Recent journey — anonymized proof block.
