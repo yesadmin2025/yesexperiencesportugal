@@ -545,13 +545,6 @@ function HomePage() {
 
   return (
     <SiteLayout>
-       <a
-         href="/studio-v2"
-         className="fixed bottom-5 right-5 z-[100] rounded-full bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-4 py-2.5 text-xs font-medium tracking-wide shadow-lg hover:bg-[color:var(--teal)] transition-colors"
-         style={{ fontFamily: "var(--font-sans)" }}
-       >
-         Preview · novo Studio
-       </a>
        <div className="home-energy">
        {/* 1 — HERO (cinematic continuous film, full-bleed, timed reveals).
            See <CinematicHero/>; HERO_COPY locks live inside it. */}
