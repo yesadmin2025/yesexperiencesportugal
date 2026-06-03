@@ -84,12 +84,12 @@ export function ShapeYourDay() {
           border: 1px solid var(--gold);
           border-radius: 12px;
           box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-          -webkit-backdrop-filter: blur(8px);
           backdrop-filter: blur(8px);
+
           color: var(--charcoal);
         }
         .syd-label {
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 11px;
           font-weight: 600;
           text-transform: uppercase;
@@ -107,7 +107,7 @@ export function ShapeYourDay() {
           border: 1px solid var(--gold);
           border-radius: 8px;
           padding: 10px 36px 10px 14px;
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 14px;
           line-height: 1.3;
           color: var(--charcoal);
@@ -135,7 +135,7 @@ export function ShapeYourDay() {
           gap: 8px;
           background: var(--teal);
           color: var(--ivory);
-          font-family: Inter, system-ui, sans-serif;
+          font-family: var(--font-sans);
           font-size: 14px;
           font-weight: 500;
           padding: 12px 20px;
@@ -155,7 +155,7 @@ export function ShapeYourDay() {
           display: block;
           text-align: center;
           margin-top: 12px;
-          font-family: Georgia, "Cormorant Garamond", serif;
+          font-family: var(--font-serif);
           font-style: italic;
           font-size: 12px;
           color: var(--teal);
@@ -175,7 +175,7 @@ export function ShapeYourDay() {
           gap: 10px;
           background: var(--gold);
           color: var(--charcoal);
-          font-family: Georgia, "Cormorant Garamond", serif;
+          font-family: var(--font-serif);
           font-style: italic;
           font-size: 15px;
           padding: 14px 20px;
