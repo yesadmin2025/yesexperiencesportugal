@@ -871,6 +871,13 @@ function HomePage() {
         </section>
 
 
+      {/* 5a — PATHFINDER QUIZ
+          3-question gated quiz routing visitors to the right product
+          (Arrábida / Tróia / Sintra Signature, Studio v2 or Bespoke).
+          State is local-only; resets on reload by design. */}
+      <PathfinderQuiz />
+
+
       {/* 5 — SIGNATURE EXPERIENCES PREVIEW
           Up to 4 real Signature tours. Each card uses the tour's real
           hero image (sourced from the matching Viator page), real title
