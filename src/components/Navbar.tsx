@@ -6,10 +6,10 @@ import { Logo } from "@/components/Logo";
 import { CtaButton } from "@/components/ui/CtaButton";
 
 const desktopLinks = [
-  { to: "/experiences", label: "Experiences" },
-  { to: "/multi-day", label: "Bespoke Journeys" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/experiences", label: "Experiences", hidden: false },
+  { to: "/multi-day", label: "Bespoke Journeys", hidden: true },
+  { to: "/about", label: "About Us", hidden: false },
+  { to: "/contact", label: "Contact", hidden: false },
 ];
 
 const mobileLinks = desktopLinks;
