@@ -641,8 +641,8 @@ function HomePage() {
               </p>
             </div>
             <ol
-              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 list-none p-0"
-              aria-label="Four paths to shape your Portugal experience"
+              className="he-stagger mt-7 md:mt-9 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 list-none p-0"
+              aria-label="Three paths to shape your Portugal experience"
             >
               {[
                 {
@@ -662,12 +662,6 @@ function HomePage() {
                   label: "Studio",
                   body: "Create from scratch in real time.",
                   to: "/studio-v2",
-                },
-                {
-                  num: "04",
-                  label: "Proposals",
-                  body: "Bigger moments, planned with care.",
-                  to: "/proposals",
                 },
               ].map((p) => (
                 <li
