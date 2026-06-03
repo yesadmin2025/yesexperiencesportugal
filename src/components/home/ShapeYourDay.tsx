@@ -84,8 +84,8 @@ export function ShapeYourDay() {
           border: 1px solid var(--gold);
           border-radius: 12px;
           box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-          -webkit-backdrop-filter: blur(8px);
           backdrop-filter: blur(8px);
+
           color: var(--charcoal);
         }
         .syd-label {
