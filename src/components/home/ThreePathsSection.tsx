@@ -242,8 +242,11 @@ export function ThreePathsSection() {
               p.variant === "bespoke" ? "path-card path-card--bespoke reveal-stagger" : "path-card reveal-stagger";
             const Inner = (
               <>
-                <div className="path-label">{p.label}</div>
-                <h3 className="serif text-[1.45rem] md:text-[1.7rem] leading-[1.18] md:leading-[1.13] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium mb-4">
+                <div className="path-label">
+                  <span className="path-label__text">{p.label}</span>
+                  <span className="path-label__num" aria-hidden="true">{p.num}</span>
+                </div>
+                <h3 className="serif text-[1.35rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium mb-3.5">
                   {p.title}
                 </h3>
 
