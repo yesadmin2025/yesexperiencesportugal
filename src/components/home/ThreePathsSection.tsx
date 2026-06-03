@@ -93,56 +93,94 @@ export function ThreePathsSection() {
         .three-paths-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 20px;
+          gap: 14px;
         }
         @media (min-width: 900px) {
           .three-paths-grid {
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            gap: 16px;
           }
         }
         .path-card {
-          padding: 36px 32px;
-          border-radius: 10px;
-          border-left: 3px solid var(--gold);
-          background: #FFFFFF;
-          transition: transform 250ms ease, box-shadow 250ms ease;
+          position: relative;
+          overflow: hidden;
+          padding: 24px 22px 22px;
+          min-height: 272px;
+          border-radius: 6px;
+          border: 1px solid color-mix(in oklab, var(--gold-soft) 62%, transparent);
+          background: var(--ivory);
+          color: var(--charcoal);
+          box-shadow: 0 1px 2px rgba(46, 46, 46, 0.04);
+          transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
           display: flex;
           flex-direction: column;
+          text-decoration: none;
+        }
+        .path-card::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: var(--gold);
         }
         .path-card--bespoke {
           background: var(--sand);
-          border-left-color: var(--teal);
+          border-color: color-mix(in oklab, var(--teal) 42%, var(--gold-soft));
+        }
+        .path-card--bespoke::before {
+          background: var(--teal);
         }
         .path-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+          transform: translateY(-2px);
+          border-color: color-mix(in oklab, var(--gold) 62%, transparent);
+          box-shadow: 0 16px 36px rgba(20, 21, 24, 0.08);
+        }
+        .path-card--bespoke:hover {
+          border-color: color-mix(in oklab, var(--teal) 58%, var(--gold-soft));
         }
         @media (prefers-reduced-motion: reduce) {
           .path-card { transition: none; }
           .path-card:hover { transform: none; }
         }
         .path-label {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
           font-family: var(--font-sans);
           font-size: 10.5px;
           text-transform: uppercase;
-          letter-spacing: 0.22em;
-          color: var(--charcoal);
-          margin-bottom: 14px;
+          letter-spacing: 0.24em;
+          color: var(--charcoal-soft);
+          margin-bottom: 18px;
           font-weight: 600;
+        }
+        .path-label::before {
+          content: "";
+          width: 6px;
+          height: 6px;
+          border-radius: 999px;
+          background: var(--gold);
+          flex: 0 0 auto;
+        }
+        .path-card--bespoke .path-label::before {
+          background: var(--teal);
         }
         .path-body {
           font-family: var(--font-sans);
-          font-size: 15px;
+          font-size: 14.5px;
           line-height: 1.65;
           color: var(--charcoal-soft);
-          margin-bottom: 24px;
+          margin: 0 0 24px;
           flex-grow: 1;
         }
         .path-cta {
           font-family: var(--font-sans);
-          font-size: 13px;
-          font-weight: 600;
+          font-size: 11.5px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
           color: var(--teal);
           background: none;
           border: none;
@@ -153,6 +191,10 @@ export function ThreePathsSection() {
           text-decoration: none;
           transition: color 200ms ease;
           align-self: flex-start;
+        }
+        @media (min-width: 768px) {
+          .path-card { padding: 28px 26px 26px; min-height: 318px; }
+          .path-body { font-size: 15px; line-height: 1.7; }
         }
         .path-cta__arrow {
           display: inline-block;
