@@ -165,7 +165,7 @@ export function Navbar() {
               size="sm"
               className="mt-3"
             >
-              Design &amp; Book Your Experience
+              Design &amp; Book
             </CtaButton>
 
           </div>
