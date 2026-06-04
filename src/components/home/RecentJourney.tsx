@@ -33,15 +33,15 @@ const PAGES = [
 const PILLARS = [
   {
     label: "Regional journeys",
-    body: "Routes across Lisbon, Alentejo, Douro, Algarve or the islands — paced for the way you travel.",
+    body: "Lisbon, Alentejo, Douro, Algarve or the islands — paced for the way you travel.",
   },
   {
     label: "Stays & logistics",
-    body: "Hand-picked properties, transfers and reservations — every overnight confirmed before you leave.",
+    body: "Hand-picked properties and transfers — every overnight confirmed before you leave.",
   },
   {
     label: "Delivered as a book",
-    body: "A travel file with days, properties, recommendations and local contacts — not a generic booking.",
+    body: "A travel file with days, stays and local contacts — not a generic booking.",
   },
 ] as const;
 
