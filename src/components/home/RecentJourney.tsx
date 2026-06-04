@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 
 // Pages from a real, anonymized private travel file we delivered.
 import pageCover from "@/assets/travel-file/cover.jpg";
