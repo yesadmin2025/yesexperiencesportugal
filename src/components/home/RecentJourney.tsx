@@ -404,9 +404,9 @@ export function RecentJourney() {
             </span>
           </h2>
           <p className="mt-5 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Beside the Studio, our quiet flagship: a private
-            travel-design service for those who want their journey
-            shaped end-to-end by a local — and delivered as a book,
+            A private travel-design service for multi-day journeys —
+            regional routes, accommodations, pacing and recommendations,
+            shaped end to end by a local and delivered as a book,
             not a booking.
           </p>
           <span aria-hidden="true" className="gold-rule mt-7 md:mt-8 mx-auto block max-w-[3rem]" />
