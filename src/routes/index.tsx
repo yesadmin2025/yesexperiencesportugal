@@ -1107,13 +1107,17 @@ function HomePage() {
                     Single italic line that braids the trust into the
                     close (separate from the top trust strip; no
                     duplicate review surface). */}
-                <p className="serif italic text-[13px] md:text-[14px] leading-[1.45] text-[color:var(--charcoal-soft)] mb-4">
-                  Joined by 700+ five-star travellers this year.
+                {/* Bridge whisper — FAQ → Final CTA. Closes the
+                    conversation rather than opening a new pitch. Social
+                    proof is braided in as continuation, not a stat. */}
+                <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-4">
+                  When you're ready, we already are — as 700+ travellers were this year.
                 </p>
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
                   Prefer a conversation
                 </span>
+
               <h2
                 id="final-cta-title"
                 className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
