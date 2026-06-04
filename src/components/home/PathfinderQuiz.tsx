@@ -443,26 +443,6 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
         { label: "Reserve this day", to: "/tours/$tourId", search: { tourId: "arrabida-wine-allinclusive" }, variant: "primary" },
         { label: "Make it yours", to: "/tours/$tourId/tailor", search: { tourId: "arrabida-wine-allinclusive" }, variant: "outline" },
       ],
-    },
-    {
-      id: "troia",
-      title: "Tróia & Comporta — by yacht",
-      blurb: "A coastal day designed for couples and small groups who want privacy, ocean and an unhurried table.",
-      img: "/images/troia.jpg",
-      ctas: [
-        { label: "Reserve this day", to: "/tours/$tourId", search: { tourId: "troia-comporta" }, variant: "primary" },
-        { label: "Make it yours", to: "/tours/$tourId/tailor", search: { tourId: "troia-comporta" }, variant: "outline" },
-      ],
-    },
-    {
-      id: "sintra",
-      title: "Sintra & Cascais — slow palaces, coastal table",
-      blurb: "Romantic, slow, palace-led. For travellers who want Sintra without the queues and Cascais without the rush.",
-      img: "/images/sintra.jpg",
-      ctas: [
-        { label: "Reserve this day", to: "/tours/$tourId", search: { tourId: "sintra-cascais" }, variant: "primary" },
-        { label: "Make it yours", to: "/tours/$tourId/tailor", search: { tourId: "sintra-cascais" }, variant: "outline" },
-      ],
     };
   }
   if (r === "STUDIO") {
