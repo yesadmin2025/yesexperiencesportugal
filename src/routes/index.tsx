@@ -1115,9 +1115,10 @@ function HomePage() {
                 {/* Bridge whisper — FAQ → Final CTA. Closes the
                     conversation rather than opening a new pitch. Social
                     proof is braided in as continuation, not a stat. */}
-                <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-4">
+                <p className="bridge-whisper text-center mb-4">
                   When you're ready, we already are — as 700+ travellers were this year.
                 </p>
+
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
                   Prefer a conversation
