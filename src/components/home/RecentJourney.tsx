@@ -405,7 +405,7 @@ export function RecentJourney() {
 
         {/* Pull quote */}
         <div className="reveal max-w-3xl mx-auto text-center mb-12 md:mb-16">
-          <p className="font-[family-name:var(--font-serif)] italic text-[1.15rem] md:text-[1.45rem] leading-[1.45] text-[color:var(--charcoal)]">
+          <p className="serif italic text-[1.15rem] md:text-[1.45rem] leading-[1.45] text-[color:var(--charcoal)]">
             “A private travel story —{" "}
             <span className="text-[color:var(--teal)]">written for you</span>, by a local
             travel designer.”
