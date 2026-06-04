@@ -161,7 +161,7 @@ describe("FAQ section#faq — locked rhythm (order-independent)", () => {
   it("locks vertical padding tokens", () => {
     expectAllTokens(
       SECTION,
-      ["py-16", "md:py-20"],
+      ["py-12", "md:py-14"],
       "section#faq",
     );
   });
@@ -169,5 +169,7 @@ describe("FAQ section#faq — locked rhythm (order-independent)", () => {
   it("does NOT regress to the pre-Phase-3 oversized rhythm", () => {
     expect(SECTION.has("py-24")).toBe(false);
     expect(SECTION.has("md:py-32")).toBe(false);
+    expect(SECTION.has("py-16")).toBe(false);
+    expect(SECTION.has("md:py-20")).toBe(false);
   });
 });
