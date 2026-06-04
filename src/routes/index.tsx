@@ -559,7 +559,7 @@ function HomePage() {
               </p>
               <p className="serif text-[color:var(--charcoal)] leading-[1.15] font-normal">
                 <span className="serif text-[1.85rem] md:text-[2.4rem] font-medium tabular-nums">700+</span>
-                <span className="ml-2 italic text-[1.1rem] md:text-[1.3rem]">five-star reviews</span>
+                <span className="ml-2 text-[1.1rem] md:text-[1.3rem]">five-star reviews</span>
                 <span className="block md:inline text-[10.5px] md:text-[11.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)] md:ml-3 mt-1.5 md:mt-0">
                   Across Google · Tripadvisor · Viator · GetYourGuide · Trustpilot
                 </span>
