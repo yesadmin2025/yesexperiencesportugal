@@ -604,7 +604,7 @@ function HomePage() {
               </h2>
 
               <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                Choose mood, group and rhythm. The Studio draws a <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>, real timings and a live price — then confirms instantly. The only path on the page that reserves in a single tap.
+                Choose mood, group and rhythm. The Studio draws a <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>, real timings and a live price — then confirms in a single tap.
               </p>
 
               {/* Three Studio inputs — small index, signposts the
@@ -626,16 +626,10 @@ function HomePage() {
                 </CtaButton>
               </div>
 
-              {/* Conversion microcopy — under-CTA trust trio. */}
-              <p className="mt-4 inline-flex items-center gap-2 text-[12.5px] md:text-[13px] leading-[1.55] text-[color:var(--charcoal)] max-w-md">
-                <span aria-hidden="true" className="block h-px w-5 bg-[color:var(--gold)]" />
-                <span className="font-medium">About 90 seconds · 11 quick steps · live pricing.</span>
-              </p>
-
-              {/* Reassurance line — direct conversion language. */}
-              <p className="mt-3 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
+              {/* Conversion microcopy — single quiet line, no duplication. */}
+              <p className="mt-4 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
                 <MessageCircle size={13} aria-hidden="true" className="mt-[3px] shrink-0 text-[color:var(--teal)]" />
-                <span>Instant reservation · cancel free up to 48h · <span className="font-medium text-[color:var(--charcoal)]">a local replies on WhatsApp.</span></span>
+                <span><span className="font-medium text-[color:var(--charcoal)]">About 90 seconds.</span> Instant reservation · cancel free up to 48h · a local on WhatsApp.</span>
               </p>
             </div>
 
