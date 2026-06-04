@@ -7,12 +7,12 @@
  * but any *value* drift (e.g. text-[2rem] → text-[1.9rem], leading-[1.12]
  * → leading-[1.1], py-4 → py-3) will fail loudly.
  *
- * Locked values (post-Phase 3, FAQ enlarged Nov 2026):
+ * Locked values (post Dec 2026 — FAQ reduced to a quiet operational
+ * footer, NOT a closing anchor; the Final CTA closes the homepage):
  *
- *   #faq-title h2 — intentionally larger than the other section H2s
- *   so it reads as the closing anchor before the CTA card.
- *     · text-[2.4rem]  sm:text-[2.8rem]  md:text-[4rem]
- *     · leading-[1.05]  md:leading-[0.98]  tracking-[-0.02em]
+ *   #faq-title h2 — calmer scale, matching other section H2s.
+ *     · text-[1.8rem]  sm:text-[2.1rem]  md:text-[2.6rem]
+ *     · leading-[1.1]  md:leading-[1.02]  tracking-[-0.018em]
  *     · text-[color:var(--charcoal)]  font-medium
  *
  *   AccordionTrigger
@@ -24,8 +24,8 @@
  *     · leading-[1.65]
  *     · px-5  md:px-6   pb-5  md:pb-6
  *
- *   #faq section wrapper
- *     · py-16  md:py-20
+ *   #faq section wrapper — tightened
+ *     · py-12  md:py-14
  *
  * If you intentionally change FAQ typography, update this test in the
  * SAME commit and document the new values in the header above.
@@ -91,12 +91,12 @@ describe("FAQ #faq-title — locked typography (order-independent)", () => {
     expectAllTokens(
       FAQ_TITLE,
       [
-        "text-[2.4rem]",
-        "sm:text-[2.8rem]",
-        "md:text-[4rem]",
-        "leading-[1.05]",
-        "md:leading-[0.98]",
-        "tracking-[-0.02em]",
+        "text-[1.8rem]",
+        "sm:text-[2.1rem]",
+        "md:text-[2.6rem]",
+        "leading-[1.1]",
+        "md:leading-[1.02]",
+        "tracking-[-0.018em]",
         "text-[color:var(--charcoal)]",
         "font-medium",
       ],
@@ -109,10 +109,10 @@ describe("FAQ #faq-title — locked typography (order-independent)", () => {
     expect(FAQ_TITLE.has("md:text-5xl")).toBe(false);
   });
 
-  it("FAQ headline is larger than the other major section H2s", () => {
-    // Other major sections cap at md:text-[3.6rem]; FAQ must exceed that.
-    expect(FAQ_TITLE.has("md:text-[4rem]")).toBe(true);
-    expect(FAQ_TITLE.has("md:text-[3.6rem]")).toBe(false);
+  it("FAQ headline stays calm — no longer the homepage's closing anchor", () => {
+    // FAQ was deliberately downsized; the Final CTA now closes the page.
+    expect(FAQ_TITLE.has("md:text-[4rem]")).toBe(false);
+    expect(FAQ_TITLE.has("md:text-[2.6rem]")).toBe(true);
   });
 });
 
@@ -161,7 +161,7 @@ describe("FAQ section#faq — locked rhythm (order-independent)", () => {
   it("locks vertical padding tokens", () => {
     expectAllTokens(
       SECTION,
-      ["py-16", "md:py-20"],
+      ["py-12", "md:py-14"],
       "section#faq",
     );
   });
@@ -169,5 +169,7 @@ describe("FAQ section#faq — locked rhythm (order-independent)", () => {
   it("does NOT regress to the pre-Phase-3 oversized rhythm", () => {
     expect(SECTION.has("py-24")).toBe(false);
     expect(SECTION.has("md:py-32")).toBe(false);
+    expect(SECTION.has("py-16")).toBe(false);
+    expect(SECTION.has("md:py-20")).toBe(false);
   });
 });

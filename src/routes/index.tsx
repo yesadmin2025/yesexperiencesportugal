@@ -139,12 +139,10 @@ const groupsAndCelebrations = [
     title: "A private moment, held with care.",
     line: (
       <>
-        Location, timing and every detail arranged{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong> — the surprise stays yours.
+        Location, timing and every detail arranged <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong>.
       </>
     ),
     detail: "Discreet · location of your choosing",
-    trust: "Planned end to end by our local team.",
     cta: "Plan a Proposal",
     to: "/proposals",
     img: imgArrabidaViewpoint,
@@ -155,12 +153,10 @@ const groupsAndCelebrations = [
     title: "For days worth remembering.",
     line: (
       <>
-        Birthdays, anniversaries and family days shaped around{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">your people</strong>, at your pace.
+        Birthdays, anniversaries and family days, shaped around <strong className="font-medium text-[color:var(--charcoal)]">your people</strong>.
       </>
     ),
     detail: "Private host · any group size",
-    trust: "Hosted by a local who knows how the day connects.",
     cta: "Plan a Celebration",
     to: "/proposals",
     img: imgArrabidaWineLunch,
@@ -171,12 +167,10 @@ const groupsAndCelebrations = [
     title: "Corporate days, handled with care.",
     line: (
       <>
-        Off-sites, incentives and client hospitality — venues, transport and timing woven into one{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day.
+        Off-sites, incentives and client hospitality — venues, transport and timing in one <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day.
       </>
     ),
     detail: "Any group size · invoice & DMC support",
-    trust: "Real driving times, real venues, real partners.",
     cta: "Plan a Corporate Day",
     to: "/corporate",
     img: imgSintraCaboDaRoca,
@@ -645,7 +639,11 @@ function HomePage() {
 
 
 
-      {/* 5a — PathfinderQuiz removed from homepage (file kept). */}
+      {/* 5a — BESPOKE TRAVEL FILE (multi-day proof, promoted)
+          Promoted to sit right after the Studio so the visitor grasps
+          that a YES journey can be delivered as a curated travel file —
+          not just a booking. Appears before Signature Experiences. */}
+      <RecentJourney />
 
 
       {/* 5 — SIGNATURE EXPERIENCES PREVIEW
@@ -662,7 +660,7 @@ function HomePage() {
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
             <span className="he-eyebrow-bar mb-5">Signature</span>
             <h2 id="signatures-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Signature days, <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
+              Signature days, already loved.
             </h2>
           </div>
 
@@ -790,12 +788,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 5b — RECENT JOURNEY (multi-day proof)
-          Real anonymized 15-day private journey from Lisbon to the
-          Costa Vicentina — proof, not promise. Lives right after
-          Signatures so multi-day appears naturally as the next scale
-          up from a Signature day. */}
-      <RecentJourney />
+      {/* 5b — Bespoke Travel File moved to right after the Studio. */}
 
 
 
@@ -813,14 +806,14 @@ function HomePage() {
             <span className="he-eyebrow-bar mb-5">Occasions</span>
 
             <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Moments that deserve <span className="italic font-normal text-[color:var(--teal)]">a setting.</span>
+              Moments that deserve a setting.
             </h2>
           </div>
 
           {/* Each block uses the shared EditorialCard primitive so
               eyebrow / title / body / detail / CTA / trust share one
               typographic rhythm across the homepage. */}
-          <div className="max-w-6xl mx-auto flex flex-col gap-12 md:gap-16">
+          <div className="max-w-6xl mx-auto flex flex-col gap-10 md:gap-12">
             {groupsAndCelebrations.map((m, i) => {
               const accent =
                 m.id === "proposals" ? "var(--gold)" :
@@ -836,7 +829,6 @@ function HomePage() {
                   title={m.title}
                   body={m.line}
                   detail={m.detail}
-                  trust={m.trust}
                   cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                   image={{ src: m.img, to: m.to }}
                   reverse={i % 2 === 1}
@@ -925,20 +917,20 @@ function HomePage() {
               <div className="relative">
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
-                  Prefer a conversation
+                  The stage is set
                 </span>
 
               <h2
                 id="final-cta-title"
                 className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
               >
-                  Ready to design your{" "}
+                  Portugal is waiting.{" "}
                   <span className="italic font-normal text-[color:var(--teal)]">
-                    Portugal?
+                    Begin your story.
                   </span>
                 </h2>
                 <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
-                  Build it live in the Studio, choose a Signature, or write to a local.
+                  Design it live in the Studio, or write to a local.
                 </p>
                 <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
                   <CtaButton to="/studio-v2" variant="primary">
