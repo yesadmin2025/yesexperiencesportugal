@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Pages from a real, anonymized private travel file we delivered.
-// Used as proof of craft for the Bespoke Travel Designer service.
 import pageCover from "@/assets/travel-file/cover.jpg";
 import pageRoute from "@/assets/travel-file/route.jpg";
 import pageReservations from "@/assets/travel-file/reservations.jpg";
@@ -13,20 +12,21 @@ import pageAccommodations from "@/assets/travel-file/accommodations.jpg";
 /**
  * Bespoke Travel Designer — proof block.
  *
- * Headline uses the canonical Typography v3 ramp: Montserrat for the
- * full title, Georgia italic ONLY on the emphasis phrase "written
- * around you" (teal). The proof block presents the delivered private
- * travel file as a flip-through book — mobile swipes through pages,
- * desktop pages turn from the spine with a 3D perspective. All motion
- * collapses to a fade when prefers-reduced-motion is set.
+ * Typography v3: Montserrat headings + Georgia italic emphasis only on
+ * the focal phrase. Proof = a real delivered travel file rendered as a
+ * flip-through book. Mobile swipes; desktop turns pages from the spine
+ * with 3D perspective; both modes share keyboard nav (← →, Home, End),
+ * a clickable thumbnail rail, aria-live page announcements, and
+ * eager preloading of adjacent pages so each flip is instant. All
+ * motion collapses to a fade when prefers-reduced-motion is set.
  */
 
 const PAGES = [
-  { src: pageCover, alt: "Cover of a private travel file — Portugal, Beyond the Postcards" },
-  { src: pageRoute, alt: "The route — a hand-designed multi-region itinerary across Portugal" },
-  { src: pageReservations, alt: "Confirmed reservations — every overnight reserved before departure" },
-  { src: pageDay, alt: "A day in the file — morning, lunch, afternoon, sunset, evening" },
-  { src: pageAccommodations, alt: "Where you stay — properties chosen to deepen each region" },
+  { src: pageCover, label: "Cover", alt: "Cover of a private travel file — Portugal, Beyond the Postcards" },
+  { src: pageRoute, label: "Route", alt: "The route — a hand-designed multi-region itinerary across Portugal" },
+  { src: pageReservations, label: "Reservations", alt: "Confirmed reservations — every overnight reserved before departure" },
+  { src: pageDay, label: "A day", alt: "A day in the file — morning, lunch, afternoon, sunset, evening" },
+  { src: pageAccommodations, label: "Stays", alt: "Where you stay — properties chosen to deepen each region" },
 ] as const;
 
 const PILLARS = [
@@ -56,6 +56,74 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
+/**
+ * Tracks which page src has finished decoding. Used to swap the
+ * shimmer skeleton out for the real image, so the book never shows
+ * a half-painted page during a flip.
+ */
+function useImageLoader(srcs: readonly string[]) {
+  const [loaded, setLoaded] = useState<Set<string>>(() => new Set());
+  useEffect(() => {
+    let cancelled = false;
+    // Eagerly decode every page once mounted — five 200KB JPEGs total,
+    // small enough to make flips instantaneous. Honours image-decode
+    // priority via the native <img> decode() API.
+    srcs.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img
+        .decode?.()
+        .then(() => {
+          if (!cancelled) {
+            setLoaded((prev) => {
+              if (prev.has(src)) return prev;
+              const next = new Set(prev);
+              next.add(src);
+              return next;
+            });
+          }
+        })
+        .catch(() => {
+          // decode() can reject on some browsers; fall back to onload.
+          img.onload = () => {
+            if (!cancelled) {
+              setLoaded((prev) => {
+                if (prev.has(src)) return prev;
+                const next = new Set(prev);
+                next.add(src);
+                return next;
+              });
+            }
+          };
+        });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [srcs]);
+  return loaded;
+}
+
+function PageSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 overflow-hidden rounded-[3px] bg-[color:var(--sand)]"
+    >
+      <div
+        className="absolute inset-0 opacity-70"
+        style={{
+          background:
+            "linear-gradient(110deg, color-mix(in oklab, var(--sand) 95%, transparent) 30%, color-mix(in oklab, var(--ivory) 95%, transparent) 50%, color-mix(in oklab, var(--sand) 95%, transparent) 70%)",
+          backgroundSize: "200% 100%",
+          animation: "rj-shimmer 1.6s ease-in-out infinite",
+        }}
+      />
+      <style>{`@keyframes rj-shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }`}</style>
+    </div>
+  );
+}
+
 function BookFlip() {
   const [index, setIndex] = useState(0);
   const [flipDir, setFlipDir] = useState<"next" | "prev" | null>(null);
@@ -63,24 +131,29 @@ function BookFlip() {
   const touchStartX = useRef<number | null>(null);
   const flipping = useRef(false);
 
+  const srcs = useMemo(() => PAGES.map((p) => p.src), []);
+  const loaded = useImageLoader(srcs);
+
   const total = PAGES.length;
 
-  const go = (dir: "next" | "prev") => {
+  const goTo = (target: number) => {
     if (flipping.current) return;
-    const nextIdx = dir === "next" ? index + 1 : index - 1;
-    if (nextIdx < 0 || nextIdx >= total) return;
+    if (target < 0 || target >= total || target === index) return;
+    const dir: "next" | "prev" = target > index ? "next" : "prev";
     if (reduced) {
-      setIndex(nextIdx);
+      setIndex(target);
       return;
     }
     flipping.current = true;
     setFlipDir(dir);
     window.setTimeout(() => {
-      setIndex(nextIdx);
+      setIndex(target);
       setFlipDir(null);
       flipping.current = false;
     }, 620);
   };
+
+  const go = (dir: "next" | "prev") => goTo(dir === "next" ? index + 1 : index - 1);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -94,34 +167,44 @@ function BookFlip() {
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowRight") {
+    if (e.key === "ArrowRight" || e.key === "PageDown") {
       e.preventDefault();
       go("next");
-    } else if (e.key === "ArrowLeft") {
+    } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
       e.preventDefault();
       go("prev");
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      goTo(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      goTo(total - 1);
     }
   };
 
   const current = PAGES[index];
-  const incoming = flipDir === "next" ? PAGES[index + 1] : flipDir === "prev" ? PAGES[index - 1] : null;
+  const incoming =
+    flipDir === "next" ? PAGES[index + 1] : flipDir === "prev" ? PAGES[index - 1] : null;
+  const currentLoaded = loaded.has(current.src);
 
   return (
     <div className="reveal mx-auto max-w-3xl">
+      {/* Screen-reader page announcer */}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        Page {index + 1} of {total}: {current.label}
+      </p>
+
       {/* Book stage */}
       <div
         role="group"
         aria-roledescription="book"
-        aria-label={`Page ${index + 1} of ${total}: ${current.alt}`}
+        aria-label="Pages from a real private travel file. Use arrow keys, swipe, or the thumbnails below to turn pages."
         tabIndex={0}
         onKeyDown={onKeyDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px]"
-        style={{
-          perspective: "2200px",
-          width: "min(100%, 520px)",
-        }}
+        style={{ perspective: "2200px", width: "min(100%, 520px)" }}
       >
         {/* Soft cast shadow under the book */}
         <div
@@ -129,18 +212,22 @@ function BookFlip() {
           className="pointer-events-none absolute inset-x-6 -bottom-5 h-8 rounded-[50%] bg-[color:var(--charcoal)]/25 blur-2xl opacity-60"
         />
 
-        <div
-          className="relative aspect-[3/4] w-full"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          {/* Static back page (becomes visible mid-flip) */}
+        <div className="relative aspect-[3/4] w-full" style={{ transformStyle: "preserve-3d" }}>
+          {/* Skeleton (only while the very first page is still decoding) */}
+          {!currentLoaded && !incoming ? <PageSkeleton /> : null}
+
+          {/* Static back page (revealed mid-flip) */}
           {incoming ? (
-            <img
-              src={incoming.src}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover object-top rounded-[3px] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
-            />
+            loaded.has(incoming.src) ? (
+              <img
+                src={incoming.src}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 h-full w-full object-cover object-top rounded-[3px] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
+              />
+            ) : (
+              <PageSkeleton />
+            )
           ) : null}
 
           {/* Current page — flips away on transition */}
@@ -154,26 +241,32 @@ function BookFlip() {
               transition: reduced
                 ? "opacity 280ms ease-out"
                 : "transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 620ms ease-out",
-              transform: flipDir === "next"
-                ? "rotateY(-172deg)"
-                : flipDir === "prev"
-                  ? "rotateY(172deg)"
-                  : "rotateY(0deg)",
+              transform:
+                flipDir === "next"
+                  ? "rotateY(-172deg)"
+                  : flipDir === "prev"
+                    ? "rotateY(172deg)"
+                    : "rotateY(0deg)",
               opacity: reduced && flipDir ? 0 : 1,
             }}
           >
-            <img
-              src={current.src}
-              alt={current.alt}
-              className="absolute inset-0 h-full w-full object-cover object-top"
-              draggable={false}
-            />
-            {/* Spine gradient on the binding edge */}
+            {currentLoaded ? (
+              <img
+                src={current.src}
+                alt={current.alt}
+                className="absolute inset-0 h-full w-full object-cover object-top"
+                draggable={false}
+                decoding="async"
+              />
+            ) : (
+              <PageSkeleton />
+            )}
+            {/* Spine gradient */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[color:var(--charcoal)]/35 via-[color:var(--charcoal)]/10 to-transparent"
             />
-            {/* Paper warmth + subtle vignette */}
+            {/* Paper vignette */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[color:var(--ivory)]/0 via-transparent to-[color:var(--charcoal)]/10"
@@ -187,7 +280,8 @@ function BookFlip() {
           onClick={() => go("prev")}
           disabled={index === 0}
           aria-label="Previous page"
-          className="hidden md:flex absolute top-1/2 -left-12 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] text-[color:var(--charcoal)] shadow-sm transition hover:border-[color:var(--charcoal)]/50 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-controls="travel-file-book"
+          className="hidden md:flex absolute top-1/2 -left-12 -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] text-[color:var(--charcoal)] shadow-sm transition hover:border-[color:var(--charcoal)]/50 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
         >
           <ChevronLeft size={18} aria-hidden="true" />
         </button>
@@ -196,51 +290,86 @@ function BookFlip() {
           onClick={() => go("next")}
           disabled={index === total - 1}
           aria-label="Next page"
-          className="hidden md:flex absolute top-1/2 -right-12 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] text-[color:var(--charcoal)] shadow-sm transition hover:border-[color:var(--charcoal)]/50 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-controls="travel-file-book"
+          className="hidden md:flex absolute top-1/2 -right-12 -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] text-[color:var(--charcoal)] shadow-sm transition hover:border-[color:var(--charcoal)]/50 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
         >
           <ChevronRight size={18} aria-hidden="true" />
         </button>
       </div>
 
-      {/* Page indicator + mobile controls */}
-      <div className="mt-7 flex items-center justify-center gap-5">
+      {/* Pagination controls — mobile arrows + counter + thumbnail rail */}
+      <div className="mt-7 flex items-center justify-center gap-4">
         <button
           type="button"
           onClick={() => go("prev")}
           disabled={index === 0}
           aria-label="Previous page"
-          className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30"
+          className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
         >
           <ChevronLeft size={16} aria-hidden="true" />
         </button>
 
-        <div className="flex items-center gap-2" aria-hidden="true">
-          {PAGES.map((_, i) => (
-            <span
-              key={i}
-              className={`h-[5px] rounded-full transition-all duration-300 ${
-                i === index
-                  ? "w-6 bg-[color:var(--gold-deep)]"
-                  : "w-[5px] bg-[color:var(--charcoal)]/25"
-              }`}
-            />
-          ))}
-        </div>
+        <p
+          className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)] min-w-[5.5rem] text-center"
+          aria-hidden="true"
+        >
+          {String(index + 1).padStart(2, "0")}{" "}
+          <span className="opacity-60">/</span> {String(total).padStart(2, "0")}
+        </p>
 
         <button
           type="button"
           onClick={() => go("next")}
           disabled={index === total - 1}
           aria-label="Next page"
-          className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30"
+          className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
         >
           <ChevronRight size={16} aria-hidden="true" />
         </button>
       </div>
 
-      <p className="mt-3 text-center text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
-        {String(index + 1).padStart(2, "0")} <span className="opacity-60">/</span> {String(total).padStart(2, "0")}
-      </p>
+      {/* Thumbnail rail — visible pagination, direct jump */}
+      <ul
+        className="mt-5 flex items-center justify-center gap-2 md:gap-3 list-none p-0"
+        role="tablist"
+        aria-label="Jump to page"
+      >
+        {PAGES.map((p, i) => {
+          const active = i === index;
+          return (
+            <li key={p.label}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={active}
+                aria-label={`Page ${i + 1} — ${p.label}`}
+                onClick={() => goTo(i)}
+                className={`group relative block h-12 w-9 md:h-14 md:w-[42px] overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
+                  active
+                    ? "border-[color:var(--gold-deep)] shadow-[0_4px_14px_-6px_rgba(184,148,82,0.55)] scale-[1.06]"
+                    : "border-[color:var(--charcoal)]/15 opacity-65 hover:opacity-100 hover:border-[color:var(--charcoal)]/40"
+                }`}
+              >
+                <img
+                  src={p.src}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover object-top"
+                  draggable={false}
+                />
+                {active ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 -bottom-[5px] mx-auto h-[2px] w-4 rounded-full bg-[color:var(--gold-deep)]"
+                  />
+                ) : null}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
@@ -264,7 +393,7 @@ export function RecentJourney() {
               written around you.
             </span>
           </h2>
-          <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
+          <p className="mt-5 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Beside the Studio, our quiet flagship: a private
             travel-design service for those who want their journey
             shaped end-to-end by a local — and delivered as a book,
@@ -277,8 +406,8 @@ export function RecentJourney() {
         <div className="reveal max-w-3xl mx-auto text-center mb-12 md:mb-16">
           <p className="font-[family-name:var(--font-serif)] italic text-[1.15rem] md:text-[1.45rem] leading-[1.45] text-[color:var(--charcoal)]">
             “A private travel story —{" "}
-            <span className="text-[color:var(--teal)]">written for you</span>, by a
-            local travel designer.”
+            <span className="text-[color:var(--teal)]">written for you</span>, by a local
+            travel designer.”
           </p>
         </div>
 
@@ -300,22 +429,26 @@ export function RecentJourney() {
         </ul>
 
         {/* Proof — flip-through book */}
-        <div className="reveal max-w-4xl mx-auto text-center mb-8 md:mb-10">
+        <div
+          id="travel-file-book"
+          className="reveal max-w-4xl mx-auto text-center mb-8 md:mb-10"
+        >
           <p className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-deep)] font-semibold">
             Inside a real travel file
           </p>
           <h3 className="mt-3 font-[family-name:var(--font-display)] font-semibold text-[1.5rem] md:text-[2rem] leading-[1.15] tracking-[-0.012em] text-[color:var(--charcoal)]">
             Turn the pages.
           </h3>
-          <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-lg mx-auto">
+          <p className="mt-3 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-lg mx-auto">
             Five pages from a private travel file we delivered this year.
-            Swipe, click the arrows, or use the keyboard to flip through.
+            Swipe on mobile, click the arrows or thumbnails, or use the
+            keyboard to flip through.
           </p>
         </div>
 
         <BookFlip />
 
-        <p className="reveal mt-8 text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
+        <p className="reveal mt-8 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
           From one of our private bespoke journeys — names removed
         </p>
 
@@ -334,7 +467,7 @@ export function RecentJourney() {
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/25 px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--charcoal)]/60"
+              className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/25 px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--charcoal)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
             >
               Talk to a designer
             </Link>
