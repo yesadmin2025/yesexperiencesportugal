@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { EditorialCard } from "@/components/ui/EditorialCard";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
@@ -816,113 +817,36 @@ function HomePage() {
             </h2>
           </div>
 
-          {/* Three premium feature blocks — alternating image/text on
-              tablet+, stacked image-then-text on mobile. Each block:
-              animated category label, soft gold divider, bold serif
-              headline, body with one highlighted phrase, italic pull
-              line, gold detail line, CTA with arrow nudge. */}
+          {/* Each block uses the shared EditorialCard primitive so
+              eyebrow / title / body / detail / CTA / trust share one
+              typographic rhythm across the homepage. */}
           <div className="max-w-6xl mx-auto flex flex-col gap-12 md:gap-16">
             {groupsAndCelebrations.map((m, i) => {
-              const reverse = i % 2 === 1;
+              const accent =
+                m.id === "proposals" ? "var(--gold)" :
+                m.id === "celebrations" ? "var(--teal-2)" :
+                m.id === "corporate" ? "var(--teal)" :
+                "var(--charcoal)";
               return (
-                <article
+                <EditorialCard
                   key={m.eyebrow}
                   id={m.id}
-                  className="reveal-stagger he-seq group grid grid-cols-1 md:grid-cols-12 gap-7 md:gap-12 items-center scroll-mt-24 md:scroll-mt-28"
-                >
-                  {/* Image side */}
-                  <Link
-                    to={m.to}
-                    aria-label={m.cta}
-                    onMouseMove={(e) => {
-                      // Pointer-aware micro-tilt: max ±2.5deg, dampened.
-                      const el = e.currentTarget as HTMLElement;
-                      const r = el.getBoundingClientRect();
-                      const px = (e.clientX - r.left) / r.width - 0.5;
-                      const py = (e.clientY - r.top) / r.height - 0.5;
-                      el.style.setProperty("--tilt-y", `${(px * 5).toFixed(2)}deg`);
-                      el.style.setProperty("--tilt-x", `${(-py * 4).toFixed(2)}deg`);
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.setProperty("--tilt-y", "0deg");
-                      el.style.setProperty("--tilt-x", "0deg");
-                    }}
-                    className={
-                      "he-tilt relative block md:col-span-7 overflow-hidden rounded-[2px] border border-[color:var(--border)] bg-[color:var(--card)] transition-transform duration-300 ease-out group-hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 " +
-                      (reverse ? "md:order-2" : "md:order-1")
-                    }
-                  >
-                    <div className="he-image-cinema he-image-rise relative aspect-[4/3] md:aspect-[5/4] overflow-hidden">
-                      <img
-                        src={m.img}
-                        alt=""
-                        aria-hidden="true"
-                        loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
-                      />
-                      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/40 via-[color:var(--charcoal-deep)]/10 to-transparent" />
-                      {/* Subtle animated category label — soft pulsing
-                          gold dot signals "live / curated", and the pill
-                          lifts gently on hover. */}
-                      <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)] shadow-[0_2px_6px_rgba(0,0,0,0.18)] transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
-                        <span aria-hidden="true" className="live-dot" />
-                        {m.eyebrow}
-                      </span>
-                    </div>
-                  </Link>
-
-                  {/* Text side */}
-                  <div
-                    className={
-                      "md:col-span-5 flex flex-col pt-1 md:pt-0 " +
-                      (reverse ? "md:order-1" : "md:order-2")
-                    }
-                  >
-                    {/* Soft gold divider — animates from left on reveal */}
-                    <span aria-hidden="true" className="gold-rule mb-4 md:mb-5 max-w-[3rem] md:max-w-[3.5rem]" />
-                    {(() => {
-                      const accent =
-                        m.id === "proposals" ? "var(--gold)" :
-                        m.id === "celebrations" ? "var(--teal-2)" :
-                        m.id === "corporate" ? "var(--teal)" :
-                        "var(--charcoal)";
-                      return (
-                        <>
-                          <span className="inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
-                            <span aria-hidden="true" className="inline-block h-[6px] w-[6px] rounded-full" style={{ backgroundColor: accent }} />
-                            {m.eyebrow}
-                          </span>
-                          <h3 className="serif mt-3 text-[1.6rem] md:text-[2.1rem] leading-[1.14] md:leading-[1.08] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance">
-                            {m.title}
-                          </h3>
-                          <p className="mt-4 text-[14.5px] md:text-[15.5px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-md">
-                            {m.line}
-                          </p>
-                          <p className="mt-5 inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal-soft)]">
-                            <span aria-hidden="true" className="inline-block h-[6px] w-[6px] rounded-full" style={{ backgroundColor: accent }} />
-                            {m.detail}
-                          </p>
-                        </>
-                      );
-                    })()}
-                    <CtaButton
-                      to={m.to}
-                      variant="primary"
-                      className="mt-7 md:mt-6 self-start"
-                    >
-                      {m.cta}
-                    </CtaButton>
-                    <p className="mt-3 text-[11.5px] leading-[1.55] text-[color:var(--charcoal-soft)]/85 font-normal">
-                      {m.trust}
-                    </p>
-                  </div>
-                </article>
+                  eyebrow={m.eyebrow}
+                  accent={accent}
+                  title={m.title}
+                  body={m.line}
+                  detail={m.detail}
+                  trust={m.trust}
+                  cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
+                  image={{ src: m.img, to: m.to }}
+                  reverse={i % 2 === 1}
+                />
               );
             })}
           </div>
         </div>
       </section>
+
 
 
       {/* 7 — FAQ
