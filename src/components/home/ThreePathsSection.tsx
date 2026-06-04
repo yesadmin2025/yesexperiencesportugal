@@ -9,6 +9,10 @@
 
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Compass, Sparkles, type LucideIcon } from "lucide-react";
+import { signatureTours } from "@/data/signatureTours";
+
+// Derived from real Signature data — never hardcoded.
+const SIGNATURE_FROM = Math.min(...signatureTours.map((t) => t.priceFrom));
 
 type Path = {
   num: string;
@@ -19,6 +23,7 @@ type Path = {
   body: React.ReactNode;
   cta: string;
   href: string;
+  anchor: string; // price anchor line (truthful, derived where possible)
   external?: boolean;
 };
 
@@ -40,6 +45,7 @@ const PATHS: Path[] = [
     ),
     cta: "Browse the Signatures",
     href: "/experiences",
+    anchor: `From €${SIGNATURE_FROM} / guest`,
   },
   {
     num: "02",
@@ -58,6 +64,7 @@ const PATHS: Path[] = [
     ),
     cta: "Open the Studio",
     href: "/studio-v2",
+    anchor: "Live price as you build",
   },
   {
     num: "03",
@@ -76,6 +83,7 @@ const PATHS: Path[] = [
     ),
     cta: "Begin a conversation",
     href: "/multi-day",
+    anchor: "Designed to your budget",
   },
   {
     num: "04",
@@ -94,6 +102,7 @@ const PATHS: Path[] = [
     ),
     cta: "Tell us the occasion",
     href: "/proposals",
+    anchor: "On request",
   },
 ];
 
@@ -160,7 +169,11 @@ export function ThreePathsSection() {
                 <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">
                   {p.body}
                 </p>
-                <span className="he-pull mt-4 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
+                <span className="mt-4 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal-soft)]">
+                  <span aria-hidden="true" className="h-px w-3 bg-[color:var(--gold)]/55" />
+                  {p.anchor}
+                </span>
+                <span className="he-pull mt-3 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
                   {p.cta}
                   <span
                     aria-hidden="true"
