@@ -930,7 +930,7 @@ function HomePage() {
                   </span>
                 </h2>
                 <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
-                  Design it live in the Studio, or write to a local.
+                  Every journey begins with a conversation. Tell us what matters to you and we’ll shape the rest.
                 </p>
                 <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
                   <CtaButton to="/studio-v2" variant="primary">
