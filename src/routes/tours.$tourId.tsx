@@ -225,7 +225,7 @@ function TourHero({
               params={{ tourId: tour.id }}
               className="flex-1 inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
-              Tailor this Signature
+              Make it yours
             </Link>
           </div>
         </div>
@@ -646,7 +646,7 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
       <div className="container-x max-w-6xl">
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-14 items-start">
           <div>
-            <Eyebrow>Tailor this Signature</Eyebrow>
+            <Eyebrow>Make it yours</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Keep the experience.
               <br />
@@ -788,7 +788,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             params={{ tourId: tour.id }}
             variant="ghostDark"
           >
-            Tailor this Signature
+            Make it yours
           </CtaButton>
         </div>
 
