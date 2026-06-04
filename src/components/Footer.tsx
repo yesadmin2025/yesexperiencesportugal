@@ -84,16 +84,14 @@ export function Footer() {
         {/* Bottom bar — copyright + tagline. Quiet, single line. */}
         <div className="mt-10 md:mt-10 pt-5 border-t border-[color:var(--gold-warm)]/25">
           <div
-            className="flex flex-col md:flex-row justify-between items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/70"
+            className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/85"
             style={{ fontWeight: 400 }}
           >
-            <p className="text-center md:text-left leading-[1.6]">
-              © {new Date().getFullYear()}{" "}
-              <span className="text-[color:var(--ivory)]">YES Experiences Portugal</span>
-              {" "}· Licensed tour operator (RNAVT) · Lisbon, Portugal · All rights reserved.
+            <p className="leading-[1.6]">
+              © {new Date().getFullYear()} YES experiences PORTUGAL · Licensed tour operator (RNAVT) · Lisbon, Portugal
             </p>
             <p
-              className="font-[family-name:var(--font-display)] tracking-[0.32em] uppercase text-[color:var(--gold-warm)]"
+              className="font-[family-name:var(--font-display)] text-[10.5px] tracking-[0.28em] uppercase text-[color:var(--gold-warm)] whitespace-nowrap"
               style={{ fontWeight: 600 }}
             >
               Private · Local · Instant booking
