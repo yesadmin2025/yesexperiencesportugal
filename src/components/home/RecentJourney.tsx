@@ -224,7 +224,7 @@ function BookFlip() {
                 src={incoming.src}
                 alt=""
                 aria-hidden="true"
-                className="absolute inset-0 h-full w-full object-cover object-top rounded-[3px] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
+                className="absolute inset-0 h-full w-full object-contain rounded-[3px] bg-[color:var(--sand)] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
               />
             ) : (
               <PageSkeleton />
