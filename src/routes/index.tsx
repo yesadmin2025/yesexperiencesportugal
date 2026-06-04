@@ -609,13 +609,6 @@ function HomePage() {
                 device. On desktop the rail returns to the left so the
                 reading flow stays natural. */}
             <div className="reveal lg:col-span-5 lg:order-1 order-1">
-              {/* Bridge whisper — Four Doors → Studio. Frames the
-                  Studio as the natural answer when none of the doors
-                  fits exactly. */}
-              <p className="bridge-whisper !mx-0 text-left mb-4">
-                And when none of them is quite it —
-              </p>
-
               <span className="he-eyebrow-bar mb-5">
                 <span className="live-dot" aria-hidden="true" />
                 Experience Studio
