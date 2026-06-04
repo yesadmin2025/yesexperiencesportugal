@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProposalsRouteImport } from './routes/proposals'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
@@ -55,6 +57,11 @@ const TypographyAuditRoute = TypographyAuditRouteImport.update({
   path: '/typography-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioV2Route = StudioV2RouteImport.update({
   id: '/studio-v2',
   path: '/studio-v2',
@@ -73,6 +80,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ProposalsRoute = ProposalsRouteImport.update({
   id: '/proposals',
   path: '/proposals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PreviewCheckRoute = PreviewCheckRouteImport.update({
@@ -266,10 +278,12 @@ export interface FileRoutesByFullPath {
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
+  '/privacy': typeof PrivacyRoute
   '/proposals': typeof ProposalsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
+  '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -308,10 +322,12 @@ export interface FileRoutesByTo {
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
+  '/privacy': typeof PrivacyRoute
   '/proposals': typeof ProposalsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
+  '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -351,10 +367,12 @@ export interface FileRoutesById {
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
+  '/privacy': typeof PrivacyRoute
   '/proposals': typeof ProposalsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
+  '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -395,10 +413,12 @@ export interface FileRouteTypes {
     | '/local-stories'
     | '/multi-day'
     | '/preview-check'
+    | '/privacy'
     | '/proposals'
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
+    | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -437,10 +457,12 @@ export interface FileRouteTypes {
     | '/local-stories'
     | '/multi-day'
     | '/preview-check'
+    | '/privacy'
     | '/proposals'
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
+    | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -479,10 +501,12 @@ export interface FileRouteTypes {
     | '/local-stories'
     | '/multi-day'
     | '/preview-check'
+    | '/privacy'
     | '/proposals'
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
+    | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -522,10 +546,12 @@ export interface RootRouteChildren {
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   MultiDayRoute: typeof MultiDayRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProposalsRoute: typeof ProposalsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
   StudioV2Route: typeof StudioV2RouteWithChildren
+  TermsRoute: typeof TermsRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
@@ -556,6 +582,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TypographyAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/studio-v2': {
       id: '/studio-v2'
       path: '/studio-v2'
@@ -582,6 +615,13 @@ declare module '@tanstack/react-router' {
       path: '/proposals'
       fullPath: '/proposals'
       preLoaderRoute: typeof ProposalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/preview-check': {
@@ -883,10 +923,12 @@ const rootRouteChildren: RootRouteChildren = {
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   MultiDayRoute: MultiDayRoute,
   PreviewCheckRoute: PreviewCheckRoute,
+  PrivacyRoute: PrivacyRoute,
   ProposalsRoute: ProposalsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
   StudioV2Route: StudioV2RouteWithChildren,
+  TermsRoute: TermsRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-04T05:56:00.951Z",
+  "generatedAt": "2026-06-04T06:54:45.577Z",
   "filesScanned": 324,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1232,7 +1232,7 @@
     },
     {
       "file": "src/components/home/ThreePathsSection.tsx",
-      "line": 137,
+      "line": 119,
       "col": 102,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1952,7 +1952,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 3571,
+      "line": 3595,
       "col": 41,
       "raw": "#000",
       "normalized": "#000000",
@@ -1961,7 +1961,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 3571,
+      "line": 3595,
       "col": 47,
       "raw": "#000",
       "normalized": "#000000",
@@ -1970,7 +1970,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4064,
+      "line": 4088,
       "col": 7,
       "raw": "#555",
       "normalized": "#555555",
@@ -1979,7 +1979,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4745,
+      "line": 4769,
       "col": 47,
       "raw": "#8a6f2e",
       "normalized": "#8a6f2e",
@@ -1988,7 +1988,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4781,
+      "line": 4805,
       "col": 47,
       "raw": "#d8b97a",
       "normalized": "#d8b97a",
