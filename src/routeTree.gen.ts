@@ -15,6 +15,7 @@ import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProposalsRouteImport } from './routes/proposals'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
@@ -79,6 +80,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ProposalsRoute = ProposalsRouteImport.update({
   id: '/proposals',
   path: '/proposals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PreviewCheckRoute = PreviewCheckRouteImport.update({
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
+  '/privacy': typeof PrivacyRoute
   '/proposals': typeof ProposalsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -315,6 +322,7 @@ export interface FileRoutesByTo {
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
+  '/privacy': typeof PrivacyRoute
   '/proposals': typeof ProposalsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -359,6 +367,7 @@ export interface FileRoutesById {
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
+  '/privacy': typeof PrivacyRoute
   '/proposals': typeof ProposalsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/local-stories'
     | '/multi-day'
     | '/preview-check'
+    | '/privacy'
     | '/proposals'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -447,6 +457,7 @@ export interface FileRouteTypes {
     | '/local-stories'
     | '/multi-day'
     | '/preview-check'
+    | '/privacy'
     | '/proposals'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -490,6 +501,7 @@ export interface FileRouteTypes {
     | '/local-stories'
     | '/multi-day'
     | '/preview-check'
+    | '/privacy'
     | '/proposals'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -534,6 +546,7 @@ export interface RootRouteChildren {
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   MultiDayRoute: typeof MultiDayRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProposalsRoute: typeof ProposalsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
@@ -602,6 +615,13 @@ declare module '@tanstack/react-router' {
       path: '/proposals'
       fullPath: '/proposals'
       preLoaderRoute: typeof ProposalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/preview-check': {
@@ -903,6 +923,7 @@ const rootRouteChildren: RootRouteChildren = {
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   MultiDayRoute: MultiDayRoute,
   PreviewCheckRoute: PreviewCheckRoute,
+  PrivacyRoute: PrivacyRoute,
   ProposalsRoute: ProposalsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
