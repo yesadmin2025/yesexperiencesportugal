@@ -540,7 +540,7 @@ function HomePage() {
           700+ five-star reviews across major platforms
         </h2>
         <div className="container-x">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 md:gap-8 text-center md:text-left">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
             <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
               <p
                 className="flex items-center justify-center md:justify-start gap-1 text-[color:var(--gold)]"
@@ -551,16 +551,16 @@ function HomePage() {
                   <Star key={i} className="he-trust-star" size={14} fill="currentColor" strokeWidth={0} aria-hidden="true" focusable="false" />
                 ))}
               </p>
-              <p className="serif text-[1.15rem] md:text-[1.35rem] text-[color:var(--charcoal)] leading-[1.25] font-normal">
-                700+ <span className="italic">five-star reviews</span>
-                <span className="hidden md:inline text-[color:var(--charcoal-soft)]"> · </span>
-                <span className="block md:inline text-[10.5px] md:text-[11.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)] md:ml-1 mt-1.5 md:mt-0">
-                  Private · Local · Designed in Portugal
+              <p className="serif text-[color:var(--charcoal)] leading-[1.15] font-normal">
+                <span className="serif text-[1.85rem] md:text-[2.4rem] font-medium tabular-nums">700+</span>
+                <span className="ml-2 italic text-[1.1rem] md:text-[1.3rem]">five-star reviews</span>
+                <span className="block md:inline text-[10.5px] md:text-[11.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)] md:ml-3 mt-1.5 md:mt-0">
+                  Across Google · Tripadvisor · Viator · GetYourGuide · Trustpilot
                 </span>
               </p>
             </div>
             <ul
-              className="he-stagger flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3 md:gap-x-8 list-none p-0 h-6 md:h-7 opacity-90"
+              className="he-stagger flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3 md:gap-x-8 list-none p-0 h-6 md:h-7 opacity-95"
               aria-label="Featured on Google, Tripadvisor, Viator, GetYourGuide and Trustpilot"
             >
               {(["google", "tripadvisor", "viator", "getyourguide", "trustpilot"] as const).map((p) => (
