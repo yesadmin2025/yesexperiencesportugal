@@ -28,15 +28,15 @@ const PATHS: Path[] = [
     label: "Signature Experiences",
     title: (
       <>
-        Curated private days, <span className="italic">yours to tailor.</span>
+        Already loved. <span className="italic">Yours to make personal.</span>
       </>
     ),
     body: (
       <>
-        Flagship private experiences across Lisbon, Sintra, Arrábida and Sesimbra. Book as designed, or adjust the details that matter to you.
+        Flagship days across Lisbon, Sintra, Arrábida and Sesimbra — trusted by hundreds of travellers. Book as they are, or refine the details that matter.
       </>
     ),
-    cta: "Explore Signature Experiences",
+    cta: "Browse the Signatures",
     href: "/experiences",
   },
   {
@@ -45,12 +45,12 @@ const PATHS: Path[] = [
     label: "Experience Studio",
     title: (
       <>
-        Design a day, <span className="italic">reserve in minutes.</span>
+        Build it live. <span className="italic">Reserve in minutes.</span>
       </>
     ),
     body: (
       <>
-        An intelligent builder: shape mood, pace and priorities. See the real route, real timings and live price — then confirm instantly. No forms, no waiting.
+        Shape mood, pace and priorities on an intelligent canvas. Watch the real route appear, see the live price, and confirm in a single tap — no forms, no waiting.
       </>
     ),
     cta: "Open the Studio",
@@ -62,15 +62,15 @@ const PATHS: Path[] = [
     label: "Travel Designer",
     title: (
       <>
-        Bespoke journeys, <span className="italic">shaped end to end.</span>
+        A Portugal <span className="italic">written around you.</span>
       </>
     ),
     body: (
       <>
-        A local travel designer plans the full journey — multi-day routes, regional pacing, accommodations and recommendations. Delivered as a private travel file, not a booking.
+        Slow mornings in the Douro. A villa above Cascais. A table only insiders know. A travel designer composes your multi-day Portugal — and hands it back as a private book.
       </>
     ),
-    cta: "Plan your journey",
+    cta: "Begin a conversation",
     href: "/multi-day",
   },
   {
@@ -79,15 +79,15 @@ const PATHS: Path[] = [
     label: "Proposals · Celebrations · Corporate",
     title: (
       <>
-        For milestones <span className="italic">and private groups.</span>
+        Moments that <span className="italic">deserve a setting.</span>
       </>
     ),
     body: (
       <>
-        Privately designed and managed experiences for proposals, celebrations and corporate gatherings — coordinated locally, with full discretion.
+        Proposals shaped in private. Family celebrations woven around your people. Corporate days handled with the same care — discreetly, locally, end to end.
       </>
     ),
-    cta: "Tell us what you have in mind",
+    cta: "Tell us the occasion",
     href: "/proposals",
   },
 ];
@@ -101,18 +101,18 @@ export function ThreePathsSection() {
     >
       <div className="container-x">
         <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="he-eyebrow-bar mb-5">Four ways to experience YES</span>
+          <span className="he-eyebrow-bar mb-5">Where to begin</span>
           <h2
             id="three-paths-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Four ways to{" "}
+            Four doors into{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
-              experience Portugal.
+              your Portugal.
             </span>
           </h2>
           <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Choose a curated Signature, design a day in the Studio, commission a bespoke journey, or plan a private occasion.
+            Start with one you can book, build one you can confirm in minutes, commission a multi-day story, or set the stage for an occasion.
           </p>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
