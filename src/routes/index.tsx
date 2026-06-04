@@ -161,7 +161,7 @@ const groupsAndCelebrations = [
     line: (
       <>
         Birthdays, anniversaries and family gatherings shaped around{" "}
-        <span className="kw">your people</span> and your pace.
+        <strong className="font-medium text-[color:var(--charcoal)]">your people</strong> and your pace.
       </>
     ),
     pull: "Your people, your pace.",
