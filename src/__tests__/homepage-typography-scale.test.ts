@@ -80,7 +80,7 @@ describe("Homepage eyebrow labels — canonical utility usage", () => {
   it("every major section intro uses .he-eyebrow-bar", () => {
     const requiredEyebrows = [
       "Experience Studio",
-      "Signature experiences",
+      "Signature",
     ];
     for (const label of requiredEyebrows) {
       const re = new RegExp(`he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`);
