@@ -392,7 +392,10 @@ export function RecentJourney() {
       aria-labelledby="bespoke-designer-title"
     >
       <div className="container-x">
-        <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
+        {/* Header — tightened. The book itself carries the proof, so we
+            keep one headline + one supporting line and let the object
+            below do the talking. */}
+        <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-10">
           <span className="he-eyebrow-bar mb-5">Bespoke Travel Designer</span>
           <h2
             id="bespoke-designer-title"
@@ -406,48 +409,39 @@ export function RecentJourney() {
           <p className="mt-5 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Multi-day Portugal, composed by a local — delivered as a book, not a booking.
           </p>
-          <span aria-hidden="true" className="gold-rule mt-7 md:mt-8 mx-auto block max-w-[3rem]" />
+          <span aria-hidden="true" className="gold-rule mt-6 md:mt-7 mx-auto block max-w-[3rem]" />
         </div>
 
-        {/* Three pillars */}
-        <ul className="reveal grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto mb-14 md:mb-20 list-none p-0">
+        {/* Proof — the book is now the focal object. No competing
+            eyebrow/subtitle above it; the section header already framed
+            the idea. */}
+        <div id="travel-file-book">
+          <BookFlip />
+        </div>
+
+        <p className="reveal mt-7 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
+          From one of our bespoke journeys — names removed
+        </p>
+
+        {/* Three pillars demoted to a quiet caption strip beneath the
+            book — same words, lower visual weight. No cards, no sand
+            background; just a thin labelled row that supports the book
+            instead of competing with it. */}
+        <ul className="reveal mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8 max-w-4xl mx-auto list-none p-0 border-t border-[color:var(--border)] pt-6 md:pt-7 text-center sm:text-left">
           {PILLARS.map((p) => (
-            <li
-              key={p.label}
-              className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-5 md:px-6 md:py-6"
-            >
-              <div className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+            <li key={p.label}>
+              <div className="font-[family-name:var(--font-display)] text-[10px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
                 {p.label}
               </div>
-              <p className="mt-3 font-[family-name:var(--font-sans)] text-[15px] md:text-[16px] leading-[1.55] text-[color:var(--charcoal)]">
+              <p className="mt-2 font-[family-name:var(--font-sans)] text-[13px] md:text-[13.5px] leading-[1.55] text-[color:var(--charcoal-soft)]">
                 {p.body}
               </p>
             </li>
           ))}
         </ul>
 
-        {/* Proof — flip-through book */}
-        <div
-          id="travel-file-book"
-          className="reveal max-w-4xl mx-auto text-center mb-8 md:mb-10"
-        >
-          <span className="he-eyebrow-bar mb-5">Inside a real travel file</span>
-          <SectionTitle as="h3" size="compact" spacing="normal">
-            Turn the pages.
-          </SectionTitle>
-          <p className="mt-3 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-lg mx-auto">
-            Five pages from a private file we delivered this year.
-          </p>
-        </div>
-
-        <BookFlip />
-
-        <p className="reveal mt-8 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
-          From one of our bespoke journeys — names removed
-        </p>
-
         {/* CTA */}
-        <div className="reveal mt-14 md:mt-16 max-w-2xl mx-auto text-center">
+        <div className="reveal mt-10 md:mt-12 max-w-2xl mx-auto text-center">
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/multi-day"
