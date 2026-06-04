@@ -78,7 +78,7 @@ const PATHS: Path[] = [
     ),
     body: (
       <>
-        A travel designer composes your multi-day Portugal — stays, tables, transitions — and hands it back as a private book.
+        A travel designer composes your multi-day Portugal — stays, tables, transitions — and hands it back as a bound book.
       </>
     ),
     cta: "Begin a conversation",
@@ -97,7 +97,7 @@ const PATHS: Path[] = [
     ),
     body: (
       <>
-        Proposals shaped in private. Celebrations woven around your people. Corporate days handled end to end — discreetly, locally.
+        Proposals staged off the map. Celebrations woven around your people. Corporate days handled end to end — discreet, local, quietly excellent.
       </>
     ),
     cta: "Tell us the occasion",

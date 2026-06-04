@@ -617,7 +617,13 @@ function HomePage() {
               >
                 Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
-              <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
+              {/* Proprietary-IP positioning line — function-led, no
+                  competitor comparisons (brand guardrail). Signals the
+                  Studio is a way of working, not a feature. */}
+              <p className="serif italic mt-4 text-[14px] md:text-[15.5px] leading-[1.5] text-[color:var(--teal)] max-w-md">
+                Designed live, with you — not assembled in advance.
+              </p>
+              <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                 Choose <span className="kw">mood</span>, group and rhythm. The Studio draws a <span className="kw">real route</span>, real timings and a live price — then confirms instantly. The only path on the page that reserves in a single tap.
               </p>
 
@@ -1072,6 +1078,13 @@ function HomePage() {
               />
 
               <div className="relative">
+                {/* Integrated social proof — narrative, not stat block.
+                    Single italic line that braids the trust into the
+                    close (separate from the top trust strip; no
+                    duplicate review surface). */}
+                <p className="serif italic text-[13px] md:text-[14px] leading-[1.45] text-[color:var(--charcoal-soft)] mb-4">
+                  Joined by 700+ five-star travellers this year.
+                </p>
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
                   Prefer a conversation
