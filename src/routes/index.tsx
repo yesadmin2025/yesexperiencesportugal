@@ -855,7 +855,7 @@ function HomePage() {
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
             <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
-            <h2 id="groups-title" className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
+            <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
               Moments that deserve <span className="italic font-normal text-[color:var(--teal)]">a setting.</span>
             </h2>
             <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
