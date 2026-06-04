@@ -183,7 +183,7 @@ const groupsAndCelebrations = [
     line: (
       <>
         Incentives, off-sites and client hospitality — venues, transport and timing woven into one{" "}
-        <span className="kw">effortless</span> day, with the same attention we bring to a proposal.
+        <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day, with the same attention we bring to a proposal.
       </>
     ),
     pull: "Run locally. Delivered seamlessly.",
