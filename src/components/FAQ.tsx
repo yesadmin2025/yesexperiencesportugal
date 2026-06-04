@@ -24,25 +24,10 @@ import {
  */
 const FAQS: { q: string; a: ReactNode }[] = [
   {
-    q: "Can I book directly on the website?",
+    q: "What is the difference between Signature, Studio and Bespoke?",
     a: (
       <>
-        Yes. You can confirm a Signature, a Tailored Signature or a journey
-        you build in the Studio in a few minutes — no forms, no waiting. You
-        receive your confirmation and full details right away, and a local
-        reaches out within one working day to align the last details.
-      </>
-    ),
-  },
-  {
-    q: "What is the difference between Signature, Tailored and Studio?",
-    a: (
-      <>
-        Signature is a ready-to-book private experience — confirmed as it is, with everything included.
-        <br />
-        Tailored lets you adjust selected details inside a Signature: pickup location, language, group size or add-ons.
-        <br />
-        Studio lets you build from scratch in real time — choose your mood, who's coming and your rhythm, and we draft a private day with real stops and a live price in about 90 seconds.
+        Signature is a ready-to-book private day. Studio designs a private day in real time around your mood, group and rhythm. Bespoke is a multi-day Portugal, composed by a local and delivered as a travel file.
       </>
     ),
   },
@@ -50,55 +35,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can I speak with a local?",
     a: (
       <>
-        Yes. After every confirmation — Signature, Tailored or Studio — a local from our team reaches out within one working day via WhatsApp to align the final details. For Bespoke Journeys, the conversation starts before anything is confirmed.
-      </>
-    ),
-  },
-  {
-    q: "Are experiences private?",
-    a: (
-      <>
-        Yes. Every YES experience is private — your group only. We do not combine groups or run shared tours.
-      </>
-    ),
-  },
-  {
-    q: "Can I plan proposals or celebrations?",
-    a: (
-      <>
-        Yes. We plan the location, timing and details discreetly with local knowledge. Get in touch and we handle everything — from a quiet cliffside moment to a full celebration for a larger group.
-      </>
-    ),
-  },
-  {
-    q: "Do you handle corporate and private groups?",
-    a: (
-      <>
-        Yes — from small executive groups to larger incentive programmes. Full logistics, transport coordination, invoice and DMC support included.
-      </>
-    ),
-  },
-  {
-    q: "Can I create multi-day journeys?",
-    a: (
-      <>
-        Yes. Multi-day journeys are designed in conversation with our local team — properties confirmed, routes mapped, every day planned with real timing. You receive a complete private travel file before departure.
-      </>
-    ),
-  },
-  {
-    q: "What happens after I confirm?",
-    a: (
-      <>
-        You receive your booking confirmation and full experience details immediately. A local from our team reaches out within one working day via WhatsApp to confirm pickup, align any final details and answer any questions.
-      </>
-    ),
-  },
-  {
-    q: "Can I adjust the experience after booking?",
-    a: (
-      <>
-        Yes, within reason. Contact us via WhatsApp and we will do our best to accommodate changes. Significant changes to itinerary or group size may affect pricing.
+        Yes. After every booking a local from our team reaches out within one working day to align the final details. For Bespoke journeys, the conversation starts before anything is confirmed.
       </>
     ),
   },
@@ -106,7 +43,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What if my plans change?",
     a: (
       <>
-        Free cancellation up to 48 hours before your experience for Signature and Studio bookings. Bespoke Journeys and group bookings have their own terms, shared at the time of confirmation.
+        Free cancellation up to 48 hours before your experience for Signature and Studio bookings. Bespoke journeys have their own terms, shared at confirmation.
       </>
     ),
   },
