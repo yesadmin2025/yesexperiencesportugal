@@ -234,7 +234,7 @@ function BookFlip() {
           {/* Current page — flips away on transition */}
           <div
             key={`${index}-${flipDir ?? "idle"}`}
-            className="absolute inset-0 rounded-[3px] overflow-hidden bg-[color:var(--sand)] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.55)] ring-1 ring-[color:var(--charcoal)]/10"
+            className="absolute inset-0 rounded-[3px] overflow-hidden bg-[color:var(--sand)] shadow-[0_44px_88px_-32px_rgba(46,46,46,0.62),0_20px_40px_-20px_rgba(46,46,46,0.38)] ring-1 ring-[color:var(--charcoal)]/12"
             style={{
               transformOrigin: flipDir === "prev" ? "left center" : "right center",
               transformStyle: "preserve-3d",
