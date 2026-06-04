@@ -798,11 +798,11 @@ function HomePage() {
           occasion" path lives together with clear hierarchy. */}
       <section
         id="occasions"
-        className="he-section-rule section-enter section-y bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+        className="he-section-rule section-enter py-14 md:py-20 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         aria-labelledby="groups-title"
       >
         <div className="container-x">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
+          <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
             <span className="he-eyebrow-bar mb-5">Occasions</span>
 
             <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
@@ -813,7 +813,7 @@ function HomePage() {
           {/* Each block uses the shared EditorialCard primitive so
               eyebrow / title / body / detail / CTA / trust share one
               typographic rhythm across the homepage. */}
-          <div className="max-w-6xl mx-auto flex flex-col gap-10 md:gap-12">
+          <div className="max-w-6xl mx-auto flex flex-col gap-7 md:gap-10">
             {groupsAndCelebrations.map((m, i) => {
               const accent =
                 m.id === "proposals" ? "var(--gold)" :
