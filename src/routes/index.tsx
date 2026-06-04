@@ -885,9 +885,10 @@ function HomePage() {
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
             {/* Bridge whisper — Signatures → Occasions. Carries the
                 reader from a single day into the bigger moments. */}
-            <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-5 max-w-md mx-auto">
+            <p className="bridge-whisper text-center mb-5">
               And when the moment is bigger than a day —
             </p>
+
             <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
 
             <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
