@@ -81,22 +81,35 @@ export function Footer() {
 
         </div>
 
-        {/* Bottom bar — copyright + tagline. Quiet, single line. */}
+        {/* Bottom bar — copyright + discreet legal links. Single quiet line. */}
         <div className="mt-10 md:mt-10 pt-5 border-t border-[color:var(--gold-warm)]/25">
           <div
-            className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/85"
+            className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/80"
             style={{ fontWeight: 400 }}
           >
             <p className="leading-[1.6]">
-              © {new Date().getFullYear()} YES experiences PORTUGAL · Licensed tour operator (RNAVT) · Lisbon, Portugal
+              © {new Date().getFullYear()} YES experiences Portugal. All rights reserved.
+              <span className="hidden md:inline"> · Licensed tour operator (RNAVT) · Lisbon.</span>
             </p>
-            <p
-              className="font-[family-name:var(--font-display)] text-[10.5px] tracking-[0.28em] uppercase text-[color:var(--gold-warm)] whitespace-nowrap"
-              style={{ fontWeight: 600 }}
-            >
-              Private · Local · Instant booking
-            </p>
+            <nav aria-label="Legal" className="flex items-center gap-5">
+              <Link
+                to="/terms"
+                className="text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+              >
+                Terms
+              </Link>
+              <span aria-hidden="true" className="text-[color:var(--ivory)]/30">·</span>
+              <Link
+                to="/privacy"
+                className="text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+              >
+                Privacy
+              </Link>
+            </nav>
           </div>
+          <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--ivory)]/55 font-[family-name:var(--font-sans)]">
+            Licensed tour operator (RNAVT) · Lisbon, Portugal
+          </p>
         </div>
       </div>
     </footer>
