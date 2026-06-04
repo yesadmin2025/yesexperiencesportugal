@@ -917,20 +917,20 @@ function HomePage() {
               <div className="relative">
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
-                  Prefer a conversation
+                  The stage is set
                 </span>
 
               <h2
                 id="final-cta-title"
                 className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
               >
-                  Ready to design your{" "}
+                  Portugal is waiting.{" "}
                   <span className="italic font-normal text-[color:var(--teal)]">
-                    Portugal?
+                    Begin your story.
                   </span>
                 </h2>
                 <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
-                  Build it live in the Studio, choose a Signature, or write to a local.
+                  Design it live in the Studio, or write to a local.
                 </p>
                 <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
                   <CtaButton to="/studio-v2" variant="primary">
