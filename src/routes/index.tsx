@@ -218,17 +218,17 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "YES experiences Portugal — Portugal is the stage. You write the story." },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
-      { name: "description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
+      { name: "description", content: "Private experiences in Portugal — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra. 700+ five-star reviews." },
       {
         property: "og:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "og:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
+      { property: "og:description", content: "Private experiences in Portugal — Signature days, Experience Studio with live pricing and instant reservation, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra." },
       {
         property: "twitter:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "twitter:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
+      { property: "twitter:description", content: "Private experiences in Portugal — Signature days, Experience Studio with live pricing and instant reservation, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra." },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
@@ -540,7 +540,7 @@ function HomePage() {
           700+ five-star reviews across major platforms
         </h2>
         <div className="container-x">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 md:gap-8 text-center md:text-left">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
             <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
               <p
                 className="flex items-center justify-center md:justify-start gap-1 text-[color:var(--gold)]"
@@ -551,16 +551,16 @@ function HomePage() {
                   <Star key={i} className="he-trust-star" size={14} fill="currentColor" strokeWidth={0} aria-hidden="true" focusable="false" />
                 ))}
               </p>
-              <p className="serif text-[1.15rem] md:text-[1.35rem] text-[color:var(--charcoal)] leading-[1.25] font-normal">
-                700+ <span className="italic">five-star reviews</span>
-                <span className="hidden md:inline text-[color:var(--charcoal-soft)]"> · </span>
-                <span className="block md:inline text-[10.5px] md:text-[11.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)] md:ml-1 mt-1.5 md:mt-0">
-                  Private · Local · Designed in Portugal
+              <p className="serif text-[color:var(--charcoal)] leading-[1.15] font-normal">
+                <span className="serif text-[1.85rem] md:text-[2.4rem] font-medium tabular-nums">700+</span>
+                <span className="ml-2 italic text-[1.1rem] md:text-[1.3rem]">five-star reviews</span>
+                <span className="block md:inline text-[10.5px] md:text-[11.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)] md:ml-3 mt-1.5 md:mt-0">
+                  Across Google · Tripadvisor · Viator · GetYourGuide · Trustpilot
                 </span>
               </p>
             </div>
             <ul
-              className="he-stagger flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3 md:gap-x-8 list-none p-0 h-6 md:h-7 opacity-90"
+              className="he-stagger flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3 md:gap-x-8 list-none p-0 h-6 md:h-7 opacity-95"
               aria-label="Featured on Google, Tripadvisor, Viator, GetYourGuide and Trustpilot"
             >
               {(["google", "tripadvisor", "viator", "getyourguide", "trustpilot"] as const).map((p) => (
@@ -618,7 +618,7 @@ function HomePage() {
                 Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
               <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                Pick a <span className="kw">mood</span>, who's coming and your rhythm. We draft a private day with <span className="kw">real stops</span>, real timing and a live price — ready to confirm.
+                Choose <span className="kw">mood</span>, group and rhythm. The Studio draws a <span className="kw">real route</span>, real timings and a live price — then reserves instantly. No forms. No waiting.
               </p>
 
               {/* Three Studio inputs — small index, signposts the
@@ -643,13 +643,13 @@ function HomePage() {
               {/* Conversion microcopy — under-CTA trust trio. */}
               <p className="mt-4 inline-flex items-center gap-2 text-[12.5px] md:text-[13px] leading-[1.55] text-[color:var(--charcoal)] max-w-md">
                 <span aria-hidden="true" className="block h-px w-5 bg-[color:var(--gold)]" />
-                <span className="font-medium">About 90 seconds · 11 quick steps · no forms.</span>
+                <span className="font-medium">About 90 seconds · 11 quick steps · live pricing.</span>
               </p>
 
               {/* Reassurance line — direct conversion language. */}
               <p className="mt-3 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
                 <MessageCircle size={13} aria-hidden="true" className="mt-[3px] shrink-0 text-[color:var(--teal)]" />
-                <span>Instant confirmation · cancel free up to 48h · <span className="font-medium text-[color:var(--charcoal)]">a local replies on WhatsApp.</span></span>
+                <span>Instant reservation · cancel free up to 48h · <span className="font-medium text-[color:var(--charcoal)]">a local replies on WhatsApp.</span></span>
               </p>
             </div>
 
@@ -854,12 +854,12 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
-            <span className="he-eyebrow-bar mb-5">Groups &amp; celebrations</span>
+            <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
             <h2 id="groups-title" className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
               For moments bigger than a <span className="italic font-normal text-[color:var(--teal)]">tour.</span>
             </h2>
             <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Proposals, celebrations, corporate groups and multi-day journeys — shaped with local care.
+              Privately designed and managed experiences for proposals, celebrations and corporate gatherings — coordinated locally, with full discretion.
             </p>
           </div>
 

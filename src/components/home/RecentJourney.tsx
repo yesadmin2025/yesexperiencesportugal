@@ -32,16 +32,16 @@ const PAGES = [
 
 const PILLARS = [
   {
-    label: "Designed with you",
-    body: "It begins with a conversation — your pace, your taste, the Portugal you want to feel.",
+    label: "Regional journeys",
+    body: "Multi-day routes across Lisbon, Alentejo, Douro, Algarve or the islands — paced for the way you travel.",
   },
   {
-    label: "Written by a local",
-    body: "A travel designer on the ground, shaping a story only someone from here would draw.",
+    label: "Stays & logistics",
+    body: "Hand-picked accommodations, transfers and reservations — every overnight and transition confirmed before you leave.",
   },
   {
     label: "Delivered as a book",
-    body: "Your journey arrives as a private travel file: route, days, properties — all confirmed.",
+    body: "A private travel file with days, properties, recommendations and local contacts — not a generic booking.",
   },
 ] as const;
 
@@ -404,9 +404,9 @@ export function RecentJourney() {
             </span>
           </h2>
           <p className="mt-5 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Beside the Studio, our quiet flagship: a private
-            travel-design service for those who want their journey
-            shaped end-to-end by a local — and delivered as a book,
+            A private travel-design service for multi-day journeys —
+            regional routes, accommodations, pacing and recommendations,
+            shaped end to end by a local and delivered as a book,
             not a booking.
           </p>
           <span aria-hidden="true" className="gold-rule mt-7 md:mt-8 mx-auto block max-w-[3rem]" />
