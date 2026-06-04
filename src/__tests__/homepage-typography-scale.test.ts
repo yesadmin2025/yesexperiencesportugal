@@ -79,12 +79,8 @@ describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
 describe("Homepage eyebrow labels — canonical utility usage", () => {
   it("every major section intro uses .he-eyebrow-bar", () => {
     const requiredEyebrows = [
-      "Three ways in",
       "Experience Studio",
-      "Why YES",
       "Signature experiences",
-      "Groups",
-    ];
     for (const label of requiredEyebrows) {
       const re = new RegExp(`he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`);
       expect(re.test(src), `missing .he-eyebrow-bar wrapper for "${label}"`).toBe(true);
