@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 
 // Pages from a real, anonymized private travel file we delivered.
 import pageCover from "@/assets/travel-file/cover.jpg";
@@ -203,8 +204,8 @@ function BookFlip() {
         onKeyDown={onKeyDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px]"
-        style={{ perspective: "2200px", width: "min(100%, 520px)" }}
+        className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] px-6 md:px-8"
+        style={{ perspective: "2200px", width: "min(100%, 360px)" }}
       >
         {/* Soft cast shadow under the book */}
         <div
@@ -223,7 +224,7 @@ function BookFlip() {
                 src={incoming.src}
                 alt=""
                 aria-hidden="true"
-                className="absolute inset-0 h-full w-full object-cover object-top rounded-[3px] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
+                className="absolute inset-0 h-full w-full object-contain rounded-[3px] bg-[color:var(--sand)] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
               />
             ) : (
               <PageSkeleton />
@@ -233,7 +234,7 @@ function BookFlip() {
           {/* Current page — flips away on transition */}
           <div
             key={`${index}-${flipDir ?? "idle"}`}
-            className="absolute inset-0 rounded-[3px] overflow-hidden shadow-[0_30px_60px_-30px_rgba(46,46,46,0.55)] ring-1 ring-[color:var(--charcoal)]/10"
+            className="absolute inset-0 rounded-[3px] overflow-hidden bg-[color:var(--sand)] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.55)] ring-1 ring-[color:var(--charcoal)]/10"
             style={{
               transformOrigin: flipDir === "prev" ? "left center" : "right center",
               transformStyle: "preserve-3d",
@@ -254,7 +255,7 @@ function BookFlip() {
               <img
                 src={current.src}
                 alt={current.alt}
-                className="absolute inset-0 h-full w-full object-cover object-top"
+                className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}
                 decoding="async"
               />
@@ -433,12 +434,10 @@ export function RecentJourney() {
           id="travel-file-book"
           className="reveal max-w-4xl mx-auto text-center mb-8 md:mb-10"
         >
-          <p className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-deep)] font-semibold">
-            Inside a real travel file
-          </p>
-          <h3 className="mt-3 font-[family-name:var(--font-display)] font-semibold text-[1.5rem] md:text-[2rem] leading-[1.15] tracking-[-0.012em] text-[color:var(--charcoal)]">
+          <span className="he-eyebrow-bar">Inside a real travel file</span>
+          <SectionTitle as="h3" size="compact" spacing="normal">
             Turn the pages.
-          </h3>
+          </SectionTitle>
           <p className="mt-3 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-lg mx-auto">
             Five pages from a private travel file we delivered this year.
             Swipe on mobile, click the arrows or thumbnails, or use the
