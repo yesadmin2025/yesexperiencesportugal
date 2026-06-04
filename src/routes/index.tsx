@@ -788,12 +788,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 5b — RECENT JOURNEY (multi-day proof)
-          Real anonymized 15-day private journey from Lisbon to the
-          Costa Vicentina — proof, not promise. Lives right after
-          Signatures so multi-day appears naturally as the next scale
-          up from a Signature day. */}
-      <RecentJourney />
+      {/* 5b — Bespoke Travel File moved to right after the Studio. */}
 
 
 
