@@ -255,7 +255,7 @@ function BookFlip() {
               <img
                 src={current.src}
                 alt={current.alt}
-                className="absolute inset-0 h-full w-full object-cover object-top"
+                className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}
                 decoding="async"
               />
