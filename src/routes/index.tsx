@@ -1078,7 +1078,7 @@ function HomePage() {
                 </span>
               <h2
                 id="final-cta-title"
-                className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+                className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
               >
                   Ready to design your{" "}
                   <span className="italic font-normal text-[color:var(--teal)]">
