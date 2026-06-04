@@ -540,11 +540,6 @@ function HomePage() {
           700+ five-star reviews across major platforms
         </h2>
         <div className="container-x">
-          {/* Bridge whisper — Hero → Trust. Keeps the conversation
-              going instead of cutting from cinema to social proof. */}
-          <p className="reveal bridge-whisper text-center mb-7 md:mb-9">
-            What follows isn't a catalogue — it's how we already work, every day.
-          </p>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
 
