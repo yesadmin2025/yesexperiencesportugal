@@ -1048,17 +1048,6 @@ function HomePage() {
               />
 
               <div className="relative">
-                {/* Integrated social proof — narrative, not stat block.
-                    Single italic line that braids the trust into the
-                    close (separate from the top trust strip; no
-                    duplicate review surface). */}
-                {/* Bridge whisper — FAQ → Final CTA. Closes the
-                    conversation rather than opening a new pitch. Social
-                    proof is braided in as continuation, not a stat. */}
-                <p className="bridge-whisper text-center mb-4">
-                  When you're ready, we already are — as 700+ travellers were this year.
-                </p>
-
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
                   Prefer a conversation
@@ -1084,8 +1073,8 @@ function HomePage() {
                     Write to a Local
                   </CtaButton>
                 </div>
-                <p className="bridge-whisper mt-6">
-                  A local replies within the day — usually within the hour.
+                <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                  A local usually replies within the hour.
                 </p>
 
               </div>
