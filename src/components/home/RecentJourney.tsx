@@ -431,14 +431,39 @@ export function RecentJourney() {
           id="travel-file-book"
           className="reveal max-w-4xl mx-auto text-center mb-8 md:mb-10"
         >
-          <span className="he-eyebrow-bar">Inside a real travel file</span>
+          <span className="he-eyebrow-bar mb-5">Inside a real travel file</span>
           <SectionTitle as="h3" size="compact" spacing="normal">
             Turn the pages.
           </SectionTitle>
           <p className="mt-3 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-lg mx-auto">
-            Five pages from a private travel file we delivered this year.
-            Swipe on mobile, click the arrows or thumbnails, or use the
-            keyboard to flip through.
+            Five pages from a private file we delivered this year.
+          </p>
+        </div>
+
+        <BookFlip />
+
+        <p className="reveal mt-8 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
+          From one of our bespoke journeys — names removed
+        </p>
+
+        {/* CTA */}
+        <div className="reveal mt-14 md:mt-16 max-w-2xl mx-auto text-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/multi-day"
+              className="inline-flex items-center justify-center gap-2 rounded-[2px] bg-[color:var(--teal)] px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+            >
+              Start the conversation
+              <ArrowRight size={14} aria-hidden="true" />
+            </Link>
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/25 px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--charcoal)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+            >
+              Talk to a designer
+            </Link>
+          </div>
+        </div>
           </p>
         </div>
 
