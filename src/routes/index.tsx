@@ -854,12 +854,12 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
-            <span className="he-eyebrow-bar mb-5">Groups &amp; celebrations</span>
+            <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
             <h2 id="groups-title" className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
               For moments bigger than a <span className="italic font-normal text-[color:var(--teal)]">tour.</span>
             </h2>
             <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Proposals, celebrations, corporate groups and multi-day journeys — shaped with local care.
+              Privately designed and managed experiences for proposals, celebrations and corporate gatherings — coordinated locally, with full discretion.
             </p>
           </div>
 
