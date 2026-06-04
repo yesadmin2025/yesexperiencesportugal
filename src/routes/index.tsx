@@ -635,9 +635,10 @@ function HomePage() {
               {/* Proprietary-IP positioning line — function-led, no
                   competitor comparisons (brand guardrail). Signals the
                   Studio is a way of working, not a feature. */}
-              <p className="serif italic mt-4 text-[14px] md:text-[15.5px] leading-[1.5] text-[color:var(--teal)] max-w-md">
+              <p className="bridge-whisper !mx-0 text-left mt-4 !text-[color:var(--teal)]">
                 Designed live, with you — not assembled in advance.
               </p>
+
               <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                 Choose mood, group and rhythm. The Studio draws a <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>, real timings and a live price — then confirms instantly. The only path on the page that reserves in a single tap.
               </p>
