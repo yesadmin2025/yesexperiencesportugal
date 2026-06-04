@@ -42,8 +42,8 @@ export function Footer() {
             />
           </Link>
           <p
-            className="mt-5 text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
-            style={{ fontWeight: 350, letterSpacing: "0.005em" }}
+            className="mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
+            style={{ fontWeight: 400, letterSpacing: "0.005em" }}
           >
             Private Portugal experiences, designed with you and confirmed in minutes —
             700+ five-star reviews, real local hosts, instant booking.
