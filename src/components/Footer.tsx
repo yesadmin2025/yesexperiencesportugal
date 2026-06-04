@@ -42,8 +42,8 @@ export function Footer() {
             />
           </Link>
           <p
-            className="mt-5 text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
-            style={{ fontWeight: 350, letterSpacing: "0.005em" }}
+            className="mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
+            style={{ fontWeight: 400, letterSpacing: "0.005em" }}
           >
             Private Portugal experiences, designed with you and confirmed in minutes —
             700+ five-star reviews, real local hosts, instant booking.
@@ -84,16 +84,17 @@ export function Footer() {
         {/* Bottom bar — copyright + tagline. Quiet, single line. */}
         <div className="mt-10 md:mt-10 pt-5 border-t border-[color:var(--gold-warm)]/25">
           <div
-            className="flex flex-col md:flex-row justify-between items-center gap-3 text-[12px] text-[color:var(--ivory)]/70"
-            style={{ fontWeight: 350 }}
+            className="flex flex-col md:flex-row justify-between items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/70"
+            style={{ fontWeight: 400 }}
           >
-            <p>
-              © {new Date().getFullYear()} YES experiences Portugal · Licensed tour operator (RNAVT)
-              · Lisbon, Portugal
+            <p className="text-center md:text-left leading-[1.6]">
+              © {new Date().getFullYear()}{" "}
+              <span className="text-[color:var(--ivory)]">YES Experiences Portugal</span>
+              {" "}· Licensed tour operator (RNAVT) · Lisbon, Portugal · All rights reserved.
             </p>
             <p
-              className="tracking-[0.32em] uppercase text-[color:var(--gold-warm)]"
-              style={{ fontWeight: 500 }}
+              className="font-[family-name:var(--font-display)] tracking-[0.32em] uppercase text-[color:var(--gold-warm)]"
+              style={{ fontWeight: 600 }}
             >
               Private · Local · Instant booking
             </p>
@@ -108,17 +109,17 @@ function FooterCol({ title, links }: { title: string; links: { to: string; label
   return (
     <div>
       <h4
-        className="font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
-        style={{ fontWeight: 500 }}
+        className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
+        style={{ fontWeight: 600 }}
       >
         {title}
       </h4>
-      <ul className="space-y-3 text-[14px]" style={{ fontWeight: 350 }}>
+      <ul className="space-y-3 font-[family-name:var(--font-sans)] text-[14px]" style={{ fontWeight: 400 }}>
         {links.map((l) => (
           <li key={l.to}>
             <Link
               to={l.to}
-              className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300"
+              className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
             >
               {l.label}
             </Link>
