@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -53,6 +54,11 @@ import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 const TypographyAuditRoute = TypographyAuditRouteImport.update({
   id: '/typography-audit',
   path: '/typography-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioV2Route = StudioV2RouteImport.update({
@@ -270,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
+  '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -312,6 +319,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
+  '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -355,6 +363,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
+  '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
@@ -399,6 +408,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
+    | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
+    | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -483,6 +494,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
+    | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/builder-images'
@@ -526,6 +538,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
   StudioV2Route: typeof StudioV2RouteWithChildren
+  TermsRoute: typeof TermsRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
@@ -554,6 +567,13 @@ declare module '@tanstack/react-router' {
       path: '/typography-audit'
       fullPath: '/typography-audit'
       preLoaderRoute: typeof TypographyAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio-v2': {
@@ -887,6 +907,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
   StudioV2Route: StudioV2RouteWithChildren,
+  TermsRoute: TermsRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
