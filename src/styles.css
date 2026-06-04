@@ -3345,6 +3345,30 @@ html.motion-ready [data-motion].motion-in {
     color: var(--charcoal);
   }
 
+  /* Bridge whisper — the canonical lead-in voice between homepage
+     sections. Georgia italic, small, charcoal-soft, centred, with
+     consistent rhythm. Locked here so the 6 inter-section bridges on
+     the homepage (and the matching closing lines) stay in one voice
+     and can be tuned globally. Body copy must NEVER use this — Georgia
+     italic on the homepage is reserved for H2 emphasis and bridges. */
+  .bridge-whisper {
+    font-family: var(--font-serif, Georgia), Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--charcoal-soft);
+    max-width: 28rem; /* matches max-w-md */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (min-width: 768px) {
+    .bridge-whisper {
+      font-size: 14px;
+    }
+  }
+
+
   /* Animated gold rule — thin divider that draws from left to right
      when its parent enters the viewport via .reveal/.reveal-stagger.
      Pure CSS, ≤220ms, respects reduced-motion via the global rules. */
