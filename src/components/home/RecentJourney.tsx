@@ -464,36 +464,6 @@ export function RecentJourney() {
             </Link>
           </div>
         </div>
-          </p>
-        </div>
-
-        <BookFlip />
-
-        <p className="reveal mt-8 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
-          From one of our private bespoke journeys — names removed
-        </p>
-
-        {/* CTA */}
-        <div className="reveal mt-14 md:mt-16 max-w-2xl mx-auto text-center">
-          <p className="font-[family-name:var(--font-serif)] italic text-[1.1rem] md:text-[1.25rem] text-[color:var(--teal)] leading-snug">
-            “Tell us where you want to go — we'll write the rest.”
-          </p>
-          <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              to="/multi-day"
-              className="inline-flex items-center justify-center gap-2 rounded-[2px] bg-[color:var(--teal)] px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-            >
-              Start the conversation
-              <ArrowRight size={14} aria-hidden="true" />
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/25 px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--charcoal)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-            >
-              Talk to a designer
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   );
