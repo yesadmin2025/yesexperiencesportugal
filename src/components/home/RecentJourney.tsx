@@ -387,10 +387,10 @@ export function RecentJourney() {
           <span className="he-eyebrow-bar mb-5">Bespoke Travel Designer</span>
           <h2
             id="bespoke-designer-title"
-            className="mt-3 font-[family-name:var(--font-display)] font-semibold text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] text-balance"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             A Portugal{" "}
-            <span className="font-[family-name:var(--font-serif)] italic font-normal text-[color:var(--teal)]">
+            <span className="italic font-normal text-[color:var(--teal)]">
               written around you.
             </span>
           </h2>
@@ -405,7 +405,7 @@ export function RecentJourney() {
 
         {/* Pull quote */}
         <div className="reveal max-w-3xl mx-auto text-center mb-12 md:mb-16">
-          <p className="font-[family-name:var(--font-serif)] italic text-[1.15rem] md:text-[1.45rem] leading-[1.45] text-[color:var(--charcoal)]">
+          <p className="serif italic text-[1.15rem] md:text-[1.45rem] leading-[1.45] text-[color:var(--charcoal)]">
             “A private travel story —{" "}
             <span className="text-[color:var(--teal)]">written for you</span>, by a local
             travel designer.”
@@ -419,10 +419,10 @@ export function RecentJourney() {
               key={p.label}
               className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-5 md:px-6 md:py-6"
             >
-              <div className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+              <div className="serif text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
                 {p.label}
               </div>
-              <p className="mt-3 font-[family-name:var(--font-serif)] text-[1.05rem] md:text-[1.15rem] leading-[1.4] text-[color:var(--charcoal)]">
+              <p className="mt-3 text-[1.05rem] md:text-[1.15rem] leading-[1.4] text-[color:var(--charcoal)]">
                 {p.body}
               </p>
             </li>
