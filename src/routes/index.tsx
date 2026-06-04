@@ -814,7 +814,7 @@ function HomePage() {
           {/* Each block uses the shared EditorialCard primitive so
               eyebrow / title / body / detail / CTA / trust share one
               typographic rhythm across the homepage. */}
-          <div className="max-w-6xl mx-auto flex flex-col gap-12 md:gap-16">
+          <div className="max-w-6xl mx-auto flex flex-col gap-10 md:gap-12">
             {groupsAndCelebrations.map((m, i) => {
               const accent =
                 m.id === "proposals" ? "var(--gold)" :
@@ -830,7 +830,6 @@ function HomePage() {
                   title={m.title}
                   body={m.line}
                   detail={m.detail}
-                  trust={m.trust}
                   cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                   image={{ src: m.img, to: m.to }}
                   reverse={i % 2 === 1}
