@@ -218,17 +218,17 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "YES experiences Portugal — Portugal is the stage. You write the story." },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
-      { name: "description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
+      { name: "description", content: "Private experiences in Portugal — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra. 700+ five-star reviews." },
       {
         property: "og:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "og:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
+      { property: "og:description", content: "Private experiences in Portugal — Signature days, Experience Studio with live pricing and instant reservation, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra." },
       {
         property: "twitter:title",
         content: "Portugal is the stage. You write the story. — YES experiences",
       },
-      { property: "twitter:description", content: "Private Portugal experiences, designed with you and confirmed in minutes — 700+ five-star reviews, real local hosts, instant booking. Day tours from €138. Bespoke journeys for multi-day travellers." },
+      { property: "twitter:description", content: "Private experiences in Portugal — Signature days, Experience Studio with live pricing and instant reservation, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra." },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
