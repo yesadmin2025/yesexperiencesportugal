@@ -786,10 +786,11 @@ function HomePage() {
                         <Link
                           to="/tours/$tourId/tailor"
                           params={{ tourId: t.id }}
-                          className="self-start serif italic text-[13px] leading-[1.4] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300"
+                          className="self-start inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300"
                           aria-label={`Make ${t.title} yours`}
                         >
-                          or make it yours →
+                          Make it yours
+                          <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
                         </Link>
                       </div>
                     </div>
