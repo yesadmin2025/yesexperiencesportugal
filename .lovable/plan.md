@@ -1,85 +1,104 @@
-# Studio v2 Builder Flow Upgrades
+## Homepage Evolution Plan — Four Ways In (preserve identity, raise the bar)
 
-Scope: `/studio-v2` only. Frontend-first, with one Supabase table + one server function for the resumable email draft.
+**Non-negotiable:** YES has **four paths**, not three. Signature · Studio · Travel Designer · Moments (Proposals/Celebrations/Corporate). The reference site's 3+1 split is rejected — we keep our four-door architecture and lift execution instead.
 
-## 1. Progress bar — start at 20%
+This plan only borrows what reinforces YES's editorial/cinematic tone. It rejects everything that turns YES into a SaaS configurator (Quality Score, TM badges, "Add in 1‑Click", Step X of 11, stock imagery, "Premium Class" labels).
 
-- In the Studio v2 stepper (StudioV2 + `StudioConversionHud`), clamp the progress so step 1 reads as 20% minimum.
-- Implementation: change the percent calc from `step / total` to `0.2 + 0.8 * ((step - 1) / (total - 1))` (still 100% at the end).
-- Keep ARIA `aria-valuenow` aligned with the displayed %.
+---
 
-## 2. Persistent builder chrome (every step)
+### P1 — Hero refinement (low effort, high impact)
 
-Add a single `StudioBuilderChrome` component rendered by `StudioV2` around the active scene:
+Keep current `CinematicHero` and approved copy. Refine atmosphere only:
 
-- **Host card** (`HostCard`): small round avatar + "Your host in Sesimbra — Tiago" + WhatsApp link.
-  - Desktop ≥ md: pinned right rail (sticky, top of content area).
-  - Mobile: collapsible strip pinned just under the top bar.
-- **WhatsApp CTA** (always visible): `https://wa.me/351911889992?text=...` — uses brand gold pill button, accessible label.
-- **Price strip** (`LivePriceStrip`): sticky bottom bar showing "from €<X> / guest" derived live from current draft (mood, region, duration, group size, add-ons). Updates on every state change. Reduced-motion safe.
+- Deepen overlay slightly (more cinematic silence around the headline).
+- Tighten microcopy under the CTAs to one editorial line: *"choose another that brings more clarity* 
+- Confirm reduced-motion and visual-regression baselines still pass.
 
-Tokens only — `--gold`, `--charcoal`, `--ivory`. Mobile-first (393px verified).
+No structural change. No new section.
 
-## 3. Autosave to localStorage
+---
 
-- New hook `useStudioDraft()` wrapping the existing studio state (`useStudioState`).
-- Debounced (250ms) write of the full draft to `localStorage` under key `yes:studio-v2:draft:v1`.
-- On mount, hydrate from localStorage if present and no server-loaded draft.
-- Clear key after successful booking/handoff.
+### P2 — Studio Preview block (the real differentiator)
 
-## 4. "Email me my draft" (step 3+)
+A live, *editorial* glimpse of the Studio on the homepage — **not** a configurator mock with scores and TM badges.
 
-- New Supabase table `studio_drafts` (id uuid PK, email text, draft jsonb, resume_token text unique, created_at, expires_at default now()+30 days).
-- RLS: insert/select via service role only; resume endpoint is a server function that reads by token.
-- Server function `emailStudioDraft` (TanStack `createServerFn`): validates email + draft, inserts row, generates token, sends transactional email containing `https://yesexperiencesportugal.com/studio?resume=<token>`.
-- Email setup: scaffold app emails infra + `studio-draft-resume` template.
-- Studio v2 reads `?resume=` on mount; if present, calls `loadStudioDraft({token})` server fn to hydrate state.
-- Button visible from step index ≥ 2 (third step), inline in chrome.
+Placement: replaces the current static "Experience Studio (promoted)" section (block 4 in `approved-homepage-structure.ts`), same `aria-labelledby="studio-title"`, same spacing tier. No new block, no order change, structure lock stays green.
 
-## 5. Real-catalogue Studio output
+What it shows (mobile-first, ~520–620px tall):
 
-Create `src/lib/studio-v2/catalogueMapping.ts` mapping `(mood, region, duration)` → a canonical Signature tour blueprint pulled from `src/data/signatureTours.ts`, with these mappings:
+- Left rail: 3 quiet "moves" the traveller can make (mood · pace · table). Tap to swap.
+- Right rail: a soft-fading editorial line + a real route line drawn on a muted map crop + a discreet "from €…" line (no "Quality Score", no percent bar, no "1‑Click").
+- Single CTA: **Open the Studio →** (canonical `CtaButton`, gold sheen on hover, scoped to `.home-energy`).
 
-| Mood | Region | Base tour | Add-ons |
-|---|---|---|---|
-| Wine & food | Arrábida / Setúbal | Arrábida Private Wine Tour (3 wineries + market + Sesimbra view + traditional lunch) | tile-painting workshop, extra tasting |
-| Coastal & beaches | Arrábida | Arrábida & Sesimbra Boat Tour | — |
-| Coastal & beaches | Comporta / Tróia | Tróia & Comporta Tour | dolphin-watching |
-| Active | Arrábida | Arrábida coastal active tour | — |
-| Hands-on culture | (any) | Azeitão cheese & tiles workshop + wine tasting + Sesimbra | — |
+Voice: `YES — your day is taking shape.` Never "Smart Recommendation".
 
-- Half-day: condense to 4–5h, ~60% of full-day price, drop last 1–2 chapters, keep core anchor.
-- Output renders chapter-by-chapter with real stop names (Azeitão, Sesimbra, Portinho da Arrábida) and realistic timing windows (e.g. 09:30–11:00 Azeitão market).
-- Refine stage stays: user can swap/remove chapters, toggle add-ons; price strip recomputes.
+Reuses existing tokens, `PremiumMap`/`BuilderMap` crop, no new dependencies, no invented data.
 
-## 6. Files
+---
 
-**New**
-- `src/components/studio-v2/chrome/StudioBuilderChrome.tsx`
-- `src/components/studio-v2/chrome/HostCard.tsx`
-- `src/components/studio-v2/chrome/LivePriceStrip.tsx`
-- `src/components/studio-v2/chrome/WhatsappCta.tsx`
-- `src/components/studio-v2/chrome/EmailDraftButton.tsx`
-- `src/hooks/useStudioDraft.ts`
-- `src/lib/studio-v2/catalogueMapping.ts`
-- `src/lib/studio-v2/pricing.ts`
-- `src/lib/studio-v2/draft.functions.ts` (emailStudioDraft, loadStudioDraft)
-- `src/lib/email-templates/studio-draft-resume.tsx`
+### P3 — Keep ThreePathsSection as **four cards**, sharpen the rhythm
 
-**Edited**
-- `src/components/studio-v2/StudioV2.tsx` — mount chrome, wire draft hook, resume param
-- `src/components/builder/v3/StudioConversionHud.tsx` — 20% floor on progress
-- `src/components/studio-v2/LivingItinerary.tsx` — consume catalogueMapping
-- `src/lib/email-templates/registry.ts` — register new template
-- Asset: small host avatar JPG in `src/assets/studio/host-tiago.jpg`
+Do **not** collapse to 3+1. Instead, give the four cards a clearer visual cadence so the eye reads them as: *Curated · Live · Bespoke · Occasion*.
 
-**Migration**
-- `studio_drafts` table + RLS + grants (service_role only).
+- Keep 4-card grid (`sm:grid-cols-2 lg:grid-cols-4`) — already correct.
+- Add a one-word *role tag* above each label so the four doors are instantly legible:
+  - 01 Signature → **Curated**
+  - 02 Studio → **Live**
+  - 03 Travel Designer → **Bespoke**
+  - 04 Moments → **Occasion**
+- Tighten the body copy on Travel Designer + Moments so all four cards land at similar length (current Travel Designer card is heavier than the others).
+- No layout, no color, no font change.
 
-## 7. Out of scope
+---
 
-- Real payments/booking truth — site stays in test mode.
-- Marketing emails — only the single transactional resume email.
-- Desktop-first redesign — mobile remains source of truth (393px), desktop adapted.
+### P4 — FAQ block before final CTA
 
-Confirm and I'll ship it.
+Add **one** new section between `groups` and the final CTA: `aria-labelledby="faq-title"`, 5–7 questions, Radix `Accordion` (already in repo), editorial styling, no icons-as-decoration.
+
+Questions cover the real friction points (the four doors, instant reservation truth-mode, designer involvement, payments, languages, group size, response time). All answers truthful — TEST MODE rules respected (Studio = instant; Travel Designer / Moments = human, fast response).
+
+Update `approved-homepage-structure.ts` (block 7 = FAQ, block 8 = Final CTA — the spec already lists FAQ but it's a duplicated entry; clean that up) and the matching structure test + Playwright spec in the same change.
+
+---
+
+### P5 — Final CTA: dual surface
+
+Keep the current final CTA section. Add a second, quieter line beneath the primary CTA:
+
+- Primary: **Design your Portugal** → `/studio-v2`
+- Quiet line: *"Prefer a human? A local is one message away."* → opens WhatsApp (already an allowed *optional* support channel; never primary).
+
+No new section, no order change.
+
+---
+
+### What we are NOT doing (explicit)
+
+- No "Experience Quality Score", no "92%", no percent bars, no TM, no "1‑Click", no "60 Sec" badges.
+- No collapsing of the four paths into 3+1.
+- No new hero, no new visual identity, no parallax outside `.home-energy`.
+- No invented tours, stops, partners, prices, or itinerary content.
+- No competitor comparisons or invented superlatives.
+
+---
+
+### Order of execution
+
+1. P1 Hero refinement (smallest, lowest risk).
+2. P3 Four-card rhythm sharpen.
+3. P4 FAQ section + structure lock update.
+4. P5 Final CTA dual surface.
+5. P2 Studio Preview block (biggest, ship last so structure tests stay green throughout).
+
+Each step ships independently, with the relevant test suite (`homepage-structure`, `homepage-typography-scale`, `hero-*`, `no-horizontal-overflow`) green before moving on.
+
+---
+
+### Technical notes
+
+- Files touched: `src/components/home/ThreePathsSection.tsx`, `src/routes/index.tsx`, new `src/components/home/StudioPreview.tsx`, new `src/components/home/HomeFAQ.tsx`, `src/content/approved-homepage-structure.ts`, matching tests under `src/routes/__tests__/` and `e2e/`.
+- All copy passes through the brand guardrails (no banned words, sentence case, Montserrat + Georgia italic + Inter).
+- All motion stays inside `.home-energy` and respects `prefers-reduced-motion`.
+- No DB changes. No new env vars. No new dependencies.
+
+Confirm and I'll start with P1 + P3 in the same pass.
