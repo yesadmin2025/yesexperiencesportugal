@@ -9,6 +9,10 @@
 
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Compass, Sparkles, type LucideIcon } from "lucide-react";
+import { signatureTours } from "@/data/signatureTours";
+
+// Derived from real Signature data — never hardcoded.
+const SIGNATURE_FROM = Math.min(...signatureTours.map((t) => t.priceFrom));
 
 type Path = {
   num: string;
@@ -19,6 +23,7 @@ type Path = {
   body: React.ReactNode;
   cta: string;
   href: string;
+  anchor: string; // price anchor line (truthful, derived where possible)
   external?: boolean;
 };
 
