@@ -115,19 +115,25 @@ export function ThreePathsSection() {
     >
       <div className="container-x">
         <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
+          {/* Bridge whisper — Trust → Four Doors. Frames the doors as
+              the continuation of "how we work", not a new topic. */}
+          <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-5 max-w-md mx-auto">
+            So — here is how a Portugal with us begins.
+          </p>
           <span className="he-eyebrow-bar mb-5">Where to begin</span>
           <h2
             id="three-paths-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Four doors into{" "}
+            Four ways in.{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
-              your Portugal.
+              One conversation.
             </span>
           </h2>
           <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Start with one you can book, build one you can confirm in minutes, commission a multi-day story, or set the stage for an occasion.
+            Whichever door you choose, the same hands shape what happens next — a curated day, a live build, a multi-day story, or an occasion staged with care.
           </p>
+
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 
