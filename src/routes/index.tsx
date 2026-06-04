@@ -639,7 +639,11 @@ function HomePage() {
 
 
 
-      {/* 5a — PathfinderQuiz removed from homepage (file kept). */}
+      {/* 5a — BESPOKE TRAVEL FILE (multi-day proof, promoted)
+          Promoted to sit right after the Studio so the visitor grasps
+          that a YES journey can be delivered as a curated travel file —
+          not just a booking. Appears before Signature Experiences. */}
+      <RecentJourney />
 
 
       {/* 5 — SIGNATURE EXPERIENCES PREVIEW
@@ -656,7 +660,7 @@ function HomePage() {
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
             <span className="he-eyebrow-bar mb-5">Signature</span>
             <h2 id="signatures-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Signature days, <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
+              Signature days, already loved.
             </h2>
           </div>
 
