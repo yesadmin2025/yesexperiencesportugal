@@ -7,12 +7,12 @@
  * but any *value* drift (e.g. text-[2rem] → text-[1.9rem], leading-[1.12]
  * → leading-[1.1], py-4 → py-3) will fail loudly.
  *
- * Locked values (post-Phase 3, FAQ enlarged Nov 2026):
+ * Locked values (post Dec 2026 — FAQ reduced to a quiet operational
+ * footer, NOT a closing anchor; the Final CTA closes the homepage):
  *
- *   #faq-title h2 — intentionally larger than the other section H2s
- *   so it reads as the closing anchor before the CTA card.
- *     · text-[2.4rem]  sm:text-[2.8rem]  md:text-[4rem]
- *     · leading-[1.05]  md:leading-[0.98]  tracking-[-0.02em]
+ *   #faq-title h2 — calmer scale, matching other section H2s.
+ *     · text-[1.8rem]  sm:text-[2.1rem]  md:text-[2.6rem]
+ *     · leading-[1.1]  md:leading-[1.02]  tracking-[-0.018em]
  *     · text-[color:var(--charcoal)]  font-medium
  *
  *   AccordionTrigger
@@ -24,8 +24,8 @@
  *     · leading-[1.65]
  *     · px-5  md:px-6   pb-5  md:pb-6
  *
- *   #faq section wrapper
- *     · py-16  md:py-20
+ *   #faq section wrapper — tightened
+ *     · py-12  md:py-14
  *
  * If you intentionally change FAQ typography, update this test in the
  * SAME commit and document the new values in the header above.
