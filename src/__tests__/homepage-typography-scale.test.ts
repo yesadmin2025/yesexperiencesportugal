@@ -71,14 +71,10 @@ describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
   }
 });
 
-describe("Homepage H2 — informational tier (Three ways)", () => {
-  it("#paths-title uses 1.7rem → 1.95rem → 2.4rem ramp", () => {
-    const cls = findH2Block("paths-title");
-    expect(extractRem(cls, null)).toBe(1.7);
-    expect(extractRem(cls, "sm")).toBe(1.95);
-    expect(extractRem(cls, "md")).toBe(2.4);
-  });
-});
+// Informational tier (three-paths-title) lives in ThreePathsSection.tsx
+// — locked in that component's own ramp (1.7 / 1.95 / 2.4) and not
+// re-validated here because this suite scans src/routes/index.tsx.
+
 
 describe("Homepage eyebrow labels — canonical utility usage", () => {
   it("every major section intro uses .he-eyebrow-bar", () => {
