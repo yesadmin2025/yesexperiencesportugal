@@ -404,18 +404,9 @@ export function RecentJourney() {
             </span>
           </h2>
           <p className="mt-5 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Multi-day Portugal, composed by a local from first morning to last sunset. Delivered as a book, not a booking.
+            Multi-day Portugal, composed by a local — delivered as a book, not a booking.
           </p>
           <span aria-hidden="true" className="gold-rule mt-7 md:mt-8 mx-auto block max-w-[3rem]" />
-        </div>
-
-        {/* Pull quote */}
-        <div className="reveal max-w-3xl mx-auto text-center mb-12 md:mb-16">
-          <p className="serif italic text-[1.15rem] md:text-[1.45rem] leading-[1.45] text-[color:var(--charcoal)]">
-            “A private travel story —{" "}
-            <span className="text-[color:var(--teal)]">written for you</span>, by a local
-            travel designer.”
-          </p>
         </div>
 
         {/* Three pillars */}
