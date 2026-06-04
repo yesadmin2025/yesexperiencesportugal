@@ -540,11 +540,6 @@ function HomePage() {
           700+ five-star reviews across major platforms
         </h2>
         <div className="container-x">
-          {/* Bridge whisper — Hero → Trust. Keeps the conversation
-              going instead of cutting from cinema to social proof. */}
-          <p className="reveal bridge-whisper text-center mb-7 md:mb-9">
-            What follows isn't a catalogue — it's how we already work, every day.
-          </p>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
 
@@ -614,13 +609,6 @@ function HomePage() {
                 device. On desktop the rail returns to the left so the
                 reading flow stays natural. */}
             <div className="reveal lg:col-span-5 lg:order-1 order-1">
-              {/* Bridge whisper — Four Doors → Studio. Frames the
-                  Studio as the natural answer when none of the doors
-                  fits exactly. */}
-              <p className="bridge-whisper !mx-0 text-left mb-4">
-                And when none of them is quite it —
-              </p>
-
               <span className="he-eyebrow-bar mb-5">
                 <span className="live-dot" aria-hidden="true" />
                 Experience Studio
@@ -632,12 +620,6 @@ function HomePage() {
               >
                 Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
-              {/* Proprietary-IP positioning line — function-led, no
-                  competitor comparisons (brand guardrail). Signals the
-                  Studio is a way of working, not a feature. */}
-              <p className="bridge-whisper !mx-0 text-left mt-4 !text-[color:var(--teal)]">
-                Designed live, with you — not assembled in advance.
-              </p>
 
               <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                 Choose mood, group and rhythm. The Studio draws a <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>, real timings and a live price — then confirms instantly. The only path on the page that reserves in a single tap.
@@ -701,20 +683,10 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
-            {/* Bridge whisper — Studio → Signatures. The other way in,
-                for travellers who prefer to begin from something proven. */}
-            <p className="bridge-whisper text-center mb-5">
-              Or begin with a day already loved by hundreds.
-            </p>
-
-            <span className="he-eyebrow-bar mb-5">Signature experiences</span>
+            <span className="he-eyebrow-bar mb-5">Signature</span>
             <h2 id="signatures-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Signature days, <span className="italic font-normal text-[color:var(--teal)]">ready when you are.</span>
+              Days <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
             </h2>
-            <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Loved by hundreds. Book one as it is, or refine the details that matter to you.
-
-            </p>
           </div>
 
           {/* Mobile: full-bleed editorial cover carousel. Uses
@@ -814,10 +786,11 @@ function HomePage() {
                         <Link
                           to="/tours/$tourId/tailor"
                           params={{ tourId: t.id }}
-                          className="self-start serif italic text-[13px] leading-[1.4] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300"
+                          className="self-start inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300"
                           aria-label={`Make ${t.title} yours`}
                         >
-                          or make it yours →
+                          Make it yours
+                          <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
                         </Link>
                       </div>
                     </div>
@@ -860,20 +833,11 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
-            {/* Bridge whisper — Signatures → Occasions. Carries the
-                reader from a single day into the bigger moments. */}
-            <p className="bridge-whisper text-center mb-5">
-              And when the moment is bigger than a day —
-            </p>
-
-            <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
+            <span className="he-eyebrow-bar mb-5">Occasions</span>
 
             <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
               Moments that deserve <span className="italic font-normal text-[color:var(--teal)]">a setting.</span>
             </h2>
-            <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Three occasions, one standard of care. Proposals planned in secret, celebrations woven around your people, and corporate days delivered with the same attention to detail.
-            </p>
           </div>
 
           {/* Three premium feature blocks — alternating image/text on
@@ -1085,17 +1049,6 @@ function HomePage() {
               />
 
               <div className="relative">
-                {/* Integrated social proof — narrative, not stat block.
-                    Single italic line that braids the trust into the
-                    close (separate from the top trust strip; no
-                    duplicate review surface). */}
-                {/* Bridge whisper — FAQ → Final CTA. Closes the
-                    conversation rather than opening a new pitch. Social
-                    proof is braided in as continuation, not a stat. */}
-                <p className="bridge-whisper text-center mb-4">
-                  When you're ready, we already are — as 700+ travellers were this year.
-                </p>
-
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
                   Prefer a conversation
@@ -1121,8 +1074,8 @@ function HomePage() {
                     Write to a Local
                   </CtaButton>
                 </div>
-                <p className="bridge-whisper mt-6">
-                  A local replies within the day — usually within the hour.
+                <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                  A local usually replies within the hour.
                 </p>
 
               </div>

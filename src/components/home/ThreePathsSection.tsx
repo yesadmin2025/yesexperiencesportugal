@@ -99,12 +99,6 @@ export function ThreePathsSection() {
     >
       <div className="container-x">
         <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          {/* Bridge whisper — Trust → Four Doors. Frames the doors as
-              the continuation of "how we work", not a new topic. */}
-          <p className="bridge-whisper text-center mb-5">
-            So — here is how a Portugal with us begins.
-          </p>
-
           <span className="he-eyebrow-bar mb-5">Where to begin</span>
           <h2
             id="three-paths-title"
@@ -115,9 +109,6 @@ export function ThreePathsSection() {
               One conversation.
             </span>
           </h2>
-          <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Whichever door you choose, the same hands shape what happens next — a curated day, a live build, a multi-day story, or an occasion staged with care.
-          </p>
 
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
@@ -156,11 +147,11 @@ export function ThreePathsSection() {
                 <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">
                   {p.body}
                 </p>
-                <span className="he-pull mt-5 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
+                <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
                   {p.cta}
                   <span
                     aria-hidden="true"
-                    className="not-italic transition-transform duration-300 ease-out group-hover:translate-x-1"
+                    className="text-[color:var(--gold)] transition-transform duration-300 ease-out group-hover:translate-x-1"
                   >
                     →
                   </span>
