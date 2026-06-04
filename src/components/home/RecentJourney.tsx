@@ -205,12 +205,12 @@ function BookFlip() {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] px-6 md:px-8"
-        style={{ perspective: "2200px", width: "min(100%, 360px)" }}
+        style={{ perspective: "2400px", width: "min(100%, 420px)" }}
       >
-        {/* Soft cast shadow under the book */}
+        {/* Premium dossier shadow — warmer, deeper, layered. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-6 -bottom-5 h-8 rounded-[50%] bg-[color:var(--charcoal)]/25 blur-2xl opacity-60"
+          className="pointer-events-none absolute inset-x-4 -bottom-7 h-10 rounded-[50%] bg-[color:var(--charcoal-deep)]/35 blur-3xl opacity-70"
         />
 
         <div className="relative aspect-[3/4] w-full" style={{ transformStyle: "preserve-3d" }}>
