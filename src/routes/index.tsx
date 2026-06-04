@@ -139,7 +139,7 @@ const groupsAndCelebrations = [
     line: (
       <>
         From location to timing, every detail is arranged{" "}
-        <span className="kw">discreetly</span>, with local knowledge that protects the surprise.
+        <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong>, with local knowledge that protects the surprise.
       </>
     ),
     pull: "Composed for the moment, never templated.",
