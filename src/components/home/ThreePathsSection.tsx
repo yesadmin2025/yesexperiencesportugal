@@ -32,74 +32,58 @@ const PATHS: Path[] = [
     num: "01",
     Icon: BookOpen,
     role: "Curated",
-    label: "Signature Experiences",
+    label: "Signature",
     title: (
       <>
-        Already loved. <span className="italic">Yours to make personal.</span>
+        Already loved. <span className="italic">Yours to shape.</span>
       </>
     ),
-    body: (
-      <>
-        Flagship days across Lisbon, Sintra and Arrábida — trusted by hundreds. Book as they are, or refine the details that matter.
-      </>
-    ),
-    cta: "Browse the Signatures",
+    body: <>Flagship days across Lisbon, Sintra and Arrábida.</>,
+    cta: "Browse",
     href: "/experiences",
-    anchor: `From €${SIGNATURE_FROM} / guest`,
+    anchor: `From €${SIGNATURE_FROM}`,
   },
   {
     num: "02",
     Icon: Wand2,
     role: "Live",
-    label: "Experience Studio",
+    label: "Studio",
     title: (
       <>
         Build it live. <span className="italic">Reserve in minutes.</span>
       </>
     ),
-    body: (
-      <>
-        Shape mood, pace and priorities on a living canvas. Watch the real route appear, see the live price, confirm in a single tap.
-      </>
-    ),
+    body: <>Shape your day on a living canvas — route, price, confirm.</>,
     cta: "Open the Studio",
     href: "/studio-v2",
-    anchor: "Live price as you build",
+    anchor: "Live price",
   },
   {
     num: "03",
     Icon: Compass,
     role: "Bespoke",
-    label: "Travel Designer",
+    label: "Designer",
     title: (
       <>
         A Portugal <span className="italic">written around you.</span>
       </>
     ),
-    body: (
-      <>
-        A travel designer composes your multi-day Portugal — stays, tables, transitions — and hands it back as a bound book.
-      </>
-    ),
+    body: <>A designer composes your multi-day Portugal, end to end.</>,
     cta: "Begin a conversation",
     href: "/multi-day",
-    anchor: "Designed to your budget",
+    anchor: "To your budget",
   },
   {
     num: "04",
     Icon: Sparkles,
     role: "Occasion",
-    label: "Proposals · Celebrations · Corporate",
+    label: "Moments",
     title: (
       <>
         Moments that <span className="italic">deserve a setting.</span>
       </>
     ),
-    body: (
-      <>
-        Proposals staged off the map. Celebrations woven around your people. Corporate days handled end to end — discreet, local, quietly excellent.
-      </>
-    ),
+    body: <>Proposals, celebrations and corporate days — staged with care.</>,
     cta: "Tell us the occasion",
     href: "/proposals",
     anchor: "On request",
