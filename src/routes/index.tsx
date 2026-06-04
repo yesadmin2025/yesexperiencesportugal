@@ -620,12 +620,6 @@ function HomePage() {
               >
                 Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
-              {/* Proprietary-IP positioning line — function-led, no
-                  competitor comparisons (brand guardrail). Signals the
-                  Studio is a way of working, not a feature. */}
-              <p className="bridge-whisper !mx-0 text-left mt-4 !text-[color:var(--teal)]">
-                Designed live, with you — not assembled in advance.
-              </p>
 
               <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                 Choose mood, group and rhythm. The Studio draws a <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>, real timings and a live price — then confirms instantly. The only path on the page that reserves in a single tap.
