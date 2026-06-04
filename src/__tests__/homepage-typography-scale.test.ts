@@ -81,6 +81,7 @@ describe("Homepage eyebrow labels — canonical utility usage", () => {
     const requiredEyebrows = [
       "Experience Studio",
       "Signature experiences",
+    ];
     for (const label of requiredEyebrows) {
       const re = new RegExp(`he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`);
       expect(re.test(src), `missing .he-eyebrow-bar wrapper for "${label}"`).toBe(true);
