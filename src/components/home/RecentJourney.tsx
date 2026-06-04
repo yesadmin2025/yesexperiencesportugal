@@ -434,12 +434,10 @@ export function RecentJourney() {
           id="travel-file-book"
           className="reveal max-w-4xl mx-auto text-center mb-8 md:mb-10"
         >
-          <p className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-deep)] font-semibold">
-            Inside a real travel file
-          </p>
-          <h3 className="mt-3 font-[family-name:var(--font-display)] font-semibold text-[1.5rem] md:text-[2rem] leading-[1.15] tracking-[-0.012em] text-[color:var(--charcoal)]">
+          <span className="he-eyebrow-bar">Inside a real travel file</span>
+          <SectionTitle as="h3" size="compact" spacing="normal">
             Turn the pages.
-          </h3>
+          </SectionTitle>
           <p className="mt-3 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] max-w-lg mx-auto">
             Five pages from a private travel file we delivered this year.
             Swipe on mobile, click the arrows or thumbnails, or use the
