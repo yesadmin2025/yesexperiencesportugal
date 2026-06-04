@@ -419,10 +419,10 @@ export function RecentJourney() {
               key={p.label}
               className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-5 md:px-6 md:py-6"
             >
-              <div className="serif text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+              <div className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
                 {p.label}
               </div>
-              <p className="mt-3 text-[1.05rem] md:text-[1.15rem] leading-[1.4] text-[color:var(--charcoal)]">
+              <p className="mt-3 font-[family-name:var(--font-sans)] text-[15px] md:text-[16px] leading-[1.55] text-[color:var(--charcoal)]">
                 {p.body}
               </p>
             </li>
