@@ -540,7 +540,13 @@ function HomePage() {
           700+ five-star reviews across major platforms
         </h2>
         <div className="container-x">
+          {/* Bridge whisper — Hero → Trust. Keeps the conversation
+              going instead of cutting from cinema to social proof. */}
+          <p className="reveal serif italic text-center text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-7 md:mb-9 max-w-md mx-auto">
+            What follows isn't a catalogue — it's how we already work, every day.
+          </p>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
+
             <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
               <p
                 className="flex items-center justify-center md:justify-start gap-1 text-[color:var(--gold)]"
@@ -607,10 +613,17 @@ function HomePage() {
                 device. On desktop the rail returns to the left so the
                 reading flow stays natural. */}
             <div className="reveal lg:col-span-5 lg:order-1 order-1">
+              {/* Bridge whisper — Four Doors → Studio. Frames the
+                  Studio as the natural answer when none of the doors
+                  fits exactly. */}
+              <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-4">
+                And when none of them is quite it —
+              </p>
               <span className="he-eyebrow-bar mb-5">
                 <span className="live-dot" aria-hidden="true" />
                 Experience Studio
               </span>
+
               <h2
                 id="studio-title"
                 className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
@@ -685,12 +698,18 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
+            {/* Bridge whisper — Studio → Signatures. The other way in,
+                for travellers who prefer to begin from something proven. */}
+            <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-5 max-w-md mx-auto">
+              Or begin with a day already loved by hundreds.
+            </p>
             <span className="he-eyebrow-bar mb-5">Signature experiences</span>
             <h2 id="signatures-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
               Signature days, <span className="italic font-normal text-[color:var(--teal)]">ready when you are.</span>
             </h2>
             <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
               Loved by hundreds. Book one as it is, or refine the details that matter to you.
+
             </p>
           </div>
 
@@ -860,7 +879,13 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
+            {/* Bridge whisper — Signatures → Occasions. Carries the
+                reader from a single day into the bigger moments. */}
+            <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-5 max-w-md mx-auto">
+              And when the moment is bigger than a day —
+            </p>
             <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
+
             <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
               Moments that deserve <span className="italic font-normal text-[color:var(--teal)]">a setting.</span>
             </h2>
@@ -1082,13 +1107,17 @@ function HomePage() {
                     Single italic line that braids the trust into the
                     close (separate from the top trust strip; no
                     duplicate review surface). */}
-                <p className="serif italic text-[13px] md:text-[14px] leading-[1.45] text-[color:var(--charcoal-soft)] mb-4">
-                  Joined by 700+ five-star travellers this year.
+                {/* Bridge whisper — FAQ → Final CTA. Closes the
+                    conversation rather than opening a new pitch. Social
+                    proof is braided in as continuation, not a stat. */}
+                <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-4">
+                  When you're ready, we already are — as 700+ travellers were this year.
                 </p>
                 <span className="he-eyebrow-bar mb-5">
                   <MessageCircle aria-hidden="true" />
                   Prefer a conversation
                 </span>
+
               <h2
                 id="final-cta-title"
                 className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
