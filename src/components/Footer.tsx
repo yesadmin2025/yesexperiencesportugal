@@ -98,7 +98,7 @@ export function Footer() {
               >
                 Terms
               </Link>
-              <span aria-hidden="true" className="text-[color:var(--ivory)]/30">·</span>
+              <span aria-hidden="true" className="text-[color:var(--ivory)]/55">·</span>
               <Link
                 to="/privacy"
                 className="text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"

@@ -662,7 +662,7 @@ function HomePage() {
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
             <span className="he-eyebrow-bar mb-5">Signature</span>
             <h2 id="signatures-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Days <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
+              Signature days, <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
             </h2>
           </div>
 
