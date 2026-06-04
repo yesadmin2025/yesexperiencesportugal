@@ -8,7 +8,7 @@
  */
 
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, Compass, Sparkles, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Compass, Sparkles, type LucideIcon } from "lucide-react";
 
 type Path = {
   num: string;
@@ -21,57 +21,70 @@ type Path = {
   external?: boolean;
 };
 
-const BESPOKE_WHATSAPP =
-  "https://wa.me/351911889992?text=Ol%C3%A1%21%20Gostaria%20de%20planear%20uma%20viagem%20pela%20vossa%20equipa";
-
 const PATHS: Path[] = [
   {
     num: "01",
-    Icon: CalendarDays,
-    label: "Day experiences",
+    Icon: BookOpen,
+    label: "Signature Experiences",
     title: (
       <>
-        A private day, <span className="italic">shaped around you.</span>
+        Curated private days, <span className="italic">yours to tailor.</span>
       </>
     ),
     body: (
       <>
-        Choose a ready-made Signature, or design your own day from scratch. Private, local, and yours from the first hour to the last.
+        Flagship private experiences across Lisbon, Sintra, Arrábida and Sesimbra. Book as designed, or adjust the details that matter to you.
       </>
     ),
-    cta: "Explore days",
+    cta: "Explore Signature Experiences",
     href: "/experiences",
   },
   {
     num: "02",
-    Icon: Compass,
-    label: "Bespoke travel designer",
+    Icon: Wand2,
+    label: "Experience Studio",
     title: (
       <>
-        Some stories need <span className="italic">more than one day.</span>
+        Design a day, <span className="italic">reserve in minutes.</span>
       </>
     ),
     body: (
       <>
-        A local shapes your Portugal — region by region, at your pace. It starts with a conversation, and ends with a journey made for you.
+        An intelligent builder: shape mood, pace and priorities. See the real route, real timings and live price — then confirm instantly. No forms, no waiting.
       </>
     ),
-    cta: "Start the conversation",
-    href: BESPOKE_WHATSAPP,
-    external: true,
+    cta: "Open the Studio",
+    href: "/studio-v2",
   },
   {
     num: "03",
-    Icon: Sparkles,
-    label: "Occasions",
+    Icon: Compass,
+    label: "Travel Designer",
     title: (
       <>
-        Proposals, celebrations <span className="italic">and private groups.</span>
+        Bespoke journeys, <span className="italic">shaped end to end.</span>
       </>
     ),
     body: (
       <>
-        From a quiet moment by the sea to a day for a group of twenty — planned with local care, and complete discretion.
+        A local travel designer plans the full journey — multi-day routes, regional pacing, accommodations and recommendations. Delivered as a private travel file, not a booking.
+      </>
+    ),
+    cta: "Plan your journey",
+    href: "/multi-day",
+  },
+  {
+    num: "04",
+    Icon: Sparkles,
+    label: "Proposals · Celebrations · Corporate",
+    title: (
+      <>
+        For milestones <span className="italic">and private groups.</span>
+      </>
+    ),
+    body: (
+      <>
+        Privately designed and managed experiences for proposals, celebrations and corporate gatherings — coordinated locally, with full discretion.
       </>
     ),
     cta: "Tell us what you have in mind",
@@ -88,16 +101,19 @@ export function ThreePathsSection() {
     >
       <div className="container-x">
         <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="he-eyebrow-bar mb-5">Ways to experience</span>
+          <span className="he-eyebrow-bar mb-5">Four ways to experience YES</span>
           <h2
             id="three-paths-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            However you want{" "}
+            Four ways to{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
-              to experience Portugal.
+              experience Portugal.
             </span>
           </h2>
+          <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
+            Choose a curated Signature, design a day in the Studio, commission a bespoke journey, or plan a private occasion.
+          </p>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 
