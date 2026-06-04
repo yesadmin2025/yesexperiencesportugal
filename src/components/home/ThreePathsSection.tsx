@@ -45,6 +45,7 @@ const PATHS: Path[] = [
     ),
     cta: "Browse the Signatures",
     href: "/experiences",
+    anchor: `From €${SIGNATURE_FROM} / guest`,
   },
   {
     num: "02",
@@ -63,6 +64,7 @@ const PATHS: Path[] = [
     ),
     cta: "Open the Studio",
     href: "/studio-v2",
+    anchor: "Live price as you build",
   },
   {
     num: "03",
@@ -81,6 +83,7 @@ const PATHS: Path[] = [
     ),
     cta: "Begin a conversation",
     href: "/multi-day",
+    anchor: "Designed to your budget",
   },
   {
     num: "04",
@@ -99,6 +102,7 @@ const PATHS: Path[] = [
     ),
     cta: "Tell us the occasion",
     href: "/proposals",
+    anchor: "On request",
   },
 ];
 
