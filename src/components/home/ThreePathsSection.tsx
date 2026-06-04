@@ -147,11 +147,11 @@ export function ThreePathsSection() {
                 <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">
                   {p.body}
                 </p>
-                <span className="he-pull mt-5 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
+                <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
                   {p.cta}
                   <span
                     aria-hidden="true"
-                    className="not-italic transition-transform duration-300 ease-out group-hover:translate-x-1"
+                    className="text-[color:var(--gold)] transition-transform duration-300 ease-out group-hover:translate-x-1"
                   >
                     →
                   </span>
