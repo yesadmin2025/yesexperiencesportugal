@@ -618,7 +618,7 @@ function HomePage() {
                 Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
               <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                Pick a <span className="kw">mood</span>, who's coming and your rhythm. We draft a private day with <span className="kw">real stops</span>, real timing and a live price — ready to confirm.
+                Choose <span className="kw">mood</span>, group and rhythm. The Studio draws a <span className="kw">real route</span>, real timings and a live price — then reserves instantly. No forms. No waiting.
               </p>
 
               {/* Three Studio inputs — small index, signposts the
