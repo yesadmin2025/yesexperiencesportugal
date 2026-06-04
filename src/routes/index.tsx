@@ -135,14 +135,14 @@ const groupsAndCelebrations = [
   {
     id: "proposals",
     eyebrow: "Proposals",
-    title: "A private moment, shaped with care.",
+    title: "A private moment, held with care.",
     line: (
       <>
-        From location to timing, we plan the details{" "}
-        <span className="kw">discreetly</span> with local knowledge.
+        From location to timing, every detail is arranged{" "}
+        <span className="kw">discreetly</span>, with local knowledge that protects the surprise.
       </>
     ),
-    pull: "Designed for the moment, not the template.",
+    pull: "Composed for the moment, never templated.",
     detail: "Discreet · location of your choosing",
     handles: [
       "Location scouting",
@@ -160,8 +160,8 @@ const groupsAndCelebrations = [
     title: "For days worth remembering.",
     line: (
       <>
-        Birthdays, anniversaries and family moments shaped around{" "}
-        <span className="kw">your people</span> and pace.
+        Birthdays, anniversaries and family gatherings shaped around{" "}
+        <span className="kw">your people</span> and your pace.
       </>
     ),
     pull: "Your people, your pace.",
@@ -178,15 +178,15 @@ const groupsAndCelebrations = [
   },
   {
     id: "corporate",
-    eyebrow: "Corporate & Groups",
-    title: "Private group days, without the generic formula.",
+    eyebrow: "Corporate",
+    title: "Corporate days, handled with the same care.",
     line: (
       <>
-        Local experiences, transport and timing coordinated into one{" "}
-        <span className="kw">effortless</span> day.
+        Incentives, off-sites and client hospitality — venues, transport and timing woven into one{" "}
+        <span className="kw">effortless</span> day, with the same attention we bring to a proposal.
       </>
     ),
-    pull: "Handled end to end, locally.",
+    pull: "Run locally. Delivered seamlessly.",
     detail: "Any group size · invoice & DMC support",
     handles: [
       "Full logistics management",
@@ -194,7 +194,7 @@ const groupsAndCelebrations = [
       "Invoice & DMC support",
     ],
     trust: "Real driving times, real venues, real partners.",
-    cta: "Plan a Group Experience",
+    cta: "Plan a Corporate Day",
     to: "/corporate",
     img: imgSintraCaboDaRoca,
   },
@@ -618,7 +618,7 @@ function HomePage() {
                 Design your day. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
               </h2>
               <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                Choose <span className="kw">mood</span>, group and rhythm. The Studio draws a <span className="kw">real route</span>, real timings and a live price — then reserves instantly. No forms. No waiting.
+                Choose <span className="kw">mood</span>, group and rhythm. The Studio draws a <span className="kw">real route</span>, real timings and a live price — then confirms instantly. The only path on the page that reserves in a single tap.
               </p>
 
               {/* Three Studio inputs — small index, signposts the
@@ -684,7 +684,7 @@ function HomePage() {
               Signature days, <span className="italic font-normal text-[color:var(--teal)]">ready when you are.</span>
             </h2>
             <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Book a Signature as it is, or tailor selected details.
+              Loved by hundreds. Book one as it is, or refine the details that matter to you.
             </p>
           </div>
 
@@ -856,10 +856,10 @@ function HomePage() {
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-12">
             <span className="he-eyebrow-bar mb-5">Proposals · Celebrations · Corporate</span>
             <h2 id="groups-title" className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
-              For moments bigger than a <span className="italic font-normal text-[color:var(--teal)]">tour.</span>
+              Moments that deserve <span className="italic font-normal text-[color:var(--teal)]">a setting.</span>
             </h2>
             <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Privately designed and managed experiences for proposals, celebrations and corporate gatherings — coordinated locally, with full discretion.
+              Three occasions, one standard of care. Proposals planned in secret, celebrations woven around your people, and corporate days delivered with the same attention to detail.
             </p>
           </div>
 
@@ -1086,18 +1086,18 @@ function HomePage() {
                   </span>
                 </h2>
                 <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
-                  Start in the Studio, explore a Signature, or talk to a local.
+                  Build it live in the Studio, choose a Signature, or write to a local.
                 </p>
                 <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
                   <CtaButton to="/studio-v2" variant="primary">
-                    Create Your Story
+                    Open the Studio
                   </CtaButton>
                   <CtaButton to="/contact" variant="ghost">
-                    Talk to a Local
+                    Write to a Local
                   </CtaButton>
                 </div>
                 <p className="serif mt-6 text-[13px] italic text-[color:var(--charcoal-soft)]">
-                  Need help shaping it? A local is one message away.
+                  A local replies within the day — usually within the hour.
                 </p>
               </div>
             </div>
