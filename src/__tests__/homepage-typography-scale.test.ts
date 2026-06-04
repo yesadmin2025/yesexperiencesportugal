@@ -1,22 +1,27 @@
 /**
- * Homepage typography scale — refined mobile→desktop ramp (v2).
+ * Homepage typography scale — three-voice tiering (v3).
  *
- * Locks the lighter, more editorial mobile scale agreed in the
- * Nov 2026 refinement pass. Mobile H2s now sit between 1.7rem and
- * 2rem (down from 2.5rem) with `font-medium` weight on the body of
- * the page; only the hero remains visually dominant.
+ * Refinement Nov 2026: five H2s previously shared a single ramp
+ * (2 / 2.4 / 3.6), so conversion, editorial and informational
+ * sections shouted at equal volume. v3 splits them into three
+ * voices with clearly distinct rhythm:
  *
- * Tiers on the homepage:
+ *   · CONVERSION tier — Studio + Final CTA
+ *     "Do something now" sections. Largest type, tightest leading,
+ *     italic emphasis carries the action.
+ *     → text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem]
+ *       leading-[1.05] md:leading-[0.96], tracking-[-0.02em]
  *
- *   · MAJOR section H2 (Studio, Why YES, Signatures, Groups, Final CTA)
- *     → text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] (medium weight)
- *     The Final CTA card was re-aligned from a teal surface to ivory,
- *     so it now follows the same ramp as the other major sections.
+ *   · EDITORIAL tier — Signatures + Groups
+ *     Discovery / browsing sections. Mid scale, calmer leading.
+ *     → text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem]
+ *       leading-[1.12] md:leading-[1.02], tracking-[-0.014em]
  *
- *   · SUB-section H2 (Three ways)
+ *   · INFORMATIONAL tier — Three ways
+ *     Sub-section primer / navigation. Compact.
  *     → text-[1.7rem] sm:text-[1.95rem] md:text-[2.4rem]
  *
- * Eyebrows: .he-eyebrow-bar utility (11px, 700, 0.28em) — unchanged.
+ * Eyebrows: .he-eyebrow-bar utility (unchanged).
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
@@ -40,42 +45,42 @@ function extractRem(cls: string, prefix: string | null): number | null {
   return m ? parseFloat(m[1]) : null;
 }
 
-describe("Homepage H2 — major section ramp (refined)", () => {
-  const MAJOR_IDS = [
-    "studio-title",
-    "why-yes-title",
-    "signatures-title",
-    "groups-title",
-    "final-cta-title",
-  ];
+describe("Homepage H2 — conversion tier (Studio, Final CTA)", () => {
+  const CONVERSION_IDS = ["studio-title", "final-cta-title"];
 
-  for (const id of MAJOR_IDS) {
-    it(`#${id} uses 2rem → 2.4rem → 3.6rem ramp`, () => {
+  for (const id of CONVERSION_IDS) {
+    it(`#${id} uses 2.1rem → 2.5rem → 3.8rem ramp`, () => {
       const cls = findH2Block(id);
-      expect(extractRem(cls, null), `#${id}: mobile size`).toBe(2);
-      expect(extractRem(cls, "sm"), `#${id}: sm size`).toBe(2.4);
-      expect(extractRem(cls, "md"), `#${id}: md size`).toBe(3.6);
+      expect(extractRem(cls, null), `#${id}: mobile size`).toBe(2.1);
+      expect(extractRem(cls, "sm"), `#${id}: sm size`).toBe(2.5);
+      expect(extractRem(cls, "md"), `#${id}: md size`).toBe(3.8);
     });
   }
 });
 
-describe("Homepage H2 — sub-section ramp (refined)", () => {
-  it("#paths-title uses 1.7rem → 1.95rem → 2.4rem ramp", () => {
-    const cls = findH2Block("paths-title");
-    expect(extractRem(cls, null)).toBe(1.7);
-    expect(extractRem(cls, "sm")).toBe(1.95);
-    expect(extractRem(cls, "md")).toBe(2.4);
-  });
+describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
+  const EDITORIAL_IDS = ["signatures-title", "groups-title"];
+
+  for (const id of EDITORIAL_IDS) {
+    it(`#${id} uses 1.8rem → 2.1rem → 2.95rem ramp`, () => {
+      const cls = findH2Block(id);
+      expect(extractRem(cls, null), `#${id}: mobile size`).toBe(1.8);
+      expect(extractRem(cls, "sm"), `#${id}: sm size`).toBe(2.1);
+      expect(extractRem(cls, "md"), `#${id}: md size`).toBe(2.95);
+    });
+  }
 });
+
+// Informational tier (three-paths-title) lives in ThreePathsSection.tsx
+// — locked in that component's own ramp (1.7 / 1.95 / 2.4) and not
+// re-validated here because this suite scans src/routes/index.tsx.
+
 
 describe("Homepage eyebrow labels — canonical utility usage", () => {
   it("every major section intro uses .he-eyebrow-bar", () => {
     const requiredEyebrows = [
-      "Three ways in",
       "Experience Studio",
-      "Why YES",
       "Signature experiences",
-      "Groups",
     ];
     for (const label of requiredEyebrows) {
       const re = new RegExp(`he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`);

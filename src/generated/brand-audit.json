@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-04T01:57:12.691Z",
+  "generatedAt": "2026-06-04T03:04:40.794Z",
   "filesScanned": 324,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1232,7 +1232,7 @@
     },
     {
       "file": "src/components/home/ThreePathsSection.tsx",
-      "line": 107,
+      "line": 123,
       "col": 102,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
