@@ -13,6 +13,7 @@ import { BookOpen, Wand2, Compass, Sparkles, type LucideIcon } from "lucide-reac
 type Path = {
   num: string;
   Icon: LucideIcon;
+  role: string;
   label: string;
   title: React.ReactNode;
   body: React.ReactNode;
@@ -25,6 +26,7 @@ const PATHS: Path[] = [
   {
     num: "01",
     Icon: BookOpen,
+    role: "Curated",
     label: "Signature Experiences",
     title: (
       <>
@@ -33,7 +35,7 @@ const PATHS: Path[] = [
     ),
     body: (
       <>
-        Flagship days across Lisbon, Sintra, Arrábida and Sesimbra — trusted by hundreds of travellers. Book as they are, or refine the details that matter.
+        Flagship days across Lisbon, Sintra and Arrábida — trusted by hundreds. Book as they are, or refine the details that matter.
       </>
     ),
     cta: "Browse the Signatures",
@@ -42,6 +44,7 @@ const PATHS: Path[] = [
   {
     num: "02",
     Icon: Wand2,
+    role: "Live",
     label: "Experience Studio",
     title: (
       <>
@@ -50,7 +53,7 @@ const PATHS: Path[] = [
     ),
     body: (
       <>
-        Shape mood, pace and priorities on an intelligent canvas. Watch the real route appear, see the live price, and confirm in a single tap — no forms, no waiting.
+        Shape mood, pace and priorities on a living canvas. Watch the real route appear, see the live price, confirm in a single tap.
       </>
     ),
     cta: "Open the Studio",
@@ -59,6 +62,7 @@ const PATHS: Path[] = [
   {
     num: "03",
     Icon: Compass,
+    role: "Bespoke",
     label: "Travel Designer",
     title: (
       <>
@@ -67,7 +71,7 @@ const PATHS: Path[] = [
     ),
     body: (
       <>
-        Slow mornings in the Douro. A villa above Cascais. A table only insiders know. A travel designer composes your multi-day Portugal — and hands it back as a private book.
+        A travel designer composes your multi-day Portugal — stays, tables, transitions — and hands it back as a private book.
       </>
     ),
     cta: "Begin a conversation",
@@ -76,6 +80,7 @@ const PATHS: Path[] = [
   {
     num: "04",
     Icon: Sparkles,
+    role: "Occasion",
     label: "Proposals · Celebrations · Corporate",
     title: (
       <>
@@ -84,7 +89,7 @@ const PATHS: Path[] = [
     ),
     body: (
       <>
-        Proposals shaped in private. Family celebrations woven around your people. Corporate days handled with the same care — discreetly, locally, end to end.
+        Proposals shaped in private. Celebrations woven around your people. Corporate days handled end to end — discreetly, locally.
       </>
     ),
     cta: "Tell us the occasion",
