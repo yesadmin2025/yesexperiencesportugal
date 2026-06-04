@@ -147,7 +147,11 @@ export function ThreePathsSection() {
                     {p.num}
                   </span>
                 </div>
-                <span className="mt-4 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+                <span className="mt-4 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+                  <span className="serif italic font-normal normal-case tracking-normal text-[12.5px] text-[color:var(--teal)]">
+                    {p.role}
+                  </span>
+                  <span aria-hidden="true" className="h-px w-3 bg-[color:var(--gold)]/55" />
                   {p.label}
                 </span>
                 <h3 className="serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
