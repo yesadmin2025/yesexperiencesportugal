@@ -138,18 +138,12 @@ const groupsAndCelebrations = [
     title: "A private moment, held with care.",
     line: (
       <>
-        From location to timing, every detail is arranged{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong>, with local knowledge that protects the surprise.
+        Location, timing and every detail arranged{" "}
+        <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong> — the surprise stays yours.
       </>
     ),
-    pull: "Composed for the moment, never templated.",
     detail: "Discreet · location of your choosing",
-    handles: [
-      "Location scouting",
-      "Timing optimisation",
-      "Full discretion",
-    ],
-    trust: "Planned end to end with our local team.",
+    trust: "Planned end to end by our local team.",
     cta: "Plan a Proposal",
     to: "/proposals",
     img: imgArrabidaViewpoint,
@@ -160,18 +154,12 @@ const groupsAndCelebrations = [
     title: "For days worth remembering.",
     line: (
       <>
-        Birthdays, anniversaries and family gatherings shaped around{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">your people</strong> and your pace.
+        Birthdays, anniversaries and family days shaped around{" "}
+        <strong className="font-medium text-[color:var(--charcoal)]">your people</strong>, at your pace.
       </>
     ),
-    pull: "Your people, your pace.",
     detail: "Private host · any group size",
-    handles: [
-      "Group coordination",
-      "Multi-activity planning",
-      "Personal touches",
-    ],
-    trust: "Coordinated by a local host who knows how the day connects.",
+    trust: "Hosted by a local who knows how the day connects.",
     cta: "Plan a Celebration",
     to: "/proposals",
     img: imgArrabidaWineLunch,
@@ -179,20 +167,14 @@ const groupsAndCelebrations = [
   {
     id: "corporate",
     eyebrow: "Corporate",
-    title: "Corporate days, handled with the same care.",
+    title: "Corporate days, handled with care.",
     line: (
       <>
-        Incentives, off-sites and client hospitality — venues, transport and timing woven into one{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day, with the same attention we bring to a proposal.
+        Off-sites, incentives and client hospitality — venues, transport and timing woven into one{" "}
+        <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day.
       </>
     ),
-    pull: "Run locally. Delivered seamlessly.",
     detail: "Any group size · invoice & DMC support",
-    handles: [
-      "Full logistics management",
-      "Transport coordination",
-      "Invoice & DMC support",
-    ],
     trust: "Real driving times, real venues, real partners.",
     cta: "Plan a Corporate Day",
     to: "/corporate",
