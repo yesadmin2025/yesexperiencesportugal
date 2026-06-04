@@ -298,8 +298,8 @@ function BookFlip() {
         </button>
       </div>
 
-      {/* Pagination controls — mobile arrows + counter + thumbnail rail */}
-      <div className="mt-7 flex items-center justify-center gap-4">
+      {/* Pagination controls — mobile arrows + counter + page label */}
+      <div className="mt-8 md:mt-7 flex items-center justify-center gap-4">
         <button
           type="button"
           onClick={() => go("prev")}
@@ -310,13 +310,22 @@ function BookFlip() {
           <ChevronLeft size={16} aria-hidden="true" />
         </button>
 
-        <p
-          className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)] min-w-[5.5rem] text-center"
-          aria-hidden="true"
-        >
-          {String(index + 1).padStart(2, "0")}{" "}
-          <span className="opacity-60">/</span> {String(total).padStart(2, "0")}
-        </p>
+        <div className="flex flex-col items-center min-w-[8rem]">
+          <p
+            className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] font-semibold text-[color:var(--charcoal)]"
+            aria-hidden="true"
+          >
+            {String(index + 1).padStart(2, "0")}
+            <span className="mx-1.5 text-[color:var(--charcoal-soft)]/60">/</span>
+            {String(total).padStart(2, "0")}
+          </p>
+          <p
+            key={current.label}
+            className="mt-1.5 font-[family-name:var(--font-serif)] italic text-[14px] md:text-[15px] leading-[1.2] text-[color:var(--charcoal-soft)] transition-opacity duration-300"
+          >
+            {current.label}
+          </p>
+        </div>
 
         <button
           type="button"
@@ -331,7 +340,7 @@ function BookFlip() {
 
       {/* Thumbnail rail — visible pagination, direct jump */}
       <ul
-        className="mt-5 flex items-center justify-center gap-2 md:gap-3 list-none p-0"
+        className="mt-6 flex items-center justify-center gap-2.5 md:gap-3 list-none p-0"
         role="tablist"
         aria-label="Jump to page"
       >
@@ -345,10 +354,10 @@ function BookFlip() {
                 aria-selected={active}
                 aria-label={`Page ${i + 1} — ${p.label}`}
                 onClick={() => goTo(i)}
-                className={`group relative block h-12 w-9 md:h-14 md:w-[42px] overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
+                className={`group relative block h-14 w-[42px] md:h-16 md:w-12 overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
                   active
-                    ? "border-[color:var(--gold-deep)] shadow-[0_4px_14px_-6px_rgba(184,148,82,0.55)] scale-[1.06]"
-                    : "border-[color:var(--charcoal)]/15 opacity-65 hover:opacity-100 hover:border-[color:var(--charcoal)]/40"
+                    ? "border-[color:var(--gold-deep)] shadow-[0_6px_18px_-8px_rgba(184,148,82,0.6)] scale-[1.08]"
+                    : "border-[color:var(--charcoal)]/15 opacity-60 hover:opacity-100 hover:border-[color:var(--charcoal)]/40"
                 }`}
               >
                 <img
@@ -363,7 +372,7 @@ function BookFlip() {
                 {active ? (
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-0 -bottom-[5px] mx-auto h-[2px] w-4 rounded-full bg-[color:var(--gold-deep)]"
+                    className="absolute inset-x-0 -bottom-[5px] mx-auto h-[2px] w-5 rounded-full bg-[color:var(--gold-deep)]"
                   />
                 ) : null}
               </button>
