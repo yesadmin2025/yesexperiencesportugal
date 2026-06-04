@@ -617,9 +617,10 @@ function HomePage() {
               {/* Bridge whisper — Four Doors → Studio. Frames the
                   Studio as the natural answer when none of the doors
                   fits exactly. */}
-              <p className="serif italic text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-4">
+              <p className="bridge-whisper !mx-0 text-left mb-4">
                 And when none of them is quite it —
               </p>
+
               <span className="he-eyebrow-bar mb-5">
                 <span className="live-dot" aria-hidden="true" />
                 Experience Studio
