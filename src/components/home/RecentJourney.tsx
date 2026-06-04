@@ -204,8 +204,8 @@ function BookFlip() {
         onKeyDown={onKeyDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px]"
-        style={{ perspective: "2200px", width: "min(100%, 520px)" }}
+        className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] px-6 md:px-8"
+        style={{ perspective: "2200px", width: "min(100%, 360px)" }}
       >
         {/* Soft cast shadow under the book */}
         <div
