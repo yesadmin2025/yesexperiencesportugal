@@ -683,20 +683,10 @@ function HomePage() {
       >
         <div className="container-x">
           <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
-            {/* Bridge whisper — Studio → Signatures. The other way in,
-                for travellers who prefer to begin from something proven. */}
-            <p className="bridge-whisper text-center mb-5">
-              Or begin with a day already loved by hundreds.
-            </p>
-
-            <span className="he-eyebrow-bar mb-5">Signature experiences</span>
+            <span className="he-eyebrow-bar mb-5">Signature</span>
             <h2 id="signatures-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Signature days, <span className="italic font-normal text-[color:var(--teal)]">ready when you are.</span>
+              Days <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
             </h2>
-            <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-              Loved by hundreds. Book one as it is, or refine the details that matter to you.
-
-            </p>
           </div>
 
           {/* Mobile: full-bleed editorial cover carousel. Uses
