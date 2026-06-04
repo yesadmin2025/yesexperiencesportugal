@@ -643,13 +643,13 @@ function HomePage() {
               {/* Conversion microcopy — under-CTA trust trio. */}
               <p className="mt-4 inline-flex items-center gap-2 text-[12.5px] md:text-[13px] leading-[1.55] text-[color:var(--charcoal)] max-w-md">
                 <span aria-hidden="true" className="block h-px w-5 bg-[color:var(--gold)]" />
-                <span className="font-medium">About 90 seconds · 11 quick steps · no forms.</span>
+                <span className="font-medium">About 90 seconds · 11 quick steps · live pricing.</span>
               </p>
 
               {/* Reassurance line — direct conversion language. */}
               <p className="mt-3 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
                 <MessageCircle size={13} aria-hidden="true" className="mt-[3px] shrink-0 text-[color:var(--teal)]" />
-                <span>Instant confirmation · cancel free up to 48h · <span className="font-medium text-[color:var(--charcoal)]">a local replies on WhatsApp.</span></span>
+                <span>Instant reservation · cancel free up to 48h · <span className="font-medium text-[color:var(--charcoal)]">a local replies on WhatsApp.</span></span>
               </p>
             </div>
 
