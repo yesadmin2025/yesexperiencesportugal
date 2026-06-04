@@ -542,9 +542,10 @@ function HomePage() {
         <div className="container-x">
           {/* Bridge whisper — Hero → Trust. Keeps the conversation
               going instead of cutting from cinema to social proof. */}
-          <p className="reveal serif italic text-center text-[13px] md:text-[14px] leading-[1.5] text-[color:var(--charcoal-soft)] mb-7 md:mb-9 max-w-md mx-auto">
+          <p className="reveal bridge-whisper text-center mb-7 md:mb-9">
             What follows isn't a catalogue — it's how we already work, every day.
           </p>
+
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
 
             <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
