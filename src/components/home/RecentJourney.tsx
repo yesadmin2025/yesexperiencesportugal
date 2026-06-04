@@ -205,12 +205,12 @@ function BookFlip() {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         className="relative mx-auto outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] px-6 md:px-8"
-        style={{ perspective: "2200px", width: "min(100%, 360px)" }}
+        style={{ perspective: "2400px", width: "min(100%, 420px)" }}
       >
-        {/* Soft cast shadow under the book */}
+        {/* Premium dossier shadow — warmer, deeper, layered. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-6 -bottom-5 h-8 rounded-[50%] bg-[color:var(--charcoal)]/25 blur-2xl opacity-60"
+          className="pointer-events-none absolute inset-x-4 -bottom-7 h-10 rounded-[50%] bg-[color:var(--charcoal-deep)]/35 blur-3xl opacity-70"
         />
 
         <div className="relative aspect-[3/4] w-full" style={{ transformStyle: "preserve-3d" }}>
@@ -224,7 +224,7 @@ function BookFlip() {
                 src={incoming.src}
                 alt=""
                 aria-hidden="true"
-                className="absolute inset-0 h-full w-full object-contain rounded-[3px] bg-[color:var(--sand)] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)]"
+                className="absolute inset-0 h-full w-full object-contain rounded-[3px] bg-[color:var(--sand)] shadow-[0_40px_80px_-30px_rgba(46,46,46,0.6),0_18px_36px_-18px_rgba(46,46,46,0.35)]"
               />
             ) : (
               <PageSkeleton />
@@ -234,7 +234,7 @@ function BookFlip() {
           {/* Current page — flips away on transition */}
           <div
             key={`${index}-${flipDir ?? "idle"}`}
-            className="absolute inset-0 rounded-[3px] overflow-hidden bg-[color:var(--sand)] shadow-[0_30px_60px_-30px_rgba(46,46,46,0.55)] ring-1 ring-[color:var(--charcoal)]/10"
+            className="absolute inset-0 rounded-[3px] overflow-hidden bg-[color:var(--sand)] shadow-[0_44px_88px_-32px_rgba(46,46,46,0.62),0_20px_40px_-20px_rgba(46,46,46,0.38)] ring-1 ring-[color:var(--charcoal)]/12"
             style={{
               transformOrigin: flipDir === "prev" ? "left center" : "right center",
               transformStyle: "preserve-3d",
@@ -388,15 +388,15 @@ export function RecentJourney() {
   return (
     <section
       id="multi-day"
-      className="he-section-rule section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+      className="he-section-rule section-enter py-14 md:py-20 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
       aria-labelledby="bespoke-designer-title"
     >
       <div className="container-x">
         {/* Header — tightened. The book itself carries the proof, so we
             keep one headline + one supporting line and let the object
             below do the talking. */}
-        <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-10">
-          <span className="he-eyebrow-bar mb-5">Bespoke Travel Designer</span>
+        <div className="reveal text-center max-w-2xl mx-auto mb-6 md:mb-8">
+          <span className="he-eyebrow-bar mb-4">Bespoke Travel Designer</span>
           <h2
             id="bespoke-designer-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
@@ -406,34 +406,32 @@ export function RecentJourney() {
               written around you.
             </span>
           </h2>
-          <p className="mt-5 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
+          <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Multi-day Portugal, composed by a local — delivered as a book, not a booking.
           </p>
-          <span aria-hidden="true" className="gold-rule mt-6 md:mt-7 mx-auto block max-w-[3rem]" />
+          <span aria-hidden="true" className="gold-rule mt-5 md:mt-6 mx-auto block max-w-[3rem]" />
         </div>
 
-        {/* Proof — the book is now the focal object. No competing
-            eyebrow/subtitle above it; the section header already framed
-            the idea. */}
-        <div id="travel-file-book">
+        {/* Proof — the book is the focal object. Enlarged slightly and
+            given a deeper, warmer dossier shadow so it reads as a luxury
+            travel file, not a flat image. */}
+        <div id="travel-file-book" className="bespoke-book-stage">
           <BookFlip />
         </div>
 
-        <p className="reveal mt-7 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
+        <p className="reveal mt-5 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
           From one of our bespoke journeys — names removed
         </p>
 
-        {/* Three pillars demoted to a quiet caption strip beneath the
-            book — same words, lower visual weight. No cards, no sand
-            background; just a thin labelled row that supports the book
-            instead of competing with it. */}
-        <ul className="reveal mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8 max-w-4xl mx-auto list-none p-0 border-t border-[color:var(--border)] pt-6 md:pt-7 text-center sm:text-left">
+        {/* Three pillars — tight caption strip beneath the book. Same
+            words, lower visual weight, much less vertical space. */}
+        <ul className="reveal mt-7 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto list-none p-0 border-t border-[color:var(--border)] pt-5 md:pt-6 text-center sm:text-left">
           {PILLARS.map((p) => (
             <li key={p.label}>
               <div className="font-[family-name:var(--font-display)] text-[10px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
                 {p.label}
               </div>
-              <p className="mt-2 font-[family-name:var(--font-sans)] text-[13px] md:text-[13.5px] leading-[1.55] text-[color:var(--charcoal-soft)]">
+              <p className="mt-1.5 font-[family-name:var(--font-sans)] text-[13px] md:text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">
                 {p.body}
               </p>
             </li>
@@ -441,7 +439,7 @@ export function RecentJourney() {
         </ul>
 
         {/* CTA */}
-        <div className="reveal mt-10 md:mt-12 max-w-2xl mx-auto text-center">
+        <div className="reveal mt-7 md:mt-9 max-w-2xl mx-auto text-center">
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/multi-day"

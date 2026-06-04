@@ -32,18 +32,34 @@ const FAQS: { q: string; a: ReactNode }[] = [
     ),
   },
   {
-    q: "Can I speak with a local?",
+    q: "Can I customise a Signature day?",
     a: (
       <>
-        Yes. After every booking a local from our team reaches out within one working day to align the final details. For Bespoke journeys, the conversation starts before anything is confirmed.
+        Yes. Every Signature day can be adjusted — pace, stops, lunch, timing — within the same route. For deeper changes across regions, Bespoke is the right path.
       </>
     ),
   },
   {
-    q: "What if my plans change?",
+    q: "Do I speak directly with a local designer?",
     a: (
       <>
-        Free cancellation up to 48 hours before your experience for Signature and Studio bookings. Bespoke journeys have their own terms, shared at confirmation.
+        Always. A local from our team takes your request personally — never a call centre, never a chatbot. For Bespoke journeys, the conversation begins before anything is confirmed.
+      </>
+    ),
+  },
+  {
+    q: "How far in advance should I book?",
+    a: (
+      <>
+        Signature and Studio days are usually available within a few days’ notice. For Bespoke journeys, two to four weeks gives us room to design properly; peak season fills earlier.
+      </>
+    ),
+  },
+  {
+    q: "What happens after I submit a request?",
+    a: (
+      <>
+        A local replies personally, usually within the hour. We confirm the details, share a clear proposal, and only then ask for confirmation — no pressure, no automated funnels.
       </>
     ),
   },
