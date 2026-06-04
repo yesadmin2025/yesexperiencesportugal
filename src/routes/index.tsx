@@ -793,55 +793,32 @@ function HomePage() {
                       </div>
                     </Link>
 
-                    {/* Body — real teaser + real highlights + dual CTAs */}
+                    {/* Body — short teaser + one primary CTA + a quiet
+                        secondary link. Highlights live on the detail
+                        page; the card stays calm and editorial. */}
                     <div className="flex flex-col gap-4 p-5 md:p-6">
                       <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
                         {t.line}
                       </p>
 
-                      {/* Real highlights — pulled directly from the
-                          tour's `highlights` array. Capped at 3 for
-                          card-level legibility. */}
-                      {t.highlights.length > 0 && (
-                        <ul className="flex flex-col gap-1.5 text-[12.5px] leading-[1.5] text-[color:var(--charcoal)]">
-                          {t.highlights.map((h) => (
-                            <li key={h} className="flex items-start gap-2">
-                              <span
-                                aria-hidden="true"
-                                className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]"
-                              />
-                              <span>{h}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-
-                      {/* Dual CTAs — Reserve (confirm as designed) +
-                          Make it yours (open the same day for refinement).
-                          "Make it yours" is the brand-aligned phrasing
-                          for the Tailored path: adjustments INSIDE one
-                          Signature, never a different tour. */}
-                      <div className="mt-auto flex flex-col xs:flex-row gap-2.5 pt-1">
+                      <div className="mt-auto flex flex-col gap-2 pt-1">
                         <CtaButton
                           to="/tours/$tourId"
                           params={{ tourId: t.id }}
                           variant="primary"
                           size="sm"
-                          className="flex-1"
                           aria-label={`Reserve ${t.title}`}
                         >
                           Reserve this day
                         </CtaButton>
-                        <CtaButton
+                        <Link
                           to="/tours/$tourId/tailor"
                           params={{ tourId: t.id }}
-                          variant="ghost"
-                          size="sm"
-                          className="flex-1"
+                          className="self-start serif italic text-[13px] leading-[1.4] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300"
                           aria-label={`Make ${t.title} yours`}
                         >
-                          Make it yours
-                        </CtaButton>
+                          or make it yours →
+                        </Link>
                       </div>
                     </div>
                   </article>
