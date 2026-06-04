@@ -787,11 +787,11 @@ function HomePage() {
                         </ul>
                       )}
 
-                      {/* Dual CTAs — Book + Tailor. Book is the primary
-                          (solid teal); Tailor is a quieter outlined
-                          option, reflecting the brand rule that Tailored
-                          = adjustments INSIDE one Signature, never a
-                          replacement for the Signature itself. */}
+                      {/* Dual CTAs — Reserve (confirm as designed) +
+                          Make it yours (open the same day for refinement).
+                          "Make it yours" is the brand-aligned phrasing
+                          for the Tailored path: adjustments INSIDE one
+                          Signature, never a different tour. */}
                       <div className="mt-auto flex flex-col xs:flex-row gap-2.5 pt-1">
                         <CtaButton
                           to="/tours/$tourId"
@@ -799,9 +799,9 @@ function HomePage() {
                           variant="primary"
                           size="sm"
                           className="flex-1"
-                          aria-label={`Book ${t.title}`}
+                          aria-label={`Reserve ${t.title}`}
                         >
-                          Book
+                          Reserve this day
                         </CtaButton>
                         <CtaButton
                           to="/tours/$tourId/tailor"
@@ -809,9 +809,9 @@ function HomePage() {
                           variant="ghost"
                           size="sm"
                           className="flex-1"
-                          aria-label={`Tailor ${t.title}`}
+                          aria-label={`Make ${t.title} yours`}
                         >
-                          Tailor
+                          Make it yours
                         </CtaButton>
                       </div>
                     </div>

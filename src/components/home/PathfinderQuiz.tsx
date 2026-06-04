@@ -440,30 +440,8 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       title,
       pills: ["Wine", "Coast", "Private", "From €138"],
       ctas: [
-        { label: "Book this day", to: "/tours/$tourId", search: { tourId: "arrabida-wine-allinclusive" }, variant: "primary" },
-        { label: "Tailor it", to: "/tours/$tourId/tailor", search: { tourId: "arrabida-wine-allinclusive" }, variant: "outline" },
-      ],
-    };
-  }
-  if (r === "TROIA") {
-    return {
-      label: "Signature day · Tróia",
-      title: troiaTitle(s),
-      pills: ["Coast", "Nature", "Private", "From €165"],
-      ctas: [
-        { label: "Book this day", to: "/tours/$tourId", search: { tourId: "troia-comporta" }, variant: "primary" },
-        { label: "Tailor it", to: "/tours/$tourId/tailor", search: { tourId: "troia-comporta" }, variant: "outline" },
-      ],
-    };
-  }
-  if (r === "SINTRA") {
-    return {
-      label: "Signature day · Sintra",
-      title: sintraTitle(s),
-      pills: ["History", "Coast", "Private"],
-      ctas: [
-        { label: "Book this day", to: "/tours/$tourId", search: { tourId: "sintra-cascais" }, variant: "primary" },
-        { label: "Tailor it", to: "/tours/$tourId/tailor", search: { tourId: "sintra-cascais" }, variant: "outline" },
+        { label: "Reserve this day", to: "/tours/$tourId", search: { tourId: "arrabida-wine-allinclusive" }, variant: "primary" },
+        { label: "Make it yours", to: "/tours/$tourId/tailor", search: { tourId: "arrabida-wine-allinclusive" }, variant: "outline" },
       ],
     };
   }

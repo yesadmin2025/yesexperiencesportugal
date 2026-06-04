@@ -92,17 +92,12 @@ function ExperiencesPage() {
                   >
                     {t.title}
                   </Link>
-                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                    <span className="flex items-center gap-1.5">
-                      <MapPin size={12} /> {t.region}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={12} /> {t.durationHours}
-                    </span>
-                    <span className="text-[color:var(--teal)]">From €{t.priceFrom}</span>
-                  </div>
-
-                  <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                  {/* Teaser — emotional lead BEFORE meta/price.
+                      Hierarchy: title → story → highlights → fit →
+                      duration/price (subdued) → CTAs. Price is
+                      preserved for conversion but no longer dominates
+                      the read. */}
+                  <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
                     {t.blurb}
                   </p>
 
@@ -110,7 +105,7 @@ function ExperiencesPage() {
                       sourced from the matching Viator product page.
                       Never invented. */}
                   {topHighlights.length > 0 && (
-                    <ul className="mt-3 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
+                    <ul className="mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
                       {topHighlights.map((h) => (
                         <li key={h} className="flex items-start gap-2">
                           <span
@@ -123,12 +118,28 @@ function ExperiencesPage() {
                     </ul>
                   )}
 
-                  <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                  <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
                     Fits best · {t.fitsBest}
                   </p>
 
-                  {/* Dual CTAs — Book (primary) + Tailor (adjust inside
-                      this Signature, never a different tour). */}
+                  {/* Subdued meta strip — region · duration · from €X.
+                      Price kept (conversion) but reduced to body weight
+                      so it stops dominating the card read. */}
+                  <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                    <span className="flex items-center gap-1.5">
+                      <MapPin size={11} /> {t.region}
+                    </span>
+                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                    <span className="flex items-center gap-1.5">
+                      <Clock size={11} /> {t.durationHours}
+                    </span>
+                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                    <span className="text-[color:var(--charcoal)]">From €{t.priceFrom}</span>
+                  </div>
+
+                  {/* Dual CTAs — Reserve (confirm as designed) +
+                      Make it yours (adjust details inside this same
+                      Signature, never a different tour). */}
                   <div className="mt-5 flex flex-col xs:flex-row gap-2.5">
                     <CtaButton
                       to="/tours/$tourId"
@@ -136,9 +147,9 @@ function ExperiencesPage() {
                       variant="primary"
                       size="sm"
                       className="flex-1"
-                      aria-label={`Book ${t.title}`}
+                      aria-label={`Reserve ${t.title}`}
                     >
-                      Book
+                      Reserve this day
                     </CtaButton>
                     <CtaButton
                       to="/tours/$tourId/tailor"
@@ -146,9 +157,9 @@ function ExperiencesPage() {
                       variant="ghost"
                       size="sm"
                       className="flex-1"
-                      aria-label={`Tailor ${t.title}`}
+                      aria-label={`Make ${t.title} yours`}
                     >
-                      Tailor
+                      Make it yours
                     </CtaButton>
                   </div>
                 </article>
