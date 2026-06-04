@@ -139,12 +139,10 @@ const groupsAndCelebrations = [
     title: "A private moment, held with care.",
     line: (
       <>
-        Location, timing and every detail arranged{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong> — the surprise stays yours.
+        Location, timing and every detail arranged <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong>.
       </>
     ),
     detail: "Discreet · location of your choosing",
-    trust: "Planned end to end by our local team.",
     cta: "Plan a Proposal",
     to: "/proposals",
     img: imgArrabidaViewpoint,
@@ -155,12 +153,10 @@ const groupsAndCelebrations = [
     title: "For days worth remembering.",
     line: (
       <>
-        Birthdays, anniversaries and family days shaped around{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">your people</strong>, at your pace.
+        Birthdays, anniversaries and family days, shaped around <strong className="font-medium text-[color:var(--charcoal)]">your people</strong>.
       </>
     ),
     detail: "Private host · any group size",
-    trust: "Hosted by a local who knows how the day connects.",
     cta: "Plan a Celebration",
     to: "/proposals",
     img: imgArrabidaWineLunch,
@@ -171,12 +167,10 @@ const groupsAndCelebrations = [
     title: "Corporate days, handled with care.",
     line: (
       <>
-        Off-sites, incentives and client hospitality — venues, transport and timing woven into one{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day.
+        Off-sites, incentives and client hospitality — venues, transport and timing in one <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day.
       </>
     ),
     detail: "Any group size · invoice & DMC support",
-    trust: "Real driving times, real venues, real partners.",
     cta: "Plan a Corporate Day",
     to: "/corporate",
     img: imgSintraCaboDaRoca,
