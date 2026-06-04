@@ -57,9 +57,9 @@ export function Footer() {
             title="Experiences"
             links={[
               { to: "/experiences", label: "All Experiences" },
-              { to: "/day-tours", label: "Day Tours" },
-              { to: "/multi-day", label: "Multi-Day Journeys" },
-              { to: "/builder", label: "Build Your Own" },
+              { to: "/day-tours", label: "Day Experiences" },
+              { to: "/multi-day", label: "Bespoke Journeys" },
+              { to: "/builder", label: "Experience Studio" },
             ]}
           />
           <FooterCol
@@ -67,7 +67,7 @@ export function Footer() {
             links={[
               { to: "/proposals", label: "Proposals & Celebrations" },
               { to: "/corporate", label: "Corporate" },
-              { to: "/contact", label: "Private Bookings" },
+              { to: "/contact", label: "Private Groups" },
             ]}
           />
           <FooterCol
