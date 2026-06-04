@@ -169,7 +169,11 @@ export function ThreePathsSection() {
                 <p className="mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">
                   {p.body}
                 </p>
-                <span className="he-pull mt-4 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
+                <span className="mt-4 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal-soft)]">
+                  <span aria-hidden="true" className="h-px w-3 bg-[color:var(--gold)]/55" />
+                  {p.anchor}
+                </span>
+                <span className="he-pull mt-3 serif italic text-[14px] md:text-[15px] leading-[1.45] text-[color:var(--charcoal)] inline-flex items-center gap-2">
                   {p.cta}
                   <span
                     aria-hidden="true"
