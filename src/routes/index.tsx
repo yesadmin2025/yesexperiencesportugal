@@ -1144,9 +1144,10 @@ function HomePage() {
                     Write to a Local
                   </CtaButton>
                 </div>
-                <p className="serif mt-6 text-[13px] italic text-[color:var(--charcoal-soft)]">
+                <p className="bridge-whisper mt-6">
                   A local replies within the day — usually within the hour.
                 </p>
+
               </div>
             </div>
           </div>
