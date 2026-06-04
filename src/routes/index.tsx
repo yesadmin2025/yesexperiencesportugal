@@ -806,7 +806,7 @@ function HomePage() {
             <span className="he-eyebrow-bar mb-5">Occasions</span>
 
             <h2 id="groups-title" className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium">
-              Moments that deserve <span className="italic font-normal text-[color:var(--teal)]">a setting.</span>
+              Moments that deserve a setting.
             </h2>
           </div>
 
