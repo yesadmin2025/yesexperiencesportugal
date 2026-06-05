@@ -26,22 +26,27 @@ export type StudioV3Phase =
   | "feeling"
   | "who"
   | "rhythm"
-  | "map" // placeholder for upcoming Phase 4+
-  ;
+  | "map"
+  | "storyboard"; // placeholder for upcoming Phase 5+
 
 export interface StudioV3State {
   phase: StudioV3Phase;
   feeling: Feeling | null;
   companions: Companions | null;
   rhythm: Rhythm | null;
+  /** Resolved Signature tour id once Phase 4 completes. */
+  tourId: string | null;
 }
+
 
 export const INITIAL_STATE: StudioV3State = {
   phase: "feeling",
   feeling: null,
   companions: null,
   rhythm: null,
+  tourId: null,
 };
+
 
 export interface ChoiceOption<T extends string> {
   id: T;
