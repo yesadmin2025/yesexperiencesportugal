@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
+import { MapAwakens } from "./MapAwakens";
+import { findTour } from "@/data/signatureTours";
 import {
   COMPANIONS,
   FEELINGS,
@@ -14,20 +16,11 @@ import {
 } from "./types";
 
 /**
- * StudioV3 — Cinematic Journey Composer (Phases 1–3 scaffold).
+ * StudioV3 — Cinematic Journey Composer (Phases 1–4).
  *
- * Three sequential beats:
- *   1. Feeling — "How would you like Portugal to feel?"
- *   2. Who     — "Who is travelling?"
- *   3. Rhythm  — "How should the day unfold?"
- *
- * Each beat is one decision on a quiet, full-bleed ivory stage. The
- * orchestrator handles crossfades between phases (~360ms exit, ~480ms
- * enter) so the journey feels like one continuous reveal, not a wizard.
- *
- * Phase 4+ (Map Awakens, Curation, Storyboard, Signature, Booking) ship
- * in follow-up turns. For now we render a quiet handoff card when the
- * trilogy completes.
+ * Phase 1 Feeling → Phase 2 Who → Phase 3 Rhythm → Phase 4 The map awakens.
+ * Phase 5 (Storyboard) ships in a follow-up turn — the current handoff
+ * confirms the curated Signature day and previews what comes next.
  */
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
@@ -51,7 +44,6 @@ export function StudioV3() {
 
   const onFeeling = (id: Feeling) => {
     setState((s) => ({ ...s, feeling: id }));
-    // Give the selection a beat to register before advancing.
     window.setTimeout(() => advance("who"), 520);
   };
   const onCompanions = (id: Companions) => {
@@ -63,13 +55,14 @@ export function StudioV3() {
     window.setTimeout(() => advance("map"), 620);
   };
 
-  // Keyboard back for desktop users.
+  // Keyboard back.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (state.phase === "who") back("feeling");
       else if (state.phase === "rhythm") back("who");
       else if (state.phase === "map") back("rhythm");
+      else if (state.phase === "storyboard") back("map");
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -78,7 +71,7 @@ export function StudioV3() {
   return (
     <main aria-label="YES Studio">
       {state.phase === "feeling" ? (
-        <PhaseShell accent="ivory" exiting={exiting} step={1} totalSteps={3}>
+        <PhaseShell accent="ivory" exiting={exiting} step={1} totalSteps={4}>
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
@@ -90,7 +83,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "who" ? (
-        <PhaseShell accent="gold" exiting={exiting} step={2} totalSteps={3}>
+        <PhaseShell accent="gold" exiting={exiting} step={2} totalSteps={4}>
           <BackLink onClick={() => back("feeling")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
@@ -99,7 +92,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "rhythm" ? (
-        <PhaseShell accent="teal" exiting={exiting} step={3} totalSteps={3}>
+        <PhaseShell accent="teal" exiting={exiting} step={3} totalSteps={4}>
           <BackLink onClick={() => back("who")} />
           <PhaseHeader
             eyebrow="The rhythm"
@@ -111,9 +104,22 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-      {state.phase === "map" ? (
-        <PhaseShell accent="teal" exiting={exiting}>
-          <Handoff state={state} onBack={() => back("rhythm")} />
+      {state.phase === "map" && state.feeling && state.companions && state.rhythm ? (
+        <MapAwakens
+          feeling={state.feeling}
+          companions={state.companions}
+          rhythm={state.rhythm}
+          onBack={() => back("rhythm")}
+          onContinue={(tourId) => {
+            setState((s) => ({ ...s, tourId }));
+            advance("storyboard");
+          }}
+        />
+      ) : null}
+
+      {state.phase === "storyboard" ? (
+        <PhaseShell accent="teal" exiting={exiting} step={4} totalSteps={4}>
+          <StoryboardHandoff state={state} onBack={() => back("map")} />
         </PhaseShell>
       ) : null}
     </main>
@@ -190,10 +196,14 @@ function BackLink({ onClick }: { onClick: () => void }) {
   );
 }
 
-function Handoff({ state, onBack }: { state: StudioV3State; onBack: () => void }) {
-  const feeling = FEELINGS.find((f) => f.id === state.feeling);
-  const who = COMPANIONS.find((c) => c.id === state.companions);
-  const rhythm = RHYTHMS.find((r) => r.id === state.rhythm);
+function StoryboardHandoff({
+  state,
+  onBack,
+}: {
+  state: StudioV3State;
+  onBack: () => void;
+}) {
+  const tour = state.tourId ? findTour(state.tourId) : undefined;
   return (
     <div
       className="w-full max-w-[520px] text-center"
@@ -204,34 +214,29 @@ function Handoff({ state, onBack }: { state: StudioV3State; onBack: () => void }
         className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
       >
-        <span style={{ color: "var(--gold)" }}>—</span> The map awakens
+        <span style={{ color: "var(--gold)" }}>—</span> Your journey, held
       </p>
       <h2
         className="mt-5 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold"
         style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
       >
-        Portugal is{" "}
+        {tour?.region ?? "Portugal"} is{" "}
         <span
           className="italic font-normal"
           style={{ fontFamily: "var(--font-serif)", color: "var(--teal)" }}
         >
-          listening.
+          waiting.
         </span>
       </h2>
 
-      <dl className="mt-8 mx-auto inline-block text-left">
-        <Row term="Feeling" value={feeling?.label ?? "—"} />
-        <Row term="Company" value={who?.label ?? "—"} />
-        <Row term="Rhythm" value={rhythm?.label ?? "—"} />
-      </dl>
-
-      <p
-        className="mt-8 text-[13px] leading-relaxed max-w-[380px] mx-auto"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-      >
-        Next, the coastline draws itself and stops begin to appear — one by one,
-        each with its own light and story.
-      </p>
+      {tour ? (
+        <p
+          className="mt-5 text-[13px] leading-relaxed max-w-[420px] mx-auto"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+        >
+          {tour.blurb}
+        </p>
+      ) : null}
 
       <button
         type="button"
@@ -239,33 +244,14 @@ function Handoff({ state, onBack }: { state: StudioV3State; onBack: () => void }
         className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 text-[11px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed"
         style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
       >
-        Reveal the map <ArrowRight size={14} aria-hidden />
+        Open the storyboard <ArrowRight size={14} aria-hidden />
       </button>
       <p
         className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
       >
-        Map composition · arriving next
+        Storyboard composition · arriving next
       </p>
-    </div>
-  );
-}
-
-function Row({ term, value }: { term: string; value: string }) {
-  return (
-    <div className="flex items-baseline gap-4 py-1.5">
-      <dt
-        className="text-[10px] uppercase tracking-[0.24em] font-semibold min-w-[64px]"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
-      >
-        {term}
-      </dt>
-      <dd
-        className="text-[14px] font-medium"
-        style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-      >
-        {value}
-      </dd>
     </div>
   );
 }
