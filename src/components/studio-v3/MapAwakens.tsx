@@ -182,7 +182,21 @@ export function MapAwakens({ feeling, companions, rhythm, onBack, onContinue }: 
               >
                 Moment {String(current.index + 1).padStart(2, "0")} ·{" "}
                 <span style={{ color: "var(--gold)" }}>{journey.tour.region}</span>
+                {current.borrowed ? (
+                  <span
+                    className="ml-2 normal-case tracking-normal italic"
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+                      fontSize: "11px",
+                      letterSpacing: 0,
+                    }}
+                  >
+                    · added for you
+                  </span>
+                ) : null}
               </p>
+
               <h2
                 className="mt-2 text-[20px] sm:text-[24px] leading-[1.15] tracking-[-0.01em] font-bold"
                 style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
