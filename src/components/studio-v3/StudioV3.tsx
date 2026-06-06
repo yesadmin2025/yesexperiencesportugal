@@ -719,3 +719,97 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+/**
+ * ReactionOverlay — full-viewport cinematic beat shown between phases.
+ * Sits above the next phase (which is already mounted under it) and
+ * gracefully dissolves on its own. Inline animation; no styles.css edits.
+ */
+function ReactionOverlay({ reaction }: { reaction: Reaction }) {
+  return (
+    <div
+      key={`${reaction.eyebrow}-${reaction.message}`}
+      role="status"
+      aria-live="polite"
+      className="fixed inset-0 z-40 flex items-center justify-center px-6 pointer-events-none"
+      style={{
+        background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+        backdropFilter: "blur(2px)",
+        animation: "studioV3ReactionFade 1100ms ease-out both",
+      }}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-[22%] h-px w-12 -translate-x-1/2"
+        style={{ background: "var(--gold)" }}
+      />
+      <div className="max-w-[480px] text-center">
+        <p
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+        >
+          <span style={{ color: "var(--gold)" }}>—</span> {reaction.eyebrow}
+        </p>
+        <p
+          className="mt-5 text-[20px] sm:text-[24px] leading-[1.25] italic"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--charcoal)",
+            animation: "studioV3RiseIn 520ms ease-out both",
+            animationDelay: "80ms",
+          }}
+        >
+          {reaction.message}
+        </p>
+        {reaction.detail ? (
+          <p
+            className="mt-3 text-[11px] uppercase tracking-[0.24em] font-semibold"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              animation: "studioV3RiseIn 540ms ease-out both",
+              animationDelay: "180ms",
+            }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> {reaction.detail}
+          </p>
+        ) : null}
+        {reaction.chips && reaction.chips.length > 0 ? (
+          <ul
+            className="mt-5 flex flex-wrap justify-center gap-2"
+            style={{
+              animation: "studioV3RiseIn 600ms ease-out both",
+              animationDelay: "220ms",
+            }}
+          >
+            {reaction.chips.map((chip) => (
+              <li
+                key={chip}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold"
+                style={{
+                  background: "var(--ivory)",
+                  color: "var(--charcoal)",
+                  border: "1px solid color-mix(in oklab, var(--charcoal) 14%, transparent)",
+                  boxShadow: "0 8px 18px -14px rgba(46,46,46,0.22)",
+                }}
+              >
+                <span aria-hidden style={{ color: "var(--gold)" }}>
+                  ●
+                </span>
+                {chip}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+      <style>{`
+        @keyframes studioV3ReactionFade {
+          0% { opacity: 0; }
+          15% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
