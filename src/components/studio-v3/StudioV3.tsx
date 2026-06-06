@@ -428,11 +428,39 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-      {reaction ? <ReactionOverlay reaction={reaction} /> : null}
+      {reaction ? (
+        <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
+      ) : null}
+
+      {/* Discreet help affordance shown throughout the Studio flow.
+          TODO: Later phase — connect Ask YES help link to official contact channel. */}
+      {state.phase !== "map" ? (
+        <div
+          className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-6"
+        >
+          <button
+            type="button"
+            disabled
+            aria-label="Need help? Ask YES (coming soon)"
+            className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
+              backdropFilter: "blur(4px)",
+              border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              borderRadius: "999px",
+            }}
+          >
+            <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+            Need help? Ask YES
+          </button>
+        </div>
+      ) : null}
     </main>
 
   );
 }
+
 
 /* ---------- Sub-components ---------- */
 
