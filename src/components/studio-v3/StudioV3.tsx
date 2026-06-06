@@ -151,7 +151,7 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
-    const hold = Math.min(r.holdMs ?? 1600, 2100);
+    const hold = Math.min(r.holdMs ?? 2600, 3400);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
