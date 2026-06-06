@@ -51,15 +51,6 @@ export const INITIAL_STATE: StudioV3State = {
 };
 
 
-export const INITIAL_STATE: StudioV3State = {
-  phase: "feeling",
-  feeling: null,
-  companions: null,
-  rhythm: null,
-  tourId: null,
-};
-
-
 export interface ChoiceOption<T extends string> {
   id: T;
   label: string;
