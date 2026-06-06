@@ -80,11 +80,16 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  */
 type Reaction = {
   eyebrow: string;
+  /** Message body. Use "\n" to render a second line for poetic pacing. */
   message: string;
   /** Small detail line under the message (e.g. "From Lisbon"). */
   detail?: string | null;
-  /** Optional chips rendered as journey pins (e.g. selected interests). */
+  /** Optional chips rendered as selected moments (e.g. interests). */
   chips?: string[];
+  /** Optional label above the chips (e.g. "Chosen moments"). */
+  chipsLabel?: string;
+  /** Optional trailing line under the chips (e.g. "and more to refine"). */
+  chipsTail?: string;
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
   /** How long the beat holds before auto-dissolving. Capped at 2100ms. */
