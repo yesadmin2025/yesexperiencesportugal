@@ -5,6 +5,47 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { composeJourneyTitle, getOptionLabel, getOptionLabels } from "./curation";
 import { findTour } from "@/data/signatureTours";
+
+// Atmospheric images — already shipping in the project. We reuse the
+// existing /src/assets library, no new files, no external URLs.
+import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
+import atmFood from "@/assets/studio/atm-food-local.jpg";
+import atmScenic from "@/assets/studio/atm-relaxed-scenic.jpg";
+import atmRomantic from "@/assets/studio/atm-romantic-intimate.jpg";
+import atmSocial from "@/assets/studio/atm-social-celebratory.jpg";
+import atmCultural from "@/assets/studio/atm-elegant-cultural.jpg";
+import expWine from "@/assets/exp-wine.jpg";
+import expGastronomy from "@/assets/exp-gastronomy.jpg";
+import expNature from "@/assets/exp-nature.jpg";
+import expCoastal from "@/assets/exp-coastal.jpg";
+import expStreet from "@/assets/exp-street.jpg";
+import editViewpoint from "@/assets/edit-viewpoint.jpg";
+import editMarket from "@/assets/edit-market.jpg";
+
+const FEELING_IMAGE: Record<string, string> = {
+  coastal: atmCoastal,
+  "wine-food": atmFood,
+  hidden: atmScenic,
+  romance: atmRomantic,
+  family: atmSocial,
+  culture: atmCultural,
+  adventure: atmCoastal,
+  "slow-luxury": atmScenic,
+};
+
+const INTEREST_IMAGE: Record<string, string> = {
+  wine: expWine,
+  gastronomy: expGastronomy,
+  nature: expNature,
+  coast: expCoastal,
+  heritage: atmCultural,
+  photography: editViewpoint,
+  wellness: atmScenic,
+  "local-life": editMarket,
+  street: expStreet, // safety fallback (unused id, kept defensively)
+};
+
+
 import {
   COMPANIONS,
   CONSIDERATIONS,
