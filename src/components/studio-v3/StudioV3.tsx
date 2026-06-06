@@ -87,7 +87,10 @@ type Reaction = {
   chips?: string[];
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
+  /** How long the beat holds before auto-dissolving. Capped at 2100ms. */
+  holdMs?: number;
 };
+
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
@@ -119,7 +122,8 @@ export function StudioV3() {
   /**
    * Show a reaction beat, then land on the next phase. The phase is
    * advanced silently beneath the overlay so when the beat dissolves the
-   * next question is already mounted and ready.
+   * next question is already mounted and ready. Users can tap the overlay
+   * to dismiss the beat early.
    */
   const playReaction = useCallback((r: Reaction) => {
     // Reduced-motion: skip the beat entirely and advance immediately.
@@ -127,6 +131,7 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
+    const hold = Math.min(r.holdMs ?? 1600, 2100);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -134,7 +139,7 @@ export function StudioV3() {
       setReaction(r);
       window.setTimeout(() => {
         setReaction((current) => (current === r ? null : current));
-      }, 850);
+      }, hold);
     }, 280);
   }, [advance]);
 
@@ -162,6 +167,7 @@ export function StudioV3() {
     pickAndAdvance("feeling", id, "who", {
       eyebrow: "The feeling",
       message: "Your journey is finding its atmosphere.",
+      holdMs: 1600,
     });
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
   const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
@@ -170,8 +176,9 @@ export function StudioV3() {
     const label = getOptionLabel(PICKUPS, id);
     pickAndAdvance("pickup", id, "guests", {
       eyebrow: "The beginning",
-      message: "Your route now has a starting point.",
+      message: "Your route now has a beginning.",
       detail: label ? `From ${label}` : null,
+      holdMs: 1600,
       // TODO: Later phase — render a real map preview here once
       // BuilderMap is safe to lift above the existing Map phase.
     });
@@ -183,7 +190,9 @@ export function StudioV3() {
     pickAndAdvance("investment", id, "map", {
       eyebrow: "The shape",
       message: "We'll keep the design transparent before anything is confirmed.",
+      holdMs: 1600,
     });
+
 
 
   // Multi-select toggles.
@@ -223,6 +232,7 @@ export function StudioV3() {
       message: "These moments are becoming the heart of your journey.",
       chips: chips.length > 0 ? chips : undefined,
       nextPhase: "rhythm",
+      holdMs: 1900,
     });
   };
   const continueFromConsiderations = () => {
@@ -233,8 +243,10 @@ export function StudioV3() {
       message: "Good experiences are designed around real people.",
       detail: isNone ? "Nothing to mention" : null,
       nextPhase: "language",
+      holdMs: 1600,
     });
   };
+
 
   // Keyboard back — follows the full phase chain in reverse. Escape during
   // a reaction beat just dismisses the beat and reveals the phase beneath.
@@ -416,11 +428,39 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-      {reaction ? <ReactionOverlay reaction={reaction} /> : null}
+      {reaction ? (
+        <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
+      ) : null}
+
+      {/* Discreet help affordance shown throughout the Studio flow.
+          TODO: Later phase — connect Ask YES help link to official contact channel. */}
+      {state.phase !== "map" ? (
+        <div
+          className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-6"
+        >
+          <button
+            type="button"
+            disabled
+            aria-label="Need help? Ask YES (coming soon)"
+            className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
+              backdropFilter: "blur(4px)",
+              border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              borderRadius: "999px",
+            }}
+          >
+            <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+            Need help? Ask YES
+          </button>
+        </div>
+      ) : null}
     </main>
 
   );
 }
+
 
 /* ---------- Sub-components ---------- */
 
@@ -666,24 +706,42 @@ function StoryboardHandoff({
         </ul>
       </section>
 
-      {/* ---------- Final CTA ---------- */}
-      {/* TODO: Later phase — connect this CTA to contact / lead handoff. */}
-      <div className="mt-12 text-center">
+      {/* ---------- Two future paths: direct or refined with YES ---------- */}
+      <div className="mt-12 flex flex-col items-center gap-4">
+        {/* Primary: direct reservation. */}
+        {/* TODO: Later phase — connect direct reservation flow. */}
         <button
           type="button"
           disabled
           className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-80 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
         >
-          Refine this journey with YES <ArrowRight size={14} aria-hidden />
+          Secure this journey directly <ArrowRight size={14} aria-hidden />
         </button>
+
+        {/* Secondary: human refinement with YES. */}
+        {/* TODO: Later phase — connect YES human refinement/contact flow. */}
+        <button
+          type="button"
+          disabled
+          className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{
+            color: "var(--charcoal)",
+            background: "transparent",
+            border: "1px solid color-mix(in oklab, var(--charcoal) 22%, transparent)",
+          }}
+        >
+          Refine with YES first
+        </button>
+
         <p
-          className="mt-3 text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+          className="mt-1 text-[10.5px] uppercase tracking-[0.24em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
         >
-          Contact and confirmation come next
+          Contact and confirmation come next.
         </p>
       </div>
+
     </div>
   );
 }
@@ -715,19 +773,28 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
  * Sits above the next phase (which is already mounted under it) and
  * gracefully dissolves on its own. Inline animation; no styles.css edits.
  */
-function ReactionOverlay({ reaction }: { reaction: Reaction }) {
+function ReactionOverlay({
+  reaction,
+  onDismiss,
+}: {
+  reaction: Reaction;
+  onDismiss: () => void;
+}) {
+  const hold = Math.min(reaction.holdMs ?? 1600, 2100);
   return (
-    <div
+    <button
+      type="button"
+      onClick={onDismiss}
+      aria-label="Continue"
       key={`${reaction.eyebrow}-${reaction.message}`}
-      role="status"
-      aria-live="polite"
-      className="fixed inset-0 z-40 flex items-center justify-center px-6 pointer-events-none"
+      className="fixed inset-0 z-40 flex items-center justify-center px-6 cursor-pointer focus:outline-none"
       style={{
         background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
         backdropFilter: "blur(2px)",
-        animation: "studioV3ReactionFade 1100ms ease-out both",
+        animation: `studioV3ReactionFade ${hold}ms ease-out both`,
       }}
     >
+
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-[22%] h-px w-12 -translate-x-1/2"
@@ -799,7 +866,8 @@ function ReactionOverlay({ reaction }: { reaction: Reaction }) {
           100% { opacity: 0; }
         }
       `}</style>
-    </div>
+    </button>
+
   );
 }
 
