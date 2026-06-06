@@ -439,9 +439,14 @@ export function StudioV3() {
         <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
       ) : null}
 
-      {/* Discreet help affordance shown throughout the Studio flow.
+      {/* Discreet help affordance. Hidden on phases that already show a
+          Continue CTA (interests, considerations) and on the final Map +
+          Storyboard, to keep Continue visually dominant and avoid overlap.
           TODO: Later phase — connect Ask YES help link to official contact channel. */}
-      {state.phase !== "map" ? (
+      {state.phase !== "map" &&
+      state.phase !== "interests" &&
+      state.phase !== "considerations" &&
+      state.phase !== "storyboard" ? (
         <div
           className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-6"
         >
