@@ -216,10 +216,10 @@ export function StudioV3() {
       id === "slow"
         ? "Fewer stops. More time in place."
         : id === "balanced"
-          ? "A natural rhythm between movement and pause."
+          ? "Movement and pause, kept in balance."
           : id === "full"
             ? "More discovery, still shaped into one realistic day."
-            : "A fuller arc, refined carefully.";
+            : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
     pickAndAdvance("rhythm", id, "considerations", {
       kind: "rhythm",
@@ -1034,52 +1034,108 @@ function MapPreviewPanel({
         />
       ) : null}
 
-      {/* ---------- Pickup: origin dot + route fading outward ---------- */}
+      {/* ---------- Pickup: origin + dashed route fading to ghost destination ---------- */}
       {reaction.kind === "pickup" ? (
-        <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
-          <span
-            aria-hidden
-            className="inline-block shrink-0"
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "999px",
-              background: "var(--gold)",
-              boxShadow: "0 0 0 5px color-mix(in oklab, var(--gold) 18%, transparent)",
-            }}
-          />
-          <span
-            className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
-            style={{ color: "var(--charcoal)" }}
+        <>
+          {/* Quiet "Route forming" eyebrow, top-left of the canvas. */}
+          <p
+            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
-            Origin · {reaction.originLabel ?? "your start"}
-          </span>
-          <span
-            aria-hidden
-            className="flex-1 h-px"
-            style={{
-              background:
-                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 38%, transparent) 0%, color-mix(in oklab, var(--charcoal) 18%, transparent) 55%, transparent 100%)",
-            }}
-          />
-        </div>
+            Route forming
+          </p>
+
+          <div className="absolute inset-x-5 bottom-5 flex items-center gap-2.5">
+            {/* Origin dot — double ring for weight. */}
+            <span
+              aria-hidden
+              className="inline-block shrink-0 relative"
+              style={{
+                width: 12,
+                height: 12,
+                borderRadius: "999px",
+                background: "var(--gold)",
+                boxShadow:
+                  "0 0 0 5px color-mix(in oklab, var(--gold) 20%, transparent), 0 0 0 9px color-mix(in oklab, var(--gold) 10%, transparent)",
+              }}
+            />
+            <span
+              className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+              style={{ color: "var(--charcoal)" }}
+            >
+              Origin · {reaction.originLabel ?? "your start"}
+            </span>
+            {/* Dashed hairline route, extending further. */}
+            <span
+              aria-hidden
+              className="flex-1 h-px"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 42%, transparent) 0%, color-mix(in oklab, var(--charcoal) 22%, transparent) 60%, color-mix(in oklab, var(--charcoal) 10%, transparent) 100%)",
+                backgroundSize: "6px 1px",
+                backgroundRepeat: "repeat-x",
+              }}
+            />
+            {/* Ghost destination — unlabeled, half-opacity, dashed border. */}
+            <span
+              aria-hidden
+              className="inline-block shrink-0"
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "999px",
+                background: "transparent",
+                border: "1px dashed color-mix(in oklab, var(--charcoal) 35%, transparent)",
+                opacity: 0.7,
+              }}
+            />
+          </div>
+        </>
       ) : null}
 
-      {/* ---------- Interests: thematic pins on the map ---------- */}
+      {/* ---------- Interests: thematic pins, connected to origin by hairlines ---------- */}
       {isInterests ? (
         <>
-          {/* Origin anchor still present, top-left, so the map keeps its frame. */}
+          {/* Faint hairlines from origin to each pin — SVG so we can draw
+              true diagonals without new components. */}
+          <svg
+            aria-hidden
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            {reaction.chips!.slice(0, 4).map((label, i) => {
+              const p = pinPositions[i];
+              return (
+                <line
+                  key={`line-${label}`}
+                  x1={10}
+                  y1={82}
+                  x2={p.x}
+                  y2={p.y}
+                  stroke="color-mix(in oklab, var(--charcoal) 22%, transparent)"
+                  strokeWidth={0.35}
+                  strokeDasharray="1.2 1.6"
+                  vectorEffect="non-scaling-stroke"
+                />
+              );
+            })}
+          </svg>
+
+          {/* Origin anchor — gold, bottom-left. */}
           <span
             aria-hidden
             className="absolute"
             style={{
               left: "10%",
               top: "82%",
-              width: 8,
-              height: 8,
+              transform: "translate(-50%, -50%)",
+              width: 10,
+              height: 10,
               borderRadius: "999px",
               background: "var(--gold)",
-              boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 16%, transparent)",
+              boxShadow:
+                "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent), 0 0 0 7px color-mix(in oklab, var(--gold) 9%, transparent)",
             }}
           />
           {reaction.chips!.slice(0, 4).map((label, i) => {
@@ -1187,40 +1243,79 @@ function MapPreviewPanel({
         </div>
       ) : null}
 
-      {/* ---------- Investment: bridge into the full map ---------- */}
+      {/* ---------- Investment: origin + moment dots + faint route + ghost end ---------- */}
       {reaction.kind === "investment" ? (
-        <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
-          <span
-            aria-hidden
-            className="inline-block shrink-0"
-            style={{
-              width: 9,
-              height: 9,
-              borderRadius: "999px",
-              background: "var(--gold)",
-              boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
-            }}
-          />
-          <span
-            aria-hidden
-            className="flex-1 h-px"
-            style={{
-              background:
-                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 35%, transparent) 0%, color-mix(in oklab, var(--teal) 38%, transparent) 60%, color-mix(in oklab, var(--gold) 55%, transparent) 100%)",
-            }}
-          />
-          <span
-            aria-hidden
-            className="inline-block shrink-0"
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "999px",
-              background: "color-mix(in oklab, var(--teal) 80%, transparent)",
-              boxShadow: "0 0 0 3px color-mix(in oklab, var(--teal) 14%, transparent)",
-            }}
-          />
-        </div>
+        <>
+          <p
+            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            The route can take shape
+          </p>
+          <div className="absolute inset-x-5 bottom-5 flex items-center gap-2">
+            {/* Origin */}
+            <span
+              aria-hidden
+              className="inline-block shrink-0"
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "999px",
+                background: "var(--gold)",
+                boxShadow:
+                  "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent), 0 0 0 7px color-mix(in oklab, var(--gold) 9%, transparent)",
+              }}
+            />
+            {/* Three teal moment dots along the arc, separated by hairlines. */}
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="flex items-center gap-2 flex-1">
+                <span
+                  aria-hidden
+                  className="flex-1 h-px"
+                  style={{
+                    background:
+                      "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 28%, transparent), color-mix(in oklab, var(--charcoal) 18%, transparent))",
+                  }}
+                />
+                <span
+                  aria-hidden
+                  className="inline-block shrink-0"
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "999px",
+                    background: "color-mix(in oklab, var(--teal) 78%, transparent)",
+                    boxShadow:
+                      "0 0 0 3px color-mix(in oklab, var(--teal) 12%, transparent)",
+                  }}
+                />
+              </span>
+            ))}
+            {/* Tail hairline + ghost destination (unlabeled, dashed). */}
+            <span
+              aria-hidden
+              className="flex-1 h-px"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 22%, transparent), color-mix(in oklab, var(--charcoal) 8%, transparent))",
+                backgroundSize: "6px 1px",
+                backgroundRepeat: "repeat-x",
+              }}
+            />
+            <span
+              aria-hidden
+              className="inline-block shrink-0"
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "999px",
+                background: "transparent",
+                border: "1px dashed color-mix(in oklab, var(--charcoal) 35%, transparent)",
+                opacity: 0.7,
+              }}
+            />
+          </div>
+        </>
       ) : null}
 
       {/* ---------- Fallback: quiet caption (feeling / considerations) ---------- */}
