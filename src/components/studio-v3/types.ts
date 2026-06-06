@@ -36,7 +36,19 @@ export interface StudioV3State {
   rhythm: Rhythm | null;
   /** Resolved Signature tour id once Phase 4 completes. */
   tourId: string | null;
+  /** Deterministic editorial title composed once map → storyboard. */
+  journeyTitle: string | null;
 }
+
+
+export const INITIAL_STATE: StudioV3State = {
+  phase: "feeling",
+  feeling: null,
+  companions: null,
+  rhythm: null,
+  tourId: null,
+  journeyTitle: null,
+};
 
 
 export const INITIAL_STATE: StudioV3State = {
