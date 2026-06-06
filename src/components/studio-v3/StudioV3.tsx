@@ -122,26 +122,31 @@ export function StudioV3() {
    * next question is already mounted and ready.
    */
   const playReaction = useCallback((r: Reaction) => {
+    // Reduced-motion: skip the beat entirely and advance immediately.
+    if (prefersReducedMotion()) {
+      advance(r.nextPhase);
+      return;
+    }
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
       setExiting(false);
       setReaction(r);
-      const hold = prefersReducedMotion() ? 350 : 1150;
       window.setTimeout(() => {
         setReaction((current) => (current === r ? null : current));
-      }, hold);
-    }, 320);
-  }, []);
+      }, 850);
+    }, 280);
+  }, [advance]);
 
   // Single-select handlers — set field, then either play a reaction beat
-  // or auto-advance straight to the next phase.
+  // (strong beats only on the 5 priority steps) or auto-advance straight
+  // to the next phase.
   const pickAndAdvance = <K extends keyof StudioV3State>(
     key: K,
     value: StudioV3State[K],
     next: StudioV3Phase,
     reactionInit?: Omit<Reaction, "nextPhase">,
-    delay = 460,
+    delay = 420,
   ) => {
     setState((s) => ({ ...s, [key]: value }));
     if (reactionInit) {
@@ -151,17 +156,15 @@ export function StudioV3() {
     }
   };
 
+  // Strong reaction beats live only on: Feeling, Pickup, Interests,
+  // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) =>
     pickAndAdvance("feeling", id, "who", {
       eyebrow: "The feeling",
       message: "Your journey is finding its atmosphere.",
     });
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
-  const onOccasion = (id: Occasion) =>
-    pickAndAdvance("occasion", id, "date", {
-      eyebrow: "The occasion",
-      message: "We'll shape the day around what matters most.",
-    });
+  const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
@@ -173,28 +176,15 @@ export function StudioV3() {
       // BuilderMap is safe to lift above the existing Map phase.
     });
   };
-  const onGuests = (id: GuestBucket) =>
-    pickAndAdvance("guests", id, "interests", {
-      eyebrow: "The party",
-      message: "We'll adapt transport, tables and timing to your group.",
-    });
-  const onRhythm = (id: Rhythm) =>
-    pickAndAdvance(
-      "rhythm",
-      id,
-      "considerations",
-      {
-        eyebrow: "The rhythm",
-        message: "The day should feel natural, not rushed.",
-      },
-      520,
-    );
+  const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
+  const onRhythm = (id: Rhythm) => pickAndAdvance("rhythm", id, "considerations");
   const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
       eyebrow: "The shape",
       message: "We'll keep the design transparent before anything is confirmed.",
     });
+
 
   // Multi-select toggles.
   const toggleInterest = (id: Interest) => {
