@@ -87,7 +87,10 @@ type Reaction = {
   chips?: string[];
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
+  /** How long the beat holds before auto-dissolving. Capped at 2100ms. */
+  holdMs?: number;
 };
+
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
