@@ -122,7 +122,8 @@ export function StudioV3() {
   /**
    * Show a reaction beat, then land on the next phase. The phase is
    * advanced silently beneath the overlay so when the beat dissolves the
-   * next question is already mounted and ready.
+   * next question is already mounted and ready. Users can tap the overlay
+   * to dismiss the beat early.
    */
   const playReaction = useCallback((r: Reaction) => {
     // Reduced-motion: skip the beat entirely and advance immediately.
@@ -130,6 +131,7 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
+    const hold = Math.min(r.holdMs ?? 1600, 2100);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -137,7 +139,7 @@ export function StudioV3() {
       setReaction(r);
       window.setTimeout(() => {
         setReaction((current) => (current === r ? null : current));
-      }, 850);
+      }, hold);
     }, 280);
   }, [advance]);
 
@@ -165,6 +167,7 @@ export function StudioV3() {
     pickAndAdvance("feeling", id, "who", {
       eyebrow: "The feeling",
       message: "Your journey is finding its atmosphere.",
+      holdMs: 1600,
     });
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
   const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
@@ -173,8 +176,9 @@ export function StudioV3() {
     const label = getOptionLabel(PICKUPS, id);
     pickAndAdvance("pickup", id, "guests", {
       eyebrow: "The beginning",
-      message: "Your route now has a starting point.",
+      message: "Your route now has a beginning.",
       detail: label ? `From ${label}` : null,
+      holdMs: 1600,
       // TODO: Later phase — render a real map preview here once
       // BuilderMap is safe to lift above the existing Map phase.
     });
@@ -186,7 +190,9 @@ export function StudioV3() {
     pickAndAdvance("investment", id, "map", {
       eyebrow: "The shape",
       message: "We'll keep the design transparent before anything is confirmed.",
+      holdMs: 1600,
     });
+
 
 
   // Multi-select toggles.
