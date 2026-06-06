@@ -171,7 +171,7 @@ export function StudioV3() {
   const onFeeling = (id: Feeling) =>
     pickAndAdvance("feeling", id, "who", {
       eyebrow: "The feeling",
-      message: "Your journey is finding its atmosphere.",
+      message: "Light, space, and a slower rhythm.\nThis is where it begins.",
       holdMs: 1600,
     });
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
@@ -181,11 +181,10 @@ export function StudioV3() {
     const label = getOptionLabel(PICKUPS, id);
     pickAndAdvance("pickup", id, "guests", {
       eyebrow: "The beginning",
-      message: "Your route now has a beginning.",
-      detail: label ? `From ${label}` : null,
+      message: label
+        ? `It starts here.\nFrom ${label}, the day begins to open.`
+        : "It starts here.\nThe day begins to open.",
       holdMs: 1600,
-      // TODO: Later phase — render a real map preview here once
-      // BuilderMap is safe to lift above the existing Map phase.
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
@@ -194,7 +193,7 @@ export function StudioV3() {
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
       eyebrow: "The shape",
-      message: "We'll keep the design transparent before anything is confirmed.",
+      message: "No surprises.\nJust clarity before anything moves forward.",
       holdMs: 1600,
     });
 
