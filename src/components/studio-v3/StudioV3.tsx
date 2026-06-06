@@ -252,6 +252,9 @@ export function StudioV3() {
       originLabel: label,
       postcardSubline: "Route forming",
       holdMs: 2800,
+      // Pickup carries the feeling's atmosphere as a subtle wash, so the
+      // origin moment still feels grounded in the trip's tone.
+      bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
