@@ -1034,35 +1034,63 @@ function MapPreviewPanel({
         />
       ) : null}
 
-      {/* ---------- Pickup: origin dot + route fading outward ---------- */}
+      {/* ---------- Pickup: origin + dashed route fading to ghost destination ---------- */}
       {reaction.kind === "pickup" ? (
-        <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
-          <span
-            aria-hidden
-            className="inline-block shrink-0"
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "999px",
-              background: "var(--gold)",
-              boxShadow: "0 0 0 5px color-mix(in oklab, var(--gold) 18%, transparent)",
-            }}
-          />
-          <span
-            className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
-            style={{ color: "var(--charcoal)" }}
+        <>
+          {/* Quiet "Route forming" eyebrow, top-left of the canvas. */}
+          <p
+            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
-            Origin · {reaction.originLabel ?? "your start"}
-          </span>
-          <span
-            aria-hidden
-            className="flex-1 h-px"
-            style={{
-              background:
-                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 38%, transparent) 0%, color-mix(in oklab, var(--charcoal) 18%, transparent) 55%, transparent 100%)",
-            }}
-          />
-        </div>
+            Route forming
+          </p>
+
+          <div className="absolute inset-x-5 bottom-5 flex items-center gap-2.5">
+            {/* Origin dot — double ring for weight. */}
+            <span
+              aria-hidden
+              className="inline-block shrink-0 relative"
+              style={{
+                width: 12,
+                height: 12,
+                borderRadius: "999px",
+                background: "var(--gold)",
+                boxShadow:
+                  "0 0 0 5px color-mix(in oklab, var(--gold) 20%, transparent), 0 0 0 9px color-mix(in oklab, var(--gold) 10%, transparent)",
+              }}
+            />
+            <span
+              className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+              style={{ color: "var(--charcoal)" }}
+            >
+              Origin · {reaction.originLabel ?? "your start"}
+            </span>
+            {/* Dashed hairline route, extending further. */}
+            <span
+              aria-hidden
+              className="flex-1 h-px"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 42%, transparent) 0%, color-mix(in oklab, var(--charcoal) 22%, transparent) 60%, color-mix(in oklab, var(--charcoal) 10%, transparent) 100%)",
+                backgroundSize: "6px 1px",
+                backgroundRepeat: "repeat-x",
+              }}
+            />
+            {/* Ghost destination — unlabeled, half-opacity, dashed border. */}
+            <span
+              aria-hidden
+              className="inline-block shrink-0"
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "999px",
+                background: "transparent",
+                border: "1px dashed color-mix(in oklab, var(--charcoal) 35%, transparent)",
+                opacity: 0.7,
+              }}
+            />
+          </div>
+        </>
       ) : null}
 
       {/* ---------- Interests: thematic pins on the map ---------- */}
