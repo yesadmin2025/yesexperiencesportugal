@@ -1064,6 +1064,33 @@ function MapPreviewPanel({
         style={{ background: "var(--gold)" }}
       />
 
+      {/* ---------- Atmospheric image wash ----------
+          Existing project asset, low opacity, ivory veil on top so text and
+          map markers stay readable. Wash sits beneath the grid + dots. */}
+      {reaction.bgImage ? (
+        <>
+          <img
+            src={reaction.bgImage}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+            style={{
+              opacity: 0.62,
+              filter: "saturate(0.85) contrast(0.95)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 55%, transparent) 0%, color-mix(in oklab, var(--ivory) 40%, transparent) 45%, color-mix(in oklab, var(--charcoal) 30%, transparent) 100%)",
+            }}
+          />
+        </>
+      ) : null}
+
+
       {/* Faint hairline grid — reads as a map surface, not a postcard. */}
       {showMap ? (
         <div
