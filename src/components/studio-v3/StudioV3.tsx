@@ -1093,21 +1093,49 @@ function MapPreviewPanel({
         </>
       ) : null}
 
-      {/* ---------- Interests: thematic pins on the map ---------- */}
+      {/* ---------- Interests: thematic pins, connected to origin by hairlines ---------- */}
       {isInterests ? (
         <>
-          {/* Origin anchor still present, top-left, so the map keeps its frame. */}
+          {/* Faint hairlines from origin to each pin — SVG so we can draw
+              true diagonals without new components. */}
+          <svg
+            aria-hidden
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            {reaction.chips!.slice(0, 4).map((label, i) => {
+              const p = pinPositions[i];
+              return (
+                <line
+                  key={`line-${label}`}
+                  x1={10}
+                  y1={82}
+                  x2={p.x}
+                  y2={p.y}
+                  stroke="color-mix(in oklab, var(--charcoal) 22%, transparent)"
+                  strokeWidth={0.35}
+                  strokeDasharray="1.2 1.6"
+                  vectorEffect="non-scaling-stroke"
+                />
+              );
+            })}
+          </svg>
+
+          {/* Origin anchor — gold, bottom-left. */}
           <span
             aria-hidden
             className="absolute"
             style={{
               left: "10%",
               top: "82%",
-              width: 8,
-              height: 8,
+              transform: "translate(-50%, -50%)",
+              width: 10,
+              height: 10,
               borderRadius: "999px",
               background: "var(--gold)",
-              boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 16%, transparent)",
+              boxShadow:
+                "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent), 0 0 0 7px color-mix(in oklab, var(--gold) 9%, transparent)",
             }}
           />
           {reaction.chips!.slice(0, 4).map((label, i) => {
