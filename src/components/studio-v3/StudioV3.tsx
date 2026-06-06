@@ -151,6 +151,8 @@ type Reaction = {
   nextPhase: StudioV3Phase;
   /** How long the beat holds before auto-dissolving. Capped at 3400ms. */
   holdMs?: number;
+  /** Optional atmospheric background image rendered inside the postcard. */
+  bgImage?: string;
 };
 
 
