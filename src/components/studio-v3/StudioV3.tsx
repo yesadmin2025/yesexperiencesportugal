@@ -866,7 +866,8 @@ function ReactionOverlay({
           100% { opacity: 0; }
         }
       `}</style>
-    </div>
+    </button>
+
   );
 }
 
