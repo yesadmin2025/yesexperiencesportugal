@@ -467,31 +467,31 @@ export function StudioV3() {
         <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
       ) : null}
 
-      {/* Discreet help affordance. Hidden on phases that already show a
-          Continue CTA (interests, considerations) and on the final Map +
-          Storyboard, to keep Continue visually dominant and avoid overlap.
+      {/* Discreet help affordance. Softened to a near-whisper so it never
+          competes with the main experience. Hidden on phases that already
+          show a Continue CTA (interests, considerations), on the final Map +
+          Storyboard, and whenever a reaction beat is on screen.
           TODO: Later phase — connect Ask YES help link to official contact channel. */}
-      {state.phase !== "map" &&
+      {!reaction &&
+      state.phase !== "map" &&
       state.phase !== "interests" &&
       state.phase !== "considerations" &&
       state.phase !== "storyboard" ? (
         <div
-          className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-6"
+          className="pointer-events-none fixed inset-x-0 bottom-2 z-30 flex justify-center px-6"
         >
           <button
             type="button"
             disabled
             aria-label="Need help? Ask YES (coming soon)"
-            className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="pointer-events-auto inline-flex items-center gap-1.5 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.26em] font-semibold opacity-55 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
-              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
-              backdropFilter: "blur(4px)",
-              border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+              background: "transparent",
               borderRadius: "999px",
             }}
           >
-            <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}>—</span>
             Need help? Ask YES
           </button>
         </div>
