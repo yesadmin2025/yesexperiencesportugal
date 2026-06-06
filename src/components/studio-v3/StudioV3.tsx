@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
-import { composeJourneyTitle } from "./curation";
+import { composeJourneyTitle, getOptionLabel, getOptionLabels } from "./curation";
 import { findTour } from "@/data/signatureTours";
 import {
   COMPANIONS,
