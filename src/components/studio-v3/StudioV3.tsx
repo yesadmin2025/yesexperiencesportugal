@@ -71,9 +71,33 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
   return i > 0 ? PHASE_ORDER[i - 1] : null;
 }
 
+/**
+ * Reaction beat — a short cinematic punctuation shown between phases.
+ * It overlays the next phase, holds for ~1.1s (or ~0.35s for
+ * reduced-motion users) and then dissolves on its own. The user never
+ * has to click through it. It exists to break the "form-feeling" by
+ * acknowledging each choice before the next question appears.
+ */
+type Reaction = {
+  eyebrow: string;
+  message: string;
+  /** Small detail line under the message (e.g. "From Lisbon"). */
+  detail?: string | null;
+  /** Optional chips rendered as journey pins (e.g. selected interests). */
+  chips?: string[];
+  /** Phase the user lands on once the beat dissolves. */
+  nextPhase: StudioV3Phase;
+};
+
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const [exiting, setExiting] = useState(false);
+  const [reaction, setReaction] = useState<Reaction | null>(null);
 
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
@@ -84,6 +108,7 @@ export function StudioV3() {
   }, []);
 
   const back = useCallback((prev: StudioV3Phase) => {
+    setReaction(null);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: prev }));
@@ -91,26 +116,85 @@ export function StudioV3() {
     }, 280);
   }, []);
 
-  // Single-select handlers — set field, then auto-advance.
+  /**
+   * Show a reaction beat, then land on the next phase. The phase is
+   * advanced silently beneath the overlay so when the beat dissolves the
+   * next question is already mounted and ready.
+   */
+  const playReaction = useCallback((r: Reaction) => {
+    setExiting(true);
+    window.setTimeout(() => {
+      setState((s) => ({ ...s, phase: r.nextPhase }));
+      setExiting(false);
+      setReaction(r);
+      const hold = prefersReducedMotion() ? 350 : 1150;
+      window.setTimeout(() => {
+        setReaction((current) => (current === r ? null : current));
+      }, hold);
+    }, 320);
+  }, []);
+
+  // Single-select handlers — set field, then either play a reaction beat
+  // or auto-advance straight to the next phase.
   const pickAndAdvance = <K extends keyof StudioV3State>(
     key: K,
     value: StudioV3State[K],
     next: StudioV3Phase,
-    delay = 520,
+    reactionInit?: Omit<Reaction, "nextPhase">,
+    delay = 460,
   ) => {
     setState((s) => ({ ...s, [key]: value }));
-    window.setTimeout(() => advance(next), delay);
+    if (reactionInit) {
+      window.setTimeout(() => playReaction({ ...reactionInit, nextPhase: next }), delay);
+    } else {
+      window.setTimeout(() => advance(next), delay);
+    }
   };
 
-  const onFeeling = (id: Feeling) => pickAndAdvance("feeling", id, "who");
+  const onFeeling = (id: Feeling) =>
+    pickAndAdvance("feeling", id, "who", {
+      eyebrow: "The feeling",
+      message: "Your journey is finding its atmosphere.",
+    });
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
-  const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
+  const onOccasion = (id: Occasion) =>
+    pickAndAdvance("occasion", id, "date", {
+      eyebrow: "The occasion",
+      message: "We'll shape the day around what matters most.",
+    });
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
-  const onPickup = (id: Pickup) => pickAndAdvance("pickup", id, "guests");
-  const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
-  const onRhythm = (id: Rhythm) => pickAndAdvance("rhythm", id, "considerations", 620);
+  const onPickup = (id: Pickup) => {
+    const label = getOptionLabel(PICKUPS, id);
+    pickAndAdvance("pickup", id, "guests", {
+      eyebrow: "The beginning",
+      message: "Your route now has a starting point.",
+      detail: label ? `From ${label}` : null,
+      // TODO: Later phase — render a real map preview here once
+      // BuilderMap is safe to lift above the existing Map phase.
+    });
+  };
+  const onGuests = (id: GuestBucket) =>
+    pickAndAdvance("guests", id, "interests", {
+      eyebrow: "The party",
+      message: "We'll adapt transport, tables and timing to your group.",
+    });
+  const onRhythm = (id: Rhythm) =>
+    pickAndAdvance(
+      "rhythm",
+      id,
+      "considerations",
+      {
+        eyebrow: "The rhythm",
+        message: "The day should feel natural, not rushed.",
+      },
+      520,
+    );
   const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
-  const onInvestment = (id: InvestmentTier) => pickAndAdvance("investment", id, "map");
+  const onInvestment = (id: InvestmentTier) =>
+    pickAndAdvance("investment", id, "map", {
+      eyebrow: "The shape",
+      message: "We'll keep the design transparent before anything is confirmed.",
+    });
 
   // Multi-select toggles.
   const toggleInterest = (id: Interest) => {
@@ -137,16 +221,46 @@ export function StudioV3() {
     });
   };
 
-  // Keyboard back — follows the full phase chain in reverse.
+  // Continue handlers for the two multi-select screens — reaction fires
+  // on Continue only, never on each toggle.
+  const continueFromInterests = () => {
+    const chips = state.interests
+      .map((id) => getOptionLabel(INTERESTS, id))
+      .filter((l): l is string => Boolean(l))
+      .slice(0, 4);
+    playReaction({
+      eyebrow: "The moments",
+      message: "These moments are becoming the heart of your journey.",
+      chips: chips.length > 0 ? chips : undefined,
+      nextPhase: "rhythm",
+    });
+  };
+  const continueFromConsiderations = () => {
+    const isNone =
+      state.considerations.length === 0 || state.considerations.includes("none");
+    playReaction({
+      eyebrow: "The care",
+      message: "Good experiences are designed around real people.",
+      detail: isNone ? "Nothing to mention" : null,
+      nextPhase: "language",
+    });
+  };
+
+  // Keyboard back — follows the full phase chain in reverse. Escape during
+  // a reaction beat just dismisses the beat and reveals the phase beneath.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
+      if (reaction) {
+        setReaction(null);
+        return;
+      }
       const prev = prevPhase(state.phase);
       if (prev) back(prev);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [state.phase, back]);
+  }, [state.phase, back, reaction]);
 
   const step = stepOf(state.phase);
 
