@@ -72,19 +72,21 @@ export function PhaseShell({
         style={{ background: "var(--gold)" }}
       />
 
-      {/* Tiny progress whisper. */}
+      {/* Tiny progress whisper. Intentionally low-contrast so it never
+          reads as "Step 1 of 13" — just a quiet anchor. */}
       {step && totalSteps ? (
         <div
-          className="absolute left-1/2 top-5 -translate-x-1/2 text-[10px] uppercase tracking-[0.28em] font-semibold select-none"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          className="absolute left-1/2 top-5 -translate-x-1/2 text-[9.5px] uppercase tracking-[0.3em] font-semibold select-none"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 30%, transparent)" }}
           aria-label={`Step ${step} of ${totalSteps}`}
         >
-          {String(step).padStart(2, "0")} <span style={{ color: "var(--gold)" }}>·</span>{" "}
+          {String(step).padStart(2, "0")}{" "}
+          <span style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}>·</span>{" "}
           {String(totalSteps).padStart(2, "0")}
         </div>
       ) : null}
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-5 py-16 sm:py-20">
+      <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-5 pt-16 pb-28 sm:py-20">
         {children}
       </div>
 

@@ -80,11 +80,16 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  */
 type Reaction = {
   eyebrow: string;
+  /** Message body. Use "\n" to render a second line for poetic pacing. */
   message: string;
   /** Small detail line under the message (e.g. "From Lisbon"). */
   detail?: string | null;
-  /** Optional chips rendered as journey pins (e.g. selected interests). */
+  /** Optional chips rendered as selected moments (e.g. interests). */
   chips?: string[];
+  /** Optional label above the chips (e.g. "Chosen moments"). */
+  chipsLabel?: string;
+  /** Optional trailing line under the chips (e.g. "and more to refine"). */
+  chipsTail?: string;
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
   /** How long the beat holds before auto-dissolving. Capped at 2100ms. */
@@ -166,7 +171,7 @@ export function StudioV3() {
   const onFeeling = (id: Feeling) =>
     pickAndAdvance("feeling", id, "who", {
       eyebrow: "The feeling",
-      message: "Your journey is finding its atmosphere.",
+      message: "Light, space, and a slower rhythm.\nThis is where it begins.",
       holdMs: 1600,
     });
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
@@ -176,11 +181,10 @@ export function StudioV3() {
     const label = getOptionLabel(PICKUPS, id);
     pickAndAdvance("pickup", id, "guests", {
       eyebrow: "The beginning",
-      message: "Your route now has a beginning.",
-      detail: label ? `From ${label}` : null,
+      message: label
+        ? `It starts here.\nFrom ${label}, the day begins to open.`
+        : "It starts here.\nThe day begins to open.",
       holdMs: 1600,
-      // TODO: Later phase — render a real map preview here once
-      // BuilderMap is safe to lift above the existing Map phase.
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
@@ -189,7 +193,7 @@ export function StudioV3() {
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
       eyebrow: "The shape",
-      message: "We'll keep the design transparent before anything is confirmed.",
+      message: "No surprises.\nJust clarity before anything moves forward.",
       holdMs: 1600,
     });
 
@@ -223,14 +227,17 @@ export function StudioV3() {
   // Continue handlers for the two multi-select screens — reaction fires
   // on Continue only, never on each toggle.
   const continueFromInterests = () => {
-    const chips = state.interests
+    const allChips = state.interests
       .map((id) => getOptionLabel(INTERESTS, id))
-      .filter((l): l is string => Boolean(l))
-      .slice(0, 4);
+      .filter((l): l is string => Boolean(l));
+    const chips = allChips.slice(0, 4);
+    const tail = allChips.length > 4 ? "and more to refine" : undefined;
     playReaction({
       eyebrow: "The moments",
-      message: "These moments are becoming the heart of your journey.",
+      message: "These are the moments that will stay.\nThe rest can stay quiet.",
       chips: chips.length > 0 ? chips : undefined,
+      chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
+      chipsTail: tail,
       nextPhase: "rhythm",
       holdMs: 1900,
     });
@@ -240,7 +247,7 @@ export function StudioV3() {
       state.considerations.length === 0 || state.considerations.includes("none");
     playReaction({
       eyebrow: "The care",
-      message: "Good experiences are designed around real people.",
+      message: "It is not just where you go.\nIt is how the day fits you.",
       detail: isNone ? "Nothing to mention" : null,
       nextPhase: "language",
       holdMs: 1600,
@@ -432,9 +439,14 @@ export function StudioV3() {
         <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
       ) : null}
 
-      {/* Discreet help affordance shown throughout the Studio flow.
+      {/* Discreet help affordance. Hidden on phases that already show a
+          Continue CTA (interests, considerations) and on the final Map +
+          Storyboard, to keep Continue visually dominant and avoid overlap.
           TODO: Later phase — connect Ask YES help link to official contact channel. */}
-      {state.phase !== "map" ? (
+      {state.phase !== "map" &&
+      state.phase !== "interests" &&
+      state.phase !== "considerations" &&
+      state.phase !== "storyboard" ? (
         <div
           className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-6"
         >
@@ -808,11 +820,11 @@ function ReactionOverlay({
           <span style={{ color: "var(--gold)" }}>—</span> {reaction.eyebrow}
         </p>
         <p
-          className="mt-5 text-[20px] sm:text-[24px] leading-[1.25] italic"
+          className="mt-5 text-[20px] sm:text-[24px] leading-[1.3] italic whitespace-pre-line text-balance"
           style={{
             fontFamily: "var(--font-serif)",
             color: "var(--charcoal)",
-            animation: "studioV3RiseIn 520ms ease-out both",
+            animation: "studioV3RiseIn 560ms ease-out both",
             animationDelay: "80ms",
           }}
         >
@@ -831,38 +843,49 @@ function ReactionOverlay({
           </p>
         ) : null}
         {reaction.chips && reaction.chips.length > 0 ? (
-          <ul
-            className="mt-5 flex flex-wrap justify-center gap-2"
+          <div
+            className="mt-6"
             style={{
               animation: "studioV3RiseIn 600ms ease-out both",
               animationDelay: "220ms",
             }}
           >
-            {reaction.chips.map((chip) => (
-              <li
-                key={chip}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold"
+            {reaction.chipsLabel ? (
+              <p
+                className="text-[10px] uppercase tracking-[0.28em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span> {reaction.chipsLabel}
+              </p>
+            ) : null}
+            <p
+              className="mt-2.5 text-[15px] leading-[1.5] italic"
+              style={{
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+              }}
+            >
+              {reaction.chips.join(" · ")}
+            </p>
+            {reaction.chipsTail ? (
+              <p
+                className="mt-2 text-[12px] italic"
                 style={{
-                  background: "var(--ivory)",
-                  color: "var(--charcoal)",
-                  border: "1px solid color-mix(in oklab, var(--charcoal) 14%, transparent)",
-                  boxShadow: "0 8px 18px -14px rgba(46,46,46,0.22)",
+                  fontFamily: "var(--font-serif)",
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                 }}
               >
-                <span aria-hidden style={{ color: "var(--gold)" }}>
-                  ●
-                </span>
-                {chip}
-              </li>
-            ))}
-          </ul>
+                {reaction.chipsTail}
+              </p>
+            ) : null}
+          </div>
         ) : null}
       </div>
       <style>{`
         @keyframes studioV3ReactionFade {
           0% { opacity: 0; }
-          15% { opacity: 1; }
-          80% { opacity: 1; }
+          12% { opacity: 1; }
+          86% { opacity: 1; }
           100% { opacity: 0; }
         }
       `}</style>
