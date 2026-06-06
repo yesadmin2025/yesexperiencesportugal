@@ -22,19 +22,90 @@ export type Companions =
 
 export type Rhythm = "slow" | "balanced" | "full" | "immersive";
 
+export type Occasion =
+  | "none"
+  | "proposal"
+  | "anniversary"
+  | "birthday"
+  | "honeymoon"
+  | "family-day"
+  | "corporate"
+  | "celebration";
+
+export type DateWindow =
+  | "exact"
+  | "this-week"
+  | "next-2-weeks"
+  | "this-month"
+  | "flexible"
+  | "exploring";
+
+export type Pickup =
+  | "lisbon"
+  | "lisbon-airport"
+  | "lisbon-cruise"
+  | "cascais-estoril"
+  | "sintra"
+  | "sesimbra-setubal-arrabida"
+  | "comporta-troia"
+  | "other";
+
+export type GuestBucket = "1" | "2" | "3-4" | "5-6" | "7-10" | "11+";
+
+export type Interest =
+  | "wine"
+  | "gastronomy"
+  | "nature"
+  | "coast"
+  | "heritage"
+  | "photography"
+  | "wellness"
+  | "local-life";
+
+export type Consideration =
+  | "none"
+  | "vegetarian"
+  | "vegan"
+  | "gluten-free"
+  | "allergies"
+  | "reduced-mobility"
+  | "child-seats"
+  | "avoid-long-walks"
+  | "quiet-pace";
+
+export type Language = "en" | "pt" | "es" | "fr" | "other";
+
+export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
+
 export type StudioV3Phase =
   | "feeling"
   | "who"
+  | "occasion"
+  | "date"
+  | "pickup"
+  | "guests"
+  | "interests"
   | "rhythm"
+  | "considerations"
+  | "language"
+  | "investment"
   | "map"
-  | "storyboard"; // placeholder for upcoming Phase 5+
+  | "storyboard";
 
 export interface StudioV3State {
   phase: StudioV3Phase;
   feeling: Feeling | null;
   companions: Companions | null;
+  occasion: Occasion | null;
+  dateWindow: DateWindow | null;
+  pickup: Pickup | null;
+  guests: GuestBucket | null;
+  interests: Interest[];
   rhythm: Rhythm | null;
-  /** Resolved Signature tour id once Phase 4 completes. */
+  considerations: Consideration[];
+  language: Language | null;
+  investment: InvestmentTier | null;
+  /** Resolved Signature tour id once Phase 4 (map) completes. */
   tourId: string | null;
   /** Deterministic editorial title composed once map → storyboard. */
   journeyTitle: string | null;
@@ -45,7 +116,15 @@ export const INITIAL_STATE: StudioV3State = {
   phase: "feeling",
   feeling: null,
   companions: null,
+  occasion: null,
+  dateWindow: null,
+  pickup: null,
+  guests: null,
+  interests: [],
   rhythm: null,
+  considerations: [],
+  language: null,
+  investment: null,
   tourId: null,
   journeyTitle: null,
 };
