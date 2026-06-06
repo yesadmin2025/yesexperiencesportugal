@@ -773,19 +773,28 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
  * Sits above the next phase (which is already mounted under it) and
  * gracefully dissolves on its own. Inline animation; no styles.css edits.
  */
-function ReactionOverlay({ reaction }: { reaction: Reaction }) {
+function ReactionOverlay({
+  reaction,
+  onDismiss,
+}: {
+  reaction: Reaction;
+  onDismiss: () => void;
+}) {
+  const hold = Math.min(reaction.holdMs ?? 1600, 2100);
   return (
-    <div
+    <button
+      type="button"
+      onClick={onDismiss}
+      aria-label="Continue"
       key={`${reaction.eyebrow}-${reaction.message}`}
-      role="status"
-      aria-live="polite"
-      className="fixed inset-0 z-40 flex items-center justify-center px-6 pointer-events-none"
+      className="fixed inset-0 z-40 flex items-center justify-center px-6 cursor-pointer focus:outline-none"
       style={{
         background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
         backdropFilter: "blur(2px)",
-        animation: "studioV3ReactionFade 1100ms ease-out both",
+        animation: `studioV3ReactionFade ${hold}ms ease-out both`,
       }}
     >
+
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-[22%] h-px w-12 -translate-x-1/2"
