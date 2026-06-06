@@ -4,6 +4,9 @@ import type { RoutedStopUI } from "@/components/builder/types";
 import { curateJourney, type CuratedJourney } from "./curation";
 import type { Companions, Feeling, Rhythm } from "./types";
 
+// TODO: Later phase — add pickup-aware map eyebrow ("From {pickup label}").
+// Skipped in Phase 1B to avoid prop drilling and a wider refactor.
+
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
 );

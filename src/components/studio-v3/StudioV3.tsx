@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
-import { composeJourneyTitle } from "./curation";
+import { composeJourneyTitle, getOptionLabel, getOptionLabels } from "./curation";
 import { findTour } from "@/data/signatureTours";
 import {
   COMPANIONS,
@@ -291,9 +291,12 @@ export function StudioV3() {
           onContinue={(tourId) => {
             const tour = findTour(tourId);
             const title = composeJourneyTitle({
-              feeling: state.feeling!,
-              companions: state.companions!,
-              rhythm: state.rhythm!,
+              feeling: state.feeling,
+              companions: state.companions,
+              occasion: state.occasion,
+              pickup: state.pickup,
+              interests: state.interests,
+              rhythm: state.rhythm,
               region: tour?.region ?? null,
             });
             setState((s) => ({ ...s, tourId, journeyTitle: title }));
@@ -415,66 +418,185 @@ function StoryboardHandoff({
   onBack: () => void;
 }) {
   const tour = state.tourId ? findTour(state.tourId) : undefined;
+
+  // Human-readable labels for every captured choice.
+  const feelingLabel = getOptionLabel(FEELINGS, state.feeling);
+  const companionsLabel = getOptionLabel(COMPANIONS, state.companions);
+  const occasionLabel =
+    state.occasion && state.occasion !== "none"
+      ? getOptionLabel(OCCASIONS, state.occasion)
+      : "Just because";
+  const dateLabel = getOptionLabel(DATE_WINDOWS, state.dateWindow, "Flexible");
+  const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
+  const guestsLabel = getOptionLabel(GUEST_BUCKETS, state.guests, "To be refined with YES");
+  const interestsLabel = getOptionLabels(INTERESTS, state.interests, "Open to suggestions");
+  const rhythmLabel = getOptionLabel(RHYTHMS, state.rhythm);
+  const considerationsLabel = state.considerations.includes("none")
+    ? "Nothing to mention"
+    : getOptionLabels(CONSIDERATIONS, state.considerations, "Nothing to mention");
+  const languageLabel = getOptionLabel(LANGUAGES, state.language, "English");
+  const investmentLabel = getOptionLabel(INVESTMENT_TIERS, state.investment, "Open to suggestions");
+
+  // Emotional 2-sentence description, composed from real choices.
+  const region = tour?.region ?? "Portugal";
+  const themeWord =
+    state.interests[0] === "wine" || state.feeling === "wine-food"
+      ? "wine, local flavour"
+      : state.feeling === "coastal" || state.interests.includes("coast")
+        ? "coastal beauty"
+        : state.feeling === "culture" || state.interests.includes("heritage")
+          ? "heritage and atmosphere"
+          : state.feeling === "romance"
+            ? "quiet, romantic moments"
+            : state.feeling === "family"
+              ? "ease and shared time"
+              : "real Portuguese moments";
+  const paceWord =
+    state.rhythm === "slow"
+      ? "a slower rhythm"
+      : state.rhythm === "immersive"
+        ? "an unhurried, immersive day"
+        : state.rhythm === "full"
+          ? "a rich, full day"
+          : "a thoughtful rhythm";
+  const pickupCity =
+    pickupLabel && state.pickup && state.pickup !== "other"
+      ? pickupLabel
+      : "your chosen starting point";
+  const description = `A private day shaped around ${themeWord} and ${paceWord}. Starting from ${pickupCity}, this journey brings together scenic moments, real local experiences and time to enjoy ${region} without rushing.`;
+
+  const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
+
   return (
     <div
-      className="w-full max-w-[520px] text-center"
+      className="w-full max-w-[640px]"
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
       <BackLink onClick={onBack} />
-      <p
-        className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-      >
-        <span style={{ color: "var(--gold)" }}>—</span> Your journey, held
-      </p>
-      {state.journeyTitle ? (
+
+      {/* ---------- Title block ---------- */}
+      <header className="text-center">
         <p
-          className="mt-4 text-[18px] sm:text-[20px] leading-[1.25] italic"
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+        >
+          <span style={{ color: "var(--gold)" }}>—</span> Your private journey
+        </p>
+        <h1
+          className="mt-5 text-[28px] sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
+          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+        >
+          {journeyTitle}
+        </h1>
+        <p
+          className="mt-5 text-[14px] leading-[1.55] max-w-[520px] mx-auto"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
+        >
+          {description}
+        </p>
+      </header>
+
+      {/* ---------- Journey summary ---------- */}
+      <section
+        aria-label="Journey summary"
+        className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5 text-left"
+      >
+        <SummaryRow label="Feeling" value={feelingLabel} />
+        <SummaryRow label="Travelling with" value={companionsLabel} />
+        <SummaryRow label="Occasion" value={occasionLabel} />
+        <SummaryRow label="When" value={dateLabel} />
+        <SummaryRow label="Beginning" value={pickupLabel} />
+        <SummaryRow label="Guests" value={guestsLabel} />
+        <SummaryRow label="Moments" value={interestsLabel} />
+        <SummaryRow label="Rhythm" value={rhythmLabel} />
+        <SummaryRow label="Care notes" value={considerationsLabel} />
+        <SummaryRow label="Hosted in" value={languageLabel} />
+        <SummaryRow label="Experience comfort" value={investmentLabel} />
+        {tour ? <SummaryRow label="Anchor region" value={tour.region} /> : null}
+      </section>
+
+      {/* ---------- What YES will refine ---------- */}
+      <section
+        aria-label="What YES will refine"
+        className="mt-12 pt-8 border-t text-left"
+        style={{ borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }}
+      >
+        <p
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+        >
+          <span style={{ color: "var(--gold)" }}>—</span> What YES will refine with you
+        </p>
+        <p
+          className="mt-4 text-[14px] leading-[1.6] italic"
           style={{
             fontFamily: "var(--font-serif)",
-            color: "var(--teal)",
+            color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
           }}
         >
-          {state.journeyTitle}
+          Your journey now has a shape. The YES team will refine the final details, confirm
+          availability and make sure the day feels effortless before anything is locked.
         </p>
-      ) : null}
-      <h2
-        className="mt-5 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold"
-        style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-      >
-        {tour?.region ?? "Portugal"} is{" "}
-        <span
-          className="italic font-normal"
-          style={{ fontFamily: "var(--font-serif)", color: "var(--teal)" }}
+        <ul
+          className="mt-5 space-y-2.5 text-[13.5px] leading-[1.55]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
         >
-          waiting.
-        </span>
-      </h2>
+          {[
+            "Exact availability and best timing",
+            "Final route and partner availability",
+            "Pickup details",
+            "Dietary, comfort or mobility notes",
+            "Final investment before confirmation",
+          ].map((item) => (
+            <li key={item} className="flex gap-3">
+              <span aria-hidden style={{ color: "var(--gold)" }}>
+                —
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      {tour ? (
+      {/* ---------- Final CTA ---------- */}
+      {/* TODO: Later phase — connect this CTA to contact / lead handoff. */}
+      <div className="mt-12 text-center">
+        <button
+          type="button"
+          disabled
+          className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-80 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
+        >
+          Refine this journey with YES <ArrowRight size={14} aria-hidden />
+        </button>
         <p
-          className="mt-5 text-[13px] leading-relaxed max-w-[420px] mx-auto"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+          className="mt-3 text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
         >
-          {tour.blurb}
+          Contact and confirmation come next
         </p>
-      ) : null}
+      </div>
+    </div>
+  );
+}
 
-      {/* TODO: 1B — render Journey Summary block here listing every captured choice. */}
-
-      <button
-        type="button"
-        disabled
-        className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 text-[11px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed"
-        style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-      >
-        Open the storyboard <ArrowRight size={14} aria-hidden />
-      </button>
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div
+      className="pb-4 border-b"
+      style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+    >
       <p
-        className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
+        className="text-[10px] uppercase tracking-[0.26em] font-semibold"
+        style={{ color: "var(--gold)" }}
       >
-        Storyboard composition · arriving next
+        {label}
+      </p>
+      <p
+        className="mt-1.5 text-[14px] leading-[1.4]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 85%, transparent)" }}
+      >
+        {value}
       </p>
     </div>
   );

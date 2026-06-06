@@ -17,54 +17,175 @@
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
-import type { Companions, Feeling, Rhythm } from "./types";
+import type {
+  ChoiceOption,
+  Companions,
+  Feeling,
+  Interest,
+  Occasion,
+  Pickup,
+  Rhythm,
+} from "./types";
+
+/* ---------- Label helpers (pure, deterministic) ---------- */
+
+/** Map a single id to its human-readable label, with a graceful fallback. */
+export function getOptionLabel<T extends string>(
+  options: ReadonlyArray<ChoiceOption<T>>,
+  value: T | null | undefined,
+  fallback = "To be refined with YES",
+): string {
+  if (!value) return fallback;
+  return options.find((o) => o.id === value)?.label ?? fallback;
+}
+
+/** Map a list of ids to their labels, joined as a natural sentence fragment. */
+export function getOptionLabels<T extends string>(
+  options: ReadonlyArray<ChoiceOption<T>>,
+  values: ReadonlyArray<T> | null | undefined,
+  fallback = "Nothing to mention",
+): string {
+  if (!values || values.length === 0) return fallback;
+  const labels = values
+    .map((v) => options.find((o) => o.id === v)?.label)
+    .filter((x): x is string => Boolean(x));
+  if (labels.length === 0) return fallback;
+  if (labels.length === 1) return labels[0];
+  if (labels.length === 2) return `${labels[0]} and ${labels[1]}`;
+  return `${labels.slice(0, -1).join(", ")} and ${labels[labels.length - 1]}`;
+}
 
 /* ---------- Journey title (deterministic, pure) ---------- */
 
-const TITLE_NOUN: Record<Feeling, string> = {
-  coastal: "coast",
-  "wine-food": "table",
-  hidden: "drift",
-  romance: "afternoon",
-  family: "day",
-  culture: "wander",
-  adventure: "horizon",
-  "slow-luxury": "afternoon",
+const RHYTHM_ADJ: Record<Rhythm, string> = {
+  slow: "Slow",
+  balanced: "Quiet",
+  full: "Rich",
+  immersive: "Long",
 };
 
-const TITLE_ADJ: Record<Rhythm, string> = {
-  slow: "slow",
-  balanced: "quiet",
-  full: "rich",
-  immersive: "long",
+const FEELING_THEME: Record<Feeling, string> = {
+  coastal: "coastal",
+  "wine-food": "wine and table",
+  hidden: "hidden",
+  romance: "romantic",
+  family: "family",
+  culture: "heritage",
+  adventure: "Atlantic",
+  "slow-luxury": "slow",
 };
 
-const TITLE_SUFFIX: Record<Companions, string> = {
-  solo: "alone",
-  couple: "for two",
-  family: "together",
-  friends: "shared",
-  celebration: "to remember",
-  proposal: "for one yes",
-  corporate: "private",
+const INTEREST_THEME: Partial<Record<Interest, string>> = {
+  wine: "wine",
+  gastronomy: "table",
+  coast: "coastal",
+  nature: "nature",
+  heritage: "heritage",
+  photography: "golden hour",
+  wellness: "slow",
+  "local-life": "local",
+};
+
+function geoFromPickup(pickup: Pickup | null | undefined): string | null {
+  switch (pickup) {
+    case "lisbon":
+    case "lisbon-airport":
+    case "lisbon-cruise":
+      return "Lisbon";
+    case "cascais-estoril":
+      return "Cascais";
+    case "sintra":
+      return "Sintra";
+    case "sesimbra-setubal-arrabida":
+      return "Arrábida";
+    case "comporta-troia":
+      return "Comporta";
+    default:
+      return null;
+  }
+}
+
+function scopeFromCompanions(c: Companions | null | undefined): string {
+  switch (c) {
+    case "couple":
+    case "proposal":
+      return "escape";
+    case "celebration":
+      return "celebration";
+    case "corporate":
+      return "private day";
+    case "family":
+    case "friends":
+    case "solo":
+    default:
+      return "day";
+  }
+}
+
+const OCCASION_BASE: Partial<Record<Occasion, string>> = {
+  proposal: "A private proposal day",
+  anniversary: "An anniversary worth marking",
+  honeymoon: "A honeymoon escape",
+  birthday: "A birthday in Portugal",
+  corporate: "A private corporate day",
+  celebration: "A private celebration",
 };
 
 /**
- * composeJourneyTitle — short, sentence-case, deterministic title for the
- * resolved journey. Region is accepted for future shaping but intentionally
- * not concatenated to keep titles under ~38 chars and editorial in tone.
- * Examples: "A slow coast, for two." · "A quiet table, together."
+ * composeJourneyTitle — deterministic, sentence-case, ≤48 chars, no clichés.
+ * Examples: "Slow coastal Arrábida escape" · "A honeymoon escape in Arrábida".
+ * Falls back to "Your private Portugal day" when data is too thin.
  */
 export function composeJourneyTitle(input: {
-  feeling: Feeling;
-  companions: Companions;
-  rhythm: Rhythm;
+  feeling: Feeling | null;
+  companions?: Companions | null;
+  occasion?: Occasion | null;
+  pickup?: Pickup | null;
+  interests?: ReadonlyArray<Interest>;
+  rhythm: Rhythm | null;
+  /** Legacy field — accepted for callers that resolve a region later. */
   region?: string | null;
 }): string {
-  const adj = TITLE_ADJ[input.rhythm];
-  const noun = TITLE_NOUN[input.feeling];
-  const suffix = TITLE_SUFFIX[input.companions];
-  return `A ${adj} ${noun}, ${suffix}.`;
+  const FALLBACK = "Your private Portugal day";
+  const geo = geoFromPickup(input.pickup);
+
+  // Occasion-led titles (proposal / anniversary / honeymoon / …)
+  if (input.occasion && OCCASION_BASE[input.occasion]) {
+    const base = OCCASION_BASE[input.occasion]!;
+    if (geo) {
+      const withGeo = `${base} in ${geo}`;
+      if (withGeo.length <= 48) return withGeo;
+    }
+    return base.length <= 48 ? base : FALLBACK;
+  }
+
+  if (!input.feeling || !input.rhythm) return FALLBACK;
+
+  // Theme: prefer the first interest with a known theme word, else feeling.
+  let theme = FEELING_THEME[input.feeling];
+  if (input.interests && input.interests.length > 0) {
+    for (const i of input.interests) {
+      const t = INTEREST_THEME[i];
+      if (t) {
+        theme = t;
+        break;
+      }
+    }
+  }
+
+  const adj = RHYTHM_ADJ[input.rhythm];
+  const scope = scopeFromCompanions(input.companions ?? null);
+
+  // Pattern: "{Adj} {theme} {geo} {scope}" e.g. "Slow coastal Arrábida escape"
+  const candidates = [
+    [adj, theme, geo, scope].filter(Boolean).join(" "),
+    [adj, theme, scope].filter(Boolean).join(" "),
+    [theme.charAt(0).toUpperCase() + theme.slice(1), scope].join(" "),
+  ];
+  for (const c of candidates) {
+    if (c && c.length <= 48 && !c.includes("!")) return c;
+  }
+  return FALLBACK;
 }
 
 const FEELING_TO_TOURS: Record<Feeling, string[]> = {
