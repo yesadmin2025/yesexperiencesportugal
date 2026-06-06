@@ -5,6 +5,47 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { composeJourneyTitle, getOptionLabel, getOptionLabels } from "./curation";
 import { findTour } from "@/data/signatureTours";
+
+// Atmospheric images — already shipping in the project. We reuse the
+// existing /src/assets library, no new files, no external URLs.
+import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
+import atmFood from "@/assets/studio/atm-food-local.jpg";
+import atmScenic from "@/assets/studio/atm-relaxed-scenic.jpg";
+import atmRomantic from "@/assets/studio/atm-romantic-intimate.jpg";
+import atmSocial from "@/assets/studio/atm-social-celebratory.jpg";
+import atmCultural from "@/assets/studio/atm-elegant-cultural.jpg";
+import expWine from "@/assets/exp-wine.jpg";
+import expGastronomy from "@/assets/exp-gastronomy.jpg";
+import expNature from "@/assets/exp-nature.jpg";
+import expCoastal from "@/assets/exp-coastal.jpg";
+import expStreet from "@/assets/exp-street.jpg";
+import editViewpoint from "@/assets/edit-viewpoint.jpg";
+import editMarket from "@/assets/edit-market.jpg";
+
+const FEELING_IMAGE: Record<string, string> = {
+  coastal: atmCoastal,
+  "wine-food": atmFood,
+  hidden: atmScenic,
+  romance: atmRomantic,
+  family: atmSocial,
+  culture: atmCultural,
+  adventure: atmCoastal,
+  "slow-luxury": atmScenic,
+};
+
+const INTEREST_IMAGE: Record<string, string> = {
+  wine: expWine,
+  gastronomy: expGastronomy,
+  nature: expNature,
+  coast: expCoastal,
+  heritage: atmCultural,
+  photography: editViewpoint,
+  wellness: atmScenic,
+  "local-life": editMarket,
+  street: expStreet, // safety fallback (unused id, kept defensively)
+};
+
+
 import {
   COMPANIONS,
   CONSIDERATIONS,
@@ -110,6 +151,8 @@ type Reaction = {
   nextPhase: StudioV3Phase;
   /** How long the beat holds before auto-dissolving. Capped at 3400ms. */
   holdMs?: number;
+  /** Optional atmospheric background image rendered inside the postcard. */
+  bgImage?: string;
 };
 
 
@@ -192,6 +235,7 @@ export function StudioV3() {
       message: "Light, space, and a slower rhythm.\nThis is where it begins.",
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
       holdMs: 2600,
+      bgImage: FEELING_IMAGE[id],
     });
   };
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
@@ -208,6 +252,9 @@ export function StudioV3() {
       originLabel: label,
       postcardSubline: "Route forming",
       holdMs: 2800,
+      // Pickup carries the feeling's atmosphere as a subtle wash, so the
+      // origin moment still feels grounded in the trip's tone.
+      bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
@@ -294,6 +341,7 @@ export function StudioV3() {
       postcardSubline: "These will guide the route.",
       nextPhase: "rhythm",
       holdMs: 3200,
+      bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
     });
   };
   const continueFromConsiderations = () => {
@@ -1015,6 +1063,33 @@ function MapPreviewPanel({
         className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
         style={{ background: "var(--gold)" }}
       />
+
+      {/* ---------- Atmospheric image wash ----------
+          Existing project asset, low opacity, ivory veil on top so text and
+          map markers stay readable. Wash sits beneath the grid + dots. */}
+      {reaction.bgImage ? (
+        <>
+          <img
+            src={reaction.bgImage}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+            style={{
+              opacity: 0.62,
+              filter: "saturate(0.85) contrast(0.95)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 68%, transparent) 0%, color-mix(in oklab, var(--ivory) 50%, transparent) 50%, color-mix(in oklab, var(--ivory) 78%, transparent) 100%)",
+            }}
+          />
+        </>
+      ) : null}
+
 
       {/* Faint hairline grid — reads as a map surface, not a postcard. */}
       {showMap ? (
