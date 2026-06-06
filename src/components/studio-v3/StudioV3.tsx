@@ -235,6 +235,7 @@ export function StudioV3() {
       message: "Light, space, and a slower rhythm.\nThis is where it begins.",
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
       holdMs: 2600,
+      bgImage: FEELING_IMAGE[id],
     });
   };
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
