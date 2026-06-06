@@ -1,64 +1,134 @@
-# Homepage refinement — remove bridges, tighten copy, fix fonts
 
-## 1. Remove all "bridge whisper" transition phrases
+# Studio V3 — Minimal Implementation Plan
+*Planning only. No code. Reuse-first, copy/state-first, zero new infra.*
 
-The italic lead-ins between sections feel like template filler ("So — here is how a Portugal with us begins.", "And when none of them is quite it —", "Or begin with a day already loved by hundreds.", etc.). They read as narration the brand doesn't need.
+---
 
-**Action:** delete every `.bridge-whisper` instance on the homepage. The transition becomes the negative space between sections — gold rule + eyebrow do the work.
+## 1. Files likely to change
 
-Locations to clean:
-- `src/routes/index.tsx` — 5 bridge-whisper paragraphs (Hero→Trust, Studio intro, Signatures intro, Occasions intro, FAQ→Final CTA closer)
-- `src/components/home/ThreePathsSection.tsx` — 1 bridge-whisper above eyebrow
+Scoped strictly to `/studio-v3`:
 
-Keep the `.bridge-whisper` utility class in `styles.css` for now (other routes may use it), just stop using it on the homepage.
+- `src/components/studio-v3/types.ts` — add 1–2 state fields (`journeyTitle`, `composing` flag). No new component types.
+- `src/components/studio-v3/StudioV3.tsx` — orchestration only: insert a "composing" interstitial beat, pass title down, route storyboard handoff.
+- `src/components/studio-v3/MapAwakens.tsx` — swap "· added for you" italic for a gold dot + accessible whisper on hover/focus; add a small "hold + vignette" CSS state on the final stop (no new component).
+- `src/components/studio-v3/curation.ts` — add a pure `composeJourneyTitle(feeling, companions, rhythm, region)` helper. No data model changes.
+- `src/components/studio-v3/PhaseShell.tsx` — *optional, minimal*: accept a `mode="interstitial"` prop to render a centered whisper line. If it adds risk, do it inline in `StudioV3.tsx` instead and skip this edit.
+- `src/components/studio-v3/StudioV3.tsx` (storyboard block) — wrap existing `RevealInvestment` so it mounts collapsed with the `from €X` line visible. No changes to pricing logic.
 
-## 2. Tighten the section copy itself
+That's it. Six files maximum, most edits ≤ 30 lines.
 
-Right now the eyebrow + H2 + lede stack repeats the same idea three times in different words. Trim each to one clear thought.
+---
 
-**Four Doors section** (ThreePathsSection)
-- H2: "Four ways in. One conversation." → keep
-- Lede currently: "Whichever door you choose, the same hands shape what happens next — a curated day, a live build, a multi-day story, or an occasion staged with care."
-- Rewrite to one short line: *"Same hands. Four ways to begin."* — and let the four cards speak.
+## 2. Files that must NOT be touched
 
-**Signatures section**
-- Eyebrow "Signature experiences" → "Signature"
-- H2 "Signature days, ready when you are." → "Days already loved."
-- Drop the supporting lede entirely (the cards explain themselves).
+- `src/integrations/supabase/*` (client, server, middleware, types)
+- `src/components/builder/*`, `src/components/studio-v2/*`, `src/routes/studio-v2.tsx`, `src/routes/builder.tsx`
+- `src/data/signatureTours.ts`, `src/data/stopGeo.ts`, `src/data/regionStops.ts` (read-only)
+- `src/styles.css`, brand tokens, `tailwind` config
+- Any `src/lib/builder*`, `studioNarrative.functions.ts`, pricing logic
+- Hero, homepage, routes outside `/studio-v3`
+- `src/routeTree.gen.ts` (auto-generated)
+- All CI workflows, e2e specs, brand audits
+- `RevealInvestment` internals (only wrap/prop it from outside)
+- `BuilderMap` / `PremiumMap` internals (consume as-is)
 
-**Occasions section** — eyebrow + H2 only, no lede paragraph.
+---
 
-**Final CTA** — replace the stat closer ("…as 700+ travellers were this year") with a single quiet line.
+## 3. Smallest possible phases
 
-## 3. Font audit — kill the template feel
+**Phase 1 — Copy + state only (no logic, no new files)**
+- Replace "added for you" italic with a gold dot + `aria-label` / tooltip whisper.
+- Add `composeJourneyTitle()` (pure function) + render the title in the storyboard handoff header.
+- Tighten storyboard handoff copy.
+*Risk: near-zero. No motion, no data, no pricing.*
 
-The italic transitions look templated because they're set in Georgia (system serif). Georgia is fine inside a Montserrat headline as emphasis, but as a standalone italic paragraph on ivory it reads generic.
+**Phase 2 — One held silence (motion only)**
+- Insert ~1.2–1.4s "Composing your Portugal…" beat between Phase 3 (rhythm) and Phase 4 (map), reusing `PhaseShell`'s fade. Pure state machine flag. Honors `prefers-reduced-motion` (skip).
 
-**Rules going forward (homepage):**
-- Georgia italic appears **only inside H1/H2** as the teal emphasis span. Never as standalone body text.
-- All standalone supporting text = Inter, upright, `--charcoal-soft`.
-- Card CTAs ("Browse", "Open the Studio", etc.) — currently rendered in Georgia italic via `.he-pull`. Switch to Inter, 13px, uppercase tracking, semibold + arrow. Matches eyebrow voice and removes the second "serif italic" voice that was competing with the H2 italic.
-- The "or make it yours →" link under each Signature card — switch from Georgia italic to Inter, lowercase, regular, with the gold arrow. Quieter, less precious.
+**Phase 3 — Pricing as whisper (presentation only)**
+- Mount existing `RevealInvestment` in collapsed state, surface only `from €X per guest`. Expansion stays as-is. No pricing math touched.
 
-## 4. Replace `.he-pull` italic with a single CTA voice
+**Phase 4 — Map as climax (motion + reuse)**
+- Within `MapAwakens`, sequence existing pan/zoom to ease into each stop and hold on the last with a CSS vignette overlay. Reuses `BuilderMap`. If gold-line drawing isn't already trivial via the existing map primitive, **postpone** the line and ship only the pan/hold/vignette.
 
-Today the homepage has three "click here" voices:
-1. Big primary button (Inter, uppercase) — Hero, Signature
-2. `.he-pull` Georgia italic + arrow — ThreePaths cards
-3. Plain underline links
+**Phase 5 — Lead capture (conditional)**
+- Only if an existing leads/contacts table or save mechanism exists in Supabase. If not: **stop and report** — do not create a table.
 
-Collapse to two: primary button + a single quiet text link (Inter, 12.5px, uppercase tracking, gold arrow). Use the quiet link everywhere a card needs a soft CTA.
+---
 
-## 5. Verify after changes
+## 4. Highest visible impact / lowest risk
 
-- Scroll the homepage on mobile (393px) — sections should flow without italic interruptions
-- Confirm no Georgia italic appears outside H1/H2 emphasis spans
-- Confirm card CTAs all share the same Inter voice
-- Update memory: homepage italic policy → "Georgia italic ONLY inside H1/H2. No standalone italic paragraphs. No `.bridge-whisper` on homepage."
+**Phase 1.** The named journey ("A slow coast, for two.") is the single biggest perceived-ownership lift, costs almost nothing, and risks nothing. Ship it first and alone.
 
-## Technical notes
+---
 
-- Files touched: `src/routes/index.tsx`, `src/components/home/ThreePathsSection.tsx`, `mem://index.md`, `mem://design/homepage-emphasis.md`
-- No structural changes, no new components, no new sections
-- Reduced-motion behavior unchanged
-- No test snapshots should break; if `homepage-structure.spec.ts` asserts on the removed bridge phrases I'll update the spec to match
+## 5. What can be done with copy/state only
+
+- Journey title generation + render
+- "Added for you" → gold dot + whisper
+- Storyboard handoff copy tightening
+- Collapsed pricing presentation (prop-level)
+- Composing interstitial (state flag + existing shell)
+
+No logic, no schema, no APIs.
+
+---
+
+## 6. What requires real logic changes
+
+- Phase 4 map choreography (sequenced pan/zoom/hold) — touches `MapAwakens` motion code.
+- Any gold-line route drawing if not already supported by `BuilderMap` — **postpone** unless trivial.
+- Phase 5 lead save — requires confirming an existing table first.
+
+---
+
+## 7. Postpone
+
+- Gold polyline between stops (unless `BuilderMap` already exposes it)
+- Save / share / return-to-journey
+- Sound, haptics, video transitions
+- Any new analytics events beyond what already fires
+- Expanding choice grids, new phases, new questions
+- Lead capture until storage is confirmed
+
+---
+
+## 8. Credit-saving build strategy
+
+1. **One phase per turn.** Never bundle phases — each phase ships, is verified visually, then the next is scoped.
+2. **Copy/state before motion before logic.** Cheapest edits first; they often satisfy the brief on their own.
+3. **Edit, don't create.** No new components unless a phase literally cannot be expressed as props/state on an existing one.
+4. **No speculative refactors.** Leave `RevealInvestment`, `BuilderMap`, `curation.ts` scoring untouched in Phase 1.
+5. **Stop conditions written into each phase.** E.g. "if gold line isn't a one-prop change on BuilderMap, skip it." Prevents rabbit holes.
+6. **Reuse existing tokens, fonts, motion primitives.** Zero `styles.css` edits.
+7. **No CI/test churn.** Changes stay inside `/studio-v3`, which has no dedicated guard workflows — avoids triggering hero/homepage/typography regressions.
+8. **Verify with a single preview check per phase**, not a full audit pass.
+
+---
+
+## 9. Final single build prompt — Phase 1 only
+
+> **Phase 1 — Studio V3: name the journey + quiet authorship signal (copy/state only).**
+>
+> Scope strictly to these files. No new components. No new files. No schema. No pricing changes. No motion changes. No map changes.
+>
+> 1. **`src/components/studio-v3/curation.ts`** — add a pure helper `composeJourneyTitle({ feeling, companions, rhythm, region })` returning a short sentence-case title like *"A slow coast, for two."* Use a small lookup table keyed by `feeling` for the noun phrase, by `companions` for the suffix, by `rhythm` for the adjective. Sentence case, ends with a period, ≤ 38 chars. No external calls, no AI, no randomness — deterministic.
+>
+> 2. **`src/components/studio-v3/types.ts`** — add `journeyTitle: string | null` to `StudioV3State` and `INITIAL_STATE`.
+>
+> 3. **`src/components/studio-v3/StudioV3.tsx`** — when advancing from `map` → `storyboard`, compute the title via the helper (using the resolved tour's `region`) and store it in state. In `StoryboardHandoff`, render the title above the existing `{region} is waiting.` headline as a Georgia-italic teal line with the existing eyebrow spacing. No other changes.
+>
+> 4. **`src/components/studio-v3/MapAwakens.tsx`** — replace the existing `"· added for you"` italic span with a single 6px gold dot (`var(--gold)`), `aria-label="Chosen for the way you travel"`, and a `title` tooltip with the same whisper. Keep layout, no motion changes.
+>
+> Constraints:
+> - Reuse existing tokens (`--gold`, `--teal`, `--charcoal`, `--font-serif`, `--font-display`).
+> - No new dependencies. No new files. No `styles.css` edits.
+> - Honor `prefers-reduced-motion` (nothing new animated here, but verify nothing regresses).
+> - Mobile-first; 44×44 touch targets unchanged; 4.5:1 contrast maintained.
+> - Do not touch `RevealInvestment`, `BuilderMap`, pricing, or any file outside `src/components/studio-v3/`.
+>
+> Verify by loading `/studio-v3` in the mobile preview and walking through Feeling → Who → Rhythm → Map → Storyboard. Confirm the title renders, the gold dot replaces the italic, and no other behavior changed.
+
+---
+
+**Net effect of this plan:** 4 phases shippable in ≤ 4 turns, ~6 files touched total, zero new infra, zero risk to production routes, and the highest-emotion change (named journey) lands in Phase 1.
