@@ -1084,7 +1084,7 @@ function MapPreviewPanel({
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 55%, transparent) 0%, color-mix(in oklab, var(--ivory) 40%, transparent) 45%, color-mix(in oklab, var(--charcoal) 30%, transparent) 100%)",
+                "linear-gradient(180deg, color-mix(in oklab, var(--ivory) 68%, transparent) 0%, color-mix(in oklab, var(--ivory) 50%, transparent) 50%, color-mix(in oklab, var(--ivory) 78%, transparent) 100%)",
             }}
           />
         </>
