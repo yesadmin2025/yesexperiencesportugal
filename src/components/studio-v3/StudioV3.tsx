@@ -78,7 +78,16 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  * has to click through it. It exists to break the "form-feeling" by
  * acknowledging each choice before the next question appears.
  */
+type ReactionKind =
+  | "feeling"
+  | "pickup"
+  | "interests"
+  | "considerations"
+  | "investment";
+
 type Reaction = {
+  /** Which of the 5 priority beats — drives the postcard visual. */
+  kind: ReactionKind;
   eyebrow: string;
   /** Message body. Use "\n" to render a second line for poetic pacing. */
   message: string;
@@ -90,9 +99,15 @@ type Reaction = {
   chipsLabel?: string;
   /** Optional trailing line under the chips (e.g. "and more to refine"). */
   chipsTail?: string;
+  /** Origin label for the pickup postcard (e.g. "Lisbon"). */
+  originLabel?: string;
+  /** Quiet caption rendered inside the postcard (varies per kind). */
+  postcardCaption?: string;
+  /** Quiet line rendered under the postcard, bridging into the next phase. */
+  postcardSubline?: string;
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
-  /** How long the beat holds before auto-dissolving. Capped at 2100ms. */
+  /** How long the beat holds before auto-dissolving. Capped at 3400ms. */
   holdMs?: number;
 };
 
@@ -136,7 +151,7 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
-    const hold = Math.min(r.holdMs ?? 1600, 2100);
+    const hold = Math.min(r.holdMs ?? 2600, 3400);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -168,23 +183,30 @@ export function StudioV3() {
 
   // Strong reaction beats live only on: Feeling, Pickup, Interests,
   // Considerations, Investment. The other steps get quiet auto-advance.
-  const onFeeling = (id: Feeling) =>
+  const onFeeling = (id: Feeling) => {
+    const label = getOptionLabel(FEELINGS, id);
     pickAndAdvance("feeling", id, "who", {
+      kind: "feeling",
       eyebrow: "The feeling",
       message: "Light, space, and a slower rhythm.\nThis is where it begins.",
-      holdMs: 1600,
+      postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
+      holdMs: 2600,
     });
+  };
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
   const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
     pickAndAdvance("pickup", id, "guests", {
+      kind: "pickup",
       eyebrow: "The beginning",
       message: label
         ? `It starts here.\nFrom ${label}, the day begins to open.`
         : "It starts here.\nThe day begins to open.",
-      holdMs: 1600,
+      originLabel: label,
+      postcardSubline: "Route forming",
+      holdMs: 2800,
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
@@ -192,9 +214,12 @@ export function StudioV3() {
   const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
+      kind: "investment",
       eyebrow: "The shape",
       message: "No surprises.\nJust clarity before anything moves forward.",
-      holdMs: 1600,
+      postcardCaption: "Estimate before confirmation.",
+      postcardSubline: "Now the route can take shape.",
+      holdMs: 2600,
     });
 
 
@@ -233,24 +258,27 @@ export function StudioV3() {
     const chips = allChips.slice(0, 4);
     const tail = allChips.length > 4 ? "and more to refine" : undefined;
     playReaction({
+      kind: "interests",
       eyebrow: "The moments",
       message: "These are the moments that will stay.\nThe rest can stay quiet.",
       chips: chips.length > 0 ? chips : undefined,
       chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
       chipsTail: tail,
+      postcardSubline: "These will guide the route.",
       nextPhase: "rhythm",
-      holdMs: 1900,
+      holdMs: 3200,
     });
   };
   const continueFromConsiderations = () => {
     const isNone =
       state.considerations.length === 0 || state.considerations.includes("none");
     playReaction({
+      kind: "considerations",
       eyebrow: "The care",
       message: "It is not just where you go.\nIt is how the day fits you.",
-      detail: isNone ? "Nothing to mention" : null,
+      postcardCaption: isNone ? "Nothing to adjust." : "Care notes held.",
       nextPhase: "language",
-      holdMs: 1600,
+      holdMs: 2600,
     });
   };
 
@@ -439,31 +467,31 @@ export function StudioV3() {
         <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
       ) : null}
 
-      {/* Discreet help affordance. Hidden on phases that already show a
-          Continue CTA (interests, considerations) and on the final Map +
-          Storyboard, to keep Continue visually dominant and avoid overlap.
+      {/* Discreet help affordance. Softened to a near-whisper so it never
+          competes with the main experience. Hidden on phases that already
+          show a Continue CTA (interests, considerations), on the final Map +
+          Storyboard, and whenever a reaction beat is on screen.
           TODO: Later phase — connect Ask YES help link to official contact channel. */}
-      {state.phase !== "map" &&
+      {!reaction &&
+      state.phase !== "map" &&
       state.phase !== "interests" &&
       state.phase !== "considerations" &&
       state.phase !== "storyboard" ? (
         <div
-          className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-6"
+          className="pointer-events-none fixed inset-x-0 bottom-2 z-30 flex justify-center px-6"
         >
           <button
             type="button"
             disabled
             aria-label="Need help? Ask YES (coming soon)"
-            className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="pointer-events-auto inline-flex items-center gap-1.5 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.26em] font-semibold opacity-55 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
-              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
-              backdropFilter: "blur(4px)",
-              border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+              background: "transparent",
               borderRadius: "999px",
             }}
           >
-            <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}>—</span>
             Need help? Ask YES
           </button>
         </div>
@@ -792,7 +820,22 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 1600, 2100);
+  const hold = Math.min(reaction.holdMs ?? 2600, 3400);
+
+  // Per-kind soft "postcard" gradient using brand tokens only.
+  // No external imagery: warm scenic washes drawn from --ivory / --sand /
+  // --gold-soft / --teal-2. Acts as the visual layer behind/above the copy.
+  const postcardBg =
+    reaction.kind === "feeling"
+      ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 88%, transparent) 0%, color-mix(in oklab, var(--sand) 70%, transparent) 55%, color-mix(in oklab, var(--gold-soft, var(--gold)) 40%, transparent) 100%)"
+      : reaction.kind === "pickup"
+        ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 92%, transparent) 0%, color-mix(in oklab, var(--teal-2, var(--teal)) 18%, transparent) 100%)"
+        : reaction.kind === "interests"
+          ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 90%, transparent) 0%, color-mix(in oklab, var(--gold-soft, var(--gold)) 32%, transparent) 60%, color-mix(in oklab, var(--sand) 65%, transparent) 100%)"
+          : reaction.kind === "considerations"
+            ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 94%, transparent) 0%, color-mix(in oklab, var(--sand) 72%, transparent) 100%)"
+            : "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 92%, transparent) 0%, color-mix(in oklab, var(--teal-2, var(--teal)) 16%, transparent) 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 26%, transparent) 100%)";
+
   return (
     <button
       type="button"
@@ -806,91 +849,159 @@ function ReactionOverlay({
         animation: `studioV3ReactionFade ${hold}ms ease-out both`,
       }}
     >
-
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[22%] h-px w-12 -translate-x-1/2"
-        style={{ background: "var(--gold)" }}
-      />
-      <div className="max-w-[480px] text-center">
+      <div className="w-full max-w-[480px] text-center">
         <p
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
         >
           <span style={{ color: "var(--gold)" }}>—</span> {reaction.eyebrow}
         </p>
+
+        {/* ---------- Postcard visual ---------- */}
+        <div
+          aria-hidden
+          className="mt-5 mx-auto relative overflow-hidden"
+          style={{
+            width: "100%",
+            maxWidth: "420px",
+            aspectRatio: reaction.kind === "interests" ? "4 / 3" : "16 / 9",
+            background: postcardBg,
+            border: "1px solid color-mix(in oklab, var(--charcoal) 8%, transparent)",
+            borderRadius: "2px",
+            boxShadow: "0 14px 40px -22px rgba(46,46,46,0.28)",
+            animation: "studioV3RiseIn 600ms ease-out both",
+          }}
+        >
+          {/* Hairline gold rule, mirrors the editorial system. */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
+            style={{ background: "var(--gold)" }}
+          />
+
+          {reaction.kind === "pickup" ? (
+            // Origin · {label} ——— (line continues, no endpoint = "forming")
+            <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
+              <span
+                aria-hidden
+                className="inline-block shrink-0"
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: "999px",
+                  background: "var(--gold)",
+                  boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
+                }}
+              />
+              <span
+                className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+                style={{ color: "var(--charcoal)" }}
+              >
+                Origin · {reaction.originLabel ?? "your start"}
+              </span>
+              <span
+                aria-hidden
+                className="flex-1 h-px"
+                style={{
+                  background:
+                    "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 35%, transparent) 0%, color-mix(in oklab, var(--charcoal) 20%, transparent) 60%, transparent 100%)",
+                }}
+              />
+            </div>
+          ) : reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0 ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-5">
+              {reaction.chipsLabel ? (
+                <p
+                  className="text-[10px] uppercase tracking-[0.3em] font-semibold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  {reaction.chipsLabel}
+                </p>
+              ) : null}
+              <p
+                className="mt-3 text-[18px] sm:text-[20px] leading-[1.35] italic text-balance"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  color: "var(--charcoal)",
+                }}
+              >
+                {reaction.chips.join(" · ")}
+              </p>
+              {reaction.chipsTail ? (
+                <p
+                  className="mt-2 text-[12px] italic"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  }}
+                >
+                  {reaction.chipsTail}
+                </p>
+              ) : null}
+            </div>
+          ) : reaction.postcardCaption ? (
+            <div className="absolute inset-x-5 bottom-5">
+              <p
+                className="text-[11px] uppercase tracking-[0.24em] font-semibold text-left"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span> {reaction.postcardCaption}
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        {/* ---------- Story copy ---------- */}
         <p
-          className="mt-5 text-[20px] sm:text-[24px] leading-[1.3] italic whitespace-pre-line text-balance"
+          className="mt-6 text-[20px] sm:text-[24px] leading-[1.3] italic whitespace-pre-line text-balance"
           style={{
             fontFamily: "var(--font-serif)",
             color: "var(--charcoal)",
-            animation: "studioV3RiseIn 560ms ease-out both",
-            animationDelay: "80ms",
+            animation: "studioV3RiseIn 620ms ease-out both",
+            animationDelay: "160ms",
           }}
         >
           {reaction.message}
         </p>
+
+        {/* Optional bridge subline under the message — quiet, italic. */}
+        {reaction.postcardSubline ? (
+          <p
+            className="mt-4 text-[12.5px] italic"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 58%, transparent)",
+              animation: "studioV3RiseIn 640ms ease-out both",
+              animationDelay: "260ms",
+            }}
+          >
+            {reaction.postcardSubline}
+          </p>
+        ) : null}
+
         {reaction.detail ? (
           <p
             className="mt-3 text-[11px] uppercase tracking-[0.24em] font-semibold"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               animation: "studioV3RiseIn 540ms ease-out both",
-              animationDelay: "180ms",
+              animationDelay: "260ms",
             }}
           >
             <span style={{ color: "var(--gold)" }}>—</span> {reaction.detail}
           </p>
         ) : null}
-        {reaction.chips && reaction.chips.length > 0 ? (
-          <div
-            className="mt-6"
-            style={{
-              animation: "studioV3RiseIn 600ms ease-out both",
-              animationDelay: "220ms",
-            }}
-          >
-            {reaction.chipsLabel ? (
-              <p
-                className="text-[10px] uppercase tracking-[0.28em] font-semibold"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                <span style={{ color: "var(--gold)" }}>—</span> {reaction.chipsLabel}
-              </p>
-            ) : null}
-            <p
-              className="mt-2.5 text-[15px] leading-[1.5] italic"
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-              }}
-            >
-              {reaction.chips.join(" · ")}
-            </p>
-            {reaction.chipsTail ? (
-              <p
-                className="mt-2 text-[12px] italic"
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                }}
-              >
-                {reaction.chipsTail}
-              </p>
-            ) : null}
-          </div>
-        ) : null}
       </div>
+
       <style>{`
         @keyframes studioV3ReactionFade {
           0% { opacity: 0; }
-          12% { opacity: 1; }
-          86% { opacity: 1; }
+          8% { opacity: 1; }
+          85% { opacity: 1; }
           100% { opacity: 0; }
         }
       `}</style>
     </button>
-
   );
 }
 
