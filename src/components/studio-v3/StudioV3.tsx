@@ -224,6 +224,17 @@ function StoryboardHandoff({
       >
         <span style={{ color: "var(--gold)" }}>—</span> Your journey, held
       </p>
+      {state.journeyTitle ? (
+        <p
+          className="mt-4 text-[18px] sm:text-[20px] leading-[1.25] italic"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--teal)",
+          }}
+        >
+          {state.journeyTitle}
+        </p>
+      ) : null}
       <h2
         className="mt-5 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold"
         style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
