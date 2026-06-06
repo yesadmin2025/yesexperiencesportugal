@@ -706,24 +706,42 @@ function StoryboardHandoff({
         </ul>
       </section>
 
-      {/* ---------- Final CTA ---------- */}
-      {/* TODO: Later phase — connect this CTA to contact / lead handoff. */}
-      <div className="mt-12 text-center">
+      {/* ---------- Two future paths: direct or refined with YES ---------- */}
+      <div className="mt-12 flex flex-col items-center gap-4">
+        {/* Primary: direct reservation. */}
+        {/* TODO: Later phase — connect direct reservation flow. */}
         <button
           type="button"
           disabled
           className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-80 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
         >
-          Refine this journey with YES <ArrowRight size={14} aria-hidden />
+          Secure this journey directly <ArrowRight size={14} aria-hidden />
         </button>
+
+        {/* Secondary: human refinement with YES. */}
+        {/* TODO: Later phase — connect YES human refinement/contact flow. */}
+        <button
+          type="button"
+          disabled
+          className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{
+            color: "var(--charcoal)",
+            background: "transparent",
+            border: "1px solid color-mix(in oklab, var(--charcoal) 22%, transparent)",
+          }}
+        >
+          Refine with YES first
+        </button>
+
         <p
-          className="mt-3 text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+          className="mt-1 text-[10.5px] uppercase tracking-[0.24em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
         >
-          Contact and confirmation come next
+          Contact and confirmation come next.
         </p>
       </div>
+
     </div>
   );
 }
