@@ -19,6 +19,54 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
 import type { Companions, Feeling, Rhythm } from "./types";
 
+/* ---------- Journey title (deterministic, pure) ---------- */
+
+const TITLE_NOUN: Record<Feeling, string> = {
+  coastal: "coast",
+  "wine-food": "table",
+  hidden: "drift",
+  romance: "afternoon",
+  family: "day",
+  culture: "wander",
+  adventure: "horizon",
+  "slow-luxury": "afternoon",
+};
+
+const TITLE_ADJ: Record<Rhythm, string> = {
+  slow: "slow",
+  balanced: "quiet",
+  full: "rich",
+  immersive: "long",
+};
+
+const TITLE_SUFFIX: Record<Companions, string> = {
+  solo: "alone",
+  couple: "for two",
+  family: "together",
+  friends: "shared",
+  celebration: "to remember",
+  proposal: "for one yes",
+  corporate: "private",
+};
+
+/**
+ * composeJourneyTitle — short, sentence-case, deterministic title for the
+ * resolved journey. Region is accepted for future shaping but intentionally
+ * not concatenated to keep titles under ~38 chars and editorial in tone.
+ * Examples: "A slow coast, for two." · "A quiet table, together."
+ */
+export function composeJourneyTitle(input: {
+  feeling: Feeling;
+  companions: Companions;
+  rhythm: Rhythm;
+  region?: string | null;
+}): string {
+  const adj = TITLE_ADJ[input.rhythm];
+  const noun = TITLE_NOUN[input.feeling];
+  const suffix = TITLE_SUFFIX[input.companions];
+  return `A ${adj} ${noun}, ${suffix}.`;
+}
+
 const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   coastal: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
   "wine-food": ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo"],

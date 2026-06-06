@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
+import { composeJourneyTitle } from "./curation";
 import { findTour } from "@/data/signatureTours";
 import {
   COMPANIONS,
@@ -111,7 +112,14 @@ export function StudioV3() {
           rhythm={state.rhythm}
           onBack={() => back("rhythm")}
           onContinue={(tourId) => {
-            setState((s) => ({ ...s, tourId }));
+            const tour = findTour(tourId);
+            const title = composeJourneyTitle({
+              feeling: state.feeling!,
+              companions: state.companions!,
+              rhythm: state.rhythm!,
+              region: tour?.region ?? null,
+            });
+            setState((s) => ({ ...s, tourId, journeyTitle: title }));
             advance("storyboard");
           }}
         />
@@ -216,6 +224,17 @@ function StoryboardHandoff({
       >
         <span style={{ color: "var(--gold)" }}>—</span> Your journey, held
       </p>
+      {state.journeyTitle ? (
+        <p
+          className="mt-4 text-[18px] sm:text-[20px] leading-[1.25] italic"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--teal)",
+          }}
+        >
+          {state.journeyTitle}
+        </p>
+      ) : null}
       <h2
         className="mt-5 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold"
         style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}

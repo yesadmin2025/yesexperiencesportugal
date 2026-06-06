@@ -184,16 +184,12 @@ export function MapAwakens({ feeling, companions, rhythm, onBack, onContinue }: 
                 <span style={{ color: "var(--gold)" }}>{journey.tour.region}</span>
                 {current.borrowed ? (
                   <span
-                    className="ml-2 normal-case tracking-normal italic"
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
-                      fontSize: "11px",
-                      letterSpacing: 0,
-                    }}
-                  >
-                    · added for you
-                  </span>
+                    className="ml-2 inline-block align-middle h-1.5 w-1.5 rounded-full"
+                    style={{ background: "var(--gold)" }}
+                    role="img"
+                    aria-label="Chosen for the way you travel"
+                    title="Chosen for the way you travel"
+                  />
                 ) : null}
               </p>
 
