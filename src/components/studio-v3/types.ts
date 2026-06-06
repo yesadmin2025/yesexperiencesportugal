@@ -22,19 +22,90 @@ export type Companions =
 
 export type Rhythm = "slow" | "balanced" | "full" | "immersive";
 
+export type Occasion =
+  | "none"
+  | "proposal"
+  | "anniversary"
+  | "birthday"
+  | "honeymoon"
+  | "family-day"
+  | "corporate"
+  | "celebration";
+
+export type DateWindow =
+  | "exact"
+  | "this-week"
+  | "next-2-weeks"
+  | "this-month"
+  | "flexible"
+  | "exploring";
+
+export type Pickup =
+  | "lisbon"
+  | "lisbon-airport"
+  | "lisbon-cruise"
+  | "cascais-estoril"
+  | "sintra"
+  | "sesimbra-setubal-arrabida"
+  | "comporta-troia"
+  | "other";
+
+export type GuestBucket = "1" | "2" | "3-4" | "5-6" | "7-10" | "11+";
+
+export type Interest =
+  | "wine"
+  | "gastronomy"
+  | "nature"
+  | "coast"
+  | "heritage"
+  | "photography"
+  | "wellness"
+  | "local-life";
+
+export type Consideration =
+  | "none"
+  | "vegetarian"
+  | "vegan"
+  | "gluten-free"
+  | "allergies"
+  | "reduced-mobility"
+  | "child-seats"
+  | "avoid-long-walks"
+  | "quiet-pace";
+
+export type Language = "en" | "pt" | "es" | "fr" | "other";
+
+export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
+
 export type StudioV3Phase =
   | "feeling"
   | "who"
+  | "occasion"
+  | "date"
+  | "pickup"
+  | "guests"
+  | "interests"
   | "rhythm"
+  | "considerations"
+  | "language"
+  | "investment"
   | "map"
-  | "storyboard"; // placeholder for upcoming Phase 5+
+  | "storyboard";
 
 export interface StudioV3State {
   phase: StudioV3Phase;
   feeling: Feeling | null;
   companions: Companions | null;
+  occasion: Occasion | null;
+  dateWindow: DateWindow | null;
+  pickup: Pickup | null;
+  guests: GuestBucket | null;
+  interests: Interest[];
   rhythm: Rhythm | null;
-  /** Resolved Signature tour id once Phase 4 completes. */
+  considerations: Consideration[];
+  language: Language | null;
+  investment: InvestmentTier | null;
+  /** Resolved Signature tour id once Phase 4 (map) completes. */
   tourId: string | null;
   /** Deterministic editorial title composed once map → storyboard. */
   journeyTitle: string | null;
@@ -45,7 +116,15 @@ export const INITIAL_STATE: StudioV3State = {
   phase: "feeling",
   feeling: null,
   companions: null,
+  occasion: null,
+  dateWindow: null,
+  pickup: null,
+  guests: null,
+  interests: [],
   rhythm: null,
+  considerations: [],
+  language: null,
+  investment: null,
   tourId: null,
   journeyTitle: null,
 };
@@ -83,4 +162,82 @@ export const RHYTHMS: ChoiceOption<Rhythm>[] = [
   { id: "balanced", label: "Balanced", whisper: "Four stops. Room to breathe." },
   { id: "full", label: "Full", whisper: "Five stops. Rich and varied." },
   { id: "immersive", label: "Immersive", whisper: "Dawn to candlelight." },
+];
+
+export const OCCASIONS: ChoiceOption<Occasion>[] = [
+  { id: "none", label: "Just because", whisper: "No reason needed." },
+  { id: "proposal", label: "Proposal", whisper: "One question, beautifully framed." },
+  { id: "anniversary", label: "Anniversary", whisper: "A year worth marking." },
+  { id: "birthday", label: "Birthday", whisper: "A day that earns the candles." },
+  { id: "honeymoon", label: "Honeymoon", whisper: "First days, slowly lived." },
+  { id: "family-day", label: "Family day", whisper: "Everyone, gently together." },
+  { id: "corporate", label: "Corporate", whisper: "Considered, private, elegant." },
+  { id: "celebration", label: "Celebration", whisper: "Something worth raising a glass to." },
+];
+
+export const DATE_WINDOWS: ChoiceOption<DateWindow>[] = [
+  { id: "exact", label: "I have an exact date", whisper: "We'll confirm it together." },
+  { id: "this-week", label: "This week", whisper: "Soon, while the light is right." },
+  { id: "next-2-weeks", label: "Next two weeks", whisper: "Time enough to plan it well." },
+  { id: "this-month", label: "This month", whisper: "Somewhere in the next few weeks." },
+  { id: "flexible", label: "Flexible", whisper: "Pick the day the weather agrees." },
+  { id: "exploring", label: "Still exploring", whisper: "No rush — let the idea settle." },
+];
+
+export const PICKUPS: ChoiceOption<Pickup>[] = [
+  { id: "lisbon", label: "Lisbon", whisper: "From your hotel or address." },
+  { id: "lisbon-airport", label: "Lisbon airport", whisper: "Arrive, breathe, begin." },
+  { id: "lisbon-cruise", label: "Lisbon cruise terminal", whisper: "Step off, into the day." },
+  { id: "cascais-estoril", label: "Cascais / Estoril", whisper: "The Atlantic edge." },
+  { id: "sintra", label: "Sintra", whisper: "Among the palaces and pine." },
+  { id: "sesimbra-setubal-arrabida", label: "Sesimbra / Setúbal / Arrábida", whisper: "South of the river." },
+  { id: "comporta-troia", label: "Comporta / Tróia", whisper: "By request." },
+  { id: "other", label: "Other / I'll tell you later", whisper: "We'll work it out together." },
+];
+
+export const GUEST_BUCKETS: ChoiceOption<GuestBucket>[] = [
+  { id: "1", label: "Just me", whisper: "One quiet seat." },
+  { id: "2", label: "Two", whisper: "The pair of you." },
+  { id: "3-4", label: "Three or four", whisper: "A small, close circle." },
+  { id: "5-6", label: "Five or six", whisper: "A gathered table." },
+  { id: "7-10", label: "Seven to ten", whisper: "A larger group, still intimate." },
+  { id: "11+", label: "Eleven or more", whisper: "We'll plan it as a private event." },
+];
+
+export const INTERESTS: ChoiceOption<Interest>[] = [
+  { id: "wine", label: "Wine", whisper: "Cellars, glasses, slow tastings." },
+  { id: "gastronomy", label: "Gastronomy", whisper: "Long lunches, real cooking." },
+  { id: "nature", label: "Nature", whisper: "Trails, hills, open sky." },
+  { id: "coast", label: "Coast", whisper: "Cliffs, coves, salt air." },
+  { id: "heritage", label: "Heritage", whisper: "Stones, stories, centuries." },
+  { id: "photography", label: "Photography", whisper: "Light worth chasing." },
+  { id: "wellness", label: "Wellness", whisper: "Quiet body, quiet mind." },
+  { id: "local-life", label: "Local life", whisper: "Markets, makers, neighbours." },
+];
+
+export const CONSIDERATIONS: ChoiceOption<Consideration>[] = [
+  { id: "none", label: "Nothing to mention", whisper: "All good — let's go." },
+  { id: "vegetarian", label: "Vegetarian", whisper: "Vegetables, beautifully done." },
+  { id: "vegan", label: "Vegan", whisper: "Fully plant-based menus." },
+  { id: "gluten-free", label: "Gluten-free", whisper: "Bread and pasta adapted." },
+  { id: "allergies", label: "Allergies", whisper: "We'll confirm the details with you." },
+  { id: "reduced-mobility", label: "Reduced mobility", whisper: "We'll choose easy ground." },
+  { id: "child-seats", label: "Child seats", whisper: "We'll bring what's needed." },
+  { id: "avoid-long-walks", label: "Avoid long walks", whisper: "Shorter strolls, more stops." },
+  { id: "quiet-pace", label: "Quiet pace", whisper: "Fewer transitions, more dwelling." },
+];
+
+export const LANGUAGES: ChoiceOption<Language>[] = [
+  { id: "en", label: "English", whisper: "Hosted in English." },
+  { id: "pt", label: "Portuguese", whisper: "Hosted in Portuguese." },
+  { id: "es", label: "Spanish", whisper: "Hosted in Spanish." },
+  { id: "fr", label: "French", whisper: "Hosted in French." },
+  { id: "other", label: "Other", whisper: "Tell us — we'll do our best." },
+];
+
+export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
+  { id: "considered", label: "Considered", whisper: "Beautifully done, gently scaled." },
+  { id: "elevated", label: "Elevated", whisper: "A step further, in every detail." },
+  { id: "bespoke", label: "Bespoke", whisper: "No ceiling, every choice yours." },
+  { id: "open", label: "Open to suggestions", whisper: "Show us what's possible." },
 ];
