@@ -820,11 +820,11 @@ function ReactionOverlay({
           <span style={{ color: "var(--gold)" }}>—</span> {reaction.eyebrow}
         </p>
         <p
-          className="mt-5 text-[20px] sm:text-[24px] leading-[1.25] italic"
+          className="mt-5 text-[20px] sm:text-[24px] leading-[1.3] italic whitespace-pre-line text-balance"
           style={{
             fontFamily: "var(--font-serif)",
             color: "var(--charcoal)",
-            animation: "studioV3RiseIn 520ms ease-out both",
+            animation: "studioV3RiseIn 560ms ease-out both",
             animationDelay: "80ms",
           }}
         >
@@ -843,38 +843,49 @@ function ReactionOverlay({
           </p>
         ) : null}
         {reaction.chips && reaction.chips.length > 0 ? (
-          <ul
-            className="mt-5 flex flex-wrap justify-center gap-2"
+          <div
+            className="mt-6"
             style={{
               animation: "studioV3RiseIn 600ms ease-out both",
               animationDelay: "220ms",
             }}
           >
-            {reaction.chips.map((chip) => (
-              <li
-                key={chip}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold"
+            {reaction.chipsLabel ? (
+              <p
+                className="text-[10px] uppercase tracking-[0.28em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span> {reaction.chipsLabel}
+              </p>
+            ) : null}
+            <p
+              className="mt-2.5 text-[15px] leading-[1.5] italic"
+              style={{
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+              }}
+            >
+              {reaction.chips.join(" · ")}
+            </p>
+            {reaction.chipsTail ? (
+              <p
+                className="mt-2 text-[12px] italic"
                 style={{
-                  background: "var(--ivory)",
-                  color: "var(--charcoal)",
-                  border: "1px solid color-mix(in oklab, var(--charcoal) 14%, transparent)",
-                  boxShadow: "0 8px 18px -14px rgba(46,46,46,0.22)",
+                  fontFamily: "var(--font-serif)",
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                 }}
               >
-                <span aria-hidden style={{ color: "var(--gold)" }}>
-                  ●
-                </span>
-                {chip}
-              </li>
-            ))}
-          </ul>
+                {reaction.chipsTail}
+              </p>
+            ) : null}
+          </div>
         ) : null}
       </div>
       <style>{`
         @keyframes studioV3ReactionFade {
           0% { opacity: 0; }
-          15% { opacity: 1; }
-          80% { opacity: 1; }
+          12% { opacity: 1; }
+          86% { opacity: 1; }
           100% { opacity: 0; }
         }
       `}</style>
