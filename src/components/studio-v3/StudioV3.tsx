@@ -78,7 +78,16 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  * has to click through it. It exists to break the "form-feeling" by
  * acknowledging each choice before the next question appears.
  */
+type ReactionKind =
+  | "feeling"
+  | "pickup"
+  | "interests"
+  | "considerations"
+  | "investment";
+
 type Reaction = {
+  /** Which of the 5 priority beats — drives the postcard visual. */
+  kind: ReactionKind;
   eyebrow: string;
   /** Message body. Use "\n" to render a second line for poetic pacing. */
   message: string;
@@ -90,9 +99,15 @@ type Reaction = {
   chipsLabel?: string;
   /** Optional trailing line under the chips (e.g. "and more to refine"). */
   chipsTail?: string;
+  /** Origin label for the pickup postcard (e.g. "Lisbon"). */
+  originLabel?: string;
+  /** Quiet caption rendered inside the postcard (varies per kind). */
+  postcardCaption?: string;
+  /** Quiet line rendered under the postcard, bridging into the next phase. */
+  postcardSubline?: string;
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
-  /** How long the beat holds before auto-dissolving. Capped at 2100ms. */
+  /** How long the beat holds before auto-dissolving. Capped at 3400ms. */
   holdMs?: number;
 };
 
