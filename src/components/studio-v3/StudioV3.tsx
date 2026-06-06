@@ -112,7 +112,14 @@ export function StudioV3() {
           rhythm={state.rhythm}
           onBack={() => back("rhythm")}
           onContinue={(tourId) => {
-            setState((s) => ({ ...s, tourId }));
+            const tour = findTour(tourId);
+            const title = composeJourneyTitle({
+              feeling: state.feeling!,
+              companions: state.companions!,
+              rhythm: state.rhythm!,
+              region: tour?.region ?? null,
+            });
+            setState((s) => ({ ...s, tourId, journeyTitle: title }));
             advance("storyboard");
           }}
         />
