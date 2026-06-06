@@ -82,6 +82,7 @@ type ReactionKind =
   | "feeling"
   | "pickup"
   | "interests"
+  | "rhythm"
   | "considerations"
   | "investment";
 
@@ -210,7 +211,33 @@ export function StudioV3() {
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
-  const onRhythm = (id: Rhythm) => pickAndAdvance("rhythm", id, "considerations");
+  const onRhythm = (id: Rhythm) => {
+    const hint =
+      id === "slow"
+        ? "Fewer stops. More time in place."
+        : id === "balanced"
+          ? "A natural rhythm between movement and pause."
+          : id === "full"
+            ? "More discovery, still shaped into one realistic day."
+            : "A fuller arc, refined carefully.";
+    const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
+    pickAndAdvance("rhythm", id, "considerations", {
+      kind: "rhythm",
+      eyebrow: "The rhythm",
+      message: hint,
+      originLabel: pickupLabel ?? undefined,
+      postcardCaption:
+        id === "slow"
+          ? "Slow"
+          : id === "balanced"
+            ? "Balanced"
+            : id === "full"
+              ? "Full"
+              : "Immersive",
+      postcardSubline: "The route keeps forming.",
+      holdMs: 1600,
+    });
+  };
   const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
@@ -857,99 +884,9 @@ function ReactionOverlay({
           <span style={{ color: "var(--gold)" }}>—</span> {reaction.eyebrow}
         </p>
 
-        {/* ---------- Postcard visual ---------- */}
-        <div
-          aria-hidden
-          className="mt-5 mx-auto relative overflow-hidden"
-          style={{
-            width: "100%",
-            maxWidth: "420px",
-            aspectRatio: reaction.kind === "interests" ? "4 / 3" : "16 / 9",
-            background: postcardBg,
-            border: "1px solid color-mix(in oklab, var(--charcoal) 8%, transparent)",
-            borderRadius: "2px",
-            boxShadow: "0 14px 40px -22px rgba(46,46,46,0.28)",
-            animation: "studioV3RiseIn 600ms ease-out both",
-          }}
-        >
-          {/* Hairline gold rule, mirrors the editorial system. */}
-          <div
-            aria-hidden
-            className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
-            style={{ background: "var(--gold)" }}
-          />
+        {/* ---------- Map preview panel ---------- */}
+        <MapPreviewPanel reaction={reaction} fallbackBg={postcardBg} />
 
-          {reaction.kind === "pickup" ? (
-            // Origin · {label} ——— (line continues, no endpoint = "forming")
-            <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
-              <span
-                aria-hidden
-                className="inline-block shrink-0"
-                style={{
-                  width: 9,
-                  height: 9,
-                  borderRadius: "999px",
-                  background: "var(--gold)",
-                  boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
-                }}
-              />
-              <span
-                className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
-                style={{ color: "var(--charcoal)" }}
-              >
-                Origin · {reaction.originLabel ?? "your start"}
-              </span>
-              <span
-                aria-hidden
-                className="flex-1 h-px"
-                style={{
-                  background:
-                    "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 35%, transparent) 0%, color-mix(in oklab, var(--charcoal) 20%, transparent) 60%, transparent 100%)",
-                }}
-              />
-            </div>
-          ) : reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0 ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-5">
-              {reaction.chipsLabel ? (
-                <p
-                  className="text-[10px] uppercase tracking-[0.3em] font-semibold"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                >
-                  {reaction.chipsLabel}
-                </p>
-              ) : null}
-              <p
-                className="mt-3 text-[18px] sm:text-[20px] leading-[1.35] italic text-balance"
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  color: "var(--charcoal)",
-                }}
-              >
-                {reaction.chips.join(" · ")}
-              </p>
-              {reaction.chipsTail ? (
-                <p
-                  className="mt-2 text-[12px] italic"
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                  }}
-                >
-                  {reaction.chipsTail}
-                </p>
-              ) : null}
-            </div>
-          ) : reaction.postcardCaption ? (
-            <div className="absolute inset-x-5 bottom-5">
-              <p
-                className="text-[11px] uppercase tracking-[0.24em] font-semibold text-left"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-              >
-                <span style={{ color: "var(--gold)" }}>—</span> {reaction.postcardCaption}
-              </p>
-            </div>
-          ) : null}
-        </div>
 
         {/* ---------- Story copy ---------- */}
         <p
@@ -1004,4 +941,301 @@ function ReactionOverlay({
     </button>
   );
 }
+
+/**
+ * MapPreviewPanel — a lightweight, abstract map-like canvas used inside
+ * reaction beats to suggest the journey forming. No real geography, no
+ * external map library, no invented coordinates — just brand tokens, a
+ * faint hairline grid, an origin dot and thematic pins.
+ *
+ * TODO: Later phase — when the full Map is ready earlier in the flow,
+ * consider replacing this with a constrained preview of BuilderMap. For
+ * now BuilderMap internals must not change, so we render this locally.
+ */
+function MapPreviewPanel({
+  reaction,
+  fallbackBg,
+}: {
+  reaction: Reaction;
+  fallbackBg: string;
+}) {
+  const isInterests =
+    reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0;
+  const showMap =
+    reaction.kind === "pickup" ||
+    reaction.kind === "interests" ||
+    reaction.kind === "rhythm" ||
+    reaction.kind === "investment";
+
+  // Map-like ivory background with subtle teal/gold gradients.
+  const mapBg = showMap
+    ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 96%, transparent) 0%, color-mix(in oklab, var(--sand) 60%, transparent) 55%, color-mix(in oklab, var(--teal-2, var(--teal)) 10%, transparent) 100%)"
+    : fallbackBg;
+
+  // Pin positions for the interests preview. Stable, abstract — these are
+  // thematic pins, not confirmed stops, and they are deliberately spread
+  // so the canvas reads as a map, not a tag row.
+  const pinPositions: Array<{ x: number; y: number }> = [
+    { x: 22, y: 38 },
+    { x: 58, y: 28 },
+    { x: 72, y: 62 },
+    { x: 38, y: 70 },
+  ];
+
+  // Rhythm preview — number of soft stop dots along the route.
+  const rhythmDots =
+    reaction.kind === "rhythm"
+      ? reaction.postcardCaption === "Slow"
+        ? 2
+        : reaction.postcardCaption === "Balanced"
+          ? 3
+          : reaction.postcardCaption === "Full"
+            ? 5
+            : 4
+      : 0;
+
+  return (
+    <div
+      aria-hidden
+      className="mt-5 mx-auto relative overflow-hidden"
+      style={{
+        width: "100%",
+        maxWidth: "420px",
+        aspectRatio: isInterests ? "4 / 3" : "16 / 9",
+        background: mapBg,
+        border: "1px solid color-mix(in oklab, var(--charcoal) 8%, transparent)",
+        borderRadius: "2px",
+        boxShadow: "0 14px 40px -22px rgba(46,46,46,0.28)",
+        animation: "studioV3RiseIn 600ms ease-out both",
+      }}
+    >
+      {/* Hairline gold rule, mirrors the editorial system. */}
+      <div
+        aria-hidden
+        className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
+        style={{ background: "var(--gold)" }}
+      />
+
+      {/* Faint hairline grid — reads as a map surface, not a postcard. */}
+      {showMap ? (
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 6%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--charcoal) 6%, transparent) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+            opacity: 0.55,
+            maskImage:
+              "radial-gradient(ellipse at center, black 55%, transparent 95%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at center, black 55%, transparent 95%)",
+          }}
+        />
+      ) : null}
+
+      {/* ---------- Pickup: origin dot + route fading outward ---------- */}
+      {reaction.kind === "pickup" ? (
+        <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
+          <span
+            aria-hidden
+            className="inline-block shrink-0"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: "999px",
+              background: "var(--gold)",
+              boxShadow: "0 0 0 5px color-mix(in oklab, var(--gold) 18%, transparent)",
+            }}
+          />
+          <span
+            className="text-[11px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+            style={{ color: "var(--charcoal)" }}
+          >
+            Origin · {reaction.originLabel ?? "your start"}
+          </span>
+          <span
+            aria-hidden
+            className="flex-1 h-px"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 38%, transparent) 0%, color-mix(in oklab, var(--charcoal) 18%, transparent) 55%, transparent 100%)",
+            }}
+          />
+        </div>
+      ) : null}
+
+      {/* ---------- Interests: thematic pins on the map ---------- */}
+      {isInterests ? (
+        <>
+          {/* Origin anchor still present, top-left, so the map keeps its frame. */}
+          <span
+            aria-hidden
+            className="absolute"
+            style={{
+              left: "10%",
+              top: "82%",
+              width: 8,
+              height: 8,
+              borderRadius: "999px",
+              background: "var(--gold)",
+              boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 16%, transparent)",
+            }}
+          />
+          {reaction.chips!.slice(0, 4).map((label, i) => {
+            const p = pinPositions[i];
+            return (
+              <div
+                key={label}
+                className="absolute flex items-center gap-1.5"
+                style={{ left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%, -50%)" }}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block"
+                  style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: "999px",
+                    background: "color-mix(in oklab, var(--teal) 80%, transparent)",
+                    boxShadow:
+                      "0 0 0 3px color-mix(in oklab, var(--teal) 14%, transparent)",
+                  }}
+                />
+                <span
+                  className="text-[10px] uppercase tracking-[0.2em] font-semibold whitespace-nowrap"
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+                  }}
+                >
+                  {label}
+                </span>
+              </div>
+            );
+          })}
+          {reaction.chipsTail ? (
+            <p
+              className="absolute inset-x-0 bottom-2 text-center text-[10px] italic"
+              style={{
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              }}
+            >
+              {reaction.chipsTail}
+            </p>
+          ) : null}
+        </>
+      ) : null}
+
+      {/* ---------- Rhythm: origin + density-aware stop dots ---------- */}
+      {reaction.kind === "rhythm" ? (
+        <div className="absolute inset-x-5 bottom-5 flex items-center gap-2">
+          <span
+            aria-hidden
+            className="inline-block shrink-0"
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: "999px",
+              background: "var(--gold)",
+              boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
+            }}
+          />
+          <span
+            aria-hidden
+            className="h-px w-4"
+            style={{ background: "color-mix(in oklab, var(--charcoal) 30%, transparent)" }}
+          />
+          {Array.from({ length: rhythmDots }).map((_, i) => (
+            <span key={i} aria-hidden className="flex items-center gap-2">
+              <span
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: "999px",
+                  background: "color-mix(in oklab, var(--teal) 70%, transparent)",
+                  display: "inline-block",
+                }}
+              />
+              {i < rhythmDots - 1 ? (
+                <span
+                  aria-hidden
+                  className="h-px w-3"
+                  style={{
+                    background: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                  }}
+                />
+              ) : null}
+            </span>
+          ))}
+          <span
+            aria-hidden
+            className="flex-1 h-px"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 18%, transparent), transparent)",
+            }}
+          />
+          {reaction.postcardCaption ? (
+            <span
+              className="ml-2 text-[10px] uppercase tracking-[0.22em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+            >
+              {reaction.postcardCaption}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* ---------- Investment: bridge into the full map ---------- */}
+      {reaction.kind === "investment" ? (
+        <div className="absolute inset-x-5 bottom-5 flex items-center gap-3">
+          <span
+            aria-hidden
+            className="inline-block shrink-0"
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: "999px",
+              background: "var(--gold)",
+              boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
+            }}
+          />
+          <span
+            aria-hidden
+            className="flex-1 h-px"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 35%, transparent) 0%, color-mix(in oklab, var(--teal) 38%, transparent) 60%, color-mix(in oklab, var(--gold) 55%, transparent) 100%)",
+            }}
+          />
+          <span
+            aria-hidden
+            className="inline-block shrink-0"
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: "999px",
+              background: "color-mix(in oklab, var(--teal) 80%, transparent)",
+              boxShadow: "0 0 0 3px color-mix(in oklab, var(--teal) 14%, transparent)",
+            }}
+          />
+        </div>
+      ) : null}
+
+      {/* ---------- Fallback: quiet caption (feeling / considerations) ---------- */}
+      {!showMap && reaction.postcardCaption ? (
+        <div className="absolute inset-x-5 bottom-5">
+          <p
+            className="text-[11px] uppercase tracking-[0.24em] font-semibold text-left"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> {reaction.postcardCaption}
+          </p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 
