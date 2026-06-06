@@ -82,6 +82,7 @@ type ReactionKind =
   | "feeling"
   | "pickup"
   | "interests"
+  | "rhythm"
   | "considerations"
   | "investment";
 
