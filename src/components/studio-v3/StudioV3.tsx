@@ -232,6 +232,7 @@ export function StudioV3() {
       message: "These moments are becoming the heart of your journey.",
       chips: chips.length > 0 ? chips : undefined,
       nextPhase: "rhythm",
+      holdMs: 1900,
     });
   };
   const continueFromConsiderations = () => {
@@ -242,8 +243,10 @@ export function StudioV3() {
       message: "Good experiences are designed around real people.",
       detail: isNone ? "Nothing to mention" : null,
       nextPhase: "language",
+      holdMs: 1600,
     });
   };
+
 
   // Keyboard back — follows the full phase chain in reverse. Escape during
   // a reaction beat just dismisses the beat and reveals the phase beneath.
