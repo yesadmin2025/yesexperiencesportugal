@@ -291,9 +291,12 @@ export function StudioV3() {
           onContinue={(tourId) => {
             const tour = findTour(tourId);
             const title = composeJourneyTitle({
-              feeling: state.feeling!,
-              companions: state.companions!,
-              rhythm: state.rhythm!,
+              feeling: state.feeling,
+              companions: state.companions,
+              occasion: state.occasion,
+              pickup: state.pickup,
+              interests: state.interests,
+              rhythm: state.rhythm,
               region: tour?.region ?? null,
             });
             setState((s) => ({ ...s, tourId, journeyTitle: title }));
