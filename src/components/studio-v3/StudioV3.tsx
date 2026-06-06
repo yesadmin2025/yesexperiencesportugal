@@ -425,7 +425,10 @@ export function StudioV3() {
           <StoryboardHandoff state={state} onBack={() => back("map")} />
         </PhaseShell>
       ) : null}
+
+      {reaction ? <ReactionOverlay reaction={reaction} /> : null}
     </main>
+
   );
 }
 
