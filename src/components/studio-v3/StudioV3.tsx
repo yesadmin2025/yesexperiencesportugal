@@ -227,14 +227,17 @@ export function StudioV3() {
   // Continue handlers for the two multi-select screens — reaction fires
   // on Continue only, never on each toggle.
   const continueFromInterests = () => {
-    const chips = state.interests
+    const allChips = state.interests
       .map((id) => getOptionLabel(INTERESTS, id))
-      .filter((l): l is string => Boolean(l))
-      .slice(0, 4);
+      .filter((l): l is string => Boolean(l));
+    const chips = allChips.slice(0, 4);
+    const tail = allChips.length > 4 ? "and more to refine" : undefined;
     playReaction({
       eyebrow: "The moments",
-      message: "These moments are becoming the heart of your journey.",
+      message: "These are the moments that will stay.\nThe rest can stay quiet.",
       chips: chips.length > 0 ? chips : undefined,
+      chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
+      chipsTail: tail,
       nextPhase: "rhythm",
       holdMs: 1900,
     });
@@ -244,7 +247,7 @@ export function StudioV3() {
       state.considerations.length === 0 || state.considerations.includes("none");
     playReaction({
       eyebrow: "The care",
-      message: "Good experiences are designed around real people.",
+      message: "It is not just where you go.\nIt is how the day fits you.",
       detail: isNone ? "Nothing to mention" : null,
       nextPhase: "language",
       holdMs: 1600,
