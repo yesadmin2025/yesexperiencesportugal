@@ -211,7 +211,33 @@ export function StudioV3() {
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
-  const onRhythm = (id: Rhythm) => pickAndAdvance("rhythm", id, "considerations");
+  const onRhythm = (id: Rhythm) => {
+    const hint =
+      id === "slow"
+        ? "Fewer stops. More time in place."
+        : id === "balanced"
+          ? "A natural rhythm between movement and pause."
+          : id === "full"
+            ? "More discovery, still shaped into one realistic day."
+            : "A fuller arc, refined carefully.";
+    const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
+    pickAndAdvance("rhythm", id, "considerations", {
+      kind: "rhythm",
+      eyebrow: "The rhythm",
+      message: hint,
+      originLabel: pickupLabel ?? undefined,
+      postcardCaption:
+        id === "slow"
+          ? "Slow"
+          : id === "balanced"
+            ? "Balanced"
+            : id === "full"
+              ? "Full"
+              : "Immersive",
+      postcardSubline: "The route keeps forming.",
+      holdMs: 1600,
+    });
+  };
   const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
