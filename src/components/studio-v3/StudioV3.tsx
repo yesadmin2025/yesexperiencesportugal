@@ -183,23 +183,30 @@ export function StudioV3() {
 
   // Strong reaction beats live only on: Feeling, Pickup, Interests,
   // Considerations, Investment. The other steps get quiet auto-advance.
-  const onFeeling = (id: Feeling) =>
+  const onFeeling = (id: Feeling) => {
+    const label = getOptionLabel(FEELINGS, id);
     pickAndAdvance("feeling", id, "who", {
+      kind: "feeling",
       eyebrow: "The feeling",
       message: "Light, space, and a slower rhythm.\nThis is where it begins.",
-      holdMs: 1600,
+      postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
+      holdMs: 2600,
     });
+  };
   const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
   const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
     pickAndAdvance("pickup", id, "guests", {
+      kind: "pickup",
       eyebrow: "The beginning",
       message: label
         ? `It starts here.\nFrom ${label}, the day begins to open.`
         : "It starts here.\nThe day begins to open.",
-      holdMs: 1600,
+      originLabel: label,
+      postcardSubline: "Route forming",
+      holdMs: 2800,
     });
   };
   const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
@@ -207,9 +214,12 @@ export function StudioV3() {
   const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
   const onInvestment = (id: InvestmentTier) =>
     pickAndAdvance("investment", id, "map", {
+      kind: "investment",
       eyebrow: "The shape",
       message: "No surprises.\nJust clarity before anything moves forward.",
-      holdMs: 1600,
+      postcardCaption: "Estimate before confirmation.",
+      postcardSubline: "Now the route can take shape.",
+      holdMs: 2600,
     });
 
 
@@ -248,24 +258,27 @@ export function StudioV3() {
     const chips = allChips.slice(0, 4);
     const tail = allChips.length > 4 ? "and more to refine" : undefined;
     playReaction({
+      kind: "interests",
       eyebrow: "The moments",
       message: "These are the moments that will stay.\nThe rest can stay quiet.",
       chips: chips.length > 0 ? chips : undefined,
       chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
       chipsTail: tail,
+      postcardSubline: "These will guide the route.",
       nextPhase: "rhythm",
-      holdMs: 1900,
+      holdMs: 3200,
     });
   };
   const continueFromConsiderations = () => {
     const isNone =
       state.considerations.length === 0 || state.considerations.includes("none");
     playReaction({
+      kind: "considerations",
       eyebrow: "The care",
       message: "It is not just where you go.\nIt is how the day fits you.",
-      detail: isNone ? "Nothing to mention" : null,
+      postcardCaption: isNone ? "Nothing to adjust." : "Care notes held.",
       nextPhase: "language",
-      holdMs: 1600,
+      holdMs: 2600,
     });
   };
 
