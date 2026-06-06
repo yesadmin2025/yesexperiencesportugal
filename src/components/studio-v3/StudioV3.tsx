@@ -371,7 +371,7 @@ export function StudioV3() {
             onToggle={toggleConsideration}
           />
           <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
-          <ContinueCta disabled={false} onClick={() => advance("language")} label="Continue" />
+          <ContinueCta disabled={false} onClick={continueFromConsiderations} label="Continue" />
         </PhaseShell>
       ) : null}
 
