@@ -216,10 +216,10 @@ export function StudioV3() {
       id === "slow"
         ? "Fewer stops. More time in place."
         : id === "balanced"
-          ? "A natural rhythm between movement and pause."
+          ? "Movement and pause, kept in balance."
           : id === "full"
             ? "More discovery, still shaped into one realistic day."
-            : "A fuller arc, refined carefully.";
+            : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
     pickAndAdvance("rhythm", id, "considerations", {
       kind: "rhythm",
