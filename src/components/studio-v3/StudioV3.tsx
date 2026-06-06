@@ -341,6 +341,7 @@ export function StudioV3() {
       postcardSubline: "These will guide the route.",
       nextPhase: "rhythm",
       holdMs: 3200,
+      bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
     });
   };
   const continueFromConsiderations = () => {
