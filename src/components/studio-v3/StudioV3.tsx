@@ -336,9 +336,10 @@ export function StudioV3() {
           <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
           <ContinueCta
             disabled={state.interests.length < 1}
-            onClick={() => advance("rhythm")}
+            onClick={continueFromInterests}
             label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
           />
+
         </PhaseShell>
       ) : null}
 
