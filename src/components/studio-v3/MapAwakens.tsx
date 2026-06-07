@@ -309,7 +309,7 @@ export function MapAwakens({ feeling, companions, rhythm, onBack, onContinue }: 
               className="mt-2 text-[10px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
             >
-              Storyboard · arriving next
+              Suggested route · to be confirmed by YES
             </p>
           </div>
         </div>
