@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-07T01:00:35.680Z",
-  "filesScanned": 333,
+  "generatedAt": "2026-06-07T15:22:58.146Z",
+  "filesScanned": 335,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 219,
+    "total": 220,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 131
+    "mismatch": 132
   },
   "findings": [
     {
@@ -1400,6 +1400,15 @@
       "normalized": "#faf8f3",
       "snippet": "<span className=\"block font-display text-[18px] font-semibold leading-tight tracking-tight text-[var(--ivory,#FAF8F3)] sm:text-[20px]\">",
       "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
+      "line": 300,
+      "col": 38,
+      "raw": "#b3261e",
+      "normalized": "#b3261e",
+      "snippet": "style={{ color: \"#b3261e\" }}",
+      "status": "mismatch"
     },
     {
       "file": "src/lib/brand-tokens.test.ts",
