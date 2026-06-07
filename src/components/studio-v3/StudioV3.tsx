@@ -631,6 +631,19 @@ export function StudioV3() {
   const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
   const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
 
+  // Solo-aware occasion list: hide clearly group/couple-only options.
+  // Couple/family/corporate get a prioritised order but the full list stays
+  // available below — only Solo trims the list.
+  const orderedOccasions = state.companions === "solo"
+    ? OCCASIONS.filter((o) => o.id !== "proposal" && o.id !== "honeymoon" && o.id !== "family-day" && o.id !== "corporate")
+    : isCoupleish
+      ? prioritiseOptions(OCCASIONS, ["honeymoon", "proposal", "anniversary", "birthday", "none", "celebration"])
+      : isFamily
+        ? prioritiseOptions(OCCASIONS, ["family-day", "birthday", "celebration", "none"])
+        : isCorporate
+          ? prioritiseOptions(OCCASIONS, ["corporate", "celebration", "none"])
+          : [...OCCASIONS];
+
 
   // Living Journey Panel visibility — hide on the opening "feeling" pick
   // (don't compete with the first moment), on the final map/storyboard
