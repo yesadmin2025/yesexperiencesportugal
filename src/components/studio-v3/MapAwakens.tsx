@@ -113,16 +113,16 @@ export function MapAwakens({ feeling, companions, rhythm, onBack, onContinue }: 
 
       {/* Eyebrow */}
       <div
-        className="absolute left-1/2 top-5 -translate-x-1/2 z-20 text-[10px] uppercase tracking-[0.28em] font-semibold"
+        className="absolute left-1/2 top-5 -translate-x-1/2 z-20 text-[10px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
-        <span style={{ color: "var(--gold)" }}>—</span> The map awakens
+        <span style={{ color: "var(--gold)" }}>—</span> Suggested route · taking shape
       </div>
 
       {/* Map stage — top portion of the viewport. */}
       <div className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3">
         <div
-          className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/10 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.32)] transition-opacity duration-[700ms] ${
+          className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
             mounted ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -143,6 +143,46 @@ export function MapAwakens({ feeling, companions, rhythm, onBack, onContinue }: 
               locale="en"
             />
           </Suspense>
+
+          {/* Cinematic vignette — soft dark wash at top + bottom for a
+              premium, Homepage-Studio-Preview feel. Pins and route stay
+              fully legible because the centre stays untouched. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(46,46,46,0.32) 0%, rgba(46,46,46,0) 22%, rgba(46,46,46,0) 70%, rgba(46,46,46,0.38) 100%)",
+            }}
+          />
+
+          {/* Top-left chip — reinforces non-confirmed status */}
+          <div
+            className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+              borderRadius: "2px",
+            }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Suggested route
+          </div>
+
+          {/* Bottom-right footnote — clarifies status without alarming */}
+          {revealed >= journey.moments.length ? (
+            <div
+              className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+              style={{
+                background: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+                color: "var(--ivory)",
+                borderRadius: "2px",
+                animation: "studioV3RiseIn 520ms ease-out both",
+              }}
+            >
+              To be confirmed by YES
+            </div>
+          ) : null}
         </div>
       </div>
 
