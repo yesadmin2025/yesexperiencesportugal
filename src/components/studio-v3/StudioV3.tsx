@@ -568,6 +568,63 @@ export function StudioV3() {
 
   const step = stepOf(state.phase);
 
+  // -------- Adaptive option ordering (deterministic, derived from state) --------
+  const isCoupleish =
+    state.companions === "couple" ||
+    state.companions === "proposal" ||
+    state.occasion === "honeymoon" ||
+    state.occasion === "anniversary" ||
+    state.occasion === "proposal" ||
+    state.feeling === "romance";
+  const isFamily = state.companions === "family";
+  const isCorporate = state.companions === "corporate";
+
+  const interestsPriority: Interest[] =
+    state.feeling === "wine-food"
+      ? ["wine", "gastronomy", "local-life"]
+      : state.feeling === "coastal" || state.feeling === "adventure"
+        ? ["coast", "nature", "photography"]
+        : state.feeling === "slow-luxury"
+          ? ["wellness", "gastronomy", "wine"]
+          : state.feeling === "culture"
+            ? ["heritage", "local-life", "photography"]
+            : state.feeling === "family"
+              ? ["nature", "coast", "local-life"]
+              : [];
+
+  const rhythmPriority: Rhythm[] = isCoupleish || state.feeling === "slow-luxury"
+    ? ["slow", "balanced", "full", "immersive"]
+    : isFamily
+      ? ["balanced", "slow"]
+      : isCorporate
+        ? ["balanced", "full"]
+        : [];
+
+  const investmentPriority: InvestmentTier[] = isCoupleish
+    ? ["elevated", "bespoke", "considered", "open"]
+    : isCorporate
+      ? ["elevated", "bespoke"]
+      : [];
+
+  const considerationsPriority: Consideration[] = isFamily
+    ? ["quiet-pace", "avoid-long-walks", "child-seats"]
+    : state.companions === "celebration" || state.occasion === "celebration"
+      ? ["quiet-pace"]
+      : [];
+
+  const guestsPriority: GuestBucket[] = isCorporate
+    ? ["7-10", "11+", "5-6", "3-4"]
+    : isFamily
+      ? ["3-4", "5-6"]
+      : [];
+
+  const orderedInterests = prioritiseOptions(INTERESTS, interestsPriority);
+  const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
+  const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
+  const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
+  const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
+
+
   return (
     <main aria-label="YES Studio">
       {state.phase === "feeling" ? (
