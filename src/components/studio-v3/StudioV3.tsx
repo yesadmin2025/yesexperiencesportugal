@@ -1137,6 +1137,14 @@ function StoryboardHandoff({
         >
           Availability and final details are confirmed before your experience.
         </p>
+        {inferredGuestsNote(state) ? (
+          <p
+            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 48%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> {inferredGuestsNote(state)}
+          </p>
+        ) : null}
       </div>
 
       {/* ---------- 5. CTA stack ---------- */}
