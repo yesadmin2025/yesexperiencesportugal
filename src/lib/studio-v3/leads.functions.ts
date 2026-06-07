@@ -52,7 +52,7 @@ export const createStudioV3Lead = createServerFn({ method: "POST" })
         contact_email: data.contactEmail,
         contact_phone: data.contactPhone ?? null,
         contact_note: data.contactNote ?? null,
-        state: data.state,
+        state: data.state as never,
         status: "requested",
       })
       .select("id")
