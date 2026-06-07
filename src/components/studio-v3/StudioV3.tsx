@@ -146,6 +146,115 @@ function pickTeaser(phase: StudioV3Phase, seed: string): string {
   return arr[hash];
 }
 
+/* ---------- Adaptive intelligence helpers (deterministic, local) ---------- */
+
+/**
+ * contextualTeaser — replaces the generic per-phase teaser with one that
+ * reacts to what the traveller has already said. Falls back to the
+ * existing rotating teaser whenever no context-aware line applies.
+ */
+function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
+  const { feeling, companions, occasion } = state;
+  switch (phase) {
+    case "feeling": {
+      if (feeling === "wine-food") return "Next, the table starts to matter.";
+      if (feeling === "coastal" || feeling === "adventure")
+        return "Next, the route moves toward open air.";
+      if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
+      if (feeling === "romance") return "Next, we shape the beginning for two.";
+      if (feeling === "family") return "Next, we make the day easy for everyone.";
+      break;
+    }
+    case "who": {
+      if (companions === "couple" || companions === "proposal")
+        return "Next, we shape the beginning for two.";
+      if (companions === "family") return "Next, we make the day easy for everyone.";
+      if (companions === "corporate") return "Next, we shape the group flow.";
+      if (companions === "celebration") return "Next, we shape the celebration.";
+      if (companions === "solo") return "Next, we shape a quieter day.";
+      break;
+    }
+    case "occasion": {
+      if (occasion === "honeymoon" || occasion === "anniversary" || occasion === "proposal")
+        return "Next, we shape the beginning for two.";
+      break;
+    }
+    case "pickup": {
+      if (companions === "family") return "Next, we make the day easy for everyone.";
+      if (companions === "corporate") return "Next, we shape the group flow.";
+      break;
+    }
+    case "interests": {
+      if (feeling === "wine-food") return "Next, the table starts to matter.";
+      if (feeling === "coastal" || feeling === "adventure")
+        return "Next, the route moves toward open air.";
+      if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
+      break;
+    }
+    case "rhythm": {
+      if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
+      break;
+    }
+    default:
+      break;
+  }
+  return pickTeaser(phase, [feeling, companions, occasion, state.pickup].filter(Boolean).join(","));
+}
+
+/** Stable prioritised reorder: priority ids first (in order), then the rest. */
+function prioritiseOptions<T extends string>(
+  options: ReadonlyArray<ChoiceOption<T>>,
+  priorityIds: ReadonlyArray<T>,
+): ChoiceOption<T>[] {
+  if (priorityIds.length === 0) return [...options];
+  const map = new Map(options.map((o) => [o.id, o]));
+  const seen = new Set<T>();
+  const head: ChoiceOption<T>[] = [];
+  for (const id of priorityIds) {
+    const opt = map.get(id);
+    if (opt && !seen.has(id)) {
+      head.push(opt);
+      seen.add(id);
+    }
+  }
+  const tail = options.filter((o) => !seen.has(o.id));
+  return [...head, ...tail];
+}
+
+/** Per-feeling reaction copy — used in the feeling beat. */
+function feelingReactionMessage(id: Feeling): string {
+  switch (id) {
+    case "wine-food":
+      return "Long tables, local bottles, and time to stay.\nThe day begins around the table.";
+    case "romance":
+      return "Soft light, slower moves, and space for two.\nThe day begins quietly.";
+    case "family":
+      return "Easy timing, real laughter, and space for everyone.\nThe day begins gently.";
+    case "hidden":
+      return "Quiet roads, small doors, places that do not perform.\nThe route begins away from the obvious.";
+    case "adventure":
+      return "Open edges, movement, and air in the day.\nThe route begins with energy.";
+    case "slow-luxury":
+      return "Fewer stops, deeper moments, nothing rushed.\nThe route begins with space.";
+    case "coastal":
+      return "Atlantic light, salt on the wind, the cliffs ahead.\nThe route begins facing the sea.";
+    case "culture":
+      return "Old stones, long stories, footsteps that linger.\nThe day begins with depth.";
+    default:
+      return "Light, space, and a slower rhythm.\nThis is where it begins.";
+  }
+}
+
+/** Inferred-guests note shown subtly on the final reveal. */
+function inferredGuestsNote(state: StudioV3State): string | null {
+  if (!state.guestsInferred || !state.guests) return null;
+  if (state.guests === "1") return "Assumed for this draft: solo traveller";
+  if (state.guests === "2") return "Assumed for this draft: 2 guests";
+  return null;
+}
+
+
+
 /**
  * Reaction beat — a short cinematic punctuation shown between phases.
  * It overlays the next phase, holds for ~1.1s (or ~0.35s for
