@@ -157,8 +157,10 @@ function pickTeaser(phase: StudioV3Phase, seed: string): string {
  */
 function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
   const { feeling, companions, occasion } = state;
+  const isSolo = companions === "solo";
   switch (phase) {
     case "feeling": {
+      if (isSolo) return "Next, we shape a quieter day.";
       if (feeling === "wine-food") return "Next, the table starts to matter.";
       if (feeling === "coastal" || feeling === "adventure")
         return "Next, the route moves toward open air.";
@@ -168,25 +170,28 @@ function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
       break;
     }
     case "who": {
+      if (isSolo) return "Next, we shape a quieter day.";
       if (companions === "couple" || companions === "proposal")
         return "Next, we shape the beginning for two.";
       if (companions === "family") return "Next, we make the day easy for everyone.";
       if (companions === "corporate") return "Next, we shape the group flow.";
       if (companions === "celebration") return "Next, we shape the celebration.";
-      if (companions === "solo") return "Next, we shape a quieter day.";
       break;
     }
     case "occasion": {
+      if (isSolo) return "A private rhythm, built around you.";
       if (occasion === "honeymoon" || occasion === "anniversary" || occasion === "proposal")
         return "Next, we shape the beginning for two.";
       break;
     }
     case "pickup": {
+      if (isSolo) return "The route can stay light and personal.";
       if (companions === "family") return "Next, we make the day easy for everyone.";
       if (companions === "corporate") return "Next, we shape the group flow.";
       break;
     }
     case "interests": {
+      if (isSolo) return "The route can stay light and personal.";
       if (feeling === "wine-food") return "Next, the table starts to matter.";
       if (feeling === "coastal" || feeling === "adventure")
         return "Next, the route moves toward open air.";
@@ -194,6 +199,7 @@ function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
       break;
     }
     case "rhythm": {
+      if (isSolo) return "A private rhythm, built around you.";
       if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
       break;
     }
