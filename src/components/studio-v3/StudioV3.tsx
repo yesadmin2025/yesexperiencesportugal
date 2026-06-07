@@ -622,9 +622,22 @@ export function StudioV3() {
 
       {state.phase === "storyboard" ? (
         <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
-          <StoryboardHandoff state={state} onBack={() => back("map")} />
+          <StoryboardHandoff
+            state={state}
+            onBack={() => back("map")}
+            onSecure={() => openLeadSheet("book")}
+            onRefine={() => openLeadSheet("refine")}
+          />
         </PhaseShell>
       ) : null}
+
+      <LeadCaptureSheet
+        open={leadSheet.open}
+        intent={leadSheet.intent}
+        state={state}
+        onClose={closeLeadSheet}
+      />
+
 
       {reaction ? (
         <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
