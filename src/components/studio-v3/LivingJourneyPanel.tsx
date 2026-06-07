@@ -1,16 +1,24 @@
-// Studio V3 — Living Journey Panel (Phase 1, mobile hotfix).
+// Studio V3 — Living Journey Panel (Phase 1, mobile QA hotfix v2).
 //
-// A compact card that updates live as the user makes choices. Rendered in
-// normal document flow so it can NEVER overlap the active question, Back,
-// step label, CTA, or choice grid on mobile. Placeholder rows are hidden
-// until they carry real data, so the card stays small early in the flow.
+// Hardened to never overlap mobile content:
+//   - Hidden entirely on mobile (< md). Mobile already runs the full
+//     cinematic single-column flow; the panel was adding noise and
+//     occasionally overlapping the question / Back / step label /
+//     choice grid / Continue CTA.
+//   - On tablet/desktop, rendered as a compact inline card at the top
+//     of <main>, in normal document flow (never fixed, never sticky),
+//     so it can never overlap PhaseShell content.
 //
-// Rules (locked):
+// Other rules (locked):
 //   - Reads state ONLY through existing curation helpers.
 //   - Never invents stops: route + moments come from resolveStudioV3Route.
 //   - Soft fade only (≤220ms), brand tokens only, mobile-first.
-//   - Hidden on the opening "feeling" phase, on "map" / "storyboard"
-//     (own panels), and while a reaction beat plays.
+//   - Hidden on "feeling" / "map" / "storyboard" phases and while a
+//     reaction beat plays.
+//   - Placeholder rows are hidden until they carry real data, so the
+//     card stays small early in the flow. "Investment shown once you
+//     choose your tier" placeholder removed — investment row only
+//     appears once a tier is actually selected.
 
 import { useMemo } from "react";
 import {
@@ -55,30 +63,37 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     ],
   );
 
-  // DNA pills — at most 4, in stable order: feeling · companions · rhythm · top interest.
+  // DNA pills — max 3 in stable order: feeling · companions · rhythm.
+  // Interest pulled in only when room remains (we cap at 3 to stay compact).
   const dna = useMemo(() => {
     const pills: string[] = [];
     if (state.feeling) pills.push(getOptionLabel(FEELINGS, state.feeling));
     if (state.companions) pills.push(getOptionLabel(COMPANIONS, state.companions));
     if (state.rhythm) pills.push(getOptionLabel(RHYTHMS, state.rhythm));
-    if (state.interests && state.interests.length > 0) {
+    if (pills.length < 3 && state.interests && state.interests.length > 0) {
       pills.push(getOptionLabel(INTERESTS, state.interests[0]));
     }
-    return pills.slice(0, 4);
+    return pills.slice(0, 3);
   }, [state.feeling, state.companions, state.rhythm, state.interests]);
 
-  // Route + moments — only resolved once the three core picks are in.
+  // Route + moments — only resolved once the three core picks AND a pickup
+  // or at least one interest are in (avoids early placeholder noise).
+  const meaningfulRoute =
+    !!(state.feeling && state.companions && state.rhythm) &&
+    !!(state.pickup || (state.interests && state.interests.length > 0));
+
   const resolved = useMemo(() => {
-    if (!state.feeling || !state.companions || !state.rhythm) return null;
+    if (!meaningfulRoute) return null;
     return resolveStudioV3Route({
-      feeling: state.feeling,
-      companions: state.companions,
-      rhythm: state.rhythm,
+      feeling: state.feeling!,
+      companions: state.companions!,
+      rhythm: state.rhythm!,
       interests: state.interests,
       pickup: state.pickup,
       occasion: state.occasion,
     });
   }, [
+    meaningfulRoute,
     state.feeling,
     state.companions,
     state.rhythm,
@@ -93,14 +108,12 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
 
-  if (hidden) {
-    // Keep the node mounted-free on mobile so it can't ever overlap; the
-    // parent already keys the phase, so remount cost is negligible.
-    return null;
-  }
+  if (hidden) return null;
 
   return (
-    <div className="w-full flex justify-center px-3 pt-3">
+    // `hidden md:flex` — completely off the DOM-render path on mobile so
+    // it can never overlap the PhaseShell. Tablet/desktop only.
+    <div className="hidden md:flex w-full justify-center px-3 pt-3">
       <div
         className="w-full max-w-md rounded-[2px] border px-3 py-2 transition-opacity duration-[220ms] ease-out motion-reduce:transition-none"
         style={{
@@ -123,7 +136,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           {title}
         </h2>
 
-        {/* DNA pills */}
+        {/* DNA pills — only when at least one exists */}
         {dna.length > 0 ? (
           <ul className="mt-1.5 flex flex-wrap gap-1">
             {dna.map((label) => (
@@ -141,7 +154,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           </ul>
         ) : null}
 
-        {/* Route line — only when we actually have a resolved route */}
+        {/* Route — only when we actually have a meaningful resolved route */}
         {routeLine ? (
           <p
             className="mt-1.5 text-[10.5px] leading-tight truncate"
@@ -173,7 +186,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           </p>
         ) : null}
 
-        {/* Investment tier — label only, never €. Only after user picks. */}
+        {/* Investment tier — label only, never €. Only after user picks.
+            No "Investment shown once you choose your tier" placeholder. */}
         {investmentLabel ? (
           <p
             className="mt-1 text-[10.5px] leading-tight truncate"
