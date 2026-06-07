@@ -279,75 +279,191 @@ function scoreStop(stop: PoolStop, feeling: Feeling, companions: Companions): nu
   return score;
 }
 
+/* ---------- Pickup affinity (route-area containment) ---------- */
+//
+// IMPORTANT: a tour's `seed.region` is the operational PICKUP HUB
+// ("lisbon" or "alentejo"), NOT the route's destination area. Two tours
+// can share seed.region "lisbon" while landing in completely different
+// places (Sintra vs Évora vs Tróia vs Tomar–Coimbra). The route-area
+// truth lives in each tour's own `region` field (e.g. "Setúbal · Arrábida",
+// "Centro", "Alentejo", "Tróia · Comporta · Alentejo"). To avoid mixing
+// distant routes, the Studio MUST resolve ONE Signature tour and draw
+// ALL stops from that single tour's `stops` array — never borrow from
+// siblings, even if they share the same pickup hub.
+
+/** Tour ids that physically stay near the Lisbon metro area. */
+const LISBON_AREA_TOURS = new Set([
+  "arrabida-wine-allinclusive",
+  "arrabida-boat",
+  "sintra-cascais",
+  "wild-beaches-picnic",
+  "azeitao-cheese",
+  "tiles-workshop",
+]);
+
+/** Tour ids whose route is the Tróia / Comporta / Alentejo corridor. */
+const COMPORTA_TROIA_TOURS = new Set([
+  "troia-comporta",
+  "evora-alentejo",
+]);
+
+function pickupAffinity(tour: SignatureTour, pickup: Pickup | null): number {
+  if (!pickup || pickup === "other") return 0;
+  if (pickup === "comporta-troia") {
+    if (COMPORTA_TROIA_TOURS.has(tour.id)) return 4;
+    if (LISBON_AREA_TOURS.has(tour.id)) return -3;
+    return 0;
+  }
+  // All other pickup buckets are Lisbon-region origins.
+  if (LISBON_AREA_TOURS.has(tour.id)) return 2;
+  if (COMPORTA_TROIA_TOURS.has(tour.id)) return -1;
+  // Centro / Alentejo tours technically start from Lisbon but require
+  // long transfers — soft penalty so they only win on very strong fit.
+  return -2;
+}
+
+function interestAffinity(tour: SignatureTour, interests: ReadonlyArray<Interest>): number {
+  if (!interests.length) return 0;
+  const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
+    .map((s) => `${s.label} ${s.story}`)
+    .join(" ")}`.toLowerCase();
+  let score = 0;
+  for (const i of interests) {
+    const kws = INTEREST_TOUR_KEYWORDS[i];
+    if (!kws) continue;
+    for (const kw of kws) {
+      if (hay.includes(kw)) {
+        score += 1;
+        break; // one hit per interest is enough
+      }
+    }
+  }
+  return score;
+}
+
+const INTEREST_TOUR_KEYWORDS: Partial<Record<Interest, string[]>> = {
+  wine: ["wine", "winery", "tasting", "vineyard", "moscatel"],
+  gastronomy: ["lunch", "cheese", "table", "market", "gastronom", "pairings", "food"],
+  coast: ["coast", "beach", "boat", "cliff", "atlantic", "harbour", "cove"],
+  nature: ["nature", "trail", "garden", "hills", "natural park"],
+  heritage: ["palace", "convent", "templar", "tile", "azulejo", "heritage", "unesco", "monks", "old town", "ruins"],
+  photography: ["viewpoint", "sunset", "golden", "view", "dusk"],
+  wellness: ["slow", "quiet", "garden", "patio", "courtyard"],
+  "local-life": ["village", "market", "local", "workshop", "neighbour"],
+};
+
+/** Pick ONE Signature skeleton that best fits the answers AND keeps the
+ *  route geographically contained near the chosen pickup. Deterministic. */
+function pickPrimaryTour(
+  feeling: Feeling,
+  companions: Companions,
+  interests: ReadonlyArray<Interest>,
+  pickup: Pickup | null,
+): { tour: SignatureTour; alternates: SignatureTour[] } {
+  const candidateIds = FEELING_TO_TOURS[feeling] ?? [];
+  const candidates = candidateIds
+    .map((id) => signatureTours.find((t) => t.id === id))
+    .filter((t): t is SignatureTour => Boolean(t));
+
+  if (candidates.length === 0) {
+    const fallback =
+      signatureTours.find((t) => t.id === "arrabida-wine-allinclusive") ??
+      signatureTours[0];
+    return { tour: fallback, alternates: [] };
+  }
+
+  const scored = candidates
+    .map((tour, order) => {
+      let score = 0;
+      score += pickupAffinity(tour, pickup) * 1.2;
+      score += interestAffinity(tour, interests);
+      // Companions soft hints — proposal/celebration lean wine/heritage tours.
+      if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
+        score += 0.5;
+      }
+      return { tour, score, order };
+    })
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.order - b.order; // preserve FEELING_TO_TOURS ordering as tiebreak
+    });
+
+  return {
+    tour: scored[0].tour,
+    alternates: scored.slice(1, 3).map((s) => s.tour),
+  };
+}
+
+/**
+ * curateJourney — route-contained. Returns moments drawn ONLY from the
+ * single primary Signature tour's own `stops`. No cross-tour borrowing,
+ * no mixed-region routes. The map preview, MapAwakens stage and the
+ * Journey Card all consume this single source via resolveStudioV3Route.
+ */
 export function curateJourney(
   feeling: Feeling,
   companions: Companions,
   rhythm: Rhythm,
+  options?: {
+    interests?: ReadonlyArray<Interest>;
+    pickup?: Pickup | null;
+  },
 ): CuratedJourney {
-  const ids = FEELING_TO_TOURS[feeling] ?? [];
-  const tours = ids
-    .map((id) => signatureTours.find((t) => t.id === id))
-    .filter((t): t is SignatureTour => Boolean(t));
+  const interests = options?.interests ?? [];
+  const pickup = options?.pickup ?? null;
 
-  const primary =
-    tours[0] ??
-    signatureTours.find((t) => t.id === "arrabida-wine-allinclusive") ??
-    signatureTours[0];
-  const alternates = tours.slice(1, 3);
+  const { tour: primary, alternates } = pickPrimaryTour(
+    feeling,
+    companions,
+    interests,
+    pickup,
+  );
 
-  // Build the regional pool — all stops from tours sharing the same
-  // seed.region as the primary. Falls back to the primary alone if the
-  // region key is missing or no siblings exist.
-  const regionKey = primary.seed?.region;
-  const regionalTours = regionKey
-    ? signatureTours.filter((t) => t.seed?.region === regionKey)
-    : [primary];
+  // STRICT containment: pool = primary tour's own stops only.
+  const pool: PoolStop[] = primary.stops.map((s) => ({
+    fromTourId: primary.id,
+    label: s.label,
+    story: s.story,
+    image: s.image,
+    focal: s.focal,
+    imageTheme: s.imageTheme,
+    isBaseTour: true,
+  }));
 
-  const pool: PoolStop[] = [];
-  for (const t of regionalTours) {
-    for (const s of t.stops) {
-      pool.push({
-        fromTourId: t.id,
-        label: s.label,
-        story: s.story,
-        image: s.image,
-        focal: s.focal,
-        imageTheme: s.imageTheme,
-        isBaseTour: t.id === primary.id,
-      });
-    }
-  }
-
-  // Score + sort. Stable order: score desc, then base-tour first, then
-  // resolvable-coords first, then by original pool order.
+  // Score by feeling + companions + selected interests (refinement, not
+  // additional locations). Stops with resolvable coords are preferred so
+  // the map has something to draw.
   const scored = pool
     .map((s, i) => {
       const geo = lookupStop(s.label);
-      return {
-        stop: s,
-        score: scoreStop(s, feeling, companions),
-        hasGeo: Boolean(geo),
-        geo,
-        order: i,
-      };
+      let score = scoreStop(s, feeling, companions);
+      if (interests.length > 0) {
+        const hay = `${s.label} ${s.story}`.toLowerCase();
+        for (const interest of interests) {
+          const kws = INTEREST_TOUR_KEYWORDS[interest] ?? [];
+          for (const kw of kws) {
+            if (hay.includes(kw)) {
+              score += 0.5;
+              break;
+            }
+          }
+        }
+      }
+      return { stop: s, score, hasGeo: Boolean(geo), geo, order: i };
     })
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      if (a.stop.isBaseTour !== b.stop.isBaseTour) return a.stop.isBaseTour ? -1 : 1;
       if (a.hasGeo !== b.hasGeo) return a.hasGeo ? -1 : 1;
       return a.order - b.order;
     });
 
+  // Cap stops by rhythm but never exceed what the tour actually has.
   const target = Math.min(RHYTHM_STOP_COUNT[rhythm], scored.length);
 
-  // Anchor: first stop is the base tour's opening stop when present, so
-  // the day has a clear narrative arc rooted in a real Signature.
-  const anchor = scored.find(
-    (s) => s.stop.isBaseTour && s.stop.label === primary.stops[0]?.label,
-  );
+  // Anchor on the tour's opening stop so the narrative arc is intact.
+  const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
   const picks: typeof scored = [];
   const seenLabels = new Set<string>();
-
   if (anchor) {
     picks.push(anchor);
     seenLabels.add(anchor.stop.label.toLowerCase());
@@ -360,6 +476,15 @@ export function curateJourney(
     seenLabels.add(key);
   }
 
+  // Re-order picks to match the tour's natural stop order so the route
+  // reads as a believable progression on the map.
+  const tourOrder = new Map(primary.stops.map((s, i) => [s.label.toLowerCase(), i]));
+  picks.sort((a, b) => {
+    const ai = tourOrder.get(a.stop.label.toLowerCase()) ?? 999;
+    const bi = tourOrder.get(b.stop.label.toLowerCase()) ?? 999;
+    return ai - bi;
+  });
+
   const moments: CuratedMoment[] = picks.map((s, i) => ({
     index: i,
     label: s.stop.label,
@@ -369,7 +494,7 @@ export function curateJourney(
     lat: s.geo?.lat ?? null,
     lng: s.geo?.lng ?? null,
     fromTourId: s.stop.fromTourId,
-    borrowed: !s.stop.isBaseTour,
+    borrowed: false, // never borrowed under route containment
   }));
 
   const firstGeo = moments.find((m) => m.lat !== null && m.lng !== null);
@@ -379,6 +504,185 @@ export function curateJourney(
       : null;
 
   return { tour: primary, alternates, moments, center };
+}
+
+/* ---------- Single route-resolution source (used everywhere) ---------- */
+
+export type RouteConfidence = "high" | "medium" | "needs-human-refinement";
+
+export interface ResolvedRoutePoint {
+  /** 0-based order along the route. */
+  index: number;
+  /** Human-facing stop label as it appears in the Signature catalog. */
+  label: string;
+  /** Short editorial line, drawn from the same Signature stop. */
+  story: string;
+  /** Geo coordinates when resolvable; null = render label only, no pin. */
+  lat: number | null;
+  lng: number | null;
+}
+
+export interface ResolvedStudioV3Route {
+  /** INTERNAL only — id of the Signature skeleton chosen. Never shown. */
+  skeletonTourKey: string | null;
+  /** INTERNAL only — full Signature title for logging/debug. Never shown. */
+  skeletonTitleInternal: string | null;
+  /** Customer-facing area label (e.g. "Setúbal · Arrábida"). */
+  routeAreaLabel: string;
+  /** Customer-facing route sentence: "Origin → A · B · C → Origin". */
+  suggestedRouteLabel: string;
+  /** Ordered route points, max 4 main points, all from the same Signature. */
+  routePoints: ResolvedRoutePoint[];
+  /** Deterministic editorial title for the journey card. */
+  journeyTitle: string;
+  /** 2–3 short reasons grounded in the actual answers. */
+  whyItFits: string[];
+  /** Up to 2 personalized refinements (substitutions inside the area). */
+  refinements: string[];
+  /** Short copy line about what YES will confirm before booking. */
+  whatToConfirm: string;
+  /** Resolution confidence — drives the fallback messaging upstream. */
+  confidence: RouteConfidence;
+}
+
+/**
+ * resolveStudioV3Route — the SINGLE source of route truth for Studio V3.
+ *
+ * Progressive previews, the MapAwakens stage and the final Journey Card
+ * must all consume the object returned by this function. There must not
+ * be separate route logic anywhere else in Studio V3.
+ *
+ * Guarantees:
+ *  - Picks ONE Signature skeleton based on feeling + interests + pickup.
+ *  - All routePoints come from that Signature's own `stops` only.
+ *  - Never combines distant tours. Never invents stops or suppliers.
+ *  - Hidden skeleton title is never exposed (skeletonTitleInternal only).
+ *  - Falls back to a "Tailor-made by YES" object when nothing fits safely.
+ */
+export function resolveStudioV3Route(input: {
+  feeling: Feeling | null;
+  companions: Companions | null;
+  rhythm: Rhythm | null;
+  interests: ReadonlyArray<Interest>;
+  pickup: Pickup | null;
+  occasion?: Occasion | null;
+  considerations?: ReadonlyArray<string>;
+}): ResolvedStudioV3Route {
+  const { feeling, companions, rhythm, interests, pickup, occasion } = input;
+  const origin = pickupCityLabel(pickup);
+
+  // Fallback when we don't have enough to safely resolve a Signature.
+  if (!feeling || !companions || !rhythm) {
+    return {
+      skeletonTourKey: null,
+      skeletonTitleInternal: null,
+      routeAreaLabel: "Tailor-made by YES",
+      suggestedRouteLabel: "To be refined with YES",
+      routePoints: [],
+      journeyTitle: "Your private Portugal day",
+      whyItFits: [],
+      refinements: [],
+      whatToConfirm:
+        "Availability and final details are confirmed before your experience.",
+      confidence: "needs-human-refinement",
+    };
+  }
+
+  const journey = curateJourney(feeling, companions, rhythm, { interests, pickup });
+
+  // Hard cap at 4 main route points on the Journey Card (per brief).
+  const routePoints: ResolvedRoutePoint[] = journey.moments
+    .slice(0, 4)
+    .map((m, i) => ({
+      index: i,
+      label: m.label,
+      story: m.story,
+      lat: m.lat,
+      lng: m.lng,
+    }));
+
+  // Short route sentence, derived only from the same Signature's stops.
+  const shortLabels: string[] = [];
+  const seen = new Set<string>();
+  for (const p of routePoints) {
+    const short = p.label.split(/[—–-]/)[0].split(",")[0].trim();
+    const key = short.toLowerCase();
+    if (!short || seen.has(key)) continue;
+    seen.add(key);
+    shortLabels.push(short);
+    if (shortLabels.length >= 3) break;
+  }
+  const suggestedRouteLabel =
+    shortLabels.length > 0
+      ? `${origin} → ${shortLabels.join(" · ")} → ${origin}`
+      : `${origin} → your chosen region → ${origin}`;
+
+  const journeyTitle = composeJourneyTitle({
+    feeling,
+    companions,
+    occasion: occasion ?? null,
+    pickup,
+    interests,
+    rhythm,
+    region: journey.tour.region,
+  });
+
+  const whyItFits = composeJourneyReasons({
+    feeling,
+    companions,
+    rhythm,
+    interests,
+    pickup,
+    occasion: occasion ?? null,
+  });
+
+  const refinements = composePersonalizedMoments({
+    feeling,
+    rhythm,
+    interests,
+    considerations: input.considerations ?? [],
+  });
+
+  // If any selected interest has no match inside the chosen Signature
+  // area, add the safe note instead of pulling stops from other tours.
+  const tourHay = `${journey.tour.title} ${journey.tour.theme} ${journey.tour.stops
+    .map((s) => `${s.label} ${s.story}`)
+    .join(" ")}`.toLowerCase();
+  const unmatched = interests.filter((i) => {
+    const kws = INTEREST_TOUR_KEYWORDS[i] ?? [];
+    if (kws.length === 0) return false;
+    return !kws.some((kw) => tourHay.includes(kw));
+  });
+  if (unmatched.length > 0 && refinements.length < 2) {
+    refinements.push(
+      "Additional interests can be refined by YES without leaving the route area.",
+    );
+  }
+
+  // Confidence: high when we have ≥3 real geo points AND a matched
+  // pickup affinity; medium otherwise; refinement when we have 0 points.
+  const geoCount = routePoints.filter((p) => p.lat !== null && p.lng !== null).length;
+  const affinity = pickupAffinity(journey.tour, pickup);
+  const confidence: RouteConfidence =
+    routePoints.length === 0
+      ? "needs-human-refinement"
+      : geoCount >= 3 && affinity >= 2
+        ? "high"
+        : "medium";
+
+  return {
+    skeletonTourKey: journey.tour.id,
+    skeletonTitleInternal: journey.tour.title,
+    routeAreaLabel: journey.tour.region,
+    suggestedRouteLabel,
+    routePoints,
+    journeyTitle,
+    whyItFits,
+    refinements: refinements.slice(0, 2),
+    whatToConfirm:
+      "Availability and final details are confirmed before your experience.",
+    confidence,
+  };
 }
 
 /* ---------- Phase 1D: customer-facing journey draft helpers ---------- */
