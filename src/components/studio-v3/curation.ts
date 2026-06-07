@@ -380,3 +380,168 @@ export function curateJourney(
 
   return { tour: primary, alternates, moments, center };
 }
+
+/* ---------- Phase 1D: customer-facing journey draft helpers ---------- */
+/*
+ * These helpers turn the internal Signature skeleton into customer-facing
+ * draft language. The tour is used ONLY as a safe operational/geographic
+ * skeleton — its name is never surfaced. Personalization is by substitution,
+ * never by accumulation: at most 2 adaptations, never invented stops.
+ */
+
+/** Map a pickup id to a human "city" label safe to use in route text. */
+export function pickupCityLabel(pickup: Pickup | null | undefined): string {
+  switch (pickup) {
+    case "lisbon":
+    case "lisbon-airport":
+    case "lisbon-cruise":
+      return "Lisbon";
+    case "cascais-estoril":
+      return "Cascais";
+    case "sintra":
+      return "Sintra";
+    case "sesimbra-setubal-arrabida":
+      return "Setúbal";
+    case "comporta-troia":
+      return "Comporta";
+    default:
+      return "your chosen starting point";
+  }
+}
+
+/**
+ * composeJourneyReasons — 2–3 short, factual reasons grounded in the
+ * traveller's actual choices. No invented superlatives.
+ */
+export function composeJourneyReasons(input: {
+  feeling: Feeling | null;
+  companions: Companions | null;
+  rhythm: Rhythm | null;
+  interests: ReadonlyArray<Interest>;
+  pickup: Pickup | null;
+  occasion?: Occasion | null;
+}): string[] {
+  const reasons: string[] = [];
+
+  const themePool: Partial<Record<Interest, string>> = {
+    wine: "wine and tastings",
+    gastronomy: "table moments",
+    coast: "coastal beauty",
+    nature: "nature and open air",
+    heritage: "heritage and old streets",
+    photography: "viewpoints and golden hour",
+    wellness: "calmer, restorative moments",
+    "local-life": "real local life",
+  };
+  const themes = (input.interests ?? [])
+    .map((i) => themePool[i])
+    .filter((x): x is string => Boolean(x))
+    .slice(0, 2);
+  if (themes.length > 0) {
+    reasons.push(
+      themes.length === 1
+        ? `Built around ${themes[0]}, the way you said it should feel.`
+        : `Built around ${themes[0]} and ${themes[1]}, the way you said it should feel.`,
+    );
+  } else if (input.feeling) {
+    reasons.push("Built around the feeling you chose, not a fixed itinerary.");
+  }
+
+  if (input.rhythm) {
+    const pace =
+      input.rhythm === "slow"
+        ? "A slower rhythm, with room to linger."
+        : input.rhythm === "immersive"
+          ? "An unhurried, immersive arc — kept realistic for one day."
+          : input.rhythm === "full"
+            ? "More discovery, still shaped into one realistic day."
+            : "Movement and pause, kept in balance.";
+    reasons.push(pace);
+  }
+
+  const city = pickupCityLabel(input.pickup);
+  if (city && city !== "your chosen starting point") {
+    reasons.push(`Starts and ends near ${city}, no long transfers.`);
+  } else if (input.companions === "family") {
+    reasons.push("Shaped to feel easy for everyone travelling with you.");
+  } else if (input.companions === "couple" || input.occasion === "honeymoon" || input.occasion === "anniversary") {
+    reasons.push("Quieter pacing for the two of you.");
+  }
+
+  return reasons.slice(0, 3);
+}
+
+/**
+ * composePersonalizedMoments — at most 2 safe, same-region adaptations.
+ * No invented stops, no invented suppliers, no exact timings. These are
+ * the only customer-facing "changes" surfaced on the draft card.
+ */
+export function composePersonalizedMoments(input: {
+  feeling: Feeling | null;
+  rhythm: Rhythm | null;
+  interests: ReadonlyArray<Interest>;
+  considerations: ReadonlyArray<string>;
+}): string[] {
+  const out: string[] = [];
+
+  if (input.rhythm === "slow" || input.rhythm === "immersive") {
+    out.push("A slower rhythm with more time between stops.");
+  } else if (input.rhythm === "full") {
+    out.push("A slightly fuller arc, kept realistic for one day.");
+  }
+
+  const hasWine = input.interests.includes("wine");
+  const hasLocal = input.interests.includes("local-life");
+  const hasHeritage = input.interests.includes("heritage");
+  const hasCoast = input.interests.includes("coast");
+  const hasGastro = input.interests.includes("gastronomy");
+
+  if (hasLocal && hasWine) {
+    out.push("A local craft or village moment may replace one wine-heavy stop, subject to availability.");
+  } else if (hasHeritage && hasWine) {
+    out.push("A heritage moment may take the place of one tasting, subject to availability.");
+  } else if (hasGastro && !hasWine) {
+    out.push("A long table moment may anchor the day instead of a tasting stop.");
+  } else if (hasCoast && input.feeling !== "coastal") {
+    out.push("A coastal pause may be added, depending on the day's conditions.");
+  } else if (input.considerations && input.considerations.length > 0 && !input.considerations.includes("none")) {
+    out.push("Pacing and stops adjusted around the notes you shared.");
+  }
+
+  return out.slice(0, 2);
+}
+
+/**
+ * composeSuggestedRoute — ONE realistic same-region route as a string:
+ * "Origin → Stop · Stop · Stop → Origin". Uses the internal skeleton's
+ * own stops, never invents distant places. Falls back to a soft phrase.
+ */
+export function composeSuggestedRoute(input: {
+  pickup: Pickup | null;
+  feeling: Feeling | null;
+  companions: Companions | null;
+  rhythm: Rhythm | null;
+}): string {
+  const origin = pickupCityLabel(input.pickup);
+  if (!input.feeling || !input.companions || !input.rhythm) {
+    return `${origin} → your chosen region → ${origin}`;
+  }
+  const journey = curateJourney(input.feeling, input.companions, input.rhythm);
+  // Take up to 3 distinct stop labels, trimmed to the first comma/dash phrase
+  // so the route reads cleanly.
+  const stops: string[] = [];
+  const seen = new Set<string>();
+  for (const m of journey.moments) {
+    const short = m.label.split(/[—–-]/)[0].split(",")[0].trim();
+    const key = short.toLowerCase();
+    if (!short || seen.has(key)) continue;
+    seen.add(key);
+    stops.push(short);
+    if (stops.length >= 3) break;
+  }
+  if (stops.length === 0) {
+    return `${origin} → your chosen region → ${origin}`;
+  }
+  return `${origin} → ${stops.join(" · ")} → ${origin}`;
+}
+
