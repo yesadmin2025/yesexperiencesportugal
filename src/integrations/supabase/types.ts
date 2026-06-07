@@ -1354,6 +1354,54 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_v3_leads: {
+        Row: {
+          contact_email: string
+          contact_name: string
+          contact_note: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          intent: string
+          journey_title: string | null
+          skeleton_tour_key: string | null
+          state: Json
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          contact_email: string
+          contact_name: string
+          contact_note?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          intent?: string
+          journey_title?: string | null
+          skeleton_tour_key?: string | null
+          state?: Json
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          contact_email?: string
+          contact_name?: string
+          contact_note?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          intent?: string
+          journey_title?: string | null
+          skeleton_tour_key?: string | null
+          state?: Json
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
+import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
+import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
   composePersonalizedMoments,
@@ -196,6 +198,17 @@ export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
+    { open: false, intent: "book" },
+  );
+  const openLeadSheet = useCallback(
+    (intent: LeadIntent) => setLeadSheet({ open: true, intent }),
+    [],
+  );
+  const closeLeadSheet = useCallback(
+    () => setLeadSheet((s) => ({ ...s, open: false })),
+    [],
+  );
 
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
@@ -609,9 +622,22 @@ export function StudioV3() {
 
       {state.phase === "storyboard" ? (
         <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
-          <StoryboardHandoff state={state} onBack={() => back("map")} />
+          <StoryboardHandoff
+            state={state}
+            onBack={() => back("map")}
+            onSecure={() => openLeadSheet("book")}
+            onRefine={() => openLeadSheet("refine")}
+          />
         </PhaseShell>
       ) : null}
+
+      <LeadCaptureSheet
+        open={leadSheet.open}
+        intent={leadSheet.intent}
+        state={state}
+        onClose={closeLeadSheet}
+      />
+
 
       {reaction ? (
         <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
@@ -765,9 +791,13 @@ function ContinueCta({
 function StoryboardHandoff({
   state,
   onBack,
+  onSecure,
+  onRefine,
 }: {
   state: StudioV3State;
   onBack: () => void;
+  onSecure: () => void;
+  onRefine: () => void;
 }) {
   const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
 
@@ -907,39 +937,45 @@ function StoryboardHandoff({
       <div className="mt-12 flex flex-col items-center gap-4">
         <button
           type="button"
-          disabled
-          className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-80 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          onClick={onSecure}
+          className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-          aria-label="Secure this journey directly (coming soon)"
+          aria-label="Secure this journey directly"
         >
           Secure this journey directly <ArrowRight size={14} aria-hidden />
         </button>
 
         <button
           type="button"
-          disabled
-          className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold opacity-70 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          onClick={onRefine}
+          className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{
             color: "var(--charcoal)",
             background: "transparent",
             border: "1px solid color-mix(in oklab, var(--charcoal) 22%, transparent)",
           }}
-          aria-label="Refine with YES first (coming soon)"
+          aria-label="Refine with YES first"
         >
           Refine with YES first
         </button>
 
-        <button
-          type="button"
-          disabled
-          className="mt-1 inline-flex items-center gap-1.5 px-2 py-1 text-[10.5px] uppercase tracking-[0.24em] font-semibold opacity-55 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)", background: "transparent" }}
-          aria-label="Need help? Ask YES (coming soon)"
+        <a
+          href={whatsappHref(
+            `Hi YES — I just composed a journey in the Studio${
+              state.journeyTitle ? ` ("${state.journeyTitle}")` : ""
+            } and would like some help.`,
+          )}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-flex items-center gap-1.5 px-2 py-1 min-h-[32px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", background: "transparent" }}
+          aria-label="Need help? Ask YES on WhatsApp"
         >
-          <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}>—</span>
+          <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
           Need help? Ask YES
-        </button>
+        </a>
       </div>
+
     </div>
   );
 }
