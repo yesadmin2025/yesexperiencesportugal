@@ -638,6 +638,20 @@ function FooterHint({ children }: { children: React.ReactNode }) {
   );
 }
 
+function NextTeaser({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      className="mt-5 text-center text-[11.5px] uppercase tracking-[0.22em] font-semibold max-w-[320px]"
+      style={{
+        color: "color-mix(in oklab, var(--gold) 70%, var(--charcoal))",
+        animation: "studioV3RiseIn 340ms ease-out both",
+      }}
+    >
+      <span style={{ color: "var(--gold)" }}>→</span> {children}
+    </p>
+  );
+}
+
 function BackLink({ onClick }: { onClick: () => void }) {
   return (
     <button
