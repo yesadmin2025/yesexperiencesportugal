@@ -10,6 +10,7 @@ import {
   composePersonalizedMoments,
   composeSuggestedRoute,
   getOptionLabel,
+  inferGuests,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
 
