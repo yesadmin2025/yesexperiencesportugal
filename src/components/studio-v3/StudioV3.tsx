@@ -519,7 +519,11 @@ export function StudioV3() {
             values={state.considerations}
             onToggle={toggleConsideration}
           />
-          <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
+          {state.considerations.length > 0 ? (
+            <NextTeaser>Next, the voice</NextTeaser>
+          ) : (
+            <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
+          )}
           <ContinueCta disabled={false} onClick={continueFromConsiderations} label="Continue" />
         </PhaseShell>
       ) : null}
