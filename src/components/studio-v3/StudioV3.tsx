@@ -626,8 +626,18 @@ export function StudioV3() {
   const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
 
 
+  // Living Journey Panel visibility — hide on the opening "feeling" pick
+  // (don't compete with the first moment), on the final map/storyboard
+  // (own panels), and while a reaction beat is overlaying the screen.
+  const livingPanelHidden =
+    !!reaction ||
+    state.phase === "feeling" ||
+    state.phase === "map" ||
+    state.phase === "storyboard";
+
   return (
     <main aria-label="YES Studio">
+      <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
           <PhaseHeader
