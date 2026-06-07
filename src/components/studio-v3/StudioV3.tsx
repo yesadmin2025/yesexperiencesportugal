@@ -690,7 +690,7 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
-          <ChoiceGrid options={OCCASIONS} value={state.occasion} onSelect={onOccasion} />
+          <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
           {state.occasion ? (
             <NextTeaser>{contextualTeaser("occasion", state)}</NextTeaser>
           ) : (
