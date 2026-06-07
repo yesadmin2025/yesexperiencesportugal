@@ -387,18 +387,51 @@ export function StudioV3() {
     pickAndAdvance("feeling", id, "who", {
       kind: "feeling",
       eyebrow: "The feeling",
-      message: "Light, space, and a slower rhythm.\nThis is where it begins.",
+      message: feelingReactionMessage(id),
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
       holdMs: 2600,
       bgImage: FEELING_IMAGE[id],
     });
   };
-  const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
-  const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
+  const onCompanions = (id: Companions) => {
+    // Re-infer eagerly so the user landing on pickup already has guests set
+    // when applicable. We never overwrite an explicit user choice.
+    setState((s) => {
+      const inferred = inferGuests(id, s.occasion, s.feeling);
+      if (inferred && (s.guestsInferred || !s.guests)) {
+        return { ...s, companions: id, guests: inferred, guestsInferred: true };
+      }
+      // Companions changed to something that no longer infers — clear stale inference.
+      if (!inferred && s.guestsInferred) {
+        return { ...s, companions: id, guests: null, guestsInferred: false };
+      }
+      return { ...s, companions: id };
+    });
+    window.setTimeout(() => advance("occasion"), 420);
+  };
+  const onOccasion = (id: Occasion) => {
+    setState((s) => {
+      const inferred = inferGuests(s.companions, id, s.feeling);
+      if (inferred && (s.guestsInferred || !s.guests)) {
+        return { ...s, occasion: id, guests: inferred, guestsInferred: true };
+      }
+      if (!inferred && s.guestsInferred) {
+        return { ...s, occasion: id, guests: null, guestsInferred: false };
+      }
+      return { ...s, occasion: id };
+    });
+    window.setTimeout(() => advance("date"), 420);
+  };
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
-    pickAndAdvance("pickup", id, "guests", {
+    // Final inference check before leaving pickup → decide whether to skip guests.
+    const inferred = inferGuests(state.companions, state.occasion, state.feeling);
+    const nextAfterPickup: StudioV3Phase = inferred ? "interests" : "guests";
+    if (inferred) {
+      setState((s) => ({ ...s, guests: inferred, guestsInferred: true }));
+    }
+    pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
       eyebrow: "The beginning",
       message: label
@@ -412,7 +445,11 @@ export function StudioV3() {
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
-  const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
+  const onGuests = (id: GuestBucket) => {
+    // Explicit pick overrides any prior inference.
+    setState((s) => ({ ...s, guests: id, guestsInferred: false }));
+    window.setTimeout(() => advance("interests"), 420);
+  };
   const onRhythm = (id: Rhythm) => {
     const hint =
       id === "slow"
