@@ -391,7 +391,11 @@ export function StudioV3() {
             titleAccent="Portugal to feel?"
           />
           <ChoiceGrid options={FEELINGS} value={state.feeling} onSelect={onFeeling} />
-          <FooterHint>One choice. You can shape the rest later.</FooterHint>
+          {state.feeling ? (
+            <NextTeaser>Next, the company</NextTeaser>
+          ) : (
+            <FooterHint>One choice. You can shape the rest later.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -400,7 +404,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("feeling")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
-          <FooterHint>This quietly shapes what we suggest next.</FooterHint>
+          {state.companions ? (
+            <NextTeaser>Next, the occasion</NextTeaser>
+          ) : (
+            <FooterHint>This quietly shapes what we suggest next.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -409,7 +417,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={OCCASIONS} value={state.occasion} onSelect={onOccasion} />
-          <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
+          {state.occasion ? (
+            <NextTeaser>Next, the when</NextTeaser>
+          ) : (
+            <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -418,7 +430,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
-          <FooterHint>We'll confirm the exact date together later.</FooterHint>
+          {state.dateWindow ? (
+            <NextTeaser>Next, we shape the beginning</NextTeaser>
+          ) : (
+            <FooterHint>We'll confirm the exact date together later.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -427,7 +443,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
-          <FooterHint>Pickup is included from the Lisbon region.</FooterHint>
+          {state.pickup ? (
+            <NextTeaser>Next, the party size</NextTeaser>
+          ) : (
+            <FooterHint>Pickup is included from the Lisbon region.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -436,7 +456,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
           <ChoiceGrid options={GUEST_BUCKETS} value={state.guests} onSelect={onGuests} />
-          <FooterHint>You can adjust the exact number with us later.</FooterHint>
+          {state.guests ? (
+            <NextTeaser>Next, we choose the moments</NextTeaser>
+          ) : (
+            <FooterHint>You can adjust the exact number with us later.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -450,7 +474,11 @@ export function StudioV3() {
             values={state.interests}
             onToggle={toggleInterest}
           />
-          <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
+          {state.interests.length > 0 ? (
+            <NextTeaser>Next, we refine the rhythm</NextTeaser>
+          ) : (
+            <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
+          )}
           <ContinueCta
             disabled={state.interests.length < 1}
             onClick={continueFromInterests}
@@ -469,7 +497,11 @@ export function StudioV3() {
             titleAccent="day unfold?"
           />
           <ChoiceGrid options={RHYTHMS} value={state.rhythm} onSelect={onRhythm} columns={2} />
-          <FooterHint>You can change pace at any stop.</FooterHint>
+          {state.rhythm ? (
+            <NextTeaser>Next, the care</NextTeaser>
+          ) : (
+            <FooterHint>You can change pace at any stop.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -487,7 +519,11 @@ export function StudioV3() {
             values={state.considerations}
             onToggle={toggleConsideration}
           />
-          <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
+          {state.considerations.length > 0 ? (
+            <NextTeaser>Next, the voice</NextTeaser>
+          ) : (
+            <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
+          )}
           <ContinueCta disabled={false} onClick={continueFromConsiderations} label="Continue" />
         </PhaseShell>
       ) : null}
@@ -497,7 +533,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
-          <FooterHint>Your host will be fluent in your choice.</FooterHint>
+          {state.language ? (
+            <NextTeaser>Next, the comfort</NextTeaser>
+          ) : (
+            <FooterHint>Your host will be fluent in your choice.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -510,7 +550,11 @@ export function StudioV3() {
             titleAccent="shape the experience?"
           />
           <ChoiceGrid options={INVESTMENT_TIERS} value={state.investment} onSelect={onInvestment} />
-          <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
+          {state.investment ? (
+            <NextTeaser>Next, the route takes shape</NextTeaser>
+          ) : (
+            <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -634,6 +678,20 @@ function FooterHint({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+    </p>
+  );
+}
+
+function NextTeaser({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      className="mt-5 text-center text-[11.5px] uppercase tracking-[0.22em] font-semibold max-w-[320px]"
+      style={{
+        color: "color-mix(in oklab, var(--gold) 70%, var(--charcoal))",
+        animation: "studioV3RiseIn 340ms ease-out both",
+      }}
+    >
+      <span style={{ color: "var(--gold)" }}>→</span> {children}
     </p>
   );
 }
