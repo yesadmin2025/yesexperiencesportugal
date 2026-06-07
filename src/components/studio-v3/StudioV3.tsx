@@ -5,7 +5,6 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import {
   composeJourneyTitle,
-  composeJourneyReasons,
   composePersonalizedMoments,
   composeSuggestedRoute,
   getOptionLabel,
