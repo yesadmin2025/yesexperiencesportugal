@@ -67,6 +67,7 @@ import {
   OCCASIONS,
   PICKUPS,
   RHYTHMS,
+  type ChoiceOption,
   type Companions,
   type Consideration,
   type DateWindow,
