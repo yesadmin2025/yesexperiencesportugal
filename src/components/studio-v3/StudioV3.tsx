@@ -404,7 +404,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("feeling")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
-          <FooterHint>This quietly shapes what we suggest next.</FooterHint>
+          {state.companions ? (
+            <NextTeaser>Next, the occasion</NextTeaser>
+          ) : (
+            <FooterHint>This quietly shapes what we suggest next.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -413,7 +417,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={OCCASIONS} value={state.occasion} onSelect={onOccasion} />
-          <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
+          {state.occasion ? (
+            <NextTeaser>Next, the when</NextTeaser>
+          ) : (
+            <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -422,7 +430,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
-          <FooterHint>We'll confirm the exact date together later.</FooterHint>
+          {state.dateWindow ? (
+            <NextTeaser>Next, we shape the beginning</NextTeaser>
+          ) : (
+            <FooterHint>We'll confirm the exact date together later.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -431,7 +443,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
-          <FooterHint>Pickup is included from the Lisbon region.</FooterHint>
+          {state.pickup ? (
+            <NextTeaser>Next, the party size</NextTeaser>
+          ) : (
+            <FooterHint>Pickup is included from the Lisbon region.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
