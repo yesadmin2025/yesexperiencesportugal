@@ -791,9 +791,13 @@ function ContinueCta({
 function StoryboardHandoff({
   state,
   onBack,
+  onSecure,
+  onRefine,
 }: {
   state: StudioV3State;
   onBack: () => void;
+  onSecure: () => void;
+  onRefine: () => void;
 }) {
   const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
 
