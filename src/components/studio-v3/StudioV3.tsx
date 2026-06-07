@@ -5,7 +5,6 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import {
   composeJourneyTitle,
-  composeJourneyReasons,
   composePersonalizedMoments,
   composeSuggestedRoute,
   getOptionLabel,
@@ -686,13 +685,8 @@ function StoryboardHandoff({
   state: StudioV3State;
   onBack: () => void;
 }) {
-  // The internal Signature tour is used ONLY as a safe operational/geographic
-  // skeleton — its name is never surfaced. Customer-facing copy speaks of
-  // "your journey draft", "suggested route", "personalized moments".
-
   const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
 
-  // Emotional 2-sentence description, composed from real choices.
   const themeWord =
     state.interests[0] === "wine" || state.feeling === "wine-food"
       ? "wine and local flavour"
@@ -717,24 +711,18 @@ function StoryboardHandoff({
     pickupLabel && state.pickup && state.pickup !== "other"
       ? pickupLabel
       : "your chosen starting point";
-  const description = `A private day shaped around ${themeWord} and ${paceWord}. Starting from ${pickupCity}, your draft brings together scenic moments and real local experiences — without rushing.`;
+
+  const description = `A private day shaped around ${themeWord} and ${paceWord}. From ${pickupCity}, with real moments and no rush.`;
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
 
-  const reasons = composeJourneyReasons({
-    feeling: state.feeling,
-    companions: state.companions,
-    rhythm: state.rhythm,
-    interests: state.interests,
-    pickup: state.pickup,
-    occasion: state.occasion,
-  });
   const moments = composePersonalizedMoments({
     feeling: state.feeling,
     rhythm: state.rhythm,
     interests: state.interests,
     considerations: state.considerations,
   });
+
   const suggestedRoute = composeSuggestedRoute({
     pickup: state.pickup,
     feeling: state.feeling,
@@ -744,71 +732,47 @@ function StoryboardHandoff({
 
   return (
     <div
-      className="w-full max-w-[640px]"
+      className="relative w-full max-w-[640px] px-5 pb-12"
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
       <BackLink onClick={onBack} />
 
-      {/* ---------- 1. Your Journey Draft ---------- */}
-      <header className="text-center">
-        <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-        >
-          <span style={{ color: "var(--gold)" }}>—</span> Your journey draft
-        </p>
+      {/* ---------- 1. Big title ---------- */}
+      <header className="text-center pt-10">
         <h1
-          className="mt-5 text-[28px] sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
+          className="text-[30px] sm:text-[38px] leading-[1.05] tracking-[-0.015em] font-bold"
+          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+        >
+          Your journey draft
+        </h1>
+
+        {/* Journey name */}
+        <h2
+          className="mt-3 text-[17px] sm:text-[20px] leading-[1.3] font-semibold"
           style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
         >
           {journeyTitle}
-        </h1>
+        </h2>
+
+        {/* Emotional paragraph */}
         <p
-          className="mt-5 text-[14px] leading-[1.55] max-w-[520px] mx-auto"
+          className="mt-5 text-[14px] leading-[1.55] max-w-[480px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
         >
           {description}
         </p>
       </header>
 
-      {/* ---------- 2. Why this route fits you ---------- */}
-      {reasons.length > 0 ? (
-        <DraftSection title="Why this route fits you">
-          <ul
-            className="space-y-2.5 text-[13.5px] leading-[1.55]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-          >
-            {reasons.map((r) => (
-              <li key={r} className="flex gap-3">
-                <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
-                <span>{r}</span>
-              </li>
-            ))}
-          </ul>
-        </DraftSection>
-      ) : null}
-
-      {/* ---------- 3. Personalized moments (max 2) ---------- */}
-      {moments.length > 0 ? (
-        <DraftSection title="Personalized moments">
-          <ul
-            className="space-y-2.5 text-[13.5px] leading-[1.55]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-          >
-            {moments.map((m) => (
-              <li key={m} className="flex gap-3">
-                <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
-                <span>{m}</span>
-              </li>
-            ))}
-          </ul>
-        </DraftSection>
-      ) : null}
-
-      {/* ---------- 4. Suggested route ---------- */}
-      <DraftSection title="Suggested route">
+      {/* ---------- 2. Suggested route ---------- */}
+      <div className="mt-8 text-center">
         <p
-          className="text-[14px] leading-[1.6]"
+          className="text-[11px] uppercase tracking-[0.26em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+        >
+          <span style={{ color: "var(--gold)" }}>—</span> Suggested route
+        </p>
+        <p
+          className="mt-2.5 text-[15px] leading-[1.55]"
           style={{
             fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -816,25 +780,47 @@ function StoryboardHandoff({
         >
           {suggestedRoute}
         </p>
-      </DraftSection>
+      </div>
 
-      {/* ---------- 5. Before you secure it ---------- */}
-      <DraftSection title="Before you secure it">
+      {/* ---------- 3. Personalized moments (max 2) ---------- */}
+      {moments.length > 0 ? (
+        <div className="mt-8 text-center">
+          <p
+            className="text-[11px] uppercase tracking-[0.26em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Personalized moments
+          </p>
+          <ul className="mt-3 inline-block text-left space-y-1.5">
+            {moments.slice(0, 2).map((m) => (
+              <li
+                key={m}
+                className="flex gap-2.5 text-[13px] leading-[1.5]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+              >
+                <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+                <span>{m}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {/* ---------- 4. Before you secure it ---------- */}
+      <div className="mt-8 text-center">
         <p
-          className="text-[13.5px] leading-[1.6] italic"
+          className="text-[11.5px] leading-[1.6] italic"
           style={{
             fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          Availability, timing and final details are confirmed before your experience.
+          Availability and final details are confirmed before your experience.
         </p>
-      </DraftSection>
+      </div>
 
-      {/* ---------- CTAs: direct booking is primary ---------- */}
+      {/* ---------- 5. CTA stack ---------- */}
       <div className="mt-12 flex flex-col items-center gap-4">
-        {/* Primary: direct reservation. */}
-        {/* TODO: Phase 2 — connect to existing safe reservation flow when available. */}
         <button
           type="button"
           disabled
@@ -845,8 +831,6 @@ function StoryboardHandoff({
           Secure this journey directly <ArrowRight size={14} aria-hidden />
         </button>
 
-        {/* Secondary: optional refinement with YES (never required). */}
-        {/* TODO: Phase 2 — connect to existing YES refinement flow when available. */}
         <button
           type="button"
           disabled
@@ -861,8 +845,6 @@ function StoryboardHandoff({
           Refine with YES first
         </button>
 
-        {/* Optional discreet help link — never primary. */}
-        {/* TODO: Phase 2 — connect to existing safe support channel. */}
         <button
           type="button"
           disabled
@@ -874,26 +856,7 @@ function StoryboardHandoff({
           Need help? Ask YES
         </button>
       </div>
-
     </div>
-  );
-}
-
-function DraftSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section
-      aria-label={title}
-      className="mt-10 pt-7 border-t text-left"
-      style={{ borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }}
-    >
-      <p
-        className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-      >
-        <span style={{ color: "var(--gold)" }}>—</span> {title}
-      </p>
-      <div className="mt-4">{children}</div>
-    </section>
   );
 }
 
