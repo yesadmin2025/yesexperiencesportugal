@@ -3,7 +3,13 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
-import { composeJourneyTitle, getOptionLabel, getOptionLabels } from "./curation";
+import {
+  composeJourneyTitle,
+  composeJourneyReasons,
+  composePersonalizedMoments,
+  composeSuggestedRoute,
+  getOptionLabel,
+} from "./curation";
 import { findTour } from "@/data/signatureTours";
 
 // Atmospheric images — already shipping in the project. We reuse the
