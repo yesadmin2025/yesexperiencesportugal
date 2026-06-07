@@ -456,7 +456,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
           <ChoiceGrid options={GUEST_BUCKETS} value={state.guests} onSelect={onGuests} />
-          <FooterHint>You can adjust the exact number with us later.</FooterHint>
+          {state.guests ? (
+            <NextTeaser>Next, we choose the moments</NextTeaser>
+          ) : (
+            <FooterHint>You can adjust the exact number with us later.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -470,7 +474,11 @@ export function StudioV3() {
             values={state.interests}
             onToggle={toggleInterest}
           />
-          <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
+          {state.interests.length > 0 ? (
+            <NextTeaser>Next, we refine the rhythm</NextTeaser>
+          ) : (
+            <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
+          )}
           <ContinueCta
             disabled={state.interests.length < 1}
             onClick={continueFromInterests}
@@ -489,7 +497,11 @@ export function StudioV3() {
             titleAccent="day unfold?"
           />
           <ChoiceGrid options={RHYTHMS} value={state.rhythm} onSelect={onRhythm} columns={2} />
-          <FooterHint>You can change pace at any stop.</FooterHint>
+          {state.rhythm ? (
+            <NextTeaser>Next, the care</NextTeaser>
+          ) : (
+            <FooterHint>You can change pace at any stop.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
