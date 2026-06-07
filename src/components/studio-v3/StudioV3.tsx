@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
+import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
+import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
   composePersonalizedMoments,
