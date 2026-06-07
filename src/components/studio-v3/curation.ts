@@ -21,11 +21,48 @@ import type {
   ChoiceOption,
   Companions,
   Feeling,
+  GuestBucket,
   Interest,
   Occasion,
   Pickup,
   Rhythm,
 } from "./types";
+
+/* ---------- Adaptive intelligence: guest inference ---------- */
+
+/**
+ * inferGuests — deterministic, conservative.
+ *
+ * Returns a `GuestBucket` only when the answers unambiguously imply a
+ * party size (solo or a couple), allowing the Studio to silently skip
+ * the guests phase. Returns `null` for any conflicting / group answer
+ * (family, friends, corporate, celebration, …) so the user is still
+ * asked. The inferred value is persisted on state so the final reveal
+ * and the lead payload always carry a guest count.
+ */
+export function inferGuests(
+  companions: Companions | null,
+  occasion: Occasion | null,
+  _feeling: Feeling | null,
+): GuestBucket | null {
+  if (!companions) return null;
+  if (companions === "solo") return "1";
+  if (companions === "couple" || companions === "proposal") return "2";
+  // Romance / honeymoon / proposal / anniversary all imply two when paired
+  // with a couple-style companion — handled by the couple/proposal branch
+  // above. We never infer for family / friends / celebration / corporate.
+  if (
+    (occasion === "honeymoon" || occasion === "proposal" || occasion === "anniversary") &&
+    companions !== "family" &&
+    companions !== "friends" &&
+    companions !== "corporate" &&
+    companions !== "celebration"
+  ) {
+    return "2";
+  }
+  return null;
+}
+
 
 /* ---------- Label helpers (pure, deterministic) ---------- */
 

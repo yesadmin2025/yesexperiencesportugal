@@ -109,6 +109,8 @@ export interface StudioV3State {
   tourId: string | null;
   /** Deterministic editorial title composed once map → storyboard. */
   journeyTitle: string | null;
+  /** True when `guests` was inferred from companions/occasion (the guests phase was skipped). */
+  guestsInferred: boolean;
 }
 
 
@@ -127,6 +129,7 @@ export const INITIAL_STATE: StudioV3State = {
   investment: null,
   tourId: null,
   journeyTitle: null,
+  guestsInferred: false,
 };
 
 

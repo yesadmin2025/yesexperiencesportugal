@@ -10,6 +10,7 @@ import {
   composePersonalizedMoments,
   composeSuggestedRoute,
   getOptionLabel,
+  inferGuests,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
 
@@ -66,6 +67,7 @@ import {
   OCCASIONS,
   PICKUPS,
   RHYTHMS,
+  type ChoiceOption,
   type Companions,
   type Consideration,
   type DateWindow,
@@ -144,6 +146,115 @@ function pickTeaser(phase: StudioV3Phase, seed: string): string {
   for (let i = 0; i < seed.length; i++) hash = (hash + seed.charCodeAt(i)) % arr.length;
   return arr[hash];
 }
+
+/* ---------- Adaptive intelligence helpers (deterministic, local) ---------- */
+
+/**
+ * contextualTeaser — replaces the generic per-phase teaser with one that
+ * reacts to what the traveller has already said. Falls back to the
+ * existing rotating teaser whenever no context-aware line applies.
+ */
+function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
+  const { feeling, companions, occasion } = state;
+  switch (phase) {
+    case "feeling": {
+      if (feeling === "wine-food") return "Next, the table starts to matter.";
+      if (feeling === "coastal" || feeling === "adventure")
+        return "Next, the route moves toward open air.";
+      if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
+      if (feeling === "romance") return "Next, we shape the beginning for two.";
+      if (feeling === "family") return "Next, we make the day easy for everyone.";
+      break;
+    }
+    case "who": {
+      if (companions === "couple" || companions === "proposal")
+        return "Next, we shape the beginning for two.";
+      if (companions === "family") return "Next, we make the day easy for everyone.";
+      if (companions === "corporate") return "Next, we shape the group flow.";
+      if (companions === "celebration") return "Next, we shape the celebration.";
+      if (companions === "solo") return "Next, we shape a quieter day.";
+      break;
+    }
+    case "occasion": {
+      if (occasion === "honeymoon" || occasion === "anniversary" || occasion === "proposal")
+        return "Next, we shape the beginning for two.";
+      break;
+    }
+    case "pickup": {
+      if (companions === "family") return "Next, we make the day easy for everyone.";
+      if (companions === "corporate") return "Next, we shape the group flow.";
+      break;
+    }
+    case "interests": {
+      if (feeling === "wine-food") return "Next, the table starts to matter.";
+      if (feeling === "coastal" || feeling === "adventure")
+        return "Next, the route moves toward open air.";
+      if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
+      break;
+    }
+    case "rhythm": {
+      if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
+      break;
+    }
+    default:
+      break;
+  }
+  return pickTeaser(phase, [feeling, companions, occasion, state.pickup].filter(Boolean).join(","));
+}
+
+/** Stable prioritised reorder: priority ids first (in order), then the rest. */
+function prioritiseOptions<T extends string>(
+  options: ReadonlyArray<ChoiceOption<T>>,
+  priorityIds: ReadonlyArray<T>,
+): ChoiceOption<T>[] {
+  if (priorityIds.length === 0) return [...options];
+  const map = new Map(options.map((o) => [o.id, o]));
+  const seen = new Set<T>();
+  const head: ChoiceOption<T>[] = [];
+  for (const id of priorityIds) {
+    const opt = map.get(id);
+    if (opt && !seen.has(id)) {
+      head.push(opt);
+      seen.add(id);
+    }
+  }
+  const tail = options.filter((o) => !seen.has(o.id));
+  return [...head, ...tail];
+}
+
+/** Per-feeling reaction copy — used in the feeling beat. */
+function feelingReactionMessage(id: Feeling): string {
+  switch (id) {
+    case "wine-food":
+      return "Long tables, local bottles, and time to stay.\nThe day begins around the table.";
+    case "romance":
+      return "Soft light, slower moves, and space for two.\nThe day begins quietly.";
+    case "family":
+      return "Easy timing, real laughter, and space for everyone.\nThe day begins gently.";
+    case "hidden":
+      return "Quiet roads, small doors, places that do not perform.\nThe route begins away from the obvious.";
+    case "adventure":
+      return "Open edges, movement, and air in the day.\nThe route begins with energy.";
+    case "slow-luxury":
+      return "Fewer stops, deeper moments, nothing rushed.\nThe route begins with space.";
+    case "coastal":
+      return "Atlantic light, salt on the wind, the cliffs ahead.\nThe route begins facing the sea.";
+    case "culture":
+      return "Old stones, long stories, footsteps that linger.\nThe day begins with depth.";
+    default:
+      return "Light, space, and a slower rhythm.\nThis is where it begins.";
+  }
+}
+
+/** Inferred-guests note shown subtly on the final reveal. */
+function inferredGuestsNote(state: StudioV3State): string | null {
+  if (!state.guestsInferred || !state.guests) return null;
+  if (state.guests === "1") return "Assumed for this draft: solo traveller";
+  if (state.guests === "2") return "Assumed for this draft: 2 guests";
+  return null;
+}
+
+
 
 /**
  * Reaction beat — a short cinematic punctuation shown between phases.
@@ -276,18 +387,51 @@ export function StudioV3() {
     pickAndAdvance("feeling", id, "who", {
       kind: "feeling",
       eyebrow: "The feeling",
-      message: "Light, space, and a slower rhythm.\nThis is where it begins.",
+      message: feelingReactionMessage(id),
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
       holdMs: 2600,
       bgImage: FEELING_IMAGE[id],
     });
   };
-  const onCompanions = (id: Companions) => pickAndAdvance("companions", id, "occasion");
-  const onOccasion = (id: Occasion) => pickAndAdvance("occasion", id, "date");
+  const onCompanions = (id: Companions) => {
+    // Re-infer eagerly so the user landing on pickup already has guests set
+    // when applicable. We never overwrite an explicit user choice.
+    setState((s) => {
+      const inferred = inferGuests(id, s.occasion, s.feeling);
+      if (inferred && (s.guestsInferred || !s.guests)) {
+        return { ...s, companions: id, guests: inferred, guestsInferred: true };
+      }
+      // Companions changed to something that no longer infers — clear stale inference.
+      if (!inferred && s.guestsInferred) {
+        return { ...s, companions: id, guests: null, guestsInferred: false };
+      }
+      return { ...s, companions: id };
+    });
+    window.setTimeout(() => advance("occasion"), 420);
+  };
+  const onOccasion = (id: Occasion) => {
+    setState((s) => {
+      const inferred = inferGuests(s.companions, id, s.feeling);
+      if (inferred && (s.guestsInferred || !s.guests)) {
+        return { ...s, occasion: id, guests: inferred, guestsInferred: true };
+      }
+      if (!inferred && s.guestsInferred) {
+        return { ...s, occasion: id, guests: null, guestsInferred: false };
+      }
+      return { ...s, occasion: id };
+    });
+    window.setTimeout(() => advance("date"), 420);
+  };
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
-    pickAndAdvance("pickup", id, "guests", {
+    // Final inference check before leaving pickup → decide whether to skip guests.
+    const inferred = inferGuests(state.companions, state.occasion, state.feeling);
+    const nextAfterPickup: StudioV3Phase = inferred ? "interests" : "guests";
+    if (inferred) {
+      setState((s) => ({ ...s, guests: inferred, guestsInferred: true }));
+    }
+    pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
       eyebrow: "The beginning",
       message: label
@@ -301,7 +445,11 @@ export function StudioV3() {
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
-  const onGuests = (id: GuestBucket) => pickAndAdvance("guests", id, "interests");
+  const onGuests = (id: GuestBucket) => {
+    // Explicit pick overrides any prior inference.
+    setState((s) => ({ ...s, guests: id, guestsInferred: false }));
+    window.setTimeout(() => advance("interests"), 420);
+  };
   const onRhythm = (id: Rhythm) => {
     const hint =
       id === "slow"
@@ -420,6 +568,63 @@ export function StudioV3() {
 
   const step = stepOf(state.phase);
 
+  // -------- Adaptive option ordering (deterministic, derived from state) --------
+  const isCoupleish =
+    state.companions === "couple" ||
+    state.companions === "proposal" ||
+    state.occasion === "honeymoon" ||
+    state.occasion === "anniversary" ||
+    state.occasion === "proposal" ||
+    state.feeling === "romance";
+  const isFamily = state.companions === "family";
+  const isCorporate = state.companions === "corporate";
+
+  const interestsPriority: Interest[] =
+    state.feeling === "wine-food"
+      ? ["wine", "gastronomy", "local-life"]
+      : state.feeling === "coastal" || state.feeling === "adventure"
+        ? ["coast", "nature", "photography"]
+        : state.feeling === "slow-luxury"
+          ? ["wellness", "gastronomy", "wine"]
+          : state.feeling === "culture"
+            ? ["heritage", "local-life", "photography"]
+            : state.feeling === "family"
+              ? ["nature", "coast", "local-life"]
+              : [];
+
+  const rhythmPriority: Rhythm[] = isCoupleish || state.feeling === "slow-luxury"
+    ? ["slow", "balanced", "full", "immersive"]
+    : isFamily
+      ? ["balanced", "slow"]
+      : isCorporate
+        ? ["balanced", "full"]
+        : [];
+
+  const investmentPriority: InvestmentTier[] = isCoupleish
+    ? ["elevated", "bespoke", "considered", "open"]
+    : isCorporate
+      ? ["elevated", "bespoke"]
+      : [];
+
+  const considerationsPriority: Consideration[] = isFamily
+    ? ["quiet-pace", "avoid-long-walks", "child-seats"]
+    : state.companions === "celebration" || state.occasion === "celebration"
+      ? ["quiet-pace"]
+      : [];
+
+  const guestsPriority: GuestBucket[] = isCorporate
+    ? ["7-10", "11+", "5-6", "3-4"]
+    : isFamily
+      ? ["3-4", "5-6"]
+      : [];
+
+  const orderedInterests = prioritiseOptions(INTERESTS, interestsPriority);
+  const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
+  const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
+  const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
+  const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
+
+
   return (
     <main aria-label="YES Studio">
       {state.phase === "feeling" ? (
@@ -431,7 +636,7 @@ export function StudioV3() {
           />
           <ChoiceGrid options={FEELINGS} value={state.feeling} onSelect={onFeeling} />
           {state.feeling ? (
-            <NextTeaser>{pickTeaser("feeling", state.feeling ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (
             <FooterHint>One choice. You can shape the rest later.</FooterHint>
           )}
@@ -444,7 +649,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
           {state.companions ? (
-            <NextTeaser>{pickTeaser("who", state.companions ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("who", state)}</NextTeaser>
           ) : (
             <FooterHint>This quietly shapes what we suggest next.</FooterHint>
           )}
@@ -457,7 +662,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={OCCASIONS} value={state.occasion} onSelect={onOccasion} />
           {state.occasion ? (
-            <NextTeaser>{pickTeaser("occasion", state.occasion ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("occasion", state)}</NextTeaser>
           ) : (
             <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
           )}
@@ -470,7 +675,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
           {state.dateWindow ? (
-            <NextTeaser>{pickTeaser("date", state.dateWindow ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("date", state)}</NextTeaser>
           ) : (
             <FooterHint>We'll confirm the exact date together later.</FooterHint>
           )}
@@ -483,7 +688,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
           {state.pickup ? (
-            <NextTeaser>{pickTeaser("pickup", state.pickup ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("pickup", state)}</NextTeaser>
           ) : (
             <FooterHint>Pickup is included from the Lisbon region.</FooterHint>
           )}
@@ -494,9 +699,9 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
-          <ChoiceGrid options={GUEST_BUCKETS} value={state.guests} onSelect={onGuests} />
+          <ChoiceGrid options={orderedGuests} value={state.guests} onSelect={onGuests} />
           {state.guests ? (
-            <NextTeaser>{pickTeaser("guests", state.guests ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
           ) : (
             <FooterHint>You can adjust the exact number with us later.</FooterHint>
           )}
@@ -505,16 +710,16 @@ export function StudioV3() {
 
       {state.phase === "interests" ? (
         <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
-          <BackLink onClick={() => back("guests")} />
+          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
             mode="multi"
-            options={INTERESTS}
+            options={orderedInterests}
             values={state.interests}
             onToggle={toggleInterest}
           />
           {state.interests.length > 0 ? (
-            <NextTeaser>{pickTeaser("interests", state.interests.join(","))}</NextTeaser>
+            <NextTeaser>{contextualTeaser("interests", state)}</NextTeaser>
           ) : (
             <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
           )}
@@ -535,9 +740,9 @@ export function StudioV3() {
             title="How should the"
             titleAccent="day unfold?"
           />
-          <ChoiceGrid options={RHYTHMS} value={state.rhythm} onSelect={onRhythm} columns={2} />
+          <ChoiceGrid options={orderedRhythms} value={state.rhythm} onSelect={onRhythm} columns={2} />
           {state.rhythm ? (
-            <NextTeaser>{pickTeaser("rhythm", state.rhythm ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("rhythm", state)}</NextTeaser>
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
           )}
@@ -554,12 +759,12 @@ export function StudioV3() {
           />
           <ChoiceGrid
             mode="multi"
-            options={CONSIDERATIONS}
+            options={orderedConsiderations}
             values={state.considerations}
             onToggle={toggleConsideration}
           />
           {state.considerations.length > 0 ? (
-            <NextTeaser>{pickTeaser("considerations", state.considerations.join(","))}</NextTeaser>
+            <NextTeaser>{contextualTeaser("considerations", state)}</NextTeaser>
           ) : (
             <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
           )}
@@ -573,7 +778,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
           {state.language ? (
-            <NextTeaser>{pickTeaser("language", state.language ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("language", state)}</NextTeaser>
           ) : (
             <FooterHint>Your host will be fluent in your choice.</FooterHint>
           )}
@@ -588,14 +793,15 @@ export function StudioV3() {
             title="How should we"
             titleAccent="shape the experience?"
           />
-          <ChoiceGrid options={INVESTMENT_TIERS} value={state.investment} onSelect={onInvestment} />
+          <ChoiceGrid options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
           {state.investment ? (
-            <NextTeaser>{pickTeaser("investment", state.investment ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
             <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
           )}
         </PhaseShell>
       ) : null}
+
 
       {state.phase === "map" && state.feeling && state.companions && state.rhythm ? (
         <MapAwakens
@@ -931,6 +1137,14 @@ function StoryboardHandoff({
         >
           Availability and final details are confirmed before your experience.
         </p>
+        {inferredGuestsNote(state) ? (
+          <p
+            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 48%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> {inferredGuestsNote(state)}
+          </p>
+        ) : null}
       </div>
 
       {/* ---------- 5. CTA stack ---------- */}
