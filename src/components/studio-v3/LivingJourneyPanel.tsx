@@ -1,15 +1,16 @@
-// Studio V3 — Living Journey Panel (Phase 1 only).
+// Studio V3 — Living Journey Panel (Phase 1, mobile hotfix).
 //
-// A compact, fixed top card that updates live as the user makes choices,
-// so the Studio feels like a journey being designed — not a sequence of
-// isolated questions.
+// A compact card that updates live as the user makes choices. Rendered in
+// normal document flow so it can NEVER overlap the active question, Back,
+// step label, CTA, or choice grid on mobile. Placeholder rows are hidden
+// until they carry real data, so the card stays small early in the flow.
 //
 // Rules (locked):
 //   - Reads state ONLY through existing curation helpers.
 //   - Never invents stops: route + moments come from resolveStudioV3Route.
 //   - Soft fade only (≤220ms), brand tokens only, mobile-first.
-//   - Hidden on the opening "feeling" phase (don't compete with first pick),
-//     on "map" / "storyboard" (own panels), and while a reaction beat plays.
+//   - Hidden on the opening "feeling" phase, on "map" / "storyboard"
+//     (own panels), and while a reaction beat plays.
 
 import { useMemo } from "react";
 import {
@@ -86,23 +87,22 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     state.occasion,
   ]);
 
-  const routeLine = resolved?.suggestedRouteLabel ?? "Route forms as you choose";
+  const routeLine = resolved?.suggestedRouteLabel ?? null;
   const moments = (resolved?.routePoints ?? []).slice(0, 3).map((p) => p.label);
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
 
+  if (hidden) {
+    // Keep the node mounted-free on mobile so it can't ever overlap; the
+    // parent already keys the phase, so remount cost is negligible.
+    return null;
+  }
+
   return (
-    <div
-      aria-hidden={hidden}
-      className={[
-        "pointer-events-none fixed inset-x-0 top-10 z-20 flex justify-center px-3",
-        "transition-opacity duration-[220ms] ease-out motion-reduce:transition-none",
-        hidden ? "opacity-0" : "opacity-100",
-      ].join(" ")}
-    >
+    <div className="w-full flex justify-center px-3 pt-3">
       <div
-        className="pointer-events-auto w-full max-w-md rounded-[2px] border px-3.5 py-2.5 backdrop-blur-sm"
+        className="w-full max-w-md rounded-[2px] border px-3 py-2 transition-opacity duration-[220ms] ease-out motion-reduce:transition-none"
         style={{
           background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
           borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
@@ -111,13 +111,13 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
       >
         {/* Eyebrow + working title */}
         <p
-          className="text-[9px] uppercase tracking-[0.26em] font-bold"
+          className="text-[9px] uppercase tracking-[0.26em] font-bold leading-none"
           style={{ color: "var(--gold)" }}
         >
           Your journey · forming
         </p>
         <h2
-          className="mt-0.5 text-[13.5px] leading-snug font-semibold truncate"
+          className="mt-1 text-[13px] leading-tight font-semibold truncate"
           style={{ color: "var(--charcoal)", fontFamily: "var(--font-display)" }}
         >
           {title}
@@ -129,7 +129,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
             {dna.map((label) => (
               <li
                 key={label}
-                className="rounded-full px-2 py-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold"
+                className="rounded-full px-2 py-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold leading-none"
                 style={{
                   background: "color-mix(in oklab, var(--sand) 70%, transparent)",
                   color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
@@ -141,24 +141,26 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           </ul>
         ) : null}
 
-        {/* Route line */}
-        <p
-          className="mt-1.5 text-[10.5px] truncate"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-        >
-          <span
-            className="mr-1 uppercase tracking-[0.2em] font-bold"
-            style={{ color: "color-mix(in oklab, var(--teal) 80%, transparent)" }}
+        {/* Route line — only when we actually have a resolved route */}
+        {routeLine ? (
+          <p
+            className="mt-1.5 text-[10.5px] leading-tight truncate"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
           >
-            Route
-          </span>
-          {routeLine}
-        </p>
+            <span
+              className="mr-1 uppercase tracking-[0.2em] font-bold"
+              style={{ color: "color-mix(in oklab, var(--teal) 80%, transparent)" }}
+            >
+              Route
+            </span>
+            {routeLine}
+          </p>
+        ) : null}
 
-        {/* Moments so far */}
+        {/* Moments so far — only once they exist */}
         {moments.length > 0 ? (
           <p
-            className="mt-1 text-[10.5px] truncate"
+            className="mt-1 text-[10.5px] leading-tight truncate"
             style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
           >
             <span
@@ -171,19 +173,21 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           </p>
         ) : null}
 
-        {/* Investment tier — label only, never € */}
-        <p
-          className="mt-1 text-[10.5px] truncate"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-        >
-          <span
-            className="mr-1 uppercase tracking-[0.2em] font-bold"
-            style={{ color: "color-mix(in oklab, var(--teal) 80%, transparent)" }}
+        {/* Investment tier — label only, never €. Only after user picks. */}
+        {investmentLabel ? (
+          <p
+            className="mt-1 text-[10.5px] leading-tight truncate"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
           >
-            Investment
-          </span>
-          {investmentLabel ?? "Shown once you choose your tier"}
-        </p>
+            <span
+              className="mr-1 uppercase tracking-[0.2em] font-bold"
+              style={{ color: "color-mix(in oklab, var(--teal) 80%, transparent)" }}
+            >
+              Investment
+            </span>
+            {investmentLabel}
+          </p>
+        ) : null}
       </div>
     </div>
   );
