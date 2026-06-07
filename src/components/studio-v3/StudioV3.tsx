@@ -198,6 +198,17 @@ export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
+    { open: false, intent: "book" },
+  );
+  const openLeadSheet = useCallback(
+    (intent: LeadIntent) => setLeadSheet({ open: true, intent }),
+    [],
+  );
+  const closeLeadSheet = useCallback(
+    () => setLeadSheet((s) => ({ ...s, open: false })),
+    [],
+  );
 
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
