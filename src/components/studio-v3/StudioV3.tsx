@@ -533,7 +533,11 @@ export function StudioV3() {
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
-          <FooterHint>Your host will be fluent in your choice.</FooterHint>
+          {state.language ? (
+            <NextTeaser>Next, the comfort</NextTeaser>
+          ) : (
+            <FooterHint>Your host will be fluent in your choice.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
@@ -546,7 +550,11 @@ export function StudioV3() {
             titleAccent="shape the experience?"
           />
           <ChoiceGrid options={INVESTMENT_TIERS} value={state.investment} onSelect={onInvestment} />
-          <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
+          {state.investment ? (
+            <NextTeaser>Next, the route takes shape</NextTeaser>
+          ) : (
+            <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
