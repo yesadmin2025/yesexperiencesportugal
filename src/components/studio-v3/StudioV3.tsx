@@ -157,8 +157,10 @@ function pickTeaser(phase: StudioV3Phase, seed: string): string {
  */
 function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
   const { feeling, companions, occasion } = state;
+  const isSolo = companions === "solo";
   switch (phase) {
     case "feeling": {
+      if (isSolo) return "Next, we shape a quieter day.";
       if (feeling === "wine-food") return "Next, the table starts to matter.";
       if (feeling === "coastal" || feeling === "adventure")
         return "Next, the route moves toward open air.";
@@ -168,25 +170,28 @@ function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
       break;
     }
     case "who": {
+      if (isSolo) return "Next, we shape a quieter day.";
       if (companions === "couple" || companions === "proposal")
         return "Next, we shape the beginning for two.";
       if (companions === "family") return "Next, we make the day easy for everyone.";
       if (companions === "corporate") return "Next, we shape the group flow.";
       if (companions === "celebration") return "Next, we shape the celebration.";
-      if (companions === "solo") return "Next, we shape a quieter day.";
       break;
     }
     case "occasion": {
+      if (isSolo) return "A private rhythm, built around you.";
       if (occasion === "honeymoon" || occasion === "anniversary" || occasion === "proposal")
         return "Next, we shape the beginning for two.";
       break;
     }
     case "pickup": {
+      if (isSolo) return "The route can stay light and personal.";
       if (companions === "family") return "Next, we make the day easy for everyone.";
       if (companions === "corporate") return "Next, we shape the group flow.";
       break;
     }
     case "interests": {
+      if (isSolo) return "The route can stay light and personal.";
       if (feeling === "wine-food") return "Next, the table starts to matter.";
       if (feeling === "coastal" || feeling === "adventure")
         return "Next, the route moves toward open air.";
@@ -194,6 +199,7 @@ function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
       break;
     }
     case "rhythm": {
+      if (isSolo) return "A private rhythm, built around you.";
       if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
       break;
     }
@@ -625,6 +631,19 @@ export function StudioV3() {
   const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
   const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
 
+  // Solo-aware occasion list: hide clearly group/couple-only options.
+  // Couple/family/corporate get a prioritised order but the full list stays
+  // available below — only Solo trims the list.
+  const orderedOccasions = state.companions === "solo"
+    ? OCCASIONS.filter((o) => o.id !== "proposal" && o.id !== "honeymoon" && o.id !== "family-day" && o.id !== "corporate")
+    : isCoupleish
+      ? prioritiseOptions(OCCASIONS, ["honeymoon", "proposal", "anniversary", "birthday", "none", "celebration"])
+      : isFamily
+        ? prioritiseOptions(OCCASIONS, ["family-day", "birthday", "celebration", "none"])
+        : isCorporate
+          ? prioritiseOptions(OCCASIONS, ["corporate", "celebration", "none"])
+          : [...OCCASIONS];
+
 
   // Living Journey Panel visibility — hide on the opening "feeling" pick
   // (don't compete with the first moment), on the final map/storyboard
@@ -671,7 +690,7 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
-          <ChoiceGrid options={OCCASIONS} value={state.occasion} onSelect={onOccasion} />
+          <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
           {state.occasion ? (
             <NextTeaser>{contextualTeaser("occasion", state)}</NextTeaser>
           ) : (
