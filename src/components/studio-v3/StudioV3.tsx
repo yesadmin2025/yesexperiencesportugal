@@ -636,7 +636,7 @@ export function StudioV3() {
           />
           <ChoiceGrid options={FEELINGS} value={state.feeling} onSelect={onFeeling} />
           {state.feeling ? (
-            <NextTeaser>{pickTeaser("feeling", state.feeling ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (
             <FooterHint>One choice. You can shape the rest later.</FooterHint>
           )}
@@ -649,7 +649,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
           {state.companions ? (
-            <NextTeaser>{pickTeaser("who", state.companions ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("who", state)}</NextTeaser>
           ) : (
             <FooterHint>This quietly shapes what we suggest next.</FooterHint>
           )}
@@ -662,7 +662,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={OCCASIONS} value={state.occasion} onSelect={onOccasion} />
           {state.occasion ? (
-            <NextTeaser>{pickTeaser("occasion", state.occasion ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("occasion", state)}</NextTeaser>
           ) : (
             <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
           )}
@@ -675,7 +675,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
           {state.dateWindow ? (
-            <NextTeaser>{pickTeaser("date", state.dateWindow ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("date", state)}</NextTeaser>
           ) : (
             <FooterHint>We'll confirm the exact date together later.</FooterHint>
           )}
@@ -688,7 +688,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
           {state.pickup ? (
-            <NextTeaser>{pickTeaser("pickup", state.pickup ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("pickup", state)}</NextTeaser>
           ) : (
             <FooterHint>Pickup is included from the Lisbon region.</FooterHint>
           )}
@@ -699,9 +699,9 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
-          <ChoiceGrid options={GUEST_BUCKETS} value={state.guests} onSelect={onGuests} />
+          <ChoiceGrid options={orderedGuests} value={state.guests} onSelect={onGuests} />
           {state.guests ? (
-            <NextTeaser>{pickTeaser("guests", state.guests ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
           ) : (
             <FooterHint>You can adjust the exact number with us later.</FooterHint>
           )}
@@ -710,16 +710,16 @@ export function StudioV3() {
 
       {state.phase === "interests" ? (
         <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
-          <BackLink onClick={() => back("guests")} />
+          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
             mode="multi"
-            options={INTERESTS}
+            options={orderedInterests}
             values={state.interests}
             onToggle={toggleInterest}
           />
           {state.interests.length > 0 ? (
-            <NextTeaser>{pickTeaser("interests", state.interests.join(","))}</NextTeaser>
+            <NextTeaser>{contextualTeaser("interests", state)}</NextTeaser>
           ) : (
             <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
           )}
@@ -740,9 +740,9 @@ export function StudioV3() {
             title="How should the"
             titleAccent="day unfold?"
           />
-          <ChoiceGrid options={RHYTHMS} value={state.rhythm} onSelect={onRhythm} columns={2} />
+          <ChoiceGrid options={orderedRhythms} value={state.rhythm} onSelect={onRhythm} columns={2} />
           {state.rhythm ? (
-            <NextTeaser>{pickTeaser("rhythm", state.rhythm ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("rhythm", state)}</NextTeaser>
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
           )}
@@ -759,12 +759,12 @@ export function StudioV3() {
           />
           <ChoiceGrid
             mode="multi"
-            options={CONSIDERATIONS}
+            options={orderedConsiderations}
             values={state.considerations}
             onToggle={toggleConsideration}
           />
           {state.considerations.length > 0 ? (
-            <NextTeaser>{pickTeaser("considerations", state.considerations.join(","))}</NextTeaser>
+            <NextTeaser>{contextualTeaser("considerations", state)}</NextTeaser>
           ) : (
             <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
           )}
@@ -778,7 +778,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
           {state.language ? (
-            <NextTeaser>{pickTeaser("language", state.language ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("language", state)}</NextTeaser>
           ) : (
             <FooterHint>Your host will be fluent in your choice.</FooterHint>
           )}
@@ -793,14 +793,15 @@ export function StudioV3() {
             title="How should we"
             titleAccent="shape the experience?"
           />
-          <ChoiceGrid options={INVESTMENT_TIERS} value={state.investment} onSelect={onInvestment} />
+          <ChoiceGrid options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
           {state.investment ? (
-            <NextTeaser>{pickTeaser("investment", state.investment ?? "")}</NextTeaser>
+            <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
             <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
           )}
         </PhaseShell>
       ) : null}
+
 
       {state.phase === "map" && state.feeling && state.companions && state.rhythm ? (
         <MapAwakens
