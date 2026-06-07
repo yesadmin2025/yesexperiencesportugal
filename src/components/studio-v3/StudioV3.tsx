@@ -391,7 +391,11 @@ export function StudioV3() {
             titleAccent="Portugal to feel?"
           />
           <ChoiceGrid options={FEELINGS} value={state.feeling} onSelect={onFeeling} />
-          <FooterHint>One choice. You can shape the rest later.</FooterHint>
+          {state.feeling ? (
+            <NextTeaser>Next, the company</NextTeaser>
+          ) : (
+            <FooterHint>One choice. You can shape the rest later.</FooterHint>
+          )}
         </PhaseShell>
       ) : null}
 
