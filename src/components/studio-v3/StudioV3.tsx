@@ -117,6 +117,32 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
   return i > 0 ? PHASE_ORDER[i - 1] : null;
 }
 
+/** Rotate through 3 teaser variants per phase so returning to a step and
+ *  choosing a different answer feels distinct, not robotic. */
+const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
+  feeling: ["Next, the company", "Next, who joins you", "Next, your travellers"],
+  who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
+  occasion: ["Next, the when", "Next, your timing", "Next, the season"],
+  date: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
+  pickup: ["Next, the party size", "Next, your group", "Next, how many guests"],
+  guests: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
+  interests: ["Next, we refine the rhythm", "Next, the pace", "Next, how it flows"],
+  rhythm: ["Next, the care", "Next, the details", "Next, what matters most"],
+  considerations: ["Next, the voice", "Next, your language", "Next, how you hear it"],
+  language: ["Next, the comfort", "Next, the shape", "Next, your style"],
+  investment: ["Next, the route takes shape", "Next, the map awakens", "Next, the journey forms"],
+  map: ["Next, your draft"],
+  storyboard: [""],
+};
+
+function pickTeaser(phase: StudioV3Phase, seed: string): string {
+  const arr = NEXT_TEASERS[phase] ?? [""];
+  if (arr.length <= 1) return arr[0];
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash + seed.charCodeAt(i)) % arr.length;
+  return arr[hash];
+}
+
 /**
  * Reaction beat — a short cinematic punctuation shown between phases.
  * It overlays the next phase, holds for ~1.1s (or ~0.35s for
