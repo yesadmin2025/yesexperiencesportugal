@@ -576,13 +576,19 @@ export function StudioV3() {
   };
   const dateBgImage = () => (state.feeling ? FEELING_IMAGE[state.feeling] : undefined);
   const playDateReaction = (mode: DateMode, delay = 420) => {
+    const forward: StudioV3State = {
+      ...state,
+      dateMode: mode,
+      dateExact: mode === "exact" ? state.dateExact : null,
+    };
+    const next = getNextPhase(forward, "date");
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
         eyebrow: "The when",
         message: dateModeAtmosphereLine(mode),
         bgImage: dateBgImage(),
-        nextPhase: "pickup",
+        nextPhase: next,
         holdMs: 1700,
       });
     }, delay);
