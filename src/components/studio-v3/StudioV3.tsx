@@ -494,12 +494,24 @@ export function StudioV3() {
     // when applicable. We never overwrite an explicit user choice.
     setState((s) => {
       const inferred = inferGuests(id, s.occasion, s.feeling);
-      if (inferred && (s.guestsInferred || !s.guests)) {
-        return { ...s, companions: id, guests: inferred, guestsInferred: true };
+      if (inferred != null && (s.guestsInferred || s.guests == null)) {
+        return {
+          ...s,
+          companions: id,
+          guests: inferred,
+          guestsInferred: true,
+          guestsPrivateEvent: inferred >= 11,
+        };
       }
       // Companions changed to something that no longer infers — clear stale inference.
-      if (!inferred && s.guestsInferred) {
-        return { ...s, companions: id, guests: null, guestsInferred: false };
+      if (inferred == null && s.guestsInferred) {
+        return {
+          ...s,
+          companions: id,
+          guests: null,
+          guestsInferred: false,
+          guestsPrivateEvent: false,
+        };
       }
       return { ...s, companions: id };
     });
@@ -517,11 +529,23 @@ export function StudioV3() {
   const onOccasion = (id: Occasion) => {
     setState((s) => {
       const inferred = inferGuests(s.companions, id, s.feeling);
-      if (inferred && (s.guestsInferred || !s.guests)) {
-        return { ...s, occasion: id, guests: inferred, guestsInferred: true };
+      if (inferred != null && (s.guestsInferred || s.guests == null)) {
+        return {
+          ...s,
+          occasion: id,
+          guests: inferred,
+          guestsInferred: true,
+          guestsPrivateEvent: inferred >= 11,
+        };
       }
-      if (!inferred && s.guestsInferred) {
-        return { ...s, occasion: id, guests: null, guestsInferred: false };
+      if (inferred == null && s.guestsInferred) {
+        return {
+          ...s,
+          occasion: id,
+          guests: null,
+          guestsInferred: false,
+          guestsPrivateEvent: false,
+        };
       }
       return { ...s, occasion: id };
     });
