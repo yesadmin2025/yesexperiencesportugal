@@ -892,3 +892,199 @@ export function composeSuggestedRoute(input: {
   return `${origin} → ${stops.join(" · ")} → ${origin}`;
 }
 
+
+/* ============================================================
+ * Phase 4 — Adaptive Decision Layer
+ * Deterministic, derived from state. No AI, no backend, no I/O.
+ * ============================================================ */
+
+/** Normalise the seven companion ids into the five high-level types. */
+export function companionsType(c: Companions | null): CompanionsType | null {
+  if (!c) return null;
+  switch (c) {
+    case "solo":
+      return "solo";
+    case "couple":
+    case "proposal":
+      return "couple";
+    case "family":
+      return "family";
+    case "friends":
+    case "celebration":
+      return "friends";
+    case "corporate":
+      return "corporate";
+  }
+}
+
+/**
+ * deriveIntentProfile — pure derivation from current answers.
+ * Never stored, only computed at read sites. Always returns a value
+ * (defaults to "exploration" / medium when answers are still thin).
+ */
+export function deriveIntentProfile(state: StudioV3State): IntentProfile {
+  const cType = companionsType(state.companions) ?? "couple";
+
+  // intentType
+  let intentType: IntentType = "exploration";
+  if (cType === "corporate") {
+    intentType = "corporate";
+  } else if (
+    state.occasion === "proposal" ||
+    state.occasion === "honeymoon" ||
+    state.occasion === "anniversary" ||
+    state.feeling === "romance" ||
+    cType === "couple"
+  ) {
+    intentType = "romantic";
+  } else if (
+    state.occasion === "birthday" ||
+    state.occasion === "celebration" ||
+    state.occasion === "family-day" ||
+    cType === "family" ||
+    cType === "friends"
+  ) {
+    intentType = "celebration";
+  } else if (state.feeling === "slow-luxury" || state.feeling === "wine-food") {
+    intentType = "relaxation";
+  }
+
+  // intensity — from rhythm first, feeling second.
+  let intensity: IntentLevel = "medium";
+  if (state.rhythm === "slow") intensity = "low";
+  else if (state.rhythm === "immersive" || state.rhythm === "full") intensity = "high";
+  else if (state.feeling === "adventure") intensity = "high";
+  else if (state.feeling === "slow-luxury") intensity = "low";
+
+  // privacyLevel — corporate / proposal / honeymoon imply high privacy.
+  let privacyLevel: IntentLevel = "medium";
+  if (
+    cType === "corporate" ||
+    state.occasion === "proposal" ||
+    state.occasion === "honeymoon" ||
+    state.guestsPrivateEvent
+  ) {
+    privacyLevel = "high";
+  } else if (cType === "solo" || cType === "couple") {
+    privacyLevel = "medium";
+  } else if (cType === "friends" || cType === "family") {
+    privacyLevel = "low";
+  }
+
+  return { companionsType: cType, intentType, intensity, privacyLevel };
+}
+
+/* ---------- Option relevance filters ---------- */
+
+/**
+ * filterOccasions — hide options that are operationally invalid for the
+ * chosen companion type. Solo: hide couple/group-only. Corporate: hide
+ * romantic + family-day. Couple: hide family-day + corporate.
+ */
+export function filterOccasions(
+  options: ReadonlyArray<ChoiceOption<Occasion>>,
+  companions: Companions | null,
+): ChoiceOption<Occasion>[] {
+  const cType = companionsType(companions);
+  if (!cType) return [...options];
+  const HIDE: Record<CompanionsType, ReadonlyArray<Occasion>> = {
+    solo: ["proposal", "honeymoon", "family-day", "corporate", "anniversary"],
+    couple: ["family-day", "corporate"],
+    family: ["proposal", "honeymoon", "corporate"],
+    friends: ["proposal", "honeymoon", "family-day", "corporate"],
+    corporate: ["proposal", "honeymoon", "anniversary", "family-day", "birthday"],
+  };
+  const hidden = new Set(HIDE[cType]);
+  return options.filter((o) => !hidden.has(o.id));
+}
+
+/**
+ * filterConsiderations — corporate strips care notes down to operationally
+ * relevant fields (dietary + accessibility). Solo/couple/family/friends
+ * keep the full set.
+ */
+export function filterConsiderations(
+  options: ReadonlyArray<ChoiceOption<Consideration>>,
+  companions: Companions | null,
+): ChoiceOption<Consideration>[] {
+  if (companions !== "corporate") return [...options];
+  const KEEP = new Set<Consideration>([
+    "none",
+    "vegetarian",
+    "vegan",
+    "gluten-free",
+    "allergies",
+    "reduced-mobility",
+  ]);
+  return options.filter((o) => KEEP.has(o.id));
+}
+
+/**
+ * filterInterests — corporate hides clearly leisure/intimate interests
+ * (wellness). All other companion types keep the full set; deprioritisation
+ * happens at the ordering layer, not here.
+ */
+export function filterInterests(
+  options: ReadonlyArray<ChoiceOption<Interest>>,
+  companions: Companions | null,
+): ChoiceOption<Interest>[] {
+  if (companions === "corporate") {
+    return options.filter((o) => o.id !== "wellness");
+  }
+  return [...options];
+}
+
+/* ---------- Phase relevance ---------- */
+
+/**
+ * isPhaseRelevant — true when this phase still needs to be asked given
+ * what's already known. Used by getNextPhase to skip irrelevant phases.
+ */
+export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boolean {
+  switch (phase) {
+    case "guests": {
+      // Skip when guests is already known (inferred from companions/occasion
+      // or set explicitly via the stepper).
+      if (state.guests != null) return false;
+      const inferred = inferGuests(state.companions, state.occasion, state.feeling);
+      return inferred == null;
+    }
+    default:
+      return true;
+  }
+}
+
+const LINEAR_ORDER: StudioV3Phase[] = [
+  "intro",
+  "feeling",
+  "who",
+  "occasion",
+  "date",
+  "pickup",
+  "guests",
+  "interests",
+  "rhythm",
+  "considerations",
+  "language",
+  "investment",
+  "map",
+  "storyboard",
+];
+
+/**
+ * getNextPhase — adaptive next-phase resolver. Walks forward from the
+ * current phase and returns the first phase that is still relevant given
+ * the live state. Falls back to "storyboard" when nothing remains.
+ */
+export function getNextPhase(
+  state: StudioV3State,
+  current: StudioV3Phase,
+): StudioV3Phase {
+  const idx = LINEAR_ORDER.indexOf(current);
+  if (idx < 0) return "storyboard";
+  for (let i = idx + 1; i < LINEAR_ORDER.length; i++) {
+    const candidate = LINEAR_ORDER[i];
+    if (isPhaseRelevant(candidate, state)) return candidate;
+  }
+  return "storyboard";
+}
