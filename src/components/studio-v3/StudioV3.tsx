@@ -4,6 +4,7 @@ import { ChoiceGrid } from "./ChoiceGrid";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
+import { ComposerMap } from "./ComposerMap";
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
@@ -654,9 +655,15 @@ export function StudioV3() {
     state.phase === "map" ||
     state.phase === "storyboard";
 
+  // ComposerMap shares LivingJourneyPanel's hidden gate, plus an extra
+  // guard so it never renders on the opening feeling phase before a pick.
+  const composerHidden =
+    livingPanelHidden || (state.phase === "feeling" && !state.feeling);
+
   return (
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
+      <ComposerMap state={state} hidden={composerHidden} />
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
           <PhaseHeader
