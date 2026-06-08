@@ -1071,17 +1071,17 @@ export function StudioV3() {
 
       {state.phase === "investment" ? (
         <PhaseShell accent="gold" exiting={exiting}>
-          <BackLink onClick={() => back("language")} />
+          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader
-            eyebrow="The comfort"
+            eyebrow="Experience investment"
             title="How should we"
-            titleAccent="shape the experience?"
+            titleAccent="shape the investment?"
           />
           <ChoiceGrid options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
           {state.investment ? (
             <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
-            <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
+            <FooterHint>This shapes the route — not a price. We'll share specifics together.</FooterHint>
           )}
         </PhaseShell>
       ) : null}
