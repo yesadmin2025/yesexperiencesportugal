@@ -490,10 +490,12 @@ export function curateJourney(
   options?: {
     interests?: ReadonlyArray<Interest>;
     pickup?: Pickup | null;
+    investment?: InvestmentTier | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
   const pickup = options?.pickup ?? null;
+  const investment = options?.investment ?? null;
 
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
@@ -520,8 +522,8 @@ export function curateJourney(
     .map((s, i) => {
       const geo = lookupStop(s.label);
       let score = scoreStop(s, feeling, companions);
+      const hay = `${s.label} ${s.story}`.toLowerCase();
       if (interests.length > 0) {
-        const hay = `${s.label} ${s.story}`.toLowerCase();
         for (const interest of interests) {
           const kws = INTEREST_TOUR_KEYWORDS[interest] ?? [];
           for (const kw of kws) {
@@ -532,6 +534,8 @@ export function curateJourney(
           }
         }
       }
+      // Phase 4.5 soft signal — never changes the pool, only ranking.
+      score += investmentPremiumScore(investment, hay);
       return { stop: s, score, hasGeo: Boolean(geo), geo, order: i };
     })
     .sort((a, b) => {
@@ -540,8 +544,11 @@ export function curateJourney(
       return a.order - b.order;
     });
 
-  // Cap stops by rhythm but never exceed what the tour actually has.
-  const target = Math.min(RHYTHM_STOP_COUNT[rhythm], scored.length);
+  // Cap stops by rhythm, nudged by investment, but never exceed what the
+  // tour has and never drop below a viable 2-stop arc.
+  const investmentDelta = investment ? INVESTMENT_STOP_DELTA[investment] : 0;
+  const rhythmTarget = RHYTHM_STOP_COUNT[rhythm] + investmentDelta;
+  const target = Math.max(2, Math.min(rhythmTarget, scored.length));
 
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
