@@ -865,11 +865,17 @@ export function StudioV3() {
         <PhaseShell accent="teal" exiting={exiting}>
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
-          <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
-          {state.dateWindow ? (
-            <NextTeaser>{contextualTeaser("date", state)}</NextTeaser>
+          <DatePhaseControls
+            dateExact={state.dateExact}
+            dateMode={state.dateMode}
+            onPickExact={onDateExact}
+            onPickFlexible={onDateFlexible}
+            onPickUndecided={onDateUndecided}
+          />
+          {state.dateMode ? (
+            <NextTeaser>{dateNextTeaser(state.dateMode)}</NextTeaser>
           ) : (
-            <FooterHint>We'll confirm the exact date together later.</FooterHint>
+            <FooterHint>Pick a date, or tell us you're flexible.</FooterHint>
           )}
         </PhaseShell>
       ) : null}
