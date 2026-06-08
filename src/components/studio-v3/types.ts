@@ -143,6 +143,7 @@ export const INITIAL_STATE: StudioV3State = {
   tourId: null,
   journeyTitle: null,
   guestsInferred: false,
+  guestsPrivateEvent: false,
   firstName: null,
 };
 
