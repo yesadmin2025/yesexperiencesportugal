@@ -108,6 +108,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "marina-de-troia",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Tróia",
     name: "Marina de Troia",
     type: "viewpoint",
