@@ -35,13 +35,12 @@ function makeRoutePoints(
   }));
 }
 
-describe("Phase 5E — flag default", () => {
+describe("Phase 5E — flag state (staging)", () => {
   it("STUDIO_V3_ROUTE_COMPOSITION_ENABLED stays false in committed code", () => {
     expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(false);
   });
 
-  it("resolveStudioV3Route output is unchanged across a representative slice (flag off)", () => {
-    // Run twice and assert deep equality (catch accidental side effects).
+  it("resolveStudioV3Route is deterministic and never exceeds 4 route points", () => {
     const inputs = [
       { feeling: "wine-food" as const, companions: "couple" as const, rhythm: "balanced" as const, interests: ["wine", "gastronomy"] as const, pickup: "lisbon" as const },
       { feeling: "coastal" as const, companions: "family" as const, rhythm: "slow" as const, interests: ["coast", "nature"] as const, pickup: "lisbon" as const },
