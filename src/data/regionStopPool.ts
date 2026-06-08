@@ -91,6 +91,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "roman-ruins-troia",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Tróia",
     name: "Roman Ruins of Tróia",
     type: "monument",
