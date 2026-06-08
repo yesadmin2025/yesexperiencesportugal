@@ -71,7 +71,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
     true, // Studio started (we've left intro)
     !!state.feeling,
     !!state.companions,
-    !!state.occasion || !!state.dateWindow,
+    !!state.occasion || !!state.dateMode,
     !!state.pickup,
     !!state.guests || state.guestsInferred,
     (state.interests?.length ?? 0) > 0,
