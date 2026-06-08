@@ -789,6 +789,37 @@ export function StudioV3() {
     const chips = allChips.slice(0, 4);
     const tail = allChips.length > 4 ? "and more to refine" : undefined;
     const next = getNextPhase(state, "interests");
+
+    // Map-led beat — preview the forming route using a tentative balanced
+    // rhythm (real Signature stops; no invention). If the resolver returns
+    // no points (insufficient state), gracefully fall back to the
+    // image-led interests beat.
+    if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
+      const resolved = resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: state.rhythm ?? "balanced",
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        investment: state.investment,
+      });
+      const labels = resolved.routePoints.map((p) => p.label);
+      if (labels.length > 0) {
+        playReaction({
+          kind: "map-beat",
+          eyebrow: "The moments",
+          message: "These moments begin to shape the route.",
+          mapMode: "pins",
+          originLabel: pickupCityLabel(state.pickup) || undefined,
+          routeLabels: labels,
+          nextPhase: next,
+          holdMs: 2800,
+        });
+        return;
+      }
+    }
+
     playReaction({
       kind: "interests",
       eyebrow: "The moments",
