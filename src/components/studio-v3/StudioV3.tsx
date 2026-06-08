@@ -322,6 +322,12 @@ type Reaction = {
   holdMs?: number;
   /** Optional atmospheric background image rendered inside the postcard. */
   bgImage?: string;
+  /** Map-beat metadata (kind === "map-beat" only). */
+  mapMode?: MapBeatMode;
+  /** Real route labels from resolveStudioV3Route — never invented. */
+  routeLabels?: ReadonlyArray<string>;
+  /** Rhythm bucket used by the pace beat. */
+  rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
 };
 
 
