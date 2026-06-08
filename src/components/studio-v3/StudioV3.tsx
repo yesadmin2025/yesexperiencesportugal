@@ -310,6 +310,90 @@ type Reaction = {
 };
 
 
+/** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
+function companionsAtmosphereLine(id: Companions): string {
+  switch (id) {
+    case "solo":
+      return "A day shaped around you — and the light you arrived with.";
+    case "couple":
+      return "Two of you, one rhythm, room to slow down together.";
+    case "family":
+      return "Easy timing, gentle pauses, space for everyone.";
+    case "friends":
+      return "A shared table, an open road, time to linger.";
+    case "celebration":
+      return "A day quietly built around the reason to gather.";
+    case "proposal":
+      return "One moment held with care, the rest left to feel real.";
+    case "corporate":
+      return "Considered, private, calmly hosted from start to end.";
+    default:
+      return "A day shaped around the people in it.";
+  }
+}
+
+/** Atmospheric image for the Who beat — reuses Studio V3 images already imported above. */
+function companionsAtmosphereImage(id: Companions, feeling: Feeling | null): string | undefined {
+  switch (id) {
+    case "couple":
+    case "proposal":
+      return atmRomantic;
+    case "family":
+    case "friends":
+    case "celebration":
+      return atmSocial;
+    case "corporate":
+      return atmCultural;
+    case "solo":
+    default:
+      return feeling ? FEELING_IMAGE[feeling] : atmScenic;
+  }
+}
+
+/** Context-aware atmosphere copy for the Occasion step. */
+function occasionAtmosphereLine(id: Occasion, companions: Companions | null): string {
+  switch (id) {
+    case "proposal":
+      return "We hold the moment. You stay present.";
+    case "anniversary":
+      return "A year worth marking, quietly and well.";
+    case "honeymoon":
+      return "First days, slowly lived, nothing rushed.";
+    case "birthday":
+      return "A day that earns the candles, without the staging.";
+    case "family-day":
+      return "Everyone gently together, at one rhythm.";
+    case "corporate":
+      return "Considered, private, elegantly hosted.";
+    case "celebration":
+      return "Something worth raising a glass to — held with care.";
+    case "none":
+    default:
+      return companions === "corporate"
+        ? "No occasion needed — just a day that runs well."
+        : "No reason needed — just a day that belongs to you.";
+  }
+}
+
+/** Atmospheric image for the Occasion beat. */
+function occasionAtmosphereImage(id: Occasion, feeling: Feeling | null): string | undefined {
+  switch (id) {
+    case "proposal":
+    case "anniversary":
+    case "honeymoon":
+      return atmRomantic;
+    case "birthday":
+    case "family-day":
+    case "celebration":
+      return atmSocial;
+    case "corporate":
+      return atmCultural;
+    case "none":
+    default:
+      return feeling ? FEELING_IMAGE[feeling] : atmScenic;
+  }
+}
+
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
