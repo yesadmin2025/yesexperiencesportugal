@@ -926,12 +926,21 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting}>
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
-          <ChoiceGrid options={orderedGuests} value={state.guests} onSelect={onGuests} />
-          {state.guests ? (
+          <GuestStepper
+            value={state.guests}
+            inferred={state.guestsInferred}
+            onChange={onGuestsChange}
+          />
+          {state.guests != null ? (
             <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
           ) : (
-            <FooterHint>You can adjust the exact number with us later.</FooterHint>
+            <FooterHint>This helps us shape the vehicle, pace and table.</FooterHint>
           )}
+          <ContinueCta
+            disabled={state.guests == null}
+            onClick={() => advance("interests")}
+            label="Continue"
+          />
         </PhaseShell>
       ) : null}
 
