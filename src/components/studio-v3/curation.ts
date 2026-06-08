@@ -20,11 +20,18 @@ import { lookupStop } from "@/data/stopGeo";
 import type {
   ChoiceOption,
   Companions,
+  CompanionsType,
+  Consideration,
   Feeling,
+  IntentLevel,
+  IntentProfile,
+  IntentType,
   Interest,
   Occasion,
   Pickup,
   Rhythm,
+  StudioV3Phase,
+  StudioV3State,
 } from "./types";
 
 /* ---------- Adaptive intelligence: guest inference ---------- */
