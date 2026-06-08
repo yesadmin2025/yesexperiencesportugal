@@ -772,6 +772,28 @@ export function resolveStudioV3Route(input: {
         ? "high"
         : "medium";
 
+  // Phase 5D — copy-only optional refinements, flag-gated. When the flag is
+  // false (current default), `finalRefinements` is byte-identical to the
+  // pre-Phase-5D `refinements.slice(0, 2)`, so live Studio output does not
+  // change. When the flag is enabled, optional stop names from
+  // REGION_STOP_POOL are appended as additional copy lines only — they
+  // never mutate routePoints, geo, suggestedRouteLabel, pricing, or the
+  // hidden Signature skeleton.
+  const baseRefinements = refinements.slice(0, 2);
+  let finalRefinements = baseRefinements;
+  if (STUDIO_V3_OPTIONAL_STOPS_ENABLED) {
+    const optional = selectOptionalRefinements({
+      skeletonTourId: journey.tour.id,
+      interests,
+      rhythm,
+      companions,
+      investment,
+      considerations: input.considerations ?? [],
+      existingRoutePointLabels: routePoints.map((p) => p.label),
+    });
+    finalRefinements = [...baseRefinements, ...optional].slice(0, 2);
+  }
+
   return {
     skeletonTourKey: journey.tour.id,
     skeletonTitleInternal: journey.tour.title,
@@ -780,7 +802,7 @@ export function resolveStudioV3Route(input: {
     routePoints,
     journeyTitle,
     whyItFits,
-    refinements: refinements.slice(0, 2),
+    refinements: finalRefinements,
     whatToConfirm:
       "Availability and final details are confirmed before your experience.",
     confidence,
