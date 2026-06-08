@@ -127,6 +127,7 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
 /** Rotate through 3 teaser variants per phase so returning to a step and
  *  choosing a different answer feels distinct, not robotic. */
 const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
+  intro: [""],
   feeling: ["Next, the company", "Next, who joins you", "Next, your travellers"],
   who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
