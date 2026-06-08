@@ -6,8 +6,9 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
-import { AtmosphereBeat } from "./CreationBeat";
+import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
@@ -19,8 +20,15 @@ import {
   getNextPhase,
   getOptionLabel,
   inferGuests,
+  pickupCityLabel,
+  resolveStudioV3Route,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
+
+// Bible alignment Phase 1 — automatic map-led creation beats fired after
+// Pickup / Interests / Rhythm. Disable to fall back to the previous
+// (image-led) reaction beats site-wide.
+const STUDIO_V3_MAP_BEATS_ENABLED = true;
 
 // Atmospheric images — already shipping in the project. We reuse the
 // existing /src/assets library, no new files, no external URLs.
@@ -285,10 +293,11 @@ type ReactionKind =
   | "rhythm"
   | "considerations"
   | "investment"
-  | "atmosphere";
+  | "atmosphere"
+  | "map-beat";
 
 type Reaction = {
-  /** Which of the 5 priority beats — drives the postcard visual. */
+  /** Which of the priority beats — drives the postcard visual. */
   kind: ReactionKind;
   eyebrow: string;
   /** Message body. Use "\n" to render a second line for poetic pacing. */
@@ -313,6 +322,12 @@ type Reaction = {
   holdMs?: number;
   /** Optional atmospheric background image rendered inside the postcard. */
   bgImage?: string;
+  /** Map-beat metadata (kind === "map-beat" only). */
+  mapMode?: MapBeatMode;
+  /** Real route labels from resolveStudioV3Route — never invented. */
+  routeLabels?: ReadonlyArray<string>;
+  /** Rhythm bucket used by the pace beat. */
+  rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
 };
 
 
@@ -407,6 +422,7 @@ function prefersReducedMotion(): boolean {
 
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
+  const isMobile = useIsMobile();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
@@ -629,6 +645,18 @@ export function StudioV3() {
       }));
     }
     const nextAfterPickup = getNextPhase(forwardState, "pickup");
+    const originLabel = pickupCityLabel(id);
+    if (STUDIO_V3_MAP_BEATS_ENABLED && originLabel) {
+      pickAndAdvance("pickup", id, nextAfterPickup, {
+        kind: "map-beat",
+        eyebrow: "The beginning",
+        message: `The day begins in ${originLabel}.`,
+        mapMode: "origin",
+        originLabel,
+        holdMs: 2600,
+      });
+      return;
+    }
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
       eyebrow: "The beginning",
@@ -665,6 +693,33 @@ export function StudioV3() {
             : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
     const next = getNextPhase({ ...state, rhythm: id }, "rhythm");
+
+    if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
+      const resolved = resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: id,
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        investment: state.investment,
+      });
+      const labels = resolved.routePoints.map((p) => p.label);
+      if (labels.length > 0) {
+        pickAndAdvance("rhythm", id, next, {
+          kind: "map-beat",
+          eyebrow: "The rhythm",
+          message: hint,
+          mapMode: "pace",
+          originLabel: pickupCityLabel(state.pickup) || undefined,
+          routeLabels: labels,
+          rhythmBucket: id,
+          holdMs: 2400,
+        });
+        return;
+      }
+    }
+
     pickAndAdvance("rhythm", id, next, {
       kind: "rhythm",
       eyebrow: "The rhythm",
@@ -735,6 +790,37 @@ export function StudioV3() {
     const chips = allChips.slice(0, 4);
     const tail = allChips.length > 4 ? "and more to refine" : undefined;
     const next = getNextPhase(state, "interests");
+
+    // Map-led beat — preview the forming route using a tentative balanced
+    // rhythm (real Signature stops; no invention). If the resolver returns
+    // no points (insufficient state), gracefully fall back to the
+    // image-led interests beat.
+    if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
+      const resolved = resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: state.rhythm ?? "balanced",
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        investment: state.investment,
+      });
+      const labels = resolved.routePoints.map((p) => p.label);
+      if (labels.length > 0) {
+        playReaction({
+          kind: "map-beat",
+          eyebrow: "The moments",
+          message: "These moments begin to shape the route.",
+          mapMode: "pins",
+          originLabel: pickupCityLabel(state.pickup) || undefined,
+          routeLabels: labels,
+          nextPhase: next,
+          holdMs: 2800,
+        });
+        return;
+      }
+    }
+
     playReaction({
       kind: "interests",
       eyebrow: "The moments",
@@ -884,7 +970,7 @@ export function StudioV3() {
   return (
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
-      <ComposerMap state={state} hidden={composerHidden} />
+      <ComposerMap state={state} hidden={composerHidden || isMobile} />
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting}>
           <PhaseHeader
@@ -1532,6 +1618,41 @@ function ReactionOverlay({
       >
         <AtmosphereBeat
           imageSrc={reaction.bgImage}
+          eyebrow={reaction.eyebrow}
+          line={reaction.message}
+        />
+        <style>{`
+          @keyframes studioV3ReactionFade {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+        `}</style>
+      </button>
+    );
+  }
+
+  // Map-beat — dark editorial map panel with origin / route / numbered
+  // pins. Used between Pickup, Interests and Rhythm choices.
+  if (reaction.kind === "map-beat") {
+    return (
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Continue"
+        key={`${reaction.eyebrow}-${reaction.message}`}
+        className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
+        style={{
+          background: "var(--charcoal)",
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+        }}
+      >
+        <MapBeat
+          mode={reaction.mapMode ?? "origin"}
+          originLabel={reaction.originLabel}
+          routeLabels={reaction.routeLabels}
+          rhythm={reaction.rhythmBucket ?? null}
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
