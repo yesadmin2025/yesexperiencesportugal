@@ -293,10 +293,11 @@ type ReactionKind =
   | "rhythm"
   | "considerations"
   | "investment"
-  | "atmosphere";
+  | "atmosphere"
+  | "map-beat";
 
 type Reaction = {
-  /** Which of the 5 priority beats — drives the postcard visual. */
+  /** Which of the priority beats — drives the postcard visual. */
   kind: ReactionKind;
   eyebrow: string;
   /** Message body. Use "\n" to render a second line for poetic pacing. */
