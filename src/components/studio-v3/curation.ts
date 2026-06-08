@@ -703,6 +703,22 @@ export function resolveStudioV3Route(input: {
       lng: m.lng,
     }));
 
+  // Phase 5E — controlled route composition (replace up to 3 non-critical
+  // stops with same-type candidates from REGION_STOP_POOL). Flag-gated and
+  // OFF in committed code, so this branch is a no-op today. When enabled,
+  // mutates `routePoints` in place to preserve order and downstream wiring.
+  if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+    const composed = applyReplacementCandidates(routePoints, {
+      skeletonTourId: journey.tour.id,
+      interests,
+      rhythm,
+      companions,
+      investment,
+      considerations: input.considerations ?? [],
+    });
+    for (let i = 0; i < composed.length; i++) routePoints[i] = composed[i];
+  }
+
   // Short route sentence, derived only from the same Signature's stops.
   const shortLabels: string[] = [];
   const seen = new Set<string>();
