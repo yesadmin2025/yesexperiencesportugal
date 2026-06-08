@@ -14,6 +14,7 @@ import {
   COMPANIONS,
   FEELINGS,
   INTERESTS,
+  INVESTMENT_TIERS,
   RHYTHMS,
   type StudioV3State,
 } from "./types";
