@@ -484,7 +484,8 @@ export function StudioV3() {
   // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
-    pickAndAdvance("feeling", id, "who", {
+    const next = getNextPhase({ ...state, feeling: id }, "feeling");
+    pickAndAdvance("feeling", id, next, {
       kind: "feeling",
       eyebrow: "The feeling",
       message: feelingReactionMessage(id),
