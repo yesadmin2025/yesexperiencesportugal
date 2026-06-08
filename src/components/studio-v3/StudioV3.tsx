@@ -20,8 +20,15 @@ import {
   getNextPhase,
   getOptionLabel,
   inferGuests,
+  pickupCityLabel,
+  resolveStudioV3Route,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
+
+// Bible alignment Phase 1 — automatic map-led creation beats fired after
+// Pickup / Interests / Rhythm. Disable to fall back to the previous
+// (image-led) reaction beats site-wide.
+const STUDIO_V3_MAP_BEATS_ENABLED = true;
 
 // Atmospheric images — already shipping in the project. We reuse the
 // existing /src/assets library, no new files, no external URLs.
