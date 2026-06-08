@@ -78,6 +78,7 @@ export type Language = "en" | "pt" | "es" | "fr" | "other";
 export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 
 export type StudioV3Phase =
+  | "intro"
   | "feeling"
   | "who"
   | "occasion"
