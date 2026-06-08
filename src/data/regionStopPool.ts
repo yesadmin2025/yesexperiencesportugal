@@ -159,6 +159,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "herdade-da-comporta",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Comporta",
     name: "Herdade da Comporta",
     type: "winery",
