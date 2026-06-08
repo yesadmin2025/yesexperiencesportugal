@@ -664,7 +664,8 @@ export function StudioV3() {
             ? "More discovery, still shaped into one realistic day."
             : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
-    pickAndAdvance("rhythm", id, "considerations", {
+    const next = getNextPhase({ ...state, rhythm: id }, "rhythm");
+    pickAndAdvance("rhythm", id, next, {
       kind: "rhythm",
       eyebrow: "The rhythm",
       message: hint,
@@ -681,9 +682,13 @@ export function StudioV3() {
       holdMs: 1600,
     });
   };
-  const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
-  const onInvestment = (id: InvestmentTier) =>
-    pickAndAdvance("investment", id, "map", {
+  const onLanguage = (id: Language) => {
+    const next = getNextPhase({ ...state, language: id }, "language");
+    pickAndAdvance("language", id, next);
+  };
+  const onInvestment = (id: InvestmentTier) => {
+    const next = getNextPhase({ ...state, investment: id }, "investment");
+    pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
       message: "No surprises.\nJust clarity before anything moves forward.",
@@ -691,6 +696,7 @@ export function StudioV3() {
       postcardSubline: "Now the route can take shape.",
       holdMs: 2600,
     });
+  };
 
 
 
