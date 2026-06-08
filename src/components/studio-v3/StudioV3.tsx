@@ -102,6 +102,7 @@ import {
 const TOTAL_STEPS = 13;
 
 const PHASE_ORDER: StudioV3Phase[] = [
+  "intro",
   "feeling",
   "who",
   "occasion",
