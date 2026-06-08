@@ -27,6 +27,7 @@ import type {
   IntentProfile,
   IntentType,
   Interest,
+  InvestmentTier,
   Occasion,
   Pickup,
   Rhythm,
@@ -249,6 +250,45 @@ const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
   immersive: 6,
 };
 
+/* ---------- Phase 4.5: investment as a soft shaping signal ----------
+ * Tiny, deterministic. Never invents stops, never crosses regions, never
+ * changes the Signature skeleton. Only nudges:
+ *   - target stop count inside the already-resolved Signature
+ *   - relevance score for premium-feeling stops vs efficient ones
+ * "open" is neutral on both axes — best fit from the existing profile.
+ */
+const INVESTMENT_STOP_DELTA: Record<InvestmentTier, number> = {
+  considered: -1, // efficient — fewer extras
+  elevated: 0,    // balanced premium
+  bespoke: -1,    // fewer but stronger moments
+  open: 0,        // best fit
+};
+
+const INVESTMENT_PREMIUM_KEYWORDS: string[] = [
+  "private", "exclusive", "premium", "tasting", "sommelier", "chef",
+  "cellar", "estate", "manor", "palace", "boutique", "michelin",
+  "sunset", "candlelight", "champagne", "long lunch", "pairing",
+  "reserve", "vintage",
+];
+
+const INVESTMENT_EFFICIENT_KEYWORDS: string[] = [
+  "village", "market", "workshop", "easy", "stroll", "walk",
+  "viewpoint", "harbour", "old town", "tile",
+];
+
+function investmentPremiumScore(
+  investment: InvestmentTier | null | undefined,
+  hay: string,
+): number {
+  if (!investment || investment === "open") return 0;
+  const premiumHit = INVESTMENT_PREMIUM_KEYWORDS.some((kw) => hay.includes(kw));
+  const efficientHit = INVESTMENT_EFFICIENT_KEYWORDS.some((kw) => hay.includes(kw));
+  if (investment === "bespoke") return premiumHit ? 0.4 : 0;
+  if (investment === "elevated") return premiumHit ? 0.2 : 0;
+  if (investment === "considered") return efficientHit ? 0.15 : 0;
+  return 0;
+}
+
 // Keyword affinity per feeling — matched against stop label + story (lowercase).
 // Hits add to the relevance score; misses are simply ignored.
 const FEELING_KEYWORDS: Record<Feeling, string[]> = {
@@ -450,10 +490,12 @@ export function curateJourney(
   options?: {
     interests?: ReadonlyArray<Interest>;
     pickup?: Pickup | null;
+    investment?: InvestmentTier | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
   const pickup = options?.pickup ?? null;
+  const investment = options?.investment ?? null;
 
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
@@ -480,8 +522,8 @@ export function curateJourney(
     .map((s, i) => {
       const geo = lookupStop(s.label);
       let score = scoreStop(s, feeling, companions);
+      const hay = `${s.label} ${s.story}`.toLowerCase();
       if (interests.length > 0) {
-        const hay = `${s.label} ${s.story}`.toLowerCase();
         for (const interest of interests) {
           const kws = INTEREST_TOUR_KEYWORDS[interest] ?? [];
           for (const kw of kws) {
@@ -492,6 +534,8 @@ export function curateJourney(
           }
         }
       }
+      // Phase 4.5 soft signal — never changes the pool, only ranking.
+      score += investmentPremiumScore(investment, hay);
       return { stop: s, score, hasGeo: Boolean(geo), geo, order: i };
     })
     .sort((a, b) => {
@@ -500,8 +544,11 @@ export function curateJourney(
       return a.order - b.order;
     });
 
-  // Cap stops by rhythm but never exceed what the tour actually has.
-  const target = Math.min(RHYTHM_STOP_COUNT[rhythm], scored.length);
+  // Cap stops by rhythm, nudged by investment, but never exceed what the
+  // tour has and never drop below a viable 2-stop arc.
+  const investmentDelta = investment ? INVESTMENT_STOP_DELTA[investment] : 0;
+  const rhythmTarget = RHYTHM_STOP_COUNT[rhythm] + investmentDelta;
+  const target = Math.max(2, Math.min(rhythmTarget, scored.length));
 
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
@@ -610,8 +657,10 @@ export function resolveStudioV3Route(input: {
   pickup: Pickup | null;
   occasion?: Occasion | null;
   considerations?: ReadonlyArray<string>;
+  investment?: InvestmentTier | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
+  const investment = input.investment ?? null;
   const origin = pickupCityLabel(pickup);
 
   // Fallback when we don't have enough to safely resolve a Signature.
@@ -631,7 +680,11 @@ export function resolveStudioV3Route(input: {
     };
   }
 
-  const journey = curateJourney(feeling, companions, rhythm, { interests, pickup });
+  const journey = curateJourney(feeling, companions, rhythm, {
+    interests,
+    pickup,
+    investment,
+  });
 
   // Hard cap at 4 main route points on the Journey Card (per brief).
   const routePoints: ResolvedRoutePoint[] = journey.moments
