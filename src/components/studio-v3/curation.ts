@@ -1693,7 +1693,7 @@ export function applyReplacementCandidates(
 
   const cap = Math.min(
     replacementCapForRhythm(input.rhythm),
-    Math.max(0, out.length - PROTECTED_LEAD_COUNT),
+    Math.max(0, out.length - 1), // index 0 is always protected
   );
   if (cap === 0) return out;
 
@@ -1719,15 +1719,16 @@ export function applyReplacementCandidates(
 
   let replacedCount = 0;
 
-  for (let i = PROTECTED_LEAD_COUNT; i < out.length; i++) {
+  for (let i = 0; i < out.length; i++) {
     if (replacedCount >= cap) break;
     const current = out[i];
-    const currentType = inferRoutePointType(current.label, current.story);
-    if (!currentType) continue;
+    if (isProtectedRoutePoint(current, i, candidates)) continue;
+    const kind = inferRoutePointType(current.label, current.story);
+    if (!kind) continue; // belt-and-braces; isProtectedRoutePoint already guards
 
     for (const cand of candidates) {
       if (usedIds.has(cand.id)) continue;
-      if (cand.type !== currentType) continue;
+      if (!isCompatibleCandidate(kind, cand)) continue;
       if (cand.oneOfGroup && usedGroups.has(cand.oneOfGroup)) continue;
       if (usedLabels.has(normalizeLabel(cand.name))) continue;
 
