@@ -5,6 +5,7 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
+import { AtmosphereBeat } from "./CreationBeat";
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
@@ -277,7 +278,8 @@ type ReactionKind =
   | "interests"
   | "rhythm"
   | "considerations"
-  | "investment";
+  | "investment"
+  | "atmosphere";
 
 type Reaction = {
   /** Which of the 5 priority beats — drives the postcard visual. */
