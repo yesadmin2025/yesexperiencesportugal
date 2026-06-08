@@ -1758,7 +1758,173 @@ export function applyReplacementCandidates(
   return out;
 }
 
+/* ---------------------------------------------------------------------------
+ * Phase 5G — One personalised extra moment (flag-gated, additive).
+ *
+ * Adds AT MOST one extra routePoint from REGION_STOP_POOL when the
+ * composed route has fewer than 4 points and rhythm is not "slow".
+ * Reuses `selectReplacementCandidates` for all eligibility/safety:
+ *  - region + routeCluster containment
+ *  - active === true
+ *  - signatureTourId / sourceTourIds / generic eligibility
+ *  - oneOfGroup uniqueness (vs current route)
+ *  - reduced-mobility deny (no viewpoint for mobility considerations)
+ *  - existing labels excluded
+ *  - P17/P6 isolation (encoded in pool data + cluster gate)
+ *
+ * Insertion: never at index 0; if last point is a table/lunch slot,
+ * insert before it; otherwise insert after index 1. Length is hard-capped
+ * at 4. Existing routePoints are never reordered.
+ * --------------------------------------------------------------------------- */
+
+const EXTRA_MOMENT_STORY_FALLBACK: Record<OptionalStop["type"], string> = {
+  winery: "A short tasting at a small local estate.",
+  workshop: "A brief hands-on moment with a local maker.",
+  monument: "A quiet pause at a landmark on the way.",
+  market: "A short walk through a working local market.",
+  table: "A short stop at a neighbourhood table.",
+  beach: "A short pause by a calm stretch of coast.",
+  viewpoint: "A short pause at a panoramic overlook.",
+  nature: "A short walk through a quiet natural setting.",
+  garden: "A short stroll through a calm garden.",
+  studio: "A brief visit to a local studio.",
+  boat: "A short moment by the water.",
+  heritage: "A short pause at a place with historical depth.",
+  village: "A short walk through the village centre.",
+};
+
+function buildExtraMomentStory(cand: OptionalStop): string {
+  const notes = (cand.notes ?? "").trim();
+  if (notes.length > 0) return notes;
+  return EXTRA_MOMENT_STORY_FALLBACK[cand.type];
+}
+
+function scoreExtraMomentCandidate(
+  cand: OptionalStop,
+  ctx: {
+    interests: ReadonlyArray<Interest>;
+    rhythm: Rhythm;
+    companions: Companions;
+    investment: InvestmentTier | null;
+    skeletonSignatureTourId: string;
+    existingKinds: ReadonlySet<OptionalStop["type"]>;
+  },
+): number {
+  let score = 0;
+  if (ctx.interests.some((i) => cand.suitsInterests.includes(i))) score += 3;
+  if (!ctx.existingKinds.has(cand.type)) score += 2;
+  if (cand.suitsRhythm.includes(ctx.rhythm)) score += 1;
+  if (!cand.suitsCompanions || cand.suitsCompanions.includes(ctx.companions)) {
+    score += 1;
+  }
+  if (ctx.investment && cand.suitsInvestment?.includes(ctx.investment)) {
+    score += 1;
+  }
+  if (
+    cand.sourceTourIds &&
+    cand.sourceTourIds.includes(ctx.skeletonSignatureTourId)
+  ) {
+    score += 1;
+  }
+  if (cand.durationMin > 60) score -= 2;
+  return score;
+}
+
+/**
+ * Append at most one extra routePoint when safe. Pure function — returns
+ * a new array; never grows beyond 4; never reorders existing entries.
+ */
+export function applyExtraMoment(
+  routePoints: ReadonlyArray<ResolvedRoutePoint>,
+  input: {
+    skeletonTourId: string | null | undefined;
+    interests: ReadonlyArray<Interest>;
+    rhythm: Rhythm;
+    companions: Companions;
+    investment: InvestmentTier | null;
+    considerations: ReadonlyArray<string>;
+  },
+): ResolvedRoutePoint[] {
+  const out = routePoints.map((p) => ({ ...p }));
+  if (input.rhythm === "slow") return out;
+  if (out.length === 0) return out;
+  if (out.length >= 4) return out;
+
+  const skeleton = input.skeletonTourId
+    ? SKELETON_TO_CLUSTER[input.skeletonTourId]
+    : undefined;
+  if (!skeleton) return out;
+
+  const candidates = selectReplacementCandidates({
+    skeletonTourId: input.skeletonTourId,
+    interests: input.interests,
+    rhythm: input.rhythm,
+    companions: input.companions,
+    investment: input.investment,
+    considerations: input.considerations,
+    existingRoutePointLabels: out.map((p) => p.label),
+  });
+  if (candidates.length === 0) return out;
+
+  const existingKinds = new Set<OptionalStop["type"]>();
+  for (const p of out) {
+    const k = inferRoutePointType(p.label, p.story);
+    if (k && k !== "scenic") existingKinds.add(k);
+  }
+  const existingGroups = new Set<string>();
+  for (const p of out) {
+    const match = REGION_STOP_POOL.find(
+      (s) => normalizeLabel(s.name) === normalizeLabel(p.label),
+    );
+    if (match?.oneOfGroup) existingGroups.add(match.oneOfGroup);
+  }
+
+  const scored = candidates
+    .filter((c) => !(c.oneOfGroup && existingGroups.has(c.oneOfGroup)))
+    .map((c) => ({
+      cand: c,
+      score: scoreExtraMomentCandidate(c, {
+        interests: input.interests,
+        rhythm: input.rhythm,
+        companions: input.companions,
+        investment: input.investment,
+        skeletonSignatureTourId: skeleton.signatureTourId,
+        existingKinds,
+      }),
+    }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (a.cand.durationMin !== b.cand.durationMin) {
+        return a.cand.durationMin - b.cand.durationMin;
+      }
+      return a.cand.id.localeCompare(b.cand.id);
+    });
+
+  const pick = scored[0]?.cand;
+  if (!pick) return out;
+
+  const lastKind = inferRoutePointType(
+    out[out.length - 1].label,
+    out[out.length - 1].story,
+  );
+  const insertAt =
+    lastKind === "table" ? out.length - 1 : Math.min(2, out.length);
+
+  const inserted: ResolvedRoutePoint = {
+    index: insertAt,
+    label: pick.name,
+    story: buildExtraMomentStory(pick),
+    lat: pick.coords?.lat ?? null,
+    lng: pick.coords?.lng ?? null,
+  };
+
+  const next = [...out.slice(0, insertAt), inserted, ...out.slice(insertAt)];
+  // Re-number indices to keep ResolvedRoutePoint contract.
+  return next.slice(0, 4).map((p, i) => ({ ...p, index: i }));
+}
+
 /** Test-only accessor for the local flag — keeps the flag private to this
  *  module while letting the test suite assert it is OFF in committed code. */
 export const __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS =
   STUDIO_V3_ROUTE_COMPOSITION_ENABLED;
+
