@@ -36,8 +36,8 @@ function makeRoutePoints(
 }
 
 describe("Phase 5E — flag state (staging)", () => {
-  it("STUDIO_V3_ROUTE_COMPOSITION_ENABLED is enabled for staging", () => {
-    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(true);
+  it("STUDIO_V3_ROUTE_COMPOSITION_ENABLED stays false in committed code", () => {
+    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(false);
   });
 
   it("resolveStudioV3Route is deterministic and never exceeds 4 route points", () => {
