@@ -970,7 +970,7 @@ export function StudioV3() {
   return (
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
-      <ComposerMap state={state} hidden={composerHidden} />
+      <ComposerMap state={state} hidden={composerHidden || isMobile} />
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting}>
           <PhaseHeader
