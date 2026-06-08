@@ -758,6 +758,7 @@ export function StudioV3() {
   // (own panels), and while a reaction beat is overlaying the screen.
   const livingPanelHidden =
     !!reaction ||
+    state.phase === "intro" ||
     state.phase === "feeling" ||
     state.phase === "map" ||
     state.phase === "storyboard";
@@ -765,7 +766,23 @@ export function StudioV3() {
   // ComposerMap shares LivingJourneyPanel's hidden gate, plus an extra
   // guard so it never renders on the opening feeling phase before a pick.
   const composerHidden =
-    livingPanelHidden || (state.phase === "feeling" && !state.feeling);
+    livingPanelHidden ||
+    state.phase === "intro" ||
+    (state.phase === "feeling" && !state.feeling);
+
+  // Intro is a pre-Studio moment — render its own canvas and short-circuit
+  // the rest of the Studio chrome (no ComposerMap, no Journey pill,
+  // no footer help, no progress).
+  if (state.phase === "intro") {
+    return (
+      <StudioV3Intro
+        onComplete={(name) => {
+          setState((s) => ({ ...s, firstName: name }));
+          advance("feeling");
+        }}
+      />
+    );
+  }
 
   return (
     <main aria-label="YES Studio">
