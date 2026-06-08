@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ChoiceGrid } from "./ChoiceGrid";
+import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
@@ -101,6 +102,7 @@ import {
 const TOTAL_STEPS = 13;
 
 const PHASE_ORDER: StudioV3Phase[] = [
+  "intro",
   "feeling",
   "who",
   "occasion",
@@ -127,6 +129,7 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
 /** Rotate through 3 teaser variants per phase so returning to a step and
  *  choosing a different answer feels distinct, not robotic. */
 const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
+  intro: [""],
   feeling: ["Next, the company", "Next, who joins you", "Next, your travellers"],
   who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
@@ -755,6 +758,7 @@ export function StudioV3() {
   // (own panels), and while a reaction beat is overlaying the screen.
   const livingPanelHidden =
     !!reaction ||
+    state.phase === "intro" ||
     state.phase === "feeling" ||
     state.phase === "map" ||
     state.phase === "storyboard";
@@ -762,14 +766,30 @@ export function StudioV3() {
   // ComposerMap shares LivingJourneyPanel's hidden gate, plus an extra
   // guard so it never renders on the opening feeling phase before a pick.
   const composerHidden =
-    livingPanelHidden || (state.phase === "feeling" && !state.feeling);
+    livingPanelHidden ||
+    state.phase === "intro" ||
+    (state.phase === "feeling" && !state.feeling);
+
+  // Intro is a pre-Studio moment — render its own canvas and short-circuit
+  // the rest of the Studio chrome (no ComposerMap, no Journey pill,
+  // no footer help, no progress).
+  if (state.phase === "intro") {
+    return (
+      <StudioV3Intro
+        onComplete={(name) => {
+          setState((s) => ({ ...s, firstName: name }));
+          advance("feeling");
+        }}
+      />
+    );
+  }
 
   return (
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       {state.phase === "feeling" ? (
-        <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="ivory" exiting={exiting}>
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
@@ -785,7 +805,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "who" ? (
-        <PhaseShell accent="gold" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="gold" exiting={exiting}>
           <BackLink onClick={() => back("feeling")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
@@ -798,7 +818,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "occasion" ? (
-        <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="ivory" exiting={exiting}>
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
@@ -811,7 +831,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "date" ? (
-        <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="teal" exiting={exiting}>
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
@@ -824,7 +844,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "pickup" ? (
-        <PhaseShell accent="gold" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="gold" exiting={exiting}>
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
@@ -837,7 +857,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "guests" ? (
-        <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="ivory" exiting={exiting}>
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
           <ChoiceGrid options={orderedGuests} value={state.guests} onSelect={onGuests} />
@@ -850,7 +870,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "interests" ? (
-        <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="teal" exiting={exiting}>
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
@@ -874,7 +894,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "rhythm" ? (
-        <PhaseShell accent="gold" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="gold" exiting={exiting}>
           <BackLink onClick={() => back("interests")} />
           <PhaseHeader
             eyebrow="The rhythm"
@@ -891,7 +911,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "considerations" ? (
-        <PhaseShell accent="ivory" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="ivory" exiting={exiting}>
           <BackLink onClick={() => back("rhythm")} />
           <PhaseHeader
             eyebrow="The care"
@@ -914,7 +934,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "language" ? (
-        <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="teal" exiting={exiting}>
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
@@ -927,7 +947,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "investment" ? (
-        <PhaseShell accent="gold" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="gold" exiting={exiting}>
           <BackLink onClick={() => back("language")} />
           <PhaseHeader
             eyebrow="The comfort"
@@ -968,7 +988,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "storyboard" ? (
-        <PhaseShell accent="teal" exiting={exiting} step={step} totalSteps={TOTAL_STEPS}>
+        <PhaseShell accent="teal" exiting={exiting}>
           <StoryboardHandoff
             state={state}
             onBack={() => back("map")}
