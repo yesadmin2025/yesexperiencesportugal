@@ -240,7 +240,7 @@ describe("Phase 5E — applyReplacementCandidates rules", () => {
       { label: "WineryC", story: "Adega visit." },
     ]);
     const out = applyReplacementCandidates(route, { ...baseInput, rhythm: "immersive" });
-    for (let i = 2; i < out.length; i++) {
+    for (let i = 1; i < out.length; i++) {
       if (out[i].label === route[i].label) continue;
       const stop = REGION_STOP_POOL.find((s) => s.name === out[i].label);
       expect(stop?.type).toBe("winery");
