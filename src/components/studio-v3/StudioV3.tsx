@@ -501,7 +501,16 @@ export function StudioV3() {
       }
       return { ...s, companions: id };
     });
-    window.setTimeout(() => advance("occasion"), 420);
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The company",
+        message: companionsAtmosphereLine(id),
+        bgImage: companionsAtmosphereImage(id, state.feeling),
+        nextPhase: "occasion",
+        holdMs: 1700,
+      });
+    }, 420);
   };
   const onOccasion = (id: Occasion) => {
     setState((s) => {
@@ -514,7 +523,16 @@ export function StudioV3() {
       }
       return { ...s, occasion: id };
     });
-    window.setTimeout(() => advance("date"), 420);
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The occasion",
+        message: occasionAtmosphereLine(id, state.companions),
+        bgImage: occasionAtmosphereImage(id, state.feeling),
+        nextPhase: "date",
+        holdMs: 1700,
+      });
+    }, 420);
   };
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
