@@ -717,7 +717,20 @@ export function resolveStudioV3Route(input: {
       considerations: input.considerations ?? [],
     });
     for (let i = 0; i < composed.length; i++) routePoints[i] = composed[i];
+
+    // Phase 5G — optionally append ONE extra moment when safe.
+    const withExtra = applyExtraMoment(routePoints, {
+      skeletonTourId: journey.tour.id,
+      interests,
+      rhythm,
+      companions,
+      investment,
+      considerations: input.considerations ?? [],
+    });
+    routePoints.length = 0;
+    for (const p of withExtra) routePoints.push(p);
   }
+
 
   // Short route sentence, derived only from the same Signature's stops.
   const shortLabels: string[] = [];
