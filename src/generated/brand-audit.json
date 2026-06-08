@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-08T01:31:32.291Z",
-  "filesScanned": 337,
+  "generatedAt": "2026-06-08T02:02:58.602Z",
+  "filesScanned": 339,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 223,
+    "total": 228,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 135
+    "mismatch": 140
   },
   "findings": [
     {
@@ -1400,6 +1400,51 @@
       "normalized": "#faf8f3",
       "snippet": "<span className=\"block font-display text-[18px] font-semibold leading-tight tracking-tight text-[var(--ivory,#FAF8F3)] sm:text-[20px]\">",
       "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 80,
+      "col": 45,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "background: \"var(--charcoal-deep, #1a1a1a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 91,
+      "col": 46,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 80%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 153,
+      "col": 48,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 70%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 219,
+      "col": 86,
+      "raw": "#0c1a1d",
+      "normalized": "#0c1a1d",
+      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 45%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 219,
+      "col": 99,
+      "raw": "#0c1a1d",
+      "normalized": "#0c1a1d",
+      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 45%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
     },
     {
       "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
