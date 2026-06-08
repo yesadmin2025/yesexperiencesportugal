@@ -937,8 +937,13 @@ export function StudioV3() {
             <FooterHint>This helps us shape the vehicle, pace and table.</FooterHint>
           )}
           <ContinueCta
-            disabled={state.guests == null}
-            onClick={() => advance("interests")}
+            disabled={false}
+            onClick={() => {
+              // If the user never touched the stepper, commit the displayed
+              // default (2) before advancing so the count is always real.
+              if (state.guests == null) onGuestsChange(2);
+              advance("interests");
+            }}
             label="Continue"
           />
         </PhaseShell>
