@@ -116,6 +116,54 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             "0 12px 30px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
         }}
       >
+        {/* Adaptive progress whisper — thin gold line + quiet label.
+            Milestone-based (not question-count) so adaptive skips never
+            create a jumpy or inconsistent counter. */}
+        <div
+          role="progressbar"
+          aria-label={`Journey ${progressLabel}`}
+          aria-valuenow={pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="relative w-full"
+          style={{ height: "1px" }}
+        >
+          <div
+            className="h-full origin-left transition-[width] duration-[700ms] ease-out motion-reduce:transition-none"
+            style={{
+              width: `${pct}%`,
+              background:
+                "linear-gradient(90deg, color-mix(in oklab, var(--gold) 10%, transparent) 0%, var(--gold) 100%)",
+            }}
+          />
+        </div>
+        <div
+          className="flex items-center justify-between gap-3 px-3 py-1"
+          style={{
+            background: "color-mix(in oklab, #0d0d0d 70%, transparent)",
+          }}
+        >
+          <span
+            className="text-[9px] uppercase font-semibold"
+            style={{
+              color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+              letterSpacing: "0.26em",
+            }}
+          >
+            {progressLabel}
+          </span>
+          {hasPickup ? (
+            <span
+              className="text-[9px] uppercase font-semibold truncate max-w-[55%]"
+              style={{
+                color: "color-mix(in oklab, var(--ivory) 60%, transparent)",
+                letterSpacing: "0.22em",
+              }}
+            >
+              From {getPickupShort(state.pickup!)}
+            </span>
+          ) : null}
+        </div>
         {/* Header strip (tablet/desktop only — keeps mobile compact) */}
         <div
           className="hidden sm:flex items-center justify-between gap-3 border-b px-3 py-1.5"
