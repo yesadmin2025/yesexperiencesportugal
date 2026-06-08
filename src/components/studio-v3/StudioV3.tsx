@@ -6,8 +6,9 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
-import { AtmosphereBeat } from "./CreationBeat";
+import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
