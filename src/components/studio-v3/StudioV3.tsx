@@ -5,6 +5,7 @@ import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
+import { AtmosphereBeat } from "./CreationBeat";
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
@@ -277,7 +278,8 @@ type ReactionKind =
   | "interests"
   | "rhythm"
   | "considerations"
-  | "investment";
+  | "investment"
+  | "atmosphere";
 
 type Reaction = {
   /** Which of the 5 priority beats — drives the postcard visual. */
@@ -307,6 +309,90 @@ type Reaction = {
   bgImage?: string;
 };
 
+
+/** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
+function companionsAtmosphereLine(id: Companions): string {
+  switch (id) {
+    case "solo":
+      return "A day shaped around you — and the light you arrived with.";
+    case "couple":
+      return "Two of you, one rhythm, room to slow down together.";
+    case "family":
+      return "Easy timing, gentle pauses, space for everyone.";
+    case "friends":
+      return "A shared table, an open road, time to linger.";
+    case "celebration":
+      return "A day quietly built around the reason to gather.";
+    case "proposal":
+      return "One moment held with care, the rest left to feel real.";
+    case "corporate":
+      return "Considered, private, calmly hosted from start to end.";
+    default:
+      return "A day shaped around the people in it.";
+  }
+}
+
+/** Atmospheric image for the Who beat — reuses Studio V3 images already imported above. */
+function companionsAtmosphereImage(id: Companions, feeling: Feeling | null): string | undefined {
+  switch (id) {
+    case "couple":
+    case "proposal":
+      return atmRomantic;
+    case "family":
+    case "friends":
+    case "celebration":
+      return atmSocial;
+    case "corporate":
+      return atmCultural;
+    case "solo":
+    default:
+      return feeling ? FEELING_IMAGE[feeling] : atmScenic;
+  }
+}
+
+/** Context-aware atmosphere copy for the Occasion step. */
+function occasionAtmosphereLine(id: Occasion, companions: Companions | null): string {
+  switch (id) {
+    case "proposal":
+      return "We hold the moment. You stay present.";
+    case "anniversary":
+      return "A year worth marking, quietly and well.";
+    case "honeymoon":
+      return "First days, slowly lived, nothing rushed.";
+    case "birthday":
+      return "A day that earns the candles, without the staging.";
+    case "family-day":
+      return "Everyone gently together, at one rhythm.";
+    case "corporate":
+      return "Considered, private, elegantly hosted.";
+    case "celebration":
+      return "Something worth raising a glass to — held with care.";
+    case "none":
+    default:
+      return companions === "corporate"
+        ? "No occasion needed — just a day that runs well."
+        : "No reason needed — just a day that belongs to you.";
+  }
+}
+
+/** Atmospheric image for the Occasion beat. */
+function occasionAtmosphereImage(id: Occasion, feeling: Feeling | null): string | undefined {
+  switch (id) {
+    case "proposal":
+    case "anniversary":
+    case "honeymoon":
+      return atmRomantic;
+    case "birthday":
+    case "family-day":
+    case "celebration":
+      return atmSocial;
+    case "corporate":
+      return atmCultural;
+    case "none":
+    default:
+      return feeling ? FEELING_IMAGE[feeling] : atmScenic;
+  }
+}
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
@@ -415,7 +501,16 @@ export function StudioV3() {
       }
       return { ...s, companions: id };
     });
-    window.setTimeout(() => advance("occasion"), 420);
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The company",
+        message: companionsAtmosphereLine(id),
+        bgImage: companionsAtmosphereImage(id, state.feeling),
+        nextPhase: "occasion",
+        holdMs: 1700,
+      });
+    }, 420);
   };
   const onOccasion = (id: Occasion) => {
     setState((s) => {
@@ -428,7 +523,16 @@ export function StudioV3() {
       }
       return { ...s, occasion: id };
     });
-    window.setTimeout(() => advance("date"), 420);
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The occasion",
+        message: occasionAtmosphereLine(id, state.companions),
+        bgImage: occasionAtmosphereImage(id, state.feeling),
+        nextPhase: "date",
+        holdMs: 1700,
+      });
+    }, 420);
   };
   const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
   const onPickup = (id: Pickup) => {
@@ -1267,6 +1371,39 @@ function ReactionOverlay({
   onDismiss: () => void;
 }) {
   const hold = Math.min(reaction.holdMs ?? 2600, 3400);
+
+  // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
+  // full-bleed image wash with a single italic line, no postcard chrome.
+  if (reaction.kind === "atmosphere") {
+    return (
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Continue"
+        key={`${reaction.eyebrow}-${reaction.message}`}
+        className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
+        style={{
+          background: "var(--charcoal)",
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+        }}
+      >
+        <AtmosphereBeat
+          imageSrc={reaction.bgImage}
+          eyebrow={reaction.eyebrow}
+          line={reaction.message}
+        />
+        <style>{`
+          @keyframes studioV3ReactionFade {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+        `}</style>
+      </button>
+    );
+  }
+
 
   // Per-kind soft "postcard" gradient using brand tokens only.
   // No external imagery: warm scenic washes drawn from --ivory / --sand /
