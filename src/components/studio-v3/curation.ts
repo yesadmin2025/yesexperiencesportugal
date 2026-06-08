@@ -17,6 +17,12 @@
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
+import {
+  REGION_STOP_POOL,
+  STUDIO_V3_OPTIONAL_STOPS_ENABLED,
+  type OptionalStop,
+  type RegionId,
+} from "@/data/regionStopPool";
 import type {
   ChoiceOption,
   Companions,
@@ -766,6 +772,28 @@ export function resolveStudioV3Route(input: {
         ? "high"
         : "medium";
 
+  // Phase 5D — copy-only optional refinements, flag-gated. When the flag is
+  // false (current default), `finalRefinements` is byte-identical to the
+  // pre-Phase-5D `refinements.slice(0, 2)`, so live Studio output does not
+  // change. When the flag is enabled, optional stop names from
+  // REGION_STOP_POOL are appended as additional copy lines only — they
+  // never mutate routePoints, geo, suggestedRouteLabel, pricing, or the
+  // hidden Signature skeleton.
+  const baseRefinements = refinements.slice(0, 2);
+  let finalRefinements = baseRefinements;
+  if (STUDIO_V3_OPTIONAL_STOPS_ENABLED) {
+    const optional = selectOptionalRefinements({
+      skeletonTourId: journey.tour.id,
+      interests,
+      rhythm,
+      companions,
+      investment,
+      considerations: input.considerations ?? [],
+      existingRoutePointLabels: routePoints.map((p) => p.label),
+    });
+    finalRefinements = [...baseRefinements, ...optional].slice(0, 2);
+  }
+
   return {
     skeletonTourKey: journey.tour.id,
     skeletonTitleInternal: journey.tour.title,
@@ -774,7 +802,7 @@ export function resolveStudioV3Route(input: {
     routePoints,
     journeyTitle,
     whyItFits,
-    refinements: refinements.slice(0, 2),
+    refinements: finalRefinements,
     whatToConfirm:
       "Availability and final details are confirmed before your experience.",
     confidence,
@@ -1140,4 +1168,253 @@ export function getNextPhase(
     if (isPhaseRelevant(candidate, state)) return candidate;
   }
   return "storyboard";
+}
+
+/* ---------------------------------------------------------------------------
+ * Phase 5D — Safe optional stop resolver (copy-only, flag-gated).
+ *
+ * `selectOptionalRefinements` reads from `REGION_STOP_POOL` and returns
+ * stop NAMES only. It NEVER mutates routePoints, geo, suggestedRouteLabel,
+ * pricing, the skeleton, or any other Studio V3 output. It is wired into
+ * `resolveStudioV3Route` behind `STUDIO_V3_OPTIONAL_STOPS_ENABLED` which is
+ * `false` in committed code, so live behaviour is unchanged.
+ *
+ * Hard rules (also covered by `optional-stops.test.ts`):
+ *  - same region as the skeleton
+ *  - same routeCluster as the skeleton
+ *  - active === true only
+ *  - if candidate has signatureTourId, it must equal the skeleton id
+ *  - if candidate has sourceTourIds, it must include the skeleton id
+ *  - never duplicate an existing routePoint label
+ *  - never stack a oneOfGroup — keep ONE winner per group
+ *  - never bypass considerations (reduced-mobility / avoid-long-walks)
+ *  - slow rhythm → max 1, other rhythms → max 2
+ *  - investment is a soft score boost only — never a hard gate
+ * --------------------------------------------------------------------------- */
+
+/**
+ * Explicit skeleton → cluster map. Keyed by existing Signature tour ids
+ * only. Unknown skeleton ids return an empty refinement list — we never
+ * guess a region or cluster.
+ */
+const SKELETON_TO_CLUSTER: Record<
+  string,
+  { region: RegionId; routeCluster: string; signatureTourId: string }
+> = {
+  "troia-comporta": {
+    region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
+    signatureTourId: "troia-comporta",
+  },
+  "tomar-coimbra": {
+    region: "tomar-coimbra",
+    routeCluster: "tomar-coimbra-heritage",
+    signatureTourId: "tomar-coimbra",
+  },
+  "fatima-nazare-obidos": {
+    region: "fatima-nazare-obidos",
+    routeCluster: "fatima-nazare-obidos-spirit-coast",
+    signatureTourId: "fatima-nazare-obidos",
+  },
+  "sintra-cascais": {
+    region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
+    signatureTourId: "sintra-cascais",
+  },
+  "evora-alentejo": {
+    region: "alentejo-evora",
+    routeCluster: "evora-city-classical-wineries",
+    signatureTourId: "evora-alentejo",
+  },
+  // Arrábida / Azeitão / Sesimbra cluster — five Signature skeletons all
+  // share the same region + routeCluster. Optional stops in the pool may
+  // gate on either signatureTourId (single-tour stop) or sourceTourIds
+  // (shared-source stop).
+  "arrabida-wine-allinclusive": {
+    region: "arrabida-setubal",
+    routeCluster: "arrabida-azeitao-sesimbra",
+    signatureTourId: "arrabida-wine-allinclusive",
+  },
+  "wild-beaches-picnic": {
+    region: "arrabida-setubal",
+    routeCluster: "arrabida-azeitao-sesimbra",
+    signatureTourId: "wild-beaches-picnic",
+  },
+  "arrabida-boat": {
+    region: "arrabida-setubal",
+    routeCluster: "arrabida-azeitao-sesimbra",
+    signatureTourId: "arrabida-boat",
+  },
+  "tiles-workshop": {
+    region: "arrabida-setubal",
+    routeCluster: "arrabida-azeitao-sesimbra",
+    signatureTourId: "tiles-workshop",
+  },
+  "azeitao-cheese": {
+    region: "arrabida-setubal",
+    routeCluster: "arrabida-azeitao-sesimbra",
+    signatureTourId: "azeitao-cheese",
+  },
+};
+
+/**
+ * Considerations that imply difficult terrain. We avoid blindly excluding
+ * a `type` (e.g. all viewpoints) — instead we deny only when the stop's
+ * notes or type clearly imply difficult access. This is intentionally
+ * conservative.
+ */
+const DIFFICULT_ACCESS_RE =
+  /stairs|steep|uneven|cave|trail|beach access|reduced[- ]?mobility|may not suit|difficult access/i;
+
+const MOBILITY_CONSIDERATIONS = new Set<string>([
+  "reduced-mobility",
+  "avoid-long-walks",
+]);
+
+function isDeniedByConsiderations(
+  stop: OptionalStop,
+  considerations: ReadonlyArray<string>,
+): boolean {
+  if (considerations.length === 0) return false;
+  const mobilityConcern = considerations.some((c) =>
+    MOBILITY_CONSIDERATIONS.has(c),
+  );
+  if (!mobilityConcern) return false;
+  if (stop.notes && DIFFICULT_ACCESS_RE.test(stop.notes)) return true;
+  return false;
+}
+
+/**
+ * Deterministic candidate score. Higher is better. Used for ranking and
+ * for oneOfGroup tie-breaking. Investment is a soft boost only — it never
+ * gates eligibility in Phase 5D.
+ */
+function scoreOptionalStop(
+  stop: OptionalStop,
+  ctx: {
+    interests: ReadonlyArray<Interest>;
+    rhythm: Rhythm;
+    companions: Companions;
+    investment: InvestmentTier | null;
+  },
+): number {
+  let score = 0;
+
+  // Interest overlap
+  if (ctx.interests.length > 0) {
+    for (const i of ctx.interests) {
+      if (stop.suitsInterests.includes(i)) score += 1;
+    }
+  }
+
+  // Rhythm match
+  if (stop.suitsRhythm.includes(ctx.rhythm)) score += 1;
+
+  // Companions match — undefined `suitsCompanions` is treated as compatible
+  if (!stop.suitsCompanions || stop.suitsCompanions.includes(ctx.companions)) {
+    score += 1;
+  }
+
+  // Investment soft boost
+  if (stop.suitsInvestment && ctx.investment) {
+    if (ctx.investment === "open") {
+      score += 0.25;
+    } else if (stop.suitsInvestment.includes(ctx.investment)) {
+      score += 0.5;
+    }
+  }
+
+  return score;
+}
+
+function normalizeLabel(s: string): string {
+  return s.trim().toLowerCase();
+}
+
+/**
+ * Pure selector. Reads from REGION_STOP_POOL and returns stop names only.
+ * Does NOT consult the feature flag — the call site in
+ * `resolveStudioV3Route` gates it. This keeps the selector unit-testable
+ * with the flag still false in committed code.
+ */
+export function selectOptionalRefinements(input: {
+  skeletonTourId: string | null | undefined;
+  interests: ReadonlyArray<Interest>;
+  rhythm: Rhythm;
+  companions: Companions;
+  investment: InvestmentTier | null;
+  considerations: ReadonlyArray<string>;
+  existingRoutePointLabels: ReadonlyArray<string>;
+}): string[] {
+  const skeleton = input.skeletonTourId
+    ? SKELETON_TO_CLUSTER[input.skeletonTourId]
+    : undefined;
+  if (!skeleton) return [];
+
+  const existing = new Set(
+    input.existingRoutePointLabels.map((l) => normalizeLabel(l)),
+  );
+
+  // Eligibility filter
+  const eligible = REGION_STOP_POOL.filter((stop) => {
+    if (!stop.active) return false;
+    if (stop.region !== skeleton.region) return false;
+    if (stop.routeCluster !== skeleton.routeCluster) return false;
+
+    // signatureTourId gate
+    if (stop.signatureTourId && stop.signatureTourId !== skeleton.signatureTourId) {
+      return false;
+    }
+    // sourceTourIds gate (only when signatureTourId is not set or doesn't match)
+    if (stop.sourceTourIds && stop.sourceTourIds.length > 0) {
+      if (!stop.sourceTourIds.includes(skeleton.signatureTourId)) {
+        // If signatureTourId already matched above, we never got here. If
+        // it wasn't set, sourceTourIds must include the skeleton.
+        if (!stop.signatureTourId) return false;
+      }
+    }
+
+    // Dedupe vs existing route points
+    if (existing.has(normalizeLabel(stop.name))) return false;
+
+    // Considerations deny
+    if (isDeniedByConsiderations(stop, input.considerations)) return false;
+
+    return true;
+  });
+
+  // Score + deterministic sort (score desc, durationMin asc, id asc)
+  const scored = eligible
+    .map((stop) => ({
+      stop,
+      score: scoreOptionalStop(stop, {
+        interests: input.interests,
+        rhythm: input.rhythm,
+        companions: input.companions,
+        investment: input.investment,
+      }),
+    }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (a.stop.durationMin !== b.stop.durationMin) {
+        return a.stop.durationMin - b.stop.durationMin;
+      }
+      return a.stop.id.localeCompare(b.stop.id);
+    });
+
+  // Collapse oneOfGroup — keep first (highest-scored) member of each group
+  const seenGroups = new Set<string>();
+  const collapsed: typeof scored = [];
+  for (const entry of scored) {
+    const group = entry.stop.oneOfGroup;
+    if (group) {
+      if (seenGroups.has(group)) continue;
+      seenGroups.add(group);
+    }
+    collapsed.push(entry);
+  }
+
+  // Rhythm cap — slow rhythm gets at most 1 optional stop
+  const cap = input.rhythm === "slow" ? 1 : 2;
+  return collapsed.slice(0, cap).map((e) => e.stop.name);
 }
