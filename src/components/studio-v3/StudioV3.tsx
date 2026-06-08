@@ -977,8 +977,14 @@ export function StudioV3() {
             onClick={() => {
               // If the user never touched the stepper, commit the displayed
               // default (2) before advancing so the count is always real.
+              const committedGuests = state.guests ?? 2;
               if (state.guests == null) onGuestsChange(2);
-              advance("interests");
+              const forward: StudioV3State = {
+                ...state,
+                guests: committedGuests,
+                guestsPrivateEvent: committedGuests >= 11,
+              };
+              advance(getNextPhase(forward, "guests"));
             }}
             label="Continue"
           />
