@@ -733,6 +733,7 @@ export function StudioV3() {
       .filter((l): l is string => Boolean(l));
     const chips = allChips.slice(0, 4);
     const tail = allChips.length > 4 ? "and more to refine" : undefined;
+    const next = getNextPhase(state, "interests");
     playReaction({
       kind: "interests",
       eyebrow: "The moments",
@@ -741,7 +742,7 @@ export function StudioV3() {
       chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
       chipsTail: tail,
       postcardSubline: "These will guide the route.",
-      nextPhase: "rhythm",
+      nextPhase: next,
       holdMs: 3200,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
     });
@@ -749,12 +750,13 @@ export function StudioV3() {
   const continueFromConsiderations = () => {
     const isNone =
       state.considerations.length === 0 || state.considerations.includes("none");
+    const next = getNextPhase(state, "considerations");
     playReaction({
       kind: "considerations",
       eyebrow: "The care",
       message: "It is not just where you go.\nIt is how the day fits you.",
       postcardCaption: isNone ? "Nothing to adjust." : "Care notes held.",
-      nextPhase: "language",
+      nextPhase: next,
       holdMs: 2600,
     });
   };
