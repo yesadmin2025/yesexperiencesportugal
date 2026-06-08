@@ -90,6 +90,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
       interests: state.interests,
       pickup: state.pickup,
       occasion: state.occasion,
+      investment: state.investment,
     });
   }, [
     meaningfulRoute,
@@ -99,6 +100,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     state.interests,
     state.pickup,
     state.occasion,
+    state.investment,
   ]);
 
   const routeLine = resolved?.suggestedRouteLabel ?? null;
