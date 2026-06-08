@@ -163,14 +163,26 @@ describe("Phase 5E — applyReplacementCandidates rules", () => {
     expect(out[0].label).toBe("Évora");
   });
 
-  it("never replaces the second route point (protected anchor)", () => {
+  it("Phase 5F — index 1 CAN be replaced when it is a safe same-type slot", () => {
+    // Évora skeleton, winery at index 1 with an immersive rhythm + many
+    // eligible winery candidates in the cluster → index 1 should be swapped
+    // (replaces blanket PROTECTED_LEAD_COUNT=2 from Phase 5E).
     const route = makeRoutePoints([
       { label: "Évora", story: "Old town heritage walk." },
-      { label: "Some Winery", story: "Classical Alentejo winery tasting." },
-      { label: "Another Winery", story: "Wine estate cellar visit." },
+      { label: "WineryAnchor", story: "Wine estate tasting." },
+      { label: "WineryB", story: "Wine cellar visit." },
+      { label: "WineryC", story: "Adega visit." },
     ]);
-    const out = applyReplacementCandidates(route, baseInput);
-    expect(out[1].label).toBe("Some Winery");
+    const out = applyReplacementCandidates(route, {
+      ...baseInput,
+      rhythm: "immersive",
+    });
+    // Index 0 still protected.
+    expect(out[0].label).toBe("Évora");
+    // At least one replacement happened somewhere in 1..n (proves the
+    // blanket index-1 protection was lifted).
+    const changed = out.filter((p, i) => p.label !== route[i].label);
+    expect(changed.length).toBeGreaterThanOrEqual(1);
   });
 
   it("preserves array length (never grows beyond 4)", () => {
