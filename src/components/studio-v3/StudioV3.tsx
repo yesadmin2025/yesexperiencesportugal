@@ -644,6 +644,18 @@ export function StudioV3() {
       }));
     }
     const nextAfterPickup = getNextPhase(forwardState, "pickup");
+    const originLabel = pickupCityLabel(id);
+    if (STUDIO_V3_MAP_BEATS_ENABLED && originLabel) {
+      pickAndAdvance("pickup", id, nextAfterPickup, {
+        kind: "map-beat",
+        eyebrow: "The beginning",
+        message: `The day begins in ${originLabel}.`,
+        mapMode: "origin",
+        originLabel,
+        holdMs: 2600,
+      });
+      return;
+    }
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
       eyebrow: "The beginning",
