@@ -65,6 +65,7 @@ export interface OptionalStop {
   notes?: string;
   source: OptionalStopSource;
   signatureTourId?: string;
+  sourceTourIds?: string[];
   routeCluster?: string;
   oneOfGroup?: string;
   active: boolean;
