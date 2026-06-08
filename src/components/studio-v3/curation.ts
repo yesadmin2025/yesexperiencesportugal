@@ -1464,48 +1464,120 @@ const STUDIO_V3_ROUTE_COMPOSITION_ENABLED = false;
  *  we use a conservative constant; candidates are scored relative to this. */
 const ROUTE_POINT_BASELINE_MIN = 60;
 
-/** First N positions are the anchor and are never replaced. */
-const PROTECTED_LEAD_COUNT = 2;
-
 function replacementCapForRhythm(rhythm: Rhythm): number {
   if (rhythm === "slow") return 1;
   if (rhythm === "balanced") return 2;
   return 3; // full | immersive
 }
 
+/** Inferred route-point kind. Extends OptionalStopType with a virtual
+ *  "scenic" bucket for coastal / dusk / landscape phrasing that has no
+ *  single canonical OptionalStopType — handled via the compatibility map. */
+type InferredRoutePointKind = OptionalStop["type"] | "scenic";
+
 /**
- * Infer a coarse OptionalStopType from a Signature stop's label + story.
+ * Infer a coarse kind from a Signature stop's label + story.
  * Deterministic, keyword-only. Returns null when nothing matches — those
  * stops are skipped (never replaced) to stay safe.
+ *
+ * Order matters: more specific patterns (winery, workshop, viewpoint…)
+ * run before the broader "village (place)" and "scenic" fallbacks so a
+ * label like "Cristo Rei viewpoint" stays `viewpoint`, "Family winery in
+ * Azeitão" stays `winery`, while bare "Sesimbra coast" or "Arrábida at
+ * dusk" can still resolve to a usable kind.
  */
 function inferRoutePointType(
   label: string,
   story: string,
-): OptionalStop["type"] | null {
+): InferredRoutePointKind | null {
   const hay = `${label} ${story}`.toLowerCase();
-  if (/\bwinery|wine cellar|wine estate|vineyard|adega|quinta\b/.test(hay))
+  if (/\bwinery|wine cellar|wine estate|wine tasting|vineyard|adega|quinta\b/.test(hay))
     return "winery";
-  if (/\bviewpoint|miradouro|overlook|panoram/.test(hay)) return "viewpoint";
-  if (/\bbeach|praia|cove|sand\b/.test(hay)) return "beach";
-  if (/\bmarket|mercado\b/.test(hay)) return "market";
-  if (/\bvillage|aldeia|hamlet|vila d/.test(hay)) return "village";
-  if (/\bgarden|jardim|park\b/.test(hay)) return "garden";
   if (/\bworkshop|atelier|tile painting|hands-on\b/.test(hay))
     return "workshop";
   if (/\bboat|barco|sail|catamaran|cruise\b/.test(hay)) return "boat";
-  if (/\blunch|dinner|tasting menu|chef|table|petiscos|restaurant\b/.test(hay))
-    return "table";
+  if (/\bmarket|mercado\b/.test(hay)) return "market";
   if (
     /\bmonastery|convent|chapel|cathedral|church|castle|palace|temple|fortress|capela|igreja|castelo|pal[áa]cio|monument\b/.test(
       hay,
     )
   )
     return "monument";
-  if (/\bheritage|historic|old town|centro hist[óo]rico|roman ruin/.test(hay))
-    return "heritage";
+  if (/\bviewpoint|viewpoints|miradouro|overlook|panoram|lookout\b/.test(hay))
+    return "viewpoint";
+  if (/\bbeach|praia|cove|sand\b/.test(hay)) return "beach";
+  if (
+    /\blunch|dinner|meal|restaurant|table|petiscos|picnic|tasting menu|chef|food|gastronomy\b/.test(
+      hay,
+    )
+  )
+    return "table";
+  if (
+    /\bvillage|aldeia|hamlet|vila d|town|old town|historic centre|centro hist[óo]rico|sesimbra|azeit[ãa]o|cascais|sintra|[óo]bidos|comporta|tomar|coimbra|[ée]vora\b/.test(
+      hay,
+    )
+  )
+    return "village";
+  if (/\bgarden|jardim|park\b/.test(hay)) return "garden";
   if (/\bstudio|gallery|artisan\b/.test(hay)) return "studio";
-  if (/\bnature|forest|reserve|trail|hike|cliff\b/.test(hay)) return "nature";
+  if (/\bheritage|historic|roman ruin\b/.test(hay)) return "heritage";
+  if (/\bnature|forest|reserve|trail|hike|cliff|cliffs\b/.test(hay))
+    return "nature";
+  if (/\bcoast|coastal|seaside|ocean|dusk|sunset|landscape\b/.test(hay))
+    return "scenic";
   return null;
+}
+
+/**
+ * Compatibility map: which OptionalStop candidate types can legally replace
+ * a route point of a given inferred kind. Strict by default — wider
+ * families only where listed by the Phase 5F spec, never across food /
+ * heritage / coast boundaries.
+ */
+const REPLACEMENT_FAMILY: Record<InferredRoutePointKind, ReadonlyArray<OptionalStop["type"]>> = {
+  winery: ["winery"],
+  workshop: ["workshop"],
+  monument: ["monument"],
+  market: ["market"],
+  table: ["table"],
+  beach: ["beach"],
+  viewpoint: ["viewpoint"],
+  nature: ["nature"],
+  garden: ["garden"],
+  studio: ["studio"],
+  boat: ["boat"],
+  heritage: ["heritage", "monument"],
+  scenic: ["beach", "viewpoint", "nature", "village"],
+  village: ["village", "market", "monument"],
+};
+
+function isCompatibleCandidate(
+  kind: InferredRoutePointKind,
+  cand: OptionalStop,
+): boolean {
+  return REPLACEMENT_FAMILY[kind].includes(cand.type);
+}
+
+/**
+ * Phase 5F: replaces the blanket PROTECTED_LEAD_COUNT=2 guard.
+ *   - index 0 is always protected (entry/anchor).
+ *   - index 1+ is replaceable when its inferred kind has at least one
+ *     compatible candidate in the pre-filtered pool.
+ *   - route points whose kind cannot be inferred are protected.
+ *   - table/lunch slots are protected unless a same-family table
+ *     candidate exists.
+ */
+function isProtectedRoutePoint(
+  routePoint: ResolvedRoutePoint,
+  index: number,
+  candidates: ReadonlyArray<OptionalStop>,
+): boolean {
+  if (index === 0) return true;
+  const kind = inferRoutePointType(routePoint.label, routePoint.story);
+  if (!kind) return true;
+  const hasCompatible = candidates.some((c) => isCompatibleCandidate(kind, c));
+  if (!hasCompatible) return true;
+  return false;
 }
 
 /** Hard deny: mobility considerations + viewpoint replacement candidates. */
@@ -1621,7 +1693,7 @@ export function applyReplacementCandidates(
 
   const cap = Math.min(
     replacementCapForRhythm(input.rhythm),
-    Math.max(0, out.length - PROTECTED_LEAD_COUNT),
+    Math.max(0, out.length - 1), // index 0 is always protected
   );
   if (cap === 0) return out;
 
@@ -1647,15 +1719,16 @@ export function applyReplacementCandidates(
 
   let replacedCount = 0;
 
-  for (let i = PROTECTED_LEAD_COUNT; i < out.length; i++) {
+  for (let i = 0; i < out.length; i++) {
     if (replacedCount >= cap) break;
     const current = out[i];
-    const currentType = inferRoutePointType(current.label, current.story);
-    if (!currentType) continue;
+    if (isProtectedRoutePoint(current, i, candidates)) continue;
+    const kind = inferRoutePointType(current.label, current.story);
+    if (!kind) continue; // belt-and-braces; isProtectedRoutePoint already guards
 
     for (const cand of candidates) {
       if (usedIds.has(cand.id)) continue;
-      if (cand.type !== currentType) continue;
+      if (!isCompatibleCandidate(kind, cand)) continue;
       if (cand.oneOfGroup && usedGroups.has(cand.oneOfGroup)) continue;
       if (usedLabels.has(normalizeLabel(cand.name))) continue;
 
