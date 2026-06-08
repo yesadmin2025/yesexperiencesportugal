@@ -597,9 +597,14 @@ export function StudioV3() {
     const label = getOptionLabel(PICKUPS, id);
     // Final inference check before leaving pickup → decide whether to skip guests.
     const inferred = inferGuests(state.companions, state.occasion, state.feeling);
-    const nextAfterPickup: StudioV3Phase = inferred ? "interests" : "guests";
-    if (inferred) {
-      setState((s) => ({ ...s, guests: inferred, guestsInferred: true }));
+    const nextAfterPickup: StudioV3Phase = inferred != null ? "interests" : "guests";
+    if (inferred != null) {
+      setState((s) => ({
+        ...s,
+        guests: inferred,
+        guestsInferred: true,
+        guestsPrivateEvent: inferred >= 11,
+      }));
     }
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
@@ -615,10 +620,16 @@ export function StudioV3() {
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
-  const onGuests = (id: GuestBucket) => {
-    // Explicit pick overrides any prior inference.
-    setState((s) => ({ ...s, guests: id, guestsInferred: false }));
-    window.setTimeout(() => advance("interests"), 420);
+  /** Phase 3 — exact guest count from the stepper (1–14). Manual change
+   *  always clears the inferred flag and refreshes the private-event flag. */
+  const onGuestsChange = (n: number) => {
+    const next = Math.max(1, Math.min(14, Math.trunc(n)));
+    setState((s) => ({
+      ...s,
+      guests: next,
+      guestsInferred: false,
+      guestsPrivateEvent: next >= 11,
+    }));
   };
   const onRhythm = (id: Rhythm) => {
     const hint =
