@@ -276,8 +276,8 @@ export const LANGUAGES: ChoiceOption<Language>[] = [
 ];
 
 export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
-  { id: "considered", label: "Considered", whisper: "Beautifully done, gently scaled." },
-  { id: "elevated", label: "Elevated", whisper: "A step further, in every detail." },
-  { id: "bespoke", label: "Bespoke", whisper: "No ceiling, every choice yours." },
-  { id: "open", label: "Open to suggestions", whisper: "Show us what's possible." },
+  { id: "considered", label: "Considered", whisper: "Beautifully private, without unnecessary extras." },
+  { id: "elevated", label: "Elevated", whisper: "More curated moments, stronger tastings and smoother pacing." },
+  { id: "bespoke", label: "Bespoke", whisper: "Premium details, private access and a more distinctive day." },
+  { id: "open", label: "Open to guidance", whisper: "Let YES shape the best fit around your choices." },
 ];
