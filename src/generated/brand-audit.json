@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-08T02:55:23.576Z",
-  "filesScanned": 342,
+  "generatedAt": "2026-06-08T03:25:56.796Z",
+  "filesScanned": 343,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1403,7 +1403,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 113,
+      "line": 122,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1412,7 +1412,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 143,
+      "line": 152,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1421,7 +1421,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 172,
+      "line": 181,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1430,7 +1430,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 234,
+      "line": 243,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1439,7 +1439,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 300,
+      "line": 309,
       "col": 86,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1448,7 +1448,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 300,
+      "line": 309,
       "col": 99,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1466,7 +1466,7 @@
     },
     {
       "file": "src/components/studio-v3/LivingJourneyPanel.tsx",
-      "line": 295,
+      "line": 297,
       "col": 92,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1475,7 +1475,7 @@
     },
     {
       "file": "src/components/studio-v3/LivingJourneyPanel.tsx",
-      "line": 295,
+      "line": 297,
       "col": 105,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1484,7 +1484,7 @@
     },
     {
       "file": "src/components/studio-v3/LivingJourneyPanel.tsx",
-      "line": 433,
+      "line": 435,
       "col": 88,
       "raw": "#d8c089",
       "normalized": "#d8c089",
