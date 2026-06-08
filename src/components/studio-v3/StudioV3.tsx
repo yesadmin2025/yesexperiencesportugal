@@ -85,6 +85,7 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
+import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
