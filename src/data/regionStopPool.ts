@@ -125,6 +125,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "cais-palafitico-carrasqueira",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Carrasqueira",
     name: "Cais Palafítico do Porto da Carrasqueira",
     type: "heritage",
