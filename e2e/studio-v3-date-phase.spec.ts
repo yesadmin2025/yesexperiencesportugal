@@ -29,17 +29,17 @@ async function walkToDatePhase(page: Page) {
   await page.getByRole("button", { name: /^Begin$/ }).click();
   await page.getByRole("button", { name: /^Skip$/ }).click();
 
-  // Feeling
+  // Feeling (ChoiceGrid renders option buttons with role="radio")
   await expect(page.getByText(/Portugal to feel\?/i)).toBeVisible();
-  await page.getByRole("button", { name: /Coastal escape/i }).click();
+  await page.getByRole("radio", { name: /Coastal escape/i }).click();
 
   // Who
   await expect(page.getByText(/Who is/i)).toBeVisible({ timeout: 8000 });
-  await page.getByRole("button", { name: /^Solo/i }).click();
+  await page.getByRole("radio", { name: /^Solo/i }).click();
 
   // Occasion
   await expect(page.getByText(/reason behind it\?/i)).toBeVisible({ timeout: 8000 });
-  await page.getByRole("button", { name: /Just because/i }).click();
+  await page.getByRole("radio", { name: /Just because/i }).click();
 
   // Date phase
   await expect(page.getByText(/When should/i)).toBeVisible({ timeout: 8000 });
