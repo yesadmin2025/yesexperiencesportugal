@@ -112,11 +112,13 @@ export interface StudioV3State {
   journeyTitle: string | null;
   /** True when `guests` was inferred from companions/occasion (the guests phase was skipped). */
   guestsInferred: boolean;
+  /** Optional first name from the opening intro. Null when user skips. */
+  firstName: string | null;
 }
 
 
 export const INITIAL_STATE: StudioV3State = {
-  phase: "feeling",
+  phase: "intro",
   feeling: null,
   companions: null,
   occasion: null,
