@@ -495,72 +495,73 @@ export function StudioV3() {
     });
   };
   const onCompanions = (id: Companions) => {
-    // Re-infer eagerly so the user landing on pickup already has guests set
-    // when applicable. We never overwrite an explicit user choice.
-    setState((s) => {
-      const inferred = inferGuests(id, s.occasion, s.feeling);
-      if (inferred != null && (s.guestsInferred || s.guests == null)) {
-        return {
-          ...s,
-          companions: id,
-          guests: inferred,
-          guestsInferred: true,
-          guestsPrivateEvent: inferred >= 11,
-        };
-      }
-      // Companions changed to something that no longer infers — clear stale inference.
-      if (inferred == null && s.guestsInferred) {
-        return {
-          ...s,
-          companions: id,
-          guests: null,
-          guestsInferred: false,
-          guestsPrivateEvent: false,
-        };
-      }
-      return { ...s, companions: id };
-    });
+    // Compute forward state (with possible guest inference) so we can both
+    // commit it and resolve the next phase adaptively.
+    const inferred = inferGuests(id, state.occasion, state.feeling);
+    let forward: StudioV3State;
+    if (inferred != null && (state.guestsInferred || state.guests == null)) {
+      forward = {
+        ...state,
+        companions: id,
+        guests: inferred,
+        guestsInferred: true,
+        guestsPrivateEvent: inferred >= 11,
+      };
+    } else if (inferred == null && state.guestsInferred) {
+      forward = {
+        ...state,
+        companions: id,
+        guests: null,
+        guestsInferred: false,
+        guestsPrivateEvent: false,
+      };
+    } else {
+      forward = { ...state, companions: id };
+    }
+    setState(() => forward);
+    const next = getNextPhase(forward, "who");
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
         eyebrow: "The company",
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
-        nextPhase: "occasion",
+        nextPhase: next,
         holdMs: 1700,
       });
     }, 420);
   };
   const onOccasion = (id: Occasion) => {
-    setState((s) => {
-      const inferred = inferGuests(s.companions, id, s.feeling);
-      if (inferred != null && (s.guestsInferred || s.guests == null)) {
-        return {
-          ...s,
-          occasion: id,
-          guests: inferred,
-          guestsInferred: true,
-          guestsPrivateEvent: inferred >= 11,
-        };
-      }
-      if (inferred == null && s.guestsInferred) {
-        return {
-          ...s,
-          occasion: id,
-          guests: null,
-          guestsInferred: false,
-          guestsPrivateEvent: false,
-        };
-      }
-      return { ...s, occasion: id };
-    });
+    const inferred = inferGuests(state.companions, id, state.feeling);
+    let forward: StudioV3State;
+    if (inferred != null && (state.guestsInferred || state.guests == null)) {
+      forward = {
+        ...state,
+        occasion: id,
+        guests: inferred,
+        guestsInferred: true,
+        guestsPrivateEvent: inferred >= 11,
+      };
+    } else if (inferred == null && state.guestsInferred) {
+      forward = {
+        ...state,
+        occasion: id,
+        guests: null,
+        guestsInferred: false,
+        guestsPrivateEvent: false,
+      };
+    } else {
+      forward = { ...state, occasion: id };
+    }
+    setState(() => forward);
+    const next = getNextPhase(forward, "occasion");
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
         eyebrow: "The occasion",
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
-        nextPhase: "date",
+        nextPhase: next,
         holdMs: 1700,
       });
     }, 420);
