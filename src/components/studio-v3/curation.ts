@@ -27,6 +27,7 @@ import type {
   IntentProfile,
   IntentType,
   Interest,
+  InvestmentTier,
   Occasion,
   Pickup,
   Rhythm,
