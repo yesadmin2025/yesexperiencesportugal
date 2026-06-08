@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-08T02:02:58.602Z",
-  "filesScanned": 339,
+  "generatedAt": "2026-06-08T02:21:56.734Z",
+  "filesScanned": 341,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 228,
+    "total": 229,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 140
+    "mismatch": 141
   },
   "findings": [
     {
@@ -1403,7 +1403,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 80,
+      "line": 113,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1412,7 +1412,16 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 91,
+      "line": 143,
+      "col": 46,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 70%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 172,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1421,7 +1430,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 153,
+      "line": 234,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1430,7 +1439,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 219,
+      "line": 300,
       "col": 86,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1439,7 +1448,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 219,
+      "line": 300,
       "col": 99,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
