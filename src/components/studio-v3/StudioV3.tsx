@@ -61,7 +61,6 @@ const INTEREST_IMAGE: Record<string, string> = {
 import {
   COMPANIONS,
   CONSIDERATIONS,
-  DATE_WINDOWS,
   FEELINGS,
   GUEST_BUCKETS,
   INITIAL_STATE,
@@ -74,7 +73,7 @@ import {
   type ChoiceOption,
   type Companions,
   type Consideration,
-  type DateWindow,
+  type DateMode,
   type Feeling,
   type GuestBucket,
   type Interest,
@@ -86,6 +85,7 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
+import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
@@ -537,7 +537,39 @@ export function StudioV3() {
       });
     }, 420);
   };
-  const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
+  // Date phase (Phase 2) — operational date selection.
+  // dateMode: "exact" | "flexible" | "undecided"; dateExact is ISO yyyy-mm-dd
+  // only when "exact". Reaction copy reflects the chosen mode.
+  const dateModeAtmosphereLine = (mode: DateMode): string => {
+    if (mode === "exact") return "A clear date. The day can begin to take shape.";
+    if (mode === "flexible") return "Flexible. We'll leave room for the right light.";
+    return "No rush. The journey can form before the date is fixed.";
+  };
+  const dateBgImage = () => (state.feeling ? FEELING_IMAGE[state.feeling] : undefined);
+  const playDateReaction = (mode: DateMode, delay = 420) => {
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The when",
+        message: dateModeAtmosphereLine(mode),
+        bgImage: dateBgImage(),
+        nextPhase: "pickup",
+        holdMs: 1700,
+      });
+    }, delay);
+  };
+  const onDateExact = (iso: string) => {
+    setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }));
+    playDateReaction("exact");
+  };
+  const onDateFlexible = () => {
+    setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }));
+    playDateReaction("flexible");
+  };
+  const onDateUndecided = () => {
+    setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }));
+    playDateReaction("undecided");
+  };
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
     // Final inference check before leaving pickup → decide whether to skip guests.
@@ -834,11 +866,17 @@ export function StudioV3() {
         <PhaseShell accent="teal" exiting={exiting}>
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
-          <ChoiceGrid options={DATE_WINDOWS} value={state.dateWindow} onSelect={onDate} columns={1} />
-          {state.dateWindow ? (
-            <NextTeaser>{contextualTeaser("date", state)}</NextTeaser>
+          <DatePhaseControls
+            dateExact={state.dateExact}
+            dateMode={state.dateMode}
+            onPickExact={onDateExact}
+            onPickFlexible={onDateFlexible}
+            onPickUndecided={onDateUndecided}
+          />
+          {state.dateMode ? (
+            <NextTeaser>{dateNextTeaser(state.dateMode)}</NextTeaser>
           ) : (
-            <FooterHint>We'll confirm the exact date together later.</FooterHint>
+            <FooterHint>Pick a date, or tell us you're flexible.</FooterHint>
           )}
         </PhaseShell>
       ) : null}
