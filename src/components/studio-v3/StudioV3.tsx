@@ -688,13 +688,14 @@ export function StudioV3() {
   };
   const onInvestment = (id: InvestmentTier) => {
     const next = getNextPhase({ ...state, investment: id }, "investment");
+    const label = getOptionLabel(INVESTMENT_TIERS, id);
     pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
-      message: "No surprises.\nJust clarity before anything moves forward.",
-      postcardCaption: "Estimate before confirmation.",
-      postcardSubline: "Now the route can take shape.",
-      holdMs: 2600,
+      message: "This sets the tone.\nThe day will be shaped around it.",
+      postcardCaption: label ? `Direction · ${label}` : "Direction set",
+      postcardSubline: "The moments will follow from here.",
+      holdMs: 2400,
     });
   };
 
