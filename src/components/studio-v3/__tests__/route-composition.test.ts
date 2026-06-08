@@ -10,8 +10,10 @@ import {
   resolveStudioV3Route,
   selectReplacementCandidates,
   applyReplacementCandidates,
+  applyExtraMoment,
   __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS,
 } from "@/components/studio-v3/curation";
+
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 
 const baseInput = {
@@ -428,6 +430,164 @@ describe("Phase 5F — type inference + compatibility families", () => {
       const stop = REGION_STOP_POOL.find((s) => s.name === out[i].label);
       // If anything swapped, it must be a table — never village/winery/beach.
       expect(stop?.type).toBe("table");
+    }
+  });
+});
+
+describe("Phase 5G — one personalised extra moment", () => {
+  it("flag remains false in committed code", () => {
+    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(false);
+  });
+
+  it("slow rhythm never adds an extra moment", () => {
+    const route = makeRoutePoints([
+      { label: "Évora", story: "Old town walk." },
+      { label: "WineryA", story: "Wine estate tasting." },
+    ]);
+    const out = applyExtraMoment(route, { ...baseInput, rhythm: "slow" });
+    expect(out.length).toBe(route.length);
+  });
+
+  it("balanced rhythm can add ONE extra moment when route < 4 (Arrábida)", () => {
+    const route = makeRoutePoints([
+      { label: "Cristo Rei viewpoint", story: "Panoramic overlook." },
+      { label: "Family winery in Azeitão", story: "Wine estate tasting." },
+      { label: "Azeitão village", story: "Old town walk." },
+    ]);
+    const out = applyExtraMoment(route, {
+      skeletonTourId: "arrabida-wine-allinclusive",
+      interests: ["wine", "gastronomy", "heritage"],
+      rhythm: "balanced",
+      companions: "couple",
+      investment: "elevated",
+      considerations: [],
+    });
+    expect(out.length).toBeLessThanOrEqual(4);
+    expect(out.length).toBeGreaterThanOrEqual(route.length);
+    if (out.length === route.length + 1) {
+      const added = out.find(
+        (p) => !route.some((r) => r.label === p.label),
+      );
+      expect(added).toBeDefined();
+      const stop = REGION_STOP_POOL.find((s) => s.name === added!.label);
+      expect(stop).toBeDefined();
+      expect(stop!.region).toBe("arrabida-setubal");
+      expect(stop!.routeCluster).toBe("arrabida-azeitao-sesimbra");
+      expect(stop!.active).toBe(true);
+    }
+  });
+
+  it("never exceeds 4 routePoints even when input is already 4", () => {
+    const route = makeRoutePoints([
+      { label: "Évora", story: "Old town walk." },
+      { label: "WineryA", story: "Wine estate tasting." },
+      { label: "WineryB", story: "Wine cellar visit." },
+      { label: "WineryC", story: "Adega visit." },
+    ]);
+    const out = applyExtraMoment(route, { ...baseInput, rhythm: "immersive" });
+    expect(out.length).toBe(4);
+  });
+
+  it("reduced-mobility never adds a viewpoint extra moment", () => {
+    const route = makeRoutePoints([
+      { label: "Sesimbra", story: "Coastal village walk." },
+      { label: "Anchor stop", story: "Azeitão village stroll." },
+    ]);
+    const out = applyExtraMoment(route, {
+      skeletonTourId: "wild-beaches-picnic",
+      interests: ["coast", "nature"],
+      rhythm: "full",
+      companions: "couple",
+      investment: "elevated",
+      considerations: ["reduced-mobility"],
+    });
+    const added = out.find((p) => !route.some((r) => r.label === p.label));
+    if (added) {
+      const stop = REGION_STOP_POOL.find((s) => s.name === added.label);
+      expect(stop?.type).not.toBe("viewpoint");
+    }
+  });
+
+  it("never picks a oneOfGroup member already present in the route", () => {
+    // Seed route with a pool stop that belongs to a oneOfGroup, if any.
+    const grouped = REGION_STOP_POOL.find(
+      (s) =>
+        s.routeCluster === "arrabida-azeitao-sesimbra" &&
+        !!s.oneOfGroup &&
+        s.active,
+    );
+    if (!grouped) return; // no grouped stop in cluster — skip silently
+    const route = makeRoutePoints([
+      { label: "Cristo Rei viewpoint", story: "Panoramic overlook." },
+      { label: grouped.name, story: grouped.notes ?? "" },
+    ]);
+    const out = applyExtraMoment(route, {
+      skeletonTourId: "arrabida-wine-allinclusive",
+      interests: ["wine", "gastronomy", "heritage"],
+      rhythm: "balanced",
+      companions: "couple",
+      investment: "elevated",
+      considerations: [],
+    });
+    const added = out.find((p) => !route.some((r) => r.label === p.label));
+    if (added) {
+      const stop = REGION_STOP_POOL.find((s) => s.name === added.label);
+      if (stop?.oneOfGroup) {
+        expect(stop.oneOfGroup).not.toBe(grouped.oneOfGroup);
+      }
+    }
+  });
+
+  it("preserves region and routeCluster on the added stop", () => {
+    const route = makeRoutePoints([
+      { label: "Coastal viewpoint", story: "Panoramic miradouro." },
+      { label: "Tile painting atelier", story: "Hands-on workshop." },
+    ]);
+    const out = applyExtraMoment(route, {
+      skeletonTourId: "tiles-workshop",
+      interests: ["heritage", "local-life"],
+      rhythm: "balanced",
+      companions: "solo",
+      investment: "considered",
+      considerations: [],
+    });
+    const added = out.find((p) => !route.some((r) => r.label === p.label));
+    if (added) {
+      const stop = REGION_STOP_POOL.find((s) => s.name === added.label);
+      expect(stop?.region).toBe("arrabida-setubal");
+      expect(stop?.routeCluster).toBe("arrabida-azeitao-sesimbra");
+    }
+  });
+
+  it("never returns a P17 stop into a P6 Évora extra moment", () => {
+    const route = makeRoutePoints([
+      { label: "Évora", story: "Old town walk." },
+      { label: "WineryA", story: "Wine estate tasting." },
+    ]);
+    const out = applyExtraMoment(route, baseInput);
+    const added = out.find((p) => !route.some((r) => r.label === p.label));
+    if (added) {
+      const stop = REGION_STOP_POOL.find((s) => s.name === added.label);
+      expect(stop?.signatureTourId).not.toBe("roman-heritage-talha-wines");
+    }
+  });
+
+  it("inserts before a final table/lunch slot when present", () => {
+    const route = makeRoutePoints([
+      { label: "Cristo Rei viewpoint", story: "Panoramic overlook." },
+      { label: "Azeitão village", story: "Old town walk." },
+      { label: "Long traditional lunch", story: "Local restaurant table." },
+    ]);
+    const out = applyExtraMoment(route, {
+      skeletonTourId: "arrabida-wine-allinclusive",
+      interests: ["wine", "gastronomy", "heritage"],
+      rhythm: "full",
+      companions: "couple",
+      investment: "elevated",
+      considerations: [],
+    });
+    if (out.length === route.length + 1) {
+      expect(out[out.length - 1].label).toBe("Long traditional lunch");
     }
   });
 });
