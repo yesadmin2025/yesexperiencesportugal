@@ -703,6 +703,22 @@ export function resolveStudioV3Route(input: {
       lng: m.lng,
     }));
 
+  // Phase 5E — controlled route composition (replace up to 3 non-critical
+  // stops with same-type candidates from REGION_STOP_POOL). Flag-gated and
+  // OFF in committed code, so this branch is a no-op today. When enabled,
+  // mutates `routePoints` in place to preserve order and downstream wiring.
+  if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+    const composed = applyReplacementCandidates(routePoints, {
+      skeletonTourId: journey.tour.id,
+      interests,
+      rhythm,
+      companions,
+      investment,
+      considerations: input.considerations ?? [],
+    });
+    for (let i = 0; i < composed.length; i++) routePoints[i] = composed[i];
+  }
+
   // Short route sentence, derived only from the same Signature's stops.
   const shortLabels: string[] = [];
   const seen = new Set<string>();
@@ -1418,3 +1434,250 @@ export function selectOptionalRefinements(input: {
   const cap = input.rhythm === "slow" ? 1 : 2;
   return collapsed.slice(0, cap).map((e) => e.stop.name);
 }
+
+/* ---------------------------------------------------------------------------
+ * Phase 5E — Controlled route composition (replacement, flag-gated).
+ *
+ * `applyReplacementCandidates` may replace up to N non-critical route points
+ * with same-type candidates from REGION_STOP_POOL. It is gated by
+ * `STUDIO_V3_ROUTE_COMPOSITION_ENABLED` (false in committed code) and the
+ * call site in `resolveStudioV3Route` does not run it when the flag is off,
+ * so live behaviour is byte-identical to today.
+ *
+ * Hard rules (covered by `route-composition.test.ts`):
+ *  - never replace the first route point (and never the second — first 1–2
+ *    positions are the primary anchor)
+ *  - candidates must match region, routeCluster, signatureTourId rules,
+ *    active === true, oneOfGroup uniqueness, and considerations deny list
+ *  - candidates must match the inferred type of the route point being
+ *    replaced (winery → winery, viewpoint → viewpoint, etc.)
+ *  - total duration delta stays within ±20% of the baseline
+ *  - rhythm cap: slow → 1, balanced → 2, full/immersive → 3
+ *  - never grows the route beyond the existing 4-point cap
+ *  - never reorders the route — replacements are in-place only
+ * --------------------------------------------------------------------------- */
+
+const STUDIO_V3_ROUTE_COMPOSITION_ENABLED = false;
+
+/** Baseline minutes assumed per existing route point when computing the
+ *  total-duration safety check. We don't store durationMin on TourStop, so
+ *  we use a conservative constant; candidates are scored relative to this. */
+const ROUTE_POINT_BASELINE_MIN = 60;
+
+/** First N positions are the anchor and are never replaced. */
+const PROTECTED_LEAD_COUNT = 2;
+
+function replacementCapForRhythm(rhythm: Rhythm): number {
+  if (rhythm === "slow") return 1;
+  if (rhythm === "balanced") return 2;
+  return 3; // full | immersive
+}
+
+/**
+ * Infer a coarse OptionalStopType from a Signature stop's label + story.
+ * Deterministic, keyword-only. Returns null when nothing matches — those
+ * stops are skipped (never replaced) to stay safe.
+ */
+function inferRoutePointType(
+  label: string,
+  story: string,
+): OptionalStop["type"] | null {
+  const hay = `${label} ${story}`.toLowerCase();
+  if (/\bwinery|wine cellar|wine estate|vineyard|adega|quinta\b/.test(hay))
+    return "winery";
+  if (/\bviewpoint|miradouro|overlook|panoram/.test(hay)) return "viewpoint";
+  if (/\bbeach|praia|cove|sand\b/.test(hay)) return "beach";
+  if (/\bmarket|mercado\b/.test(hay)) return "market";
+  if (/\bvillage|aldeia|hamlet|vila d/.test(hay)) return "village";
+  if (/\bgarden|jardim|park\b/.test(hay)) return "garden";
+  if (/\bworkshop|atelier|tile painting|hands-on\b/.test(hay))
+    return "workshop";
+  if (/\bboat|barco|sail|catamaran|cruise\b/.test(hay)) return "boat";
+  if (/\blunch|dinner|tasting menu|chef|table|petiscos|restaurant\b/.test(hay))
+    return "table";
+  if (
+    /\bmonastery|convent|chapel|cathedral|church|castle|palace|temple|fortress|capela|igreja|castelo|pal[áa]cio|monument\b/.test(
+      hay,
+    )
+  )
+    return "monument";
+  if (/\bheritage|historic|old town|centro hist[óo]rico|roman ruin/.test(hay))
+    return "heritage";
+  if (/\bstudio|gallery|artisan\b/.test(hay)) return "studio";
+  if (/\bnature|forest|reserve|trail|hike|cliff\b/.test(hay)) return "nature";
+  return null;
+}
+
+/** Hard deny: mobility considerations + viewpoint replacement candidates. */
+function isReplacementDeniedByConsiderations(
+  stop: OptionalStop,
+  considerations: ReadonlyArray<string>,
+): boolean {
+  if (isDeniedByConsiderations(stop, considerations)) return true;
+  const mobilityConcern = considerations.some((c) =>
+    MOBILITY_CONSIDERATIONS.has(c),
+  );
+  if (mobilityConcern && stop.type === "viewpoint") return true;
+  return false;
+}
+
+/**
+ * Pure ranked selector for replacement candidates. Returns the OptionalStop
+ * objects (not names) so the caller can match by type and durationMin.
+ * Deterministic sort: score DESC → durationMin ASC → id ASC.
+ */
+export function selectReplacementCandidates(input: {
+  skeletonTourId: string | null | undefined;
+  interests: ReadonlyArray<Interest>;
+  rhythm: Rhythm;
+  companions: Companions;
+  investment: InvestmentTier | null;
+  considerations: ReadonlyArray<string>;
+  existingRoutePointLabels: ReadonlyArray<string>;
+}): OptionalStop[] {
+  const skeleton = input.skeletonTourId
+    ? SKELETON_TO_CLUSTER[input.skeletonTourId]
+    : undefined;
+  if (!skeleton) return [];
+
+  const existing = new Set(
+    input.existingRoutePointLabels.map((l) => normalizeLabel(l)),
+  );
+
+  const eligible = REGION_STOP_POOL.filter((stop) => {
+    if (!stop.active) return false;
+    if (stop.region !== skeleton.region) return false;
+    if (stop.routeCluster !== skeleton.routeCluster) return false;
+    if (stop.signatureTourId && stop.signatureTourId !== skeleton.signatureTourId) {
+      return false;
+    }
+    if (stop.sourceTourIds && stop.sourceTourIds.length > 0) {
+      if (!stop.sourceTourIds.includes(skeleton.signatureTourId)) {
+        if (!stop.signatureTourId) return false;
+      }
+    }
+    if (existing.has(normalizeLabel(stop.name))) return false;
+    if (isReplacementDeniedByConsiderations(stop, input.considerations)) {
+      return false;
+    }
+    return true;
+  });
+
+  const scored = eligible
+    .map((stop) => {
+      let score = scoreOptionalStop(stop, {
+        interests: input.interests,
+        rhythm: input.rhythm,
+        companions: input.companions,
+        investment: input.investment,
+      });
+      // Phase 5E scoring tweak: penalize long-duration outliers vs baseline.
+      const delta = Math.abs(stop.durationMin - ROUTE_POINT_BASELINE_MIN);
+      if (delta > ROUTE_POINT_BASELINE_MIN * 0.6) score -= 2;
+      return { stop, score };
+    })
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (a.stop.durationMin !== b.stop.durationMin) {
+        return a.stop.durationMin - b.stop.durationMin;
+      }
+      return a.stop.id.localeCompare(b.stop.id);
+    });
+
+  return scored.map((e) => e.stop);
+}
+
+/**
+ * Apply replacements in-place against an ordered `routePoints` array. Pure
+ * function — returns a new array; never reorders; never grows. Honors:
+ *  - PROTECTED_LEAD_COUNT (skips first 1–2 indices)
+ *  - type preservation
+ *  - oneOfGroup uniqueness
+ *  - total duration within ±20% of baseline
+ *  - rhythm cap
+ *  - existing 4-point cap is preserved (input length is the cap)
+ */
+export function applyReplacementCandidates(
+  routePoints: ReadonlyArray<ResolvedRoutePoint>,
+  input: {
+    skeletonTourId: string | null | undefined;
+    interests: ReadonlyArray<Interest>;
+    rhythm: Rhythm;
+    companions: Companions;
+    investment: InvestmentTier | null;
+    considerations: ReadonlyArray<string>;
+  },
+): ResolvedRoutePoint[] {
+  const out = routePoints.map((p) => ({ ...p }));
+  if (out.length === 0) return out;
+
+  const cap = Math.min(
+    replacementCapForRhythm(input.rhythm),
+    Math.max(0, out.length - PROTECTED_LEAD_COUNT),
+  );
+  if (cap === 0) return out;
+
+  const candidates = selectReplacementCandidates({
+    skeletonTourId: input.skeletonTourId,
+    interests: input.interests,
+    rhythm: input.rhythm,
+    companions: input.companions,
+    investment: input.investment,
+    considerations: input.considerations,
+    existingRoutePointLabels: out.map((p) => p.label),
+  });
+  if (candidates.length === 0) return out;
+
+  const usedIds = new Set<string>();
+  const usedGroups = new Set<string>();
+  const usedLabels = new Set(out.map((p) => normalizeLabel(p.label)));
+
+  const baselineTotal = out.length * ROUTE_POINT_BASELINE_MIN;
+  let runningTotal = baselineTotal;
+  const minTotal = baselineTotal * 0.8;
+  const maxTotal = baselineTotal * 1.2;
+
+  let replacedCount = 0;
+
+  for (let i = PROTECTED_LEAD_COUNT; i < out.length; i++) {
+    if (replacedCount >= cap) break;
+    const current = out[i];
+    const currentType = inferRoutePointType(current.label, current.story);
+    if (!currentType) continue;
+
+    for (const cand of candidates) {
+      if (usedIds.has(cand.id)) continue;
+      if (cand.type !== currentType) continue;
+      if (cand.oneOfGroup && usedGroups.has(cand.oneOfGroup)) continue;
+      if (usedLabels.has(normalizeLabel(cand.name))) continue;
+
+      const projectedTotal =
+        runningTotal - ROUTE_POINT_BASELINE_MIN + cand.durationMin;
+      if (projectedTotal < minTotal || projectedTotal > maxTotal) continue;
+
+      // Commit replacement (preserve index, drop geo since pool coords are
+      // optional — keep candidate coords when present, else null).
+      out[i] = {
+        index: current.index,
+        label: cand.name,
+        story: cand.notes ?? current.story,
+        lat: cand.coords?.lat ?? null,
+        lng: cand.coords?.lng ?? null,
+      };
+      usedIds.add(cand.id);
+      if (cand.oneOfGroup) usedGroups.add(cand.oneOfGroup);
+      usedLabels.delete(normalizeLabel(current.label));
+      usedLabels.add(normalizeLabel(cand.name));
+      runningTotal = projectedTotal;
+      replacedCount += 1;
+      break;
+    }
+  }
+
+  return out;
+}
+
+/** Test-only accessor for the local flag — keeps the flag private to this
+ *  module while letting the test suite assert it is OFF in committed code. */
+export const __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS =
+  STUDIO_V3_ROUTE_COMPOSITION_ENABLED;
