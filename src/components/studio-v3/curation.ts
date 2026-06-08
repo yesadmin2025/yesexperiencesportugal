@@ -657,8 +657,10 @@ export function resolveStudioV3Route(input: {
   pickup: Pickup | null;
   occasion?: Occasion | null;
   considerations?: ReadonlyArray<string>;
+  investment?: InvestmentTier | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
+  const investment = input.investment ?? null;
   const origin = pickupCityLabel(pickup);
 
   // Fallback when we don't have enough to safely resolve a Signature.
@@ -678,7 +680,11 @@ export function resolveStudioV3Route(input: {
     };
   }
 
-  const journey = curateJourney(feeling, companions, rhythm, { interests, pickup });
+  const journey = curateJourney(feeling, companions, rhythm, {
+    interests,
+    pickup,
+    investment,
+  });
 
   // Hard cap at 4 main route points on the Journey Card (per brief).
   const routePoints: ResolvedRoutePoint[] = journey.moments
