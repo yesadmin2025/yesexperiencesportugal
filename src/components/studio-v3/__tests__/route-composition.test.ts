@@ -10,8 +10,10 @@ import {
   resolveStudioV3Route,
   selectReplacementCandidates,
   applyReplacementCandidates,
+  applyExtraMoment,
   __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS,
 } from "@/components/studio-v3/curation";
+
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 
 const baseInput = {
