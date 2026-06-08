@@ -536,7 +536,39 @@ export function StudioV3() {
       });
     }, 420);
   };
-  const onDate = (id: DateWindow) => pickAndAdvance("dateWindow", id, "pickup");
+  // Date phase (Phase 2) — operational date selection.
+  // dateMode: "exact" | "flexible" | "undecided"; dateExact is ISO yyyy-mm-dd
+  // only when "exact". Reaction copy reflects the chosen mode.
+  const dateModeAtmosphereLine = (mode: DateMode): string => {
+    if (mode === "exact") return "A clear date. The day can begin to take shape.";
+    if (mode === "flexible") return "Flexible. We'll leave room for the right light.";
+    return "No rush. The journey can form before the date is fixed.";
+  };
+  const dateBgImage = () => (state.feeling ? FEELING_IMAGE[state.feeling] : undefined);
+  const playDateReaction = (mode: DateMode, delay = 420) => {
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The when",
+        message: dateModeAtmosphereLine(mode),
+        bgImage: dateBgImage(),
+        nextPhase: "pickup",
+        holdMs: 1700,
+      });
+    }, delay);
+  };
+  const onDateExact = (iso: string) => {
+    setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }));
+    playDateReaction("exact");
+  };
+  const onDateFlexible = () => {
+    setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }));
+    playDateReaction("flexible");
+  };
+  const onDateUndecided = () => {
+    setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }));
+    playDateReaction("undecided");
+  };
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
     // Final inference check before leaving pickup → decide whether to skip guests.
