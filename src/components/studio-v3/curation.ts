@@ -250,6 +250,45 @@ const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
   immersive: 6,
 };
 
+/* ---------- Phase 4.5: investment as a soft shaping signal ----------
+ * Tiny, deterministic. Never invents stops, never crosses regions, never
+ * changes the Signature skeleton. Only nudges:
+ *   - target stop count inside the already-resolved Signature
+ *   - relevance score for premium-feeling stops vs efficient ones
+ * "open" is neutral on both axes — best fit from the existing profile.
+ */
+const INVESTMENT_STOP_DELTA: Record<InvestmentTier, number> = {
+  considered: -1, // efficient — fewer extras
+  elevated: 0,    // balanced premium
+  bespoke: -1,    // fewer but stronger moments
+  open: 0,        // best fit
+};
+
+const INVESTMENT_PREMIUM_KEYWORDS: string[] = [
+  "private", "exclusive", "premium", "tasting", "sommelier", "chef",
+  "cellar", "estate", "manor", "palace", "boutique", "michelin",
+  "sunset", "candlelight", "champagne", "long lunch", "pairing",
+  "reserve", "vintage",
+];
+
+const INVESTMENT_EFFICIENT_KEYWORDS: string[] = [
+  "village", "market", "workshop", "easy", "stroll", "walk",
+  "viewpoint", "harbour", "old town", "tile",
+];
+
+function investmentPremiumScore(
+  investment: InvestmentTier | null | undefined,
+  hay: string,
+): number {
+  if (!investment || investment === "open") return 0;
+  const premiumHit = INVESTMENT_PREMIUM_KEYWORDS.some((kw) => hay.includes(kw));
+  const efficientHit = INVESTMENT_EFFICIENT_KEYWORDS.some((kw) => hay.includes(kw));
+  if (investment === "bespoke") return premiumHit ? 0.4 : 0;
+  if (investment === "elevated") return premiumHit ? 0.2 : 0;
+  if (investment === "considered") return efficientHit ? 0.15 : 0;
+  return 0;
+}
+
 // Keyword affinity per feeling — matched against stop label + story (lowercase).
 // Hits add to the relevance score; misses are simply ignored.
 const FEELING_KEYWORDS: Record<Feeling, string[]> = {
