@@ -484,7 +484,8 @@ export function StudioV3() {
   // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
-    pickAndAdvance("feeling", id, "who", {
+    const next = getNextPhase({ ...state, feeling: id }, "feeling");
+    pickAndAdvance("feeling", id, next, {
       kind: "feeling",
       eyebrow: "The feeling",
       message: feelingReactionMessage(id),
@@ -494,72 +495,73 @@ export function StudioV3() {
     });
   };
   const onCompanions = (id: Companions) => {
-    // Re-infer eagerly so the user landing on pickup already has guests set
-    // when applicable. We never overwrite an explicit user choice.
-    setState((s) => {
-      const inferred = inferGuests(id, s.occasion, s.feeling);
-      if (inferred != null && (s.guestsInferred || s.guests == null)) {
-        return {
-          ...s,
-          companions: id,
-          guests: inferred,
-          guestsInferred: true,
-          guestsPrivateEvent: inferred >= 11,
-        };
-      }
-      // Companions changed to something that no longer infers — clear stale inference.
-      if (inferred == null && s.guestsInferred) {
-        return {
-          ...s,
-          companions: id,
-          guests: null,
-          guestsInferred: false,
-          guestsPrivateEvent: false,
-        };
-      }
-      return { ...s, companions: id };
-    });
+    // Compute forward state (with possible guest inference) so we can both
+    // commit it and resolve the next phase adaptively.
+    const inferred = inferGuests(id, state.occasion, state.feeling);
+    let forward: StudioV3State;
+    if (inferred != null && (state.guestsInferred || state.guests == null)) {
+      forward = {
+        ...state,
+        companions: id,
+        guests: inferred,
+        guestsInferred: true,
+        guestsPrivateEvent: inferred >= 11,
+      };
+    } else if (inferred == null && state.guestsInferred) {
+      forward = {
+        ...state,
+        companions: id,
+        guests: null,
+        guestsInferred: false,
+        guestsPrivateEvent: false,
+      };
+    } else {
+      forward = { ...state, companions: id };
+    }
+    setState(() => forward);
+    const next = getNextPhase(forward, "who");
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
         eyebrow: "The company",
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
-        nextPhase: "occasion",
+        nextPhase: next,
         holdMs: 1700,
       });
     }, 420);
   };
   const onOccasion = (id: Occasion) => {
-    setState((s) => {
-      const inferred = inferGuests(s.companions, id, s.feeling);
-      if (inferred != null && (s.guestsInferred || s.guests == null)) {
-        return {
-          ...s,
-          occasion: id,
-          guests: inferred,
-          guestsInferred: true,
-          guestsPrivateEvent: inferred >= 11,
-        };
-      }
-      if (inferred == null && s.guestsInferred) {
-        return {
-          ...s,
-          occasion: id,
-          guests: null,
-          guestsInferred: false,
-          guestsPrivateEvent: false,
-        };
-      }
-      return { ...s, occasion: id };
-    });
+    const inferred = inferGuests(state.companions, id, state.feeling);
+    let forward: StudioV3State;
+    if (inferred != null && (state.guestsInferred || state.guests == null)) {
+      forward = {
+        ...state,
+        occasion: id,
+        guests: inferred,
+        guestsInferred: true,
+        guestsPrivateEvent: inferred >= 11,
+      };
+    } else if (inferred == null && state.guestsInferred) {
+      forward = {
+        ...state,
+        occasion: id,
+        guests: null,
+        guestsInferred: false,
+        guestsPrivateEvent: false,
+      };
+    } else {
+      forward = { ...state, occasion: id };
+    }
+    setState(() => forward);
+    const next = getNextPhase(forward, "occasion");
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
         eyebrow: "The occasion",
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
-        nextPhase: "date",
+        nextPhase: next,
         holdMs: 1700,
       });
     }, 420);
@@ -574,13 +576,19 @@ export function StudioV3() {
   };
   const dateBgImage = () => (state.feeling ? FEELING_IMAGE[state.feeling] : undefined);
   const playDateReaction = (mode: DateMode, delay = 420) => {
+    const forward: StudioV3State = {
+      ...state,
+      dateMode: mode,
+      dateExact: mode === "exact" ? state.dateExact : null,
+    };
+    const next = getNextPhase(forward, "date");
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
         eyebrow: "The when",
         message: dateModeAtmosphereLine(mode),
         bgImage: dateBgImage(),
-        nextPhase: "pickup",
+        nextPhase: next,
         holdMs: 1700,
       });
     }, delay);
@@ -656,7 +664,8 @@ export function StudioV3() {
             ? "More discovery, still shaped into one realistic day."
             : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
-    pickAndAdvance("rhythm", id, "considerations", {
+    const next = getNextPhase({ ...state, rhythm: id }, "rhythm");
+    pickAndAdvance("rhythm", id, next, {
       kind: "rhythm",
       eyebrow: "The rhythm",
       message: hint,
@@ -673,9 +682,13 @@ export function StudioV3() {
       holdMs: 1600,
     });
   };
-  const onLanguage = (id: Language) => pickAndAdvance("language", id, "investment");
-  const onInvestment = (id: InvestmentTier) =>
-    pickAndAdvance("investment", id, "map", {
+  const onLanguage = (id: Language) => {
+    const next = getNextPhase({ ...state, language: id }, "language");
+    pickAndAdvance("language", id, next);
+  };
+  const onInvestment = (id: InvestmentTier) => {
+    const next = getNextPhase({ ...state, investment: id }, "investment");
+    pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
       message: "No surprises.\nJust clarity before anything moves forward.",
@@ -683,6 +696,7 @@ export function StudioV3() {
       postcardSubline: "Now the route can take shape.",
       holdMs: 2600,
     });
+  };
 
 
 
@@ -719,6 +733,7 @@ export function StudioV3() {
       .filter((l): l is string => Boolean(l));
     const chips = allChips.slice(0, 4);
     const tail = allChips.length > 4 ? "and more to refine" : undefined;
+    const next = getNextPhase(state, "interests");
     playReaction({
       kind: "interests",
       eyebrow: "The moments",
@@ -727,7 +742,7 @@ export function StudioV3() {
       chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
       chipsTail: tail,
       postcardSubline: "These will guide the route.",
-      nextPhase: "rhythm",
+      nextPhase: next,
       holdMs: 3200,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
     });
@@ -735,12 +750,13 @@ export function StudioV3() {
   const continueFromConsiderations = () => {
     const isNone =
       state.considerations.length === 0 || state.considerations.includes("none");
+    const next = getNextPhase(state, "considerations");
     playReaction({
       kind: "considerations",
       eyebrow: "The care",
       message: "It is not just where you go.\nIt is how the day fits you.",
       postcardCaption: isNone ? "Nothing to adjust." : "Care notes held.",
-      nextPhase: "language",
+      nextPhase: next,
       holdMs: 2600,
     });
   };
@@ -961,8 +977,14 @@ export function StudioV3() {
             onClick={() => {
               // If the user never touched the stepper, commit the displayed
               // default (2) before advancing so the count is always real.
+              const committedGuests = state.guests ?? 2;
               if (state.guests == null) onGuestsChange(2);
-              advance("interests");
+              const forward: StudioV3State = {
+                ...state,
+                guests: committedGuests,
+                guestsPrivateEvent: committedGuests >= 11,
+              };
+              advance(getNextPhase(forward, "guests"));
             }}
             label="Continue"
           />
