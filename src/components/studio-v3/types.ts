@@ -93,12 +93,18 @@ export type StudioV3Phase =
   | "map"
   | "storyboard";
 
+/** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
+export type DateMode = "exact" | "flexible" | "undecided";
+
 export interface StudioV3State {
   phase: StudioV3Phase;
   feeling: Feeling | null;
   companions: Companions | null;
   occasion: Occasion | null;
-  dateWindow: DateWindow | null;
+  /** Operational date mode. Null until the date phase is answered. */
+  dateMode: DateMode | null;
+  /** ISO yyyy-mm-dd when dateMode === "exact"; null otherwise. */
+  dateExact: string | null;
   pickup: Pickup | null;
   guests: GuestBucket | null;
   interests: Interest[];
@@ -122,7 +128,8 @@ export const INITIAL_STATE: StudioV3State = {
   feeling: null,
   companions: null,
   occasion: null,
-  dateWindow: null,
+  dateMode: null,
+  dateExact: null,
   pickup: null,
   guests: null,
   interests: [],
