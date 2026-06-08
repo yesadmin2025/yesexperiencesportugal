@@ -1457,7 +1457,7 @@ export function selectOptionalRefinements(input: {
  *  - never reorders the route — replacements are in-place only
  * --------------------------------------------------------------------------- */
 
-const STUDIO_V3_ROUTE_COMPOSITION_ENABLED = true;
+const STUDIO_V3_ROUTE_COMPOSITION_ENABLED = false;
 
 /** Baseline minutes assumed per existing route point when computing the
  *  total-duration safety check. We don't store durationMin on TourStop, so
