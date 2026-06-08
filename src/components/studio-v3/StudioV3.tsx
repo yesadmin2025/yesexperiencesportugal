@@ -422,6 +422,7 @@ function prefersReducedMotion(): boolean {
 
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
+  const isMobile = useIsMobile();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
