@@ -1372,6 +1372,39 @@ function ReactionOverlay({
 }) {
   const hold = Math.min(reaction.holdMs ?? 2600, 3400);
 
+  // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
+  // full-bleed image wash with a single italic line, no postcard chrome.
+  if (reaction.kind === "atmosphere") {
+    return (
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Continue"
+        key={`${reaction.eyebrow}-${reaction.message}`}
+        className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
+        style={{
+          background: "var(--charcoal)",
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+        }}
+      >
+        <AtmosphereBeat
+          imageSrc={reaction.bgImage}
+          eyebrow={reaction.eyebrow}
+          line={reaction.message}
+        />
+        <style>{`
+          @keyframes studioV3ReactionFade {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+        `}</style>
+      </button>
+    );
+  }
+
+
   // Per-kind soft "postcard" gradient using brand tokens only.
   // No external imagery: warm scenic washes drawn from --ivory / --sand /
   // --gold-soft / --teal-2. Acts as the visual layer behind/above the copy.
