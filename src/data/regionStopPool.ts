@@ -65,6 +65,8 @@ export interface OptionalStop {
   notes?: string;
   source: OptionalStopSource;
   signatureTourId?: string;
+  routeCluster?: string;
+  oneOfGroup?: string;
   active: boolean;
 }
 
@@ -89,6 +91,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "roman-ruins-troia",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Tróia",
     name: "Roman Ruins of Tróia",
     type: "monument",
@@ -105,6 +108,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "marina-de-troia",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Tróia",
     name: "Marina de Troia",
     type: "viewpoint",
@@ -121,6 +125,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "cais-palafitico-carrasqueira",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Carrasqueira",
     name: "Cais Palafítico do Porto da Carrasqueira",
     type: "heritage",
@@ -137,6 +142,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "comporta-village",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Comporta",
     name: "Comporta",
     type: "village",
@@ -153,6 +159,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "herdade-da-comporta",
     region: "comporta-troia",
+    routeCluster: "troia-comporta-coast",
     subregion: "Comporta",
     name: "Herdade da Comporta",
     type: "winery",
@@ -179,6 +186,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     durationMin: 30,
     source: "signature-core",
     signatureTourId: "troia-comporta",
+    routeCluster: "troia-comporta-coast",
+    oneOfGroup: "comporta-beach-choice",
     active: false,
     notes: "Source-verified itinerary stop from P18. Conditional: page notes if conditions allow.",
   },
@@ -195,12 +204,15 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     durationMin: 30,
     source: "signature-core",
     signatureTourId: "troia-comporta",
+    routeCluster: "troia-comporta-coast",
+    oneOfGroup: "comporta-beach-choice",
     active: true,
     notes: "Source-verified itinerary stop from P18.",
   },
   {
     id: "tomar-historic-center",
     region: "tomar-coimbra",
+    routeCluster: "tomar-coimbra-heritage",
     subregion: "Tomar",
     name: "Tomar",
     type: "heritage",
@@ -217,6 +229,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "convento-de-cristo",
     region: "tomar-coimbra",
+    routeCluster: "tomar-coimbra-heritage",
     subregion: "Tomar",
     name: "Convento de Cristo",
     type: "monument",
@@ -233,6 +246,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "coimbra-historic-center",
     region: "tomar-coimbra",
+    routeCluster: "tomar-coimbra-heritage",
     subregion: "Coimbra",
     name: "Coimbra",
     type: "heritage",
@@ -249,6 +263,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "universidade-de-coimbra",
     region: "tomar-coimbra",
+    routeCluster: "tomar-coimbra-heritage",
     subregion: "Coimbra",
     name: "Universidade de Coimbra",
     type: "monument",
@@ -265,6 +280,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "biblioteca-joanina",
     region: "tomar-coimbra",
+    routeCluster: "tomar-coimbra-heritage",
     subregion: "Coimbra",
     name: "Biblioteca Joanina",
     type: "monument",
@@ -281,6 +297,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "fatima-sanctuary",
     region: "fatima-nazare-obidos",
+    routeCluster: "fatima-nazare-obidos-spirit-coast",
     subregion: "Fátima",
     name: "Fátima Sanctuary",
     type: "monument",
@@ -297,6 +314,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "nazare-town",
     region: "fatima-nazare-obidos",
+    routeCluster: "fatima-nazare-obidos-spirit-coast",
     subregion: "Nazaré",
     name: "Nazaré",
     type: "village",
@@ -313,6 +331,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "praia-da-nazare",
     region: "fatima-nazare-obidos",
+    routeCluster: "fatima-nazare-obidos-spirit-coast",
     subregion: "Nazaré",
     name: "Praia da Nazaré",
     type: "beach",
@@ -329,6 +348,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "obidos-medieval-town",
     region: "fatima-nazare-obidos",
+    routeCluster: "fatima-nazare-obidos-spirit-coast",
     subregion: "Óbidos",
     name: "Óbidos",
     type: "village",
@@ -345,6 +365,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "castelo-de-obidos",
     region: "fatima-nazare-obidos",
+    routeCluster: "fatima-nazare-obidos-spirit-coast",
     subregion: "Óbidos",
     name: "Castelo de Óbidos",
     type: "monument",
@@ -361,6 +382,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "sintra-town",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
     subregion: "Sintra",
     name: "Sintra",
     type: "village",
@@ -377,6 +399,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "sintra-national-palace",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
+    oneOfGroup: "sintra-monument-choice",
     subregion: "Sintra",
     name: "Sintra National Palace",
     type: "monument",
@@ -393,6 +417,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "pena-palace",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
+    oneOfGroup: "sintra-monument-choice",
     subregion: "Sintra",
     name: "Park and National Palace of Pena",
     type: "monument",
@@ -409,6 +435,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "quinta-da-regaleira",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
+    oneOfGroup: "sintra-monument-choice",
     subregion: "Sintra",
     name: "Quinta da Regaleira",
     type: "garden",
@@ -425,6 +453,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "azenhas-do-mar",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
     subregion: "Sintra coast",
     name: "Azenhas do Mar",
     type: "village",
@@ -441,6 +470,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "adega-regional-de-colares",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
     subregion: "Colares",
     name: "Adega Regional de Colares",
     type: "winery",
@@ -457,6 +487,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "cascais-town",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
     subregion: "Cascais",
     name: "Cascais",
     type: "village",
@@ -473,6 +504,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
   {
     id: "cabo-da-roca",
     region: "sintra-cascais",
+    routeCluster: "sintra-cascais-coast-heritage",
     subregion: "Sintra coast",
     name: "Cabo da Roca",
     type: "viewpoint",
