@@ -994,7 +994,7 @@ export function StudioV3() {
 
       {state.phase === "interests" ? (
         <PhaseShell accent="teal" exiting={exiting}>
-          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
+          <BackLink onClick={() => back("investment")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
             mode="multi"
