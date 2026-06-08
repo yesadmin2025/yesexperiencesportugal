@@ -82,9 +82,13 @@ test.describe("Studio V3 — date phase", () => {
 
     // The input is .sr-only so use fill() (Playwright bypasses visibility
     // for form fields) and dispatch a native input/change.
+    // React tracks input values via a hidden setter; bypass that tracker
+    // so the controlled onChange handler actually fires.
     await input.evaluate((el, value) => {
       const i = el as HTMLInputElement;
-      i.value = value;
+      const proto = Object.getPrototypeOf(i);
+      const setter = Object.getOwnPropertyDescriptor(proto, "value")?.set;
+      setter?.call(i, value);
       i.dispatchEvent(new Event("input", { bubbles: true }));
       i.dispatchEvent(new Event("change", { bubbles: true }));
     }, iso);
