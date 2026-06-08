@@ -94,8 +94,8 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
  *
  * Chain (13 internal phases — never surfaced as a "long form"):
- *   feeling → who → occasion → date → pickup → guests → interests
- *   → rhythm → considerations → language → investment → map → storyboard
+ *   feeling → who → occasion → date → pickup → guests → investment
+ *   → interests → rhythm → considerations → language → map → storyboard
  *
  * Phase 1B will: wire curation soft-hints from the new fields, show pickup
  * in the map eyebrow, and render the Journey Summary block in the
@@ -112,11 +112,11 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "date",
   "pickup",
   "guests",
+  "investment",
   "interests",
   "rhythm",
   "considerations",
   "language",
-  "investment",
   "map",
   "storyboard",
 ];
