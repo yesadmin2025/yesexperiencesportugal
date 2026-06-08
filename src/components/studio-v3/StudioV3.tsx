@@ -692,6 +692,33 @@ export function StudioV3() {
             : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
     const next = getNextPhase({ ...state, rhythm: id }, "rhythm");
+
+    if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
+      const resolved = resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: id,
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        investment: state.investment,
+      });
+      const labels = resolved.routePoints.map((p) => p.label);
+      if (labels.length > 0) {
+        pickAndAdvance("rhythm", id, next, {
+          kind: "map-beat",
+          eyebrow: "The rhythm",
+          message: hint,
+          mapMode: "pace",
+          originLabel: pickupCityLabel(state.pickup) || undefined,
+          routeLabels: labels,
+          rhythmBucket: id,
+          holdMs: 2400,
+        });
+        return;
+      }
+    }
+
     pickAndAdvance("rhythm", id, next, {
       kind: "rhythm",
       eyebrow: "The rhythm",
