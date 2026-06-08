@@ -259,10 +259,10 @@ function feelingReactionMessage(id: Feeling): string {
 
 /** Inferred-guests note shown subtly on the final reveal. */
 function inferredGuestsNote(state: StudioV3State): string | null {
-  if (!state.guestsInferred || !state.guests) return null;
-  if (state.guests === "1") return "Assumed for this draft: solo traveller";
-  if (state.guests === "2") return "Assumed for this draft: 2 guests";
-  return null;
+  if (!state.guestsInferred || state.guests == null) return null;
+  if (state.guests === 1) return "Assumed for this draft: solo traveller";
+  if (state.guests === 2) return "Assumed for this draft: 2 guests";
+  return `Assumed for this draft: ${state.guests} guests`;
 }
 
 
