@@ -1092,7 +1092,7 @@ export function StudioV3() {
           feeling={state.feeling}
           companions={state.companions}
           rhythm={state.rhythm}
-          onBack={() => back("investment")}
+          onBack={() => back("language")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
             const title = composeJourneyTitle({
