@@ -89,6 +89,68 @@ describe("Phase 5E — selectReplacementCandidates eligibility", () => {
   });
 });
 
+describe("Phase 5E — sourceTourIds tour-isolation gate", () => {
+  // arrabida-wine-allinclusive shares its routeCluster with four other
+  // Signature skeletons; the Arrábida pool entries below carry sourceTourIds
+  // instead of a single signatureTourId, so they must be eligible when the
+  // resolved skeleton id appears in sourceTourIds.
+  it("includes pool stops whose sourceTourIds contains the skeleton id (Arrábida)", () => {
+    const out = selectReplacementCandidates({
+      skeletonTourId: "arrabida-wine-allinclusive",
+      interests: ["wine", "gastronomy", "coast", "heritage"],
+      rhythm: "balanced",
+      companions: "couple",
+      investment: "elevated",
+      considerations: [],
+      existingRoutePointLabels: [],
+    });
+    const ids = out.map((s) => s.id);
+    expect(ids).toContain("mercado-do-livramento");
+    expect(ids).toContain("azeitao-village");
+    expect(ids).toContain("quinta-de-catralvos");
+    expect(ids).toContain("castelo-de-sesimbra");
+    // Single-tour pool stops also still match by signatureTourId.
+    expect(ids).toContain("quinta-do-piloto");
+  });
+
+  it("excludes pool stops whose sourceTourIds does NOT contain the skeleton id", () => {
+    // lapa-de-santa-margarida.sourceTourIds = ["arrabida-boat","wild-beaches-picnic"]
+    // — must NOT appear for azeitao-cheese.
+    const out = selectReplacementCandidates({
+      skeletonTourId: "azeitao-cheese",
+      interests: ["nature", "heritage"],
+      rhythm: "balanced",
+      companions: "couple",
+      investment: "elevated",
+      considerations: [],
+      existingRoutePointLabels: [],
+    });
+    const ids = out.map((s) => s.id);
+    expect(ids).not.toContain("lapa-de-santa-margarida");
+    expect(ids).not.toContain("cabo-espichel");
+    // Shared stops that DO include azeitao-cheese must still appear.
+    expect(ids).toContain("azeitao-village");
+    expect(ids).toContain("mercado-do-livramento");
+  });
+
+  it("never crosses region or routeCluster even via sourceTourIds", () => {
+    const out = selectReplacementCandidates({
+      skeletonTourId: "arrabida-wine-allinclusive",
+      interests: ["wine"],
+      rhythm: "balanced",
+      companions: "couple",
+      investment: "elevated",
+      considerations: [],
+      existingRoutePointLabels: [],
+    });
+    for (const stop of out) {
+      expect(stop.region).toBe("arrabida-setubal");
+      expect(stop.routeCluster).toBe("arrabida-azeitao-sesimbra");
+      expect(stop.active).toBe(true);
+    }
+  });
+});
+
 describe("Phase 5E — applyReplacementCandidates rules", () => {
   it("never replaces the first route point", () => {
     const route = makeRoutePoints([

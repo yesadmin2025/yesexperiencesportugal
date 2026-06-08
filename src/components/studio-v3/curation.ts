@@ -1548,14 +1548,22 @@ export function selectReplacementCandidates(input: {
     if (!stop.active) return false;
     if (stop.region !== skeleton.region) return false;
     if (stop.routeCluster !== skeleton.routeCluster) return false;
-    if (stop.signatureTourId && stop.signatureTourId !== skeleton.signatureTourId) {
-      return false;
-    }
-    if (stop.sourceTourIds && stop.sourceTourIds.length > 0) {
-      if (!stop.sourceTourIds.includes(skeleton.signatureTourId)) {
-        if (!stop.signatureTourId) return false;
-      }
-    }
+
+    // Tour-isolation gate — a candidate is eligible when AT LEAST ONE holds:
+    //   (a) signatureTourId matches the resolved skeleton, OR
+    //   (b) sourceTourIds contains the resolved skeleton, OR
+    //   (c) neither field is set (generic cluster stop, region+cluster gated).
+    const sigOk =
+      !!stop.signatureTourId && stop.signatureTourId === skeleton.signatureTourId;
+    const srcOk =
+      !!stop.sourceTourIds &&
+      stop.sourceTourIds.length > 0 &&
+      stop.sourceTourIds.includes(skeleton.signatureTourId);
+    const generic =
+      !stop.signatureTourId &&
+      (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
+    if (!sigOk && !srcOk && !generic) return false;
+
     if (existing.has(normalizeLabel(stop.name))) return false;
     if (isReplacementDeniedByConsiderations(stop, input.considerations)) {
       return false;
