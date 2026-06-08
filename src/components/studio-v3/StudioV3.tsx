@@ -61,7 +61,6 @@ const INTEREST_IMAGE: Record<string, string> = {
 import {
   COMPANIONS,
   CONSIDERATIONS,
-  DATE_WINDOWS,
   FEELINGS,
   GUEST_BUCKETS,
   INITIAL_STATE,
@@ -74,7 +73,7 @@ import {
   type ChoiceOption,
   type Companions,
   type Consideration,
-  type DateWindow,
+  type DateMode,
   type Feeling,
   type GuestBucket,
   type Interest,
