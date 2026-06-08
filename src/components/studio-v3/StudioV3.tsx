@@ -605,6 +605,15 @@ export function StudioV3() {
         guestsInferred: true,
         guestsPrivateEvent: inferred >= 11,
       }));
+    } else {
+      // Seed a sensible default so the stepper starts on a real value the
+      // user can simply confirm. Marked non-inferred so the helper copy
+      // reads as a user-owned choice, and any +/- still clears nothing.
+      setState((s) =>
+        s.guests == null
+          ? { ...s, guests: 2, guestsInferred: false, guestsPrivateEvent: false }
+          : s,
+      );
     }
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
