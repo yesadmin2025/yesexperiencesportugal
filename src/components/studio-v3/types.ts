@@ -96,6 +96,28 @@ export type StudioV3Phase =
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
 
+/* ---------- Phase 4: Adaptive Decision Layer ---------- */
+
+/** Companions, normalised into a high-level traveller type. */
+export type CompanionsType = "solo" | "couple" | "family" | "friends" | "corporate";
+
+/** Derived intent of the journey — never stored, always recomputed from state. */
+export type IntentType =
+  | "romantic"
+  | "celebration"
+  | "exploration"
+  | "corporate"
+  | "relaxation";
+
+export type IntentLevel = "low" | "medium" | "high";
+
+export interface IntentProfile {
+  companionsType: CompanionsType;
+  intentType: IntentType;
+  intensity: IntentLevel;
+  privacyLevel: IntentLevel;
+}
+
 export interface StudioV3State {
   phase: StudioV3Phase;
   feeling: Feeling | null;

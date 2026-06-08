@@ -13,6 +13,10 @@ import {
   composeJourneyTitle,
   composePersonalizedMoments,
   composeSuggestedRoute,
+  filterConsiderations,
+  filterInterests,
+  filterOccasions,
+  getNextPhase,
   getOptionLabel,
   inferGuests,
 } from "./curation";
@@ -595,9 +599,19 @@ export function StudioV3() {
   };
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
-    // Final inference check before leaving pickup → decide whether to skip guests.
+    // Build a forward-looking state so getNextPhase can decide whether
+    // guests should be asked or skipped based on inference.
     const inferred = inferGuests(state.companions, state.occasion, state.feeling);
-    const nextAfterPickup: StudioV3Phase = inferred != null ? "interests" : "guests";
+    const forwardState: StudioV3State =
+      inferred != null
+        ? {
+            ...state,
+            pickup: id,
+            guests: inferred,
+            guestsInferred: true,
+            guestsPrivateEvent: inferred >= 11,
+          }
+        : { ...state, pickup: id };
     if (inferred != null) {
       setState((s) => ({
         ...s,
@@ -606,6 +620,7 @@ export function StudioV3() {
         guestsPrivateEvent: inferred >= 11,
       }));
     }
+    const nextAfterPickup = getNextPhase(forwardState, "pickup");
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
       eyebrow: "The beginning",
@@ -793,24 +808,29 @@ export function StudioV3() {
       ? ["quiet-pace"]
       : [];
 
-  // Guests is now a numeric stepper (Phase 3), so no bucket ordering is needed.
-  const orderedInterests = prioritiseOptions(INTERESTS, interestsPriority);
+  // Phase 4: filter first (hide irrelevant options entirely), then prioritise.
+  const orderedInterests = prioritiseOptions(
+    filterInterests(INTERESTS, state.companions),
+    interestsPriority,
+  );
   const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
   const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
-  const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
+  const orderedConsiderations = prioritiseOptions(
+    filterConsiderations(CONSIDERATIONS, state.companions),
+    considerationsPriority,
+  );
 
-  // Solo-aware occasion list: hide clearly group/couple-only options.
-  // Couple/family/corporate get a prioritised order but the full list stays
-  // available below — only Solo trims the list.
-  const orderedOccasions = state.companions === "solo"
-    ? OCCASIONS.filter((o) => o.id !== "proposal" && o.id !== "honeymoon" && o.id !== "family-day" && o.id !== "corporate")
-    : isCoupleish
-      ? prioritiseOptions(OCCASIONS, ["honeymoon", "proposal", "anniversary", "birthday", "none", "celebration"])
+  // Adaptive occasion list: filter by companions first (hide invalid for
+  // solo/couple/family/friends/corporate), then apply context priority order.
+  const filteredOccasions = filterOccasions(OCCASIONS, state.companions);
+  const orderedOccasions =
+    isCoupleish
+      ? prioritiseOptions(filteredOccasions, ["honeymoon", "proposal", "anniversary", "birthday", "none", "celebration"])
       : isFamily
-        ? prioritiseOptions(OCCASIONS, ["family-day", "birthday", "celebration", "none"])
+        ? prioritiseOptions(filteredOccasions, ["family-day", "birthday", "celebration", "none"])
         : isCorporate
-          ? prioritiseOptions(OCCASIONS, ["corporate", "celebration", "none"])
-          : [...OCCASIONS];
+          ? prioritiseOptions(filteredOccasions, ["corporate", "celebration", "none"])
+          : filteredOccasions;
 
 
   // Living Journey Panel visibility — hide on the opening "feeling" pick
