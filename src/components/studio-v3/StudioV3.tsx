@@ -793,17 +793,11 @@ export function StudioV3() {
       ? ["quiet-pace"]
       : [];
 
-  const guestsPriority: GuestBucket[] = isCorporate
-    ? ["7-10", "11+", "5-6", "3-4"]
-    : isFamily
-      ? ["3-4", "5-6"]
-      : [];
-
+  // Guests is now a numeric stepper (Phase 3), so no bucket ordering is needed.
   const orderedInterests = prioritiseOptions(INTERESTS, interestsPriority);
   const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
   const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
   const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
-  const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
 
   // Solo-aware occasion list: hide clearly group/couple-only options.
   // Couple/family/corporate get a prioritised order but the full list stays
