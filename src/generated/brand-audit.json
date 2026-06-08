@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T04:23:38.113Z",
+  "generatedAt": "2026-06-08T04:55:15.823Z",
   "filesScanned": 344,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 229,
+    "total": 232,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 141
+    "mismatch": 144
   },
   "findings": [
     {
@@ -1453,6 +1453,33 @@
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
       "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 45%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/CreationBeat.tsx",
+      "line": 185,
+      "col": 90,
+      "raw": "#0c1a1d",
+      "normalized": "#0c1a1d",
+      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 38%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/CreationBeat.tsx",
+      "line": 185,
+      "col": 103,
+      "raw": "#0c1a1d",
+      "normalized": "#0c1a1d",
+      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 38%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/CreationBeat.tsx",
+      "line": 295,
+      "col": 78,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #0d0d0d 75%, transparent) 100%)\",",
       "status": "mismatch"
     },
     {
