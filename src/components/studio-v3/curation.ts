@@ -1062,11 +1062,11 @@ const LINEAR_ORDER: StudioV3Phase[] = [
   "date",
   "pickup",
   "guests",
+  "investment",
   "interests",
   "rhythm",
   "considerations",
   "language",
-  "investment",
   "map",
   "storyboard",
 ];

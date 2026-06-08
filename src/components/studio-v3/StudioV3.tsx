@@ -94,8 +94,8 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
  *
  * Chain (13 internal phases — never surfaced as a "long form"):
- *   feeling → who → occasion → date → pickup → guests → interests
- *   → rhythm → considerations → language → investment → map → storyboard
+ *   feeling → who → occasion → date → pickup → guests → investment
+ *   → interests → rhythm → considerations → language → map → storyboard
  *
  * Phase 1B will: wire curation soft-hints from the new fields, show pickup
  * in the map eyebrow, and render the Journey Summary block in the
@@ -112,11 +112,11 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "date",
   "pickup",
   "guests",
+  "investment",
   "interests",
   "rhythm",
   "considerations",
   "language",
-  "investment",
   "map",
   "storyboard",
 ];
@@ -138,12 +138,12 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
   date: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
   pickup: ["Next, the party size", "Next, your group", "Next, how many guests"],
-  guests: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
+  guests: ["Next, the shape of the day", "Next, the comfort", "Next, how it's held"],
   interests: ["Next, we refine the rhythm", "Next, the pace", "Next, how it flows"],
   rhythm: ["Next, the care", "Next, the details", "Next, what matters most"],
   considerations: ["Next, the voice", "Next, your language", "Next, how you hear it"],
-  language: ["Next, the comfort", "Next, the shape", "Next, your style"],
-  investment: ["Next, the route takes shape", "Next, the map awakens", "Next, the journey forms"],
+  language: ["Next, the route takes shape", "Next, the map awakens", "Next, the journey forms"],
+  investment: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
   map: ["Next, your draft"],
   storyboard: [""],
 };
@@ -688,13 +688,14 @@ export function StudioV3() {
   };
   const onInvestment = (id: InvestmentTier) => {
     const next = getNextPhase({ ...state, investment: id }, "investment");
+    const label = getOptionLabel(INVESTMENT_TIERS, id);
     pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
-      message: "No surprises.\nJust clarity before anything moves forward.",
-      postcardCaption: "Estimate before confirmation.",
-      postcardSubline: "Now the route can take shape.",
-      holdMs: 2600,
+      message: "This sets the tone.\nThe day will be shaped around it.",
+      postcardCaption: label ? `Direction · ${label}` : "Direction set",
+      postcardSubline: "The moments will follow from here.",
+      holdMs: 2400,
     });
   };
 
@@ -993,7 +994,7 @@ export function StudioV3() {
 
       {state.phase === "interests" ? (
         <PhaseShell accent="teal" exiting={exiting}>
-          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
+          <BackLink onClick={() => back("investment")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
             mode="multi"
@@ -1070,17 +1071,17 @@ export function StudioV3() {
 
       {state.phase === "investment" ? (
         <PhaseShell accent="gold" exiting={exiting}>
-          <BackLink onClick={() => back("language")} />
+          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader
-            eyebrow="The comfort"
+            eyebrow="Experience investment"
             title="How should we"
-            titleAccent="shape the experience?"
+            titleAccent="shape the investment?"
           />
           <ChoiceGrid options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
           {state.investment ? (
             <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
-            <FooterHint>Comfort level only — we'll share specifics together.</FooterHint>
+            <FooterHint>This shapes the route — not a price. We'll share specifics together.</FooterHint>
           )}
         </PhaseShell>
       ) : null}
@@ -1091,7 +1092,7 @@ export function StudioV3() {
           feeling={state.feeling}
           companions={state.companions}
           rhythm={state.rhythm}
-          onBack={() => back("investment")}
+          onBack={() => back("language")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
             const title = composeJourneyTitle({

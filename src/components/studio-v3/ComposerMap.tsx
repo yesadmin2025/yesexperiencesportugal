@@ -14,6 +14,7 @@ import {
   COMPANIONS,
   FEELINGS,
   INTERESTS,
+  INVESTMENT_TIERS,
   RHYTHMS,
   type StudioV3State,
 } from "./types";
@@ -74,9 +75,9 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
     !!state.occasion || !!state.dateMode,
     !!state.pickup,
     state.guests != null || state.guestsInferred,
+    !!state.investment,
     (state.interests?.length ?? 0) > 0,
     !!state.rhythm,
-    state.considerations.length > 0 || !!state.investment,
     state.phase === "map" || state.phase === "storyboard",
   ];
   const completed = milestones.filter(Boolean).length;
@@ -94,7 +95,14 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             ? `${pct}% shaped`
             : "Just started";
 
-  const statusLabel = state.investment ? "Draft ready" : "Composing your day";
+  const investmentLabel = state.investment
+    ? getOptionLabel(INVESTMENT_TIERS, state.investment)
+    : null;
+  const statusLabel = state.rhythm
+    ? "Draft ready"
+    : investmentLabel
+      ? `Investment direction: ${investmentLabel}`
+      : "Composing your day";
 
 
   // Build aria summary.
