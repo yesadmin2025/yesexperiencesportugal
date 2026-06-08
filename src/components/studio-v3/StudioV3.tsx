@@ -62,7 +62,6 @@ import {
   COMPANIONS,
   CONSIDERATIONS,
   FEELINGS,
-  GUEST_BUCKETS,
   INITIAL_STATE,
   INTERESTS,
   INVESTMENT_TIERS,
@@ -75,7 +74,6 @@ import {
   type Consideration,
   type DateMode,
   type Feeling,
-  type GuestBucket,
   type Interest,
   type InvestmentTier,
   type Language,
@@ -86,6 +84,7 @@ import {
   type StudioV3State,
 } from "./types";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
+import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
