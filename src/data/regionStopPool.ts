@@ -21,6 +21,7 @@
 
 export type RegionId =
   | "lisbon-sintra-cascais"
+  | "sintra-cascais"
   | "arrabida-setubal"
   | "alentejo-evora"
   | "douro-porto"
