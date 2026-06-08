@@ -17,6 +17,12 @@
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
+import {
+  REGION_STOP_POOL,
+  STUDIO_V3_OPTIONAL_STOPS_ENABLED,
+  type OptionalStop,
+  type RegionId,
+} from "@/data/regionStopPool";
 import type {
   ChoiceOption,
   Companions,
