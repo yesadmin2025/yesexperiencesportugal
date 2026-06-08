@@ -106,7 +106,8 @@ export interface StudioV3State {
   /** ISO yyyy-mm-dd when dateMode === "exact"; null otherwise. */
   dateExact: string | null;
   pickup: Pickup | null;
-  guests: GuestBucket | null;
+  /** Exact guest count (1–14). Null until resolved (explicit or inferred). */
+  guests: number | null;
   interests: Interest[];
   rhythm: Rhythm | null;
   considerations: Consideration[];
@@ -118,6 +119,8 @@ export interface StudioV3State {
   journeyTitle: string | null;
   /** True when `guests` was inferred from companions/occasion (the guests phase was skipped). */
   guestsInferred: boolean;
+  /** True when guests >= 11 — the day is then shaped as a private event. */
+  guestsPrivateEvent: boolean;
   /** Optional first name from the opening intro. Null when user skips. */
   firstName: string | null;
 }
@@ -140,6 +143,7 @@ export const INITIAL_STATE: StudioV3State = {
   tourId: null,
   journeyTitle: null,
   guestsInferred: false,
+  guestsPrivateEvent: false,
   firstName: null,
 };
 

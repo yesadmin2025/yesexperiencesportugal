@@ -73,7 +73,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
     !!state.companions,
     !!state.occasion || !!state.dateMode,
     !!state.pickup,
-    !!state.guests || state.guestsInferred,
+    state.guests != null || state.guestsInferred,
     (state.interests?.length ?? 0) > 0,
     !!state.rhythm,
     state.considerations.length > 0 || !!state.investment,

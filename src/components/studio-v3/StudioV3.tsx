@@ -62,7 +62,6 @@ import {
   COMPANIONS,
   CONSIDERATIONS,
   FEELINGS,
-  GUEST_BUCKETS,
   INITIAL_STATE,
   INTERESTS,
   INVESTMENT_TIERS,
@@ -75,7 +74,6 @@ import {
   type Consideration,
   type DateMode,
   type Feeling,
-  type GuestBucket,
   type Interest,
   type InvestmentTier,
   type Language,
@@ -86,6 +84,7 @@ import {
   type StudioV3State,
 } from "./types";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
+import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
@@ -260,10 +259,10 @@ function feelingReactionMessage(id: Feeling): string {
 
 /** Inferred-guests note shown subtly on the final reveal. */
 function inferredGuestsNote(state: StudioV3State): string | null {
-  if (!state.guestsInferred || !state.guests) return null;
-  if (state.guests === "1") return "Assumed for this draft: solo traveller";
-  if (state.guests === "2") return "Assumed for this draft: 2 guests";
-  return null;
+  if (!state.guestsInferred || state.guests == null) return null;
+  if (state.guests === 1) return "Assumed for this draft: solo traveller";
+  if (state.guests === 2) return "Assumed for this draft: 2 guests";
+  return `Assumed for this draft: ${state.guests} guests`;
 }
 
 
@@ -495,12 +494,24 @@ export function StudioV3() {
     // when applicable. We never overwrite an explicit user choice.
     setState((s) => {
       const inferred = inferGuests(id, s.occasion, s.feeling);
-      if (inferred && (s.guestsInferred || !s.guests)) {
-        return { ...s, companions: id, guests: inferred, guestsInferred: true };
+      if (inferred != null && (s.guestsInferred || s.guests == null)) {
+        return {
+          ...s,
+          companions: id,
+          guests: inferred,
+          guestsInferred: true,
+          guestsPrivateEvent: inferred >= 11,
+        };
       }
       // Companions changed to something that no longer infers — clear stale inference.
-      if (!inferred && s.guestsInferred) {
-        return { ...s, companions: id, guests: null, guestsInferred: false };
+      if (inferred == null && s.guestsInferred) {
+        return {
+          ...s,
+          companions: id,
+          guests: null,
+          guestsInferred: false,
+          guestsPrivateEvent: false,
+        };
       }
       return { ...s, companions: id };
     });
@@ -518,11 +529,23 @@ export function StudioV3() {
   const onOccasion = (id: Occasion) => {
     setState((s) => {
       const inferred = inferGuests(s.companions, id, s.feeling);
-      if (inferred && (s.guestsInferred || !s.guests)) {
-        return { ...s, occasion: id, guests: inferred, guestsInferred: true };
+      if (inferred != null && (s.guestsInferred || s.guests == null)) {
+        return {
+          ...s,
+          occasion: id,
+          guests: inferred,
+          guestsInferred: true,
+          guestsPrivateEvent: inferred >= 11,
+        };
       }
-      if (!inferred && s.guestsInferred) {
-        return { ...s, occasion: id, guests: null, guestsInferred: false };
+      if (inferred == null && s.guestsInferred) {
+        return {
+          ...s,
+          occasion: id,
+          guests: null,
+          guestsInferred: false,
+          guestsPrivateEvent: false,
+        };
       }
       return { ...s, occasion: id };
     });
@@ -574,9 +597,14 @@ export function StudioV3() {
     const label = getOptionLabel(PICKUPS, id);
     // Final inference check before leaving pickup → decide whether to skip guests.
     const inferred = inferGuests(state.companions, state.occasion, state.feeling);
-    const nextAfterPickup: StudioV3Phase = inferred ? "interests" : "guests";
-    if (inferred) {
-      setState((s) => ({ ...s, guests: inferred, guestsInferred: true }));
+    const nextAfterPickup: StudioV3Phase = inferred != null ? "interests" : "guests";
+    if (inferred != null) {
+      setState((s) => ({
+        ...s,
+        guests: inferred,
+        guestsInferred: true,
+        guestsPrivateEvent: inferred >= 11,
+      }));
     }
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
@@ -592,10 +620,16 @@ export function StudioV3() {
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
-  const onGuests = (id: GuestBucket) => {
-    // Explicit pick overrides any prior inference.
-    setState((s) => ({ ...s, guests: id, guestsInferred: false }));
-    window.setTimeout(() => advance("interests"), 420);
+  /** Phase 3 — exact guest count from the stepper (1–14). Manual change
+   *  always clears the inferred flag and refreshes the private-event flag. */
+  const onGuestsChange = (n: number) => {
+    const next = Math.max(1, Math.min(14, Math.trunc(n)));
+    setState((s) => ({
+      ...s,
+      guests: next,
+      guestsInferred: false,
+      guestsPrivateEvent: next >= 11,
+    }));
   };
   const onRhythm = (id: Rhythm) => {
     const hint =
@@ -759,17 +793,11 @@ export function StudioV3() {
       ? ["quiet-pace"]
       : [];
 
-  const guestsPriority: GuestBucket[] = isCorporate
-    ? ["7-10", "11+", "5-6", "3-4"]
-    : isFamily
-      ? ["3-4", "5-6"]
-      : [];
-
+  // Guests is now a numeric stepper (Phase 3), so no bucket ordering is needed.
   const orderedInterests = prioritiseOptions(INTERESTS, interestsPriority);
   const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
   const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
   const orderedConsiderations = prioritiseOptions(CONSIDERATIONS, considerationsPriority);
-  const orderedGuests = prioritiseOptions(GUEST_BUCKETS, guestsPriority);
 
   // Solo-aware occasion list: hide clearly group/couple-only options.
   // Couple/family/corporate get a prioritised order but the full list stays
@@ -898,12 +926,26 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting}>
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
-          <ChoiceGrid options={orderedGuests} value={state.guests} onSelect={onGuests} />
-          {state.guests ? (
+          <GuestStepper
+            value={state.guests}
+            inferred={state.guestsInferred}
+            onChange={onGuestsChange}
+          />
+          {state.guests != null ? (
             <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
           ) : (
-            <FooterHint>You can adjust the exact number with us later.</FooterHint>
+            <FooterHint>This helps us shape the vehicle, pace and table.</FooterHint>
           )}
+          <ContinueCta
+            disabled={false}
+            onClick={() => {
+              // If the user never touched the stepper, commit the displayed
+              // default (2) before advancing so the count is always real.
+              if (state.guests == null) onGuestsChange(2);
+              advance("interests");
+            }}
+            label="Continue"
+          />
         </PhaseShell>
       ) : null}
 
