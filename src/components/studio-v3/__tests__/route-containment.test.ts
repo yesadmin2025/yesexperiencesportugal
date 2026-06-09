@@ -140,7 +140,7 @@ function buildAllowedLabelsForSkeleton(
 }
 
 describe("Studio V3 — resolveStudioV3Route route containment", () => {
-  it("never returns a route point whose label is absent from the resolved Signature tour", () => {
+  it("never returns a route point whose label is absent from the resolved Signature tour or approved composition pool", () => {
     const violations: Array<{
       input: Record<string, unknown>;
       skeletonTourKey: string | null;
