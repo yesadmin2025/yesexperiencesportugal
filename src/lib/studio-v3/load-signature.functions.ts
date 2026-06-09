@@ -45,6 +45,7 @@ export const loadStudioV3Signature = createServerFn({ method: "POST" })
       journeyTitle: (row.journey_title as string | null) ?? null,
       skeletonTourKey: (row.skeleton_tour_key as string | null) ?? null,
       savedAt: (row.saved_at as string | null) ?? null,
-      state: (row.state ?? {}) as Record<string, unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      state: (row.state ?? {}) as any,
     };
   });
