@@ -27,6 +27,24 @@ import {
   resolveStudioV3Route,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+
+// Lazy — Leaflet ships only when the reveal mounts.
+const BuilderMap = lazy(() =>
+  import("@/components/builder/BuilderMap").then((m) => ({
+    default: m.BuilderMap,
+  })),
+);
+
+/** Map a Signature tour region string to the canonical RegionKey used by
+ *  BuilderMap / REGION_ORIGIN. Defaults to arrabida — the most common. */
+function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
+  const r = (region ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("comporta") || r.includes("évora") || r.includes("evora")) return "alentejo";
+  if (r.includes("centro") || r.includes("coimbra") || r.includes("fátima") || r.includes("nazaré") || r.includes("óbidos")) return "centro";
+  if (r.includes("sintra") || r.includes("cascais") || r.includes("cabo da roca") || r.includes("lisbon coast")) return "lisbon-coast";
+  return "arrabida";
+}
 
 // Bible alignment Phase 1 — automatic map-led creation beats fired after
 // Pickup / Interests / Rhythm. Disable to fall back to the previous
