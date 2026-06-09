@@ -2342,7 +2342,7 @@ function SaveSignatureButton({
       const res = await save({
         data: {
           journeyTitle,
-          skeletonTourKey: state.skeletonTourKey ?? null,
+          skeletonTourKey: state.tourId ?? null,
           state: state as unknown as Record<string, unknown>,
         },
       });
