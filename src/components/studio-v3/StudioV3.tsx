@@ -1732,7 +1732,7 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 2600, 3400);
+  const hold = Math.min(reaction.holdMs ?? 2600, 4500);
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.
