@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
@@ -1281,6 +1281,7 @@ export function StudioV3() {
         <PhaseShell accent="teal" exiting={exiting}>
           <StoryboardHandoff
             state={state}
+            onStateChange={setState}
             onBack={() => back("map")}
             onSecure={() => openLeadSheet("book")}
             onRefine={() => openLeadSheet("refine")}
@@ -1447,11 +1448,13 @@ function ContinueCta({
 
 function StoryboardHandoff({
   state,
+  onStateChange,
   onBack,
   onSecure,
   onRefine,
 }: {
   state: StudioV3State;
+  onStateChange: Dispatch<SetStateAction<StudioV3State>>;
   onBack: () => void;
   onSecure: () => void;
   onRefine: () => void;
@@ -1496,12 +1499,92 @@ function StoryboardHandoff({
 
   const shapingLine = investmentShapingLine(state.investment);
 
-  const suggestedRoute = composeSuggestedRoute({
-    pickup: state.pickup,
-    feeling: state.feeling,
-    companions: state.companions,
-    rhythm: state.rhythm,
-  });
+  // --- Phase 7B: inline editable route -----------------------------------
+  // Source of truth: resolveStudioV3Route → routePoints. The user may
+  // reorder/remove/swap stops; pool is restricted to the SAME resolved
+  // Signature tour's own `stops` (no invented stops, per memory rule).
+  const resolved = useMemo(
+    () =>
+      resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: state.rhythm,
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        considerations: state.considerations,
+        investment: state.investment,
+      }),
+    [
+      state.feeling,
+      state.companions,
+      state.rhythm,
+      state.interests,
+      state.pickup,
+      state.occasion,
+      state.considerations,
+      state.investment,
+    ],
+  );
+
+  const baseStops = useMemo(
+    () => resolved.routePoints.map((p) => ({ label: p.label, story: p.story })),
+    [resolved.routePoints],
+  );
+
+  const editedStops = state.editedRoutePoints ?? baseStops;
+  const skeletonTour = resolved.skeletonTourKey
+    ? findTour(resolved.skeletonTourKey)
+    : null;
+  const swapPool = useMemo(() => {
+    if (!skeletonTour) return [] as Array<{ label: string; story: string }>;
+    const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
+    return skeletonTour.stops
+      .filter((s) => !inUse.has(s.label.toLowerCase()))
+      .map((s) => ({ label: s.label, story: s.story }));
+  }, [skeletonTour, editedStops]);
+
+  const setEdited = useCallback(
+    (
+      updater: (
+        prev: Array<{ label: string; story: string }>,
+      ) => Array<{ label: string; story: string }>,
+    ) => {
+      onStateChange((s) => {
+        const current = s.editedRoutePoints ?? baseStops;
+        const next = updater(current);
+        // If user returned to identity, store null so save reflects "unchanged".
+        const same =
+          next.length === baseStops.length &&
+          next.every((p, i) => p.label === baseStops[i].label);
+        return { ...s, editedRoutePoints: same ? null : next };
+      });
+    },
+    [onStateChange, baseStops],
+  );
+
+  const origin = pickupCityLabel(state.pickup);
+  const shortLabels: string[] = [];
+  const seenShort = new Set<string>();
+  for (const p of editedStops) {
+    const short = p.label.split(/[—–-]/)[0].split(",")[0].trim();
+    const key = short.toLowerCase();
+    if (!short || seenShort.has(key)) continue;
+    seenShort.add(key);
+    shortLabels.push(short);
+    if (shortLabels.length >= 3) break;
+  }
+  const suggestedRoute =
+    editedStops.length > 0 && shortLabels.length > 0
+      ? `${origin} → ${shortLabels.join(" · ")} → ${origin}`
+      : composeSuggestedRoute({
+          pickup: state.pickup,
+          feeling: state.feeling,
+          companions: state.companions,
+          rhythm: state.rhythm,
+        });
+
+  const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
 
   // Earned reveal handoff — short personalised line stitched from the
   // composed route's themes. Uses firstName when available, neutral
@@ -1617,6 +1700,191 @@ function StoryboardHandoff({
           {suggestedRoute}
         </p>
       </div>
+
+      {/* ---------- 2b. Editable stops (Phase 7B) ---------- */}
+      {editedStops.length > 0 ? (
+        <div
+          data-testid="studio-v3-stops-editor"
+          className="mt-6 max-w-[520px] mx-auto"
+        >
+          <ol className="space-y-2">
+            {editedStops.map((s, i) => {
+              const isFirst = i === 0;
+              const isLast = i === editedStops.length - 1;
+              const swapOpen = swapOpenIdx === i;
+              return (
+                <li
+                  key={`${s.label}-${i}`}
+                  data-testid="studio-v3-stop-row"
+                  className="rounded-[8px] px-3 py-2.5"
+                  style={{
+                    background: "color-mix(in oklab, var(--sand) 45%, transparent)",
+                    border:
+                      "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  }}
+                >
+                  <div className="flex items-start gap-2.5">
+                    <span
+                      aria-hidden
+                      className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                      style={{
+                        background: "color-mix(in oklab, var(--gold) 25%, transparent)",
+                        color: "var(--charcoal)",
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className="text-[13.5px] font-semibold leading-[1.3]"
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          color: "var(--charcoal)",
+                        }}
+                      >
+                        {s.label}
+                      </p>
+                      {s.story ? (
+                        <p
+                          className="mt-0.5 text-[12px] leading-[1.45]"
+                          style={{
+                            color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+                          }}
+                        >
+                          {s.story}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <button
+                        type="button"
+                        aria-label={`Move ${s.label} earlier`}
+                        disabled={isFirst}
+                        onClick={() =>
+                          setEdited((prev) => {
+                            const n = [...prev];
+                            [n[i - 1], n[i]] = [n[i], n[i - 1]];
+                            return n;
+                          })
+                        }
+                        className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Move ${s.label} later`}
+                        disabled={isLast}
+                        onClick={() =>
+                          setEdited((prev) => {
+                            const n = [...prev];
+                            [n[i], n[i + 1]] = [n[i + 1], n[i]];
+                            return n;
+                          })
+                        }
+                        className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        ↓
+                      </button>
+                      {swapPool.length > 0 ? (
+                        <button
+                          type="button"
+                          aria-label={`Swap ${s.label}`}
+                          aria-expanded={swapOpen}
+                          onClick={() =>
+                            setSwapOpenIdx(swapOpen ? null : i)
+                          }
+                          className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          ⇄
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        aria-label={`Remove ${s.label}`}
+                        disabled={editedStops.length <= 1}
+                        onClick={() =>
+                          setEdited((prev) => prev.filter((_, j) => j !== i))
+                        }
+                        className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+
+                  {swapOpen ? (
+                    <ul
+                      data-testid="studio-v3-swap-pool"
+                      className="mt-2.5 space-y-1 border-t pt-2"
+                      style={{
+                        borderColor:
+                          "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                      }}
+                    >
+                      {swapPool.map((cand) => (
+                        <li key={cand.label}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEdited((prev) =>
+                                prev.map((p, j) => (j === i ? cand : p)),
+                              );
+                              setSwapOpenIdx(null);
+                            }}
+                            className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                            style={{ color: "var(--charcoal)" }}
+                          >
+                            <span className="font-semibold">{cand.label}</span>
+                            {cand.story ? (
+                              <span
+                                className="block text-[11.5px]"
+                                style={{
+                                  color:
+                                    "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                                }}
+                              >
+                                {cand.story}
+                              </span>
+                            ) : null}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
+
+          {state.editedRoutePoints ? (
+            <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">
+              <span
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span> Edited by you
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  onStateChange((s) => ({ ...s, editedRoutePoints: null }))
+                }
+                className="px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{ color: "var(--charcoal)" }}
+              >
+                Reset to suggested
+              </button>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
 
       {/* ---------- 2.5 Shaping direction (investment) ---------- */}
       {shapingLine ? (

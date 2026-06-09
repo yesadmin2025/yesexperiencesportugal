@@ -145,6 +145,14 @@ export interface StudioV3State {
   guestsPrivateEvent: boolean;
   /** Optional first name from the opening intro. Null when user skips. */
   firstName: string | null;
+  /**
+   * User-edited route points from the final reveal (Phase 7B inline editor).
+   * Null when the user hasn't touched the route — the resolved route from
+   * `resolveStudioV3Route` is used as-is. When non-null, this overrides the
+   * displayed route in the reveal. Only labels/stories from the resolved
+   * Signature tour's own `stops` may appear here (no invented stops).
+   */
+  editedRoutePoints: Array<{ label: string; story: string }> | null;
 }
 
 
@@ -167,6 +175,7 @@ export const INITIAL_STATE: StudioV3State = {
   guestsInferred: false,
   guestsPrivateEvent: false,
   firstName: null,
+  editedRoutePoints: null,
 };
 
 
