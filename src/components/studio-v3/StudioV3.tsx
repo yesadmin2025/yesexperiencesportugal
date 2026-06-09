@@ -674,7 +674,7 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
-        holdMs: 2600,
+        holdMs: 3600,
       });
       return;
     }
