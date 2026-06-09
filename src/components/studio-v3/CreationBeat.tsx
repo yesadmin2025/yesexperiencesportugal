@@ -169,7 +169,10 @@ export function MapBeat({
           <span aria-hidden>—</span> {eyebrow}
         </p>
 
-        {/* The map panel. */}
+        {/* The map panel — cinematic dark editorial canvas with layered
+            depth, gold glow on the route and elegant numbered pins.
+            Mirrors the language of the homepage Studio preview without
+            importing any of its code. */}
         <div
           role="img"
           aria-label={
@@ -180,101 +183,184 @@ export function MapBeat({
           className="relative mt-5 mx-auto overflow-hidden"
           style={{
             width: "100%",
-            aspectRatio: "16 / 9",
+            aspectRatio: "16 / 10",
             background:
-              "radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 38%, #0c1a1d) 0%, #0c1a1d 70%)",
-            borderRadius: "4px",
+              "radial-gradient(140% 90% at 12% 18%, color-mix(in oklab, var(--teal) 52%, #08171a) 0%, #08171a 62%), radial-gradient(80% 70% at 88% 92%, color-mix(in oklab, var(--gold) 18%, transparent) 0%, transparent 70%)",
+            borderRadius: "6px",
             border:
-              "1px solid color-mix(in oklab, var(--gold) 26%, transparent)",
+              "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
             boxShadow:
-              "0 18px 50px -28px rgba(0,0,0,0.65), 0 0 0 1px color-mix(in oklab, var(--gold) 10%, transparent) inset",
-            animation: "studioV3RiseIn 620ms ease-out both",
+              "0 28px 70px -34px rgba(0,0,0,0.75), 0 0 0 1px color-mix(in oklab, var(--gold) 14%, transparent) inset, 0 0 60px -20px color-mix(in oklab, var(--gold) 18%, transparent) inset",
+            animation: "studioV3RiseIn 680ms ease-out both",
           }}
         >
+          {/* Inner editorial vignette — pulls the eye to the route. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%)",
+            }}
+          />
+
+          {/* Hairline gold rule, top centre — editorial signature. */}
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
+            style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
+          />
+
+          {/* Corner ticks — subtle frame marks, premium camera feel. */}
+          {([
+            "top-2 left-2 border-l border-t",
+            "top-2 right-2 border-r border-t",
+            "bottom-2 left-2 border-l border-b",
+            "bottom-2 right-2 border-r border-b",
+          ]).map((cls) => (
+            <span
+              key={cls}
+              aria-hidden
+              className={`absolute ${cls} h-2.5 w-2.5`}
+              style={{ borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)" }}
+            />
+          ))}
+
           <svg
             viewBox="0 0 100 80"
             preserveAspectRatio="none"
             className="absolute inset-0 h-full w-full"
             aria-hidden
           >
-            {/* Hairline editorial grid — premium contrast against the deep teal canvas. */}
-            <g stroke="rgba(201,169,106,0.12)" strokeWidth="0.18">
-              {[20, 40, 60].map((y) => (
+            <defs>
+              {/* Warm gold glow filter for the route line. */}
+              <filter id="studioV3MapBeatGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="0.9" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              {/* Radial fill for pins — small luminous core. */}
+              <radialGradient id="studioV3MapBeatPin" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="color-mix(in oklab, var(--teal) 30%, var(--ivory))" />
+                <stop offset="55%" stopColor="var(--teal)" />
+                <stop offset="100%" stopColor="color-mix(in oklab, var(--teal) 70%, #000)" />
+              </radialGradient>
+            </defs>
+
+            {/* Hairline editorial grid — quieter, richer. */}
+            <g stroke="rgba(201,169,106,0.10)" strokeWidth="0.16">
+              {[16, 32, 48, 64].map((y) => (
                 <line key={`h${y}`} x1="0" y1={y} x2="100" y2={y} />
               ))}
-              {[25, 50, 75].map((x) => (
+              {[20, 40, 60, 80].map((x) => (
                 <line key={`v${x}`} x1={x} y1="0" x2={x} y2="80" />
               ))}
             </g>
 
-            {/* Origin dot with soft halo. */}
+            {/* Origin dot — gold core with double pulsing halo. */}
             {originLabel ? (
               <g>
                 <circle
                   cx={origin.x}
                   cy={origin.y}
-                  r="4.2"
+                  r="5.4"
                   fill="none"
                   stroke="var(--gold)"
-                  strokeOpacity="0.45"
-                  strokeWidth="0.5"
+                  strokeOpacity="0.55"
+                  strokeWidth="0.45"
                   style={{
                     animation:
-                      "studioV3MapBeatPulse 1800ms ease-out 200ms both",
+                      "studioV3MapBeatPulse 2000ms ease-out 200ms infinite",
                     transformOrigin: `${origin.x}px ${origin.y}px`,
+                    transformBox: "fill-box",
                   }}
                 />
                 <circle
                   cx={origin.x}
                   cy={origin.y}
-                  r="1.9"
+                  r="3.0"
+                  fill="color-mix(in oklab, var(--gold) 30%, transparent)"
+                  style={{
+                    animation: "studioV3MapBeatFade 520ms ease-out both",
+                  }}
+                />
+                <circle
+                  cx={origin.x}
+                  cy={origin.y}
+                  r="1.5"
                   fill="var(--gold)"
                   style={{
                     animation: "studioV3MapBeatFade 500ms ease-out both",
+                    filter: "url(#studioV3MapBeatGlow)",
                   }}
                 />
               </g>
             ) : null}
 
-            {/* Gold route line — draws in on mount. */}
+            {/* Gold route line — glowing, draws in on mount. */}
             {path ? (
-              <path
-                d={path}
-                fill="none"
-                stroke="var(--gold)"
-                strokeWidth="0.8"
-                strokeLinecap="round"
-                strokeDasharray={`${approxPathLen}`}
-                strokeDashoffset={`${approxPathLen}`}
-                opacity="0.95"
-                style={{
-                  animation: `studioV3MapBeatDraw 1100ms ease-out 280ms forwards`,
-                }}
-              />
+              <>
+                <path
+                  d={path}
+                  fill="none"
+                  stroke="color-mix(in oklab, var(--gold) 55%, transparent)"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeDasharray={`${approxPathLen}`}
+                  strokeDashoffset={`${approxPathLen}`}
+                  style={{
+                    animation: `studioV3MapBeatDraw 1200ms ease-out 280ms forwards`,
+                    filter: "url(#studioV3MapBeatGlow)",
+                  }}
+                />
+                <path
+                  d={path}
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeWidth="0.7"
+                  strokeLinecap="round"
+                  strokeDasharray={`${approxPathLen}`}
+                  strokeDashoffset={`${approxPathLen}`}
+                  style={{
+                    animation: `studioV3MapBeatDraw 1200ms ease-out 280ms forwards`,
+                  }}
+                />
+              </>
             ) : null}
 
-            {/* Numbered teal pins — sequenced fade-in. */}
+            {/* Numbered pins — luminous teal core with gold ring. */}
             {visible.map((p, i) => (
               <g
                 key={i}
                 style={{
-                  animation: `studioV3MapBeatFade 380ms ease-out ${
-                    420 + i * 240
+                  animation: `studioV3MapBeatFade 420ms ease-out ${
+                    520 + i * 220
                   }ms both`,
                   transformOrigin: `${p.x}px ${p.y}px`,
+                  transformBox: "fill-box",
                 }}
               >
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r="2.9"
-                  fill="var(--teal)"
-                  stroke="var(--ivory)"
+                  r="4.2"
+                  fill="none"
+                  stroke="color-mix(in oklab, var(--gold) 55%, transparent)"
                   strokeWidth="0.35"
+                />
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="3.0"
+                  fill="url(#studioV3MapBeatPin)"
+                  stroke="var(--ivory)"
+                  strokeWidth="0.4"
                 />
                 <text
                   x={p.x}
-                  y={p.y + 1.0}
+                  y={p.y + 1.05}
                   textAnchor="middle"
                   fontSize="2.6"
                   fontWeight="700"
@@ -287,21 +373,26 @@ export function MapBeat({
             ))}
           </svg>
 
-          {/* Origin / pace label strip. */}
+          {/* Origin / pace label strip — deeper, with gold accent. */}
           <div
-            className="absolute left-0 right-0 bottom-0 flex items-center justify-between gap-3 px-3 py-1.5"
+            className="absolute left-0 right-0 bottom-0 flex items-center justify-between gap-3 px-3.5 py-2"
             style={{
               background:
-                "linear-gradient(180deg, transparent 0%, color-mix(in oklab, #0d0d0d 75%, transparent) 100%)",
+                "linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)",
             }}
           >
             {originLabel ? (
               <span
-                className="text-[9.5px] uppercase tracking-[0.24em] font-semibold truncate"
+                className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.26em] font-semibold truncate"
                 style={{
-                  color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+                  color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
                 }}
               >
+                <span
+                  aria-hidden
+                  className="inline-block h-1 w-1 rounded-full"
+                  style={{ background: "var(--gold)" }}
+                />
                 From {originLabel}
               </span>
             ) : (
@@ -309,18 +400,18 @@ export function MapBeat({
             )}
             {paceLabel ? (
               <span
-                className="text-[9.5px] uppercase tracking-[0.24em] font-semibold"
+                className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
                 style={{
-                  color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                  color: "color-mix(in oklab, var(--ivory) 82%, transparent)",
                 }}
               >
                 Pace · {paceLabel}
               </span>
             ) : pinCount > 0 ? (
               <span
-                className="text-[9.5px] uppercase tracking-[0.24em] font-semibold"
+                className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
                 style={{
-                  color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
+                  color: "color-mix(in oklab, var(--ivory) 75%, transparent)",
                 }}
               >
                 {pinCount} stop{pinCount === 1 ? "" : "s"}
