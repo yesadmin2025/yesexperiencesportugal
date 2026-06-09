@@ -435,8 +435,8 @@ describe("Phase 5F — type inference + compatibility families", () => {
 });
 
 describe("Phase 5G — one personalised extra moment", () => {
-  it("flag remains false in committed code", () => {
-    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(false);
+  it("flag is ON in committed code (Phase 5H preview QA)", () => {
+    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(true);
   });
 
   it("slow rhythm never adds an extra moment", () => {
