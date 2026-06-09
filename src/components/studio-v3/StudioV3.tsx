@@ -1448,11 +1448,13 @@ function ContinueCta({
 
 function StoryboardHandoff({
   state,
+  onStateChange,
   onBack,
   onSecure,
   onRefine,
 }: {
   state: StudioV3State;
+  onStateChange: React.Dispatch<React.SetStateAction<StudioV3State>>;
   onBack: () => void;
   onSecure: () => void;
   onRefine: () => void;
