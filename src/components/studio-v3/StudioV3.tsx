@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
