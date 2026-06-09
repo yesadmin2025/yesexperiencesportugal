@@ -743,7 +743,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
-          holdMs: 2600,
+          holdMs: 3800,
         });
         return;
       }
