@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
+import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
@@ -444,6 +445,10 @@ export function StudioV3() {
   const isMobile = useIsMobile();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  const [hydrating, setHydrating] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).has("saved");
+  });
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
     { open: false, intent: "book" },
   );
@@ -455,6 +460,40 @@ export function StudioV3() {
     () => setLeadSheet((s) => ({ ...s, open: false })),
     [],
   );
+
+  // Phase 7A — hydrate a saved Signature directly into the final reveal.
+  // Reads ?saved=<token> once on mount, fetches the persisted state, then
+  // jumps straight to the storyboard phase (skips intro + all questions).
+  const load = useServerFn(loadStudioV3Signature);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("saved");
+    if (!token) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await load({ data: { token } });
+        if (cancelled) return;
+        if (res.found && res.state && typeof res.state === "object") {
+          const restored = {
+            ...INITIAL_STATE,
+            ...(res.state as Partial<StudioV3State>),
+            phase: "storyboard" as StudioV3Phase,
+          };
+          setState(restored);
+        }
+      } catch (e) {
+        console.error("[studio-v3 hydrate]", e);
+      } finally {
+        if (!cancelled) setHydrating(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [load]);
+
 
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
