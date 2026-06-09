@@ -449,6 +449,8 @@ export function StudioV3() {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
   });
+  void hydrating; // reserved for a future fade-in overlay
+
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
     { open: false, intent: "book" },
   );
