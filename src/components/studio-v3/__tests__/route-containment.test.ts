@@ -82,9 +82,62 @@ function norm(s: string): string {
 }
 
 /** Build a Set of every real stop label that exists across the entire catalog. */
-const CATALOG_STOP_LABELS = new Set<string>(
-  signatureTours.flatMap((t) => t.stops.map((s) => norm(s.label))),
-);
+const CATALOG_STOP_LABELS = new Set<string>([
+  ...signatureTours.flatMap((t) => t.stops.map((s) => norm(s.label))),
+  // Phase 5H: controlled composition may surface approved pool stops as
+  // route points. They are part of the operator-confirmed catalog even
+  // though they don't live inside a Signature `stops` array.
+  ...REGION_STOP_POOL.filter((s) => s.active).map((s) => norm(s.name)),
+]);
+
+/**
+ * Phase 5H route-containment contract.
+ *
+ * A routePoint label is valid for a resolved skeleton when EITHER:
+ *  - it appears in the skeleton's own Signature `stops` array, OR
+ *  - it appears in REGION_STOP_POOL as an approved composition candidate:
+ *      • active === true
+ *      • same region as the skeleton
+ *      • same routeCluster as the skeleton
+ *      • candidate.signatureTourId === skeletonTourId, OR
+ *        candidate.sourceTourIds includes skeletonTourId, OR
+ *        candidate has neither field (generic cluster stop)
+ *
+ * Duplicate / oneOfGroup / P17 isolation are enforced inside curation
+ * itself (selectReplacementCandidates / applyReplacementCandidates /
+ * applyExtraMoment) — if a label is emitted by resolveStudioV3Route()
+ * it has already cleared those gates.
+ */
+function buildAllowedLabelsForSkeleton(
+  skeletonTourKey: string,
+  tourStops: ReadonlyArray<{ label: string }>,
+): Set<string> {
+  const allowed = new Set<string>(tourStops.map((s) => norm(s.label)));
+  const cluster = SKELETON_TO_CLUSTER[skeletonTourKey];
+  if (!cluster) return allowed;
+
+  for (const stop of REGION_STOP_POOL) {
+    if (!stop.active) continue;
+    if (stop.region !== cluster.region) continue;
+    if (stop.routeCluster !== cluster.routeCluster) continue;
+
+    const sigOk =
+      !!stop.signatureTourId &&
+      stop.signatureTourId === cluster.signatureTourId;
+    const srcOk =
+      !!stop.sourceTourIds &&
+      stop.sourceTourIds.length > 0 &&
+      stop.sourceTourIds.includes(cluster.signatureTourId);
+    const generic =
+      !stop.signatureTourId &&
+      (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
+
+    if (sigOk || srcOk || generic) {
+      allowed.add(norm(stop.name));
+    }
+  }
+  return allowed;
+}
 
 describe("Studio V3 — resolveStudioV3Route route containment", () => {
   it("never returns a route point whose label is absent from the resolved Signature tour", () => {
