@@ -175,6 +175,7 @@ export const INITIAL_STATE: StudioV3State = {
   guestsInferred: false,
   guestsPrivateEvent: false,
   firstName: null,
+  editedRoutePoints: null,
 };
 
 
