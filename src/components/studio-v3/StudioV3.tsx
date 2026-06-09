@@ -685,8 +685,18 @@ export function StudioV3() {
     }));
   };
   const onRhythm = (id: Rhythm) => {
-    const hint =
+    const name = state.firstName?.trim() || null;
+    const baseHint =
       id === "slow"
+        ? "slower, more local, more deliberate"
+        : id === "balanced"
+          ? "movement and pause, in balance"
+          : id === "full"
+            ? "richer, still shaped into one realistic day"
+            : "a fuller arc, carefully held";
+    const hint = name
+      ? `For you, this route is becoming ${baseHint}.`
+      : id === "slow"
         ? "Fewer stops. More time in place."
         : id === "balanced"
           ? "Movement and pause, kept in balance."
@@ -716,7 +726,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
-          holdMs: 2400,
+          holdMs: 2600,
         });
         return;
       }
