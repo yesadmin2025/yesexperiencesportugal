@@ -20,6 +20,7 @@ import { describe, it, expect } from "vitest";
 import {
   curateJourney,
   resolveStudioV3Route,
+  SKELETON_TO_CLUSTER,
 } from "@/components/studio-v3/curation";
 import {
   type Companions,
@@ -29,6 +30,7 @@ import {
   type Rhythm,
 } from "@/components/studio-v3/types";
 import { findTour, signatureTours } from "@/data/signatureTours";
+import { REGION_STOP_POOL } from "@/data/regionStopPool";
 
 const FEELINGS: Feeling[] = [
   "coastal",
