@@ -41,7 +41,6 @@ describe("Phase 5H — flag state (preview QA)", () => {
   it("STUDIO_V3_ROUTE_COMPOSITION_ENABLED is ON for preview QA", () => {
     expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(true);
   });
-});
 
   it("resolveStudioV3Route is deterministic and never exceeds 4 route points", () => {
     const inputs = [
