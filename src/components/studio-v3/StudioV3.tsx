@@ -819,15 +819,24 @@ export function StudioV3() {
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
+        const name = state.firstName?.trim() || null;
+        const firstInterest = state.interests[0]
+          ? getOptionLabel(INTERESTS, state.interests[0])?.toLowerCase()
+          : null;
+        const message = name && firstInterest
+          ? `${name}, this is starting to feel more like your kind of Portugal — ${firstInterest} at the centre.`
+          : firstInterest
+            ? `These ${firstInterest}-led moments begin to shape the route.`
+            : "These moments begin to shape the route.";
         playReaction({
           kind: "map-beat",
           eyebrow: "The moments",
-          message: "These moments begin to shape the route.",
+          message,
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           nextPhase: next,
-          holdMs: 2800,
+          holdMs: 3000,
         });
         return;
       }
