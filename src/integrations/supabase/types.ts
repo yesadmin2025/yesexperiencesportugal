@@ -1364,6 +1364,8 @@ export type Database = {
           id: string
           intent: string
           journey_title: string | null
+          saved_at: string | null
+          share_token: string | null
           skeleton_tour_key: string | null
           state: Json
           status: string
@@ -1379,6 +1381,8 @@ export type Database = {
           id?: string
           intent?: string
           journey_title?: string | null
+          saved_at?: string | null
+          share_token?: string | null
           skeleton_tour_key?: string | null
           state?: Json
           status?: string
@@ -1394,6 +1398,8 @@ export type Database = {
           id?: string
           intent?: string
           journey_title?: string | null
+          saved_at?: string | null
+          share_token?: string | null
           skeleton_tour_key?: string | null
           state?: Json
           status?: string
