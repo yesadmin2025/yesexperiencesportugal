@@ -1281,6 +1281,7 @@ export function StudioV3() {
         <PhaseShell accent="teal" exiting={exiting}>
           <StoryboardHandoff
             state={state}
+            onStateChange={setState}
             onBack={() => back("map")}
             onSecure={() => openLeadSheet("book")}
             onRefine={() => openLeadSheet("refine")}
