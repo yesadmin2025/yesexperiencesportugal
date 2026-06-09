@@ -1499,12 +1499,92 @@ function StoryboardHandoff({
 
   const shapingLine = investmentShapingLine(state.investment);
 
-  const suggestedRoute = composeSuggestedRoute({
-    pickup: state.pickup,
-    feeling: state.feeling,
-    companions: state.companions,
-    rhythm: state.rhythm,
-  });
+  // --- Phase 7B: inline editable route -----------------------------------
+  // Source of truth: resolveStudioV3Route → routePoints. The user may
+  // reorder/remove/swap stops; pool is restricted to the SAME resolved
+  // Signature tour's own `stops` (no invented stops, per memory rule).
+  const resolved = useMemo(
+    () =>
+      resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: state.rhythm,
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        considerations: state.considerations,
+        investment: state.investment,
+      }),
+    [
+      state.feeling,
+      state.companions,
+      state.rhythm,
+      state.interests,
+      state.pickup,
+      state.occasion,
+      state.considerations,
+      state.investment,
+    ],
+  );
+
+  const baseStops = useMemo(
+    () => resolved.routePoints.map((p) => ({ label: p.label, story: p.story })),
+    [resolved.routePoints],
+  );
+
+  const editedStops = state.editedRoutePoints ?? baseStops;
+  const skeletonTour = resolved.skeletonTourKey
+    ? findTour(resolved.skeletonTourKey)
+    : null;
+  const swapPool = useMemo(() => {
+    if (!skeletonTour) return [] as Array<{ label: string; story: string }>;
+    const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
+    return skeletonTour.stops
+      .filter((s) => !inUse.has(s.label.toLowerCase()))
+      .map((s) => ({ label: s.label, story: s.story }));
+  }, [skeletonTour, editedStops]);
+
+  const setEdited = useCallback(
+    (
+      updater: (
+        prev: Array<{ label: string; story: string }>,
+      ) => Array<{ label: string; story: string }>,
+    ) => {
+      onStateChange((s) => {
+        const current = s.editedRoutePoints ?? baseStops;
+        const next = updater(current);
+        // If user returned to identity, store null so save reflects "unchanged".
+        const same =
+          next.length === baseStops.length &&
+          next.every((p, i) => p.label === baseStops[i].label);
+        return { ...s, editedRoutePoints: same ? null : next };
+      });
+    },
+    [onStateChange, baseStops],
+  );
+
+  const origin = pickupCityLabel(state.pickup);
+  const shortLabels: string[] = [];
+  const seenShort = new Set<string>();
+  for (const p of editedStops) {
+    const short = p.label.split(/[—–-]/)[0].split(",")[0].trim();
+    const key = short.toLowerCase();
+    if (!short || seenShort.has(key)) continue;
+    seenShort.add(key);
+    shortLabels.push(short);
+    if (shortLabels.length >= 3) break;
+  }
+  const suggestedRoute =
+    editedStops.length > 0 && shortLabels.length > 0
+      ? `${origin} → ${shortLabels.join(" · ")} → ${origin}`
+      : composeSuggestedRoute({
+          pickup: state.pickup,
+          feeling: state.feeling,
+          companions: state.companions,
+          rhythm: state.rhythm,
+        });
+
+  const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
 
   // Earned reveal handoff — short personalised line stitched from the
   // composed route's themes. Uses firstName when available, neutral
