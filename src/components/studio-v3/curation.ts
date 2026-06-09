@@ -1226,7 +1226,7 @@ export function getNextPhase(
  * only. Unknown skeleton ids return an empty refinement list — we never
  * guess a region or cluster.
  */
-const SKELETON_TO_CLUSTER: Record<
+export const SKELETON_TO_CLUSTER: Record<
   string,
   { region: RegionId; routeCluster: string; signatureTourId: string }
 > = {
