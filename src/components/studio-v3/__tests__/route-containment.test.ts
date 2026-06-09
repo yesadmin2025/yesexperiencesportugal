@@ -178,8 +178,9 @@ describe("Studio V3 — resolveStudioV3Route route containment", () => {
                 `skeletonTourKey "${route.skeletonTourKey}" must exist in the Signature catalog`,
               ).toBeDefined();
 
-              const tourLabels = new Set(
-                tour!.stops.map((s) => norm(s.label)),
+              const allowedLabels = buildAllowedLabelsForSkeleton(
+                route.skeletonTourKey,
+                tour!.stops,
               );
 
               for (const point of route.routePoints) {
