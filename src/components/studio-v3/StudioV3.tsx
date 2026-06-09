@@ -1441,6 +1441,32 @@ function StoryboardHandoff({
     rhythm: state.rhythm,
   });
 
+  // Earned reveal handoff — short personalised line stitched from the
+  // composed route's themes. Uses firstName when available, neutral
+  // otherwise. No invented facts, no superlatives.
+  const name = state.firstName?.trim() || null;
+  const handoffLead = name
+    ? `${name}, this is the day as you shaped it.`
+    : "This is the day as you shaped it.";
+  const themeBits: string[] = [];
+  if (state.interests.includes("wine") || state.feeling === "wine-food") themeBits.push("wine");
+  if (state.interests.includes("coast") || state.feeling === "coastal") themeBits.push("coast");
+  if (state.interests.includes("heritage") || state.feeling === "culture") themeBits.push("heritage");
+  if (state.interests.includes("gastronomy")) themeBits.push("local table");
+  if (state.feeling === "romance") themeBits.push("quiet moments");
+  const paceBit =
+    state.rhythm === "slow"
+      ? "a slower rhythm"
+      : state.rhythm === "immersive"
+        ? "an unhurried arc"
+        : state.rhythm === "full"
+          ? "a richer arc"
+          : "a thoughtful rhythm";
+  const themesJoined = themeBits.slice(0, 3).join(", ");
+  const handoffSupport = themesJoined
+    ? `${themesJoined.charAt(0).toUpperCase()}${themesJoined.slice(1)} and ${paceBit} — held inside one private route.`
+    : `${paceBit.charAt(0).toUpperCase()}${paceBit.slice(1)}, held inside one private route.`;
+
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
@@ -1448,10 +1474,46 @@ function StoryboardHandoff({
     >
       <BackLink onClick={onBack} />
 
+      {/* ---------- 0. Earned reveal handoff ---------- */}
+      <div
+        className="text-center pt-10"
+        style={{ animation: "studioV3RiseIn 720ms ease-out both" }}
+      >
+        <p
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        >
+          <span style={{ color: "var(--gold)" }}>—</span> The reveal
+        </p>
+        <p
+          className="mt-4 text-[22px] sm:text-[26px] leading-[1.3] italic text-balance"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--charcoal)",
+            animationDelay: "120ms",
+          }}
+        >
+          {handoffLead}
+        </p>
+        <p
+          className="mt-3 text-[13.5px] leading-[1.55] max-w-[440px] mx-auto"
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+          }}
+        >
+          {handoffSupport}
+        </p>
+        <span
+          aria-hidden
+          className="mt-6 inline-block h-px w-10"
+          style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+        />
+      </div>
+
       {/* ---------- 1. Big title ---------- */}
-      <header className="text-center pt-10">
+      <header className="text-center pt-8">
         <h1
-          className="text-[30px] sm:text-[38px] leading-[1.05] tracking-[-0.015em] font-bold"
+          className="text-[28px] sm:text-[34px] leading-[1.05] tracking-[-0.015em] font-bold"
           style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
         >
           Your journey draft
@@ -1473,6 +1535,7 @@ function StoryboardHandoff({
           {description}
         </p>
       </header>
+
 
       {/* ---------- 2. Suggested route ---------- */}
       <div className="mt-8 text-center">
