@@ -184,7 +184,7 @@ describe("Studio V3 — resolveStudioV3Route route containment", () => {
               );
 
               for (const point of route.routePoints) {
-                if (!tourLabels.has(norm(point.label))) {
+                if (!allowedLabels.has(norm(point.label))) {
                   violations.push({
                     input: { feeling, companions, rhythm, pickup, interests },
                     skeletonTourKey: route.skeletonTourKey,
