@@ -311,7 +311,7 @@ export function MapBeat({
                   strokeDasharray={`${approxPathLen}`}
                   strokeDashoffset={`${approxPathLen}`}
                   style={{
-                    animation: `studioV3MapBeatDraw 1200ms ease-out 280ms forwards`,
+                    animation: `studioV3MapBeatDraw 1800ms ease-out 380ms forwards`,
                     filter: "url(#studioV3MapBeatGlow)",
                   }}
                 />
@@ -324,7 +324,7 @@ export function MapBeat({
                   strokeDasharray={`${approxPathLen}`}
                   strokeDashoffset={`${approxPathLen}`}
                   style={{
-                    animation: `studioV3MapBeatDraw 1200ms ease-out 280ms forwards`,
+                    animation: `studioV3MapBeatDraw 1800ms ease-out 380ms forwards`,
                   }}
                 />
               </>
@@ -335,8 +335,8 @@ export function MapBeat({
               <g
                 key={i}
                 style={{
-                  animation: `studioV3MapBeatFade 420ms ease-out ${
-                    520 + i * 220
+                  animation: `studioV3MapBeatFade 560ms ease-out ${
+                    620 + i * 340
                   }ms both`,
                   transformOrigin: `${p.x}px ${p.y}px`,
                   transformBox: "fill-box",
@@ -426,7 +426,7 @@ export function MapBeat({
             className="mt-3 text-[11px] leading-[1.45] text-center"
             style={{
               color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
-              animation: "studioV3RiseIn 600ms ease-out 600ms both",
+              animation: "studioV3RiseIn 640ms ease-out 980ms both",
             }}
           >
             {labels
@@ -443,7 +443,7 @@ export function MapBeat({
           style={{
             fontFamily: "var(--font-serif)",
             color: "var(--ivory)",
-            animation: "studioV3RiseIn 620ms ease-out 220ms both",
+            animation: "studioV3RiseIn 680ms ease-out 380ms both",
           }}
         >
           {line}
