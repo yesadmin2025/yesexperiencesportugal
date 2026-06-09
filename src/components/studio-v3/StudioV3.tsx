@@ -1574,6 +1574,27 @@ function StoryboardHandoff({
         </p>
       </div>
 
+      {/* ---------- 2.5 Shaping direction (investment) ---------- */}
+      {shapingLine ? (
+        <div className="mt-6 text-center">
+          <p
+            className="text-[11px] uppercase tracking-[0.26em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
+          </p>
+          <p
+            className="mt-2.5 text-[13.5px] leading-[1.6] max-w-[420px] mx-auto"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+            }}
+          >
+            {shapingLine}
+          </p>
+        </div>
+      ) : null}
+
       {/* ---------- 3. Personalized moments (max 2) ---------- */}
       {moments.length > 0 ? (
         <div className="mt-8 text-center">
