@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
@@ -27,6 +27,24 @@ import {
   resolveStudioV3Route,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+
+// Lazy — Leaflet ships only when the reveal mounts.
+const BuilderMap = lazy(() =>
+  import("@/components/builder/BuilderMap").then((m) => ({
+    default: m.BuilderMap,
+  })),
+);
+
+/** Map a Signature tour region string to the canonical RegionKey used by
+ *  BuilderMap / REGION_ORIGIN. Defaults to arrabida — the most common. */
+function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
+  const r = (region ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("comporta") || r.includes("évora") || r.includes("evora")) return "alentejo";
+  if (r.includes("centro") || r.includes("coimbra") || r.includes("fátima") || r.includes("nazaré") || r.includes("óbidos")) return "centro";
+  if (r.includes("sintra") || r.includes("cascais") || r.includes("cabo da roca") || r.includes("lisbon coast")) return "lisbon-coast";
+  return "arrabida";
+}
 
 // Bible alignment Phase 1 — automatic map-led creation beats fired after
 // Pickup / Interests / Rhythm. Disable to fall back to the previous
@@ -1681,6 +1699,58 @@ function StoryboardHandoff({
         </p>
       </header>
 
+
+      {/* ---------- 2a. Live route map (matches homepage Studio preview) ---------- */}
+      {(() => {
+        const coordByLabel = new Map(
+          resolved.routePoints
+            .filter((p) => p.lat !== null && p.lng !== null)
+            .map((p) => [p.label.toLowerCase(), { lat: p.lat as number, lng: p.lng as number }]),
+        );
+        const regionKey = tourRegionToRegionKey(skeletonTour?.region ?? null);
+        const mapStops = editedStops
+          .map((s, i) => {
+            const coord = coordByLabel.get(s.label.toLowerCase());
+            if (!coord) return null;
+            return {
+              key: `${s.label}-${i}`,
+              region_key: regionKey,
+              label: s.label,
+              blurb: s.story ?? null,
+              tag: null,
+              lat: coord.lat,
+              lng: coord.lng,
+              duration_minutes: 60,
+              driveMinutesFromPrev: i === 0 ? 0 : 20,
+            };
+          })
+          .filter((x): x is NonNullable<typeof x> => x !== null);
+        if (mapStops.length < 2) return null;
+        const origin = REGION_ORIGIN[regionKey];
+        return (
+          <div
+            data-testid="studio-v3-reveal-map"
+            className="mt-6 mx-auto w-full max-w-[520px] overflow-hidden rounded-[10px]"
+            style={{
+              height: 240,
+              border: "1px solid color-mix(in oklab, var(--charcoal) 14%, transparent)",
+              background: "var(--sand)",
+            }}
+          >
+            <Suspense fallback={<div className="h-full w-full" style={{ background: "var(--sand)" }} />}>
+              <BuilderMap
+                stops={mapStops}
+                regionCenter={{ lat: origin.lat, lng: origin.lng }}
+                regionKey={regionKey}
+                emotionalMode
+                activeStopIndex={mapStops.length - 1}
+                chrome={false}
+                locale="en"
+              />
+            </Suspense>
+          </div>
+        );
+      })()}
 
       {/* ---------- 2. Suggested route ---------- */}
       <div className="mt-8 text-center">
