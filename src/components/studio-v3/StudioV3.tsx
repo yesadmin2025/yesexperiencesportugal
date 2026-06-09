@@ -1678,6 +1678,8 @@ function StoryboardHandoff({
           Refine with YES first
         </button>
 
+        <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
+
         <a
           href={whatsappHref(
             `Hi YES — I just composed a journey in the Studio${
