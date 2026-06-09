@@ -686,7 +686,7 @@ export function StudioV3() {
         : "It starts here.\nThe day begins to open.",
       originLabel: label,
       postcardSubline: "Route forming",
-      holdMs: 2800,
+      holdMs: 3800,
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
