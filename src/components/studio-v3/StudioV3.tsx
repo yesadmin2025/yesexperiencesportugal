@@ -2317,4 +2317,128 @@ function MapPreviewPanel({
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Phase 7A — Saveable Signature                                      */
+/* ------------------------------------------------------------------ */
+
+function SaveSignatureButton({
+  state,
+  journeyTitle,
+}: {
+  state: StudioV3State;
+  journeyTitle: string;
+}) {
+  const save = useServerFn(saveStudioV3Signature);
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
+    "idle",
+  );
+  const [token, setToken] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const onSave = useCallback(async () => {
+    if (status === "saving" || status === "saved") return;
+    setStatus("saving");
+    try {
+      const res = await save({
+        data: {
+          journeyTitle,
+          skeletonTourKey: state.skeletonTourKey ?? null,
+          state: state as unknown as Record<string, unknown>,
+        },
+      });
+      setToken(res.token);
+      setStatus("saved");
+    } catch (e) {
+      console.error("[studio-v3 save]", e);
+      setStatus("error");
+    }
+  }, [save, status, journeyTitle, state]);
+
+  if (status === "saved" && token) {
+    const link =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/studio-v3?saved=${token}`
+        : `/studio-v3?saved=${token}`;
+    return (
+      <div
+        data-testid="studio-v3-saved-confirmation"
+        className="mt-1 w-full max-w-[420px] text-center motion-safe:[animation:studioV3RiseIn_520ms_ease-out_both]"
+      >
+        <div
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] uppercase tracking-[0.22em] font-semibold"
+          style={{
+            background: "color-mix(in oklab, var(--gold) 18%, transparent)",
+            color: "var(--charcoal)",
+            border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+          }}
+        >
+          <Check size={13} aria-hidden style={{ color: "var(--gold)" }} />
+          Signature saved
+        </div>
+        <p
+          className="mt-3 text-[12px] leading-[1.5]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        >
+          You can reopen this draft any time with this private link.
+        </p>
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(link);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            } catch {
+              /* clipboard blocked — link still visible below */
+            }
+          }}
+          className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{
+            color: "var(--charcoal)",
+            background: "transparent",
+            border: "1px solid color-mix(in oklab, var(--charcoal) 18%, transparent)",
+            borderRadius: 999,
+          }}
+        >
+          {copied ? "Copied" : "Copy link"}
+        </button>
+        <p
+          className="mt-2 text-[10.5px] font-mono break-all"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        >
+          {link}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onSave}
+      disabled={status === "saving"}
+      data-testid="studio-v3-save-signature"
+      className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      style={{
+        color: "var(--charcoal)",
+        background: "transparent",
+        border: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
+      }}
+      aria-label="Save this Signature for later"
+    >
+      {status === "saving" ? (
+        <>
+          <Loader2 size={14} aria-hidden className="animate-spin" />
+          Saving…
+        </>
+      ) : status === "error" ? (
+        <>Try saving again</>
+      ) : (
+        <>Save this Signature</>
+      )}
+    </button>
+  );
+}
+
+
 
