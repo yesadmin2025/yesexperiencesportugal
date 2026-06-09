@@ -277,8 +277,9 @@ function inferredGuestsNote(state: StudioV3State): string | null {
   return `Assumed for this draft: ${state.guests} guests`;
 }
 
-/** Investment shaping direction — shown in the final reveal when selected. */
-function investmentShapingLine(tier: InvestmentTier | null): string | null {
+/** Investment shaping direction — shown in the final reveal when selected.
+ *  Exported so the Studio V3 test suite can lock the exact copy per tier. */
+export function investmentShapingLine(tier: InvestmentTier | null): string | null {
   switch (tier) {
     case "considered":
       return "Shaped with clarity, comfort and restraint — private, beautiful, without unnecessary extras.";
