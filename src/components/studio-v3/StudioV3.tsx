@@ -277,8 +277,9 @@ function inferredGuestsNote(state: StudioV3State): string | null {
   return `Assumed for this draft: ${state.guests} guests`;
 }
 
-/** Investment shaping direction — shown in the final reveal when selected. */
-function investmentShapingLine(tier: InvestmentTier | null): string | null {
+/** Investment shaping direction — shown in the final reveal when selected.
+ *  Exported so the Studio V3 test suite can lock the exact copy per tier. */
+export function investmentShapingLine(tier: InvestmentTier | null): string | null {
   switch (tier) {
     case "considered":
       return "Shaped with clarity, comfort and restraint — private, beautiful, without unnecessary extras.";
@@ -482,7 +483,7 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
-    const hold = Math.min(r.holdMs ?? 2600, 3400);
+    const hold = Math.min(r.holdMs ?? 2600, 4500);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -673,7 +674,7 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
-        holdMs: 2600,
+        holdMs: 3600,
       });
       return;
     }
@@ -685,7 +686,7 @@ export function StudioV3() {
         : "It starts here.\nThe day begins to open.",
       originLabel: label,
       postcardSubline: "Route forming",
-      holdMs: 2800,
+      holdMs: 3800,
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
@@ -742,7 +743,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
-          holdMs: 2600,
+          holdMs: 3800,
         });
         return;
       }
@@ -1576,18 +1577,27 @@ function StoryboardHandoff({
 
       {/* ---------- 2.5 Shaping direction (investment) ---------- */}
       {shapingLine ? (
-        <div className="mt-6 text-center">
+        <div
+          data-testid="studio-v3-shaping-direction"
+          className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_both] motion-reduce:opacity-100"
+          style={{ animationDelay: "220ms" }}
+        >
+          <span
+            aria-hidden
+            className="mx-auto mb-5 block h-px w-10"
+            style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+          />
           <p
-            className="text-[11px] uppercase tracking-[0.26em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+            className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
           </p>
           <p
-            className="mt-2.5 text-[13.5px] leading-[1.6] max-w-[420px] mx-auto"
+            className="mt-3 text-[15px] sm:text-[16px] leading-[1.55] italic text-balance max-w-[440px] mx-auto"
             style={{
               fontFamily: "var(--font-serif)",
-              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
             }}
           >
             {shapingLine}
@@ -1722,7 +1732,7 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 2600, 3400);
+  const hold = Math.min(reaction.holdMs ?? 2600, 4500);
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.

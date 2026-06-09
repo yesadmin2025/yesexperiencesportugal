@@ -42,6 +42,7 @@ export function DatePhaseControls({
     <div className="mt-8 w-full max-w-[520px]">
       {/* Primary: exact date */}
       <label
+        htmlFor="studio-v3-date-input"
         className="block text-[11px] uppercase tracking-[0.22em]"
         style={{
           fontFamily: "var(--font-display)",
@@ -50,81 +51,83 @@ export function DatePhaseControls({
       >
         Choose a date
       </label>
-      <button
-        type="button"
-        onClick={() => {
-          const el = inputRef.current;
-          if (!el) return;
-          // Prefer showPicker when available; fall back to focus+click.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const anyEl = el as any;
-          if (typeof anyEl.showPicker === "function") {
-            try {
-              anyEl.showPicker();
-              return;
-            } catch {
-              /* fallthrough */
-            }
-          }
-          el.focus();
-          el.click();
-        }}
-        className="relative mt-2 w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-        style={{
-          background: exactSelected
-            ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
-            : "var(--ivory)",
-          borderColor: exactSelected
-            ? "var(--teal)"
-            : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
-          boxShadow: exactSelected
-            ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
-            : "0 6px 18px -14px rgba(46,46,46,0.18)",
-        }}
-      >
-        <span
-          className="block text-[14px] leading-tight font-semibold"
-          style={{
-            fontFamily: "var(--font-display)",
-            color: "var(--charcoal)",
-            letterSpacing: "-0.005em",
-          }}
-        >
-          {exactLabel}
-        </span>
-        <span
-          className="mt-1 block text-[12px] leading-snug italic"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
-          }}
-        >
-          We'll shape the day around it.
-        </span>
-        {exactSelected ? (
-          <span
-            aria-hidden
-            className="absolute right-3 top-3 inline-block h-1.5 w-1.5 rounded-full"
-            style={{ background: "var(--gold)" }}
-          />
-        ) : null}
-      </button>
 
-      {/* Hidden native input — drives the picker, accessible to keyboards. */}
-      <input
-        ref={inputRef}
-        type="date"
-        min={todayIso}
-        value={dateExact ?? ""}
-        onChange={(e) => {
-          const v = e.target.value;
-          if (!v) return;
-          if (v < todayIso) return; // belt-and-braces past-date guard
-          onPickExact(v);
-        }}
-        aria-label="Choose a date"
-        className="sr-only"
-      />
+      {/* Relative wrapper holds the visible styled button AND an invisible
+          native <input type="date"> overlaid on top. The native input owns
+          the tap, so mobile browsers (notably iOS Safari) reliably open the
+          picker — `showPicker()` from a button has historically failed on
+          iOS / inside sr-only inputs. The button below is purely cosmetic. */}
+      <div className="relative mt-2">
+        <div
+          aria-hidden
+          className="relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none"
+          style={{
+            background: exactSelected
+              ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
+              : "var(--ivory)",
+            borderColor: exactSelected
+              ? "var(--teal)"
+              : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
+            boxShadow: exactSelected
+              ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
+              : "0 6px 18px -14px rgba(46,46,46,0.18)",
+          }}
+        >
+          <span
+            className="block text-[14px] leading-tight font-semibold"
+            style={{
+              fontFamily: "var(--font-display)",
+              color: "var(--charcoal)",
+              letterSpacing: "-0.005em",
+            }}
+          >
+            {exactLabel}
+          </span>
+          <span
+            className="mt-1 block text-[12px] leading-snug italic"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+            }}
+          >
+            We'll shape the day around it.
+          </span>
+          {exactSelected ? (
+            <span
+              aria-hidden
+              className="absolute right-3 top-3 inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--gold)" }}
+            />
+          ) : null}
+        </div>
+
+        {/* Real native input — full-area, transparent, owns the tap. */}
+        <input
+          ref={inputRef}
+          id="studio-v3-date-input"
+          type="date"
+          min={todayIso}
+          value={dateExact ?? ""}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (!v) return;
+            if (v < todayIso) return; // belt-and-braces past-date guard
+            onPickExact(v);
+          }}
+          onClick={() => {
+            // Best-effort: open the picker programmatically on browsers
+            // that support it (Chrome / Edge / recent Safari). Wrapped in
+            // try/catch because non-user-gesture calls throw.
+            const el = inputRef.current as (HTMLInputElement & { showPicker?: () => void }) | null;
+            try { el?.showPicker?.(); } catch { /* noop */ }
+          }}
+          aria-label="Choose a date"
+          className="absolute inset-0 h-full w-full opacity-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{ colorScheme: "light", WebkitAppearance: "none" }}
+        />
+      </div>
+
+
 
       {/* Secondary options */}
       <div className="mt-3 grid grid-cols-1 gap-3">
