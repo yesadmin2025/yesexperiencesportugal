@@ -646,11 +646,15 @@ export function StudioV3() {
     }
     const nextAfterPickup = getNextPhase(forwardState, "pickup");
     const originLabel = pickupCityLabel(id);
+    const name = state.firstName?.trim() || null;
     if (STUDIO_V3_MAP_BEATS_ENABLED && originLabel) {
+      const line = name
+        ? `${name}, the day begins in ${originLabel}.`
+        : `The day begins in ${originLabel}.`;
       pickAndAdvance("pickup", id, nextAfterPickup, {
         kind: "map-beat",
         eyebrow: "The beginning",
-        message: `The day begins in ${originLabel}.`,
+        message: line,
         mapMode: "origin",
         originLabel,
         holdMs: 2600,
@@ -666,8 +670,6 @@ export function StudioV3() {
       originLabel: label,
       postcardSubline: "Route forming",
       holdMs: 2800,
-      // Pickup carries the feeling's atmosphere as a subtle wash, so the
-      // origin moment still feels grounded in the trip's tone.
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
