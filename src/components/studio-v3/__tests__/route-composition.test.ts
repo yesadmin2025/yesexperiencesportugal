@@ -37,9 +37,9 @@ function makeRoutePoints(
   }));
 }
 
-describe("Phase 5E — flag state (staging)", () => {
-  it("STUDIO_V3_ROUTE_COMPOSITION_ENABLED stays false in committed code", () => {
-    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(false);
+describe("Phase 5H — flag state (preview QA)", () => {
+  it("STUDIO_V3_ROUTE_COMPOSITION_ENABLED is ON for preview QA", () => {
+    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(true);
   });
 
   it("resolveStudioV3Route is deterministic and never exceeds 4 route points", () => {
@@ -435,8 +435,8 @@ describe("Phase 5F — type inference + compatibility families", () => {
 });
 
 describe("Phase 5G — one personalised extra moment", () => {
-  it("flag remains false in committed code", () => {
-    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(false);
+  it("flag is ON in committed code (Phase 5H preview QA)", () => {
+    expect(__STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS).toBe(true);
   });
 
   it("slow rhythm never adds an extra moment", () => {
