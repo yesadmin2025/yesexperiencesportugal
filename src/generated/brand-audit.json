@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T15:39:38.768Z",
+  "generatedAt": "2026-06-09T16:27:26.584Z",
   "filesScanned": 345,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,9 +18,9 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 232,
+    "total": 233,
     "approved": 61,
-    "allowlisted": 27,
+    "allowlisted": 28,
     "mismatch": 144
   },
   "findings": [
@@ -1457,29 +1457,38 @@
     },
     {
       "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 185,
+      "line": 188,
       "col": 90,
-      "raw": "#0c1a1d",
-      "normalized": "#0c1a1d",
-      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 38%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "raw": "#08171a",
+      "normalized": "#08171a",
+      "snippet": "\"radial-gradient(140% 90% at 12% 18%, color-mix(in oklab, var(--teal) 52%, #08171a) 0%, #08171a 62%), radial-gradient(80% 70% at 88% 92%, color-mix(in oklab, va",
       "status": "mismatch"
     },
     {
       "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 185,
+      "line": 188,
       "col": 103,
-      "raw": "#0c1a1d",
-      "normalized": "#0c1a1d",
-      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 38%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "raw": "#08171a",
+      "normalized": "#08171a",
+      "snippet": "\"radial-gradient(140% 90% at 12% 18%, color-mix(in oklab, var(--teal) 52%, #08171a) 0%, #08171a 62%), radial-gradient(80% 70% at 88% 92%, color-mix(in oklab, va",
       "status": "mismatch"
     },
     {
       "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 295,
+      "line": 248,
+      "col": 85,
+      "raw": "#000",
+      "normalized": "#000000",
+      "snippet": "<stop offset=\"100%\" stopColor=\"color-mix(in oklab, var(--teal) 70%, #000)\" />",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/studio-v3/CreationBeat.tsx",
+      "line": 381,
       "col": 78,
-      "raw": "#0d0d0d",
-      "normalized": "#0d0d0d",
-      "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #0d0d0d 75%, transparent) 100%)\",",
+      "raw": "#050d0f",
+      "normalized": "#050d0f",
+      "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)\",",
       "status": "mismatch"
     },
     {
