@@ -1454,7 +1454,7 @@ function StoryboardHandoff({
   onRefine,
 }: {
   state: StudioV3State;
-  onStateChange: React.Dispatch<React.SetStateAction<StudioV3State>>;
+  onStateChange: Dispatch<SetStateAction<StudioV3State>>;
   onBack: () => void;
   onSecure: () => void;
   onRefine: () => void;
