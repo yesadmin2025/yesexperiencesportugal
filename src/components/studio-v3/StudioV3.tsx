@@ -1450,6 +1450,8 @@ function StoryboardHandoff({
     considerations: state.considerations,
   });
 
+  const shapingLine = investmentShapingLine(state.investment);
+
   const suggestedRoute = composeSuggestedRoute({
     pickup: state.pickup,
     feeling: state.feeling,
