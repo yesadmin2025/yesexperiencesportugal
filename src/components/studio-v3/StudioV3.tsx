@@ -277,6 +277,22 @@ function inferredGuestsNote(state: StudioV3State): string | null {
   return `Assumed for this draft: ${state.guests} guests`;
 }
 
+/** Investment shaping direction — shown in the final reveal when selected. */
+function investmentShapingLine(tier: InvestmentTier | null): string | null {
+  switch (tier) {
+    case "considered":
+      return "Shaped with clarity, comfort and restraint — private, beautiful, without unnecessary extras.";
+    case "elevated":
+      return "Shaped with stronger curated moments, smoother pacing and a more polished private flow.";
+    case "bespoke":
+      return "Shaped for a more distinctive day — fewer generic choices, stronger character and more memorable details.";
+    case "open":
+      return "Shaped around the strongest fit for your route, rhythm and interests.";
+    default:
+      return null;
+  }
+}
+
 
 
 /**
@@ -1434,6 +1450,8 @@ function StoryboardHandoff({
     considerations: state.considerations,
   });
 
+  const shapingLine = investmentShapingLine(state.investment);
+
   const suggestedRoute = composeSuggestedRoute({
     pickup: state.pickup,
     feeling: state.feeling,
@@ -1555,6 +1573,27 @@ function StoryboardHandoff({
           {suggestedRoute}
         </p>
       </div>
+
+      {/* ---------- 2.5 Shaping direction (investment) ---------- */}
+      {shapingLine ? (
+        <div className="mt-6 text-center">
+          <p
+            className="text-[11px] uppercase tracking-[0.26em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
+          </p>
+          <p
+            className="mt-2.5 text-[13.5px] leading-[1.6] max-w-[420px] mx-auto"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+            }}
+          >
+            {shapingLine}
+          </p>
+        </div>
+      ) : null}
 
       {/* ---------- 3. Personalized moments (max 2) ---------- */}
       {moments.length > 0 ? (
