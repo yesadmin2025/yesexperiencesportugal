@@ -28,6 +28,7 @@ import type {
   Companions,
   CompanionsType,
   Consideration,
+  DestinationIntent,
   Feeling,
   IntentLevel,
   IntentProfile,
@@ -414,6 +415,58 @@ function pickupAffinity(tour: SignatureTour, pickup: Pickup | null): number {
   return -2;
 }
 
+/* ---------- Destination intent (soft additive boost) ---------- */
+//
+// Pickup ≠ destination. A traveller staying in Lisbon may still want
+// inland Alentejo, Central Portugal, the Spiritual coast or Comporta.
+// destinationIntent is an OPTIONAL signal layered on top of pickup so
+// the resolver can land on the right Signature skeleton without
+// rewriting route composition. Boosts are tuned to overcome the
+// ~±4 pickup swing for clearly inland/central choices, and stay light
+// for "anywhere-special" / "no-preference". It never invents skeletons,
+// never crosses routeCluster, and never bypasses route containment.
+const DESTINATION_INTENT_BOOSTS: Record<DestinationIntent, Record<string, number>> = {
+  "no-preference": {},
+  "lisbon-sintra-cascais": {
+    "sintra-cascais": 4,
+    "tiles-workshop": 1,
+  },
+  "arrabida-setubal-azeitao": {
+    "arrabida-wine-allinclusive": 3,
+    "arrabida-boat": 3,
+    "wild-beaches-picnic": 3,
+    "azeitao-cheese": 3,
+    "tiles-workshop": 2,
+  },
+  "alentejo-evora-wine": {
+    "evora-alentejo": 6,
+  },
+  "spiritual-coast": {
+    "fatima-nazare-obidos": 6,
+  },
+  "central-portugal": {
+    "tomar-coimbra": 6,
+  },
+  "comporta-troia": {
+    "troia-comporta": 6,
+  },
+  "anywhere-special": {
+    "evora-alentejo": 1.5,
+    "tomar-coimbra": 1.5,
+    "fatima-nazare-obidos": 1.5,
+    "troia-comporta": 1.5,
+  },
+};
+
+function destinationIntentBoost(
+  tour: SignatureTour,
+  destinationIntent: DestinationIntent | null | undefined,
+): number {
+  if (!destinationIntent || destinationIntent === "no-preference") return 0;
+  const table = DESTINATION_INTENT_BOOSTS[destinationIntent];
+  return table?.[tour.id] ?? 0;
+}
+
 function interestAffinity(tour: SignatureTour, interests: ReadonlyArray<Interest>): number {
   if (!interests.length) return 0;
   const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
@@ -451,9 +504,17 @@ function pickPrimaryTour(
   companions: Companions,
   interests: ReadonlyArray<Interest>,
   pickup: Pickup | null,
+  destinationIntent: DestinationIntent | null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const candidateIds = FEELING_TO_TOURS[feeling] ?? [];
-  const candidates = candidateIds
+  // When a destination intent is set, fold its target tours into the
+  // candidate pool so the boost can actually pick them up (FEELING_TO_TOURS
+  // alone may not include e.g. evora-alentejo for a "coastal" feeling).
+  const intentTargets = destinationIntent && destinationIntent !== "no-preference"
+    ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
+    : [];
+  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets]));
+  const candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
 
@@ -487,6 +548,7 @@ function pickPrimaryTour(
       let score = 0;
       score += pickupAffinity(tour, pickup) * 1.2;
       score += interestAffinity(tour, interests);
+      score += destinationIntentBoost(tour, destinationIntent);
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
         score += 0.5;
@@ -521,17 +583,20 @@ export function curateJourney(
     interests?: ReadonlyArray<Interest>;
     pickup?: Pickup | null;
     investment?: InvestmentTier | null;
+    destinationIntent?: DestinationIntent | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
   const pickup = options?.pickup ?? null;
   const investment = options?.investment ?? null;
+  const destinationIntent = options?.destinationIntent ?? null;
 
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
     companions,
     interests,
     pickup,
+    destinationIntent,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -698,9 +763,11 @@ export function resolveStudioV3Route(input: {
   occasion?: Occasion | null;
   considerations?: ReadonlyArray<string>;
   investment?: InvestmentTier | null;
+  destinationIntent?: DestinationIntent | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
   const investment = input.investment ?? null;
+  const destinationIntent = input.destinationIntent ?? null;
   const origin = pickupCityLabel(pickup);
 
   // Fallback when we don't have enough to safely resolve a Signature.
@@ -724,6 +791,7 @@ export function resolveStudioV3Route(input: {
     interests,
     pickup,
     investment,
+    destinationIntent,
   });
 
   // Hard cap at 4 main route points on the Journey Card (per brief).
@@ -1235,6 +1303,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
+  "destination",
   "who",
   "occasion",
   "date",

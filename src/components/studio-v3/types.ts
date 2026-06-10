@@ -80,6 +80,7 @@ export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 export type StudioV3Phase =
   | "intro"
   | "feeling"
+  | "destination"
   | "who"
   | "occasion"
   | "date"
@@ -95,6 +96,25 @@ export type StudioV3Phase =
 
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
+
+/**
+ * Soft destination intent — captured optionally between Feeling and Companions.
+ * Pickup means "where the traveller is staying", which doesn't necessarily
+ * equal "where they want the day to go". destinationIntent is an additive
+ * scoring signal so a Lisbon-staying traveller can still steer the route
+ * inland (Alentejo, Central, Spiritual coast) or south (Comporta/Tróia).
+ * It never invents stops, never crosses routeCluster after the skeleton is
+ * picked, and "no-preference" leaves prior behaviour essentially unchanged.
+ */
+export type DestinationIntent =
+  | "no-preference"
+  | "lisbon-sintra-cascais"
+  | "arrabida-setubal-azeitao"
+  | "alentejo-evora-wine"
+  | "spiritual-coast"
+  | "central-portugal"
+  | "comporta-troia"
+  | "anywhere-special";
 
 /* ---------- Phase 4: Adaptive Decision Layer ---------- */
 
@@ -153,6 +173,13 @@ export interface StudioV3State {
    * Signature tour's own `stops` may appear here (no invented stops).
    */
   editedRoutePoints: Array<{ label: string; story: string }> | null;
+  /**
+   * Soft destination intent (Phase: between Feeling and Companions).
+   * Default "no-preference" keeps prior pickup-driven behaviour unchanged.
+   * Used additively in curation scoring to overcome Lisbon pickup bias
+   * when the user clearly steers inland/central/spiritual/Comporta.
+   */
+  destinationIntent: DestinationIntent;
 }
 
 
@@ -176,6 +203,7 @@ export const INITIAL_STATE: StudioV3State = {
   guestsPrivateEvent: false,
   firstName: null,
   editedRoutePoints: null,
+  destinationIntent: "no-preference",
 };
 
 
@@ -289,4 +317,15 @@ export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
   { id: "elevated", label: "Elevated", whisper: "More curated moments, stronger tastings and smoother pacing." },
   { id: "bespoke", label: "Bespoke", whisper: "Premium details, private access and a more distinctive day." },
   { id: "open", label: "Open to guidance", whisper: "Let YES shape the best fit around your choices." },
+];
+
+export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
+  { id: "no-preference", label: "No preference — let YES shape it", whisper: "We'll let your other choices lead." },
+  { id: "lisbon-sintra-cascais", label: "Lisbon coast, Sintra & Cascais", whisper: "Palaces, pine and the Atlantic edge." },
+  { id: "arrabida-setubal-azeitao", label: "Arrábida, Setúbal & Azeitão", whisper: "Wine, coves and quiet cellars." },
+  { id: "alentejo-evora-wine", label: "Alentejo, Évora & wine country", whisper: "Long lunches, open plains." },
+  { id: "spiritual-coast", label: "Fátima, Nazaré, Óbidos & the spiritual coast", whisper: "Sanctuaries, cliffs and walled towns." },
+  { id: "central-portugal", label: "Tomar, Coimbra & Central Portugal", whisper: "Templar stones, scholarly streets." },
+  { id: "comporta-troia", label: "Comporta & Tróia", whisper: "Pine, rice fields and white sand." },
+  { id: "anywhere-special", label: "I'm open to anywhere special", whisper: "Surprise me — go where it's most special." },
 ];

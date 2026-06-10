@@ -99,6 +99,7 @@ const INTEREST_IMAGE: Record<string, string> = {
 import {
   COMPANIONS,
   CONSIDERATIONS,
+  DESTINATION_INTENTS,
   FEELINGS,
   INITIAL_STATE,
   INTERESTS,
@@ -111,6 +112,7 @@ import {
   type Companions,
   type Consideration,
   type DateMode,
+  type DestinationIntent,
   type Feeling,
   type Interest,
   type InvestmentTier,
@@ -136,11 +138,12 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
  * storyboard handoff. Those are intentionally not touched here.
  */
 
-const TOTAL_STEPS = 13;
+const TOTAL_STEPS = 14;
 
 const PHASE_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
+  "destination",
   "who",
   "occasion",
   "date",
@@ -167,7 +170,8 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  *  choosing a different answer feels distinct, not robotic. */
 const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   intro: [""],
-  feeling: ["Next, the company", "Next, who joins you", "Next, your travellers"],
+  feeling: ["Next, a direction begins to emerge", "Next, where Portugal calls you", "Next, the region takes shape"],
+  destination: ["Next, the company", "Next, who joins you", "Next, your travellers"],
   who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
   date: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
@@ -369,6 +373,11 @@ export function studioV3Progress(
   }
   if (hasCompanions) {
     return { percent: 34, phrase: "The company is set." };
+  }
+  const hasDestination =
+    state.destinationIntent != null && state.destinationIntent !== "no-preference";
+  if (hasDestination) {
+    return { percent: 28, phrase: "A direction begins to emerge." };
   }
   if (hasFeeling) {
     return { percent: 22, phrase: "A direction settles in." };
@@ -659,6 +668,27 @@ export function StudioV3() {
       bgImage: FEELING_IMAGE[id],
     });
   };
+  const onDestination = (id: DestinationIntent) => {
+    const forward: StudioV3State = { ...state, destinationIntent: id };
+    setState(() => forward);
+    const next = getNextPhase(forward, "destination");
+    const message =
+      id === "no-preference"
+        ? "No fixed direction. The day will find its own."
+        : id === "anywhere-special"
+          ? "Open to anywhere special. Portugal can surprise you."
+          : "A direction begins to emerge.";
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The direction",
+        message,
+        bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
+        nextPhase: next,
+        holdMs: 2200,
+      });
+    }, 420);
+  };
   const onCompanions = (id: Companions) => {
     // Compute forward state (with possible guest inference) so we can both
     // commit it and resolve the next phase adaptively.
@@ -864,6 +894,7 @@ export function StudioV3() {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -915,6 +946,7 @@ export function StudioV3() {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: id,
+        destinationIntent: state.destinationIntent,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -994,6 +1026,7 @@ export function StudioV3() {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -1251,9 +1284,37 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
+      {state.phase === "destination" ? (
+        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
+          <BackLink onClick={() => back("feeling")} />
+          <PhaseHeader
+            eyebrow="The direction"
+            title="Where in Portugal"
+            titleAccent="is calling you?"
+          />
+          <p
+            className="-mt-3 mb-5 text-[13px] leading-[1.55]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
+            Pick a direction, or let YES shape it around your choices.
+          </p>
+          <ChoiceGrid
+            options={DESTINATION_INTENTS}
+            value={state.destinationIntent}
+            onSelect={onDestination}
+            columns={1}
+          />
+          {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
+            <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
+          ) : (
+            <FooterHint>Optional — pickup tells us where you stay, not where the day goes.</FooterHint>
+          )}
+        </PhaseShell>
+      ) : null}
+
       {state.phase === "who" ? (
         <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
-          <BackLink onClick={() => back("feeling")} />
+          <BackLink onClick={() => back("destination")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
           {state.companions ? (
@@ -1668,6 +1729,7 @@ function StoryboardHandoff({
         occasion: state.occasion,
         considerations: state.considerations,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
       }),
     [
       state.feeling,
@@ -1678,6 +1740,7 @@ function StoryboardHandoff({
       state.occasion,
       state.considerations,
       state.investment,
+      state.destinationIntent,
     ],
   );
 
