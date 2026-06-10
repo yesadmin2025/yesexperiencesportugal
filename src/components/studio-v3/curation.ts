@@ -2008,8 +2008,91 @@ export function applyExtraMoment(
   return next.slice(0, 4).map((p, i) => ({ ...p, index: i }));
 }
 
+/* ---------------------------------------------------------------------------
+ * Phase 7A — Mobility safety filter for original skeleton stops.
+ *
+ * The base composition pipeline already filters mobility-unsafe candidates
+ * out of REPLACEMENT pools (see `isReplacementDeniedByConsiderations`), but
+ * an original Signature skeleton stop may still surface a cliff, cove,
+ * cave, trail or steep viewpoint when the traveller flagged reduced
+ * mobility / avoid-long-walks. This pass walks the composed routePoints
+ * and, for any stop whose label/story implies difficult access, tries to
+ * replace it with a safe same-family candidate from REGION_STOP_POOL. If
+ * no safe candidate exists, the unsafe stop is dropped.
+ * --------------------------------------------------------------------------- */
+
+const UNSAFE_SKELETON_RE =
+  /\bcliffs?\b|\bcoves?\b|\bcaves?\b|\bsteep\b|\bstairs?\b|\buneven\b|\btrail\b|\bhike\b|\bwild beach\b|\bsecluded beach\b|kayak|snorkel|swim across|hard to reach|miradouro/i;
+
+function isUnsafeSkeletonStop(label: string, story: string): boolean {
+  const hay = `${label} ${story}`;
+  return UNSAFE_SKELETON_RE.test(hay);
+}
+
+export function applyMobilitySafety(
+  routePoints: ReadonlyArray<ResolvedRoutePoint>,
+  input: {
+    skeletonTourId: string | null | undefined;
+    interests: ReadonlyArray<Interest>;
+    rhythm: Rhythm;
+    companions: Companions;
+    investment: InvestmentTier | null;
+    considerations: ReadonlyArray<string>;
+  },
+): ResolvedRoutePoint[] {
+  const out = routePoints.map((p) => ({ ...p }));
+  if (out.length === 0) return out;
+
+  const candidates = selectReplacementCandidates({
+    skeletonTourId: input.skeletonTourId,
+    interests: input.interests,
+    rhythm: input.rhythm,
+    companions: input.companions,
+    investment: input.investment,
+    considerations: input.considerations,
+    existingRoutePointLabels: out.map((p) => p.label),
+  });
+
+  const usedIds = new Set<string>();
+  const usedLabels = new Set(out.map((p) => normalizeLabel(p.label)));
+  const result: ResolvedRoutePoint[] = [];
+
+  for (const p of out) {
+    if (!isUnsafeSkeletonStop(p.label, p.story)) {
+      result.push(p);
+      continue;
+    }
+    const kind = inferRoutePointType(p.label, p.story);
+    const cand = kind
+      ? candidates.find(
+          (c) =>
+            !usedIds.has(c.id) &&
+            !usedLabels.has(normalizeLabel(c.name)) &&
+            isCompatibleCandidate(kind, c),
+        )
+      : undefined;
+    if (cand) {
+      usedIds.add(cand.id);
+      usedLabels.delete(normalizeLabel(p.label));
+      usedLabels.add(normalizeLabel(cand.name));
+      result.push({
+        index: p.index,
+        label: cand.name,
+        story: cand.notes ?? p.story,
+        lat: cand.coords?.lat ?? null,
+        lng: cand.coords?.lng ?? null,
+      });
+    }
+    // else: drop the unsafe stop (no safe replacement available).
+  }
+
+  // Re-index to keep ResolvedRoutePoint contract.
+  return result.map((p, i) => ({ ...p, index: i }));
+}
+
 /** Test-only accessor for the local flag — keeps the flag private to this
  *  module while letting the test suite assert it is OFF in committed code. */
 export const __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS =
   STUDIO_V3_ROUTE_COMPOSITION_ENABLED;
+
 
