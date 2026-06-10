@@ -523,7 +523,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
   });
-  void hydrating; // reserved for a future fade-in overlay
+  const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
 
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
     { open: false, intent: "book" },
@@ -537,9 +537,11 @@ export function StudioV3() {
     [],
   );
 
-  // Phase 7A — hydrate a saved Signature directly into the final reveal.
+  // Phase 7D — hydrate a saved Signature directly into the final reveal.
   // Reads ?saved=<token> once on mount, fetches the persisted state, then
   // jumps straight to the storyboard phase (skips intro + all questions).
+  // Preserves editedRoutePoints from the saved payload via spread over
+  // INITIAL_STATE. Invalid/missing tokens surface a graceful card.
   const load = useServerFn(loadStudioV3Signature);
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -552,15 +554,19 @@ export function StudioV3() {
         const res = await load({ data: { token } });
         if (cancelled) return;
         if (res.found && res.state && typeof res.state === "object") {
-          const restored = {
+          const restored: StudioV3State = {
             ...INITIAL_STATE,
             ...(res.state as Partial<StudioV3State>),
             phase: "storyboard" as StudioV3Phase,
           };
           setState(restored);
+          setHydrateError(null);
+        } else {
+          setHydrateError("not-found");
         }
       } catch (e) {
         console.error("[studio-v3 hydrate]", e);
+        if (!cancelled) setHydrateError("failed");
       } finally {
         if (!cancelled) setHydrating(false);
       }
