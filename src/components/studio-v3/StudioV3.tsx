@@ -19,7 +19,9 @@ import {
   composeJourneyTitle,
   
   composeSuggestedRoute,
+  filterCompanions,
   filterConsiderations,
+  filterDestinationIntents,
   filterInterests,
   filterOccasions,
   getNextPhase,
