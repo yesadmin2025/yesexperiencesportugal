@@ -1280,6 +1280,48 @@ export function filterInterests(
   return [...options];
 }
 
+/**
+ * filterCompanions — hide companion options that are operationally
+ * incompatible with the chosen feeling, so the Studio stops feeling like
+ * a questionnaire. Conservative on purpose: only removes pairs that would
+ * read as illogical (e.g. "corporate" on a romance day, "proposal" on a
+ * family or adventure day).
+ *
+ *   feeling=romance       → hide corporate, family
+ *   feeling=family        → hide proposal, corporate
+ *   feeling=adventure     → hide proposal, corporate
+ *   feeling=slow-luxury   → hide corporate
+ *   feeling=coastal/wine-food/hidden/culture → keep all
+ */
+export function filterCompanions(
+  options: ReadonlyArray<ChoiceOption<Companions>>,
+  feeling: Feeling | null,
+): ChoiceOption<Companions>[] {
+  if (!feeling) return [...options];
+  const HIDE: Partial<Record<Feeling, ReadonlyArray<Companions>>> = {
+    romance: ["corporate", "family"],
+    family: ["proposal", "corporate"],
+    adventure: ["proposal", "corporate"],
+    "slow-luxury": ["corporate"],
+  };
+  const hidden = new Set<Companions>(HIDE[feeling] ?? []);
+  return options.filter((o) => !hidden.has(o.id));
+}
+
+/**
+ * filterDestinationIntents — drop redundant low-commitment options.
+ * "no-preference" and "anywhere-special" carry the same user signal
+ * ("let YES decide"); we keep only "no-preference" in the UI so the
+ * list reads as intentional choices, not five ways to skip. The
+ * "anywhere-special" id stays valid in the type system and scoring
+ * for back-compat / saved links.
+ */
+export function filterDestinationIntents(
+  options: ReadonlyArray<ChoiceOption<DestinationIntent>>,
+): ChoiceOption<DestinationIntent>[] {
+  return options.filter((o) => o.id !== "anywhere-special");
+}
+
 /* ---------- Phase relevance ---------- */
 
 /**
