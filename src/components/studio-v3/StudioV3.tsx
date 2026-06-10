@@ -1691,12 +1691,66 @@ function StoryboardHandoff({
     ? findTour(resolved.skeletonTourKey)
     : null;
   const swapPool = useMemo(() => {
-    if (!skeletonTour) return [] as Array<{ label: string; story: string }>;
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
-    return skeletonTour.stops
-      .filter((s) => !inUse.has(s.label.toLowerCase()))
-      .map((s) => ({ label: s.label, story: s.story }));
-  }, [skeletonTour, editedStops]);
+    const pool: Array<{ label: string; story: string; source: "skeleton" | "region-pool" }> = [];
+
+    // 1) Same Signature skeleton's own stops (always safe, anchor narrative).
+    if (skeletonTour) {
+      for (const s of skeletonTour.stops) {
+        if (!inUse.has(s.label.toLowerCase())) {
+          pool.push({ label: s.label, story: s.story, source: "skeleton" });
+        }
+      }
+    }
+
+    // 2) Approved REGION_STOP_POOL candidates — same region + routeCluster,
+    //    tour-isolation respected, considerations honoured, deduped vs
+    //    editedStops. We also defend oneOfGroup against existing edited
+    //    labels (an edited stop may already represent a oneOfGroup member).
+    if (resolved.skeletonTourKey && state.companions && state.rhythm) {
+      const editedLabelsLower = new Set(editedStops.map((s) => s.label.toLowerCase()));
+      const usedGroups = new Set<string>();
+      for (const stop of REGION_STOP_POOL) {
+        if (stop.oneOfGroup && editedLabelsLower.has(stop.name.toLowerCase())) {
+          usedGroups.add(stop.oneOfGroup);
+        }
+      }
+      const cands = selectReplacementCandidates({
+        skeletonTourId: resolved.skeletonTourKey,
+        interests: state.interests,
+        rhythm: state.rhythm,
+        companions: state.companions,
+        investment: state.investment,
+        considerations: state.considerations,
+        existingRoutePointLabels: editedStops.map((s) => s.label),
+      });
+      const seenLabels = new Set(pool.map((p) => p.label.toLowerCase()));
+      for (const c of cands) {
+        const key = c.name.toLowerCase();
+        if (seenLabels.has(key) || inUse.has(key)) continue;
+        if (c.oneOfGroup && usedGroups.has(c.oneOfGroup)) continue;
+        if (c.oneOfGroup) usedGroups.add(c.oneOfGroup);
+        seenLabels.add(key);
+        pool.push({
+          label: c.name,
+          story: c.notes ?? "A considered moment, in keeping with the day's rhythm.",
+          source: "region-pool",
+        });
+      }
+    }
+
+    return pool;
+  }, [
+    skeletonTour,
+    editedStops,
+    resolved.skeletonTourKey,
+    state.companions,
+    state.rhythm,
+    state.interests,
+    state.investment,
+    state.considerations,
+  ]);
+
 
   const setEdited = useCallback(
     (
