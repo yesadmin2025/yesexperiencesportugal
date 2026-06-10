@@ -50,7 +50,7 @@ test.describe("Studio V3 — reveal pacing", () => {
   test("shaping direction renders with slow RiseIn when investment chosen", async ({ page }) => {
     await walkToReveal(page, { pickInvestment: true });
 
-    const reveal = page.getByText(/Your journey draft/i);
+    const reveal = page.getByText(/this is your Signature/i);
     await expect(reveal).toBeVisible({ timeout: 15_000 });
 
     const shaping = page.getByTestId("studio-v3-shaping-direction");
