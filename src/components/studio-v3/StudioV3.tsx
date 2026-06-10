@@ -2197,9 +2197,13 @@ function StoryboardHandoff({
                       <button
                         type="button"
                         onClick={() => {
-                          setEdited((prev) => [...prev, cand]);
+                          setEdited((prev) => [
+                            ...prev,
+                            { label: cand.label, story: cand.story },
+                          ]);
                           setAddOpen(false);
                         }}
+
                         className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                         style={{ color: "var(--charcoal)" }}
                       >
