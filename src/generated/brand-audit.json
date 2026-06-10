@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-10T02:27:15.685Z",
-  "filesScanned": 350,
+  "generatedAt": "2026-06-10T02:56:30.252Z",
+  "filesScanned": 351,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -20,8 +20,8 @@
   "counts": {
     "total": 233,
     "approved": 61,
-    "allowlisted": 28,
-    "mismatch": 144
+    "allowlisted": 27,
+    "mismatch": 145
   },
   "findings": [
     {
@@ -1456,42 +1456,6 @@
       "status": "mismatch"
     },
     {
-      "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 188,
-      "col": 90,
-      "raw": "#08171a",
-      "normalized": "#08171a",
-      "snippet": "\"radial-gradient(140% 90% at 12% 18%, color-mix(in oklab, var(--teal) 52%, #08171a) 0%, #08171a 62%), radial-gradient(80% 70% at 88% 92%, color-mix(in oklab, va",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 188,
-      "col": 103,
-      "raw": "#08171a",
-      "normalized": "#08171a",
-      "snippet": "\"radial-gradient(140% 90% at 12% 18%, color-mix(in oklab, var(--teal) 52%, #08171a) 0%, #08171a 62%), radial-gradient(80% 70% at 88% 92%, color-mix(in oklab, va",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 248,
-      "col": 85,
-      "raw": "#000",
-      "normalized": "#000000",
-      "snippet": "<stop offset=\"100%\" stopColor=\"color-mix(in oklab, var(--teal) 70%, #000)\" />",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/components/studio-v3/CreationBeat.tsx",
-      "line": 381,
-      "col": 78,
-      "raw": "#050d0f",
-      "normalized": "#050d0f",
-      "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)\",",
-      "status": "mismatch"
-    },
-    {
       "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
       "line": 572,
       "col": 38,
@@ -1525,6 +1489,42 @@
       "raw": "#d8c089",
       "normalized": "#d8c089",
       "snippet": "<circle cx={origin.x} cy={origin.y} r=\"3.2\" fill=\"none\" stroke=\"var(--gold-soft, #d8c089)\" strokeOpacity=\"0.5\" strokeWidth=\"0.4\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 143,
+      "col": 43,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "background: \"var(--charcoal-deep, #14181a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 246,
+      "col": 82,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "<circle cx={ORIGIN.x} cy={ORIGIN.y} r=\"3.6\" fill=\"var(--charcoal-deep, #14181a)\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 309,
+      "col": 76,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "<circle cx={p.x} cy={p.y} r=\"3.6\" fill=\"var(--charcoal-deep, #14181a)\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 352,
+      "col": 74,
+      "raw": "#050d0f",
+      "normalized": "#050d0f",
+      "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)\",",
       "status": "mismatch"
     },
     {
