@@ -9,7 +9,8 @@
 
 import { describe, it, expect } from "vitest";
 import { resolveStudioV3Route } from "@/components/studio-v3/curation";
-import { findTour } from "@/data/signatureTours";
+import { findTour, signatureTours } from "@/data/signatureTours";
+import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import type {
   Companions,
   DestinationIntent,
