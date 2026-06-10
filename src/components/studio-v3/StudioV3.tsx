@@ -1318,7 +1318,7 @@ export function StudioV3() {
         <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("destination")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
-          <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
+          <ChoiceGrid options={filterCompanions(COMPANIONS, state.feeling)} value={state.companions} onSelect={onCompanions} />
           {state.companions ? (
             <NextTeaser>{contextualTeaser("who", state)}</NextTeaser>
           ) : (
