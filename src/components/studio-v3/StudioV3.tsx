@@ -99,6 +99,7 @@ const INTEREST_IMAGE: Record<string, string> = {
 import {
   COMPANIONS,
   CONSIDERATIONS,
+  DESTINATION_INTENTS,
   FEELINGS,
   INITIAL_STATE,
   INTERESTS,
@@ -111,6 +112,7 @@ import {
   type Companions,
   type Consideration,
   type DateMode,
+  type DestinationIntent,
   type Feeling,
   type Interest,
   type InvestmentTier,
