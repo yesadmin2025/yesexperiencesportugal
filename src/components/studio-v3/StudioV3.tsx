@@ -663,6 +663,27 @@ export function StudioV3() {
       bgImage: FEELING_IMAGE[id],
     });
   };
+  const onDestination = (id: DestinationIntent) => {
+    const forward: StudioV3State = { ...state, destinationIntent: id };
+    setState(() => forward);
+    const next = getNextPhase(forward, "destination");
+    const message =
+      id === "no-preference"
+        ? "No fixed direction. The day will find its own."
+        : id === "anywhere-special"
+          ? "Open to anywhere special. Portugal can surprise you."
+          : "A direction begins to emerge.";
+    window.setTimeout(() => {
+      playReaction({
+        kind: "atmosphere",
+        eyebrow: "The direction",
+        message,
+        bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
+        nextPhase: next,
+        holdMs: 2200,
+      });
+    }, 420);
+  };
   const onCompanions = (id: Companions) => {
     // Compute forward state (with possible guest inference) so we can both
     // commit it and resolve the next phase adaptively.
