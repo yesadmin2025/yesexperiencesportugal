@@ -1,14 +1,16 @@
 // Studio V3 — Creation Storytelling layer.
 //
 // AtmosphereBeat: image + italic line, used for Who / Occasion.
-// MapBeat: dark editorial SVG map panel (no Mapbox, no BuilderMap, no tiles),
-//   used between choices to show the journey forming. Origin dot, gold route
-//   line, numbered teal pins. Visual language is inspired by the homepage
-//   Studio preview; rendered locally so we do not touch StudioLivePreview.
+// MapBeat: cinematic homepage-style map panel (delegates to
+//   StudioV3SignatureMap — the shared visual language used between
+//   questions AND in the final Signature reveal).
 //
 // Both beats render INSIDE the existing ReactionOverlay button wrapper, which
 // already handles fixed positioning, click/Escape dismiss, auto-dissolve and
 // prefers-reduced-motion.
+
+import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+
 
 interface AtmosphereBeatProps {
   /** Existing Studio V3 atmospheric image (must already be imported upstream). */
