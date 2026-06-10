@@ -1690,6 +1690,72 @@ function StoryboardHandoff({
     ? `${themesJoined.charAt(0).toUpperCase()}${themesJoined.slice(1)} and ${paceBit} — held inside one private route.`
     : `${paceBit.charAt(0).toUpperCase()}${paceBit.slice(1)}, held inside one private route.`;
 
+  // ---------- Phase 6E: Signature Story copy ----------
+  const heroLead = name
+    ? `${name}, this is your Signature.`
+    : "This is your Signature.";
+  const heroSub = `A private day shaped around ${themeWord} and ${paceWord}.`;
+
+  // Story of the day — generated only from real composed route points.
+  const cleanLabel = (s: string) =>
+    s.split(/[—–-]/)[0].split(",")[0].trim();
+  const firstStop = editedStops[0] ? cleanLabel(editedStops[0].label) : null;
+  const lastStop =
+    editedStops.length > 1
+      ? cleanLabel(editedStops[editedStops.length - 1].label)
+      : null;
+  const middleStops = editedStops
+    .slice(1, Math.max(1, editedStops.length - 1))
+    .map((s) => cleanLabel(s.label))
+    .filter((x) => x.length > 0);
+
+  const opening = firstStop
+    ? `The day begins gently from ${pickupCity}, with the first part of the route opening toward ${firstStop}.`
+    : `The day begins gently from ${pickupCity}.`;
+
+  const heartTheme = themeBits.length
+    ? `${themeBits.slice(0, 3).join(", ")}`
+    : "Real Portuguese moments";
+  const heartMiddle =
+    middleStops.length > 0
+      ? `, with pauses through ${middleStops.slice(0, 2).join(" and ")}`
+      : "";
+  const heart = `${heartTheme.charAt(0).toUpperCase()}${heartTheme.slice(1)} shape the centre of the experience${heartMiddle}.`;
+
+  const closingPlace = lastStop && lastStop !== firstStop ? ` near ${lastStop}` : "";
+  const closing =
+    state.rhythm === "slow" || state.rhythm === "immersive"
+      ? `The route closes with space to breathe${closingPlace}, rather than rushing through one more stop.`
+      : state.rhythm === "full"
+        ? `The route closes with one last full chapter${closingPlace}, before the return.`
+        : `The route closes gently${closingPlace}, with time to settle before the return.`;
+
+  const storyChapters = [
+    { eyebrow: "Opening", body: opening },
+    { eyebrow: "The heart of the day", body: heart },
+    { eyebrow: "Closing note", body: closing },
+  ];
+
+  // Signature DNA — small set of chips derived from selected state.
+  const dnaChips: string[] = [];
+  const feelingLabel = getOptionLabel(FEELINGS, state.feeling);
+  if (feelingLabel) dnaChips.push(feelingLabel);
+  const companionsLabel = getOptionLabel(COMPANIONS, state.companions);
+  if (companionsLabel) dnaChips.push(companionsLabel);
+  for (const id of state.interests.slice(0, 3)) {
+    const l = getOptionLabel(INTERESTS, id);
+    if (l) dnaChips.push(l);
+  }
+  const rhythmLabel = getOptionLabel(RHYTHMS, state.rhythm);
+  if (rhythmLabel) dnaChips.push(rhythmLabel);
+  if (state.investment) {
+    const invLabel = getOptionLabel(INVESTMENT_TIERS, state.investment);
+    if (invLabel) dnaChips.push(invLabel);
+  }
+  if (pickupCity && state.pickup && state.pickup !== "other") {
+    dnaChips.push(`From ${pickupCity}`);
+  }
+
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
@@ -1697,8 +1763,8 @@ function StoryboardHandoff({
     >
       <BackLink onClick={onBack} />
 
-      {/* ---------- 0. Earned reveal handoff ---------- */}
-      <div
+      {/* ---------- 1. Hero — Your Signature ---------- */}
+      <header
         className="text-center pt-10"
         style={{ animation: "studioV3RiseIn 720ms ease-out both" }}
       >
@@ -1706,61 +1772,38 @@ function StoryboardHandoff({
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> The reveal
+          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
         </p>
+        <h1
+          className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
+          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+          data-testid="studio-v3-signature-hero"
+        >
+          {heroLead}
+        </h1>
         <p
-          className="mt-4 text-[22px] sm:text-[26px] leading-[1.3] italic text-balance"
+          className="mt-4 text-[16px] sm:text-[18px] leading-[1.45] italic text-balance max-w-[460px] mx-auto"
           style={{
             fontFamily: "var(--font-serif)",
-            color: "var(--charcoal)",
-            animationDelay: "120ms",
+            color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
           }}
         >
-          {handoffLead}
+          {heroSub}
         </p>
         <p
-          className="mt-3 text-[13.5px] leading-[1.55] max-w-[440px] mx-auto"
-          style={{
-            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-          }}
+          className="mt-4 text-[12.5px] leading-[1.55] max-w-[420px] mx-auto"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
-          {handoffSupport}
+          Created from your choices. Held inside one coherent route.
         </p>
         <span
           aria-hidden
           className="mt-6 inline-block h-px w-10"
           style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
         />
-      </div>
-
-      {/* ---------- 1. Big title ---------- */}
-      <header className="text-center pt-8">
-        <h1
-          className="text-[28px] sm:text-[34px] leading-[1.05] tracking-[-0.015em] font-bold"
-          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-        >
-          Your journey draft
-        </h1>
-
-        {/* Journey name */}
-        <h2
-          className="mt-3 text-[17px] sm:text-[20px] leading-[1.3] font-semibold"
-          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-        >
-          {journeyTitle}
-        </h2>
-
-        {/* Emotional paragraph */}
-        <p
-          className="mt-5 text-[14px] leading-[1.55] max-w-[480px] mx-auto"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
-        >
-          {description}
-        </p>
       </header>
 
-
-      {/* ---------- 2a. Live route map (matches homepage Studio preview) ---------- */}
+      {/* ---------- 2. Live route map ---------- */}
       {(() => {
         const coordByLabel = new Map(
           resolved.routePoints
@@ -1790,7 +1833,7 @@ function StoryboardHandoff({
         return (
           <div
             data-testid="studio-v3-reveal-map"
-            className="mt-6 mx-auto w-full max-w-[520px] overflow-hidden rounded-[10px]"
+            className="mt-8 mx-auto w-full max-w-[520px] overflow-hidden rounded-[10px]"
             style={{
               height: 240,
               border: "1px solid color-mix(in oklab, var(--charcoal) 14%, transparent)",
@@ -1812,31 +1855,52 @@ function StoryboardHandoff({
         );
       })()}
 
-      {/* ---------- 2. Suggested route ---------- */}
-      <div className="mt-8 text-center">
+      {/* ---------- 3. Story of the day ---------- */}
+      <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
         <p
-          className="text-[11px] uppercase tracking-[0.26em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Suggested route
+          <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
         </p>
-        <p
-          className="mt-2.5 text-[15px] leading-[1.55]"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-          }}
-        >
-          {suggestedRoute}
-        </p>
-      </div>
+        <div className="mt-5 space-y-5">
+          {storyChapters.map((c) => (
+            <div key={c.eyebrow}>
+              <p
+                className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+                style={{ color: "var(--gold)" }}
+              >
+                {c.eyebrow}
+              </p>
+              <p
+                className="mt-1.5 text-[14px] leading-[1.55]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+              >
+                {c.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* ---------- 2b. Editable stops (Phase 7B) ---------- */}
+      {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
       {editedStops.length > 0 ? (
         <div
           data-testid="studio-v3-stops-editor"
-          className="mt-6 max-w-[520px] mx-auto"
+          className="mt-10 max-w-[520px] mx-auto"
         >
+          <p
+            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Fine-tune your Signature
+          </p>
+          <p
+            className="mt-2 mb-4 text-center text-[12px] leading-[1.5]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+          >
+            Reorder, swap or remove a moment. The route stays inside the same region.
+          </p>
           <ol className="space-y-2">
             {editedStops.map((s, i) => {
               const isFirst = i === 0;
@@ -2015,8 +2079,37 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
+      {/* ---------- 5. Signature DNA ---------- */}
+      {dnaChips.length > 0 ? (
+        <section
+          data-testid="studio-v3-signature-dna"
+          className="mt-10 max-w-[520px] mx-auto text-center"
+        >
+          <p
+            className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
+          </p>
+          <ul className="mt-3 flex flex-wrap justify-center gap-1.5">
+            {dnaChips.map((chip) => (
+              <li
+                key={chip}
+                className="px-2.5 py-1 text-[11.5px] leading-[1.3] rounded-full"
+                style={{
+                  background: "color-mix(in oklab, var(--sand) 55%, transparent)",
+                  border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+                }}
+              >
+                {chip}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
-      {/* ---------- 2.5 Shaping direction (investment) ---------- */}
+      {/* ---------- 6. Shaping direction (investment) ---------- */}
       {shapingLine ? (
         <div
           data-testid="studio-v3-shaping-direction"
@@ -2046,31 +2139,7 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
-      {/* ---------- 3. Personalized moments (max 2) ---------- */}
-      {moments.length > 0 ? (
-        <div className="mt-8 text-center">
-          <p
-            className="text-[11px] uppercase tracking-[0.26em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> Personalized moments
-          </p>
-          <ul className="mt-3 inline-block text-left space-y-1.5">
-            {moments.slice(0, 2).map((m) => (
-              <li
-                key={m}
-                className="flex gap-2.5 text-[13px] leading-[1.5]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
-              >
-                <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
-                <span>{m}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      {/* ---------- 4. Before you secure it ---------- */}
+      {/* ---------- 7. Before you secure it ---------- */}
       <div className="mt-8 text-center">
         <p
           className="text-[11.5px] leading-[1.6] italic"
@@ -2091,44 +2160,52 @@ function StoryboardHandoff({
         ) : null}
       </div>
 
-      {/* ---------- 5. CTA stack ---------- */}
+      {/* ---------- 8. CTA stack ---------- */}
       <div className="mt-12 flex flex-col items-center gap-4">
+        <p
+          className="text-[15px] sm:text-[16px] italic leading-[1.4] text-center"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+          }}
+        >
+          Ready to say YES to this day?
+        </p>
         <button
           type="button"
           onClick={onSecure}
           className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-          aria-label="Secure this journey directly"
+          aria-label="Say YES to this Signature"
         >
-          Secure this journey directly <ArrowRight size={14} aria-hidden />
+          Say YES to this Signature <ArrowRight size={14} aria-hidden />
         </button>
+
+        <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
 
         <button
           type="button"
           onClick={onRefine}
-          className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{
-            color: "var(--charcoal)",
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             background: "transparent",
-            border: "1px solid color-mix(in oklab, var(--charcoal) 22%, transparent)",
           }}
           aria-label="Refine with YES first"
         >
           Refine with YES first
         </button>
 
-        <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
-
         <a
           href={whatsappHref(
-            `Hi YES — I just composed a journey in the Studio${
+            `Hi YES — I just composed a Signature in the Studio${
               state.journeyTitle ? ` ("${state.journeyTitle}")` : ""
             } and would like some help.`,
           )}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-1 inline-flex items-center gap-1.5 px-2 py-1 min-h-[32px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", background: "transparent" }}
+          className="inline-flex items-center gap-1.5 px-2 py-1 min-h-[32px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", background: "transparent" }}
           aria-label="Need help? Ask YES on WhatsApp"
         >
           <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
