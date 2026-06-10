@@ -1279,9 +1279,37 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
+      {state.phase === "destination" ? (
+        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
+          <BackLink onClick={() => back("feeling")} />
+          <PhaseHeader
+            eyebrow="The direction"
+            title="Where in Portugal"
+            titleAccent="is calling you?"
+          />
+          <p
+            className="-mt-3 mb-5 text-[13px] leading-[1.55]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
+            Pick a direction, or let YES shape it around your choices.
+          </p>
+          <ChoiceGrid
+            options={DESTINATION_INTENTS}
+            value={state.destinationIntent}
+            onSelect={onDestination}
+            columns={1}
+          />
+          {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
+            <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
+          ) : (
+            <FooterHint>Optional — pickup tells us where you stay, not where the day goes.</FooterHint>
+          )}
+        </PhaseShell>
+      ) : null}
+
       {state.phase === "who" ? (
         <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
-          <BackLink onClick={() => back("feeling")} />
+          <BackLink onClick={() => back("destination")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
           {state.companions ? (
