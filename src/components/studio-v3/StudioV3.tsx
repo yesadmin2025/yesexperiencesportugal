@@ -570,10 +570,15 @@ export function StudioV3() {
         const res = await load({ data: { token } });
         if (cancelled) return;
         if (res.found && res.state && typeof res.state === "object") {
+          const raw = res.state as Partial<StudioV3State>;
           const restored: StudioV3State = {
             ...INITIAL_STATE,
-            ...(res.state as Partial<StudioV3State>),
+            ...raw,
             phase: "storyboard" as StudioV3Phase,
+            destinationIntent:
+              raw.destinationIntent === "anywhere-special"
+                ? "no-preference"
+                : (raw.destinationIntent ?? INITIAL_STATE.destinationIntent),
           };
           setState(restored);
           setHydrateError(null);
