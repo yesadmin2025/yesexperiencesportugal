@@ -374,6 +374,11 @@ export function studioV3Progress(
   if (hasCompanions) {
     return { percent: 34, phrase: "The company is set." };
   }
+  const hasDestination =
+    state.destinationIntent != null && state.destinationIntent !== "no-preference";
+  if (hasDestination) {
+    return { percent: 28, phrase: "A direction begins to emerge." };
+  }
   if (hasFeeling) {
     return { percent: 22, phrase: "A direction settles in." };
   }
