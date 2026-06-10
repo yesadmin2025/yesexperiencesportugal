@@ -2889,13 +2889,16 @@ function SaveSignatureButton({
           }}
         >
           <Check size={13} aria-hidden style={{ color: "var(--gold)" }} />
-          Signature saved
+          Your Signature is saved
         </div>
         <p
-          className="mt-3 text-[12px] leading-[1.5]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          className="mt-3 text-[13px] leading-[1.5] italic"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+          }}
         >
-          You can reopen this draft any time with this private link.
+          You can return to this private story anytime.
         </p>
         <button
           type="button"
