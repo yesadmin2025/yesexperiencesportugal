@@ -80,16 +80,16 @@ describe("Phase 7A — tiles/craft intent prefers tiles-workshop", () => {
     expect(route.skeletonTourKey).toBe("tiles-workshop");
   });
 
-  it("culture WITHOUT a craft signal does NOT force tiles-workshop", () => {
+  it("tiles-workshop boost is additive (never forces tiles when no Lisbon-area pickup)", () => {
+    // From the Comporta/Tróia pickup, tiles-workshop is geographically far —
+    // the boost should not pull it across regions.
     const route = resolveStudioV3Route({
       feeling: "culture",
-      companions: "couple",
+      companions: "solo",
       rhythm: "balanced",
-      interests: ["heritage", "photography"],
-      pickup: "lisbon",
+      interests: ["local-life", "heritage"],
+      pickup: "comporta-troia",
     });
-    // No local-life signal → should fall through to the default culture
-    // skeleton (tiles-workshop boost should not fire).
     expect(route.skeletonTourKey).not.toBe("tiles-workshop");
   });
 });
