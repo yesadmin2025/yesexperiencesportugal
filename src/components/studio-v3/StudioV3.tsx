@@ -601,6 +601,10 @@ export function StudioV3() {
       return;
     }
     const hold = Math.min(r.holdMs ?? 2600, 4500);
+    // Calmer transition: an extra 200ms gap is added between the beat
+    // dissolving and the next phase becoming interactive, so the new
+    // question never appears abruptly behind the fading overlay.
+    const settle = 200;
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -608,7 +612,7 @@ export function StudioV3() {
       setReaction(r);
       window.setTimeout(() => {
         setReaction((current) => (current === r ? null : current));
-      }, hold);
+      }, hold + settle);
     }, 280);
   }, [advance]);
 
