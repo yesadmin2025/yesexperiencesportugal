@@ -1880,7 +1880,7 @@ function StoryboardHandoff({
           className="mt-4 text-[12.5px] leading-[1.55] max-w-[420px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
-          Created from your choices. Held inside one coherent route.
+          A private route, shaped from your choices — not a template.
         </p>
         <span
           aria-hidden
