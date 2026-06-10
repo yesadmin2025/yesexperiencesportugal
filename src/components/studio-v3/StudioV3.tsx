@@ -15,7 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
-  composePersonalizedMoments,
+  
   composeSuggestedRoute,
   filterConsiderations,
   filterInterests,
