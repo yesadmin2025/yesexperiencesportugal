@@ -1564,16 +1564,7 @@ function StoryboardHandoff({
       ? pickupLabel
       : "your chosen starting point";
 
-  const description = `A private day shaped around ${themeWord} and ${paceWord}. From ${pickupCity}, with real moments and no rush.`;
-
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
-
-  const moments = composePersonalizedMoments({
-    feeling: state.feeling,
-    rhythm: state.rhythm,
-    interests: state.interests,
-    considerations: state.considerations,
-  });
 
   const shapingLine = investmentShapingLine(state.investment);
 
