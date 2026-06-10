@@ -1736,6 +1736,21 @@ function StoryboardHandoff({
         });
 
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
+  const [addOpen, setAddOpen] = useState<boolean>(false);
+
+  // Max moments by rhythm — used by the reveal editor to allow ONE safe
+  // extra moment when the user wants to enrich the day. Composition itself
+  // remains conservative; this is user-controlled fine-tuning only.
+  const maxMoments =
+    state.rhythm === "slow"
+      ? editedStops.length // slow: locked to current — no add
+      : state.rhythm === "balanced" ||
+          state.rhythm === "full" ||
+          state.rhythm === "immersive"
+        ? 5
+        : 4;
+  const canAddMoment = editedStops.length < maxMoments && swapPool.length > 0;
+  const isRouteComplete = editedStops.length >= maxMoments;
 
   // Story themes — derived from the user's choices, used in hero subhead
   // and the "heart of the day" chapter. No invented facts.
