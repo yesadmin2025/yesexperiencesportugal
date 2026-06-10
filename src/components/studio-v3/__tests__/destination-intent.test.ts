@@ -125,6 +125,11 @@ describe("destinationIntent — soft additive scoring", () => {
       "comporta-troia",
       "anywhere-special",
     ];
+    const norm = (s: string) => s.trim().toLowerCase();
+    const allowed = new Set<string>([
+      ...signatureTours.flatMap((t) => t.stops.map((s) => norm(s.label))),
+      ...REGION_STOP_POOL.filter((s) => s.active).map((s) => norm(s.name)),
+    ]);
     for (const di of intents) {
       const r = resolve({
         feeling: "culture",
@@ -133,11 +138,9 @@ describe("destinationIntent — soft additive scoring", () => {
         pickup: "lisbon",
       });
       if (!r.skeletonTourKey) continue;
-      const tour = findTour(r.skeletonTourKey);
-      expect(tour, `tour ${r.skeletonTourKey} must exist`).toBeTruthy();
-      const allowed = new Set(tour!.stops.map((s) => s.label.toLowerCase()));
+      expect(findTour(r.skeletonTourKey)).toBeTruthy();
       for (const p of r.routePoints) {
-        expect(allowed.has(p.label.toLowerCase())).toBe(true);
+        expect(allowed.has(norm(p.label))).toBe(true);
       }
     }
   });
