@@ -80,6 +80,7 @@ export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 export type StudioV3Phase =
   | "intro"
   | "feeling"
+  | "destination"
   | "who"
   | "occasion"
   | "date"
@@ -95,6 +96,25 @@ export type StudioV3Phase =
 
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
+
+/**
+ * Soft destination intent — captured optionally between Feeling and Companions.
+ * Pickup means "where the traveller is staying", which doesn't necessarily
+ * equal "where they want the day to go". destinationIntent is an additive
+ * scoring signal so a Lisbon-staying traveller can still steer the route
+ * inland (Alentejo, Central, Spiritual coast) or south (Comporta/Tróia).
+ * It never invents stops, never crosses routeCluster after the skeleton is
+ * picked, and "no-preference" leaves prior behaviour essentially unchanged.
+ */
+export type DestinationIntent =
+  | "no-preference"
+  | "lisbon-sintra-cascais"
+  | "arrabida-setubal-azeitao"
+  | "alentejo-evora-wine"
+  | "spiritual-coast"
+  | "central-portugal"
+  | "comporta-troia"
+  | "anywhere-special";
 
 /* ---------- Phase 4: Adaptive Decision Layer ---------- */
 
