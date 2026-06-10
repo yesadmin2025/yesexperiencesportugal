@@ -27,9 +27,12 @@ import {
   inferGuests,
   pickupCityLabel,
   resolveStudioV3Route,
+  selectReplacementCandidates,
 } from "./curation";
 import { findTour } from "@/data/signatureTours";
+import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+
 
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
