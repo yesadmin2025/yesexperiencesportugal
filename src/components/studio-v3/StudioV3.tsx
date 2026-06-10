@@ -136,11 +136,12 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
  * storyboard handoff. Those are intentionally not touched here.
  */
 
-const TOTAL_STEPS = 13;
+const TOTAL_STEPS = 14;
 
 const PHASE_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
+  "destination",
   "who",
   "occasion",
   "date",
@@ -167,7 +168,8 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  *  choosing a different answer feels distinct, not robotic. */
 const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   intro: [""],
-  feeling: ["Next, the company", "Next, who joins you", "Next, your travellers"],
+  feeling: ["Next, a direction begins to emerge", "Next, where Portugal calls you", "Next, the region takes shape"],
+  destination: ["Next, the company", "Next, who joins you", "Next, your travellers"],
   who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
   date: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
