@@ -14,6 +14,10 @@ function hydrate(saved: Partial<StudioV3State>): StudioV3State {
     ...INITIAL_STATE,
     ...saved,
     phase: "storyboard" as StudioV3Phase,
+    destinationIntent:
+      saved.destinationIntent === "anywhere-special"
+        ? "no-preference"
+        : (saved.destinationIntent ?? INITIAL_STATE.destinationIntent),
   };
 }
 
