@@ -173,6 +173,13 @@ export interface StudioV3State {
    * Signature tour's own `stops` may appear here (no invented stops).
    */
   editedRoutePoints: Array<{ label: string; story: string }> | null;
+  /**
+   * Soft destination intent (Phase: between Feeling and Companions).
+   * Default "no-preference" keeps prior pickup-driven behaviour unchanged.
+   * Used additively in curation scoring to overcome Lisbon pickup bias
+   * when the user clearly steers inland/central/spiritual/Comporta.
+   */
+  destinationIntent: DestinationIntent;
 }
 
 
@@ -196,6 +203,7 @@ export const INITIAL_STATE: StudioV3State = {
   guestsPrivateEvent: false,
   firstName: null,
   editedRoutePoints: null,
+  destinationIntent: "no-preference",
 };
 
 
