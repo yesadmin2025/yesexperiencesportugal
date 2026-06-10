@@ -677,7 +677,7 @@ export function StudioV3() {
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 1700,
+        holdMs: 3200,
       });
     }, 420);
   };
@@ -712,7 +712,7 @@ export function StudioV3() {
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 1700,
+        holdMs: 3200,
       });
     }, 420);
   };
@@ -970,7 +970,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           nextPhase: next,
-          holdMs: 3000,
+          holdMs: 3400,
         });
         return;
       }
