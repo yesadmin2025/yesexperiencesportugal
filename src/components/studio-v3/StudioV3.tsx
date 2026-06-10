@@ -10,6 +10,8 @@ import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
 import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
+import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
