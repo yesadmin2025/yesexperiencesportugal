@@ -2133,10 +2133,13 @@ function StoryboardHandoff({
                             type="button"
                             onClick={() => {
                               setEdited((prev) =>
-                                prev.map((p, j) => (j === i ? cand : p)),
+                                prev.map((p, j) =>
+                                  j === i ? { label: cand.label, story: cand.story } : p,
+                                ),
                               );
                               setSwapOpenIdx(null);
                             }}
+
                             className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                             style={{ color: "var(--charcoal)" }}
                           >
