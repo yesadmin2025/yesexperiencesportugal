@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
+import { CtaButton } from "@/components/ui/CtaButton";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
@@ -570,10 +571,15 @@ export function StudioV3() {
         const res = await load({ data: { token } });
         if (cancelled) return;
         if (res.found && res.state && typeof res.state === "object") {
+          const raw = res.state as Partial<StudioV3State>;
           const restored: StudioV3State = {
             ...INITIAL_STATE,
-            ...(res.state as Partial<StudioV3State>),
+            ...raw,
             phase: "storyboard" as StudioV3Phase,
+            destinationIntent:
+              raw.destinationIntent === "anywhere-special"
+                ? "no-preference"
+                : (raw.destinationIntent ?? INITIAL_STATE.destinationIntent),
           };
           setState(restored);
           setHydrateError(null);
@@ -1705,12 +1711,7 @@ function StoryboardHandoff({
   onSecure: () => void;
   onRefine: () => void;
 }) {
-  const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
-
-  const pickupCity =
-    pickupLabel && state.pickup && state.pickup !== "other"
-      ? pickupLabel
-      : "your chosen starting point";
+  const pickupCity = pickupCityLabel(state.pickup);
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
 
@@ -3133,55 +3134,50 @@ function SaveSignatureButton({
     return (
       <div
         data-testid="studio-v3-saved-confirmation"
-        className="mt-1 w-full max-w-[420px] text-center motion-safe:[animation:studioV3RiseIn_520ms_ease-out_both]"
+        className="mt-2 w-full max-w-[420px] motion-safe:[animation:studioV3RiseIn_520ms_ease-out_both]"
       >
-        <div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] uppercase tracking-[0.22em] font-semibold"
-          style={{
-            background: "color-mix(in oklab, var(--gold) 18%, transparent)",
-            color: "var(--charcoal)",
-            border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-          }}
-        >
-          <Check size={13} aria-hidden style={{ color: "var(--gold)" }} />
+        <span
+          aria-hidden="true"
+          className="gold-rule mb-4 max-w-[3rem] mx-auto block"
+        />
+        <span className="flex items-center justify-center gap-2.5 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-full bg-[color:var(--gold)]"
+          />
+          Saved
+        </span>
+        <h3 className="serif mt-3 text-[1.6rem] leading-[1.14] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance text-center">
           Your Signature is saved
-        </div>
-        <p
-          className="mt-3 text-[13px] leading-[1.5] italic"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
-          }}
-        >
+        </h3>
+        <p className="mt-3 text-[13px] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-md mx-auto text-center">
           You can return to this private story anytime.
         </p>
-        <button
-          type="button"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(link);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 2000);
-            } catch {
-              /* clipboard blocked — link still visible below */
-            }
-          }}
-          className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{
-            color: "var(--charcoal)",
-            background: "transparent",
-            border: "1px solid color-mix(in oklab, var(--charcoal) 18%, transparent)",
-            borderRadius: 999,
-          }}
-        >
-          {copied ? "Copied" : "Copy link"}
-        </button>
-        <p
-          className="mt-2 text-[10.5px] font-mono break-all"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-        >
-          {link}
-        </p>
+        <div className="mt-5 flex flex-col items-center gap-3">
+          <CtaButton
+            variant="ghost"
+            size="sm"
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(link);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              } catch {
+                /* clipboard blocked — link still visible below */
+              }
+            }}
+            iconLeading={<Check size={13} aria-hidden className="text-[color:var(--gold)]" />}
+            icon={null}
+          >
+            {copied ? "Copied" : "Copy link"}
+          </CtaButton>
+          <p
+            className="text-[10.5px] font-mono break-all text-center"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            {link}
+          </p>
+        </div>
       </div>
     );
   }

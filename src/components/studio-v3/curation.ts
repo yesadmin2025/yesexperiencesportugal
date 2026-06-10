@@ -992,6 +992,15 @@ export function pickupCityLabel(pickup: Pickup | null | undefined): string {
   }
 }
 
+/** Canonical city labels surfaced by pickupCityLabel() — safe words for Story of the Day e2e. */
+export const PICKUP_CITY_LABELS = [
+  "Lisbon",
+  "Cascais",
+  "Sintra",
+  "Setúbal",
+  "Comporta",
+] as const;
+
 /**
  * composeJourneyReasons — 2–3 short, factual reasons grounded in the
  * traveller's actual choices. No invented superlatives.

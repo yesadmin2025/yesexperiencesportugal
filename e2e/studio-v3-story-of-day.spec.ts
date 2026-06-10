@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { PICKUP_CITY_LABELS } from "../src/components/studio-v3/curation";
 
 /**
  * Studio V3 — "Story of the day" containment e2e.
@@ -91,18 +92,7 @@ test.describe("Studio V3 — Story of the day containment", () => {
     //    invented stop names being inserted by the chapter composer.
     const ALLOWED = new Set<string>([
       // Pickup cities surfaced by pickupCityLabel().
-      "Lisbon",
-      "Porto",
-      "Cascais",
-      "Sintra",
-      "Évora",
-      "Faro",
-      "Albufeira",
-      "Setúbal",
-      "Sesimbra",
-      "Comporta",
-      "Tróia",
-      "Coimbra",
+      ...PICKUP_CITY_LABELS,
       // Reveal section words / fixed copy.
       "Opening",
       "The",

@@ -14,6 +14,10 @@ function hydrate(saved: Partial<StudioV3State>): StudioV3State {
     ...INITIAL_STATE,
     ...saved,
     phase: "storyboard" as StudioV3Phase,
+    destinationIntent:
+      saved.destinationIntent === "anywhere-special"
+        ? "no-preference"
+        : (saved.destinationIntent ?? INITIAL_STATE.destinationIntent),
   };
 }
 
@@ -50,5 +54,21 @@ describe("Phase 7D — saved Signature hydration", () => {
       feeling: "hidden",
     });
     expect(restored.phase).toBe("storyboard");
+  });
+
+  it("coerces legacy anywhere-special intent to no-preference", () => {
+    const restored = hydrate({
+      destinationIntent: "anywhere-special",
+      feeling: "coastal",
+    });
+    expect(restored.destinationIntent).toBe("no-preference");
+  });
+
+  it("preserves a valid destinationIntent from the saved payload", () => {
+    const restored = hydrate({
+      destinationIntent: "alentejo-evora-wine",
+      feeling: "wine-food",
+    });
+    expect(restored.destinationIntent).toBe("alentejo-evora-wine");
   });
 });
