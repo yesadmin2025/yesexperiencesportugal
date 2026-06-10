@@ -554,10 +554,20 @@ export function curateJourney(
     });
 
   // Cap stops by rhythm, nudged by investment, but never exceed what the
-  // tour has and never drop below a viable 2-stop arc.
+  // tour has and never drop below a substantive arc.
+  // Phase 7A: floor is 3 stops by default so a day never feels under-shaped.
+  // Only an explicitly slow rhythm may resolve to a calmer 2-stop day, and
+  // only when the day is for solo / couple-style travel without family or
+  // nature interests pulling for more substance.
   const investmentDelta = investment ? INVESTMENT_STOP_DELTA[investment] : 0;
   const rhythmTarget = RHYTHM_STOP_COUNT[rhythm] + investmentDelta;
-  const target = Math.max(2, Math.min(rhythmTarget, scored.length));
+  const allowTwoStop =
+    rhythm === "slow" &&
+    (companions === "solo" || companions === "couple" || companions === "proposal") &&
+    feeling !== "family" &&
+    !interests.includes("nature");
+  const minStops = allowTwoStop ? 2 : 3;
+  const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
 
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
