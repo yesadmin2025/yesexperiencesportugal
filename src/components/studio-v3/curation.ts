@@ -504,9 +504,17 @@ function pickPrimaryTour(
   companions: Companions,
   interests: ReadonlyArray<Interest>,
   pickup: Pickup | null,
+  destinationIntent: DestinationIntent | null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const candidateIds = FEELING_TO_TOURS[feeling] ?? [];
-  const candidates = candidateIds
+  // When a destination intent is set, fold its target tours into the
+  // candidate pool so the boost can actually pick them up (FEELING_TO_TOURS
+  // alone may not include e.g. evora-alentejo for a "coastal" feeling).
+  const intentTargets = destinationIntent && destinationIntent !== "no-preference"
+    ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
+    : [];
+  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets]));
+  const candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
 
@@ -540,6 +548,7 @@ function pickPrimaryTour(
       let score = 0;
       score += pickupAffinity(tour, pickup) * 1.2;
       score += interestAffinity(tour, interests);
+      score += destinationIntentBoost(tour, destinationIntent);
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
         score += 0.5;
