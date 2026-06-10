@@ -889,6 +889,7 @@ export function StudioV3() {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -940,6 +941,7 @@ export function StudioV3() {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: id,
+        destinationIntent: state.destinationIntent,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -1019,6 +1021,7 @@ export function StudioV3() {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -1693,6 +1696,7 @@ function StoryboardHandoff({
         occasion: state.occasion,
         considerations: state.considerations,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
       }),
     [
       state.feeling,
