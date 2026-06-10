@@ -415,6 +415,58 @@ function pickupAffinity(tour: SignatureTour, pickup: Pickup | null): number {
   return -2;
 }
 
+/* ---------- Destination intent (soft additive boost) ---------- */
+//
+// Pickup ≠ destination. A traveller staying in Lisbon may still want
+// inland Alentejo, Central Portugal, the Spiritual coast or Comporta.
+// destinationIntent is an OPTIONAL signal layered on top of pickup so
+// the resolver can land on the right Signature skeleton without
+// rewriting route composition. Boosts are tuned to overcome the
+// ~±4 pickup swing for clearly inland/central choices, and stay light
+// for "anywhere-special" / "no-preference". It never invents skeletons,
+// never crosses routeCluster, and never bypasses route containment.
+const DESTINATION_INTENT_BOOSTS: Record<DestinationIntent, Record<string, number>> = {
+  "no-preference": {},
+  "lisbon-sintra-cascais": {
+    "sintra-cascais": 4,
+    "tiles-workshop": 1,
+  },
+  "arrabida-setubal-azeitao": {
+    "arrabida-wine-allinclusive": 3,
+    "arrabida-boat": 3,
+    "wild-beaches-picnic": 3,
+    "azeitao-cheese": 3,
+    "tiles-workshop": 2,
+  },
+  "alentejo-evora-wine": {
+    "evora-alentejo": 6,
+  },
+  "spiritual-coast": {
+    "fatima-nazare-obidos": 6,
+  },
+  "central-portugal": {
+    "tomar-coimbra": 6,
+  },
+  "comporta-troia": {
+    "troia-comporta": 6,
+  },
+  "anywhere-special": {
+    "evora-alentejo": 1.5,
+    "tomar-coimbra": 1.5,
+    "fatima-nazare-obidos": 1.5,
+    "troia-comporta": 1.5,
+  },
+};
+
+function destinationIntentBoost(
+  tour: SignatureTour,
+  destinationIntent: DestinationIntent | null | undefined,
+): number {
+  if (!destinationIntent || destinationIntent === "no-preference") return 0;
+  const table = DESTINATION_INTENT_BOOSTS[destinationIntent];
+  return table?.[tour.id] ?? 0;
+}
+
 function interestAffinity(tour: SignatureTour, interests: ReadonlyArray<Interest>): number {
   if (!interests.length) return 0;
   const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
