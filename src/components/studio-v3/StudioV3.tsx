@@ -1539,26 +1539,6 @@ function StoryboardHandoff({
 }) {
   const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
 
-  const themeWord =
-    state.interests[0] === "wine" || state.feeling === "wine-food"
-      ? "wine and local flavour"
-      : state.feeling === "coastal" || state.interests.includes("coast")
-        ? "coastal beauty"
-        : state.feeling === "culture" || state.interests.includes("heritage")
-          ? "heritage and atmosphere"
-          : state.feeling === "romance"
-            ? "quiet, romantic moments"
-            : state.feeling === "family"
-              ? "ease and shared time"
-              : "real Portuguese moments";
-  const paceWord =
-    state.rhythm === "slow"
-      ? "a slower rhythm"
-      : state.rhythm === "immersive"
-        ? "an unhurried, immersive day"
-        : state.rhythm === "full"
-          ? "a rich, full day"
-          : "a thoughtful rhythm";
   const pickupCity =
     pickupLabel && state.pickup && state.pickup !== "other"
       ? pickupLabel
