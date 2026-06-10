@@ -1707,6 +1707,7 @@ function StoryboardHandoff({
       state.occasion,
       state.considerations,
       state.investment,
+      state.destinationIntent,
     ],
   );
 
