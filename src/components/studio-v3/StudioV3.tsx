@@ -1949,7 +1949,7 @@ function StoryboardHandoff({
             className="mt-2 mb-4 text-center text-[12px] leading-[1.5]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
           >
-            Reorder, swap or remove a moment. The route stays inside the same region.
+            Reorder, swap, remove — or add one moment when the day has room. The route stays inside the same region.
           </p>
           <ol className="space-y-2">
             {editedStops.map((s, i) => {
