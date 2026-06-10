@@ -15,7 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
-  composePersonalizedMoments,
+  
   composeSuggestedRoute,
   filterConsiderations,
   filterInterests,
@@ -1539,41 +1539,12 @@ function StoryboardHandoff({
 }) {
   const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
 
-  const themeWord =
-    state.interests[0] === "wine" || state.feeling === "wine-food"
-      ? "wine and local flavour"
-      : state.feeling === "coastal" || state.interests.includes("coast")
-        ? "coastal beauty"
-        : state.feeling === "culture" || state.interests.includes("heritage")
-          ? "heritage and atmosphere"
-          : state.feeling === "romance"
-            ? "quiet, romantic moments"
-            : state.feeling === "family"
-              ? "ease and shared time"
-              : "real Portuguese moments";
-  const paceWord =
-    state.rhythm === "slow"
-      ? "a slower rhythm"
-      : state.rhythm === "immersive"
-        ? "an unhurried, immersive day"
-        : state.rhythm === "full"
-          ? "a rich, full day"
-          : "a thoughtful rhythm";
   const pickupCity =
     pickupLabel && state.pickup && state.pickup !== "other"
       ? pickupLabel
       : "your chosen starting point";
 
-  const description = `A private day shaped around ${themeWord} and ${paceWord}. From ${pickupCity}, with real moments and no rush.`;
-
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
-
-  const moments = composePersonalizedMoments({
-    feeling: state.feeling,
-    rhythm: state.rhythm,
-    interests: state.interests,
-    considerations: state.considerations,
-  });
 
   const shapingLine = investmentShapingLine(state.investment);
 
@@ -1664,13 +1635,9 @@ function StoryboardHandoff({
 
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
 
-  // Earned reveal handoff — short personalised line stitched from the
-  // composed route's themes. Uses firstName when available, neutral
-  // otherwise. No invented facts, no superlatives.
+  // Story themes — derived from the user's choices, used in hero subhead
+  // and the "heart of the day" chapter. No invented facts.
   const name = state.firstName?.trim() || null;
-  const handoffLead = name
-    ? `${name}, this is the day as you shaped it.`
-    : "This is the day as you shaped it.";
   const themeBits: string[] = [];
   if (state.interests.includes("wine") || state.feeling === "wine-food") themeBits.push("wine");
   if (state.interests.includes("coast") || state.feeling === "coastal") themeBits.push("coast");
@@ -1685,16 +1652,18 @@ function StoryboardHandoff({
         : state.rhythm === "full"
           ? "a richer arc"
           : "a thoughtful rhythm";
-  const themesJoined = themeBits.slice(0, 3).join(", ");
-  const handoffSupport = themesJoined
-    ? `${themesJoined.charAt(0).toUpperCase()}${themesJoined.slice(1)} and ${paceBit} — held inside one private route.`
-    : `${paceBit.charAt(0).toUpperCase()}${paceBit.slice(1)}, held inside one private route.`;
 
   // ---------- Phase 6E: Signature Story copy ----------
   const heroLead = name
     ? `${name}, this is your Signature.`
     : "This is your Signature.";
-  const heroSub = `A private day shaped around ${themeWord} and ${paceWord}.`;
+  const heroThemes = themeBits.slice(0, 3);
+  const heroSub =
+    heroThemes.length >= 2
+      ? `A private day shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, with ${paceBit}.`
+      : heroThemes.length === 1
+        ? `A private day shaped around ${heroThemes[0]}, with ${paceBit}.`
+        : `A private day shaped around your rhythm, interests and route.`;
 
   // Story of the day — generated only from real composed route points.
   const cleanLabel = (s: string) =>
