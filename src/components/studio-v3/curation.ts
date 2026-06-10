@@ -464,6 +464,24 @@ function pickPrimaryTour(
     return { tour: fallback, alternates: [] };
   }
 
+  // Phase 7A: tiles / craft / hands-on culture intent boost.
+  // When the traveller signals culture + local craft (heritage interest paired
+  // with local-life), prefer `tiles-workshop` over generic culture skeletons
+  // where geographically reasonable (Lisbon-area pickups). We never force
+  // tiles when the user did not express that intent (no local-life signal).
+  const wantsTilesCraft =
+    feeling === "culture" &&
+    interests.includes("local-life") &&
+    (interests.includes("heritage") || interests.length === 1);
+  const isLisbonArea =
+    !pickup ||
+    pickup === "lisbon" ||
+    pickup === "lisbon-airport" ||
+    pickup === "lisbon-cruise" ||
+    pickup === "cascais-estoril" ||
+    pickup === "sintra" ||
+    pickup === "sesimbra-setubal-arrabida";
+
   const scored = candidates
     .map((tour, order) => {
       let score = 0;
@@ -472,6 +490,9 @@ function pickPrimaryTour(
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
         score += 0.5;
+      }
+      if (wantsTilesCraft && isLisbonArea && tour.id === "tiles-workshop") {
+        score += 3;
       }
       return { tour, score, order };
     })
