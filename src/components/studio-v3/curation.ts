@@ -266,7 +266,10 @@ const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
 const INVESTMENT_STOP_DELTA: Record<InvestmentTier, number> = {
   considered: -1, // efficient — fewer extras
   elevated: 0,    // balanced premium
-  bespoke: -1,    // fewer but stronger moments
+  // Phase 7A: bespoke should NOT thin the day. It signals stronger character
+  // and premium candidate preference, not fewer stops. Soft scoring boost is
+  // applied separately in `investmentPremiumScore`.
+  bespoke: 0,
   open: 0,        // best fit
 };
 
@@ -461,6 +464,24 @@ function pickPrimaryTour(
     return { tour: fallback, alternates: [] };
   }
 
+  // Phase 7A: tiles / craft / hands-on culture intent boost.
+  // When the traveller signals culture + local craft (heritage interest paired
+  // with local-life), prefer `tiles-workshop` over generic culture skeletons
+  // where geographically reasonable (Lisbon-area pickups). We never force
+  // tiles when the user did not express that intent (no local-life signal).
+  const wantsTilesCraft =
+    feeling === "culture" &&
+    interests.includes("local-life") &&
+    (interests.includes("heritage") || interests.length === 1);
+  const isLisbonArea =
+    !pickup ||
+    pickup === "lisbon" ||
+    pickup === "lisbon-airport" ||
+    pickup === "lisbon-cruise" ||
+    pickup === "cascais-estoril" ||
+    pickup === "sintra" ||
+    pickup === "sesimbra-setubal-arrabida";
+
   const scored = candidates
     .map((tour, order) => {
       let score = 0;
@@ -469,6 +490,9 @@ function pickPrimaryTour(
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
         score += 0.5;
+      }
+      if (wantsTilesCraft && isLisbonArea && tour.id === "tiles-workshop") {
+        score += 3;
       }
       return { tour, score, order };
     })
@@ -551,10 +575,20 @@ export function curateJourney(
     });
 
   // Cap stops by rhythm, nudged by investment, but never exceed what the
-  // tour has and never drop below a viable 2-stop arc.
+  // tour has and never drop below a substantive arc.
+  // Phase 7A: floor is 3 stops by default so a day never feels under-shaped.
+  // Only an explicitly slow rhythm may resolve to a calmer 2-stop day, and
+  // only when the day is for solo / couple-style travel without family or
+  // nature interests pulling for more substance.
   const investmentDelta = investment ? INVESTMENT_STOP_DELTA[investment] : 0;
   const rhythmTarget = RHYTHM_STOP_COUNT[rhythm] + investmentDelta;
-  const target = Math.max(2, Math.min(rhythmTarget, scored.length));
+  const allowTwoStop =
+    rhythm === "slow" &&
+    (companions === "solo" || companions === "couple" || companions === "proposal") &&
+    feeling !== "family" &&
+    !interests.includes("nature");
+  const minStops = allowTwoStop ? 2 : 3;
+  const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
 
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
@@ -708,6 +742,29 @@ export function resolveStudioV3Route(input: {
   // OFF in committed code, so this branch is a no-op today. When enabled,
   // mutates `routePoints` in place to preserve order and downstream wiring.
   if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+    // Phase 7A — mobility safety: if the traveller flagged reduced mobility
+    // or asked to avoid long walks, replace or drop original skeleton stops
+    // whose label/story suggests cliffs, coves, caves, trails, hikes, steep
+    // access or other difficult terrain — even though the skeleton itself
+    // is "approved". Replacement uses the same safety-filtered candidate
+    // pool as composition (mobility deny + viewpoint deny already applied),
+    // so swapped stops are guaranteed safe.
+    const mobilityConcern = (input.considerations ?? []).some((c) =>
+      MOBILITY_CONSIDERATIONS.has(c),
+    );
+    if (mobilityConcern) {
+      const safe = applyMobilitySafety(routePoints, {
+        skeletonTourId: journey.tour.id,
+        interests,
+        rhythm,
+        companions,
+        investment,
+        considerations: input.considerations ?? [],
+      });
+      routePoints.length = 0;
+      for (const p of safe) routePoints.push(p);
+    }
+
     const composed = applyReplacementCandidates(routePoints, {
       skeletonTourId: journey.tour.id,
       interests,
@@ -716,7 +773,8 @@ export function resolveStudioV3Route(input: {
       investment,
       considerations: input.considerations ?? [],
     });
-    for (let i = 0; i < composed.length; i++) routePoints[i] = composed[i];
+    routePoints.length = 0;
+    for (const p of composed) routePoints.push(p);
 
     // Phase 5G — optionally append ONE extra moment when safe.
     const withExtra = applyExtraMoment(routePoints, {
@@ -1353,6 +1411,20 @@ function scoreOptionalStop(
     }
   }
 
+  // Phase 7A: corporate companions should feel professionally private, not
+  // romantic / coastal-picnic. Penalise picnic/cove/sunset cues; boost
+  // private tastings, cellars, courtyards and gardens. Same region/cluster,
+  // never invents stops — purely a ranking adjustment.
+  if (ctx.companions === "corporate") {
+    const hay = `${stop.name} ${stop.notes ?? ""}`.toLowerCase();
+    if (/picnic|cove|wild beach|sunset|candlelit|romantic|swim|snorkel/.test(hay)) {
+      score -= 1.5;
+    }
+    if (/private|tasting|cellar|estate|courtyard|garden|sommelier|reserve/.test(hay)) {
+      score += 0.75;
+    }
+  }
+
   return score;
 }
 
@@ -1936,8 +2008,91 @@ export function applyExtraMoment(
   return next.slice(0, 4).map((p, i) => ({ ...p, index: i }));
 }
 
+/* ---------------------------------------------------------------------------
+ * Phase 7A — Mobility safety filter for original skeleton stops.
+ *
+ * The base composition pipeline already filters mobility-unsafe candidates
+ * out of REPLACEMENT pools (see `isReplacementDeniedByConsiderations`), but
+ * an original Signature skeleton stop may still surface a cliff, cove,
+ * cave, trail or steep viewpoint when the traveller flagged reduced
+ * mobility / avoid-long-walks. This pass walks the composed routePoints
+ * and, for any stop whose label/story implies difficult access, tries to
+ * replace it with a safe same-family candidate from REGION_STOP_POOL. If
+ * no safe candidate exists, the unsafe stop is dropped.
+ * --------------------------------------------------------------------------- */
+
+const UNSAFE_SKELETON_RE =
+  /\bcliffs?\b|\bcoves?\b|\bcaves?\b|\bsteep\b|\bstairs?\b|\buneven\b|\btrail\b|\bhike\b|\bwild beach\b|\bsecluded beach\b|kayak|snorkel|swim across|hard to reach|miradouro/i;
+
+function isUnsafeSkeletonStop(label: string, story: string): boolean {
+  const hay = `${label} ${story}`;
+  return UNSAFE_SKELETON_RE.test(hay);
+}
+
+export function applyMobilitySafety(
+  routePoints: ReadonlyArray<ResolvedRoutePoint>,
+  input: {
+    skeletonTourId: string | null | undefined;
+    interests: ReadonlyArray<Interest>;
+    rhythm: Rhythm;
+    companions: Companions;
+    investment: InvestmentTier | null;
+    considerations: ReadonlyArray<string>;
+  },
+): ResolvedRoutePoint[] {
+  const out = routePoints.map((p) => ({ ...p }));
+  if (out.length === 0) return out;
+
+  const candidates = selectReplacementCandidates({
+    skeletonTourId: input.skeletonTourId,
+    interests: input.interests,
+    rhythm: input.rhythm,
+    companions: input.companions,
+    investment: input.investment,
+    considerations: input.considerations,
+    existingRoutePointLabels: out.map((p) => p.label),
+  });
+
+  const usedIds = new Set<string>();
+  const usedLabels = new Set(out.map((p) => normalizeLabel(p.label)));
+  const result: ResolvedRoutePoint[] = [];
+
+  for (const p of out) {
+    if (!isUnsafeSkeletonStop(p.label, p.story)) {
+      result.push(p);
+      continue;
+    }
+    const kind = inferRoutePointType(p.label, p.story);
+    const cand = kind
+      ? candidates.find(
+          (c) =>
+            !usedIds.has(c.id) &&
+            !usedLabels.has(normalizeLabel(c.name)) &&
+            isCompatibleCandidate(kind, c),
+        )
+      : undefined;
+    if (cand) {
+      usedIds.add(cand.id);
+      usedLabels.delete(normalizeLabel(p.label));
+      usedLabels.add(normalizeLabel(cand.name));
+      result.push({
+        index: p.index,
+        label: cand.name,
+        story: cand.notes ?? p.story,
+        lat: cand.coords?.lat ?? null,
+        lng: cand.coords?.lng ?? null,
+      });
+    }
+    // else: drop the unsafe stop (no safe replacement available).
+  }
+
+  // Re-index to keep ResolvedRoutePoint contract.
+  return result.map((p, i) => ({ ...p, index: i }));
+}
+
 /** Test-only accessor for the local flag — keeps the flag private to this
  *  module while letting the test suite assert it is OFF in committed code. */
 export const __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS =
   STUDIO_V3_ROUTE_COMPOSITION_ENABLED;
+
 
