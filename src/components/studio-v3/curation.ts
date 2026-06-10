@@ -742,6 +742,29 @@ export function resolveStudioV3Route(input: {
   // OFF in committed code, so this branch is a no-op today. When enabled,
   // mutates `routePoints` in place to preserve order and downstream wiring.
   if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+    // Phase 7A — mobility safety: if the traveller flagged reduced mobility
+    // or asked to avoid long walks, replace or drop original skeleton stops
+    // whose label/story suggests cliffs, coves, caves, trails, hikes, steep
+    // access or other difficult terrain — even though the skeleton itself
+    // is "approved". Replacement uses the same safety-filtered candidate
+    // pool as composition (mobility deny + viewpoint deny already applied),
+    // so swapped stops are guaranteed safe.
+    const mobilityConcern = (input.considerations ?? []).some((c) =>
+      MOBILITY_CONSIDERATIONS.has(c),
+    );
+    if (mobilityConcern) {
+      const safe = applyMobilitySafety(routePoints, {
+        skeletonTourId: journey.tour.id,
+        interests,
+        rhythm,
+        companions,
+        investment,
+        considerations: input.considerations ?? [],
+      });
+      routePoints.length = 0;
+      for (const p of safe) routePoints.push(p);
+    }
+
     const composed = applyReplacementCandidates(routePoints, {
       skeletonTourId: journey.tour.id,
       interests,
@@ -750,7 +773,8 @@ export function resolveStudioV3Route(input: {
       investment,
       considerations: input.considerations ?? [],
     });
-    for (let i = 0; i < composed.length; i++) routePoints[i] = composed[i];
+    routePoints.length = 0;
+    for (const p of composed) routePoints.push(p);
 
     // Phase 5G — optionally append ONE extra moment when safe.
     const withExtra = applyExtraMoment(routePoints, {
