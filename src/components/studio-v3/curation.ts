@@ -1303,6 +1303,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
+  "destination",
   "who",
   "occasion",
   "date",
