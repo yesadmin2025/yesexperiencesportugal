@@ -1118,6 +1118,71 @@ export function StudioV3() {
     state.phase === "intro" ||
     (state.phase === "feeling" && !state.feeling);
 
+  // Phase 7D — saved-link hydration overlays. Loading spinner while we
+  // fetch a `?saved=<token>` Signature; graceful card if it's missing or
+  // failed. Both short-circuit before the intro/Studio chrome.
+  if (hydrating && !hydrateError) {
+    return (
+      <main
+        aria-label="Opening your Signature"
+        className="min-h-[100dvh] flex items-center justify-center px-6"
+        style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
+      >
+        <div className="text-center" data-testid="studio-v3-hydrating">
+          <Loader2 size={18} className="animate-spin mx-auto" aria-hidden style={{ color: "var(--gold)" }} />
+          <p className="mt-4 text-[11px] uppercase tracking-[0.24em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+            Opening your Signature…
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (hydrateError) {
+    return (
+      <main
+        aria-label="Signature not available"
+        className="min-h-[100dvh] flex items-center justify-center px-6"
+        style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
+      >
+        <div className="max-w-md text-center" data-testid="studio-v3-hydrate-error">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold" style={{ color: "var(--gold)" }}>
+            YES Studio
+          </p>
+          <h1 className="mt-3 text-[1.6rem] font-semibold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            {hydrateError === "not-found"
+              ? "This Signature is no longer available."
+              : "We couldn't open this Signature."}
+          </h1>
+          <p className="mt-3 text-[14px] leading-[1.55]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
+            The private link may have expired or been mistyped. You can begin a new Signature in a few taps.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                window.history.replaceState({}, "", window.location.pathname);
+              }
+              setHydrateError(null);
+              setState({ ...INITIAL_STATE });
+            }}
+            className="mt-6 inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{
+              color: "var(--ivory)",
+              background: "var(--charcoal)",
+              border: "1px solid var(--charcoal)",
+              borderRadius: 999,
+            }}
+          >
+            Start a new Signature
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   // Intro is a pre-Studio moment — render its own canvas and short-circuit
   // the rest of the Studio chrome (no ComposerMap, no Journey pill,
   // no footer help, no progress).
