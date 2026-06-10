@@ -1301,7 +1301,7 @@ export function StudioV3() {
             Pick a direction, or let YES shape it around your choices.
           </p>
           <ChoiceGrid
-            options={DESTINATION_INTENTS}
+            options={filterDestinationIntents(DESTINATION_INTENTS)}
             value={state.destinationIntent}
             onSelect={onDestination}
             columns={1}
