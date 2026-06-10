@@ -10,6 +10,8 @@ import { MapAwakens } from "./MapAwakens";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
 import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
+import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
@@ -900,6 +902,34 @@ export function StudioV3() {
   const onInvestment = (id: InvestmentTier) => {
     const next = getNextPhase({ ...state, investment: id }, "investment");
     const label = getOptionLabel(INVESTMENT_TIERS, id);
+
+    if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
+      const resolved = resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: state.rhythm,
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        investment: id,
+      });
+      const labels = resolved.routePoints.map((p) => p.label);
+      if (labels.length > 0) {
+        pickAndAdvance("investment", id, next, {
+          kind: "map-beat",
+          eyebrow: "The shape",
+          message: label
+            ? `The day refines around ${label.toLowerCase()}.`
+            : "The day refines around your direction.",
+          mapMode: "pins",
+          originLabel: pickupCityLabel(state.pickup) || undefined,
+          routeLabels: labels,
+          holdMs: 3200,
+        });
+        return;
+      }
+    }
+
     pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
@@ -909,6 +939,7 @@ export function StudioV3() {
       holdMs: 2400,
     });
   };
+
 
 
 
@@ -1844,56 +1875,20 @@ function StoryboardHandoff({
       </header>
 
       {/* ---------- 2. Live route map ---------- */}
-      {(() => {
-        const coordByLabel = new Map(
-          resolved.routePoints
-            .filter((p) => p.lat !== null && p.lng !== null)
-            .map((p) => [p.label.toLowerCase(), { lat: p.lat as number, lng: p.lng as number }]),
-        );
-        const regionKey = tourRegionToRegionKey(skeletonTour?.region ?? null);
-        const mapStops = editedStops
-          .map((s, i) => {
-            const coord = coordByLabel.get(s.label.toLowerCase());
-            if (!coord) return null;
-            return {
-              key: `${s.label}-${i}`,
-              region_key: regionKey,
-              label: s.label,
-              blurb: s.story ?? null,
-              tag: null,
-              lat: coord.lat,
-              lng: coord.lng,
-              duration_minutes: 60,
-              driveMinutesFromPrev: i === 0 ? 0 : 20,
-            };
-          })
-          .filter((x): x is NonNullable<typeof x> => x !== null);
-        if (mapStops.length < 2) return null;
-        const origin = REGION_ORIGIN[regionKey];
-        return (
-          <div
-            data-testid="studio-v3-reveal-map"
-            className="mt-8 mx-auto w-full max-w-[520px] overflow-hidden rounded-[10px]"
-            style={{
-              height: 240,
-              border: "1px solid color-mix(in oklab, var(--charcoal) 14%, transparent)",
-              background: "var(--sand)",
-            }}
-          >
-            <Suspense fallback={<div className="h-full w-full" style={{ background: "var(--sand)" }} />}>
-              <BuilderMap
-                stops={mapStops}
-                regionCenter={{ lat: origin.lat, lng: origin.lng }}
-                regionKey={regionKey}
-                emotionalMode
-                activeStopIndex={mapStops.length - 1}
-                chrome={false}
-                locale="en"
-              />
-            </Suspense>
-          </div>
-        );
-      })()}
+      {editedStops.length > 0 ? (
+        <div
+          data-testid="studio-v3-reveal-map"
+          className="mt-8 mx-auto w-full max-w-[520px]"
+        >
+          <StudioV3SignatureMap
+            stops={editedStops.map((s) => s.label)}
+            originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
+            aspectRatio="16 / 11"
+            ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
+          />
+        </div>
+      ) : null}
+
 
       {/* ---------- 3. Story of the day ---------- */}
       <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
