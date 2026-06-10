@@ -1387,6 +1387,20 @@ function scoreOptionalStop(
     }
   }
 
+  // Phase 7A: corporate companions should feel professionally private, not
+  // romantic / coastal-picnic. Penalise picnic/cove/sunset cues; boost
+  // private tastings, cellars, courtyards and gardens. Same region/cluster,
+  // never invents stops — purely a ranking adjustment.
+  if (ctx.companions === "corporate") {
+    const hay = `${stop.name} ${stop.notes ?? ""}`.toLowerCase();
+    if (/picnic|cove|wild beach|sunset|candlelit|romantic|swim|snorkel/.test(hay)) {
+      score -= 1.5;
+    }
+    if (/private|tasting|cellar|estate|courtyard|garden|sommelier|reserve/.test(hay)) {
+      score += 0.75;
+    }
+  }
+
   return score;
 }
 
