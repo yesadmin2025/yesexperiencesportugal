@@ -2105,6 +2105,74 @@ function StoryboardHandoff({
             })}
           </ol>
 
+          {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
+          {canAddMoment ? (
+            <div data-testid="studio-v3-add-moment" className="mt-3">
+              <button
+                type="button"
+                onClick={() => setAddOpen((v) => !v)}
+                aria-expanded={addOpen}
+                className="w-full rounded-[8px] px-3 py-2 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  border:
+                    "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
+                  color: "var(--charcoal)",
+                  background: "transparent",
+                }}
+              >
+                {addOpen ? "Close" : "+ Add a moment to your day"}
+              </button>
+              {addOpen ? (
+                <ul
+                  data-testid="studio-v3-add-pool"
+                  className="mt-2 space-y-1 rounded-[8px] p-2"
+                  style={{
+                    background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+                    border:
+                      "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  }}
+                >
+                  {swapPool.slice(0, 6).map((cand) => (
+                    <li key={cand.label}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEdited((prev) => [...prev, cand]);
+                          setAddOpen(false);
+                        }}
+                        className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        <span className="font-semibold">+ {cand.label}</span>
+                        {cand.story ? (
+                          <span
+                            className="block text-[11.5px]"
+                            style={{
+                              color:
+                                "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                            }}
+                          >
+                            {cand.story}
+                          </span>
+                        ) : null}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ) : isRouteComplete && swapPool.length > 0 ? (
+            <p
+              className="mt-3 text-center text-[12px] leading-[1.5]"
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              }}
+            >
+              This Signature is already complete for the rhythm you chose. Try swapping a moment instead.
+            </p>
+          ) : null}
+
+
           {state.editedRoutePoints ? (
             <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">
               <span
