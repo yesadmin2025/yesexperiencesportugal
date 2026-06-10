@@ -318,3 +318,14 @@ export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
   { id: "bespoke", label: "Bespoke", whisper: "Premium details, private access and a more distinctive day." },
   { id: "open", label: "Open to guidance", whisper: "Let YES shape the best fit around your choices." },
 ];
+
+export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
+  { id: "no-preference", label: "No preference — let YES shape it", whisper: "We'll let your other choices lead." },
+  { id: "lisbon-sintra-cascais", label: "Lisbon coast, Sintra & Cascais", whisper: "Palaces, pine and the Atlantic edge." },
+  { id: "arrabida-setubal-azeitao", label: "Arrábida, Setúbal & Azeitão", whisper: "Wine, coves and quiet cellars." },
+  { id: "alentejo-evora-wine", label: "Alentejo, Évora & wine country", whisper: "Long lunches, open plains." },
+  { id: "spiritual-coast", label: "Fátima, Nazaré, Óbidos & the spiritual coast", whisper: "Sanctuaries, cliffs and walled towns." },
+  { id: "central-portugal", label: "Tomar, Coimbra & Central Portugal", whisper: "Templar stones, scholarly streets." },
+  { id: "comporta-troia", label: "Comporta & Tróia", whisper: "Pine, rice fields and white sand." },
+  { id: "anywhere-special", label: "I'm open to anywhere special", whisper: "Surprise me — go where it's most special." },
+];
