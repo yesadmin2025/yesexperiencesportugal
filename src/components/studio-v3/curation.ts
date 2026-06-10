@@ -28,6 +28,7 @@ import type {
   Companions,
   CompanionsType,
   Consideration,
+  DestinationIntent,
   Feeling,
   IntentLevel,
   IntentProfile,
