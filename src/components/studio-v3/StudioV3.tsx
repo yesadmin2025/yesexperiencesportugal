@@ -1736,6 +1736,21 @@ function StoryboardHandoff({
         });
 
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
+  const [addOpen, setAddOpen] = useState<boolean>(false);
+
+  // Max moments by rhythm — used by the reveal editor to allow ONE safe
+  // extra moment when the user wants to enrich the day. Composition itself
+  // remains conservative; this is user-controlled fine-tuning only.
+  const maxMoments =
+    state.rhythm === "slow"
+      ? editedStops.length // slow: locked to current — no add
+      : state.rhythm === "balanced" ||
+          state.rhythm === "full" ||
+          state.rhythm === "immersive"
+        ? 5
+        : 4;
+  const canAddMoment = editedStops.length < maxMoments && swapPool.length > 0;
+  const isRouteComplete = editedStops.length >= maxMoments;
 
   // Story themes — derived from the user's choices, used in hero subhead
   // and the "heart of the day" chapter. No invented facts.
@@ -1865,7 +1880,7 @@ function StoryboardHandoff({
           className="mt-4 text-[12.5px] leading-[1.55] max-w-[420px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
-          Created from your choices. Held inside one coherent route.
+          A private route, shaped from your choices — not a template.
         </p>
         <span
           aria-hidden
@@ -1934,7 +1949,7 @@ function StoryboardHandoff({
             className="mt-2 mb-4 text-center text-[12px] leading-[1.5]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
           >
-            Reorder, swap or remove a moment. The route stays inside the same region.
+            Reorder, swap, remove — or add one moment when the day has room. The route stays inside the same region.
           </p>
           <ol className="space-y-2">
             {editedStops.map((s, i) => {
@@ -2089,6 +2104,74 @@ function StoryboardHandoff({
               );
             })}
           </ol>
+
+          {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
+          {canAddMoment ? (
+            <div data-testid="studio-v3-add-moment" className="mt-3">
+              <button
+                type="button"
+                onClick={() => setAddOpen((v) => !v)}
+                aria-expanded={addOpen}
+                className="w-full rounded-[8px] px-3 py-2 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  border:
+                    "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
+                  color: "var(--charcoal)",
+                  background: "transparent",
+                }}
+              >
+                {addOpen ? "Close" : "+ Add a moment to your day"}
+              </button>
+              {addOpen ? (
+                <ul
+                  data-testid="studio-v3-add-pool"
+                  className="mt-2 space-y-1 rounded-[8px] p-2"
+                  style={{
+                    background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+                    border:
+                      "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  }}
+                >
+                  {swapPool.slice(0, 6).map((cand) => (
+                    <li key={cand.label}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEdited((prev) => [...prev, cand]);
+                          setAddOpen(false);
+                        }}
+                        className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        <span className="font-semibold">+ {cand.label}</span>
+                        {cand.story ? (
+                          <span
+                            className="block text-[11.5px]"
+                            style={{
+                              color:
+                                "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                            }}
+                          >
+                            {cand.story}
+                          </span>
+                        ) : null}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ) : isRouteComplete && swapPool.length > 0 ? (
+            <p
+              className="mt-3 text-center text-[12px] leading-[1.5]"
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              }}
+            >
+              This Signature is already complete for the rhythm you chose. Try swapping a moment instead.
+            </p>
+          ) : null}
+
 
           {state.editedRoutePoints ? (
             <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">

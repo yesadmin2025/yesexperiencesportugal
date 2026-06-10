@@ -1146,8 +1146,12 @@ export function deriveIntentProfile(state: StudioV3State): IntentProfile {
 
 /**
  * filterOccasions — hide options that are operationally invalid for the
- * chosen companion type. Solo: hide couple/group-only. Corporate: hide
- * romantic + family-day. Couple: hide family-day + corporate.
+ * chosen companion type, AND hide options the user has already implied via
+ * their companions pick (no repetition).
+ *
+ *   companions === "proposal"    → also hide "proposal"
+ *   companions === "celebration" → also hide "celebration" + "birthday"
+ *   companions === "corporate"   → also hide "corporate" (already declared)
  */
 export function filterOccasions(
   options: ReadonlyArray<ChoiceOption<Occasion>>,
@@ -1160,9 +1164,15 @@ export function filterOccasions(
     couple: ["family-day", "corporate"],
     family: ["proposal", "honeymoon", "corporate"],
     friends: ["proposal", "honeymoon", "family-day", "corporate"],
-    corporate: ["proposal", "honeymoon", "anniversary", "family-day", "birthday"],
+    corporate: ["proposal", "honeymoon", "anniversary", "family-day", "birthday", "celebration"],
   };
-  const hidden = new Set(HIDE[cType]);
+  const hidden = new Set<Occasion>(HIDE[cType]);
+  if (companions === "proposal") hidden.add("proposal");
+  if (companions === "celebration") {
+    hidden.add("celebration");
+    hidden.add("birthday");
+  }
+  if (companions === "corporate") hidden.add("corporate");
   return options.filter((o) => !hidden.has(o.id));
 }
 
