@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { PICKUP_CITY_LABELS } from "../src/components/studio-v3/curation";
 
 /**
  * Studio V3 — "Story of the day" containment e2e.
