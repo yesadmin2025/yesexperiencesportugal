@@ -1127,7 +1127,7 @@ export function StudioV3() {
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
       {state.phase === "feeling" ? (
-        <PhaseShell accent="ivory" exiting={exiting}>
+        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
@@ -1143,7 +1143,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "who" ? (
-        <PhaseShell accent="gold" exiting={exiting}>
+        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("feeling")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid options={COMPANIONS} value={state.companions} onSelect={onCompanions} />
@@ -1156,7 +1156,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "occasion" ? (
-        <PhaseShell accent="ivory" exiting={exiting}>
+        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
@@ -1169,7 +1169,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "date" ? (
-        <PhaseShell accent="teal" exiting={exiting}>
+        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <DatePhaseControls
@@ -1188,7 +1188,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "pickup" ? (
-        <PhaseShell accent="gold" exiting={exiting}>
+        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
@@ -1201,7 +1201,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "guests" ? (
-        <PhaseShell accent="ivory" exiting={exiting}>
+        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
           <GuestStepper
@@ -1234,7 +1234,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "interests" ? (
-        <PhaseShell accent="teal" exiting={exiting}>
+        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("investment")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
@@ -1258,7 +1258,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "rhythm" ? (
-        <PhaseShell accent="gold" exiting={exiting}>
+        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("interests")} />
           <PhaseHeader
             eyebrow="The rhythm"
@@ -1275,7 +1275,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "considerations" ? (
-        <PhaseShell accent="ivory" exiting={exiting}>
+        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("rhythm")} />
           <PhaseHeader
             eyebrow="The care"
@@ -1298,7 +1298,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "language" ? (
-        <PhaseShell accent="teal" exiting={exiting}>
+        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
@@ -1311,7 +1311,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "investment" ? (
-        <PhaseShell accent="gold" exiting={exiting}>
+        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader
             eyebrow="Experience investment"
@@ -1352,7 +1352,7 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "storyboard" ? (
-        <PhaseShell accent="teal" exiting={exiting}>
+        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)}>
           <StoryboardHandoff
             state={state}
             onStateChange={setState}
