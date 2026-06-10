@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T01:40:46.520Z",
+  "generatedAt": "2026-06-10T02:05:50.222Z",
   "filesScanned": 349,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1493,7 +1493,7 @@
     },
     {
       "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
-      "line": 300,
+      "line": 572,
       "col": 38,
       "raw": "#b3261e",
       "normalized": "#b3261e",
