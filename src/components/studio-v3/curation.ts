@@ -583,17 +583,20 @@ export function curateJourney(
     interests?: ReadonlyArray<Interest>;
     pickup?: Pickup | null;
     investment?: InvestmentTier | null;
+    destinationIntent?: DestinationIntent | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
   const pickup = options?.pickup ?? null;
   const investment = options?.investment ?? null;
+  const destinationIntent = options?.destinationIntent ?? null;
 
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
     companions,
     interests,
     pickup,
+    destinationIntent,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
