@@ -1705,12 +1705,7 @@ function StoryboardHandoff({
   onSecure: () => void;
   onRefine: () => void;
 }) {
-  const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
-
-  const pickupCity =
-    pickupLabel && state.pickup && state.pickup !== "other"
-      ? pickupLabel
-      : "your chosen starting point";
+  const pickupCity = pickupCityLabel(state.pickup);
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
 
