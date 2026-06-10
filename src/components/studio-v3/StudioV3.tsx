@@ -902,6 +902,34 @@ export function StudioV3() {
   const onInvestment = (id: InvestmentTier) => {
     const next = getNextPhase({ ...state, investment: id }, "investment");
     const label = getOptionLabel(INVESTMENT_TIERS, id);
+
+    if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
+      const resolved = resolveStudioV3Route({
+        feeling: state.feeling,
+        companions: state.companions,
+        rhythm: state.rhythm,
+        interests: state.interests,
+        pickup: state.pickup,
+        occasion: state.occasion,
+        investment: id,
+      });
+      const labels = resolved.routePoints.map((p) => p.label);
+      if (labels.length > 0) {
+        pickAndAdvance("investment", id, next, {
+          kind: "map-beat",
+          eyebrow: "The shape",
+          message: label
+            ? `The day refines around ${label.toLowerCase()}.`
+            : "The day refines around your direction.",
+          mapMode: "pins",
+          originLabel: pickupCityLabel(state.pickup) || undefined,
+          routeLabels: labels,
+          holdMs: 3200,
+        });
+        return;
+      }
+    }
+
     pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
@@ -911,6 +939,7 @@ export function StudioV3() {
       holdMs: 2400,
     });
   };
+
 
 
 
