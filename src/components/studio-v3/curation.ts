@@ -266,7 +266,10 @@ const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
 const INVESTMENT_STOP_DELTA: Record<InvestmentTier, number> = {
   considered: -1, // efficient — fewer extras
   elevated: 0,    // balanced premium
-  bespoke: -1,    // fewer but stronger moments
+  // Phase 7A: bespoke should NOT thin the day. It signals stronger character
+  // and premium candidate preference, not fewer stops. Soft scoring boost is
+  // applied separately in `investmentPremiumScore`.
+  bespoke: 0,
   open: 0,        // best fit
 };
 
