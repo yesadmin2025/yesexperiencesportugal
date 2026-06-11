@@ -2497,15 +2497,15 @@ function StoryboardHandoff({
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
           }}
         >
-          Ready to say YES to this day?
+          Ready to say YES to the day you shaped?
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
           className="text-[12.5px] leading-[1.5] text-center max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          Your Signature is ready. Next, YES will confirm the date, pickup and
-          final practical details with you — nothing is reserved yet.
+          YES will confirm the date, pickup and practical details with you
+          before anything is reserved.
         </p>
         <button
           type="button"
