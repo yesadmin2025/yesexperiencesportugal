@@ -1800,7 +1800,7 @@ function StoryboardHandoff({
         seenLabels.add(key);
         pool.push({
           label: c.name,
-          story: c.notes ?? "A considered moment, in keeping with the day's rhythm.",
+          story: customerStopBlurb(c),
           source: "region-pool",
         });
       }
