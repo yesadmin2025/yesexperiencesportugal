@@ -1916,12 +1916,17 @@ function StoryboardHandoff({
     ? `${name}, this is your Signature.`
     : "This is your Signature.";
   const heroThemes = themeBits.slice(0, 3);
+  const regionName = skeletonTour?.region?.trim() || null;
+  const regionPhrase = regionName ? `A private ${regionName} day` : `A private day`;
   const heroSub =
     heroThemes.length >= 2
-      ? `A private day shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, with ${paceBit}.`
+      ? `${regionPhrase}, shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, held inside ${paceBit}.`
       : heroThemes.length === 1
-        ? `A private day shaped around ${heroThemes[0]}, with ${paceBit}.`
-        : `A private day shaped around your rhythm, interests and route.`;
+        ? `${regionPhrase}, shaped around ${heroThemes[0]}, held inside ${paceBit}.`
+        : `${regionPhrase}, shaped from your choices — not a template.`;
+  const heroOrigin = pickupCity && hasNamedPickupForHero(pickupCity)
+    ? `Created from your choices. Held inside one coherent route from ${pickupCity}.`
+    : `Created from your choices. Held inside one coherent route.`;
 
   // Story of the day — generated only from real composed route points.
   const cleanLabel = (s: string) =>
