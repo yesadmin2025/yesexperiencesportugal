@@ -967,8 +967,8 @@ export function StudioV3() {
           kind: "map-beat",
           eyebrow: "The shape",
           message: label
-            ? `The day refines around ${label.toLowerCase()}.`
-            : "The day refines around your direction.",
+            ? `The route is no longer a template. It refines around ${label.toLowerCase()}.`
+            : "The route is no longer a template. Its shape is becoming yours.",
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
