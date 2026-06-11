@@ -676,7 +676,7 @@ export function StudioV3() {
       eyebrow: "The feeling",
       message: feelingReactionMessage(id),
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
-      holdMs: 2600,
+      holdMs: 4400,
       bgImage: FEELING_IMAGE[id],
     });
   };
@@ -684,11 +684,12 @@ export function StudioV3() {
     const forward: StudioV3State = { ...state, destinationIntent: id };
     setState(() => forward);
     const next = getNextPhase(forward, "destination");
+    const destLabel = getOptionLabel(DESTINATION_INTENTS, id);
     const message =
       id === "no-preference"
-        ? "No fixed direction. The day will find its own."
-        : id === "anywhere-special"
-          ? "Open to anywhere special. Portugal can surprise you."
+        ? "No fixed direction. The route can find its own."
+        : destLabel
+          ? `${destLabel} enters the story. The shape begins to lean.`
           : "A direction begins to emerge.";
     window.setTimeout(() => {
       playReaction({
@@ -697,7 +698,7 @@ export function StudioV3() {
         message,
         bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
         nextPhase: next,
-        holdMs: 2200,
+        holdMs: 4200,
       });
     }, 420);
   };
