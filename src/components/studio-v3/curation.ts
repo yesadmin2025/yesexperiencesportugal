@@ -2008,10 +2008,22 @@ const EXTRA_MOMENT_STORY_FALLBACK: Record<OptionalStop["type"], string> = {
   village: "A short walk through the village centre.",
 };
 
-function buildExtraMomentStory(cand: OptionalStop): string {
-  const notes = (cand.notes ?? "").trim();
-  if (notes.length > 0) return notes;
+/**
+ * Customer-facing one-line blurb for an OptionalStop.
+ *
+ * The `notes` field on REGION_STOP_POOL entries is INTERNAL ONLY — it
+ * contains source-verification language ("Source-verified itinerary stop
+ * from P3", "one-of-N winery option", "Supplier availability required",
+ * etc.) that must never reach the traveller. This helper derives a short,
+ * experiential line from the stop's type so the editor / swap pool / Story
+ * of the Day always read like polished Signature notes.
+ */
+export function customerStopBlurb(cand: OptionalStop): string {
   return EXTRA_MOMENT_STORY_FALLBACK[cand.type];
+}
+
+function buildExtraMomentStory(cand: OptionalStop): string {
+  return customerStopBlurb(cand);
 }
 
 function scoreExtraMomentCandidate(
