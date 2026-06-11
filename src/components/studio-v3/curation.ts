@@ -1993,19 +1993,19 @@ export function applyReplacementCandidates(
  * --------------------------------------------------------------------------- */
 
 const EXTRA_MOMENT_STORY_FALLBACK: Record<OptionalStop["type"], string> = {
-  winery: "A short tasting at a small local estate.",
-  workshop: "A brief hands-on moment with a local maker.",
-  monument: "A quiet pause at a landmark on the way.",
-  market: "A short walk through a working local market.",
-  table: "A short stop at a neighbourhood table.",
-  beach: "A short pause by a calm stretch of coast.",
-  viewpoint: "A short pause at a panoramic overlook.",
-  nature: "A short walk through a quiet natural setting.",
-  garden: "A short stroll through a calm garden.",
-  studio: "A brief visit to a local studio.",
-  boat: "A short moment by the water.",
-  heritage: "A short pause at a place with historical depth.",
-  village: "A short walk through the village centre.",
+  winery: "A grounded wine moment shaped around regional flavour.",
+  workshop: "A hands-on craft moment with a local maker.",
+  monument: "A heritage pause grounded in local history.",
+  market: "A vivid local market — colour, flavour and everyday life.",
+  table: "A relaxed regional table woven into the day's rhythm.",
+  beach: "A coastal pause with sand, sea and slower air.",
+  viewpoint: "A quiet viewpoint with space to take it in.",
+  nature: "A calm walk through a quieter natural setting.",
+  garden: "A slow stroll through a gentle garden.",
+  studio: "A short visit with a local studio and its work.",
+  boat: "A quiet moment by the water.",
+  heritage: "A layered heritage pause with real local depth.",
+  village: "A quiet village pause, away from the busier route.",
 };
 
 /**
