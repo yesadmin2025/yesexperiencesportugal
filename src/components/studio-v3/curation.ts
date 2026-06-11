@@ -1956,7 +1956,7 @@ export function applyReplacementCandidates(
       out[i] = {
         index: current.index,
         label: cand.name,
-        story: cand.notes ?? current.story,
+        story: customerStopBlurb(cand),
         lat: cand.coords?.lat ?? null,
         lng: cand.coords?.lng ?? null,
       };
