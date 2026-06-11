@@ -2249,12 +2249,12 @@ function StoryboardHandoff({
 
           {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
           {canAddMoment ? (
-            <div data-testid="studio-v3-add-moment" className="mt-3">
+            <div data-testid="studio-v3-add-moment" className="mt-4">
               <button
                 type="button"
                 onClick={() => setAddOpen((v) => !v)}
                 aria-expanded={addOpen}
-                className="w-full rounded-[8px] px-3 py-2 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                className="w-full rounded-[8px] px-3 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   border:
                     "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
@@ -2262,8 +2262,16 @@ function StoryboardHandoff({
                   background: "transparent",
                 }}
               >
-                {addOpen ? "Close" : "+ Add a moment to your day"}
+                {addOpen ? "Close" : "+ Add one more moment"}
               </button>
+              {addOpen ? (
+                <p
+                  className="mt-2 text-center text-[11.5px] leading-[1.5]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+                >
+                  Choose a moment that still fits the day's rhythm.
+                </p>
+              ) : null}
               {addOpen ? (
                 <ul
                   data-testid="studio-v3-add-pool"
