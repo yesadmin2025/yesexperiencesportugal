@@ -629,11 +629,14 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
-    const hold = Math.min(r.holdMs ?? 2600, 4500);
-    // Calmer transition: an extra 200ms gap is added between the beat
-    // dissolving and the next phase becoming interactive, so the new
-    // question never appears abruptly behind the fading overlay.
-    const settle = 200;
+    // Final emotional finish: cap raised so creation beats stay on screen
+    // long enough for the route line to fully draw, pins to land one by
+    // one, and the user to register the moment before moving on.
+    const hold = Math.min(r.holdMs ?? 3200, 5800);
+    // Calmer handoff — keep ~450ms of negative space after the beat
+    // dissolves before the next question becomes interactive, so it
+    // never appears abruptly behind the fading overlay.
+    const settle = 450;
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -673,7 +676,7 @@ export function StudioV3() {
       eyebrow: "The feeling",
       message: feelingReactionMessage(id),
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
-      holdMs: 2600,
+      holdMs: 4400,
       bgImage: FEELING_IMAGE[id],
     });
   };
@@ -681,11 +684,12 @@ export function StudioV3() {
     const forward: StudioV3State = { ...state, destinationIntent: id };
     setState(() => forward);
     const next = getNextPhase(forward, "destination");
+    const destLabel = getOptionLabel(DESTINATION_INTENTS, id);
     const message =
       id === "no-preference"
-        ? "No fixed direction. The day will find its own."
-        : id === "anywhere-special"
-          ? "Open to anywhere special. Portugal can surprise you."
+        ? "No fixed direction. The route can find its own."
+        : destLabel
+          ? `${destLabel} enters the story. The shape begins to lean.`
           : "A direction begins to emerge.";
     window.setTimeout(() => {
       playReaction({
@@ -694,7 +698,7 @@ export function StudioV3() {
         message,
         bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
         nextPhase: next,
-        holdMs: 2200,
+        holdMs: 4200,
       });
     }, 420);
   };
@@ -731,7 +735,7 @@ export function StudioV3() {
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 3200,
+        holdMs: 4600,
       });
     }, 420);
   };
@@ -766,7 +770,7 @@ export function StudioV3() {
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 3200,
+        holdMs: 4600,
       });
     }, 420);
   };
@@ -793,7 +797,7 @@ export function StudioV3() {
         message: dateModeAtmosphereLine(mode),
         bgImage: dateBgImage(),
         nextPhase: next,
-        holdMs: 1700,
+        holdMs: 4200,
       });
     }, delay);
   };
@@ -845,7 +849,7 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
-        holdMs: 3600,
+        holdMs: 5000,
       });
       return;
     }
@@ -857,7 +861,7 @@ export function StudioV3() {
         : "It starts here.\nThe day begins to open.",
       originLabel: label,
       postcardSubline: "Route forming",
-      holdMs: 3800,
+      holdMs: 4800,
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
@@ -907,15 +911,23 @@ export function StudioV3() {
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
+        const paceHint =
+          id === "slow"
+            ? "A slower day needs fewer, better moments."
+            : id === "balanced"
+              ? "Movement and pause, held in balance across the route."
+              : id === "full"
+                ? "A richer arc — still shaped into one realistic day."
+                : "A fuller, immersive arc — carefully held.";
         pickAndAdvance("rhythm", id, next, {
           kind: "map-beat",
           eyebrow: "The rhythm",
-          message: hint,
+          message: paceHint,
           mapMode: "pace",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
-          holdMs: 3800,
+          holdMs: 5400,
         });
         return;
       }
@@ -935,7 +947,7 @@ export function StudioV3() {
               ? "Full"
               : "Immersive",
       postcardSubline: "The route keeps forming.",
-      holdMs: 1600,
+      holdMs: 4200,
     });
   };
   const onLanguage = (id: Language) => {
@@ -963,12 +975,12 @@ export function StudioV3() {
           kind: "map-beat",
           eyebrow: "The shape",
           message: label
-            ? `The day refines around ${label.toLowerCase()}.`
-            : "The day refines around your direction.",
+            ? `The route is no longer a template. It refines around ${label.toLowerCase()}.`
+            : "The route is no longer a template. Its shape is becoming yours.",
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
-          holdMs: 3200,
+          holdMs: 5200,
         });
         return;
       }
@@ -980,7 +992,7 @@ export function StudioV3() {
       message: "This sets the tone.\nThe day will be shaped around it.",
       postcardCaption: label ? `Direction · ${label}` : "Direction set",
       postcardSubline: "The moments will follow from here.",
-      holdMs: 2400,
+      holdMs: 4200,
     });
   };
 
@@ -1040,14 +1052,19 @@ export function StudioV3() {
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
         const name = state.firstName?.trim() || null;
-        const firstInterest = state.interests[0]
-          ? getOptionLabel(INTERESTS, state.interests[0])?.toLowerCase()
-          : null;
-        const message = name && firstInterest
-          ? `${name}, this is starting to feel more like your kind of Portugal — ${firstInterest} at the centre.`
-          : firstInterest
-            ? `These ${firstInterest}-led moments begin to shape the route.`
-            : "These moments begin to shape the route.";
+        const interestLabels = state.interests
+          .slice(0, 2)
+          .map((iid) => getOptionLabel(INTERESTS, iid)?.toLowerCase())
+          .filter((l): l is string => Boolean(l));
+        const interestPhrase =
+          interestLabels.length === 2
+            ? `${interestLabels[0]} and ${interestLabels[1]}`
+            : interestLabels[0] ?? null;
+        const message = name && interestPhrase
+          ? `${name}, ${interestPhrase} are beginning to align with the route.`
+          : interestPhrase
+            ? `${interestPhrase.charAt(0).toUpperCase()}${interestPhrase.slice(1)} are beginning to align with the route.`
+            : "The first shape of the day is now visible.";
         playReaction({
           kind: "map-beat",
           eyebrow: "The moments",
@@ -1056,7 +1073,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           nextPhase: next,
-          holdMs: 3400,
+          holdMs: 5400,
         });
         return;
       }
@@ -1071,7 +1088,7 @@ export function StudioV3() {
       chipsTail: tail,
       postcardSubline: "These will guide the route.",
       nextPhase: next,
-      holdMs: 3200,
+      holdMs: 4600,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
     });
   };
@@ -1085,7 +1102,7 @@ export function StudioV3() {
       message: "It is not just where you go.\nIt is how the day fits you.",
       postcardCaption: isNone ? "Nothing to adjust." : "Care notes held.",
       nextPhase: next,
-      holdMs: 2600,
+      holdMs: 4200,
     });
   };
 
@@ -1899,12 +1916,19 @@ function StoryboardHandoff({
     ? `${name}, this is your Signature.`
     : "This is your Signature.";
   const heroThemes = themeBits.slice(0, 3);
+  const regionName = skeletonTour?.region?.trim() || null;
+  const regionPhrase = regionName ? `A private ${regionName} day` : `A private day`;
   const heroSub =
     heroThemes.length >= 2
-      ? `A private day shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, with ${paceBit}.`
+      ? `${regionPhrase}, shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, held inside ${paceBit}.`
       : heroThemes.length === 1
-        ? `A private day shaped around ${heroThemes[0]}, with ${paceBit}.`
-        : `A private day shaped around your rhythm, interests and route.`;
+        ? `${regionPhrase}, shaped around ${heroThemes[0]}, held inside ${paceBit}.`
+        : `${regionPhrase}, shaped from your choices — not a template.`;
+  const heroPickupNamed =
+    !!pickupCity && pickupCity !== "your chosen starting point";
+  const heroOrigin = heroPickupNamed
+    ? `Created from your choices. Held inside one coherent route from ${pickupCity}.`
+    : `Created from your choices. Held inside one coherent route.`;
 
   // Story of the day — generated only from real composed route points.
   const cleanLabel = (s: string) =>
@@ -1914,20 +1938,20 @@ function StoryboardHandoff({
     editedStops.length > 1
       ? cleanLabel(editedStops[editedStops.length - 1].label)
       : null;
-  const middleStops = editedStops
-    .slice(1, Math.max(1, editedStops.length - 1))
-    .map((s) => cleanLabel(s.label))
-    .filter((x) => x.length > 0);
+
+
 
   const hasNamedPickup =
     !!pickupCity && pickupCity !== "your chosen starting point";
+  const regionForStory = skeletonTour?.region?.trim() || null;
+  const towardRegion = regionForStory ? ` toward ${regionForStory}` : "";
   const opening = firstStop
     ? hasNamedPickup
-      ? `The day begins gently from ${pickupCity}, opening toward ${firstStop}.`
-      : `The day begins gently, opening toward ${firstStop}.`
+      ? `The day begins from ${pickupCity}, easing${towardRegion} until ${firstStop} sets the tone.`
+      : `The day begins quietly, easing${towardRegion} until ${firstStop} sets the tone.`
     : hasNamedPickup
-      ? `The day begins gently from ${pickupCity}.`
-      : `The day begins gently, at your own pace.`;
+      ? `The day begins from ${pickupCity}, easing${towardRegion} at your own pace.`
+      : `The day begins quietly, at your own pace.`;
 
   // Grammar-safe list joiner ("a", "a and b", "a, b and c").
   const joinList = (items: string[]): string => {
@@ -1941,19 +1965,21 @@ function StoryboardHandoff({
     ? `${joinList(themeList).charAt(0).toUpperCase()}${joinList(themeList).slice(1)}`
     : "Real Portuguese moments";
   const heartVerb = themeList.length === 1 ? "sits" : "sit";
-  const heartMiddle =
-    middleStops.length > 0
-      ? `, with pauses through ${joinList(middleStops.slice(0, 2))}`
-      : "";
-  const heart = `${heartSubject} ${heartVerb} at the heart of the day${heartMiddle}.`;
+  const heartTail =
+    state.rhythm === "slow" || state.rhythm === "immersive"
+      ? ", with space between each moment rather than a rushed checklist."
+      : state.rhythm === "full"
+        ? ", with each chapter given room to be felt before the next."
+        : ", held in a rhythm that moves without rushing.";
+  const heart = `${heartSubject} ${heartVerb} at the centre of the day${heartTail}`;
 
   const closingPlace = lastStop && lastStop !== firstStop ? ` near ${lastStop}` : "";
   const closing =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? `The route closes with space to breathe${closingPlace}, rather than chasing one more stop.`
+      ? `The final stretch keeps the day close${closingPlace}, ending with room to breathe rather than chasing one more stop.`
       : state.rhythm === "full"
-        ? `The route closes with one last full chapter${closingPlace}, before the return.`
-        : `The route closes gently${closingPlace}, with time to settle before the return.`;
+        ? `The final stretch holds one last chapter${closingPlace}, then turns gently toward the return.`
+        : `The final stretch settles${closingPlace}, leaving time to land before the return.`;
 
   const storyChapters = [
     { eyebrow: "Opening", body: opening },
@@ -2019,7 +2045,7 @@ function StoryboardHandoff({
           className="mt-4 text-[12.5px] leading-[1.55] max-w-[420px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
-          A private route, shaped from your choices — not a template.
+          {heroOrigin}
         </p>
         <span
           aria-hidden
@@ -2471,15 +2497,15 @@ function StoryboardHandoff({
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
           }}
         >
-          Ready to say YES to this day?
+          Ready to say YES to the day you shaped?
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
           className="text-[12.5px] leading-[1.5] text-center max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          Your Signature is ready. Next, YES will confirm the date, pickup and
-          final practical details with you — nothing is reserved yet.
+          YES will confirm the date, pickup and practical details with you
+          before anything is reserved.
         </p>
         <button
           type="button"
@@ -2562,7 +2588,7 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 2600, 4500);
+  const hold = Math.min(reaction.holdMs ?? 3200, 5800);
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.
