@@ -2220,7 +2220,7 @@ export function applyMobilitySafety(
       result.push({
         index: p.index,
         label: cand.name,
-        story: cand.notes ?? p.story,
+        story: customerStopBlurb(cand),
         lat: cand.coords?.lat ?? null,
         lng: cand.coords?.lng ?? null,
       });
