@@ -1924,7 +1924,9 @@ function StoryboardHandoff({
       : heroThemes.length === 1
         ? `${regionPhrase}, shaped around ${heroThemes[0]}, held inside ${paceBit}.`
         : `${regionPhrase}, shaped from your choices — not a template.`;
-  const heroOrigin = pickupCity && hasNamedPickupForHero(pickupCity)
+  const heroPickupNamed =
+    !!pickupCity && pickupCity !== "your chosen starting point";
+  const heroOrigin = heroPickupNamed
     ? `Created from your choices. Held inside one coherent route from ${pickupCity}.`
     : `Created from your choices. Held inside one coherent route.`;
 
