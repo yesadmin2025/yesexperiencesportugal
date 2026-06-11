@@ -849,7 +849,7 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
-        holdMs: 3600,
+        holdMs: 5000,
       });
       return;
     }
@@ -861,7 +861,7 @@ export function StudioV3() {
         : "It starts here.\nThe day begins to open.",
       originLabel: label,
       postcardSubline: "Route forming",
-      holdMs: 3800,
+      holdMs: 4800,
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
     });
   };
@@ -919,7 +919,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
-          holdMs: 3800,
+          holdMs: 5400,
         });
         return;
       }
@@ -939,7 +939,7 @@ export function StudioV3() {
               ? "Full"
               : "Immersive",
       postcardSubline: "The route keeps forming.",
-      holdMs: 1600,
+      holdMs: 4200,
     });
   };
   const onLanguage = (id: Language) => {
@@ -972,7 +972,7 @@ export function StudioV3() {
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
-          holdMs: 3200,
+          holdMs: 5200,
         });
         return;
       }
@@ -984,7 +984,7 @@ export function StudioV3() {
       message: "This sets the tone.\nThe day will be shaped around it.",
       postcardCaption: label ? `Direction · ${label}` : "Direction set",
       postcardSubline: "The moments will follow from here.",
-      holdMs: 2400,
+      holdMs: 4200,
     });
   };
 
@@ -1060,7 +1060,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           nextPhase: next,
-          holdMs: 3400,
+          holdMs: 5400,
         });
         return;
       }
@@ -1075,7 +1075,7 @@ export function StudioV3() {
       chipsTail: tail,
       postcardSubline: "These will guide the route.",
       nextPhase: next,
-      holdMs: 3200,
+      holdMs: 4600,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
     });
   };
@@ -1089,7 +1089,7 @@ export function StudioV3() {
       message: "It is not just where you go.\nIt is how the day fits you.",
       postcardCaption: isNone ? "Nothing to adjust." : "Care notes held.",
       nextPhase: next,
-      holdMs: 2600,
+      holdMs: 4200,
     });
   };
 
