@@ -735,7 +735,7 @@ export function StudioV3() {
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 3200,
+        holdMs: 4600,
       });
     }, 420);
   };
@@ -770,7 +770,7 @@ export function StudioV3() {
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 3200,
+        holdMs: 4600,
       });
     }, 420);
   };
@@ -797,7 +797,7 @@ export function StudioV3() {
         message: dateModeAtmosphereLine(mode),
         bgImage: dateBgImage(),
         nextPhase: next,
-        holdMs: 1700,
+        holdMs: 4200,
       });
     }, delay);
   };
