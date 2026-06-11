@@ -306,43 +306,58 @@ export function StudioV3SignatureMap({
                   }}
                 />
               ) : null}
-              <circle cx={p.x} cy={p.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
-              <circle cx={p.x} cy={p.y} r="2.6" fill="var(--gold)" />
-              {isLast ? <circle cx={p.x} cy={p.y} r="1.1" fill="var(--ivory)" opacity="0.95" /> : null}
+              <circle cx={p.x} cy={p.y} r="5.2" fill="var(--charcoal-deep, #14181a)" />
+              <circle cx={p.x} cy={p.y} r="4.4" fill="var(--gold)" />
+              <text
+                x={p.x}
+                y={p.y + 1.6}
+                textAnchor="middle"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "5px",
+                  fill: "var(--charcoal-deep, #14181a)",
+                }}
+              >
+                {i + 1}
+              </text>
             </g>
           );
         })}
       </svg>
 
-      {/* Pin labels — ivory with text-shadow, flipped to stay in-frame. */}
-      <ul aria-hidden className="pointer-events-none absolute inset-0 m-0 list-none p-0">
-        {waypoints.map((p, i) => {
-          const xPct = (p.x / VB_W) * 100;
-          const yPct = (p.y / VB_H) * 100;
-          const flipLeft = xPct > 55;
-          const delay = 600 + i * 380 + 250;
-          return (
-            <li
-              key={i}
-              className="absolute max-w-[44%]"
-              style={{
-                left: `${xPct}%`,
-                top: `${yPct}%`,
-                transform: flipLeft
-                  ? "translate(calc(-100% - 10px), -50%)"
-                  : "translate(10px, -50%)",
-                textAlign: flipLeft ? "right" : "left",
-                opacity: active ? 1 : 0,
-                transition: `opacity 600ms ease ${delay}ms`,
-              }}
-            >
-              <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
-                {shown[i]}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      {/* Only the active/last pin's full name floats on the map.
+          The rest live in the legend strip below (rendered by caller),
+          which avoids label overlap at 393px mobile. */}
+      {waypoints.length > 0 ? (() => {
+        const i = waypoints.length - 1;
+        const p = waypoints[i];
+        const xPct = (p.x / VB_W) * 100;
+        const yPct = (p.y / VB_H) * 100;
+        const flipLeft = xPct > 55;
+        const delay = 600 + i * 380 + 250;
+        return (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute"
+            style={{
+              left: `${xPct}%`,
+              top: `${yPct}%`,
+              maxWidth: "46%",
+              transform: flipLeft
+                ? "translate(calc(-100% - 12px), -50%)"
+                : "translate(12px, -50%)",
+              textAlign: flipLeft ? "right" : "left",
+              opacity: active ? 1 : 0,
+              transition: `opacity 600ms ease ${delay}ms`,
+            }}
+          >
+            <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]">
+              {shown[i]}
+            </span>
+          </div>
+        );
+      })() : null}
 
       {/* Bottom strip — From X · pace/stops. */}
       <div
