@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T19:57:31.955Z",
+  "generatedAt": "2026-06-11T20:27:48.516Z",
   "filesScanned": 352,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 233,
+    "total": 234,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 145
+    "mismatch": 146
   },
   "findings": [
     {
@@ -1515,12 +1515,21 @@
       "col": 76,
       "raw": "#14181a",
       "normalized": "#14181a",
-      "snippet": "<circle cx={p.x} cy={p.y} r=\"3.6\" fill=\"var(--charcoal-deep, #14181a)\" />",
+      "snippet": "<circle cx={p.x} cy={p.y} r=\"5.2\" fill=\"var(--charcoal-deep, #14181a)\" />",
       "status": "mismatch"
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 352,
+      "line": 319,
+      "col": 47,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "fill: \"var(--charcoal-deep, #14181a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 367,
       "col": 74,
       "raw": "#050d0f",
       "normalized": "#050d0f",
