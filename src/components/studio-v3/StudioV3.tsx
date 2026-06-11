@@ -2040,6 +2040,36 @@ function StoryboardHandoff({
             aspectRatio="16 / 11"
             ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
           />
+          {/* Numbered legend — full names live here so the map stays clean
+              and labels never overlap at 393px mobile. */}
+          <ol
+            className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-1"
+            aria-label="Route stops in order"
+          >
+            {editedStops.map((s, i) => (
+              <li key={`${s.label}-${i}`} className="inline-flex items-center gap-1.5">
+                <span
+                  aria-hidden
+                  className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                  style={{
+                    background: "color-mix(in oklab, var(--gold) 28%, transparent)",
+                    color: "var(--charcoal)",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span
+                  className="text-[11.5px] leading-[1.3] font-semibold"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                  }}
+                >
+                  {cleanLabel(s.label)}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
       ) : null}
 
