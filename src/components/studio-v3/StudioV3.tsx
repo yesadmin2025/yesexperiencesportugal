@@ -1919,23 +1919,38 @@ function StoryboardHandoff({
     .map((s) => cleanLabel(s.label))
     .filter((x) => x.length > 0);
 
+  const hasNamedPickup =
+    !!pickupCity && pickupCity !== "your chosen starting point";
   const opening = firstStop
-    ? `The day begins gently from ${pickupCity}, with the first part of the route opening toward ${firstStop}.`
-    : `The day begins gently from ${pickupCity}.`;
+    ? hasNamedPickup
+      ? `The day begins gently from ${pickupCity}, opening toward ${firstStop}.`
+      : `The day begins gently, opening toward ${firstStop}.`
+    : hasNamedPickup
+      ? `The day begins gently from ${pickupCity}.`
+      : `The day begins gently, at your own pace.`;
 
-  const heartTheme = themeBits.length
-    ? `${themeBits.slice(0, 3).join(", ")}`
+  // Grammar-safe list joiner ("a", "a and b", "a, b and c").
+  const joinList = (items: string[]): string => {
+    if (items.length === 0) return "";
+    if (items.length === 1) return items[0];
+    if (items.length === 2) return `${items[0]} and ${items[1]}`;
+    return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+  };
+  const themeList = themeBits.slice(0, 3);
+  const heartSubject = themeList.length
+    ? `${joinList(themeList).charAt(0).toUpperCase()}${joinList(themeList).slice(1)}`
     : "Real Portuguese moments";
+  const heartVerb = themeList.length === 1 ? "sits" : "sit";
   const heartMiddle =
     middleStops.length > 0
-      ? `, with pauses through ${middleStops.slice(0, 2).join(" and ")}`
+      ? `, with pauses through ${joinList(middleStops.slice(0, 2))}`
       : "";
-  const heart = `${heartTheme.charAt(0).toUpperCase()}${heartTheme.slice(1)} shape the centre of the experience${heartMiddle}.`;
+  const heart = `${heartSubject} ${heartVerb} at the heart of the day${heartMiddle}.`;
 
   const closingPlace = lastStop && lastStop !== firstStop ? ` near ${lastStop}` : "";
   const closing =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? `The route closes with space to breathe${closingPlace}, rather than rushing through one more stop.`
+      ? `The route closes with space to breathe${closingPlace}, rather than chasing one more stop.`
       : state.rhythm === "full"
         ? `The route closes with one last full chapter${closingPlace}, before the return.`
         : `The route closes gently${closingPlace}, with time to settle before the return.`;
