@@ -911,10 +911,18 @@ export function StudioV3() {
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
+        const paceHint =
+          id === "slow"
+            ? "A slower day needs fewer, better moments."
+            : id === "balanced"
+              ? "Movement and pause, held in balance across the route."
+              : id === "full"
+                ? "A richer arc — still shaped into one realistic day."
+                : "A fuller, immersive arc — carefully held.";
         pickAndAdvance("rhythm", id, next, {
           kind: "map-beat",
           eyebrow: "The rhythm",
-          message: hint,
+          message: paceHint,
           mapMode: "pace",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
