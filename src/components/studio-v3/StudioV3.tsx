@@ -1044,14 +1044,19 @@ export function StudioV3() {
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
         const name = state.firstName?.trim() || null;
-        const firstInterest = state.interests[0]
-          ? getOptionLabel(INTERESTS, state.interests[0])?.toLowerCase()
-          : null;
-        const message = name && firstInterest
-          ? `${name}, this is starting to feel more like your kind of Portugal — ${firstInterest} at the centre.`
-          : firstInterest
-            ? `These ${firstInterest}-led moments begin to shape the route.`
-            : "These moments begin to shape the route.";
+        const interestLabels = state.interests
+          .slice(0, 2)
+          .map((iid) => getOptionLabel(INTERESTS, iid)?.toLowerCase())
+          .filter((l): l is string => Boolean(l));
+        const interestPhrase =
+          interestLabels.length === 2
+            ? `${interestLabels[0]} and ${interestLabels[1]}`
+            : interestLabels[0] ?? null;
+        const message = name && interestPhrase
+          ? `${name}, ${interestPhrase} are beginning to align with the route.`
+          : interestPhrase
+            ? `${interestPhrase.charAt(0).toUpperCase()}${interestPhrase.slice(1)} are beginning to align with the route.`
+            : "The first shape of the day is now visible.";
         playReaction({
           kind: "map-beat",
           eyebrow: "The moments",
