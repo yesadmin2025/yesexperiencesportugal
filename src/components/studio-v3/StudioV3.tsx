@@ -1938,10 +1938,8 @@ function StoryboardHandoff({
     editedStops.length > 1
       ? cleanLabel(editedStops[editedStops.length - 1].label)
       : null;
-  const middleStops = editedStops
-    .slice(1, Math.max(1, editedStops.length - 1))
-    .map((s) => cleanLabel(s.label))
-    .filter((x) => x.length > 0);
+
+
 
   const hasNamedPickup =
     !!pickupCity && pickupCity !== "your chosen starting point";
