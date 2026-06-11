@@ -20,6 +20,7 @@ import {
   composeJourneyTitle,
   
   composeSuggestedRoute,
+  customerStopBlurb,
   filterCompanions,
   filterConsiderations,
   filterDestinationIntents,
@@ -1799,7 +1800,7 @@ function StoryboardHandoff({
         seenLabels.add(key);
         pool.push({
           label: c.name,
-          story: c.notes ?? "A considered moment, in keeping with the day's rhythm.",
+          story: customerStopBlurb(c),
           source: "region-pool",
         });
       }
@@ -1918,23 +1919,38 @@ function StoryboardHandoff({
     .map((s) => cleanLabel(s.label))
     .filter((x) => x.length > 0);
 
+  const hasNamedPickup =
+    !!pickupCity && pickupCity !== "your chosen starting point";
   const opening = firstStop
-    ? `The day begins gently from ${pickupCity}, with the first part of the route opening toward ${firstStop}.`
-    : `The day begins gently from ${pickupCity}.`;
+    ? hasNamedPickup
+      ? `The day begins gently from ${pickupCity}, opening toward ${firstStop}.`
+      : `The day begins gently, opening toward ${firstStop}.`
+    : hasNamedPickup
+      ? `The day begins gently from ${pickupCity}.`
+      : `The day begins gently, at your own pace.`;
 
-  const heartTheme = themeBits.length
-    ? `${themeBits.slice(0, 3).join(", ")}`
+  // Grammar-safe list joiner ("a", "a and b", "a, b and c").
+  const joinList = (items: string[]): string => {
+    if (items.length === 0) return "";
+    if (items.length === 1) return items[0];
+    if (items.length === 2) return `${items[0]} and ${items[1]}`;
+    return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+  };
+  const themeList = themeBits.slice(0, 3);
+  const heartSubject = themeList.length
+    ? `${joinList(themeList).charAt(0).toUpperCase()}${joinList(themeList).slice(1)}`
     : "Real Portuguese moments";
+  const heartVerb = themeList.length === 1 ? "sits" : "sit";
   const heartMiddle =
     middleStops.length > 0
-      ? `, with pauses through ${middleStops.slice(0, 2).join(" and ")}`
+      ? `, with pauses through ${joinList(middleStops.slice(0, 2))}`
       : "";
-  const heart = `${heartTheme.charAt(0).toUpperCase()}${heartTheme.slice(1)} shape the centre of the experience${heartMiddle}.`;
+  const heart = `${heartSubject} ${heartVerb} at the heart of the day${heartMiddle}.`;
 
   const closingPlace = lastStop && lastStop !== firstStop ? ` near ${lastStop}` : "";
   const closing =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? `The route closes with space to breathe${closingPlace}, rather than rushing through one more stop.`
+      ? `The route closes with space to breathe${closingPlace}, rather than chasing one more stop.`
       : state.rhythm === "full"
         ? `The route closes with one last full chapter${closingPlace}, before the return.`
         : `The route closes gently${closingPlace}, with time to settle before the return.`;
@@ -2024,6 +2040,36 @@ function StoryboardHandoff({
             aspectRatio="16 / 11"
             ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
           />
+          {/* Numbered legend — full names live here so the map stays clean
+              and labels never overlap at 393px mobile. */}
+          <ol
+            className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-1"
+            aria-label="Route stops in order"
+          >
+            {editedStops.map((s, i) => (
+              <li key={`${s.label}-${i}`} className="inline-flex items-center gap-1.5">
+                <span
+                  aria-hidden
+                  className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                  style={{
+                    background: "color-mix(in oklab, var(--gold) 28%, transparent)",
+                    color: "var(--charcoal)",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span
+                  className="text-[11.5px] leading-[1.3] font-semibold"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                  }}
+                >
+                  {cleanLabel(s.label)}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
       ) : null}
 
@@ -2072,7 +2118,7 @@ function StoryboardHandoff({
             className="mt-2 mb-4 text-center text-[12px] leading-[1.5]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
           >
-            Reorder, swap, remove — or add one moment when the day has room. The route stays inside the same region.
+            Reorder, swap or remove a moment. The route stays inside the same region.
           </p>
           <ol className="space-y-2">
             {editedStops.map((s, i) => {
@@ -2233,12 +2279,12 @@ function StoryboardHandoff({
 
           {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
           {canAddMoment ? (
-            <div data-testid="studio-v3-add-moment" className="mt-3">
+            <div data-testid="studio-v3-add-moment" className="mt-4">
               <button
                 type="button"
                 onClick={() => setAddOpen((v) => !v)}
                 aria-expanded={addOpen}
-                className="w-full rounded-[8px] px-3 py-2 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                className="w-full rounded-[8px] px-3 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   border:
                     "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
@@ -2246,8 +2292,16 @@ function StoryboardHandoff({
                   background: "transparent",
                 }}
               >
-                {addOpen ? "Close" : "+ Add a moment to your day"}
+                {addOpen ? "Close" : "+ Add one more moment"}
               </button>
+              {addOpen ? (
+                <p
+                  className="mt-2 text-center text-[11.5px] leading-[1.5]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+                >
+                  Choose a moment that still fits the day's rhythm.
+                </p>
+              ) : null}
               {addOpen ? (
                 <ul
                   data-testid="studio-v3-add-pool"

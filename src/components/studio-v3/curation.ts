@@ -1956,7 +1956,7 @@ export function applyReplacementCandidates(
       out[i] = {
         index: current.index,
         label: cand.name,
-        story: cand.notes ?? current.story,
+        story: customerStopBlurb(cand),
         lat: cand.coords?.lat ?? null,
         lng: cand.coords?.lng ?? null,
       };
@@ -1993,25 +1993,37 @@ export function applyReplacementCandidates(
  * --------------------------------------------------------------------------- */
 
 const EXTRA_MOMENT_STORY_FALLBACK: Record<OptionalStop["type"], string> = {
-  winery: "A short tasting at a small local estate.",
-  workshop: "A brief hands-on moment with a local maker.",
-  monument: "A quiet pause at a landmark on the way.",
-  market: "A short walk through a working local market.",
-  table: "A short stop at a neighbourhood table.",
-  beach: "A short pause by a calm stretch of coast.",
-  viewpoint: "A short pause at a panoramic overlook.",
-  nature: "A short walk through a quiet natural setting.",
-  garden: "A short stroll through a calm garden.",
-  studio: "A brief visit to a local studio.",
-  boat: "A short moment by the water.",
-  heritage: "A short pause at a place with historical depth.",
-  village: "A short walk through the village centre.",
+  winery: "A grounded wine moment shaped around regional flavour.",
+  workshop: "A hands-on craft moment with a local maker.",
+  monument: "A heritage pause grounded in local history.",
+  market: "A vivid local market — colour, flavour and everyday life.",
+  table: "A relaxed regional table woven into the day's rhythm.",
+  beach: "A coastal pause with sand, sea and slower air.",
+  viewpoint: "A quiet viewpoint with space to take it in.",
+  nature: "A calm walk through a quieter natural setting.",
+  garden: "A slow stroll through a gentle garden.",
+  studio: "A short visit with a local studio and its work.",
+  boat: "A quiet moment by the water.",
+  heritage: "A layered heritage pause with real local depth.",
+  village: "A quiet village pause, away from the busier route.",
 };
 
-function buildExtraMomentStory(cand: OptionalStop): string {
-  const notes = (cand.notes ?? "").trim();
-  if (notes.length > 0) return notes;
+/**
+ * Customer-facing one-line blurb for an OptionalStop.
+ *
+ * The `notes` field on REGION_STOP_POOL entries is INTERNAL ONLY — it
+ * contains source-verification language ("Source-verified itinerary stop
+ * from P3", "one-of-N winery option", "Supplier availability required",
+ * etc.) that must never reach the traveller. This helper derives a short,
+ * experiential line from the stop's type so the editor / swap pool / Story
+ * of the Day always read like polished Signature notes.
+ */
+export function customerStopBlurb(cand: OptionalStop): string {
   return EXTRA_MOMENT_STORY_FALLBACK[cand.type];
+}
+
+function buildExtraMomentStory(cand: OptionalStop): string {
+  return customerStopBlurb(cand);
 }
 
 function scoreExtraMomentCandidate(
@@ -2208,7 +2220,7 @@ export function applyMobilitySafety(
       result.push({
         index: p.index,
         label: cand.name,
-        story: cand.notes ?? p.story,
+        story: customerStopBlurb(cand),
         lat: cand.coords?.lat ?? null,
         lng: cand.coords?.lng ?? null,
       });
