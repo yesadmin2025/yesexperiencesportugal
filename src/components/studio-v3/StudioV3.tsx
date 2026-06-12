@@ -1529,6 +1529,10 @@ export function StudioV3() {
           feeling={state.feeling}
           companions={state.companions}
           rhythm={state.rhythm}
+          interests={state.interests}
+          pickup={state.pickup}
+          investment={state.investment}
+          destinationIntent={state.destinationIntent}
           onBack={() => back("language")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
@@ -3272,32 +3276,48 @@ function SaveSignatureButton({
   }
 
   return (
-    <button
-      type="button"
-      onClick={onSave}
-      disabled={status === "saving"}
-      data-testid="studio-v3-save-signature"
-      className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-      style={{
-        color: "var(--charcoal)",
-        background: "transparent",
-        border: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
-      }}
-      aria-label="Save this Signature for later"
-    >
-      {status === "saving" ? (
-        <>
-          <Loader2 size={14} aria-hidden className="animate-spin" />
-          Saving…
-        </>
-      ) : status === "error" ? (
-        <>Try saving again</>
-      ) : (
-        <>Save this Signature</>
-      )}
-    </button>
+    <div className="flex flex-col items-center w-full">
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={status === "saving"}
+        data-testid="studio-v3-save-signature"
+        className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        style={{
+          color: "var(--charcoal)",
+          background: "transparent",
+          border: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
+        }}
+        aria-label="Save this Signature for later"
+      >
+        {status === "saving" ? (
+          <>
+            <Loader2 size={14} aria-hidden className="animate-spin" />
+            Saving…
+          </>
+        ) : status === "error" ? (
+          <>Try saving again</>
+        ) : (
+          <>Save this Signature</>
+        )}
+      </button>
+      {status === "error" ? (
+        <p
+          role="status"
+          aria-live="polite"
+          data-testid="studio-v3-save-error"
+          className="mt-3 max-w-[340px] text-center text-[12px] leading-[1.5] [text-wrap:pretty]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        >
+          We couldn't save this Signature just now. Please try again, or use{" "}
+          <span style={{ color: "var(--gold)", fontWeight: 600 }}>Say YES</span>{" "}
+          and we'll keep the details with your request.
+        </p>
+      ) : null}
+    </div>
   );
 }
+
 
 
 

@@ -54,25 +54,54 @@ function cleanLabel(raw: string): string {
   return raw.split(/[—–-]/)[0].split(",")[0].trim();
 }
 
-/** Generate deterministic screen-space waypoints along a soft S-curve. */
+/** Generate deterministic screen-space waypoints along a soft S-curve.
+ *  Slots are distributed evenly across the full curve regardless of `n`,
+ *  then deconflicted so no two pins land within `MIN_SEP` of each other —
+ *  this prevents 4-stop routes (e.g. Évora / Alentejo) from visually
+ *  collapsing into 2 pins when stops are geographically close.
+ *  Geometry is schematic, not geographic. */
+const MIN_SEP = 22; // viewBox units (pin radius ≈ 8)
 function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: number }[] {
   const n = labels.length;
   if (n === 0) return [];
-  // X moves from 70 → 178; Y from 88 → 232 (origin is at ~y=44).
-  const xs = [70, 100, 128, 152, 168, 178];
-  const ys = [88, 130, 168, 198, 218, 232];
-  return labels.map((label, i) => {
-    const t = n === 1 ? 0 : i / Math.max(1, n - 1);
-    const idx = Math.min(5, Math.round(t * 5));
-    const baseX = xs[idx];
-    const baseY = ys[idx];
-    const j = labelJitter(label);
-    return {
+  // Even fractions along the curve: 1→[0.5], 2→[0,1], 3→[0,0.5,1], 4→[0,.34,.67,1]
+  const xMin = 70, xMax = 178;
+  const yMin = 88, yMax = 232;
+  const out: { x: number; y: number }[] = [];
+  for (let i = 0; i < n; i += 1) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    // Soft S-curve in Y so the route reads as a coastal arc.
+    const sy = t + Math.sin(t * Math.PI) * 0.08;
+    const baseX = xMin + (xMax - xMin) * t;
+    const baseY = yMin + (yMax - yMin) * Math.max(0, Math.min(1, sy));
+    const j = labelJitter(labels[i]);
+    out.push({
       x: Math.max(60, Math.min(186, baseX + j * 0.4)),
-      y: Math.max(80, Math.min(236, baseY + (j % 7) * 0.7)),
-    };
-  });
+      y: Math.max(80, Math.min(236, baseY + (j % 5) * 0.6)),
+    });
+  }
+  // Deconflict — if any pin is too close to its predecessor, nudge it
+  // further along the natural curve direction.
+  for (let i = 1; i < out.length; i += 1) {
+    const a = out[i - 1];
+    const b = out[i];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < MIN_SEP) {
+      const push = MIN_SEP - dist + 1;
+      // Push primarily along +x/+y (route flows down-right).
+      const nx = dx === 0 ? 1 : dx / dist;
+      const ny = dy === 0 ? 1 : dy / dist;
+      out[i] = {
+        x: Math.max(60, Math.min(186, b.x + nx * push)),
+        y: Math.max(80, Math.min(236, b.y + ny * push)),
+      };
+    }
+  }
+  return out;
 }
+
 
 /** Build a smooth route path through origin + waypoints (Catmull-Rom-ish). */
 function buildRoutePath(points: { x: number; y: number }[]): string {
@@ -327,8 +356,9 @@ export function StudioV3SignatureMap({
       </svg>
 
       {/* Only the active/last pin's full name floats on the map.
-          The rest live in the legend strip below (rendered by caller),
-          which avoids label overlap at 393px mobile. */}
+          Hidden on mobile (≤520px) to prevent overlap with the legend
+          and the bottom strip. The numbered legend below the map
+          carries the full route on small screens. */}
       {waypoints.length > 0 ? (() => {
         const i = waypoints.length - 1;
         const p = waypoints[i];
@@ -339,7 +369,7 @@ export function StudioV3SignatureMap({
         return (
           <div
             aria-hidden
-            className="pointer-events-none absolute"
+            className="pointer-events-none absolute hidden sm:block"
             style={{
               left: `${xPct}%`,
               top: `${yPct}%`,
@@ -359,9 +389,12 @@ export function StudioV3SignatureMap({
         );
       })() : null}
 
-      {/* Bottom strip — From X · pace/stops. */}
+      {/* Bottom strip — From X · pace/stops.
+          Hidden on mobile (≤520px) so the in-map captions never collide
+          with the pin labels. The numbered legend rendered by the caller
+          carries the full route on small screens. */}
       <div
-        className="absolute left-0 right-0 bottom-0 flex items-end justify-between gap-3 px-3.5 py-2"
+        className="absolute left-0 right-0 bottom-0 hidden sm:flex items-end justify-between gap-3 px-3.5 py-2"
         style={{
           background:
             "linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)",
