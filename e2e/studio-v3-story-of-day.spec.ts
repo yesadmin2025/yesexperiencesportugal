@@ -133,5 +133,45 @@ test.describe("Studio V3 — Story of the day containment", () => {
       suspicious,
       `Story of the day referenced tokens that are not in the composed route nor in the safe allow-list: ${suspicious.join(", ")}`,
     ).toEqual([]);
+
+    // 4. Internal/source/composer terms must NEVER appear in the customer-facing
+    //    reveal copy (story chapters OR CTA bridge). These came from the audit
+    //    of customer-visible leaks ("Source-verified…", "Treat as one-of-N",
+    //    "Supplier availability required", "from P3", "across P2", etc.).
+    const FORBIDDEN_PHRASES = [
+      /source-verified/i,
+      /treat as one-of/i,
+      /supplier availability/i,
+      /\bP\d+\b/,
+      /\bskeleton\b/i,
+      /\bswap pool\b/i,
+      /\beditedstops?\b/i,
+      /\boptional itinerary stop\b/i,
+      /\boriginal Viator\b/i,
+      /\bplaceholder\b/i,
+    ];
+    const bridge = page.getByTestId("studio-v3-cta-bridge");
+    await expect(bridge).toBeVisible();
+    const bridgeText = (await bridge.innerText()).trim();
+    expect(bridgeText.length).toBeGreaterThan(0);
+
+    for (const blob of [storyText, bridgeText]) {
+      for (const pat of FORBIDDEN_PHRASES) {
+        expect(
+          pat.test(blob),
+          `Customer-facing reveal copy must not contain internal term ${pat}. Got: ${blob}`,
+        ).toBe(false);
+      }
+    }
+
+    // 5. Same capitalised-token containment guard applied to the CTA bridge.
+    const bridgeTokens =
+      bridgeText.match(/\b[A-ZÁÂÃÀÉÊÍÓÔÕÚÇ][a-záâãàéêíóôõúç-]+\b/g) ?? [];
+    const bridgeSuspicious = bridgeTokens.filter((t) => !ALLOWED.has(t));
+    expect(
+      bridgeSuspicious,
+      `CTA bridge referenced tokens that are not in the composed route nor in the safe allow-list: ${bridgeSuspicious.join(", ")}`,
+    ).toEqual([]);
   });
 });
+
