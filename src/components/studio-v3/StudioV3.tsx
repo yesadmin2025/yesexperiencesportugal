@@ -698,7 +698,7 @@ export function StudioV3() {
         message,
         bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
         nextPhase: next,
-        holdMs: 4200,
+        holdMs: 4700,
       });
     }, 420);
   };
