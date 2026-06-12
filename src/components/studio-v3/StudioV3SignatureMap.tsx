@@ -327,8 +327,9 @@ export function StudioV3SignatureMap({
       </svg>
 
       {/* Only the active/last pin's full name floats on the map.
-          The rest live in the legend strip below (rendered by caller),
-          which avoids label overlap at 393px mobile. */}
+          Hidden on mobile (≤520px) to prevent overlap with the legend
+          and the bottom strip. The numbered legend below the map
+          carries the full route on small screens. */}
       {waypoints.length > 0 ? (() => {
         const i = waypoints.length - 1;
         const p = waypoints[i];
@@ -339,7 +340,7 @@ export function StudioV3SignatureMap({
         return (
           <div
             aria-hidden
-            className="pointer-events-none absolute"
+            className="pointer-events-none absolute hidden sm:block"
             style={{
               left: `${xPct}%`,
               top: `${yPct}%`,
@@ -359,9 +360,12 @@ export function StudioV3SignatureMap({
         );
       })() : null}
 
-      {/* Bottom strip — From X · pace/stops. */}
+      {/* Bottom strip — From X · pace/stops.
+          Hidden on mobile (≤520px) so the in-map captions never collide
+          with the pin labels. The numbered legend rendered by the caller
+          carries the full route on small screens. */}
       <div
-        className="absolute left-0 right-0 bottom-0 flex items-end justify-between gap-3 px-3.5 py-2"
+        className="absolute left-0 right-0 bottom-0 hidden sm:flex items-end justify-between gap-3 px-3.5 py-2"
         style={{
           background:
             "linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)",
