@@ -2127,7 +2127,7 @@ function StoryboardHandoff({
                 {c.eyebrow}
               </p>
               <p
-                className="mt-1.5 text-[14px] leading-[1.55]"
+                className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
               >
                 {c.body}
