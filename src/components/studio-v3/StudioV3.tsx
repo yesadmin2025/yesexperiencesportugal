@@ -2042,7 +2042,7 @@ function StoryboardHandoff({
           {heroLead}
         </h1>
         <p
-          className="mt-4 text-[16px] sm:text-[18px] leading-[1.45] italic text-balance max-w-[460px] mx-auto"
+          className="mt-4 text-[15.5px] sm:text-[18px] leading-[1.5] italic text-balance [text-wrap:pretty] [hyphens:auto] max-w-[360px] sm:max-w-[460px] mx-auto"
           style={{
             fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -2051,7 +2051,7 @@ function StoryboardHandoff({
           {heroSub}
         </p>
         <p
-          className="mt-4 text-[12.5px] leading-[1.55] max-w-[420px] mx-auto"
+          className="mt-4 text-[12.5px] leading-[1.55] [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
           {heroOrigin}
@@ -2127,7 +2127,7 @@ function StoryboardHandoff({
                 {c.eyebrow}
               </p>
               <p
-                className="mt-1.5 text-[14px] leading-[1.55]"
+                className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
               >
                 {c.body}
@@ -2500,7 +2500,7 @@ function StoryboardHandoff({
       {/* ---------- 8. CTA stack ---------- */}
       <div className="mt-12 flex flex-col items-center gap-4">
         <p
-          className="text-[15px] sm:text-[16px] italic leading-[1.4] text-center"
+          className="text-[15px] sm:text-[16px] italic leading-[1.45] text-center text-balance [text-wrap:pretty] max-w-[360px] sm:max-w-[440px]"
           style={{
             fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
@@ -2510,7 +2510,7 @@ function StoryboardHandoff({
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.5] text-center max-w-[420px]"
+          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
           Saying YES opens a private conversation — your date, pickup and final
