@@ -1529,6 +1529,10 @@ export function StudioV3() {
           feeling={state.feeling}
           companions={state.companions}
           rhythm={state.rhythm}
+          interests={state.interests}
+          pickup={state.pickup}
+          investment={state.investment}
+          destinationIntent={state.destinationIntent}
           onBack={() => back("language")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
