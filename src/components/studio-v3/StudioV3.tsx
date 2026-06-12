@@ -1923,12 +1923,12 @@ function StoryboardHandoff({
       ? `${regionPhrase}, shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, held inside ${paceBit}.`
       : heroThemes.length === 1
         ? `${regionPhrase}, shaped around ${heroThemes[0]}, held inside ${paceBit}.`
-        : `${regionPhrase}, shaped from your choices — not a template.`;
+        : `${regionPhrase}, shaped from your own choices rather than a template.`;
   const heroPickupNamed =
     !!pickupCity && pickupCity !== "your chosen starting point";
   const heroOrigin = heroPickupNamed
-    ? `Created from your choices. Held inside one coherent route from ${pickupCity}.`
-    : `Created from your choices. Held inside one coherent route.`;
+    ? `Composed privately for ${name ?? "you"} — one route, one rhythm, beginning and ending in ${pickupCity}.`
+    : `Composed privately for ${name ?? "you"} — one route, one rhythm, shaped only around the day you described.`;
 
   // Story of the day — generated only from real composed route points.
   const cleanLabel = (s: string) =>
