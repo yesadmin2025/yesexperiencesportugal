@@ -1938,6 +1938,10 @@ function StoryboardHandoff({
     editedStops.length > 1
       ? cleanLabel(editedStops[editedStops.length - 1].label)
       : null;
+  const middleStop =
+    editedStops.length >= 3
+      ? cleanLabel(editedStops[Math.floor(editedStops.length / 2)].label)
+      : null;
 
 
 
@@ -1947,11 +1951,11 @@ function StoryboardHandoff({
   const towardRegion = regionForStory ? ` toward ${regionForStory}` : "";
   const opening = firstStop
     ? hasNamedPickup
-      ? `The day begins from ${pickupCity}, easing${towardRegion} until ${firstStop} sets the tone.`
+      ? `The day begins from ${pickupCity}, easing${towardRegion} until ${firstStop} sets the tone — quietly, the way a private day should open.`
       : `The day begins quietly, easing${towardRegion} until ${firstStop} sets the tone.`
     : hasNamedPickup
-      ? `The day begins from ${pickupCity}, easing${towardRegion} at your own pace.`
-      : `The day begins quietly, at your own pace.`;
+      ? `The day begins from ${pickupCity}, easing${towardRegion} at the pace you asked for.`
+      : `The day begins quietly, at the pace you asked for.`;
 
   // Grammar-safe list joiner ("a", "a and b", "a, b and c").
   const joinList = (items: string[]): string => {
@@ -1967,19 +1971,24 @@ function StoryboardHandoff({
   const heartVerb = themeList.length === 1 ? "sits" : "sit";
   const heartTail =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? ", with space between each moment rather than a rushed checklist."
+      ? ", with space between each moment rather than a rushed checklist"
       : state.rhythm === "full"
-        ? ", with each chapter given room to be felt before the next."
-        : ", held in a rhythm that moves without rushing.";
-  const heart = `${heartSubject} ${heartVerb} at the centre of the day${heartTail}`;
+        ? ", with each chapter given room to be felt before the next"
+        : ", held in a rhythm that moves without rushing";
+  const heartMiddle =
+    middleStop && middleStop !== firstStop && middleStop !== lastStop
+      ? ` ${middleStop} sits at the centre, anchoring the day.`
+      : "";
+  const heart = `${heartSubject} ${heartVerb} at the heart of the day${heartTail}.${heartMiddle}`;
 
   const closingPlace = lastStop && lastStop !== firstStop ? ` near ${lastStop}` : "";
+  const closingReturn = hasNamedPickup ? `, before turning back toward ${pickupCity}` : "";
   const closing =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? `The final stretch keeps the day close${closingPlace}, ending with room to breathe rather than chasing one more stop.`
+      ? `The final stretch keeps the day close${closingPlace}, ending with room to breathe${closingReturn}.`
       : state.rhythm === "full"
-        ? `The final stretch holds one last chapter${closingPlace}, then turns gently toward the return.`
-        : `The final stretch settles${closingPlace}, leaving time to land before the return.`;
+        ? `The final stretch holds one last chapter${closingPlace}, then turns gently${closingReturn}.`
+        : `The final stretch settles${closingPlace}, leaving time to land${closingReturn}.`;
 
   const storyChapters = [
     { eyebrow: "Opening", body: opening },
