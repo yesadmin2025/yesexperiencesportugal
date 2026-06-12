@@ -2042,7 +2042,7 @@ function StoryboardHandoff({
           {heroLead}
         </h1>
         <p
-          className="mt-4 text-[16px] sm:text-[18px] leading-[1.45] italic text-balance max-w-[460px] mx-auto"
+          className="mt-4 text-[15.5px] sm:text-[18px] leading-[1.5] italic text-balance [text-wrap:pretty] [hyphens:auto] max-w-[360px] sm:max-w-[460px] mx-auto"
           style={{
             fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -2051,7 +2051,7 @@ function StoryboardHandoff({
           {heroSub}
         </p>
         <p
-          className="mt-4 text-[12.5px] leading-[1.55] max-w-[420px] mx-auto"
+          className="mt-4 text-[12.5px] leading-[1.55] [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
           {heroOrigin}
