@@ -632,11 +632,11 @@ export function StudioV3() {
     // Final emotional finish: cap raised so creation beats stay on screen
     // long enough for the route line to fully draw, pins to land one by
     // one, and the user to register the moment before moving on.
-    const hold = Math.min(r.holdMs ?? 3200, 5800);
-    // Calmer handoff — keep ~450ms of negative space after the beat
+    const hold = Math.min(r.holdMs ?? 3200, 6600);
+    // Calmer handoff — keep ~650ms of negative space after the beat
     // dissolves before the next question becomes interactive, so it
     // never appears abruptly behind the fading overlay.
-    const settle = 450;
+    const settle = 650;
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -698,7 +698,7 @@ export function StudioV3() {
         message,
         bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
         nextPhase: next,
-        holdMs: 4200,
+        holdMs: 4700,
       });
     }, 420);
   };
@@ -735,7 +735,7 @@ export function StudioV3() {
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 4600,
+        holdMs: 5100,
       });
     }, 420);
   };
@@ -770,7 +770,7 @@ export function StudioV3() {
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
         nextPhase: next,
-        holdMs: 4600,
+        holdMs: 5100,
       });
     }, 420);
   };
@@ -797,7 +797,7 @@ export function StudioV3() {
         message: dateModeAtmosphereLine(mode),
         bgImage: dateBgImage(),
         nextPhase: next,
-        holdMs: 4200,
+        holdMs: 4700,
       });
     }, delay);
   };
@@ -849,7 +849,7 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
-        holdMs: 5000,
+        holdMs: 5800,
       });
       return;
     }
@@ -927,7 +927,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
-          holdMs: 5400,
+          holdMs: 6200,
         });
         return;
       }
@@ -980,7 +980,7 @@ export function StudioV3() {
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
-          holdMs: 5200,
+          holdMs: 6000,
         });
         return;
       }
@@ -1073,7 +1073,7 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           nextPhase: next,
-          holdMs: 5400,
+          holdMs: 6200,
         });
         return;
       }
@@ -2588,7 +2588,7 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 3200, 5800);
+  const hold = Math.min(reaction.holdMs ?? 3200, 6600);
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.
