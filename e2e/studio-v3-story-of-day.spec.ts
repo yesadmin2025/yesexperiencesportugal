@@ -120,6 +120,8 @@ test.describe("Studio V3 — Story of the day containment", () => {
       "Swap",
       "Fine-tune",
       "Reorder",
+      "Saying",
+      "This",
     ]);
     for (const stop of stopLabels) {
       for (const token of stop.split(/\s+/)) {
