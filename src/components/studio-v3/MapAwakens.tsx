@@ -2,7 +2,15 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import type { RoutedStopUI } from "@/components/builder/types";
 import { curateJourney, type CuratedJourney } from "./curation";
-import type { Companions, Feeling, Rhythm } from "./types";
+import type {
+  Companions,
+  DestinationIntent,
+  Feeling,
+  Interest,
+  InvestmentTier,
+  Pickup,
+  Rhythm,
+} from "./types";
 
 // TODO: Later phase — add pickup-aware map eyebrow ("From {pickup label}").
 // Skipped in Phase 1B to avoid prop drilling and a wider refactor.
@@ -27,17 +35,42 @@ interface Props {
   feeling: Feeling;
   companions: Companions;
   rhythm: Rhythm;
+  /** Optional context — when present, ensures the intermediate playback
+   *  resolves to the SAME tour family the final reveal will use, so users
+   *  never see a stale wrong-region route (e.g. Arrábida while their
+   *  selected destination intent is Alentejo / Évora). */
+  interests?: ReadonlyArray<Interest>;
+  pickup?: Pickup | null;
+  investment?: InvestmentTier | null;
+  destinationIntent?: DestinationIntent | null;
   onBack: () => void;
   onContinue: (tourId: string) => void;
 }
 
 const AUTO_INTERVAL_MS = 3400;
 
-export function MapAwakens({ feeling, companions, rhythm, onBack, onContinue }: Props) {
+export function MapAwakens({
+  feeling,
+  companions,
+  rhythm,
+  interests,
+  pickup,
+  investment,
+  destinationIntent,
+  onBack,
+  onContinue,
+}: Props) {
   const journey: CuratedJourney = useMemo(
-    () => curateJourney(feeling, companions, rhythm),
-    [feeling, companions, rhythm],
+    () =>
+      curateJourney(feeling, companions, rhythm, {
+        interests,
+        pickup,
+        investment,
+        destinationIntent,
+      }),
+    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent],
   );
+
 
   const [revealed, setRevealed] = useState(0); // how many moments shown
   const [active, setActive] = useState(0); // currently spotlit moment
