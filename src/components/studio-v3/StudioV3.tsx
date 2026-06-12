@@ -632,11 +632,11 @@ export function StudioV3() {
     // Final emotional finish: cap raised so creation beats stay on screen
     // long enough for the route line to fully draw, pins to land one by
     // one, and the user to register the moment before moving on.
-    const hold = Math.min(r.holdMs ?? 3200, 5800);
-    // Calmer handoff — keep ~450ms of negative space after the beat
+    const hold = Math.min(r.holdMs ?? 3200, 6600);
+    // Calmer handoff — keep ~650ms of negative space after the beat
     // dissolves before the next question becomes interactive, so it
     // never appears abruptly behind the fading overlay.
-    const settle = 450;
+    const settle = 650;
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
