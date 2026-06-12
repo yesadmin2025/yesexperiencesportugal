@@ -1923,12 +1923,12 @@ function StoryboardHandoff({
       ? `${regionPhrase}, shaped around ${heroThemes.slice(0, -1).join(", ")} and ${heroThemes[heroThemes.length - 1]}, held inside ${paceBit}.`
       : heroThemes.length === 1
         ? `${regionPhrase}, shaped around ${heroThemes[0]}, held inside ${paceBit}.`
-        : `${regionPhrase}, shaped from your choices — not a template.`;
+        : `${regionPhrase}, shaped from your own choices rather than a template.`;
   const heroPickupNamed =
     !!pickupCity && pickupCity !== "your chosen starting point";
   const heroOrigin = heroPickupNamed
-    ? `Created from your choices. Held inside one coherent route from ${pickupCity}.`
-    : `Created from your choices. Held inside one coherent route.`;
+    ? `Composed privately for ${name ?? "you"} — one route, one rhythm, beginning and ending in ${pickupCity}.`
+    : `Composed privately for ${name ?? "you"} — one route, one rhythm, shaped only around the day you described.`;
 
   // Story of the day — generated only from real composed route points.
   const cleanLabel = (s: string) =>
@@ -1937,6 +1937,10 @@ function StoryboardHandoff({
   const lastStop =
     editedStops.length > 1
       ? cleanLabel(editedStops[editedStops.length - 1].label)
+      : null;
+  const middleStop =
+    editedStops.length >= 3
+      ? cleanLabel(editedStops[Math.floor(editedStops.length / 2)].label)
       : null;
 
 
@@ -1947,11 +1951,11 @@ function StoryboardHandoff({
   const towardRegion = regionForStory ? ` toward ${regionForStory}` : "";
   const opening = firstStop
     ? hasNamedPickup
-      ? `The day begins from ${pickupCity}, easing${towardRegion} until ${firstStop} sets the tone.`
+      ? `The day begins from ${pickupCity}, easing${towardRegion} until ${firstStop} sets the tone — quietly, the way a private day should open.`
       : `The day begins quietly, easing${towardRegion} until ${firstStop} sets the tone.`
     : hasNamedPickup
-      ? `The day begins from ${pickupCity}, easing${towardRegion} at your own pace.`
-      : `The day begins quietly, at your own pace.`;
+      ? `The day begins from ${pickupCity}, easing${towardRegion} at the pace you asked for.`
+      : `The day begins quietly, at the pace you asked for.`;
 
   // Grammar-safe list joiner ("a", "a and b", "a, b and c").
   const joinList = (items: string[]): string => {
@@ -1967,19 +1971,24 @@ function StoryboardHandoff({
   const heartVerb = themeList.length === 1 ? "sits" : "sit";
   const heartTail =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? ", with space between each moment rather than a rushed checklist."
+      ? ", with space between each moment rather than a rushed checklist"
       : state.rhythm === "full"
-        ? ", with each chapter given room to be felt before the next."
-        : ", held in a rhythm that moves without rushing.";
-  const heart = `${heartSubject} ${heartVerb} at the centre of the day${heartTail}`;
+        ? ", with each chapter given room to be felt before the next"
+        : ", held in a rhythm that moves without rushing";
+  const heartMiddle =
+    middleStop && middleStop !== firstStop && middleStop !== lastStop
+      ? ` ${middleStop} sits at the centre, anchoring the day.`
+      : "";
+  const heart = `${heartSubject} ${heartVerb} at the heart of the day${heartTail}.${heartMiddle}`;
 
   const closingPlace = lastStop && lastStop !== firstStop ? ` near ${lastStop}` : "";
+  const closingReturn = hasNamedPickup ? `, before turning back toward ${pickupCity}` : "";
   const closing =
     state.rhythm === "slow" || state.rhythm === "immersive"
-      ? `The final stretch keeps the day close${closingPlace}, ending with room to breathe rather than chasing one more stop.`
+      ? `The final stretch keeps the day close${closingPlace}, ending with room to breathe${closingReturn}.`
       : state.rhythm === "full"
-        ? `The final stretch holds one last chapter${closingPlace}, then turns gently toward the return.`
-        : `The final stretch settles${closingPlace}, leaving time to land before the return.`;
+        ? `The final stretch holds one last chapter${closingPlace}, then turns gently${closingReturn}.`
+        : `The final stretch settles${closingPlace}, leaving time to land${closingReturn}.`;
 
   const storyChapters = [
     { eyebrow: "Opening", body: opening },
@@ -2497,15 +2506,15 @@ function StoryboardHandoff({
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
           }}
         >
-          Ready to say YES to the day you shaped?
+          {name ? `${name}, this is the day you shaped.` : "This is the day you shaped."}
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
           className="text-[12.5px] leading-[1.5] text-center max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          YES will confirm the date, pickup and practical details with you
-          before anything is reserved.
+          Saying YES opens a private conversation — your date, pickup and final
+          details are confirmed with you before anything is reserved.
         </p>
         <button
           type="button"
