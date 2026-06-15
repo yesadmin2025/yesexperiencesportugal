@@ -147,10 +147,15 @@ function TourDetailPage() {
 function TourHero({
   tour,
   resolveImg,
+  meta,
 }: {
   tour: SignatureTour;
   resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
+  meta: ViatorMeta | undefined;
 }) {
+  const heroResolved = resolveImg(tour, "hero");
+  // If we have Viator gallery, use the first image (curated cover) instead.
+  const heroSrc = meta?.gallery?.[0] ?? heroResolved.src;
   return (
     <>
       {/* Breadcrumb */}
@@ -170,7 +175,7 @@ function TourHero({
           {/* Cinematic hero image */}
           <div className="relative aspect-[4/5] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] overflow-hidden shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]">
             <img
-              {...resolveImg(tour, "hero")}
+              src={heroSrc}
               alt={tour.title}
               fetchPriority="high"
               decoding="async"
@@ -198,6 +203,19 @@ function TourHero({
               <p className="serif italic font-light mt-4 text-[15px] sm:text-lg md:text-xl text-[color:var(--ivory)]/90 max-w-xl leading-snug">
                 {tour.blurb}
               </p>
+
+              {/* Rating pill (only when we have Viator data) */}
+              {meta && meta.reviewCount > 0 && (
+                <div className="mt-4 inline-flex items-center gap-2 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-3 py-1.5 text-[12px]">
+                  <span className="flex gap-0.5 text-[color:var(--gold)]">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
+                    ))}
+                  </span>
+                  <span className="tracking-tight font-medium">{meta.rating.toFixed(1)}</span>
+                  <span className="text-[color:var(--charcoal-soft)]">· {meta.reviewCount} reviews</span>
+                </div>
+              )}
 
               <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/80">
                 <span className="flex items-center gap-1.5">
@@ -239,11 +257,14 @@ function TourHero({
 /* ════════════════════════════════════════════════════════════════
  * 2 · TRUST STRIP
  * ════════════════════════════════════════════════════════════ */
-function TrustStrip() {
+function TrustStrip({ meta }: { meta?: ViatorMeta }) {
   const items = [
     { icon: <Shield size={14} />, label: "Instant confirmation" },
     { icon: <Check size={14} />, label: "No forms. No waiting." },
-    { icon: <Star size={14} />, label: "Trusted local guide" },
+    {
+      icon: <Star size={14} />,
+      label: meta && meta.reviewCount > 0 ? `${meta.rating.toFixed(1)} · ${meta.reviewCount} reviews` : "Trusted local guide",
+    },
   ];
   return (
     <section className="border-y border-[color:var(--border)] bg-[color:var(--ivory)]">
