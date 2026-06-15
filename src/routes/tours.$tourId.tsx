@@ -576,11 +576,12 @@ function IncludedAndIdeal({ tour }: { tour: SignatureTour }) {
 function GalleryStrip({
   tour,
   resolveImg,
+  meta,
 }: {
   tour: SignatureTour;
   resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
+  meta?: ViatorMeta;
 }) {
-  // Build gallery from real assets: tour gallery if present, otherwise stop images
   const seen = new Set<string>();
   const photos: { src: string; alt: string; focal?: string }[] = [];
   const push = (src: string, alt: string, focal?: string) => {
@@ -589,15 +590,18 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Hero first
-  const hero = resolveImg(tour, "hero");
-  push(hero.src, tour.title, tour.focal);
-
-  // Stop photos in order
+  // Viator gallery first (real, curated)
+  if (meta?.gallery?.length) {
+    meta.gallery.forEach((g, i) => push(g, i === 0 ? tour.title : `${tour.title} — ${i + 1}`));
+  } else {
+    const hero = resolveImg(tour, "hero");
+    push(hero.src, tour.title, tour.focal);
+  }
+  // Then stop photos in itinerary order
   for (const s of tour.stops ?? []) {
     push(stopImage(s), s.label, stopFocal(s));
   }
-  // Then any extra gallery shots
+  // Then any local gallery
   for (const g of tour.gallery ?? []) {
     push(g, tour.title);
   }
@@ -708,61 +712,78 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
 /* ════════════════════════════════════════════════════════════════
  * 11 · REVIEWS / SOCIAL PROOF
  * ════════════════════════════════════════════════════════════ */
-const TOUR_REVIEWS = [
+const FALLBACK_REVIEWS = [
   {
-    quote:
+    title: "Quiet, private, perfectly paced",
+    text:
       "Felt like a private day with a Portuguese friend who happens to know everyone. Nothing rushed, nothing generic.",
-    name: "Sarah T.",
-    location: "San Francisco",
-    platform: "Google",
+    author: "Sarah T.",
+    date: null as string | null,
   },
   {
-    quote:
+    title: "Booked in five minutes",
+    text:
       "We booked in five minutes, confirmed instantly, and the day exceeded every expectation. Quiet luxury done properly.",
-    name: "Pierre L.",
-    location: "Paris",
-    platform: "TripAdvisor",
+    author: "Pierre L.",
+    date: null as string | null,
   },
   {
-    quote:
+    title: "Cared for, end to end",
+    text:
       "Our small group felt completely cared for. Beautiful pace, beautiful stops, beautiful people.",
-    name: "Akiko M.",
-    location: "Tokyo",
-    platform: "Trustpilot",
+    author: "Akiko M.",
+    date: null as string | null,
   },
 ];
 
-function ReviewsBlock() {
+function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
+  const hasReal = meta && meta.topReviews && meta.topReviews.length > 0;
+  const reviews = hasReal ? meta!.topReviews : FALLBACK_REVIEWS;
+  const headline =
+    meta && meta.reviewCount > 0
+      ? `${meta.rating.toFixed(1)} from ${meta.reviewCount} reviews`
+      : "Trusted by travelers worldwide";
+
   return (
     <section className="py-14 md:py-20 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)]">
       <div className="container-x max-w-6xl">
         <div className="text-center mb-10">
           <Eyebrow flank tone="onDark">What guests say</Eyebrow>
           <SectionTitle size="compact">
-            700+{" "}
-            <SectionTitle.Em className="text-[color:var(--gold-soft)]">5-star reviews</SectionTitle.Em>
+            <SectionTitle.Em className="text-[color:var(--gold-soft)]">{headline}</SectionTitle.Em>
           </SectionTitle>
+          {meta && meta.reviewCount > 0 && (
+            <p className="mt-3 inline-flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/70">
+              <span className="flex gap-0.5 text-[color:var(--gold)]">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <Star key={i} size={11} fill="currentColor" strokeWidth={0} />
+                ))}
+              </span>
+              Verified guests
+            </p>
+          )}
         </div>
 
         <div className="grid md:grid-cols-3 gap-5 md:gap-6">
-          {TOUR_REVIEWS.map((r) => (
+          {reviews.slice(0, 3).map((r, i) => (
             <figure
-              key={r.name}
+              key={(r.author ?? "") + i + (r.title ?? "")}
               className="bg-[color:var(--ivory)] text-[color:var(--charcoal)] p-6 md:p-7 flex flex-col"
             >
               <div className="flex gap-0.5 text-[color:var(--gold)] mb-4">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <Star key={i} size={13} fill="currentColor" />
+                {[0, 1, 2, 3, 4].map((j) => (
+                  <Star key={j} size={13} fill="currentColor" strokeWidth={0} />
                 ))}
               </div>
-              <blockquote className="serif text-[16px] md:text-[17px] leading-snug italic">
-                "{r.quote}"
+              {r.title && (
+                <h4 className="serif text-[15px] md:text-base mb-2 leading-snug">{r.title}</h4>
+              )}
+              <blockquote className="text-[14px] md:text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                "{r.text}"
               </blockquote>
               <figcaption className="mt-5 pt-4 border-t border-[color:var(--border)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                {r.name} · {r.location}
-                <span className="block mt-1 text-[color:var(--gold)] not-italic normal-case tracking-[0.18em]">
-                  via {r.platform}
-                </span>
+                {r.author}
+                {r.date && <span className="text-[color:var(--gold)] not-italic"> · {r.date}</span>}
               </figcaption>
             </figure>
           ))}
