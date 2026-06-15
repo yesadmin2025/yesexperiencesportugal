@@ -359,7 +359,7 @@ export const signatureTours: SignatureTour[] = [
     focal: "50% 45%",
     gallery: [imgArrabidaBoatCoves, imgArrabidaBoatPortinho, imgArrabidaBoatSesimbra, imgArrabidaBoatExtra],
     bookingUrl:
-      "https://yesexperiences.pt/tour/private-full-day-arrabida-and-sesimbra-with-included-boat-tour-from-lisbon/",
+      "https://www.viator.com/tours/Lisbon/Private-Full-Day-Arrabida-and-Sesimbra-with-Boat-Tour-from-Lisbon/d538-349639P12",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -850,6 +850,104 @@ export const signatureTours: SignatureTour[] = [
       styles: ["heritage"],
       highlights: ["ginjinha", "viewpoint"],
       pace: "balanced",
+      tier: "signature",
+    },
+  },
+  {
+    id: "roman-heritage-alentejo",
+    title: "Roman Heritage Wine Tour — Hidden Alentejo from Lisbon",
+    region: "Alentejo · Vidigueira",
+    duration: "Long Day",
+    durationHours: "10–12h",
+    priceFrom: 260,
+    theme: "Wine",
+    blurb:
+      "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
+    intro:
+      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a river beach almost no one knows. The slowest day in our catalogue. The most surprising.",
+    fitsBest: "Couples · wine lovers · curious travelers",
+    pace: ["Roman ruins", "Talha winery", "River beach"],
+    stops: [
+      {
+        label: "Villa Romana de São Cucufate",
+        story:
+          "One of Alentejo's most important Roman sites — a 2,000-year-old villa where wine was already being made in the 4th century.",
+        imageTheme: "evora-alentejo",
+        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
+        focal: "50% 45%",
+      },
+      {
+        label: "Centro Interpretativo do Vinho de Talha",
+        story:
+          "Portugal's most unique wine tradition — fermentation in clay amphorae, unchanged for two millennia. A small museum that opens the door to it.",
+        imageTheme: "evora-alentejo",
+        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/ff/caption.jpg",
+        focal: "50% 50%",
+      },
+      {
+        label: "Vila Alva",
+        story:
+          "A drive through a whitewashed village few visitors stop in — gentle, slow, deeply Alentejano.",
+        imageTheme: "evora-alentejo",
+        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/82/03/caption.jpg",
+        focal: "50% 55%",
+      },
+      {
+        label: "Adega do Mestre Daniel · XXVI Talhas",
+        story:
+          "A small family winery still pressing wine into Roman-style talhas. You taste straight from the clay, the way it has been done for centuries.",
+        imageTheme: "evora-alentejo",
+        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
+        focal: "50% 50%",
+      },
+      {
+        label: "Albergaria dos Fusos",
+        story:
+          "A quiet river beach surrounded by cork oaks — a slow finish before the drive back to Lisbon. (Warmer months only.)",
+        imageTheme: "evora-alentejo",
+        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f6/caption.jpg",
+        focal: "50% 55%",
+      },
+    ],
+    highlights: [
+      "Roman ruins of São Cucufate, with wine-press chambers still intact",
+      "Tasting straight from clay talhas at a tiny family cellar",
+      "A whitewashed Alentejo village few travelers see",
+      "Optional river-beach stop in warmer months",
+    ],
+    included: [
+      "Private guide and driver",
+      "Hotel pickup and drop-off in Lisbon",
+      "Roman site entrance",
+      "Talha winery tasting",
+      "All transport and tolls",
+    ],
+    idealFor: [
+      "Wine lovers who already know Setúbal and Évora",
+      "Couples wanting somewhere genuinely off the trail",
+      "History travelers chasing the Roman wine story",
+    ],
+    notes: [
+      "It's a long day (10–12h) — Vidigueira is ~2h south of Lisbon. The drive is the price of the silence at the other end.",
+      "The river-beach stop is seasonal — your guide swaps it for an extra winery in winter.",
+    ],
+    img: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
+    focal: "50% 45%",
+    gallery: [
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/ff/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/82/03/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f6/caption.jpg",
+    ],
+    bookingUrl:
+      "https://www.viator.com/tours/Lisbon/Exclusive-Roman-Wine-Tour-from-Lisbon-Hidden-Alentejo-and-Flavors/d538-349639P17",
+    seed: {
+      region: "alentejo",
+      duration: "fullday",
+      styles: ["wine", "heritage"],
+      highlights: ["tasting", "viewpoint"],
+      pace: "slow",
       tier: "signature",
     },
   },
