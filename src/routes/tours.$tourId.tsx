@@ -21,6 +21,7 @@ import {
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
+import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
 import { SimpleTailorForm } from "@/components/SimpleTailorForm";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
@@ -98,14 +99,15 @@ export const Route = createFileRoute("/tours/$tourId")({
 function TourDetailPage() {
   const { tour } = Route.useLoaderData();
   const { resolveImg } = useImportedTourImages();
+  const meta = getViatorMeta(tour.id);
 
   return (
     <SiteLayout>
       {/* ── 1 · HERO ─────────────────────────────────────────────── */}
-      <TourHero tour={tour} resolveImg={resolveImg} />
+      <TourHero tour={tour} resolveImg={resolveImg} meta={meta} />
 
       {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
-      <TrustStrip />
+      <TrustStrip meta={meta} />
 
       {/* ── 3 · SHORT INTRO ─────────────────────────────────────── */}
       <IntroBlock tour={tour} />
@@ -123,13 +125,13 @@ function TourDetailPage() {
       <IncludedAndIdeal tour={tour} />
 
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
-      <GalleryStrip tour={tour} resolveImg={resolveImg} />
+      <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} />
 
       {/* ── 10 · TAILOR THIS SIGNATURE ─────────────────────────── */}
       <TailorBlock tour={tour} />
 
       {/* ── 11 · REVIEWS ───────────────────────────────────────── */}
-      <ReviewsBlock />
+      <ReviewsBlock meta={meta} />
 
       {/* ── 12 · FINAL CTA ─────────────────────────────────────── */}
       <FinalCta tour={tour} />
