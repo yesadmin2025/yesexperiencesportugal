@@ -1883,6 +1883,19 @@ function StoryboardHandoff({
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState<boolean>(false);
 
+  // ---------- Cinematic composing beat ----------
+  // Brief overlay before the reveal renders, so the Signature feels
+  // composed (not toggled). Respects prefers-reduced-motion.
+  const [composing, setComposing] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
+  useEffect(() => {
+    if (!composing) return;
+    const t = window.setTimeout(() => setComposing(false), 1600);
+    return () => window.clearTimeout(t);
+  }, [composing]);
+
   // Max moments by rhythm — used by the reveal editor to allow ONE safe
   // extra moment when the user wants to enrich the day. Composition itself
   // remains conservative; this is user-controlled fine-tuning only.
