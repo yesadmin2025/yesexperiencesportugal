@@ -106,6 +106,10 @@ function TourDetailPage() {
   const { tour } = Route.useLoaderData();
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
+  const validation = validateTour(tour, meta);
+  useEffect(() => {
+    logTourValidation(validation);
+  }, [validation]);
 
   return (
     <SiteLayout>
