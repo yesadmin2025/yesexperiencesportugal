@@ -1883,6 +1883,19 @@ function StoryboardHandoff({
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState<boolean>(false);
 
+  // ---------- Cinematic composing beat ----------
+  // Brief overlay before the reveal renders, so the Signature feels
+  // composed (not toggled). Respects prefers-reduced-motion.
+  const [composing, setComposing] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
+  useEffect(() => {
+    if (!composing) return;
+    const t = window.setTimeout(() => setComposing(false), 1600);
+    return () => window.clearTimeout(t);
+  }, [composing]);
+
   // Max moments by rhythm — used by the reveal editor to allow ONE safe
   // extra moment when the user wants to enrich the day. Composition itself
   // remains conservative; this is user-controlled fine-tuning only.
@@ -2020,12 +2033,57 @@ function StoryboardHandoff({
     dnaChips.push(`From ${pickupCity}`);
   }
 
+  // ---------- Daypart timeline ----------
+  // Pure labels derived from stop count + rhythm — no invented facts.
+  const dayparts: string[] = (() => {
+    const n = editedStops.length;
+    if (n <= 2) return ["Morning", "Late afternoon"];
+    if (n === 3) return ["Morning", "Midday", "Late afternoon"];
+    if (n === 4) return ["Morning", "Midday", "Afternoon", "Sunset"];
+    return ["Morning", "Midday", "Afternoon", "Sunset", "Evening"];
+  })();
+
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
+      {/* ---------- Cinematic composing beat ---------- */}
+      {composing ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center px-8 text-center"
+          style={{
+            background: "var(--ivory)",
+            animation: "studioV3ReactionFade 1600ms ease-out both",
+          }}
+        >
+          <p
+            className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
+          </p>
+          <p
+            className="mt-5 text-[20px] sm:text-[24px] leading-[1.25] italic max-w-[420px]"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+            }}
+          >
+            {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you described.
+          </p>
+          <span
+            aria-hidden
+            className="mt-7 inline-block h-px w-10"
+            style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
+          />
+        </div>
+      ) : null}
+
       <BackLink onClick={onBack} />
+
 
       {/* ---------- 1. Hero — Your Signature ---------- */}
       <header
@@ -2065,7 +2123,28 @@ function StoryboardHandoff({
           className="mt-6 inline-block h-px w-10"
           style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
         />
+        {/* YES Approved trust mark */}
+        <div
+          className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+          style={{
+            border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)",
+            background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
+          }}
+          aria-label="YES Approved Signature"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden style={{ color: "var(--gold)" }}>
+            <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" strokeWidth="1.25" />
+            <path d="M4.5 8.4 7 10.8l4.5-5.2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span
+            className="text-[10px] uppercase tracking-[0.26em] font-semibold"
+            style={{ color: "var(--teal)" }}
+          >
+            YES Approved
+          </span>
+        </div>
       </header>
+
 
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
@@ -2112,8 +2191,44 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
+      {/* ---------- 2b. Daypart timeline ---------- */}
+      {dayparts.length > 0 ? (
+        <section
+          data-testid="studio-v3-daypart-timeline"
+          className="mt-8 max-w-[440px] mx-auto px-2"
+          aria-label="How the day unfolds across the day"
+        >
+          <div className="relative">
+            <span
+              aria-hidden
+              className="absolute left-2 right-2 top-[3px] h-px"
+              style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
+            />
+            <ol className="relative flex items-start justify-between gap-2">
+              {dayparts.map((label) => (
+                <li key={label} className="flex flex-col items-center text-center">
+                  <span
+                    aria-hidden
+                    className="block h-[7px] w-[7px] rounded-full"
+                    style={{ background: "var(--gold)" }}
+                  />
+                  <span
+                    className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                  >
+                    {label}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      ) : null}
+
+
 
       {/* ---------- 3. Story of the day ---------- */}
+
       <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
         <p
           className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
@@ -2432,21 +2547,27 @@ function StoryboardHandoff({
           >
             <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
           </p>
-          <ul className="mt-3 flex flex-wrap justify-center gap-1.5">
+          <ul className="mt-4 flex flex-wrap justify-center gap-1.5">
             {dnaChips.map((chip) => (
               <li
                 key={chip}
-                className="px-2.5 py-1 text-[11.5px] leading-[1.3] rounded-full"
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-[11.5px] leading-[1.3] rounded-full font-semibold"
                 style={{
-                  background: "color-mix(in oklab, var(--sand) 55%, transparent)",
-                  border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)",
-                  color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+                  background: "transparent",
+                  border: "1px solid color-mix(in oklab, var(--teal) 40%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
                 }}
               >
+                <span
+                  aria-hidden
+                  className="block h-1 w-1 rounded-full"
+                  style={{ background: "var(--gold)" }}
+                />
                 {chip}
               </li>
             ))}
           </ul>
+
         </section>
       ) : null}
 
