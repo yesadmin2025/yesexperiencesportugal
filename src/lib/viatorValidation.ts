@@ -129,7 +129,7 @@ export function validateTour(tour: SignatureTour, meta?: ViatorMeta): TourValida
 }
 
 export function validateAllTours(): TourValidation[] {
-  return SIGNATURE_TOURS.map((t) => validateTour(t, getViatorMeta(t.id)));
+  return signatureTours.map((t: SignatureTour) => validateTour(t, getViatorMeta(t.id)));
 }
 
 /**
