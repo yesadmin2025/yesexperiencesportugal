@@ -7,7 +7,7 @@
 //
 // Pure functions only — safe to import on client or server.
 
-import { SIGNATURE_TOURS, type SignatureTour } from "@/data/signatureTours";
+import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta, type ViatorStop } from "@/data/signatureToursViator";
 
 export type FieldDiff = {
