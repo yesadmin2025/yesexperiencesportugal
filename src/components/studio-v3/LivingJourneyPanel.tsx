@@ -113,6 +113,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
+  const originLabel = state.pickup ? getOptionLabel(PICKUPS, state.pickup) : null;
+
 
   // --- AI live story (Lovable AI) ---
   // Fires when at least feeling+companions exist. Debounced 700ms.
