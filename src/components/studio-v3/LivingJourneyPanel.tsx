@@ -261,6 +261,9 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               routeLine={routeLine}
               moments={moments}
               investmentLabel={investmentLabel}
+              storyText={aiStory?.text ?? null}
+              storyLoading={storyLoading}
+              storySource={aiStory?.source ?? null}
             />,
             document.body,
           )
