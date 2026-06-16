@@ -111,6 +111,77 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
 
+  // --- AI live story (Lovable AI) ---
+  // Fires when at least feeling+companions exist. Debounced 700ms.
+  // Re-fires on any meaningful state change. Graceful fallback if it errors.
+  const fetchStory = useServerFn(composeLiveStory);
+  const [aiStory, setAiStory] = useState<{ text: string; source: "ai" | "fallback" } | null>(null);
+  const [storyLoading, setStoryLoading] = useState(false);
+  const reqIdRef = useRef(0);
+  const storyKey = useMemo(() => {
+    return [
+      state.firstName ?? "",
+      state.feeling ?? "",
+      state.companions ?? "",
+      state.occasion ?? "",
+      state.pickup ?? "",
+      state.destinationIntent ?? "",
+      (state.interests ?? []).join("|"),
+      state.rhythm ?? "",
+      state.investment ?? "",
+    ].join("·");
+  }, [
+    state.firstName,
+    state.feeling,
+    state.companions,
+    state.occasion,
+    state.pickup,
+    state.destinationIntent,
+    state.interests,
+    state.rhythm,
+    state.investment,
+  ]);
+
+  useEffect(() => {
+    if (hidden) return;
+    if (!state.feeling || !state.companions) {
+      setAiStory(null);
+      return;
+    }
+    const id = ++reqIdRef.current;
+    setStoryLoading(true);
+    const t = setTimeout(() => {
+      fetchStory({
+        data: {
+          firstName: state.firstName ?? null,
+          feeling: state.feeling,
+          companions: state.companions,
+          occasion: state.occasion,
+          pickup: state.pickup,
+          destinationIntent: state.destinationIntent,
+          interests: state.interests,
+          rhythm: state.rhythm,
+          investment: state.investment,
+        },
+      })
+        .then((res) => {
+          if (id !== reqIdRef.current) return;
+          setAiStory(res);
+        })
+        .catch(() => {
+          if (id !== reqIdRef.current) return;
+          setAiStory(null);
+        })
+        .finally(() => {
+          if (id !== reqIdRef.current) return;
+          setStoryLoading(false);
+        });
+    }, 700);
+    return () => clearTimeout(t);
+    // storyKey captures the dependency surface deterministically.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storyKey, hidden]);
+
   // Escape closes drawer; lock body scroll while open.
   useEffect(() => {
     if (!open) return;
