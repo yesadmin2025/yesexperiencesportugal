@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { findTour, stopImage, stopFocal, type SignatureTour, type TourStop } from "@/data/signatureTours";
+import { getViatorMeta } from "@/data/signatureToursViator";
+import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
+import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
