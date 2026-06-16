@@ -100,6 +100,13 @@ export function bookableIncluded(
   return { items: tour.included ?? [], source: "internal" };
 }
 
+function computeSeverity(stops: FieldDiff, included: FieldDiff): Severity {
+  if (stops.onlyInternal.length > 0 || included.onlyInternal.length > 0) return "critical";
+  if (stops.onlyViator.length > 0) return "major";
+  if (included.onlyViator.length > 0) return "minor";
+  return "clean";
+}
+
 export function validateTour(tour: SignatureTour, meta?: ViatorMeta): TourValidation {
   const hasViatorMeta = !!meta;
   if (!meta) {
@@ -110,6 +117,7 @@ export function validateTour(tour: SignatureTour, meta?: ViatorMeta): TourValida
       stops: { matched: [], onlyInternal: tour.stops.map((s) => s.label), onlyViator: [] },
       included: { matched: [], onlyInternal: tour.included ?? [], onlyViator: [] },
       issueCount: 0,
+      severity: "clean",
     };
   }
 
@@ -117,6 +125,11 @@ export function validateTour(tour: SignatureTour, meta?: ViatorMeta): TourValida
   const viatorStops = meta.stops.filter((s: ViatorStop) => !s.passBy).map((s) => s.name);
   const stops = diffLists(tour.stops.map((s) => s.label), viatorStops);
   const included = diffLists(tour.included ?? [], meta.included ?? []);
+  const issueCount =
+    stops.onlyInternal.length +
+    stops.onlyViator.length +
+    included.onlyInternal.length +
+    included.onlyViator.length;
 
   return {
     tourId: tour.id,
@@ -124,11 +137,8 @@ export function validateTour(tour: SignatureTour, meta?: ViatorMeta): TourValida
     hasViatorMeta: true,
     stops,
     included,
-    issueCount:
-      stops.onlyInternal.length +
-      stops.onlyViator.length +
-      included.onlyInternal.length +
-      included.onlyViator.length,
+    issueCount,
+    severity: computeSeverity(stops, included),
   };
 }
 
