@@ -42,6 +42,7 @@ import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
 import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
@@ -218,6 +219,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
   path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminViatorValidationRoute = AdminViatorValidationRouteImport.update({
+  id: '/admin/viator-validation',
+  path: '/admin/viator-validation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
   id: '/admin/tour-link-audit',
   path: '/admin/tour-link-audit',
@@ -300,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
+  '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
@@ -345,6 +352,7 @@ export interface FileRoutesByTo {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
+  '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
@@ -391,6 +399,7 @@ export interface FileRoutesById {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
+  '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
@@ -438,6 +447,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
+    | '/admin/viator-validation'
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
@@ -483,6 +493,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
+    | '/admin/viator-validation'
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
@@ -528,6 +539,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/tour-link-audit'
+    | '/admin/viator-validation'
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
@@ -574,6 +586,7 @@ export interface RootRouteChildren {
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
+  AdminViatorValidationRoute: typeof AdminViatorValidationRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiImgRoute: typeof ApiImgRoute
   ApiVerifyHeroRoute: typeof ApiVerifyHeroRoute
@@ -819,6 +832,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/viator-validation': {
+      id: '/admin/viator-validation'
+      path: '/admin/viator-validation'
+      fullPath: '/admin/viator-validation'
+      preLoaderRoute: typeof AdminViatorValidationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/tour-link-audit': {
       id: '/admin/tour-link-audit'
       path: '/admin/tour-link-audit'
@@ -959,6 +979,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
+  AdminViatorValidationRoute: AdminViatorValidationRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiImgRoute: ApiImgRoute,
   ApiVerifyHeroRoute: ApiVerifyHeroRoute,

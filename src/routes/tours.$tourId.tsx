@@ -22,6 +22,12 @@ import {
   type TourStop,
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
+import {
+  bookableIncluded,
+  validateTour,
+  logTourValidation,
+} from "@/lib/viatorValidation";
+import { useEffect } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
 import { SimpleTailorForm } from "@/components/SimpleTailorForm";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
@@ -100,6 +106,10 @@ function TourDetailPage() {
   const { tour } = Route.useLoaderData();
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
+  const validation = validateTour(tour, meta);
+  useEffect(() => {
+    logTourValidation(validation);
+  }, [validation]);
 
   return (
     <SiteLayout>
@@ -122,7 +132,7 @@ function TourDetailPage() {
       <RouteMap tour={tour} />
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
-      <IncludedAndIdeal tour={tour} />
+      <IncludedAndIdeal tour={tour} meta={meta} />
 
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} />
@@ -526,13 +536,19 @@ function RouteMap({ tour }: { tour: SignatureTour }) {
 /* ════════════════════════════════════════════════════════════════
  * 7 · INCLUDED + IDEAL FOR
  * ════════════════════════════════════════════════════════════ */
-function IncludedAndIdeal({ tour }: { tour: SignatureTour }) {
+function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
+  const inc = bookableIncluded(tour, meta);
   return (
     <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)]">
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
         <Block icon={<Check size={14} />} title="What's included">
+          {inc.source === "viator" && (
+            <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+              Verified against Viator product page
+            </p>
+          )}
           <ul className="space-y-3 text-[14.5px] leading-relaxed">
-            {(tour.included ?? []).map((h) => (
+            {inc.items.map((h) => (
               <li key={h} className="flex gap-2.5">
                 <Check
                   size={15}

@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { findTour, stopImage, stopFocal, type SignatureTour, type TourStop } from "@/data/signatureTours";
+import { getViatorMeta } from "@/data/signatureToursViator";
+import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
+import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -99,6 +102,12 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
  * ──────────────────────────────────────────────────────────── */
 function TailorPage() {
   const { tour } = Route.useLoaderData();
+  const meta = getViatorMeta(tour.id);
+  const validation = useMemo(() => validateTour(tour, meta), [tour, meta]);
+  const inc = useMemo(() => bookableIncluded(tour, meta), [tour, meta]);
+  useEffect(() => {
+    logTourValidation(validation);
+  }, [validation]);
 
   // ─── State (only adjustable details) ────────────────────────
   const [date, setDate] = useState("");
@@ -110,7 +119,7 @@ function TailorPage() {
 
   // Tour-aware add-ons — only those plausible for this tour
   const addonOptions = useMemo(() => buildAddons(tour), [tour]);
-  const lunchOptions = useMemo(() => buildLunch(tour), [tour]);
+  const lunchOptions = useMemo(() => buildLunch(tour, inc.items), [tour, inc.items]);
   const [addons, setAddons] = useState<Set<string>>(new Set(["pickup"]));
   const [lunch, setLunch] = useState<string>(lunchOptions[0]?.id ?? "");
 
@@ -588,6 +597,26 @@ function TailorPage() {
 
             {/* ─── 4 · LIVE SUMMARY (sticky on desktop) ─── */}
             <aside className="lg:sticky lg:top-24">
+              {import.meta.env?.DEV && validation.hasViatorMeta && validation.issueCount > 0 && (
+                <div className="mb-3 border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/40 p-3 text-[12px] text-[color:var(--charcoal)]">
+                  <p className="font-semibold uppercase tracking-[0.2em] text-[10px] text-[color:var(--charcoal-soft)] mb-1">
+                    Viator validation · {validation.issueCount} mismatch{validation.issueCount === 1 ? "" : "es"}
+                  </p>
+                  {validation.stops.onlyInternal.length > 0 && (
+                    <p>Stops not on Viator: {validation.stops.onlyInternal.join(", ")}</p>
+                  )}
+                  {validation.stops.onlyViator.length > 0 && (
+                    <p>Stops missing from tour: {validation.stops.onlyViator.join(", ")}</p>
+                  )}
+                  {validation.included.onlyInternal.length > 0 && (
+                    <p>Inclusions not on Viator: {validation.included.onlyInternal.join(", ")}</p>
+                  )}
+                  {validation.included.onlyViator.length > 0 && (
+                    <p>Inclusions missing from tour: {validation.included.onlyViator.join(", ")}</p>
+                  )}
+                  <Link to="/admin/viator-validation" className="mt-1 inline-block underline">Open full report →</Link>
+                </div>
+              )}
               <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
                 <div className="px-5 py-4 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)] flex items-center justify-between">
                   <Eyebrow tone="onDark">Live summary</Eyebrow>
@@ -737,9 +766,13 @@ function buildAddons(tour: SignatureTour): { id: string; label: string; priceDel
   return out;
 }
 
-function buildLunch(tour: SignatureTour): { id: string; label: string }[] {
+function buildLunch(
+  tour: SignatureTour,
+  bookableIncludedItems?: string[],
+): { id: string; label: string }[] {
   const text = (tour.title + " " + tour.intro + " " + tour.blurb).toLowerCase();
-  const includesLunch = (tour.included ?? []).some((i) => /lunch/i.test(i));
+  const includedList = bookableIncludedItems ?? tour.included ?? [];
+  const includesLunch = includedList.some((i) => /lunch/i.test(i));
   if (!/lunch|picnic|meal|seafood|tasting/.test(text) && !includesLunch) return [];
   return [
     { id: "included", label: includesLunch ? "Keep included lunch" : "Add a local lunch" },
