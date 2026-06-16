@@ -60,6 +60,12 @@ import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgFatimaObidos from "@/assets/tours/fatima-nazare-obidos/obidos.jpg";
 import imgFatimaExtra from "@/assets/tours/fatima-nazare-obidos/extra.jpg";
 
+import imgRomanHero from "@/assets/tours/roman-heritage-alentejo/hero.jpg";
+import imgRomanRuins from "@/assets/tours/roman-heritage-alentejo/ruins.jpg";
+import imgRomanVillage from "@/assets/tours/roman-heritage-alentejo/village.jpg";
+import imgRomanWinery from "@/assets/tours/roman-heritage-alentejo/winery.jpg";
+import imgRomanRiver from "@/assets/tours/roman-heritage-alentejo/river.jpg";
+
 export type TourSeed = {
   region?: string;
   duration?: string;
@@ -79,6 +85,7 @@ export type StopTheme =
   | "azeitao-cheese"
   | "evora-alentejo"
   | "fatima-nazare-obidos"
+  | "roman-heritage-alentejo"
   | "sintra-cascais"
   | "tiles-workshop"
   | "tomar-coimbra"
@@ -872,40 +879,40 @@ export const signatureTours: SignatureTour[] = [
         label: "Villa Romana de São Cucufate",
         story:
           "One of Alentejo's most important Roman sites — a 2,000-year-old villa where wine was already being made in the 4th century.",
-        imageTheme: "evora-alentejo",
-        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
+        imageTheme: "roman-heritage-alentejo",
+        image: imgRomanRuins,
         focal: "50% 45%",
       },
       {
         label: "Centro Interpretativo do Vinho de Talha",
         story:
           "Portugal's most unique wine tradition — fermentation in clay amphorae, unchanged for two millennia. A small museum that opens the door to it.",
-        imageTheme: "evora-alentejo",
-        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/ff/caption.jpg",
+        imageTheme: "roman-heritage-alentejo",
+        image: imgRomanWinery,
         focal: "50% 50%",
       },
       {
         label: "Vila Alva",
         story:
           "A drive through a whitewashed village few visitors stop in — gentle, slow, deeply Alentejano.",
-        imageTheme: "evora-alentejo",
-        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/82/03/caption.jpg",
+        imageTheme: "roman-heritage-alentejo",
+        image: imgRomanVillage,
         focal: "50% 55%",
       },
       {
         label: "Adega do Mestre Daniel · XXVI Talhas",
         story:
           "A small family winery still pressing wine into Roman-style talhas. You taste straight from the clay, the way it has been done for centuries.",
-        imageTheme: "evora-alentejo",
-        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
+        imageTheme: "roman-heritage-alentejo",
+        image: imgRomanWinery,
         focal: "50% 50%",
       },
       {
         label: "Albergaria dos Fusos",
         story:
           "A quiet river beach surrounded by cork oaks — a slow finish before the drive back to Lisbon. (Warmer months only.)",
-        imageTheme: "evora-alentejo",
-        image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f6/caption.jpg",
+        imageTheme: "roman-heritage-alentejo",
+        image: imgRomanRiver,
         focal: "50% 55%",
       },
     ],
@@ -931,15 +938,9 @@ export const signatureTours: SignatureTour[] = [
       "It's a long day (10–12h) — Vidigueira is ~2h south of Lisbon. The drive is the price of the silence at the other end.",
       "The river-beach stop is seasonal — your guide swaps it for an extra winery in winter.",
     ],
-    img: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
+    img: imgRomanHero,
     focal: "50% 45%",
-    gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/ff/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/82/03/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f6/caption.jpg",
-    ],
+    gallery: [imgRomanHero, imgRomanRuins, imgRomanVillage, imgRomanWinery, imgRomanRiver],
     bookingUrl:
       "https://www.viator.com/tours/Lisbon/Exclusive-Roman-Wine-Tour-from-Lisbon-Hidden-Alentejo-and-Flavors/d538-349639P17",
     seed: {
@@ -968,6 +969,7 @@ export const STOP_THEME_IMG: Record<StopTheme, string> = {
   "azeitao-cheese": imgAzeitaoCheeseHero,
   "evora-alentejo": imgEvoraAlentejo,
   "fatima-nazare-obidos": imgFatimaNazareObidosHero,
+  "roman-heritage-alentejo": imgRomanHero,
   "sintra-cascais": imgSintraCascaisHero,
   "tiles-workshop": imgTilesWorkshop,
   "tomar-coimbra": imgTomarCoimbraHero,
