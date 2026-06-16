@@ -30,6 +30,7 @@ import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
+import { getViatorMeta } from "@/data/signatureToursViator";
 
 /* ──────────────────────────────────────────────────────────────────
  * Featured Signature tours — exactly 4 real tours, in display order.
@@ -97,19 +98,24 @@ const HERO_FILM_PLAYBACK_RATE = 0.6;
 const signatures = FEATURED_TOUR_IDS
   .filter((id) => isValidTourId(id))
   .map((id) => signatureTours.find((t) => t.id === id)!)
-  .map((t) => ({
-    id: t.id,
-    title: t.title,
-    img: t.img,
-    line: t.blurb,
-    pace: t.pace,
-    region: t.region,
-    priceFrom: t.priceFrom,
-    durationHours: t.durationHours,
-    // First 3 real highlights from the matching Viator-sourced catalog.
-    // Never fabricated — sourced from `signatureTours[].highlights`.
-    highlights: t.highlights.slice(0, 3),
-  }));
+  .map((t) => {
+    const meta = getViatorMeta(t.id);
+    return {
+      id: t.id,
+      title: t.title,
+      img: t.img,
+      line: t.blurb,
+      pace: t.pace,
+      region: t.region,
+      priceFrom: t.priceFrom,
+      durationHours: t.durationHours,
+      rating: meta?.rating ?? null,
+      reviewCount: meta?.reviewCount ?? 0,
+      // First 3 real highlights from the matching Viator-sourced catalog.
+      // Never fabricated — sourced from `signatureTours[].highlights`.
+      highlights: t.highlights.slice(0, 3),
+    };
+  });
 
 /* ──────────────────────────────────────────────────────────────────
  * Moments / Groups preview — Multi-day, Proposals, Celebrations,
@@ -729,8 +735,15 @@ function HomePage() {
                           </span>
                         </span>
                       </div>
-                      {/* Bottom: real title + real duration */}
+                      {/* Bottom: real title + meta with rating */}
                       <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">
+                        {t.rating && t.reviewCount > 0 && (
+                          <span className="mb-2 inline-flex items-center gap-1.5 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-2.5 py-1 text-[11px] rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+                            <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
+                            <span className="font-semibold tracking-tight leading-none">{t.rating.toFixed(1)}</span>
+                            <span className="text-[color:var(--charcoal-soft)] leading-none">· {t.reviewCount} reviews</span>
+                          </span>
+                        )}
                         <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance">
                           {t.title}
                         </h3>
