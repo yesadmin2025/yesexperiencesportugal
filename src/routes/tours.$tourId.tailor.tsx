@@ -597,6 +597,26 @@ function TailorPage() {
 
             {/* ─── 4 · LIVE SUMMARY (sticky on desktop) ─── */}
             <aside className="lg:sticky lg:top-24">
+              {import.meta.env?.DEV && validation.hasViatorMeta && validation.issueCount > 0 && (
+                <div className="mb-3 border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/40 p-3 text-[12px] text-[color:var(--charcoal)]">
+                  <p className="font-semibold uppercase tracking-[0.2em] text-[10px] text-[color:var(--charcoal-soft)] mb-1">
+                    Viator validation · {validation.issueCount} mismatch{validation.issueCount === 1 ? "" : "es"}
+                  </p>
+                  {validation.stops.onlyInternal.length > 0 && (
+                    <p>Stops not on Viator: {validation.stops.onlyInternal.join(", ")}</p>
+                  )}
+                  {validation.stops.onlyViator.length > 0 && (
+                    <p>Stops missing from tour: {validation.stops.onlyViator.join(", ")}</p>
+                  )}
+                  {validation.included.onlyInternal.length > 0 && (
+                    <p>Inclusions not on Viator: {validation.included.onlyInternal.join(", ")}</p>
+                  )}
+                  {validation.included.onlyViator.length > 0 && (
+                    <p>Inclusions missing from tour: {validation.included.onlyViator.join(", ")}</p>
+                  )}
+                  <Link to="/admin/viator-validation" className="mt-1 inline-block underline">Open full report →</Link>
+                </div>
+              )}
               <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
                 <div className="px-5 py-4 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)] flex items-center justify-between">
                   <Eyebrow tone="onDark">Live summary</Eyebrow>
