@@ -2547,21 +2547,27 @@ function StoryboardHandoff({
           >
             <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
           </p>
-          <ul className="mt-3 flex flex-wrap justify-center gap-1.5">
+          <ul className="mt-4 flex flex-wrap justify-center gap-1.5">
             {dnaChips.map((chip) => (
               <li
                 key={chip}
-                className="px-2.5 py-1 text-[11.5px] leading-[1.3] rounded-full"
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-[11.5px] leading-[1.3] rounded-full font-semibold"
                 style={{
-                  background: "color-mix(in oklab, var(--sand) 55%, transparent)",
-                  border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)",
-                  color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+                  background: "transparent",
+                  border: "1px solid color-mix(in oklab, var(--teal) 40%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
                 }}
               >
+                <span
+                  aria-hidden
+                  className="block h-1 w-1 rounded-full"
+                  style={{ background: "var(--gold)" }}
+                />
                 {chip}
               </li>
             ))}
           </ul>
+
         </section>
       ) : null}
 
