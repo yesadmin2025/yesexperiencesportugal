@@ -2191,8 +2191,47 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
+      {/* ---------- 2b. Daypart timeline ---------- */}
+      {dayparts.length > 0 ? (
+        <section
+          data-testid="studio-v3-daypart-timeline"
+          className="mt-8 max-w-[520px] mx-auto"
+          aria-label="How the day unfolds across the day"
+        >
+          <ol className="flex items-center justify-between gap-2 px-2">
+            {dayparts.map((label, i) => (
+              <li key={label} className="flex-1 flex flex-col items-center text-center">
+                <span
+                  aria-hidden
+                  className="block h-1.5 w-1.5 rounded-full"
+                  style={{ background: "var(--gold)" }}
+                />
+                <span
+                  className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                >
+                  {label}
+                </span>
+                {i < dayparts.length - 1 ? (
+                  <span
+                    aria-hidden
+                    className="absolute"
+                    style={{ display: "none" }}
+                  />
+                ) : null}
+              </li>
+            ))}
+          </ol>
+          <div
+            aria-hidden
+            className="mx-auto mt-[-15px] h-px max-w-[420px]"
+            style={{ background: "color-mix(in oklab, var(--gold) 32%, transparent)" }}
+          />
+        </section>
+      ) : null}
 
       {/* ---------- 3. Story of the day ---------- */}
+
       <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
         <p
           className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
