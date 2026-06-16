@@ -132,7 +132,7 @@ function TourDetailPage() {
       <RouteMap tour={tour} />
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
-      <IncludedAndIdeal tour={tour} />
+      <IncludedAndIdeal tour={tour} meta={meta} />
 
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} />
