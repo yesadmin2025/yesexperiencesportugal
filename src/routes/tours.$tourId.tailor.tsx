@@ -746,9 +746,13 @@ function buildAddons(tour: SignatureTour): { id: string; label: string; priceDel
   return out;
 }
 
-function buildLunch(tour: SignatureTour): { id: string; label: string }[] {
+function buildLunch(
+  tour: SignatureTour,
+  bookableIncludedItems?: string[],
+): { id: string; label: string }[] {
   const text = (tour.title + " " + tour.intro + " " + tour.blurb).toLowerCase();
-  const includesLunch = (tour.included ?? []).some((i) => /lunch/i.test(i));
+  const includedList = bookableIncludedItems ?? tour.included ?? [];
+  const includesLunch = includedList.some((i) => /lunch/i.test(i));
   if (!/lunch|picnic|meal|seafood|tasting/.test(text) && !includesLunch) return [];
   return [
     { id: "included", label: includesLunch ? "Keep included lunch" : "Add a local lunch" },
