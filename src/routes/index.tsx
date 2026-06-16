@@ -735,8 +735,15 @@ function HomePage() {
                           </span>
                         </span>
                       </div>
-                      {/* Bottom: real title + real duration */}
+                      {/* Bottom: real title + meta with rating */}
                       <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">
+                        {t.rating && t.reviewCount > 0 && (
+                          <span className="mb-2 inline-flex items-center gap-1.5 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-2.5 py-1 text-[11px] rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+                            <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
+                            <span className="font-semibold tracking-tight leading-none">{t.rating.toFixed(1)}</span>
+                            <span className="text-[color:var(--charcoal-soft)] leading-none">· {t.reviewCount} reviews</span>
+                          </span>
+                        )}
                         <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance">
                           {t.title}
                         </h3>
