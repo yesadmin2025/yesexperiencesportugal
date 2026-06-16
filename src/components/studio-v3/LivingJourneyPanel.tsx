@@ -306,12 +306,39 @@ function JourneyDraftDrawer({
   dna,
   routeLine,
   moments,
+  originLabel,
+  paceLabel,
   investmentLabel,
   storyText,
   storyLoading,
   storySource,
 }: DrawerProps) {
-  const pinCount = Math.max(0, Math.min(4, moments.length));
+  const totalPins = Math.max(0, Math.min(4, moments.length));
+
+  // Cinematic pin reveal — pins draw in sequence when the drawer opens,
+  // giving the "journey being drawn in real time" sensation. Respects
+  // prefers-reduced-motion: shows all pins immediately.
+  const [activePins, setActivePins] = useState(() => {
+    if (typeof window === "undefined") return totalPins;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? totalPins : 0;
+  });
+  useEffect(() => {
+    if (totalPins === 0) return;
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setActivePins(totalPins);
+      return;
+    }
+    setActivePins(0);
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    for (let i = 1; i <= totalPins; i += 1) {
+      timers.push(setTimeout(() => setActivePins(i), 280 + i * 360));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [totalPins, moments.join("|")]);
+
 
   return (
     <div
