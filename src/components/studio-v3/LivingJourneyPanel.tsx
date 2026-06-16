@@ -19,9 +19,10 @@
 //   - No pill until at least one meaningful DNA choice exists.
 //   - No route placeholder paragraphs, no investment placeholder.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   composeJourneyTitle,
   getOptionLabel,
@@ -35,6 +36,7 @@ import {
   RHYTHMS,
   type StudioV3State,
 } from "./types";
+import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
 
 interface LivingJourneyPanelProps {
   state: StudioV3State;
