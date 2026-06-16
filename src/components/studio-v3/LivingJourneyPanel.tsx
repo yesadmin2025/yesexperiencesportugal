@@ -271,6 +271,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               dna={dna}
               routeLine={routeLine}
               moments={moments}
+              originLabel={originLabel}
+              paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
               investmentLabel={investmentLabel}
               storyText={aiStory?.text ?? null}
               storyLoading={storyLoading}
@@ -289,11 +291,14 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
+  originLabel: string | null;
+  paceLabel: string | null;
   investmentLabel: string | null;
   storyText: string | null;
   storyLoading: boolean;
   storySource: "ai" | "fallback" | null;
 }
+
 
 function JourneyDraftDrawer({
   onClose,
