@@ -1338,6 +1338,22 @@ export function filterDestinationIntents(
  * what's already known. Used by getNextPhase to skip irrelevant phases.
  */
 export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boolean {
+  // Fast path — traveller chose "Construir rápido" on the intro.
+  // We skip every optional refinement phase. The remaining required path is:
+  //   feeling → destination → who → pickup → guests → interests → rhythm → map → storyboard
+  // Downstream curation already handles null occasion / null investment /
+  // empty considerations / null language gracefully (no invented facts).
+  if (state.pathMode === "fast") {
+    if (
+      phase === "occasion" ||
+      phase === "date" ||
+      phase === "considerations" ||
+      phase === "language" ||
+      phase === "investment"
+    ) {
+      return false;
+    }
+  }
   switch (phase) {
     case "guests": {
       // Skip when guests is already known (inferred from companions/occasion
@@ -1350,6 +1366,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
       return true;
   }
 }
+
 
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
