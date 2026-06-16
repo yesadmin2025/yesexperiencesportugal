@@ -708,33 +708,43 @@ function HomePage() {
                     <Link
                       to="/tours/$tourId"
                       params={{ tourId: t.id }}
-                      className="he-image-cinema he-image-rise relative block aspect-[4/5] overflow-hidden bg-[color:var(--card)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                      className="he-image-cinema he-image-rise relative block aspect-[4/5] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                       aria-label={`Open ${t.title}`}
                     >
+                      {/* Skeleton shimmer — sits behind <img>, naturally hidden once the image paints.
+                          Fixed aspect-[4/5] on the parent guarantees zero layout shift while the image
+                          (and the pills layered above it) settle in. */}
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 bg-[linear-gradient(110deg,var(--sand)_8%,rgba(255,255,255,0.55)_18%,var(--sand)_33%)] bg-[length:200%_100%] motion-safe:animate-[shimmer_1.6s_ease-in-out_infinite]"
+                      />
                       <img
                         src={t.img}
                         alt={t.title}
                         loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
+                        decoding="async"
+                        className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
                       />
+                      {/* Two-sided gradient — protects pills (top) and title (bottom) on both
+                          bright skies and dark hero shots. Tuned to clear WCAG AA over Viator imagery. */}
                       <div
                         aria-hidden="true"
-                        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent"
+                        className="absolute inset-0 z-[2] bg-[linear-gradient(to_bottom,rgba(0,0,0,0.42)_0%,rgba(0,0,0,0.08)_22%,rgba(0,0,0,0.08)_55%,rgba(0,0,0,0.72)_100%)]"
                       />
                       {/* Top row: region + rating + price — social proof and value signal above the fold */}
-                      <div className="absolute inset-x-0 top-0 p-4 md:p-5 flex items-start justify-between gap-2">
-                        <span className="shrink-0 text-[10px] uppercase tracking-[0.28em] text-white/85 drop-shadow-sm">
+                      <div className="absolute inset-x-0 top-0 z-[3] p-4 md:p-5 flex items-start justify-between gap-2">
+                        <span className="min-w-0 truncate text-[11px] uppercase tracking-[0.26em] font-medium text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
                           {t.region}
                         </span>
                         <div className="flex items-center gap-1.5 shrink-0">
                           {t.rating && t.reviewCount > 0 && (
-                            <span className="inline-flex items-center gap-1 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-2 py-1 text-[10.5px] rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+                            <span className="inline-flex items-center gap-1 bg-white text-[color:var(--charcoal)] px-2 py-1 text-[11px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
                               <Star size={10} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
                               <span className="font-semibold tracking-tight leading-none">{t.rating.toFixed(1)}</span>
                               <span className="text-[color:var(--charcoal-soft)] leading-none">({t.reviewCount})</span>
                             </span>
                           )}
-                          <span className="inline-flex items-baseline gap-1 rounded-full bg-[color:var(--ivory)]/95 px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+                          <span className="inline-flex items-baseline gap-1 rounded-full bg-white px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
                             <span className="text-[10px] uppercase tracking-[0.2em] font-semibold">
                               From
                             </span>
@@ -744,17 +754,19 @@ function HomePage() {
                           </span>
                         </div>
                       </div>
-                      {/* Bottom: title + meta — clean editorial stack with breathing room */}
-                      <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">
-                        <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+                      {/* Bottom: title + meta — clean editorial stack with breathing room.
+                          line-clamp-2 keeps long Signature names ("Roman Heritage Wine & Hidden
+                          Alentejo") tidy on narrow widths without pushing the meta row off-card. */}
+                      <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
+                        <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance line-clamp-2 [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
                           {t.title}
                         </h3>
                         <div className="mt-3 flex items-center gap-2">
-                          <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white/85">
+                          <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
                             {t.durationHours}
                           </span>
-                          <span className="inline-block w-px h-3 bg-white/40" aria-hidden="true" />
-                          <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white/85">
+                          <span className="inline-block w-px h-3 bg-white/60" aria-hidden="true" />
+                          <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
                             Private
                           </span>
                         </div>
