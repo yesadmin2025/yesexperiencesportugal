@@ -10,7 +10,7 @@ import {
   Heart,
   Shield,
   Star,
-  Users,
+  
 } from "lucide-react";
 import {
   signatureTours,
