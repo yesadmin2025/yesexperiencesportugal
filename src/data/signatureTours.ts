@@ -247,6 +247,7 @@ export const signatureTours: SignatureTour[] = [
       { label: "Praia das Bicas", story: "Wild surf beach south of Sesimbra — a candidate picnic spot depending on wind.", imageTheme: "wild-beaches-picnic" },
       { label: "Praia do Meco", story: "Long Atlantic sand — another candidate for the picnic, the guide chooses on the day.", imageTheme: "wild-beaches-picnic" },
       { label: "Castelo de Sesimbra", story: "Medieval castle high above the fishing town — Atlantic views in every direction.", imageTheme: "wild-beaches-picnic" },
+      { label: "Sesimbra", story: "End in the fishing village — a quiet stroll along the harbour at dusk.", imageTheme: "wild-beaches-picnic" },
     ],
     highlights: [
       "Private coastal route through Arrábida Natural Park",
