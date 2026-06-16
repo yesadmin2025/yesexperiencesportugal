@@ -279,6 +279,9 @@ interface DrawerProps {
   routeLine: string | null;
   moments: string[];
   investmentLabel: string | null;
+  storyText: string | null;
+  storyLoading: boolean;
+  storySource: "ai" | "fallback" | null;
 }
 
 function JourneyDraftDrawer({
@@ -288,6 +291,9 @@ function JourneyDraftDrawer({
   routeLine,
   moments,
   investmentLabel,
+  storyText,
+  storyLoading,
+  storySource,
 }: DrawerProps) {
   const pinCount = Math.max(0, Math.min(4, moments.length));
 
