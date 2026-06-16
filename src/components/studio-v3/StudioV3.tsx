@@ -612,23 +612,24 @@ export function StudioV3() {
   const back = useCallback((prev: StudioV3Phase) => {
     setReaction(null);
     setExiting(true);
-    // Walk backwards over phases that aren't relevant in the current mode
-    // (Fast path skips occasion / date / considerations / language /
-    // investment). Without this, back-link targets land on a dead phase.
-    let target = prev;
-    setState((sCurrent) => {
+    setState((s) => {
+      // Walk backwards over phases that aren't relevant in the current mode
+      // (Fast path skips occasion / date / considerations / language /
+      // investment). Without this, back-link targets land on a dead phase.
+      let target = prev;
       let idx = PHASE_ORDER.indexOf(target);
-      while (idx > 0 && !isPhaseRelevant(target, sCurrent)) {
+      while (idx > 0 && !isPhaseRelevant(target, s)) {
         idx -= 1;
         target = PHASE_ORDER[idx];
       }
-      return sCurrent;
+      window.setTimeout(() => {
+        setState((s2) => ({ ...s2, phase: target }));
+        setExiting(false);
+      }, 280);
+      return s;
     });
-    window.setTimeout(() => {
-      setState((s) => ({ ...s, phase: target }));
-      setExiting(false);
-    }, 280);
   }, []);
+
 
 
   /**
