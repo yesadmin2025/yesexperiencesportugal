@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-16T21:26:40.311Z",
-  "filesScanned": 355,
+  "generatedAt": "2026-06-16T22:15:59.514Z",
+  "filesScanned": 356,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 234,
+    "total": 231,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 146
+    "mismatch": 143
   },
   "findings": [
     {
@@ -1462,33 +1462,6 @@
       "raw": "#b3261e",
       "normalized": "#b3261e",
       "snippet": "style={{ color: \"#b3261e\" }}",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/studio-v3/LivingJourneyPanel.tsx",
-      "line": 297,
-      "col": 92,
-      "raw": "#0c1a1d",
-      "normalized": "#0c1a1d",
-      "snippet": "\"radial-gradient(120% 80% at 20% 20%, color-mix(in oklab, var(--teal) 55%, #0c1a1d) 0%, #0c1a1d 65%)\",",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/studio-v3/LivingJourneyPanel.tsx",
-      "line": 297,
-      "col": 105,
-      "raw": "#0c1a1d",
-      "normalized": "#0c1a1d",
-      "snippet": "\"radial-gradient(120% 80% at 20% 20%, color-mix(in oklab, var(--teal) 55%, #0c1a1d) 0%, #0c1a1d 65%)\",",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/studio-v3/LivingJourneyPanel.tsx",
-      "line": 435,
-      "col": 88,
-      "raw": "#d8c089",
-      "normalized": "#d8c089",
-      "snippet": "<circle cx={origin.x} cy={origin.y} r=\"3.2\" fill=\"none\" stroke=\"var(--gold-soft, #d8c089)\" strokeOpacity=\"0.5\" strokeWidth=\"0.4\" />",
       "status": "mismatch"
     },
     {
