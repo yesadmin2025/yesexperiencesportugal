@@ -102,6 +102,12 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
  * ──────────────────────────────────────────────────────────── */
 function TailorPage() {
   const { tour } = Route.useLoaderData();
+  const meta = getViatorMeta(tour.id);
+  const validation = useMemo(() => validateTour(tour, meta), [tour, meta]);
+  const inc = useMemo(() => bookableIncluded(tour, meta), [tour, meta]);
+  useEffect(() => {
+    logTourValidation(validation);
+  }, [validation]);
 
   // ─── State (only adjustable details) ────────────────────────
   const [date, setDate] = useState("");
@@ -113,7 +119,7 @@ function TailorPage() {
 
   // Tour-aware add-ons — only those plausible for this tour
   const addonOptions = useMemo(() => buildAddons(tour), [tour]);
-  const lunchOptions = useMemo(() => buildLunch(tour), [tour]);
+  const lunchOptions = useMemo(() => buildLunch(tour, inc.items), [tour, inc.items]);
   const [addons, setAddons] = useState<Set<string>>(new Set(["pickup"]));
   const [lunch, setLunch] = useState<string>(lunchOptions[0]?.id ?? "");
 
