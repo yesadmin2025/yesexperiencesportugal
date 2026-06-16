@@ -2033,6 +2033,16 @@ function StoryboardHandoff({
     dnaChips.push(`From ${pickupCity}`);
   }
 
+  // ---------- Daypart timeline ----------
+  // Pure labels derived from stop count + rhythm — no invented facts.
+  const dayparts: string[] = (() => {
+    const n = editedStops.length;
+    if (n <= 2) return ["Morning", "Late afternoon"];
+    if (n === 3) return ["Morning", "Midday", "Late afternoon"];
+    if (n === 4) return ["Morning", "Midday", "Afternoon", "Sunset"];
+    return ["Morning", "Midday", "Afternoon", "Sunset", "Evening"];
+  })();
+
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
