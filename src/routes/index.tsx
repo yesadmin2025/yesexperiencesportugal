@@ -30,6 +30,7 @@ import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
+import { getViatorMeta } from "@/data/signatureToursViator";
 
 /* ──────────────────────────────────────────────────────────────────
  * Featured Signature tours — exactly 4 real tours, in display order.
@@ -97,19 +98,24 @@ const HERO_FILM_PLAYBACK_RATE = 0.6;
 const signatures = FEATURED_TOUR_IDS
   .filter((id) => isValidTourId(id))
   .map((id) => signatureTours.find((t) => t.id === id)!)
-  .map((t) => ({
-    id: t.id,
-    title: t.title,
-    img: t.img,
-    line: t.blurb,
-    pace: t.pace,
-    region: t.region,
-    priceFrom: t.priceFrom,
-    durationHours: t.durationHours,
-    // First 3 real highlights from the matching Viator-sourced catalog.
-    // Never fabricated — sourced from `signatureTours[].highlights`.
-    highlights: t.highlights.slice(0, 3),
-  }));
+  .map((t) => {
+    const meta = getViatorMeta(t.id);
+    return {
+      id: t.id,
+      title: t.title,
+      img: t.img,
+      line: t.blurb,
+      pace: t.pace,
+      region: t.region,
+      priceFrom: t.priceFrom,
+      durationHours: t.durationHours,
+      rating: meta?.rating ?? null,
+      reviewCount: meta?.reviewCount ?? 0,
+      // First 3 real highlights from the matching Viator-sourced catalog.
+      // Never fabricated — sourced from `signatureTours[].highlights`.
+      highlights: t.highlights.slice(0, 3),
+    };
+  });
 
 /* ──────────────────────────────────────────────────────────────────
  * Moments / Groups preview — Multi-day, Proposals, Celebrations,
