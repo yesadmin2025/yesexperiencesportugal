@@ -2048,7 +2048,42 @@ function StoryboardHandoff({
       className="relative w-full max-w-[640px] px-5 pb-12"
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
+      {/* ---------- Cinematic composing beat ---------- */}
+      {composing ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center px-8 text-center"
+          style={{
+            background: "var(--ivory)",
+            animation: "studioV3ReactionFade 1600ms ease-out both",
+          }}
+        >
+          <p
+            className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
+          </p>
+          <p
+            className="mt-5 text-[20px] sm:text-[24px] leading-[1.25] italic max-w-[420px]"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+            }}
+          >
+            {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you described.
+          </p>
+          <span
+            aria-hidden
+            className="mt-7 inline-block h-px w-10"
+            style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
+          />
+        </div>
+      ) : null}
+
       <BackLink onClick={onBack} />
+
 
       {/* ---------- 1. Hero — Your Signature ---------- */}
       <header
