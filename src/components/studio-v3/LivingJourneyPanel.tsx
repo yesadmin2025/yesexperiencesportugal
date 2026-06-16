@@ -33,10 +33,13 @@ import {
   FEELINGS,
   INTERESTS,
   INVESTMENT_TIERS,
+  PICKUPS,
   RHYTHMS,
   type StudioV3State,
 } from "./types";
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
+import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+
 
 interface LivingJourneyPanelProps {
   state: StudioV3State;
