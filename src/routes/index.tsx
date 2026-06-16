@@ -721,35 +721,43 @@ function HomePage() {
                         aria-hidden="true"
                         className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent"
                       />
-                      {/* Top row: region + price */}
-                      <div className="absolute inset-x-0 top-0 p-4 md:p-5 flex items-start justify-between gap-3">
-                        <span className="text-[10px] uppercase tracking-[0.28em] text-white/85 drop-shadow-sm">
+                      {/* Top row: region + rating + price — social proof and value signal above the fold */}
+                      <div className="absolute inset-x-0 top-0 p-4 md:p-5 flex items-start justify-between gap-2">
+                        <span className="shrink-0 text-[10px] uppercase tracking-[0.28em] text-white/85 drop-shadow-sm">
                           {t.region}
                         </span>
-                        <span className="inline-flex items-baseline gap-1 rounded-full bg-[color:var(--ivory)]/95 px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
-                          <span className="text-[10.5px] uppercase tracking-[0.2em] font-semibold">
-                            From
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {t.rating && t.reviewCount > 0 && (
+                            <span className="inline-flex items-center gap-1 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-2 py-1 text-[10.5px] rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+                              <Star size={10} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
+                              <span className="font-semibold tracking-tight leading-none">{t.rating.toFixed(1)}</span>
+                              <span className="text-[color:var(--charcoal-soft)] leading-none">({t.reviewCount})</span>
+                            </span>
+                          )}
+                          <span className="inline-flex items-baseline gap-1 rounded-full bg-[color:var(--ivory)]/95 px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+                            <span className="text-[10px] uppercase tracking-[0.2em] font-semibold">
+                              From
+                            </span>
+                            <span className="serif text-[13.5px] leading-none">
+                              €{t.priceFrom}
+                            </span>
                           </span>
-                          <span className="serif text-[14px] leading-none">
-                            €{t.priceFrom}
-                          </span>
-                        </span>
+                        </div>
                       </div>
-                      {/* Bottom: real title + meta with rating */}
+                      {/* Bottom: title + meta — clean editorial stack with breathing room */}
                       <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">
-                        {t.rating && t.reviewCount > 0 && (
-                          <span className="mb-2 inline-flex items-center gap-1.5 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-2.5 py-1 text-[11px] rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
-                            <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
-                            <span className="font-semibold tracking-tight leading-none">{t.rating.toFixed(1)}</span>
-                            <span className="text-[color:var(--charcoal-soft)] leading-none">· {t.reviewCount} reviews</span>
-                          </span>
-                        )}
-                        <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance">
+                        <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
                           {t.title}
                         </h3>
-                        <span className="mt-2 inline-block text-[11px] uppercase tracking-[0.22em] text-white/85">
-                          {t.durationHours} · Private
-                        </span>
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white/85">
+                            {t.durationHours}
+                          </span>
+                          <span className="inline-block w-px h-3 bg-white/40" aria-hidden="true" />
+                          <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white/85">
+                            Private
+                          </span>
+                        </div>
                       </div>
                     </Link>
 
