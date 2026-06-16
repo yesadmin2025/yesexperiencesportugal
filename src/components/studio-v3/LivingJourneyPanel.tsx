@@ -33,10 +33,13 @@ import {
   FEELINGS,
   INTERESTS,
   INVESTMENT_TIERS,
+  PICKUPS,
   RHYTHMS,
   type StudioV3State,
 } from "./types";
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
+import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+
 
 interface LivingJourneyPanelProps {
   state: StudioV3State;
@@ -110,6 +113,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
+  const originLabel = state.pickup ? getOptionLabel(PICKUPS, state.pickup) : null;
+
 
   // --- AI live story (Lovable AI) ---
   // Fires when at least feeling+companions exist. Debounced 700ms.
@@ -266,6 +271,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               dna={dna}
               routeLine={routeLine}
               moments={moments}
+              originLabel={originLabel}
+              paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
               investmentLabel={investmentLabel}
               storyText={aiStory?.text ?? null}
               storyLoading={storyLoading}
@@ -284,11 +291,14 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
+  originLabel: string | null;
+  paceLabel: string | null;
   investmentLabel: string | null;
   storyText: string | null;
   storyLoading: boolean;
   storySource: "ai" | "fallback" | null;
 }
+
 
 function JourneyDraftDrawer({
   onClose,
@@ -296,12 +306,39 @@ function JourneyDraftDrawer({
   dna,
   routeLine,
   moments,
+  originLabel,
+  paceLabel,
   investmentLabel,
   storyText,
   storyLoading,
   storySource,
 }: DrawerProps) {
-  const pinCount = Math.max(0, Math.min(4, moments.length));
+  const totalPins = Math.max(0, Math.min(4, moments.length));
+
+  // Cinematic pin reveal — pins draw in sequence when the drawer opens,
+  // giving the "journey being drawn in real time" sensation. Respects
+  // prefers-reduced-motion: shows all pins immediately.
+  const [activePins, setActivePins] = useState(() => {
+    if (typeof window === "undefined") return totalPins;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? totalPins : 0;
+  });
+  useEffect(() => {
+    if (totalPins === 0) return;
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setActivePins(totalPins);
+      return;
+    }
+    setActivePins(0);
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    for (let i = 1; i <= totalPins; i += 1) {
+      timers.push(setTimeout(() => setActivePins(i), 280 + i * 360));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [totalPins, moments.join("|")]);
+
 
   return (
     <div
@@ -417,25 +454,28 @@ function JourneyDraftDrawer({
             </ul>
           ) : null}
 
-          {/* Editorial route preview — pure SVG, no map lib, no images. */}
-          <div
-            className="relative mt-4 rounded-[4px] overflow-hidden border"
-            style={{
-              borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
-              background:
-                "radial-gradient(120% 80% at 20% 20%, color-mix(in oklab, var(--teal) 55%, #0c1a1d) 0%, #0c1a1d 65%)",
-              aspectRatio: "16 / 9",
-            }}
-            aria-hidden
-          >
-            <RoutePreviewSvg pinCount={pinCount} hasRoute={!!routeLine || pinCount > 0} />
-            <p
-              className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold"
-              style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
-            >
-              Route preview
-            </p>
-          </div>
+          {/* Cinematic Signature map — same artefact as the final reveal.
+              Pins draw in sequence to convey real-time creation. Labels are
+              real Signature stops only — never invented. */}
+          {totalPins > 0 ? (
+            <div className="relative mt-4">
+              <StudioV3SignatureMap
+                stops={moments}
+                activeCount={activePins}
+                originLabel={originLabel}
+                paceLabel={paceLabel}
+                ariaLabel="Your journey, drawing live"
+                className="rounded-[4px] border"
+              />
+              <p
+                className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold pointer-events-none"
+                style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
+              >
+                {activePins < totalPins ? "Drawing your route…" : "Your route"}
+              </p>
+            </div>
+          ) : null}
+
 
           {/* Route line */}
           {routeLine ? (
@@ -515,73 +555,3 @@ function JourneyDraftDrawer({
   );
 }
 
-/**
- * Editorial SVG route preview — origin dot, soft curved route line, and up to
- * 4 pins. Geometry only; never reflects real coordinates. We only render the
- * line when the resolved route is meaningful (pinCount > 0 or hasRoute true).
- */
-function RoutePreviewSvg({ pinCount, hasRoute }: { pinCount: number; hasRoute: boolean }) {
-  // Fixed control points across a 100x56 viewBox.
-  const origin = { x: 10, y: 44 };
-  const anchors = [
-    { x: 30, y: 30 },
-    { x: 52, y: 38 },
-    { x: 72, y: 22 },
-    { x: 92, y: 30 },
-  ];
-  const visible = anchors.slice(0, pinCount);
-  const path =
-    visible.length > 0
-      ? `M ${origin.x} ${origin.y} ` +
-        visible
-          .map((p, i) => {
-            const prev = i === 0 ? origin : visible[i - 1];
-            const cx = (prev.x + p.x) / 2;
-            const cy = Math.min(prev.y, p.y) - 4;
-            return `Q ${cx} ${cy} ${p.x} ${p.y}`;
-          })
-          .join(" ")
-      : "";
-
-  return (
-    <svg
-      viewBox="0 0 100 56"
-      preserveAspectRatio="none"
-      className="absolute inset-0 h-full w-full"
-    >
-      {/* faint grid lines for atmosphere */}
-      <g stroke="rgba(201,169,106,0.10)" strokeWidth="0.2">
-        {[14, 28, 42].map((y) => (
-          <line key={`h${y}`} x1="0" y1={y} x2="100" y2={y} />
-        ))}
-        {[25, 50, 75].map((x) => (
-          <line key={`v${x}`} x1={x} y1="0" x2={x} y2="56" />
-        ))}
-      </g>
-
-      {/* origin dot */}
-      <circle cx={origin.x} cy={origin.y} r="1.6" fill="var(--gold)" />
-      <circle cx={origin.x} cy={origin.y} r="3.2" fill="none" stroke="var(--gold-soft, #d8c089)" strokeOpacity="0.5" strokeWidth="0.4" />
-
-      {/* route line */}
-      {hasRoute && path ? (
-        <path
-          d={path}
-          fill="none"
-          stroke="var(--gold)"
-          strokeWidth="0.7"
-          strokeLinecap="round"
-          strokeDasharray="1.4 1.2"
-        />
-      ) : null}
-
-      {/* pins */}
-      {visible.map((p, i) => (
-        <g key={i}>
-          <circle cx={p.x} cy={p.y} r="1.4" fill="var(--ivory)" />
-          <circle cx={p.x} cy={p.y} r="0.6" fill="var(--teal)" />
-        </g>
-      ))}
-    </svg>
-  );
-}
