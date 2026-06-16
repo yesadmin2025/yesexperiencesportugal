@@ -1,8 +1,9 @@
 // Studio V3 — Opening intro.
 //
-// A short premium opening shown before any Studio question. Two screens:
+// Three quiet screens:
 //   1. Welcome — single line of intent + Begin
 //   2. Name (optional) — input + Continue + Skip
+//   3. Path — guided ("Construir contigo") vs fast ("Construir rápido")
 //
 // The Studio counts no progress here: this is mood-setting only. The name
 // is stored in state and used lightly later (when present) to address the
@@ -14,11 +15,11 @@ import { ArrowRight } from "lucide-react";
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
 
 interface Props {
-  /** Called once the intro completes. Pass null when the user skips. */
-  onComplete: (firstName: string | null) => void;
+  /** Called once the intro completes. */
+  onComplete: (firstName: string | null, pathMode: "guided" | "fast") => void;
 }
 
-type IntroStep = "welcome" | "name";
+type IntroStep = "welcome" | "name" | "path";
 
 const NAME_PATTERN = /[^A-Za-zÀ-ÿ' -]/g;
 
@@ -29,11 +30,13 @@ function sanitiseName(raw: string): string {
 export function StudioV3Intro({ onComplete }: Props) {
   const [step, setStep] = useState<IntroStep>("welcome");
   const [value, setValue] = useState("");
+  const [pendingName, setPendingName] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleNameSubmit = (e: FormEvent) => {
     e.preventDefault();
     const clean = sanitiseName(value);
-    onComplete(clean.length > 0 ? clean : null);
+    setPendingName(clean.length > 0 ? clean : null);
+    setStep("path");
   };
 
   return (
@@ -122,9 +125,9 @@ export function StudioV3Intro({ onComplete }: Props) {
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />
             </button>
           </div>
-        ) : (
+        ) : step === "name" ? (
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleNameSubmit}
             className="w-full animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none"
           >
             <p
@@ -154,9 +157,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             </h2>
             <p
               className="mt-3 text-[12.5px] leading-[1.6]"
-              style={{
-                color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
-              }}
+              style={{ color: "color-mix(in oklab, var(--ivory) 70%, transparent)" }}
             >
               Optional. So the day feels addressed to you.
             </p>
@@ -194,7 +195,10 @@ export function StudioV3Intro({ onComplete }: Props) {
 
             <button
               type="button"
-              onClick={() => onComplete(null)}
+              onClick={() => {
+                setPendingName(null);
+                setStep("path");
+              }}
               className="mt-4 inline-flex min-h-[40px] items-center justify-center px-3 text-[10.5px] uppercase font-semibold transition-colors hover:opacity-100"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 55%, transparent)",
@@ -204,8 +208,129 @@ export function StudioV3Intro({ onComplete }: Props) {
               Skip
             </button>
           </form>
+        ) : (
+          <div
+            data-testid="studio-v3-intro-path"
+            className="w-full animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none"
+          >
+            <p
+              className="text-[10.5px] uppercase font-bold"
+              style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
+            >
+              — How would you like to compose it
+            </p>
+            <h2
+              className="mt-5 text-[22px] sm:text-[28px] leading-[1.18] tracking-[-0.01em] font-bold"
+              style={{
+                fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
+                color: "var(--ivory)",
+              }}
+            >
+              {pendingName ? `${pendingName}, ` : ""}
+              <span
+                style={{
+                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
+                }}
+              >
+                choose your pace.
+              </span>
+            </h2>
+
+            <div className="mt-7 grid gap-3">
+              <PathCard
+                eyebrow="Guided"
+                title="Compose it with us"
+                whisper="A few quiet choices. About five minutes."
+                onClick={() => onComplete(pendingName, "guided")}
+                recommended
+              />
+              <PathCard
+                eyebrow="Fast"
+                title="Compose it quickly"
+                whisper="Only the essentials. Under two minutes."
+                onClick={() => onComplete(pendingName, "fast")}
+              />
+            </div>
+          </div>
         )}
       </div>
     </main>
+  );
+}
+
+function PathCard({
+  eyebrow,
+  title,
+  whisper,
+  onClick,
+  recommended,
+}: {
+  eyebrow: string;
+  title: string;
+  whisper: string;
+  onClick: () => void;
+  recommended?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative w-full rounded-[10px] px-5 py-4 text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      style={{
+        background: "color-mix(in oklab, var(--ivory) 6%, transparent)",
+        border: `1px solid color-mix(in oklab, var(--gold) ${recommended ? 55 : 28}%, transparent)`,
+      }}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <p
+          className="text-[10px] uppercase font-bold"
+          style={{
+            color: "var(--gold)",
+            letterSpacing: "0.26em",
+          }}
+        >
+          — {eyebrow}
+        </p>
+        {recommended ? (
+          <span
+            className="text-[9.5px] uppercase font-semibold"
+            style={{
+              color: "color-mix(in oklab, var(--ivory) 65%, transparent)",
+              letterSpacing: "0.22em",
+            }}
+          >
+            Recommended
+          </span>
+        ) : null}
+      </div>
+      <h3
+        className="mt-2 text-[16px] sm:text-[18px] leading-[1.2] font-bold"
+        style={{
+          fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
+          color: "var(--ivory)",
+        }}
+      >
+        {title}
+      </h3>
+      <p
+        className="mt-1.5 text-[12.5px] leading-[1.5]"
+        style={{
+          color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontStyle: "italic",
+        }}
+      >
+        {whisper}
+      </p>
+      <ArrowRight
+        className="absolute right-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 transition-transform group-hover:translate-x-0.5"
+        strokeWidth={2.2}
+        aria-hidden
+        style={{ color: "var(--gold)" }}
+      />
+    </button>
   );
 }
