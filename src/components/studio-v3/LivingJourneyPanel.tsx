@@ -454,25 +454,28 @@ function JourneyDraftDrawer({
             </ul>
           ) : null}
 
-          {/* Editorial route preview — pure SVG, no map lib, no images. */}
-          <div
-            className="relative mt-4 rounded-[4px] overflow-hidden border"
-            style={{
-              borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
-              background:
-                "radial-gradient(120% 80% at 20% 20%, color-mix(in oklab, var(--teal) 55%, #0c1a1d) 0%, #0c1a1d 65%)",
-              aspectRatio: "16 / 9",
-            }}
-            aria-hidden
-          >
-            <RoutePreviewSvg pinCount={pinCount} hasRoute={!!routeLine || pinCount > 0} />
-            <p
-              className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold"
-              style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
-            >
-              Route preview
-            </p>
-          </div>
+          {/* Cinematic Signature map — same artefact as the final reveal.
+              Pins draw in sequence to convey real-time creation. Labels are
+              real Signature stops only — never invented. */}
+          {totalPins > 0 ? (
+            <div className="relative mt-4">
+              <StudioV3SignatureMap
+                stops={moments}
+                activeCount={activePins}
+                originLabel={originLabel}
+                paceLabel={paceLabel}
+                ariaLabel="Your journey, drawing live"
+                className="rounded-[4px] border"
+              />
+              <p
+                className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold pointer-events-none"
+                style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
+              >
+                {activePins < totalPins ? "Drawing your route…" : "Your route"}
+              </p>
+            </div>
+          ) : null}
+
 
           {/* Route line */}
           {routeLine ? (
