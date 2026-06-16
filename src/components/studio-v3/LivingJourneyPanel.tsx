@@ -206,9 +206,15 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   if (hidden) return null;
   if (dna.length === 0) return null; // No meaningful pick yet → no pill.
 
-  // Collapsed copy: prefer "Route forming" once route resolved, else DNA summary.
+  // Collapsed copy: prefer the AI story hint if present, else route, else DNA.
   const dnaSummary = dna.slice(0, 2).join(" · ");
-  const collapsedTrailing = routeLine ? "Route forming" : dnaSummary || "forming";
+  const collapsedTrailing = storyLoading
+    ? "Composing…"
+    : aiStory?.text
+    ? "Tap to read"
+    : routeLine
+    ? "Route forming"
+    : dnaSummary || "forming";
 
   return (
     <>
