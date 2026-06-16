@@ -2195,40 +2195,37 @@ function StoryboardHandoff({
       {dayparts.length > 0 ? (
         <section
           data-testid="studio-v3-daypart-timeline"
-          className="mt-8 max-w-[520px] mx-auto"
+          className="mt-8 max-w-[440px] mx-auto px-2"
           aria-label="How the day unfolds across the day"
         >
-          <ol className="flex items-center justify-between gap-2 px-2">
-            {dayparts.map((label, i) => (
-              <li key={label} className="flex-1 flex flex-col items-center text-center">
-                <span
-                  aria-hidden
-                  className="block h-1.5 w-1.5 rounded-full"
-                  style={{ background: "var(--gold)" }}
-                />
-                <span
-                  className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-                >
-                  {label}
-                </span>
-                {i < dayparts.length - 1 ? (
+          <div className="relative">
+            <span
+              aria-hidden
+              className="absolute left-2 right-2 top-[3px] h-px"
+              style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
+            />
+            <ol className="relative flex items-start justify-between gap-2">
+              {dayparts.map((label) => (
+                <li key={label} className="flex flex-col items-center text-center">
                   <span
                     aria-hidden
-                    className="absolute"
-                    style={{ display: "none" }}
+                    className="block h-[7px] w-[7px] rounded-full"
+                    style={{ background: "var(--gold)" }}
                   />
-                ) : null}
-              </li>
-            ))}
-          </ol>
-          <div
-            aria-hidden
-            className="mx-auto mt-[-15px] h-px max-w-[420px]"
-            style={{ background: "color-mix(in oklab, var(--gold) 32%, transparent)" }}
-          />
+                  <span
+                    className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                  >
+                    {label}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </section>
       ) : null}
+
+
 
       {/* ---------- 3. Story of the day ---------- */}
 
