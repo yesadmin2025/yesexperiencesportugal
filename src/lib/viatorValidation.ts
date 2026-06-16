@@ -10,6 +10,8 @@
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta, type ViatorStop } from "@/data/signatureToursViator";
 
+export type Severity = "critical" | "major" | "minor" | "clean";
+
 export type FieldDiff = {
   matched: string[];
   onlyInternal: string[]; // in tour but not in Viator → likely invented
@@ -24,6 +26,8 @@ export type TourValidation = {
   included: FieldDiff;
   /** Total mismatch count (onlyInternal + onlyViator across both fields). */
   issueCount: number;
+  /** Severity for prioritizing fixes. */
+  severity: Severity;
 };
 
 /** Normalize a string for fuzzy comparison — lowercase, strip diacritics + punctuation. */
