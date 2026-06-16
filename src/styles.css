@@ -5069,3 +5069,11 @@ html { scroll-behavior: smooth; }
 }
 
 
+
+/* Signature card image skeleton — shimmer behind <img> while it decodes.
+   The image sits at z-[1] and naturally covers the shimmer once painted.
+   Scoped via the bg-[length] + animation utility in src/routes/index.tsx. */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
