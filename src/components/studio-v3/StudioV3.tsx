@@ -1282,13 +1282,14 @@ export function StudioV3() {
   if (state.phase === "intro") {
     return (
       <StudioV3Intro
-        onComplete={(name) => {
-          setState((s) => ({ ...s, firstName: name }));
+        onComplete={(name, pathMode) => {
+          setState((s) => ({ ...s, firstName: name, pathMode }));
           advance("feeling");
         }}
       />
     );
   }
+
 
   return (
     <main aria-label="YES Studio">
