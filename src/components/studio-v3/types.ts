@@ -180,6 +180,13 @@ export interface StudioV3State {
    * when the user clearly steers inland/central/spiritual/Comporta.
    */
   destinationIntent: DestinationIntent;
+  /**
+   * Path mode chosen on the intro. "guided" runs the full Studio with every
+   * optional phase; "fast" skips occasion, date, considerations, language
+   * and investment so the traveller reaches the Signature reveal sooner.
+   * Defaults to "guided" to preserve prior behaviour.
+   */
+  pathMode: "guided" | "fast";
 }
 
 
@@ -204,7 +211,9 @@ export const INITIAL_STATE: StudioV3State = {
   firstName: null,
   editedRoutePoints: null,
   destinationIntent: "no-preference",
+  pathMode: "guided",
 };
+
 
 
 export interface ChoiceOption<T extends string> {
