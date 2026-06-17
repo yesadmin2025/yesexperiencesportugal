@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import type { RoutedStopUI } from "@/components/builder/types";
 import { curateJourney, type CuratedJourney } from "./curation";
+import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 import type {
   Companions,
   DestinationIntent,
@@ -18,6 +19,24 @@ import type {
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
 );
+
+// Map destinationIntent (or tour region fallback) into the silhouette
+// region so the gold pulse settles exactly where the day will unfold.
+function resolveSilhouetteRegion(
+  intent: DestinationIntent | null | undefined,
+  tourRegion: string | null | undefined,
+): SilhouetteRegion {
+  if (intent === "alentejo-evora-wine" || intent === "comporta-troia") return "alentejo";
+  if (intent === "central-portugal" || intent === "spiritual-coast") return "centro";
+  if (intent === "lisbon-sintra-cascais") return "lisbon-coast";
+  if (intent === "arrabida-setubal-azeitao") return "arrabida";
+  const r = (tourRegion ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("évora") || r.includes("evora") || r.includes("comporta")) return "alentejo";
+  if (r.includes("arrábida") || r.includes("arrabida") || r.includes("setúbal") || r.includes("setubal")) return "arrabida";
+  if (r.includes("sintra") || r.includes("cascais") || r.includes("lisbon") || r.includes("lisboa")) return "lisbon-coast";
+  if (r.includes("centro") || r.includes("central") || r.includes("óbidos") || r.includes("obidos") || r.includes("fátima") || r.includes("fatima")) return "centro";
+  return null;
+}
 
 /**
  * Phase 4 — "The map awakens".
@@ -76,17 +95,36 @@ export function MapAwakens({
   const [active, setActive] = useState(0); // currently spotlit moment
   const [playing, setPlaying] = useState(true);
   const [mounted, setMounted] = useState(false);
+  // Anticipation layer — silhouette + gold pulse hold the stage while the
+  // map silently boots underneath. Fades out as the map fades in, so the
+  // two surfaces never visually overlap (one ends as the other begins).
+  const [anticipating, setAnticipating] = useState(true);
   const timerRef = useRef<number | null>(null);
 
-  // Initial map breath — give Leaflet a beat before the first stop appears.
+  const silhouetteRegion = useMemo(
+    () => resolveSilhouetteRegion(destinationIntent, journey.tour.region),
+    [destinationIntent, journey.tour.region],
+  );
+
+  // Cinematic warm-up:
+  //   0ms   → silhouette + gold pulse hold the stage (map opacity 0)
+  //   1400ms → map starts fading in beneath
+  //   2100ms → silhouette fully gone, first stop appears
   useEffect(() => {
-    const t = window.setTimeout(() => {
+    const tMap = window.setTimeout(() => {
       setMounted(true);
+    }, 1400);
+    const tHandoff = window.setTimeout(() => {
+      setAnticipating(false);
       setRevealed(1);
       setActive(0);
-    }, 900);
-    return () => window.clearTimeout(t);
+    }, 2100);
+    return () => {
+      window.clearTimeout(tMap);
+      window.clearTimeout(tHandoff);
+    };
   }, []);
+
 
   // Auto-advance.
   useEffect(() => {
@@ -154,6 +192,36 @@ export function MapAwakens({
 
       {/* Map stage — top portion of the viewport. */}
       <div className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3">
+        {/* Anticipation layer — Portugal silhouette + gold pulse holds the
+            stage while the real map silently boots underneath. Fades out
+            as the map fades in: the two never visually overlap. */}
+        <div
+          aria-hidden
+          data-testid="studio-v3-map-anticipation"
+          className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
+            anticipating ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className="relative w-full h-full overflow-hidden rounded-[4px]"
+            style={{
+              background: "var(--ivory)",
+              animation: anticipating
+                ? "studioV3AnticipationBreath 1400ms ease-out both"
+                : undefined,
+            }}
+          >
+            <PortugalSilhouette fill={1} region={silhouetteRegion} />
+            <div
+              className="absolute inset-x-0 bottom-5 text-center text-[10px] uppercase tracking-[0.32em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span>{" "}
+              {silhouetteRegion ? "The day takes shape" : "Composing your route"}
+            </div>
+          </div>
+        </div>
+
         <div
           className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
             mounted ? "opacity-100" : "opacity-0"
@@ -352,6 +420,14 @@ export function MapAwakens({
         @keyframes studioV3RiseIn {
           from { opacity: 0; transform: translateY(14px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes studioV3AnticipationBreath {
+          0%   { opacity: 0; transform: scale(0.985); }
+          40%  { opacity: 1; transform: scale(1.01); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-testid="studio-v3-map-anticipation"] { transition: none; animation: none; }
         }
       `}</style>
     </div>
