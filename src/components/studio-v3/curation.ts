@@ -949,6 +949,31 @@ export function resolveStudioV3Route(input: {
     dateExact,
   });
 
+  // Fase 5 — telemetria de decisão. Fire-and-forget; nunca bloqueia.
+  // Consumimos `journey.audit` (rejections, pool sizes, wine swap) e
+  // emitimos um único `studio-v3:curation.decision` por resolução.
+  try {
+    recordStudioV3CurationDecision({
+      tourId: journey.tour.id,
+      tourTitleInternal: journey.tour.title,
+      region: journey.tour.region ?? null,
+      feeling,
+      companions,
+      rhythm,
+      dateExact,
+      destinationIntent,
+      investment,
+      poolSizeRaw: journey.audit.poolSizeRaw,
+      poolSizeAfterClosures: journey.audit.poolSizeAfterClosures,
+      picked: journey.moments.map((m) => m.label),
+      rejections: journey.audit.rejections,
+      wineSwapApplied: journey.audit.wineSwapApplied,
+      target: journey.audit.target,
+    });
+  } catch {
+    /* telemetry must never break curation */
+  }
+
   // Hard cap at 4 main route points on the Journey Card (per brief).
   const routePoints: ResolvedRoutePoint[] = journey.moments
     .slice(0, 4)
