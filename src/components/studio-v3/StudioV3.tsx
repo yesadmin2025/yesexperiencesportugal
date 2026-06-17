@@ -796,11 +796,11 @@ export function StudioV3() {
     return "No rush. The journey can form before the date is fixed.";
   };
   const dateBgImage = () => (state.feeling ? FEELING_IMAGE[state.feeling] : undefined);
-  const playDateReaction = (mode: DateMode, delay = 420) => {
+  const playDateReaction = (mode: DateMode, exactIso: string | null = null, delay = 420) => {
     const forward: StudioV3State = {
       ...state,
       dateMode: mode,
-      dateExact: mode === "exact" ? state.dateExact : null,
+      dateExact: mode === "exact" ? exactIso : null,
     };
     const next = getNextPhase(forward, "date");
     window.setTimeout(() => {
@@ -816,15 +816,15 @@ export function StudioV3() {
   };
   const onDateExact = (iso: string) => {
     setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }));
-    playDateReaction("exact");
+    playDateReaction("exact", iso);
   };
   const onDateFlexible = () => {
     setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }));
-    playDateReaction("flexible");
+    playDateReaction("flexible", null);
   };
   const onDateUndecided = () => {
     setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }));
-    playDateReaction("undecided");
+    playDateReaction("undecided", null);
   };
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
