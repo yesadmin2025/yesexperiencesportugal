@@ -96,6 +96,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
       pickup: state.pickup,
       occasion: state.occasion,
       investment: state.investment,
+      destinationIntent: state.destinationIntent,
+      dateExact: state.dateExact,
     });
   }, [
     meaningfulRoute,
@@ -106,6 +108,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     state.pickup,
     state.occasion,
     state.investment,
+    state.destinationIntent,
+    state.dateExact,
   ]);
 
   const routeLine = resolved?.suggestedRouteLabel ?? null;
