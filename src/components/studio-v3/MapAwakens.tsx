@@ -370,7 +370,8 @@ export function MapAwakens({
             </div>
           ) : null}
         </div>
-      </div>
+      </section>
+
 
       {/* Editorial moment card — anchored to lower portion. */}
       <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-6 pt-4">
