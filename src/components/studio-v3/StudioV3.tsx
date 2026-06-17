@@ -1304,10 +1304,27 @@ export function StudioV3() {
   }
 
 
+  // Ambient anticipation — Portugal silhouette behind every phase.
+  // The coastline draws in with progress; a gold pulse settles on the
+  // inferred region the moment the traveller hints at one. Strict
+  // atmosphere — never interactive, never labelled.
+  const anticipation = (() => {
+    const pct = studioV3Progress(state, state.phase)?.percent ?? 0;
+    const fill = Math.max(0.12, Math.min(1, pct / 100));
+    const intent = state.destinationIntent;
+    let region: import("./PortugalSilhouette").SilhouetteRegion = null;
+    if (intent === "alentejo" || intent === "comporta") region = "alentejo";
+    else if (intent === "centro" || intent === "north") region = "centro";
+    else if (intent === "lisbon-coast" || intent === "sintra") region = "lisbon-coast";
+    else if (intent === "arrabida" || intent === "setubal") region = "arrabida";
+    return { fill, region };
+  })();
+
   return (
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
+
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
           <PhaseHeader
