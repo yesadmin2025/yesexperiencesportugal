@@ -9,8 +9,8 @@ const baseResolved: Pick<
 > = {
   skeletonTourKey: "arrabida-private",
   routePoints: [
-    { label: "Azeitão", story: "Cellars and cheese.", lat: 38.5, lng: -9 },
-    { label: "Sesimbra", story: "Fishing-village lunch.", lat: 38.4, lng: -9.1 },
+    { index: 0, label: "Azeitão", story: "Cellars and cheese.", lat: 38.5, lng: -9 },
+    { index: 0, label: "Sesimbra", story: "Fishing-village lunch.", lat: 38.4, lng: -9.1 },
   ],
   suggestedRouteLabel: "Lisbon → Azeitão · Sesimbra → Lisbon",
   journeyTitle: "Your Arrábida day",
@@ -53,8 +53,8 @@ describe("validateResolvedSignature", () => {
       {
         ...baseResolved,
         routePoints: [
-          { label: "", story: "x", lat: null, lng: null },
-          { label: "Y", story: "  ", lat: null, lng: null },
+          { index: 0, label: "", story: "x", lat: null, lng: null },
+          { index: 0, label: "Y", story: "  ", lat: null, lng: null },
         ],
       },
       baseTour,
