@@ -684,6 +684,21 @@ export function curateJourney(
     seenLabels.add(key);
   }
 
+  if (interests.includes("wine") && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
+    const winePick = scored.find((s) => !seenLabels.has(s.stop.label.toLowerCase()) && WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`));
+    if (winePick) {
+      if (picks.length < target) {
+        picks.push(winePick);
+        seenLabels.add(winePick.stop.label.toLowerCase());
+      } else if (picks.length > 1) {
+        const removed = picks.pop();
+        if (removed) seenLabels.delete(removed.stop.label.toLowerCase());
+        picks.push(winePick);
+        seenLabels.add(winePick.stop.label.toLowerCase());
+      }
+    }
+  }
+
   // Re-order picks to match the tour's natural stop order so the route
   // reads as a believable progression on the map.
   const tourOrder = new Map(primary.stops.map((s, i) => [s.label.toLowerCase(), i]));
