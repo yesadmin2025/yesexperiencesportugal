@@ -42,7 +42,7 @@ export function validateResolvedSignature(
     | "suggestedRouteLabel"
     | "journeyTitle"
   >,
-  tour: Pick<Tour, "id" | "title" | "img"> | null | undefined,
+  tour: Pick<SignatureTour, "id" | "title" | "img"> | null | undefined,
 ): RevealValidationResult {
   const missing: RevealValidationFailure[] = [];
 
