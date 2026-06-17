@@ -69,7 +69,7 @@ describe("Studio V3 — Phase 5 telemetry", () => {
       (r) => r.reason === "winery-cap",
     );
     expect(wineryRejections && wineryRejections.length).toBeGreaterThan(0);
-    expect(wineryRejections?.[0].detail).toBe("cap=3");
+    expect(wineryRejections?.[0].detail).toMatch(/region=.+cap=\d+/);
   });
 
   it("records closed-on-date rejections for Mercado do Livramento on Mondays", () => {

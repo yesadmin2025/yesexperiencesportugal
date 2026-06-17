@@ -114,7 +114,7 @@ describe("Studio V3 curation — operational truth", () => {
       expect(wineryCount).toBeLessThanOrEqual(1);
     });
 
-    it("Alentejo wine day still respects the 3-winery ceiling", () => {
+    it("Alentejo wine day caps at 2 wineries (regional ceiling)", () => {
       const route = resolveStudioV3Route({
         feeling: "wine-food",
         companions: "couple",
@@ -127,7 +127,25 @@ describe("Studio V3 curation — operational truth", () => {
       const wineryCount = route.routePoints.filter((p) =>
         WINE_RE.test(`${p.label} ${p.story}`),
       ).length;
-      expect(wineryCount).toBeLessThanOrEqual(3);
+      expect(wineryCount).toBeLessThanOrEqual(2);
+    });
+
+    it("rejection reason carries region + cap detail for audit", () => {
+      // Force a high-pressure wine pool in Sintra (cap=1) to provoke
+      // winery-cap rejections we can inspect on the audit trail.
+      const journey = curateJourney("wine-food", "couple", "immersive", {
+        interests: ["wine", "gastronomy"],
+        pickup: "sintra",
+        destinationIntent: "lisbon-sintra-cascais",
+        investment: "bespoke",
+      });
+      const wineryRejections = journey.audit.rejections.filter(
+        (r) => r.reason === "winery-cap",
+      );
+      for (const r of wineryRejections) {
+        expect(r.detail ?? "").toMatch(/region=/);
+        expect(r.detail ?? "").toMatch(/cap=\d+/);
+      }
     });
   });
 });
