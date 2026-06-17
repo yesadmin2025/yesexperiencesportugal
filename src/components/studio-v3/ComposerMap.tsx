@@ -56,6 +56,8 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
         pickup: state.pickup,
         occasion: state.occasion,
         investment: state.investment,
+        destinationIntent: state.destinationIntent,
+        dateExact: state.dateExact,
       })
     : null;
 
