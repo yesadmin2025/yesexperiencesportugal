@@ -154,3 +154,10 @@ export function recordStudioV3Phase4Timing(
   emitStudioV3Event({ kind: "phase4.timing", payload });
 }
 
+export function recordStudioV3RevealValidation(
+  payload: StudioV3RevealValidation,
+): void {
+  emitStudioV3Event({ kind: "reveal.validation", payload });
+}
+
+
