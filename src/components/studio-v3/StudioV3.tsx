@@ -1917,18 +1917,50 @@ function StoryboardHandoff({
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState<boolean>(false);
 
-  // ---------- Cinematic composing beat ----------
-  // Brief overlay before the reveal renders, so the Signature feels
-  // composed (not toggled). Respects prefers-reduced-motion.
-  const [composing, setComposing] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  });
+  // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
+  // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
+  // Beat 2 (900–1800ms): Georgia italic "why it fits" line lands under the photo.
+  // Beat 3 (1800–2600ms): trust whisper appears, then overlay dismisses and the
+  //                      route map pins draw in sequence.
+  // Respects prefers-reduced-motion (collapses to beat 3 instantly).
+  const reducedMotionInitial =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const [composeBeat, setComposeBeat] = useState<0 | 1 | 2 | 3 | 4>(
+    reducedMotionInitial ? 4 : 0,
+  );
+  const composing = composeBeat < 4;
   useEffect(() => {
-    if (!composing) return;
-    const t = window.setTimeout(() => setComposing(false), 1600);
-    return () => window.clearTimeout(t);
-  }, [composing]);
+    if (reducedMotionInitial) return;
+    const timers = [
+      window.setTimeout(() => setComposeBeat(1), 60),
+      window.setTimeout(() => setComposeBeat(2), 900),
+      window.setTimeout(() => setComposeBeat(3), 1800),
+      window.setTimeout(() => setComposeBeat(4), 2600),
+    ];
+    return () => timers.forEach(window.clearTimeout);
+  }, [reducedMotionInitial]);
+
+  // Staggered route-pin draw — starts only after the composing overlay clears.
+  const totalStops = editedStops.length;
+  const [revealedStops, setRevealedStops] = useState<number>(
+    reducedMotionInitial ? totalStops : 0,
+  );
+  useEffect(() => {
+    if (composing) return;
+    if (reducedMotionInitial) {
+      setRevealedStops(totalStops);
+      return;
+    }
+    setRevealedStops(0);
+    const timers: number[] = [];
+    for (let i = 1; i <= totalStops; i += 1) {
+      timers.push(
+        window.setTimeout(() => setRevealedStops(i), 220 + i * 320),
+      );
+    }
+    return () => timers.forEach(window.clearTimeout);
+  }, [composing, totalStops, reducedMotionInitial]);
 
   // Max moments by rhythm — used by the reveal editor to allow ONE safe
   // extra moment when the user wants to enrich the day. Composition itself
