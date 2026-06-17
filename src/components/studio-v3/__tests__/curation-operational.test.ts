@@ -131,18 +131,17 @@ describe("Studio V3 curation — operational truth", () => {
     });
 
     it("rejection reason carries region + cap detail for audit", () => {
-      const route = resolveStudioV3Route({
-        feeling: "romance",
-        companions: "couple",
-        rhythm: "balanced",
-        interests: ["heritage", "wine"],
+      // Force a high-pressure wine pool in Sintra (cap=1) to provoke
+      // winery-cap rejections we can inspect on the audit trail.
+      const journey = curateJourney("wine-food", "couple", "immersive", {
+        interests: ["wine", "gastronomy"],
         pickup: "sintra",
         destinationIntent: "lisbon-sintra-cascais",
+        investment: "bespoke",
       });
-      const wineryRejections = (route.audit?.rejections ?? []).filter(
+      const wineryRejections = journey.audit.rejections.filter(
         (r) => r.reason === "winery-cap",
       );
-      // If any winery was rejected for cap, the detail must name the region.
       for (const r of wineryRejections) {
         expect(r.detail ?? "").toMatch(/region=/);
         expect(r.detail ?? "").toMatch(/cap=\d+/);
