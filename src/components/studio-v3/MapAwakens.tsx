@@ -95,17 +95,36 @@ export function MapAwakens({
   const [active, setActive] = useState(0); // currently spotlit moment
   const [playing, setPlaying] = useState(true);
   const [mounted, setMounted] = useState(false);
+  // Anticipation layer — silhouette + gold pulse hold the stage while the
+  // map silently boots underneath. Fades out as the map fades in, so the
+  // two surfaces never visually overlap (one ends as the other begins).
+  const [anticipating, setAnticipating] = useState(true);
   const timerRef = useRef<number | null>(null);
 
-  // Initial map breath — give Leaflet a beat before the first stop appears.
+  const silhouetteRegion = useMemo(
+    () => resolveSilhouetteRegion(destinationIntent, journey.tour.region),
+    [destinationIntent, journey.tour.region],
+  );
+
+  // Cinematic warm-up:
+  //   0ms   → silhouette + gold pulse hold the stage (map opacity 0)
+  //   1400ms → map starts fading in beneath
+  //   2100ms → silhouette fully gone, first stop appears
   useEffect(() => {
-    const t = window.setTimeout(() => {
+    const tMap = window.setTimeout(() => {
       setMounted(true);
+    }, 1400);
+    const tHandoff = window.setTimeout(() => {
+      setAnticipating(false);
       setRevealed(1);
       setActive(0);
-    }, 900);
-    return () => window.clearTimeout(t);
+    }, 2100);
+    return () => {
+      window.clearTimeout(tMap);
+      window.clearTimeout(tHandoff);
+    };
   }, []);
+
 
   // Auto-advance.
   useEffect(() => {
