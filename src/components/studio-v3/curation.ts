@@ -18,6 +18,7 @@
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
 import { isStopClosedOn } from "@/data/stopOperational";
+import { recordStudioV3CurationDecision } from "@/lib/studio-v3-telemetry";
 import {
   REGION_STOP_POOL,
   STUDIO_V3_OPTIONAL_STOPS_ENABLED,
@@ -355,6 +356,29 @@ export interface CuratedJourney {
   moments: CuratedMoment[];
   /** Region center for the map — first geo-resolvable moment, or null. */
   center: { lat: number; lng: number } | null;
+  /** Fase 5 — audit trail (rejections, swaps, pool sizes). Never shown
+   *  to users; consumed by `resolveStudioV3Route` to emit the
+   *  `studio-v3:curation.decision` telemetry event. */
+  audit: CurationAudit;
+}
+
+export interface CurationAuditRejection {
+  label: string;
+  reason:
+    | "closed-on-date"
+    | "winery-cap"
+    | "duplicate-label"
+    | "semantic-duplicate"
+    | "swapped-for-wine";
+  detail?: string;
+}
+
+export interface CurationAudit {
+  poolSizeRaw: number;
+  poolSizeAfterClosures: number;
+  target: number;
+  rejections: CurationAuditRejection[];
+  wineSwapApplied: boolean;
 }
 
 interface PoolStop {
@@ -640,9 +664,20 @@ export function curateJourney(
   // Operational closures live in src/data/stopOperational.ts so new rules
   // (holidays, seasonal windows, partner-confirmed downtime) can be added
   // without touching curation logic. Always cite a source there.
+  const rejections: CurationAuditRejection[] = [];
   const pool: PoolStop[] = !dateExact
     ? rawPool
-    : rawPool.filter((s) => !isStopClosedOn(`${s.label} ${s.story}`, dateExact));
+    : rawPool.filter((s) => {
+        const closed = isStopClosedOn(`${s.label} ${s.story}`, dateExact);
+        if (closed) {
+          rejections.push({
+            label: s.label,
+            reason: "closed-on-date",
+            detail: dateExact,
+          });
+        }
+        return !closed;
+      });
 
 
   // Score by feeling + companions + selected interests (refinement, not
@@ -723,9 +758,22 @@ export function curateJourney(
   if (anchor) addPick(anchor);
   for (const s of scored) {
     if (picks.length >= target) break;
-    if (seenLabels.has(s.stop.label.toLowerCase())) continue;
-    if (seenSemantic.has(normalizeSemantic(s.stop.label))) continue;
-    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) continue;
+    if (seenLabels.has(s.stop.label.toLowerCase())) {
+      rejections.push({ label: s.stop.label, reason: "duplicate-label" });
+      continue;
+    }
+    if (seenSemantic.has(normalizeSemantic(s.stop.label))) {
+      rejections.push({ label: s.stop.label, reason: "semantic-duplicate" });
+      continue;
+    }
+    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) {
+      rejections.push({
+        label: s.stop.label,
+        reason: "winery-cap",
+        detail: `cap=${MAX_WINERY_STOPS}`,
+      });
+      continue;
+    }
     addPick(s);
   }
 
@@ -735,6 +783,7 @@ export function curateJourney(
     interests.includes("wine") ||
     options?.destinationIntent === "alentejo-evora-wine" ||
     options?.destinationIntent === "arrabida-setubal-azeitao";
+  let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
     const winePick = scored.find(
       (s) =>
@@ -745,6 +794,7 @@ export function curateJourney(
     if (winePick) {
       if (picks.length < target) {
         addPick(winePick);
+        wineSwapApplied = true;
       } else if (picks.length > 1) {
         // Swap a non-anchor pick out so wine fits without growing the day.
         const swapIndex = picks.length - 1;
@@ -752,8 +802,14 @@ export function curateJourney(
         if (removed) {
           seenLabels.delete(removed.stop.label.toLowerCase());
           seenSemantic.delete(normalizeSemantic(removed.stop.label));
+          rejections.push({
+            label: removed.stop.label,
+            reason: "swapped-for-wine",
+            detail: winePick.stop.label,
+          });
         }
         addPick(winePick);
+        wineSwapApplied = true;
       }
     }
   }
@@ -785,7 +841,15 @@ export function curateJourney(
       ? { lat: firstGeo.lat, lng: firstGeo.lng }
       : null;
 
-  return { tour: primary, alternates, moments, center };
+  const audit: CurationAudit = {
+    poolSizeRaw: rawPool.length,
+    poolSizeAfterClosures: pool.length,
+    target,
+    rejections,
+    wineSwapApplied,
+  };
+
+  return { tour: primary, alternates, moments, center, audit };
 }
 
 /* ---------- Single route-resolution source (used everywhere) ---------- */
@@ -885,6 +949,31 @@ export function resolveStudioV3Route(input: {
     destinationIntent,
     dateExact,
   });
+
+  // Fase 5 — telemetria de decisão. Fire-and-forget; nunca bloqueia.
+  // Consumimos `journey.audit` (rejections, pool sizes, wine swap) e
+  // emitimos um único `studio-v3:curation.decision` por resolução.
+  try {
+    recordStudioV3CurationDecision({
+      tourId: journey.tour.id,
+      tourTitleInternal: journey.tour.title,
+      region: journey.tour.region ?? null,
+      feeling,
+      companions,
+      rhythm,
+      dateExact,
+      destinationIntent,
+      investment,
+      poolSizeRaw: journey.audit.poolSizeRaw,
+      poolSizeAfterClosures: journey.audit.poolSizeAfterClosures,
+      picked: journey.moments.map((m) => m.label),
+      rejections: journey.audit.rejections,
+      wineSwapApplied: journey.audit.wineSwapApplied,
+      target: journey.audit.target,
+    });
+  } catch {
+    /* telemetry must never break curation */
+  }
 
   // Hard cap at 4 main route points on the Journey Card (per brief).
   const routePoints: ResolvedRoutePoint[] = journey.moments

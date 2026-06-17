@@ -64,7 +64,7 @@ Hoje o reveal entrega um Journey Card estático. Bible pede "longing". Proposta:
 - 2ª batida (800–1600ms): título manuscrito-ish (Georgia italic) + 1 linha de "why it fits".
 - 3ª batida (>1600ms): route points aparecem em sequência (stagger 120ms), com sub-line "We confirm everything before you book".
 
-### Fase 5 — Telemetria de curation (P2)
+### Fase 5 — Telemetria de curation (✅ Shipped)
 Já temos `[studio-v3.phase4]`. Adicionar:
 - `studio-v3:curation.decision` (tour escolhido, score, closures aplicados, swaps por wine signal).
 - Painel `/admin.studio-v3-audit` para ver últimas 100 decisões e rejeições.
