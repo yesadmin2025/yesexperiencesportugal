@@ -782,6 +782,7 @@ export function curateJourney(
     interests.includes("wine") ||
     options?.destinationIntent === "alentejo-evora-wine" ||
     options?.destinationIntent === "arrabida-setubal-azeitao";
+  let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
     const winePick = scored.find(
       (s) =>
@@ -792,6 +793,7 @@ export function curateJourney(
     if (winePick) {
       if (picks.length < target) {
         addPick(winePick);
+        wineSwapApplied = true;
       } else if (picks.length > 1) {
         // Swap a non-anchor pick out so wine fits without growing the day.
         const swapIndex = picks.length - 1;
@@ -799,8 +801,14 @@ export function curateJourney(
         if (removed) {
           seenLabels.delete(removed.stop.label.toLowerCase());
           seenSemantic.delete(normalizeSemantic(removed.stop.label));
+          rejections.push({
+            label: removed.stop.label,
+            reason: "swapped-for-wine",
+            detail: winePick.stop.label,
+          });
         }
         addPick(winePick);
+        wineSwapApplied = true;
       }
     }
   }
@@ -832,7 +840,15 @@ export function curateJourney(
       ? { lat: firstGeo.lat, lng: firstGeo.lng }
       : null;
 
-  return { tour: primary, alternates, moments, center };
+  const audit: CurationAudit = {
+    poolSizeRaw: rawPool.length,
+    poolSizeAfterClosures: pool.length,
+    target,
+    rejections,
+    wineSwapApplied,
+  };
+
+  return { tour: primary, alternates, moments, center, audit };
 }
 
 /* ---------- Single route-resolution source (used everywhere) ---------- */
