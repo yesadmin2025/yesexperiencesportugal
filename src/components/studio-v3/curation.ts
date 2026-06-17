@@ -757,9 +757,22 @@ export function curateJourney(
   if (anchor) addPick(anchor);
   for (const s of scored) {
     if (picks.length >= target) break;
-    if (seenLabels.has(s.stop.label.toLowerCase())) continue;
-    if (seenSemantic.has(normalizeSemantic(s.stop.label))) continue;
-    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) continue;
+    if (seenLabels.has(s.stop.label.toLowerCase())) {
+      rejections.push({ label: s.stop.label, reason: "duplicate-label" });
+      continue;
+    }
+    if (seenSemantic.has(normalizeSemantic(s.stop.label))) {
+      rejections.push({ label: s.stop.label, reason: "semantic-duplicate" });
+      continue;
+    }
+    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) {
+      rejections.push({
+        label: s.stop.label,
+        reason: "winery-cap",
+        detail: `cap=${MAX_WINERY_STOPS}`,
+      });
+      continue;
+    }
     addPick(s);
   }
 
