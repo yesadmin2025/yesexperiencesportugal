@@ -70,6 +70,11 @@ export function PhaseShell({
           background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
         }}
       />
+      {/* Ambient Portugal silhouette — anticipation of the map. */}
+      {anticipation ? (
+        <PortugalSilhouette fill={anticipation.fill} region={anticipation.region ?? null} />
+      ) : null}
+
       {/* Hairline gold horizon. */}
       <div
         aria-hidden
