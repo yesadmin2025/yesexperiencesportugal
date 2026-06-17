@@ -355,6 +355,29 @@ export interface CuratedJourney {
   moments: CuratedMoment[];
   /** Region center for the map — first geo-resolvable moment, or null. */
   center: { lat: number; lng: number } | null;
+  /** Fase 5 — audit trail (rejections, swaps, pool sizes). Never shown
+   *  to users; consumed by `resolveStudioV3Route` to emit the
+   *  `studio-v3:curation.decision` telemetry event. */
+  audit: CurationAudit;
+}
+
+export interface CurationAuditRejection {
+  label: string;
+  reason:
+    | "closed-on-date"
+    | "winery-cap"
+    | "duplicate-label"
+    | "semantic-duplicate"
+    | "swapped-for-wine";
+  detail?: string;
+}
+
+export interface CurationAudit {
+  poolSizeRaw: number;
+  poolSizeAfterClosures: number;
+  target: number;
+  rejections: CurationAuditRejection[];
+  wineSwapApplied: boolean;
 }
 
 interface PoolStop {
