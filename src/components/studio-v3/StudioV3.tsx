@@ -1814,6 +1814,38 @@ function StoryboardHandoff({
   const skeletonTour = resolved.skeletonTourKey
     ? findTour(resolved.skeletonTourKey)
     : null;
+
+  // ---------- Fase 4 reveal guard ----------------------------------------
+  // The cinematic reveal must only run when the resolved Signature is
+  // fully grounded in real tour data. If anything is missing (no skeleton,
+  // missing stops, missing hero image, etc.) we surface a safe fallback
+  // instead of rendering a half-empty reveal with placeholders.
+  const revealValidation = useMemo(
+    () =>
+      validateResolvedSignature(
+        {
+          skeletonTourKey: resolved.skeletonTourKey,
+          routePoints: resolved.routePoints,
+          suggestedRouteLabel: resolved.suggestedRouteLabel,
+          journeyTitle: resolved.journeyTitle,
+        },
+        skeletonTour ?? null,
+      ),
+    [
+      resolved.skeletonTourKey,
+      resolved.routePoints,
+      resolved.suggestedRouteLabel,
+      resolved.journeyTitle,
+      skeletonTour,
+    ],
+  );
+  useEffect(() => {
+    recordStudioV3RevealValidation({
+      ok: revealValidation.ok,
+      missing: revealValidation.missing,
+      tourId: revealValidation.tourId,
+    });
+  }, [revealValidation.ok, revealValidation.missing, revealValidation.tourId]);
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{ label: string; story: string; source: "skeleton" | "region-pool" }> = [];
