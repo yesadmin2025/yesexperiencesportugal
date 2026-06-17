@@ -758,7 +758,26 @@ export function curateJourney(
     "tomar-coimbra": 1,
     "other": 1,
   };
-  const regionId: RegionId = (primary.region as RegionId) ?? "other";
+  // tour.region is a human-readable label (e.g. "Setúbal · Arrábida"),
+  // not a RegionId. Normalise to a RegionId for cap lookup.
+  const regionLabel = (primary.region ?? "").toLowerCase();
+  const regionId: RegionId = /arr[áa]bida|set[úu]bal|azeit[ãa]o|sesimbra|palmela/.test(regionLabel)
+    ? "arrabida-setubal"
+    : /alentejo|[ée]vora/.test(regionLabel)
+    ? "alentejo-evora"
+    : /douro|porto/.test(regionLabel)
+    ? "douro-porto"
+    : /sintra|cascais/.test(regionLabel)
+    ? "sintra-cascais"
+    : /lisbon|lisboa/.test(regionLabel)
+    ? "lisbon-sintra-cascais"
+    : /comporta|tr[óo]ia/.test(regionLabel)
+    ? "comporta-troia"
+    : /f[áa]tima|nazar[ée]|[óo]bidos/.test(regionLabel)
+    ? "fatima-nazare-obidos"
+    : /tomar|coimbra/.test(regionLabel)
+    ? "tomar-coimbra"
+    : "other";
   const wineryCap = REGIONAL_WINERY_CAP[regionId] ?? 1;
   const isWineryStop = (s: (typeof scored)[number]) =>
     WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`);
