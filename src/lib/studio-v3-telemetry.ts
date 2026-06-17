@@ -62,6 +62,52 @@ type StudioV3Event =
   | { kind: "curation.decision"; payload: StudioV3CurationDecision }
   | { kind: "phase4.timing"; payload: StudioV3Phase4Timing };
 
+export interface StudioV3BufferedEvent {
+  kind: StudioV3Event["kind"];
+  ts: number;
+  payload: StudioV3CurationDecision | StudioV3Phase4Timing;
+}
+
+const BUFFER_KEY = "studio-v3.audit.buffer.v1";
+const BUFFER_MAX = 200;
+
+function readBuffer(): StudioV3BufferedEvent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(BUFFER_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as StudioV3BufferedEvent[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeBuffer(next: StudioV3BufferedEvent[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(BUFFER_KEY, JSON.stringify(next));
+  } catch {
+    /* quota / private mode — silent */
+  }
+}
+
+/** Ring-buffer last N events in localStorage for the audit dashboard. */
+function bufferEvent(event: StudioV3Event): void {
+  const buf = readBuffer();
+  buf.push({ kind: event.kind, ts: Date.now(), payload: event.payload });
+  if (buf.length > BUFFER_MAX) buf.splice(0, buf.length - BUFFER_MAX);
+  writeBuffer(buf);
+}
+
+export function readStudioV3AuditBuffer(): StudioV3BufferedEvent[] {
+  return readBuffer();
+}
+
+export function clearStudioV3AuditBuffer(): void {
+  writeBuffer([]);
+}
+
 /** Single emit helper — keeps the console prefix and event names aligned. */
 export function emitStudioV3Event(event: StudioV3Event): void {
   if (typeof window === "undefined") return;
@@ -82,6 +128,7 @@ export function emitStudioV3Event(event: StudioV3Event): void {
   } catch {
     /* SSR / no-window — silent */
   }
+  bufferEvent(event);
 }
 
 /** Convenience wrappers (typed call-sites, single import per consumer). */
@@ -96,3 +143,4 @@ export function recordStudioV3Phase4Timing(
 ): void {
   emitStudioV3Event({ kind: "phase4.timing", payload });
 }
+
