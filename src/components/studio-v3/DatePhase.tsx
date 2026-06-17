@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import type { DateMode } from "./types";
 
 /**
@@ -26,7 +26,6 @@ export function DatePhaseControls({
   onPickFlexible: () => void;
   onPickUndecided: () => void;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const todayIso = useMemo(() => {
     const d = new Date();
     const yyyy = d.getFullYear();
@@ -103,7 +102,6 @@ export function DatePhaseControls({
 
         {/* Real native input — full-area, transparent, owns the tap. */}
         <input
-          ref={inputRef}
           id="studio-v3-date-input"
           type="date"
           min={todayIso}
@@ -113,13 +111,6 @@ export function DatePhaseControls({
             if (!v) return;
             if (v < todayIso) return; // belt-and-braces past-date guard
             onPickExact(v);
-          }}
-          onClick={() => {
-            // Best-effort: open the picker programmatically on browsers
-            // that support it (Chrome / Edge / recent Safari). Wrapped in
-            // try/catch because non-user-gesture calls throw.
-            const el = inputRef.current as (HTMLInputElement & { showPicker?: () => void }) | null;
-            try { el?.showPicker?.(); } catch { /* noop */ }
           }}
           aria-label="Choose a date"
           className="absolute inset-0 h-full w-full opacity-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
