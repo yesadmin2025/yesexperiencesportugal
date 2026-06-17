@@ -642,14 +642,16 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
-    // Final emotional finish: cap raised so creation beats stay on screen
-    // long enough for the route line to fully draw, pins to land one by
-    // one, and the user to register the moment before moving on.
-    const hold = Math.min(r.holdMs ?? 3200, 6600);
-    // Calmer handoff — keep ~650ms of negative space after the beat
-    // dissolves before the next question becomes interactive, so it
-    // never appears abruptly behind the fading overlay.
-    const settle = 650;
+    // Atmosphere beats are mood-setters — keep them brief so the next
+    // question is reachable quickly. Map/interest/rhythm beats stay a
+    // touch longer to register the cinematic moment. Capped to avoid the
+    // overlay ever lingering and blocking taps on the next phase.
+    const rawHold = r.holdMs ?? 2400;
+    const ceiling =
+      r.kind === "map-beat" || r.kind === "interests" || r.kind === "rhythm"
+        ? 3800
+        : 2400;
+    const hold = Math.min(rawHold, ceiling);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -657,8 +659,8 @@ export function StudioV3() {
       setReaction(r);
       window.setTimeout(() => {
         setReaction((current) => (current === r ? null : current));
-      }, hold + settle);
-    }, 280);
+      }, hold);
+    }, 220);
   }, [advance]);
 
   // Single-select handlers — set field, then either play a reaction beat
