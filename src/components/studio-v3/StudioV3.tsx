@@ -1566,6 +1566,7 @@ export function StudioV3() {
           pickup={state.pickup}
           investment={state.investment}
           destinationIntent={state.destinationIntent}
+          dateExact={state.dateExact}
           onBack={() => back("language")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
