@@ -62,6 +62,9 @@ interface Props {
   pickup?: Pickup | null;
   investment?: InvestmentTier | null;
   destinationIntent?: DestinationIntent | null;
+  /** ISO yyyy-mm-dd of the exact selected day — used to skip stops
+   *  closed on that weekday (e.g. Mercado do Livramento on Mondays). */
+  dateExact?: string | null;
   onBack: () => void;
   onContinue: (tourId: string) => void;
 }
@@ -76,6 +79,7 @@ export function MapAwakens({
   pickup,
   investment,
   destinationIntent,
+  dateExact,
   onBack,
   onContinue,
 }: Props) {
@@ -86,9 +90,11 @@ export function MapAwakens({
         pickup,
         investment,
         destinationIntent,
+        dateExact,
       }),
-    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent],
+    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact],
   );
+
 
 
   const [revealed, setRevealed] = useState(0); // how many moments shown
