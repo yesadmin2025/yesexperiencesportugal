@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import type { RoutedStopUI } from "@/components/builder/types";
 import { curateJourney, type CuratedJourney } from "./curation";
+import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 import type {
   Companions,
   DestinationIntent,
@@ -18,6 +19,24 @@ import type {
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
 );
+
+// Map destinationIntent (or tour region fallback) into the silhouette
+// region so the gold pulse settles exactly where the day will unfold.
+function resolveSilhouetteRegion(
+  intent: DestinationIntent | null | undefined,
+  tourRegion: string | null | undefined,
+): SilhouetteRegion {
+  if (intent === "alentejo-evora-wine" || intent === "comporta-troia") return "alentejo";
+  if (intent === "central-portugal" || intent === "spiritual-coast") return "centro";
+  if (intent === "lisbon-sintra-cascais") return "lisbon-coast";
+  if (intent === "arrabida-setubal-azeitao") return "arrabida";
+  const r = (tourRegion ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("évora") || r.includes("evora") || r.includes("comporta")) return "alentejo";
+  if (r.includes("arrábida") || r.includes("arrabida") || r.includes("setúbal") || r.includes("setubal")) return "arrabida";
+  if (r.includes("sintra") || r.includes("cascais") || r.includes("lisbon") || r.includes("lisboa")) return "lisbon-coast";
+  if (r.includes("centro") || r.includes("central") || r.includes("óbidos") || r.includes("obidos") || r.includes("fátima") || r.includes("fatima")) return "centro";
+  return null;
+}
 
 /**
  * Phase 4 — "The map awakens".
