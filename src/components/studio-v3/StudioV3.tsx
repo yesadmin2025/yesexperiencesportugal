@@ -642,14 +642,16 @@ export function StudioV3() {
       advance(r.nextPhase);
       return;
     }
-    // Final emotional finish: cap raised so creation beats stay on screen
-    // long enough for the route line to fully draw, pins to land one by
-    // one, and the user to register the moment before moving on.
-    const hold = Math.min(r.holdMs ?? 3200, 6600);
-    // Calmer handoff — keep ~650ms of negative space after the beat
-    // dissolves before the next question becomes interactive, so it
-    // never appears abruptly behind the fading overlay.
-    const settle = 650;
+    // Atmosphere beats are mood-setters — keep them brief so the next
+    // question is reachable quickly. Map/interest/rhythm beats stay a
+    // touch longer to register the cinematic moment. Capped to avoid the
+    // overlay ever lingering and blocking taps on the next phase.
+    const rawHold = r.holdMs ?? 2400;
+    const ceiling =
+      r.kind === "map-beat" || r.kind === "interests" || r.kind === "rhythm"
+        ? 3800
+        : 2400;
+    const hold = Math.min(rawHold, ceiling);
     setExiting(true);
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: r.nextPhase }));
@@ -657,8 +659,8 @@ export function StudioV3() {
       setReaction(r);
       window.setTimeout(() => {
         setReaction((current) => (current === r ? null : current));
-      }, hold + settle);
-    }, 280);
+      }, hold);
+    }, 220);
   }, [advance]);
 
   // Single-select handlers — set field, then either play a reaction beat
@@ -2772,7 +2774,25 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 3200, 6600);
+  // Match the cap used in playReaction so the overlay never visually
+  // lingers past the moment the underlying phase becomes the focus.
+  const rawHold = reaction.holdMs ?? 2400;
+  const ceiling =
+    reaction.kind === "map-beat" || reaction.kind === "interests" || reaction.kind === "rhythm"
+      ? 3800
+      : 2400;
+  const hold = Math.min(rawHold, ceiling);
+
+  // After the visible peak, surrender pointer events so taps fall through
+  // to the next phase already mounted underneath. Fixes the core bug of
+  // the user seeing the next question but being unable to tap it.
+  const [clickThrough, setClickThrough] = useState(false);
+  useEffect(() => {
+    setClickThrough(false);
+    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.55));
+    return () => window.clearTimeout(t);
+  }, [hold, reaction]);
+  const passThroughStyle = clickThrough ? { pointerEvents: "none" as const } : {};
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.
@@ -2786,7 +2806,7 @@ function ReactionOverlay({
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
           background: "var(--charcoal)",
-          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
         }}
       >
         <AtmosphereBeat
@@ -2818,7 +2838,7 @@ function ReactionOverlay({
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
           background: "var(--charcoal)",
-          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
         }}
       >
         <MapBeat
@@ -2866,7 +2886,7 @@ function ReactionOverlay({
       style={{
         background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
         backdropFilter: "blur(2px)",
-        animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+        animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
       }}
     >
       <div className="w-full max-w-[480px] text-center">

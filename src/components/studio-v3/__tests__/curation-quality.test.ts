@@ -23,7 +23,20 @@ describe("Studio V3 curation quality", () => {
     expect(route.routePoints.some((p) => WINE_RE.test(`${p.label} ${p.story}`))).toBe(true);
   });
 
-  it("does not repeat stops and keeps them inside the resolved Signature", () => {
+  it("wine-food feeling alone (no explicit wine interest) still surfaces a wine stop", () => {
+    const route = resolveStudioV3Route({
+      feeling: "wine-food",
+      companions: "couple",
+      rhythm: "balanced",
+      interests: [],
+      pickup: "lisbon",
+      destinationIntent: "arrabida-setubal-azeitao",
+    });
+
+    expect(route.routePoints.some((p) => WINE_RE.test(`${p.label} ${p.story}`))).toBe(true);
+  });
+
+  it("does not repeat stops semantically (Bacalhôa vs Bacalhôa Palace & Winery)", () => {
     const route = resolveStudioV3Route({
       feeling: "wine-food",
       companions: "friends",
@@ -32,14 +45,22 @@ describe("Studio V3 curation quality", () => {
       pickup: "lisbon",
       investment: "bespoke",
     });
-    const labels = route.routePoints.map((p) => norm(p.label));
+    const normalize = (s: string) =>
+      s
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    const semantic = route.routePoints.map((p) => normalize(p.label));
+    expect(semantic).toEqual(Array.from(new Set(semantic)));
+
     const tour = route.skeletonTourKey ? findTour(route.skeletonTourKey) : null;
     const allowed = new Set([
-      ...(tour?.stops.map((s) => norm(s.label)) ?? []),
-      ...REGION_STOP_POOL.filter((s) => s.active).map((s) => norm(s.name)),
+      ...(tour?.stops.map((s) => s.label.toLowerCase()) ?? []),
+      ...REGION_STOP_POOL.filter((s) => s.active).map((s) => s.name.toLowerCase()),
     ]);
-
-    expect(labels).toEqual(Array.from(new Set(labels)));
-    expect(labels.every((label) => allowed.has(label))).toBe(true);
+    expect(route.routePoints.every((p) => allowed.has(p.label.toLowerCase()))).toBe(true);
   });
 });

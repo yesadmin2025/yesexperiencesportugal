@@ -1,134 +1,213 @@
+# Plano — transformar o Studio no melhor builder
 
-# Studio V3 — Minimal Implementation Plan
-*Planning only. No code. Reuse-first, copy/state-first, zero new infra.*
+## Testes feitos agora
 
----
+1. **Preview mobile 393×587 em `/studio-v3`**
+   - Intro abre corretamente.
+   - O fluxo chega a Feeling e Destination.
+   - Ao escolher **Wine & food**, o Studio avança para a fase seguinte, mas o beat anterior continua por cima durante vários segundos.
+   - Resultado: o utilizador vê a próxima pergunta, tenta tocar, e o overlay invisível/ativo intercepta o clique. Isto explica a sensação de “erro”, lentidão e pouco progresso.
 
-## 1. Files likely to change
+2. **Preview mobile em `/builder`**
+   - O entry point não é claro: o Builder antigo redireciona para Studio, mas a experiência continua a parecer uma sequência de perguntas, não um builder vivo.
 
-Scoped strictly to `/studio-v3`:
+3. **Testes unitários existentes**
+   - `curation-quality.test.ts` passou.
+   - `phase-shell-anticipation.test.tsx` passou.
+   - Ou seja: os snapshots básicos passam, mas não cobrem o problema real de UX/interação.
 
-- `src/components/studio-v3/types.ts` — add 1–2 state fields (`journeyTitle`, `composing` flag). No new component types.
-- `src/components/studio-v3/StudioV3.tsx` — orchestration only: insert a "composing" interstitial beat, pass title down, route storyboard handoff.
-- `src/components/studio-v3/MapAwakens.tsx` — swap "· added for you" italic for a gold dot + accessible whisper on hover/focus; add a small "hold + vignette" CSS state on the final stop (no new component).
-- `src/components/studio-v3/curation.ts` — add a pure `composeJourneyTitle(feeling, companions, rhythm, region)` helper. No data model changes.
-- `src/components/studio-v3/PhaseShell.tsx` — *optional, minimal*: accept a `mode="interstitial"` prop to render a centered whisper line. If it adds risk, do it inline in `StudioV3.tsx` instead and skip this edit.
-- `src/components/studio-v3/StudioV3.tsx` (storyboard block) — wrap existing `RevealInvestment` so it mounts collapsed with the `from €X` line visible. No changes to pricing logic.
+## Diagnóstico principal
 
-That's it. Six files maximum, most edits ≤ 30 lines.
+O problema não é só visual. É estrutural:
 
----
+```text
+Escolha do cliente
+  → beat cinematográfico longo
+  → próxima fase já aparece por baixo
+  → overlay continua ativo e bloqueia toques
+  → utilizador tenta avançar e sente erro / atraso / sobreposição
+```
 
-## 2. Files that must NOT be touched
+Além disso:
+- O Studio ainda parece demasiado “formulário com animações”.
+- O mapa ainda não se torna o centro da criação cedo o suficiente.
+- A curadoria de vinho ainda depende demasiado de sinais específicos e pode falhar quando o perfil diz “wine & food” mas a rota base/stop pool não reforça adega/quinta.
+- O reveal final não cria um momento de certeza; ainda parece summary, não “a tua viagem nasceu”.
+- O fluxo de data precisa ser validado em mobile real com o overlay corrigido, porque neste teste o bloqueio apareceu antes de eu conseguir completar o caminho com estabilidade.
 
-- `src/integrations/supabase/*` (client, server, middleware, types)
-- `src/components/builder/*`, `src/components/studio-v2/*`, `src/routes/studio-v2.tsx`, `src/routes/builder.tsx`
-- `src/data/signatureTours.ts`, `src/data/stopGeo.ts`, `src/data/regionStops.ts` (read-only)
-- `src/styles.css`, brand tokens, `tailwind` config
-- Any `src/lib/builder*`, `studioNarrative.functions.ts`, pricing logic
-- Hero, homepage, routes outside `/studio-v3`
-- `src/routeTree.gen.ts` (auto-generated)
-- All CI workflows, e2e specs, brand audits
-- `RevealInvestment` internals (only wrap/prop it from outside)
-- `BuilderMap` / `PremiumMap` internals (consume as-is)
+## Objetivo de produto
 
----
+Transformar o Studio num **builder cinematográfico vivo**:
 
-## 3. Smallest possible phases
+- menos sensação de questionário;
+- mais sensação de criação em tempo real;
+- mapa e rota a responderem imediatamente;
+- resultado fiel ao perfil;
+- zero overlays a bloquear interação;
+- reveal final com impacto emocional e confiança operacional.
 
-**Phase 1 — Copy + state only (no logic, no new files)**
-- Replace "added for you" italic with a gold dot + `aria-label` / tooltip whisper.
-- Add `composeJourneyTitle()` (pure function) + render the title in the storyboard handoff header.
-- Tighten storyboard handoff copy.
-*Risk: near-zero. No motion, no data, no pricing.*
+## Fase 1 — Corrigir fricção crítica de interação
 
-**Phase 2 — One held silence (motion only)**
-- Insert ~1.2–1.4s "Composing your Portugal…" beat between Phase 3 (rhythm) and Phase 4 (map), reusing `PhaseShell`'s fade. Pure state machine flag. Honors `prefers-reduced-motion` (skip).
+**Prioridade máxima.** Antes de melhorar estética, o Studio tem de ser tocável.
 
-**Phase 3 — Pricing as whisper (presentation only)**
-- Mount existing `RevealInvestment` in collapsed state, surface only `from €X per guest`. Expansion stays as-is. No pricing math touched.
+### O que corrigir
 
-**Phase 4 — Map as climax (motion + reuse)**
-- Within `MapAwakens`, sequence existing pan/zoom to ease into each stop and hold on the last with a CSS vignette overlay. Reuses `BuilderMap`. If gold-line drawing isn't already trivial via the existing map primitive, **postpone** the line and ship only the pan/hold/vignette.
+- Refatorar `playReaction` em `StudioV3.tsx` para impedir que a próxima pergunta fique visível enquanto o overlay ainda bloqueia toques.
+- Escolher um destes padrões:
+  - **Padrão recomendado:** overlay termina primeiro, depois a próxima fase entra limpa.
+  - Alternativa: overlay vira `pointer-events-none` depois do primeiro segundo, mas isto é menos elegante.
+- Reduzir beats longos onde não são essenciais:
+  - direção, companhia, ocasião, data: ~1600–2200ms;
+  - mapa/interesses/rhythm: podem manter mais impacto, mas com saída clara.
+- Adicionar teste E2E para garantir que após uma escolha o próximo botão fica clicável sem interceptação.
 
-**Phase 5 — Lead capture (conditional)**
-- Only if an existing leads/contacts table or save mechanism exists in Supabase. If not: **stop and report** — do not create a table.
+### Resultado esperado
 
----
+O utilizador nunca vê uma fase que ainda não pode tocar.
 
-## 4. Highest visible impact / lowest risk
+## Fase 2 — Data sem erro e sem armadilha mobile
 
-**Phase 1.** The named journey ("A slow coast, for two.") is the single biggest perceived-ownership lift, costs almost nothing, and risks nothing. Ship it first and alone.
+### O que corrigir
 
----
+- Substituir o input de data invisível por um controlo mobile mais robusto:
+  - botão visual + input nativo visível o suficiente para ser fiável;
+  - sem `showPicker()` obrigatório;
+  - sem overlay opaco que crie dead zones.
+- Criar teste E2E específico:
+  - chegar à fase Date;
+  - selecionar data futura;
+  - confirmar que avança para Pickup;
+  - confirmar ausência de console/page errors.
 
-## 5. What can be done with copy/state only
+### Resultado esperado
 
-- Journey title generation + render
-- "Added for you" → gold dot + whisper
-- Storyboard handoff copy tightening
-- Collapsed pricing presentation (prop-level)
-- Composing interstitial (state flag + existing shell)
+Escolher data nunca bloqueia o Studio.
 
-No logic, no schema, no APIs.
+## Fase 3 — Curadoria fiel ao perfil, sem paragens repetidas
 
----
+### O que corrigir
 
-## 6. What requires real logic changes
+- Em `curation.ts`, tratar **feeling = wine-food** como sinal forte de vinho, mesmo que o utilizador ainda não tenha escolhido `interest: wine`.
+- Garantir pelo menos uma paragem real de vinho/adega/quinta/tasting quando o perfil indicar vinho por:
+  - feeling `wine-food`;
+  - interest `wine`;
+  - destination `alentejo-evora-wine` ou `arrabida-setubal-azeitao`.
+- Melhorar deduplicação sem inventar paragens:
+  - normalizar acentos;
+  - remover sufixos como “winery”, “adega”, “palace”, “tasting”, “visit”;
+  - evitar pares que soem iguais, tipo “Bacalhôa” + “Bacalhôa Palace & Winery”.
+- Adicionar testes para combinações reais:
+  - Wine & food + casal + Arrábida;
+  - Wine & food + Alentejo;
+  - Hidden + wine interest;
+  - Gastronomy sem wine não deve forçar adega se não fizer sentido.
 
-- Phase 4 map choreography (sequenced pan/zoom/hold) — touches `MapAwakens` motion code.
-- Any gold-line route drawing if not already supported by `BuilderMap` — **postpone** unless trivial.
-- Phase 5 lead save — requires confirming an existing table first.
+### Resultado esperado
 
----
+Se o cliente escolhe vinho, a rota mostra vinho. Sem repetições e sem fantasia.
 
-## 7. Postpone
+## Fase 4 — Mapa como criação, não decoração
 
-- Gold polyline between stops (unless `BuilderMap` already exposes it)
-- Save / share / return-to-journey
-- Sound, haptics, video transitions
-- Any new analytics events beyond what already fires
-- Expanding choice grids, new phases, new questions
-- Lead capture until storage is confirmed
+### O que corrigir
 
----
+- A silhueta de Portugal deve reagir no momento certo:
+  - pulse ativa imediatamente após `destinationIntent` quando existe;
+  - se não houver destino explícito, usa inferência suave por feeling/pickup, mas visualmente mais discreta.
+- Levar o mapa mais cedo para mobile:
+  - não como painel pesado;
+  - como “route pulse” leve: origem, região provável, 2–3 pins fantasma.
+- Reduzir re-render do `PortugalSilhouette`:
+  - memoização já existe;
+  - completar com props estáveis via `useMemo` em `StudioV3.tsx`;
+  - evitar recriar objetos de anticipation em cada render sem necessidade.
 
-## 8. Credit-saving build strategy
+### Resultado esperado
 
-1. **One phase per turn.** Never bundle phases — each phase ships, is verified visually, then the next is scoped.
-2. **Copy/state before motion before logic.** Cheapest edits first; they often satisfy the brief on their own.
-3. **Edit, don't create.** No new components unless a phase literally cannot be expressed as props/state on an existing one.
-4. **No speculative refactors.** Leave `RevealInvestment`, `BuilderMap`, `curation.ts` scoring untouched in Phase 1.
-5. **Stop conditions written into each phase.** E.g. "if gold line isn't a one-prop change on BuilderMap, skip it." Prevents rabbit holes.
-6. **Reuse existing tokens, fonts, motion primitives.** Zero `styles.css` edits.
-7. **No CI/test churn.** Changes stay inside `/studio-v3`, which has no dedicated guard workflows — avoids triggering hero/homepage/typography regressions.
-8. **Verify with a single preview check per phase**, not a full audit pass.
+O cliente sente que Portugal se está a desenhar à frente dele, não que só vê mapa no fim.
 
----
+## Fase 5 — Resolver texto sobreposto e ritmo mobile
 
-## 9. Final single build prompt — Phase 1 only
+### O que corrigir
 
-> **Phase 1 — Studio V3: name the journey + quiet authorship signal (copy/state only).**
->
-> Scope strictly to these files. No new components. No new files. No schema. No pricing changes. No motion changes. No map changes.
->
-> 1. **`src/components/studio-v3/curation.ts`** — add a pure helper `composeJourneyTitle({ feeling, companions, rhythm, region })` returning a short sentence-case title like *"A slow coast, for two."* Use a small lookup table keyed by `feeling` for the noun phrase, by `companions` for the suffix, by `rhythm` for the adjective. Sentence case, ends with a period, ≤ 38 chars. No external calls, no AI, no randomness — deterministic.
->
-> 2. **`src/components/studio-v3/types.ts`** — add `journeyTitle: string | null` to `StudioV3State` and `INITIAL_STATE`.
->
-> 3. **`src/components/studio-v3/StudioV3.tsx`** — when advancing from `map` → `storyboard`, compute the title via the helper (using the resolved tour's `region`) and store it in state. In `StoryboardHandoff`, render the title above the existing `{region} is waiting.` headline as a Georgia-italic teal line with the existing eyebrow spacing. No other changes.
->
-> 4. **`src/components/studio-v3/MapAwakens.tsx`** — replace the existing `"· added for you"` italic span with a single 6px gold dot (`var(--gold)`), `aria-label="Chosen for the way you travel"`, and a `title` tooltip with the same whisper. Keep layout, no motion changes.
->
-> Constraints:
-> - Reuse existing tokens (`--gold`, `--teal`, `--charcoal`, `--font-serif`, `--font-display`).
-> - No new dependencies. No new files. No `styles.css` edits.
-> - Honor `prefers-reduced-motion` (nothing new animated here, but verify nothing regresses).
-> - Mobile-first; 44×44 touch targets unchanged; 4.5:1 contrast maintained.
-> - Do not touch `RevealInvestment`, `BuilderMap`, pricing, or any file outside `src/components/studio-v3/`.
->
-> Verify by loading `/studio-v3` in the mobile preview and walking through Feeling → Who → Rhythm → Map → Storyboard. Confirm the title renders, the gold dot replaces the italic, and no other behavior changed.
+- Rever `PhaseShell` para mobile pequeno:
+  - top progress deve ocupar espaço real ou ficar mais discreto;
+  - conteúdo não pode começar por baixo de progress/painéis;
+  - CTA/help inferior não pode competir com escolhas.
+- Rever `LivingJourneyPanel`:
+  - em mobile, deve ser colapsado ou aparecer apenas depois da escolha principal;
+  - nunca sobrepor header/pergunta.
+- Adicionar teste visual/DOM para iPhone SE-height:
+  - sem elementos interativos sobrepostos;
+  - sem botão oculto atrás de overlay.
 
----
+### Resultado esperado
 
-**Net effect of this plan:** 4 phases shippable in ≤ 4 turns, ~6 files touched total, zero new infra, zero risk to production routes, and the highest-emotion change (named journey) lands in Phase 1.
+O Studio respira em ecrãs pequenos e deixa de parecer apertado.
+
+## Fase 6 — Reveal final com impacto
+
+### O que construir
+
+- Antes do storyboard, criar um momento de composição final:
+
+```text
+A rota fecha.
+O dia ganha nome.
+A assinatura aparece.
+```
+
+- O reveal deve mostrar primeiro:
+  - título da jornada;
+  - mapa/rota curta;
+  - 3 razões pelas quais foi escolhido para aquele perfil;
+  - uma paragem hero real.
+- Só depois aparecem detalhes, refinamento e CTA.
+- A copy deve explicar a fidelidade ao perfil, sem texto genérico.
+
+### Resultado esperado
+
+O fim parece uma criação personalizada, não uma página de resumo.
+
+## Fase 7 — Test suite mínima obrigatória
+
+Criar/atualizar testes que protegem os pontos que falharam:
+
+1. **E2E mobile Studio happy path**
+   - Intro → Guided → Wine & food → Arrábida → Couple → Date → Pickup → Wine → Rhythm → Reveal.
+
+2. **Overlay safety test**
+   - Depois de cada beat, nenhum overlay ativo pode bloquear a próxima escolha.
+
+3. **Date test**
+   - Data futura avança sem erro.
+
+4. **Curation tests**
+   - Wine profile inclui adega/quinta/tasting real.
+   - Sem paragens duplicadas semanticamente.
+   - Stops ficam dentro das fontes reais permitidas.
+
+5. **Layering test**
+   - Anticipation acima do wash e abaixo do conteúdo continua protegido.
+
+## Ordem de implementação recomendada
+
+```text
+1. Overlay/interação crítica
+2. Date mobile
+3. Curadoria vinho + dedupe
+4. Texto/spacing mobile
+5. Mapa/pulse antecipado
+6. Reveal final
+7. Testes E2E completos
+```
+
+## Critério de aceitação
+
+Só considero esta fase resolvida quando:
+
+- consigo completar o fluxo inteiro em mobile sem clique bloqueado;
+- escolher vinho gera pelo menos uma paragem real de vinho/adega/quinta quando fizer sentido;
+- não há stops repetidos semanticamente;
+- a data avança sem erro;
+- o reveal final mostra claramente “isto foi feito para mim”;
+- há testes a proteger estas regressões.
