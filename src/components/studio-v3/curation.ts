@@ -604,12 +604,18 @@ export function curateJourney(
     pickup?: Pickup | null;
     investment?: InvestmentTier | null;
     destinationIntent?: DestinationIntent | null;
+    /** ISO yyyy-mm-dd — when present, stops closed on that weekday
+     *  (e.g. Mercado do Livramento on Mondays) are removed from the
+     *  pool so we never propose a stop that won't be open. */
+    dateExact?: string | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
   const pickup = options?.pickup ?? null;
   const investment = options?.investment ?? null;
   const destinationIntent = options?.destinationIntent ?? null;
+  const dateExact = options?.dateExact ?? null;
+
 
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
