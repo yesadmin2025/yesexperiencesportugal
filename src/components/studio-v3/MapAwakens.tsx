@@ -99,6 +99,11 @@ export function MapAwakens({
   // map silently boots underneath. Fades out as the map fades in, so the
   // two surfaces never visually overlap (one ends as the other begins).
   const [anticipating, setAnticipating] = useState(true);
+  // Polite announcement for screen readers — narrates the silhouette →
+  // map → first stop arc without making the silhouette itself focusable.
+  const [srStatus, setSrStatus] = useState<string>(
+    "Composing your route. A map of Portugal is taking shape.",
+  );
   const timerRef = useRef<number | null>(null);
 
   const silhouetteRegion = useMemo(
@@ -110,20 +115,75 @@ export function MapAwakens({
   //   0ms   → silhouette + gold pulse hold the stage (map opacity 0)
   //   1400ms → map starts fading in beneath
   //   2100ms → silhouette fully gone, first stop appears
+  //
+  // We also capture real wall-clock timings per device so we can audit
+  // whether the choreography keeps its rhythm on lower-end phones.
   useEffect(() => {
+    const t0 =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    const now = () =>
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    const emit = (
+      phase: "silhouette-shown" | "map-mounted" | "first-stop" | "complete",
+      extra: Record<string, unknown> = {},
+    ) => {
+      const elapsed = Math.round(now() - t0);
+      const payload = {
+        phase,
+        elapsedMs: elapsed,
+        tourId: journey.tour.id,
+        region: silhouetteRegion ?? journey.tour.region ?? null,
+        viewport:
+          typeof window !== "undefined"
+            ? { w: window.innerWidth, h: window.innerHeight, dpr: window.devicePixelRatio }
+            : null,
+        reducedMotion:
+          typeof window !== "undefined"
+            ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            : false,
+        ...extra,
+      };
+      // Console marker — discoverable in DevTools without an analytics SDK.
+      // Grouped under a stable prefix so users can filter `studio-v3.phase4`.
+      // eslint-disable-next-line no-console
+      console.info("[studio-v3.phase4]", phase, payload);
+      // Custom event — lets any analytics layer (or test) subscribe.
+      try {
+        window.dispatchEvent(
+          new CustomEvent("studio-v3:phase4-timing", { detail: payload }),
+        );
+      } catch {
+        /* SSR / no-window — silent. */
+      }
+    };
+
+    emit("silhouette-shown");
+
     const tMap = window.setTimeout(() => {
       setMounted(true);
+      setSrStatus("Map ready. The route is about to reveal its first moment.");
+      emit("map-mounted");
     }, 1400);
     const tHandoff = window.setTimeout(() => {
       setAnticipating(false);
       setRevealed(1);
       setActive(0);
+      setSrStatus(
+        `First moment revealed${journey.moments[0]?.label ? `: ${journey.moments[0].label}` : ""}.`,
+      );
+      emit("first-stop");
     }, 2100);
+    const tComplete = window.setTimeout(() => {
+      emit("complete");
+    }, 2800);
     return () => {
       window.clearTimeout(tMap);
       window.clearTimeout(tHandoff);
+      window.clearTimeout(tComplete);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
 
   // Auto-advance.
