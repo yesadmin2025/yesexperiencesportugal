@@ -105,3 +105,5 @@ function PortugalSilhouetteBase({ fill, region = null }: Props) {
     </div>
   );
 }
+
+export const PortugalSilhouette = memo(PortugalSilhouetteBase);
