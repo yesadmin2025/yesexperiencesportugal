@@ -522,7 +522,8 @@ function pickPrimaryTour(
   const intentTargets = destinationIntent && destinationIntent !== "no-preference"
     ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
     : [];
-  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets]));
+  const interestTargets = interests.flatMap((i) => INTEREST_TARGET_TOURS[i] ?? []);
+  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets, ...interestTargets]));
   const candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
@@ -558,6 +559,9 @@ function pickPrimaryTour(
       score += pickupAffinity(tour, pickup) * 1.2;
       score += interestAffinity(tour, interests);
       score += destinationIntentBoost(tour, destinationIntent);
+      if (interests.includes("wine") && /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega/i.test(`${tour.title} ${tour.theme} ${tour.blurb}`)) {
+        score += 2.5;
+      }
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
         score += 0.5;
