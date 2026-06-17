@@ -31,6 +31,7 @@ export function PhaseShell({
   step,
   totalSteps,
   progress,
+  anticipation = null,
 }: PhaseShellProps) {
   const [entered, setEntered] = useState(false);
   useEffect(() => {
