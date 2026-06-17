@@ -1604,7 +1604,13 @@ function scoreOptionalStop(
 }
 
 function normalizeLabel(s: string): string {
-  return s.trim().toLowerCase();
+  return s
+    .split(/[—–-]/)[0]
+    .split(",")[0]
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 /**
