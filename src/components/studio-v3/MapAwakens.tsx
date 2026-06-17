@@ -62,6 +62,9 @@ interface Props {
   pickup?: Pickup | null;
   investment?: InvestmentTier | null;
   destinationIntent?: DestinationIntent | null;
+  /** ISO yyyy-mm-dd of the exact selected day — used to skip stops
+   *  closed on that weekday (e.g. Mercado do Livramento on Mondays). */
+  dateExact?: string | null;
   onBack: () => void;
   onContinue: (tourId: string) => void;
 }
@@ -76,6 +79,7 @@ export function MapAwakens({
   pickup,
   investment,
   destinationIntent,
+  dateExact,
   onBack,
   onContinue,
 }: Props) {
@@ -86,9 +90,11 @@ export function MapAwakens({
         pickup,
         investment,
         destinationIntent,
+        dateExact,
       }),
-    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent],
+    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact],
   );
+
 
 
   const [revealed, setRevealed] = useState(0); // how many moments shown
@@ -99,6 +105,11 @@ export function MapAwakens({
   // map silently boots underneath. Fades out as the map fades in, so the
   // two surfaces never visually overlap (one ends as the other begins).
   const [anticipating, setAnticipating] = useState(true);
+  // Polite announcement for screen readers — narrates the silhouette →
+  // map → first stop arc without making the silhouette itself focusable.
+  const [srStatus, setSrStatus] = useState<string>(
+    "Composing your route. A map of Portugal is taking shape.",
+  );
   const timerRef = useRef<number | null>(null);
 
   const silhouetteRegion = useMemo(
@@ -110,20 +121,75 @@ export function MapAwakens({
   //   0ms   → silhouette + gold pulse hold the stage (map opacity 0)
   //   1400ms → map starts fading in beneath
   //   2100ms → silhouette fully gone, first stop appears
+  //
+  // We also capture real wall-clock timings per device so we can audit
+  // whether the choreography keeps its rhythm on lower-end phones.
   useEffect(() => {
+    const t0 =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    const now = () =>
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    const emit = (
+      phase: "silhouette-shown" | "map-mounted" | "first-stop" | "complete",
+      extra: Record<string, unknown> = {},
+    ) => {
+      const elapsed = Math.round(now() - t0);
+      const payload = {
+        phase,
+        elapsedMs: elapsed,
+        tourId: journey.tour.id,
+        region: silhouetteRegion ?? journey.tour.region ?? null,
+        viewport:
+          typeof window !== "undefined"
+            ? { w: window.innerWidth, h: window.innerHeight, dpr: window.devicePixelRatio }
+            : null,
+        reducedMotion:
+          typeof window !== "undefined"
+            ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            : false,
+        ...extra,
+      };
+      // Console marker — discoverable in DevTools without an analytics SDK.
+      // Grouped under a stable prefix so users can filter `studio-v3.phase4`.
+      // eslint-disable-next-line no-console
+      console.info("[studio-v3.phase4]", phase, payload);
+      // Custom event — lets any analytics layer (or test) subscribe.
+      try {
+        window.dispatchEvent(
+          new CustomEvent("studio-v3:phase4-timing", { detail: payload }),
+        );
+      } catch {
+        /* SSR / no-window — silent. */
+      }
+    };
+
+    emit("silhouette-shown");
+
     const tMap = window.setTimeout(() => {
       setMounted(true);
+      setSrStatus("Map ready. The route is about to reveal its first moment.");
+      emit("map-mounted");
     }, 1400);
     const tHandoff = window.setTimeout(() => {
       setAnticipating(false);
       setRevealed(1);
       setActive(0);
+      setSrStatus(
+        `First moment revealed${journey.moments[0]?.label ? `: ${journey.moments[0].label}` : ""}.`,
+      );
+      emit("first-stop");
     }, 2100);
+    const tComplete = window.setTimeout(() => {
+      emit("complete");
+    }, 2800);
     return () => {
       window.clearTimeout(tMap);
       window.clearTimeout(tHandoff);
+      window.clearTimeout(tComplete);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
 
   // Auto-advance.
@@ -190,13 +256,29 @@ export function MapAwakens({
         <span style={{ color: "var(--gold)" }}>—</span> Suggested route · taking shape
       </div>
 
+      {/* Polite live-region — narrates the silhouette → map → first stop
+          arc to assistive tech so blind users get the same emotional beat
+          as sighted users. Visually hidden, never traps focus. */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {srStatus}
+      </div>
+
       {/* Map stage — top portion of the viewport. */}
-      <div className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3">
+      <section
+        aria-label="Suggested route map"
+        aria-busy={!mounted || anticipating}
+        className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
+      >
         {/* Anticipation layer — Portugal silhouette + gold pulse holds the
             stage while the real map silently boots underneath. Fades out
             as the map fades in: the two never visually overlap. */}
         <div
-          aria-hidden
+          aria-hidden="true"
           data-testid="studio-v3-map-anticipation"
           className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
             anticipating ? "opacity-100" : "opacity-0"
@@ -222,11 +304,20 @@ export function MapAwakens({
           </div>
         </div>
 
+        {/* Map wrapper — hidden from AT and tab order while anticipating
+            so screen readers and keyboard users never land on an empty
+            invisible map. `inert` removes focusability entirely on
+            supported browsers; `tabIndex={-1}` is the safe fallback. */}
         <div
           className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
             mounted ? "opacity-100" : "opacity-0"
           }`}
+          aria-hidden={anticipating}
+          // @ts-expect-error — `inert` is a valid HTML attribute, React 19 supports it
+          inert={anticipating ? "" : undefined}
+          tabIndex={anticipating ? -1 : undefined}
         >
+
           <Suspense
             fallback={
               <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", background: "var(--sand)" }}>
@@ -285,7 +376,8 @@ export function MapAwakens({
             </div>
           ) : null}
         </div>
-      </div>
+      </section>
+
 
       {/* Editorial moment card — anchored to lower portion. */}
       <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-6 pt-4">

@@ -604,12 +604,18 @@ export function curateJourney(
     pickup?: Pickup | null;
     investment?: InvestmentTier | null;
     destinationIntent?: DestinationIntent | null;
+    /** ISO yyyy-mm-dd — when present, stops closed on that weekday
+     *  (e.g. Mercado do Livramento on Mondays) are removed from the
+     *  pool so we never propose a stop that won't be open. */
+    dateExact?: string | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
   const pickup = options?.pickup ?? null;
   const investment = options?.investment ?? null;
   const destinationIntent = options?.destinationIntent ?? null;
+  const dateExact = options?.dateExact ?? null;
+
 
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
@@ -620,7 +626,7 @@ export function curateJourney(
   );
 
   // STRICT containment: pool = primary tour's own stops only.
-  const pool: PoolStop[] = primary.stops.map((s) => ({
+  const rawPool: PoolStop[] = primary.stops.map((s) => ({
     fromTourId: primary.id,
     label: s.label,
     story: s.story,
@@ -629,6 +635,26 @@ export function curateJourney(
     imageTheme: s.imageTheme,
     isBaseTour: true,
   }));
+
+  // Operational closures — stops we KNOW are closed on a given weekday.
+  // Keep this list short, factual and easy to verify. Never invent.
+  // weekday: 0=Sun, 1=Mon … 6=Sat
+  const STOP_CLOSURES: ReadonlyArray<{ match: RegExp; closedOn: ReadonlyArray<number>; reason: string }> = [
+    { match: /mercado\s+do\s+livramento/i, closedOn: [1], reason: "Mercado do Livramento closed on Mondays" },
+  ];
+  const selectedWeekday =
+    dateExact && /^\d{4}-\d{2}-\d{2}$/.test(dateExact)
+      ? new Date(`${dateExact}T12:00:00`).getDay()
+      : null;
+  const pool: PoolStop[] = selectedWeekday == null
+    ? rawPool
+    : rawPool.filter((s) => {
+        const hay = `${s.label} ${s.story}`;
+        return !STOP_CLOSURES.some(
+          (c) => c.match.test(hay) && c.closedOn.includes(selectedWeekday),
+        );
+      });
+
 
   // Score by feeling + companions + selected interests (refinement, not
   // additional locations). Stops with resolvable coords are preferred so
@@ -692,18 +718,28 @@ export function curateJourney(
   const picks: typeof scored = [];
   const seenLabels = new Set<string>();
   const seenSemantic = new Set<string>();
+  // Hard cap on winery-type stops in a single day. Even for wine-led
+  // travellers, 3 wineries is the operational ceiling — beyond that the
+  // palate dulls and the day stops feeling curated.
+  const MAX_WINERY_STOPS = 3;
+  const isWineryStop = (s: (typeof scored)[number]) =>
+    WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`);
+  let wineryCount = 0;
   const addPick = (s: (typeof scored)[number]) => {
     picks.push(s);
     seenLabels.add(s.stop.label.toLowerCase());
     seenSemantic.add(normalizeSemantic(s.stop.label));
+    if (isWineryStop(s)) wineryCount += 1;
   };
   if (anchor) addPick(anchor);
   for (const s of scored) {
     if (picks.length >= target) break;
     if (seenLabels.has(s.stop.label.toLowerCase())) continue;
     if (seenSemantic.has(normalizeSemantic(s.stop.label))) continue;
+    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) continue;
     addPick(s);
   }
+
 
   const wineSignal =
     feeling === "wine-food" ||
