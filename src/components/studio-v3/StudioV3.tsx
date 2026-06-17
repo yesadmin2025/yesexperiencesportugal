@@ -1313,10 +1313,10 @@ export function StudioV3() {
     const fill = Math.max(0.12, Math.min(1, pct / 100));
     const intent = state.destinationIntent;
     let region: import("./PortugalSilhouette").SilhouetteRegion = null;
-    if (intent === "alentejo" || intent === "comporta") region = "alentejo";
-    else if (intent === "centro" || intent === "north") region = "centro";
-    else if (intent === "lisbon-coast" || intent === "sintra") region = "lisbon-coast";
-    else if (intent === "arrabida" || intent === "setubal") region = "arrabida";
+    if (intent === "alentejo-evora-wine" || intent === "comporta-troia") region = "alentejo";
+    else if (intent === "central-portugal" || intent === "spiritual-coast") region = "centro";
+    else if (intent === "lisbon-sintra-cascais") region = "lisbon-coast";
+    else if (intent === "arrabida-setubal-azeitao") region = "arrabida";
     return { fill, region };
   })();
 
