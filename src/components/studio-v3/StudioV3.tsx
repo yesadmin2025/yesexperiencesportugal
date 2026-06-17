@@ -2806,7 +2806,7 @@ function ReactionOverlay({
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
           background: "var(--charcoal)",
-          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
         }}
       >
         <AtmosphereBeat
@@ -2838,7 +2838,7 @@ function ReactionOverlay({
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
           background: "var(--charcoal)",
-          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
         }}
       >
         <MapBeat
@@ -2886,7 +2886,7 @@ function ReactionOverlay({
       style={{
         background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
         backdropFilter: "blur(2px)",
-        animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+        animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
       }}
     >
       <div className="w-full max-w-[480px] text-center">
