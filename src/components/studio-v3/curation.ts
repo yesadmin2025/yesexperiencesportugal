@@ -862,10 +862,14 @@ export function resolveStudioV3Route(input: {
   considerations?: ReadonlyArray<string>;
   investment?: InvestmentTier | null;
   destinationIntent?: DestinationIntent | null;
+  /** ISO yyyy-mm-dd — forwarded to curateJourney so operational closures
+   *  (e.g. Mercado do Livramento on Mondays) are respected end-to-end. */
+  dateExact?: string | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
   const investment = input.investment ?? null;
   const destinationIntent = input.destinationIntent ?? null;
+  const dateExact = input.dateExact ?? null;
   const origin = pickupCityLabel(pickup);
 
   // Fallback when we don't have enough to safely resolve a Signature.
@@ -890,6 +894,7 @@ export function resolveStudioV3Route(input: {
     pickup,
     investment,
     destinationIntent,
+    dateExact,
   });
 
   // Hard cap at 4 main route points on the Journey Card (per brief).
