@@ -626,7 +626,7 @@ export function curateJourney(
   );
 
   // STRICT containment: pool = primary tour's own stops only.
-  const pool: PoolStop[] = primary.stops.map((s) => ({
+  const rawPool: PoolStop[] = primary.stops.map((s) => ({
     fromTourId: primary.id,
     label: s.label,
     story: s.story,
@@ -635,6 +635,26 @@ export function curateJourney(
     imageTheme: s.imageTheme,
     isBaseTour: true,
   }));
+
+  // Operational closures — stops we KNOW are closed on a given weekday.
+  // Keep this list short, factual and easy to verify. Never invent.
+  // weekday: 0=Sun, 1=Mon … 6=Sat
+  const STOP_CLOSURES: ReadonlyArray<{ match: RegExp; closedOn: ReadonlyArray<number>; reason: string }> = [
+    { match: /mercado\s+do\s+livramento/i, closedOn: [1], reason: "Mercado do Livramento closed on Mondays" },
+  ];
+  const selectedWeekday =
+    dateExact && /^\d{4}-\d{2}-\d{2}$/.test(dateExact)
+      ? new Date(`${dateExact}T12:00:00`).getDay()
+      : null;
+  const pool: PoolStop[] = selectedWeekday == null
+    ? rawPool
+    : rawPool.filter((s) => {
+        const hay = `${s.label} ${s.story}`;
+        return !STOP_CLOSURES.some(
+          (c) => c.match.test(hay) && c.closedOn.includes(selectedWeekday),
+        );
+      });
+
 
   // Score by feeling + companions + selected interests (refinement, not
   // additional locations). Stops with resolvable coords are preferred so
