@@ -46,7 +46,7 @@ function PortugalSilhouetteBase({ fill, region = null }: Props) {
       aria-hidden
       data-testid="studio-v3-anticipation-layer"
       data-region={region ?? "none"}
-      className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-100"
+      className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center opacity-100"
       style={{ contain: "layout paint style", transform: "translateZ(0)", willChange: "transform, opacity" }}
     >
       <svg
