@@ -718,18 +718,28 @@ export function curateJourney(
   const picks: typeof scored = [];
   const seenLabels = new Set<string>();
   const seenSemantic = new Set<string>();
+  // Hard cap on winery-type stops in a single day. Even for wine-led
+  // travellers, 3 wineries is the operational ceiling — beyond that the
+  // palate dulls and the day stops feeling curated.
+  const MAX_WINERY_STOPS = 3;
+  const isWineryStop = (s: (typeof scored)[number]) =>
+    WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`);
+  let wineryCount = 0;
   const addPick = (s: (typeof scored)[number]) => {
     picks.push(s);
     seenLabels.add(s.stop.label.toLowerCase());
     seenSemantic.add(normalizeSemantic(s.stop.label));
+    if (isWineryStop(s)) wineryCount += 1;
   };
   if (anchor) addPick(anchor);
   for (const s of scored) {
     if (picks.length >= target) break;
     if (seenLabels.has(s.stop.label.toLowerCase())) continue;
     if (seenSemantic.has(normalizeSemantic(s.stop.label))) continue;
+    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) continue;
     addPick(s);
   }
+
 
   const wineSignal =
     feeling === "wine-food" ||
