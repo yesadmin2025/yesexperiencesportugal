@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo } from "react";
 
 /**
  * PortugalSilhouette — ambient geographic anchor.
@@ -33,32 +33,27 @@ const REGION_DOT: Record<NonNullable<SilhouetteRegion>, { x: number; y: number }
   alentejo: { x: 60, y: 158 },
 };
 
-export function PortugalSilhouette({ fill, region = null }: Props) {
+function PortugalSilhouetteBase({ fill, region = null }: Props) {
   const clamped = Math.max(0, Math.min(1, fill));
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setMounted(true), 60);
-    return () => window.clearTimeout(t);
-  }, []);
 
   // Approximate path length so stroke-dasharray reveal is smooth.
   const PATH_LENGTH = 620;
-  const drawn = PATH_LENGTH * clamped;
+  const dashOffset = PATH_LENGTH * (1 - clamped);
   const dot = region ? REGION_DOT[region] : null;
 
   return (
     <div
       aria-hidden
-      className={`pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-[900ms] ease-out ${
-        mounted ? "opacity-100" : "opacity-0"
-      }`}
+      data-testid="studio-v3-anticipation-layer"
+      data-region={region ?? "none"}
+      className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center opacity-100"
+      style={{ contain: "layout paint style", transform: "translateZ(0)", willChange: "transform, opacity" }}
     >
       <svg
         viewBox="0 0 100 220"
         preserveAspectRatio="xMidYMid meet"
         className="h-[78%] sm:h-[82%] w-auto motion-reduce:transition-none"
-        style={{ opacity: 0.55 }}
+        style={{ opacity: 0.5 }}
       >
         {/* Ghost outline — always present, very faint. */}
         <path
@@ -76,8 +71,9 @@ export function PortugalSilhouette({ fill, region = null }: Props) {
           strokeWidth={0.9}
           strokeLinejoin="round"
           strokeLinecap="round"
-          strokeDasharray={`${drawn} ${PATH_LENGTH}`}
-          style={{ transition: "stroke-dasharray 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)" }}
+          strokeDasharray={PATH_LENGTH}
+          strokeDashoffset={dashOffset}
+          style={{ transition: "stroke-dashoffset 900ms cubic-bezier(0.22, 0.61, 0.36, 1)" }}
         />
         {/* Soft interior wash — fades in with progress. */}
         <path
@@ -87,7 +83,7 @@ export function PortugalSilhouette({ fill, region = null }: Props) {
         />
         {/* Region pulse — gold dot at the inferred destination. */}
         {dot ? (
-          <g style={{ transformOrigin: `${dot.x}px ${dot.y}px` }}>
+          <g key={region} data-testid="studio-v3-region-pulse" style={{ transformOrigin: `${dot.x}px ${dot.y}px`, transformBox: "fill-box" }}>
             <circle
               cx={dot.x}
               cy={dot.y}
@@ -109,3 +105,5 @@ export function PortugalSilhouette({ fill, region = null }: Props) {
     </div>
   );
 }
+
+export const PortugalSilhouette = memo(PortugalSilhouetteBase);

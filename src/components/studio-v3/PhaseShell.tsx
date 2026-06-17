@@ -56,7 +56,8 @@ export function PhaseShell({
       {/* Ambient wash — slow radial glow that breathes. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 motion-reduce:hidden"
+        data-testid="studio-v3-wash-layer"
+        className="pointer-events-none absolute inset-0 z-0 motion-reduce:hidden"
         style={{
           background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
           animation: "studioV3Breathe 14s ease-in-out infinite",
@@ -65,7 +66,7 @@ export function PhaseShell({
       {/* Static fallback for reduced motion. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 hidden motion-reduce:block"
+        className="pointer-events-none absolute inset-0 z-0 hidden motion-reduce:block"
         style={{
           background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
         }}
@@ -78,7 +79,7 @@ export function PhaseShell({
       {/* Hairline gold horizon. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[18%] h-px w-12 -translate-x-1/2"
+        className="pointer-events-none absolute left-1/2 top-[18%] z-[2] h-px w-12 -translate-x-1/2"
         style={{ background: "var(--gold)" }}
       />
 
@@ -126,7 +127,7 @@ export function PhaseShell({
         </div>
       ) : null}
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-5 pt-16 pb-28 sm:py-20">
+      <div data-testid="studio-v3-content-layer" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-24 pb-32 sm:justify-center sm:py-20">
         {children}
       </div>
 

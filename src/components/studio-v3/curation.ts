@@ -250,6 +250,13 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   "slow-luxury": ["arrabida-wine-allinclusive", "sintra-cascais", "evora-alentejo"],
 };
 
+const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
+  wine: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
+  gastronomy: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
+  heritage: ["tomar-coimbra", "fatima-nazare-obidos", "sintra-cascais", "tiles-workshop"],
+  coast: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "sintra-cascais"],
+};
+
 const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
   slow: 3,
   balanced: 4,
@@ -311,6 +318,8 @@ const FEELING_KEYWORDS: Record<Feeling, string[]> = {
   adventure: ["boat", "swim", "snorkel", "cliffs", "wind", "atlantic", "cabo", "trail", "climb"],
   "slow-luxury": ["long", "slow", "courtyard", "private", "tasting", "garden", "patio", "golden", "quietly", "drift"],
 };
+
+const WINE_STOP_RE = /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
 
 const COMPANIONS_KEYWORDS: Partial<Record<Companions, string[]>> = {
   proposal: ["sunset", "golden", "viewpoint", "courtyard", "quiet", "view", "cliff"],
@@ -513,7 +522,8 @@ function pickPrimaryTour(
   const intentTargets = destinationIntent && destinationIntent !== "no-preference"
     ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
     : [];
-  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets]));
+  const interestTargets = interests.flatMap((i) => INTEREST_TARGET_TOURS[i] ?? []);
+  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets, ...interestTargets]));
   const candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
@@ -549,6 +559,9 @@ function pickPrimaryTour(
       score += pickupAffinity(tour, pickup) * 1.2;
       score += interestAffinity(tour, interests);
       score += destinationIntentBoost(tour, destinationIntent);
+      if (interests.includes("wine") && /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega/i.test(`${tour.title} ${tour.theme} ${tour.blurb}`)) {
+        score += 2.5;
+      }
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
         score += 0.5;
@@ -669,6 +682,21 @@ export function curateJourney(
     if (seenLabels.has(key)) continue;
     picks.push(s);
     seenLabels.add(key);
+  }
+
+  if (interests.includes("wine") && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
+    const winePick = scored.find((s) => !seenLabels.has(s.stop.label.toLowerCase()) && WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`));
+    if (winePick) {
+      if (picks.length < target) {
+        picks.push(winePick);
+        seenLabels.add(winePick.stop.label.toLowerCase());
+      } else if (picks.length > 1) {
+        const removed = picks.pop();
+        if (removed) seenLabels.delete(removed.stop.label.toLowerCase());
+        picks.push(winePick);
+        seenLabels.add(winePick.stop.label.toLowerCase());
+      }
+    }
   }
 
   // Re-order picks to match the tour's natural stop order so the route
@@ -1576,7 +1604,13 @@ function scoreOptionalStop(
 }
 
 function normalizeLabel(s: string): string {
-  return s.trim().toLowerCase();
+  return s
+    .split(/[—–-]/)[0]
+    .split(",")[0]
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 /**
@@ -1779,8 +1813,8 @@ const REPLACEMENT_FAMILY: Record<InferredRoutePointKind, ReadonlyArray<OptionalS
   studio: ["studio"],
   boat: ["boat"],
   heritage: ["heritage", "monument"],
-  scenic: ["beach", "viewpoint", "nature", "village"],
-  village: ["village", "market", "monument"],
+  scenic: ["beach", "viewpoint", "nature", "village", "winery"],
+  village: ["village", "market", "monument", "winery"],
 };
 
 function isCompatibleCandidate(

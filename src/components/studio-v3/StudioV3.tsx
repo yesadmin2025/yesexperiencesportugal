@@ -796,11 +796,11 @@ export function StudioV3() {
     return "No rush. The journey can form before the date is fixed.";
   };
   const dateBgImage = () => (state.feeling ? FEELING_IMAGE[state.feeling] : undefined);
-  const playDateReaction = (mode: DateMode, delay = 420) => {
+  const playDateReaction = (mode: DateMode, exactIso: string | null = null, delay = 420) => {
     const forward: StudioV3State = {
       ...state,
       dateMode: mode,
-      dateExact: mode === "exact" ? state.dateExact : null,
+      dateExact: mode === "exact" ? exactIso : null,
     };
     const next = getNextPhase(forward, "date");
     window.setTimeout(() => {
@@ -816,15 +816,15 @@ export function StudioV3() {
   };
   const onDateExact = (iso: string) => {
     setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }));
-    playDateReaction("exact");
+    playDateReaction("exact", iso);
   };
   const onDateFlexible = () => {
     setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }));
-    playDateReaction("flexible");
+    playDateReaction("flexible", null);
   };
   const onDateUndecided = () => {
     setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }));
-    playDateReaction("undecided");
+    playDateReaction("undecided", null);
   };
   const onPickup = (id: Pickup) => {
     const label = getOptionLabel(PICKUPS, id);
@@ -2105,11 +2105,30 @@ function StoryboardHandoff({
           >
             {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you described.
           </p>
+          <div className="mt-7 flex items-center gap-2" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                className="block h-1.5 w-1.5 rounded-full"
+                style={{
+                  background: i === 1 ? "var(--teal)" : "var(--gold)",
+                  animation: "studioV3ComposePulse 900ms ease-in-out infinite",
+                  animationDelay: `${i * 140}ms`,
+                }}
+              />
+            ))}
+          </div>
           <span
             aria-hidden
-            className="mt-7 inline-block h-px w-10"
+            className="mt-5 inline-block h-px w-16"
             style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
           />
+          <style>{`
+            @keyframes studioV3ComposePulse {
+              0%, 100% { opacity: 0.35; transform: translateY(0) scale(1); }
+              50% { opacity: 1; transform: translateY(-3px) scale(1.18); }
+            }
+          `}</style>
         </div>
       ) : null}
 
