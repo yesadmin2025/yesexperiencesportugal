@@ -250,13 +250,29 @@ export function MapAwakens({
         <span style={{ color: "var(--gold)" }}>—</span> Suggested route · taking shape
       </div>
 
+      {/* Polite live-region — narrates the silhouette → map → first stop
+          arc to assistive tech so blind users get the same emotional beat
+          as sighted users. Visually hidden, never traps focus. */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {srStatus}
+      </div>
+
       {/* Map stage — top portion of the viewport. */}
-      <div className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3">
+      <section
+        aria-label="Suggested route map"
+        aria-busy={!mounted || anticipating}
+        className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
+      >
         {/* Anticipation layer — Portugal silhouette + gold pulse holds the
             stage while the real map silently boots underneath. Fades out
             as the map fades in: the two never visually overlap. */}
         <div
-          aria-hidden
+          aria-hidden="true"
           data-testid="studio-v3-map-anticipation"
           className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
             anticipating ? "opacity-100" : "opacity-0"
@@ -282,11 +298,20 @@ export function MapAwakens({
           </div>
         </div>
 
+        {/* Map wrapper — hidden from AT and tab order while anticipating
+            so screen readers and keyboard users never land on an empty
+            invisible map. `inert` removes focusability entirely on
+            supported browsers; `tabIndex={-1}` is the safe fallback. */}
         <div
           className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
             mounted ? "opacity-100" : "opacity-0"
           }`}
+          aria-hidden={anticipating}
+          // @ts-expect-error — `inert` is a valid HTML attribute, React 19 supports it
+          inert={anticipating ? "" : undefined}
+          tabIndex={anticipating ? -1 : undefined}
         >
+
           <Suspense
             fallback={
               <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", background: "var(--sand)" }}>
