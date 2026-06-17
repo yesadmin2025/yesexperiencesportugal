@@ -663,9 +663,20 @@ export function curateJourney(
   // Operational closures live in src/data/stopOperational.ts so new rules
   // (holidays, seasonal windows, partner-confirmed downtime) can be added
   // without touching curation logic. Always cite a source there.
+  const rejections: CurationAuditRejection[] = [];
   const pool: PoolStop[] = !dateExact
     ? rawPool
-    : rawPool.filter((s) => !isStopClosedOn(`${s.label} ${s.story}`, dateExact));
+    : rawPool.filter((s) => {
+        const closed = isStopClosedOn(`${s.label} ${s.story}`, dateExact);
+        if (closed) {
+          rejections.push({
+            label: s.label,
+            reason: "closed-on-date",
+            detail: dateExact,
+          });
+        }
+        return !closed;
+      });
 
 
   // Score by feeling + companions + selected interests (refinement, not
