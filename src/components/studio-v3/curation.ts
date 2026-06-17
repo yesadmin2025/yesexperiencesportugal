@@ -17,6 +17,7 @@
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
+import { isStopClosedOn } from "@/data/stopOperational";
 import {
   REGION_STOP_POOL,
   STUDIO_V3_OPTIONAL_STOPS_ENABLED,
@@ -636,24 +637,12 @@ export function curateJourney(
     isBaseTour: true,
   }));
 
-  // Operational closures — stops we KNOW are closed on a given weekday.
-  // Keep this list short, factual and easy to verify. Never invent.
-  // weekday: 0=Sun, 1=Mon … 6=Sat
-  const STOP_CLOSURES: ReadonlyArray<{ match: RegExp; closedOn: ReadonlyArray<number>; reason: string }> = [
-    { match: /mercado\s+do\s+livramento/i, closedOn: [1], reason: "Mercado do Livramento closed on Mondays" },
-  ];
-  const selectedWeekday =
-    dateExact && /^\d{4}-\d{2}-\d{2}$/.test(dateExact)
-      ? new Date(`${dateExact}T12:00:00`).getDay()
-      : null;
-  const pool: PoolStop[] = selectedWeekday == null
+  // Operational closures live in src/data/stopOperational.ts so new rules
+  // (holidays, seasonal windows, partner-confirmed downtime) can be added
+  // without touching curation logic. Always cite a source there.
+  const pool: PoolStop[] = !dateExact
     ? rawPool
-    : rawPool.filter((s) => {
-        const hay = `${s.label} ${s.story}`;
-        return !STOP_CLOSURES.some(
-          (c) => c.match.test(hay) && c.closedOn.includes(selectedWeekday),
-        );
-      });
+    : rawPool.filter((s) => !isStopClosedOn(`${s.label} ${s.story}`, dateExact));
 
 
   // Score by feeling + companions + selected interests (refinement, not
