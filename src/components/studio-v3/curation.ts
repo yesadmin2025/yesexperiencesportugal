@@ -1779,8 +1779,8 @@ const REPLACEMENT_FAMILY: Record<InferredRoutePointKind, ReadonlyArray<OptionalS
   studio: ["studio"],
   boat: ["boat"],
   heritage: ["heritage", "monument"],
-  scenic: ["beach", "viewpoint", "nature", "village"],
-  village: ["village", "market", "monument"],
+  scenic: ["beach", "viewpoint", "nature", "village", "winery"],
+  village: ["village", "market", "monument", "winery"],
 };
 
 function isCompatibleCandidate(
