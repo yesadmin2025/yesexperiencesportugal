@@ -553,14 +553,21 @@ function pickPrimaryTour(
     pickup === "sintra" ||
     pickup === "sesimbra-setubal-arrabida";
 
+  const wantsWine =
+    feeling === "wine-food" ||
+    interests.includes("wine") ||
+    interests.includes("gastronomy") ||
+    destinationIntent === "alentejo-evora-wine" ||
+    destinationIntent === "arrabida-setubal-azeitao";
+
   const scored = candidates
     .map((tour, order) => {
       let score = 0;
       score += pickupAffinity(tour, pickup) * 1.2;
       score += interestAffinity(tour, interests);
       score += destinationIntentBoost(tour, destinationIntent);
-      if (interests.includes("wine") && /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega/i.test(`${tour.title} ${tour.theme} ${tour.blurb}`)) {
-        score += 2.5;
+      if (wantsWine && /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(`${tour.title} ${tour.theme} ${tour.blurb}`)) {
+        score += 3;
       }
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
