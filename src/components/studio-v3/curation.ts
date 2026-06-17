@@ -18,6 +18,7 @@
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
 import { isStopClosedOn } from "@/data/stopOperational";
+import { recordStudioV3CurationDecision } from "@/lib/studio-v3-telemetry";
 import {
   REGION_STOP_POOL,
   STUDIO_V3_OPTIONAL_STOPS_ENABLED,
