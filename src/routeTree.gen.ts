@@ -44,6 +44,7 @@ import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
+import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
@@ -229,6 +230,11 @@ const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
   path: '/admin/tour-link-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
+  id: '/admin/studio-v3-audit',
+  path: '/admin/studio-v3-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminImportToursRoute = AdminImportToursRouteImport.update({
   id: '/admin/import-tours',
   path: '/admin/import-tours',
@@ -305,6 +311,7 @@ export interface FileRoutesByFullPath {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
@@ -351,6 +358,7 @@ export interface FileRoutesByTo {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
@@ -446,6 +455,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/studio-v3-audit'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/api/health'
@@ -492,6 +502,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/studio-v3-audit'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/api/health'
@@ -538,6 +549,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/studio-v3-audit'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/api/health'
@@ -585,6 +597,7 @@ export interface RootRouteChildren {
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
+  AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
   AdminViatorValidationRoute: typeof AdminViatorValidationRoute
   ApiHealthRoute: typeof ApiHealthRoute
@@ -846,6 +859,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTourLinkAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/studio-v3-audit': {
+      id: '/admin/studio-v3-audit'
+      path: '/admin/studio-v3-audit'
+      fullPath: '/admin/studio-v3-audit'
+      preLoaderRoute: typeof AdminStudioV3AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/import-tours': {
       id: '/admin/import-tours'
       path: '/admin/import-tours'
@@ -978,6 +998,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
+  AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
   AdminViatorValidationRoute: AdminViatorValidationRoute,
   ApiHealthRoute: ApiHealthRoute,
