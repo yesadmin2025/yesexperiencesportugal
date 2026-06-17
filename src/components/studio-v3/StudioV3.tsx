@@ -2774,7 +2774,25 @@ function ReactionOverlay({
   reaction: Reaction;
   onDismiss: () => void;
 }) {
-  const hold = Math.min(reaction.holdMs ?? 3200, 6600);
+  // Match the cap used in playReaction so the overlay never visually
+  // lingers past the moment the underlying phase becomes the focus.
+  const rawHold = reaction.holdMs ?? 2400;
+  const ceiling =
+    reaction.kind === "map-beat" || reaction.kind === "interests" || reaction.kind === "rhythm"
+      ? 3800
+      : 2400;
+  const hold = Math.min(rawHold, ceiling);
+
+  // After the visible peak, surrender pointer events so taps fall through
+  // to the next phase already mounted underneath. Fixes the core bug of
+  // the user seeing the next question but being unable to tap it.
+  const [clickThrough, setClickThrough] = useState(false);
+  useEffect(() => {
+    setClickThrough(false);
+    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.55));
+    return () => window.clearTimeout(t);
+  }, [hold, reaction]);
+  const passThroughStyle = clickThrough ? { pointerEvents: "none" as const } : {};
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.
