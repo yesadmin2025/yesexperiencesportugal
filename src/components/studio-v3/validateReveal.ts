@@ -11,7 +11,7 @@
 //  - When data is incomplete, prefer an honest fallback over fiction.
 
 import type { ResolvedStudioV3Route } from "./curation";
-import type { Tour } from "@/data/signatureTours";
+import type { SignatureTour } from "@/data/signatureTours";
 
 export type RevealValidationFailure =
   | "no-skeleton"
