@@ -65,6 +65,10 @@ type StudioV3Event =
 /** Single emit helper — keeps the console prefix and event names aligned. */
 export function emitStudioV3Event(event: StudioV3Event): void {
   if (typeof window === "undefined") return;
+  // Silence in vitest — telemetry is fire-and-forget in product but in
+  // tests it floods stdout (curation suites call resolveStudioV3Route
+  // thousands of times) and pushes long-running suites past timeout.
+  if (typeof process !== "undefined" && process.env?.VITEST) return;
   try {
     // eslint-disable-next-line no-console
     console.info(`[studio-v3.${event.kind}]`, event.payload);
