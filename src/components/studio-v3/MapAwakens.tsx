@@ -134,11 +134,11 @@ export function MapAwakens({
     const now = () =>
       typeof performance !== "undefined" ? performance.now() : Date.now();
     const emit = (
-      phase: "silhouette-shown" | "map-mounted" | "first-stop" | "complete",
+      phase: StudioV3Phase4Phase,
       extra: Record<string, unknown> = {},
     ) => {
       const elapsed = Math.round(now() - t0);
-      const payload = {
+      recordStudioV3Phase4Timing({
         phase,
         elapsedMs: elapsed,
         tourId: journey.tour.id,
@@ -152,19 +152,7 @@ export function MapAwakens({
             ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
             : false,
         ...extra,
-      };
-      // Console marker — discoverable in DevTools without an analytics SDK.
-      // Grouped under a stable prefix so users can filter `studio-v3.phase4`.
-      // eslint-disable-next-line no-console
-      console.info("[studio-v3.phase4]", phase, payload);
-      // Custom event — lets any analytics layer (or test) subscribe.
-      try {
-        window.dispatchEvent(
-          new CustomEvent("studio-v3:phase4-timing", { detail: payload }),
-        );
-      } catch {
-        /* SSR / no-window — silent. */
-      }
+      });
     };
 
     emit("silhouette-shown");
