@@ -227,9 +227,19 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
           for (const f of m.expected) expected.add(f);
         }
 
-        // Validator suppresses tour-not-found when skeleton is also missing.
+        // Validator suppresses tour checks when skeleton is also missing.
         if (expected.has("no-skeleton")) {
           expected.delete("tour-not-found");
+          expected.delete("tour-missing-image");
+          expected.delete("tour-missing-title");
+        }
+        // If no-stops cleared the routePoints, per-stop checks can't fire.
+        if (expected.has("no-stops")) {
+          expected.delete("stop-missing-label");
+          expected.delete("stop-missing-story");
+        }
+        // If the tour itself is null, image/title sub-flags can't fire.
+        if (tour === null && resolved.skeletonTourKey) {
           expected.delete("tour-missing-image");
           expected.delete("tour-missing-title");
         }
