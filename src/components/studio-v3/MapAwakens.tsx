@@ -421,6 +421,14 @@ export function MapAwakens({
           from { opacity: 0; transform: translateY(14px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes studioV3AnticipationBreath {
+          0%   { opacity: 0; transform: scale(0.985); }
+          40%  { opacity: 1; transform: scale(1.01); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-testid="studio-v3-map-anticipation"] { transition: none; animation: none; }
+        }
       `}</style>
     </div>
   );
