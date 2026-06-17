@@ -1917,18 +1917,50 @@ function StoryboardHandoff({
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState<boolean>(false);
 
-  // ---------- Cinematic composing beat ----------
-  // Brief overlay before the reveal renders, so the Signature feels
-  // composed (not toggled). Respects prefers-reduced-motion.
-  const [composing, setComposing] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  });
+  // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
+  // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
+  // Beat 2 (900–1800ms): Georgia italic "why it fits" line lands under the photo.
+  // Beat 3 (1800–2600ms): trust whisper appears, then overlay dismisses and the
+  //                      route map pins draw in sequence.
+  // Respects prefers-reduced-motion (collapses to beat 3 instantly).
+  const reducedMotionInitial =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const [composeBeat, setComposeBeat] = useState<0 | 1 | 2 | 3 | 4>(
+    reducedMotionInitial ? 4 : 0,
+  );
+  const composing = composeBeat < 4;
   useEffect(() => {
-    if (!composing) return;
-    const t = window.setTimeout(() => setComposing(false), 1600);
-    return () => window.clearTimeout(t);
-  }, [composing]);
+    if (reducedMotionInitial) return;
+    const timers = [
+      window.setTimeout(() => setComposeBeat(1), 60),
+      window.setTimeout(() => setComposeBeat(2), 900),
+      window.setTimeout(() => setComposeBeat(3), 1800),
+      window.setTimeout(() => setComposeBeat(4), 2600),
+    ];
+    return () => timers.forEach(window.clearTimeout);
+  }, [reducedMotionInitial]);
+
+  // Staggered route-pin draw — starts only after the composing overlay clears.
+  const totalStops = editedStops.length;
+  const [revealedStops, setRevealedStops] = useState<number>(
+    reducedMotionInitial ? totalStops : 0,
+  );
+  useEffect(() => {
+    if (composing) return;
+    if (reducedMotionInitial) {
+      setRevealedStops(totalStops);
+      return;
+    }
+    setRevealedStops(0);
+    const timers: number[] = [];
+    for (let i = 1; i <= totalStops; i += 1) {
+      timers.push(
+        window.setTimeout(() => setRevealedStops(i), 220 + i * 320),
+      );
+    }
+    return () => timers.forEach(window.clearTimeout);
+  }, [composing, totalStops, reducedMotionInitial]);
 
   // Max moments by rhythm — used by the reveal editor to allow ONE safe
   // extra moment when the user wants to enrich the day. Composition itself
@@ -2082,56 +2114,93 @@ function StoryboardHandoff({
       className="relative w-full max-w-[640px] px-5 pb-12"
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
-      {/* ---------- Cinematic composing beat ---------- */}
+      {/* ---------- Fase 4 — Cinematic 3-beat composing reveal ---------- */}
       {composing ? (
         <div
           role="status"
           aria-live="polite"
-          className="fixed inset-0 z-40 flex flex-col items-center justify-center px-8 text-center"
-          style={{
-            background: "var(--ivory)",
-            animation: "studioV3ReactionFade 1600ms ease-out both",
-          }}
+          aria-label="Composing your Signature"
+          data-testid="studio-v3-compose-overlay"
+          data-beat={composeBeat}
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center px-6 text-center"
+          style={{ background: "var(--ivory)" }}
         >
+          {/* Beat 1 — hero photo of the resolved Signature, fades in. */}
+          {skeletonTour?.img ? (
+            <div
+              className="relative w-full max-w-[460px] overflow-hidden rounded-[4px]"
+              style={{
+                aspectRatio: "16 / 11",
+                boxShadow: "0 24px 60px -28px rgba(0,0,0,0.45)",
+                opacity: composeBeat >= 1 ? 1 : 0,
+                transform: composeBeat >= 1 ? "scale(1)" : "scale(1.03)",
+                transition:
+                  "opacity 900ms ease-out, transform 1400ms ease-out",
+              }}
+            >
+              <img
+                src={skeletonTour.img}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ filter: "saturate(0.92) contrast(1.02)" }}
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.32) 100%)",
+                }}
+              />
+              <p
+                className="absolute left-4 bottom-3 text-[9.5px] uppercase tracking-[0.3em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--ivory) 92%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
+              </p>
+            </div>
+          ) : (
+            <p
+              className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
+            </p>
+          )}
+
+          {/* Beat 2 — italic "why it fits" line. */}
           <p
-            className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
-          </p>
-          <p
-            className="mt-5 text-[20px] sm:text-[24px] leading-[1.25] italic max-w-[420px]"
+            className="mt-6 text-[19px] sm:text-[23px] leading-[1.3] italic max-w-[420px] [text-wrap:pretty]"
             style={{
               fontFamily: "var(--font-serif)",
-              color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 86%, transparent)",
+              opacity: composeBeat >= 2 ? 1 : 0,
+              transform: composeBeat >= 2 ? "translateY(0)" : "translateY(10px)",
+              transition: "opacity 700ms ease-out, transform 700ms ease-out",
             }}
           >
             {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you described.
           </p>
-          <div className="mt-7 flex items-center gap-2" aria-hidden>
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="block h-1.5 w-1.5 rounded-full"
-                style={{
-                  background: i === 1 ? "var(--teal)" : "var(--gold)",
-                  animation: "studioV3ComposePulse 900ms ease-in-out infinite",
-                  animationDelay: `${i * 140}ms`,
-                }}
-              />
-            ))}
-          </div>
+
+          {/* Beat 3 — trust whisper. */}
+          <p
+            className="mt-5 text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{
+              color: "color-mix(in oklab, var(--teal) 78%, transparent)",
+              opacity: composeBeat >= 3 ? 1 : 0,
+              transform: composeBeat >= 3 ? "translateY(0)" : "translateY(6px)",
+              transition: "opacity 600ms ease-out, transform 600ms ease-out",
+            }}
+          >
+            We confirm everything before you book
+          </p>
+
           <span
             aria-hidden
-            className="mt-5 inline-block h-px w-16"
-            style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
+            className="mt-6 inline-block h-px w-12"
+            style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
           />
-          <style>{`
-            @keyframes studioV3ComposePulse {
-              0%, 100% { opacity: 0.35; transform: translateY(0) scale(1); }
-              50% { opacity: 1; transform: translateY(-3px) scale(1.18); }
-            }
-          `}</style>
         </div>
       ) : null}
 
@@ -2207,6 +2276,7 @@ function StoryboardHandoff({
         >
           <StudioV3SignatureMap
             stops={editedStops.map((s) => s.label)}
+            activeCount={revealedStops}
             originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
             aspectRatio="16 / 11"
             ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
@@ -2217,29 +2287,40 @@ function StoryboardHandoff({
             className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-1"
             aria-label="Route stops in order"
           >
-            {editedStops.map((s, i) => (
-              <li key={`${s.label}-${i}`} className="inline-flex items-center gap-1.5">
-                <span
-                  aria-hidden
-                  className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+            {editedStops.map((s, i) => {
+              const visible = i < revealedStops;
+              return (
+                <li
+                  key={`${s.label}-${i}`}
+                  className="inline-flex items-center gap-1.5 motion-reduce:!opacity-100 motion-reduce:!translate-y-0"
                   style={{
-                    background: "color-mix(in oklab, var(--gold) 28%, transparent)",
-                    color: "var(--charcoal)",
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? "translateY(0)" : "translateY(4px)",
+                    transition: "opacity 360ms ease-out, transform 360ms ease-out",
                   }}
                 >
-                  {i + 1}
-                </span>
-                <span
-                  className="text-[11.5px] leading-[1.3] font-semibold"
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                  }}
-                >
-                  {cleanLabel(s.label)}
-                </span>
-              </li>
-            ))}
+                  <span
+                    aria-hidden
+                    className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 28%, transparent)",
+                      color: "var(--charcoal)",
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className="text-[11.5px] leading-[1.3] font-semibold"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                    }}
+                  >
+                    {cleanLabel(s.label)}
+                  </span>
+                </li>
+              );
+            })}
           </ol>
         </div>
       ) : null}
