@@ -2143,6 +2143,56 @@ function StoryboardHandoff({
     return ["Morning", "Midday", "Afternoon", "Sunset", "Evening"];
   })();
 
+  // Hard guard: if the resolved Signature is incomplete, render a safe
+  // fallback instead of the cinematic reveal. No invented stops / photos.
+  if (!revealValidation.ok) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        aria-label="Signature needs a human touch"
+        data-testid="studio-v3-reveal-fallback"
+        data-missing={revealValidation.missing.join(",")}
+        className="relative w-full max-w-[560px] px-5 pb-12 pt-10 text-center"
+      >
+        <BackLink onClick={onBack} />
+        <p
+          className="mt-6 text-[10.5px] uppercase tracking-[0.28em] font-bold"
+          style={{ color: "var(--gold)" }}
+        >
+          — YES Studio
+        </p>
+        <h1
+          className="mt-3 text-[1.55rem] sm:text-[1.8rem] font-semibold leading-tight"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          Your Signature needs a human touch.
+        </h1>
+        <p
+          className="mt-4 text-[14px] leading-[1.6]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        >
+          We won't show a Signature that isn't fully grounded in a real tour.
+          A YES curator will compose this one with you — same care, no
+          guesswork.
+        </p>
+        <div className="mt-7 flex flex-col items-center gap-3">
+          <CtaButton onClick={onRefine} variant="primary">
+            Continue with a curator
+          </CtaButton>
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-[11px] uppercase tracking-[0.24em] font-semibold underline-offset-4 hover:underline"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
+            Adjust my answers
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
