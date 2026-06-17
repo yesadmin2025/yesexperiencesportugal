@@ -675,33 +675,60 @@ export function curateJourney(
   const minStops = allowTwoStop ? 2 : 3;
   const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
 
+  // Semantic dedupe: strip common suffixes/words and accents so e.g.
+  // "Bacalhôa" and "Bacalhôa Palace & Winery" are treated as the same
+  // location and never appear together in the same day.
+  const normalizeSemantic = (label: string): string =>
+    label
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g, "")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
   const picks: typeof scored = [];
   const seenLabels = new Set<string>();
-  if (anchor) {
-    picks.push(anchor);
-    seenLabels.add(anchor.stop.label.toLowerCase());
-  }
+  const seenSemantic = new Set<string>();
+  const addPick = (s: (typeof scored)[number]) => {
+    picks.push(s);
+    seenLabels.add(s.stop.label.toLowerCase());
+    seenSemantic.add(normalizeSemantic(s.stop.label));
+  };
+  if (anchor) addPick(anchor);
   for (const s of scored) {
     if (picks.length >= target) break;
-    const key = s.stop.label.toLowerCase();
-    if (seenLabels.has(key)) continue;
-    picks.push(s);
-    seenLabels.add(key);
+    if (seenLabels.has(s.stop.label.toLowerCase())) continue;
+    if (seenSemantic.has(normalizeSemantic(s.stop.label))) continue;
+    addPick(s);
   }
 
-  if (interests.includes("wine") && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
-    const winePick = scored.find((s) => !seenLabels.has(s.stop.label.toLowerCase()) && WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`));
+  const wineSignal =
+    feeling === "wine-food" ||
+    interests.includes("wine") ||
+    options?.destinationIntent === "alentejo-evora-wine" ||
+    options?.destinationIntent === "arrabida-setubal-azeitao";
+  if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
+    const winePick = scored.find(
+      (s) =>
+        !seenLabels.has(s.stop.label.toLowerCase()) &&
+        !seenSemantic.has(normalizeSemantic(s.stop.label)) &&
+        WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`),
+    );
     if (winePick) {
       if (picks.length < target) {
-        picks.push(winePick);
-        seenLabels.add(winePick.stop.label.toLowerCase());
+        addPick(winePick);
       } else if (picks.length > 1) {
-        const removed = picks.pop();
-        if (removed) seenLabels.delete(removed.stop.label.toLowerCase());
-        picks.push(winePick);
-        seenLabels.add(winePick.stop.label.toLowerCase());
+        // Swap a non-anchor pick out so wine fits without growing the day.
+        const swapIndex = picks.length - 1;
+        const removed = picks.splice(swapIndex, 1)[0];
+        if (removed) {
+          seenLabels.delete(removed.stop.label.toLowerCase());
+          seenSemantic.delete(normalizeSemantic(removed.stop.label));
+        }
+        addPick(winePick);
       }
     }
   }
