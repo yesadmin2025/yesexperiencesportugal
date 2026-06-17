@@ -2105,11 +2105,30 @@ function StoryboardHandoff({
           >
             {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you described.
           </p>
+          <div className="mt-7 flex items-center gap-2" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                className="block h-1.5 w-1.5 rounded-full"
+                style={{
+                  background: i === 1 ? "var(--teal)" : "var(--gold)",
+                  animation: "studioV3ComposePulse 900ms ease-in-out infinite",
+                  animationDelay: `${i * 140}ms`,
+                }}
+              />
+            ))}
+          </div>
           <span
             aria-hidden
-            className="mt-7 inline-block h-px w-10"
+            className="mt-5 inline-block h-px w-16"
             style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
           />
+          <style>{`
+            @keyframes studioV3ComposePulse {
+              0%, 100% { opacity: 0.35; transform: translateY(0) scale(1); }
+              50% { opacity: 1; transform: translateY(-3px) scale(1.18); }
+            }
+          `}</style>
         </div>
       ) : null}
 
