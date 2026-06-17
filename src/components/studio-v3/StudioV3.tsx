@@ -2276,6 +2276,7 @@ function StoryboardHandoff({
         >
           <StudioV3SignatureMap
             stops={editedStops.map((s) => s.label)}
+            activeCount={revealedStops}
             originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
             aspectRatio="16 / 11"
             ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
@@ -2286,29 +2287,40 @@ function StoryboardHandoff({
             className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-1"
             aria-label="Route stops in order"
           >
-            {editedStops.map((s, i) => (
-              <li key={`${s.label}-${i}`} className="inline-flex items-center gap-1.5">
-                <span
-                  aria-hidden
-                  className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+            {editedStops.map((s, i) => {
+              const visible = i < revealedStops;
+              return (
+                <li
+                  key={`${s.label}-${i}`}
+                  className="inline-flex items-center gap-1.5 motion-reduce:!opacity-100 motion-reduce:!translate-y-0"
                   style={{
-                    background: "color-mix(in oklab, var(--gold) 28%, transparent)",
-                    color: "var(--charcoal)",
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? "translateY(0)" : "translateY(4px)",
+                    transition: "opacity 360ms ease-out, transform 360ms ease-out",
                   }}
                 >
-                  {i + 1}
-                </span>
-                <span
-                  className="text-[11.5px] leading-[1.3] font-semibold"
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                  }}
-                >
-                  {cleanLabel(s.label)}
-                </span>
-              </li>
-            ))}
+                  <span
+                    aria-hidden
+                    className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 28%, transparent)",
+                      color: "var(--charcoal)",
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className="text-[11.5px] leading-[1.3] font-semibold"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                    }}
+                  >
+                    {cleanLabel(s.label)}
+                  </span>
+                </li>
+              );
+            })}
           </ol>
         </div>
       ) : null}
