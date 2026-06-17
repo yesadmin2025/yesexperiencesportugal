@@ -192,6 +192,36 @@ export function MapAwakens({
 
       {/* Map stage — top portion of the viewport. */}
       <div className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3">
+        {/* Anticipation layer — Portugal silhouette + gold pulse holds the
+            stage while the real map silently boots underneath. Fades out
+            as the map fades in: the two never visually overlap. */}
+        <div
+          aria-hidden
+          data-testid="studio-v3-map-anticipation"
+          className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
+            anticipating ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className="relative w-full h-full overflow-hidden rounded-[4px]"
+            style={{
+              background: "var(--ivory)",
+              animation: anticipating
+                ? "studioV3AnticipationBreath 1400ms ease-out both"
+                : undefined,
+            }}
+          >
+            <PortugalSilhouette fill={1} region={silhouetteRegion} />
+            <div
+              className="absolute inset-x-0 bottom-5 text-center text-[10px] uppercase tracking-[0.32em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span>{" "}
+              {silhouetteRegion ? "The day takes shape" : "Composing your route"}
+            </div>
+          </div>
+        </div>
+
         <div
           className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
             mounted ? "opacity-100" : "opacity-0"
