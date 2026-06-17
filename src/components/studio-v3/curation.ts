@@ -250,6 +250,13 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   "slow-luxury": ["arrabida-wine-allinclusive", "sintra-cascais", "evora-alentejo"],
 };
 
+const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
+  wine: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
+  gastronomy: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
+  heritage: ["tomar-coimbra", "fatima-nazare-obidos", "sintra-cascais", "tiles-workshop"],
+  coast: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "sintra-cascais"],
+};
+
 const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
   slow: 3,
   balanced: 4,
@@ -311,6 +318,8 @@ const FEELING_KEYWORDS: Record<Feeling, string[]> = {
   adventure: ["boat", "swim", "snorkel", "cliffs", "wind", "atlantic", "cabo", "trail", "climb"],
   "slow-luxury": ["long", "slow", "courtyard", "private", "tasting", "garden", "patio", "golden", "quietly", "drift"],
 };
+
+const WINE_STOP_RE = /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
 
 const COMPANIONS_KEYWORDS: Partial<Record<Companions, string[]>> = {
   proposal: ["sunset", "golden", "viewpoint", "courtyard", "quiet", "view", "cliff"],
