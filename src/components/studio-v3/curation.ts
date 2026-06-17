@@ -742,10 +742,24 @@ export function curateJourney(
   const picks: typeof scored = [];
   const seenLabels = new Set<string>();
   const seenSemantic = new Set<string>();
-  // Hard cap on winery-type stops in a single day. Even for wine-led
-  // travellers, 3 wineries is the operational ceiling — beyond that the
-  // palate dulls and the day stops feeling curated.
-  const MAX_WINERY_STOPS = 3;
+  // Regional hard caps on winery-type stops per day. Beyond these counts
+  // the palate dulls and the day stops feeling curated. Sintra/Lisboa are
+  // not wine regions — at most one symbolic stop. Arrábida/Setúbal is the
+  // Moscatel heartland (3). Alentejo allows 2 distinct estates. Other
+  // regions default to 1 unless we widen the rule explicitly.
+  const REGIONAL_WINERY_CAP: Record<RegionId, number> = {
+    "arrabida-setubal": 3,
+    "alentejo-evora": 2,
+    "douro-porto": 3,
+    "sintra-cascais": 1,
+    "lisbon-sintra-cascais": 1,
+    "comporta-troia": 1,
+    "fatima-nazare-obidos": 1,
+    "tomar-coimbra": 1,
+    "other": 1,
+  };
+  const regionId: RegionId = (primary.region as RegionId) ?? "other";
+  const wineryCap = REGIONAL_WINERY_CAP[regionId] ?? 1;
   const isWineryStop = (s: (typeof scored)[number]) =>
     WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`);
   let wineryCount = 0;
@@ -766,11 +780,11 @@ export function curateJourney(
       rejections.push({ label: s.stop.label, reason: "semantic-duplicate" });
       continue;
     }
-    if (isWineryStop(s) && wineryCount >= MAX_WINERY_STOPS) {
+    if (isWineryStop(s) && wineryCount >= wineryCap) {
       rejections.push({
         label: s.stop.label,
         reason: "winery-cap",
-        detail: `cap=${MAX_WINERY_STOPS}`,
+        detail: `region=${regionId} cap=${wineryCap}`,
       });
       continue;
     }
