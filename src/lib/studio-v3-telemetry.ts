@@ -58,14 +58,24 @@ export interface StudioV3Phase4Timing {
   [extra: string]: unknown;
 }
 
+export interface StudioV3RevealValidation {
+  ok: boolean;
+  missing: string[];
+  tourId: string | null;
+}
+
 type StudioV3Event =
   | { kind: "curation.decision"; payload: StudioV3CurationDecision }
-  | { kind: "phase4.timing"; payload: StudioV3Phase4Timing };
+  | { kind: "phase4.timing"; payload: StudioV3Phase4Timing }
+  | { kind: "reveal.validation"; payload: StudioV3RevealValidation };
 
 export interface StudioV3BufferedEvent {
   kind: StudioV3Event["kind"];
   ts: number;
-  payload: StudioV3CurationDecision | StudioV3Phase4Timing;
+  payload:
+    | StudioV3CurationDecision
+    | StudioV3Phase4Timing
+    | StudioV3RevealValidation;
 }
 
 const BUFFER_KEY = "studio-v3.audit.buffer.v1";
@@ -143,4 +153,11 @@ export function recordStudioV3Phase4Timing(
 ): void {
   emitStudioV3Event({ kind: "phase4.timing", payload });
 }
+
+export function recordStudioV3RevealValidation(
+  payload: StudioV3RevealValidation,
+): void {
+  emitStudioV3Event({ kind: "reveal.validation", payload });
+}
+
 
