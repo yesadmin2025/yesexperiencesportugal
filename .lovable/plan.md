@@ -1,80 +1,90 @@
-# Studio V3 vs Studio Bible — gap analysis and improvement plan
+## Objetivo
 
-## What was just shipped (this turn)
-
-- `dateExact` agora atravessa `resolveStudioV3Route` → `curateJourney` (antes só chegava via `MapAwakens`). Os 3 consumidores foram atualizados: `MapAwakens`, `ComposerMap`, `LivingJourneyPanel`.
-- Nova suite `src/components/studio-v3/__tests__/curation-operational.test.ts` (8 testes, todos verdes):
-  - Mercado do Livramento removido às 2ª feiras (Arrábida wine day).
-  - Volta a aparecer numa 3ª feira com os mesmos inputs.
-  - `dateExact` malformado é ignorado sem crash.
-  - Cap de **3 adegas** validado em Arrábida (immersive + bespoke), via `curateJourney` e via `resolveStudioV3Route`.
-  - Sintra romance day ≤ 1 adega (Adega Regional de Colares).
-  - Alentejo wine day ≤ 3 adegas.
-
-> Nota sobre o pedido original: a Studio bible nunca formalizou caps regionais (3 Arrábida / 1 Sintra / 2 Alentejo). O que existe hoje no código é **um cap global de 3 wineries por dia**, aplicado dentro do skeleton já contido por região. Os testes confirmam que esse cap, na prática, produz exatamente os números que o utilizador descreveu — sem precisar de novas regras regionais. Se quiseres caps explícitos por região, está na Fase 2 abaixo.
+Uma linguagem única de mapa em todo o produto — a silhueta editorial dourada do `LiveMapPreview` da homepage — e um Builder que se sente vivo (progressão clara, datas a funcionar, pins reativos, reveal premium com preços). Sem inventar paragens, tours, fotos ou preços (continua a obedecer ao bible: só dados resolvidos das Signatures + Viator).
 
 ---
 
-## Comparação com Studio Bible (north star + canonical rules)
+## 1. Mapa unificado — `EditorialMap` (novo primitivo)
 
-| Pilar da bible | Estado em V3 | Gap |
-|---|---|---|
-| "Cinematic discovery, not configurator" | Forte: atmosphere → mapa antecipado → reveal | Reveal final ainda parece um card; falta o momento de "longing" cinematográfico |
-| "Guided not asked" | Médio: ainda há 7 fases explícitas | Algumas (occasion, considerations) podem ser inferidas; ver Fase 3 |
-| "Portugal felt early through atmosphere" | Bom: silhueta + gold pulse na Fase 4 | Falta som ambiente opcional + ritmo de fade entre atmosphere clips |
-| "AI orchestrates, never invents" | Bom: route containment + closures | Falta telemetria de "stops rejeitados" para auditoria |
-| "Restraint > features" | Risco: 8 fases + investment + considerations | Considerar fundir guests+companions, ou inferir mais agressivo |
-| Brand guardrails (palette, motion, ≤220ms) | OK no shell | `studioV3AnticipationBreath` precisa de auditoria de duração em low-end |
-| No-invention + Signature truth | OK (route containment hardened) | Falta integrar `regionRules` (horários reais) com `STOP_CLOSURES` |
+Criar `src/components/maps/EditorialMap.tsx` extraindo o look do `LiveMapPreview`:
+
+- Silhueta de Portugal SVG + grid topográfico ténue (gold 0.18).
+- Linha de rota dourada que se desenha (stroke-dashoffset, 2400ms).
+- Pins gold com pulse suave, último pin com núcleo ivory.
+- Indicador "Routing · Portugal · Live" topo, caption editorial em baixo.
+- Props: `stops` (label, lat?, lng? ou x/y), `activeCount` (para reveal faseado), `caption`, `eyebrow`, `tone` ("dark" charcoal | "light" ivory).
+- Respeita `prefers-reduced-motion`.
+- Sem dependência de Leaflet/Mapbox — puro SVG, mobile-fast.
+
+Mapear coordenadas reais (lat/lng de `src/data/stopCoords.ts`) para o viewBox 200×400 via bounding box Portugal continental (lat 36.9–42.2, lng −9.6/−6.2). Função pura `projectLatLng()` testada.
+
+## 2. Substituir mapas existentes
+
+| Onde | Hoje | Passa a ser |
+|------|------|-------------|
+| Studio V3 `MapAwakens` (fase 2) | silhueta própria + glow | `<EditorialMap tone="dark" stops={regionStops} activeCount={selectedCount} />` |
+| Studio V3 `StudioV3SignatureMap` (reveal) | mapa custom com pins | `<EditorialMap tone="dark" stops={routePoints} activeCount={revealedStops} caption={journeyTitle} />` |
+| Builder `LivingMap` | versão atual | `<EditorialMap tone="light" stops={selectedStops} activeCount={selectedStops.length} />` enquanto compõe; mantém zoom-by-region só no reveal final |
+| Builder reveal final | igual ao composer | `<EditorialMap>` em modo `revealing` com pins sequenciados (220+i*320ms) — mesmo timing do Studio V3 |
+
+Homepage `LiveMapPreview` continua intacta (já é a referência); refactor interno para reutilizar `EditorialMap` mas mesmas props/output visual byte-equivalente (snapshot test).
+
+## 3. Builder — progressão, datas e reveal premium
+
+### 3a. Engagement & progressão
+- Stepper com 4 beats claros: **Região → Ritmo → Datas → Compor**. Cada beat com eyebrow ("— BEAT 02 · RITMO"), título Montserrat, micro-copy Georgia italic.
+- Ao avançar, o mapa à direita (desktop) / topo sticky (mobile) acende mais um pin com a cadência do LiveMapPreview — feedback visual imediato de cada escolha.
+- Persistência: hook `useBuilderPersistence` já existe; garantir que retomar a sessão restaura o beat e os pins.
+
+### 3b. Datas a funcionar
+Auditoria do `DatePhase`:
+- Validar que o range picker emite `startDate`/`endDate` válidos para `useMultiDayBuilder`.
+- Bloqueio de datas passadas + janela mínima 7 dias (regra operacional já no bible).
+- Sincronizar com `studio-v3-telemetry` (`date.selected` event) para o audit.
+- Estado vazio elegante quando o utilizador volta atrás.
+
+### 3c. Reveal premium com preços
+Novo componente `BuilderReveal.tsx` (substitui o handoff atual):
+
+1. **Beat A (0–900ms)** — hero photo da Signature resolvida em fade.
+2. **Beat B (900–1800ms)** — Georgia italic "why it fits" + `<EditorialMap>` com pins a aparecer 1-a-1.
+3. **Beat C (1800–2600ms)** — card de preço: `from €X /pp` derivado de `signatureToursViator.priceFrom` (campo já existente — não inventamos). Inclui:
+   - duração real
+   - nº de paragens reais
+   - 2-3 inclusões reais (do Viator data)
+   - CTA primário "Reserve instantly" (TEST MODE permite) + ghost "Refine details".
+4. **Validation guard** já implementado (`validateResolvedSignature`) — se falhar, fallback "needs a human touch" (mantém-se).
+
+Preço apenas mostrado se `priceFrom` existir e validar; senão mostra "Price on request" + CTA WhatsApp.
+
+## 4. Telemetria & testes
+
+- Estender `studio-v3-telemetry` com `builder.beatAdvanced`, `builder.dateSelected`, `builder.revealShown` (com preço/sem preço).
+- Adicionar tab "Builder" em `/admin/studio-v3-audit` reutilizando o mesmo layout (viewport · dpr · reducedMotion).
+- Testes:
+  - `editorial-map.test.tsx` — projeção lat/lng, activeCount staggering, reduced motion.
+  - `builder-reveal.test.tsx` — mostra preço só quando válido, fallback caso contrário.
+  - `date-phase.test.tsx` — bloqueia passado, emite range válido.
+  - Snapshot do `LiveMapPreview` antes/depois do refactor (byte-equivalente).
+
+## 5. Não-objetivos (não tocar)
+
+- Homepage hero / copy / vídeos.
+- Signature pages (continuam fonte de verdade Viator).
+- Stack de pagamentos (Bokun final step só quando live).
+- Tipografia / paleta — mantém canonical tokens.
 
 ---
 
-## Plano de melhorias (priorizado)
+## Ordem de execução
 
-### Fase 1 — Operational truth registry (P0, 1 ficheiro)
-Mover `STOP_CLOSURES` (hoje hardcoded dentro de `curateJourney`) para `src/data/stopOperational.ts` com schema explícito:
-```ts
-type StopRule = {
-  match: RegExp;
-  closedOn?: number[];     // weekdays
-  closedDates?: string[];  // yyyy-mm-dd (feriados)
-  seasonal?: { from: string; to: string };
-  source: string;          // link Viator/site oficial
-};
-```
-Permite adicionar Quinta da Regaleira (último horário 18h inverno), Capela dos Ossos (Évora — fechada certas datas), etc., **sempre com fonte**. Suite de testes paramétrica.
+1. `EditorialMap` + testes + projeção lat/lng.
+2. Refactor `LiveMapPreview` interno → `EditorialMap` (snapshot lock).
+3. Swap em Studio V3 (MapAwakens + reveal).
+4. Swap em Builder + novo stepper de progressão.
+5. `DatePhase` audit + fix.
+6. `BuilderReveal` com preço real do Viator.
+7. Telemetria + tab admin.
+8. Validação Playwright mobile (393×850) em todos os ecrãs.
 
-### Fase 2 — Caps regionais explícitos (P1, opcional)
-Substituir `MAX_WINERY_STOPS = 3` global por:
-```ts
-const WINERY_CAP_BY_REGION: Record<RegionId, number> = {
-  arrabida: 3, sintra: 1, alentejo: 2, centro: 1, ...
-};
-```
-Resolve o caso "Sintra com 3 adegas" mesmo se um dia o pool crescer. Testes já existem (operational suite) — basta apertar os limites.
-
-### Fase 3 — Reduzir fases via inferência (P1)
-- `occasion` opcional quando `companions=couple` + `feeling=romance` → "romantic escape" implícito.
-- `considerations` só pergunta se `companions ∈ {family, celebration, corporate}`.
-- Meta: 8 fases → 5–6 para o caso comum, mantendo opt-in para refinement.
-
-### Fase 4 — Reveal final cinematográfico (P1)
-Hoje o reveal entrega um Journey Card estático. Bible pede "longing". Proposta:
-- 1ª batida (0–800ms): fade do mapa para imagem hero do anchor stop, com filme curto (3s loop) se existir.
-- 2ª batida (800–1600ms): título manuscrito-ish (Georgia italic) + 1 linha de "why it fits".
-- 3ª batida (>1600ms): route points aparecem em sequência (stagger 120ms), com sub-line "We confirm everything before you book".
-
-### Fase 5 — Telemetria de curation (✅ Shipped)
-Já temos `[studio-v3.phase4]`. Adicionar:
-- `studio-v3:curation.decision` (tour escolhido, score, closures aplicados, swaps por wine signal).
-- Painel `/admin.studio-v3-audit` para ver últimas 100 decisões e rejeições.
-- Permite detectar "wine pedido mas 0 wineries" em produção.
-
-### Fase 6 — Preço indicativo (decisão pendente)
-Bible em TEST MODE adia preço real. Banda discreta "Investment forming · indicative" que escala com `interests.length × rhythm × investment` sem número absoluto. Texto: "We'll confirm the exact figure with your tailored proposal." Implementação leve, 1 componente, 0 lógica de pagamento.
-
----
-
-## Próximos passos sugeridos
-
-Recomendo arrancar pela **Fase 1** (registry de horários) — desbloqueia adicionar Regaleira, Évora, mercados sem mexer em `curation.ts` outra vez. Confirma e implemento já a seguir.
+Confirmas para avançar?
