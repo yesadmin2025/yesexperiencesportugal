@@ -20,10 +20,6 @@ import type {
 // TODO: Later phase — add pickup-aware map eyebrow ("From {pickup label}").
 // Skipped in Phase 1B to avoid prop drilling and a wider refactor.
 
-const BuilderMap = lazy(() =>
-  import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
-);
-
 // Map destinationIntent (or tour region fallback) into the silhouette
 // region so the gold pulse settles exactly where the day will unfold.
 function resolveSilhouetteRegion(
