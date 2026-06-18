@@ -1,10 +1,7 @@
-import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ChevronUp } from "lucide-react";
 import type { RoutedStopUI } from "@/components/builder/types";
-
-const BuilderMap = lazy(() =>
-  import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
-);
+import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
 
 /**
  * Wraps BuilderMap with a progressive reveal: starts hidden, fades in the
