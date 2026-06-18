@@ -1,12 +1,12 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
-import type { RoutedStopUI } from "@/components/builder/types";
 import { curateJourney, type CuratedJourney } from "./curation";
 import {
   recordStudioV3Phase4Timing,
   type StudioV3Phase4Phase,
 } from "@/lib/studio-v3-telemetry";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
+import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
 import type {
   Companions,
   DestinationIntent,
