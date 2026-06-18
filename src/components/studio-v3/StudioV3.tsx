@@ -1851,6 +1851,14 @@ function StoryboardHandoff({
       tourId: revealValidation.tourId,
     });
   }, [revealValidation.ok, revealValidation.missing, revealValidation.tourId]);
+
+  // Fase 4 — past-date guard. Persisted state can hold a stale exact date
+  // from a previous session; demote silently so the reveal never displays
+  // "Sat 12 Sep 2025" in 2026.
+  const safeDate = useMemo(
+    () => safeDateForReveal(state.dateExact, state.dateMode),
+    [state.dateExact, state.dateMode],
+  );
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{ label: string; story: string; source: "skeleton" | "region-pool" }> = [];
