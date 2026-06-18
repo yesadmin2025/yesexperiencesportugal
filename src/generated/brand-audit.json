@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-18T00:18:43.138Z",
-  "filesScanned": 366,
+  "generatedAt": "2026-06-18T00:28:37.816Z",
+  "filesScanned": 367,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 231,
+    "total": 232,
     "approved": 61,
     "allowlisted": 27,
-    "mismatch": 143
+    "mismatch": 144
   },
   "findings": [
     {
@@ -1237,6 +1237,15 @@
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
       "snippet": "\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_rgba(46,46,",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/maps/EditorialMap.tsx",
+      "line": 152,
+      "col": 29,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "? \"var(--charcoal-deep, #14181a)\"",
       "status": "mismatch"
     },
     {
