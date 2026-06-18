@@ -1331,6 +1331,8 @@ export function StudioV3() {
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
+      <StudioV3ProgressStepper phase={state.phase} />
+
 
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
