@@ -297,23 +297,18 @@ export function MapAwakens({
           tabIndex={anticipating ? -1 : undefined}
         >
 
-          <Suspense
-            fallback={
-              <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", background: "var(--sand)" }}>
-                Map awakening…
-              </div>
-            }
-          >
-            <BuilderMap
-              stops={mapStops}
-              regionCenter={journey.center}
-              regionKey={journey.tour.id}
-              emotionalMode
-              activeStopIndex={mapStops.length > 0 ? Math.min(active, mapStops.length - 1) : null}
-              chrome={false}
-              locale="en"
-            />
-          </Suspense>
+          <EditorialMap
+            stops={mapStops}
+            activeCount={revealed}
+            tone="dark"
+            eyebrow="Suggested route"
+            meta={journey.tour.region ?? "Portugal"}
+            caption={current?.label}
+            footerRight={`${journey.moments.length} stop${journey.moments.length === 1 ? "" : "s"} · 1 day`}
+            ariaLabel={`Suggested route ${journey.tour.region ? `in ${journey.tour.region}` : ""} with ${journey.moments.length} moments.`}
+            className="w-full h-full"
+            aspectRatio="auto"
+          />
 
           {/* Cinematic vignette — soft dark wash at top + bottom for a
               premium, Homepage-Studio-Preview feel. Pins and route stay
