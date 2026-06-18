@@ -1,12 +1,12 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
-import type { RoutedStopUI } from "@/components/builder/types";
 import { curateJourney, type CuratedJourney } from "./curation";
 import {
   recordStudioV3Phase4Timing,
   type StudioV3Phase4Phase,
 } from "@/lib/studio-v3-telemetry";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
+import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
 import type {
   Companions,
   DestinationIntent,
@@ -19,10 +19,6 @@ import type {
 
 // TODO: Later phase — add pickup-aware map eyebrow ("From {pickup label}").
 // Skipped in Phase 1B to avoid prop drilling and a wider refactor.
-
-const BuilderMap = lazy(() =>
-  import("@/components/builder/BuilderMap").then((m) => ({ default: m.BuilderMap })),
-);
 
 // Map destinationIntent (or tour region fallback) into the silhouette
 // region so the gold pulse settles exactly where the day will unfold.
@@ -205,24 +201,15 @@ export function MapAwakens({
     setRevealed((r) => Math.max(r, next + 1));
   };
 
-  // Build RoutedStopUI[] for BuilderMap — only the revealed moments that
-  // have real coordinates. Map is forgiving of missing stops.
-  const mapStops: RoutedStopUI[] = useMemo(() => {
-    return journey.moments
-      .slice(0, revealed)
-      .filter((m) => m.lat !== null && m.lng !== null)
-      .map((m, i) => ({
-        key: `${journey.tour.id}-${m.index}`,
-        region_key: journey.tour.id,
-        label: m.label,
-        blurb: m.story,
-        tag: null,
-        lat: m.lat as number,
-        lng: m.lng as number,
-        duration_minutes: 60,
-        driveMinutesFromPrev: i === 0 ? 0 : 25,
-      }));
-  }, [journey, revealed]);
+  // Build EditorialMap stops — use stopCoords-derived lat/lng when available
+  // (EditorialMap projects them onto the unified Portugal silhouette).
+  const mapStops: EditorialMapStop[] = useMemo(() => {
+    return journey.moments.map((m) => ({
+      label: m.label,
+      lat: typeof m.lat === "number" ? m.lat : undefined,
+      lng: typeof m.lng === "number" ? m.lng : undefined,
+    }));
+  }, [journey]);
 
   const current = journey.moments[active];
   const isLast = active === journey.moments.length - 1 && revealed >= journey.moments.length;
@@ -310,23 +297,18 @@ export function MapAwakens({
           tabIndex={anticipating ? -1 : undefined}
         >
 
-          <Suspense
-            fallback={
-              <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", background: "var(--sand)" }}>
-                Map awakening…
-              </div>
-            }
-          >
-            <BuilderMap
-              stops={mapStops}
-              regionCenter={journey.center}
-              regionKey={journey.tour.id}
-              emotionalMode
-              activeStopIndex={mapStops.length > 0 ? Math.min(active, mapStops.length - 1) : null}
-              chrome={false}
-              locale="en"
-            />
-          </Suspense>
+          <EditorialMap
+            stops={mapStops}
+            activeCount={revealed}
+            tone="dark"
+            eyebrow="Suggested route"
+            meta={journey.tour.region ?? "Portugal"}
+            caption={current?.label}
+            footerRight={`${journey.moments.length} stop${journey.moments.length === 1 ? "" : "s"} · 1 day`}
+            ariaLabel={`Suggested route ${journey.tour.region ? `in ${journey.tour.region}` : ""} with ${journey.moments.length} moments.`}
+            className="w-full h-full"
+            aspectRatio="auto"
+          />
 
           {/* Cinematic vignette — soft dark wash at top + bottom for a
               premium, Homepage-Studio-Preview feel. Pins and route stay
