@@ -53,15 +53,16 @@ export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, cu
       }`}
       aria-hidden={!visible}
     >
-      <Suspense
-        fallback={
-          <div className="absolute inset-0 grid place-items-center bg-[color:var(--sand)] text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/60 font-semibold">
-            {FALLBACK_I18N[locale] ?? FALLBACK_I18N.en}
-          </div>
-        }
-      >
-        <BuilderMap stops={stops} regionCenter={regionCenter} regionKey={regionKey} emotionalMode locale={locale} />
-      </Suspense>
+      <EditorialMap
+        stops={stops.map<EditorialMapStop>((s) => ({ label: s.label, lat: s.lat, lng: s.lng }))}
+        tone="dark"
+        eyebrow="Composing"
+        meta={regionKey ?? "Portugal"}
+        footerRight={stops.length > 0 ? `${stops.length} stop${stops.length === 1 ? "" : "s"}` : undefined}
+        className="w-full h-full"
+        aspectRatio="auto"
+        ariaLabel={FALLBACK_I18N[locale] ?? FALLBACK_I18N.en}
+      />
 
       {ribbon ? (
         <>
