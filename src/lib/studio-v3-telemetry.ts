@@ -64,10 +64,29 @@ export interface StudioV3RevealValidation {
   tourId: string | null;
 }
 
+/** Perceived 4-beat stepper: Region → Rhythm → Dates → Compose. */
+export type StudioV3BuilderStepId = "region" | "rhythm" | "dates" | "compose";
+export interface StudioV3BuilderStep {
+  step: StudioV3BuilderStepId;
+  stepIndex: number;
+  phase: string;
+}
+
+export interface StudioV3RevealPremium {
+  tourId: string | null;
+  hasPrice: boolean;
+  priceFromEUR: number | null;
+  durationLabel: string | null;
+  stopCount: number;
+  dateExact: string | null;
+}
+
 type StudioV3Event =
   | { kind: "curation.decision"; payload: StudioV3CurationDecision }
   | { kind: "phase4.timing"; payload: StudioV3Phase4Timing }
-  | { kind: "reveal.validation"; payload: StudioV3RevealValidation };
+  | { kind: "reveal.validation"; payload: StudioV3RevealValidation }
+  | { kind: "builder.step"; payload: StudioV3BuilderStep }
+  | { kind: "reveal.premium"; payload: StudioV3RevealPremium };
 
 export interface StudioV3BufferedEvent {
   kind: StudioV3Event["kind"];
@@ -75,7 +94,9 @@ export interface StudioV3BufferedEvent {
   payload:
     | StudioV3CurationDecision
     | StudioV3Phase4Timing
-    | StudioV3RevealValidation;
+    | StudioV3RevealValidation
+    | StudioV3BuilderStep
+    | StudioV3RevealPremium;
 }
 
 const BUFFER_KEY = "studio-v3.audit.buffer.v1";
@@ -158,6 +179,14 @@ export function recordStudioV3RevealValidation(
   payload: StudioV3RevealValidation,
 ): void {
   emitStudioV3Event({ kind: "reveal.validation", payload });
+}
+
+export function recordStudioV3BuilderStep(payload: StudioV3BuilderStep): void {
+  emitStudioV3Event({ kind: "builder.step", payload });
+}
+
+export function recordStudioV3RevealPremium(payload: StudioV3RevealPremium): void {
+  emitStudioV3Event({ kind: "reveal.premium", payload });
 }
 
 

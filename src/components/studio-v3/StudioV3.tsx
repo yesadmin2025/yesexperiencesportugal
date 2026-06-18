@@ -14,6 +14,9 @@ import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
+import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
+import { SignaturePriceCard } from "./SignaturePriceCard";
+import { safeDateForReveal } from "./dateGuards";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -1328,6 +1331,8 @@ export function StudioV3() {
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
+      <StudioV3ProgressStepper phase={state.phase} />
+
 
       {state.phase === "feeling" ? (
         <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
@@ -1846,6 +1851,14 @@ function StoryboardHandoff({
       tourId: revealValidation.tourId,
     });
   }, [revealValidation.ok, revealValidation.missing, revealValidation.tourId]);
+
+  // Fase 4 — past-date guard. Persisted state can hold a stale exact date
+  // from a previous session; demote silently so the reveal never displays
+  // "Sat 12 Sep 2025" in 2026.
+  const safeDate = useMemo(
+    () => safeDateForReveal(state.dateExact, state.dateMode),
+    [state.dateExact, state.dateMode],
+  );
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{ label: string; story: string; source: "skeleton" | "region-pool" }> = [];
@@ -2819,7 +2832,17 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
-      {/* ---------- 7. Before you secure it ---------- */}
+      {/* ---------- 7. Premium price card ---------- */}
+      <SignaturePriceCard
+        tour={skeletonTour ?? null}
+        stopCount={editedStops.length}
+        dateExact={safeDate.dateExact}
+        onSecure={onSecure}
+        onRefine={onRefine}
+        journeyTitle={state.journeyTitle}
+      />
+
+      {/* ---------- 7b. Before you secure it ---------- */}
       <div className="mt-8 text-center">
         <p
           className="text-[11.5px] leading-[1.6] italic"
@@ -2830,6 +2853,15 @@ function StoryboardHandoff({
         >
           Availability and final details are confirmed before your experience.
         </p>
+        {safeDate.demoted ? (
+          <p
+            data-testid="studio-v3-date-demoted"
+            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+            style={{ color: "var(--gold)" }}
+          >
+            — Your saved date has passed. Pick a new one when you're ready.
+          </p>
+        ) : null}
         {inferredGuestsNote(state) ? (
           <p
             className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
