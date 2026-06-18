@@ -201,24 +201,15 @@ export function MapAwakens({
     setRevealed((r) => Math.max(r, next + 1));
   };
 
-  // Build RoutedStopUI[] for BuilderMap — only the revealed moments that
-  // have real coordinates. Map is forgiving of missing stops.
-  const mapStops: RoutedStopUI[] = useMemo(() => {
-    return journey.moments
-      .slice(0, revealed)
-      .filter((m) => m.lat !== null && m.lng !== null)
-      .map((m, i) => ({
-        key: `${journey.tour.id}-${m.index}`,
-        region_key: journey.tour.id,
-        label: m.label,
-        blurb: m.story,
-        tag: null,
-        lat: m.lat as number,
-        lng: m.lng as number,
-        duration_minutes: 60,
-        driveMinutesFromPrev: i === 0 ? 0 : 25,
-      }));
-  }, [journey, revealed]);
+  // Build EditorialMap stops — use stopCoords-derived lat/lng when available
+  // (EditorialMap projects them onto the unified Portugal silhouette).
+  const mapStops: EditorialMapStop[] = useMemo(() => {
+    return journey.moments.map((m) => ({
+      label: m.label,
+      lat: typeof m.lat === "number" ? m.lat : undefined,
+      lng: typeof m.lng === "number" ? m.lng : undefined,
+    }));
+  }, [journey]);
 
   const current = journey.moments[active];
   const isLast = active === journey.moments.length - 1 && revealed >= journey.moments.length;
