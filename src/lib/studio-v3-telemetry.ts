@@ -181,4 +181,12 @@ export function recordStudioV3RevealValidation(
   emitStudioV3Event({ kind: "reveal.validation", payload });
 }
 
+export function recordStudioV3BuilderStep(payload: StudioV3BuilderStep): void {
+  emitStudioV3Event({ kind: "builder.step", payload });
+}
+
+export function recordStudioV3RevealPremium(payload: StudioV3RevealPremium): void {
+  emitStudioV3Event({ kind: "reveal.premium", payload });
+}
+
 
