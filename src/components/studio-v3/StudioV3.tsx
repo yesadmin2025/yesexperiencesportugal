@@ -14,6 +14,9 @@ import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
+import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
+import { SignaturePriceCard } from "./SignaturePriceCard";
+import { safeDateForReveal } from "./dateGuards";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
