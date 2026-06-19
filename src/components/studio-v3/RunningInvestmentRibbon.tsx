@@ -68,6 +68,8 @@ export function RunningInvestmentRibbon({
       ? priceFromEur * guests
       : null;
 
+  const voice = tour ? regionalVoiceFor(tour.region) : null;
+
   // Compose the live line.
   let line: string;
   if (priceFromEur != null && guests != null && partyTotalEur != null) {
