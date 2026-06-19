@@ -81,7 +81,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             >
               — Studio
             </p>
-            <h1
+            <h2
               className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-bold"
               style={{
                 fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
@@ -99,7 +99,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               >
                 Portugal day.
               </span>
-            </h1>
+            </h2>
             <p
               className="mt-5 text-[14px] leading-[1.6]"
               style={{
