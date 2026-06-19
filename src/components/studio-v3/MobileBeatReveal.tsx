@@ -36,36 +36,21 @@ export interface MobileBeatRevealProps {
   onDone: () => void;
 }
 
-export function MobileBeatReveal({ beat, index, onDone }: MobileBeatRevealProps) {
-  const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "idle">("idle");
+export function MobileBeatReveal({ beat, index: _index, onDone }: MobileBeatRevealProps) {
+  const [phase, setPhase] = useState<"idle">("idle");
 
+  // The full-screen beat overlay was hiding the map + the question for ~1.8s
+  // on every phase change, which read as "nothing is happening" on mobile.
+  // We now rely on the persistent stepper + ComposerMap + reaction beat for
+  // progression cues, so this overlay resolves immediately and never paints.
   useEffect(() => {
-    if (!beat) {
-      setPhase("idle");
-      return;
-    }
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      onDone();
-      return;
-    }
-    setPhase("enter");
-    const t1 = window.setTimeout(() => setPhase("hold"), 280);
-    const t2 = window.setTimeout(() => setPhase("exit"), 280 + HOLD_MS);
-    const t3 = window.setTimeout(() => {
-      setPhase("idle");
-      onDone();
-    }, 280 + HOLD_MS + 320 + REDUCE_DURATION);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      window.clearTimeout(t3);
-    };
+    if (!beat) return;
+    onDone();
   }, [beat, onDone]);
 
-  if (!beat || phase === "idle") return null;
+  // Keep state reference so React doesn't strip the hook; never render.
+  void phase; void setPhase;
+  return null;
 
   const opacity = phase === "enter" ? 0 : phase === "exit" ? 0 : 1;
 
