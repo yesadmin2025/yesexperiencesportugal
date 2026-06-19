@@ -129,7 +129,7 @@ export function SignaturePriceCard({
             “{journeyTitle}”
           </p>
         ) : null}
-        </p>
+
 
         {hasPrice ? (
           <>
