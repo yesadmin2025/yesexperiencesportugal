@@ -3227,6 +3227,43 @@ function ReactionOverlay({
           </p>
         ) : null}
 
+        {/* Regional voice — only renders once a Signature resolves, so the
+            tone of the place enters the transition itself. Never invented. */}
+        {(() => {
+          if (!state.feeling || !state.companions || !state.rhythm) return null;
+          const resolved = resolveStudioV3Route({
+            feeling: state.feeling,
+            companions: state.companions,
+            rhythm: state.rhythm,
+            interests: state.interests,
+            pickup: state.pickup,
+            occasion: state.occasion,
+            investment: state.investment,
+            destinationIntent: state.destinationIntent,
+            dateExact: state.dateExact,
+          });
+          const tour = resolved?.skeletonTourKey
+            ? signatureTours.find((t) => t.id === resolved.skeletonTourKey)
+            : null;
+          if (!tour) return null;
+          const voice = regionalVoiceFor(tour.region);
+          if (voice.eyebrow === "PORTUGAL VOICE") return null;
+          return (
+            <p
+              className="mt-4 inline-flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.26em] font-bold"
+              style={{
+                color: "var(--teal)",
+                animation: "studioV3RiseIn 540ms ease-out both",
+                animationDelay: "360ms",
+              }}
+              data-testid="studio-v3-region-voice"
+            >
+              <span style={{ color: "var(--gold)" }} aria-hidden>—</span>
+              <span>{voice.eyebrow}</span>
+            </p>
+          );
+        })()}
+
         {reaction.detail ? (
           <p
             className="mt-3 text-[11px] uppercase tracking-[0.24em] font-semibold"
