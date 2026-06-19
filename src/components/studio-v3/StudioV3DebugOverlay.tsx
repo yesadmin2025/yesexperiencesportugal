@@ -70,8 +70,8 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
         setEnabled((v) => {
           const next = !v;
           try {
-            if (next) window.sessionStorage.setItem(STORAGE_KEY, "1");
-            else window.sessionStorage.removeItem(STORAGE_KEY);
+            if (next) window.localStorage.setItem(STORAGE_KEY, "1");
+            else window.localStorage.removeItem(STORAGE_KEY);
           } catch {
             /* noop */
           }
