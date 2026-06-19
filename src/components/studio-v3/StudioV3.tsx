@@ -1331,7 +1331,7 @@ export function StudioV3() {
   })();
 
   return (
-    <main aria-label="YES Studio">
+    <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
