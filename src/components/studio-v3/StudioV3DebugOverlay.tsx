@@ -6,7 +6,7 @@
  * validation. Never renders unless explicitly enabled.
  *
  * Enable via any of:
- *   - URL:        ?debug=studio        (persists in sessionStorage)
+ *   - URL:        ?debug=studio        (persists in localStorage)
  *   - URL off:    ?debug=off
  *   - localStorage: studio-v3-debug = "1"
  *   - env:        VITE_STUDIO_V3_DEBUG = "1"
