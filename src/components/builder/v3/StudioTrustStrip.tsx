@@ -6,7 +6,7 @@
  * that YES is rated across 4 real platforms with 700+ five-star reviews,
  * without breaking the cinematic atmosphere.
  *
- *   ★★★★★ 700+ reviews · Google · Tripadvisor · Viator · GetYourGuide
+ *   ★★★★★ 700+ reviews · Google · Tripadvisor · GetYourGuide
  *
  * - Ivory 55% on the existing charcoal backdrop, no extra surfaces.
  * - Single line, no icons / no logos — keeps weight under 18px.
@@ -21,7 +21,7 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
   return (
     <div
       role="note"
-      aria-label={`700+ five-star reviews across Google, Tripadvisor, Viator and GetYourGuide`}
+      aria-label={`700+ five-star reviews across Google, Tripadvisor and GetYourGuide`}
       className="absolute bottom-[108px] inset-x-0 z-[44] flex items-center justify-center px-3 pointer-events-none motion-safe:animate-[fade-in_1.1s_ease-out_both]"
     >
       <span
@@ -44,7 +44,7 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
         <span aria-hidden="true" className="opacity-30">·</span>
         <span>Tripadvisor</span>
         <span aria-hidden="true" className="opacity-30">·</span>
-        <span>Viator</span>
+        <span>GetYourGuide</span>
       </span>
     </div>
   );

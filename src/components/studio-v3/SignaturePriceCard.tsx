@@ -1,16 +1,26 @@
 // Premium price card for the Studio V3 reveal.
 //
 // Anchored entirely in real, tour-specific data:
-//   - priceFrom in EUR (derived from VIATOR_META[tourId].priceFromUSD)
+//   - priceFrom in EUR (derived from the canonical operations dataset)
 //   - duration label from signatureTours[tourId].durationHours
 //   - real stop count from the resolved/edited route
 //
-// If priceFromUSD is missing for the tour, we degrade gracefully to
+// Up to three add-ons can be opted into. Add-ons are region-mapped and
+// priced as a % of the base "from" anchor — never invented numbers.
+// Only add-ons whose itinerary thresholds (stops / duration) are met
+// surface, so we never promise something the day can't hold.
+//
+// If the base price is missing, the card degrades gracefully to
 // "Price on request" + a WhatsApp escape hatch. No fabricated numbers.
 
-import { useEffect, useMemo } from "react";
-import { ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Check } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
+import {
+  addOnEurFromBase,
+  selectSignatureAddOns,
+  type SignatureAddOn,
+} from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
@@ -48,6 +58,28 @@ export function SignaturePriceCard({
 
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
   const hasPrice = priceEur != null;
+
+  const availableAddOns = useMemo<SignatureAddOn[]>(
+    () =>
+      selectSignatureAddOns({
+        region: tour?.region ?? null,
+        stopCount,
+        durationLabel,
+      }),
+    [tour?.region, stopCount, durationLabel],
+  );
+  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
+  const toggleAddOn = (id: string) =>
+    setSelectedAddOnIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  const addOnsTotalEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    return availableAddOns
+      .filter((a) => selectedAddOnIds.includes(a.id))
+      .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
+  }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
+  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
 
   useEffect(() => {
     recordStudioV3RevealPremium({
@@ -161,6 +193,94 @@ export function SignaturePriceCard({
             </li>
           ) : null}
         </ul>
+
+        {hasPrice && availableAddOns.length > 0 ? (
+          <fieldset
+            data-testid="studio-v3-add-ons"
+            data-count={availableAddOns.length}
+            className="mt-6 mx-auto max-w-[380px] text-left"
+          >
+            <legend
+              className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Add to your day
+            </legend>
+            <ul className="flex flex-col gap-2">
+              {availableAddOns.map((a) => {
+                const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
+                const selected = selectedAddOnIds.includes(a.id);
+                return (
+                  <li key={a.id}>
+                    <button
+                      type="button"
+                      onClick={() => toggleAddOn(a.id)}
+                      aria-pressed={selected}
+                      data-addon-id={a.id}
+                      className="flex w-full items-start gap-3 rounded-[4px] px-3 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                      style={{
+                        background: selected
+                          ? "color-mix(in oklab, var(--gold) 12%, var(--ivory))"
+                          : "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
+                        border: `1px solid ${
+                          selected
+                            ? "color-mix(in oklab, var(--gold) 70%, transparent)"
+                            : "color-mix(in oklab, var(--charcoal) 12%, transparent)"
+                        }`,
+                      }}
+                    >
+                      <span
+                        aria-hidden
+                        className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full"
+                        style={{
+                          background: selected ? "var(--gold)" : "transparent",
+                          border: `1px solid ${
+                            selected ? "var(--gold)" : "color-mix(in oklab, var(--charcoal) 30%, transparent)"
+                          }`,
+                        }}
+                      >
+                        {selected ? <Check size={10} color="var(--ivory)" /> : null}
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span
+                          className="block text-[12.5px] font-semibold"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          {a.label}
+                        </span>
+                        <span
+                          className="block text-[11.5px] leading-snug mt-0.5"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+                        >
+                          {a.blurb}
+                        </span>
+                      </span>
+                      <span
+                        className="shrink-0 text-[12px] font-semibold tabular-nums"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        +€{eur}
+                        <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
+                          / pp
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            {selectedAddOnIds.length > 0 && totalEur != null ? (
+              <p
+                data-testid="studio-v3-add-ons-total"
+                className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
+                style={{ color: "var(--charcoal)" }}
+              >
+                Total <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
+              </p>
+            ) : null}
+          </fieldset>
+        ) : null}
 
         <div className="mt-6 flex flex-col items-center gap-2.5">
           {hasPrice ? (

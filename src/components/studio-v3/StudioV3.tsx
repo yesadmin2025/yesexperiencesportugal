@@ -8,6 +8,8 @@ import { ChoiceGrid } from "./ChoiceGrid";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
+import { MobileBeatReveal } from "./MobileBeatReveal";
+import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
 import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
@@ -543,6 +545,7 @@ export function StudioV3() {
   const isMobile = useIsMobile();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(null);
   const [hydrating, setHydrating] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
@@ -1331,7 +1334,22 @@ export function StudioV3() {
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
-      <StudioV3ProgressStepper phase={state.phase} />
+      <StudioV3ProgressStepper
+        phase={state.phase}
+        onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
+        onBeatAdvance={(beat, index) => {
+          if (isMobile) setMobileReveal({ beat, index });
+        }}
+      />
+      {isMobile ? (
+        <MobileBeatReveal
+          beat={mobileReveal?.beat ?? null}
+          index={mobileReveal?.index ?? 0}
+          onDone={() => setMobileReveal(null)}
+        />
+      ) : null}
+
+
 
 
       {state.phase === "feeling" ? (
