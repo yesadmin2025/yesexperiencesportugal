@@ -1,16 +1,26 @@
 // Premium price card for the Studio V3 reveal.
 //
 // Anchored entirely in real, tour-specific data:
-//   - priceFrom in EUR (derived from VIATOR_META[tourId].priceFromUSD)
+//   - priceFrom in EUR (derived from the canonical operations dataset)
 //   - duration label from signatureTours[tourId].durationHours
 //   - real stop count from the resolved/edited route
 //
-// If priceFromUSD is missing for the tour, we degrade gracefully to
+// Up to three add-ons can be opted into. Add-ons are region-mapped and
+// priced as a % of the base "from" anchor — never invented numbers.
+// Only add-ons whose itinerary thresholds (stops / duration) are met
+// surface, so we never promise something the day can't hold.
+//
+// If the base price is missing, the card degrades gracefully to
 // "Price on request" + a WhatsApp escape hatch. No fabricated numbers.
 
-import { useEffect, useMemo } from "react";
-import { ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Check } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
+import {
+  addOnEurFromBase,
+  selectSignatureAddOns,
+  type SignatureAddOn,
+} from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
