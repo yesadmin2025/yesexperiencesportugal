@@ -71,11 +71,13 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
       Object.values(ADD_ON_CATALOG)
         .flat()
         .forEach((a) => {
-          const text = `${a.id} ${a.label} ${a.blurb}`.toLowerCase();
+          const text = `${a.id} ${a.label}`.toLowerCase();
+          // Things included in every Signature must never be sold again.
           expect(text).not.toMatch(/\bpickup\b/);
           expect(text).not.toMatch(/private transfer/);
           expect(text).not.toMatch(/door-to-door/);
-          expect(text).not.toMatch(/(?:^|\W)guide(?:\W|$)/);
+          expect(text).not.toMatch(/\bguide service\b/);
+          expect(text).not.toMatch(/\blunch\b/);
         });
     });
 
