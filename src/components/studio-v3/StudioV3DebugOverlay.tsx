@@ -47,13 +47,12 @@ function readInitialEnabled(): boolean {
   } catch {
     /* noop */
   }
-  // @ts-expect-error vite env
-  if (import.meta?.env?.VITE_STUDIO_V3_DEBUG === "1") return true;
+  if ((import.meta as { env?: Record<string, string> }).env?.VITE_STUDIO_V3_DEBUG === "1") return true;
   return false;
 }
 
 interface Props {
-  state: StudioV3State;
+  state: StudioState;
   composerHidden: boolean;
   reactionActive: boolean;
 }
