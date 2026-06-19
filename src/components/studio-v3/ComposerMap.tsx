@@ -20,6 +20,7 @@ import {
 } from "./types";
 import { getOptionLabel, resolveStudioV3Route } from "./curation";
 import { signatureTours } from "@/data/signatureTours";
+import { regionalVoiceFor } from "./regionalVoice";
 
 type Anticipation = "feeling" | "rhythm" | "dates" | "compose";
 
