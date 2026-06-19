@@ -1678,7 +1678,12 @@ export function StudioV3() {
       state.phase !== "considerations" &&
       state.phase !== "storyboard" ? (
         <div
-          className="pointer-events-none fixed inset-x-0 bottom-2 z-30 flex justify-center px-6"
+          aria-hidden="false"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pt-6 pb-2"
+          style={{
+            background:
+              "linear-gradient(to top, var(--ivory) 0%, color-mix(in oklab, var(--ivory) 92%, transparent) 55%, transparent 100%)",
+          }}
         >
           <button
             type="button"
