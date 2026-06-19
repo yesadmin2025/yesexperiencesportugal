@@ -468,11 +468,106 @@ function JourneyDraftDrawer({
             </ul>
           ) : null}
 
-          {/* Cinematic Signature map — same artefact as the final reveal.
-              Pins draw in sequence to convey real-time creation. Labels are
-              real Signature stops only — never invented. */}
+          {/* Tabbed view — Story · Timeline · Map. Keeps the drawer focused
+              while letting the traveller feel the day from three angles.
+              All three views are powered by the same resolved Signature. */}
           {totalPins > 0 ? (
-            <div className="relative mt-4">
+            <div
+              role="tablist"
+              aria-label="Journey view"
+              data-testid="studio-v3-journey-tabs"
+              className="mt-4 flex items-center gap-1 rounded-full p-1"
+              style={{
+                background: "color-mix(in oklab, var(--sand) 60%, transparent)",
+                border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              }}
+            >
+              {(["story", "timeline", "map"] as const).map((v) => {
+                const active = view === v;
+                return (
+                  <button
+                    key={v}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    data-view={v}
+                    data-state={active ? "active" : "inactive"}
+                    onClick={() => setView(v)}
+                    className="flex-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    style={{
+                      background: active ? "var(--ivory)" : "transparent",
+                      color: active
+                        ? "var(--charcoal)"
+                        : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                      boxShadow: active
+                        ? "0 4px 12px -8px color-mix(in oklab, var(--charcoal) 40%, transparent)"
+                        : "none",
+                    }}
+                  >
+                    {v === "story" ? "Story" : v === "timeline" ? "Timeline" : "Map"}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {/* Story view — the AI whisper + route + moments-so-far list */}
+          {view === "story" && totalPins > 0 ? (
+            <>
+              {routeLine ? (
+                <p
+                  className="mt-3 text-[12px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                >
+                  <span
+                    className="mr-1.5 text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                    style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
+                  >
+                    Route
+                  </span>
+                  {routeLine}
+                </p>
+              ) : null}
+              {moments.length > 0 ? (
+                <div className="mt-3">
+                  <p
+                    className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                    style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
+                  >
+                    Moments so far
+                  </p>
+                  <ol
+                    className="mt-1.5 space-y-1 text-[12px] leading-snug"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                  >
+                    {moments.slice(0, 3).map((m, i) => (
+                      <li key={`${m}-${i}`} className="flex gap-2">
+                        <span
+                          className="mt-[7px] inline-block h-1 w-1 rounded-full shrink-0"
+                          style={{ background: "var(--gold)" }}
+                          aria-hidden
+                        />
+                        <span>{m}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+
+          {/* Timeline view — ordered chapters from the real Signature */}
+          {view === "timeline" && totalPins > 0 ? (
+            <TimelineView
+              moments={timelineMoments}
+              durationLabel={durationLabel}
+              originLabel={originLabel}
+            />
+          ) : null}
+
+          {/* Map view — same map artefact, drawn live */}
+          {view === "map" && totalPins > 0 ? (
+            <div className="relative mt-3">
               <StudioV3SignatureMap
                 stops={moments}
                 activeCount={activePins}
@@ -491,48 +586,6 @@ function JourneyDraftDrawer({
           ) : null}
 
 
-          {/* Route line */}
-          {routeLine ? (
-            <p
-              className="mt-3 text-[12px] leading-snug"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-            >
-              <span
-                className="mr-1.5 text-[9.5px] uppercase tracking-[0.22em] font-bold"
-                style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
-              >
-                Route
-              </span>
-              {routeLine}
-            </p>
-          ) : null}
-
-          {/* Moments */}
-          {moments.length > 0 ? (
-            <div className="mt-3">
-              <p
-                className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
-                style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
-              >
-                Moments so far
-              </p>
-              <ol
-                className="mt-1.5 space-y-1 text-[12px] leading-snug"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-              >
-                {moments.slice(0, 3).map((m, i) => (
-                  <li key={`${m}-${i}`} className="flex gap-2">
-                    <span
-                      className="mt-[7px] inline-block h-1 w-1 rounded-full shrink-0"
-                      style={{ background: "var(--gold)" }}
-                      aria-hidden
-                    />
-                    <span>{m}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ) : null}
 
           {/* Investment — label only, only after selection */}
           {investmentLabel ? (
