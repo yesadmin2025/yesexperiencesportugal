@@ -142,7 +142,9 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
       <div
         role="img"
         aria-label={ariaParts.join(" · ")}
-        className="relative mx-auto w-full max-w-[480px] overflow-hidden rounded-[6px] border"
+        data-anticipation={anticipation}
+        data-testid="studio-v3-composer-map"
+        className="relative mx-auto w-full max-w-[480px] overflow-hidden rounded-[6px] border transition-[border-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none"
         style={{
           background: "var(--charcoal-deep, #1a1a1a)",
           borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
