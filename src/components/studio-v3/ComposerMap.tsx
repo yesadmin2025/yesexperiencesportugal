@@ -288,6 +288,45 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             ))}
           </div>
         ) : null}
+
+        {/* Informative scope strip — only shown once a Signature resolves.
+            Real data only (region · stops · duration · From €N/guest).
+            Never invented, never visible before resolution. */}
+        {tour ? (
+          <div
+            data-testid="studio-v3-composer-scope"
+            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-3 py-2"
+            style={{
+              background: "color-mix(in oklab, #0d0d0d 80%, transparent)",
+              borderTop:
+                "1px solid color-mix(in oklab, var(--gold) 18%, transparent)",
+            }}
+          >
+            <span
+              className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5"
+              style={{
+                color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+              }}
+            >
+              <span
+                className="inline-block h-[3px] w-[3px] rounded-full"
+                style={{ background: "var(--gold)" }}
+                aria-hidden
+              />
+              {scopeRegion}
+              {scopeStops > 0 ? ` · ${scopeStops} moments` : ""}
+              {scopeDuration ? ` · ~${scopeDuration}` : ""}
+            </span>
+            {scopePriceFromEur != null ? (
+              <span
+                className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                style={{ color: "var(--gold)" }}
+              >
+                From €{scopePriceFromEur} / guest
+              </span>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );
