@@ -47,6 +47,8 @@ export interface EditorialMapProps {
   aspectRatio?: string;
   /** Optional className for sizing/border overrides. */
   className?: string;
+  /** Dense route players can hide projected labels to prevent collisions. */
+  showLabels?: boolean;
   /** Accessibility label for the whole map artefact. */
   ariaLabel?: string;
 }
@@ -119,6 +121,7 @@ export function EditorialMap({
   tone = "dark",
   aspectRatio = "200 / 400",
   className,
+  showLabels = true,
   ariaLabel,
 }: EditorialMapProps) {
   const points = useMemo(() => resolveStopPoints(stops), [stops]);
@@ -300,6 +303,7 @@ export function EditorialMap({
       </div>
 
       {/* Pin labels — projected to percent so they stick to their pin in any container size. */}
+      {showLabels ? (
       <ul className="pointer-events-none absolute inset-0 m-0 list-none p-0">
         {shown.map((p, i) => {
           const xPct = (p.x / VB_W) * 100;
@@ -329,6 +333,7 @@ export function EditorialMap({
           );
         })}
       </ul>
+      ) : null}
 
       {/* Bottom strip */}
       {(caption || footerRight) ? (
