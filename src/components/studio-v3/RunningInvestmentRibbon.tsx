@@ -91,30 +91,61 @@ export function RunningInvestmentRibbon({
   };
 
   return (
-    <div className="w-full px-3 pt-1.5" data-testid="studio-v3-investment-ribbon">
+    <div className="w-full px-3 pt-1.5" data-testid="studio-v3-investment-ribbon" data-region-voice={voice?.eyebrow ?? ""}>
       <div
-        className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-3 rounded-[4px] border px-3 py-1.5 transition-opacity duration-[220ms] motion-reduce:transition-none"
+        className="mx-auto flex w-full max-w-[480px] flex-col gap-0.5 rounded-[4px] border px-3 py-1.5 transition-opacity duration-[220ms] motion-reduce:transition-none"
         style={{
           background: "color-mix(in oklab, var(--sand) 55%, var(--ivory))",
           borderColor: "color-mix(in oklab, var(--gold) 22%, transparent)",
         }}
       >
-        <span
-          className="text-[10px] uppercase font-semibold tracking-[0.22em] inline-flex items-center gap-1.5 truncate"
-          style={{ color: "var(--charcoal)" }}
-        >
+        <div className="flex items-center justify-between gap-3">
           <span
-            className="inline-block h-[4px] w-[4px] rounded-full shrink-0"
-            style={{ background: "var(--gold)" }}
-            aria-hidden
-          />
-          <span className="shrink-0" style={{ color: "color-mix(in oklab, var(--charcoal) 70%, var(--ivory))" }}>
-            Experience investment —
+            className="text-[10px] uppercase font-semibold tracking-[0.22em] inline-flex items-center gap-1.5 truncate"
+            style={{ color: "var(--charcoal)" }}
+          >
+            <span
+              className="inline-block h-[4px] w-[4px] rounded-full shrink-0"
+              style={{ background: "var(--gold)" }}
+              aria-hidden
+            />
+            <span className="shrink-0" style={{ color: "color-mix(in oklab, var(--charcoal) 70%, var(--ivory))" }}>
+              Experience investment —
+            </span>
+            <span className="truncate" style={{ color: "var(--charcoal)" }}>
+              {line}
+            </span>
           </span>
-          <span className="truncate" style={{ color: "var(--charcoal)" }}>
-            {line}
+          {/* dismiss button moved below */}
+          <button
+            type="button"
+            onClick={dismiss}
+            aria-label="Hide investment ribbon for this session"
+            className="shrink-0 text-[10px] uppercase tracking-[0.22em] font-semibold rounded-full px-2 py-1 motion-reduce:transition-none transition-colors duration-150 hover:bg-[color:color-mix(in_oklab,var(--gold)_18%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, var(--ivory))",
+              minHeight: 28,
+            }}
+          >
+            Hide
+          </button>
+        </div>
+        {voice ? (
+          <span
+            className="text-[9.5px] uppercase tracking-[0.26em] font-semibold inline-flex items-center gap-1.5 truncate"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, var(--ivory))" }}
+            data-testid="studio-v3-region-voice"
+          >
+            <span style={{ color: "var(--teal)" }}>{voice.eyebrow}</span>
+            <span style={{ color: "var(--gold)" }} aria-hidden>·</span>
+            <span className="italic font-normal normal-case tracking-normal text-[11px]" style={{ fontFamily: "var(--font-serif)" }}>
+              {voice.whisper}
+            </span>
           </span>
-        </span>
+        ) : null}
+      </div>
+    </div>
+  );
         <button
           type="button"
           onClick={dismiss}
