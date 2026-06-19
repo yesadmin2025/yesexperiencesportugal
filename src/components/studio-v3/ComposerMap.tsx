@@ -19,6 +19,9 @@ import {
   type StudioV3State,
 } from "./types";
 import { getOptionLabel, resolveStudioV3Route } from "./curation";
+import { signatureTours } from "@/data/signatureTours";
+
+type Anticipation = "feeling" | "rhythm" | "dates" | "compose";
 
 interface ComposerMapProps {
   state: StudioV3State;
