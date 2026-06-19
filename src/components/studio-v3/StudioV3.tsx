@@ -8,6 +8,8 @@ import { ChoiceGrid } from "./ChoiceGrid";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
+import { MobileBeatReveal } from "./MobileBeatReveal";
+import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
 import { ComposerMap } from "./ComposerMap";
 import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
