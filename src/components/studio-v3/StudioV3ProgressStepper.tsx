@@ -20,6 +20,15 @@ export const STUDIO_V3_BEATS = [
 
 export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
 
+/** Quiet reassurance line under the stepper — tells the traveller where they
+ *  are in the four-beat arc without inflating the step count. */
+const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
+  region: "Beat 1 of 4 — settling the stage",
+  rhythm: "Beat 2 of 4 — halfway there",
+  dates: "Beat 3 of 4 — almost composed",
+  compose: "Beat 4 of 4 — your Signature",
+};
+
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
@@ -132,12 +141,13 @@ export function StudioV3ProgressStepper({
   if (active == null) return null;
 
   return (
-    <nav
-      aria-label="Studio progress"
-      data-testid="studio-v3-progress-stepper"
-      data-active-beat={STUDIO_V3_BEATS[active].id}
-      className="mx-auto mt-4 mb-2 flex w-full max-w-[440px] items-center justify-between gap-2 px-5"
-    >
+    <div className="mx-auto w-full max-w-[440px]">
+      <nav
+        aria-label="Studio progress"
+        data-testid="studio-v3-progress-stepper"
+        data-active-beat={STUDIO_V3_BEATS[active].id}
+        className="mt-4 mb-1 flex w-full items-center justify-between gap-2 px-5"
+      >
       {STUDIO_V3_BEATS.map((beat, i) => {
         const isActive = i === active;
         const isDone = i < active;
@@ -208,6 +218,16 @@ export function StudioV3ProgressStepper({
           </div>
         );
       })}
-    </nav>
+      </nav>
+      <p
+        data-testid="studio-v3-beat-reassurance"
+        className="px-5 mb-2 text-center text-[10px] uppercase tracking-[0.22em] font-semibold"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+      >
+        <span style={{ color: "var(--gold)" }}>—</span>{" "}
+        {BEAT_REASSURANCE[STUDIO_V3_BEATS[active].id]}
+      </p>
+    </div>
   );
 }
+

@@ -2898,6 +2898,8 @@ function StoryboardHandoff({
         onSecure={onSecure}
         onRefine={onRefine}
         journeyTitle={state.journeyTitle}
+        guests={state.guests}
+        included={skeletonTour?.included ?? []}
       />
 
       {/* ---------- 7b. Before you secure it ---------- */}

@@ -40,6 +40,10 @@ export interface SignaturePriceCardProps {
   onSecure: () => void;
   onRefine: () => void;
   journeyTitle?: string | null;
+  /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
+  guests?: number | null;
+  /** Real `included[]` from the resolved Signature — drives the footnote. */
+  included?: ReadonlyArray<string>;
 }
 
 export function SignaturePriceCard({
@@ -49,6 +53,8 @@ export function SignaturePriceCard({
   onSecure,
   onRefine,
   journeyTitle,
+  guests,
+  included,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
@@ -94,6 +100,35 @@ export function SignaturePriceCard({
       .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
+  const partyCount = guests && guests >= 2 ? guests : null;
+  const partyTotalEur = totalEur != null && partyCount != null ? totalEur * partyCount : null;
+
+  // S2 — Smart suggestion: the first eligible add-on the resolver returned,
+  // dismissible, hidden once it's been selected. Never invented — sourced
+  // from a real sibling Signature in the same region.
+  const [suggestionDismissed, setSuggestionDismissed] = useState(false);
+  const suggestion = useMemo<SignatureAddOn | null>(() => {
+    if (!hasPrice) return null;
+    if (suggestionDismissed) return null;
+    const first = availableAddOns[0];
+    if (!first) return null;
+    if (selectedAddOnIds.includes(first.id)) return null;
+    if (atCap) return null;
+    return first;
+  }, [availableAddOns, selectedAddOnIds, atCap, hasPrice, suggestionDismissed]);
+
+  // S3 — "Why this works": three short lines pulled from the resolved
+  // Signature's real `included[]`. Pure data, never invented copy.
+  const whyThisWorks = useMemo<string[]>(() => {
+    if (!included || included.length === 0) return [];
+    return included.slice(0, 3).map((s) => s.trim()).filter(Boolean);
+  }, [included]);
+
+  // S4 — Inclusions footnote: up to 4 short items from the real `included[]`.
+  const inclusionFootnote = useMemo<string[]>(() => {
+    if (!included || included.length === 0) return [];
+    return included.slice(0, 4).map((s) => s.trim()).filter(Boolean);
+  }, [included]);
 
   useEffect(() => {
     recordStudioV3RevealPremium({
@@ -174,6 +209,18 @@ export function SignaturePriceCard({
             >
               A private day, just for you — driver, guide and every detail handled. You only show up.
             </p>
+            {partyTotalEur != null ? (
+              <p
+                data-testid="studio-v3-party-total"
+                className="mt-2 text-[12px] font-semibold tabular-nums"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+              >
+                × {partyCount} guests{" "}
+                <span style={{ color: "var(--gold)" }}>—</span>{" "}
+                <span style={{ color: "var(--charcoal)" }}>€{partyTotalEur}</span>{" "}
+                <span className="text-[9.5px] uppercase tracking-[0.2em] opacity-70">total</span>
+              </p>
+            ) : null}
           </>
         ) : (
           <>
@@ -220,6 +267,93 @@ export function SignaturePriceCard({
           ) : null}
         </ul>
 
+        {/* S3 — Why this works: 3 bullets from the resolved Signature's real
+            `included[]`. No invented copy, no quality score gimmick. */}
+        {hasPrice && whyThisWorks.length > 0 ? (
+          <div
+            data-testid="studio-v3-why-this-works"
+            className="mt-5 mx-auto max-w-[380px] text-left"
+          >
+            <p
+              className="text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Why this works
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {whyThisWorks.map((line, i) => (
+                <li
+                  key={`${i}-${line.slice(0, 16)}`}
+                  className="flex items-start gap-2 text-[12px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[7px] inline-block h-1 w-1 shrink-0 rounded-full"
+                    style={{ background: "var(--gold)" }}
+                  />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {/* S2 — Smart suggestion: promote the most-relevant eligible add-on
+            as an "Often added" upsell card above the chip list. Dismissible.
+            Sourced from a real sibling Signature; never invented. */}
+        {suggestion ? (
+          <div
+            data-testid="studio-v3-suggested-addon"
+            data-addon-id={suggestion.id}
+            className="mt-5 mx-auto max-w-[380px] flex items-start gap-3 rounded-[4px] px-3 py-2.5 text-left"
+            style={{
+              background: "color-mix(in oklab, var(--gold) 8%, var(--ivory))",
+              border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+            }}
+          >
+            <span className="flex-1 min-w-0">
+              <span
+                className="block text-[9.5px] uppercase tracking-[0.24em] font-bold"
+                style={{ color: "var(--gold)" }}
+              >
+                Often added
+              </span>
+              <span
+                className="mt-0.5 block text-[12.5px] font-semibold"
+                style={{ color: "var(--charcoal)" }}
+              >
+                {suggestion.label}
+              </span>
+              <span
+                className="mt-0.5 block text-[11.5px] leading-snug"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+              >
+                {suggestion.blurb}
+              </span>
+            </span>
+            <span className="flex shrink-0 flex-col items-end gap-1.5">
+              <button
+                type="button"
+                onClick={() => toggleAddOn(suggestion.id)}
+                className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-semibold transition-transform duration-200 hover:-translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
+              >
+                Add +€{addOnEurFromBase(priceEur ?? 0, suggestion.pricePctOfBase)}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSuggestionDismissed(true)}
+                aria-label="Dismiss suggestion"
+                className="text-[10px] uppercase tracking-[0.18em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                Not now
+              </button>
+            </span>
+          </div>
+        ) : null}
+
         {hasPrice && availableAddOns.length > 0 ? (
           <fieldset
             data-testid="studio-v3-add-ons"
@@ -233,8 +367,10 @@ export function SignaturePriceCard({
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
             <ul className="flex flex-col gap-2">
+
               {availableAddOns.map((a) => {
                 const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
+
 
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
@@ -336,6 +472,52 @@ export function SignaturePriceCard({
             </output>
           </fieldset>
         ) : null}
+
+        {/* S4 — Inclusions footnote: what's actually in the day. Real data
+            from the resolved Signature's `included[]`; never invented. */}
+        {hasPrice && inclusionFootnote.length > 0 ? (
+          <footer
+            data-testid="studio-v3-inclusions-footnote"
+            className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+              border: "1px dashed color-mix(in oklab, var(--charcoal) 16%, transparent)",
+            }}
+          >
+            <p
+              className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              Included
+            </p>
+            <ul className="mt-1.5 flex flex-col gap-1">
+              {inclusionFootnote.map((line, i) => (
+                <li
+                  key={`inc-${i}`}
+                  className="flex items-start gap-2 text-[11.5px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full"
+                    style={{ background: "color-mix(in oklab, var(--charcoal) 35%, transparent)" }}
+                  />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+            <p
+              className="mt-2 text-[10px] italic"
+              style={{
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              }}
+            >
+              No hidden fees — every detail of the day is included.
+            </p>
+          </footer>
+        ) : null}
+
 
         <div className="mt-6 flex flex-col items-center gap-2.5">
           {hasPrice ? (
