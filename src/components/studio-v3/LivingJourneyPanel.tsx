@@ -339,6 +339,13 @@ interface DrawerProps {
   storyText: string | null;
   storyLoading: boolean;
   storySource: "ai" | "fallback" | null;
+  /** Scope strip — fuses Bible storytelling with the reference builder's clarity. */
+  scopeRegion: string | null;
+  scopeDuration: string | null;
+  scopeStops: number;
+  scopePriceFromEur: number | null;
+  scopePartyCount: number | null;
+  scopePartyTotalEur: number | null;
 }
 
 
@@ -356,7 +363,14 @@ function JourneyDraftDrawer({
   storyText,
   storyLoading,
   storySource,
+  scopeRegion,
+  scopeDuration,
+  scopeStops,
+  scopePriceFromEur,
+  scopePartyCount,
+  scopePartyTotalEur,
 }: DrawerProps) {
+
   const totalPins = Math.max(0, Math.min(4, moments.length));
   const [view, setView] = useState<"story" | "timeline" | "map">("story");
 
