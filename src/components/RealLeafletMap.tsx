@@ -262,7 +262,11 @@ export function RealLeafletMap({ region }: { region: string | null }) {
   );
 
   return (
-    <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
+    <div
+      className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden"
+      data-testid="real-leaflet-map"
+      data-active-region={region ?? "portugal"}
+    >
       <div className="flex items-baseline justify-between px-5 pt-5">
         <span className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--gold)] inline-flex items-center gap-2">
           <MapIcon size={12} /> Live Map
