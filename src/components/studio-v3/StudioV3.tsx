@@ -1266,11 +1266,11 @@ export function StudioV3() {
           <p className="text-[10px] uppercase tracking-[0.28em] font-bold" style={{ color: "var(--gold)" }}>
             YES Studio
           </p>
-          <h1 className="mt-3 text-[1.6rem] font-semibold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="mt-3 text-[1.6rem] font-semibold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
             {hydrateError === "not-found"
               ? "This Signature is no longer available."
               : "We couldn't open this Signature."}
-          </h1>
+          </h2>
           <p className="mt-3 text-[14px] leading-[1.55]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
             The private link may have expired or been mistyped. You can begin a new Signature in a few taps.
