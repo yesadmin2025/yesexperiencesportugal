@@ -1789,6 +1789,9 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
       <X size={16} aria-hidden />
     </button>
   );
+}
+
+
 
 /** Dark continue CTA used by the two multi-select screens. Inline styles
  *  intentionally mirror the StoryboardHandoff CTA — no new component. */
