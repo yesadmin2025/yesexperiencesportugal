@@ -246,6 +246,31 @@ export function SignaturePriceCard({
                       data-addon-id={a.id}
                       className="flex w-full items-start gap-3 rounded-[4px] px-3 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                       style={{
+              {availableAddOns.map((a) => {
+                const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
+                const selected = selectedAddOnIds.includes(a.id);
+                const pending = pendingAddOnId === a.id;
+                const disabled = !selected && atCap;
+                const state = pending
+                  ? "pending"
+                  : selected
+                    ? "checked"
+                    : disabled
+                      ? "disabled"
+                      : "idle";
+                return (
+                  <li key={a.id}>
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selected}
+                      aria-disabled={disabled || undefined}
+                      aria-busy={pending || undefined}
+                      onClick={() => toggleAddOn(a.id)}
+                      data-addon-id={a.id}
+                      data-state={state}
+                      className="addon-chip flex w-full items-start gap-3 rounded-[4px] px-3 py-2.5 text-left transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
+                      style={{
                         background: selected
                           ? "color-mix(in oklab, var(--gold) 12%, var(--ivory))"
                           : "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
@@ -254,24 +279,29 @@ export function SignaturePriceCard({
                             ? "color-mix(in oklab, var(--gold) 70%, transparent)"
                             : "color-mix(in oklab, var(--charcoal) 12%, transparent)"
                         }`,
+                        opacity: disabled ? 0.45 : 1,
                       }}
                     >
                       <span
                         aria-hidden
-                        className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full"
+                        className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full transition-transform duration-200"
                         style={{
                           background: selected ? "var(--gold)" : "transparent",
                           border: `1px solid ${
                             selected ? "var(--gold)" : "color-mix(in oklab, var(--charcoal) 30%, transparent)"
                           }`,
+                          transform: pending ? "scale(0.85)" : "scale(1)",
                         }}
                       >
                         {selected ? <Check size={10} color="var(--ivory)" /> : null}
                       </span>
                       <span className="flex-1 min-w-0">
                         <span
-                          className="block text-[12.5px] font-semibold"
-                          style={{ color: "var(--charcoal)" }}
+                          className="block text-[12.5px]"
+                          style={{
+                            color: "var(--charcoal)",
+                            fontWeight: selected ? 600 : 500,
+                          }}
                         >
                           {a.label}
                         </span>
@@ -296,16 +326,27 @@ export function SignaturePriceCard({
                 );
               })}
             </ul>
-            {selectedAddOnIds.length > 0 && totalEur != null ? (
-              <p
-                data-testid="studio-v3-add-ons-total"
-                className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
-                style={{ color: "var(--charcoal)" }}
-              >
-                Total <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
-                <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
-              </p>
-            ) : null}
+            <p
+              className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+            >
+              Up to {MAX_ADDONS} add-ons
+            </p>
+            <output
+              data-testid="studio-v3-add-ons-total"
+              aria-live="polite"
+              className="mt-3 block text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
+              style={{ color: "var(--charcoal)" }}
+            >
+              {selectedAddOnIds.length > 0 && totalEur != null ? (
+                <>
+                  Total <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
+                </>
+              ) : (
+                <span className="sr-only">No add-ons selected</span>
+              )}
+            </output>
           </fieldset>
         ) : null}
 
