@@ -112,14 +112,14 @@ export function SignaturePriceCard({
   // from a real sibling Signature in the same region.
   const [suggestionDismissed, setSuggestionDismissed] = useState(false);
   const suggestion = useMemo<SignatureAddOn | null>(() => {
-    if (!hasPrice) return null;
+    if (!showAddOns || !hasPrice) return null;
     if (suggestionDismissed) return null;
     const first = availableAddOns[0];
     if (!first) return null;
     if (selectedAddOnIds.includes(first.id)) return null;
     if (atCap) return null;
     return first;
-  }, [availableAddOns, selectedAddOnIds, atCap, hasPrice, suggestionDismissed]);
+  }, [availableAddOns, selectedAddOnIds, atCap, hasPrice, suggestionDismissed, showAddOns]);
 
   // S3 — "Why this works": three short lines pulled from the resolved
   // Signature's real `included[]`. Pure data, never invented copy.
@@ -307,7 +307,7 @@ export function SignaturePriceCard({
         {/* S2 — Smart suggestion: promote the most-relevant eligible add-on
             as an "Often added" upsell card above the chip list. Dismissible.
             Sourced from a real sibling Signature; never invented. */}
-        {suggestion ? (
+        {showAddOns && suggestion ? (
           <div
             data-testid="studio-v3-suggested-addon"
             data-addon-id={suggestion.id}
@@ -359,7 +359,7 @@ export function SignaturePriceCard({
           </div>
         ) : null}
 
-        {hasPrice && availableAddOns.length > 0 ? (
+        {showAddOns && hasPrice && availableAddOns.length > 0 ? (
           <fieldset
             data-testid="studio-v3-add-ons"
             data-count={availableAddOns.length}
