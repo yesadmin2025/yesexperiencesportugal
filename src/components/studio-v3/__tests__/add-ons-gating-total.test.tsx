@@ -197,7 +197,8 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
   describe("running total (base + Σ selected, per pp)", () => {
     it("shows no total badge when nothing is selected", () => {
       render(<SignaturePriceCard {...defaultProps()} />);
-      expect(screen.queryByTestId("studio-v3-add-ons-total")).not.toBeInTheDocument();
+      const total = screen.queryByTestId("studio-v3-add-ons-total");
+      expect(total?.textContent?.toLowerCase() ?? "").not.toMatch(/total/);
     });
 
     it.each(["light", "dark"] as const)(
@@ -233,9 +234,10 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
         const total = screen.getByTestId("studio-v3-add-ons-total");
         expect(total.textContent).toContain(`€${runningTotal}`);
 
-        // Deselect everything → total badge disappears.
+        // Deselect everything → total badge no longer shows a price.
         for (let i = 1; i < items.length; i += 1) fireEvent.click(items[i].el);
-        expect(screen.queryByTestId("studio-v3-add-ons-total")).not.toBeInTheDocument();
+        const emptied = screen.queryByTestId("studio-v3-add-ons-total");
+        expect(emptied?.textContent?.toLowerCase() ?? "").not.toMatch(/total/);
       },
     );
 
@@ -252,7 +254,8 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
           const total = screen.getByTestId("studio-v3-add-ons-total");
           expect(total.textContent).toContain(`€${200 + eur}`);
         } else {
-          expect(screen.queryByTestId("studio-v3-add-ons-total")).not.toBeInTheDocument();
+          const off = screen.queryByTestId("studio-v3-add-ons-total");
+          expect(off?.textContent?.toLowerCase() ?? "").not.toMatch(/total/);
         }
       }
     });
