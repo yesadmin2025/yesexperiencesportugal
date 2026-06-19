@@ -115,9 +115,16 @@ export function StudioV3ProgressStepper({
           return;
       }
       e.preventDefault();
-      const target = buttonsRef.current[reachable[nextPos]];
-      target?.focus();
-    },
+      // Walk down from the desired index until we find a focusable button —
+      // the active beat renders as a div, so End/ArrowRight near the end
+      // should land on the last *focusable* (completed) beat.
+      for (let i = reachable[nextPos]; i >= 0; i -= 1) {
+        const target = buttonsRef.current[i];
+        if (target) {
+          target.focus();
+          return;
+        }
+      }
     [active],
   );
 
