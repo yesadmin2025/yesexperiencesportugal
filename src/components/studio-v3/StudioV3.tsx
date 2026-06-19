@@ -1629,6 +1629,11 @@ export function StudioV3() {
           investment={state.investment}
           destinationIntent={state.destinationIntent}
           dateExact={state.dateExact}
+          rerollCount={state.rerollCount ?? 0}
+          studioState={state}
+          onReshape={() =>
+            setState((s) => ({ ...s, rerollCount: (s.rerollCount ?? 0) + 1 }))
+          }
           onBack={() => back("rhythm")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
@@ -1646,6 +1651,7 @@ export function StudioV3() {
           }}
         />
       ) : null}
+
 
       {state.phase === "storyboard" ? (
         <>
