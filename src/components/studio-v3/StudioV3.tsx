@@ -1631,15 +1631,18 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "storyboard" ? (
-        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
-          <StoryboardHandoff
-            state={state}
-            onStateChange={setState}
-            onBack={() => back("map")}
-            onSecure={() => openLeadSheet("book")}
-            onRefine={() => openLeadSheet("refine")}
-          />
-        </PhaseShell>
+        <>
+          <CurtainRise state={state} />
+          <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+            <StoryboardHandoff
+              state={state}
+              onStateChange={setState}
+              onBack={() => back("map")}
+              onSecure={() => openLeadSheet("book")}
+              onRefine={() => openLeadSheet("refine")}
+            />
+          </PhaseShell>
+        </>
       ) : null}
 
       <LeadCaptureSheet
