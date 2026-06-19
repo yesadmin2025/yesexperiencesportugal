@@ -1239,8 +1239,16 @@ export function StudioV3() {
   //   - intro (pre-Studio canvas)
   //   - the dedicated map/storyboard phases (own surface)
   //   - while a reaction overlay is on screen
+  // Chrome only earns its place once the traveller has placed a starting
+  // point on the map — i.e. there is genuinely a route forming. Before
+  // that, the journey pill, atmospheric stage, investment ribbon and
+  // beat stepper all stay out of the way so the questions can breathe.
+  // (Studio philosophy: the interface disappears until it has something
+  // real to say.)
+  const chromeReady = state.pickup != null;
   const composerHidden =
     !!reaction ||
+    !chromeReady ||
     state.phase === "intro" ||
     state.phase === "map" ||
     state.phase === "storyboard";
