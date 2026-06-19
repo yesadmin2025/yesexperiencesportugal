@@ -19,6 +19,7 @@ import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { SignaturePriceCard } from "./SignaturePriceCard";
 import { QualityScore } from "./QualityScore";
+import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
@@ -1340,6 +1341,7 @@ export function StudioV3() {
 
   return (
     <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
+      <StudioV3DebugOverlay state={state} composerHidden={composerHidden} reactionActive={!!reaction} />
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
