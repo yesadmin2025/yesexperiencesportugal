@@ -1,9 +1,20 @@
-// Signature add-ons — region-mapped, priced as % of base.
+// Signature add-ons — region-mapped, but every add-on is a real
+// experience pulled from a *sibling* signature in the same region.
 //
-// Up to three add-ons surface in the Studio reveal. Pricing derives at
-// runtime from the resolved base price (no hardcoded prices, no third
-// party brand names exposed to the traveller). An add-on only appears
-// if the itinerary leaves room for it (duration / stops thresholds).
+// Rules (non-negotiable):
+//   1. NEVER invent stops or experiences. Every add-on declares the
+//      sibling `sourceTourId` it borrows from — that tour exists in
+//      src/data/signatureTours.ts.
+//   2. NEVER duplicate something the resolved Signature already
+//      includes. Pickup, private transport, lunch, the guide etc. are
+//      already part of every Signature's `included` array — we do not
+//      sell them again as add-ons.
+//   3. The traveller never sees more than 3 add-ons, and only those
+//      whose itinerary thresholds (stops / hours) are met.
+//   4. Pricing is derived at runtime as a % of the base "from" anchor
+//      and rounded to the nearest €5/pp. No invented numbers.
+
+import type { SignatureTour } from "./signatureTours";
 
 export type RegionBucket =
   | "lisbon-arrabida"
@@ -18,9 +29,11 @@ export interface SignatureAddOn {
   blurb: string;
   /** Price as a fraction of the base "from" price (per person). */
   pricePctOfBase: number;
-  /** Minimum stops for this add-on to be eligible. */
+  /** The sibling Signature this experience belongs to. Must exist. */
+  sourceTourId: string;
+  /** Minimum stops in the resolved itinerary for this add-on to surface. */
   minStops?: number;
-  /** Minimum duration (hours) for this add-on to be eligible. */
+  /** Minimum duration (hours) for this add-on to surface. */
   minHours?: number;
 }
 
@@ -30,116 +43,124 @@ export function regionBucket(region: string | null | undefined): RegionBucket {
   if (r.includes("douro") || r.includes("porto")) return "douro";
   if (r.includes("comporta") || r.includes("tróia") || r.includes("troia")) return "comporta";
   if (r.includes("alentejo") || r.includes("évora") || r.includes("evora")) return "alentejo";
-  if (r.includes("centro") || r.includes("coimbra") || r.includes("óbidos") || r.includes("obidos")) return "centro";
+  if (r.includes("centro") || r.includes("coimbra") || r.includes("óbidos") || r.includes("obidos") || r.includes("fátima") || r.includes("fatima") || r.includes("nazaré") || r.includes("nazare")) return "centro";
   return "lisbon-arrabida";
 }
 
-export const ADD_ONS_BY_REGION: Record<RegionBucket, SignatureAddOn[]> = {
+/**
+ * Catalog of borrowable experiences per region. Every entry's
+ * `sourceTourId` references an existing Signature (see signatureTours.ts).
+ * Nothing on this list is fabricated — each card is the headline moment
+ * of a real sibling Signature in the same region.
+ */
+export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
   "lisbon-arrabida": [
     {
-      id: "sommelier-tasting",
-      label: "Sommelier wine flight",
-      blurb: "A private flight of Setúbal estate wines with a resident sommelier.",
+      id: "hidden-cove-picnic",
+      sourceTourId: "wild-beaches-picnic",
+      label: "Hidden-cove beach picnic",
+      blurb: "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
-    },
-    {
-      id: "sunset-extension",
-      label: "Sunset at Cabo Espichel",
-      blurb: "Stay until last light at the cliff sanctuary — driver waits with you.",
-      pricePctOfBase: 0.12,
       minHours: 6,
     },
     {
-      id: "private-transfer",
-      label: "Door-to-door private transfer",
-      blurb: "Premium sedan pick-up from your hotel and return — no shared rides.",
+      id: "coastal-boat-ride",
+      sourceTourId: "arrabida-boat",
+      label: "Coastal boat ride from Sesimbra",
+      blurb: "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
+      minHours: 6,
+    },
+    {
+      id: "azulejo-workshop",
+      sourceTourId: "tiles-workshop",
+      label: "Hand-painted azulejo workshop",
+      blurb: "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
+      pricePctOfBase: 0.16,
+    },
+    {
+      id: "azeitao-cheese",
+      sourceTourId: "azeitao-cheese",
+      label: "Azeitão cheese-making session",
+      blurb: "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
+      pricePctOfBase: 0.14,
+    },
+    {
+      id: "sintra-detour",
+      sourceTourId: "sintra-cascais",
+      label: "Sintra detour — Pena & Cabo da Roca",
+      blurb: "Add a short loop through Sintra's romantic hills and Europe's western-most cape on the way home.",
+      pricePctOfBase: 0.20,
+      minHours: 7,
+      minStops: 4,
     },
   ],
   alentejo: [
     {
-      id: "estate-lunch",
-      label: "Estate-table long lunch",
-      blurb: "Slow lunch at a working herdade — your chef cooks at your table.",
-      pricePctOfBase: 0.24,
-      minHours: 6,
-    },
-    {
-      id: "amphora-tasting",
-      label: "Talha amphora tasting",
-      blurb: "Taste 2000-year-old clay-vessel wines with the winemaker.",
+      id: "chapel-of-bones",
+      sourceTourId: "evora-alentejo",
+      label: "Chapel of Bones, after the queue",
+      blurb: "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
       pricePctOfBase: 0.16,
     },
     {
-      id: "private-transfer",
-      label: "Door-to-door private transfer",
-      blurb: "Premium sedan pick-up from your hotel and return — no shared rides.",
-      pricePctOfBase: 0.25,
-    },
-  ],
-  douro: [
-    {
-      id: "vintage-tasting",
-      label: "Reserve vintage flight",
-      blurb: "A vertical tasting of estate vintages, paired by the cellar master.",
-      pricePctOfBase: 0.28,
-    },
-    {
-      id: "river-cruise",
-      label: "Private river hour",
-      blurb: "A private rabelo hour on the Douro — sunset slot when available.",
-      pricePctOfBase: 0.20,
-      minHours: 6,
-    },
-    {
-      id: "private-transfer",
-      label: "Door-to-door private transfer",
-      blurb: "Premium sedan pick-up from your hotel and return — no shared rides.",
-      pricePctOfBase: 0.30,
-    },
-  ],
-  centro: [
-    {
-      id: "monastery-after-hours",
-      label: "After-hours monastery visit",
-      blurb: "Step inside Alcobaça or Batalha after the doors close to the public.",
-      pricePctOfBase: 0.22,
-    },
-    {
-      id: "village-lunch",
-      label: "Hidden-village long lunch",
-      blurb: "Lunch in a stone-walled village kitchen — only the locals know it.",
+      id: "talha-amphora",
+      sourceTourId: "roman-heritage-alentejo",
+      label: "Talha amphora wine tasting",
+      blurb: "Taste 2 000-year-old clay-vessel wines in a Vidigueira cellar with the winemaker.",
       pricePctOfBase: 0.18,
-      minStops: 3,
     },
     {
-      id: "private-transfer",
-      label: "Door-to-door private transfer",
-      blurb: "Premium sedan pick-up from your hotel and return — no shared rides.",
-      pricePctOfBase: 0.25,
+      id: "roman-ruins-trail",
+      sourceTourId: "roman-heritage-alentejo",
+      label: "Roman heritage stop",
+      blurb: "A guided pause at a real Roman site — columns, mosaics, the same hills they walked.",
+      pricePctOfBase: 0.12,
+      minStops: 3,
     },
   ],
   comporta: [
     {
-      id: "beach-table",
-      label: "Beach-table seafood lunch",
-      blurb: "A dune-side table with the day's catch — your chef plates feet-on-sand.",
-      pricePctOfBase: 0.22,
-      minHours: 5,
-    },
-    {
-      id: "rice-fields-ride",
-      label: "Rice-fields golden hour",
-      blurb: "An open-top loop through Comporta's rice paddies at last light.",
+      id: "roman-troia",
+      sourceTourId: "troia-comporta",
+      label: "Roman ruins of Tróia",
+      blurb: "A quiet guided walk through one of the Atlantic's largest Roman fish-salting sites.",
       pricePctOfBase: 0.14,
     },
     {
-      id: "private-transfer",
-      label: "Door-to-door private transfer",
-      blurb: "Premium sedan pick-up from your hotel and return — no shared rides.",
-      pricePctOfBase: 0.22,
+      id: "herdade-tasting",
+      sourceTourId: "troia-comporta",
+      label: "Herdade da Comporta wine tasting",
+      blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
+      pricePctOfBase: 0.20,
     },
   ],
+  centro: [
+    {
+      id: "templar-tomar",
+      sourceTourId: "tomar-coimbra",
+      label: "Templar Convent of Tomar",
+      blurb: "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
+      pricePctOfBase: 0.18,
+    },
+    {
+      id: "obidos-walls",
+      sourceTourId: "fatima-nazare-obidos",
+      label: "Walled town of Óbidos",
+      blurb: "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
+      pricePctOfBase: 0.14,
+    },
+    {
+      id: "nazare-cliffs",
+      sourceTourId: "fatima-nazare-obidos",
+      label: "Nazaré giant-wave cliffs",
+      blurb: "Stand above the canyon that makes Nazaré's monster waves — the Atlantic stretching to the horizon.",
+      pricePctOfBase: 0.16,
+      minHours: 6,
+    },
+  ],
+  // No Douro Signature in the dataset yet — we refuse to fabricate one.
+  douro: [],
 };
 
 /** Round to nearest €5, floor €5. */
@@ -161,17 +182,24 @@ export function parseDurationLowerHours(label: string | null | undefined): numbe
 
 /**
  * Pick up to 3 add-ons appropriate for the resolved itinerary.
- * Filters by stops/hours thresholds, never returns more than 3.
+ *
+ * Filters applied (in order):
+ *   1. drop any add-on whose `sourceTourId` IS the resolved tour —
+ *      the resolved Signature already delivers that experience
+ *   2. enforce `minStops` / `minHours` thresholds against the resolved day
+ *   3. cap at 3
  */
 export function selectSignatureAddOns(opts: {
-  region: string | null | undefined;
+  resolvedTour: Pick<SignatureTour, "id" | "region"> | null | undefined;
   stopCount: number;
   durationLabel: string | null | undefined;
 }): SignatureAddOn[] {
-  const bucket = regionBucket(opts.region);
+  if (!opts.resolvedTour) return [];
+  const bucket = regionBucket(opts.resolvedTour.region);
   const hours = parseDurationLowerHours(opts.durationLabel);
-  const pool = ADD_ONS_BY_REGION[bucket] ?? [];
+  const pool = ADD_ON_CATALOG[bucket] ?? [];
   return pool
+    .filter((a) => a.sourceTourId !== opts.resolvedTour!.id)
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
     .slice(0, 3);
