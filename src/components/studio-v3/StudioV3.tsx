@@ -1340,8 +1340,8 @@ export function StudioV3() {
 
   return (
     <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
-      <LivingJourneyPanel state={state} hidden />
-      <ComposerMap state={state} hidden />
+      <LivingJourneyPanel state={state} hidden={composerHidden} />
+      <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
       <StudioV3ProgressStepper
         phase={state.phase}
