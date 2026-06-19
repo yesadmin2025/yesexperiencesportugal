@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-19T20:11:36.423Z",
-  "filesScanned": 389,
+  "generatedAt": "2026-06-19T21:02:10.199Z",
+  "filesScanned": 394,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1412,7 +1412,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 149,
+      "line": 150,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1421,7 +1421,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 179,
+      "line": 180,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1430,7 +1430,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 208,
+      "line": 209,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1439,7 +1439,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 270,
+      "line": 271,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1448,7 +1448,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 300,
+      "line": 302,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1457,7 +1457,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 375,
+      "line": 388,
       "col": 86,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1466,7 +1466,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 375,
+      "line": 388,
       "col": 99,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
