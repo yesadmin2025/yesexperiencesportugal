@@ -6,7 +6,7 @@
  * that YES is rated across 4 real platforms with 700+ five-star reviews,
  * without breaking the cinematic atmosphere.
  *
- *   ★★★★★ 700+ reviews · Google · Tripadvisor · Viator · GetYourGuide
+ *   ★★★★★ 700+ reviews · Google · Tripadvisor · GetYourGuide
  *
  * - Ivory 55% on the existing charcoal backdrop, no extra surfaces.
  * - Single line, no icons / no logos — keeps weight under 18px.
