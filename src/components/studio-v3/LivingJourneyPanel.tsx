@@ -355,6 +355,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               scopePriceFromEur={scopePriceFromEur}
               scopePartyCount={partyCount}
               scopePartyTotalEur={scopePartyTotalEur}
+              memoryLine={memoryLine}
             />,
 
             document.body,
