@@ -44,7 +44,8 @@ import {
   resolveStudioV3Route,
   selectReplacementCandidates,
 } from "./curation";
-import { findTour } from "@/data/signatureTours";
+import { findTour, signatureTours } from "@/data/signatureTours";
+import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 
