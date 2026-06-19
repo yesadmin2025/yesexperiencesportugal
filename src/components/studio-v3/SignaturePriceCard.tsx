@@ -158,7 +158,7 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Private experience · final details confirmed with you
+              A private day, just for you — driver, guide and every detail handled. You only show up.
             </p>
           </>
         ) : (
