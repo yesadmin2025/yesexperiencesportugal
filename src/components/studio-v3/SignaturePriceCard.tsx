@@ -196,6 +196,8 @@ export function SignaturePriceCard({
               From
             </p>
             <p
+              data-testid="studio-v3-base-price"
+              data-eur={priceEur ?? ""}
               className="mt-1 text-[40px] leading-none font-bold tabular-nums"
               style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
             >
