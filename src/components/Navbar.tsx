@@ -117,7 +117,7 @@ export function Navbar() {
                 {n.label}
               </Link>
             ))}
-            <CtaButton to="/studio-v2" variant="primary" size="sm" className="ml-2">
+            <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-2">
               Design &amp; Book
             </CtaButton>
 
@@ -159,7 +159,7 @@ export function Navbar() {
               </Link>
             ))}
             <CtaButton
-              to="/studio-v2"
+              to="/studio-v3"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"

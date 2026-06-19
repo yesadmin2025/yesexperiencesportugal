@@ -622,7 +622,7 @@ function HomePage() {
               </ol>
 
               <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                <CtaButton to="/studio-v2" variant="primary">
+                <CtaButton to="/studio-v3" variant="primary">
                   Start designing
                 </CtaButton>
               </div>
@@ -966,7 +966,7 @@ function HomePage() {
                   Every journey begins with a conversation. Tell us what matters to you and we’ll shape the rest.
                 </p>
                 <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
-                  <CtaButton to="/studio-v2" variant="primary">
+                  <CtaButton to="/studio-v3" variant="primary">
                     Open the Studio
                   </CtaButton>
                   <CtaButton to="/contact" variant="ghost">

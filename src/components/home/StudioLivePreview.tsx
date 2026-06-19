@@ -371,7 +371,7 @@ export function StudioLivePreview() {
             </span>
           </div>
           <Link
-            to="/studio-v2"
+            to="/studio-v3"
             className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[3px] bg-[color:var(--teal)] px-3.5 py-2 text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)] shadow-[0_4px_14px_-6px_rgba(41,91,97,0.55)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
           >
             Continue draft

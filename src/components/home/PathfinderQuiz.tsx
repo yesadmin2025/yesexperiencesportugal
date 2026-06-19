@@ -452,7 +452,7 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       subtitle: "Open the Studio and design your day in real time. Takes about 90 seconds.",
       pills: ["Custom", "Any mood", "Instant price"],
       ctas: [
-        { label: "Open Studio", to: "/studio-v2", variant: "gold" },
+        { label: "Open Studio", to: "/studio-v3", variant: "gold" },
       ],
     };
   }
