@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-19T19:49:52.206Z",
-  "filesScanned": 388,
+  "generatedAt": "2026-06-19T20:11:36.423Z",
+  "filesScanned": 389,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 237,
+    "total": 238,
     "approved": 61,
     "allowlisted": 29,
-    "mismatch": 147
+    "mismatch": 148
   },
   "findings": [
     {
@@ -1412,7 +1412,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 124,
+      "line": 149,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1421,7 +1421,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 154,
+      "line": 179,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1430,7 +1430,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 183,
+      "line": 208,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1439,7 +1439,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 245,
+      "line": 270,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1448,7 +1448,16 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 311,
+      "line": 300,
+      "col": 48,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 80%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 375,
       "col": 86,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1457,7 +1466,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 311,
+      "line": 375,
       "col": 99,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",

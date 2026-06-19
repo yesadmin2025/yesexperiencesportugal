@@ -3178,10 +3178,18 @@ function ReactionOverlay({
     >
       <div className="w-full max-w-[480px] text-center">
         <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold inline-flex items-center gap-1.5 mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+          data-testid="studio-v3-voice-mark"
         >
-          <span style={{ color: "var(--gold)" }}>—</span> {reaction.eyebrow}
+          <span
+            className="font-bold tracking-[0.32em]"
+            style={{ color: "var(--teal)" }}
+          >
+            YES
+          </span>
+          <span style={{ color: "var(--gold)" }}>—</span>
+          <span>{reaction.eyebrow}</span>
         </p>
 
         {/* ---------- Map preview panel ---------- */}
