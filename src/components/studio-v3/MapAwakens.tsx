@@ -308,6 +308,7 @@ export function MapAwakens({
             ariaLabel={`Suggested route ${journey.tour.region ? `in ${journey.tour.region}` : ""} with ${journey.moments.length} moments.`}
             className="w-full h-full"
             aspectRatio="auto"
+            showLabels={false}
           />
 
           {/* Cinematic vignette — soft dark wash at top + bottom for a

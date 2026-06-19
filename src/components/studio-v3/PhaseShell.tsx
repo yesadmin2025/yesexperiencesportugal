@@ -1,5 +1,4 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 
 /**
  * PhaseShell — cinematic frame shared by every Studio V3 phase.
@@ -18,10 +17,8 @@ interface PhaseShellProps {
   step?: number;
   totalSteps?: number;
   progress?: { percent: number; phrase: string } | null;
-  /** Ambient Portugal silhouette behind the content. Coastline draws in
-   *  with `fill` (0..1); optional region pulses gold where the journey
-   *  is taking shape. Strict atmosphere — never interactive. */
-  anticipation?: { fill: number; region?: SilhouetteRegion } | null;
+  /** Deprecated: question phases must stay clean, with no map/silhouette behind choices. */
+  anticipation?: { fill: number; region?: unknown } | null;
 }
 
 export function PhaseShell({
@@ -71,11 +68,6 @@ export function PhaseShell({
           background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
         }}
       />
-      {/* Ambient Portugal silhouette — anticipation of the map. */}
-      {anticipation ? (
-        <PortugalSilhouette fill={anticipation.fill} region={anticipation.region ?? null} />
-      ) : null}
-
       {/* Hairline gold horizon. */}
       <div
         aria-hidden

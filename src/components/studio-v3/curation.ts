@@ -1552,21 +1552,23 @@ export function filterDestinationIntents(
  * what's already known. Used by getNextPhase to skip irrelevant phases.
  */
 export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boolean {
-  // Fast path — traveller chose "Construir rápido" on the intro.
-  // We skip every optional refinement phase. The remaining required path is:
-  //   feeling → destination → who → pickup → guests → interests → rhythm → map → storyboard
-  // Downstream curation already handles null occasion / null investment /
-  // empty considerations / null language gracefully (no invented facts).
+  // Product correction: Studio now asks only client-useful questions before
+  // revealing a real Signature. Occasion / care / language / investment made
+  // the flow feel like a poetic quiz and created price confusion, so they are
+  // left for the human confirmation step instead of the builder.
+  if (
+    phase === "occasion" ||
+    phase === "considerations" ||
+    phase === "language" ||
+    phase === "investment"
+  ) {
+    return false;
+  }
+
+  // Fast path — traveller chose "Compose it quickly" on the intro.
+  // Keep only the essentials, skipping date as well.
   if (state.pathMode === "fast") {
-    if (
-      phase === "occasion" ||
-      phase === "date" ||
-      phase === "considerations" ||
-      phase === "language" ||
-      phase === "investment"
-    ) {
-      return false;
-    }
+    if (phase === "date") return false;
   }
   switch (phase) {
     case "guests": {
