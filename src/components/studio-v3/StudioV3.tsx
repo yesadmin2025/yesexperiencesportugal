@@ -2373,13 +2373,13 @@ function StoryboardHandoff({
         >
           <span style={{ color: "var(--gold)" }}>—</span> Your Signature
         </p>
-        <h1
+        <h2
           className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
           style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
           data-testid="studio-v3-signature-hero"
         >
           {heroLead}
-        </h1>
+        </h2>
         <p
           className="mt-4 text-[15.5px] sm:text-[18px] leading-[1.5] italic text-balance [text-wrap:pretty] [hyphens:auto] max-w-[360px] sm:max-w-[460px] mx-auto"
           style={{
