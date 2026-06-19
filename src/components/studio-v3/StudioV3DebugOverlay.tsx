@@ -14,7 +14,7 @@
  * Keyboard: press "D" (with Shift) to toggle at runtime.
  */
 import { useEffect, useState } from "react";
-import type { StudioState } from "@/hooks/useStudioState";
+import type { StudioV3State } from "./types";
 
 const btnStyle: React.CSSProperties = {
   background: "transparent",
