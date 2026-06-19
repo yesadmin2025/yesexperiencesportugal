@@ -234,19 +234,7 @@ export function SignaturePriceCard({
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
             <ul className="flex flex-col gap-2">
-              {availableAddOns.map((a) => {
-                const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
-                const selected = selectedAddOnIds.includes(a.id);
-                return (
-                  <li key={a.id}>
-                    <button
-                      type="button"
-                      onClick={() => toggleAddOn(a.id)}
-                      aria-pressed={selected}
-                      data-addon-id={a.id}
-                      className="flex w-full items-start gap-3 rounded-[4px] px-3 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                      style={{
-              {availableAddOns.map((a) => {
+
                 const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
