@@ -17,8 +17,12 @@ interface PhaseShellProps {
   step?: number;
   totalSteps?: number;
   progress?: { percent: number; phrase: string } | null;
-  /** Deprecated: question phases must stay clean, with no map/silhouette behind choices. */
-  anticipation?: { fill: number; region?: unknown } | null;
+  /** Regional anticipation — a quiet pulse hinting at the resolving region.
+   *  `fill` is 0..1 (used to modulate intensity); `region` is the resolved
+   *  region id (e.g. "arrabida") or `null` while destinationIntent is still
+   *  ambiguous. When `region` is null, no pulse is rendered — only the
+   *  layer itself, so layout stays stable. */
+  anticipation?: { fill: number; region: string | null } | null;
 }
 
 export function PhaseShell({
