@@ -145,5 +145,5 @@ export function RunningInvestmentRibbon({
         ) : null}
       </div>
     </div>
-}
+  );
 }
