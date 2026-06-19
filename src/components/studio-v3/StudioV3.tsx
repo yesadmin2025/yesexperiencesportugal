@@ -1689,7 +1689,7 @@ function PhaseHeader({
       >
         <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}
       </p>
-      <h1
+      <h2
         className="mt-5 text-[28px] sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
         style={{
           fontFamily: "var(--font-display)",
@@ -1705,7 +1705,7 @@ function PhaseHeader({
         >
           {titleAccent}
         </span>
-      </h1>
+      </h2>
     </header>
   );
 }
