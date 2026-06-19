@@ -231,6 +231,8 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="lead-sheet-title"
+      data-testid="studio-v3-lead-sheet"
+      data-state={done ? "sent" : submitting ? "submitting" : errorMsg ? "error" : "idle"}
     >
       {/* Scrim */}
       <button
