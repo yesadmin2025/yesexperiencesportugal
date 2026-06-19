@@ -152,7 +152,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
             type="button"
             onClick={() => {
               try {
-                window.sessionStorage.removeItem(STORAGE_KEY);
+                window.localStorage.removeItem(STORAGE_KEY);
               } catch {
                 /* noop */
               }
