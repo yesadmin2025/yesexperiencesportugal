@@ -190,7 +190,19 @@ export function MapAwakens({
       window.clearTimeout(tComplete);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rerollCount]);
+
+  // Reset cinematic state every reshape so the new route plays in from
+  // its first moment, not mid-sequence.
+  useEffect(() => {
+    if (rerollCount === 0) return;
+    setRevealed(0);
+    setActive(0);
+    setPlaying(true);
+    setMounted(false);
+    setAnticipating(true);
+    setSrStatus("Reshaping your day. A new route is taking shape.");
+  }, [rerollCount]);
 
 
 
