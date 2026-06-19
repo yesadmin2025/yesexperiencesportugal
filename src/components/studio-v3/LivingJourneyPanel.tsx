@@ -277,6 +277,8 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               dna={dna}
               routeLine={routeLine}
               moments={moments}
+              timelineMoments={timelineMoments}
+              durationLabel={null}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
               investmentLabel={investmentLabel}
@@ -297,6 +299,8 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
+  timelineMoments: Array<{ label: string; story?: string | null }>;
+  durationLabel: string | null;
   originLabel: string | null;
   paceLabel: string | null;
   investmentLabel: string | null;
@@ -312,6 +316,8 @@ function JourneyDraftDrawer({
   dna,
   routeLine,
   moments,
+  timelineMoments,
+  durationLabel,
   originLabel,
   paceLabel,
   investmentLabel,
@@ -320,6 +326,7 @@ function JourneyDraftDrawer({
   storySource,
 }: DrawerProps) {
   const totalPins = Math.max(0, Math.min(4, moments.length));
+  const [view, setView] = useState<"story" | "timeline" | "map">("story");
 
   // Cinematic pin reveal — pins draw in sequence when the drawer opens,
   // giving the "journey being drawn in real time" sensation. Respects
