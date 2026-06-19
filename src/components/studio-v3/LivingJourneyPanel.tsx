@@ -482,16 +482,7 @@ function JourneyDraftDrawer({
                 {title}
               </h2>
               {memoryLine ? (
-                <p
-                  className="mt-2 text-[12.5px] italic leading-snug"
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
-                  }}
-                  data-testid="studio-v3-memory-line"
-                >
-                  {memoryLine}
-                </p>
+                <MemoryRewriteLine line={memoryLine} />
               ) : null}
             </div>
             <button
