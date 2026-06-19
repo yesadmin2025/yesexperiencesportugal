@@ -125,6 +125,7 @@ export function StudioV3ProgressStepper({
           return;
         }
       }
+    },
     [active],
   );
 
