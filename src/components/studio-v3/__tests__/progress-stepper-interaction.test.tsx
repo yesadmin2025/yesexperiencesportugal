@@ -64,7 +64,7 @@ function Harness() {
 
 describe("StudioV3ProgressStepper — interaction sync", () => {
   it("advances Region → Rhythm → Dates → Compose, staying in sync with the internal phase", async () => {
-    const user = userEvent.setup();
+    // fireEvent for sync clicks
     render(<Harness />);
 
     for (let i = 0; i < JOURNEY.length; i++) {
@@ -80,7 +80,7 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
       ).toContain(STUDIO_V3_BEATS[beatIndexForPhase(phase)!].label);
 
       if (i < JOURNEY.length - 1) {
-        await user.click(screen.getByTestId("harness-next"));
+        act(() => { fireEvent.click(screen.getByTestId("harness-next")); });
       }
     }
 
@@ -91,12 +91,12 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
   });
 
   it("walking backward re-syncs the active beat each step", async () => {
-    const user = userEvent.setup();
+    // fireEvent for sync clicks
     render(<Harness />);
 
     // Fast-forward to the end.
     for (let i = 0; i < JOURNEY.length - 1; i++) {
-      await user.click(screen.getByTestId("harness-next"));
+      act(() => { fireEvent.click(screen.getByTestId("harness-next")); });
     }
     expect(
       screen.getByTestId("studio-v3-progress-stepper").getAttribute("data-active-beat"),
@@ -104,7 +104,7 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
 
     // Walk back, asserting sync at every step.
     for (let i = JOURNEY.length - 2; i >= 0; i--) {
-      await user.click(screen.getByTestId("harness-back"));
+      act(() => { fireEvent.click(screen.getByTestId("harness-back")); });
       const phase = JOURNEY[i];
       expect(screen.getByTestId("harness-phase").textContent).toBe(phase);
       expect(
@@ -120,11 +120,11 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
     const spy = recordStudioV3BuilderStep as unknown as ReturnType<typeof vi.fn>;
     spy.mockClear();
 
-    const user = userEvent.setup();
+    // fireEvent for sync clicks
     render(<Harness />);
 
     for (let i = 0; i < JOURNEY.length - 1; i++) {
-      await user.click(screen.getByTestId("harness-next"));
+      act(() => { fireEvent.click(screen.getByTestId("harness-next")); });
     }
 
     const beats = spy.mock.calls.map((c) => c[0].step);
