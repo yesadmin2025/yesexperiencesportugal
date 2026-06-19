@@ -218,6 +218,16 @@ export function StudioV3ProgressStepper({
           </div>
         );
       })}
-    </nav>
+      </nav>
+      <p
+        data-testid="studio-v3-beat-reassurance"
+        className="px-5 mb-2 text-center text-[10px] uppercase tracking-[0.22em] font-semibold"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+      >
+        <span style={{ color: "var(--gold)" }}>—</span>{" "}
+        {BEAT_REASSURANCE[STUDIO_V3_BEATS[active].id]}
+      </p>
+    </div>
   );
 }
+
