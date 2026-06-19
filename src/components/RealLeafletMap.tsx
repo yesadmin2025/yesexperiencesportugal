@@ -36,10 +36,11 @@ const PORTUGAL_BOUNDS = L.latLngBounds(
 );
 
 // Per-region zoom memory — switching regions restores that region's
-// last camera (center + zoom). Mirrors the BuilderMap behaviour so the
-// experience is consistent across our two real Leaflet surfaces.
+// last camera (center + zoom). Persists to localStorage so a full page
+// refresh restores the same view. Mirrors BuilderMap behaviour.
 // See mem://preferences/builder-map-zoom.
-const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
+import { getMapZoomStore } from "@/lib/mapZoomMemory";
+const zoomByRegion = getMapZoomStore("premium-map");
 const PORTUGAL_KEY = "__portugal__";
 
 type Marker = StopLatLng & { tours: { id: string; title: string }[] };
