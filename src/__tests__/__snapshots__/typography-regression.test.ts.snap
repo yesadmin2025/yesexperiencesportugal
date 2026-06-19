@@ -1,5 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
+
+exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
+
+exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"font-serif italic font-normal"`;
+
+exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"font-serif italic font-normal mt-3 sm:mt-4"`;
+
 exports[`Typography regression — headline class strings > [multi-day] hero subhead 1`] = `"mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed"`;
 
 exports[`Typography regression — headline class strings > [proposals] hero subhead 1`] = `"mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed"`;
