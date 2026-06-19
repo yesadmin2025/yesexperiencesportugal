@@ -98,7 +98,6 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
     ["destination", state.destinationIntent || "—"],
     ["interests", (state.interests ?? []).join(", ") || "—"],
     ["guests", state.guests != null ? String(state.guests) : "—"],
-    ["pace", state.pace || "—"],
     ["language", state.language || "—"],
     ["occasion", state.occasion || "—"],
     ["investment", state.investment || "—"],
