@@ -1332,8 +1332,8 @@ export function StudioV3() {
 
   return (
     <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
-      <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
-      <ComposerMap state={state} hidden={composerHidden || isMobile} />
+      <LivingJourneyPanel state={state} hidden />
+      <ComposerMap state={state} hidden />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
       <StudioV3ProgressStepper
         phase={state.phase}
@@ -1495,7 +1495,7 @@ export function StudioV3() {
 
       {state.phase === "interests" ? (
         <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
-          <BackLink onClick={() => back("investment")} />
+          <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
             mode="multi"
@@ -1598,7 +1598,7 @@ export function StudioV3() {
           investment={state.investment}
           destinationIntent={state.destinationIntent}
           dateExact={state.dateExact}
-          onBack={() => back("language")}
+          onBack={() => back("rhythm")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
             const title = composeJourneyTitle({
