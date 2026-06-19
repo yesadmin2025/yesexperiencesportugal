@@ -123,7 +123,9 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
-  const originLabel = state.pickup ? getOptionLabel(PICKUPS, state.pickup) : null;
+  const originLabel = state.pickup ? getOptionLabel(PICKVERSANT_PLACEHOLDER, state.pickup) : null;
+
+
 
 
   // --- AI live story (Lovable AI) ---
