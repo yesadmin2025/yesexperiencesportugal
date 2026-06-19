@@ -146,4 +146,10 @@ export const BRAND_HEX_EXEMPT_PATH_PREFIXES = [
   // Contrast regression test — locks the palette hex values so WCAG
   // ratios can be computed without depending on a CSS parser.
   "src/__tests__/homepage-contrast.test.ts",
+  // Debug overlays that render the palette hex *as data* on screen.
+  "src/components/HeroColorDebugOverlay.tsx",
+  // Legacy Studio v2 mood-tint table — the hex literals ARE the data
+  // (a lookup map of mood → tint). Studio v2 is deprecated; do not
+  // refactor unless the file is removed.
+  "src/lib/studio-v2/",
 ] as const;
