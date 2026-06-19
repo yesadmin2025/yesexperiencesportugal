@@ -52,7 +52,7 @@ function readInitialEnabled(): boolean {
 }
 
 interface Props {
-  state: StudioState;
+  state: StudioV3State;
   composerHidden: boolean;
   reactionActive: boolean;
 }
