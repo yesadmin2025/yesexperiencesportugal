@@ -18,6 +18,7 @@ import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { SignaturePriceCard } from "./SignaturePriceCard";
+import { QualityScore } from "./QualityScore";
 import { safeDateForReveal } from "./dateGuards";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
@@ -1217,9 +1218,9 @@ export function StudioV3() {
           : filteredOccasions;
 
 
-  // Living Journey Panel visibility — hide on the opening "feeling" pick
-  // (don't compete with the first moment), on the final map/storyboard
-  // (own panels), and while a reaction beat is overlaying the screen.
+  // Living Journey Panel (heavy editorial text) — keep hidden during the
+  // question chain to avoid competing with the active phase. Reveals on
+  // map/storyboard where it owns the surface.
   const livingPanelHidden =
     !!reaction ||
     state.phase === "intro" ||
@@ -1227,12 +1228,19 @@ export function StudioV3() {
     state.phase === "map" ||
     state.phase === "storyboard";
 
-  // ComposerMap shares LivingJourneyPanel's hidden gate, plus an extra
-  // guard so it never renders on the opening feeling phase before a pick.
+  // ComposerMap — Studio Bible §4 "live map updates as stops change".
+  // Lightweight, peripheral, progressive: renders the moment the traveller
+  // has made any meaningful pick (feeling/companions/rhythm) so the day
+  // is *visibly* taking shape between every question. Hidden only on:
+  //   - intro (pre-Studio canvas)
+  //   - the dedicated map/storyboard phases (own surface)
+  //   - while a reaction overlay is on screen
   const composerHidden =
-    livingPanelHidden ||
+    !!reaction ||
     state.phase === "intro" ||
-    (state.phase === "feeling" && !state.feeling);
+    state.phase === "map" ||
+    state.phase === "storyboard";
+
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
@@ -2902,7 +2910,10 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
-      {/* ---------- 7. Premium price card ---------- */}
+      {/* ---------- 7. Quality Score (Studio Bible §11) ---------- */}
+      <QualityScore state={state} />
+
+      {/* ---------- 7b. Premium price card ---------- */}
       <SignaturePriceCard
         tour={skeletonTour ?? null}
         stopCount={editedStops.length}
@@ -2914,6 +2925,7 @@ function StoryboardHandoff({
         included={skeletonTour?.included ?? []}
         showAddOns={false}
       />
+
 
       {/* ---------- 7b. Before you secure it ---------- */}
       <div className="mt-8 text-center">
