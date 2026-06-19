@@ -44,7 +44,7 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
         <span aria-hidden="true" className="opacity-30">·</span>
         <span>Tripadvisor</span>
         <span aria-hidden="true" className="opacity-30">·</span>
-        <span>Viator</span>
+        <span>GetYourGuide</span>
       </span>
     </div>
   );
