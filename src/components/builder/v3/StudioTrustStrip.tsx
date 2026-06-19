@@ -21,7 +21,7 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
   return (
     <div
       role="note"
-      aria-label={`700+ five-star reviews across Google, Tripadvisor, Viator and GetYourGuide`}
+      aria-label={`700+ five-star reviews across Google, Tripadvisor and GetYourGuide`}
       className="absolute bottom-[108px] inset-x-0 z-[44] flex items-center justify-center px-3 pointer-events-none motion-safe:animate-[fade-in_1.1s_ease-out_both]"
     >
       <span
