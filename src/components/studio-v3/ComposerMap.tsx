@@ -70,6 +70,26 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
   const pinCount = hasInterests ? Math.min(4, routePoints.length) : 0;
   const showRoute = hasInterests && pinCount > 0;
 
+  // Anticipation beat — drives progressive geometry + tone (Track 2 fusion).
+  // Monotonic: never regresses once a deeper beat has been reached.
+  const anticipation: Anticipation =
+    resolved?.skeletonTourKey
+      ? "compose"
+      : state.dateMode
+        ? "dates"
+        : state.rhythm
+          ? "rhythm"
+          : "feeling";
+
+  // Real Signature data — never invented. Hidden until skeleton resolves.
+  const tour = resolved?.skeletonTourKey
+    ? signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null
+    : null;
+  const scopeStops = tour?.stops.length ?? 0;
+  const scopeDuration = tour?.durationHours ?? null;
+  const scopeRegion = tour?.region ?? resolved?.routeAreaLabel ?? null;
+  const scopePriceFromEur = tour?.priceFrom ?? null;
+
   // -------- Adaptive progress (milestone-based, not question-based) --------
   // The Studio is adaptive — some phases get skipped or inferred. So we
   // measure progress by completed CREATION milestones, never by question
