@@ -105,12 +105,15 @@ export function RunningInvestmentRibbon({
             style={{ color: "var(--charcoal)" }}
           >
             <span
-              className="inline-block h-[4px] w-[4px] rounded-full shrink-0"
-              style={{ background: "var(--gold)" }}
-              aria-hidden
-            />
+              className="font-bold tracking-[0.30em] shrink-0"
+              style={{ color: "var(--teal)" }}
+              data-testid="studio-v3-voice-mark"
+            >
+              YES
+            </span>
+            <span style={{ color: "var(--gold)" }} aria-hidden>—</span>
             <span className="shrink-0" style={{ color: "color-mix(in oklab, var(--charcoal) 70%, var(--ivory))" }}>
-              Experience investment —
+              Investment
             </span>
             <span className="truncate" style={{ color: "var(--charcoal)" }}>
               {line}
