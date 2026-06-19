@@ -1383,12 +1383,17 @@ export function StudioV3() {
           >
             Pick a direction, or let YES shape it around your choices.
           </p>
-          <ChoiceGrid
-            options={filterDestinationIntents(DESTINATION_INTENTS)}
-            value={state.destinationIntent}
-            onSelect={onDestination}
-            columns={1}
-          />
+          <div
+            data-testid="studio-v3-destination-region-grid"
+            data-selected-region={state.destinationIntent ?? ""}
+          >
+            <ChoiceGrid
+              options={filterDestinationIntents(DESTINATION_INTENTS)}
+              value={state.destinationIntent}
+              onSelect={onDestination}
+              columns={1}
+            />
+          </div>
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
