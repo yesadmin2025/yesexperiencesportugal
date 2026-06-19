@@ -302,7 +302,7 @@ export function SignaturePriceCard({
               className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
             >
-              Reserve instantly <ArrowRight size={14} aria-hidden />
+              Yes — make this day mine <ArrowRight size={14} aria-hidden />
             </button>
           ) : (
             <a
