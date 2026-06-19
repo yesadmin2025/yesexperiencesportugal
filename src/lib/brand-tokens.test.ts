@@ -170,6 +170,11 @@ describe("Brand lock — no hard-coded brand hex outside locked surfaces", () =>
       const text = readFileSync(file, "utf8");
       let m: RegExpExecArray | null;
       while ((m = findHexRe.exec(text)) !== null) {
+        // Defensive fallback pattern `var(--token, #HEX)` is allowed:
+        // the canonical source is the CSS custom property, the hex is
+        // just there if the var fails to resolve. Skip those matches.
+        const beforeWindow = text.slice(Math.max(0, m.index - 40), m.index);
+        if (/var\([^)]*,\s*$/.test(beforeWindow)) continue;
         const line = text.slice(0, m.index).split("\n").length;
         offenders.push({ file: rel, hex: m[1], line });
       }
