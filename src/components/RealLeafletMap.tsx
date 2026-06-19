@@ -158,11 +158,29 @@ export function RealLeafletMap({ region }: { region: string | null }) {
       maxZoom: 18,
     }).addTo(map);
     mapRef.current = map;
-    // Wait for the container to be measurable, then fit Portugal
+
+    // Persist the camera per region so switching regions restores their
+    // last view (mem://preferences/builder-map-zoom).
+    map.on("zoomend moveend", () => {
+      const c = map.getCenter();
+      zoomByRegion.set(lastRegionRef.current, {
+        center: [c.lat, c.lng],
+        zoom: map.getZoom(),
+      });
+    });
+
+    // Wait for the container to be measurable, then fit Portugal (or the
+    // remembered camera for the initial region, if any).
     const ro = new ResizeObserver(() => {
       if (el.clientWidth > 0 && el.clientHeight > 0) {
         map.invalidateSize();
-        map.fitBounds(PORTUGAL_BOUNDS, { animate: false });
+        const key = region && REGION_CENTERS[region] ? region : PORTUGAL_KEY;
+        const remembered = zoomByRegion.get(key);
+        if (remembered) {
+          map.setView(remembered.center, remembered.zoom, { animate: false });
+        } else {
+          map.fitBounds(PORTUGAL_BOUNDS, { animate: false });
+        }
         ro.disconnect();
       }
     });
