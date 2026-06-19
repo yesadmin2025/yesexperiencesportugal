@@ -100,6 +100,35 @@ export function SignaturePriceCard({
       .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
+  const partyCount = guests && guests >= 2 ? guests : null;
+  const partyTotalEur = totalEur != null && partyCount != null ? totalEur * partyCount : null;
+
+  // S2 — Smart suggestion: the first eligible add-on the resolver returned,
+  // dismissible, hidden once it's been selected. Never invented — sourced
+  // from a real sibling Signature in the same region.
+  const [suggestionDismissed, setSuggestionDismissed] = useState(false);
+  const suggestion = useMemo<SignatureAddOn | null>(() => {
+    if (!hasPrice) return null;
+    if (suggestionDismissed) return null;
+    const first = availableAddOns[0];
+    if (!first) return null;
+    if (selectedAddOnIds.includes(first.id)) return null;
+    if (atCap) return null;
+    return first;
+  }, [availableAddOns, selectedAddOnIds, atCap, hasPrice, suggestionDismissed]);
+
+  // S3 — "Why this works": three short lines pulled from the resolved
+  // Signature's real `included[]`. Pure data, never invented copy.
+  const whyThisWorks = useMemo<string[]>(() => {
+    if (!included || included.length === 0) return [];
+    return included.slice(0, 3).map((s) => s.trim()).filter(Boolean);
+  }, [included]);
+
+  // S4 — Inclusions footnote: up to 4 short items from the real `included[]`.
+  const inclusionFootnote = useMemo<string[]>(() => {
+    if (!included || included.length === 0) return [];
+    return included.slice(0, 4).map((s) => s.trim()).filter(Boolean);
+  }, [included]);
 
   useEffect(() => {
     recordStudioV3RevealPremium({
