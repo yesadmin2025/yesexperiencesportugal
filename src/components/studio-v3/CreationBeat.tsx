@@ -62,10 +62,13 @@ export function AtmosphereBeat({ imageSrc, eyebrow, line }: AtmosphereBeatProps)
 
       <div className="relative z-10 w-full max-w-[480px] text-center">
         <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold inline-flex items-center justify-center gap-1.5"
           style={{ color: "var(--gold)" }}
+          data-testid="studio-v3-voice-mark"
         >
-          <span aria-hidden>—</span> {eyebrow}
+          <span className="font-bold tracking-[0.32em]" style={{ color: "var(--ivory)" }}>YES</span>
+          <span aria-hidden>—</span>
+          <span>{eyebrow}</span>
         </p>
         <p
           className="mt-5 text-[22px] sm:text-[26px] leading-[1.35] italic text-balance"
