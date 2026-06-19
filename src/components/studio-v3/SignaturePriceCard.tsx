@@ -150,6 +150,8 @@ export function SignaturePriceCard({
       data-testid="studio-v3-price-card"
       data-has-price={hasPrice ? "true" : "false"}
       data-price-source={priceSource}
+      data-tour-id={tour?.id ?? ""}
+      data-base-price-eur={priceEur ?? ""}
       className="mx-auto mt-10 w-full max-w-[460px] px-5"
       aria-label="Your Signature — investment"
     >
@@ -194,6 +196,8 @@ export function SignaturePriceCard({
               From
             </p>
             <p
+              data-testid="studio-v3-base-price"
+              data-eur={priceEur ?? ""}
               className="mt-1 text-[40px] leading-none font-bold tabular-nums"
               style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
             >
