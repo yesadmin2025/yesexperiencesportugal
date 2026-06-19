@@ -531,14 +531,58 @@ const INTEREST_TOUR_KEYWORDS: Partial<Record<Interest, string[]>> = {
   "local-life": ["village", "market", "local", "workshop", "neighbour"],
 };
 
+/* ============================================================
+ * Seeded variation helpers (Reshape this day)
+ * ------------------------------------------------------------
+ *  Deterministic, dependency-free PRNG. We never invent stops or tours —
+ *  variation only re-picks among already-eligible candidates (top-band
+ *  tours within the same feeling/region pool) and gently jitters per-stop
+ *  scores so a different equally-good moment can win a tie. With seed=0
+ *  every helper is a no-op, so the original deterministic curation (and
+ *  its locked test snapshots) is preserved.
+ * ============================================================ */
+function hashSeed(input: string | number | undefined): number {
+  if (input === undefined || input === null || input === "" || input === 0 || input === "0") return 0;
+  const str = String(input);
+  let h = 2166136261 >>> 0; // FNV-1a basis
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(seed: number): () => number {
+  let t = seed >>> 0;
+  return function () {
+    t = (t + 0x6D2B79F5) >>> 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Strong coherence regex: stops/tours that read as exclusively-family
+ *  (children/playground language) must not surface when the traveller is
+ *  solo/couple/proposal/corporate. AI predictive guardrail — never offer
+ *  family-coded language to a couple. */
+const FAMILY_ONLY_RE = /\b(child(ren)?|kids|kid-friendly|playground|stroller|toddler|baby|babies)\b/i;
+/** Stops/tours that read as exclusively-couple/romantic-only must not
+ *  surface when the traveller is corporate / family / friends. */
+const ROMANTIC_ONLY_RE = /\b(honeymoon|just the two of you|for two|romantic dinner|proposal|engagement)\b/i;
+
 /** Pick ONE Signature skeleton that best fits the answers AND keeps the
- *  route geographically contained near the chosen pickup. Deterministic. */
+ *  route geographically contained near the chosen pickup. Deterministic
+ *  unless `seed` is provided — then re-picks among top-band tours (Δ ≤ 1.5
+ *  from the leader) using the seed so "Reshape" yields a different but
+ *  equally-good Signature when multiple fit. */
 function pickPrimaryTour(
   feeling: Feeling,
   companions: Companions,
   interests: ReadonlyArray<Interest>,
   pickup: Pickup | null,
   destinationIntent: DestinationIntent | null,
+  seed: number = 0,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const candidateIds = FEELING_TO_TOURS[feeling] ?? [];
   // When a destination intent is set, fold its target tours into the
@@ -585,6 +629,14 @@ function pickPrimaryTour(
     destinationIntent === "alentejo-evora-wine" ||
     destinationIntent === "arrabida-setubal-azeitao";
 
+  // AI-predictive coherence: hard-deprioritise tours whose ideal-for
+  // copy reads as exclusively-family when the traveller is not family,
+  // and the mirror case for romantic-only tours offered to corporate.
+  const cType = companionsType(companions);
+  const blockFamilyCoded =
+    cType === "couple" || cType === "solo" || cType === "corporate";
+  const blockRomanticCoded = cType === "corporate" || cType === "family";
+
   const scored = candidates
     .map((tour, order) => {
       let score = 0;
@@ -601,6 +653,11 @@ function pickPrimaryTour(
       if (wantsTilesCraft && isLisbonArea && tour.id === "tiles-workshop") {
         score += 3;
       }
+      // Coherence guard — never let family-coded copy win for couples,
+      // never let romantic-only copy win for corporate.
+      const idealFor = tour.idealFor.join(" ");
+      if (blockFamilyCoded && FAMILY_ONLY_RE.test(idealFor)) score -= 6;
+      if (blockRomanticCoded && ROMANTIC_ONLY_RE.test(idealFor)) score -= 6;
       return { tour, score, order };
     })
     .sort((a, b) => {
@@ -608,11 +665,25 @@ function pickPrimaryTour(
       return a.order - b.order; // preserve FEELING_TO_TOURS ordering as tiebreak
     });
 
-  return {
-    tour: scored[0].tour,
-    alternates: scored.slice(1, 3).map((s) => s.tour),
-  };
+  // Seed > 0 → "Reshape" picks among top-band tours (within Δ 1.5 of the
+  // leader) so re-rolls offer a genuinely different but equally-good day.
+  let chosen = scored[0];
+  if (seed > 0 && scored.length > 1) {
+    const top = scored[0].score;
+    const band = scored.filter((s) => top - s.score <= 1.5);
+    if (band.length > 1) {
+      const rand = mulberry32(seed)();
+      chosen = band[Math.floor(rand * band.length)] ?? scored[0];
+    }
+  }
+
+  const alternates = scored
+    .filter((s) => s.tour.id !== chosen.tour.id)
+    .slice(0, 2)
+    .map((s) => s.tour);
+  return { tour: chosen.tour, alternates };
 }
+
 
 /**
  * curateJourney — route-contained. Returns moments drawn ONLY from the
