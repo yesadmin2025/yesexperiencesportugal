@@ -1356,13 +1356,15 @@ export function StudioV3() {
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
-      <StudioV3ProgressStepper
-        phase={state.phase}
-        onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
-        onBeatAdvance={(beat, index) => {
-          if (isMobile) setMobileReveal({ beat, index });
-        }}
-      />
+      {chromeReady ? (
+        <StudioV3ProgressStepper
+          phase={state.phase}
+          onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
+          onBeatAdvance={(beat, index) => {
+            if (isMobile) setMobileReveal({ beat, index });
+          }}
+        />
+      ) : null}
       <RunningInvestmentRibbon state={state} hidden={composerHidden} />
       {isMobile ? (
         <MobileBeatReveal
