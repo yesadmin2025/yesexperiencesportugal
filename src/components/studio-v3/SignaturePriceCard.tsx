@@ -250,8 +250,7 @@ export function SignaturePriceCard({
                   <li key={a.id}>
                     <button
                       type="button"
-                      role="checkbox"
-                      aria-checked={selected}
+                      aria-pressed={selected}
                       aria-disabled={disabled || undefined}
                       aria-busy={pending || undefined}
                       onClick={() => toggleAddOn(a.id)}
