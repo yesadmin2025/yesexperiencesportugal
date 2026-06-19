@@ -44,10 +44,12 @@ const CHIP_I18N = {
  * Premium Leaflet route map — branded numbered pins, animated gold polyline,
  * smooth flyTo, scroll-zoom disabled (page-friendly).
  *
- * Per-region zoom memory is preserved so switching regions restores their
+ * Per-region zoom memory is preserved (in-memory + localStorage) so
+ * switching regions — or refreshing the page — restores that region's
  * last view (see mem://preferences/builder-map-zoom).
  */
-const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
+import { getMapZoomStore } from "@/lib/mapZoomMemory";
+const zoomByRegion = getMapZoomStore("builder-map");
 
 export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true, locale = "en" }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
