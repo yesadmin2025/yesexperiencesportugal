@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-19T02:28:59.588Z",
-  "filesScanned": 374,
+  "generatedAt": "2026-06-19T02:50:14.242Z",
+  "filesScanned": 379,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 232,
+    "total": 236,
     "approved": 61,
-    "allowlisted": 27,
-    "mismatch": 144
+    "allowlisted": 29,
+    "mismatch": 146
   },
   "findings": [
     {
@@ -1517,6 +1517,42 @@
       "normalized": "#050d0f",
       "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)\",",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
+      "line": 48,
+      "col": 70,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "<div data-theme={theme} style={{ background: theme === \"dark\" ? \"#111\" : \"#fff\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
+      "line": 48,
+      "col": 79,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "<div data-theme={theme} style={{ background: theme === \"dark\" ? \"#111\" : \"#fff\" }}>",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/progress-stepper-a11y.test.tsx",
+      "line": 18,
+      "col": 70,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "<div data-theme={theme} style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/progress-stepper-a11y.test.tsx",
+      "line": 18,
+      "col": 95,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "<div data-theme={theme} style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}>",
+      "status": "allowlisted"
     },
     {
       "file": "src/lib/brand-tokens.test.ts",

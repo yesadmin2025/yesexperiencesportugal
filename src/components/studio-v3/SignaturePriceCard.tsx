@@ -62,11 +62,11 @@ export function SignaturePriceCard({
   const availableAddOns = useMemo<SignatureAddOn[]>(
     () =>
       selectSignatureAddOns({
-        region: tour?.region ?? null,
+        resolvedTour: tour,
         stopCount,
         durationLabel,
       }),
-    [tour?.region, stopCount, durationLabel],
+    [tour, stopCount, durationLabel],
   );
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const toggleAddOn = (id: string) =>
@@ -116,8 +116,20 @@ export function SignaturePriceCard({
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
+          <span style={{ color: "var(--gold)" }}>—</span> {journeyTitle ? "Your Signature" : "The journey you composed"}
         </p>
+        {journeyTitle ? (
+          <p
+            className="mt-2 text-[19px] sm:text-[21px] leading-[1.2] italic text-balance"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "var(--charcoal)",
+            }}
+          >
+            “{journeyTitle}”
+          </p>
+        ) : null}
+
 
         {hasPrice ? (
           <>
@@ -146,7 +158,7 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Private experience · final details confirmed with you
+              A private day, just for you — driver, guide and every detail handled. You only show up.
             </p>
           </>
         ) : (
@@ -204,7 +216,7 @@ export function SignaturePriceCard({
               className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Add to your day
+              <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
             <ul className="flex flex-col gap-2">
               {availableAddOns.map((a) => {
@@ -290,7 +302,7 @@ export function SignaturePriceCard({
               className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
             >
-              Reserve instantly <ArrowRight size={14} aria-hidden />
+              Yes — make this day mine <ArrowRight size={14} aria-hidden />
             </button>
           ) : (
             <a
@@ -313,7 +325,7 @@ export function SignaturePriceCard({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
           >
-            Refine details
+            Adjust a few things first
           </button>
         </div>
       </div>
