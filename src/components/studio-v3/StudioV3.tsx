@@ -1383,12 +1383,17 @@ export function StudioV3() {
           >
             Pick a direction, or let YES shape it around your choices.
           </p>
-          <ChoiceGrid
-            options={filterDestinationIntents(DESTINATION_INTENTS)}
-            value={state.destinationIntent}
-            onSelect={onDestination}
-            columns={1}
-          />
+          <div
+            data-testid="studio-v3-destination-region-grid"
+            data-selected-region={state.destinationIntent ?? ""}
+          >
+            <ChoiceGrid
+              options={filterDestinationIntents(DESTINATION_INTENTS)}
+              value={state.destinationIntent}
+              onSelect={onDestination}
+              columns={1}
+            />
+          </div>
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
@@ -2269,6 +2274,11 @@ function StoryboardHandoff({
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
+      data-testid="studio-v3-reveal"
+      data-reveal-region={skeletonTour?.region ?? ""}
+      data-reveal-tour={skeletonTour?.id ?? ""}
+      data-reveal-stops={editedStops.length}
+      data-destination-intent={state.destinationIntent ?? ""}
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
       {/* ---------- Fase 4 — Cinematic 3-beat composing reveal ---------- */}

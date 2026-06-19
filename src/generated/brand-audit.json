@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-19T03:57:13.040Z",
-  "filesScanned": 382,
+  "generatedAt": "2026-06-19T04:10:23.361Z",
+  "filesScanned": 384,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -755,7 +755,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 55,
+      "line": 56,
       "col": 24,
       "raw": "#f5efdf",
       "normalized": "#f5efdf",
@@ -764,7 +764,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 57,
+      "line": 58,
       "col": 50,
       "raw": "#f5efdf",
       "normalized": "#f5efdf",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 210,
+      "line": 211,
       "col": 29,
       "raw": "#0c5b66",
       "normalized": "#0c5b66",
@@ -782,7 +782,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 218,
+      "line": 219,
       "col": 60,
       "raw": "#555",
       "normalized": "#555555",
@@ -791,7 +791,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 225,
+      "line": 226,
       "col": 60,
       "raw": "#888",
       "normalized": "#888888",
@@ -800,7 +800,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 228,
+      "line": 229,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -809,7 +809,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 150,
+      "line": 152,
       "col": 106,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -818,7 +818,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 246,
+      "line": 248,
       "col": 45,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -1466,7 +1466,7 @@
     },
     {
       "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
-      "line": 572,
+      "line": 574,
       "col": 38,
       "raw": "#b3261e",
       "normalized": "#b3261e",
