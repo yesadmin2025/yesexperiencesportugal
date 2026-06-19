@@ -71,7 +71,7 @@ export function ShapeYourDay() {
     // Spec: pickup = other → /studio-v2 (with note flag) - studio still
     // gets the intent/group so the rest of the prompt is honored.
     void navigate({
-      to: "/studio-v2",
+      to: "/studio-v3",
       search: { intent, group, pickup },
     });
   };
