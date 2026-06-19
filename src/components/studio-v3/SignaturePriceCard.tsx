@@ -116,7 +116,19 @@ export function SignaturePriceCard({
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
+          <span style={{ color: "var(--gold)" }}>—</span> {journeyTitle ? "Your Signature" : "The journey you composed"}
+        </p>
+        {journeyTitle ? (
+          <p
+            className="mt-2 text-[19px] sm:text-[21px] leading-[1.2] italic text-balance"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "var(--charcoal)",
+            }}
+          >
+            “{journeyTitle}”
+          </p>
+        ) : null}
         </p>
 
         {hasPrice ? (
