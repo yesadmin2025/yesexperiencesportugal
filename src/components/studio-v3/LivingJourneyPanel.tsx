@@ -123,7 +123,26 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
-  const originLabel = state.pickup ? getOptionLabel(PICKVERSANT_PLACEHOLDER, state.pickup) : null;
+  const originLabel = state.pickup ? getOptionLabel(PICKUPS, state.pickup) : null;
+
+  // -------- Scope strip (reference-builder DNA) --------
+  // Pull the real Signature behind the resolved route so we can show
+  // region · stops · duration · "from €N / guest" — never invented.
+  const resolvedTour = useMemo(() => {
+    if (!resolved?.skeletonTourKey) return null;
+    return signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null;
+  }, [resolved?.skeletonTourKey]);
+
+  const scopeRegion = resolvedTour?.region ?? null;
+  const scopeDuration = resolvedTour?.durationHours ?? null;
+  const scopeStops = routePoints.length;
+  const scopePriceFromEur = resolvedTour?.priceFrom && resolvedTour.priceFrom > 0
+    ? resolvedTour.priceFrom
+    : null;
+  const partyCount = state.guests && state.guests >= 2 ? state.guests : null;
+  const scopePartyTotalEur = scopePriceFromEur && partyCount ? scopePriceFromEur * partyCount : null;
+
+
 
 
 
