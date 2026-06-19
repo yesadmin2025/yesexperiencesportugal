@@ -53,6 +53,9 @@ export function ChoiceGrid<T extends string>({
               type="button"
               role={isMulti ? "checkbox" : "radio"}
               aria-checked={selected}
+              data-testid="studio-v3-choice"
+              data-option-id={opt.id}
+              data-selected={selected ? "true" : "false"}
               onClick={() => {
                 if (isMulti) onToggle?.(opt.id);
                 else onSelect?.(opt.id);
