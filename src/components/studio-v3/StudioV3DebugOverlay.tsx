@@ -18,7 +18,7 @@ import type { StudioV3State } from "./types";
 
 const btnStyle: React.CSSProperties = {
   background: "transparent",
-  color: "#FAF8F3",
+  color: "var(--ivory)",
   border: "1px solid rgba(250,248,243,0.25)",
   borderRadius: 4,
   padding: "0 6px",
@@ -115,7 +115,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
         fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
         fontSize: 11,
         lineHeight: 1.45,
-        color: "#FAF8F3",
+        color: "var(--ivory)",
         background: "rgba(20, 20, 20, 0.88)",
         border: "1px solid rgba(201, 169, 106, 0.55)",
         borderRadius: 8,
@@ -136,7 +136,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
           marginBottom: collapsed ? 0 : 6,
         }}
       >
-        <strong style={{ color: "#C9A96A", letterSpacing: 1, textTransform: "uppercase", fontSize: 10 }}>
+        <strong style={{ color: "var(--gold)", letterSpacing: 1, textTransform: "uppercase", fontSize: 10 }}>
           Studio V3 · debug
         </strong>
         <div style={{ display: "flex", gap: 4 }}>
@@ -182,7 +182,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
                 </td>
                 <td
                   style={{
-                    color: k === "composerHidden" && v === "true" ? "#FF8A8A" : "#FAF8F3",
+                    color: k === "composerHidden" && v === "true" ? "#FF8A8A" : "var(--ivory)",
                     fontWeight: k === "phase" || k === "composerHidden" ? 600 : 400,
                     wordBreak: "break-word",
                   }}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-19T09:30:29.667Z",
+  "generatedAt": "2026-06-19T09:47:23.046Z",
   "filesScanned": 388,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 236,
+    "total": 237,
     "approved": 61,
     "allowlisted": 29,
-    "mismatch": 146
+    "mismatch": 147
   },
   "findings": [
     {
@@ -1471,6 +1471,15 @@
       "raw": "#b3261e",
       "normalized": "#b3261e",
       "snippet": "style={{ color: \"#b3261e\" }}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 185,
+      "col": 70,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": "color: k === \"composerHidden\" && v === \"true\" ? \"#FF8A8A\" : \"var(--ivory)\",",
       "status": "mismatch"
     },
     {
