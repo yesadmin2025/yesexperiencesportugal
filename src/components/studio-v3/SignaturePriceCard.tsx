@@ -194,6 +194,94 @@ export function SignaturePriceCard({
           ) : null}
         </ul>
 
+        {hasPrice && availableAddOns.length > 0 ? (
+          <fieldset
+            data-testid="studio-v3-add-ons"
+            data-count={availableAddOns.length}
+            className="mt-6 mx-auto max-w-[380px] text-left"
+          >
+            <legend
+              className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Add to your day
+            </legend>
+            <ul className="flex flex-col gap-2">
+              {availableAddOns.map((a) => {
+                const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
+                const selected = selectedAddOnIds.includes(a.id);
+                return (
+                  <li key={a.id}>
+                    <button
+                      type="button"
+                      onClick={() => toggleAddOn(a.id)}
+                      aria-pressed={selected}
+                      data-addon-id={a.id}
+                      className="flex w-full items-start gap-3 rounded-[4px] px-3 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                      style={{
+                        background: selected
+                          ? "color-mix(in oklab, var(--gold) 12%, var(--ivory))"
+                          : "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
+                        border: `1px solid ${
+                          selected
+                            ? "color-mix(in oklab, var(--gold) 70%, transparent)"
+                            : "color-mix(in oklab, var(--charcoal) 12%, transparent)"
+                        }`,
+                      }}
+                    >
+                      <span
+                        aria-hidden
+                        className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full"
+                        style={{
+                          background: selected ? "var(--gold)" : "transparent",
+                          border: `1px solid ${
+                            selected ? "var(--gold)" : "color-mix(in oklab, var(--charcoal) 30%, transparent)"
+                          }`,
+                        }}
+                      >
+                        {selected ? <Check size={10} color="var(--ivory)" /> : null}
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span
+                          className="block text-[12.5px] font-semibold"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          {a.label}
+                        </span>
+                        <span
+                          className="block text-[11.5px] leading-snug mt-0.5"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+                        >
+                          {a.blurb}
+                        </span>
+                      </span>
+                      <span
+                        className="shrink-0 text-[12px] font-semibold tabular-nums"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        +€{eur}
+                        <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
+                          / pp
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            {selectedAddOnIds.length > 0 && totalEur != null ? (
+              <p
+                data-testid="studio-v3-add-ons-total"
+                className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
+                style={{ color: "var(--charcoal)" }}
+              >
+                Total <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
+              </p>
+            ) : null}
+          </fieldset>
+        ) : null}
+
         <div className="mt-6 flex flex-col items-center gap-2.5">
           {hasPrice ? (
             <button
