@@ -805,8 +805,16 @@ export function curateJourney(
       }
       // Phase 4.5 soft signal — never changes the pool, only ranking.
       score += investmentPremiumScore(investment, hay);
+      // Reshape jitter (seed > 0 only): ±0.45 deterministic nudge per stop.
+      // Small enough that high-affinity picks still win, big enough that
+      // close-tie moments swap on a re-roll. Anchor (first tour stop) is
+      // never jittered so the day always opens coherently.
+      if (rand && i > 0) {
+        score += (rand() - 0.5) * 0.9;
+      }
       return { stop: s, score, hasGeo: Boolean(geo), geo, order: i };
     })
+
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       if (a.hasGeo !== b.hasGeo) return a.hasGeo ? -1 : 1;
