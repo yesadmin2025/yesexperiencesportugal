@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-19T04:10:23.361Z",
+  "generatedAt": "2026-06-19T05:07:45.847Z",
   "filesScanned": 384,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1241,7 +1241,7 @@
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
-      "line": 152,
+      "line": 155,
       "col": 29,
       "raw": "#14181a",
       "normalized": "#14181a",
