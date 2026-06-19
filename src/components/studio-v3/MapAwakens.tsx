@@ -484,7 +484,21 @@ export function MapAwakens({
             </button>
           </div>
 
-          {/* Hold this journey CTA — appears when sequence completes. */}
+          {/* Quality Score + Reshape — appear together when the sequence
+              completes. Quality answers "is this day really shaped for me?",
+              Reshape answers "show me another way to live this day." */}
+          {studioState ? (
+            <div
+              className={`mt-4 transition-opacity duration-[520ms] ${
+                isLast ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
+              aria-hidden={!isLast}
+            >
+              <QualityScore state={studioState} />
+            </div>
+          ) : null}
+
+          {/* Hold this journey CTA + Reshape this day — appear when sequence completes. */}
           <div
             className={`mt-5 text-center transition-opacity duration-[520ms] ${
               isLast ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -499,13 +513,33 @@ export function MapAwakens({
             >
               Hold this journey <ArrowRight size={14} aria-hidden />
             </button>
+            {onReshape ? (
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={onReshape}
+                  data-testid="studio-v3-reshape-day"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                    background: "transparent",
+                    borderBottom: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
+                  }}
+                  aria-label="Reshape this day — keep your answers, see another route"
+                >
+                  <RefreshCw size={12} aria-hidden style={{ color: "var(--gold)" }} />
+                  Reshape this day
+                </button>
+              </div>
+            ) : null}
             <p
-              className="mt-2 text-[10px] uppercase tracking-[0.24em] font-semibold"
+              className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
             >
               Suggested route · to be confirmed by YES
             </p>
           </div>
+
         </div>
       </div>
 
