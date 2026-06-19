@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-19T03:46:00.664Z",
+  "generatedAt": "2026-06-19T03:57:13.040Z",
   "filesScanned": 382,
   "approvedPalette": {
     "teal": "#295B61",
@@ -755,7 +755,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 48,
+      "line": 55,
       "col": 24,
       "raw": "#f5efdf",
       "normalized": "#f5efdf",
@@ -764,7 +764,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 50,
+      "line": 57,
       "col": 50,
       "raw": "#f5efdf",
       "normalized": "#f5efdf",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 184,
+      "line": 210,
       "col": 29,
       "raw": "#0c5b66",
       "normalized": "#0c5b66",
@@ -782,7 +782,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 192,
+      "line": 218,
       "col": 60,
       "raw": "#555",
       "normalized": "#555555",
@@ -791,7 +791,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 199,
+      "line": 225,
       "col": 60,
       "raw": "#888",
       "normalized": "#888888",
@@ -800,7 +800,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 202,
+      "line": 228,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",

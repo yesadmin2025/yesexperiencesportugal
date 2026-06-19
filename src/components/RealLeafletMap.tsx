@@ -35,6 +35,13 @@ const PORTUGAL_BOUNDS = L.latLngBounds(
   L.latLng(42.2, -6.2),
 );
 
+// Per-region zoom memory — switching regions restores that region's
+// last camera (center + zoom). Mirrors the BuilderMap behaviour so the
+// experience is consistent across our two real Leaflet surfaces.
+// See mem://preferences/builder-map-zoom.
+const zoomByRegion = new Map<string, { center: [number, number]; zoom: number }>();
+const PORTUGAL_KEY = "__portugal__";
+
 type Marker = StopLatLng & { tours: { id: string; title: string }[] };
 
 function makeDivIcon(color: string, count = 1) {
@@ -59,6 +66,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const clusterRef = useRef<L.MarkerClusterGroup | null>(null);
+  const lastRegionRef = useRef<string>(PORTUGAL_KEY);
   const [stops, setStops] = useState<TourStopRef[]>([]);
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [loading, setLoading] = useState(true);
@@ -150,11 +158,29 @@ export function RealLeafletMap({ region }: { region: string | null }) {
       maxZoom: 18,
     }).addTo(map);
     mapRef.current = map;
-    // Wait for the container to be measurable, then fit Portugal
+
+    // Persist the camera per region so switching regions restores their
+    // last view (mem://preferences/builder-map-zoom).
+    map.on("zoomend moveend", () => {
+      const c = map.getCenter();
+      zoomByRegion.set(lastRegionRef.current, {
+        center: [c.lat, c.lng],
+        zoom: map.getZoom(),
+      });
+    });
+
+    // Wait for the container to be measurable, then fit Portugal (or the
+    // remembered camera for the initial region, if any).
     const ro = new ResizeObserver(() => {
       if (el.clientWidth > 0 && el.clientHeight > 0) {
         map.invalidateSize();
-        map.fitBounds(PORTUGAL_BOUNDS, { animate: false });
+        const key = region && REGION_CENTERS[region] ? region : PORTUGAL_KEY;
+        const remembered = zoomByRegion.get(key);
+        if (remembered) {
+          map.setView(remembered.center, remembered.zoom, { animate: false });
+        } else {
+          map.fitBounds(PORTUGAL_BOUNDS, { animate: false });
+        }
         ro.disconnect();
       }
     });
@@ -210,13 +236,19 @@ export function RealLeafletMap({ region }: { region: string | null }) {
     clusterRef.current = cluster;
   }, [markers]);
 
-  // Fly to selected region (or back to whole-Portugal view)
+  // Fly to selected region (or back to whole-Portugal view), restoring
+  // any remembered per-region camera so the user returns to the same zoom.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     const el = containerRef.current;
     if (!el || el.clientWidth === 0 || el.clientHeight === 0) return;
-    if (region && REGION_CENTERS[region]) {
+    const key = region && REGION_CENTERS[region] ? region : PORTUGAL_KEY;
+    lastRegionRef.current = key;
+    const remembered = zoomByRegion.get(key);
+    if (remembered) {
+      map.flyTo(remembered.center, remembered.zoom, { duration: 0.6 });
+    } else if (region && REGION_CENTERS[region]) {
       const c = REGION_CENTERS[region];
       map.flyTo([c.lat, c.lng], c.zoom, { duration: 0.8 });
     } else {
@@ -230,7 +262,11 @@ export function RealLeafletMap({ region }: { region: string | null }) {
   );
 
   return (
-    <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
+    <div
+      className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden"
+      data-testid="real-leaflet-map"
+      data-active-region={region ?? "portugal"}
+    >
       <div className="flex items-baseline justify-between px-5 pt-5">
         <span className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--gold)] inline-flex items-center gap-2">
           <MapIcon size={12} /> Live Map
