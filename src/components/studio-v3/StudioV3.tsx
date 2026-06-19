@@ -1402,7 +1402,7 @@ export function StudioV3() {
             titleAccent="is calling you?"
           />
           <p
-            className="-mt-3 mb-5 text-[13px] leading-[1.55]"
+            className="mt-1 mb-6 max-w-[34ch] mx-auto text-center text-[13px] leading-[1.55]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
           >
             Pick a direction, or let YES shape it around your choices.
