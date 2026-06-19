@@ -79,6 +79,16 @@ export function PhaseShell({
         style={{ background: "var(--gold)" }}
       />
 
+      {/* Regional anticipation layer — sits between wash and content.
+          Renders a soft, region-tinted pulse once destinationIntent
+          resolves; before that it's an empty, layout-stable shell. */}
+      {anticipation ? (
+        <RegionAnticipationLayer
+          fill={anticipation.fill}
+          region={anticipation.region}
+        />
+      ) : null}
+
       {/* Adaptive progress whisper — emotional phrase + soft percent.
           Calm, not loud; never a bar, never "step X of Y". */}
       {progress ? (
