@@ -187,6 +187,16 @@ export interface StudioV3State {
    * Defaults to "guided" to preserve prior behaviour.
    */
   pathMode: "guided" | "fast";
+  /**
+   * How many times the traveller has tapped "Reshape this day" on the map
+   * reveal. Starts at 0 (deterministic first render — preserves the
+   * existing curation contract and test snapshots). Each bump seeds the
+   * curator so the same answers can yield a different — still coherent —
+   * route: a different equally-good Signature when several fit, plus
+   * gentle stop-score jitter that re-orders moments without breaking
+   * caps or the no-invention rule.
+   */
+  rerollCount: number;
 }
 
 
@@ -212,7 +222,9 @@ export const INITIAL_STATE: StudioV3State = {
   editedRoutePoints: null,
   destinationIntent: "no-preference",
   pathMode: "guided",
+  rerollCount: 0,
 };
+
 
 
 

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play, RefreshCw } from "lucide-react";
 import { curateJourney, type CuratedJourney } from "./curation";
+import { QualityScore } from "./QualityScore";
+import type { StudioV3State } from "./types";
+
 import {
   recordStudioV3Phase4Timing,
   type StudioV3Phase4Phase,
@@ -65,6 +68,12 @@ interface Props {
   /** ISO yyyy-mm-dd of the exact selected day — used to skip stops
    *  closed on that weekday (e.g. Mercado do Livramento on Mondays). */
   dateExact?: string | null;
+  /** Reshape counter — drives the seeded variation in curateJourney. */
+  rerollCount?: number;
+  /** Full Studio state — used for the Quality Score widget. */
+  studioState?: StudioV3State;
+  /** Bump the reshape counter; if omitted, the Reshape CTA is hidden. */
+  onReshape?: () => void;
   onBack: () => void;
   onContinue: (tourId: string) => void;
 }
@@ -80,6 +89,9 @@ export function MapAwakens({
   investment,
   destinationIntent,
   dateExact,
+  rerollCount = 0,
+  studioState,
+  onReshape,
   onBack,
   onContinue,
 }: Props) {
@@ -91,9 +103,11 @@ export function MapAwakens({
         investment,
         destinationIntent,
         dateExact,
+        seed: rerollCount,
       }),
-    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact],
+    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact, rerollCount],
   );
+
 
 
 
@@ -176,7 +190,19 @@ export function MapAwakens({
       window.clearTimeout(tComplete);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rerollCount]);
+
+  // Reset cinematic state every reshape so the new route plays in from
+  // its first moment, not mid-sequence.
+  useEffect(() => {
+    if (rerollCount === 0) return;
+    setRevealed(0);
+    setActive(0);
+    setPlaying(true);
+    setMounted(false);
+    setAnticipating(true);
+    setSrStatus("Reshaping your day. A new route is taking shape.");
+  }, [rerollCount]);
 
 
 
@@ -458,7 +484,21 @@ export function MapAwakens({
             </button>
           </div>
 
-          {/* Hold this journey CTA — appears when sequence completes. */}
+          {/* Quality Score + Reshape — appear together when the sequence
+              completes. Quality answers "is this day really shaped for me?",
+              Reshape answers "show me another way to live this day." */}
+          {studioState ? (
+            <div
+              className={`mt-4 transition-opacity duration-[520ms] ${
+                isLast ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
+              aria-hidden={!isLast}
+            >
+              <QualityScore state={studioState} />
+            </div>
+          ) : null}
+
+          {/* Hold this journey CTA + Reshape this day — appear when sequence completes. */}
           <div
             className={`mt-5 text-center transition-opacity duration-[520ms] ${
               isLast ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -473,13 +513,33 @@ export function MapAwakens({
             >
               Hold this journey <ArrowRight size={14} aria-hidden />
             </button>
+            {onReshape ? (
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={onReshape}
+                  data-testid="studio-v3-reshape-day"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                    background: "transparent",
+                    borderBottom: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
+                  }}
+                  aria-label="Reshape this day — keep your answers, see another route"
+                >
+                  <RefreshCw size={12} aria-hidden style={{ color: "var(--gold)" }} />
+                  Reshape this day
+                </button>
+              </div>
+            ) : null}
             <p
-              className="mt-2 text-[10px] uppercase tracking-[0.24em] font-semibold"
+              className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
             >
               Suggested route · to be confirmed by YES
             </p>
           </div>
+
         </div>
       </div>
 
