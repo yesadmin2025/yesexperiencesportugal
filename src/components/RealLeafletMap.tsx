@@ -66,6 +66,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const clusterRef = useRef<L.MarkerClusterGroup | null>(null);
+  const lastRegionRef = useRef<string>(PORTUGAL_KEY);
   const [stops, setStops] = useState<TourStopRef[]>([]);
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [loading, setLoading] = useState(true);
