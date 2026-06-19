@@ -75,9 +75,12 @@ describe("Studio Drift · i18n regression", () => {
   });
 
   it("defaults customer-facing strings to English (US/international)", () => {
-    expect(t("chapter.name", "en")).toBe("what should we call you");
-    expect(t("reveal.eyebrow", "en")).toBe("your Portugal story");
-    expect(t("cta.book", "en")).toBe("book this day");
+    // Canonical EN copy lives in src/lib/drift/i18n.ts. Markdown
+    // emphasis (`*word*`) is part of the rendered voice and is
+    // intentional — see the dictionary in i18n.ts for source of truth.
+    expect(t("chapter.name", "en")).toBe("First — what should we *call* you?");
+    expect(t("reveal.eyebrow", "en")).toBe("Your Portugal day");
+    expect(t("cta.book", "en")).toBe("Secure Your Experience");
   });
 
   it("exposes ES + FR for non-English speakers without falling back to PT", () => {

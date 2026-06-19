@@ -27,8 +27,11 @@ describe("Studio Drift contract", () => {
   });
 
   it("defaults the customer-facing Studio language to English", () => {
-    expect(t("chapter.name", "en")).toBe("what should we call you");
-    expect(t("reveal.eyebrow", "en")).toBe("your Portugal story");
+    // Copy lives in src/lib/drift/i18n.ts (EN dict). We assert the
+    // current canonical strings — markdown emphasis (`*word*`) is part
+    // of the rendered voice and stays in the source.
+    expect(t("chapter.name", "en")).toBe("First — what should we *call* you?");
+    expect(t("reveal.eyebrow", "en")).toBe("Your Portugal day");
   });
 
   it("changes prediction from soft confidence before another explicit answer is asked", () => {

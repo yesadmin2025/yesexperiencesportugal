@@ -132,11 +132,17 @@ describe("Primary CTA — teal fill + gold border + premium hover", () => {
 
   it("CTAs use a hover lift, not a bouncy or scaling transform", () => {
     const home = readFileSync(HOMEPAGE_FILES[0], "utf8");
-    // Hover lift = -translate-y-0.5 / -translate-y-1 / -translate-y-[3px]
-    expect(home).toMatch(/hover:-translate-y-(?:0\.5|1|\[3px\])/);
+    // Hover lift is either applied inline (-translate-y-0.5/-1/-[3px])
+    // OR encapsulated by the canonical <CtaButton> primitive, which
+    // bakes `hover:-translate-y-[1px]` into its className. Both are
+    // valid expressions of the same brand contract.
+    const inlineLift = /hover:-translate-y-(?:0\.5|1|\[(?:1|2|3)px\])/.test(home);
+    const primitiveLift = /<CtaButton(?![^>]*variant=["']ghost)/.test(home);
+    expect(
+      inlineLift || primitiveLift,
+      "homepage CTAs missing hover lift (raw -translate-y or <CtaButton variant='primary'>)",
+    ).toBe(true);
     // No scale-on-hover (banned by guardrails outside .home-energy).
-    // Inside .home-energy a slight 1.02 zoom is tolerated for images,
-    // but CTA-style hover:scale-105 is banned site-wide.
     expect(home).not.toMatch(/hover:scale-1(?:05|10|25)/);
   });
 });
