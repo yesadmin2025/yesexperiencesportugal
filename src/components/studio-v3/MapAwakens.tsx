@@ -68,6 +68,12 @@ interface Props {
   /** ISO yyyy-mm-dd of the exact selected day — used to skip stops
    *  closed on that weekday (e.g. Mercado do Livramento on Mondays). */
   dateExact?: string | null;
+  /** Reshape counter — drives the seeded variation in curateJourney. */
+  rerollCount?: number;
+  /** Full Studio state — used for the Quality Score widget. */
+  studioState?: StudioV3State;
+  /** Bump the reshape counter; if omitted, the Reshape CTA is hidden. */
+  onReshape?: () => void;
   onBack: () => void;
   onContinue: (tourId: string) => void;
 }
@@ -83,6 +89,9 @@ export function MapAwakens({
   investment,
   destinationIntent,
   dateExact,
+  rerollCount = 0,
+  studioState,
+  onReshape,
   onBack,
   onContinue,
 }: Props) {
@@ -94,9 +103,11 @@ export function MapAwakens({
         investment,
         destinationIntent,
         dateExact,
+        seed: rerollCount,
       }),
-    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact],
+    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact, rerollCount],
   );
+
 
 
 
