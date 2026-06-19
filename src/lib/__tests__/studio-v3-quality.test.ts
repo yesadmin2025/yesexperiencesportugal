@@ -29,11 +29,11 @@ function s(over: Partial<StudioV3State> = {}): StudioV3State {
 describe("computeQualityScore", () => {
   it("returns null without direction", () => {
     expect(computeQualityScore(s())).toBeNull();
-    expect(computeQualityScore(s({ feeling: "savour" }))).toBeNull();
+    expect(computeQualityScore(s({ feeling: "wine-food" }))).toBeNull();
   });
 
   it("scores baseline once feeling + companions exist", () => {
-    const r = computeQualityScore(s({ feeling: "savour", companions: "couple" }))!;
+    const r = computeQualityScore(s({ feeling: "wine-food", companions: "couple" }))!;
     expect(r.score).toBeGreaterThanOrEqual(50);
     expect(r.score).toBeLessThan(85);
   });
@@ -41,10 +41,10 @@ describe("computeQualityScore", () => {
   it("rewards completed direction (rhythm + 2-3 interests)", () => {
     const r = computeQualityScore(
       s({
-        feeling: "savour",
+        feeling: "wine-food",
         companions: "family",
         rhythm: "slow",
-        interests: ["wine", "food", "heritage"],
+        interests: ["wine", "gastronomy", "heritage"],
         investment: "elevated",
       }),
     )!;
@@ -55,18 +55,18 @@ describe("computeQualityScore", () => {
   it("penalises overload (5+ themes)", () => {
     const base = computeQualityScore(
       s({
-        feeling: "savour",
+        feeling: "wine-food",
         companions: "couple",
         rhythm: "slow",
-        interests: ["wine", "food", "heritage"],
+        interests: ["wine", "gastronomy", "heritage"],
       }),
     )!;
     const overloaded = computeQualityScore(
       s({
-        feeling: "savour",
+        feeling: "wine-food",
         companions: "couple",
         rhythm: "slow",
-        interests: ["wine", "food", "heritage", "nature", "art"],
+        interests: ["wine", "gastronomy", "heritage", "nature", "wellness"],
       }),
     )!;
     expect(overloaded.score).toBeLessThan(base.score);
@@ -74,10 +74,10 @@ describe("computeQualityScore", () => {
 
   it("penalises contradictory pacing (full/immersive + couple-romantic)", () => {
     const calm = computeQualityScore(
-      s({ feeling: "savour", companions: "couple", rhythm: "balanced" }),
+      s({ feeling: "wine-food", companions: "couple", rhythm: "balanced" }),
     )!;
     const intense = computeQualityScore(
-      s({ feeling: "savour", companions: "couple", rhythm: "immersive" }),
+      s({ feeling: "wine-food", companions: "couple", rhythm: "immersive" }),
     )!;
     expect(intense.score).toBeLessThan(calm.score);
   });
