@@ -62,11 +62,11 @@ export function SignaturePriceCard({
   const availableAddOns = useMemo<SignatureAddOn[]>(
     () =>
       selectSignatureAddOns({
-        region: tour?.region ?? null,
+        resolvedTour: tour,
         stopCount,
         durationLabel,
       }),
-    [tour?.region, stopCount, durationLabel],
+    [tour, stopCount, durationLabel],
   );
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const toggleAddOn = (id: string) =>
