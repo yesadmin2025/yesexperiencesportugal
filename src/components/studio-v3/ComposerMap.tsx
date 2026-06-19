@@ -296,36 +296,48 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
         {tour ? (
           <div
             data-testid="studio-v3-composer-scope"
-            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-3 py-2"
+            data-region-voice={regionalVoiceFor(tour.region).eyebrow}
+            className="flex flex-col gap-1 px-3 py-2"
             style={{
               background: "color-mix(in oklab, #0d0d0d 80%, transparent)",
               borderTop:
                 "1px solid color-mix(in oklab, var(--gold) 18%, transparent)",
             }}
           >
-            <span
-              className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5"
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+              <span
+                className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5"
+                style={{
+                  color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                }}
+              >
+                <span
+                  className="inline-block h-[3px] w-[3px] rounded-full"
+                  style={{ background: "var(--gold)" }}
+                  aria-hidden
+                />
+                {scopeRegion}
+                {scopeStops > 0 ? ` · ${scopeStops} moments` : ""}
+                {scopeDuration ? ` · ~${scopeDuration}` : ""}
+              </span>
+              {scopePriceFromEur != null ? (
+                <span
+                  className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                  style={{ color: "var(--gold)" }}
+                >
+                  From €{scopePriceFromEur} / guest
+                </span>
+              ) : null}
+            </div>
+            <p
+              className="text-[10.5px] italic leading-tight"
               style={{
-                color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--ivory) 68%, transparent)",
               }}
             >
-              <span
-                className="inline-block h-[3px] w-[3px] rounded-full"
-                style={{ background: "var(--gold)" }}
-                aria-hidden
-              />
-              {scopeRegion}
-              {scopeStops > 0 ? ` · ${scopeStops} moments` : ""}
-              {scopeDuration ? ` · ~${scopeDuration}` : ""}
-            </span>
-            {scopePriceFromEur != null ? (
-              <span
-                className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
-                style={{ color: "var(--gold)" }}
-              >
-                From €{scopePriceFromEur} / guest
-              </span>
-            ) : null}
+              {regionalVoiceFor(tour.region).whisper}
+            </p>
           </div>
         ) : null}
       </div>
