@@ -35,14 +35,13 @@ function readInitialEnabled(): boolean {
     const url = new URL(window.location.href);
     const q = url.searchParams.get("debug");
     if (q === "studio" || q === "1" || q === "on") {
-      window.sessionStorage.setItem(STORAGE_KEY, "1");
+      window.localStorage.setItem(STORAGE_KEY, "1");
       return true;
     }
     if (q === "off" || q === "0") {
-      window.sessionStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(STORAGE_KEY);
       return false;
     }
-    if (window.sessionStorage.getItem(STORAGE_KEY) === "1") return true;
     if (window.localStorage.getItem(STORAGE_KEY) === "1") return true;
   } catch {
     /* noop */
