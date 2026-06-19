@@ -369,7 +369,10 @@ export interface CurationAuditRejection {
     | "winery-cap"
     | "duplicate-label"
     | "semantic-duplicate"
-    | "swapped-for-wine";
+    | "swapped-for-wine"
+    | "coherence-family-only"
+    | "coherence-romantic-only";
+
   detail?: string;
 }
 
