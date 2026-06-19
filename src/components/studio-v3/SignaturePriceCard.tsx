@@ -40,6 +40,10 @@ export interface SignaturePriceCardProps {
   onSecure: () => void;
   onRefine: () => void;
   journeyTitle?: string | null;
+  /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
+  guests?: number | null;
+  /** Real `included[]` from the resolved Signature — drives the footnote. */
+  included?: ReadonlyArray<string>;
 }
 
 export function SignaturePriceCard({
@@ -49,6 +53,8 @@ export function SignaturePriceCard({
   onSecure,
   onRefine,
   journeyTitle,
+  guests,
+  included,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
