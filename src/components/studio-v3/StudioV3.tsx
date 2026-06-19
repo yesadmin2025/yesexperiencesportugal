@@ -1776,6 +1776,8 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
       type="button"
       onClick={handleClose}
       data-testid="studio-v3-close"
+      data-has-progress={hasProgress ? "true" : "false"}
+      data-confirm-on-close={hasProgress ? "true" : "false"}
       className="fixed right-3 top-3 z-[60] inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{
         color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
