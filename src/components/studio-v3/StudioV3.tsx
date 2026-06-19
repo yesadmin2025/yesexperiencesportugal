@@ -1331,7 +1331,22 @@ export function StudioV3() {
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
-      <StudioV3ProgressStepper phase={state.phase} />
+      <StudioV3ProgressStepper
+        phase={state.phase}
+        onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
+        onBeatAdvance={(beat, index) => {
+          if (isMobile) setMobileReveal({ beat, index });
+        }}
+      />
+      {isMobile ? (
+        <MobileBeatReveal
+          beat={mobileReveal?.beat ?? null}
+          index={mobileReveal?.index ?? 0}
+          onDone={() => setMobileReveal(null)}
+        />
+      ) : null}
+
+
 
 
       {state.phase === "feeling" ? (
