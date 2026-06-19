@@ -59,6 +59,28 @@ export function SignaturePriceCard({
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
   const hasPrice = priceEur != null;
 
+  const availableAddOns = useMemo<SignatureAddOn[]>(
+    () =>
+      selectSignatureAddOns({
+        region: tour?.region ?? null,
+        stopCount,
+        durationLabel,
+      }),
+    [tour?.region, stopCount, durationLabel],
+  );
+  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
+  const toggleAddOn = (id: string) =>
+    setSelectedAddOnIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  const addOnsTotalEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    return availableAddOns
+      .filter((a) => selectedAddOnIds.includes(a.id))
+      .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
+  }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
+  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
+
   useEffect(() => {
     recordStudioV3RevealPremium({
       tourId: tour?.id ?? null,
