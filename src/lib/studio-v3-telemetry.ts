@@ -13,7 +13,10 @@ export type StudioV3RejectionReason =
   | "winery-cap"
   | "duplicate-label"
   | "semantic-duplicate"
-  | "swapped-for-wine";
+  | "swapped-for-wine"
+  | "coherence-family-only"
+  | "coherence-romantic-only";
+
 
 export interface StudioV3StopRejection {
   label: string;
