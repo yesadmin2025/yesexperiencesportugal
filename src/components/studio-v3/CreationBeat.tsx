@@ -9,6 +9,7 @@
 // already handles fixed positioning, click/Escape dismiss, auto-dissolve and
 // prefers-reduced-motion.
 
+import { useState } from "react";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 
 
@@ -22,16 +23,29 @@ interface AtmosphereBeatProps {
 }
 
 export function AtmosphereBeat({ imageSrc, eyebrow, line }: AtmosphereBeatProps) {
+  // Gate the italic reveal on image-load so the line never appears over an
+  // unpainted hero on slow networks. If there is no image, or the image
+  // fails, we still show the line — never trap the beat behind a missing
+  // asset. A short min-hold ensures the animation reads even when cached.
+  const [imgReady, setImgReady] = useState<boolean>(!imageSrc);
+  const ready = imgReady;
   return (
-    <div className="relative w-full h-full flex items-center justify-center px-6">
+    <div
+      className="relative w-full h-full flex items-center justify-center px-6"
+      data-testid="studio-v3-atmosphere-beat"
+    >
       {imageSrc ? (
         <img
           src={imageSrc}
           alt=""
           aria-hidden
+          onLoad={() => setImgReady(true)}
+          onError={() => setImgReady(true)}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             filter: "saturate(0.92) contrast(1.04) brightness(0.6)",
+            opacity: imgReady ? 1 : 0,
+            transition: "opacity 380ms ease",
           }}
         />
       ) : null}
@@ -58,8 +72,10 @@ export function AtmosphereBeat({ imageSrc, eyebrow, line }: AtmosphereBeatProps)
           style={{
             fontFamily: "var(--font-serif)",
             color: "var(--ivory)",
-            animation: "studioV3RiseIn 620ms ease-out both",
+            opacity: ready ? 1 : 0,
+            animation: ready ? "studioV3RiseIn 620ms ease-out both" : undefined,
             animationDelay: "120ms",
+            transition: "opacity 360ms ease",
           }}
         >
           {line}
@@ -134,7 +150,11 @@ export function MapBeat({
       : null;
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center px-5">
+    <div
+      className="relative w-full h-full flex items-center justify-center px-5"
+      data-testid="studio-v3-map-beat"
+      data-map-beat-mode={mode}
+    >
       <div className="relative z-10 w-full max-w-[480px]">
         <p
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold text-center"
