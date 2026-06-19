@@ -216,7 +216,7 @@ export function SignaturePriceCard({
               className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Add to your day
+              <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
             <ul className="flex flex-col gap-2">
               {availableAddOns.map((a) => {
