@@ -209,6 +209,18 @@ export function SignaturePriceCard({
             >
               A private day, just for you — driver, guide and every detail handled. You only show up.
             </p>
+            {partyTotalEur != null ? (
+              <p
+                data-testid="studio-v3-party-total"
+                className="mt-2 text-[12px] font-semibold tabular-nums"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+              >
+                × {partyCount} guests{" "}
+                <span style={{ color: "var(--gold)" }}>—</span>{" "}
+                <span style={{ color: "var(--charcoal)" }}>€{partyTotalEur}</span>{" "}
+                <span className="text-[9.5px] uppercase tracking-[0.2em] opacity-70">total</span>
+              </p>
+            ) : null}
           </>
         ) : (
           <>
