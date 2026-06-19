@@ -813,3 +813,58 @@ function JourneyDraftDrawer({
   );
 }
 
+/**
+ * MemoryRewriteLine — narrates the day's choices in past tense and, when
+ * the user goes back and changes a decision, briefly highlights itself in
+ * gold + crossfades the new sentence in. Respects prefers-reduced-motion.
+ */
+function MemoryRewriteLine({ line }: { line: string }) {
+  const [shown, setShown] = useState(line);
+  const [rewriting, setRewriting] = useState(false);
+  const first = useRef(true);
+
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      setShown(line);
+      return;
+    }
+    if (line === shown) return;
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setShown(line);
+      return;
+    }
+    setRewriting(true);
+    const t1 = window.setTimeout(() => setShown(line), 180);
+    const t2 = window.setTimeout(() => setRewriting(false), 760);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [line, shown]);
+
+  return (
+    <p
+      className="mt-2 text-[12.5px] italic leading-snug transition-colors duration-[320ms] motion-reduce:transition-none rounded-[3px] px-1 -mx-1"
+      style={{
+        fontFamily: "var(--font-serif)",
+        color: rewriting
+          ? "var(--charcoal)"
+          : "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+        background: rewriting
+          ? "color-mix(in oklab, var(--gold) 14%, transparent)"
+          : "transparent",
+        opacity: rewriting ? 0.92 : 1,
+      }}
+      data-testid="studio-v3-memory-line"
+      data-rewriting={rewriting ? "1" : "0"}
+      aria-live="polite"
+    >
+      {shown}
+    </p>
+  );
+}
+
