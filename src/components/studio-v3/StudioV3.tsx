@@ -1754,6 +1754,42 @@ function BackLink({ onClick }: { onClick: () => void }) {
   );
 }
 
+/**
+ * CloseStudio — a discreet exit affordance pinned to the top-right of
+ * the Studio. With unsaved progress it asks for confirmation before
+ * leaving so the traveller doesn't lose the journey they were composing.
+ */
+function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
+  const handleClose = useCallback(() => {
+    if (typeof window === "undefined") return;
+    if (hasProgress) {
+      const ok = window.confirm(
+        "Leave the Studio? Your journey so far won't be saved.",
+      );
+      if (!ok) return;
+    }
+    window.location.assign("/");
+  }, [hasProgress]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleClose}
+      data-testid="studio-v3-close"
+      className="fixed right-3 top-3 z-[60] inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      style={{
+        color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+        background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+      }}
+      aria-label="Close the Studio"
+    >
+      <X size={16} aria-hidden />
+    </button>
+  );
+
 /** Dark continue CTA used by the two multi-select screens. Inline styles
  *  intentionally mirror the StoryboardHandoff CTA — no new component. */
 function ContinueCta({
