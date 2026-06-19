@@ -14,7 +14,18 @@
  * Keyboard: press "D" (with Shift) to toggle at runtime.
  */
 import { useEffect, useState } from "react";
-import type { StudioV3State } from "@/hooks/useStudioState";
+import type { StudioState } from "@/hooks/useStudioState";
+
+const btnStyle: React.CSSProperties = {
+  background: "transparent",
+  color: "#FAF8F3",
+  border: "1px solid rgba(250,248,243,0.25)",
+  borderRadius: 4,
+  padding: "0 6px",
+  fontSize: 11,
+  lineHeight: "16px",
+  cursor: "pointer",
+};
 
 const STORAGE_KEY = "studio-v3-debug";
 
