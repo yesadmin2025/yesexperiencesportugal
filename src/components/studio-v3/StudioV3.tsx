@@ -18,6 +18,7 @@ import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { SignaturePriceCard } from "./SignaturePriceCard";
+import { QualityScore } from "./QualityScore";
 import { safeDateForReveal } from "./dateGuards";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
