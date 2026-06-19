@@ -1680,6 +1680,7 @@ export function StudioV3() {
           Storyboard, and whenever a reaction beat is on screen.
           TODO: Later phase — connect Ask YES help link to official contact channel. */}
       {!reaction &&
+      !EARLY_PHASES.includes(state.phase) &&
       state.phase !== "map" &&
       state.phase !== "interests" &&
       state.phase !== "considerations" &&
