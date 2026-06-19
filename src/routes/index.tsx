@@ -831,7 +831,7 @@ function HomePage() {
           occasion" path lives together with clear hierarchy. */}
       <section
         id="occasions"
-        className="he-section-rule section-enter py-14 md:py-20 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+        className="he-section-rule section-enter py-16 md:py-20 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         aria-labelledby="groups-title"
       >
         <div className="container-x">

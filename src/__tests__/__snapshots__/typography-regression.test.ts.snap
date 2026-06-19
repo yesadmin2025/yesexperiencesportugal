@@ -1,14 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Typography regression — headline class strings > [home] hero eyebrow 1`] = `"whitespace-nowrap truncate"`;
+exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
 
-exports[`Typography regression — headline class strings > [home] hero h1 1`] = `"hero-h1 serif mt-5 md:mt-8 text-[2.05rem] sm:text-[2.7rem] md:text-[4rem] lg:text-[4.6rem] leading-[1.1] sm:leading-[1.04] md:leading-[1.0] tracking-[-0.02em] text-[color:var(--ivory)] text-left opacity-0 animate-[heroFade_0.9s_ease-out_0.25s_forwards] [text-shadow:0_2px_18px_rgba(0,0,0,0.35)]"`;
+exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
 
-exports[`Typography regression — headline class strings > [home] hero h1 line 2 (italic gold) 1`] = `"block italic font-normal text-[color:var(--gold-soft)] mt-1 md:mt-1.5 text-[2.05rem] sm:text-[2.7rem] md:text-[4rem] lg:text-[4.6rem] tracking-[-0.024em] leading-[1.1] sm:leading-[1.04] md:leading-[1.0]"`;
+exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"font-serif italic font-normal"`;
 
-exports[`Typography regression — headline class strings > [home] hero microcopy 1`] = `"text-[14px] md:text-[14.5px] text-[color:var(--ivory)] leading-[1.65] md:leading-[1.7] font-normal tracking-[0.005em] text-center sm:text-left"`;
-
-exports[`Typography regression — headline class strings > [home] hero subheadline 1`] = `"mt-5 md:mt-7 text-[15.5px] md:text-[19px] text-[color:var(--ivory)]/95 max-w-md md:max-w-lg leading-[1.6] md:leading-[1.65] font-normal text-left opacity-0 animate-[heroFade_0.9s_ease-out_0.45s_forwards] [text-shadow:0_1px_8px_rgba(0,0,0,0.3)]"`;
+exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"font-serif italic font-normal mt-3 sm:mt-4"`;
 
 exports[`Typography regression — headline class strings > [multi-day] hero subhead 1`] = `"mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed"`;
 
@@ -18,7 +16,8 @@ exports[`Typography regression — token rules from styles.css > token .hero-h1 
 "base: letter-spacing: -0.012em; line-height: 1.08;
 base: letter-spacing: -0.014em; line-height: 1.04;
 base: letter-spacing: -0.018em; line-height: 1.14;
-base: letter-spacing: -0.022em; line-height: 1.1;"
+base: letter-spacing: -0.022em; line-height: 1.1;
+base: animation: heroEnterFadeOnly 0.4s ease-out 0.6s both !important;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-display 1`] = `

@@ -131,12 +131,6 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 7,
-    name: "FAQ — visible helpful answers",
-    ariaLabelledBy: "faq-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
     order: 8,
     name: "Final CTA — talk to a local",
     marker: "FINAL CTA",

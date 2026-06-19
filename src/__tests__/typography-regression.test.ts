@@ -387,40 +387,35 @@ type HeadlineSpec = {
 };
 
 const HEADLINES: HeadlineSpec[] = [
-  // Homepage hero — frozen contract, must not drift.
-  // Anchored on the inner data-hero-field="eyebrow" span (stable hook),
-  // matching the Typography v3 hero markup (the outer wrapper sizing
-  // changed during the structural rework but the eyebrow text node is
-  // the actual locked element).
+  // Homepage hero — the cinematic "One Breath" stanza is what users
+  // actually see; the original HERO_COPY fields (eyebrow / headline /
+  // subheadline / microcopy) now live as SR-only probes with no
+  // className. We therefore lock the two visible stanza paragraphs
+  // (HERO_PHRASES[0] and HERO_PHRASES[1]), which carry the real
+  // typography contract for the hero on mobile + desktop.
   {
     page: "home",
-    role: "hero eyebrow",
-    file: "src/routes/index.tsx",
-    pattern: /<span data-hero-field="eyebrow" className="([^"]+)"/,
+    role: "hero stanza line 1",
+    file: "src/components/home/CinematicHero.tsx",
+    pattern: /<p\s+className="(font-serif italic font-normal)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",
-    role: "hero h1",
-    file: "src/routes/index.tsx",
-    pattern: /<h1\s+data-hero-field="headlineLine1 headlineLine2"\s+className="([^"]+)"/,
+    role: "hero stanza line 2",
+    file: "src/components/home/CinematicHero.tsx",
+    pattern: /<p\s+className="(font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
   },
   {
     page: "home",
-    role: "hero h1 line 2 (italic gold)",
-    file: "src/routes/index.tsx",
-    pattern: /data-hero-field="headlineLine2"\s+className="([^"]+)"/,
+    role: "hero primary CTA",
+    file: "src/components/home/CinematicHero.tsx",
+    pattern: /data-hero-field="primaryCta"\s+className="([^"]+)"/,
   },
   {
     page: "home",
-    role: "hero subheadline",
-    file: "src/routes/index.tsx",
-    pattern: /<p\s+data-hero-field="subheadline"\s+className="([^"]+)"/,
-  },
-  {
-    page: "home",
-    role: "hero microcopy",
-    file: "src/routes/index.tsx",
-    pattern: /<p\s+data-hero-field="microcopy"\s+className="([^"]+)"/,
+    role: "hero secondary CTA",
+    file: "src/components/home/CinematicHero.tsx",
+    pattern: /data-hero-field="secondaryCta"\s+className="([^"]+)"/,
   },
 
   // Multi-day page hero — now uses the canonical <SectionTitle as="h1" size="anchor">

@@ -17,7 +17,7 @@ export const HERO_COPY = {
   headlineLine1: "Portugal is waiting to be lived.",
   headlineLine2: "You just have to start writing.",
   subheadline: "Every story is different. So is yours.",
-  primaryCta: "Begin Your Journey",
+  primaryCta: "Create Your Story",
   secondaryCta: "Explore Signature Experiences",
   microcopy: "Create it live. Confirm instantly. No forms. No waiting.",
   brandLine: "Whatever you have in mind, we say YES.",
