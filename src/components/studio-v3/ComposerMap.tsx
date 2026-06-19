@@ -19,6 +19,9 @@ import {
   type StudioV3State,
 } from "./types";
 import { getOptionLabel, resolveStudioV3Route } from "./curation";
+import { signatureTours } from "@/data/signatureTours";
+
+type Anticipation = "feeling" | "rhythm" | "dates" | "compose";
 
 interface ComposerMapProps {
   state: StudioV3State;
@@ -66,6 +69,26 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
   const routePoints = resolved?.routePoints ?? [];
   const pinCount = hasInterests ? Math.min(4, routePoints.length) : 0;
   const showRoute = hasInterests && pinCount > 0;
+
+  // Anticipation beat — drives progressive geometry + tone (Track 2 fusion).
+  // Monotonic: never regresses once a deeper beat has been reached.
+  const anticipation: Anticipation =
+    resolved?.skeletonTourKey
+      ? "compose"
+      : state.dateMode
+        ? "dates"
+        : state.rhythm
+          ? "rhythm"
+          : "feeling";
+
+  // Real Signature data — never invented. Hidden until skeleton resolves.
+  const tour = resolved?.skeletonTourKey
+    ? signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null
+    : null;
+  const scopeStops = tour?.stops.length ?? 0;
+  const scopeDuration = tour?.durationHours ?? null;
+  const scopeRegion = tour?.region ?? resolved?.routeAreaLabel ?? null;
+  const scopePriceFromEur = tour?.priceFrom ?? null;
 
   // -------- Adaptive progress (milestone-based, not question-based) --------
   // The Studio is adaptive — some phases get skipped or inferred. So we
@@ -119,7 +142,9 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
       <div
         role="img"
         aria-label={ariaParts.join(" · ")}
-        className="relative mx-auto w-full max-w-[480px] overflow-hidden rounded-[6px] border"
+        data-anticipation={anticipation}
+        data-testid="studio-v3-composer-map"
+        className="relative mx-auto w-full max-w-[480px] overflow-hidden rounded-[6px] border transition-[border-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none"
         style={{
           background: "var(--charcoal-deep, #1a1a1a)",
           borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
@@ -261,6 +286,45 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
                 {label}
               </span>
             ))}
+          </div>
+        ) : null}
+
+        {/* Informative scope strip — only shown once a Signature resolves.
+            Real data only (region · stops · duration · From €N/guest).
+            Never invented, never visible before resolution. */}
+        {tour ? (
+          <div
+            data-testid="studio-v3-composer-scope"
+            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-3 py-2"
+            style={{
+              background: "color-mix(in oklab, #0d0d0d 80%, transparent)",
+              borderTop:
+                "1px solid color-mix(in oklab, var(--gold) 18%, transparent)",
+            }}
+          >
+            <span
+              className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5"
+              style={{
+                color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
+              }}
+            >
+              <span
+                className="inline-block h-[3px] w-[3px] rounded-full"
+                style={{ background: "var(--gold)" }}
+                aria-hidden
+              />
+              {scopeRegion}
+              {scopeStops > 0 ? ` · ${scopeStops} moments` : ""}
+              {scopeDuration ? ` · ~${scopeDuration}` : ""}
+            </span>
+            {scopePriceFromEur != null ? (
+              <span
+                className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                style={{ color: "var(--gold)" }}
+              >
+                From €{scopePriceFromEur} / guest
+              </span>
+            ) : null}
           </div>
         ) : null}
       </div>
