@@ -545,6 +545,7 @@ export function StudioV3() {
   const isMobile = useIsMobile();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(null);
   const [hydrating, setHydrating] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
