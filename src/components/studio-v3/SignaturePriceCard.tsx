@@ -469,6 +469,52 @@ export function SignaturePriceCard({
           </fieldset>
         ) : null}
 
+        {/* S4 — Inclusions footnote: what's actually in the day. Real data
+            from the resolved Signature's `included[]`; never invented. */}
+        {hasPrice && inclusionFootnote.length > 0 ? (
+          <footer
+            data-testid="studio-v3-inclusions-footnote"
+            className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+              border: "1px dashed color-mix(in oklab, var(--charcoal) 16%, transparent)",
+            }}
+          >
+            <p
+              className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              Included
+            </p>
+            <ul className="mt-1.5 flex flex-col gap-1">
+              {inclusionFootnote.map((line, i) => (
+                <li
+                  key={`inc-${i}`}
+                  className="flex items-start gap-2 text-[11.5px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full"
+                    style={{ background: "color-mix(in oklab, var(--charcoal) 35%, transparent)" }}
+                  />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+            <p
+              className="mt-2 text-[10px] italic"
+              style={{
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              }}
+            >
+              No hidden fees — every detail of the day is included.
+            </p>
+          </footer>
+        ) : null}
+
+
         <div className="mt-6 flex flex-col items-center gap-2.5">
           {hasPrice ? (
             <button
