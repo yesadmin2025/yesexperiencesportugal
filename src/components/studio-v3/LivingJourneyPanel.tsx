@@ -386,6 +386,7 @@ interface DrawerProps {
   scopePriceFromEur: number | null;
   scopePartyCount: number | null;
   scopePartyTotalEur: number | null;
+  memoryLine: string | null;
 }
 
 
