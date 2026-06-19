@@ -535,12 +535,34 @@ function JourneyDraftDrawer({
                 borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
               }}
             >
-              <p
-                className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
-                style={{ color: "var(--gold)" }}
-              >
-                <span aria-hidden>—</span> Scope so far
-              </p>
+              <div className="flex items-center justify-between gap-2">
+                <p
+                  className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
+                  style={{ color: "var(--gold)" }}
+                >
+                  <span aria-hidden>—</span> Scope so far
+                </p>
+                {scopeRegion ? (
+                  <p
+                    className="text-[9px] uppercase tracking-[0.26em] font-bold"
+                    style={{ color: "color-mix(in oklab, var(--teal) 88%, transparent)" }}
+                    data-testid="studio-v3-region-voice"
+                  >
+                    {regionalVoiceFor(scopeRegion).eyebrow}
+                  </p>
+                ) : null}
+              </div>
+              {scopeRegion ? (
+                <p
+                  className="mt-1 text-[11px] italic leading-snug"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+                  }}
+                >
+                  {regionalVoiceFor(scopeRegion).whisper}
+                </p>
+              ) : null}
               <ul
                 className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] leading-snug"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 82%, transparent)" }}
