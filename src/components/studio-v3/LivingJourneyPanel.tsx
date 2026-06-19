@@ -113,7 +113,9 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   ]);
 
   const routeLine = resolved?.suggestedRouteLabel ?? null;
-  const moments = (resolved?.routePoints ?? []).slice(0, 4).map((p) => p.label);
+  const routePoints = (resolved?.routePoints ?? []).slice(0, 4);
+  const moments = routePoints.map((p) => p.label);
+  const timelineMoments = routePoints.map((p) => ({ label: p.label, story: p.story }));
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
