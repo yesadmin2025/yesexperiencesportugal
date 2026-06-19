@@ -2909,7 +2909,10 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
-      {/* ---------- 7. Premium price card ---------- */}
+      {/* ---------- 7. Quality Score (Studio Bible §11) ---------- */}
+      <QualityScore state={state} />
+
+      {/* ---------- 7b. Premium price card ---------- */}
       <SignaturePriceCard
         tour={skeletonTour ?? null}
         stopCount={editedStops.length}
@@ -2921,6 +2924,7 @@ function StoryboardHandoff({
         included={skeletonTour?.included ?? []}
         showAddOns={false}
       />
+
 
       {/* ---------- 7b. Before you secure it ---------- */}
       <div className="mt-8 text-center">
