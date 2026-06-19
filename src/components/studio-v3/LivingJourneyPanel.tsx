@@ -143,6 +143,36 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const partyCount = state.guests && state.guests >= 2 ? state.guests : null;
   const scopePartyTotalEur = scopePriceFromEur && partyCount ? scopePriceFromEur * partyCount : null;
 
+  // Memory of the day — narrates the choices already made in past tense,
+  // so returning to the drawer feels like reading the day's diary back.
+  // Pure state read; never invents stops, partners, or prices.
+  const memoryLine = useMemo(() => {
+    const parts: string[] = [];
+    if (state.feeling) {
+      parts.push(`started with ${getOptionLabel(FEELINGS, state.feeling).toLowerCase()}`);
+    }
+    if (state.companions) {
+      const c = getOptionLabel(COMPANIONS, state.companions).toLowerCase();
+      parts.push(`travelling ${c}`);
+    }
+    if (state.interests && state.interests.length > 0) {
+      const labels = state.interests
+        .slice(0, 2)
+        .map((id) => getOptionLabel(INTERESTS, id).toLowerCase());
+      parts.push(`added ${labels.join(" & ")}`);
+    }
+    if (state.rhythm) {
+      const r = getOptionLabel(RHYTHMS, state.rhythm).toLowerCase();
+      parts.push(`chose a ${r} rhythm`);
+    }
+    if (parts.length < 2) return null;
+    const name = state.firstName?.trim();
+    const lead = name ? `${name}, you` : "You";
+    // Title-case only the first word, comma-join the rest, period at end.
+    return `${lead} ${parts.join(", ")}.`;
+  }, [state.feeling, state.companions, state.interests, state.rhythm, state.firstName]);
+
+
 
 
 
