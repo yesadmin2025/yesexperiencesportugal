@@ -2233,12 +2233,12 @@ function StoryboardHandoff({
         >
           — YES Studio
         </p>
-        <h1
+        <h2
           className="mt-3 text-[1.55rem] sm:text-[1.8rem] font-semibold leading-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
           Your Signature needs a human touch.
-        </h1>
+        </h2>
         <p
           className="mt-4 text-[14px] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
