@@ -236,13 +236,19 @@ export function RealLeafletMap({ region }: { region: string | null }) {
     clusterRef.current = cluster;
   }, [markers]);
 
-  // Fly to selected region (or back to whole-Portugal view)
+  // Fly to selected region (or back to whole-Portugal view), restoring
+  // any remembered per-region camera so the user returns to the same zoom.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     const el = containerRef.current;
     if (!el || el.clientWidth === 0 || el.clientHeight === 0) return;
-    if (region && REGION_CENTERS[region]) {
+    const key = region && REGION_CENTERS[region] ? region : PORTUGAL_KEY;
+    lastRegionRef.current = key;
+    const remembered = zoomByRegion.get(key);
+    if (remembered) {
+      map.flyTo(remembered.center, remembered.zoom, { duration: 0.6 });
+    } else if (region && REGION_CENTERS[region]) {
       const c = REGION_CENTERS[region];
       map.flyTo([c.lat, c.lng], c.zoom, { duration: 0.8 });
     } else {
