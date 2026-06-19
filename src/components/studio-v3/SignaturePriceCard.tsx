@@ -325,7 +325,7 @@ export function SignaturePriceCard({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
           >
-            Refine details
+            Adjust a few things first
           </button>
         </div>
       </div>
