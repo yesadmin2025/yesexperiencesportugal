@@ -1353,6 +1353,7 @@ export function StudioV3() {
           if (isMobile) setMobileReveal({ beat, index });
         }}
       />
+      <RunningInvestmentRibbon state={state} hidden={composerHidden} />
       {isMobile ? (
         <MobileBeatReveal
           beat={mobileReveal?.beat ?? null}
