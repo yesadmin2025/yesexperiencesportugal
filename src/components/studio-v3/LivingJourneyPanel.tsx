@@ -242,15 +242,23 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   if (hidden) return null;
   if (dna.length === 0) return null; // No meaningful pick yet → no pill.
 
-  // Collapsed copy: prefer the AI story hint if present, else route, else DNA.
+  // Collapsed copy: prefer scope (region · from €N) when a Signature has
+  // resolved — that's the reference-builder clarity. Otherwise fall back
+  // to the storytelling cue.
   const dnaSummary = dna.slice(0, 2).join(" · ");
+  const scopeTrailing = scopePriceFromEur
+    ? `${scopeRegion ?? "Your day"} · from €${scopePriceFromEur} / guest`
+    : null;
   const collapsedTrailing = storyLoading
     ? "Composing…"
+    : scopeTrailing
+    ? scopeTrailing
     : aiStory?.text
     ? "Tap to read"
     : routeLine
     ? "Route forming"
     : dnaSummary || "forming";
+
 
   return (
     <>
