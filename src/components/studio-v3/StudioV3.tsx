@@ -1334,10 +1334,7 @@ export function StudioV3() {
     <main aria-label="YES Studio">
       <LivingJourneyPanel state={state} hidden={livingPanelHidden} />
       <ComposerMap state={state} hidden={composerHidden || isMobile} />
-      <CloseStudio
-        atIntro={state.phase === "intro"}
-        hasProgress={state.phase !== "intro" && state.phase !== "feeling"}
-      />
+      <CloseStudio hasProgress={state.phase !== "feeling"} />
       <StudioV3ProgressStepper
         phase={state.phase}
         onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
