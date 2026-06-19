@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play, RefreshCw } from "lucide-react";
 import { curateJourney, type CuratedJourney } from "./curation";
+import { QualityScore } from "./QualityScore";
+import type { StudioV3State } from "./types";
+
 import {
   recordStudioV3Phase4Timing,
   type StudioV3Phase4Phase,
