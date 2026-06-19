@@ -75,18 +75,17 @@ export function SignaturePriceCard({
   const toggleAddOn = (id: string) => {
     const isSelected = selectedAddOnIds.includes(id);
     if (!isSelected && atCap) return; // gated
-    setPendingAddOnId(id);
-    // Brief optimistic pending state (≤220ms), reduced-motion safe.
+    // Toggle synchronously so totals + a11y stay deterministic.
+    setSelectedAddOnIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+    // Transient visual flourish — pending shimmer for ≤180ms, reduced-motion safe.
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    const delay = reduced ? 0 : 180;
-    window.setTimeout(() => {
-      setSelectedAddOnIds((prev) =>
-        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-      );
-      setPendingAddOnId(null);
-    }, delay);
+    if (reduced) return;
+    setPendingAddOnId(id);
+    window.setTimeout(() => setPendingAddOnId(null), 180);
   };
   const addOnsTotalEur = useMemo(() => {
     if (!hasPrice || !priceEur) return 0;
