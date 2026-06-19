@@ -513,6 +513,85 @@ function JourneyDraftDrawer({
             </ul>
           ) : null}
 
+          {/* Scope strip — reference-builder DNA: region · stops · hours ·
+              Experience Investment from. Real data only; nothing invented.
+              Renders the moment a Signature resolves; before that, the
+              dnaSummary above is the only "what you're building" cue. */}
+          {(scopeRegion || scopeDuration || scopeStops > 0 || scopePriceFromEur) ? (
+            <div
+              data-testid="studio-v3-journey-scope"
+              className="mt-3 rounded-[4px] border px-3 py-2.5"
+              style={{
+                background: "color-mix(in oklab, var(--sand) 40%, var(--ivory))",
+                borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
+              }}
+            >
+              <p
+                className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
+                style={{ color: "var(--gold)" }}
+              >
+                <span aria-hidden>—</span> Scope so far
+              </p>
+              <ul
+                className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] leading-snug"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 82%, transparent)" }}
+              >
+                {scopeRegion ? (
+                  <li className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+                    {scopeRegion}
+                  </li>
+                ) : null}
+                {scopeStops > 0 ? (
+                  <li className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+                    {scopeStops} {scopeStops === 1 ? "moment" : "moments"}
+                  </li>
+                ) : null}
+                {scopeDuration ? (
+                  <li className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+                    {scopeDuration}
+                  </li>
+                ) : null}
+              </ul>
+              {scopePriceFromEur ? (
+                <p
+                  className="mt-2 text-[12px] tabular-nums"
+                  style={{ color: "var(--charcoal)" }}
+                >
+                  <span
+                    className="mr-1.5 text-[9px] uppercase tracking-[0.24em] font-bold"
+                    style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
+                  >
+                    Experience Investment
+                  </span>
+                  <span className="font-semibold">from €{scopePriceFromEur}</span>{" "}
+                  <span className="text-[10px] uppercase tracking-[0.18em] opacity-70">/ guest</span>
+                  {scopePartyTotalEur && scopePartyCount ? (
+                    <>
+                      {" "}
+                      <span style={{ color: "var(--gold)" }}>·</span>{" "}
+                      <span>party of {scopePartyCount} <span className="font-semibold">~€{scopePartyTotalEur}</span></span>
+                    </>
+                  ) : null}
+                </p>
+              ) : (
+                <p
+                  className="mt-2 text-[11px] italic"
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                  }}
+                >
+                  Experience Investment — shaped with you.
+                </p>
+              )}
+            </div>
+          ) : null}
+
+
+
           {/* Tabbed view — Story · Timeline · Map. Keeps the drawer focused
               while letting the traveller feel the day from three angles.
               All three views are powered by the same resolved Signature. */}
