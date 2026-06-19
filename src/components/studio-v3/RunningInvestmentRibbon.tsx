@@ -145,20 +145,5 @@ export function RunningInvestmentRibbon({
         ) : null}
       </div>
     </div>
-  );
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label="Hide investment ribbon for this session"
-          className="shrink-0 text-[10px] uppercase tracking-[0.22em] font-semibold rounded-full px-2 py-1 motion-reduce:transition-none transition-colors duration-150 hover:bg-[color:color-mix(in_oklab,var(--gold)_18%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{
-            color: "color-mix(in oklab, var(--charcoal) 60%, var(--ivory))",
-            minHeight: 28,
-          }}
-        >
-          Hide
-        </button>
-      </div>
-    </div>
-  );
+}
 }
