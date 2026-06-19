@@ -6,7 +6,7 @@
  * validation. Never renders unless explicitly enabled.
  *
  * Enable via any of:
- *   - URL:        ?debug=studio        (persists in sessionStorage)
+ *   - URL:        ?debug=studio        (persists in localStorage)
  *   - URL off:    ?debug=off
  *   - localStorage: studio-v3-debug = "1"
  *   - env:        VITE_STUDIO_V3_DEBUG = "1"
@@ -35,14 +35,13 @@ function readInitialEnabled(): boolean {
     const url = new URL(window.location.href);
     const q = url.searchParams.get("debug");
     if (q === "studio" || q === "1" || q === "on") {
-      window.sessionStorage.setItem(STORAGE_KEY, "1");
+      window.localStorage.setItem(STORAGE_KEY, "1");
       return true;
     }
     if (q === "off" || q === "0") {
-      window.sessionStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(STORAGE_KEY);
       return false;
     }
-    if (window.sessionStorage.getItem(STORAGE_KEY) === "1") return true;
     if (window.localStorage.getItem(STORAGE_KEY) === "1") return true;
   } catch {
     /* noop */
@@ -71,8 +70,8 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
         setEnabled((v) => {
           const next = !v;
           try {
-            if (next) window.sessionStorage.setItem(STORAGE_KEY, "1");
-            else window.sessionStorage.removeItem(STORAGE_KEY);
+            if (next) window.localStorage.setItem(STORAGE_KEY, "1");
+            else window.localStorage.removeItem(STORAGE_KEY);
           } catch {
             /* noop */
           }
@@ -153,7 +152,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
             type="button"
             onClick={() => {
               try {
-                window.sessionStorage.removeItem(STORAGE_KEY);
+                window.localStorage.removeItem(STORAGE_KEY);
               } catch {
                 /* noop */
               }
