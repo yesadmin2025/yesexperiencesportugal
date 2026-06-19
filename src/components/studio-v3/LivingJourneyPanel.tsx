@@ -410,6 +410,7 @@ function JourneyDraftDrawer({
   scopePriceFromEur,
   scopePartyCount,
   scopePartyTotalEur,
+  memoryLine,
 }: DrawerProps) {
 
   const totalPins = Math.max(0, Math.min(4, moments.length));
