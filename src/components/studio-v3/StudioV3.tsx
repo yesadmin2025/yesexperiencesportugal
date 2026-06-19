@@ -1649,7 +1649,7 @@ export function StudioV3() {
 
 
       {reaction ? (
-        <ReactionOverlay reaction={reaction} onDismiss={() => setReaction(null)} />
+        <ReactionOverlay reaction={reaction} state={state} onDismiss={() => setReaction(null)} />
       ) : null}
 
       {/* Discreet help affordance. Softened to a near-whisper so it never
