@@ -18,6 +18,7 @@ import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
+import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard } from "./SignaturePriceCard";
 import { QualityScore } from "./QualityScore";
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
@@ -1630,15 +1631,18 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "storyboard" ? (
-        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
-          <StoryboardHandoff
-            state={state}
-            onStateChange={setState}
-            onBack={() => back("map")}
-            onSecure={() => openLeadSheet("book")}
-            onRefine={() => openLeadSheet("refine")}
-          />
-        </PhaseShell>
+        <>
+          <CurtainRise state={state} />
+          <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+            <StoryboardHandoff
+              state={state}
+              onStateChange={setState}
+              onBack={() => back("map")}
+              onSecure={() => openLeadSheet("book")}
+              onRefine={() => openLeadSheet("refine")}
+            />
+          </PhaseShell>
+        </>
       ) : null}
 
       <LeadCaptureSheet
