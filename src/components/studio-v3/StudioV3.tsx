@@ -3056,9 +3056,11 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
  */
 function ReactionOverlay({
   reaction,
+  state,
   onDismiss,
 }: {
   reaction: Reaction;
+  state: StudioV3State;
   onDismiss: () => void;
 }) {
   // Match the cap used in playReaction so the overlay never visually
