@@ -182,6 +182,7 @@ export function StudioV3ProgressStepper({
         );
 
         const sharedProps = {
+          "data-testid": "studio-v3-phase-tab",
           "data-beat": beat.id,
           "data-state": isActive ? "active" : isDone ? "done" : "upcoming",
           "aria-current": isActive ? ("step" as const) : undefined,

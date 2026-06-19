@@ -231,6 +231,8 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="lead-sheet-title"
+      data-testid="studio-v3-lead-sheet"
+      data-state={done ? "sent" : submitting ? "submitting" : errorMsg ? "error" : "idle"}
     >
       {/* Scrim */}
       <button
@@ -261,7 +263,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
 
         <div className="px-6 pt-8 pb-7">
           {done ? (
-            <div className="text-center py-6">
+            <div className="text-center py-6" data-testid="studio-v3-lead-sheet-confirmation">
               <p
                 className="text-[11px] uppercase tracking-[0.26em] font-semibold"
                 style={{ color: "var(--gold)" }}
