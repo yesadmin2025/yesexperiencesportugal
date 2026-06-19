@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
-import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
