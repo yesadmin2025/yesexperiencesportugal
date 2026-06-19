@@ -151,3 +151,65 @@ export function PhaseShell({
     </div>
   );
 }
+
+/**
+ * RegionAnticipationLayer — a low-key pulse that warms the stage in the tint
+ * of the resolving region. Pure atmosphere: pointer-events-none, aria-hidden,
+ * sits between the wash and the content layer, and respects reduced motion.
+ *
+ * - `region === null` → renders an empty, region="none" shell (no pulse), so
+ *   the layer is always present and layout never shifts as intent resolves.
+ * - `fill` (0..1) modulates the pulse opacity so confidence reads visually.
+ */
+const REGION_TINT: Record<string, string> = {
+  arrabida: "color-mix(in oklab, var(--teal) 28%, transparent)",
+  douro: "color-mix(in oklab, var(--gold) 28%, transparent)",
+  alentejo: "color-mix(in oklab, var(--sand) 70%, transparent)",
+  lisboa: "color-mix(in oklab, var(--teal) 22%, transparent)",
+  sintra: "color-mix(in oklab, var(--teal) 24%, transparent)",
+  porto: "color-mix(in oklab, var(--gold) 24%, transparent)",
+};
+
+function RegionAnticipationLayer({
+  fill,
+  region,
+}: {
+  fill: number;
+  region: string | null;
+}) {
+  const clamped = Math.max(0, Math.min(1, fill));
+  const tint =
+    region && REGION_TINT[region]
+      ? REGION_TINT[region]
+      : "color-mix(in oklab, var(--gold) 18%, transparent)";
+
+  return (
+    <div
+      aria-hidden
+      data-testid="studio-v3-anticipation-layer"
+      data-region={region ?? "none"}
+      data-fill={clamped.toFixed(2)}
+      className="pointer-events-none absolute inset-0 z-[1] motion-reduce:hidden"
+    >
+      {region ? (
+        <div
+          data-testid="studio-v3-region-pulse"
+          className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: "min(78vw, 520px)",
+            aspectRatio: "1 / 1",
+            background: `radial-gradient(circle at 50% 50%, ${tint} 0%, transparent 62%)`,
+            opacity: 0.35 + clamped * 0.55,
+            animation: "studioV3RegionPulse 6.4s ease-in-out infinite",
+          }}
+        />
+      ) : null}
+      <style>{`
+        @keyframes studioV3RegionPulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: var(--anticipation-base, 0.5); }
+          50% { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+}
