@@ -1239,8 +1239,16 @@ export function StudioV3() {
   //   - intro (pre-Studio canvas)
   //   - the dedicated map/storyboard phases (own surface)
   //   - while a reaction overlay is on screen
+  // Chrome only earns its place once the traveller has placed a starting
+  // point on the map — i.e. there is genuinely a route forming. Before
+  // that, the journey pill, atmospheric stage, investment ribbon and
+  // beat stepper all stay out of the way so the questions can breathe.
+  // (Studio philosophy: the interface disappears until it has something
+  // real to say.)
+  const chromeReady = state.pickup != null;
   const composerHidden =
     !!reaction ||
+    !chromeReady ||
     state.phase === "intro" ||
     state.phase === "map" ||
     state.phase === "storyboard";
@@ -1348,13 +1356,15 @@ export function StudioV3() {
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
-      <StudioV3ProgressStepper
-        phase={state.phase}
-        onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
-        onBeatAdvance={(beat, index) => {
-          if (isMobile) setMobileReveal({ beat, index });
-        }}
-      />
+      {chromeReady ? (
+        <StudioV3ProgressStepper
+          phase={state.phase}
+          onJumpToBeat={(_beat, entryPhase) => back(entryPhase)}
+          onBeatAdvance={(beat, index) => {
+            if (isMobile) setMobileReveal({ beat, index });
+          }}
+        />
+      ) : null}
       <RunningInvestmentRibbon state={state} hidden={composerHidden} />
       {isMobile ? (
         <MobileBeatReveal
@@ -1392,7 +1402,7 @@ export function StudioV3() {
             titleAccent="is calling you?"
           />
           <p
-            className="-mt-3 mb-5 text-[13px] leading-[1.55]"
+            className="mt-1 mb-6 max-w-[34ch] mx-auto text-center text-[13px] leading-[1.55]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
           >
             Pick a direction, or let YES shape it around your choices.
@@ -1668,7 +1678,12 @@ export function StudioV3() {
       state.phase !== "considerations" &&
       state.phase !== "storyboard" ? (
         <div
-          className="pointer-events-none fixed inset-x-0 bottom-2 z-30 flex justify-center px-6"
+          aria-hidden="false"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pt-6 pb-2"
+          style={{
+            background:
+              "linear-gradient(to top, var(--ivory) 0%, color-mix(in oklab, var(--ivory) 92%, transparent) 55%, transparent 100%)",
+          }}
         >
           <button
             type="button"
