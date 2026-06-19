@@ -1266,11 +1266,11 @@ export function StudioV3() {
           <p className="text-[10px] uppercase tracking-[0.28em] font-bold" style={{ color: "var(--gold)" }}>
             YES Studio
           </p>
-          <h1 className="mt-3 text-[1.6rem] font-semibold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="mt-3 text-[1.6rem] font-semibold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
             {hydrateError === "not-found"
               ? "This Signature is no longer available."
               : "We couldn't open this Signature."}
-          </h1>
+          </h2>
           <p className="mt-3 text-[14px] leading-[1.55]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
             The private link may have expired or been mistyped. You can begin a new Signature in a few taps.
@@ -1689,7 +1689,7 @@ function PhaseHeader({
       >
         <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}
       </p>
-      <h1
+      <h2
         className="mt-5 text-[28px] sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
         style={{
           fontFamily: "var(--font-display)",
@@ -1705,7 +1705,7 @@ function PhaseHeader({
         >
           {titleAccent}
         </span>
-      </h1>
+      </h2>
     </header>
   );
 }
@@ -2233,12 +2233,12 @@ function StoryboardHandoff({
         >
           — YES Studio
         </p>
-        <h1
+        <h2
           className="mt-3 text-[1.55rem] sm:text-[1.8rem] font-semibold leading-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
           Your Signature needs a human touch.
-        </h1>
+        </h2>
         <p
           className="mt-4 text-[14px] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
@@ -2373,13 +2373,13 @@ function StoryboardHandoff({
         >
           <span style={{ color: "var(--gold)" }}>—</span> Your Signature
         </p>
-        <h1
+        <h2
           className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
           style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
           data-testid="studio-v3-signature-hero"
         >
           {heroLead}
-        </h1>
+        </h2>
         <p
           className="mt-4 text-[15.5px] sm:text-[18px] leading-[1.5] italic text-balance [text-wrap:pretty] [hyphens:auto] max-w-[360px] sm:max-w-[460px] mx-auto"
           style={{
