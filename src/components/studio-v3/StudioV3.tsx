@@ -1245,11 +1245,18 @@ export function StudioV3() {
   // beat stepper all stay out of the way so the questions can breathe.
   // (Studio philosophy: the interface disappears until it has something
   // real to say.)
-  const chromeReady = state.pickup != null;
+  // Hard phase gate: the early discovery phases (feeling → destination →
+  // who → occasion → date → pickup) are pure questions. No stage panel,
+  // no stepper, no investment ribbon, no journey pill — the interface
+  // disappears so the question can breathe. Chrome only earns its place
+  // from `guests` onward, once the traveller has placed a starting point.
+  const EARLY_PHASES: StudioV3Phase[] = [
+    "intro", "feeling", "destination", "who", "occasion", "date", "pickup",
+  ];
+  const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
     !!reaction ||
     !chromeReady ||
-    state.phase === "intro" ||
     state.phase === "map" ||
     state.phase === "storyboard";
 
@@ -1673,6 +1680,7 @@ export function StudioV3() {
           Storyboard, and whenever a reaction beat is on screen.
           TODO: Later phase — connect Ask YES help link to official contact channel. */}
       {!reaction &&
+      !EARLY_PHASES.includes(state.phase) &&
       state.phase !== "map" &&
       state.phase !== "interests" &&
       state.phase !== "considerations" &&
