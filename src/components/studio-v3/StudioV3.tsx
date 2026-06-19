@@ -17,6 +17,7 @@ import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
+import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
 import { SignaturePriceCard } from "./SignaturePriceCard";
 import { QualityScore } from "./QualityScore";
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
@@ -1352,6 +1353,7 @@ export function StudioV3() {
           if (isMobile) setMobileReveal({ beat, index });
         }}
       />
+      <RunningInvestmentRibbon state={state} hidden={composerHidden} />
       {isMobile ? (
         <MobileBeatReveal
           beat={mobileReveal?.beat ?? null}
