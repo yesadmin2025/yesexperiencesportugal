@@ -1,14 +1,13 @@
 // Premium price card for the Studio V3 reveal.
 //
 // Anchored entirely in real, tour-specific data:
-//   - priceFrom in EUR (derived from the canonical operations dataset)
+//   - priceFrom in EUR (the same canonical price shown on Signature/Viator-backed tour pages)
 //   - duration label from signatureTours[tourId].durationHours
 //   - real stop count from the resolved/edited route
 //
-// Up to three add-ons can be opted into. Add-ons are region-mapped and
-// priced as a % of the base "from" anchor — never invented numbers.
-// Only add-ons whose itinerary thresholds (stops / duration) are met
-// surface, so we never promise something the day can't hold.
+// Optional add-ons are kept behind an explicit prop for admin/test flows. The
+// public Studio reveal shows the real Viator-backed base price only, avoiding
+// misleading totals before a human confirms availability.
 //
 // If the base price is missing, the card degrades gracefully to
 // "Price on request" + a WhatsApp escape hatch. No fabricated numbers.
@@ -44,6 +43,8 @@ export interface SignaturePriceCardProps {
   guests?: number | null;
   /** Real `included[]` from the resolved Signature — drives the footnote. */
   included?: ReadonlyArray<string>;
+  /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
+  showAddOns?: boolean;
 }
 
 export function SignaturePriceCard({
@@ -55,12 +56,15 @@ export function SignaturePriceCard({
   journeyTitle,
   guests,
   included,
+  showAddOns = true,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
+    if (tour?.priceFrom && tour.priceFrom > 0) return tour.priceFrom;
     if (!meta?.priceFromUSD || meta.priceFromUSD <= 0) return null;
     return usdToEurAnchor(meta.priceFromUSD);
-  }, [meta]);
+  }, [meta, tour?.priceFrom]);
+  const priceSource = tour?.priceFrom && tour.priceFrom > 0 ? "signature" : meta?.priceFromUSD ? "viator-usd" : "missing";
 
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
   const hasPrice = priceEur != null;
@@ -145,6 +149,7 @@ export function SignaturePriceCard({
     <section
       data-testid="studio-v3-price-card"
       data-has-price={hasPrice ? "true" : "false"}
+      data-price-source={priceSource}
       className="mx-auto mt-10 w-full max-w-[460px] px-5"
       aria-label="Your Signature — investment"
     >
