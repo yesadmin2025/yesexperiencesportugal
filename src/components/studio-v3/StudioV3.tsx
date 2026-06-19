@@ -2269,6 +2269,11 @@ function StoryboardHandoff({
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
+      data-testid="studio-v3-reveal"
+      data-reveal-region={skeletonTour?.region ?? ""}
+      data-reveal-tour={skeletonTour?.id ?? ""}
+      data-reveal-stops={editedStops.length}
+      data-destination-intent={state.destinationIntent ?? ""}
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
       {/* ---------- Fase 4 — Cinematic 3-beat composing reveal ---------- */}
