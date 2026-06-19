@@ -303,14 +303,21 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               routeLine={routeLine}
               moments={moments}
               timelineMoments={timelineMoments}
-              durationLabel={null}
+              durationLabel={scopeDuration}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
               investmentLabel={investmentLabel}
               storyText={aiStory?.text ?? null}
               storyLoading={storyLoading}
               storySource={aiStory?.source ?? null}
+              scopeRegion={scopeRegion}
+              scopeDuration={scopeDuration}
+              scopeStops={scopeStops}
+              scopePriceFromEur={scopePriceFromEur}
+              scopePartyCount={partyCount}
+              scopePartyTotalEur={scopePartyTotalEur}
             />,
+
             document.body,
           )
         : null}
