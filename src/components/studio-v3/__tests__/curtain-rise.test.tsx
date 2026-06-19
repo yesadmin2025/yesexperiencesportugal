@@ -22,11 +22,11 @@ describe("CurtainRise — Signature reveal curtain", () => {
   it("shows the regional eyebrow + whisper for an Arrábida-resolving state", () => {
     const state = {
       ...INITIAL_STATE,
-      feeling: "wine-food" as const,
-      companions: "couple" as const,
-      rhythm: "balanced" as const,
-      interests: ["wine"] as const,
-    };
+      feeling: "wine-food",
+      companions: "couple",
+      rhythm: "balanced",
+      interests: ["wine"],
+    } as typeof INITIAL_STATE;
     render(<CurtainRise state={state} />);
     const root = screen.getByTestId("studio-v3-curtain-rise");
     expect(root.textContent).toMatch(/ARRÁBIDA VOICE/);
