@@ -395,31 +395,31 @@ const HEADLINES: HeadlineSpec[] = [
   {
     page: "home",
     role: "hero eyebrow",
-    file: "src/routes/index.tsx",
+    file: "src/components/home/CinematicHero.tsx",
     pattern: /<span data-hero-field="eyebrow" className="([^"]+)"/,
   },
   {
     page: "home",
     role: "hero h1",
-    file: "src/routes/index.tsx",
+    file: "src/components/home/CinematicHero.tsx",
     pattern: /<h1\s+data-hero-field="headlineLine1 headlineLine2"\s+className="([^"]+)"/,
   },
   {
     page: "home",
     role: "hero h1 line 2 (italic gold)",
-    file: "src/routes/index.tsx",
+    file: "src/components/home/CinematicHero.tsx",
     pattern: /data-hero-field="headlineLine2"\s+className="([^"]+)"/,
   },
   {
     page: "home",
     role: "hero subheadline",
-    file: "src/routes/index.tsx",
+    file: "src/components/home/CinematicHero.tsx",
     pattern: /<p\s+data-hero-field="subheadline"\s+className="([^"]+)"/,
   },
   {
     page: "home",
     role: "hero microcopy",
-    file: "src/routes/index.tsx",
+    file: "src/components/home/CinematicHero.tsx",
     pattern: /<p\s+data-hero-field="microcopy"\s+className="([^"]+)"/,
   },
 
