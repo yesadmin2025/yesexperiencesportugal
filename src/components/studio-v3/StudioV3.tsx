@@ -1084,10 +1084,10 @@ export function StudioV3() {
             ? `${interestLabels[0]} and ${interestLabels[1]}`
             : interestLabels[0] ?? null;
         const message = name && interestPhrase
-          ? `${name}, ${interestPhrase} are beginning to align with the route.`
+          ? `${name}, we are matching ${interestPhrase} to one real route.`
           : interestPhrase
-            ? `${interestPhrase.charAt(0).toUpperCase()}${interestPhrase.slice(1)} are beginning to align with the route.`
-            : "The first shape of the day is now visible.";
+            ? `Matching ${interestPhrase} to one real route.`
+            : "Matching your choices to one real route.";
         playReaction({
           kind: "map-beat",
           eyebrow: "The moments",
