@@ -25,7 +25,7 @@ describe("CurtainRise — Signature reveal curtain", () => {
       feeling: "wine-food" as const,
       companions: "couple" as const,
       rhythm: "balanced" as const,
-      interests: ["wine"],
+      interests: ["wine"] as const,
     };
     render(<CurtainRise state={state} />);
     const root = screen.getByTestId("studio-v3-curtain-rise");
