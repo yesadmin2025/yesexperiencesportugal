@@ -40,6 +40,9 @@ import {
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { TimelineView } from "./TimelineView";
+import { signatureTours } from "@/data/signatureTours";
+
+
 
 
 interface LivingJourneyPanelProps {
@@ -121,6 +124,27 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
   const originLabel = state.pickup ? getOptionLabel(PICKUPS, state.pickup) : null;
+
+  // -------- Scope strip (reference-builder DNA) --------
+  // Pull the real Signature behind the resolved route so we can show
+  // region · stops · duration · "from €N / guest" — never invented.
+  const resolvedTour = useMemo(() => {
+    if (!resolved?.skeletonTourKey) return null;
+    return signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null;
+  }, [resolved?.skeletonTourKey]);
+
+  const scopeRegion = resolvedTour?.region ?? null;
+  const scopeDuration = resolvedTour?.durationHours ?? null;
+  const scopeStops = routePoints.length;
+  const scopePriceFromEur = resolvedTour?.priceFrom && resolvedTour.priceFrom > 0
+    ? resolvedTour.priceFrom
+    : null;
+  const partyCount = state.guests && state.guests >= 2 ? state.guests : null;
+  const scopePartyTotalEur = scopePriceFromEur && partyCount ? scopePriceFromEur * partyCount : null;
+
+
+
+
 
 
   // --- AI live story (Lovable AI) ---
@@ -218,15 +242,23 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   if (hidden) return null;
   if (dna.length === 0) return null; // No meaningful pick yet → no pill.
 
-  // Collapsed copy: prefer the AI story hint if present, else route, else DNA.
+  // Collapsed copy: prefer scope (region · from €N) when a Signature has
+  // resolved — that's the reference-builder clarity. Otherwise fall back
+  // to the storytelling cue.
   const dnaSummary = dna.slice(0, 2).join(" · ");
+  const scopeTrailing = scopePriceFromEur
+    ? `${scopeRegion ?? "Your day"} · from €${scopePriceFromEur} / guest`
+    : null;
   const collapsedTrailing = storyLoading
     ? "Composing…"
+    : scopeTrailing
+    ? scopeTrailing
     : aiStory?.text
     ? "Tap to read"
     : routeLine
     ? "Route forming"
     : dnaSummary || "forming";
+
 
   return (
     <>
@@ -279,14 +311,21 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               routeLine={routeLine}
               moments={moments}
               timelineMoments={timelineMoments}
-              durationLabel={null}
+              durationLabel={scopeDuration}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
               investmentLabel={investmentLabel}
               storyText={aiStory?.text ?? null}
               storyLoading={storyLoading}
               storySource={aiStory?.source ?? null}
+              scopeRegion={scopeRegion}
+              scopeDuration={scopeDuration}
+              scopeStops={scopeStops}
+              scopePriceFromEur={scopePriceFromEur}
+              scopePartyCount={partyCount}
+              scopePartyTotalEur={scopePartyTotalEur}
             />,
+
             document.body,
           )
         : null}
@@ -308,6 +347,13 @@ interface DrawerProps {
   storyText: string | null;
   storyLoading: boolean;
   storySource: "ai" | "fallback" | null;
+  /** Scope strip — fuses Bible storytelling with the reference builder's clarity. */
+  scopeRegion: string | null;
+  scopeDuration: string | null;
+  scopeStops: number;
+  scopePriceFromEur: number | null;
+  scopePartyCount: number | null;
+  scopePartyTotalEur: number | null;
 }
 
 
@@ -325,7 +371,14 @@ function JourneyDraftDrawer({
   storyText,
   storyLoading,
   storySource,
+  scopeRegion,
+  scopeDuration,
+  scopeStops,
+  scopePriceFromEur,
+  scopePartyCount,
+  scopePartyTotalEur,
 }: DrawerProps) {
+
   const totalPins = Math.max(0, Math.min(4, moments.length));
   const [view, setView] = useState<"story" | "timeline" | "map">("story");
 
@@ -467,6 +520,85 @@ function JourneyDraftDrawer({
               ))}
             </ul>
           ) : null}
+
+          {/* Scope strip — reference-builder DNA: region · stops · hours ·
+              Experience Investment from. Real data only; nothing invented.
+              Renders the moment a Signature resolves; before that, the
+              dnaSummary above is the only "what you're building" cue. */}
+          {(scopeRegion || scopeDuration || scopeStops > 0 || scopePriceFromEur) ? (
+            <div
+              data-testid="studio-v3-journey-scope"
+              className="mt-3 rounded-[4px] border px-3 py-2.5"
+              style={{
+                background: "color-mix(in oklab, var(--sand) 40%, var(--ivory))",
+                borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
+              }}
+            >
+              <p
+                className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
+                style={{ color: "var(--gold)" }}
+              >
+                <span aria-hidden>—</span> Scope so far
+              </p>
+              <ul
+                className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] leading-snug"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 82%, transparent)" }}
+              >
+                {scopeRegion ? (
+                  <li className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+                    {scopeRegion}
+                  </li>
+                ) : null}
+                {scopeStops > 0 ? (
+                  <li className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+                    {scopeStops} {scopeStops === 1 ? "moment" : "moments"}
+                  </li>
+                ) : null}
+                {scopeDuration ? (
+                  <li className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+                    {scopeDuration}
+                  </li>
+                ) : null}
+              </ul>
+              {scopePriceFromEur ? (
+                <p
+                  className="mt-2 text-[12px] tabular-nums"
+                  style={{ color: "var(--charcoal)" }}
+                >
+                  <span
+                    className="mr-1.5 text-[9px] uppercase tracking-[0.24em] font-bold"
+                    style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
+                  >
+                    Experience Investment
+                  </span>
+                  <span className="font-semibold">from €{scopePriceFromEur}</span>{" "}
+                  <span className="text-[10px] uppercase tracking-[0.18em] opacity-70">/ guest</span>
+                  {scopePartyTotalEur && scopePartyCount ? (
+                    <>
+                      {" "}
+                      <span style={{ color: "var(--gold)" }}>·</span>{" "}
+                      <span>party of {scopePartyCount} <span className="font-semibold">~€{scopePartyTotalEur}</span></span>
+                    </>
+                  ) : null}
+                </p>
+              ) : (
+                <p
+                  className="mt-2 text-[11px] italic"
+                  style={{
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                  }}
+                >
+                  Experience Investment — shaped with you.
+                </p>
+              )}
+            </div>
+          ) : null}
+
+
 
           {/* Tabbed view — Story · Timeline · Map. Keeps the drawer focused
               while letting the traveller feel the day from three angles.
