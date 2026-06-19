@@ -49,12 +49,13 @@ export function computeQualityScore(state: StudioV3State): QualityScore | null {
   else if (themeCount === 4) raw += 6;
   else if (themeCount >= 5) raw -= 6; // overload
 
-  // Pacing coherence — relaxed rhythm + family/group reads premium
-  if (state.rhythm === "relaxed" && state.companions === "family") raw += 4;
-  // Packed rhythm + couple-romantic reads contradictory
-  if (state.rhythm === "packed" && state.companions === "couple") raw -= 6;
+  // Pacing coherence — slow rhythm + family/group reads premium
+  if (state.rhythm === "slow" && state.companions === "family") raw += 4;
+  // Full/immersive rhythm + couple-romantic reads contradictory
+  if ((state.rhythm === "full" || state.rhythm === "immersive") && state.companions === "couple") raw -= 6;
   // Slow rhythm + many themes = overload warning
-  if (state.rhythm === "relaxed" && themeCount >= 4) raw -= 4;
+  if (state.rhythm === "slow" && themeCount >= 4) raw -= 4;
+
 
   const score = round5(raw);
 
