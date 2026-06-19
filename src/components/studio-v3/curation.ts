@@ -704,6 +704,11 @@ export function curateJourney(
      *  (e.g. Mercado do Livramento on Mondays) are removed from the
      *  pool so we never propose a stop that won't be open. */
     dateExact?: string | null;
+    /** Reshape counter. 0 = original deterministic curation (test contract
+     *  preserved). > 0 = seeded variation: alternate eligible Signature
+     *  when several fit + gentle per-stop jitter so the day re-arranges
+     *  without breaking any cap or inventing stops. */
+    seed?: number | string;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -711,6 +716,8 @@ export function curateJourney(
   const investment = options?.investment ?? null;
   const destinationIntent = options?.destinationIntent ?? null;
   const dateExact = options?.dateExact ?? null;
+  const seedNum = hashSeed(options?.seed);
+  const rand = seedNum > 0 ? mulberry32(seedNum) : null;
 
 
   const { tour: primary, alternates } = pickPrimaryTour(
@@ -719,6 +726,7 @@ export function curateJourney(
     interests,
     pickup,
     destinationIntent,
+    seedNum,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -736,9 +744,30 @@ export function curateJourney(
   // (holidays, seasonal windows, partner-confirmed downtime) can be added
   // without touching curation logic. Always cite a source there.
   const rejections: CurationAuditRejection[] = [];
+  // AI-predictive coherence: drop stops whose copy reads as exclusively
+  // family-coded (children/playground) when the traveller is not family,
+  // and the mirror case for romantic-only language offered to corporate.
+  const cType = companionsType(companions);
+  const blockFamilyCoded =
+    cType === "couple" || cType === "solo" || cType === "corporate";
+  const blockRomanticCoded = cType === "corporate" || cType === "family";
+
+  const coherent: PoolStop[] = rawPool.filter((s) => {
+    const hay = `${s.label} ${s.story}`;
+    if (blockFamilyCoded && FAMILY_ONLY_RE.test(hay)) {
+      rejections.push({ label: s.label, reason: "coherence-family-only" });
+      return false;
+    }
+    if (blockRomanticCoded && ROMANTIC_ONLY_RE.test(hay)) {
+      rejections.push({ label: s.label, reason: "coherence-romantic-only" });
+      return false;
+    }
+    return true;
+  });
+
   const pool: PoolStop[] = !dateExact
-    ? rawPool
-    : rawPool.filter((s) => {
+    ? coherent
+    : coherent.filter((s) => {
         const closed = isStopClosedOn(`${s.label} ${s.story}`, dateExact);
         if (closed) {
           rejections.push({
@@ -758,6 +787,7 @@ export function curateJourney(
     .map((s, i) => {
       const geo = lookupStop(s.label);
       let score = scoreStop(s, feeling, companions);
+
       const hay = `${s.label} ${s.story}`.toLowerCase();
       if (interests.length > 0) {
         for (const interest of interests) {
