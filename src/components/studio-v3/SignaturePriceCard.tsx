@@ -303,6 +303,109 @@ export function SignaturePriceCard({
           </>
         )}
 
+        {/* Hidden picker — preview per-pax for any group size before checkout. */}
+        {hasPrice && tierRows.length > 0 ? (
+          <div className="mt-5 mx-auto max-w-[380px]" data-testid="studio-v3-tier-picker">
+            <button
+              type="button"
+              onClick={() => setPickerOpen((v) => !v)}
+              aria-expanded={pickerOpen}
+              aria-controls="studio-v3-tier-picker-panel"
+              className="mx-auto inline-flex items-center gap-1.5 px-2 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span>
+              {pickerOpen ? "Hide group pricing" : "See price for your group size"}
+              <ChevronDown
+                size={12}
+                aria-hidden
+                style={{
+                  transform: pickerOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 180ms ease-out",
+                  color: "var(--gold)",
+                }}
+              />
+            </button>
+            {pickerOpen ? (
+              <div
+                id="studio-v3-tier-picker-panel"
+                role="radiogroup"
+                aria-label="Per-person price by group size"
+                className="mt-3 grid grid-cols-4 gap-1.5 rounded-[4px] p-2"
+                style={{
+                  background: "color-mix(in oklab, var(--ivory) 94%, var(--sand))",
+                  border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                }}
+              >
+                {tierRows.map((r) => {
+                  const active = (effectiveGuests ?? 0) === r.tier
+                    || (r.tier === 8 && (effectiveGuests ?? 0) >= 8);
+                  return (
+                    <button
+                      key={r.tier}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setPreviewGuests(r.tier)}
+                      data-tier={r.tier}
+                      data-active={active ? "true" : "false"}
+                      data-real={r.real ? "true" : "false"}
+                      className="flex flex-col items-center gap-0.5 rounded-[3px] px-1.5 py-2 text-center transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                      style={{
+                        background: active
+                          ? "color-mix(in oklab, var(--gold) 18%, var(--ivory))"
+                          : "var(--ivory)",
+                        border: `1px solid ${
+                          active
+                            ? "color-mix(in oklab, var(--gold) 70%, transparent)"
+                            : "color-mix(in oklab, var(--charcoal) 10%, transparent)"
+                        }`,
+                      }}
+                    >
+                      <span
+                        className="text-[10px] uppercase tracking-[0.16em] font-bold"
+                        style={{
+                          color: active
+                            ? "var(--charcoal)"
+                            : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                        }}
+                      >
+                        {r.tier === 8 ? "8+" : r.tier}
+                      </span>
+                      <span
+                        className="text-[12px] font-bold tabular-nums leading-none"
+                        style={{ color: "var(--charcoal)", fontFamily: "var(--font-display)" }}
+                      >
+                        €{r.eur}
+                      </span>
+                      <span
+                        className="text-[8.5px] uppercase tracking-[0.14em] font-semibold"
+                        style={{
+                          color: r.real
+                            ? "color-mix(in oklab, var(--charcoal) 50%, transparent)"
+                            : "color-mix(in oklab, var(--charcoal) 38%, transparent)",
+                        }}
+                      >
+                        {r.real ? "/ pp" : "from"}
+                      </span>
+                    </button>
+                  );
+                })}
+                <p
+                  className="col-span-4 mt-1 text-center text-[10px] italic leading-snug"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  }}
+                >
+                  Private day — same itinerary, per-person rate adjusts with group size.
+                </p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+
         <ul
           className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] uppercase tracking-[0.18em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
