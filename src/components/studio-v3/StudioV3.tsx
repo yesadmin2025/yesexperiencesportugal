@@ -1704,7 +1704,12 @@ export function StudioV3() {
             title="How should we"
             titleAccent="shape the investment?"
           />
-          <InvestmentTierPicker options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
+          <InvestmentTierPicker
+            options={orderedInvestment}
+            value={state.investment}
+            onSelect={onInvestment}
+            priceFromEur={SIGNATURE_MIN_PRICE_EUR}
+          />
           {state.investment ? (
             <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
