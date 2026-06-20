@@ -144,6 +144,8 @@ function SecondaryOption({
     <button
       type="button"
       onClick={onClick}
+      data-phase-cta="date-secondary"
+      data-selected={selected ? "true" : "false"}
       className="relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{
         background: selected ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))" : "var(--ivory)",
