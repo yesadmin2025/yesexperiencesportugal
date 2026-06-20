@@ -764,6 +764,17 @@ function JourneyDraftDrawer({
                   </ol>
                 </div>
               ) : null}
+              <SmartRecommendation
+                tourId={tourId}
+                stopCount={stopCount}
+                durationLabel={durationLabel}
+              />
+              <AffinityBars
+                feeling={feeling}
+                interests={interests}
+                rhythm={rhythm}
+                companions={companions}
+              />
             </>
           ) : null}
 
