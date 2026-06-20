@@ -2721,21 +2721,21 @@ function StoryboardHandoff({
       {editedStops.length > 0 ? (
         <div
           data-testid="studio-v3-stops-editor"
-          className="mt-10 max-w-[520px] mx-auto"
+          className="mt-12 sm:mt-10 max-w-[520px] mx-auto px-1"
         >
           <p
             className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
-            <span style={{ color: "var(--gold)" }}>—</span> Fine-tune your Signature
+            <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
           </p>
           <p
-            className="mt-2 mb-4 text-center text-[12px] leading-[1.5]"
+            className="mt-2 mb-5 text-center text-[12px] leading-[1.55] max-w-[320px] mx-auto"
             style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
           >
             Reorder, swap or remove a moment. The route stays inside the same region.
           </p>
-          <ol className="space-y-2">
+          <ol className="space-y-2.5 sm:space-y-3">
             {editedStops.map((s, i) => {
               const isFirst = i === 0;
               const isLast = i === editedStops.length - 1;
@@ -2744,7 +2744,7 @@ function StoryboardHandoff({
                 <li
                   key={`${s.label}-${i}`}
                   data-testid="studio-v3-stop-row"
-                  className="rounded-[8px] px-3 py-2.5"
+                  className="rounded-[10px] px-3.5 py-3 sm:px-4 sm:py-3.5"
                   style={{
                     background: "color-mix(in oklab, var(--sand) 45%, transparent)",
                     border:
@@ -3122,10 +3122,11 @@ function StoryboardHandoff({
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[320px] sm:max-w-[420px]"
+          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[300px] sm:max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          Reserve your date now — pickup and final details are confirmed with you before anything is finalised.
+          <span className="sm:hidden">When you're ready — pickup and final details are confirmed before anything is locked in.</span>
+          <span className="hidden sm:inline">Reserve your date now — pickup and final details are confirmed with you before anything is finalised.</span>
         </p>
 
         <button
