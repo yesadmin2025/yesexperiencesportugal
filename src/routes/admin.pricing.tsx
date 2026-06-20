@@ -16,7 +16,6 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import {
   TOUR_PRICE_TIERS_QUERY_KEY,
   useTourPriceTiers,
-  } from "@/hooks/use-tour-price-tiers";
 } from "@/hooks/use-tour-price-tiers";
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
