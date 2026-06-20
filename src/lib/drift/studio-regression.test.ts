@@ -34,12 +34,7 @@ const emptyBehavior: BehaviorState = {
   attractionEvents: [],
 };
 
-const REJECTED_PT = [
-  "respira",
-  "respirar",
-  "portugal já está acordada",
-  "portugal está a reparar",
-];
+const REJECTED_PT = ["respira", "respirar", "portugal já está acordada", "portugal está a reparar"];
 
 const INFORMAL_PT_RE = /\b(tu|teu|tua|teus|tuas|contigo|irias|te)\b/;
 
@@ -67,7 +62,9 @@ describe("Studio Drift · i18n regression", () => {
   ];
 
   it("keeps PT formal and free of rejected/personified copy", () => {
-    const blob = SAMPLED_KEYS.map((k) => t(k, "pt")).join(" \n ").toLowerCase();
+    const blob = SAMPLED_KEYS.map((k) => t(k, "pt"))
+      .join(" \n ")
+      .toLowerCase();
     expect(blob).not.toMatch(INFORMAL_PT_RE);
     for (const phrase of REJECTED_PT) expect(blob).not.toContain(phrase);
     // Formal address marker should appear at least once in PT.
@@ -241,10 +238,7 @@ describe("Studio Drift · behavior + prediction regression", () => {
   });
 
   it("nextBestDimensions orders by largest remaining need", () => {
-    const pred = derivePrediction(
-      { "energy:slow": 0.9, "style:wine": 0.2 },
-      emptyBehavior,
-    );
+    const pred = derivePrediction({ "energy:slow": 0.9, "style:wine": 0.2 }, emptyBehavior);
     expect(pred.nextBestDimensions[pred.nextBestDimensions.length - 1]).toBe("energy");
     expect(pred.nextBestDimensions).toContain("style");
     expect(pred.nextBestDimensions).toContain("social");
@@ -286,7 +280,9 @@ describe("Studio Drift · composer regression", () => {
     expect(wineDay.stops.length).toBeGreaterThan(0);
     expect(coastDay.stops.length).toBeGreaterThan(0);
     expect(wineDay.stops.map((s) => s.stop.id)).not.toEqual(coastDay.stops.map((s) => s.stop.id));
-    expect(wineDay.stops.some((s) => s.stop.kind === "winery" || s.stop.kind === "cellar")).toBe(true);
+    expect(wineDay.stops.some((s) => s.stop.kind === "winery" || s.stop.kind === "cellar")).toBe(
+      true,
+    );
     expect(coastDay.stops.some((s) => s.stop.kind === "beach" || s.stop.kind === "viewpoint")).toBe(
       true,
     );

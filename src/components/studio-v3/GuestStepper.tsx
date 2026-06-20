@@ -66,11 +66,7 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
         role="group"
         aria-label="Guest count"
       >
-        <StepperButton
-          aria-label="Decrease guest count"
-          onClick={dec}
-          disabled={current <= MIN}
-        >
+        <StepperButton aria-label="Decrease guest count" onClick={dec} disabled={current <= MIN}>
           <Minus className="h-4 w-4" strokeWidth={2.2} aria-hidden />
         </StepperButton>
 
@@ -100,11 +96,7 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
           </span>
         </div>
 
-        <StepperButton
-          aria-label="Increase guest count"
-          onClick={inc}
-          disabled={current >= MAX}
-        >
+        <StepperButton aria-label="Increase guest count" onClick={inc} disabled={current >= MAX}>
           <Plus className="h-4 w-4" strokeWidth={2.2} aria-hidden />
         </StepperButton>
       </div>

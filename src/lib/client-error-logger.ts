@@ -90,7 +90,7 @@ export function installClientErrorLogger(): () => void {
   const onError = (event: ErrorEvent) => {
     void reportClientError({
       message: event.message || String(event.error ?? "Error"),
-      stack: event.error instanceof Error ? event.error.stack ?? null : null,
+      stack: event.error instanceof Error ? (event.error.stack ?? null) : null,
       source: event.filename ? `${event.filename}:${event.lineno}:${event.colno}` : null,
       severity: "error",
     });
@@ -112,13 +112,15 @@ export function installClientErrorLogger(): () => void {
             })();
     void reportClientError({
       message,
-      stack: reason instanceof Error ? reason.stack ?? null : null,
+      stack: reason instanceof Error ? (reason.stack ?? null) : null,
       severity: "unhandled_rejection",
     });
   };
 
   const onResourceError = (event: Event) => {
-    const target = event.target as (HTMLElement & { src?: string; href?: string; tagName?: string }) | null;
+    const target = event.target as
+      | (HTMLElement & { src?: string; href?: string; tagName?: string })
+      | null;
     if (!target || target === (window as unknown as HTMLElement)) return;
     const tag = target.tagName?.toLowerCase();
     if (!tag || !["img", "script", "link", "video", "source", "audio"].includes(tag)) return;

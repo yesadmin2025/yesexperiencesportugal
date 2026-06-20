@@ -24,7 +24,11 @@ const inputSchema = z.object({
     .max(10),
   pace: z.enum(["relaxed", "balanced", "full"]),
   who: z.enum(["couple", "family", "friends", "solo", "corporate", "group"]),
-  totalMinutes: z.number().int().min(0).max(24 * 60),
+  totalMinutes: z
+    .number()
+    .int()
+    .min(0)
+    .max(24 * 60),
 });
 
 type SuggestionResult = {
@@ -57,12 +61,7 @@ export const suggestPacing = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }): Promise<SuggestionResult> => {
     const fallback: SuggestionResult = {
-      warning: deterministicWarning(
-        data.totalMinutes,
-        data.stops.length,
-        data.pace,
-        data.who,
-      ),
+      warning: deterministicWarning(data.totalMinutes, data.stops.length, data.pace, data.who),
       rationale: null,
       source: "fallback",
     };

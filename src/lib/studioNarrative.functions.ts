@@ -39,7 +39,9 @@ const inputSchema = z.object({
   intention: z.string().max(40).nullable().optional(),
   journeyType: z.enum(["day", "multi"]).nullable().optional(),
   travellerName: z.string().min(1).max(40).nullable().optional(),
-  narrativeStage: z.enum(["invitation", "recognition", "emergence", "reveal"]).default("recognition"),
+  narrativeStage: z
+    .enum(["invitation", "recognition", "emergence", "reveal"])
+    .default("recognition"),
   confidence: z.number().min(0).max(1).default(0.4),
   acceptedCount: z.number().int().min(0).max(20).default(0),
   lastFragment: z.string().max(220).nullable().optional(),
@@ -47,8 +49,18 @@ const inputSchema = z.object({
 });
 
 export type StudioNarrativeResult =
-  | { mode: "narrative"; fragment: string; sensoryAnchor: string | null; source: "ai" | "fallback" | "rate_limited" }
-  | { mode: "proposal"; title: string; subtitle: string; source: "ai" | "fallback" | "rate_limited" };
+  | {
+      mode: "narrative";
+      fragment: string;
+      sensoryAnchor: string | null;
+      source: "ai" | "fallback" | "rate_limited";
+    }
+  | {
+      mode: "proposal";
+      title: string;
+      subtitle: string;
+      source: "ai" | "fallback" | "rate_limited";
+    };
 
 /* ───────────────── Fallback editorial pools (Portugal-anchored) ───────────── */
 
@@ -167,7 +179,13 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
 
 const PROPOSAL_FALLBACKS: Record<Locale, { titles: string[]; subtitleTemplates: string[] }> = {
   en: {
-    titles: ["Between Salt and Vines", "The Atlantic Table", "A Slow Tide", "The Long Afternoon", "Cork, Sea, Late Light"],
+    titles: [
+      "Between Salt and Vines",
+      "The Atlantic Table",
+      "A Slow Tide",
+      "The Long Afternoon",
+      "Cork, Sea, Late Light",
+    ],
     subtitleTemplates: [
       "A day shaped around slow tables, sea air, and long afternoons.",
       "Quiet vines, an open coast, and a table waiting in the shade.",
@@ -175,7 +193,13 @@ const PROPOSAL_FALLBACKS: Record<Locale, { titles: string[]; subtitleTemplates: 
     ],
   },
   pt: {
-    titles: ["Entre o Sal e as Vinhas", "A Mesa Atlântica", "Maré Lenta", "A Tarde Longa", "Cortiça, Mar, Luz Tardia"],
+    titles: [
+      "Entre o Sal e as Vinhas",
+      "A Mesa Atlântica",
+      "Maré Lenta",
+      "A Tarde Longa",
+      "Cortiça, Mar, Luz Tardia",
+    ],
     subtitleTemplates: [
       "Um dia feito de mesas lentas, ar do mar e tardes que não acabam.",
       "Vinhas tranquilas, costa aberta, uma mesa à espera na sombra.",
@@ -183,7 +207,13 @@ const PROPOSAL_FALLBACKS: Record<Locale, { titles: string[]; subtitleTemplates: 
     ],
   },
   es: {
-    titles: ["Entre Sal y Viñas", "La Mesa Atlántica", "Marea Lenta", "La Tarde Larga", "Corcho, Mar, Luz Tardía"],
+    titles: [
+      "Entre Sal y Viñas",
+      "La Mesa Atlántica",
+      "Marea Lenta",
+      "La Tarde Larga",
+      "Corcho, Mar, Luz Tardía",
+    ],
     subtitleTemplates: [
       "Un día hecho de mesas lentas, aire de mar y tardes largas.",
       "Viñas tranquilas, costa abierta, una mesa esperando a la sombra.",
@@ -191,7 +221,13 @@ const PROPOSAL_FALLBACKS: Record<Locale, { titles: string[]; subtitleTemplates: 
     ],
   },
   fr: {
-    titles: ["Entre Sel et Vignes", "La Table Atlantique", "Marée Lente", "L'Après-midi Long", "Liège, Mer, Lumière Tardive"],
+    titles: [
+      "Entre Sel et Vignes",
+      "La Table Atlantique",
+      "Marée Lente",
+      "L'Après-midi Long",
+      "Liège, Mer, Lumière Tardive",
+    ],
     subtitleTemplates: [
       "Une journée faite de tables lentes, d'air marin et de longs après-midis.",
       "Vignes tranquilles, côte ouverte, une table qui attend à l'ombre.",
@@ -206,19 +242,30 @@ function pickStable<T>(arr: T[], seed: string): T {
   return arr[h % arr.length];
 }
 
-function narrativeFallback(locale: Locale, stage: Stage, seed: string): { fragment: string; sensoryAnchor: string | null } {
+function narrativeFallback(
+  locale: Locale,
+  stage: Stage,
+  seed: string,
+): { fragment: string; sensoryAnchor: string | null } {
   const pool = NARRATIVE_FALLBACKS[locale][stage];
   return { fragment: pickStable(pool, seed), sensoryAnchor: null };
 }
 
-function proposalFallback(locale: Locale, seed: string, travellerName?: string | null): { title: string; subtitle: string } {
+function proposalFallback(
+  locale: Locale,
+  seed: string,
+  travellerName?: string | null,
+): { title: string; subtitle: string } {
   const pack = PROPOSAL_FALLBACKS[locale];
   const title = pickStable(pack.titles, seed);
   let subtitle = pickStable(pack.subtitleTemplates, seed + "_sub");
   if (travellerName) {
-    if (locale === "pt") subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
-    else if (locale === "es") subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
-    else if (locale === "fr") subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
+    if (locale === "pt")
+      subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
+    else if (locale === "es")
+      subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
+    else if (locale === "fr")
+      subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
     else subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
   }
   return { title, subtitle };
@@ -276,7 +323,9 @@ Register: Cereal Magazine · Aman Journals · Kinfolk.
 Return ONLY the two lines — no quotes, no labels, no prefixes.`;
 
 function localeName(loc: Locale): string {
-  return { en: "English", pt: "European Portuguese", es: "Spanish (Spain)", fr: "French (France)" }[loc];
+  return { en: "English", pt: "European Portuguese", es: "Spanish (Spain)", fr: "French (France)" }[
+    loc
+  ];
 }
 
 function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
@@ -290,11 +339,14 @@ function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
   if (data.mood) fingerprint.push(`mood:${data.mood}`);
   if (data.who) fingerprint.push(`with:${data.who}`);
   if (data.intention) fingerprint.push(`pull:${data.intention}`);
-  if (data.journeyType) fingerprint.push(`shape:${data.journeyType === "multi" ? "multi-day" : "single-day"}`);
+  if (data.journeyType)
+    fingerprint.push(`shape:${data.journeyType === "multi" ? "multi-day" : "single-day"}`);
   if (fingerprint.length) parts.push(`Emotional fingerprint: ${fingerprint.join(" · ")}.`);
 
   if (data.travellerName && data.narrativeStage === "reveal") {
-    parts.push(`Traveller name (use ONCE, softly — only because stage is reveal): ${data.travellerName}.`);
+    parts.push(
+      `Traveller name (use ONCE, softly — only because stage is reveal): ${data.travellerName}.`,
+    );
   }
 
   if (data.lastFragment) {
@@ -303,7 +355,9 @@ function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
     );
   }
   if (data.lastAcceptedTag) {
-    parts.push(`Last accepted theme: ${data.lastAcceptedTag} — do not echo this theme in the imagery.`);
+    parts.push(
+      `Last accepted theme: ${data.lastAcceptedTag} — do not echo this theme in the imagery.`,
+    );
   }
 
   const stageCue =
@@ -321,14 +375,134 @@ function buildUserPrompt(data: z.infer<typeof inputSchema>): string {
 
 /* ───────────────────────── Output sanitisation ────────────────────────────── */
 
-const BANNED = /\b(hidden gem|hidden|gem|gems|off the beaten path|luxury|unforgettable|breathtaking|stunning|amazing|magical|magic|enchanting|captivating|timeless|authentic|vibrant|idyllic|pristine|paradise|whispers?|soul|souls|journey of a lifetime|escape|escapes|escaped|escaping|adventure|adventures|discover|discovers|discovering|discovery|immersive|immerse|dream|dreams|dreamlike|once[- ]in[- ]a[- ]lifetime)\b/i;
+const BANNED =
+  /\b(hidden gem|hidden|gem|gems|off the beaten path|luxury|unforgettable|breathtaking|stunning|amazing|magical|magic|enchanting|captivating|timeless|authentic|vibrant|idyllic|pristine|paradise|whispers?|soul|souls|journey of a lifetime|escape|escapes|escaped|escaping|adventure|adventures|discover|discovers|discovering|discovery|immersive|immerse|dream|dreams|dreamlike|once[- ]in[- ]a[- ]lifetime)\b/i;
 
 /** Extended sensory anchor vocabulary — used both for extraction (telemetry)
  *  and as a mandatory presence check inside sanitiseFragment. If a generated
  *  fragment contains none of these, it is rejected and the caller falls back
  *  to the static editorial pool — preventing pure-abstraction AI output. */
 const ANCHOR_VOCAB = [
-  "salt","stone","wood","wooden","tile","tiles","tiled","azulejo","azulejos","pine","cork","vine","vines","wine","glass","bread","bread crust","table","light","wind","breeze","cliff","cliffs","tide","ferry","lemon","sun","sunlight","shade","river","sea","ocean","atlantic","fishing","boat","courtyard","candle","candlelit","oak","afternoon","morning","evening","dusk","dawn","quay","quayside","linen","napkin","ceramic","clay","plaster","whitewashed","slate","cobble","cobbles","coffee","sardine","sardines","oil","paper","enamel","copper","brass","cup","cups","bowl","plate","door","doorway","window","shutter","shutters","balcony","tram","fado","market","crust","smoke","mist","fog","dew","limestone","marble","reed","cane","fig","orange","olive","rosemary","sandy","tilework","mosaic","sal","pedra","madeira","azulejo","pinhal","cortiça","vinha","luz","tarde","manhã","mesa","copo","janela","porta","mar","rio","ferry","cacilheiro","cais","barro","cerâmica","cal","ardósia","pão","azeite","sardinha","calçada","sombra"
+  "salt",
+  "stone",
+  "wood",
+  "wooden",
+  "tile",
+  "tiles",
+  "tiled",
+  "azulejo",
+  "azulejos",
+  "pine",
+  "cork",
+  "vine",
+  "vines",
+  "wine",
+  "glass",
+  "bread",
+  "bread crust",
+  "table",
+  "light",
+  "wind",
+  "breeze",
+  "cliff",
+  "cliffs",
+  "tide",
+  "ferry",
+  "lemon",
+  "sun",
+  "sunlight",
+  "shade",
+  "river",
+  "sea",
+  "ocean",
+  "atlantic",
+  "fishing",
+  "boat",
+  "courtyard",
+  "candle",
+  "candlelit",
+  "oak",
+  "afternoon",
+  "morning",
+  "evening",
+  "dusk",
+  "dawn",
+  "quay",
+  "quayside",
+  "linen",
+  "napkin",
+  "ceramic",
+  "clay",
+  "plaster",
+  "whitewashed",
+  "slate",
+  "cobble",
+  "cobbles",
+  "coffee",
+  "sardine",
+  "sardines",
+  "oil",
+  "paper",
+  "enamel",
+  "copper",
+  "brass",
+  "cup",
+  "cups",
+  "bowl",
+  "plate",
+  "door",
+  "doorway",
+  "window",
+  "shutter",
+  "shutters",
+  "balcony",
+  "tram",
+  "fado",
+  "market",
+  "crust",
+  "smoke",
+  "mist",
+  "fog",
+  "dew",
+  "limestone",
+  "marble",
+  "reed",
+  "cane",
+  "fig",
+  "orange",
+  "olive",
+  "rosemary",
+  "sandy",
+  "tilework",
+  "mosaic",
+  "sal",
+  "pedra",
+  "madeira",
+  "azulejo",
+  "pinhal",
+  "cortiça",
+  "vinha",
+  "luz",
+  "tarde",
+  "manhã",
+  "mesa",
+  "copo",
+  "janela",
+  "porta",
+  "mar",
+  "rio",
+  "ferry",
+  "cacilheiro",
+  "cais",
+  "barro",
+  "cerâmica",
+  "cal",
+  "ardósia",
+  "pão",
+  "azeite",
+  "sardinha",
+  "calçada",
+  "sombra",
 ];
 
 function sanitiseFragment(raw: string): string | null {
@@ -381,7 +555,12 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
     const buildFallback = (): StudioNarrativeResult => {
       if (data.mode === "narrative") {
         const fb = narrativeFallback(data.locale, data.narrativeStage, seed);
-        return { mode: "narrative", fragment: fb.fragment, sensoryAnchor: fb.sensoryAnchor, source: "fallback" };
+        return {
+          mode: "narrative",
+          fragment: fb.fragment,
+          sensoryAnchor: fb.sensoryAnchor,
+          source: "fallback",
+        };
       }
       const fb = proposalFallback(data.locale, seed, data.travellerName);
       return { mode: "proposal", title: fb.title, subtitle: fb.subtitle, source: "fallback" };
@@ -462,7 +641,15 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
       if (data.mode === "narrative") {
         const sanitised = sanitiseFragment(text);
         if (!sanitised) {
-          await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "rejected" });
+          await logAiUsage({
+            provider: "lovable_ai",
+            model,
+            feature,
+            status: "failure",
+            latencyMs,
+            configHash,
+            errorCode: "rejected",
+          });
           return buildFallback();
         }
         // Continuity guard — same emotional thread, fresh imagery. If the
@@ -471,7 +658,15 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
         if (data.lastFragment) {
           const prevAnchor = extractAnchor(data.lastFragment);
           if (prevAnchor && sanitised.toLowerCase().includes(prevAnchor)) {
-            await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "echo" });
+            await logAiUsage({
+              provider: "lovable_ai",
+              model,
+              feature,
+              status: "failure",
+              latencyMs,
+              configHash,
+              errorCode: "echo",
+            });
             return buildFallback();
           }
         }
@@ -479,40 +674,94 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
         // editorial frame: no second-person pronouns. This is what keeps the
         // early stages atmospheric instead of conversational.
         if (data.narrativeStage === "invitation" || data.narrativeStage === "recognition") {
-          const secondPerson = /\b(you|your|yours|yourself|te|teu|tua|teus|tuas|ti|tu|vous|votre|vos|toi|ton|ta|tes)\b/i;
+          const secondPerson =
+            /\b(you|your|yours|yourself|te|teu|tua|teus|tuas|ti|tu|vous|votre|vos|toi|ton|ta|tes)\b/i;
           if (secondPerson.test(sanitised)) {
-            await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "second_person_too_early" });
+            await logAiUsage({
+              provider: "lovable_ai",
+              model,
+              feature,
+              status: "failure",
+              latencyMs,
+              configHash,
+              errorCode: "second_person_too_early",
+            });
             return buildFallback();
           }
         }
         // Name restraint — name allowed ONLY at reveal stage, never in the
         // first three words. Prevents over-personalisation that erodes intimacy.
         if (data.travellerName) {
-          const namePattern = new RegExp(`\\b${data.travellerName.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\b`, "i");
+          const namePattern = new RegExp(
+            `\\b${data.travellerName.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\b`,
+            "i",
+          );
           const nameAppears = namePattern.test(sanitised);
           if (nameAppears && data.narrativeStage !== "reveal") {
-            await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "name_too_early" });
+            await logAiUsage({
+              provider: "lovable_ai",
+              model,
+              feature,
+              status: "failure",
+              latencyMs,
+              configHash,
+              errorCode: "name_too_early",
+            });
             return buildFallback();
           }
           if (nameAppears && data.narrativeStage === "reveal") {
             const firstThree = sanitised.split(/\s+/).slice(0, 3).join(" ");
             if (namePattern.test(firstThree)) {
-              await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "name_too_front" });
+              await logAiUsage({
+                provider: "lovable_ai",
+                model,
+                feature,
+                status: "failure",
+                latencyMs,
+                configHash,
+                errorCode: "name_too_front",
+              });
               return buildFallback();
             }
           }
         }
-        await logAiUsage({ provider: "lovable_ai", model, feature, status: "success", latencyMs, configHash });
-        return { mode: "narrative", fragment: sanitised, sensoryAnchor: extractAnchor(sanitised), source: "ai" };
+        await logAiUsage({
+          provider: "lovable_ai",
+          model,
+          feature,
+          status: "success",
+          latencyMs,
+          configHash,
+        });
+        return {
+          mode: "narrative",
+          fragment: sanitised,
+          sensoryAnchor: extractAnchor(sanitised),
+          source: "ai",
+        };
       }
-
 
       const composed = sanitiseProposal(text);
       if (!composed) {
-        await logAiUsage({ provider: "lovable_ai", model, feature, status: "failure", latencyMs, configHash, errorCode: "rejected" });
+        await logAiUsage({
+          provider: "lovable_ai",
+          model,
+          feature,
+          status: "failure",
+          latencyMs,
+          configHash,
+          errorCode: "rejected",
+        });
         return buildFallback();
       }
-      await logAiUsage({ provider: "lovable_ai", model, feature, status: "success", latencyMs, configHash });
+      await logAiUsage({
+        provider: "lovable_ai",
+        model,
+        feature,
+        status: "success",
+        latencyMs,
+        configHash,
+      });
       return { mode: "proposal", title: composed.title, subtitle: composed.subtitle, source: "ai" };
     } catch (err) {
       await logAiUsage({

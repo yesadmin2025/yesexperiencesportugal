@@ -4,10 +4,7 @@ import { curateJourney, type CuratedJourney } from "./curation";
 import { QualityScore } from "./QualityScore";
 import type { StudioV3State } from "./types";
 
-import {
-  recordStudioV3Phase4Timing,
-  type StudioV3Phase4Phase,
-} from "@/lib/studio-v3-telemetry";
+import { recordStudioV3Phase4Timing, type StudioV3Phase4Phase } from "@/lib/studio-v3-telemetry";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
 import type {
@@ -34,10 +31,31 @@ function resolveSilhouetteRegion(
   if (intent === "lisbon-sintra-cascais") return "lisbon-coast";
   if (intent === "arrabida-setubal-azeitao") return "arrabida";
   const r = (tourRegion ?? "").toLowerCase();
-  if (r.includes("alentejo") || r.includes("évora") || r.includes("evora") || r.includes("comporta")) return "alentejo";
-  if (r.includes("arrábida") || r.includes("arrabida") || r.includes("setúbal") || r.includes("setubal")) return "arrabida";
-  if (r.includes("sintra") || r.includes("cascais") || r.includes("lisbon") || r.includes("lisboa")) return "lisbon-coast";
-  if (r.includes("centro") || r.includes("central") || r.includes("óbidos") || r.includes("obidos") || r.includes("fátima") || r.includes("fatima")) return "centro";
+  if (
+    r.includes("alentejo") ||
+    r.includes("évora") ||
+    r.includes("evora") ||
+    r.includes("comporta")
+  )
+    return "alentejo";
+  if (
+    r.includes("arrábida") ||
+    r.includes("arrabida") ||
+    r.includes("setúbal") ||
+    r.includes("setubal")
+  )
+    return "arrabida";
+  if (r.includes("sintra") || r.includes("cascais") || r.includes("lisbon") || r.includes("lisboa"))
+    return "lisbon-coast";
+  if (
+    r.includes("centro") ||
+    r.includes("central") ||
+    r.includes("óbidos") ||
+    r.includes("obidos") ||
+    r.includes("fátima") ||
+    r.includes("fatima")
+  )
+    return "centro";
   return null;
 }
 
@@ -105,11 +123,18 @@ export function MapAwakens({
         dateExact,
         seed: rerollCount,
       }),
-    [feeling, companions, rhythm, interests, pickup, investment, destinationIntent, dateExact, rerollCount],
+    [
+      feeling,
+      companions,
+      rhythm,
+      interests,
+      pickup,
+      investment,
+      destinationIntent,
+      dateExact,
+      rerollCount,
+    ],
   );
-
-
-
 
   const [revealed, setRevealed] = useState(0); // how many moments shown
   const [active, setActive] = useState(0); // currently spotlit moment
@@ -139,14 +164,9 @@ export function MapAwakens({
   // We also capture real wall-clock timings per device so we can audit
   // whether the choreography keeps its rhythm on lower-end phones.
   useEffect(() => {
-    const t0 =
-      typeof performance !== "undefined" ? performance.now() : Date.now();
-    const now = () =>
-      typeof performance !== "undefined" ? performance.now() : Date.now();
-    const emit = (
-      phase: StudioV3Phase4Phase,
-      extra: Record<string, unknown> = {},
-    ) => {
+    const t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+    const emit = (phase: StudioV3Phase4Phase, extra: Record<string, unknown> = {}) => {
       const elapsed = Math.round(now() - t0);
       recordStudioV3Phase4Timing({
         phase,
@@ -203,8 +223,6 @@ export function MapAwakens({
     setAnticipating(true);
     setSrStatus("Reshaping your day. A new route is taking shape.");
   }, [rerollCount]);
-
-
 
   // Auto-advance.
   useEffect(() => {
@@ -264,12 +282,7 @@ export function MapAwakens({
       {/* Polite live-region — narrates the silhouette → map → first stop
           arc to assistive tech so blind users get the same emotional beat
           as sighted users. Visually hidden, never traps focus. */}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {srStatus}
       </div>
 
@@ -322,7 +335,6 @@ export function MapAwakens({
           inert={anticipating ? "" : undefined}
           tabIndex={anticipating ? -1 : undefined}
         >
-
           <EditorialMap
             stops={mapStops}
             activeCount={revealed}
@@ -378,7 +390,6 @@ export function MapAwakens({
           ) : null}
         </div>
       </section>
-
 
       {/* Editorial moment card — anchored to lower portion. */}
       <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-6 pt-4">
@@ -539,7 +550,6 @@ export function MapAwakens({
               Suggested route · to be confirmed by YES
             </p>
           </div>
-
         </div>
       </div>
 

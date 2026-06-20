@@ -44,7 +44,12 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
 }
 
 export function EmbeddedConfirmationSheet({
-  open, onClose, profile, region, archetype, stops,
+  open,
+  onClose,
+  profile,
+  region,
+  archetype,
+  stops,
 }: Props) {
   const createDraft = useServerFn(createCustomBookingDraft);
   const confirm = useServerFn(confirmCustomBookingDraft);
@@ -53,7 +58,8 @@ export function EmbeddedConfirmationSheet({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const guestsDefault =
-    (profile.group?.adults ?? 0) + (profile.group?.teens ?? 0) + (profile.group?.children ?? 0) || 2;
+    (profile.group?.adults ?? 0) + (profile.group?.teens ?? 0) + (profile.group?.children ?? 0) ||
+    2;
   const [guests, setGuests] = useState(guestsDefault);
   const [date, setDate] = useState(profile.ops?.preferredDate ?? "");
   const [busy, setBusy] = useState(false);
@@ -77,7 +83,9 @@ export function EmbeddedConfirmationSheet({
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
@@ -176,22 +184,32 @@ export function EmbeddedConfirmationSheet({
             </div>
             <p
               className="text-[10.5px] uppercase tracking-[0.32em] mb-3"
-              style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+                fontWeight: 700,
+              }}
             >
               Your journey is set
             </p>
             <h2
               className="text-[26px] leading-[1.18]"
-              style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, color: "var(--charcoal)" }}
+              style={{
+                fontFamily: "var(--font-display, Montserrat), sans-serif",
+                fontWeight: 700,
+                color: "var(--charcoal)",
+              }}
             >
               {name.split(" ")[0] || "You"}, your day in Portugal is reserved.
             </h2>
             <p
               className="mt-4 text-[14px] italic leading-relaxed"
-              style={{ fontFamily: "Georgia, serif", color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+              style={{
+                fontFamily: "Georgia, serif",
+                color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+              }}
             >
-              A local designer will confirm every timing and the final investment
-              within a few hours — by email and by WhatsApp if you prefer.
+              A local designer will confirm every timing and the final investment within a few hours
+              — by email and by WhatsApp if you prefer.
             </p>
             <button
               type="button"
@@ -212,21 +230,32 @@ export function EmbeddedConfirmationSheet({
           <>
             <p
               className="text-[10.5px] uppercase tracking-[0.32em]"
-              style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+                fontWeight: 700,
+              }}
             >
               Reserve your day
             </p>
             <h2
               className="mt-2 text-[24px] leading-[1.18]"
-              style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, color: "var(--charcoal)" }}
+              style={{
+                fontFamily: "var(--font-display, Montserrat), sans-serif",
+                fontWeight: 700,
+                color: "var(--charcoal)",
+              }}
             >
               A few quiet details, then it's yours.
             </h2>
             <p
               className="mt-2 text-[13px] italic"
-              style={{ fontFamily: "Georgia, serif", color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+              style={{
+                fontFamily: "Georgia, serif",
+                color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+              }}
             >
-              {stops.length} stops · {Math.round((totals.experience / 60) * 10) / 10} h on the ground
+              {stops.length} stops · {Math.round((totals.experience / 60) * 10) / 10} h on the
+              ground
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-3">
@@ -236,7 +265,11 @@ export function EmbeddedConfirmationSheet({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full rounded-[2px] border bg-transparent px-3 py-3 text-[14px] focus-visible:outline-none focus-visible:ring-2"
-                  style={{ borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)", color: "var(--charcoal)", minHeight: 48 }}
+                  style={{
+                    borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                    color: "var(--charcoal)",
+                    minHeight: 48,
+                  }}
                 />
               </Field>
               <Field label="Email">
@@ -245,7 +278,11 @@ export function EmbeddedConfirmationSheet({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-[2px] border bg-transparent px-3 py-3 text-[14px] focus-visible:outline-none focus-visible:ring-2"
-                  style={{ borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)", color: "var(--charcoal)", minHeight: 48 }}
+                  style={{
+                    borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                    color: "var(--charcoal)",
+                    minHeight: 48,
+                  }}
                 />
               </Field>
               <div className="grid grid-cols-2 gap-3">
@@ -255,7 +292,11 @@ export function EmbeddedConfirmationSheet({
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full rounded-[2px] border bg-transparent px-3 py-3 text-[14px] focus-visible:outline-none focus-visible:ring-2"
-                    style={{ borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)", color: "var(--charcoal)", minHeight: 48 }}
+                    style={{
+                      borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                      color: "var(--charcoal)",
+                      minHeight: 48,
+                    }}
                   />
                 </Field>
                 <Field label="Guests">
@@ -264,9 +305,15 @@ export function EmbeddedConfirmationSheet({
                     min={1}
                     max={12}
                     value={guests}
-                    onChange={(e) => setGuests(Math.max(1, Math.min(12, Number(e.target.value) || 1)))}
+                    onChange={(e) =>
+                      setGuests(Math.max(1, Math.min(12, Number(e.target.value) || 1)))
+                    }
                     className="w-full rounded-[2px] border bg-transparent px-3 py-3 text-[14px] focus-visible:outline-none focus-visible:ring-2"
-                    style={{ borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)", color: "var(--charcoal)", minHeight: 48 }}
+                    style={{
+                      borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                      color: "var(--charcoal)",
+                      minHeight: 48,
+                    }}
                   />
                 </Field>
               </div>
@@ -277,13 +324,19 @@ export function EmbeddedConfirmationSheet({
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+351 …"
                   className="w-full rounded-[2px] border bg-transparent px-3 py-3 text-[14px] focus-visible:outline-none focus-visible:ring-2"
-                  style={{ borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)", color: "var(--charcoal)", minHeight: 48 }}
+                  style={{
+                    borderColor: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
+                    color: "var(--charcoal)",
+                    minHeight: 48,
+                  }}
                 />
               </Field>
             </div>
 
             {err && (
-              <p className="mt-3 text-[12.5px]" style={{ color: "var(--charcoal)" }}>{err}</p>
+              <p className="mt-3 text-[12.5px]" style={{ color: "var(--charcoal)" }}>
+                {err}
+              </p>
             )}
 
             <button
@@ -306,7 +359,10 @@ export function EmbeddedConfirmationSheet({
             </button>
             <p
               className="mt-3 text-center text-[11.5px] italic"
-              style={{ fontFamily: "Georgia, serif", color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+              style={{
+                fontFamily: "Georgia, serif",
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              }}
             >
               A local designer confirms every timing and the final investment before any charge.
             </p>

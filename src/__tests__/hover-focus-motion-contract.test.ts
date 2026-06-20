@@ -54,8 +54,7 @@ const TARGETS = [
 // We split source by lines, then look at the first-line tag opener
 // followed by its className attribute on the same or following lines
 // up to the closing `>`.
-const ROOT_TAG_RE =
-  /<(button|a|Link|NavLink|Card|CardHeader|CardContent|CardFooter)\b/;
+const ROOT_TAG_RE = /<(button|a|Link|NavLink|Card|CardHeader|CardContent|CardFooter)\b/;
 
 interface RootChunk {
   file: string;
@@ -130,10 +129,9 @@ describe("Hover motion contract — no scale-on-hover on CTA/card roots", () => 
           offenders.push(`${rel}:${r.startLine} <${r.tag}> → ${cls}`);
         }
       }
-      expect(
-        offenders,
-        `Found scale-on-hover on CTA/card roots:\n${offenders.join("\n")}`,
-      ).toEqual([]);
+      expect(offenders, `Found scale-on-hover on CTA/card roots:\n${offenders.join("\n")}`).toEqual(
+        [],
+      );
     });
   }
 });
@@ -144,8 +142,7 @@ describe("Hover motion contract — interactive lift uses translate-Y", () => {
   // a translate-Y lift. We look for any `hover:` transform utility on
   // the root and require, when present, that it be translate-y.
   const HOVER_TRANSFORM = /\bhover:(?:translate-|rotate-|scale-|skew-)/;
-  const ALLOWED_LIFT =
-    /\bhover:-translate-y-(?:0\.5|1|1\.5|\[1px\]|\[2px\]|\[3px\])\b/;
+  const ALLOWED_LIFT = /\bhover:-translate-y-(?:0\.5|1|1\.5|\[1px\]|\[2px\]|\[3px\])\b/;
 
   for (const rel of TARGETS) {
     const src = readSource(rel);

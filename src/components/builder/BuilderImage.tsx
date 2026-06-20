@@ -13,12 +13,7 @@
 import { ImageOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export type BuilderImageRatio =
-  | "16/9"
-  | "4/5"
-  | "3/2"
-  | "1/1"
-  | "18/10";
+export type BuilderImageRatio = "16/9" | "4/5" | "3/2" | "1/1" | "18/10";
 
 interface Props {
   src?: string | null;

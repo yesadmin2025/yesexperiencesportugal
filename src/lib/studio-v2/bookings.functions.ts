@@ -42,19 +42,17 @@ export const createCustomBookingDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => createSchema.parse(input))
   .handler(async ({ data }) => {
     const draftToken = randomToken(24);
-    const { error } = await supabaseAdmin
-      .from("studio_v2_bookings")
-      .insert({
-        draft_token: draftToken,
-        profile: data.profile,
-        region: data.region ?? null,
-        archetype: data.archetype ?? null,
-        stops: data.stops,
-        total_minutes: data.totalMinutes,
-        total_drive_minutes: data.totalDriveMinutes,
-        total_km: data.totalKm,
-        status: "draft",
-      });
+    const { error } = await supabaseAdmin.from("studio_v2_bookings").insert({
+      draft_token: draftToken,
+      profile: data.profile,
+      region: data.region ?? null,
+      archetype: data.archetype ?? null,
+      stops: data.stops,
+      total_minutes: data.totalMinutes,
+      total_drive_minutes: data.totalDriveMinutes,
+      total_km: data.totalKm,
+      status: "draft",
+    });
     if (error) throw new Error(error.message);
     return { draftToken };
   });
@@ -82,7 +80,10 @@ const confirmSchema = z.object({
   contactName: z.string().min(1).max(120),
   contactEmail: z.string().email().max(160),
   contactPhone: z.string().max(40).optional(),
-  preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  preferredDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   guests: z.number().int().min(1).max(40),
   notes: z.string().max(2000).optional(),
 });

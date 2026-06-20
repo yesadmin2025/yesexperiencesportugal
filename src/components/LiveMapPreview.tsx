@@ -43,8 +43,7 @@ export function LiveMapPreview() {
   }, []);
 
   // Schematic Portugal-like coastline + curved interior route.
-  const routeD =
-    "M 92 38 C 86 70, 80 102, 84 138 S 92 200, 100 248 S 118 312, 138 352";
+  const routeD = "M 92 38 C 86 70, 80 102, 84 138 S 92 200, 100 248 S 118 312, 138 352";
 
   // Stops along the route — coordinates roughly track the path.
   const stops: { x: number; y: number; label: string; delay: number }[] = [
@@ -71,12 +70,7 @@ export function LiveMapPreview() {
       >
         <defs>
           <pattern id="lmp-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path
-              d="M 20 0 L 0 0 0 20"
-              fill="none"
-              stroke="var(--gold)"
-              strokeWidth="0.4"
-            />
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--gold)" strokeWidth="0.4" />
           </pattern>
         </defs>
         <rect width="200" height="400" fill="url(#lmp-grid)" />
@@ -143,13 +137,7 @@ export function LiveMapPreview() {
             />
             <circle cx={s.x} cy={s.y} r="2.2" fill="var(--gold)" />
             {i === stops.length - 1 && (
-              <circle
-                cx={s.x}
-                cy={s.y}
-                r="2.2"
-                fill="var(--ivory)"
-                opacity="0.9"
-              />
+              <circle cx={s.x} cy={s.y} r="2.2" fill="var(--ivory)" opacity="0.9" />
             )}
           </g>
         ))}

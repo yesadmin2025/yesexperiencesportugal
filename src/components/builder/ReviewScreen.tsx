@@ -5,9 +5,7 @@ import type { BuilderImageRef } from "@/hooks/useBuilderImages";
 import { BuilderImage } from "./BuilderImage";
 // Lazy: BuilderMap pulls leaflet which references `window` at module scope
 // and crashes SSR. Loading it client-only keeps the route SSR-safe.
-const BuilderMap = lazy(() =>
-  import("./BuilderMap").then((m) => ({ default: m.BuilderMap })),
-);
+const BuilderMap = lazy(() => import("./BuilderMap").then((m) => ({ default: m.BuilderMap })));
 import { CtaButton } from "@/components/ui/CtaButton";
 import { ReferenceUploader, type ToneResult } from "./ReferenceUploader";
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
@@ -204,7 +202,8 @@ export function ReviewScreen({
                   ))}
                 </ul>
                 <p className="mt-3 text-[11.5px] leading-snug text-[color:var(--charcoal)]/65">
-                  Pricing & availability for these are confirmed by our concierge after you book — no surprises.
+                  Pricing & availability for these are confirmed by our concierge after you book —
+                  no surprises.
                 </p>
               </div>
             )}
@@ -214,12 +213,7 @@ export function ReviewScreen({
               <Block title="What can still change" items={FLEXIBLE} muted />
             </div>
 
-            {sessionId && (
-              <ReferenceUploader
-                sessionId={sessionId}
-                onToneReady={onToneReady}
-              />
-            )}
+            {sessionId && <ReferenceUploader sessionId={sessionId} onToneReady={onToneReady} />}
           </div>
 
           {/* Right: trust + price + CTAs */}
@@ -255,14 +249,7 @@ export function ReviewScreen({
 
             <ShareExport route={route} stops={stops} guests={guests} />
 
-
-
-            <CtaButton
-              type="button"
-              onClick={onConfirm}
-              variant="primary"
-              className="w-full"
-            >
+            <CtaButton type="button" onClick={onConfirm} variant="primary" className="w-full">
               Confirm your experience
             </CtaButton>
 
@@ -333,15 +320,7 @@ function Stat({
   );
 }
 
-function Block({
-  title,
-  items,
-  muted,
-}: {
-  title: string;
-  items: string[];
-  muted?: boolean;
-}) {
+function Block({ title, items, muted }: { title: string; items: string[]; muted?: boolean }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
       <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">

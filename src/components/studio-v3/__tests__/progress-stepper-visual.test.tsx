@@ -11,10 +11,7 @@
  */
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  StudioV3ProgressStepper,
-  STUDIO_V3_BEATS,
-} from "../StudioV3ProgressStepper";
+import { StudioV3ProgressStepper, STUDIO_V3_BEATS } from "../StudioV3ProgressStepper";
 import type { StudioV3Phase } from "../types";
 
 vi.mock("@/lib/studio-v3-telemetry", () => ({
@@ -37,9 +34,7 @@ describe("StudioV3ProgressStepper — visual contract", () => {
 
   it("renders the four canonical labels in order, regardless of active beat", () => {
     for (const phase of PHASES_PER_BEAT) {
-      const { getByTestId, unmount } = render(
-        <StudioV3ProgressStepper phase={phase} />,
-      );
+      const { getByTestId, unmount } = render(<StudioV3ProgressStepper phase={phase} />);
       const nav = getByTestId("studio-v3-progress-stepper");
       const labels = Array.from(nav.querySelectorAll("span:not([aria-hidden])"))
         .map((n) => n.textContent?.trim())
@@ -75,9 +70,7 @@ describe("StudioV3ProgressStepper — visual contract", () => {
   it("keeps label typography stable (display font, uppercase, tracking)", () => {
     const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
     const nav = getByTestId("studio-v3-progress-stepper");
-    const labelNodes = nav.querySelectorAll<HTMLSpanElement>(
-      "span:not([aria-hidden])",
-    );
+    const labelNodes = nav.querySelectorAll<HTMLSpanElement>("span:not([aria-hidden])");
     for (const node of Array.from(labelNodes)) {
       expect(node.className).toContain("uppercase");
       expect(node.className).toContain("tracking-[0.22em]");

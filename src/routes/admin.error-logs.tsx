@@ -85,7 +85,10 @@ function ErrorLogsPage() {
 
   async function clearAll() {
     if (!confirm("Delete ALL error logs? This cannot be undone.")) return;
-    const { error } = await supabase.from("client_error_logs").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    const { error } = await supabase
+      .from("client_error_logs")
+      .delete()
+      .neq("id", "00000000-0000-0000-0000-000000000000");
     if (error) {
       alert(error.message);
       return;
@@ -132,13 +135,29 @@ function ErrorLogsPage() {
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">
-          <Select label="Severity" value={severity} onChange={(v) => setSeverity(v as SeverityFilter)}
+          <Select
+            label="Severity"
+            value={severity}
+            onChange={(v) => setSeverity(v as SeverityFilter)}
             options={[
-              ["all", "All"], ["error", "Error"], ["unhandled_rejection", "Unhandled rejection"],
-              ["resource", "Resource"], ["warning", "Warning"], ["info", "Info"],
-            ]}/>
-          <Select label="Device" value={device} onChange={(v) => setDevice(v as DeviceFilter)}
-            options={[["all", "All"], ["mobile", "Mobile"], ["desktop", "Desktop"]]}/>
+              ["all", "All"],
+              ["error", "Error"],
+              ["unhandled_rejection", "Unhandled rejection"],
+              ["resource", "Resource"],
+              ["warning", "Warning"],
+              ["info", "Info"],
+            ]}
+          />
+          <Select
+            label="Device"
+            value={device}
+            onChange={(v) => setDevice(v as DeviceFilter)}
+            options={[
+              ["all", "All"],
+              ["mobile", "Mobile"],
+              ["desktop", "Desktop"],
+            ]}
+          />
         </div>
 
         {err && (
@@ -150,7 +169,9 @@ function ErrorLogsPage() {
         {rows === null ? (
           <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p>
         ) : filtered.length === 0 ? (
-          <p className="text-sm text-[color:var(--charcoal)]/60">No errors match the current filters.</p>
+          <p className="text-sm text-[color:var(--charcoal)]/60">
+            No errors match the current filters.
+          </p>
         ) : (
           <div className="overflow-hidden rounded-[3px] border border-[color:var(--charcoal)]/15 bg-white">
             <table className="w-full text-left text-xs">
@@ -177,18 +198,24 @@ function ErrorLogsPage() {
                           {new Date(r.created_at).toLocaleString()}
                         </td>
                         <td className="px-3 py-2 align-top">
-                          <span className={`inline-block rounded-[2px] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] ${
-                            r.severity === "error" || r.severity === "unhandled_rejection"
-                              ? "bg-red-100 text-red-700"
-                              : r.severity === "resource"
-                                ? "bg-amber-100 text-amber-700"
-                                : "bg-slate-100 text-slate-700"
-                          }`}>
+                          <span
+                            className={`inline-block rounded-[2px] px-1.5 py-0.5 text-[10px] uppercase tracking-[0.1em] ${
+                              r.severity === "error" || r.severity === "unhandled_rejection"
+                                ? "bg-red-100 text-red-700"
+                                : r.severity === "resource"
+                                  ? "bg-amber-100 text-amber-700"
+                                  : "bg-slate-100 text-slate-700"
+                            }`}
+                          >
                             {r.severity}
                           </span>
                         </td>
-                        <td className="px-3 py-2 align-top">{mobile ? "📱" : "💻"} {r.viewport_width}×{r.viewport_height}</td>
-                        <td className="px-3 py-2 align-top font-mono text-[11px]">{r.route ?? "—"}</td>
+                        <td className="px-3 py-2 align-top">
+                          {mobile ? "📱" : "💻"} {r.viewport_width}×{r.viewport_height}
+                        </td>
+                        <td className="px-3 py-2 align-top font-mono text-[11px]">
+                          {r.route ?? "—"}
+                        </td>
                         <td className="px-3 py-2 align-top">
                           <div className="line-clamp-2 max-w-[480px]">{r.message}</div>
                         </td>
@@ -203,8 +230,12 @@ function ErrorLogsPage() {
                               <Field label="Session" value={r.session_id} />
                               {r.stack && (
                                 <div>
-                                  <div className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">Stack</div>
-                                  <pre className="overflow-auto rounded-[2px] bg-[color:var(--charcoal)] p-2 text-[11px] text-[color:var(--ivory)]">{r.stack}</pre>
+                                  <div className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">
+                                    Stack
+                                  </div>
+                                  <pre className="overflow-auto rounded-[2px] bg-[color:var(--charcoal)] p-2 text-[11px] text-[color:var(--ivory)]">
+                                    {r.stack}
+                                  </pre>
                                 </div>
                               )}
                             </div>
@@ -226,15 +257,25 @@ function ErrorLogsPage() {
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-[3px] border border-[color:var(--charcoal)]/15 bg-white p-3">
-      <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">{label}</div>
+      <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">
+        {label}
+      </div>
       <div className="mt-1 text-xl font-bold">{value}</div>
     </div>
   );
 }
 
 function Select({
-  label, value, onChange, options,
-}: { label: string; value: string; onChange: (v: string) => void; options: [string, string][] }) {
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: [string, string][];
+}) {
   return (
     <label className="flex items-center gap-2 text-xs">
       <span className="uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">{label}</span>
@@ -243,7 +284,11 @@ function Select({
         onChange={(e) => onChange(e.target.value)}
         className="rounded-[2px] border border-[color:var(--charcoal)]/20 bg-white px-2 py-1.5"
       >
-        {options.map(([v, l]) => (<option key={v} value={v}>{l}</option>))}
+        {options.map(([v, l]) => (
+          <option key={v} value={v}>
+            {l}
+          </option>
+        ))}
       </select>
     </label>
   );
@@ -253,7 +298,9 @@ function Field({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
   return (
     <div>
-      <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">{label}: </span>
+      <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">
+        {label}:{" "}
+      </span>
       <span className="break-all">{value}</span>
     </div>
   );

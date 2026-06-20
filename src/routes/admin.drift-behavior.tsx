@@ -169,18 +169,11 @@ function DriftBehaviorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allowed]);
 
-  const stamp = useMemo(
-    () => new Date().toISOString().replace(/[:.]/g, "-"),
-    [rows],
-  );
+  const stamp = useMemo(() => new Date().toISOString().replace(/[:.]/g, "-"), [rows]);
 
   const onDownloadJson = () => {
     if (!rows) return;
-    download(
-      `drift-behavior-${stamp}.json`,
-      "application/json",
-      JSON.stringify(rows, null, 2),
-    );
+    download(`drift-behavior-${stamp}.json`, "application/json", JSON.stringify(rows, null, 2));
   };
   const onDownloadCsv = () => {
     if (!rows) return;
@@ -208,13 +201,16 @@ function DriftBehaviorPage() {
           <h1 className="font-serif text-3xl text-[color:var(--charcoal)]">
             Drift behavior export
           </h1>
-          <Link to="/" className="text-sm text-[color:var(--charcoal)]/70 underline underline-offset-4">
+          <Link
+            to="/"
+            className="text-sm text-[color:var(--charcoal)]/70 underline underline-offset-4"
+          >
             Home
           </Link>
         </div>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--charcoal)]/70">
-          Pull raw predictive-engine telemetry (decisions, linger, skip, attractions,
-          prediction snapshots) and download as CSV or JSON for offline analysis.
+          Pull raw predictive-engine telemetry (decisions, linger, skip, attractions, prediction
+          snapshots) and download as CSV or JSON for offline analysis.
         </p>
 
         {/* Filters */}
@@ -346,11 +342,15 @@ function DriftBehaviorPage() {
                     <td className="px-3 py-2 font-mono text-[10px] text-[color:var(--charcoal)]/70">
                       {r.session_id.slice(0, 12)}…
                     </td>
-                    <td className="px-3 py-2 text-[color:var(--charcoal)]/70">{r.chapter_id ?? "—"}</td>
+                    <td className="px-3 py-2 text-[color:var(--charcoal)]/70">
+                      {r.chapter_id ?? "—"}
+                    </td>
                     <td className="px-3 py-2 text-[color:var(--charcoal)]/70">
                       {r.decision_latency_ms ?? "—"}
                     </td>
-                    <td className="px-3 py-2 text-[color:var(--charcoal)]/70">{r.linger_ms ?? "—"}</td>
+                    <td className="px-3 py-2 text-[color:var(--charcoal)]/70">
+                      {r.linger_ms ?? "—"}
+                    </td>
                     <td className="px-3 py-2 text-[color:var(--charcoal)]/70">
                       {r.attraction_target ?? "—"}
                     </td>

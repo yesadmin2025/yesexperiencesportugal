@@ -179,9 +179,7 @@ function AdminBuilderImagesPage() {
   async function onToggle(id: string, isActive: boolean) {
     try {
       await toggleActive({ data: { id, isActive } });
-      setImages((prev) =>
-        prev.map((i) => (i.id === id ? { ...i, is_active: isActive } : i)),
-      );
+      setImages((prev) => prev.map((i) => (i.id === id ? { ...i, is_active: isActive } : i)));
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Toggle failed");
     }
@@ -223,18 +221,15 @@ function AdminBuilderImagesPage() {
             Builder images
           </h1>
           <p className="mt-2 text-[14px] text-[color:var(--charcoal)]/70 max-w-2xl">
-            Paste Viator tour URLs and pair each with the matching builder stop. The
-            scraper pulls real photos from each page and stores them with proper alt
-            text. Images are auto-active and feed the Builder mood cards, stop cards,
-            story panel, and review thumbnails.
+            Paste Viator tour URLs and pair each with the matching builder stop. The scraper pulls
+            real photos from each page and stores them with proper alt text. Images are auto-active
+            and feed the Builder mood cards, stop cards, story panel, and review thumbnails.
           </p>
         </header>
 
         {/* Pending scrape jobs */}
         <section className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5 md:p-6">
-          <h2 className="serif text-[1.3rem] font-semibold mb-4">
-            Scrape Viator pages
-          </h2>
+          <h2 className="serif text-[1.3rem] font-semibold mb-4">Scrape Viator pages</h2>
           <div className="flex flex-col gap-4">
             {items.map((it) => (
               <div
@@ -322,11 +317,7 @@ function AdminBuilderImagesPage() {
               disabled={running}
               className="inline-flex items-center gap-2 rounded-[2px] bg-[color:var(--charcoal)] px-5 py-2.5 text-[12px] uppercase tracking-[0.2em] font-bold text-[color:var(--ivory)] hover:bg-[color:var(--teal)] disabled:opacity-60"
             >
-              {running ? (
-                <Loader2 size={13} className="animate-spin" />
-              ) : (
-                <Plus size={13} />
-              )}
+              {running ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
               Scrape & save
             </button>
             <span className="text-[12px] text-[color:var(--charcoal)]/55">
@@ -340,9 +331,7 @@ function AdminBuilderImagesPage() {
           <div className="flex items-baseline justify-between">
             <h2 className="serif text-[1.3rem] font-semibold">
               Image library{" "}
-              <span className="text-[13px] text-[color:var(--charcoal)]/55">
-                ({images.length})
-              </span>
+              <span className="text-[13px] text-[color:var(--charcoal)]/55">({images.length})</span>
             </h2>
             <button
               type="button"

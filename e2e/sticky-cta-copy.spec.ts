@@ -37,8 +37,7 @@ const BUTTON_LOADING = "Opening…";
 const BUTTON_ARIA = "Start your experience — choose how to begin";
 const CHOICE_EXPLORE = "Explore Signature Experiences";
 const CHOICE_DESIGN = "Design & Secure Your Own";
-const ANNOUNCEMENT =
-  "Start your experience — shortcut available at the bottom of the screen.";
+const ANNOUNCEMENT = "Start your experience — shortcut available at the bottom of the screen.";
 
 /** The CTA <button> — stable across copy tweaks via aria-label. */
 function ctaButton(page: Page): Locator {

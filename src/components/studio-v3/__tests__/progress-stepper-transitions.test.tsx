@@ -97,16 +97,15 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
       const current = nav!.querySelectorAll('[aria-current="step"]');
       expect(current.length).toBe(1);
       // Labels always remain in canonical order.
-      const labels = Array.from(nav!.querySelectorAll("span:not([aria-hidden])"))
-        .map((n) => n.textContent?.trim());
+      const labels = Array.from(nav!.querySelectorAll("span:not([aria-hidden])")).map((n) =>
+        n.textContent?.trim(),
+      );
       expect(labels).toEqual(STUDIO_V3_BEATS.map((b) => b.label));
     }
   });
 
   it("re-entering the same beat from a different phase does not duplicate telemetry per render", async () => {
-    const { recordStudioV3BuilderStep } = await import(
-      "@/lib/studio-v3-telemetry"
-    );
+    const { recordStudioV3BuilderStep } = await import("@/lib/studio-v3-telemetry");
     const spy = recordStudioV3BuilderStep as unknown as ReturnType<typeof vi.fn>;
     spy.mockClear();
 

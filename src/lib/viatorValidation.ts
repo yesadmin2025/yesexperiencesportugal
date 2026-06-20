@@ -15,7 +15,7 @@ export type Severity = "critical" | "major" | "minor" | "clean";
 export type FieldDiff = {
   matched: string[];
   onlyInternal: string[]; // in tour but not in Viator → likely invented
-  onlyViator: string[];   // in Viator but missing from tour
+  onlyViator: string[]; // in Viator but missing from tour
 };
 
 export type TourValidation = {
@@ -123,7 +123,10 @@ export function validateTour(tour: SignatureTour, meta?: ViatorMeta): TourValida
 
   // Viator stops compared excluding pass-bys (not booked, just driven through).
   const viatorStops = meta.stops.filter((s: ViatorStop) => !s.passBy).map((s) => s.name);
-  const stops = diffLists(tour.stops.map((s) => s.label), viatorStops);
+  const stops = diffLists(
+    tour.stops.map((s) => s.label),
+    viatorStops,
+  );
   const included = diffLists(tour.included ?? [], meta.included ?? []);
   const issueCount =
     stops.onlyInternal.length +
@@ -155,7 +158,7 @@ export function logTourValidation(v: TourValidation): void {
   if (typeof window === "undefined") return;
   if (!import.meta.env?.DEV) return;
   if (!v.hasViatorMeta || v.issueCount === 0) return;
-  // eslint-disable-next-line no-console
+
   console.warn(
     `[viator-validation] ${v.tourId} — ${v.issueCount} mismatch${v.issueCount === 1 ? "" : "es"}`,
     {

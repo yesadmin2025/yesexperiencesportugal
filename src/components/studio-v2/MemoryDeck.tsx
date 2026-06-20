@@ -48,9 +48,10 @@ export function MemoryDeck({
     cards.push({
       id: "duration",
       label: "Duration",
-      value: profile.duration === "multi-day"
-        ? `${profile.durationDays ?? 3}d`
-        : opt?.label.split(" ")[0] ?? "—",
+      value:
+        profile.duration === "multi-day"
+          ? `${profile.durationDays ?? 3}d`
+          : (opt?.label.split(" ")[0] ?? "—"),
       beatIndex: beatIndexFor("choice-duration"),
     });
   }

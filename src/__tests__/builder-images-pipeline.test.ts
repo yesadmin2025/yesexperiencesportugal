@@ -26,9 +26,7 @@ import { extractImageUrlsFromHtml } from "@/lib/builderImages.server";
 describe("extractImageUrlsFromHtml — happy path", () => {
   it("extracts a single Viator jpg URL from minimal HTML", () => {
     const html = `<img src="https://cache.viator.com/tours/abc.jpg" />`;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/tours/abc.jpg",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/tours/abc.jpg"]);
   });
 
   it("extracts multiple distinct URLs preserving source order", () => {
@@ -58,9 +56,7 @@ describe("extractImageUrlsFromHtml — happy path", () => {
 
   it("preserves query strings on extracted URLs", () => {
     const html = `<img src="https://cache.viator.com/p.jpg?w=1200&q=80" />`;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/p.jpg?w=1200&q=80",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/p.jpg?w=1200&q=80"]);
   });
 
   it("decodes HTML-escaped &amp; into & inside query strings", () => {
@@ -78,9 +74,7 @@ describe("extractImageUrlsFromHtml — filtering & dedupe", () => {
       <a href="https://cache.viator.com/dup.jpg">link</a>
       <img src="https://cache.viator.com/dup.jpg" />
     `;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/dup.jpg",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/dup.jpg"]);
   });
 
   it("drops thumbnail/small/icon/logo/sprite/avatar variants", () => {
@@ -93,9 +87,7 @@ describe("extractImageUrlsFromHtml — filtering & dedupe", () => {
       https://cache.viator.com/avatar-guide.jpg
       https://cache.viator.com/full/hero.jpg
     `;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/full/hero.jpg",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/full/hero.jpg"]);
   });
 
   it("filter is case-insensitive (THUMB, Logo, ICON all dropped)", () => {
@@ -105,9 +97,7 @@ describe("extractImageUrlsFromHtml — filtering & dedupe", () => {
       https://cache.viator.com/ICON-set.webp
       https://cache.viator.com/keep.jpg
     `;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/keep.jpg",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/keep.jpg"]);
   });
 
   it("ignores non-allowed domains entirely", () => {
@@ -116,9 +106,7 @@ describe("extractImageUrlsFromHtml — filtering & dedupe", () => {
       <img src="https://images.unsplash.com/x.jpg" />
       <img src="https://cache.viator.com/keep.jpg" />
     `;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/keep.jpg",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/keep.jpg"]);
   });
 
   it("ignores unsupported extensions (gif, svg, bmp, mp4)", () => {
@@ -129,9 +117,7 @@ describe("extractImageUrlsFromHtml — filtering & dedupe", () => {
       https://cache.viator.com/video.mp4
       https://cache.viator.com/real.jpg
     `;
-    expect(extractImageUrlsFromHtml(html)).toEqual([
-      "https://cache.viator.com/real.jpg",
-    ]);
+    expect(extractImageUrlsFromHtml(html)).toEqual(["https://cache.viator.com/real.jpg"]);
   });
 
   it("dedupe is case-sensitive: differently-cased URLs are kept as separate entries", () => {
@@ -165,9 +151,7 @@ describe("extractImageUrlsFromHtml — robustness", () => {
   it("does not throw on malformed / unbalanced HTML", () => {
     const html = `<img src="https://cache.viator.com/x.jpg" <<< broken>`;
     expect(() => extractImageUrlsFromHtml(html)).not.toThrow();
-    expect(extractImageUrlsFromHtml(html)).toContain(
-      "https://cache.viator.com/x.jpg",
-    );
+    expect(extractImageUrlsFromHtml(html)).toContain("https://cache.viator.com/x.jpg");
   });
 
   it("handles a large batch (50 URLs) and de-dupes correctly", () => {

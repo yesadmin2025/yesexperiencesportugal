@@ -32,9 +32,7 @@ function makeToken(): string {
 export const saveStudioV3Signature = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import(
-      "@/integrations/supabase/client.server"
-    );
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Try up to 3 times to avoid the (extremely unlikely) token collision.
     for (let attempt = 0; attempt < 3; attempt++) {

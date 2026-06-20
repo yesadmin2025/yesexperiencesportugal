@@ -592,7 +592,9 @@ function detect(): StudioLocale {
   } catch {
     /* ignore */
   }
-  const nav = (typeof navigator !== "undefined" ? navigator.language : "pt").slice(0, 2).toLowerCase();
+  const nav = (typeof navigator !== "undefined" ? navigator.language : "pt")
+    .slice(0, 2)
+    .toLowerCase();
   if ((SUPPORTED as string[]).includes(nav)) return nav as StudioLocale;
   return "pt";
 }

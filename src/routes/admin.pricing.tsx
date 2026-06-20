@@ -13,10 +13,7 @@ import { Save, RefreshCw, AlertTriangle, Check, Eye, EyeOff } from "lucide-react
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import {
-  TOUR_PRICE_TIERS_QUERY_KEY,
-  useTourPriceTiers,
-} from "@/hooks/use-tour-price-tiers";
+import { TOUR_PRICE_TIERS_QUERY_KEY, useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
 
@@ -35,9 +32,7 @@ export const Route = createFileRoute("/admin/pricing")({
         <section className="pt-32 pb-20">
           <div className="container-x max-w-2xl">
             <h1 className="text-2xl">Pricing editor failed</h1>
-            <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
-              {error.message}
-            </p>
+            <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
             <button
               type="button"
               onClick={() => {
@@ -186,8 +181,6 @@ function AdminPricingPage() {
     );
   }
 
-
-
   return (
     <SiteLayout>
       <section className="pt-28 pb-24">
@@ -196,9 +189,8 @@ function AdminPricingPage() {
             <div>
               <h1 className="text-3xl tracking-tight">Price tier editor</h1>
               <p className="mt-2 text-sm text-[color:var(--charcoal-soft)] max-w-xl">
-                Real per-pax EUR price by group size (1–8). Tier 8 is the
-                public &ldquo;from&rdquo; anchor. Leave a cell blank to clear
-                that tier. Changes go live as soon as you save.
+                Real per-pax EUR price by group size (1–8). Tier 8 is the public &ldquo;from&rdquo;
+                anchor. Leave a cell blank to clear that tier. Changes go live as soon as you save.
               </p>
             </div>
             <div className="text-xs text-[color:var(--charcoal-soft)]">
@@ -261,22 +253,19 @@ function TourRow({
   const dirty = !tiersEqual(initialTiers, parsed);
 
   const tier8 = parsed[8];
-  const anchorMismatch =
-    typeof tier8 === "number" && tier8 !== priceFrom;
+  const anchorMismatch = typeof tier8 === "number" && tier8 !== priceFrom;
 
   async function save() {
     setBusy(true);
     try {
       const payload: PriceTiersEUR = parsed;
-      const { error } = await supabase
-        .from("tour_price_tiers")
-        .upsert(
-          {
-            tour_id: tourId,
-            tiers: payload as unknown as Record<string, number>,
-          },
-          { onConflict: "tour_id" },
-        );
+      const { error } = await supabase.from("tour_price_tiers").upsert(
+        {
+          tour_id: tourId,
+          tiers: payload as unknown as Record<string, number>,
+        },
+        { onConflict: "tour_id" },
+      );
       if (error) throw error;
       toast.success(`Saved ${title}`);
       setJustSaved(true);
@@ -337,9 +326,7 @@ function TourRow({
                 min={0}
                 step={1}
                 value={form[String(tier)] ?? ""}
-                onChange={(e) =>
-                  setForm((prev) => ({ ...prev, [String(tier)]: e.target.value }))
-                }
+                onChange={(e) => setForm((prev) => ({ ...prev, [String(tier)]: e.target.value }))}
                 placeholder="—"
                 className="w-full border border-[color:var(--border)] bg-white pl-5 pr-2 py-1.5 text-sm tabular-nums focus:outline-none focus:border-[color:var(--gold)]"
               />
@@ -351,9 +338,8 @@ function TourRow({
       {anchorMismatch ? (
         <p className="mt-3 inline-flex items-center gap-2 text-[11px] text-amber-700">
           <AlertTriangle size={12} />
-          Tier 8 (€{tier8}) differs from the public &ldquo;from&rdquo; anchor
-          (€{priceFrom}). Update the tour&rsquo;s `priceFrom` in code to match,
-          or set tier 8 to €{priceFrom}.
+          Tier 8 (€{tier8}) differs from the public &ldquo;from&rdquo; anchor (€{priceFrom}). Update
+          the tour&rsquo;s `priceFrom` in code to match, or set tier 8 to €{priceFrom}.
         </p>
       ) : null}
 

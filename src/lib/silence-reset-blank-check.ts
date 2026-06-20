@@ -37,9 +37,7 @@ export function installResetBlankCheckFilter(
   target?: (Window & typeof globalThis) | null,
 ): InstallResult {
   const resolved =
-    target === null
-      ? undefined
-      : (target ?? (typeof window !== "undefined" ? window : undefined));
+    target === null ? undefined : (target ?? (typeof window !== "undefined" ? window : undefined));
   if (!resolved) return { installed: false, dispose: () => {} };
   const w = resolved as FlaggedWindow;
   if (w[FLAG]) return { installed: false, dispose: () => {} };

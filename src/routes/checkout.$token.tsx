@@ -75,7 +75,9 @@ function CheckoutPage() {
         setError("We couldn't load this draft. The link may have expired.");
         setLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [getDraft, token]);
 
   // Drop-off telemetry — fires once if the user leaves before submitting.
@@ -130,10 +132,16 @@ function CheckoutPage() {
   if (!draft) {
     return (
       <Shell>
-        <h1 className="text-[24px]" style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}>
+        <h1
+          className="text-[24px]"
+          style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
+        >
           Draft not found.
         </h1>
-        <p className="mt-3" style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
+        <p
+          className="mt-3"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        >
           {error ?? "Return to Studio and design a new day."}
         </p>
         <button
@@ -152,7 +160,10 @@ function CheckoutPage() {
       <Shell>
         <p
           className="text-[10.5px] uppercase tracking-[0.32em]"
-          style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+          style={{
+            color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+            fontWeight: 700,
+          }}
         >
           Received
         </p>
@@ -194,8 +205,8 @@ function CheckoutPage() {
           color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
         }}
       >
-        {draft.stops.length} real stops · {Math.round((draft.total_minutes / 60) * 10) / 10} h experience ·{" "}
-        {draft.total_drive_minutes} min driving · {draft.total_km} km
+        {draft.stops.length} real stops · {Math.round((draft.total_minutes / 60) * 10) / 10} h
+        experience · {draft.total_drive_minutes} min driving · {draft.total_km} km
       </p>
 
       <button
@@ -218,11 +229,16 @@ function CheckoutPage() {
       >
         {draft.stops.map((s, i) => (
           <li key={s.key ?? i} className="text-[14px]">
-            <span style={{ fontWeight: 600 }}>{i + 1}. {s.label}</span>
+            <span style={{ fontWeight: 600 }}>
+              {i + 1}. {s.label}
+            </span>
             {s.tag && (
               <span
                 className="ml-2 text-[10.5px] uppercase tracking-[0.22em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  fontWeight: 600,
+                }}
               >
                 · {s.tag}
               </span>
@@ -234,46 +250,76 @@ function CheckoutPage() {
       <form onSubmit={onSubmit} className="mt-8 space-y-4">
         <Field label="Name *">
           <input
-            required type="text" value={name} onChange={(e) => setName(e.target.value)}
-            maxLength={120} autoComplete="name" className={inputCls} style={inputStyle}
+            required
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={120}
+            autoComplete="name"
+            className={inputCls}
+            style={inputStyle}
           />
         </Field>
         <Field label="Email *">
           <input
-            required type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-            maxLength={160} autoComplete="email" className={inputCls} style={inputStyle}
+            required
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            maxLength={160}
+            autoComplete="email"
+            className={inputCls}
+            style={inputStyle}
           />
         </Field>
         <Field label="Phone (optional)">
           <input
-            type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
-            maxLength={40} autoComplete="tel" className={inputCls} style={inputStyle}
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            maxLength={40}
+            autoComplete="tel"
+            className={inputCls}
+            style={inputStyle}
           />
         </Field>
         <div className="grid grid-cols-2 gap-4">
           <Field label="Preferred date">
             <input
-              type="date" value={date} onChange={(e) => setDate(e.target.value)}
-              className={inputCls} style={inputStyle}
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={inputCls}
+              style={inputStyle}
             />
           </Field>
           <Field label="Guests">
             <input
-              type="number" min={1} max={40} value={guests}
+              type="number"
+              min={1}
+              max={40}
+              value={guests}
               onChange={(e) => setGuests(Math.max(1, Math.min(40, Number(e.target.value) || 1)))}
-              className={inputCls} style={inputStyle}
+              className={inputCls}
+              style={inputStyle}
             />
           </Field>
         </div>
         <Field label="Anything we should know? (optional)">
           <textarea
-            value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={2000} rows={3}
-            className={inputCls} style={inputStyle}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            maxLength={2000}
+            rows={3}
+            className={inputCls}
+            style={inputStyle}
           />
         </Field>
 
         {error && (
-          <p className="text-[13px]" style={{ color: "var(--charcoal)" }}>{error}</p>
+          <p className="text-[13px]" style={{ color: "var(--charcoal)" }}>
+            {error}
+          </p>
         )}
 
         <button

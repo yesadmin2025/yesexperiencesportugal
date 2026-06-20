@@ -16,7 +16,14 @@ interface Props {
   onSkip: () => void;
 }
 
-export function NameWhisper({ prompt, placeholder, acceptLabel, skipLabel, onSubmit, onSkip }: Props) {
+export function NameWhisper({
+  prompt,
+  placeholder,
+  acceptLabel,
+  skipLabel,
+  onSubmit,
+  onSkip,
+}: Props) {
   const [value, setValue] = useState("");
 
   const handleSubmit = (e: FormEvent) => {

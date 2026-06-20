@@ -9,10 +9,7 @@ import type {
   AffinityProfile,
 } from "@/components/builder/types";
 import type { StudioProposal } from "@/components/builder/types";
-import {
-  BUILDER_REGIONS,
-  type BuilderRegionKey,
-} from "@/components/builder/RegionStep";
+import { BUILDER_REGIONS, type BuilderRegionKey } from "@/components/builder/RegionStep";
 
 /**
  * Unified state for the Living Atmosphere Studio (Builder v3).
@@ -56,7 +53,6 @@ export interface StudioState {
 /** Derived narrative stage — controls AI voice, motion duration, and beat pacing. */
 export type NarrativeStage = "invitation" | "recognition" | "emergence" | "reveal";
 
-
 const INITIAL: StudioState = {
   narrative: "",
   mood: null,
@@ -76,7 +72,6 @@ const INITIAL: StudioState = {
   narrativeFragment: null,
   narrativeFragmentAt: null,
 };
-
 
 const STORAGE_KEY = "yes.studio.state.v3";
 
@@ -263,10 +258,7 @@ export function useStudioState() {
 
   const totalMinutes = useMemo(
     () =>
-      state.acceptedStops.reduce(
-        (acc, s, i) => acc + s.duration_minutes + (i === 0 ? 0 : 20),
-        0,
-      ),
+      state.acceptedStops.reduce((acc, s, i) => acc + s.duration_minutes + (i === 0 ? 0 : 20), 0),
     [state.acceptedStops],
   );
 
@@ -277,30 +269,65 @@ export function useStudioState() {
    */
   const affinityProfile = useMemo<AffinityProfile>(() => {
     const warmthByMood: Record<string, number> = {
-      romantic: 0.95, slow: 0.7, open: 0.55, curious: 0.45, energetic: 0.35,
+      romantic: 0.95,
+      slow: 0.7,
+      open: 0.55,
+      curious: 0.45,
+      energetic: 0.35,
     };
     const depthByMood: Record<string, number> = {
-      slow: 0.95, romantic: 0.8, open: 0.55, curious: 0.4, energetic: 0.25,
+      slow: 0.95,
+      romantic: 0.8,
+      open: 0.55,
+      curious: 0.4,
+      energetic: 0.25,
     };
     const energyByMood: Record<string, number> = {
-      energetic: 0.95, curious: 0.7, open: 0.55, romantic: 0.35, slow: 0.2,
+      energetic: 0.95,
+      curious: 0.7,
+      open: 0.55,
+      romantic: 0.35,
+      slow: 0.2,
     };
     const curiosityByMood: Record<string, number> = {
-      curious: 0.95, energetic: 0.65, open: 0.6, romantic: 0.45, slow: 0.45,
+      curious: 0.95,
+      energetic: 0.65,
+      open: 0.6,
+      romantic: 0.45,
+      slow: 0.45,
     };
     const eleganceByIntention: Record<string, number> = {
-      wine: 0.85, gastronomy: 0.8, wellness: 0.75, heritage: 0.7,
-      coast: 0.6, nature: 0.5, hidden: 0.55, wonder: 0.65,
+      wine: 0.85,
+      gastronomy: 0.8,
+      wellness: 0.75,
+      heritage: 0.7,
+      coast: 0.6,
+      nature: 0.5,
+      hidden: 0.55,
+      wonder: 0.65,
     };
     const intimacyByWho: Record<string, number> = {
-      solo: 0.85, couple: 0.95, family: 0.55, friends: 0.5, corporate: 0.25, group: 0.3,
+      solo: 0.85,
+      couple: 0.95,
+      family: 0.55,
+      friends: 0.5,
+      corporate: 0.25,
+      group: 0.3,
     };
     const intentionWarmth: Record<string, number> = {
-      gastronomy: 0.85, wine: 0.85, wellness: 0.75, heritage: 0.55,
-      coast: 0.6, nature: 0.55, hidden: 0.6, wonder: 0.7,
+      gastronomy: 0.85,
+      wine: 0.85,
+      wellness: 0.75,
+      heritage: 0.55,
+      coast: 0.6,
+      nature: 0.55,
+      hidden: 0.6,
+      wonder: 0.7,
     };
     const pacingByPace: Record<string, number> = {
-      relaxed: 0.85, balanced: 0.55, full: 0.25,
+      relaxed: 0.85,
+      balanced: 0.55,
+      full: 0.25,
     };
     const m = state.mood ?? "open";
     const w = state.who ?? "couple";
@@ -335,7 +362,14 @@ export function useStudioState() {
     if (coreCount >= 3 || state.acceptedStops.length >= 1) return "emergence";
     if (coreCount >= 1 || state.awakened) return "recognition";
     return "invitation";
-  }, [state.closing, state.acceptedStops.length, state.mood, state.who, state.intention, state.awakened]);
+  }, [
+    state.closing,
+    state.acceptedStops.length,
+    state.mood,
+    state.who,
+    state.intention,
+    state.awakened,
+  ]);
 
   const setNarrativeFragment = useCallback((fragment: string | null) => {
     setState((s) => ({
@@ -363,4 +397,3 @@ export function useStudioState() {
     narrativeStage,
   };
 }
-

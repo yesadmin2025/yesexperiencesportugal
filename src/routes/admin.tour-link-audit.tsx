@@ -3,9 +3,26 @@ import { useEffect, useRef, useState } from "react";
 import { auditTourLinks } from "@/lib/tourLinkAudit.functions";
 import type { TourLinkAuditReport } from "@/lib/tourLinkAudit.server";
 import { checkRouteFile, type RouteFileCheckResult } from "@/lib/routeFileCheck.functions";
-import { getLastCrawlerError, type CrawlerErrorInfo, type CrawlerErrorStrategy } from "@/lib/crawlerError.functions";
+import {
+  getLastCrawlerError,
+  type CrawlerErrorInfo,
+  type CrawlerErrorStrategy,
+} from "@/lib/crawlerError.functions";
 import { SiteLayout } from "@/components/SiteLayout";
-import { AlertTriangle, Check, RefreshCw, FileSearch, Link2Off, HelpCircle, FileCode2, Zap, Copy, ExternalLink, Bug, RotateCcw } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  RefreshCw,
+  FileSearch,
+  Link2Off,
+  HelpCircle,
+  FileCode2,
+  Zap,
+  Copy,
+  ExternalLink,
+  Bug,
+  RotateCcw,
+} from "lucide-react";
 
 export const Route = createFileRoute("/admin/tour-link-audit")({
   beforeLoad: () => {
@@ -21,9 +38,7 @@ export const Route = createFileRoute("/admin/tour-link-audit")({
         <section className="pt-32 pb-20 min-h-[60vh]">
           <div className="container-x max-w-2xl">
             <h1 className="serif text-3xl">Audit failed</h1>
-            <p className="mt-4 text-sm text-[color:var(--charcoal-soft)]">
-              {error.message}
-            </p>
+            <p className="mt-4 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
             <button
               type="button"
               onClick={() => {
@@ -109,9 +124,9 @@ function TourLinkAuditPage() {
           </div>
           <h1 className="serif text-3xl sm:text-4xl mt-3">Tour link audit</h1>
           <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] max-w-xl leading-relaxed">
-            Scans every <code>.ts/.tsx/.js/.jsx/.mdx</code> file under{" "}
-            <code>src/</code> for internal <code>/tours/$tourId</code> references
-            and verifies each id exists in the catalog (<code>signatureTours</code>).
+            Scans every <code>.ts/.tsx/.js/.jsx/.mdx</code> file under <code>src/</code> for
+            internal <code>/tours/$tourId</code> references and verifies each id exists in the
+            catalog (<code>signatureTours</code>).
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -167,14 +182,14 @@ function TourLinkAuditPage() {
                 <div className="text-sm leading-relaxed">
                   {allClean ? (
                     <>
-                      All {report.totalReferences} tour links resolve to a real
-                      catalog id. No mismatches.
+                      All {report.totalReferences} tour links resolve to a real catalog id. No
+                      mismatches.
                     </>
                   ) : (
                     <>
                       Found <strong>{invalid.length}</strong> reference
-                      {invalid.length === 1 ? "" : "s"} to tour ids that don't
-                      exist in the catalog. Fix the files below.
+                      {invalid.length === 1 ? "" : "s"} to tour ids that don't exist in the catalog.
+                      Fix the files below.
                     </>
                   )}
                 </div>
@@ -216,9 +231,8 @@ function TourLinkAuditPage() {
                     Catalog tours with no in-source references
                   </h2>
                   <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">
-                    These exist in the catalog but no source file links to them
-                    by literal id. They are still reachable when iterating{" "}
-                    <code>signatureTours</code> dynamically.
+                    These exist in the catalog but no source file links to them by literal id. They
+                    are still reachable when iterating <code>signatureTours</code> dynamically.
                   </p>
                   <ul className="mt-3 flex flex-wrap gap-2">
                     {report.unreferencedCatalogIds.map((id) => (
@@ -319,9 +333,7 @@ function RouteTreeTroubleshooting() {
         <div className="flex items-center gap-2 font-medium">
           <FileCode2 size={14} />
           <code className="font-mono text-[12px]">src/routeTree.gen.ts</code>
-          <span className="ml-auto text-[10px] uppercase tracking-[0.2em]">
-            {probe.status}
-          </span>
+          <span className="ml-auto text-[10px] uppercase tracking-[0.2em]">{probe.status}</span>
         </div>
 
         {probe.status === "loading" && (
@@ -362,36 +374,35 @@ function RouteTreeTroubleshooting() {
 
       <div className="mt-5 text-xs text-[color:var(--charcoal-soft)] leading-relaxed space-y-3">
         <p>
-          <strong className="text-[color:var(--charcoal)]">Why crawling fails.</strong>{" "}
-          The TanStack Router Vite plugin statically parses files in{" "}
-          <code>src/routes/</code> and writes <code>src/routeTree.gen.ts</code>{" "}
-          before TS checks. If parsing fails, the generated tree goes stale and
-          paths like <code>/admin/tour-link-audit</code> raise{" "}
+          <strong className="text-[color:var(--charcoal)]">Why crawling fails.</strong> The TanStack
+          Router Vite plugin statically parses files in <code>src/routes/</code> and writes{" "}
+          <code>src/routeTree.gen.ts</code> before TS checks. If parsing fails, the generated tree
+          goes stale and paths like <code>/admin/tour-link-audit</code> raise{" "}
           <code>TS2345 — not assignable to keyof FileRoutesByPath</code>.
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <strong>Non-literal route path.</strong>{" "}
-            <code>createFileRoute()</code> requires a plain string literal —
-            never a variable, template string, or <code>as</code> cast.
+            <strong>Non-literal route path.</strong> <code>createFileRoute()</code> requires a plain
+            string literal — never a variable, template string, or <code>as</code> cast.
           </li>
           <li>
-            <strong>File name ≠ route path.</strong> Use dot-separated flat
-            files: <code>admin.tour-link-audit.tsx</code> →{" "}
-            <code>/admin/tour-link-audit</code>. Trailing slashes break it.
+            <strong>File name ≠ route path.</strong> Use dot-separated flat files:{" "}
+            <code>admin.tour-link-audit.tsx</code> → <code>/admin/tour-link-audit</code>. Trailing
+            slashes break it.
           </li>
           <li>
-            <strong>Syntax / JSX errors</strong> in any route file abort the
-            entire crawl, not just that file.
+            <strong>Syntax / JSX errors</strong> in any route file abort the entire crawl, not just
+            that file.
           </li>
           <li>
-            <strong>Manual edits to <code>routeTree.gen.ts</code></strong> are
-            overwritten on every dev reload — never edit it.
+            <strong>
+              Manual edits to <code>routeTree.gen.ts</code>
+            </strong>{" "}
+            are overwritten on every dev reload — never edit it.
           </li>
           <li>
-            <strong>Stale dev cache.</strong> If the probe above shows the route
-            missing while the file exists, restart the dev server to force a
-            re-crawl.
+            <strong>Stale dev cache.</strong> If the probe above shows the route missing while the
+            file exists, restart the dev server to force a re-crawl.
           </li>
         </ul>
       </div>
@@ -456,9 +467,7 @@ function CrawlerErrorPanel() {
     "Connecting to dev-server log…",
     "Reading log tail…",
     "Stripping ANSI codes…",
-    strategy === "root-cause"
-      ? "Matching root-cause markers…"
-      : "Locating last error marker…",
+    strategy === "root-cause" ? "Matching root-cause markers…" : "Locating last error marker…",
     "Extracting file:line:col…",
   ];
 
@@ -595,7 +604,8 @@ function CrawlerErrorPanel() {
               </span>
             </div>
             <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">
-              Step {Math.min(scanStep + 1, scanSteps.length)} / {scanSteps.length}: {scanSteps[scanStep]}
+              Step {Math.min(scanStep + 1, scanSteps.length)} / {scanSteps.length}:{" "}
+              {scanSteps[scanStep]}
             </p>
             <div className="mt-2 h-1 w-full overflow-hidden bg-[color:var(--sand)]/60">
               <div
@@ -642,9 +652,7 @@ function CrawlerErrorPanel() {
 
           {info && info.found && (
             <div className="space-y-3">
-              <div className="text-xs font-medium text-red-900 break-words">
-                {info.message}
-              </div>
+              <div className="text-xs font-medium text-red-900 break-words">{info.message}</div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs">
                 {info.file ? (
@@ -750,7 +758,6 @@ function CrawlerErrorPanel() {
   );
 }
 
-
 function SuggestedActions() {
   const [check, setCheck] = useState<RouteFileCheckResult | null>(null);
   const [checking, setChecking] = useState(false);
@@ -848,13 +855,14 @@ function SuggestedActions() {
       key: "cache",
       title: "Clear Vite & TanStack caches",
       why:
-        check?.cacheDirs.filter((d) => d.exists).map((d) => d.path).join(", ") ||
-        "No cache dirs detected.",
+        check?.cacheDirs
+          .filter((d) => d.exists)
+          .map((d) => d.path)
+          .join(", ") || "No cache dirs detected.",
       status: "todo",
       primary: {
         label: "Copy command",
-        onClick: () =>
-          copy("rm -rf node_modules/.vite .tanstack dist", "cache"),
+        onClick: () => copy("rm -rf node_modules/.vite .tanstack dist", "cache"),
       },
     },
   ];
@@ -865,9 +873,7 @@ function SuggestedActions() {
         <Zap size={12} /> Suggested next actions
       </h3>
       {checking && !check && (
-        <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">
-          Inspecting route file…
-        </p>
+        <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">Inspecting route file…</p>
       )}
       <ul className="mt-3 space-y-2">
         {actions.map((a) => {
@@ -878,10 +884,7 @@ function SuggestedActions() {
                 ? "bg-amber-500"
                 : "bg-[color:var(--charcoal-soft)]";
           return (
-            <li
-              key={a.key}
-              className="border border-[color:var(--border)] p-3 text-sm"
-            >
+            <li key={a.key} className="border border-[color:var(--border)] p-3 text-sm">
               <div className="flex items-start gap-2">
                 <span className={`mt-1.5 inline-block h-2 w-2 rounded-full ${dot}`} />
                 <div className="flex-1 min-w-0">
@@ -902,9 +905,7 @@ function SuggestedActions() {
                           <RefreshCw size={11} />
                         )}
                         {a.primary.label}
-                        {copied === a.key && (
-                          <span className="text-emerald-700">✓</span>
-                        )}
+                        {copied === a.key && <span className="text-emerald-700">✓</span>}
                       </button>
                     )}
                     {a.secondary && (
@@ -919,9 +920,7 @@ function SuggestedActions() {
                         {a.secondary.copyText && (
                           <button
                             type="button"
-                            onClick={() =>
-                              copy(a.secondary!.copyText!, `${a.key}-path`)
-                            }
+                            onClick={() => copy(a.secondary!.copyText!, `${a.key}-path`)}
                             className="inline-flex items-center gap-1 text-[11px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
                             title="Copy file path"
                           >

@@ -23,8 +23,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -202,8 +201,7 @@ serve(async (req) => {
   }
 
   const parts: Array<
-    | { type: "text"; text: string }
-    | { type: "image_url"; image_url: { url: string } }
+    { type: "text"; text: string } | { type: "image_url"; image_url: { url: string } }
   > = [
     {
       type: "text",
@@ -247,16 +245,14 @@ serve(async (req) => {
           properties: {
             toneKeywords: {
               type: "array",
-              description:
-                "3-5 lowercase single-word mood adjectives. Empty if files unreadable.",
+              description: "3-5 lowercase single-word mood adjectives. Empty if files unreadable.",
               items: { type: "string" },
               minItems: 0,
               maxItems: 5,
             },
             toneSummary: {
               type: "string",
-              description:
-                "One short sentence (max 22 words) describing overall vibe.",
+              description: "One short sentence (max 22 words) describing overall vibe.",
               maxLength: 220,
             },
           },
@@ -267,37 +263,28 @@ serve(async (req) => {
     },
   ];
 
-  const aiRes = await fetch(
-    "https://ai.gateway.lovable.dev/v1/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: parts },
-        ],
-        tools,
-        tool_choice: { type: "function", function: { name: "report_tone" } },
-      }),
+  const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: parts },
+      ],
+      tools,
+      tool_choice: { type: "function", function: { name: "report_tone" } },
+    }),
+  });
 
   if (aiRes.status === 429) {
-    return jsonResponse(
-      { error: "Too many requests, please try again in a moment." },
-      429,
-    );
+    return jsonResponse({ error: "Too many requests, please try again in a moment." }, 429);
   }
   if (aiRes.status === 402) {
-    return jsonResponse(
-      { error: "AI credits exhausted. Add funds in Lovable workspace." },
-      402,
-    );
+    return jsonResponse({ error: "AI credits exhausted. Add funds in Lovable workspace." }, 402);
   }
   if (!aiRes.ok) {
     const txt = await aiRes.text().catch(() => "");
@@ -306,8 +293,7 @@ serve(async (req) => {
   }
 
   const aiJson = await aiRes.json();
-  const toolCall =
-    aiJson?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+  const toolCall = aiJson?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
   if (!toolCall) {
     console.error("No tool call in AI response");
     return jsonResponse({ error: "Model did not return a tone summary" }, 502);

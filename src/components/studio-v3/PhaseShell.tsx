@@ -83,10 +83,7 @@ export function PhaseShell({
           Renders a soft, region-tinted pulse once destinationIntent
           resolves; before that it's an empty, layout-stable shell. */}
       {anticipation ? (
-        <RegionAnticipationLayer
-          fill={anticipation.fill}
-          region={anticipation.region}
-        />
+        <RegionAnticipationLayer fill={anticipation.fill} region={anticipation.region} />
       ) : null}
 
       {/* Adaptive progress whisper — emotional phrase + soft percent.
@@ -133,11 +130,12 @@ export function PhaseShell({
         </div>
       ) : null}
 
-
-      <div data-testid="studio-v3-content-layer" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-14 pb-28 sm:pt-28 sm:justify-center sm:py-20">
+      <div
+        data-testid="studio-v3-content-layer"
+        className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-14 pb-28 sm:pt-28 sm:justify-center sm:py-20"
+      >
         {children}
       </div>
-
 
       {/* Local keyframes — scoped via style tag to avoid polluting global CSS. */}
       <style>{`
@@ -172,13 +170,7 @@ const REGION_TINT: Record<string, string> = {
   porto: "color-mix(in oklab, var(--gold) 24%, transparent)",
 };
 
-function RegionAnticipationLayer({
-  fill,
-  region,
-}: {
-  fill: number;
-  region: string | null;
-}) {
+function RegionAnticipationLayer({ fill, region }: { fill: number; region: string | null }) {
   const clamped = Math.max(0, Math.min(1, fill));
   const tint =
     region && REGION_TINT[region]

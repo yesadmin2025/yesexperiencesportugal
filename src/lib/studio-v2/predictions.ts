@@ -9,31 +9,24 @@
 
 import type { PriorityKey, TravelerProfile } from "./profile";
 
-export const MOOD_KEYS = [
-  "food",
-  "coastal",
-  "culture",
-  "wellness",
-  "social",
-  "quiet",
-] as const;
+export const MOOD_KEYS = ["food", "coastal", "culture", "wellness", "social", "quiet"] as const;
 
 export type MoodKey = (typeof MOOD_KEYS)[number];
 export type MoodVector = Record<MoodKey, number>;
 
 // Map priority → mood contribution. One priority can hit multiple moods.
 const PRIORITY_TO_MOODS: Record<PriorityKey, MoodKey[]> = {
-  vineyard_lunch:   ["food", "social"],
-  wine_cellar:      ["culture", "quiet"],
-  coastal_scenery:  ["coastal", "quiet"],
-  hidden_villages:  ["culture", "quiet"],
-  architecture:     ["culture"],
-  heritage:         ["culture"],
+  vineyard_lunch: ["food", "social"],
+  wine_cellar: ["culture", "quiet"],
+  coastal_scenery: ["coastal", "quiet"],
+  hidden_villages: ["culture", "quiet"],
+  architecture: ["culture"],
+  heritage: ["culture"],
   local_gastronomy: ["food", "social"],
-  photography:      ["coastal", "culture"],
-  quiet_luxury:     ["quiet", "wellness"],
-  wellness:         ["wellness", "quiet"],
-  boat:             ["coastal", "social"],
+  photography: ["coastal", "culture"],
+  quiet_luxury: ["quiet", "wellness"],
+  wellness: ["wellness", "quiet"],
+  boat: ["coastal", "social"],
 };
 
 export interface PredictionState {
@@ -69,12 +62,12 @@ export function emptyMoodVector(): MoodVector {
 export function seedStateFromProfile(profile: TravelerProfile): PredictionState {
   const mv = emptyMoodVector();
   // Seed mood from the explicit profile sliders (already 0..100).
-  mv.food     = (profile.foodInterest ?? 50) / 100;
-  mv.coastal  = (profile.coastalAffinity ?? 50) / 100;
-  mv.culture  = (profile.cultureInterest ?? 50) / 100;
+  mv.food = (profile.foodInterest ?? 50) / 100;
+  mv.coastal = (profile.coastalAffinity ?? 50) / 100;
+  mv.culture = (profile.cultureInterest ?? 50) / 100;
   mv.wellness = (profile.wellnessAffinity ?? 50) / 100;
-  mv.social   = (profile.socialEnergy ?? 50) / 100;
-  mv.quiet    = 1 - mv.social;
+  mv.social = (profile.socialEnergy ?? 50) / 100;
+  mv.quiet = 1 - mv.social;
 
   return {
     weights: { ...profile.priorityWeights } as Record<PriorityKey, number>,
@@ -121,10 +114,7 @@ function nudgeMood(
   return next;
 }
 
-export function applySignal(
-  state: PredictionState,
-  signal: GestureSignal,
-): PredictionState {
+export function applySignal(state: PredictionState, signal: GestureSignal): PredictionState {
   switch (signal.type) {
     case "swap": {
       // Negative toward replaced, positive toward replacement is unknown —
@@ -187,11 +177,11 @@ export function projectStateOntoProfile(
   return {
     ...profile,
     priorityWeights: { ...state.weights },
-    foodInterest:    Math.round(state.moodVector.food * 100),
+    foodInterest: Math.round(state.moodVector.food * 100),
     coastalAffinity: Math.round(state.moodVector.coastal * 100),
     cultureInterest: Math.round(state.moodVector.culture * 100),
-    wellnessAffinity:Math.round(state.moodVector.wellness * 100),
-    socialEnergy:    Math.round(state.moodVector.social * 100),
+    wellnessAffinity: Math.round(state.moodVector.wellness * 100),
+    socialEnergy: Math.round(state.moodVector.social * 100),
   };
 }
 
@@ -210,7 +200,7 @@ export function forecastNext<T extends { key: string; priorities?: PriorityKey[]
     if (usedKeys.has(c.key)) continue;
     let score = 0;
     for (const p of c.priorities ?? []) {
-      score += (state.weights[p] ?? 0);
+      score += state.weights[p] ?? 0;
       for (const m of PRIORITY_TO_MOODS[p] ?? []) {
         score += state.moodVector[m] * 0.5;
       }

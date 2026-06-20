@@ -19,7 +19,10 @@ function parseColor(str: string): Rgb | null {
   if (!str) return null;
   const m = str.match(/rgba?\(([^)]+)\)/i);
   if (!m) return null;
-  const parts = m[1].split(/[ ,/]+/).filter(Boolean).map((p) => p.trim());
+  const parts = m[1]
+    .split(/[ ,/]+/)
+    .filter(Boolean)
+    .map((p) => p.trim());
   if (parts.length < 3) return null;
   const r = parseFloat(parts[0]);
   const g = parseFloat(parts[1]);
@@ -102,11 +105,13 @@ function describeSelector(el: Element): string {
 function suggestFix(ratio: number, required: number, large: boolean): string {
   const gap = required - ratio;
   if (large) {
-    if (gap > 1.5) return "Use a darker token (e.g. --charcoal) or add a solid surface behind text.";
+    if (gap > 1.5)
+      return "Use a darker token (e.g. --charcoal) or add a solid surface behind text.";
     return "Bump weight to ≥700 or darken color one step (e.g. --charcoal-soft → --charcoal).";
   }
   if (gap > 2) return "Replace soft token with --charcoal, or place text on --ivory/--sand.";
-  if (gap > 0.8) return "Darken text one token step, or increase font-size to ≥24px to qualify as large text.";
+  if (gap > 0.8)
+    return "Darken text one token step, or increase font-size to ≥24px to qualify as large text.";
   return "Slightly darken the foreground (one token step) to clear AA.";
 }
 

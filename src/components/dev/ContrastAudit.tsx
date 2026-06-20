@@ -22,7 +22,10 @@ function parseColor(str: string): Rgb | null {
   if (!str) return null;
   const m = str.match(/rgba?\(([^)]+)\)/i);
   if (!m) return null;
-  const parts = m[1].split(/[ ,/]+/).filter(Boolean).map((p) => p.trim());
+  const parts = m[1]
+    .split(/[ ,/]+/)
+    .filter(Boolean)
+    .map((p) => p.trim());
   if (parts.length < 3) return null;
   const r = parseFloat(parts[0]);
   const g = parseFloat(parts[1]);
@@ -206,23 +209,20 @@ export function ContrastAudit() {
       const focused = findings.filter((f) => f.inFocus);
       const offscope = findings.filter((f) => !f.inFocus);
       if (focused.length === 0 && offscope.length === 0) {
-        // eslint-disable-next-line no-console
         console.info(
           "%c[contrast-audit] ✅ No AA failures detected.",
           "color:#16a34a;font-weight:600",
         );
       } else {
-        // eslint-disable-next-line no-console
         console.warn(
           `[contrast-audit] ⚠️ ${focused.length} focused failure(s) outlined · ${offscope.length} off-scope failure(s) reported only.`,
         );
         if (focused.length > 0) {
-          // eslint-disable-next-line no-console
           console.groupCollapsed(
             `%c[contrast-audit] FOCUSED — hero · cards · CTAs`,
             "color:#dc2626;font-weight:600",
           );
-          // eslint-disable-next-line no-console
+
           console.table(
             focused.map((f) => ({
               ratio: f.ratio,
@@ -232,16 +232,15 @@ export function ContrastAudit() {
               text: f.text,
             })),
           );
-          // eslint-disable-next-line no-console
+
           console.groupEnd();
         }
         if (offscope.length > 0) {
-          // eslint-disable-next-line no-console
           console.groupCollapsed(
             `%c[contrast-audit] OFF-SCOPE (logged only)`,
             "color:#6b7280;font-weight:600",
           );
-          // eslint-disable-next-line no-console
+
           console.table(
             offscope.map((f) => ({
               ratio: f.ratio,
@@ -251,7 +250,7 @@ export function ContrastAudit() {
               text: f.text,
             })),
           );
-          // eslint-disable-next-line no-console
+
           console.groupEnd();
         }
       }

@@ -20,7 +20,21 @@ import { DEFAULT_MAPPING_RULES } from "@/data/defaultMappingRules";
 import { signatureTours } from "@/data/signatureTours";
 import { checkViatorUrlMatchesTour, type UrlMatchResult } from "@/lib/viatorUrlMatch";
 import { toast } from "sonner";
-import { Loader2, RefreshCw, Check, AlertTriangle, Sliders, Trash2, Plus, Image as ImageIcon, ImageOff, Link2, Link2Off, Download, Save } from "lucide-react";
+import {
+  Loader2,
+  RefreshCw,
+  Check,
+  AlertTriangle,
+  Sliders,
+  Trash2,
+  Plus,
+  Image as ImageIcon,
+  ImageOff,
+  Link2,
+  Link2Off,
+  Download,
+  Save,
+} from "lucide-react";
 
 const FILTER_VALUES = ["all", "with-image", "missing-image", "matched", "unmatched"] as const;
 type FilterValue = (typeof FILTER_VALUES)[number];
@@ -65,9 +79,7 @@ const SELECT_COLS =
 function normalizeUrl(u: string): string {
   return u.replace(/\/+$/, "").toLowerCase();
 }
-const SIGNATURE_BY_URL = new Map(
-  signatureTours.map((t) => [normalizeUrl(t.bookingUrl), t]),
-);
+const SIGNATURE_BY_URL = new Map(signatureTours.map((t) => [normalizeUrl(t.bookingUrl), t]));
 
 function AdminImportPage() {
   const navigate = useNavigate();
@@ -92,9 +104,7 @@ function AdminImportPage() {
   const callBulkViator = useServerFn(bulkImportViatorTours);
 
   // ----- Bulk import: paste id|url per line, run all at once -----
-  const bulkTemplate = signatureTours
-    .map((t) => `${t.id} | ${t.bookingUrl}`)
-    .join("\n");
+  const bulkTemplate = signatureTours.map((t) => `${t.id} | ${t.bookingUrl}`).join("\n");
   const [bulkText, setBulkText] = useState(bulkTemplate);
   const [bulkRunning, setBulkRunning] = useState(false);
   const [bulkResults, setBulkResults] = useState<{
@@ -104,9 +114,7 @@ function AdminImportPage() {
     results: { id: string; url: string; ok: boolean; stopsSaved?: number; error?: string }[];
   } | null>(null);
 
-  const parseBulk = (
-    text: string,
-  ): { items: { id: string; url: string }[]; errors: string[] } => {
+  const parseBulk = (text: string): { items: { id: string; url: string }[]; errors: string[] } => {
     const items: { id: string; url: string }[] = [];
     const errors: string[] = [];
     text.split(/\r?\n/).forEach((rawLine, i) => {
@@ -183,7 +191,6 @@ function AdminImportPage() {
     }
   };
 
-
   // ----- Arrábida P3 Viator source panel -----
   type ViatorItineraryStep = {
     order: number;
@@ -251,7 +258,6 @@ function AdminImportPage() {
     }
   };
 
-
   const onSaveViator = async () => {
     if (!viatorPreview) return;
     setViatorSaving(true);
@@ -290,7 +296,12 @@ function AdminImportPage() {
     notes: string;
     json: string;
     isActive: boolean;
-  }>({ name: "", notes: "", json: JSON.stringify(DEFAULT_MAPPING_RULES, null, 2), isActive: false });
+  }>({
+    name: "",
+    notes: "",
+    json: JSON.stringify(DEFAULT_MAPPING_RULES, null, 2),
+    isActive: false,
+  });
   const [savingRules, setSavingRules] = useState(false);
 
   const refreshRules = async () => {
@@ -313,7 +324,10 @@ function AdminImportPage() {
       setSession(s);
       if (!s) navigate({ to: "/auth" });
     });
-    return () => { mounted = false; sub.subscription.unsubscribe(); };
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   // Check admin role + load existing tours.
@@ -445,9 +459,7 @@ function AdminImportPage() {
   const stats = useMemo(() => {
     const total = tours.length;
     const withImage = tours.filter((t) => !!t.image_url).length;
-    const matched = tours.filter((t) =>
-      SIGNATURE_BY_URL.has(normalizeUrl(t.source_url)),
-    ).length;
+    const matched = tours.filter((t) => SIGNATURE_BY_URL.has(normalizeUrl(t.source_url))).length;
     const matchedWithImage = tours.filter(
       (t) => !!t.image_url && SIGNATURE_BY_URL.has(normalizeUrl(t.source_url)),
     ).length;
@@ -471,12 +483,17 @@ function AdminImportPage() {
       const hasImage = !!t.image_url;
       const matched = SIGNATURE_BY_URL.has(normalizeUrl(t.source_url));
       switch (filter) {
-        case "with-image": return hasImage;
-        case "missing-image": return !hasImage;
-        case "matched": return matched;
-        case "unmatched": return !matched;
+        case "with-image":
+          return hasImage;
+        case "missing-image":
+          return !hasImage;
+        case "matched":
+          return matched;
+        case "unmatched":
+          return !matched;
         case "all":
-        default: return true;
+        default:
+          return true;
       }
     });
   }, [tours, filter]);
@@ -491,8 +508,8 @@ function AdminImportPage() {
             <span className="eyebrow">Studio Admin</span>
             <h1 className="serif text-4xl mt-4">Admin only</h1>
             <p className="mt-4 text-[color:var(--charcoal-soft)]">
-              Your account ({headerLine}) doesn't have the <code>admin</code> role yet.
-              Ask the workspace owner to grant it via the database.
+              Your account ({headerLine}) doesn't have the <code>admin</code> role yet. Ask the
+              workspace owner to grant it via the database.
             </p>
             <button
               onClick={signOut}
@@ -515,9 +532,9 @@ function AdminImportPage() {
               <span className="eyebrow">Studio Admin</span>
               <h1 className="serif text-4xl mt-4">Import Tours</h1>
               <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] max-w-xl">
-                Fetches the live YES experiences catalog, maps each tour to builder
-                regions, durations, signature moments and stop coordinates with AI,
-                and saves them to the database.
+                Fetches the live YES experiences catalog, maps each tour to builder regions,
+                durations, signature moments and stop coordinates with AI, and saves them to the
+                database.
               </p>
             </div>
             <div className="flex items-center gap-3 text-xs text-[color:var(--charcoal-soft)]">
@@ -588,11 +605,10 @@ function AdminImportPage() {
               <h2 className="serif text-2xl">Arrábida P3 — Viator source</h2>
             </div>
             <p className="mt-2 text-xs text-[color:var(--charcoal-soft)] max-w-2xl">
-              Paste the exact Viator tour URL for the Arrábida P3 day. Lovable AI
-              extracts the real itinerary, inclusions, exclusions and optional
-              stops, and updates the <code>arrabida-wine-allinclusive</code>{" "}
-              entry in the database. Review the preview before saving — nothing
-              is written until you click <strong>Save</strong>.
+              Paste the exact Viator tour URL for the Arrábida P3 day. Lovable AI extracts the real
+              itinerary, inclusions, exclusions and optional stops, and updates the{" "}
+              <code>arrabida-wine-allinclusive</code> entry in the database. Review the preview
+              before saving — nothing is written until you click <strong>Save</strong>.
             </p>
 
             <div className="mt-4 flex flex-col sm:flex-row gap-2">
@@ -629,14 +645,11 @@ function AdminImportPage() {
               >
                 <AlertTriangle size={14} className="mt-0.5 shrink-0" />
                 <div className="space-y-1">
-                  {viatorUrlCheck.kind === "invalid" && (
-                    <span>{viatorUrlCheck.reason}</span>
-                  )}
+                  {viatorUrlCheck.kind === "invalid" && <span>{viatorUrlCheck.reason}</span>}
                   {viatorUrlCheck.kind === "mismatch" && (
                     <>
                       <div>
-                        This URL doesn't look like the Arrábida P3 tour. Expected
-                        keywords:{" "}
+                        This URL doesn't look like the Arrábida P3 tour. Expected keywords:{" "}
                         <span className="font-mono">
                           {viatorUrlCheck.expected.slice(0, 5).join(", ")}
                         </span>
@@ -652,14 +665,11 @@ function AdminImportPage() {
                   {viatorUrlCheck.kind === "weak" && (
                     <div>
                       Only one keyword matched (
-                      <span className="font-mono">
-                        {viatorUrlCheck.matchedKeywords.join(", ")}
-                      </span>
+                      <span className="font-mono">{viatorUrlCheck.matchedKeywords.join(", ")}</span>
                       ). Double-check this is the right Viator product.
                     </div>
                   )}
-                  {(viatorUrlCheck.kind === "mismatch" ||
-                    viatorUrlCheck.kind === "weak") && (
+                  {(viatorUrlCheck.kind === "mismatch" || viatorUrlCheck.kind === "weak") && (
                     <label className="inline-flex items-center gap-1.5 mt-1 cursor-pointer">
                       <input
                         type="checkbox"
@@ -685,12 +695,10 @@ function AdminImportPage() {
                 <div className="space-y-1">
                   <h3 className="serif text-xl">{viatorPreview.title}</h3>
                   <p className="text-xs text-[color:var(--charcoal-soft)]">
-                    {viatorPreview.durationText} · {viatorPreview.groupType} ·
-                    Pickup: {viatorPreview.pickupZone}
+                    {viatorPreview.durationText} · {viatorPreview.groupType} · Pickup:{" "}
+                    {viatorPreview.pickupZone}
                   </p>
-                  <p className="text-sm mt-2 text-[color:var(--charcoal)]">
-                    {viatorPreview.blurb}
-                  </p>
+                  <p className="text-sm mt-2 text-[color:var(--charcoal)]">{viatorPreview.blurb}</p>
                 </div>
 
                 <div>
@@ -798,11 +806,11 @@ function AdminImportPage() {
               <h2 className="serif text-2xl">Bulk import — paste all Viator URLs</h2>
             </div>
             <p className="mt-2 text-xs text-[color:var(--charcoal-soft)] max-w-2xl">
-              One line per tour, format <code>tour-id | viator-url</code>. The
-              template below is pre-filled with all {signatureTours.length} Signature
-              ids and their current bookingUrl — replace each URL with the exact
-              Viator product link, then click <strong>Import all</strong>. Each row
-              upserts <code>imported_tours</code> with the AI-extracted itinerary.
+              One line per tour, format <code>tour-id | viator-url</code>. The template below is
+              pre-filled with all {signatureTours.length} Signature ids and their current bookingUrl
+              — replace each URL with the exact Viator product link, then click{" "}
+              <strong>Import all</strong>. Each row upserts <code>imported_tours</code> with the
+              AI-extracted itinerary.
             </p>
 
             <textarea
@@ -827,9 +835,7 @@ function AdminImportPage() {
                       <li key={c.id + c.url} className="flex items-start gap-2">
                         <span
                           className={
-                            c.check.kind === "weak"
-                              ? "text-[color:var(--gold)]"
-                              : "text-red-600"
+                            c.check.kind === "weak" ? "text-[color:var(--gold)]" : "text-red-600"
                           }
                         >
                           {c.check.kind === "weak" ? "?" : "✕"}
@@ -866,7 +872,6 @@ function AdminImportPage() {
                 disabled={bulkRunning}
                 className="inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 text-[color:var(--ivory)] px-5 py-2.5 text-sm tracking-wide transition-all"
               >
-
                 {bulkRunning ? (
                   <Loader2 size={14} className="animate-spin" />
                 ) : (
@@ -886,17 +891,15 @@ function AdminImportPage() {
             {bulkResults && (
               <div className="mt-5 border-t border-[color:var(--border)] pt-4 space-y-2">
                 <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                  {bulkResults.succeeded} ok · {bulkResults.failed} failed ·
-                  {" "}{bulkResults.total} total
+                  {bulkResults.succeeded} ok · {bulkResults.failed} failed · {bulkResults.total}{" "}
+                  total
                 </div>
                 <ul className="text-xs space-y-1">
                   {bulkResults.results.map((r) => (
                     <li
                       key={r.id}
                       className={`flex items-start gap-2 border-l-2 pl-2 ${
-                        r.ok
-                          ? "border-[color:var(--teal)]/60"
-                          : "border-red-400/70"
+                        r.ok ? "border-[color:var(--teal)]/60" : "border-red-400/70"
                       }`}
                     >
                       {r.ok ? (
@@ -932,8 +935,8 @@ function AdminImportPage() {
             <p className="mt-2 text-xs text-[color:var(--charcoal-soft)] max-w-2xl">
               Choose which fetched fields populate <strong>region</strong>,{" "}
               <strong>signature moments</strong>, <strong>duration</strong> and{" "}
-              <strong>stop coordinates</strong>. The active ruleset is applied on every import.
-              When the source format changes, switch rulesets without redeploying.
+              <strong>stop coordinates</strong>. The active ruleset is applied on every import. When
+              the source format changes, switch rulesets without redeploying.
             </p>
 
             {rulesList.length === 0 && editingRuleId === null && (
@@ -1092,16 +1095,36 @@ function AdminImportPage() {
               <FilterPill value="all" current={filter} count={stats.total} icon={null}>
                 All
               </FilterPill>
-              <FilterPill value="with-image" current={filter} count={stats.withImage} icon={<ImageIcon size={11} />}>
+              <FilterPill
+                value="with-image"
+                current={filter}
+                count={stats.withImage}
+                icon={<ImageIcon size={11} />}
+              >
                 With image
               </FilterPill>
-              <FilterPill value="missing-image" current={filter} count={stats.missingImage} icon={<ImageOff size={11} />}>
+              <FilterPill
+                value="missing-image"
+                current={filter}
+                count={stats.missingImage}
+                icon={<ImageOff size={11} />}
+              >
                 Missing image
               </FilterPill>
-              <FilterPill value="matched" current={filter} count={stats.matched} icon={<Link2 size={11} />}>
+              <FilterPill
+                value="matched"
+                current={filter}
+                count={stats.matched}
+                icon={<Link2 size={11} />}
+              >
                 Matched signature
               </FilterPill>
-              <FilterPill value="unmatched" current={filter} count={stats.total - stats.matched} icon={<Link2Off size={11} />}>
+              <FilterPill
+                value="unmatched"
+                current={filter}
+                count={stats.total - stats.matched}
+                icon={<Link2Off size={11} />}
+              >
                 Unmatched
               </FilterPill>
             </div>
@@ -1114,7 +1137,12 @@ function AdminImportPage() {
           ) : filteredTours.length === 0 ? (
             <p className="mt-6 text-sm text-[color:var(--charcoal-soft)]">
               No tours match this filter.{" "}
-              <Link from="/admin/import-tours" to="." search={{ filter: "all" }} className="underline">
+              <Link
+                from="/admin/import-tours"
+                to="."
+                search={{ filter: "all" }}
+                className="underline"
+              >
                 Show all
               </Link>
               .
@@ -1146,21 +1174,31 @@ function AdminImportPage() {
                         <div>
                           <h3 className="serif text-xl">{t.title}</h3>
                           <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                            <Pill tone={hasImage ? "good" : "warn"} icon={hasImage ? <ImageIcon size={11} /> : <ImageOff size={11} />}>
+                            <Pill
+                              tone={hasImage ? "good" : "warn"}
+                              icon={hasImage ? <ImageIcon size={11} /> : <ImageOff size={11} />}
+                            >
                               {hasImage ? "Image saved" : "No image"}
                             </Pill>
-                            <Pill tone={matched ? "good" : "muted"} icon={matched ? <Link2 size={11} /> : <Link2Off size={11} />}>
+                            <Pill
+                              tone={matched ? "good" : "muted"}
+                              icon={matched ? <Link2 size={11} /> : <Link2Off size={11} />}
+                            >
                               {matched ? "Signature match" : "Unmatched"}
                             </Pill>
                             {hasImage && matched && (
-                              <Pill tone="accent" icon={<Check size={11} />}>Live on cards</Pill>
+                              <Pill tone="accent" icon={<Check size={11} />}>
+                                Live on cards
+                              </Pill>
                             )}
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                         <span>{t.region_label}</span>
-                        <span>{t.duration_label} · {t.duration_hours}</span>
+                        <span>
+                          {t.duration_label} · {t.duration_hours}
+                        </span>
                         <span className="text-[color:var(--teal)]">€{t.price_from}+</span>
                       </div>
                     </div>
@@ -1172,11 +1210,16 @@ function AdminImportPage() {
                       <Tag>{t.theme}</Tag>
                       <Tag>{t.pace}</Tag>
                       <Tag>{t.tier}</Tag>
-                      {t.styles.map((s) => <Tag key={s}>{s}</Tag>)}
+                      {t.styles.map((s) => (
+                        <Tag key={s}>{s}</Tag>
+                      ))}
                     </div>
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {t.highlights.map((h) => (
-                        <span key={h} className="text-[11px] px-2 py-0.5 border border-[color:var(--gold)]/40 text-[color:var(--charcoal)]">
+                        <span
+                          key={h}
+                          className="text-[11px] px-2 py-0.5 border border-[color:var(--gold)]/40 text-[color:var(--charcoal)]"
+                        >
                           {h}
                         </span>
                       ))}
@@ -1259,7 +1302,6 @@ function Pill({
     </span>
   );
 }
-
 
 /**
  * Single filter chip in the imported-tours list. Selection is mirrored to the

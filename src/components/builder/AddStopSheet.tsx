@@ -59,7 +59,9 @@ export function AddStopSheet({
   const sorted = useMemo(() => {
     const q = query.trim().toLowerCase();
     return stops
-      .filter((s) => (q ? s.label.toLowerCase().includes(q) || (s.tag ?? "").toLowerCase().includes(q) : true))
+      .filter((s) =>
+        q ? s.label.toLowerCase().includes(q) || (s.tag ?? "").toLowerCase().includes(q) : true,
+      )
       .map((s) => ({ s, e: eligibility[s.key] }))
       .filter(({ e }) => (eligibleOnly ? e?.eligible : true))
       .sort((a, b) => {
@@ -92,7 +94,8 @@ export function AddStopSheet({
             </h3>
             {rules && (
               <p className="mt-1 text-[11px] text-[color:var(--charcoal)]/55">
-                Within {rules.max_km_between_stops} km of last stop · max {rules.max_total_km_per_day} km/day
+                Within {rules.max_km_between_stops} km of last stop · max{" "}
+                {rules.max_total_km_per_day} km/day
               </p>
             )}
           </div>
@@ -191,7 +194,9 @@ export function AddStopSheet({
                           </p>
                         )}
                         <p className="mt-1 text-[11.5px] text-[color:var(--charcoal)]/65">
-                          {e ? `${e.kmFromLastStop} km · ${e.driveMinutesFromLastStop} min drive` : ""}
+                          {e
+                            ? `${e.kmFromLastStop} km · ${e.driveMinutesFromLastStop} min drive`
+                            : ""}
                           {!eligible && e?.reason ? ` · ${e.reason}` : ""}
                         </p>
                       </div>

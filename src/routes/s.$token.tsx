@@ -19,14 +19,22 @@ export const Route = createFileRoute("/s/$token")({
 
 function Shell({ title }: { title: string }) {
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center px-6"
-      style={{ background: "var(--ivory)", color: "var(--charcoal)" }}>
+    <div
+      className="min-h-[100dvh] flex items-center justify-center px-6"
+      style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
+    >
       <div className="max-w-md text-center">
-        <p className="text-[10px] uppercase tracking-[0.28em] font-bold"
-          style={{ color: "var(--gold)" }}>YES Experiences</p>
+        <p
+          className="text-[10px] uppercase tracking-[0.28em] font-bold"
+          style={{ color: "var(--gold)" }}
+        >
+          YES Experiences
+        </p>
         <h1 className="serif mt-3 text-[1.8rem] font-semibold leading-tight">{title}</h1>
-        <a href="/studio-v2"
-          className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4">
+        <a
+          href="/studio-v2"
+          className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4"
+        >
           Design a new experience
         </a>
       </div>
@@ -46,20 +54,29 @@ function ResumeStudio() {
     load({ data: { shareToken: token } })
       .then((r) => {
         if (cancelled) return;
-        if (!r.found) { setMissing(true); return; }
+        if (!r.found) {
+          setMissing(true);
+          return;
+        }
         setProfile({ ...emptyProfile(), ...(r.profile as Partial<TravelerProfile>) });
       })
       .catch(() => setMissing(true));
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [token, load]);
 
   if (missing) throw notFound();
   if (!profile) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center"
-        style={{ background: "var(--ivory)" }}>
-        <p className="text-[12px] uppercase tracking-[0.22em]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}>
+      <div
+        className="min-h-[100dvh] flex items-center justify-center"
+        style={{ background: "var(--ivory)" }}
+      >
+        <p
+          className="text-[12px] uppercase tracking-[0.22em]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        >
           Opening your experience…
         </p>
       </div>
@@ -69,7 +86,9 @@ function ResumeStudio() {
     <StudioV2
       initialProfile={profile}
       startAtReveal
-      onExit={() => { void navigate({ to: "/" }); }}
+      onExit={() => {
+        void navigate({ to: "/" });
+      }}
     />
   );
 }

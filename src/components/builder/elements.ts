@@ -25,10 +25,20 @@ export interface BuilderElement {
 }
 
 export const BUILDER_ELEMENTS: BuilderElement[] = [
-  { key: "sunset-setup", label: "Sunset setup", sub: "Cove or terrace, set for two", icon: Sparkles },
+  {
+    key: "sunset-setup",
+    label: "Sunset setup",
+    sub: "Cove or terrace, set for two",
+    icon: Sparkles,
+  },
   { key: "photographer", label: "Photographer", sub: "An hour, real moments", icon: Camera },
   { key: "picnic", label: "Private picnic", sub: "Local table, set outdoors", icon: Flower2 },
-  { key: "premium-tasting", label: "Premium tasting", sub: "Reserve cellar, with the maker", icon: Wine },
+  {
+    key: "premium-tasting",
+    label: "Premium tasting",
+    sub: "Reserve cellar, with the maker",
+    icon: Wine,
+  },
   { key: "vehicle-upgrade", label: "Vehicle upgrade", sub: "Premium car or van", icon: Car },
   { key: "extra-hour", label: "Extra hour", sub: "More time at a stop you love", icon: Clock },
 ];

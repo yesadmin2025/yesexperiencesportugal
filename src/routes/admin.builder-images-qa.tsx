@@ -1,14 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  Loader2,
-  Power,
-  RotateCcw,
-  Save,
-  ExternalLink,
-  Check,
-} from "lucide-react";
+import { Loader2, Power, RotateCcw, Save, ExternalLink, Check } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { BuilderImage } from "@/components/builder/BuilderImage";
@@ -118,9 +111,7 @@ function BuilderImagesQAPage() {
       if (filter === "active" && !img.is_active) continue;
       if (filter === "inactive" && img.is_active) continue;
       if (q) {
-        const stop = img.related_stop_key
-          ? stopsByKey[img.related_stop_key]
-          : null;
+        const stop = img.related_stop_key ? stopsByKey[img.related_stop_key] : null;
         const haystack = [
           img.alt_text,
           img.related_stop_key ?? "",
@@ -161,9 +152,7 @@ function BuilderImagesQAPage() {
     try {
       await toggleActive({ data: { id: img.id, isActive: !img.is_active } });
       setImages((prev) =>
-        prev.map((i) =>
-          i.id === img.id ? { ...i, is_active: !img.is_active } : i,
-        ),
+        prev.map((i) => (i.id === img.id ? { ...i, is_active: !img.is_active } : i)),
       );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Toggle failed");
@@ -178,9 +167,7 @@ function BuilderImagesQAPage() {
     setSavingAlt((s) => ({ ...s, [img.id]: true }));
     try {
       await updateAlt({ data: { id: img.id, altText: draft } });
-      setImages((prev) =>
-        prev.map((i) => (i.id === img.id ? { ...i, alt_text: draft } : i)),
-      );
+      setImages((prev) => prev.map((i) => (i.id === img.id ? { ...i, alt_text: draft } : i)));
       setAltDrafts((d) => {
         const { [img.id]: _, ...rest } = d;
         return rest;
@@ -231,16 +218,11 @@ function BuilderImagesQAPage() {
     return (
       <SiteLayout>
         <div className="container-x py-24 text-center">
-          <h1 className="serif text-2xl font-semibold text-[color:var(--charcoal)]">
-            Admin only
-          </h1>
+          <h1 className="serif text-2xl font-semibold text-[color:var(--charcoal)]">Admin only</h1>
           <p className="mt-2 text-sm text-[color:var(--charcoal)]/60">
             Sign in with an admin account to use the QA view.
           </p>
-          <Link
-            to="/auth"
-            className="mt-6 inline-block text-sm underline underline-offset-4"
-          >
+          <Link to="/auth" className="mt-6 inline-block text-sm underline underline-offset-4">
             Go to sign-in →
           </Link>
         </div>
@@ -260,8 +242,8 @@ function BuilderImagesQAPage() {
               Builder image QA
             </h1>
             <p className="mt-1 text-[13px] text-[color:var(--charcoal)]/65">
-              Preview scraped photos per stop · fix alt text · deactivate bad
-              matches · re-scrape one stop at a time.
+              Preview scraped photos per stop · fix alt text · deactivate bad matches · re-scrape
+              one stop at a time.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -306,11 +288,7 @@ function BuilderImagesQAPage() {
             disabled={loading}
             className="inline-flex items-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/15 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)]/80 hover:border-[color:var(--charcoal)]/35 disabled:opacity-50"
           >
-            {loading ? (
-              <Loader2 size={12} className="animate-spin" />
-            ) : (
-              <RotateCcw size={12} />
-            )}
+            {loading ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
             Refresh
           </button>
         </div>
@@ -340,9 +318,7 @@ function BuilderImagesQAPage() {
                 <header className="flex flex-wrap items-end justify-between gap-3 border-b border-[color:var(--charcoal)]/10 pb-3">
                   <div className="min-w-0">
                     <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
-                      {isUnassigned
-                        ? "Region / unassigned"
-                        : (stop?.region_key ?? "Stop")}
+                      {isUnassigned ? "Region / unassigned" : (stop?.region_key ?? "Stop")}
                     </p>
                     <h2 className="serif mt-0.5 text-[1.25rem] font-semibold leading-tight text-[color:var(--charcoal)]">
                       {isUnassigned ? "Not linked to a stop" : (stop?.label ?? stopKey)}
@@ -350,8 +326,7 @@ function BuilderImagesQAPage() {
                     <p className="mt-0.5 text-[11.5px] text-[color:var(--charcoal)]/55">
                       <code className="font-mono">{isUnassigned ? "—" : stopKey}</code>
                       {" · "}
-                      {group.length} image{group.length === 1 ? "" : "s"} ·{" "}
-                      {activeCount} active
+                      {group.length} image{group.length === 1 ? "" : "s"} · {activeCount} active
                     </p>
                   </div>
                   {!isUnassigned && (
@@ -401,8 +376,7 @@ function BuilderImagesQAPage() {
                 <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {group.map((img) => {
                     const draft = altDrafts[img.id];
-                    const dirty =
-                      typeof draft === "string" && draft.trim() !== img.alt_text;
+                    const dirty = typeof draft === "string" && draft.trim() !== img.alt_text;
                     return (
                       <article
                         key={img.id}
@@ -413,11 +387,7 @@ function BuilderImagesQAPage() {
                             : "border-[color:var(--charcoal)]/10 bg-[color:var(--sand)]/40 opacity-75",
                         ].join(" ")}
                       >
-                        <BuilderImage
-                          src={img.image_url}
-                          alt={img.alt_text}
-                          ratio="4/5"
-                        />
+                        <BuilderImage src={img.image_url} alt={img.alt_text} ratio="4/5" />
                         <div className="flex items-center justify-between gap-2 text-[10.5px] uppercase tracking-[0.18em] font-bold">
                           <span className="text-[color:var(--charcoal)]/55">
                             {img.usage_role} · {img.image_type}
@@ -434,8 +404,7 @@ function BuilderImagesQAPage() {
                           </span>
                         </div>
 
-                        {(img.mood_tags.length > 0 ||
-                          img.occasion_tags.length > 0) && (
+                        {(img.mood_tags.length > 0 || img.occasion_tags.length > 0) && (
                           <div className="flex flex-wrap gap-1">
                             {img.mood_tags.map((t) => (
                               <span

@@ -43,11 +43,11 @@ describe("mapZoomMemory namespace isolation", () => {
 
     // New stores in a fresh module would normally re-hydrate; here we test
     // the persisted payloads stay separate after a round-trip.
-    expect(
-      JSON.parse(window.localStorage.getItem("yes.mapZoom.builder-map.v1")!),
-    ).toEqual({ alentejo: { center: [38.57, -7.91], zoom: 10 } });
-    expect(
-      JSON.parse(window.localStorage.getItem("yes.mapZoom.premium-map.v1")!),
-    ).toEqual({ algarve: { center: [37.1, -8.2], zoom: 11 } });
+    expect(JSON.parse(window.localStorage.getItem("yes.mapZoom.builder-map.v1")!)).toEqual({
+      alentejo: { center: [38.57, -7.91], zoom: 10 },
+    });
+    expect(JSON.parse(window.localStorage.getItem("yes.mapZoom.premium-map.v1")!)).toEqual({
+      algarve: { center: [37.1, -8.2], zoom: 11 },
+    });
   });
 });

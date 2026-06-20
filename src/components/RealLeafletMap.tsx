@@ -17,23 +17,20 @@ L.Icon.Default.mergeOptions({
 });
 
 const REGION_COLORS: Record<string, string> = {
-  lisbon: "#0c5b66",   // teal
-  porto: "#b3893f",    // gold
+  lisbon: "#0c5b66", // teal
+  porto: "#b3893f", // gold
   alentejo: "#7a4d3a", // earth
-  algarve: "#2c7da0",  // ocean
+  algarve: "#2c7da0", // ocean
 };
 
 const REGION_CENTERS: Record<string, { lat: number; lng: number; zoom: number }> = {
   lisbon: { lat: 38.72, lng: -9.14, zoom: 9 },
   porto: { lat: 41.16, lng: -8.62, zoom: 9 },
   alentejo: { lat: 38.57, lng: -7.91, zoom: 8 },
-  algarve: { lat: 37.10, lng: -8.20, zoom: 9 },
+  algarve: { lat: 37.1, lng: -8.2, zoom: 9 },
 };
 
-const PORTUGAL_BOUNDS = L.latLngBounds(
-  L.latLng(36.9, -9.6),
-  L.latLng(42.2, -6.2),
-);
+const PORTUGAL_BOUNDS = L.latLngBounds(L.latLng(36.9, -9.6), L.latLng(42.2, -6.2));
 
 // Per-region zoom memory — switching regions restores that region's
 // last camera (center + zoom). Persists to localStorage so a full page
@@ -128,8 +125,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
           const id = `${geo.lat.toFixed(4)},${geo.lng.toFixed(4)}`;
           if (!byCoord[id])
             byCoord[id] = { ...geo, region: refs[0]?.region || geo.region, tours: [] };
-          for (const r of refs)
-            byCoord[id].tours.push({ id: r.tourId, title: r.tourTitle });
+          for (const r of refs) byCoord[id].tours.push({ id: r.tourId, title: r.tourTitle });
         }
         // Tiny pause to be polite to Nominatim
         await new Promise((r) => setTimeout(r, 1100));
@@ -219,7 +215,10 @@ export function RealLeafletMap({ region }: { region: string | null }) {
         ? `<div style="margin-top:6px;font-size:11px;color:#555;">
              <strong>${m.tours.length}</strong> tour${m.tours.length === 1 ? "" : "s"}:
              <ul style="margin:4px 0 0 0;padding-left:14px;max-height:120px;overflow:auto;">
-               ${m.tours.slice(0, 8).map((t) => `<li>${escapeHtml(t.title)}</li>`).join("")}
+               ${m.tours
+                 .slice(0, 8)
+                 .map((t) => `<li>${escapeHtml(t.title)}</li>`)
+                 .join("")}
                ${m.tours.length > 8 ? `<li>+${m.tours.length - 8} more</li>` : ""}
              </ul>
            </div>`
@@ -257,10 +256,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
     }
   }, [region]);
 
-  const totalTours = useMemo(
-    () => markers.reduce((s, m) => s + m.tours.length, 0),
-    [markers],
-  );
+  const totalTours = useMemo(() => markers.reduce((s, m) => s + m.tours.length, 0), [markers]);
 
   return (
     <div

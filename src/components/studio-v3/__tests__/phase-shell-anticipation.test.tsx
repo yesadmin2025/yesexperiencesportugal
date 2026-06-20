@@ -21,8 +21,12 @@ describe("PhaseShell anticipation layer", () => {
 
     expect(anticipation.getAttribute("data-region")).toBe("arrabida");
     expect(screen.getByTestId("studio-v3-region-pulse")).toBeTruthy();
-    expect(wash.compareDocumentPosition(anticipation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(anticipation.compareDocumentPosition(content) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(
+      wash.compareDocumentPosition(anticipation) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      anticipation.compareDocumentPosition(content) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 
   it("does not render a pulse before destinationIntent resolves to a region", () => {
@@ -32,7 +36,9 @@ describe("PhaseShell anticipation layer", () => {
       </PhaseShell>,
     );
 
-    expect(screen.getByTestId("studio-v3-anticipation-layer").getAttribute("data-region")).toBe("none");
+    expect(screen.getByTestId("studio-v3-anticipation-layer").getAttribute("data-region")).toBe(
+      "none",
+    );
     expect(screen.queryByTestId("studio-v3-region-pulse")).toBeNull();
   });
 });

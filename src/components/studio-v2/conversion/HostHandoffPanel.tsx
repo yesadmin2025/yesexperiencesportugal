@@ -37,10 +37,12 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-function buildItineraryMessage(profile: TravelerProfile, region: string, stops: RefineStop[]): string {
-  const greeting = profile.name?.trim()
-    ? `Olá! Sou ${profile.name.trim()}.`
-    : "Olá!";
+function buildItineraryMessage(
+  profile: TravelerProfile,
+  region: string,
+  stops: RefineStop[],
+): string {
+  const greeting = profile.name?.trim() ? `Olá! Sou ${profile.name.trim()}.` : "Olá!";
   const guests =
     (profile.group?.adults ?? 0) + (profile.group?.teens ?? 0) + (profile.group?.children ?? 0);
   const lines: string[] = [
@@ -56,7 +58,13 @@ function buildItineraryMessage(profile: TravelerProfile, region: string, stops: 
   return lines.join("\n");
 }
 
-export function HostHandoffPanel({ profile, region, archetype, stops, emphasis = "primary" }: Props) {
+export function HostHandoffPanel({
+  profile,
+  region,
+  archetype,
+  stops,
+  emphasis = "primary",
+}: Props) {
   const createDraft = useServerFn(createCustomBookingDraft);
   const [busy, setBusy] = useState(false);
   const [draftToken, setDraftToken] = useState<string | null>(null);
@@ -71,7 +79,10 @@ export function HostHandoffPanel({ profile, region, archetype, stops, emphasis =
     return { km: Math.round(km), drive: Math.round((km / 55) * 60), experience: exp };
   }, [stops]);
 
-  const waMsg = useMemo(() => buildItineraryMessage(profile, region, stops), [profile, region, stops]);
+  const waMsg = useMemo(
+    () => buildItineraryMessage(profile, region, stops),
+    [profile, region, stops],
+  );
 
   const onWhatsApp = async () => {
     void trackBuilderEvent("studio_v2_host_handoff_click", { archetype, region, emphasis });
@@ -146,13 +157,20 @@ export function HostHandoffPanel({ profile, region, archetype, stops, emphasis =
         <div className="text-left">
           <p
             className="text-[13.5px]"
-            style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600, color: "var(--charcoal)" }}
+            style={{
+              fontFamily: "var(--font-display, Montserrat), sans-serif",
+              fontWeight: 600,
+              color: "var(--charcoal)",
+            }}
           >
             Mariana
           </p>
           <p
             className="text-[10.5px] uppercase tracking-[0.26em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              fontWeight: 600,
+            }}
           >
             Your local in {region}
           </p>
@@ -161,10 +179,13 @@ export function HostHandoffPanel({ profile, region, archetype, stops, emphasis =
 
       <p
         className="max-w-[34ch] text-[13.5px] italic leading-relaxed"
-        style={{ fontFamily: "Georgia, serif", color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+        style={{
+          fontFamily: "Georgia, serif",
+          color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+        }}
       >
-        Some days are best shaped together. Mariana will refine the rhythm,
-        confirm timings and the final investment — then secure every reservation.
+        Some days are best shaped together. Mariana will refine the rhythm, confirm timings and the
+        final investment — then secure every reservation.
       </p>
 
       <a
@@ -174,9 +195,13 @@ export function HostHandoffPanel({ profile, region, archetype, stops, emphasis =
         onClick={onWhatsApp}
         className="inline-flex items-center justify-center gap-2.5 rounded-[2px] px-6 py-3.5 transition-all focus-visible:outline-none focus-visible:ring-2"
         style={{
-          background: isPrimary ? "color-mix(in oklab, var(--gold) 92%, var(--charcoal))" : "transparent",
+          background: isPrimary
+            ? "color-mix(in oklab, var(--gold) 92%, var(--charcoal))"
+            : "transparent",
           color: isPrimary ? "var(--charcoal)" : "var(--charcoal)",
-          border: isPrimary ? "none" : "1px solid color-mix(in oklab, var(--charcoal) 22%, transparent)",
+          border: isPrimary
+            ? "none"
+            : "1px solid color-mix(in oklab, var(--charcoal) 22%, transparent)",
           minHeight: 48,
           minWidth: 220,
           fontFamily: "var(--font-sans, Inter), sans-serif",

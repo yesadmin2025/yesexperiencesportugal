@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  Wine,
-  Users,
-  Clock3,
-  Sparkles,
-  MapPin,
-  ArrowRight,
-  ShieldCheck,
-  Plus,
-} from "lucide-react";
+import { Wine, Users, Clock3, Sparkles, MapPin, ArrowRight, ShieldCheck, Plus } from "lucide-react";
 import { useScrollDebugFlags } from "@/lib/scroll-debug";
 
 /**
@@ -39,7 +30,14 @@ type Stop = {
 
 const STOPS: Stop[] = [
   { id: "lis", x: 70, y: 60, label: "Lisbon", caption: "Pickup", delay: 0 },
-  { id: "aze", x: 110, y: 138, label: "Azeitão", caption: "Wine tasting · Local lunch", delay: 700 },
+  {
+    id: "aze",
+    x: 110,
+    y: 138,
+    label: "Azeitão",
+    caption: "Wine tasting · Local lunch",
+    delay: 700,
+  },
   { id: "ses", x: 154, y: 206, label: "Sesimbra", caption: "Coastal viewpoint", delay: 1400 },
 ];
 
@@ -130,10 +128,7 @@ export function StudioLivePreview() {
       </div>
 
       {/* Progress bar — gold fill, animates on reveal */}
-      <div
-        aria-hidden="true"
-        className="relative z-20 h-[3px] w-full bg-[color:var(--ivory)]/10"
-      >
+      <div aria-hidden="true" className="relative z-20 h-[3px] w-full bg-[color:var(--ivory)]/10">
         <div
           className="absolute inset-y-0 left-0 bg-gradient-to-r from-[color:var(--teal-2)] via-[color:var(--gold)] to-[color:var(--gold)]"
           style={{
@@ -218,7 +213,9 @@ export function StudioLivePreview() {
             filter="url(#slv-soft)"
             strokeDasharray={pathLen}
             strokeDashoffset={renderedActive ? 0 : pathLen}
-            style={{ transition: `stroke-dashoffset ${routeDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)` }}
+            style={{
+              transition: `stroke-dashoffset ${routeDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)`,
+            }}
           />
           <path
             ref={pathRef}
@@ -230,7 +227,9 @@ export function StudioLivePreview() {
             strokeLinecap="round"
             strokeDasharray={pathLen}
             strokeDashoffset={renderedActive ? 0 : pathLen}
-            style={{ transition: `stroke-dashoffset ${routeDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)` }}
+            style={{
+              transition: `stroke-dashoffset ${routeDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)`,
+            }}
           />
           {STOPS.map((s, i) => (
             <g
@@ -348,7 +347,11 @@ export function StudioLivePreview() {
               : "border-[color:var(--gold)]/45 bg-transparent text-[color:var(--gold)] group-hover:bg-[color:var(--gold)]/10"
           }`}
         >
-          <Plus size={11} aria-hidden="true" className={added ? "rotate-45 transition-transform" : "transition-transform"} />
+          <Plus
+            size={11}
+            aria-hidden="true"
+            className={added ? "rotate-45 transition-transform" : "transition-transform"}
+          />
           {added ? "Added" : "Add"}
         </span>
       </button>

@@ -312,18 +312,16 @@ export function inferProfile(
   }
 
   // Pick winning intent (deterministic order on ties).
-  const sortedIntents = (Object.keys(intentScore) as IntentAtmosphere[])
-    .sort((a, b) => intentScore[b] - intentScore[a]);
+  const sortedIntents = (Object.keys(intentScore) as IntentAtmosphere[]).sort(
+    (a, b) => intentScore[b] - intentScore[a],
+  );
   const topIntent = sortedIntents[0];
   const total = Object.values(intentScore).reduce((a, b) => a + b, 0) || 1;
   const confidence = intentScore[topIntent] / total;
 
   // Derive pace from average nudge + traveller lingering.
   const avgNudge = paceCount > 0 ? paceSum / paceCount : 0;
-  const pace: PaceV2 =
-    avgNudge <= -0.5 ? "light" :
-    avgNudge >=  0.5 ? "rich" :
-                       "balanced";
+  const pace: PaceV2 = avgNudge <= -0.5 ? "light" : avgNudge >= 0.5 ? "rich" : "balanced";
 
   // Seed profile from inferred intent, then overlay pace + priorities + group + pickup.
   let profile: TravelerProfile = {
@@ -362,19 +360,19 @@ export function inferProfile(
 // engine inferred and shows the traveller that the Studio "read" them.
 
 const INTENT_NOUN: Record<IntentAtmosphere, string> = {
-  relaxed_scenic:     "open horizons and slow light",
-  elegant_cultural:   "stone, shadow and quiet rooms",
-  food_local:         "long tables and unhurried tasting",
+  relaxed_scenic: "open horizons and slow light",
+  elegant_cultural: "stone, shadow and quiet rooms",
+  food_local: "long tables and unhurried tasting",
   social_celebratory: "a day that lifts the occasion",
-  romantic_intimate:  "two, the coast, dusk",
-  coastal_cinematic:  "Atlantic edges and slow gold",
+  romantic_intimate: "two, the coast, dusk",
+  coastal_cinematic: "Atlantic edges and slow gold",
 };
 
 const PACE_WORD: Record<PaceV2, string> = {
-  light:    "spacious",
+  light: "spacious",
   balanced: "balanced",
-  rich:     "fuller",
-  full:     "intensive",
+  rich: "fuller",
+  full: "intensive",
 };
 
 export function convictionLine(
@@ -400,24 +398,24 @@ export function convictionLine(
 
 /** Short, evocative shorthand for each fragment, used in "noticed" lines. */
 const FRAGMENT_SHORTHAND: Record<string, string> = {
-  "long-table":     "the long table",
-  "open-horizon":   "the open road",
-  "atlantic-edge":  "Atlantic light",
-  "quiet-stone":    "stone and shadow",
-  "two-at-dusk":    "dusk, for two",
+  "long-table": "the long table",
+  "open-horizon": "the open road",
+  "atlantic-edge": "Atlantic light",
+  "quiet-stone": "stone and shadow",
+  "two-at-dusk": "dusk, for two",
   "raised-glasses": "a day that lifts",
-  "morning-light":  "a slow morning",
-  "late-shadow":    "long afternoon shadows",
+  "morning-light": "a slow morning",
+  "late-shadow": "long afternoon shadows",
 };
 
 /** Region/element anchor per dominant atmosphere — grounded, never invented. */
 const INTENT_ANCHOR: Record<IntentAtmosphere, string> = {
-  relaxed_scenic:     "open coastal roads and slow afternoon light",
-  elegant_cultural:   "stone villages and quiet interiors",
-  food_local:         "long tables and unhurried tasting",
+  relaxed_scenic: "open coastal roads and slow afternoon light",
+  elegant_cultural: "stone villages and quiet interiors",
+  food_local: "long tables and unhurried tasting",
   social_celebratory: "a rhythm that lifts the occasion",
-  romantic_intimate:  "golden-hour coast and intimate corners",
-  coastal_cinematic:  "Atlantic edges at the hour the light turns gold",
+  romantic_intimate: "golden-hour coast and intimate corners",
+  coastal_cinematic: "Atlantic edges at the hour the light turns gold",
 };
 
 export interface ConvictionScript {

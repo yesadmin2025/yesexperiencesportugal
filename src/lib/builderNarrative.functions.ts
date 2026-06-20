@@ -47,124 +47,126 @@ export type ParsedNarrative = z.infer<typeof outputSchema>;
 
 export const parseNarrative = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
-  .handler(async ({ data }): Promise<ParsedNarrative & { source: "ai" | "rate_limited" | "fallback" }> => {
-    const rl = await rateLimit({
-      sessionId: data.sessionId,
-      bucket: "builder_narrative",
-      limit: 8,
-      windowSec: 300,
-    });
-    if (!rl.ok) {
-      return { source: "rate_limited" };
-    }
+  .handler(
+    async ({ data }): Promise<ParsedNarrative & { source: "ai" | "rate_limited" | "fallback" }> => {
+      const rl = await rateLimit({
+        sessionId: data.sessionId,
+        bucket: "builder_narrative",
+        limit: 8,
+        windowSec: 300,
+      });
+      if (!rl.ok) {
+        return { source: "rate_limited" };
+      }
 
-    const lovableKey = process.env.LOVABLE_API_KEY;
-    if (!lovableKey) return { source: "fallback" };
+      const lovableKey = process.env.LOVABLE_API_KEY;
+      if (!lovableKey) return { source: "fallback" };
 
-    const configHash = hashConfig({ narrative: data.narrative.slice(0, 80) });
-    const startedAt = Date.now();
+      const configHash = hashConfig({ narrative: data.narrative.slice(0, 80) });
+      const startedAt = Date.now();
 
-    try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${lovableKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You translate a traveller's one-sentence wish into the YES builder's canonical enums. Pick ONLY values from the provided lists. Never invent stops, regions, or experiences. If the sentence is unclear for a field, return null. Tone-only AI: do not write itinerary content.",
-            },
-            {
-              role: "user",
-              content: `Traveller's sentence: "${data.narrative}"\n\nAllowed values:\n- mood: ${MOODS.join(", ")}\n- who: ${WHOS.join(", ")}\n- intention: ${INTENTIONS.join(", ")}\n- pace: ${PACES.join(", ")}\n- regionHint (optional): ${REGIONS.join(", ")}\n\nRationale: short editorial line (≤80 chars) in the same language as the input, no marketing fluff.`,
-            },
-          ],
-          tools: [
-            {
-              type: "function",
-              function: {
-                name: "map_to_enums",
-                description: "Map the traveller's wish to the builder's canonical enums.",
-                parameters: {
-                  type: "object",
-                  properties: {
-                    mood: { type: ["string", "null"], enum: [...MOODS, null] },
-                    who: { type: ["string", "null"], enum: [...WHOS, null] },
-                    intention: { type: ["string", "null"], enum: [...INTENTIONS, null] },
-                    pace: { type: ["string", "null"], enum: [...PACES, null] },
-                    regionHint: { type: ["string", "null"], enum: [...REGIONS, null] },
-                    rationale: { type: ["string", "null"] },
+      try {
+        const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${lovableKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You translate a traveller's one-sentence wish into the YES builder's canonical enums. Pick ONLY values from the provided lists. Never invent stops, regions, or experiences. If the sentence is unclear for a field, return null. Tone-only AI: do not write itinerary content.",
+              },
+              {
+                role: "user",
+                content: `Traveller's sentence: "${data.narrative}"\n\nAllowed values:\n- mood: ${MOODS.join(", ")}\n- who: ${WHOS.join(", ")}\n- intention: ${INTENTIONS.join(", ")}\n- pace: ${PACES.join(", ")}\n- regionHint (optional): ${REGIONS.join(", ")}\n\nRationale: short editorial line (≤80 chars) in the same language as the input, no marketing fluff.`,
+              },
+            ],
+            tools: [
+              {
+                type: "function",
+                function: {
+                  name: "map_to_enums",
+                  description: "Map the traveller's wish to the builder's canonical enums.",
+                  parameters: {
+                    type: "object",
+                    properties: {
+                      mood: { type: ["string", "null"], enum: [...MOODS, null] },
+                      who: { type: ["string", "null"], enum: [...WHOS, null] },
+                      intention: { type: ["string", "null"], enum: [...INTENTIONS, null] },
+                      pace: { type: ["string", "null"], enum: [...PACES, null] },
+                      regionHint: { type: ["string", "null"], enum: [...REGIONS, null] },
+                      rationale: { type: ["string", "null"] },
+                    },
+                    required: ["mood", "who", "intention", "pace", "regionHint", "rationale"],
+                    additionalProperties: false,
                   },
-                  required: ["mood", "who", "intention", "pace", "regionHint", "rationale"],
-                  additionalProperties: false,
                 },
               },
-            },
-          ],
-          tool_choice: { type: "function", function: { name: "map_to_enums" } },
-        }),
-      });
+            ],
+            tool_choice: { type: "function", function: { name: "map_to_enums" } },
+          }),
+        });
 
-      const latencyMs = Date.now() - startedAt;
+        const latencyMs = Date.now() - startedAt;
 
-      if (!res.ok) {
+        if (!res.ok) {
+          await logAiUsage({
+            provider: "lovable_ai",
+            model: "google/gemini-3-flash-preview",
+            feature: "builder_narrative",
+            status: res.status === 429 ? "rate_limited" : "failure",
+            latencyMs,
+            configHash,
+            errorCode: String(res.status),
+          });
+          return { source: "fallback" };
+        }
+
+        const json = (await res.json()) as {
+          choices?: { message?: { tool_calls?: { function?: { arguments?: string } }[] } }[];
+        };
+        const argsStr = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+        if (!argsStr) {
+          await logAiUsage({
+            provider: "lovable_ai",
+            model: "google/gemini-3-flash-preview",
+            feature: "builder_narrative",
+            status: "failure",
+            latencyMs,
+            configHash,
+            errorCode: "no_tool_call",
+          });
+          return { source: "fallback" };
+        }
+
+        const parsed = outputSchema.parse(JSON.parse(argsStr));
+
         await logAiUsage({
           provider: "lovable_ai",
           model: "google/gemini-3-flash-preview",
           feature: "builder_narrative",
-          status: res.status === 429 ? "rate_limited" : "failure",
+          status: "success",
           latencyMs,
           configHash,
-          errorCode: String(res.status),
         });
-        return { source: "fallback" };
-      }
 
-      const json = (await res.json()) as {
-        choices?: { message?: { tool_calls?: { function?: { arguments?: string } }[] } }[];
-      };
-      const argsStr = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-      if (!argsStr) {
+        return { ...parsed, source: "ai" };
+      } catch (err) {
         await logAiUsage({
           provider: "lovable_ai",
           model: "google/gemini-3-flash-preview",
           feature: "builder_narrative",
           status: "failure",
-          latencyMs,
+          latencyMs: Date.now() - startedAt,
           configHash,
-          errorCode: "no_tool_call",
+          errorCode: "exception",
+          errorMessage: err instanceof Error ? err.message : String(err),
         });
         return { source: "fallback" };
       }
-
-      const parsed = outputSchema.parse(JSON.parse(argsStr));
-
-      await logAiUsage({
-        provider: "lovable_ai",
-        model: "google/gemini-3-flash-preview",
-        feature: "builder_narrative",
-        status: "success",
-        latencyMs,
-        configHash,
-      });
-
-      return { ...parsed, source: "ai" };
-    } catch (err) {
-      await logAiUsage({
-        provider: "lovable_ai",
-        model: "google/gemini-3-flash-preview",
-        feature: "builder_narrative",
-        status: "failure",
-        latencyMs: Date.now() - startedAt,
-        configHash,
-        errorCode: "exception",
-        errorMessage: err instanceof Error ? err.message : String(err),
-      });
-      return { source: "fallback" };
-    }
-  });
+    },
+  );

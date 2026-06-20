@@ -54,14 +54,12 @@ const KEY_COMPONENTS: ShadowSpec[] = [
 // Examples that should match:
 //   shadow-[0_8px_22px_-10px_rgba(41,91,97,0.65)]
 //   shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]
-const EDITORIAL_RECIPE =
-  /shadow-\[0_\d+px_\d+px_-\d+px_(?:rgba?\([^)]+\)|color-mix\([^)]+\))\]/;
+const EDITORIAL_RECIPE = /shadow-\[0_\d+px_\d+px_-\d+px_(?:rgba?\([^)]+\)|color-mix\([^)]+\))\]/;
 
 // Generic Tailwind shadow scales we ban inside customer-facing brand
 // surfaces. We do allow `shadow-sm` and `shadow-none` because they
 // represent "essentially flat" rather than a competing recipe.
-const FORBIDDEN_GENERIC_SHADOW =
-  /\b(?:hover:|focus:|md:|lg:)?shadow-(?:md|lg|xl|2xl|inner)\b/;
+const FORBIDDEN_GENERIC_SHADOW = /\b(?:hover:|focus:|md:|lg:)?shadow-(?:md|lg|xl|2xl|inner)\b/;
 
 function read(path: string): string {
   return existsSync(path) ? readFileSync(path, "utf8") : "";
@@ -74,7 +72,7 @@ describe("Editorial shadow-stack — presence", () => {
       expect(src.length, `${label}: source file empty`).toBeGreaterThan(0);
       expect(
         EDITORIAL_RECIPE.test(src),
-        `${label}: missing shadow-[0_Npx_Mpx_-Kpx_rgba(...)] recipe`
+        `${label}: missing shadow-[0_Npx_Mpx_-Kpx_rgba(...)] recipe`,
       ).toBe(true);
     });
   }
@@ -87,7 +85,7 @@ describe("Editorial shadow-stack — no generic substitutes", () => {
       const match = src.match(FORBIDDEN_GENERIC_SHADOW);
       expect(
         match,
-        `${label}: generic shadow ${match?.[0]} replaces the editorial recipe`
+        `${label}: generic shadow ${match?.[0]} replaces the editorial recipe`,
       ).toBeNull();
     });
   }

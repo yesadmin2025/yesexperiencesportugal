@@ -21,25 +21,21 @@ import {
   type HeroCopyVariant,
 } from "@/content/hero-scene-variants";
 import type { HeroScene } from "@/content/hero-scenes-manifest";
-import {
-  recordAssignment,
-  resolveVariant,
-  trackAbEvent,
-  type AbEvent,
-} from "@/lib/ab-testing";
+import { recordAssignment, resolveVariant, trackAbEvent, type AbEvent } from "@/lib/ab-testing";
 
 export type UseHeroVariantResult = {
   variant: HeroCopyVariant;
   scenes: readonly HeroScene[];
-  trackEvent: (event: AbEvent, meta?: { sceneId?: string; extra?: Record<string, unknown> }) => void;
+  trackEvent: (
+    event: AbEvent,
+    meta?: { sceneId?: string; extra?: Record<string, unknown> },
+  ) => void;
 };
 
 export function useHeroVariant(): UseHeroVariantResult {
   // SSR / first paint always renders the control variant — same DOM
   // server and client, no hydration mismatch.
-  const [variant, setVariant] = useState<HeroCopyVariant>(
-    () => HERO_COPY_EXPERIMENT.variants[0],
-  );
+  const [variant, setVariant] = useState<HeroCopyVariant>(() => HERO_COPY_EXPERIMENT.variants[0]);
   const exposedRef = useRef(false);
 
   useEffect(() => {

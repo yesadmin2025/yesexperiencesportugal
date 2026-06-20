@@ -95,24 +95,17 @@ export function HeroChapterDebugOverlay() {
 
         // Live read of the rendered overlay opacities — proves the
         // dissolve curve and timing on real frames.
-        const prevEl = document.querySelector<HTMLElement>(
-          '[data-hero-overlay="prev"]',
-        );
-        const currentEl = document.querySelector<HTMLElement>(
-          '[data-hero-overlay="current"]',
-        );
-        const prevOpacity = prevEl
-          ? parseFloat(getComputedStyle(prevEl).opacity || "1")
-          : null;
+        const prevEl = document.querySelector<HTMLElement>('[data-hero-overlay="prev"]');
+        const currentEl = document.querySelector<HTMLElement>('[data-hero-overlay="current"]');
+        const prevOpacity = prevEl ? parseFloat(getComputedStyle(prevEl).opacity || "1") : null;
         const currentOpacity = currentEl
           ? parseFloat(getComputedStyle(currentEl).opacity || "1")
           : 1;
         // While prev is mounted we're inside the cross-fade window.
         // Approximate elapsed via 1 - currentOpacity^(1/curve) is
         // unreliable; expose the raw opacities + total instead.
-        const fadeElapsedMs = prevEl && prevOpacity !== null
-          ? Math.round((1 - prevOpacity) * HERO_OVERLAP_MS)
-          : null;
+        const fadeElapsedMs =
+          prevEl && prevOpacity !== null ? Math.round((1 - prevOpacity) * HERO_OVERLAP_MS) : null;
 
         setSnap({
           chapterId: c.id,
@@ -214,9 +207,7 @@ export function HeroChapterDebugOverlay() {
           <div className="flex items-center justify-between mb-0.5 text-[9.5px] text-white/50 uppercase tracking-[0.14em]">
             <span>fade dissolve (smootherstep)</span>
             <span>
-              {snap.prevOpacity === null
-                ? "—"
-                : `${Math.round((1 - snap.prevOpacity) * 100)}%`}
+              {snap.prevOpacity === null ? "—" : `${Math.round((1 - snap.prevOpacity) * 100)}%`}
             </span>
           </div>
           <div className="relative h-3 rounded-sm bg-white/10 overflow-hidden">
@@ -354,9 +345,7 @@ function EasingCurveGraph({ progress }: { progress: number | null }) {
               strokeWidth={1}
               strokeDasharray="2 2"
             />
-            {playYIn !== null && (
-              <circle cx={playX} cy={playYIn} r={2.5} fill="var(--ivory)" />
-            )}
+            {playYIn !== null && <circle cx={playX} cy={playYIn} r={2.5} fill="var(--ivory)" />}
             {playYOut !== null && (
               <circle cx={playX} cy={playYOut} r={2.5} fill="var(--gold-soft)" />
             )}

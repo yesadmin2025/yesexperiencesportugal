@@ -79,7 +79,6 @@ export function inferGuests(
   return null;
 }
 
-
 /* ---------- Label helpers (pure, deterministic) ---------- */
 
 /** Map a single id to its human-readable label, with a graceful fallback. */
@@ -275,24 +274,47 @@ const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
  */
 const INVESTMENT_STOP_DELTA: Record<InvestmentTier, number> = {
   considered: -1, // efficient — fewer extras
-  elevated: 0,    // balanced premium
+  elevated: 0, // balanced premium
   // Phase 7A: bespoke should NOT thin the day. It signals stronger character
   // and premium candidate preference, not fewer stops. Soft scoring boost is
   // applied separately in `investmentPremiumScore`.
   bespoke: 0,
-  open: 0,        // best fit
+  open: 0, // best fit
 };
 
 const INVESTMENT_PREMIUM_KEYWORDS: string[] = [
-  "private", "exclusive", "premium", "tasting", "sommelier", "chef",
-  "cellar", "estate", "manor", "palace", "boutique", "michelin",
-  "sunset", "candlelight", "champagne", "long lunch", "pairing",
-  "reserve", "vintage",
+  "private",
+  "exclusive",
+  "premium",
+  "tasting",
+  "sommelier",
+  "chef",
+  "cellar",
+  "estate",
+  "manor",
+  "palace",
+  "boutique",
+  "michelin",
+  "sunset",
+  "candlelight",
+  "champagne",
+  "long lunch",
+  "pairing",
+  "reserve",
+  "vintage",
 ];
 
 const INVESTMENT_EFFICIENT_KEYWORDS: string[] = [
-  "village", "market", "workshop", "easy", "stroll", "walk",
-  "viewpoint", "harbour", "old town", "tile",
+  "village",
+  "market",
+  "workshop",
+  "easy",
+  "stroll",
+  "walk",
+  "viewpoint",
+  "harbour",
+  "old town",
+  "tile",
 ];
 
 function investmentPremiumScore(
@@ -311,17 +333,93 @@ function investmentPremiumScore(
 // Keyword affinity per feeling — matched against stop label + story (lowercase).
 // Hits add to the relevance score; misses are simply ignored.
 const FEELING_KEYWORDS: Record<Feeling, string[]> = {
-  coastal: ["beach", "coast", "sea", "boat", "harbour", "cove", "ferry", "cliff", "dusk", "sand", "sesimbra", "comporta", "portinho", "atlantic", "ocean"],
-  "wine-food": ["wine", "winery", "tasting", "lunch", "cheese", "vineyard", "market", "table", "glass", "pairings", "moscatel"],
-  hidden: ["hidden", "quiet", "secret", "small", "narrow", "rarely", "drift", "pull-over", "no crowds", "few"],
-  romance: ["quiet", "sunset", "dusk", "two", "courtyard", "private", "long lunch", "golden", "view", "stroll"],
+  coastal: [
+    "beach",
+    "coast",
+    "sea",
+    "boat",
+    "harbour",
+    "cove",
+    "ferry",
+    "cliff",
+    "dusk",
+    "sand",
+    "sesimbra",
+    "comporta",
+    "portinho",
+    "atlantic",
+    "ocean",
+  ],
+  "wine-food": [
+    "wine",
+    "winery",
+    "tasting",
+    "lunch",
+    "cheese",
+    "vineyard",
+    "market",
+    "table",
+    "glass",
+    "pairings",
+    "moscatel",
+  ],
+  hidden: [
+    "hidden",
+    "quiet",
+    "secret",
+    "small",
+    "narrow",
+    "rarely",
+    "drift",
+    "pull-over",
+    "no crowds",
+    "few",
+  ],
+  romance: [
+    "quiet",
+    "sunset",
+    "dusk",
+    "two",
+    "courtyard",
+    "private",
+    "long lunch",
+    "golden",
+    "view",
+    "stroll",
+  ],
   family: ["family", "easy", "boat", "beach", "workshop", "swim", "snorkel", "garden", "village"],
-  culture: ["palace", "convent", "library", "ruins", "roman", "templar", "chapel", "tile", "azulejo", "heritage", "old town", "unesco", "monks"],
+  culture: [
+    "palace",
+    "convent",
+    "library",
+    "ruins",
+    "roman",
+    "templar",
+    "chapel",
+    "tile",
+    "azulejo",
+    "heritage",
+    "old town",
+    "unesco",
+    "monks",
+  ],
   adventure: ["boat", "swim", "snorkel", "cliffs", "wind", "atlantic", "cabo", "trail", "climb"],
-  "slow-luxury": ["long", "slow", "courtyard", "private", "tasting", "garden", "patio", "golden", "quietly", "drift"],
+  "slow-luxury": [
+    "long",
+    "slow",
+    "courtyard",
+    "private",
+    "tasting",
+    "garden",
+    "patio",
+    "golden",
+    "quietly",
+    "drift",
+  ],
 };
 
-const WINE_STOP_RE = /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
+const WINE_STOP_RE =
+  /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
 
 const COMPANIONS_KEYWORDS: Partial<Record<Companions, string[]>> = {
   proposal: ["sunset", "golden", "viewpoint", "courtyard", "quiet", "view", "cliff"],
@@ -432,10 +530,7 @@ const LISBON_AREA_TOURS = new Set([
 ]);
 
 /** Tour ids whose route is the Tróia / Comporta / Alentejo corridor. */
-const COMPORTA_TROIA_TOURS = new Set([
-  "troia-comporta",
-  "evora-alentejo",
-]);
+const COMPORTA_TROIA_TOURS = new Set(["troia-comporta", "evora-alentejo"]);
 
 function pickupAffinity(tour: SignatureTour, pickup: Pickup | null): number {
   if (!pickup || pickup === "other") return 0;
@@ -528,7 +623,18 @@ const INTEREST_TOUR_KEYWORDS: Partial<Record<Interest, string[]>> = {
   gastronomy: ["lunch", "cheese", "table", "market", "gastronom", "pairings", "food"],
   coast: ["coast", "beach", "boat", "cliff", "atlantic", "harbour", "cove"],
   nature: ["nature", "trail", "garden", "hills", "natural park"],
-  heritage: ["palace", "convent", "templar", "tile", "azulejo", "heritage", "unesco", "monks", "old town", "ruins"],
+  heritage: [
+    "palace",
+    "convent",
+    "templar",
+    "tile",
+    "azulejo",
+    "heritage",
+    "unesco",
+    "monks",
+    "old town",
+    "ruins",
+  ],
   photography: ["viewpoint", "sunset", "golden", "view", "dusk"],
   wellness: ["slow", "quiet", "garden", "patio", "courtyard"],
   "local-life": ["village", "market", "local", "workshop", "neighbour"],
@@ -545,7 +651,8 @@ const INTEREST_TOUR_KEYWORDS: Partial<Record<Interest, string[]>> = {
  *  its locked test snapshots) is preserved.
  * ============================================================ */
 function hashSeed(input: string | number | undefined): number {
-  if (input === undefined || input === null || input === "" || input === 0 || input === "0") return 0;
+  if (input === undefined || input === null || input === "" || input === 0 || input === "0")
+    return 0;
   const str = String(input);
   let h = 2166136261 >>> 0; // FNV-1a basis
   for (let i = 0; i < str.length; i++) {
@@ -558,7 +665,7 @@ function hashSeed(input: string | number | undefined): number {
 function mulberry32(seed: number): () => number {
   let t = seed >>> 0;
   return function () {
-    t = (t + 0x6D2B79F5) >>> 0;
+    t = (t + 0x6d2b79f5) >>> 0;
     let r = Math.imul(t ^ (t >>> 15), 1 | t);
     r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
     return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
@@ -569,10 +676,12 @@ function mulberry32(seed: number): () => number {
  *  (children/playground language) must not surface when the traveller is
  *  solo/couple/proposal/corporate. AI predictive guardrail — never offer
  *  family-coded language to a couple. */
-const FAMILY_ONLY_RE = /\b(child(ren)?|kids|kid-friendly|playground|stroller|toddler|baby|babies)\b/i;
+const FAMILY_ONLY_RE =
+  /\b(child(ren)?|kids|kid-friendly|playground|stroller|toddler|baby|babies)\b/i;
 /** Stops/tours that read as exclusively-couple/romantic-only must not
  *  surface when the traveller is corporate / family / friends. */
-const ROMANTIC_ONLY_RE = /\b(honeymoon|just the two of you|for two|romantic dinner|proposal|engagement)\b/i;
+const ROMANTIC_ONLY_RE =
+  /\b(honeymoon|just the two of you|for two|romantic dinner|proposal|engagement)\b/i;
 
 /** Pick ONE Signature skeleton that best fits the answers AND keeps the
  *  route geographically contained near the chosen pickup. Deterministic
@@ -591,9 +700,10 @@ function pickPrimaryTour(
   // When a destination intent is set, fold its target tours into the
   // candidate pool so the boost can actually pick them up (FEELING_TO_TOURS
   // alone may not include e.g. evora-alentejo for a "coastal" feeling).
-  const intentTargets = destinationIntent && destinationIntent !== "no-preference"
-    ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
-    : [];
+  const intentTargets =
+    destinationIntent && destinationIntent !== "no-preference"
+      ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
+      : [];
   const interestTargets = interests.flatMap((i) => INTEREST_TARGET_TOURS[i] ?? []);
   const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets, ...interestTargets]));
   const candidates = mergedIds
@@ -602,8 +712,7 @@ function pickPrimaryTour(
 
   if (candidates.length === 0) {
     const fallback =
-      signatureTours.find((t) => t.id === "arrabida-wine-allinclusive") ??
-      signatureTours[0];
+      signatureTours.find((t) => t.id === "arrabida-wine-allinclusive") ?? signatureTours[0];
     return { tour: fallback, alternates: [] };
   }
 
@@ -636,8 +745,7 @@ function pickPrimaryTour(
   // copy reads as exclusively-family when the traveller is not family,
   // and the mirror case for romantic-only tours offered to corporate.
   const cType = companionsType(companions);
-  const blockFamilyCoded =
-    cType === "couple" || cType === "solo" || cType === "corporate";
+  const blockFamilyCoded = cType === "couple" || cType === "solo" || cType === "corporate";
   const blockRomanticCoded = cType === "corporate" || cType === "family";
 
   const scored = candidates
@@ -646,7 +754,12 @@ function pickPrimaryTour(
       score += pickupAffinity(tour, pickup) * 1.2;
       score += interestAffinity(tour, interests);
       score += destinationIntentBoost(tour, destinationIntent);
-      if (wantsWine && /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(`${tour.title} ${tour.theme} ${tour.blurb}`)) {
+      if (
+        wantsWine &&
+        /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(
+          `${tour.title} ${tour.theme} ${tour.blurb}`,
+        )
+      ) {
         score += 3;
       }
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
@@ -687,7 +800,6 @@ function pickPrimaryTour(
   return { tour: chosen.tour, alternates };
 }
 
-
 /**
  * curateJourney — route-contained. Returns moments drawn ONLY from the
  * single primary Signature tour's own `stops`. No cross-tour borrowing,
@@ -722,7 +834,6 @@ export function curateJourney(
   const seedNum = hashSeed(options?.seed);
   const rand = seedNum > 0 ? mulberry32(seedNum) : null;
 
-
   const { tour: primary, alternates } = pickPrimaryTour(
     feeling,
     companions,
@@ -751,8 +862,7 @@ export function curateJourney(
   // family-coded (children/playground) when the traveller is not family,
   // and the mirror case for romantic-only language offered to corporate.
   const cType = companionsType(companions);
-  const blockFamilyCoded =
-    cType === "couple" || cType === "solo" || cType === "corporate";
+  const blockFamilyCoded = cType === "couple" || cType === "solo" || cType === "corporate";
   const blockRomanticCoded = cType === "corporate" || cType === "family";
 
   const coherent: PoolStop[] = rawPool.filter((s) => {
@@ -781,7 +891,6 @@ export function curateJourney(
         }
         return !closed;
       });
-
 
   // Score by feeling + companions + selected interests (refinement, not
   // additional locations). Stops with resolvable coords are preferred so
@@ -845,7 +954,10 @@ export function curateJourney(
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replace(/\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g, "")
+      .replace(
+        /\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g,
+        "",
+      )
       .replace(/[^a-z0-9]+/g, " ")
       .trim();
 
@@ -868,7 +980,7 @@ export function curateJourney(
     "comporta-troia": 1,
     "fatima-nazare-obidos": 1,
     "tomar-coimbra": 1,
-    "other": 1,
+    other: 1,
   };
   // tour.region is a human-readable label (e.g. "Setúbal · Arrábida"),
   // not a RegionId. Normalise to a RegionId for cap lookup.
@@ -876,20 +988,20 @@ export function curateJourney(
   const regionId: RegionId = /arr[áa]bida|set[úu]bal|azeit[ãa]o|sesimbra|palmela/.test(regionLabel)
     ? "arrabida-setubal"
     : /alentejo|[ée]vora/.test(regionLabel)
-    ? "alentejo-evora"
-    : /douro|porto/.test(regionLabel)
-    ? "douro-porto"
-    : /sintra|cascais/.test(regionLabel)
-    ? "sintra-cascais"
-    : /lisbon|lisboa/.test(regionLabel)
-    ? "lisbon-sintra-cascais"
-    : /comporta|tr[óo]ia/.test(regionLabel)
-    ? "comporta-troia"
-    : /f[áa]tima|nazar[ée]|[óo]bidos/.test(regionLabel)
-    ? "fatima-nazare-obidos"
-    : /tomar|coimbra/.test(regionLabel)
-    ? "tomar-coimbra"
-    : "other";
+      ? "alentejo-evora"
+      : /douro|porto/.test(regionLabel)
+        ? "douro-porto"
+        : /sintra|cascais/.test(regionLabel)
+          ? "sintra-cascais"
+          : /lisbon|lisboa/.test(regionLabel)
+            ? "lisbon-sintra-cascais"
+            : /comporta|tr[óo]ia/.test(regionLabel)
+              ? "comporta-troia"
+              : /f[áa]tima|nazar[ée]|[óo]bidos/.test(regionLabel)
+                ? "fatima-nazare-obidos"
+                : /tomar|coimbra/.test(regionLabel)
+                  ? "tomar-coimbra"
+                  : "other";
   const wineryCap = REGIONAL_WINERY_CAP[regionId] ?? 1;
   const isWineryStop = (s: (typeof scored)[number]) =>
     WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`);
@@ -921,7 +1033,6 @@ export function curateJourney(
     }
     addPick(s);
   }
-
 
   const wineSignal =
     feeling === "wine-food" ||
@@ -1081,8 +1192,7 @@ export function resolveStudioV3Route(input: {
       journeyTitle: "Your private Portugal day",
       whyItFits: [],
       refinements: [],
-      whatToConfirm:
-        "Availability and final details are confirmed before your experience.",
+      whatToConfirm: "Availability and final details are confirmed before your experience.",
       confidence: "needs-human-refinement",
     };
   }
@@ -1121,15 +1231,13 @@ export function resolveStudioV3Route(input: {
   }
 
   // Hard cap at 4 main route points on the Journey Card (per brief).
-  const routePoints: ResolvedRoutePoint[] = journey.moments
-    .slice(0, 4)
-    .map((m, i) => ({
-      index: i,
-      label: m.label,
-      story: m.story,
-      lat: m.lat,
-      lng: m.lng,
-    }));
+  const routePoints: ResolvedRoutePoint[] = journey.moments.slice(0, 4).map((m, i) => ({
+    index: i,
+    label: m.label,
+    story: m.story,
+    lat: m.lat,
+    lng: m.lng,
+  }));
 
   // Phase 5E — controlled route composition (replace up to 3 non-critical
   // stops with same-type candidates from REGION_STOP_POOL). Flag-gated and
@@ -1182,7 +1290,6 @@ export function resolveStudioV3Route(input: {
     routePoints.length = 0;
     for (const p of withExtra) routePoints.push(p);
   }
-
 
   // Short route sentence, derived only from the same Signature's stops.
   const shortLabels: string[] = [];
@@ -1237,9 +1344,7 @@ export function resolveStudioV3Route(input: {
     return !kws.some((kw) => tourHay.includes(kw));
   });
   if (unmatched.length > 0 && refinements.length < 2) {
-    refinements.push(
-      "Additional interests can be refined by YES without leaving the route area.",
-    );
+    refinements.push("Additional interests can be refined by YES without leaving the route area.");
   }
 
   // Confidence: high when we have ≥3 real geo points AND a matched
@@ -1284,8 +1389,7 @@ export function resolveStudioV3Route(input: {
     journeyTitle,
     whyItFits,
     refinements: finalRefinements,
-    whatToConfirm:
-      "Availability and final details are confirmed before your experience.",
+    whatToConfirm: "Availability and final details are confirmed before your experience.",
     confidence,
   };
 }
@@ -1319,13 +1423,7 @@ export function pickupCityLabel(pickup: Pickup | null | undefined): string {
 }
 
 /** Canonical city labels surfaced by pickupCityLabel() — safe words for Story of the Day e2e. */
-export const PICKUP_CITY_LABELS = [
-  "Lisbon",
-  "Cascais",
-  "Sintra",
-  "Setúbal",
-  "Comporta",
-] as const;
+export const PICKUP_CITY_LABELS = ["Lisbon", "Cascais", "Sintra", "Setúbal", "Comporta"] as const;
 
 /**
  * composeJourneyReasons — 2–3 short, factual reasons grounded in the
@@ -1382,7 +1480,11 @@ export function composeJourneyReasons(input: {
     reasons.push(`Starts and ends near ${city}, no long transfers.`);
   } else if (input.companions === "family") {
     reasons.push("Shaped to feel easy for everyone travelling with you.");
-  } else if (input.companions === "couple" || input.occasion === "honeymoon" || input.occasion === "anniversary") {
+  } else if (
+    input.companions === "couple" ||
+    input.occasion === "honeymoon" ||
+    input.occasion === "anniversary"
+  ) {
     reasons.push("Quieter pacing for the two of you.");
   }
 
@@ -1415,14 +1517,20 @@ export function composePersonalizedMoments(input: {
   const hasGastro = input.interests.includes("gastronomy");
 
   if (hasLocal && hasWine) {
-    out.push("A local craft or village moment may replace one wine-heavy stop, subject to availability.");
+    out.push(
+      "A local craft or village moment may replace one wine-heavy stop, subject to availability.",
+    );
   } else if (hasHeritage && hasWine) {
     out.push("A heritage moment may take the place of one tasting, subject to availability.");
   } else if (hasGastro && !hasWine) {
     out.push("A long table moment may anchor the day instead of a tasting stop.");
   } else if (hasCoast && input.feeling !== "coastal") {
     out.push("A coastal pause may be added, depending on the day's conditions.");
-  } else if (input.considerations && input.considerations.length > 0 && !input.considerations.includes("none")) {
+  } else if (
+    input.considerations &&
+    input.considerations.length > 0 &&
+    !input.considerations.includes("none")
+  ) {
     out.push("Pacing and stops adjusted around the notes you shared.");
   }
 
@@ -1462,7 +1570,6 @@ export function composeSuggestedRoute(input: {
   }
   return `${origin} → ${stops.join(" · ")} → ${origin}`;
 }
-
 
 /* ============================================================
  * Phase 4 — Adaptive Decision Layer
@@ -1668,11 +1775,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // revealing a real Signature. Occasion / care / language / investment made
   // the flow feel like a poetic quiz and created price confusion, so they are
   // left for the human confirmation step instead of the builder.
-  if (
-    phase === "occasion" ||
-    phase === "considerations" ||
-    phase === "language"
-  ) {
+  if (phase === "occasion" || phase === "considerations" || phase === "language") {
     return false;
   }
 
@@ -1694,7 +1797,6 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
       return true;
   }
 }
-
 
 // Reordered (Studio V3 hybrid funnel): Investment is now positioned BETWEEN
 // Destination and Interests — the traveller first sees a partial reveal of
@@ -1731,10 +1833,7 @@ const LINEAR_ORDER: StudioV3Phase[] = [
  * current phase and returns the first phase that is still relevant given
  * the live state. Falls back to "storyboard" when nothing remains.
  */
-export function getNextPhase(
-  state: StudioV3State,
-  current: StudioV3Phase,
-): StudioV3Phase {
+export function getNextPhase(state: StudioV3State, current: StudioV3Phase): StudioV3Phase {
   const idx = LINEAR_ORDER.indexOf(current);
   if (idx < 0) return "storyboard";
   for (let i = idx + 1; i < LINEAR_ORDER.length; i++) {
@@ -1840,19 +1939,14 @@ export const SKELETON_TO_CLUSTER: Record<
 const DIFFICULT_ACCESS_RE =
   /stairs|steep|uneven|cave|trail|beach access|reduced[- ]?mobility|may not suit|difficult access/i;
 
-const MOBILITY_CONSIDERATIONS = new Set<string>([
-  "reduced-mobility",
-  "avoid-long-walks",
-]);
+const MOBILITY_CONSIDERATIONS = new Set<string>(["reduced-mobility", "avoid-long-walks"]);
 
 function isDeniedByConsiderations(
   stop: OptionalStop,
   considerations: ReadonlyArray<string>,
 ): boolean {
   if (considerations.length === 0) return false;
-  const mobilityConcern = considerations.some((c) =>
-    MOBILITY_CONSIDERATIONS.has(c),
-  );
+  const mobilityConcern = considerations.some((c) => MOBILITY_CONSIDERATIONS.has(c));
   if (!mobilityConcern) return false;
   if (stop.notes && DIFFICULT_ACCESS_RE.test(stop.notes)) return true;
   return false;
@@ -1940,14 +2034,10 @@ export function selectOptionalRefinements(input: {
   considerations: ReadonlyArray<string>;
   existingRoutePointLabels: ReadonlyArray<string>;
 }): string[] {
-  const skeleton = input.skeletonTourId
-    ? SKELETON_TO_CLUSTER[input.skeletonTourId]
-    : undefined;
+  const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
 
-  const existing = new Set(
-    input.existingRoutePointLabels.map((l) => normalizeLabel(l)),
-  );
+  const existing = new Set(input.existingRoutePointLabels.map((l) => normalizeLabel(l)));
 
   // Eligibility filter
   const eligible = REGION_STOP_POOL.filter((stop) => {
@@ -2064,15 +2154,11 @@ type InferredRoutePointKind = OptionalStop["type"] | "scenic";
  * Azeitão" stays `winery`, while bare "Sesimbra coast" or "Arrábida at
  * dusk" can still resolve to a usable kind.
  */
-function inferRoutePointType(
-  label: string,
-  story: string,
-): InferredRoutePointKind | null {
+function inferRoutePointType(label: string, story: string): InferredRoutePointKind | null {
   const hay = `${label} ${story}`.toLowerCase();
   if (/\bwinery|wine cellar|wine estate|wine tasting|vineyard|adega|quinta\b/.test(hay))
     return "winery";
-  if (/\bworkshop|atelier|tile painting|hands-on\b/.test(hay))
-    return "workshop";
+  if (/\bworkshop|atelier|tile painting|hands-on\b/.test(hay)) return "workshop";
   if (/\bboat|barco|sail|catamaran|cruise\b/.test(hay)) return "boat";
   if (/\bmarket|mercado\b/.test(hay)) return "market";
   if (
@@ -2081,8 +2167,7 @@ function inferRoutePointType(
     )
   )
     return "monument";
-  if (/\bviewpoint|viewpoints|miradouro|overlook|panoram|lookout\b/.test(hay))
-    return "viewpoint";
+  if (/\bviewpoint|viewpoints|miradouro|overlook|panoram|lookout\b/.test(hay)) return "viewpoint";
   if (/\bbeach|praia|cove|sand\b/.test(hay)) return "beach";
   if (
     /\blunch|dinner|meal|restaurant|table|petiscos|picnic|tasting menu|chef|food|gastronomy\b/.test(
@@ -2099,10 +2184,8 @@ function inferRoutePointType(
   if (/\bgarden|jardim|park\b/.test(hay)) return "garden";
   if (/\bstudio|gallery|artisan\b/.test(hay)) return "studio";
   if (/\bheritage|historic|roman ruin\b/.test(hay)) return "heritage";
-  if (/\bnature|forest|reserve|trail|hike|cliff|cliffs\b/.test(hay))
-    return "nature";
-  if (/\bcoast|coastal|seaside|ocean|dusk|sunset|landscape\b/.test(hay))
-    return "scenic";
+  if (/\bnature|forest|reserve|trail|hike|cliff|cliffs\b/.test(hay)) return "nature";
+  if (/\bcoast|coastal|seaside|ocean|dusk|sunset|landscape\b/.test(hay)) return "scenic";
   return null;
 }
 
@@ -2129,10 +2212,7 @@ const REPLACEMENT_FAMILY: Record<InferredRoutePointKind, ReadonlyArray<OptionalS
   village: ["village", "market", "monument", "winery"],
 };
 
-function isCompatibleCandidate(
-  kind: InferredRoutePointKind,
-  cand: OptionalStop,
-): boolean {
+function isCompatibleCandidate(kind: InferredRoutePointKind, cand: OptionalStop): boolean {
   return REPLACEMENT_FAMILY[kind].includes(cand.type);
 }
 
@@ -2164,9 +2244,7 @@ function isReplacementDeniedByConsiderations(
   considerations: ReadonlyArray<string>,
 ): boolean {
   if (isDeniedByConsiderations(stop, considerations)) return true;
-  const mobilityConcern = considerations.some((c) =>
-    MOBILITY_CONSIDERATIONS.has(c),
-  );
+  const mobilityConcern = considerations.some((c) => MOBILITY_CONSIDERATIONS.has(c));
   if (mobilityConcern && stop.type === "viewpoint") return true;
   return false;
 }
@@ -2185,14 +2263,10 @@ export function selectReplacementCandidates(input: {
   considerations: ReadonlyArray<string>;
   existingRoutePointLabels: ReadonlyArray<string>;
 }): OptionalStop[] {
-  const skeleton = input.skeletonTourId
-    ? SKELETON_TO_CLUSTER[input.skeletonTourId]
-    : undefined;
+  const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
 
-  const existing = new Set(
-    input.existingRoutePointLabels.map((l) => normalizeLabel(l)),
-  );
+  const existing = new Set(input.existingRoutePointLabels.map((l) => normalizeLabel(l)));
 
   const eligible = REGION_STOP_POOL.filter((stop) => {
     if (!stop.active) return false;
@@ -2203,15 +2277,13 @@ export function selectReplacementCandidates(input: {
     //   (a) signatureTourId matches the resolved skeleton, OR
     //   (b) sourceTourIds contains the resolved skeleton, OR
     //   (c) neither field is set (generic cluster stop, region+cluster gated).
-    const sigOk =
-      !!stop.signatureTourId && stop.signatureTourId === skeleton.signatureTourId;
+    const sigOk = !!stop.signatureTourId && stop.signatureTourId === skeleton.signatureTourId;
     const srcOk =
       !!stop.sourceTourIds &&
       stop.sourceTourIds.length > 0 &&
       stop.sourceTourIds.includes(skeleton.signatureTourId);
     const generic =
-      !stop.signatureTourId &&
-      (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
+      !stop.signatureTourId && (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
     if (!sigOk && !srcOk && !generic) return false;
 
     if (existing.has(normalizeLabel(stop.name))) return false;
@@ -2310,8 +2382,7 @@ export function applyReplacementCandidates(
       if (cand.oneOfGroup && usedGroups.has(cand.oneOfGroup)) continue;
       if (usedLabels.has(normalizeLabel(cand.name))) continue;
 
-      const projectedTotal =
-        runningTotal - ROUTE_POINT_BASELINE_MIN + cand.durationMin;
+      const projectedTotal = runningTotal - ROUTE_POINT_BASELINE_MIN + cand.durationMin;
       if (projectedTotal < minTotal || projectedTotal > maxTotal) continue;
 
       // Commit replacement (preserve index, drop geo since pool coords are
@@ -2410,10 +2481,7 @@ function scoreExtraMomentCandidate(
   if (ctx.investment && cand.suitsInvestment?.includes(ctx.investment)) {
     score += 1;
   }
-  if (
-    cand.sourceTourIds &&
-    cand.sourceTourIds.includes(ctx.skeletonSignatureTourId)
-  ) {
+  if (cand.sourceTourIds && cand.sourceTourIds.includes(ctx.skeletonSignatureTourId)) {
     score += 1;
   }
   if (cand.durationMin > 60) score -= 2;
@@ -2440,9 +2508,7 @@ export function applyExtraMoment(
   if (out.length === 0) return out;
   if (out.length >= 4) return out;
 
-  const skeleton = input.skeletonTourId
-    ? SKELETON_TO_CLUSTER[input.skeletonTourId]
-    : undefined;
+  const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return out;
 
   const candidates = selectReplacementCandidates({
@@ -2463,9 +2529,7 @@ export function applyExtraMoment(
   }
   const existingGroups = new Set<string>();
   for (const p of out) {
-    const match = REGION_STOP_POOL.find(
-      (s) => normalizeLabel(s.name) === normalizeLabel(p.label),
-    );
+    const match = REGION_STOP_POOL.find((s) => normalizeLabel(s.name) === normalizeLabel(p.label));
     if (match?.oneOfGroup) existingGroups.add(match.oneOfGroup);
   }
 
@@ -2493,12 +2557,8 @@ export function applyExtraMoment(
   const pick = scored[0]?.cand;
   if (!pick) return out;
 
-  const lastKind = inferRoutePointType(
-    out[out.length - 1].label,
-    out[out.length - 1].story,
-  );
-  const insertAt =
-    lastKind === "table" ? out.length - 1 : Math.min(2, out.length);
+  const lastKind = inferRoutePointType(out[out.length - 1].label, out[out.length - 1].story);
+  const insertAt = lastKind === "table" ? out.length - 1 : Math.min(2, out.length);
 
   const inserted: ResolvedRoutePoint = {
     index: insertAt,
@@ -2597,7 +2657,4 @@ export function applyMobilitySafety(
 
 /** Test-only accessor for the local flag — keeps the flag private to this
  *  module while letting the test suite assert it is OFF in committed code. */
-export const __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS =
-  STUDIO_V3_ROUTE_COMPOSITION_ENABLED;
-
-
+export const __STUDIO_V3_ROUTE_COMPOSITION_ENABLED_FOR_TESTS = STUDIO_V3_ROUTE_COMPOSITION_ENABLED;

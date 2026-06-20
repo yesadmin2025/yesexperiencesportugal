@@ -67,7 +67,9 @@ function main() {
   console.warn(banner);
   console.warn("Fix one of:");
   console.warn("  • bunx playwright install --with-deps chromium   (CI / Debian / Ubuntu)");
-  console.warn("  • export PLAYWRIGHT_CHROMIUM_PATH=/bin/chromium  (sandboxes with system Chromium)");
+  console.warn(
+    "  • export PLAYWRIGHT_CHROMIUM_PATH=/bin/chromium  (sandboxes with system Chromium)",
+  );
   console.warn(`${banner}\n`);
   // Non-blocking — never exit non-zero from this check.
 }

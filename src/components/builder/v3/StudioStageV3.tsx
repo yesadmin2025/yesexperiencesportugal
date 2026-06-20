@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, BookmarkPlus, ChevronDown, ChevronUp, Compass, RotateCcw, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  BookmarkPlus,
+  ChevronDown,
+  ChevronUp,
+  Compass,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react";
 
 import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import {
@@ -32,7 +40,6 @@ import { MemoryCard } from "./MemoryCard";
 import { MultiDayConcierge } from "./MultiDayConcierge";
 import { NameWhisper } from "./NameWhisper";
 import { NarrativeBeat } from "./NarrativeBeat";
-
 
 interface CatalogEntry {
   key: string;
@@ -76,7 +83,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     narrativeStage,
   } = useStudioState();
 
-
   const parseFn = useServerFn(parseNarrative);
   const suggestFn = useServerFn(suggestFromIntent);
   const listFn = useServerFn(listRegionStops);
@@ -96,7 +102,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
   const aiBudgetRef = useRef<number>(0);
   /** Stages that have already fired their narrative beat — fires once each. */
   const firedStagesRef = useRef<Set<string>>(new Set());
-
 
   /* ── Load region catalog ── */
   useEffect(() => {
@@ -131,8 +136,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     // any further candidate with that tag is multiplicatively dampened (×0.4)
     // so the journey opens into a new sensory register instead of looping.
     const last = state.acceptedStops.slice(-2).map((s) => s.tag?.toLowerCase() ?? "");
-    const dampenedTag =
-      last.length === 2 && last[0] && last[0] === last[1] ? last[0] : null;
+    const dampenedTag = last.length === 2 && last[0] && last[0] === last[1] ? last[0] : null;
 
     // Affinity-weighted scoring — picks the "next best" complementary moment
     // rather than echoing whatever was just accepted. Higher = better fit.
@@ -172,8 +176,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       .slice(0, 4)
       .map(({ c }) => c);
   }, [suggestionKeys, catalog, state.acceptedStops, state.intention, affinityProfile]);
-
-
 
   /* ── Chapter line (debounced) ── */
   useEffect(() => {
@@ -351,13 +353,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     aiBudgetRef.current += 1;
 
     const count = state.acceptedStops.length;
-    const lastTag =
-      count > 0 ? (state.acceptedStops[count - 1]?.tag ?? null) : null;
+    const lastTag = count > 0 ? (state.acceptedStops[count - 1]?.tag ?? null) : null;
     // Confidence rises with the stage altitude — drives temperature server-side.
     const confidence =
-      stage === "recognition" ? 0.32
-      : stage === "emergence" ? Math.min(0.8, 0.55 + count * 0.08)
-      : 0.92;
+      stage === "recognition"
+        ? 0.32
+        : stage === "emergence"
+          ? Math.min(0.8, 0.55 + count * 0.08)
+          : 0.92;
 
     let cancelled = false;
     composeFn({
@@ -409,9 +412,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
     composeFn,
     setNarrativeFragment,
   ]);
-
-
-
 
   /** Shared suggestion fetch — reused by composer submit + emotion taps. */
   const refreshSuggestions = useCallback(
@@ -498,9 +498,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       const nextPace = pick.pace ?? state.pace;
       const nextJourneyType = pick.journeyType ?? state.journeyType;
       const regionKey = state.regionKey ?? "arrabida-setubal";
-      const fullNarrative = state.narrative
-        ? `${state.narrative} · ${pick.seed}`
-        : pick.seed;
+      const fullNarrative = state.narrative ? `${state.narrative} · ${pick.seed}` : pick.seed;
       patch({
         narrative: fullNarrative,
         mood: nextMood,
@@ -651,10 +649,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         )}
       />
 
-
-
-
-
       {/* Soft header — fades in only after the world begins reacting */}
       <header
         className={`absolute top-0 inset-x-0 z-30 flex items-start justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-5 transition-opacity duration-[700ms] ${
@@ -800,19 +794,16 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       {/* ── Quiet name moment — once, between depth and who.
           Inserted only after mood + journey type are chosen so it does not
           interrupt the very first emotional spark. Skipping is first-class. */}
-      {state.mood &&
-        state.journeyType === "day" &&
-        !state.who &&
-        !state.nameAsked && (
-          <NameWhisper
-            prompt={t.nameWhisper.prompt}
-            placeholder={t.nameWhisper.placeholder}
-            acceptLabel={t.nameWhisper.accept}
-            skipLabel={t.nameWhisper.skip}
-            onSubmit={(name) => patch({ travellerName: name, nameAsked: true })}
-            onSkip={() => patch({ nameAsked: true })}
-          />
-        )}
+      {state.mood && state.journeyType === "day" && !state.who && !state.nameAsked && (
+        <NameWhisper
+          prompt={t.nameWhisper.prompt}
+          placeholder={t.nameWhisper.placeholder}
+          acceptLabel={t.nameWhisper.accept}
+          skipLabel={t.nameWhisper.skip}
+          onSubmit={(name) => patch({ travellerName: name, nameAsked: true })}
+          onSkip={() => patch({ nameAsked: true })}
+        />
+      )}
 
       {/* ── Reveal interlude — Portugal is responding ── */}
       {hasCoreIntent && !hasStops && !revealPlayed && (
@@ -823,7 +814,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           onDone={() => setRevealPlayed(true)}
         />
       )}
-
 
       {/* ── Phase: EMERGENCE ──
           Suggestions emerge softly from the atmosphere. No map yet,
@@ -839,7 +829,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             pacing={affinityProfile.pacing}
             onAccept={handleAccept}
           />
-
         </div>
       )}
 
@@ -870,7 +859,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             pacing={affinityProfile.pacing}
             onAccept={handleAccept}
           />
-
 
           <div className="flex justify-center">
             <div
@@ -913,7 +901,6 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
           proposal={state.proposal}
           onClose={closeMemory}
         />
-
       )}
     </div>
   );

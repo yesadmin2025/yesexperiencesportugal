@@ -46,7 +46,7 @@ const ORIGIN = { x: 40, y: 44 };
 function labelJitter(label: string): number {
   let h = 0;
   for (let i = 0; i < label.length; i += 1) h = (h * 31 + label.charCodeAt(i)) | 0;
-  return ((h % 21) + 21) % 21 - 10;
+  return (((h % 21) + 21) % 21) - 10;
 }
 
 /** Trim "Stop —" / parenthetical region suffix etc. so labels read clean. */
@@ -65,8 +65,10 @@ function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: numb
   const n = labels.length;
   if (n === 0) return [];
   // Even fractions along the curve: 1→[0.5], 2→[0,1], 3→[0,0.5,1], 4→[0,.34,.67,1]
-  const xMin = 70, xMax = 178;
-  const yMin = 88, yMax = 232;
+  const xMin = 70,
+    xMax = 178;
+  const yMin = 88,
+    yMax = 232;
   const out: { x: number; y: number }[] = [];
   for (let i = 0; i < n; i += 1) {
     const t = n === 1 ? 0.5 : i / (n - 1);
@@ -101,7 +103,6 @@ function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: numb
   }
   return out;
 }
-
 
 /** Build a smooth route path through origin + waypoints (Catmull-Rom-ish). */
 function buildRoutePath(points: { x: number; y: number }[]): string {
@@ -229,7 +230,12 @@ export function StudioV3SignatureMap({
         className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
         style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
       />
-      {(["top-2 left-2 border-l border-t", "top-2 right-2 border-r border-t", "bottom-2 left-2 border-l border-b", "bottom-2 right-2 border-r border-b"]).map((cls) => (
+      {[
+        "top-2 left-2 border-l border-t",
+        "top-2 right-2 border-r border-t",
+        "bottom-2 left-2 border-l border-b",
+        "bottom-2 right-2 border-r border-b",
+      ].map((cls) => (
         <span
           key={cls}
           aria-hidden
@@ -288,7 +294,9 @@ export function StudioV3SignatureMap({
               filter="url(#sv3sm-soft)"
               strokeDasharray={pathLen}
               strokeDashoffset={active ? 0 : pathLen}
-              style={{ transition: "stroke-dashoffset 1900ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms" }}
+              style={{
+                transition: "stroke-dashoffset 1900ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms",
+              }}
             />
             <path
               ref={pathRef}
@@ -300,7 +308,9 @@ export function StudioV3SignatureMap({
               strokeLinecap="round"
               strokeDasharray={pathLen}
               strokeDashoffset={active ? 0 : pathLen}
-              style={{ transition: "stroke-dashoffset 1900ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms" }}
+              style={{
+                transition: "stroke-dashoffset 1900ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms",
+              }}
             />
           </>
         ) : null}
@@ -319,7 +329,15 @@ export function StudioV3SignatureMap({
                 transformOrigin: `${p.x}px ${p.y}px`,
               }}
             >
-              <circle cx={p.x} cy={p.y} r="8" fill="none" stroke="var(--gold)" strokeWidth="1.1" strokeOpacity="0.55" />
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r="8"
+                fill="none"
+                stroke="var(--gold)"
+                strokeWidth="1.1"
+                strokeOpacity="0.55"
+              />
               {isLast ? (
                 <circle
                   cx={p.x}
@@ -359,35 +377,37 @@ export function StudioV3SignatureMap({
           Hidden on mobile (≤520px) to prevent overlap with the legend
           and the bottom strip. The numbered legend below the map
           carries the full route on small screens. */}
-      {waypoints.length > 0 ? (() => {
-        const i = waypoints.length - 1;
-        const p = waypoints[i];
-        const xPct = (p.x / VB_W) * 100;
-        const yPct = (p.y / VB_H) * 100;
-        const flipLeft = xPct > 55;
-        const delay = 600 + i * 380 + 250;
-        return (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute hidden sm:block"
-            style={{
-              left: `${xPct}%`,
-              top: `${yPct}%`,
-              maxWidth: "46%",
-              transform: flipLeft
-                ? "translate(calc(-100% - 12px), -50%)"
-                : "translate(12px, -50%)",
-              textAlign: flipLeft ? "right" : "left",
-              opacity: active ? 1 : 0,
-              transition: `opacity 600ms ease ${delay}ms`,
-            }}
-          >
-            <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]">
-              {shown[i]}
-            </span>
-          </div>
-        );
-      })() : null}
+      {waypoints.length > 0
+        ? (() => {
+            const i = waypoints.length - 1;
+            const p = waypoints[i];
+            const xPct = (p.x / VB_W) * 100;
+            const yPct = (p.y / VB_H) * 100;
+            const flipLeft = xPct > 55;
+            const delay = 600 + i * 380 + 250;
+            return (
+              <div
+                aria-hidden
+                className="pointer-events-none absolute hidden sm:block"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${yPct}%`,
+                  maxWidth: "46%",
+                  transform: flipLeft
+                    ? "translate(calc(-100% - 12px), -50%)"
+                    : "translate(12px, -50%)",
+                  textAlign: flipLeft ? "right" : "left",
+                  opacity: active ? 1 : 0,
+                  transition: `opacity 600ms ease ${delay}ms`,
+                }}
+              >
+                <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]">
+                  {shown[i]}
+                </span>
+              </div>
+            );
+          })()
+        : null}
 
       {/* Bottom strip — From X · pace/stops.
           Hidden on mobile (≤520px) so the in-map captions never collide
@@ -405,7 +425,11 @@ export function StudioV3SignatureMap({
             className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.26em] font-semibold truncate"
             style={{ color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))" }}
           >
-            <span aria-hidden className="inline-block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+            <span
+              aria-hidden
+              className="inline-block h-1 w-1 rounded-full"
+              style={{ background: "var(--gold)" }}
+            />
             From {originLabel}
           </span>
         ) : (

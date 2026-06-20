@@ -32,23 +32,31 @@ function read(): PersistedBuilderState {
     if (!raw) return DEFAULTS;
     const parsed = JSON.parse(raw) as Partial<PersistedBuilderState>;
     return {
-      excluded: Array.isArray(parsed.excluded) ? parsed.excluded.filter((x) => typeof x === "string") : [],
+      excluded: Array.isArray(parsed.excluded)
+        ? parsed.excluded.filter((x) => typeof x === "string")
+        : [],
       orderOverride:
-        Array.isArray(parsed.orderOverride) && parsed.orderOverride.every((x) => typeof x === "string")
+        Array.isArray(parsed.orderOverride) &&
+        parsed.orderOverride.every((x) => typeof x === "string")
           ? parsed.orderOverride
           : null,
-      guests: typeof parsed.guests === "number" && parsed.guests >= 1 && parsed.guests <= 12 ? parsed.guests : 2,
+      guests:
+        typeof parsed.guests === "number" && parsed.guests >= 1 && parsed.guests <= 12
+          ? parsed.guests
+          : 2,
       selectedElements: Array.isArray(parsed.selectedElements)
         ? (parsed.selectedElements.filter((x) => typeof x === "string") as ElementKey[])
         : [],
       intentions: Array.isArray(parsed.intentions)
-        ? (parsed.intentions.filter(
+        ? parsed.intentions.filter(
             (x): x is Intention =>
               typeof x === "string" && (BUILDER_INTENTION_VALUES as readonly string[]).includes(x),
-          ))
+          )
         : [],
       furthestStep:
-        typeof parsed.furthestStep === "number" && parsed.furthestStep >= 0 && parsed.furthestStep <= 7
+        typeof parsed.furthestStep === "number" &&
+        parsed.furthestStep >= 0 &&
+        parsed.furthestStep <= 7
           ? parsed.furthestStep
           : 0,
     };

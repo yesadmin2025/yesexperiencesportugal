@@ -24,7 +24,7 @@ export const MOOD_TINT: Record<IntentAtmosphere, MoodTint> = {
     alt: INTENT_IMAGE.romantic_intimate.alt,
     tintHex: "#C9A96A", // warm gold
     imageOpacity: 0.18,
-    tintOpacity: 0.10,
+    tintOpacity: 0.1,
   },
   coastal_cinematic: {
     image: INTENT_IMAGE.coastal_cinematic.src,
@@ -58,7 +58,7 @@ export const MOOD_TINT: Record<IntentAtmosphere, MoodTint> = {
     image: INTENT_IMAGE.social_celebratory.src,
     alt: INTENT_IMAGE.social_celebratory.alt,
     tintHex: "#C9A96A",
-    imageOpacity: 0.20,
+    imageOpacity: 0.2,
     tintOpacity: 0.12,
   },
 };

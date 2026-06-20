@@ -13,40 +13,42 @@
 import { createServerFn } from "@tanstack/react-start";
 
 interface StoryInput {
-  name?: string;            // optional, may be ""
-  intent: string;           // IntentAtmosphere
-  pace: string;             // PaceV2
-  region: string;           // RegionKey
+  name?: string; // optional, may be ""
+  intent: string; // IntentAtmosphere
+  pace: string; // PaceV2
+  region: string; // RegionKey
   pax: number;
   signals: Array<{ sceneId: string; tappedFragmentId: string; lingerMs: number }>;
 }
 
 const FALLBACK_INTENT_LINE: Record<string, string> = {
-  relaxed_scenic:     "a day built around open roads and slow afternoon light",
-  elegant_cultural:   "a day built around stone, shadow and quiet rooms",
-  food_local:         "a day built around long tables and unhurried tasting",
+  relaxed_scenic: "a day built around open roads and slow afternoon light",
+  elegant_cultural: "a day built around stone, shadow and quiet rooms",
+  food_local: "a day built around long tables and unhurried tasting",
   social_celebratory: "a day built to lift the room and hold the moment",
-  romantic_intimate:  "a day built for two — the coast, the quiet, the dusk",
-  coastal_cinematic:  "a day built around Atlantic light and the hour the air turns gold",
+  romantic_intimate: "a day built for two — the coast, the quiet, the dusk",
+  coastal_cinematic: "a day built around Atlantic light and the hour the air turns gold",
 };
 
 const REGION_PORTRAIT: Record<string, string> = {
-  arrabida:       "set in the Arrábida — vineyards, cliffs, an Atlantic close enough to taste",
+  arrabida: "set in the Arrábida — vineyards, cliffs, an Atlantic close enough to taste",
   "lisbon-coast": "set along Sintra and the Atlantic edge — granite, mist, ocean shoulder",
-  alentejo:       "set across the Alentejo — long horizons, slow tables, stone villages",
-  centro:         "set across central Portugal — old roads, quiet stone, late light",
+  alentejo: "set across the Alentejo — long horizons, slow tables, stone villages",
+  centro: "set across central Portugal — old roads, quiet stone, late light",
 };
 
 function fallback(input: StoryInput): { story: string } {
   const who = input.name ? `${input.name},` : "For you,";
-  const lean = FALLBACK_INTENT_LINE[input.intent] ?? "a day built around something quieter and unhurried";
-  const region = REGION_PORTRAIT[input.region] ?? "set in the corner of Portugal that fits your rhythm";
+  const lean =
+    FALLBACK_INTENT_LINE[input.intent] ?? "a day built around something quieter and unhurried";
+  const region =
+    REGION_PORTRAIT[input.region] ?? "set in the corner of Portugal that fits your rhythm";
   const closing =
     input.pace === "light"
       ? "Designed with room to breathe — nothing rushed, nothing filler."
       : input.pace === "rich"
-      ? "Designed with more in its hands — full, but never hurried."
-      : "Designed with the right weight — exactly what you wanted, nothing you didn't.";
+        ? "Designed with more in its hands — full, but never hurried."
+        : "Designed with the right weight — exactly what you wanted, nothing you didn't.";
   return { story: `${who} ${lean}, ${region}. ${closing}` };
 }
 
@@ -67,7 +69,10 @@ export const generateStoryOpener = createServerFn({ method: "POST" })
     if (!apiKey) return fallback(data);
 
     const signalSummary = data.signals
-      .map((s, i) => `Beat ${i + 1}: chose "${s.tappedFragmentId}" after ${Math.round(s.lingerMs / 100) / 10}s`)
+      .map(
+        (s, i) =>
+          `Beat ${i + 1}: chose "${s.tappedFragmentId}" after ${Math.round(s.lingerMs / 100) / 10}s`,
+      )
       .join("; ");
 
     const system = [

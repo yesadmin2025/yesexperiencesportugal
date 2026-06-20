@@ -16,12 +16,7 @@
 
 import type { SignatureTour } from "./signatureTours";
 
-export type RegionBucket =
-  | "lisbon-arrabida"
-  | "alentejo"
-  | "douro"
-  | "centro"
-  | "comporta";
+export type RegionBucket = "lisbon-arrabida" | "alentejo" | "douro" | "centro" | "comporta";
 
 export interface SignatureAddOn {
   id: string;
@@ -43,7 +38,17 @@ export function regionBucket(region: string | null | undefined): RegionBucket {
   if (r.includes("douro") || r.includes("porto")) return "douro";
   if (r.includes("comporta") || r.includes("tróia") || r.includes("troia")) return "comporta";
   if (r.includes("alentejo") || r.includes("évora") || r.includes("evora")) return "alentejo";
-  if (r.includes("centro") || r.includes("coimbra") || r.includes("óbidos") || r.includes("obidos") || r.includes("fátima") || r.includes("fatima") || r.includes("nazaré") || r.includes("nazare")) return "centro";
+  if (
+    r.includes("centro") ||
+    r.includes("coimbra") ||
+    r.includes("óbidos") ||
+    r.includes("obidos") ||
+    r.includes("fátima") ||
+    r.includes("fatima") ||
+    r.includes("nazaré") ||
+    r.includes("nazare")
+  )
+    return "centro";
   return "lisbon-arrabida";
 }
 
@@ -59,7 +64,8 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       id: "hidden-cove-picnic",
       sourceTourId: "wild-beaches-picnic",
       label: "Hidden-cove beach picnic",
-      blurb: "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
+      blurb:
+        "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
       minHours: 6,
     },
@@ -67,7 +73,8 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       id: "coastal-boat-ride",
       sourceTourId: "arrabida-boat",
       label: "Coastal boat ride from Sesimbra",
-      blurb: "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
+      blurb:
+        "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
       minHours: 6,
     },
@@ -75,22 +82,25 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       id: "azulejo-workshop",
       sourceTourId: "tiles-workshop",
       label: "Hand-painted azulejo workshop",
-      blurb: "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
+      blurb:
+        "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
       pricePctOfBase: 0.16,
     },
     {
       id: "azeitao-cheese",
       sourceTourId: "azeitao-cheese",
       label: "Azeitão cheese-making session",
-      blurb: "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
+      blurb:
+        "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
       pricePctOfBase: 0.14,
     },
     {
       id: "sintra-detour",
       sourceTourId: "sintra-cascais",
       label: "Sintra detour — Pena & Cabo da Roca",
-      blurb: "Add a short loop through Sintra's romantic hills and Europe's western-most cape on the way home.",
-      pricePctOfBase: 0.20,
+      blurb:
+        "Add a short loop through Sintra's romantic hills and Europe's western-most cape on the way home.",
+      pricePctOfBase: 0.2,
       minHours: 7,
       minStops: 4,
     },
@@ -100,7 +110,8 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       id: "chapel-of-bones",
       sourceTourId: "evora-alentejo",
       label: "Chapel of Bones, after the queue",
-      blurb: "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
+      blurb:
+        "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
       pricePctOfBase: 0.16,
     },
     {
@@ -132,7 +143,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       sourceTourId: "troia-comporta",
       label: "Herdade da Comporta wine tasting",
       blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
-      pricePctOfBase: 0.20,
+      pricePctOfBase: 0.2,
     },
   ],
   centro: [
@@ -140,21 +151,24 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       id: "templar-tomar",
       sourceTourId: "tomar-coimbra",
       label: "Templar Convent of Tomar",
-      blurb: "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
+      blurb:
+        "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
       pricePctOfBase: 0.18,
     },
     {
       id: "obidos-walls",
       sourceTourId: "fatima-nazare-obidos",
       label: "Walled town of Óbidos",
-      blurb: "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
+      blurb:
+        "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
       pricePctOfBase: 0.14,
     },
     {
       id: "nazare-cliffs",
       sourceTourId: "fatima-nazare-obidos",
       label: "Nazaré giant-wave cliffs",
-      blurb: "Stand above the canyon that makes Nazaré's monster waves — the Atlantic stretching to the horizon.",
+      blurb:
+        "Stand above the canyon that makes Nazaré's monster waves — the Atlantic stretching to the horizon.",
       pricePctOfBase: 0.16,
       minHours: 6,
     },

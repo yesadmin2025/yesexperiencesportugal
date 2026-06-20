@@ -1,11 +1,6 @@
 import { useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  HASH_ALIASES,
-  performJump,
-  resolveTarget,
-  type CheckItem,
-} from "@/lib/preview-check-jump";
+import { HASH_ALIASES, performJump, resolveTarget, type CheckItem } from "@/lib/preview-check-jump";
 
 // Re-export for backward compatibility / tests that import from the route.
 export { HASH_ALIASES, resolveTarget, performJump };
@@ -24,7 +19,6 @@ export const Route = createFileRoute("/preview-check")({
   }),
   component: PreviewCheckPage,
 });
-
 
 const CHECKS: CheckItem[] = [
   {
@@ -54,8 +48,7 @@ function PreviewCheckPage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const iframeRefs = useRef<Record<string, HTMLIFrameElement | null>>({});
 
-  const toggle = (id: string) =>
-    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggle = (id: string) => setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const jumpTo = (item: CheckItem) => {
     performJump(iframeRefs.current[item.id], item);
@@ -110,10 +103,7 @@ function PreviewCheckPage() {
                 </option>
               ))}
             </select>
-            <Link
-              to="/"
-              className="text-sm underline underline-offset-4 hover:text-primary"
-            >
+            <Link to="/" className="text-sm underline underline-offset-4 hover:text-primary">
               ← Back to site
             </Link>
           </div>
@@ -138,15 +128,10 @@ function PreviewCheckPage() {
                   aria-label={`Mark ${item.label} as verified`}
                 />
                 <div>
-                  <h2
-                    id={`check-${item.id}-title`}
-                    className="text-lg font-semibold"
-                  >
+                  <h2 id={`check-${item.id}-title`} className="text-lg font-semibold">
                     {item.label}
                   </h2>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {item.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
                 </div>
               </div>
               <div className="shrink-0 flex flex-col items-end gap-2">

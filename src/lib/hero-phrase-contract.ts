@@ -58,24 +58,41 @@ function clampGap(v: number): number {
   return v;
 }
 
-export function validateHeroContract(
-  scenes: PhraseTimings[],
-  gapMs: number,
-): ContractViolation[] {
+export function validateHeroContract(scenes: PhraseTimings[], gapMs: number): ContractViolation[] {
   const out: ContractViolation[] = [];
   scenes.forEach((s, i) => {
     if (Math.abs(s.fadeInMs - C.fadeInMs) > C.toleranceMs) {
-      out.push({ phraseIndex: i, field: "fadeInMs", actual: s.fadeInMs, expected: `${C.fadeInMs}ms ±${C.toleranceMs}` });
+      out.push({
+        phraseIndex: i,
+        field: "fadeInMs",
+        actual: s.fadeInMs,
+        expected: `${C.fadeInMs}ms ±${C.toleranceMs}`,
+      });
     }
     if (s.holdMs < C.holdMinMs - C.toleranceMs) {
-      out.push({ phraseIndex: i, field: "holdMs", actual: s.holdMs, expected: `≥${C.holdMinMs}ms` });
+      out.push({
+        phraseIndex: i,
+        field: "holdMs",
+        actual: s.holdMs,
+        expected: `≥${C.holdMinMs}ms`,
+      });
     }
     if (Math.abs(s.fadeOutMs - C.fadeOutMs) > C.toleranceMs) {
-      out.push({ phraseIndex: i, field: "fadeOutMs", actual: s.fadeOutMs, expected: `${C.fadeOutMs}ms ±${C.toleranceMs}` });
+      out.push({
+        phraseIndex: i,
+        field: "fadeOutMs",
+        actual: s.fadeOutMs,
+        expected: `${C.fadeOutMs}ms ±${C.toleranceMs}`,
+      });
     }
   });
   if (gapMs < C.gapMinMs - C.toleranceMs || gapMs > C.gapMaxMs + C.toleranceMs) {
-    out.push({ phraseIndex: -1, field: "gapMs", actual: gapMs, expected: `${C.gapMinMs}–${C.gapMaxMs}ms` });
+    out.push({
+      phraseIndex: -1,
+      field: "gapMs",
+      actual: gapMs,
+      expected: `${C.gapMinMs}–${C.gapMaxMs}ms`,
+    });
   }
   return out;
 }
@@ -94,25 +111,48 @@ export function autoFixHeroContract<T extends PhraseTimings>(
     const next = { ...s };
     const fIn = clampEnter(s.fadeInMs);
     if (fIn !== s.fadeInMs) {
-      changes.push({ phraseIndex: i, field: "fadeInMs", actual: s.fadeInMs, expected: `${C.fadeInMs}ms ±${C.toleranceMs}`, fixed: fIn });
+      changes.push({
+        phraseIndex: i,
+        field: "fadeInMs",
+        actual: s.fadeInMs,
+        expected: `${C.fadeInMs}ms ±${C.toleranceMs}`,
+        fixed: fIn,
+      });
       next.fadeInMs = fIn;
     }
     const hold = clampHold(s.holdMs);
     if (hold !== s.holdMs) {
-      changes.push({ phraseIndex: i, field: "holdMs", actual: s.holdMs, expected: `≥${C.holdMinMs}ms`, fixed: hold });
+      changes.push({
+        phraseIndex: i,
+        field: "holdMs",
+        actual: s.holdMs,
+        expected: `≥${C.holdMinMs}ms`,
+        fixed: hold,
+      });
       next.holdMs = hold;
     }
     const fOut = clampExit(s.fadeOutMs);
     if (fOut !== s.fadeOutMs) {
-      changes.push({ phraseIndex: i, field: "fadeOutMs", actual: s.fadeOutMs, expected: `${C.fadeOutMs}ms ±${C.toleranceMs}`, fixed: fOut });
+      changes.push({
+        phraseIndex: i,
+        field: "fadeOutMs",
+        actual: s.fadeOutMs,
+        expected: `${C.fadeOutMs}ms ±${C.toleranceMs}`,
+        fixed: fOut,
+      });
       next.fadeOutMs = fOut;
     }
     return next;
   });
   const fixedGap = clampGap(gapMs);
   if (fixedGap !== gapMs) {
-    changes.push({ phraseIndex: -1, field: "gapMs", actual: gapMs, expected: `${C.gapMinMs}–${C.gapMaxMs}ms`, fixed: fixedGap });
+    changes.push({
+      phraseIndex: -1,
+      field: "gapMs",
+      actual: gapMs,
+      expected: `${C.gapMinMs}–${C.gapMaxMs}ms`,
+      fixed: fixedGap,
+    });
   }
   return { scenes: fixedScenes, gapMs: fixedGap, changes };
 }
-

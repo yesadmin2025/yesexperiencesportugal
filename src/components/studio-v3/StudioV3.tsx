@@ -1,4 +1,13 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -32,7 +41,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
   composeJourneyTitle,
-  
   composeSuggestedRoute,
   customerStopBlurb,
   filterCompanions,
@@ -68,7 +76,6 @@ import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 
-
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({
@@ -80,9 +87,28 @@ const BuilderMap = lazy(() =>
  *  BuilderMap / REGION_ORIGIN. Defaults to arrabida — the most common. */
 function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
   const r = (region ?? "").toLowerCase();
-  if (r.includes("alentejo") || r.includes("comporta") || r.includes("évora") || r.includes("evora")) return "alentejo";
-  if (r.includes("centro") || r.includes("coimbra") || r.includes("fátima") || r.includes("nazaré") || r.includes("óbidos")) return "centro";
-  if (r.includes("sintra") || r.includes("cascais") || r.includes("cabo da roca") || r.includes("lisbon coast")) return "lisbon-coast";
+  if (
+    r.includes("alentejo") ||
+    r.includes("comporta") ||
+    r.includes("évora") ||
+    r.includes("evora")
+  )
+    return "alentejo";
+  if (
+    r.includes("centro") ||
+    r.includes("coimbra") ||
+    r.includes("fátima") ||
+    r.includes("nazaré") ||
+    r.includes("óbidos")
+  )
+    return "centro";
+  if (
+    r.includes("sintra") ||
+    r.includes("cascais") ||
+    r.includes("cabo da roca") ||
+    r.includes("lisbon coast")
+  )
+    return "lisbon-coast";
   return "arrabida";
 }
 
@@ -129,7 +155,6 @@ const INTEREST_IMAGE: Record<string, string> = {
   "local-life": editMarket,
   street: expStreet, // safety fallback (unused id, kept defensively)
 };
-
 
 import {
   COMPANIONS,
@@ -205,7 +230,11 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  *  choosing a different answer feels distinct, not robotic. */
 const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   intro: [""],
-  feeling: ["Next, a direction begins to emerge", "Next, where Portugal calls you", "Next, the region takes shape"],
+  feeling: [
+    "Next, a direction begins to emerge",
+    "Next, where Portugal calls you",
+    "Next, the region takes shape",
+  ],
   destination: ["Next, the company", "Next, who joins you", "Next, your travellers"],
   who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
@@ -420,8 +449,6 @@ export function studioV3Progress(
   return { percent: 8, phrase: "The day begins to take shape." };
 }
 
-
-
 /**
  * Reaction beat — a short cinematic punctuation shown between phases.
  * It overlays the next phase, holds for ~1.1s (or ~0.35s for
@@ -472,7 +499,6 @@ type Reaction = {
   /** Rhythm bucket used by the pace beat. */
   rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
 };
-
 
 /** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
 function companionsAtmosphereLine(id: Companions): string {
@@ -568,24 +594,24 @@ export function StudioV3() {
   const isMobile = useIsMobile();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
-  const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(null);
+  const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
+    null,
+  );
   const [hydrating, setHydrating] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
   });
   const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
 
-  const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>(
-    { open: false, intent: "book" },
-  );
+  const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
+    open: false,
+    intent: "book",
+  });
   const openLeadSheet = useCallback(
     (intent: LeadIntent) => setLeadSheet({ open: true, intent }),
     [],
   );
-  const closeLeadSheet = useCallback(
-    () => setLeadSheet((s) => ({ ...s, open: false })),
-    [],
-  );
+  const closeLeadSheet = useCallback(() => setLeadSheet((s) => ({ ...s, open: false })), []);
 
   // Stripe sandbox checkout — Say YES on the Signature reveal. Prices and
   // tour identity are validated server-side; the client only passes the
@@ -601,9 +627,10 @@ export function StudioV3() {
         openLeadSheet("book");
         return;
       }
-      const guests = typeof currentState.guests === "number" && currentState.guests > 0
-        ? Math.min(12, Math.max(1, Math.round(currentState.guests)))
-        : 2;
+      const guests =
+        typeof currentState.guests === "number" && currentState.guests > 0
+          ? Math.min(12, Math.max(1, Math.round(currentState.guests)))
+          : 2;
       setCheckoutPending(true);
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -729,9 +756,6 @@ export function StudioV3() {
     };
   }, [state.phase]);
 
-
-
-
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
     setState((s) => {
@@ -749,34 +773,34 @@ export function StudioV3() {
     }, 380);
   }, []);
 
-  const back = useCallback((_hint?: StudioV3Phase) => {
-    setReaction(null);
-    setExiting(true);
-    // Robust to phase reordering: walk backwards from the CURRENT phase
-    // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
-    // out (occasion / considerations / language, plus investment/date on
-    // the fast path). The hint is accepted but ignored — kept as an arg
-    // so existing call-sites compile without churn.
-    let idx = PHASE_ORDER.indexOf(state.phase) - 1;
-    let target: StudioV3Phase = PHASE_ORDER[Math.max(0, idx)];
-    while (idx > 0 && !isPhaseRelevant(target, state)) {
-      idx -= 1;
-      target = PHASE_ORDER[idx];
-    }
-    trackStep({
-      stepNumber: stepOf(state.phase),
-      stepKey: state.phase,
-      event: "back",
-      value: { to: target },
-    });
-    window.setTimeout(() => {
-      setState((s) => ({ ...s, phase: target }));
-      setExiting(false);
-    }, 280);
-  }, [state]);
-
-
-
+  const back = useCallback(
+    (_hint?: StudioV3Phase) => {
+      setReaction(null);
+      setExiting(true);
+      // Robust to phase reordering: walk backwards from the CURRENT phase
+      // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
+      // out (occasion / considerations / language, plus investment/date on
+      // the fast path). The hint is accepted but ignored — kept as an arg
+      // so existing call-sites compile without churn.
+      let idx = PHASE_ORDER.indexOf(state.phase) - 1;
+      let target: StudioV3Phase = PHASE_ORDER[Math.max(0, idx)];
+      while (idx > 0 && !isPhaseRelevant(target, state)) {
+        idx -= 1;
+        target = PHASE_ORDER[idx];
+      }
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "back",
+        value: { to: target },
+      });
+      window.setTimeout(() => {
+        setState((s) => ({ ...s, phase: target }));
+        setExiting(false);
+      }, 280);
+    },
+    [state],
+  );
 
   /**
    * Show a reaction beat, then land on the next phase. The phase is
@@ -784,40 +808,41 @@ export function StudioV3() {
    * next question is already mounted and ready. Users can tap the overlay
    * to dismiss the beat early.
    */
-  const playReaction = useCallback((r: Reaction) => {
-    // Reduced-motion: skip the beat entirely and advance immediately.
-    if (prefersReducedMotion()) {
-      advance(r.nextPhase);
-      return;
-    }
-    // Atmosphere beats are mood-setters — keep them brief so the next
-    // question is reachable quickly. Map/interest/rhythm beats stay a
-    // touch longer to register the cinematic moment. Capped to avoid the
-    // overlay ever lingering and blocking taps on the next phase.
-    const rawHold = r.holdMs ?? 2400;
-    const ceiling =
-      r.kind === "map-beat" || r.kind === "interests" || r.kind === "rhythm"
-        ? 3800
-        : 2400;
-    const hold = Math.min(rawHold, ceiling);
-    setExiting(true);
-    window.setTimeout(() => {
-      setState((s) => {
-        trackStep({
-          stepNumber: stepOf(s.phase),
-          stepKey: s.phase,
-          event: "continue",
-          value: { to: r.nextPhase, viaReaction: r.kind },
-        });
-        return { ...s, phase: r.nextPhase };
-      });
-      setExiting(false);
-      setReaction(r);
+  const playReaction = useCallback(
+    (r: Reaction) => {
+      // Reduced-motion: skip the beat entirely and advance immediately.
+      if (prefersReducedMotion()) {
+        advance(r.nextPhase);
+        return;
+      }
+      // Atmosphere beats are mood-setters — keep them brief so the next
+      // question is reachable quickly. Map/interest/rhythm beats stay a
+      // touch longer to register the cinematic moment. Capped to avoid the
+      // overlay ever lingering and blocking taps on the next phase.
+      const rawHold = r.holdMs ?? 2400;
+      const ceiling =
+        r.kind === "map-beat" || r.kind === "interests" || r.kind === "rhythm" ? 3800 : 2400;
+      const hold = Math.min(rawHold, ceiling);
+      setExiting(true);
       window.setTimeout(() => {
-        setReaction((current) => (current === r ? null : current));
-      }, hold);
-    }, 220);
-  }, [advance]);
+        setState((s) => {
+          trackStep({
+            stepNumber: stepOf(s.phase),
+            stepKey: s.phase,
+            event: "continue",
+            value: { to: r.nextPhase, viaReaction: r.kind },
+          });
+          return { ...s, phase: r.nextPhase };
+        });
+        setExiting(false);
+        setReaction(r);
+        window.setTimeout(() => {
+          setReaction((current) => (current === r ? null : current));
+        }, hold);
+      }, 220);
+    },
+    [advance],
+  );
 
   // Single-select handlers — set field, then either play a reaction beat
   // (strong beats only on the 5 priority steps) or auto-advance straight
@@ -1144,7 +1169,6 @@ export function StudioV3() {
       value: { tier: id, label },
     });
 
-
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({
         feeling: state.feeling,
@@ -1182,9 +1206,6 @@ export function StudioV3() {
       holdMs: 4200,
     });
   };
-
-
-
 
   // Multi-select toggles.
   const toggleInterest = (id: Interest) => {
@@ -1246,12 +1267,13 @@ export function StudioV3() {
         const interestPhrase =
           interestLabels.length === 2
             ? `${interestLabels[0]} and ${interestLabels[1]}`
-            : interestLabels[0] ?? null;
-        const message = name && interestPhrase
-          ? `${name}, we are matching ${interestPhrase} to one real route.`
-          : interestPhrase
-            ? `Matching ${interestPhrase} to one real route.`
-            : "Matching your choices to one real route.";
+            : (interestLabels[0] ?? null);
+        const message =
+          name && interestPhrase
+            ? `${name}, we are matching ${interestPhrase} to one real route.`
+            : interestPhrase
+              ? `Matching ${interestPhrase} to one real route.`
+              : "Matching your choices to one real route.";
         playReaction({
           kind: "map-beat",
           eyebrow: "The moments",
@@ -1280,8 +1302,7 @@ export function StudioV3() {
     });
   };
   const continueFromConsiderations = () => {
-    const isNone =
-      state.considerations.length === 0 || state.considerations.includes("none");
+    const isNone = state.considerations.length === 0 || state.considerations.includes("none");
     const next = getNextPhase(state, "considerations");
     playReaction({
       kind: "considerations",
@@ -1292,7 +1313,6 @@ export function StudioV3() {
       holdMs: 4200,
     });
   };
-
 
   // Keyboard back — follows the full phase chain in reverse. Escape during
   // a reaction beat just dismisses the beat and reveals the phase beneath.
@@ -1336,13 +1356,14 @@ export function StudioV3() {
               ? ["nature", "coast", "local-life"]
               : [];
 
-  const rhythmPriority: Rhythm[] = isCoupleish || state.feeling === "slow-luxury"
-    ? ["slow", "balanced", "full", "immersive"]
-    : isFamily
-      ? ["balanced", "slow"]
-      : isCorporate
-        ? ["balanced", "full"]
-        : [];
+  const rhythmPriority: Rhythm[] =
+    isCoupleish || state.feeling === "slow-luxury"
+      ? ["slow", "balanced", "full", "immersive"]
+      : isFamily
+        ? ["balanced", "slow"]
+        : isCorporate
+          ? ["balanced", "full"]
+          : [];
 
   const investmentPriority: InvestmentTier[] = isCoupleish
     ? ["elevated", "bespoke", "considered", "open"]
@@ -1371,15 +1392,20 @@ export function StudioV3() {
   // Adaptive occasion list: filter by companions first (hide invalid for
   // solo/couple/family/friends/corporate), then apply context priority order.
   const filteredOccasions = filterOccasions(OCCASIONS, state.companions);
-  const orderedOccasions =
-    isCoupleish
-      ? prioritiseOptions(filteredOccasions, ["honeymoon", "proposal", "anniversary", "birthday", "none", "celebration"])
-      : isFamily
-        ? prioritiseOptions(filteredOccasions, ["family-day", "birthday", "celebration", "none"])
-        : isCorporate
-          ? prioritiseOptions(filteredOccasions, ["corporate", "celebration", "none"])
-          : filteredOccasions;
-
+  const orderedOccasions = isCoupleish
+    ? prioritiseOptions(filteredOccasions, [
+        "honeymoon",
+        "proposal",
+        "anniversary",
+        "birthday",
+        "none",
+        "celebration",
+      ])
+    : isFamily
+      ? prioritiseOptions(filteredOccasions, ["family-day", "birthday", "celebration", "none"])
+      : isCorporate
+        ? prioritiseOptions(filteredOccasions, ["corporate", "celebration", "none"])
+        : filteredOccasions;
 
   // Living Journey Panel (heavy editorial text) — keep hidden during the
   // question chain to avoid competing with the active phase. Reveals on
@@ -1410,15 +1436,17 @@ export function StudioV3() {
   // disappears so the question can breathe. Chrome only earns its place
   // from `guests` onward, once the traveller has placed a starting point.
   const EARLY_PHASES: StudioV3Phase[] = [
-    "intro", "feeling", "destination", "who", "occasion", "date", "pickup",
+    "intro",
+    "feeling",
+    "destination",
+    "who",
+    "occasion",
+    "date",
+    "pickup",
   ];
   const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
-    !!reaction ||
-    !chromeReady ||
-    state.phase === "map" ||
-    state.phase === "storyboard";
-
+    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard";
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
@@ -1431,9 +1459,16 @@ export function StudioV3() {
         style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
       >
         <div className="text-center" data-testid="studio-v3-hydrating">
-          <Loader2 size={18} className="animate-spin mx-auto" aria-hidden style={{ color: "var(--gold)" }} />
-          <p className="mt-4 text-[11px] uppercase tracking-[0.24em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+          <Loader2
+            size={18}
+            className="animate-spin mx-auto"
+            aria-hidden
+            style={{ color: "var(--gold)" }}
+          />
+          <p
+            className="mt-4 text-[11px] uppercase tracking-[0.24em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
             Opening your Signature…
           </p>
         </div>
@@ -1449,17 +1484,26 @@ export function StudioV3() {
         style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
       >
         <div className="max-w-md text-center" data-testid="studio-v3-hydrate-error">
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold" style={{ color: "var(--gold)" }}>
+          <p
+            className="text-[10px] uppercase tracking-[0.28em] font-bold"
+            style={{ color: "var(--gold)" }}
+          >
             YES Studio
           </p>
-          <h2 className="mt-3 text-[1.6rem] font-semibold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+          <h2
+            className="mt-3 text-[1.6rem] font-semibold leading-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
             {hydrateError === "not-found"
               ? "This Signature is no longer available."
               : "We couldn't open this Signature."}
           </h2>
-          <p className="mt-3 text-[14px] leading-[1.55]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
-            The private link may have expired or been mistyped. You can begin a new Signature in a few taps.
+          <p
+            className="mt-3 text-[14px] leading-[1.55]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          >
+            The private link may have expired or been mistyped. You can begin a new Signature in a
+            few taps.
           </p>
           <button
             type="button"
@@ -1499,7 +1543,6 @@ export function StudioV3() {
     );
   }
 
-
   // Ambient anticipation — Portugal silhouette behind every phase.
   // The coastline draws in with progress; a gold pulse settles on the
   // inferred region the moment the traveller hints at one. Strict
@@ -1518,7 +1561,11 @@ export function StudioV3() {
 
   return (
     <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
-      <StudioV3DebugOverlay state={state} composerHidden={composerHidden} reactionActive={!!reaction} />
+      <StudioV3DebugOverlay
+        state={state}
+        composerHidden={composerHidden}
+        reactionActive={!!reaction}
+      />
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "feeling"} />
@@ -1540,11 +1587,13 @@ export function StudioV3() {
         />
       ) : null}
 
-
-
-
       {state.phase === "feeling" ? (
-        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="ivory"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
@@ -1560,7 +1609,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "destination" ? (
-        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="teal"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("feeling")} />
           <PhaseHeader
             eyebrow="The direction"
@@ -1588,16 +1642,27 @@ export function StudioV3() {
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
-            <FooterHint>Optional — pickup tells us where you stay, not where the day goes.</FooterHint>
+            <FooterHint>
+              Optional — pickup tells us where you stay, not where the day goes.
+            </FooterHint>
           )}
         </PhaseShell>
       ) : null}
 
       {state.phase === "who" ? (
-        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="gold"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("destination")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
-          <ChoiceGrid options={filterCompanions(COMPANIONS, state.feeling)} value={state.companions} onSelect={onCompanions} />
+          <ChoiceGrid
+            options={filterCompanions(COMPANIONS, state.feeling)}
+            value={state.companions}
+            onSelect={onCompanions}
+          />
           {state.companions ? (
             <NextTeaser>{contextualTeaser("who", state)}</NextTeaser>
           ) : (
@@ -1607,7 +1672,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "occasion" ? (
-        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="ivory"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
           <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
@@ -1620,7 +1690,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "date" ? (
-        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="teal"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("occasion")} />
           <PhaseHeader eyebrow="The when" title="When should" titleAccent="this unfold?" />
           <DatePhaseControls
@@ -1639,7 +1714,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "pickup" ? (
-        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="gold"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
           <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
@@ -1652,7 +1732,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "guests" ? (
-        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="ivory"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
           <GuestStepper
@@ -1685,7 +1770,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "interests" ? (
-        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="teal"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
           <ChoiceGrid
@@ -1704,19 +1794,24 @@ export function StudioV3() {
             onClick={continueFromInterests}
             label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
           />
-
         </PhaseShell>
       ) : null}
 
       {state.phase === "rhythm" ? (
-        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="gold"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("interests")} />
-          <PhaseHeader
-            eyebrow="The rhythm"
-            title="How should the"
-            titleAccent="day unfold?"
+          <PhaseHeader eyebrow="The rhythm" title="How should the" titleAccent="day unfold?" />
+          <ChoiceGrid
+            options={orderedRhythms}
+            value={state.rhythm}
+            onSelect={onRhythm}
+            columns={2}
           />
-          <ChoiceGrid options={orderedRhythms} value={state.rhythm} onSelect={onRhythm} columns={2} />
           {state.rhythm ? (
             <NextTeaser>{contextualTeaser("rhythm", state)}</NextTeaser>
           ) : (
@@ -1726,13 +1821,14 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "considerations" ? (
-        <PhaseShell accent="ivory" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="ivory"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("rhythm")} />
-          <PhaseHeader
-            eyebrow="The care"
-            title="Anything we should"
-            titleAccent="hold for you?"
-          />
+          <PhaseHeader eyebrow="The care" title="Anything we should" titleAccent="hold for you?" />
           <ChoiceGrid
             mode="multi"
             options={orderedConsiderations}
@@ -1742,14 +1838,21 @@ export function StudioV3() {
           {state.considerations.length > 0 ? (
             <NextTeaser>{contextualTeaser("considerations", state)}</NextTeaser>
           ) : (
-            <FooterHint>Add anything we should know — or continue if there is nothing to mention.</FooterHint>
+            <FooterHint>
+              Add anything we should know — or continue if there is nothing to mention.
+            </FooterHint>
           )}
           <ContinueCta disabled={false} onClick={continueFromConsiderations} label="Continue" />
         </PhaseShell>
       ) : null}
 
       {state.phase === "language" ? (
-        <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="teal"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
           <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
@@ -1762,7 +1865,12 @@ export function StudioV3() {
       ) : null}
 
       {state.phase === "investment" ? (
-        <PhaseShell accent="gold" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+        <PhaseShell
+          accent="gold"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader
             eyebrow="Experience investment"
@@ -1784,7 +1892,6 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-
       {state.phase === "map" && state.feeling && state.companions && state.rhythm ? (
         <MapAwakens
           feeling={state.feeling}
@@ -1797,9 +1904,7 @@ export function StudioV3() {
           dateExact={state.dateExact}
           rerollCount={state.rerollCount ?? 0}
           studioState={state}
-          onReshape={() =>
-            setState((s) => ({ ...s, rerollCount: (s.rerollCount ?? 0) + 1 }))
-          }
+          onReshape={() => setState((s) => ({ ...s, rerollCount: (s.rerollCount ?? 0) + 1 }))}
           onBack={() => back("rhythm")}
           onContinue={(tourId) => {
             const tour = findTour(tourId);
@@ -1818,11 +1923,15 @@ export function StudioV3() {
         />
       ) : null}
 
-
       {state.phase === "storyboard" ? (
         <>
           <CurtainRise state={state} />
-          <PhaseShell accent="teal" exiting={exiting} progress={studioV3Progress(state, state.phase)} anticipation={anticipation}>
+          <PhaseShell
+            accent="teal"
+            exiting={exiting}
+            progress={studioV3Progress(state, state.phase)}
+            anticipation={anticipation}
+          >
             <StoryboardHandoff
               state={state}
               onStateChange={setState}
@@ -1840,7 +1949,6 @@ export function StudioV3() {
         state={state}
         onClose={closeLeadSheet}
       />
-
 
       {reaction ? (
         <ReactionOverlay reaction={reaction} state={state} onDismiss={() => setReaction(null)} />
@@ -1876,16 +1984,19 @@ export function StudioV3() {
               borderRadius: "999px",
             }}
           >
-            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}>—</span>
+            <span
+              aria-hidden
+              style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+            >
+              —
+            </span>
             Need help? Ask YES
           </button>
         </div>
       ) : null}
     </main>
-
   );
 }
-
 
 /* ---------- Sub-components ---------- */
 
@@ -1980,9 +2091,7 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
   const handleClose = useCallback(() => {
     if (typeof window === "undefined") return;
     if (hasProgress) {
-      const ok = window.confirm(
-        "Leave the Studio? Your journey so far won't be saved.",
-      );
+      const ok = window.confirm("Leave the Studio? Your journey so far won't be saved.");
       if (!ok) return;
     }
     window.location.assign("/");
@@ -2009,8 +2118,6 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
     </button>
   );
 }
-
-
 
 /** Dark continue CTA used by the two multi-select screens. Inline styles
  *  intentionally mirror the StoryboardHandoff CTA — no new component. */
@@ -2093,9 +2200,7 @@ function StoryboardHandoff({
   );
 
   const editedStops = state.editedRoutePoints ?? baseStops;
-  const skeletonTour = resolved.skeletonTourKey
-    ? findTour(resolved.skeletonTourKey)
-    : null;
+  const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
@@ -2197,7 +2302,6 @@ function StoryboardHandoff({
     state.considerations,
   ]);
 
-
   const setEdited = useCallback(
     (
       updater: (
@@ -2209,8 +2313,7 @@ function StoryboardHandoff({
         const next = updater(current);
         // If user returned to identity, store null so save reflects "unchanged".
         const same =
-          next.length === baseStops.length &&
-          next.every((p, i) => p.label === baseStops[i].label);
+          next.length === baseStops.length && next.every((p, i) => p.label === baseStops[i].label);
         return { ...s, editedRoutePoints: same ? null : next };
       });
     },
@@ -2250,9 +2353,7 @@ function StoryboardHandoff({
   const reducedMotionInitial =
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  const [composeBeat, setComposeBeat] = useState<0 | 1 | 2 | 3 | 4>(
-    reducedMotionInitial ? 4 : 0,
-  );
+  const [composeBeat, setComposeBeat] = useState<0 | 1 | 2 | 3 | 4>(reducedMotionInitial ? 4 : 0);
   const composing = composeBeat < 4;
   useEffect(() => {
     if (reducedMotionInitial) return;
@@ -2267,9 +2368,7 @@ function StoryboardHandoff({
 
   // Staggered route-pin draw — starts only after the composing overlay clears.
   const totalStops = editedStops.length;
-  const [revealedStops, setRevealedStops] = useState<number>(
-    reducedMotionInitial ? totalStops : 0,
-  );
+  const [revealedStops, setRevealedStops] = useState<number>(reducedMotionInitial ? totalStops : 0);
   useEffect(() => {
     if (composing) return;
     if (reducedMotionInitial) {
@@ -2279,9 +2378,7 @@ function StoryboardHandoff({
     setRevealedStops(0);
     const timers: number[] = [];
     for (let i = 1; i <= totalStops; i += 1) {
-      timers.push(
-        window.setTimeout(() => setRevealedStops(i), 220 + i * 320),
-      );
+      timers.push(window.setTimeout(() => setRevealedStops(i), 220 + i * 320));
     }
     return () => timers.forEach(window.clearTimeout);
   }, [composing, totalStops, reducedMotionInitial]);
@@ -2292,9 +2389,7 @@ function StoryboardHandoff({
   const maxMoments =
     state.rhythm === "slow"
       ? editedStops.length // slow: locked to current — no add
-      : state.rhythm === "balanced" ||
-          state.rhythm === "full" ||
-          state.rhythm === "immersive"
+      : state.rhythm === "balanced" || state.rhythm === "full" || state.rhythm === "immersive"
         ? 5
         : 4;
   const canAddMoment = editedStops.length < maxMoments && swapPool.length > 0;
@@ -2306,7 +2401,8 @@ function StoryboardHandoff({
   const themeBits: string[] = [];
   if (state.interests.includes("wine") || state.feeling === "wine-food") themeBits.push("wine");
   if (state.interests.includes("coast") || state.feeling === "coastal") themeBits.push("coast");
-  if (state.interests.includes("heritage") || state.feeling === "culture") themeBits.push("heritage");
+  if (state.interests.includes("heritage") || state.feeling === "culture")
+    themeBits.push("heritage");
   if (state.interests.includes("gastronomy")) themeBits.push("local table");
   if (state.feeling === "romance") themeBits.push("quiet moments");
   const paceBit =
@@ -2319,9 +2415,7 @@ function StoryboardHandoff({
           : "a thoughtful rhythm";
 
   // ---------- Phase 6E: Signature Story copy ----------
-  const heroLead = name
-    ? `${name}, this is your Signature.`
-    : "This is your Signature.";
+  const heroLead = name ? `${name}, this is your Signature.` : "This is your Signature.";
   const heroThemes = themeBits.slice(0, 3);
   const regionName = skeletonTour?.region?.trim() || null;
   const regionPhrase = regionName ? `A private ${regionName} day` : `A private day`;
@@ -2331,29 +2425,22 @@ function StoryboardHandoff({
       : heroThemes.length === 1
         ? `${regionPhrase}, shaped around ${heroThemes[0]}, held inside ${paceBit}.`
         : `${regionPhrase}, shaped from your own choices rather than a template.`;
-  const heroPickupNamed =
-    !!pickupCity && pickupCity !== "your chosen starting point";
+  const heroPickupNamed = !!pickupCity && pickupCity !== "your chosen starting point";
   const heroOrigin = heroPickupNamed
     ? `Composed privately for ${name ?? "you"} — one route, one rhythm, beginning and ending in ${pickupCity}.`
     : `Composed privately for ${name ?? "you"} — one route, one rhythm, shaped only around the day you described.`;
 
   // Story of the day — generated only from real composed route points.
-  const cleanLabel = (s: string) =>
-    s.split(/[—–-]/)[0].split(",")[0].trim();
+  const cleanLabel = (s: string) => s.split(/[—–-]/)[0].split(",")[0].trim();
   const firstStop = editedStops[0] ? cleanLabel(editedStops[0].label) : null;
   const lastStop =
-    editedStops.length > 1
-      ? cleanLabel(editedStops[editedStops.length - 1].label)
-      : null;
+    editedStops.length > 1 ? cleanLabel(editedStops[editedStops.length - 1].label) : null;
   const middleStop =
     editedStops.length >= 3
       ? cleanLabel(editedStops[Math.floor(editedStops.length / 2)].label)
       : null;
 
-
-
-  const hasNamedPickup =
-    !!pickupCity && pickupCity !== "your chosen starting point";
+  const hasNamedPickup = !!pickupCity && pickupCity !== "your chosen starting point";
   const regionForStory = skeletonTour?.region?.trim() || null;
   const towardRegion = regionForStory ? ` toward ${regionForStory}` : "";
   const opening = firstStop
@@ -2462,9 +2549,8 @@ function StoryboardHandoff({
           className="mt-4 text-[14px] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
-          We won't show a Signature that isn't fully grounded in a real tour.
-          A YES curator will compose this one with you — same care, no
-          guesswork.
+          We won't show a Signature that isn't fully grounded in a real tour. A YES curator will
+          compose this one with you — same care, no guesswork.
         </p>
         <div className="mt-7 flex flex-col items-center gap-3">
           <CtaButton onClick={onRefine} variant="primary">
@@ -2513,8 +2599,7 @@ function StoryboardHandoff({
                 boxShadow: "0 24px 60px -28px rgba(0,0,0,0.45)",
                 opacity: composeBeat >= 1 ? 1 : 0,
                 transform: composeBeat >= 1 ? "scale(1)" : "scale(1.03)",
-                transition:
-                  "opacity 900ms ease-out, transform 1400ms ease-out",
+                transition: "opacity 900ms ease-out, transform 1400ms ease-out",
               }}
             >
               <img
@@ -2528,8 +2613,7 @@ function StoryboardHandoff({
                 aria-hidden
                 className="absolute inset-0"
                 style={{
-                  background:
-                    "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.32) 100%)",
+                  background: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.32) 100%)",
                 }}
               />
               <p
@@ -2559,7 +2643,8 @@ function StoryboardHandoff({
               transition: "opacity 700ms ease-out, transform 700ms ease-out",
             }}
           >
-            {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you described.
+            {name ? `${name}, ` : ""}one route, one rhythm — shaped only around the day you
+            described.
           </p>
 
           {/* Beat 3 — trust whisper. */}
@@ -2584,7 +2669,6 @@ function StoryboardHandoff({
       ) : null}
 
       <BackLink onClick={onBack} />
-
 
       {/* ---------- 1. Hero — Your Signature ---------- */}
       <header
@@ -2626,9 +2710,8 @@ function StoryboardHandoff({
         {(() => {
           const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2);
           if (!px) return null;
-          const guestsForLine = typeof state.guests === "number" && state.guests > 0
-            ? state.guests
-            : 2;
+          const guestsForLine =
+            typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
           return (
             <p
               data-testid="studio-v3-hero-price"
@@ -2640,7 +2723,8 @@ function StoryboardHandoff({
               </span>
               €{px.eurPerPax} per person
               <span style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}>
-                {" · "}{guestsForLine} guest{guestsForLine === 1 ? "" : "s"}
+                {" · "}
+                {guestsForLine} guest{guestsForLine === 1 ? "" : "s"}
               </span>
             </p>
           );
@@ -2660,9 +2744,22 @@ function StoryboardHandoff({
           }}
           aria-label="YES Approved Signature"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden style={{ color: "var(--gold)" }}>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            aria-hidden
+            style={{ color: "var(--gold)" }}
+          >
             <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" strokeWidth="1.25" />
-            <path d="M4.5 8.4 7 10.8l4.5-5.2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M4.5 8.4 7 10.8l4.5-5.2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           <span
             className="text-[10px] uppercase tracking-[0.26em] font-semibold"
@@ -2673,13 +2770,9 @@ function StoryboardHandoff({
         </div>
       </header>
 
-
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
-        <div
-          data-testid="studio-v3-reveal-map"
-          className="mt-8 mx-auto w-full max-w-[520px]"
-        >
+        <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
           <StudioV3SignatureMap
             stops={editedStops.map((s) => s.label)}
             activeCount={revealedStops}
@@ -2765,8 +2858,6 @@ function StoryboardHandoff({
         </section>
       ) : null}
 
-
-
       {/* ---------- 3. Story of the day ---------- */}
 
       <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
@@ -2826,8 +2917,7 @@ function StoryboardHandoff({
                   className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
                   style={{
                     background: "color-mix(in oklab, var(--sand) 45%, transparent)",
-                    border:
-                      "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
                   }}
                 >
                   <div className="flex items-start gap-3">
@@ -2900,9 +2990,7 @@ function StoryboardHandoff({
                           type="button"
                           aria-label={`Swap ${s.label}`}
                           aria-expanded={swapOpen}
-                          onClick={() =>
-                            setSwapOpenIdx(swapOpen ? null : i)
-                          }
+                          onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
                           className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
@@ -2913,9 +3001,7 @@ function StoryboardHandoff({
                         type="button"
                         aria-label={`Remove ${s.label}`}
                         disabled={editedStops.length <= 1}
-                        onClick={() =>
-                          setEdited((prev) => prev.filter((_, j) => j !== i))
-                        }
+                        onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
                         className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                         style={{ color: "var(--charcoal)" }}
                       >
@@ -2929,8 +3015,7 @@ function StoryboardHandoff({
                       data-testid="studio-v3-swap-pool"
                       className="mt-2.5 space-y-1 border-t pt-2"
                       style={{
-                        borderColor:
-                          "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                        borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
                       }}
                     >
                       {swapPool.map((cand) => (
@@ -2945,7 +3030,6 @@ function StoryboardHandoff({
                               );
                               setSwapOpenIdx(null);
                             }}
-
                             className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                             style={{ color: "var(--charcoal)" }}
                           >
@@ -2954,8 +3038,7 @@ function StoryboardHandoff({
                               <span
                                 className="block text-[11.5px]"
                                 style={{
-                                  color:
-                                    "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                                 }}
                               >
                                 {cand.story}
@@ -2980,8 +3063,7 @@ function StoryboardHandoff({
                 aria-expanded={addOpen}
                 className="w-full rounded-[8px] px-3 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
-                  border:
-                    "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
+                  border: "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
                   color: "var(--charcoal)",
                   background: "transparent",
                 }}
@@ -3002,8 +3084,7 @@ function StoryboardHandoff({
                   className="mt-2 space-y-1 rounded-[8px] p-2"
                   style={{
                     background: "color-mix(in oklab, var(--sand) 35%, transparent)",
-                    border:
-                      "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
                   }}
                 >
                   {swapPool.slice(0, 6).map((cand) => (
@@ -3011,13 +3092,9 @@ function StoryboardHandoff({
                       <button
                         type="button"
                         onClick={() => {
-                          setEdited((prev) => [
-                            ...prev,
-                            { label: cand.label, story: cand.story },
-                          ]);
+                          setEdited((prev) => [...prev, { label: cand.label, story: cand.story }]);
                           setAddOpen(false);
                         }}
-
                         className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                         style={{ color: "var(--charcoal)" }}
                       >
@@ -3026,8 +3103,7 @@ function StoryboardHandoff({
                           <span
                             className="block text-[11.5px]"
                             style={{
-                              color:
-                                "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                             }}
                           >
                             {cand.story}
@@ -3046,10 +3122,10 @@ function StoryboardHandoff({
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              This Signature is already complete for the rhythm you chose. Try swapping a moment instead.
+              This Signature is already complete for the rhythm you chose. Try swapping a moment
+              instead.
             </p>
           ) : null}
-
 
           {state.editedRoutePoints ? (
             <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">
@@ -3062,9 +3138,7 @@ function StoryboardHandoff({
               </span>
               <button
                 type="button"
-                onClick={() =>
-                  onStateChange((s) => ({ ...s, editedRoutePoints: null }))
-                }
+                onClick={() => onStateChange((s) => ({ ...s, editedRoutePoints: null }))}
                 className="px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{ color: "var(--charcoal)" }}
               >
@@ -3107,7 +3181,6 @@ function StoryboardHandoff({
               </li>
             ))}
           </ul>
-
         </section>
       ) : null}
 
@@ -3164,7 +3237,6 @@ function StoryboardHandoff({
         }
       />
 
-
       {/* ---------- 7b. Before you secure it ---------- */}
       <div className="mt-8 text-center">
         <p
@@ -3211,8 +3283,13 @@ function StoryboardHandoff({
           className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[300px] sm:max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          <span className="sm:hidden">When you're ready — pickup and final details are confirmed before anything is locked in.</span>
-          <span className="hidden sm:inline">Reserve your date now — pickup and final details are confirmed with you before anything is finalised.</span>
+          <span className="sm:hidden">
+            When you're ready — pickup and final details are confirmed before anything is locked in.
+          </span>
+          <span className="hidden sm:inline">
+            Reserve your date now — pickup and final details are confirmed with you before anything
+            is finalised.
+          </span>
         </p>
 
         <button
@@ -3249,18 +3326,21 @@ function StoryboardHandoff({
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-2 py-1 min-h-[32px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", background: "transparent" }}
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+            background: "transparent",
+          }}
           aria-label="Need help? Ask YES on WhatsApp"
         >
-          <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+          <span aria-hidden style={{ color: "var(--gold)" }}>
+            —
+          </span>
           Need help? Ask YES
         </a>
       </div>
-
     </div>
   );
 }
-
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
@@ -3330,7 +3410,8 @@ function ReactionOverlay({
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
           background: "var(--charcoal)",
-          animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+          ...passThroughStyle,
         }}
       >
         <AtmosphereBeat
@@ -3362,7 +3443,8 @@ function ReactionOverlay({
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
           background: "var(--charcoal)",
-          animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
+          animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+          ...passThroughStyle,
         }}
       >
         <MapBeat
@@ -3384,7 +3466,6 @@ function ReactionOverlay({
       </button>
     );
   }
-
 
   // Per-kind soft "postcard" gradient using brand tokens only.
   // No external imagery: warm scenic washes drawn from --ivory / --sand /
@@ -3410,7 +3491,8 @@ function ReactionOverlay({
       style={{
         background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
         backdropFilter: "blur(2px)",
-        animation: `studioV3ReactionFade ${hold}ms ease-out both`, ...passThroughStyle,
+        animation: `studioV3ReactionFade ${hold}ms ease-out both`,
+        ...passThroughStyle,
       }}
     >
       <div className="w-full max-w-[480px] text-center">
@@ -3419,10 +3501,7 @@ function ReactionOverlay({
           style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
           data-testid="studio-v3-voice-mark"
         >
-          <span
-            className="font-bold tracking-[0.32em]"
-            style={{ color: "var(--teal)" }}
-          >
+          <span className="font-bold tracking-[0.32em]" style={{ color: "var(--teal)" }}>
             YES
           </span>
           <span style={{ color: "var(--gold)" }}>—</span>
@@ -3431,7 +3510,6 @@ function ReactionOverlay({
 
         {/* ---------- Map preview panel ---------- */}
         <MapPreviewPanel reaction={reaction} fallbackBg={postcardBg} />
-
 
         {/* ---------- Story copy ---------- */}
         <p
@@ -3492,7 +3570,9 @@ function ReactionOverlay({
               }}
               data-testid="studio-v3-region-voice"
             >
-              <span style={{ color: "var(--gold)" }} aria-hidden>—</span>
+              <span style={{ color: "var(--gold)" }} aria-hidden>
+                —
+              </span>
               <span>{voice.eyebrow}</span>
             </p>
           );
@@ -3534,15 +3614,8 @@ function ReactionOverlay({
  * consider replacing this with a constrained preview of BuilderMap. For
  * now BuilderMap internals must not change, so we render this locally.
  */
-function MapPreviewPanel({
-  reaction,
-  fallbackBg,
-}: {
-  reaction: Reaction;
-  fallbackBg: string;
-}) {
-  const isInterests =
-    reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0;
+function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbackBg: string }) {
+  const isInterests = reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0;
   const showMap =
     reaction.kind === "pickup" ||
     reaction.kind === "interests" ||
@@ -3624,7 +3697,6 @@ function MapPreviewPanel({
         </>
       ) : null}
 
-
       {/* Faint hairline grid — reads as a map surface, not a postcard. */}
       {showMap ? (
         <div
@@ -3635,10 +3707,8 @@ function MapPreviewPanel({
               "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 6%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--charcoal) 6%, transparent) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
             opacity: 0.55,
-            maskImage:
-              "radial-gradient(ellipse at center, black 55%, transparent 95%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse at center, black 55%, transparent 95%)",
+            maskImage: "radial-gradient(ellipse at center, black 55%, transparent 95%)",
+            WebkitMaskImage: "radial-gradient(ellipse at center, black 55%, transparent 95%)",
           }}
         />
       ) : null}
@@ -3763,8 +3833,7 @@ function MapPreviewPanel({
                     height: 7,
                     borderRadius: "999px",
                     background: "color-mix(in oklab, var(--teal) 80%, transparent)",
-                    boxShadow:
-                      "0 0 0 3px color-mix(in oklab, var(--teal) 14%, transparent)",
+                    boxShadow: "0 0 0 3px color-mix(in oklab, var(--teal) 14%, transparent)",
                   }}
                 />
                 <span
@@ -3894,8 +3963,7 @@ function MapPreviewPanel({
                     height: 6,
                     borderRadius: "999px",
                     background: "color-mix(in oklab, var(--teal) 78%, transparent)",
-                    boxShadow:
-                      "0 0 0 3px color-mix(in oklab, var(--teal) 12%, transparent)",
+                    boxShadow: "0 0 0 3px color-mix(in oklab, var(--teal) 12%, transparent)",
                   }}
                 />
               </span>
@@ -3954,9 +4022,7 @@ function SaveSignatureButton({
   journeyTitle: string;
 }) {
   const save = useServerFn(saveStudioV3Signature);
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [token, setToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -3989,10 +4055,7 @@ function SaveSignatureButton({
         data-testid="studio-v3-saved-confirmation"
         className="mt-2 w-full max-w-[420px] motion-safe:[animation:studioV3RiseIn_520ms_ease-out_both]"
       >
-        <span
-          aria-hidden="true"
-          className="gold-rule mb-4 max-w-[3rem] mx-auto block"
-        />
+        <span aria-hidden="true" className="gold-rule mb-4 max-w-[3rem] mx-auto block" />
         <span className="flex items-center justify-center gap-2.5 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
           <span
             aria-hidden="true"
@@ -4070,14 +4133,10 @@ function SaveSignatureButton({
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
           We couldn't save this Signature just now. Please try again, or use{" "}
-          <span style={{ color: "var(--gold)", fontWeight: 600 }}>Say YES</span>{" "}
-          and we'll keep the details with your request.
+          <span style={{ color: "var(--gold)", fontWeight: 600 }}>Say YES</span> and we'll keep the
+          details with your request.
         </p>
       ) : null}
     </div>
   );
 }
-
-
-
-

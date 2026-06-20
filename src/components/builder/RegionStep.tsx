@@ -19,16 +19,56 @@ import { BuilderImage } from "./BuilderImage";
 ───────────────────────────────────────────────────────────────── */
 
 export const BUILDER_REGIONS = [
-  { key: "lisbon", label: "Lisbon & Coast", blurb: "The capital, Sintra's palaces, the Arrábida coast and Setúbal's wine country." },
-  { key: "arrabida-setubal", label: "Arrábida & Setúbal", blurb: "Cliffs, oyster beaches, and Portugal's wine cellars an hour from Lisbon." },
-  { key: "troia-comporta", label: "Tróia & Comporta", blurb: "Roman ruins, palafitic piers, and rice paddies on the Sado peninsula." },
-  { key: "porto", label: "Porto & Douro", blurb: "Riverside Porto, the Douro Valley terraces, port cellars and granite villages." },
-  { key: "alentejo", label: "Alentejo & Centro", blurb: "Évora, Monsaraz, cork plains, slow vineyards and the inland heart of Portugal." },
-  { key: "sintra-cascais", label: "Sintra & Cascais", blurb: "Romantic palaces, Atlantic capes, and the westernmost point of Europe." },
-  { key: "algarve", label: "Algarve", blurb: "Golden cliffs, hidden coves, Ria Formosa, Vicentine wild coast and Monchique hills." },
-  { key: "evora-alentejo", label: "Évora & Alentejo", blurb: "Roman temples, cork forests, and Alentejo's slow wine country." },
-  { key: "centro-tomar-coimbra", label: "Tomar & Coimbra", blurb: "Templar heritage and Portugal's oldest university north of Lisbon." },
-  { key: "centro-fatima-nazare-obidos", label: "Fátima, Nazaré & Óbidos", blurb: "Sanctuary, giant Atlantic waves, and a walled medieval village." },
+  {
+    key: "lisbon",
+    label: "Lisbon & Coast",
+    blurb: "The capital, Sintra's palaces, the Arrábida coast and Setúbal's wine country.",
+  },
+  {
+    key: "arrabida-setubal",
+    label: "Arrábida & Setúbal",
+    blurb: "Cliffs, oyster beaches, and Portugal's wine cellars an hour from Lisbon.",
+  },
+  {
+    key: "troia-comporta",
+    label: "Tróia & Comporta",
+    blurb: "Roman ruins, palafitic piers, and rice paddies on the Sado peninsula.",
+  },
+  {
+    key: "porto",
+    label: "Porto & Douro",
+    blurb: "Riverside Porto, the Douro Valley terraces, port cellars and granite villages.",
+  },
+  {
+    key: "alentejo",
+    label: "Alentejo & Centro",
+    blurb: "Évora, Monsaraz, cork plains, slow vineyards and the inland heart of Portugal.",
+  },
+  {
+    key: "sintra-cascais",
+    label: "Sintra & Cascais",
+    blurb: "Romantic palaces, Atlantic capes, and the westernmost point of Europe.",
+  },
+  {
+    key: "algarve",
+    label: "Algarve",
+    blurb: "Golden cliffs, hidden coves, Ria Formosa, Vicentine wild coast and Monchique hills.",
+  },
+  {
+    key: "evora-alentejo",
+    label: "Évora & Alentejo",
+    blurb: "Roman temples, cork forests, and Alentejo's slow wine country.",
+  },
+  {
+    key: "centro-tomar-coimbra",
+    label: "Tomar & Coimbra",
+    blurb: "Templar heritage and Portugal's oldest university north of Lisbon.",
+  },
+  {
+    key: "centro-fatima-nazare-obidos",
+    label: "Fátima, Nazaré & Óbidos",
+    blurb: "Sanctuary, giant Atlantic waves, and a walled medieval village.",
+  },
 ] as const;
 
 export type BuilderRegionKey = (typeof BUILDER_REGIONS)[number]["key"];
@@ -52,7 +92,8 @@ export function RegionStep({ selected, onChoose }: Props) {
           Pick a region to <span className="italic">root</span> your day.
         </h2>
         <p className="max-w-xl text-[13.5px] sm:text-[14px] text-[color:var(--charcoal)]/70 leading-relaxed">
-          We'll shape stops, drive times and tastings around this corner of Portugal. You can change this later.
+          We'll shape stops, drive times and tastings around this corner of Portugal. You can change
+          this later.
         </p>
       </div>
 

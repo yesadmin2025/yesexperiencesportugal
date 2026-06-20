@@ -49,8 +49,6 @@ interface Props {
 
 const HERO_CLIP = "/__l5e/assets-v1/501885a8-7399-4591-99fc-1c410b24c428/scene-route-portugal.mp4";
 
-
-
 /* ── Editorial timeline helpers ─────────────────────────────────────────── */
 
 /** Sensory lines per intention tag — Portuguese, editorial, observed not
@@ -100,14 +98,7 @@ function buildTimeline(stops: StudioStop[]): { time: string; stop: StudioStop }[
 
 /* ── Component ──────────────────────────────────────────────────────────── */
 
-export function MemoryCard({
-  stops,
-  regionKey,
-  pace,
-  chapter,
-  proposal,
-  onClose,
-}: Props) {
+export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose }: Props) {
   const sessionId = useBuilderSessionId();
   const create = useServerFn(createJourney);
   const [token, setToken] = useState<string | null>(null);
@@ -128,9 +119,7 @@ export function MemoryCard({
   // Title + subtitle — proposal is the source of truth; chapter is the
   // calm editorial fallback only when no proposal has been composed.
   const title = proposal?.title ?? chapter ?? regionLabel(regionKey);
-  const subtitle =
-    proposal?.subtitle ??
-    `${regionLabel(regionKey)}, em ${stops.length} momentos.`;
+  const subtitle = proposal?.subtitle ?? `${regionLabel(regionKey)}, em ${stops.length} momentos.`;
 
   // ── Layered unfold ────────────────────────────────────────────────────
   // Beat 1 (Arrival): ~2.2s of stillness — proposal identity alone.
@@ -234,7 +223,6 @@ export function MemoryCard({
     }
   };
 
-
   return (
     <div
       role="dialog"
@@ -256,9 +244,7 @@ export function MemoryCard({
       {/* ── LAYER 1 · ARRIVAL ───────────────────────────────────────────
           Full-bleed hero with proposal identity. Held in silence for
           ~1.6s before the timeline emerges. */}
-      <section
-        className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden"
-      >
+      <section className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden">
         {/* Cinematic backdrop */}
         <video
           aria-hidden="true"
@@ -280,10 +266,7 @@ export function MemoryCard({
 
         {/* Proposal identity — the editorial spread */}
         <div className="relative z-10 w-full max-w-2xl px-6 pt-24 pb-10 flex flex-col items-center text-center gap-6 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms] ease-out">
-          <span
-            aria-hidden="true"
-            className="block h-px w-10 bg-[color:var(--gold)]/75"
-          />
+          <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/75" />
           <p
             className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]"
             style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
@@ -309,10 +292,7 @@ export function MemoryCard({
             {subtitle}
           </p>
           {/* Quiet hairline anchor */}
-          <span
-            aria-hidden="true"
-            className="block h-px w-6 bg-[color:var(--ivory)]/30 mt-2"
-          />
+          <span aria-hidden="true" className="block h-px w-6 bg-[color:var(--ivory)]/30 mt-2" />
         </div>
 
         {/* ── LAYER 2 · THE DAY EMERGES ───────────────────────────────
@@ -358,15 +338,10 @@ export function MemoryCard({
             no chips, no dashboard chrome. */}
         <div
           className={`relative z-10 w-full max-w-md px-6 pb-[max(env(safe-area-inset-bottom),2rem)] flex flex-col items-center gap-5 transition-all duration-[900ms] ease-out ${
-            layer >= 3
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-3 pointer-events-none"
+            layer >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"
           }`}
         >
-          <span
-            aria-hidden="true"
-            className="block h-px w-8 bg-[color:var(--ivory)]/25 mb-2"
-          />
+          <span aria-hidden="true" className="block h-px w-8 bg-[color:var(--ivory)]/25 mb-2" />
 
           <button
             type="button"
@@ -377,13 +352,11 @@ export function MemoryCard({
           >
             {reserving ? (
               <span className="inline-flex items-center gap-2">
-                <Loader2 size={14} className="animate-spin" />
-                A abrir
+                <Loader2 size={14} className="animate-spin" />A abrir
               </span>
             ) : busy ? (
               <span className="inline-flex items-center gap-2 text-[color:var(--charcoal)]/55">
-                <Loader2 size={14} className="animate-spin" />
-                A guardar
+                <Loader2 size={14} className="animate-spin" />A guardar
               </span>
             ) : (
               "Quando estiveres pronto"
@@ -418,8 +391,7 @@ export function MemoryCard({
             <div className="w-full pt-2 flex items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-1 duration-500">
               {busy ? (
                 <span className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-[color:var(--ivory)]/55">
-                  <Loader2 size={12} className="animate-spin" />
-                  A guardar
+                  <Loader2 size={12} className="animate-spin" />A guardar
                 </span>
               ) : error ? (
                 <span className="text-[11px] tracking-[0.2em] uppercase text-red-300/80">

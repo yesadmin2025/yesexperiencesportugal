@@ -80,10 +80,7 @@ export function readVariantOverride(experiment: HeroExperiment): string | null {
 }
 
 /** Pick a variant deterministically, honouring `weights` if provided. */
-export function pickVariant(
-  experiment: HeroExperiment,
-  anonymousId: string,
-): HeroCopyVariant {
+export function pickVariant(experiment: HeroExperiment, anonymousId: string): HeroCopyVariant {
   const variants = experiment.variants;
   if (variants.length === 0) {
     throw new Error("Experiment has no variants");

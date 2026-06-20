@@ -40,10 +40,7 @@ const inputSchema = z.object({
 
 async function loadCatalog() {
   const [regionsRes, stopsRes, rulesRes, compatRes] = await Promise.all([
-    supabaseAdmin
-      .from("builder_regions")
-      .select("key,label,blurb,lat,lng")
-      .order("sort_order"),
+    supabaseAdmin.from("builder_regions").select("key,label,blurb,lat,lng").order("sort_order"),
     supabaseAdmin
       .from("builder_stops")
       .select(
@@ -56,9 +53,7 @@ async function loadCatalog() {
       .eq("is_active", true)
       .limit(1)
       .maybeSingle(),
-    supabaseAdmin
-      .from("builder_compatibility_rules")
-      .select("stop_a,stop_b,cooccurrence_count"),
+    supabaseAdmin.from("builder_compatibility_rules").select("stop_a,stop_b,cooccurrence_count"),
   ]);
 
   if (regionsRes.error) throw new Error(regionsRes.error.message);
@@ -317,7 +312,9 @@ export const buildDayRoute = createServerFn({ method: "POST" })
 
 /** Return all active stops in a region — used by the live add-stop picker. */
 export const listRegionStops = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ regionKey: z.string().min(1).max(64) }).parse(input))
+  .inputValidator((input: unknown) =>
+    z.object({ regionKey: z.string().min(1).max(64) }).parse(input),
+  )
   .handler(async ({ data }) => {
     const { stops, regions } = await loadCatalog();
     const region = regions.find((r) => r.key === data.regionKey);

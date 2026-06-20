@@ -47,9 +47,9 @@ describe("isFirstFrameJitter — jitter (retryable)", () => {
 
   it("retries up to (but excluding) JITTER_RATIO × budget", () => {
     // Just under the ceiling — still jitter.
-    expect(
-      isFirstFrameJitter(fail("budget exceeded (2000ms)", JITTER_CEILING - 1), BUDGET),
-    ).toBe(true);
+    expect(isFirstFrameJitter(fail("budget exceeded (2000ms)", JITTER_CEILING - 1), BUDGET)).toBe(
+      true,
+    );
   });
 
   it("respects a custom jitter ratio override", () => {
@@ -63,8 +63,12 @@ describe("isFirstFrameJitter — jitter (retryable)", () => {
 
 describe("isFirstFrameJitter — hard failures (NEVER retried)", () => {
   it("does not retry overruns at or above JITTER_RATIO × budget", () => {
-    expect(isFirstFrameJitter(fail("budget exceeded (2000ms)", JITTER_CEILING), BUDGET)).toBe(false);
-    expect(isFirstFrameJitter(fail("budget exceeded (2000ms)", JITTER_CEILING + 1), BUDGET)).toBe(false);
+    expect(isFirstFrameJitter(fail("budget exceeded (2000ms)", JITTER_CEILING), BUDGET)).toBe(
+      false,
+    );
+    expect(isFirstFrameJitter(fail("budget exceeded (2000ms)", JITTER_CEILING + 1), BUDGET)).toBe(
+      false,
+    );
     expect(isFirstFrameJitter(fail("budget exceeded (2000ms)", 5000), BUDGET)).toBe(false);
   });
 
@@ -74,7 +78,10 @@ describe("isFirstFrameJitter — hard failures (NEVER retried)", () => {
 
   it("does not retry decoder errors", () => {
     expect(
-      isFirstFrameJitter(fail('decoder error: code=4 msg="MEDIA_ERR_SRC_NOT_SUPPORTED"', -1), BUDGET),
+      isFirstFrameJitter(
+        fail('decoder error: code=4 msg="MEDIA_ERR_SRC_NOT_SUPPORTED"', -1),
+        BUDGET,
+      ),
     ).toBe(false);
     expect(
       isFirstFrameJitter(fail('decoder error: code=2 msg="MEDIA_ERR_NETWORK"', 800), BUDGET),
@@ -82,9 +89,7 @@ describe("isFirstFrameJitter — hard failures (NEVER retried)", () => {
   });
 
   it("does not retry autoplay rejections", () => {
-    expect(
-      isFirstFrameJitter(fail("autoplay rejected: NotAllowedError", 50), BUDGET),
-    ).toBe(false);
+    expect(isFirstFrameJitter(fail("autoplay rejected: NotAllowedError", 50), BUDGET)).toBe(false);
   });
 
   it("does not retry an unrecognised reason (fail-closed)", () => {

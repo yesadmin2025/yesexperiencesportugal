@@ -46,7 +46,7 @@ function classSet(regex: RegExp, label: string): Set<string> {
   if (!m) {
     throw new Error(
       `[faq-typography-lock] Stable selector not found: ${label}. ` +
-      `Check that the element ID/component still exists in FAQ.tsx.`
+        `Check that the element ID/component still exists in FAQ.tsx.`,
     );
   }
   return new Set(m[1].split(/\s+/).filter(Boolean));
@@ -56,35 +56,16 @@ function classSet(regex: RegExp, label: string): Set<string> {
  * Assert that EVERY expected token is present, regardless of order.
  * Reports the missing token clearly so drift is obvious.
  */
-function expectAllTokens(
-  actual: Set<string>,
-  expected: string[],
-  context: string,
-) {
+function expectAllTokens(actual: Set<string>, expected: string[], context: string) {
   const missing = expected.filter((t) => !actual.has(t));
-  expect(
-    missing,
-    `[${context}] missing locked Tailwind tokens: ${missing.join(", ")}`,
-  ).toEqual([]);
+  expect(missing, `[${context}] missing locked Tailwind tokens: ${missing.join(", ")}`).toEqual([]);
 }
 
 // Stable selectors — keyed off element IDs / component names, not class order.
-const FAQ_TITLE = classSet(
-  /id="faq-title"\s+className="([^"]+)"/,
-  "h2#faq-title",
-);
-const TRIGGER = classSet(
-  /<AccordionTrigger\s+className="([^"]+)"/,
-  "<AccordionTrigger>",
-);
-const CONTENT = classSet(
-  /<AccordionContent\s+className="([^"]+)"/,
-  "<AccordionContent>",
-);
-const SECTION = classSet(
-  /id="faq"\s+className="([^"]+)"/,
-  "section#faq",
-);
+const FAQ_TITLE = classSet(/id="faq-title"\s+className="([^"]+)"/, "h2#faq-title");
+const TRIGGER = classSet(/<AccordionTrigger\s+className="([^"]+)"/, "<AccordionTrigger>");
+const CONTENT = classSet(/<AccordionContent\s+className="([^"]+)"/, "<AccordionContent>");
+const SECTION = classSet(/id="faq"\s+className="([^"]+)"/, "section#faq");
 
 describe("FAQ #faq-title — locked typography (order-independent)", () => {
   it("locks size, line-height, tracking and color tokens", () => {
@@ -120,14 +101,7 @@ describe("AccordionTrigger — locked typography (order-independent)", () => {
   it("locks size and padding tokens", () => {
     expectAllTokens(
       TRIGGER,
-      [
-        "text-[15px]",
-        "md:text-[17px]",
-        "px-5",
-        "md:px-6",
-        "py-4",
-        "md:py-5",
-      ],
+      ["text-[15px]", "md:text-[17px]", "px-5", "md:px-6", "py-4", "md:py-5"],
       "<AccordionTrigger>",
     );
   });
@@ -159,11 +133,7 @@ describe("AccordionContent — locked typography (order-independent)", () => {
 
 describe("FAQ section#faq — locked rhythm (order-independent)", () => {
   it("locks vertical padding tokens", () => {
-    expectAllTokens(
-      SECTION,
-      ["py-12", "md:py-14"],
-      "section#faq",
-    );
+    expectAllTokens(SECTION, ["py-12", "md:py-14"], "section#faq");
   });
 
   it("does NOT regress to the pre-Phase-3 oversized rhythm", () => {

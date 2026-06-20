@@ -36,11 +36,7 @@ function parseColor(input: string): RGB {
 }
 
 function within(a: RGB, b: RGB, tol = CHANNEL_TOL): boolean {
-  return (
-    Math.abs(a.r - b.r) <= tol &&
-    Math.abs(a.g - b.g) <= tol &&
-    Math.abs(a.b - b.b) <= tol
-  );
+  return Math.abs(a.r - b.r) <= tol && Math.abs(a.g - b.g) <= tol && Math.abs(a.b - b.b) <= tol;
 }
 
 function fmt(c: RGB): string {
@@ -83,13 +79,8 @@ test.describe("Hero color tokens — non-regression", () => {
     ).toBe(true);
   });
 
-  test("headline line 1 remains ivory #FAF8F3, Montserrat 400, upright", async ({
-    page,
-  }) => {
-    const field = await readField(
-      page,
-      '[data-hero-field="headlineLine1"]:not(h1)',
-    );
+  test("headline line 1 remains ivory #FAF8F3, Montserrat 400, upright", async ({ page }) => {
+    const field = await readField(page, '[data-hero-field="headlineLine1"]:not(h1)');
     const actual = parseColor(field.color);
     expect(
       within(actual, TOKENS.ivory),
@@ -99,9 +90,7 @@ test.describe("Hero color tokens — non-regression", () => {
     expect(field.fontWeight, "headlineLine1 must stay weight 400").toBe("400");
   });
 
-  test("headline line 2 remains gold-soft #E1CFA6, Georgia italic 400", async ({
-    page,
-  }) => {
+  test("headline line 2 remains gold-soft #E1CFA6, Georgia italic 400", async ({ page }) => {
     const field = await readField(page, '[data-hero-field="headlineLine2"]');
     const actual = parseColor(field.color);
     expect(

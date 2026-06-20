@@ -75,19 +75,21 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
       expect(screen.getByTestId("harness-phase").textContent).toBe(phase);
       const nav = screen.getByTestId("studio-v3-progress-stepper");
       expect(nav.getAttribute("data-active-beat")).toBe(expectedBeat);
-      expect(
-        nav.querySelector('[aria-current="step"]')?.textContent,
-      ).toContain(STUDIO_V3_BEATS[beatIndexForPhase(phase)!].label);
+      expect(nav.querySelector('[aria-current="step"]')?.textContent).toContain(
+        STUDIO_V3_BEATS[beatIndexForPhase(phase)!].label,
+      );
 
       if (i < JOURNEY.length - 1) {
-        act(() => { fireEvent.click(screen.getByTestId("harness-next")); });
+        act(() => {
+          fireEvent.click(screen.getByTestId("harness-next"));
+        });
       }
     }
 
     // Reached compose.
-    expect(
-      screen.getByTestId("studio-v3-progress-stepper").getAttribute("data-active-beat"),
-    ).toBe("compose");
+    expect(screen.getByTestId("studio-v3-progress-stepper").getAttribute("data-active-beat")).toBe(
+      "compose",
+    );
   });
 
   it("walking backward re-syncs the active beat each step", async () => {
@@ -96,15 +98,19 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
 
     // Fast-forward to the end.
     for (let i = 0; i < JOURNEY.length - 1; i++) {
-      act(() => { fireEvent.click(screen.getByTestId("harness-next")); });
+      act(() => {
+        fireEvent.click(screen.getByTestId("harness-next"));
+      });
     }
-    expect(
-      screen.getByTestId("studio-v3-progress-stepper").getAttribute("data-active-beat"),
-    ).toBe("compose");
+    expect(screen.getByTestId("studio-v3-progress-stepper").getAttribute("data-active-beat")).toBe(
+      "compose",
+    );
 
     // Walk back, asserting sync at every step.
     for (let i = JOURNEY.length - 2; i >= 0; i--) {
-      act(() => { fireEvent.click(screen.getByTestId("harness-back")); });
+      act(() => {
+        fireEvent.click(screen.getByTestId("harness-back"));
+      });
       const phase = JOURNEY[i];
       expect(screen.getByTestId("harness-phase").textContent).toBe(phase);
       expect(
@@ -114,9 +120,7 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
   });
 
   it("emits one telemetry event per perceived phase change during navigation", async () => {
-    const { recordStudioV3BuilderStep } = await import(
-      "@/lib/studio-v3-telemetry"
-    );
+    const { recordStudioV3BuilderStep } = await import("@/lib/studio-v3-telemetry");
     const spy = recordStudioV3BuilderStep as unknown as ReturnType<typeof vi.fn>;
     spy.mockClear();
 
@@ -124,7 +128,9 @@ describe("StudioV3ProgressStepper — interaction sync", () => {
     render(<Harness />);
 
     for (let i = 0; i < JOURNEY.length - 1; i++) {
-      act(() => { fireEvent.click(screen.getByTestId("harness-next")); });
+      act(() => {
+        fireEvent.click(screen.getByTestId("harness-next"));
+      });
     }
 
     const beats = spy.mock.calls.map((c) => c[0].step);

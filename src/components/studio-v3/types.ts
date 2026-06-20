@@ -122,12 +122,7 @@ export type DestinationIntent =
 export type CompanionsType = "solo" | "couple" | "family" | "friends" | "corporate";
 
 /** Derived intent of the journey — never stored, always recomputed from state. */
-export type IntentType =
-  | "romantic"
-  | "celebration"
-  | "exploration"
-  | "corporate"
-  | "relaxation";
+export type IntentType = "romantic" | "celebration" | "exploration" | "corporate" | "relaxation";
 
 export type IntentLevel = "low" | "medium" | "high";
 
@@ -199,7 +194,6 @@ export interface StudioV3State {
   rerollCount: number;
 }
 
-
 export const INITIAL_STATE: StudioV3State = {
   phase: "intro",
   feeling: null,
@@ -224,9 +218,6 @@ export const INITIAL_STATE: StudioV3State = {
   pathMode: "guided",
   rerollCount: 0,
 };
-
-
-
 
 export interface ChoiceOption<T extends string> {
   id: T;
@@ -288,7 +279,11 @@ export const PICKUPS: ChoiceOption<Pickup>[] = [
   { id: "lisbon-cruise", label: "Lisbon cruise terminal", whisper: "Step off, into the day." },
   { id: "cascais-estoril", label: "Cascais / Estoril", whisper: "The Atlantic edge." },
   { id: "sintra", label: "Sintra", whisper: "Among the palaces and pine." },
-  { id: "sesimbra-setubal-arrabida", label: "Sesimbra / Setúbal / Arrábida", whisper: "South of the river." },
+  {
+    id: "sesimbra-setubal-arrabida",
+    label: "Sesimbra / Setúbal / Arrábida",
+    whisper: "South of the river.",
+  },
   { id: "comporta-troia", label: "Comporta / Tróia", whisper: "By request." },
   { id: "other", label: "Other / I'll tell you later", whisper: "We'll work it out together." },
 ];
@@ -334,19 +329,63 @@ export const LANGUAGES: ChoiceOption<Language>[] = [
 ];
 
 export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
-  { id: "considered", label: "Considered", whisper: "Beautifully private, without unnecessary extras." },
-  { id: "elevated", label: "Elevated", whisper: "More curated moments, stronger tastings and smoother pacing." },
-  { id: "bespoke", label: "Bespoke", whisper: "Premium details, private access and a more distinctive day." },
-  { id: "open", label: "Open to guidance", whisper: "Let YES shape the best fit around your choices." },
+  {
+    id: "considered",
+    label: "Considered",
+    whisper: "Beautifully private, without unnecessary extras.",
+  },
+  {
+    id: "elevated",
+    label: "Elevated",
+    whisper: "More curated moments, stronger tastings and smoother pacing.",
+  },
+  {
+    id: "bespoke",
+    label: "Bespoke",
+    whisper: "Premium details, private access and a more distinctive day.",
+  },
+  {
+    id: "open",
+    label: "Open to guidance",
+    whisper: "Let YES shape the best fit around your choices.",
+  },
 ];
 
 export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
-  { id: "no-preference", label: "No preference — let YES shape it", whisper: "We'll let your other choices lead." },
-  { id: "lisbon-sintra-cascais", label: "Lisbon coast, Sintra & Cascais", whisper: "Palaces, pine and the Atlantic edge." },
-  { id: "arrabida-setubal-azeitao", label: "Arrábida, Setúbal & Azeitão", whisper: "Wine, coves and quiet cellars." },
-  { id: "alentejo-evora-wine", label: "Alentejo, Évora & wine country", whisper: "Long lunches, open plains." },
-  { id: "spiritual-coast", label: "Fátima, Nazaré, Óbidos & the spiritual coast", whisper: "Sanctuaries, cliffs and walled towns." },
-  { id: "central-portugal", label: "Tomar, Coimbra & Central Portugal", whisper: "Templar stones, scholarly streets." },
+  {
+    id: "no-preference",
+    label: "No preference — let YES shape it",
+    whisper: "We'll let your other choices lead.",
+  },
+  {
+    id: "lisbon-sintra-cascais",
+    label: "Lisbon coast, Sintra & Cascais",
+    whisper: "Palaces, pine and the Atlantic edge.",
+  },
+  {
+    id: "arrabida-setubal-azeitao",
+    label: "Arrábida, Setúbal & Azeitão",
+    whisper: "Wine, coves and quiet cellars.",
+  },
+  {
+    id: "alentejo-evora-wine",
+    label: "Alentejo, Évora & wine country",
+    whisper: "Long lunches, open plains.",
+  },
+  {
+    id: "spiritual-coast",
+    label: "Fátima, Nazaré, Óbidos & the spiritual coast",
+    whisper: "Sanctuaries, cliffs and walled towns.",
+  },
+  {
+    id: "central-portugal",
+    label: "Tomar, Coimbra & Central Portugal",
+    whisper: "Templar stones, scholarly streets.",
+  },
   { id: "comporta-troia", label: "Comporta & Tróia", whisper: "Pine, rice fields and white sand." },
-  { id: "anywhere-special", label: "I'm open to anywhere special", whisper: "Surprise me — go where it's most special." },
+  {
+    id: "anywhere-special",
+    label: "I'm open to anywhere special",
+    whisper: "Surprise me — go where it's most special.",
+  },
 ];

@@ -89,16 +89,12 @@ function AuditPage() {
   const stats: Stats | null = useMemo(() => {
     if (!filtered) return null;
     const success = filtered.filter((r) => r.status === "success");
-    const failures = filtered.filter(
-      (r) => r.status === "failure" || r.status === "rate_limited",
-    );
+    const failures = filtered.filter((r) => r.status === "failure" || r.status === "rate_limited");
     const byProvider = filtered.reduce<Record<string, number>>((acc, r) => {
       acc[r.provider] = (acc[r.provider] ?? 0) + 1;
       return acc;
     }, {});
-    const latencies = filtered
-      .map((r) => r.latency_ms)
-      .filter((n): n is number => n !== null);
+    const latencies = filtered.map((r) => r.latency_ms).filter((n): n is number => n !== null);
     return {
       total: filtered.length,
       success: success.length,
@@ -137,7 +133,10 @@ function AuditPage() {
       <div className="mx-auto max-w-5xl pb-16">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="font-serif text-3xl text-[color:var(--charcoal)]">AI usage audit</h1>
-          <Link to="/" className="text-sm text-[color:var(--charcoal)]/70 underline underline-offset-4">
+          <Link
+            to="/"
+            className="text-sm text-[color:var(--charcoal)]/70 underline underline-offset-4"
+          >
             Home
           </Link>
         </div>
@@ -147,12 +146,7 @@ function AuditPage() {
 
         {/* Filters */}
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <FilterSelect
-            label="Status"
-            value={status}
-            options={STATUS_OPTIONS}
-            paramKey="status"
-          />
+          <FilterSelect label="Status" value={status} options={STATUS_OPTIONS} paramKey="status" />
           <FilterSelect
             label="Provider"
             value={provider}
@@ -162,7 +156,12 @@ function AuditPage() {
           {(status !== "all" || provider !== "all") && (
             <Link
               from="/admin/ai-audit"
-              search={(prev: z.infer<typeof searchSchema>) => ({ ...prev, status: "all" as const, provider: "all" as const, page: 1 })}
+              search={(prev: z.infer<typeof searchSchema>) => ({
+                ...prev,
+                status: "all" as const,
+                provider: "all" as const,
+                page: 1,
+              })}
               className="text-xs text-[color:var(--charcoal)]/60 underline underline-offset-4"
             >
               Clear filters
@@ -344,7 +343,9 @@ function PageLink({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-[color:var(--charcoal)]/10 bg-white px-4 py-3">
-      <div className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal)]/50">{label}</div>
+      <div className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal)]/50">
+        {label}
+      </div>
       <div className="mt-1 font-serif text-base text-[color:var(--charcoal)]">{value}</div>
     </div>
   );

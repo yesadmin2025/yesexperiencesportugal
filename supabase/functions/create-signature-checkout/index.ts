@@ -30,7 +30,8 @@ interface Body {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
-  if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+  if (req.method !== "POST")
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 
   try {
     const body = (await req.json()) as Body;
@@ -46,7 +47,8 @@ Deno.serve(async (req) => {
     if (body.environment !== "sandbox" && body.environment !== "live")
       return jsonError("Invalid environment", 400);
 
-    const allowOrigin = validateReturnOrigin(body.returnUrl) && validateReturnOrigin(body.cancelUrl);
+    const allowOrigin =
+      validateReturnOrigin(body.returnUrl) && validateReturnOrigin(body.cancelUrl);
     if (!allowOrigin) return jsonError("Return URL not allowed", 400);
 
     // Resolve per-pax EUR server-side from tour_price_tiers.
@@ -72,7 +74,11 @@ Deno.serve(async (req) => {
     const stripe = createStripeClient(body.environment);
 
     const stopsSummary = (body.stopLabels ?? []).slice(0, 6).join(" · ");
-    const description = `${body.guests} guest${body.guests > 1 ? "s" : ""}${stopsSummary ? " · " + stopsSummary : ""}`.slice(0, 500);
+    const description =
+      `${body.guests} guest${body.guests > 1 ? "s" : ""}${stopsSummary ? " · " + stopsSummary : ""}`.slice(
+        0,
+        500,
+      );
     const productName = `YES Signature — ${body.tourTitle}`.slice(0, 180);
 
     const session = await stripe.checkout.sessions.create({
@@ -118,7 +124,9 @@ function validateReturnOrigin(url: string): boolean {
     const u = new URL(url);
     if (u.protocol !== "https:" && u.protocol !== "http:") return false;
     const envAllow = (Deno.env.get("RETURN_URL_ORIGIN") ?? "")
-      .split(",").map((s) => s.trim()).filter(Boolean);
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
     const staticAllow = new Set<string>([
       "https://yesexperiences.pt",
       "https://www.yesexperiences.pt",

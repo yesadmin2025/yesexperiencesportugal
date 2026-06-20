@@ -61,8 +61,22 @@ const SCRIM_RGB = [15, 12, 9];
 // Headline is the largest text → uses the AA-large threshold (3:1).
 // Subheadline + microcopy are body text → AA-normal (4.5:1).
 const REGIONS = [
-  { id: "headline", y0: 0.58, y1: 0.78, scrimAlpha: 0.72, level: "large", colors: ["headlineLine1", "headlineLine2"] },
-  { id: "subheadline", y0: 0.78, y1: 0.93, scrimAlpha: 0.84, level: "normal", colors: ["subheadline"] },
+  {
+    id: "headline",
+    y0: 0.58,
+    y1: 0.78,
+    scrimAlpha: 0.72,
+    level: "large",
+    colors: ["headlineLine1", "headlineLine2"],
+  },
+  {
+    id: "subheadline",
+    y0: 0.78,
+    y1: 0.93,
+    scrimAlpha: 0.84,
+    level: "normal",
+    colors: ["subheadline"],
+  },
   { id: "microcopy", y0: 0.93, y1: 1.0, scrimAlpha: 0.9, level: "normal", colors: ["microcopy"] },
 ];
 
@@ -104,11 +118,16 @@ function haveFfmpeg() {
 
 function probeDuration(path) {
   const out = execFileSync("ffprobe", [
-    "-v", "error",
-    "-show_entries", "format=duration",
-    "-of", "csv=p=0",
+    "-v",
+    "error",
+    "-show_entries",
+    "format=duration",
+    "-of",
+    "csv=p=0",
     path,
-  ]).toString().trim();
+  ])
+    .toString()
+    .trim();
   const d = parseFloat(out);
   if (!Number.isFinite(d) || d <= 0) throw new Error(`bad duration: ${out}`);
   return d;
@@ -119,15 +138,25 @@ function averageBand(path, t, y0, y1) {
   // crop=iw:ih*(y1-y0):0:ih*y0  → full-width band
   // scale=1:1 (with bilinear) → 1×1 pixel = arithmetic mean of the band
   const filter = `crop=iw:ih*${(y1 - y0).toFixed(4)}:0:ih*${y0.toFixed(4)},scale=1:1:flags=bilinear,format=rgb24`;
-  const r = spawnSync("ffmpeg", [
-    "-loglevel", "error",
-    "-ss", t.toFixed(3),
-    "-i", path,
-    "-frames:v", "1",
-    "-vf", filter,
-    "-f", "rawvideo",
-    "-",
-  ], { encoding: "buffer" });
+  const r = spawnSync(
+    "ffmpeg",
+    [
+      "-loglevel",
+      "error",
+      "-ss",
+      t.toFixed(3),
+      "-i",
+      path,
+      "-frames:v",
+      "1",
+      "-vf",
+      filter,
+      "-f",
+      "rawvideo",
+      "-",
+    ],
+    { encoding: "buffer" },
+  );
   if (r.status !== 0) {
     throw new Error(`ffmpeg failed at t=${t} y=[${y0},${y1}]: ${r.stderr?.toString() ?? ""}`);
   }
@@ -143,7 +172,8 @@ function parseCliArgs(argv) {
     const a = argv[i];
     if (a === "--json") out.json = true;
     else if (a === "--video") out.videos.push(resolve(argv[++i]));
-    else if (a === "--samples") out.samples = Math.max(1, parseInt(argv[++i], 10) || DEFAULT_SAMPLES);
+    else if (a === "--samples")
+      out.samples = Math.max(1, parseInt(argv[++i], 10) || DEFAULT_SAMPLES);
   }
   return out;
 }
@@ -180,9 +210,7 @@ function isUsableVideo(p) {
 // --- Run ------------------------------------------------------------------
 function auditVideo(path, samples) {
   const duration = probeDuration(path);
-  const times = Array.from({ length: samples }, (_, i) =>
-    duration * ((i + 0.5) / samples),
-  );
+  const times = Array.from({ length: samples }, (_, i) => duration * ((i + 0.5) / samples));
   const frames = [];
   const failures = [];
   for (const t of times) {
@@ -236,9 +264,10 @@ function run() {
 
   if (usable.length === 0) {
     env.skipped = true;
-    env.reason = candidates.length === 0
-      ? "no hero videos discovered (public/video/film/ empty and no manifest)"
-      : `no usable videos (all candidates missing or empty: ${candidates.map((p) => relative(process.cwd(), p)).join(", ")})`;
+    env.reason =
+      candidates.length === 0
+        ? "no hero videos discovered (public/video/film/ empty and no manifest)"
+        : `no usable videos (all candidates missing or empty: ${candidates.map((p) => relative(process.cwd(), p)).join(", ")})`;
     if (cli.json) process.stdout.write(JSON.stringify(env, null, 2));
     else console.log(`hero-frame-contrast: skipped (${env.reason})`);
     process.exit(0);
@@ -267,7 +296,9 @@ function run() {
 
   // Human report
   console.log(`Hero film contrast — ${usable.length} video(s), ${cli.samples} frames each`);
-  console.log("(bg = avg frame colour composited with linear scrim; AA: 4.5:1 normal, 3.0:1 large)\n");
+  console.log(
+    "(bg = avg frame colour composited with linear scrim; AA: 4.5:1 normal, 3.0:1 large)\n",
+  );
   for (const v of env.videos) {
     console.log(`▸ ${v.path}${v.duration ? ` (${v.duration}s)` : ""}`);
     if (v.error) {
@@ -280,13 +311,17 @@ function run() {
         const bg = `rgb(${r.effectiveBg.join(",")})`;
         for (const c of r.checks) {
           const mark = c.pass ? "✓" : "✗";
-          console.log(`    ${mark} ${r.id.padEnd(11)} ${c.color.padEnd(14)} ${bg}  ${c.ratio.toFixed(2)}:1 (need ≥${c.required}:1)`);
+          console.log(
+            `    ${mark} ${r.id.padEnd(11)} ${c.color.padEnd(14)} ${bg}  ${c.ratio.toFixed(2)}:1 (need ≥${c.required}:1)`,
+          );
         }
       }
     }
   }
   if (skippedFiles.length > 0) {
-    console.log(`\n(skipped ${skippedFiles.length} unreadable candidate(s): ${env.skippedFiles.join(", ")})`);
+    console.log(
+      `\n(skipped ${skippedFiles.length} unreadable candidate(s): ${env.skippedFiles.join(", ")})`,
+    );
   }
   if (env.passed) {
     console.log(`\n✅ All ${usable.length} hero video(s) pass WCAG AA across every sampled frame.`);
@@ -295,7 +330,10 @@ function run() {
   console.log(`\n❌ ${allFailures.length} contrast failure(s) detected:`);
   for (const f of allFailures) {
     if (f.error) console.log(`   ${f.video}: ${f.error}`);
-    else console.log(`   ${f.video} t=${f.t}s ${f.region}/${f.color}: ${f.ratio.toFixed(2)}:1 < ${f.required}:1`);
+    else
+      console.log(
+        `   ${f.video} t=${f.t}s ${f.region}/${f.color}: ${f.ratio.toFixed(2)}:1 < ${f.required}:1`,
+      );
   }
   process.exit(1);
 }

@@ -29,7 +29,9 @@ function ribbonPhrase(s: StudioStop, index: number, fallback: string): string {
     wellness: "abrir espaço para silêncio",
   };
   if (tag && byTag[tag]) return byTag[tag];
-  return [fallback, "um momento que começa a revelar-se", "uma pausa escolhida pelo teu ritmo"][index % 3];
+  return [fallback, "um momento que começa a revelar-se", "uma pausa escolhida pelo teu ritmo"][
+    index % 3
+  ];
 }
 
 export function ItineraryRibbon({

@@ -64,9 +64,7 @@ export function useBuilderRouteImages(args: {
         if (cancelled) return;
         const stopImages: Record<string, BuilderImageRef | null> = {};
         for (const [k, v] of Object.entries(r.stopImages)) {
-          stopImages[k] = v
-            ? { url: v.image_url, alt: v.alt_text }
-            : null;
+          stopImages[k] = v ? { url: v.image_url, alt: v.alt_text } : null;
         }
         setState({
           hero: r.hero ? { url: r.hero.image_url, alt: r.hero.alt_text } : null,

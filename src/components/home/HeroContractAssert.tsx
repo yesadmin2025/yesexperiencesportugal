@@ -61,24 +61,21 @@ export function HeroContractAssert({
     window.__heroContractViolations = v;
     window.__heroContractAutoFix = autoFixChanges;
     if (autoFixChanges.length > 0) {
-      // eslint-disable-next-line no-console
       console.warn(
         `[hero-contract] AUTO-FIX applied ${autoFixChanges.length} change${autoFixChanges.length === 1 ? "" : "s"}`,
       );
-      // eslint-disable-next-line no-console
+
       console.table(autoFixChanges);
     }
     if (v.length > 0) {
-      // eslint-disable-next-line no-console
       console.error(
         `[hero-contract] ${v.length} violation${v.length === 1 ? "" : "s"} ` +
           `(spec: ${HERO_PHRASE_CONTRACT.fadeInMs}/≥${HERO_PHRASE_CONTRACT.holdMinMs}/` +
           `${HERO_PHRASE_CONTRACT.fadeOutMs}ms · gap ${HERO_PHRASE_CONTRACT.gapMinMs}–${HERO_PHRASE_CONTRACT.gapMaxMs}ms)`,
       );
-      // eslint-disable-next-line no-console
+
       console.table(v);
     } else if (autoFixChanges.length === 0) {
-      // eslint-disable-next-line no-console
       console.info("[hero-contract] PASS — all phrases within contract");
     }
   }, [scenes, gapMs, autoFixChanges]);
@@ -114,7 +111,15 @@ export function HeroContractAssert({
         boxShadow: "0 8px 28px rgba(0,0,0,0.45)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          marginBottom: 6,
+        }}
+      >
         <strong style={{ color: accent, letterSpacing: "0.08em" }}>
           {isFixMode
             ? `HERO CONTRACT · AUTO-FIX · ${autoFixChanges.length} CHANGE${autoFixChanges.length === 1 ? "" : "S"}`
@@ -140,14 +145,16 @@ export function HeroContractAssert({
       </div>
       <div style={{ opacity: 0.75, marginBottom: 6 }}>
         spec: enter {HERO_PHRASE_CONTRACT.fadeInMs}ms · hold ≥{HERO_PHRASE_CONTRACT.holdMinMs}ms ·
-        exit {HERO_PHRASE_CONTRACT.fadeOutMs}ms · gap {HERO_PHRASE_CONTRACT.gapMinMs}–{HERO_PHRASE_CONTRACT.gapMaxMs}ms
-        (±{HERO_PHRASE_CONTRACT.toleranceMs}ms)
+        exit {HERO_PHRASE_CONTRACT.fadeOutMs}ms · gap {HERO_PHRASE_CONTRACT.gapMinMs}–
+        {HERO_PHRASE_CONTRACT.gapMaxMs}ms (±{HERO_PHRASE_CONTRACT.toleranceMs}ms)
         {!isFixMode && " · append ?contract-fix=1 to auto-clamp"}
       </div>
 
       {isFixMode && (
         <>
-          <div style={{ opacity: 0.85, margin: "6px 0 4px", color: accent, letterSpacing: "0.06em" }}>
+          <div
+            style={{ opacity: 0.85, margin: "6px 0 4px", color: accent, letterSpacing: "0.06em" }}
+          >
             APPLIED FIXES
           </div>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 8 }}>
@@ -177,7 +184,14 @@ export function HeroContractAssert({
 
       {violations.length > 0 && (
         <>
-          <div style={{ opacity: 0.85, margin: "6px 0 4px", color: "#E58A6B", letterSpacing: "0.06em" }}>
+          <div
+            style={{
+              opacity: 0.85,
+              margin: "6px 0 4px",
+              color: "#E58A6B",
+              letterSpacing: "0.06em",
+            }}
+          >
             REMAINING VIOLATIONS
           </div>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -205,4 +219,3 @@ export function HeroContractAssert({
     </div>
   );
 }
-

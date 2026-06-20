@@ -44,7 +44,9 @@ describe("CurtainRise — Signature reveal curtain", () => {
   });
 
   it("collapses to a 250ms exit under prefers-reduced-motion", () => {
-    const matchMediaMock = vi.fn().mockReturnValue({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() });
+    const matchMediaMock = vi
+      .fn()
+      .mockReturnValue({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() });
     Object.defineProperty(window, "matchMedia", { writable: true, value: matchMediaMock });
     const onDone = vi.fn();
     render(<CurtainRise state={INITIAL_STATE} onDone={onDone} />);

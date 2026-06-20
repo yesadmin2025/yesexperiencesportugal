@@ -1,8 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { buildCacheKey, pickAcceptVariant, ALLOWED_EXT, ALLOWED_HOSTS } from "@/routes/api/img";
 
-const u = (path = "/wp-content/uploads/photo.jpg") =>
-  new URL(`https://yesexperiences.pt${path}`);
+const u = (path = "/wp-content/uploads/photo.jpg") => new URL(`https://yesexperiences.pt${path}`);
 
 describe("pickAcceptVariant", () => {
   it("picks avif when supported", () => {

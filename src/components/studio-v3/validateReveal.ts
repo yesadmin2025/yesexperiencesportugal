@@ -37,10 +37,7 @@ export interface RevealValidationResult {
 export function validateResolvedSignature(
   resolved: Pick<
     ResolvedStudioV3Route,
-    | "skeletonTourKey"
-    | "routePoints"
-    | "suggestedRouteLabel"
-    | "journeyTitle"
+    "skeletonTourKey" | "routePoints" | "suggestedRouteLabel" | "journeyTitle"
   >,
   tour: Pick<SignatureTour, "id" | "title" | "img"> | null | undefined,
 ): RevealValidationResult {

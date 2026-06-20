@@ -204,8 +204,7 @@ import { writeFileSync } from "node:fs";
 // can pin against `"schema": "hero-copy-qa@N"`.
 const REPORT_SCHEMA = "hero-copy-qa@1";
 
-const exitNameOf = (code) =>
-  Object.entries(EXIT).find(([, v]) => v === code)?.[0] ?? "UNKNOWN";
+const exitNameOf = (code) => Object.entries(EXIT).find(([, v]) => v === code)?.[0] ?? "UNKNOWN";
 
 function buildReport({ summary, mode, runIndex, exitCode }) {
   const targetsOut = TARGETS.map((t) => {
@@ -252,7 +251,17 @@ function buildReport({ summary, mode, runIndex, exitCode }) {
 // Any violation is a script bug. We surface the path and exit RUNTIME_ERROR.
 // ─────────────────────────────────────────────────────────────────────────────
 const REPORT_SCHEMA_SHAPE = {
-  topKeys: ["schema", "ts", "mode", "runIndex", "exitCode", "exitName", "filter", "targets", "totals"],
+  topKeys: [
+    "schema",
+    "ts",
+    "mode",
+    "runIndex",
+    "exitCode",
+    "exitName",
+    "filter",
+    "targets",
+    "totals",
+  ],
   modes: ["one-shot", "watch"],
   targetStatuses: ["ok", "drift", "fetch_failed", "manual", "unknown"],
   filterTargets: ["all", "preview", "production"],
@@ -301,16 +310,25 @@ function validateReport(report) {
     E("ts", `expected ISO-8601 timestamp string, got ${JSON.stringify(report.ts)}`);
   }
   if (!REPORT_SCHEMA_SHAPE.modes.includes(report.mode)) {
-    E("mode", `expected one of ${REPORT_SCHEMA_SHAPE.modes.join("|")}, got ${JSON.stringify(report.mode)}`);
+    E(
+      "mode",
+      `expected one of ${REPORT_SCHEMA_SHAPE.modes.join("|")}, got ${JSON.stringify(report.mode)}`,
+    );
   }
   if (!Number.isInteger(report.runIndex) || report.runIndex < 1) {
     E("runIndex", `expected positive integer, got ${JSON.stringify(report.runIndex)}`);
   }
   if (!Number.isInteger(report.exitCode) || !Object.values(EXIT).includes(report.exitCode)) {
-    E("exitCode", `expected one of ${Object.values(EXIT).join("|")}, got ${JSON.stringify(report.exitCode)}`);
+    E(
+      "exitCode",
+      `expected one of ${Object.values(EXIT).join("|")}, got ${JSON.stringify(report.exitCode)}`,
+    );
   }
   if (typeof report.exitName !== "string" || exitNameOf(report.exitCode) !== report.exitName) {
-    E("exitName", `must equal exitNameOf(exitCode) (=${exitNameOf(report.exitCode)}), got ${JSON.stringify(report.exitName)}`);
+    E(
+      "exitName",
+      `must equal exitNameOf(exitCode) (=${exitNameOf(report.exitCode)}), got ${JSON.stringify(report.exitName)}`,
+    );
   }
 
   // filter
@@ -318,9 +336,13 @@ function validateReport(report) {
     E("filter", "must be an object");
   } else {
     const fkeys = Object.keys(report.filter);
-    if (fkeys.length !== 1 || fkeys[0] !== "target") E("filter", `expected exactly { target }, got keys [${fkeys.join(", ")}]`);
+    if (fkeys.length !== 1 || fkeys[0] !== "target")
+      E("filter", `expected exactly { target }, got keys [${fkeys.join(", ")}]`);
     if (!REPORT_SCHEMA_SHAPE.filterTargets.includes(report.filter.target)) {
-      E("filter.target", `expected one of ${REPORT_SCHEMA_SHAPE.filterTargets.join("|")}, got ${JSON.stringify(report.filter.target)}`);
+      E(
+        "filter.target",
+        `expected one of ${REPORT_SCHEMA_SHAPE.filterTargets.join("|")}, got ${JSON.stringify(report.filter.target)}`,
+      );
     }
   }
 
@@ -336,11 +358,16 @@ function validateReport(report) {
       }
       const tk = Object.keys(t);
       for (const k of REPORT_SCHEMA_SHAPE.targetKeys) if (!(k in t)) E(`${path}.${k}`, "missing");
-      for (const k of tk) if (!REPORT_SCHEMA_SHAPE.targetKeys.includes(k)) E(`${path}.${k}`, "unknown key");
+      for (const k of tk)
+        if (!REPORT_SCHEMA_SHAPE.targetKeys.includes(k)) E(`${path}.${k}`, "unknown key");
       if (typeof t.name !== "string" || !t.name) E(`${path}.name`, "expected non-empty string");
-      if (typeof t.url !== "string" || !/^https?:\/\//.test(t.url)) E(`${path}.url`, "expected http(s) URL");
+      if (typeof t.url !== "string" || !/^https?:\/\//.test(t.url))
+        E(`${path}.url`, "expected http(s) URL");
       if (!REPORT_SCHEMA_SHAPE.targetStatuses.includes(t.status)) {
-        E(`${path}.status`, `expected one of ${REPORT_SCHEMA_SHAPE.targetStatuses.join("|")}, got ${JSON.stringify(t.status)}`);
+        E(
+          `${path}.status`,
+          `expected one of ${REPORT_SCHEMA_SHAPE.targetStatuses.join("|")}, got ${JSON.stringify(t.status)}`,
+        );
       }
       if (!Array.isArray(t.driftKeys) || !t.driftKeys.every((k) => typeof k === "string")) {
         E(`${path}.driftKeys`, "expected string[]");
@@ -348,7 +375,10 @@ function validateReport(report) {
       if (typeof t.fetchFailed !== "boolean") E(`${path}.fetchFailed`, "expected boolean");
       // Internal consistency: fetchFailed boolean must mirror status.
       if (t.fetchFailed !== (t.status === "fetch_failed")) {
-        E(`${path}.fetchFailed`, `must equal (status === "fetch_failed"); got ${t.fetchFailed} for status=${t.status}`);
+        E(
+          `${path}.fetchFailed`,
+          `must equal (status === "fetch_failed"); got ${t.fetchFailed} for status=${t.status}`,
+        );
       }
     });
   }
@@ -358,8 +388,10 @@ function validateReport(report) {
     E("totals", "must be an object");
   } else {
     const tk = Object.keys(report.totals);
-    for (const k of REPORT_SCHEMA_SHAPE.totalsKeys) if (!(k in report.totals)) E(`totals.${k}`, "missing");
-    for (const k of tk) if (!REPORT_SCHEMA_SHAPE.totalsKeys.includes(k)) E(`totals.${k}`, "unknown key");
+    for (const k of REPORT_SCHEMA_SHAPE.totalsKeys)
+      if (!(k in report.totals)) E(`totals.${k}`, "missing");
+    for (const k of tk)
+      if (!REPORT_SCHEMA_SHAPE.totalsKeys.includes(k)) E(`totals.${k}`, "unknown key");
     for (const k of REPORT_SCHEMA_SHAPE.totalsKeys) {
       if (!Number.isInteger(report.totals[k]) || report.totals[k] < 0) {
         E(`totals.${k}`, `expected non-negative integer, got ${JSON.stringify(report.totals[k])}`);
@@ -374,7 +406,10 @@ function validateReport(report) {
       };
       for (const k of REPORT_SCHEMA_SHAPE.totalsKeys) {
         if (report.totals[k] !== expected[k]) {
-          E(`totals.${k}`, `inconsistent: expected ${expected[k]} (from targets[]), got ${report.totals[k]}`);
+          E(
+            `totals.${k}`,
+            `inconsistent: expected ${expected[k]} (from targets[]), got ${report.totals[k]}`,
+          );
         }
       }
     }
@@ -407,7 +442,9 @@ function emitReport(report) {
     try {
       writeFileSync(CLI.reportJson, line + "\n");
     } catch (err) {
-      console.log(`\x1b[31m⚠ Failed to write JSON report to ${CLI.reportJson}: ${err.message}\x1b[0m`);
+      console.log(
+        `\x1b[31m⚠ Failed to write JSON report to ${CLI.reportJson}: ${err.message}\x1b[0m`,
+      );
     }
   }
 }
@@ -661,10 +698,9 @@ const projectRoot = resolvePath(__dirname, "..");
 // Files whose contents could change what gets rendered into the live hero.
 // We watch the source-of-truth and the route that consumes it; together they
 // cover every realistic local change that would introduce drift.
-const WATCHED_FILES = [
-  "src/content/hero-copy.ts",
-  "src/routes/index.tsx",
-].map((p) => resolvePath(projectRoot, p));
+const WATCHED_FILES = ["src/content/hero-copy.ts", "src/routes/index.tsx"].map((p) =>
+  resolvePath(projectRoot, p),
+);
 
 const YELLOW = "\x1b[33m";
 const CYAN = "\x1b[36m";
@@ -699,13 +735,9 @@ function printTransitions(transitions) {
   for (const t of transitions) {
     const arrow = `${DIM}${t.prev.status} → ${t.curr.status}${RESET}`;
     if (t.curr.status === "drift" && t.prev.status !== "drift") {
-      console.log(
-        `  ${RED}${BOLD}● NEW DRIFT${RESET} on ${BOLD}${t.target}${RESET} (${arrow})`,
-      );
+      console.log(`  ${RED}${BOLD}● NEW DRIFT${RESET} on ${BOLD}${t.target}${RESET} (${arrow})`);
     } else if (t.curr.status === "ok" && t.prev.status === "drift") {
-      console.log(
-        `  ${GREEN}${BOLD}● RESOLVED${RESET} on ${BOLD}${t.target}${RESET} (${arrow})`,
-      );
+      console.log(`  ${GREEN}${BOLD}● RESOLVED${RESET} on ${BOLD}${t.target}${RESET} (${arrow})`);
     } else {
       console.log(`  ${YELLOW}● CHANGED${RESET} on ${BOLD}${t.target}${RESET} (${arrow})`);
     }
@@ -792,7 +824,9 @@ async function tick(reason) {
   }
   if (runCount >= CLI.maxRuns) {
     const label = code === EXIT.OK ? GREEN : RED;
-    console.log(`${label}${BOLD}--max-runs reached (${CLI.maxRuns}): exiting with code ${code}.${RESET}`);
+    console.log(
+      `${label}${BOLD}--max-runs reached (${CLI.maxRuns}): exiting with code ${code}.${RESET}`,
+    );
     process.exit(code);
   }
 
@@ -830,4 +864,3 @@ process.on("SIGINT", () => {
 });
 
 await tick("initial run");
-

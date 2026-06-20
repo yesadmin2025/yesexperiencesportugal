@@ -16,8 +16,7 @@ import { cn } from "@/lib/utils";
  * or className="he-eyebrow-bar" markup. That way icon, spacing and colour stay
  * identical on every page.
  */
-export interface EyebrowProps
-  extends React.HTMLAttributes<HTMLSpanElement> {
+export interface EyebrowProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Optional Lucide / inline SVG icon to render between the rule and label. */
   icon?: React.ReactNode;
   /** Render a trailing rule on the right (centred / flanked titles). */

@@ -38,9 +38,9 @@ interface Props {
   hero?: { src: string; alt: string };
   /** Eyebrow + sequenced lines + closer (italic Georgia). */
   eyebrow?: string;
-  headlineOwner?: string;          // "Your" | "Maria's"
-  headlineWhisper: string;         // "Arrábida, the Atlantic close enough to taste"
-  lines: string[];                 // storyFinalLines() output
+  headlineOwner?: string; // "Your" | "Maria's"
+  headlineWhisper: string; // "Arrábida, the Atlantic close enough to taste"
+  lines: string[]; // storyFinalLines() output
   closer?: string;
   stops: PostcardStop[];
   /** Invitation URL for share. May be null while the session is being created. */
@@ -52,7 +52,9 @@ interface Props {
 }
 
 export function Postcard({
-  open, onClose, onContinue,
+  open,
+  onClose,
+  onContinue,
   hero,
   eyebrow = "A postcard from your day",
   headlineOwner = "Your",
@@ -70,7 +72,12 @@ export function Postcard({
   const closedRef = useRef(false);
 
   useEffect(() => {
-    if (!open) { setPhase("hidden"); setVisibleLines(0); closedRef.current = false; return; }
+    if (!open) {
+      setPhase("hidden");
+      setVisibleLines(0);
+      closedRef.current = false;
+      return;
+    }
     closedRef.current = false;
     setPhase("in");
     setVisibleLines(0);
@@ -84,10 +91,9 @@ export function Postcard({
       setVisibleLines(lines.length);
     } else {
       lines.forEach((_, i) => {
-        timers.push(window.setTimeout(
-          () => setVisibleLines((v) => Math.max(v, i + 1)),
-          inMs + 320 + i * 720,
-        ));
+        timers.push(
+          window.setTimeout(() => setVisibleLines((v) => Math.max(v, i + 1)), inMs + 320 + i * 720),
+        );
       });
     }
     return () => {
@@ -98,7 +104,9 @@ export function Postcard({
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,18 +125,25 @@ export function Postcard({
     const text = `${headlineOwner} Portugal — ${headlineWhisper}.`;
     try {
       if (typeof navigator !== "undefined" && "share" in navigator) {
-        await (navigator as Navigator & { share: (d: ShareData) => Promise<void> })
-          .share({ title, text, url: shareUrl });
+        await (navigator as Navigator & { share: (d: ShareData) => Promise<void> }).share({
+          title,
+          text,
+          url: shareUrl,
+        });
         onShare?.("native");
         return;
       }
-    } catch { /* fall through to copy */ }
+    } catch {
+      /* fall through to copy */
+    }
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       onShare?.("copy");
       window.setTimeout(() => setCopied(false), 2200);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   };
 
   if (!open && phase === "hidden") return null;
@@ -222,7 +237,10 @@ export function Postcard({
           <br />
           <span
             className="italic"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)", fontWeight: 400 }}
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+              fontWeight: 400,
+            }}
           >
             — {headlineWhisper}.
           </span>
@@ -242,7 +260,8 @@ export function Postcard({
                   color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                   opacity: shown ? 1 : 0,
                   transform: shown ? "translateY(0)" : "translateY(6px)",
-                  transition: "opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1)",
+                  transition:
+                    "opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1)",
                 }}
               >
                 {line}
@@ -309,7 +328,10 @@ export function Postcard({
         <div className="mt-10 flex flex-col gap-3">
           <button
             type="button"
-            onClick={() => { onContinue(); close(); }}
+            onClick={() => {
+              onContinue();
+              close();
+            }}
             className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-[12px] font-semibold uppercase tracking-[0.22em] transition-colors focus-visible:outline-none focus-visible:ring-2"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >

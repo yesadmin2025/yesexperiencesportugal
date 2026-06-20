@@ -27,7 +27,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What is the difference between Signature, Studio and Bespoke?",
     a: (
       <>
-        Signature is a ready-to-book private day. Studio designs a private day in real time around your mood, group and rhythm. Bespoke is a multi-day Portugal, composed by a local and delivered as a travel file.
+        Signature is a ready-to-book private day. Studio designs a private day in real time around
+        your mood, group and rhythm. Bespoke is a multi-day Portugal, composed by a local and
+        delivered as a travel file.
       </>
     ),
   },
@@ -35,7 +37,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can I customise a Signature day?",
     a: (
       <>
-        Yes. Every Signature day can be adjusted — pace, stops, lunch, timing — within the same route. For deeper changes across regions, Bespoke is the right path.
+        Yes. Every Signature day can be adjusted — pace, stops, lunch, timing — within the same
+        route. For deeper changes across regions, Bespoke is the right path.
       </>
     ),
   },
@@ -43,7 +46,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Do I speak directly with a local designer?",
     a: (
       <>
-        Always. A local from our team takes your request personally — never a call centre, never a chatbot. For Bespoke journeys, the conversation begins before anything is confirmed.
+        Always. A local from our team takes your request personally — never a call centre, never a
+        chatbot. For Bespoke journeys, the conversation begins before anything is confirmed.
       </>
     ),
   },
@@ -51,7 +55,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "How far in advance should I book?",
     a: (
       <>
-        Signature and Studio days are usually available within a few days’ notice. For Bespoke journeys, two to four weeks gives us room to design properly; peak season fills earlier.
+        Signature and Studio days are usually available within a few days’ notice. For Bespoke
+        journeys, two to four weeks gives us room to design properly; peak season fills earlier.
       </>
     ),
   },
@@ -59,7 +64,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What happens after I submit a request?",
     a: (
       <>
-        A local replies personally, usually within the hour. We confirm the details, share a clear proposal, and only then ask for confirmation — no pressure, no automated funnels.
+        A local replies personally, usually within the hour. We confirm the details, share a clear
+        proposal, and only then ask for confirmation — no pressure, no automated funnels.
       </>
     ),
   },
@@ -77,7 +83,10 @@ export function FAQ() {
       <div className="container-x">
         <div className="reveal max-w-3xl mx-auto text-center">
           <span className="he-eyebrow-bar flank">Before you book</span>
-          <h2 id="faq-title" className="serif text-[1.8rem] sm:text-[2.1rem] md:text-[2.6rem] mt-4 leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
+          <h2
+            id="faq-title"
+            className="serif text-[1.8rem] sm:text-[2.1rem] md:text-[2.6rem] mt-4 leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+          >
             A few things, before you decide.
           </h2>
           <div className="gold-divider mt-6 mx-auto w-20" />
@@ -85,12 +94,7 @@ export function FAQ() {
 
         {/* ── Questions ─────────────────────────────────────── */}
         <div className="reveal mt-8 md:mt-10 max-w-3xl mx-auto">
-          <Accordion
-            type="single"
-            collapsible
-            defaultValue={DEFAULT_OPEN}
-            className="space-y-3"
-          >
+          <Accordion type="single" collapsible defaultValue={DEFAULT_OPEN} className="space-y-3">
             {FAQS.map((item, i) => (
               <AccordionItem
                 key={i}
@@ -107,7 +111,6 @@ export function FAQ() {
             ))}
           </Accordion>
         </div>
-
       </div>
     </section>
   );

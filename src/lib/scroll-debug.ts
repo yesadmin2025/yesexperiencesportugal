@@ -86,8 +86,7 @@ export function getScrollDebugFlags(
     disableMobileReveals: all || tokens.has("reveals-off") || tokens.has("no-mobile-reveals"),
     staticMobileCarousels: all || tokens.has("carousels-off") || tokens.has("static-carousels"),
     disableMobileStudioMotion: all || tokens.has("studio-static") || tokens.has("no-studio-motion"),
-    revealDebug:
-      standaloneRevealDebug || tokens.has("reveal-debug") || tokens.has("debug-reveals"),
+    revealDebug: standaloneRevealDebug || tokens.has("reveal-debug") || tokens.has("debug-reveals"),
   };
 }
 
@@ -112,14 +111,15 @@ function describeTarget(target: EventTarget | null): string {
 function selectorFor(el: Element): string {
   const tag = el.tagName.toLowerCase();
   const id = el.id ? `#${el.id}` : "";
-  const classes = typeof el.className === "string"
-    ? el.className
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 4)
-        .map((c) => `.${CSS.escape(c)}`)
-        .join("")
-    : "";
+  const classes =
+    typeof el.className === "string"
+      ? el.className
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 4)
+          .map((c) => `.${CSS.escape(c)}`)
+          .join("")
+      : "";
   return `${tag}${id}${classes}`;
 }
 
@@ -164,8 +164,8 @@ export function installScrollDebugInstrumentation(
         id: nextListenerId++,
         type,
         target: describeTarget(this),
-        passive: typeof options === "object" ? options.passive ?? null : null,
-        capture: typeof options === "boolean" ? options : options?.capture ?? null,
+        passive: typeof options === "object" ? (options.passive ?? null) : null,
+        capture: typeof options === "boolean" ? options : (options?.capture ?? null),
       });
     }
     return originalAdd.call(this, type, listener, options);
@@ -258,7 +258,9 @@ export function reportScrollDebug(
     .filter((el) => {
       const classAttr = typeof el.className === "string" ? el.className : "";
       const styleAttr = el.getAttribute("style") ?? "";
-      return /(?:^|\s)(?:min-)?h-\[[^\]]*(?:vh|svh|dvh)|(?:height|min-height)\s*:[^;]*(?:vh|svh|dvh)/.test(`${classAttr} ${styleAttr}`);
+      return /(?:^|\s)(?:min-)?h-\[[^\]]*(?:vh|svh|dvh)|(?:height|min-height)\s*:[^;]*(?:vh|svh|dvh)/.test(
+        `${classAttr} ${styleAttr}`,
+      );
     })
     .map(compactElement);
   const scrollAnimated = all

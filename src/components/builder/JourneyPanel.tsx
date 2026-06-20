@@ -67,9 +67,7 @@ export function JourneyPanel({
   const stopMin = route.totals.stopMinutes;
 
   const journeyTitle =
-    stops.length >= 2
-      ? `${stops[0].label} → ${stops[stops.length - 1].label}`
-      : route.region.label;
+    stops.length >= 2 ? `${stops[0].label} → ${stops[stops.length - 1].label}` : route.region.label;
 
   return (
     <div className="flex h-full flex-col gap-5 p-5 md:p-6">
@@ -140,83 +138,82 @@ export function JourneyPanel({
         <ol className="mt-3 flex flex-col gap-2">
           {stops.map((s, i) => {
             const stopImageEntry = stopImages?.[s.key];
-            const stopImageStillLoading =
-              imagesLoading && stopImages && !(s.key in stopImages);
+            const stopImageStillLoading = imagesLoading && stopImages && !(s.key in stopImages);
             return (
-            <li
-              key={s.key}
-              className="group flex items-start gap-3 rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-3 transition-colors hover:border-[color:var(--charcoal)]/25"
-            >
-              {stopImageEntry ? (
-                <BuilderImage
-                  src={stopImageEntry.url}
-                  alt={stopImageEntry.alt}
-                  ratio="1/1"
-                  className="h-14 w-14 shrink-0"
-                >
-                  <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10px] font-bold text-[color:var(--ivory)] tabular-nums">
+              <li
+                key={s.key}
+                className="group flex items-start gap-3 rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-3 transition-colors hover:border-[color:var(--charcoal)]/25"
+              >
+                {stopImageEntry ? (
+                  <BuilderImage
+                    src={stopImageEntry.url}
+                    alt={stopImageEntry.alt}
+                    ratio="1/1"
+                    className="h-14 w-14 shrink-0"
+                  >
+                    <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10px] font-bold text-[color:var(--ivory)] tabular-nums">
+                      {i + 1}
+                    </span>
+                  </BuilderImage>
+                ) : stopImageStillLoading ? (
+                  <div
+                    aria-hidden="true"
+                    className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px] bg-[color:var(--sand)]/70 animate-pulse"
+                  >
+                    <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10px] font-bold text-[color:var(--ivory)] tabular-nums">
+                      {i + 1}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[color:var(--teal)] text-[11px] font-bold text-[color:var(--ivory)] tabular-nums">
                     {i + 1}
                   </span>
-                </BuilderImage>
-              ) : stopImageStillLoading ? (
-                <div
-                  aria-hidden="true"
-                  className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px] bg-[color:var(--sand)]/70 animate-pulse"
-                >
-                  <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10px] font-bold text-[color:var(--ivory)] tabular-nums">
-                    {i + 1}
-                  </span>
-                </div>
-              ) : (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[color:var(--teal)] text-[11px] font-bold text-[color:var(--ivory)] tabular-nums">
-                  {i + 1}
-                </span>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="text-[13.5px] font-semibold text-[color:var(--charcoal)] leading-tight">
-                  {s.label}
-                </p>
-                {s.tag && (
-                  <p className="mt-0.5 text-[11px] uppercase tracking-wider text-[color:var(--gold)]">
-                    {s.tag}
-                  </p>
                 )}
-                <p className="mt-1 text-[12px] text-[color:var(--charcoal)]/60">
-                  {fmtMinutes(s.duration_minutes)} on stop
-                  {i > 0 && s.driveMinutesFromPrev > 0
-                    ? ` · ${fmtMinutes(s.driveMinutesFromPrev)} drive`
-                    : ""}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => onMove(i, -1)}
-                  disabled={i === 0}
-                  aria-label={`Move ${s.label} earlier`}
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--charcoal)]/45"
-                >
-                  <ArrowUp size={13} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onMove(i, 1)}
-                  disabled={i === stops.length - 1}
-                  aria-label={`Move ${s.label} later`}
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--charcoal)]/45"
-                >
-                  <ArrowDown size={13} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onRemoveStop(s.key)}
-                  aria-label={`Remove ${s.label}`}
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-red-700 hover:bg-red-50"
-                >
-                  <X size={13} />
-                </button>
-              </div>
-            </li>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13.5px] font-semibold text-[color:var(--charcoal)] leading-tight">
+                    {s.label}
+                  </p>
+                  {s.tag && (
+                    <p className="mt-0.5 text-[11px] uppercase tracking-wider text-[color:var(--gold)]">
+                      {s.tag}
+                    </p>
+                  )}
+                  <p className="mt-1 text-[12px] text-[color:var(--charcoal)]/60">
+                    {fmtMinutes(s.duration_minutes)} on stop
+                    {i > 0 && s.driveMinutesFromPrev > 0
+                      ? ` · ${fmtMinutes(s.driveMinutesFromPrev)} drive`
+                      : ""}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onMove(i, -1)}
+                    disabled={i === 0}
+                    aria-label={`Move ${s.label} earlier`}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--charcoal)]/45"
+                  >
+                    <ArrowUp size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onMove(i, 1)}
+                    disabled={i === stops.length - 1}
+                    aria-label={`Move ${s.label} later`}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--charcoal)]/45"
+                  >
+                    <ArrowDown size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onRemoveStop(s.key)}
+                    aria-label={`Remove ${s.label}`}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              </li>
             );
           })}
         </ol>
@@ -248,10 +245,7 @@ export function JourneyPanel({
 
       {/* Bounded "Add to your day" rail — concierge-confirmed, no invented prices */}
       {onToggleElement && (
-        <ElementsShelf
-          selected={selectedElements ?? []}
-          onToggle={onToggleElement}
-        />
+        <ElementsShelf selected={selectedElements ?? []} onToggle={onToggleElement} />
       )}
 
       {/* Pace control */}
@@ -279,7 +273,9 @@ export function JourneyPanel({
               >
                 <Icon
                   size={14}
-                  className={active ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"}
+                  className={
+                    active ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"
+                  }
                   strokeWidth={1.6}
                 />
                 <span className="text-[12px] font-semibold text-[color:var(--charcoal)]">

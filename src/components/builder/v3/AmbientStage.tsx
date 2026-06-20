@@ -21,7 +21,6 @@ interface Props {
   affinity?: { warmth: number; depth: number; energy: number; intimacy: number };
 }
 
-
 /**
  * MOOD_GRADIENTS — Portuguese atmospheric palettes, not generic dark luxury.
  *
@@ -37,18 +36,30 @@ interface Props {
  */
 const MOOD_GRADIENTS: Record<string, string> = {
   slow: "radial-gradient(ellipse at 35% 65%, oklch(0.52 0.04 220 / 0.75), oklch(0.26 0.03 230 / 1) 72%)",
-  curious: "radial-gradient(ellipse at 70% 40%, oklch(0.46 0.09 235 / 0.78), oklch(0.22 0.05 245 / 1) 75%)",
-  romantic: "radial-gradient(ellipse at 50% 70%, oklch(0.48 0.11 45 / 0.82), oklch(0.24 0.06 30 / 1) 75%)",
+  curious:
+    "radial-gradient(ellipse at 70% 40%, oklch(0.46 0.09 235 / 0.78), oklch(0.22 0.05 245 / 1) 75%)",
+  romantic:
+    "radial-gradient(ellipse at 50% 70%, oklch(0.48 0.11 45 / 0.82), oklch(0.24 0.06 30 / 1) 75%)",
   open: "radial-gradient(ellipse at 55% 35%, oklch(0.6 0.04 215 / 0.7), oklch(0.3 0.03 225 / 1) 78%)",
-  energetic: "radial-gradient(ellipse at 45% 55%, oklch(0.54 0.13 55 / 0.85), oklch(0.26 0.06 25 / 1) 75%)",
-  _default: "radial-gradient(ellipse at 50% 60%, oklch(0.44 0.05 210 / 0.78), oklch(0.22 0.03 230 / 1) 75%)",
+  energetic:
+    "radial-gradient(ellipse at 45% 55%, oklch(0.54 0.13 55 / 0.85), oklch(0.26 0.06 25 / 1) 75%)",
+  _default:
+    "radial-gradient(ellipse at 50% 60%, oklch(0.44 0.05 210 / 0.78), oklch(0.22 0.03 230 / 1) 75%)",
 };
 
 function gradientFor(mood?: string | null) {
   return (mood && MOOD_GRADIENTS[mood]) || MOOD_GRADIENTS._default;
 }
 
-export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "medium", journeyType, affinity }: Props) {
+export function AmbientStage({
+  mood,
+  regionLabel,
+  imageUrl,
+  videoUrl,
+  veil = "medium",
+  journeyType,
+  affinity,
+}: Props) {
   const [currentMood, setCurrentMood] = useState<string | null>(mood ?? null);
   const [prevMood, setPrevMood] = useState<string | null>(null);
   const [fading, setFading] = useState(false);
@@ -68,10 +79,7 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
   const veilOpacity = veil === "light" ? 0.16 : veil === "deep" ? 0.38 : 0.26;
 
   return (
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 overflow-hidden pointer-events-none"
-    >
+    <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Previous mood layer (fading out) */}
       {prevMood !== null && fading && (
         <div
@@ -101,7 +109,6 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] motion-reduce:transition-none"
           style={{ opacity: 0.72, filter: "saturate(0.92) contrast(1.02) brightness(0.92)" }}
-
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
@@ -162,8 +169,7 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
         aria-hidden="true"
         className="absolute inset-x-0 bottom-0 h-[38%]"
         style={{
-          background:
-            "linear-gradient(180deg, transparent 0%, oklch(0.42 0.04 220 / 0.18) 100%)",
+          background: "linear-gradient(180deg, transparent 0%, oklch(0.42 0.04 220 / 0.18) 100%)",
           mixBlendMode: "multiply",
         }}
       />
@@ -176,9 +182,7 @@ export function AmbientStage({ mood, regionLabel, imageUrl, videoUrl, veil = "me
             "radial-gradient(ellipse at center, transparent 55%, oklch(0.15 0.02 240 / 0.22) 100%)",
         }}
       />
-      {regionLabel && (
-        <span className="sr-only">Ambient scene · {regionLabel}</span>
-      )}
+      {regionLabel && <span className="sr-only">Ambient scene · {regionLabel}</span>}
     </div>
   );
 }

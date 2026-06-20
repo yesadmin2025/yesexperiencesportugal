@@ -78,7 +78,17 @@ class FakeIO {
           intersectionRatio: 0,
           time: 0,
           rootBounds: null,
-          intersectionRect: { top: 0, bottom: 0, left: 0, right: 0, width: 0, height: 0, x: 0, y: 0, toJSON: () => ({}) } as DOMRectReadOnly,
+          intersectionRect: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0,
+            toJSON: () => ({}),
+          } as DOMRectReadOnly,
           ...e,
         }) as IntersectionObserverEntry,
     );
@@ -142,9 +152,7 @@ afterEach(() => {
 
 /** Build N reveal divs and place them into the layout's children slot. */
 function makeReveals(count: number) {
-  return Array.from({ length: count }, (_, i) => (
-    <div key={i} className="reveal" data-idx={i} />
-  ));
+  return Array.from({ length: count }, (_, i) => <div key={i} className="reveal" data-idx={i} />);
 }
 
 function getReveals() {
@@ -159,7 +167,9 @@ describe("reveal telemetry — deep-link / fast-scroll attribution", () => {
     expect(container).toBeTruthy();
     const els = getReveals();
     // Position them all well below the viewport.
-    els.forEach((el, i) => setBoundingRect(el, { top: VH + 100 + i * 50, bottom: VH + 200 + i * 50 }));
+    els.forEach((el, i) =>
+      setBoundingRect(el, { top: VH + 100 + i * 50, bottom: VH + 200 + i * 50 }),
+    );
 
     // Re-trigger the layout effect by waiting a tick is unnecessary —
     // the effect already ran on mount. The initial sweep saw the rects
@@ -177,7 +187,17 @@ describe("reveal telemetry — deep-link / fast-scroll attribution", () => {
         els.map((target) => ({
           target,
           isIntersecting: true,
-          boundingClientRect: { top: 100, bottom: 200, left: 0, right: 100, width: 100, height: 100, x: 0, y: 100, toJSON: () => ({}) } as DOMRectReadOnly,
+          boundingClientRect: {
+            top: 100,
+            bottom: 200,
+            left: 0,
+            right: 100,
+            width: 100,
+            height: 100,
+            x: 0,
+            y: 100,
+            toJSON: () => ({}),
+          } as DOMRectReadOnly,
         })),
       );
     });
@@ -218,7 +238,17 @@ describe("reveal telemetry — deep-link / fast-scroll attribution", () => {
         els.map((target) => ({
           target,
           isIntersecting: true,
-          boundingClientRect: { top: 100, bottom: 200, left: 0, right: 100, width: 100, height: 100, x: 0, y: 100, toJSON: () => ({}) } as DOMRectReadOnly,
+          boundingClientRect: {
+            top: 100,
+            bottom: 200,
+            left: 0,
+            right: 100,
+            width: 100,
+            height: 100,
+            x: 0,
+            y: 100,
+            toJSON: () => ({}),
+          } as DOMRectReadOnly,
         })),
       );
     });
@@ -256,7 +286,17 @@ describe("reveal telemetry — deep-link / fast-scroll attribution", () => {
         els.map((target) => ({
           target,
           isIntersecting: false,
-          boundingClientRect: { top: -300, bottom: -200, left: 0, right: 100, width: 100, height: 100, x: 0, y: -300, toJSON: () => ({}) } as DOMRectReadOnly,
+          boundingClientRect: {
+            top: -300,
+            bottom: -200,
+            left: 0,
+            right: 100,
+            width: 100,
+            height: 100,
+            x: 0,
+            y: -300,
+            toJSON: () => ({}),
+          } as DOMRectReadOnly,
         })),
       );
     });

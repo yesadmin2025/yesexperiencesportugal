@@ -11,7 +11,11 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { REGION_CENTROIDS } from "@/data/stopCoords";
 import { applyRules } from "@/lib/applyMappingRules.server";
-import { DEFAULT_MAPPING_RULES, safeParseRules, type MappingRules } from "@/data/defaultMappingRules";
+import {
+  DEFAULT_MAPPING_RULES,
+  safeParseRules,
+  type MappingRules,
+} from "@/data/defaultMappingRules";
 
 const CATALOG_URL = "https://yesexperiences.pt/our-experiences/";
 const AI_MODEL = "google/gemini-3-flash-preview";
@@ -20,8 +24,17 @@ const VALID_REGIONS = ["lisbon", "porto", "alentejo", "algarve"] as const;
 const VALID_DURATIONS = ["halfday", "fullday", "twoday", "threeday", "week"] as const;
 const VALID_STYLES = ["wine", "gastronomy", "nature", "heritage", "coastal"] as const;
 const VALID_HIGHLIGHTS = [
-  "livramento", "boat", "jeep", "tiles", "cheese", "tasting",
-  "portinho", "sesimbra", "viewpoint", "dinosaur", "ginjinha",
+  "livramento",
+  "boat",
+  "jeep",
+  "tiles",
+  "cheese",
+  "tasting",
+  "portinho",
+  "sesimbra",
+  "viewpoint",
+  "dinosaur",
+  "ginjinha",
 ] as const;
 const VALID_PACE = ["slow", "balanced", "rich"] as const;
 const VALID_TIERS = ["signature", "atelier", "couture"] as const;
@@ -116,15 +129,15 @@ export async function scrapeCatalog(): Promise<ScrapedTour[]> {
       block.match(/(\d{1,2}\s*hours?[^<]*)/i)?.[1] ??
       block.match(/(\d+\s*days?)/i)?.[1] ??
       "";
-    const price =
-      Number(block.match(/From\s*€\s*([\d.,]+)/i)?.[1]?.replace(/[.,]/g, "")) || 0;
+    const price = Number(block.match(/From\s*€\s*([\d.,]+)/i)?.[1]?.replace(/[.,]/g, "")) || 0;
     // Look in a wider window before AND after the heading; cards put the image
     // either above the title (preview thumb) or in the link wrapper.
     const window = html.substring(
       Math.max(0, m.index - 2000),
       Math.min(html.length, m.index + (m[0]?.length ?? 0) + 1500),
     );
-    const imgRe = /(?:data-lazy-src|data-src|src)="(https:\/\/yesexperiences\.pt\/wp-content\/uploads\/[^"]+\.(?:avif|jpg|jpeg|png|webp))"/gi;
+    const imgRe =
+      /(?:data-lazy-src|data-src|src)="(https:\/\/yesexperiences\.pt\/wp-content\/uploads\/[^"]+\.(?:avif|jpg|jpeg|png|webp))"/gi;
     let imageUrl: string | null = null;
     let im: RegExpExecArray | null;
     while ((im = imgRe.exec(window)) !== null) {
@@ -136,10 +149,14 @@ export async function scrapeCatalog(): Promise<ScrapedTour[]> {
     }
     // Fallback: try srcset (take the largest entry)
     if (!imageUrl) {
-      const srcset = window.match(/srcset="([^"]+yesexperiences\.pt\/wp-content\/uploads\/[^"]+)"/i)?.[1];
+      const srcset = window.match(
+        /srcset="([^"]+yesexperiences\.pt\/wp-content\/uploads\/[^"]+)"/i,
+      )?.[1];
       if (srcset) {
         const entries = srcset.split(",").map((s) => s.trim().split(/\s+/));
-        const best = entries.sort((a, b) => (parseInt(b[1] ?? "0") || 0) - (parseInt(a[1] ?? "0") || 0))[0];
+        const best = entries.sort(
+          (a, b) => (parseInt(b[1] ?? "0") || 0) - (parseInt(a[1] ?? "0") || 0),
+        )[0];
         imageUrl = best?.[0] ?? null;
       }
     }
@@ -225,8 +242,17 @@ const MAPPER_TOOL = {
         },
       },
       required: [
-        "region", "duration", "styles", "highlights", "pace", "tier",
-        "theme", "fitsBest", "paceCues", "blurb", "stops",
+        "region",
+        "duration",
+        "styles",
+        "highlights",
+        "pace",
+        "tier",
+        "theme",
+        "fitsBest",
+        "paceCues",
+        "blurb",
+        "stops",
       ],
       additionalProperties: false,
     },
@@ -234,12 +260,12 @@ const MAPPER_TOOL = {
 };
 
 type MapperOutput = {
-  region: typeof VALID_REGIONS[number];
-  duration: typeof VALID_DURATIONS[number];
+  region: (typeof VALID_REGIONS)[number];
+  duration: (typeof VALID_DURATIONS)[number];
   styles: string[];
   highlights: string[];
-  pace: typeof VALID_PACE[number];
-  tier: typeof VALID_TIERS[number];
+  pace: (typeof VALID_PACE)[number];
+  tier: (typeof VALID_TIERS)[number];
   theme: string;
   fitsBest: string;
   paceCues: string[];

@@ -35,7 +35,10 @@ interface Props {
 }
 
 export function MapReveal({
-  open, stops, regionCenter, regionKey,
+  open,
+  stops,
+  regionCenter,
+  regionKey,
   eyebrow = "Your day, in one breath",
   lines,
   closer = "The country has arranged itself around you.",
@@ -77,12 +80,15 @@ export function MapReveal({
       });
     }
     const t2 = window.setTimeout(() => setPhase("out"), inMs + holdMs);
-    const t3 = window.setTimeout(() => {
-      if (!closedRef.current) {
-        closedRef.current = true;
-        onClose();
-      }
-    }, inMs + holdMs + outMs);
+    const t3 = window.setTimeout(
+      () => {
+        if (!closedRef.current) {
+          closedRef.current = true;
+          onClose();
+        }
+      },
+      inMs + holdMs + outMs,
+    );
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
@@ -151,14 +157,21 @@ export function MapReveal({
               return (
                 <p
                   key={`${i}-${line}`}
-                  className={isHeadline ? "text-[19px] leading-[1.25] sm:text-[24px]" : "text-[15px] leading-[1.35] sm:text-[17px]"}
+                  className={
+                    isHeadline
+                      ? "text-[19px] leading-[1.25] sm:text-[24px]"
+                      : "text-[15px] leading-[1.35] sm:text-[17px]"
+                  }
                   style={{
                     fontFamily: "Georgia, 'Times New Roman', serif",
                     fontStyle: "italic",
-                    color: isHeadline ? "var(--ivory)" : "color-mix(in oklab, var(--ivory) 78%, transparent)",
+                    color: isHeadline
+                      ? "var(--ivory)"
+                      : "color-mix(in oklab, var(--ivory) 78%, transparent)",
                     opacity: shown ? 1 : 0,
                     transform: shown ? "translateY(0)" : "translateY(6px)",
-                    transition: "opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1)",
+                    transition:
+                      "opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1)",
                   }}
                 >
                   {line}
@@ -182,7 +195,6 @@ export function MapReveal({
             {closer}
           </p>
         </div>
-
 
         {/* Map — full-bleed */}
         <div className="absolute inset-0">

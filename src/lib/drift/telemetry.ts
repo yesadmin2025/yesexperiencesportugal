@@ -36,10 +36,7 @@ interface RecordOpts {
   meta?: Record<string, unknown>;
 }
 
-export async function recordDriftEvent(
-  event: DriftEvent,
-  opts: RecordOpts = {},
-): Promise<void> {
+export async function recordDriftEvent(event: DriftEvent, opts: RecordOpts = {}): Promise<void> {
   if (typeof window === "undefined") return;
   const sessionId = getDriftSessionId();
   try {

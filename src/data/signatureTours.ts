@@ -113,10 +113,10 @@ export type SignatureTour = {
   region: string;
   duration: string;
   durationHours: string;
-  priceFrom: number;          // EUR — guide price, final cost confirmed at booking
+  priceFrom: number; // EUR — guide price, final cost confirmed at booking
   theme: string;
-  blurb: string;              // one-line card teaser
-  intro: string;              // 2–3 sentence opening on detail page
+  blurb: string; // one-line card teaser
+  intro: string; // 2–3 sentence opening on detail page
   fitsBest: string;
   pace: string[];
   stops: TourStop[];
@@ -124,7 +124,7 @@ export type SignatureTour = {
   included: string[];
   idealFor: string[];
   notes: string[];
-  img: string;                // hero photo of this tour
+  img: string; // hero photo of this tour
   /** Default object-position for the hero crop (e.g. "50% 35%"). */
   focal?: string;
   /** Supporting Viator photos used in the detail-page gallery strip. */
@@ -172,17 +172,77 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Couples · friends · wine-curious travelers",
     pace: ["Two to three wineries", "Local lunch", "Sesimbra harbour"],
     stops: [
-      { label: "Mercado do Livramento", story: "Setúbal's 145-year-old market — fresh fish, oysters, regional cheese and Moscatel before the day even begins.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "Santuário Nacional de Cristo Rei", story: "Optional opening viewpoint over Lisbon and the Tagus — the bridge gleaming below, the city laid out at your feet.", imageTheme: "arrabida-wine-allinclusive", image: imgArrabidaWineViewpoint, focal: "50% 40%" },
-      { label: "Parque Natural da Arrabida", story: "Drive the panoramic road above the bay — turquoise water, cork-oak hills, no crowds.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "Azulejos de Azeitao", story: "Working tile factory in Azeitão — five centuries of cobalt-blue azulejo, still hand-painted.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "House & Museum José Maria Da Fonseca", story: "Seven generations of family winemaking since 1834 — cellar walk and tasting at one of Portugal's founding houses.", imageTheme: "arrabida-wine-allinclusive", image: imgArrabidaWineWinery, focal: "50% 45%" },
-      { label: "Quinta do Piloto", story: "An itinerary option — tradition meets innovation, vineyards opening to the hills.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "Farm Catralvos", story: "Quinta de Catralvos — small family producer where you taste at least five wines, label to bottle.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "Adega Coop. de Palmela, C.R.L.", story: "Optional cellar visit — historic vineyards, time-honoured techniques and a curated tasting.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "Bacalhoa Vinhos de Portugal", story: "Quinta da Bacalhôa — modern winery paired with a striking art collection.", imageTheme: "arrabida-wine-allinclusive" },
-      { label: "Azeitao — long traditional lunch", story: "Regional plates and paired wines at a quiet restaurant in the wine village.", imageTheme: "arrabida-wine-allinclusive", image: imgArrabidaWineLunch, focal: "50% 50%" },
-      { label: "Castelo de Sesimbra", story: "Optional close at the last medieval castle still standing by the sea — Atlantic views, the harbour below.", imageTheme: "arrabida-wine-allinclusive", image: imgArrabidaWineSesimbra, focal: "50% 55%" },
+      {
+        label: "Mercado do Livramento",
+        story:
+          "Setúbal's 145-year-old market — fresh fish, oysters, regional cheese and Moscatel before the day even begins.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "Santuário Nacional de Cristo Rei",
+        story:
+          "Optional opening viewpoint over Lisbon and the Tagus — the bridge gleaming below, the city laid out at your feet.",
+        imageTheme: "arrabida-wine-allinclusive",
+        image: imgArrabidaWineViewpoint,
+        focal: "50% 40%",
+      },
+      {
+        label: "Parque Natural da Arrabida",
+        story:
+          "Drive the panoramic road above the bay — turquoise water, cork-oak hills, no crowds.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "Azulejos de Azeitao",
+        story:
+          "Working tile factory in Azeitão — five centuries of cobalt-blue azulejo, still hand-painted.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "House & Museum José Maria Da Fonseca",
+        story:
+          "Seven generations of family winemaking since 1834 — cellar walk and tasting at one of Portugal's founding houses.",
+        imageTheme: "arrabida-wine-allinclusive",
+        image: imgArrabidaWineWinery,
+        focal: "50% 45%",
+      },
+      {
+        label: "Quinta do Piloto",
+        story: "An itinerary option — tradition meets innovation, vineyards opening to the hills.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "Farm Catralvos",
+        story:
+          "Quinta de Catralvos — small family producer where you taste at least five wines, label to bottle.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "Adega Coop. de Palmela, C.R.L.",
+        story:
+          "Optional cellar visit — historic vineyards, time-honoured techniques and a curated tasting.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "Bacalhoa Vinhos de Portugal",
+        story: "Quinta da Bacalhôa — modern winery paired with a striking art collection.",
+        imageTheme: "arrabida-wine-allinclusive",
+      },
+      {
+        label: "Azeitao — long traditional lunch",
+        story: "Regional plates and paired wines at a quiet restaurant in the wine village.",
+        imageTheme: "arrabida-wine-allinclusive",
+        image: imgArrabidaWineLunch,
+        focal: "50% 50%",
+      },
+      {
+        label: "Castelo de Sesimbra",
+        story:
+          "Optional close at the last medieval castle still standing by the sea — Atlantic views, the harbour below.",
+        imageTheme: "arrabida-wine-allinclusive",
+        image: imgArrabidaWineSesimbra,
+        focal: "50% 55%",
+      },
     ],
     highlights: [
       "Up to three private tastings at family-run wineries",
@@ -211,9 +271,13 @@ export const signatureTours: SignatureTour[] = [
     ],
     img: imgArrabidaWineHero,
     focal: "50% 45%",
-    gallery: [imgArrabidaWineViewpoint, imgArrabidaWineWinery, imgArrabidaWineLunch, imgArrabidaWineSesimbra],
-    bookingUrl:
-      "https://yesexperiences.pt/tour/private-full-day-wine-tour-setubal-arrabida/",
+    gallery: [
+      imgArrabidaWineViewpoint,
+      imgArrabidaWineWinery,
+      imgArrabidaWineLunch,
+      imgArrabidaWineSesimbra,
+    ],
+    bookingUrl: "https://yesexperiences.pt/tour/private-full-day-wine-tour-setubal-arrabida/",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -238,16 +302,58 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Couples · families · slow travelers",
     pace: ["Arrábida viewpoints", "Hidden cove picnic", "Sesimbra"],
     stops: [
-      { label: "Mercado do Livramento", story: "Pick the picnic together — fresh bread, cheese, fruit, cured meats and wine from one of the world's best markets.", imageTheme: "wild-beaches-picnic" },
-      { label: "Parque Natural da Arrabida", story: "Cliffs, cork oaks and golden coves — the road climbs into the protected park.", imageTheme: "wild-beaches-picnic" },
-      { label: "Portinho da Arrabida", story: "The signature turquoise bay — white sand, clear water, the cliffs rising behind.", imageTheme: "wild-beaches-picnic" },
-      { label: "Praia de Galapinhos", story: "A secluded cove voted one of Europe's most beautiful beaches.", imageTheme: "wild-beaches-picnic" },
-      { label: "Lapa de Santa Margarida", story: "A hidden sea cave with a tiny chapel inside — unexpected silence inside the park.", imageTheme: "wild-beaches-picnic" },
-      { label: "Cabo Espichel", story: "Wild cliffs, an Atlantic lighthouse and the Sanctuary of Our Lady of the Cape.", imageTheme: "wild-beaches-picnic" },
-      { label: "Praia das Bicas", story: "Wild surf beach south of Sesimbra — a candidate picnic spot depending on wind.", imageTheme: "wild-beaches-picnic" },
-      { label: "Praia do Meco", story: "Long Atlantic sand — another candidate for the picnic, the guide chooses on the day.", imageTheme: "wild-beaches-picnic" },
-      { label: "Castelo de Sesimbra", story: "Medieval castle high above the fishing town — Atlantic views in every direction.", imageTheme: "wild-beaches-picnic" },
-      { label: "Sesimbra", story: "End in the fishing village — a quiet stroll along the harbour at dusk.", imageTheme: "wild-beaches-picnic" },
+      {
+        label: "Mercado do Livramento",
+        story:
+          "Pick the picnic together — fresh bread, cheese, fruit, cured meats and wine from one of the world's best markets.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Parque Natural da Arrabida",
+        story: "Cliffs, cork oaks and golden coves — the road climbs into the protected park.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Portinho da Arrabida",
+        story: "The signature turquoise bay — white sand, clear water, the cliffs rising behind.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Praia de Galapinhos",
+        story: "A secluded cove voted one of Europe's most beautiful beaches.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Lapa de Santa Margarida",
+        story: "A hidden sea cave with a tiny chapel inside — unexpected silence inside the park.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Cabo Espichel",
+        story: "Wild cliffs, an Atlantic lighthouse and the Sanctuary of Our Lady of the Cape.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Praia das Bicas",
+        story: "Wild surf beach south of Sesimbra — a candidate picnic spot depending on wind.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Praia do Meco",
+        story:
+          "Long Atlantic sand — another candidate for the picnic, the guide chooses on the day.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Castelo de Sesimbra",
+        story: "Medieval castle high above the fishing town — Atlantic views in every direction.",
+        imageTheme: "wild-beaches-picnic",
+      },
+      {
+        label: "Sesimbra",
+        story: "End in the fishing village — a quiet stroll along the harbour at dusk.",
+        imageTheme: "wild-beaches-picnic",
+      },
     ],
     highlights: [
       "Private coastal route through Arrábida Natural Park",
@@ -301,12 +407,47 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Couples · families · active travelers",
     pace: ["Arrábida by road", "Boat into the coves", "Sesimbra at dusk"],
     stops: [
-      { label: "Mercado do Livramento", story: "Setúbal's vibrant azulejo-clad market — fresh fish, regional produce and the day's first stop.", imageTheme: "arrabida-boat" },
-      { label: "Parque Natural da Arrabida", story: "Drive into the park — verdant hills, ocean panoramas, the road dropping toward the bay.", imageTheme: "arrabida-boat", image: imgArrabidaBoatCoves, focal: "50% 55%" },
-      { label: "Lapa de Santa Margarida", story: "Boat into a hidden sea cave with a chapel inside — magical silence inside the park.", imageTheme: "arrabida-boat" },
-      { label: "Castelo de Sesimbra", story: "9th-century clifftop fortress — chapel, old walls and panoramic Atlantic views.", imageTheme: "arrabida-boat", image: imgArrabidaBoatSesimbra, focal: "50% 50%" },
-      { label: "Sesimbra", story: "Charming fishing village — a long lunch by the water, then a stroll along the harbour.", imageTheme: "arrabida-boat", image: imgArrabidaBoatPortinho, focal: "50% 55%" },
-      { label: "Cabo Espichel", story: "Dramatic cape with a lighthouse and the Sanctuary of Our Lady of the Cape — wind, cliffs, Atlantic.", imageTheme: "arrabida-boat" },
+      {
+        label: "Mercado do Livramento",
+        story:
+          "Setúbal's vibrant azulejo-clad market — fresh fish, regional produce and the day's first stop.",
+        imageTheme: "arrabida-boat",
+      },
+      {
+        label: "Parque Natural da Arrabida",
+        story:
+          "Drive into the park — verdant hills, ocean panoramas, the road dropping toward the bay.",
+        imageTheme: "arrabida-boat",
+        image: imgArrabidaBoatCoves,
+        focal: "50% 55%",
+      },
+      {
+        label: "Lapa de Santa Margarida",
+        story:
+          "Boat into a hidden sea cave with a chapel inside — magical silence inside the park.",
+        imageTheme: "arrabida-boat",
+      },
+      {
+        label: "Castelo de Sesimbra",
+        story: "9th-century clifftop fortress — chapel, old walls and panoramic Atlantic views.",
+        imageTheme: "arrabida-boat",
+        image: imgArrabidaBoatSesimbra,
+        focal: "50% 50%",
+      },
+      {
+        label: "Sesimbra",
+        story:
+          "Charming fishing village — a long lunch by the water, then a stroll along the harbour.",
+        imageTheme: "arrabida-boat",
+        image: imgArrabidaBoatPortinho,
+        focal: "50% 55%",
+      },
+      {
+        label: "Cabo Espichel",
+        story:
+          "Dramatic cape with a lighthouse and the Sanctuary of Our Lady of the Cape — wind, cliffs, Atlantic.",
+        imageTheme: "arrabida-boat",
+      },
     ],
     highlights: [
       "Boat ride into Arrábida's hidden coves",
@@ -336,7 +477,12 @@ export const signatureTours: SignatureTour[] = [
     ],
     img: imgArrabidaBoatHero,
     focal: "50% 45%",
-    gallery: [imgArrabidaBoatCoves, imgArrabidaBoatPortinho, imgArrabidaBoatSesimbra, imgArrabidaBoatExtra],
+    gallery: [
+      imgArrabidaBoatCoves,
+      imgArrabidaBoatPortinho,
+      imgArrabidaBoatSesimbra,
+      imgArrabidaBoatExtra,
+    ],
     bookingUrl:
       "https://www.viator.com/tours/Lisbon/Private-Full-Day-Arrabida-and-Sesimbra-with-Boat-Tour-from-Lisbon/d538-349639P12",
     seed: {
@@ -363,14 +509,50 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Couples · creatives · families with teens",
     pace: ["Tile atelier", "Wine tasting", "Sesimbra coast"],
     stops: [
-      { label: "Mercado do Livramento", story: "Setúbal's celebrated market — fresh fish, regional produce, 145 years of tradition.", imageTheme: "tiles-workshop" },
-      { label: "Azulejos de Azeitao", story: "Paint your own azulejo under a master tile-maker — five centuries of cobalt-blue tradition, hands-on.", imageTheme: "tiles-workshop" },
-      { label: "Farm Catralvos", story: "Quinta de Catralvos — winery option, vineyard walk and a guided tasting.", imageTheme: "tiles-workshop" },
-      { label: "Jose Maria de Fonseca", story: "Alternate winery option — the founding house of Setúbal Moscatel, seven generations strong.", imageTheme: "tiles-workshop" },
-      { label: "Bacalhoa Vinhos de Portugal", story: "Another winery option — modern cellar paired with a striking art collection.", imageTheme: "tiles-workshop" },
-      { label: "Castelo de Sesimbra", story: "9th-century clifftop castle — chapel adorned with 10,000 hand-painted tiles from the 1500s.", imageTheme: "tiles-workshop" },
-      { label: "Sesimbra", story: "Fishing village by the Atlantic — quiet walk, fresh seafood, easy plates.", imageTheme: "tiles-workshop" },
-      { label: "Santuario Nacional de Cristo Rei", story: "Closing viewpoint over the Tagus — Lisbon, the bridge and the river in one frame.", imageTheme: "tiles-workshop" },
+      {
+        label: "Mercado do Livramento",
+        story:
+          "Setúbal's celebrated market — fresh fish, regional produce, 145 years of tradition.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Azulejos de Azeitao",
+        story:
+          "Paint your own azulejo under a master tile-maker — five centuries of cobalt-blue tradition, hands-on.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Farm Catralvos",
+        story: "Quinta de Catralvos — winery option, vineyard walk and a guided tasting.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Jose Maria de Fonseca",
+        story:
+          "Alternate winery option — the founding house of Setúbal Moscatel, seven generations strong.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Bacalhoa Vinhos de Portugal",
+        story: "Another winery option — modern cellar paired with a striking art collection.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Castelo de Sesimbra",
+        story:
+          "9th-century clifftop castle — chapel adorned with 10,000 hand-painted tiles from the 1500s.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Sesimbra",
+        story: "Fishing village by the Atlantic — quiet walk, fresh seafood, easy plates.",
+        imageTheme: "tiles-workshop",
+      },
+      {
+        label: "Santuario Nacional de Cristo Rei",
+        story: "Closing viewpoint over the Tagus — Lisbon, the bridge and the river in one frame.",
+        imageTheme: "tiles-workshop",
+      },
     ],
     highlights: [
       "Paint your own azulejo with a master tile-maker",
@@ -394,9 +576,7 @@ export const signatureTours: SignatureTour[] = [
       "Families with teenagers",
       "First-time visitors curious about Portuguese craft",
     ],
-    notes: [
-      "Tiles are fired after you leave; we ship them to your home address on request.",
-    ],
+    notes: ["Tiles are fired after you leave; we ship them to your home address on request."],
     img: imgTilesWorkshop,
     focal: "50% 50%",
     bookingUrl:
@@ -425,11 +605,42 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Foodies · couples · curious first-timers",
     pace: ["Cheese workshop", "Winery tasting", "Sesimbra"],
     stops: [
-      { label: "Mercado do Livramento", story: "Setúbal's celebrated market — bread, fruit, oysters and Moscatel before the workshop begins.", imageTheme: "azeitao-cheese" },
-      { label: "Quinta Velha", story: "Private Azeitão cheese workshop — hands deep in fresh sheep's milk curd, shape your own wheel.", imageTheme: "azeitao-cheese", image: imgAzeitaoWorkshop, focal: "50% 50%" },
-      { label: "Azeitao", story: "Lunch and free time in the picturesque wine village — toasts, regional bread, fresh cheese, jam and Moscatel.", imageTheme: "azeitao-cheese" },
-      { label: "Farm Catralvos", story: "Quinta de Catralvos — guided cellar visit and five glasses of wine at a small Setúbal producer.", imageTheme: "azeitao-cheese", image: imgAzeitaoWinery, focal: "50% 45%" },
-      { label: "Castelo de Sesimbra", story: "Last medieval castle still standing by the sea — Atlantic views over the fishing town below.", imageTheme: "azeitao-cheese", image: imgAzeitaoSesimbra, focal: "50% 55%" },
+      {
+        label: "Mercado do Livramento",
+        story:
+          "Setúbal's celebrated market — bread, fruit, oysters and Moscatel before the workshop begins.",
+        imageTheme: "azeitao-cheese",
+      },
+      {
+        label: "Quinta Velha",
+        story:
+          "Private Azeitão cheese workshop — hands deep in fresh sheep's milk curd, shape your own wheel.",
+        imageTheme: "azeitao-cheese",
+        image: imgAzeitaoWorkshop,
+        focal: "50% 50%",
+      },
+      {
+        label: "Azeitao",
+        story:
+          "Lunch and free time in the picturesque wine village — toasts, regional bread, fresh cheese, jam and Moscatel.",
+        imageTheme: "azeitao-cheese",
+      },
+      {
+        label: "Farm Catralvos",
+        story:
+          "Quinta de Catralvos — guided cellar visit and five glasses of wine at a small Setúbal producer.",
+        imageTheme: "azeitao-cheese",
+        image: imgAzeitaoWinery,
+        focal: "50% 45%",
+      },
+      {
+        label: "Castelo de Sesimbra",
+        story:
+          "Last medieval castle still standing by the sea — Atlantic views over the fishing town below.",
+        imageTheme: "azeitao-cheese",
+        image: imgAzeitaoSesimbra,
+        focal: "50% 55%",
+      },
     ],
     highlights: [
       "Make your own queijo de Azeitão to take home",
@@ -485,14 +696,59 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Couples · culture lovers · first-timers",
     pace: ["Sintra forests", "Cabo da Roca", "Cascais tasting"],
     stops: [
-      { label: "Sintra", story: "UNESCO town in the hills — fairytale palaces, mossy forests, narrow lanes.", imageTheme: "sintra-cascais", image: imgSintraEstates, focal: "50% 45%" },
-      { label: "Sintra National Palace", story: "Itinerary option — Moorish-Gothic palace with the famous twin chimneys at Sintra's heart.", imageTheme: "sintra-cascais" },
-      { label: "Park and National Palace of Pena", story: "Itinerary option — romantic 19th-century palace on the highest hill, in vivid colour.", imageTheme: "sintra-cascais" },
-      { label: "Azenhas do Mar", story: "Lunch break and free time — whitewashed houses cascading down cliffs above the Atlantic.", imageTheme: "sintra-cascais" },
-      { label: "Quinta da Regaleira", story: "Itinerary option — Gothic estate with mysterious tunnels, the initiation well and lush gardens.", imageTheme: "sintra-cascais" },
-      { label: "Adega Regional de Colares", story: "Historic winery in vines planted in Atlantic sand — tasting of the rare Colares grape.", imageTheme: "sintra-cascais" },
-      { label: "Cascais", story: "Coastal town with cobblestone streets, a quiet harbour and a glass of wine in an old courtyard.", imageTheme: "sintra-cascais", image: imgSintraCascais2, focal: "50% 55%" },
-      { label: "Cabo Da Roca", story: "Westernmost point of mainland Europe — dramatic cliffs, wind, the Atlantic stretched flat.", imageTheme: "sintra-cascais", image: imgSintraCabo, focal: "50% 50%" },
+      {
+        label: "Sintra",
+        story: "UNESCO town in the hills — fairytale palaces, mossy forests, narrow lanes.",
+        imageTheme: "sintra-cascais",
+        image: imgSintraEstates,
+        focal: "50% 45%",
+      },
+      {
+        label: "Sintra National Palace",
+        story:
+          "Itinerary option — Moorish-Gothic palace with the famous twin chimneys at Sintra's heart.",
+        imageTheme: "sintra-cascais",
+      },
+      {
+        label: "Park and National Palace of Pena",
+        story:
+          "Itinerary option — romantic 19th-century palace on the highest hill, in vivid colour.",
+        imageTheme: "sintra-cascais",
+      },
+      {
+        label: "Azenhas do Mar",
+        story:
+          "Lunch break and free time — whitewashed houses cascading down cliffs above the Atlantic.",
+        imageTheme: "sintra-cascais",
+      },
+      {
+        label: "Quinta da Regaleira",
+        story:
+          "Itinerary option — Gothic estate with mysterious tunnels, the initiation well and lush gardens.",
+        imageTheme: "sintra-cascais",
+      },
+      {
+        label: "Adega Regional de Colares",
+        story:
+          "Historic winery in vines planted in Atlantic sand — tasting of the rare Colares grape.",
+        imageTheme: "sintra-cascais",
+      },
+      {
+        label: "Cascais",
+        story:
+          "Coastal town with cobblestone streets, a quiet harbour and a glass of wine in an old courtyard.",
+        imageTheme: "sintra-cascais",
+        image: imgSintraCascais2,
+        focal: "50% 55%",
+      },
+      {
+        label: "Cabo Da Roca",
+        story:
+          "Westernmost point of mainland Europe — dramatic cliffs, wind, the Atlantic stretched flat.",
+        imageTheme: "sintra-cascais",
+        image: imgSintraCabo,
+        focal: "50% 50%",
+      },
     ],
     highlights: [
       "Quieter Sintra route — palaces without the queues",
@@ -515,9 +771,7 @@ export const signatureTours: SignatureTour[] = [
       "Culture lovers who hate tourist queues",
       "Travelers with limited time who want depth, not a rush",
     ],
-    notes: [
-      "Palace interior tickets are optional — your guide books them on request.",
-    ],
+    notes: ["Palace interior tickets are optional — your guide books them on request."],
     img: imgSintraCascaisHero,
     focal: "50% 45%",
     gallery: [imgSintraEstates, imgSintraCabo, imgSintraCascais2, imgSintraExtra],
@@ -547,14 +801,60 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Couples · slow travelers · style-led explorers",
     pace: ["Sado ferry", "Tróia ruins", "Comporta beach & lunch"],
     stops: [
-      { label: "Baia de Setubal — Sado ferry crossing", story: "Short scenic ferry over the Sado estuary — dolphins are sometimes spotted on the way across.", imageTheme: "troia-comporta", image: imgTroiaFerry, focal: "50% 45%" },
-      { label: "Roman Ruins of Troia", story: "One of Iberia's largest Roman fish-salting complexes — baths, tanks and 2,000-year-old structures by the sea.", imageTheme: "troia-comporta", image: imgTroiaRuins, focal: "50% 50%" },
-      { label: "Marina de Troia", story: "A brief stop where modern architecture meets the natural shoreline — Tróia's understated luxury.", imageTheme: "troia-comporta" },
-      { label: "Cais Palafitico do Porto da Carrasqueira", story: "Wooden fishing pier on stilts — still used by local fishermen, one of Europe's most photogenic structures.", imageTheme: "troia-comporta" },
-      { label: "Comporta", story: "Pine forests, rice paddies, white-and-blue villages — free time for a curated lunch recommendation.", imageTheme: "troia-comporta", image: imgTroiaBeach, focal: "50% 60%" },
-      { label: "Herdade Da Comporta", story: "Guided tasting at the region's iconic winery — sandy soils and Atlantic breeze in every glass.", imageTheme: "troia-comporta" },
-      { label: "Comporta Beach", story: "Endless wild Atlantic sand and untouched dunes — a sense of space hard to find in Europe.", imageTheme: "troia-comporta" },
-      { label: "Praia do Carvalhal", story: "Another stunning coastal stop — natural beauty, relaxed atmosphere, a perfect closing walk.", imageTheme: "troia-comporta" },
+      {
+        label: "Baia de Setubal — Sado ferry crossing",
+        story:
+          "Short scenic ferry over the Sado estuary — dolphins are sometimes spotted on the way across.",
+        imageTheme: "troia-comporta",
+        image: imgTroiaFerry,
+        focal: "50% 45%",
+      },
+      {
+        label: "Roman Ruins of Troia",
+        story:
+          "One of Iberia's largest Roman fish-salting complexes — baths, tanks and 2,000-year-old structures by the sea.",
+        imageTheme: "troia-comporta",
+        image: imgTroiaRuins,
+        focal: "50% 50%",
+      },
+      {
+        label: "Marina de Troia",
+        story:
+          "A brief stop where modern architecture meets the natural shoreline — Tróia's understated luxury.",
+        imageTheme: "troia-comporta",
+      },
+      {
+        label: "Cais Palafitico do Porto da Carrasqueira",
+        story:
+          "Wooden fishing pier on stilts — still used by local fishermen, one of Europe's most photogenic structures.",
+        imageTheme: "troia-comporta",
+      },
+      {
+        label: "Comporta",
+        story:
+          "Pine forests, rice paddies, white-and-blue villages — free time for a curated lunch recommendation.",
+        imageTheme: "troia-comporta",
+        image: imgTroiaBeach,
+        focal: "50% 60%",
+      },
+      {
+        label: "Herdade Da Comporta",
+        story:
+          "Guided tasting at the region's iconic winery — sandy soils and Atlantic breeze in every glass.",
+        imageTheme: "troia-comporta",
+      },
+      {
+        label: "Comporta Beach",
+        story:
+          "Endless wild Atlantic sand and untouched dunes — a sense of space hard to find in Europe.",
+        imageTheme: "troia-comporta",
+      },
+      {
+        label: "Praia do Carvalhal",
+        story:
+          "Another stunning coastal stop — natural beauty, relaxed atmosphere, a perfect closing walk.",
+        imageTheme: "troia-comporta",
+      },
     ],
     highlights: [
       "Ferry crossing of the Sado estuary (dolphins often spotted)",
@@ -585,8 +885,7 @@ export const signatureTours: SignatureTour[] = [
     img: imgTroiaComportaHero,
     focal: "50% 50%",
     gallery: [imgTroiaFerry, imgTroiaRuins, imgTroiaBeach, imgTroiaExtra],
-    bookingUrl:
-      "https://yesexperiences.pt/tour/private-troia-comporta-tour-from-lisbon/",
+    bookingUrl: "https://yesexperiences.pt/tour/private-troia-comporta-tour-from-lisbon/",
     seed: {
       region: "alentejo",
       duration: "fullday",
@@ -611,15 +910,60 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "History buffs · wine lovers · couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
-      { label: "Evora", story: "UNESCO city — Roman walls, narrow whitewashed lanes, two thousand years held together quietly.", imageTheme: "evora-alentejo" },
-      { label: "Templo Romano de Evora (Templo de Diana)", story: "1st-century Roman temple at the heart of Évora — surprisingly intact, free-standing in the old forum.", imageTheme: "evora-alentejo" },
-      { label: "Chapel of Bones", story: "Strange, quiet, unforgettable — the Franciscan chapel built from bones to remember life's brevity.", imageTheme: "evora-alentejo" },
-      { label: "Joao Portugal Ramos Wines", story: "Itinerary option — modern winemaking that honours traditional Alentejo grape varieties.", imageTheme: "evora-alentejo" },
-      { label: "Enoturismo Cartuxa", story: "Itinerary option — Adega Cartuxa, next to the 16th-century Carthusian monastery, Eugénio de Almeida Foundation.", imageTheme: "evora-alentejo" },
-      { label: "Pera-grave - Qta S. Jose De Peramanca", story: "Itinerary option — one of Portugal's most prestigious estates, famed for its powerful Alentejo reds.", imageTheme: "evora-alentejo" },
-      { label: "Ervideira", story: "Itinerary option — secular family winery dating to 1880, vineyards across Vidigueira and Reguengos.", imageTheme: "evora-alentejo" },
-      { label: "Herdade do Esporao", story: "Itinerary option — landmark Reguengos estate producing balanced, age-worthy Alentejo wines.", imageTheme: "evora-alentejo" },
-      { label: "Corticarte - Arte em Cortica", story: "Visit a small cork producer — see harvest to finished product, then pick an authentic Portuguese souvenir.", imageTheme: "evora-alentejo" },
+      {
+        label: "Evora",
+        story:
+          "UNESCO city — Roman walls, narrow whitewashed lanes, two thousand years held together quietly.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Templo Romano de Evora (Templo de Diana)",
+        story:
+          "1st-century Roman temple at the heart of Évora — surprisingly intact, free-standing in the old forum.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Chapel of Bones",
+        story:
+          "Strange, quiet, unforgettable — the Franciscan chapel built from bones to remember life's brevity.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Joao Portugal Ramos Wines",
+        story:
+          "Itinerary option — modern winemaking that honours traditional Alentejo grape varieties.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Enoturismo Cartuxa",
+        story:
+          "Itinerary option — Adega Cartuxa, next to the 16th-century Carthusian monastery, Eugénio de Almeida Foundation.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Pera-grave - Qta S. Jose De Peramanca",
+        story:
+          "Itinerary option — one of Portugal's most prestigious estates, famed for its powerful Alentejo reds.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Ervideira",
+        story:
+          "Itinerary option — secular family winery dating to 1880, vineyards across Vidigueira and Reguengos.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Herdade do Esporao",
+        story:
+          "Itinerary option — landmark Reguengos estate producing balanced, age-worthy Alentejo wines.",
+        imageTheme: "evora-alentejo",
+      },
+      {
+        label: "Corticarte - Arte em Cortica",
+        story:
+          "Visit a small cork producer — see harvest to finished product, then pick an authentic Portuguese souvenir.",
+        imageTheme: "evora-alentejo",
+      },
     ],
     highlights: [
       "Walking tour of UNESCO Évora",
@@ -642,9 +986,7 @@ export const signatureTours: SignatureTour[] = [
       "Couples wanting a quieter, slower day",
       "Travelers chasing the next great Portuguese red",
     ],
-    notes: [
-      "It's a long day — pickup typically at 8:00, return after 19:00. Worth it.",
-    ],
+    notes: ["It's a long day — pickup typically at 8:00, return after 19:00. Worth it."],
     img: imgEvoraAlentejo,
     focal: "50% 50%",
     bookingUrl:
@@ -673,11 +1015,42 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "History lovers · couples · culture seekers",
     pace: ["Convento de Cristo", "Coimbra University", "Old town walk"],
     stops: [
-      { label: "Tomar", story: "Templar town in central Portugal — medieval streets and a UNESCO-listed convent at its heart.", imageTheme: "tomar-coimbra" },
-      { label: "Convento de Cristo", story: "Templar fortress — round church, manueline window, layers of orders that shaped the Discoveries.", imageTheme: "tomar-coimbra", image: imgTomarConvento, focal: "50% 45%" },
-      { label: "Coimbra", story: "One of Europe's oldest university cities — steep lanes, fado bars, the Mondego rolling below.", imageTheme: "tomar-coimbra", image: imgTomarMondego, focal: "50% 55%" },
-      { label: "Universita Di Coimbra", story: "Founded in 1290 — UNESCO-listed, with the Royal Palace of Alcáçova and the law students' black capes.", imageTheme: "tomar-coimbra", image: imgTomarCoimbra2, focal: "50% 45%" },
-      { label: "Biblioteca Joanina", story: "Baroque library inside the university — rare manuscripts and the colony of bats that protect the books.", imageTheme: "tomar-coimbra" },
+      {
+        label: "Tomar",
+        story:
+          "Templar town in central Portugal — medieval streets and a UNESCO-listed convent at its heart.",
+        imageTheme: "tomar-coimbra",
+      },
+      {
+        label: "Convento de Cristo",
+        story:
+          "Templar fortress — round church, manueline window, layers of orders that shaped the Discoveries.",
+        imageTheme: "tomar-coimbra",
+        image: imgTomarConvento,
+        focal: "50% 45%",
+      },
+      {
+        label: "Coimbra",
+        story:
+          "One of Europe's oldest university cities — steep lanes, fado bars, the Mondego rolling below.",
+        imageTheme: "tomar-coimbra",
+        image: imgTomarMondego,
+        focal: "50% 55%",
+      },
+      {
+        label: "Universita Di Coimbra",
+        story:
+          "Founded in 1290 — UNESCO-listed, with the Royal Palace of Alcáçova and the law students' black capes.",
+        imageTheme: "tomar-coimbra",
+        image: imgTomarCoimbra2,
+        focal: "50% 45%",
+      },
+      {
+        label: "Biblioteca Joanina",
+        story:
+          "Baroque library inside the university — rare manuscripts and the colony of bats that protect the books.",
+        imageTheme: "tomar-coimbra",
+      },
     ],
     highlights: [
       "Private visit to Tomar's Templar convent",
@@ -700,9 +1073,7 @@ export const signatureTours: SignatureTour[] = [
       "Couples on a longer Portugal trip",
       "Travelers who already know Sintra and Évora",
     ],
-    notes: [
-      "Library entry has timed slots — your guide pre-books on the day.",
-    ],
+    notes: ["Library entry has timed slots — your guide pre-books on the day."],
     img: imgTomarCoimbraHero,
     focal: "50% 45%",
     gallery: [imgTomarConvento, imgTomarCoimbra2, imgTomarMondego, imgTomarExtra],
@@ -732,11 +1103,42 @@ export const signatureTours: SignatureTour[] = [
     fitsBest: "Pilgrims · couples · families",
     pace: ["Fátima sanctuary", "Nazaré cliffs", "Óbidos & Ginjinha"],
     stops: [
-      { label: "Fatima", story: "Sanctuary of Our Lady of Fátima — Basilica of the Rosary, Chapel of the Apparitions, candles and quiet.", imageTheme: "fatima-nazare-obidos", image: imgFatimaSanctuary, focal: "50% 45%" },
-      { label: "Nazare", story: "Atlantic fishing town and big-wave capital — traditional lunch, the Sítio viewpoint, the lighthouse over the canyon.", imageTheme: "fatima-nazare-obidos", image: imgFatimaNazare, focal: "50% 50%" },
-      { label: "Praia da Nazare", story: "The town's vast crescent beach — fish drying in the sun, the Atlantic stretched flat.", imageTheme: "fatima-nazare-obidos" },
-      { label: "Obidos", story: "Walk inside the medieval walls — narrow lanes, whitewashed houses, ginjinha in a chocolate cup.", imageTheme: "fatima-nazare-obidos", image: imgFatimaObidos, focal: "50% 45%" },
-      { label: "Castelo de Obidos", story: "Roman foundations and Moorish layout — a royal palace from 1148 with towers added in 1375.", imageTheme: "fatima-nazare-obidos" },
+      {
+        label: "Fatima",
+        story:
+          "Sanctuary of Our Lady of Fátima — Basilica of the Rosary, Chapel of the Apparitions, candles and quiet.",
+        imageTheme: "fatima-nazare-obidos",
+        image: imgFatimaSanctuary,
+        focal: "50% 45%",
+      },
+      {
+        label: "Nazare",
+        story:
+          "Atlantic fishing town and big-wave capital — traditional lunch, the Sítio viewpoint, the lighthouse over the canyon.",
+        imageTheme: "fatima-nazare-obidos",
+        image: imgFatimaNazare,
+        focal: "50% 50%",
+      },
+      {
+        label: "Praia da Nazare",
+        story:
+          "The town's vast crescent beach — fish drying in the sun, the Atlantic stretched flat.",
+        imageTheme: "fatima-nazare-obidos",
+      },
+      {
+        label: "Obidos",
+        story:
+          "Walk inside the medieval walls — narrow lanes, whitewashed houses, ginjinha in a chocolate cup.",
+        imageTheme: "fatima-nazare-obidos",
+        image: imgFatimaObidos,
+        focal: "50% 45%",
+      },
+      {
+        label: "Castelo de Obidos",
+        story:
+          "Roman foundations and Moorish layout — a royal palace from 1148 with towers added in 1375.",
+        imageTheme: "fatima-nazare-obidos",
+      },
     ],
     highlights: [
       "Time for reflection at the Fátima sanctuary",
@@ -760,9 +1162,7 @@ export const signatureTours: SignatureTour[] = [
       "Families with mixed interests",
       "First-time visitors looking for variety in one day",
     ],
-    notes: [
-      "Big waves at Nazaré peak in winter — but the cliff view is stunning year-round.",
-    ],
+    notes: ["Big waves at Nazaré peak in winter — but the cliff view is stunning year-round."],
     img: imgFatimaNazareObidosHero,
     focal: "50% 45%",
     gallery: [imgFatimaSanctuary, imgFatimaNazare, imgFatimaObidos, imgFatimaExtra],

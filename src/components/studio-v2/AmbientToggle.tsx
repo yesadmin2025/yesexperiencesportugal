@@ -22,11 +22,16 @@ export function AmbientToggle() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) { setSupported(false); return; }
+    if (reduced) {
+      setSupported(false);
+      return;
+    }
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored === "on") setOn(true);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   // Start / stop the audio graph.
@@ -34,37 +39,57 @@ export function AmbientToggle() {
     if (!supported) return;
     if (!on) {
       const n = nodesRef.current;
-      try { n.gain?.gain.linearRampToValueAtTime(0, (ctxRef.current?.currentTime ?? 0) + 0.4); } catch { /* */ }
+      try {
+        n.gain?.gain.linearRampToValueAtTime(0, (ctxRef.current?.currentTime ?? 0) + 0.4);
+      } catch {
+        /* */
+      }
       window.setTimeout(() => {
-        try { n.src?.stop(); } catch { /* */ }
-        try { ctxRef.current?.close(); } catch { /* */ }
+        try {
+          n.src?.stop();
+        } catch {
+          /* */
+        }
+        try {
+          ctxRef.current?.close();
+        } catch {
+          /* */
+        }
         ctxRef.current = null;
         nodesRef.current = {};
       }, 500);
       return;
     }
     try {
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!Ctx) { setSupported(false); return; }
+      const Ctx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!Ctx) {
+        setSupported(false);
+        return;
+      }
       const ctx = new Ctx();
       ctxRef.current = ctx;
       // 4s pink-ish noise buffer, looped, low-passed → reads as distant surf.
       const bufLen = ctx.sampleRate * 4;
       const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
       const ch = buf.getChannelData(0);
-      let b0 = 0, b1 = 0, b2 = 0;
+      let b0 = 0,
+        b1 = 0,
+        b2 = 0;
       for (let i = 0; i < bufLen; i++) {
         const white = Math.random() * 2 - 1;
         b0 = 0.99 * b0 + 0.05 * white;
-        b1 = 0.96 * b1 + 0.10 * white;
-        b2 = 0.90 * b2 + 0.20 * white;
+        b1 = 0.96 * b1 + 0.1 * white;
+        b2 = 0.9 * b2 + 0.2 * white;
         ch[i] = (b0 + b1 + b2) * 0.18;
       }
       const src = ctx.createBufferSource();
       src.buffer = buf;
       src.loop = true;
       const lp = ctx.createBiquadFilter();
-      lp.type = "lowpass"; lp.frequency.value = 520;
+      lp.type = "lowpass";
+      lp.frequency.value = 520;
       // Slow LFO on gain — the breath of the swell.
       const gain = ctx.createGain();
       gain.gain.value = 0;
@@ -82,8 +107,16 @@ export function AmbientToggle() {
       setSupported(false);
     }
     return () => {
-      try { nodesRef.current.src?.stop(); } catch { /* */ }
-      try { ctxRef.current?.close(); } catch { /* */ }
+      try {
+        nodesRef.current.src?.stop();
+      } catch {
+        /* */
+      }
+      try {
+        ctxRef.current?.close();
+      } catch {
+        /* */
+      }
       ctxRef.current = null;
       nodesRef.current = {};
     };
@@ -94,7 +127,11 @@ export function AmbientToggle() {
   const toggle = () => {
     const next = !on;
     setOn(next);
-    try { window.localStorage.setItem(STORAGE_KEY, next ? "on" : "off"); } catch { /* */ }
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next ? "on" : "off");
+    } catch {
+      /* */
+    }
   };
 
   return (

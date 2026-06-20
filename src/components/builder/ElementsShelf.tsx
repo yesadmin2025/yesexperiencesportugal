@@ -24,9 +24,7 @@ export function ElementsShelf({ selected, onToggle }: Props) {
         >
           Add to your day
         </span>
-        <span className="text-[11px] text-[color:var(--charcoal)]/50">
-          Concierge confirms
-        </span>
+        <span className="text-[11px] text-[color:var(--charcoal)]/50">Concierge confirms</span>
       </div>
 
       {/* Mobile: snap-scroll rail. lg: 3-col grid. */}
@@ -41,10 +39,7 @@ export function ElementsShelf({ selected, onToggle }: Props) {
           const Icon = el.icon;
           const active = selected.includes(el.key);
           return (
-            <li
-              key={el.key}
-              className="snap-start shrink-0 w-[68%] sm:w-[44%] lg:w-auto"
-            >
+            <li key={el.key} className="snap-start shrink-0 w-[68%] sm:w-[44%] lg:w-auto">
               <button
                 type="button"
                 onClick={() => onToggle(el.key)}
@@ -62,7 +57,9 @@ export function ElementsShelf({ selected, onToggle }: Props) {
                   <Icon
                     size={15}
                     strokeWidth={1.6}
-                    className={active ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"}
+                    className={
+                      active ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"
+                    }
                   />
                   {active && (
                     <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--gold)] text-[color:var(--charcoal)]">

@@ -63,12 +63,12 @@ export function buildCacheKey(input: {
 }): string {
   const u = new URL(input.upstream.toString());
   u.hostname = u.hostname.toLowerCase();
-  const w = input.width && Number.isFinite(input.width)
-    ? quantize(Math.round(input.width), W_BUCKETS)
-    : 0;
-  const q = input.quality && Number.isFinite(input.quality)
-    ? quantize(Math.round(input.quality), Q_BUCKETS)
-    : 0;
+  const w =
+    input.width && Number.isFinite(input.width) ? quantize(Math.round(input.width), W_BUCKETS) : 0;
+  const q =
+    input.quality && Number.isFinite(input.quality)
+      ? quantize(Math.round(input.quality), Q_BUCKETS)
+      : 0;
   const v = pickAcceptVariant(input.accept);
   return `img|${u.toString()}|w=${w}|q=${q}|v=${v}`;
 }
@@ -97,8 +97,7 @@ export const Route = createFileRoute("/api/img")({
 
         // Forward the browser's modern format preferences so upstream/Cloudflare
         // can serve AVIF or WebP when available.
-        const accept =
-          request.headers.get("Accept") ?? "image/avif,image/webp,image/*,*/*;q=0.8";
+        const accept = request.headers.get("Accept") ?? "image/avif,image/webp,image/*,*/*;q=0.8";
 
         const widthParam = url.searchParams.get("w");
         const qualityParam = url.searchParams.get("q");

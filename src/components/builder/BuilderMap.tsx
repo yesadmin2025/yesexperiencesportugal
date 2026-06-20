@@ -33,12 +33,47 @@ interface Props {
 }
 
 const CHIP_I18N = {
-  pt: { live: "a tomar forma", stop: "momento", stops: "momentos", liveStatic: "rota ao vivo", stopStatic: "paragem", stopsStatic: "paragens", mapAria: "Mapa do percurso", outOfRange: "fora de alcance" },
-  en: { live: "shaping", stop: "moment", stops: "moments", liveStatic: "live route", stopStatic: "stop", stopsStatic: "stops", mapAria: "Live route map", outOfRange: "out of range" },
-  es: { live: "tomando forma", stop: "momento", stops: "momentos", liveStatic: "ruta en vivo", stopStatic: "parada", stopsStatic: "paradas", mapAria: "Mapa del recorrido", outOfRange: "fuera de alcance" },
-  fr: { live: "en formation", stop: "moment", stops: "moments", liveStatic: "itinéraire en direct", stopStatic: "arrêt", stopsStatic: "arrêts", mapAria: "Carte de l'itinéraire", outOfRange: "hors de portée" },
+  pt: {
+    live: "a tomar forma",
+    stop: "momento",
+    stops: "momentos",
+    liveStatic: "rota ao vivo",
+    stopStatic: "paragem",
+    stopsStatic: "paragens",
+    mapAria: "Mapa do percurso",
+    outOfRange: "fora de alcance",
+  },
+  en: {
+    live: "shaping",
+    stop: "moment",
+    stops: "moments",
+    liveStatic: "live route",
+    stopStatic: "stop",
+    stopsStatic: "stops",
+    mapAria: "Live route map",
+    outOfRange: "out of range",
+  },
+  es: {
+    live: "tomando forma",
+    stop: "momento",
+    stops: "momentos",
+    liveStatic: "ruta en vivo",
+    stopStatic: "parada",
+    stopsStatic: "paradas",
+    mapAria: "Mapa del recorrido",
+    outOfRange: "fuera de alcance",
+  },
+  fr: {
+    live: "en formation",
+    stop: "moment",
+    stops: "moments",
+    liveStatic: "itinéraire en direct",
+    stopStatic: "arrêt",
+    stopsStatic: "arrêts",
+    mapAria: "Carte de l'itinéraire",
+    outOfRange: "hors de portée",
+  },
 } as const;
-
 
 /**
  * Premium Leaflet route map — branded numbered pins, animated gold polyline,
@@ -51,7 +86,17 @@ const CHIP_I18N = {
 import { getMapZoomStore } from "@/lib/mapZoomMemory";
 const zoomByRegion = getMapZoomStore("builder-map");
 
-export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = false, candidates, onCandidateClick, activeStopIndex = null, chrome = true, locale = "en" }: Props) {
+export function BuilderMap({
+  stops,
+  regionCenter,
+  regionKey,
+  emotionalMode = false,
+  candidates,
+  onCandidateClick,
+  activeStopIndex = null,
+  chrome = true,
+  locale = "en",
+}: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
@@ -76,14 +121,11 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
       center: [38.72, -9.14],
       zoom: 9,
     });
-    L.tileLayer(
-      "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png",
-      {
-        attribution: '© OpenStreetMap contributors © CARTO',
-        subdomains: "abcd",
-        maxZoom: 19,
-      },
-    ).addTo(map);
+    L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: "© OpenStreetMap contributors © CARTO",
+      subdomains: "abcd",
+      maxZoom: 19,
+    }).addTo(map);
     L.control.zoom({ position: "bottomright" }).addTo(map);
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
@@ -157,10 +199,15 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         for (const c of candidates) {
           if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
           const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
-          m.bindTooltip(c.eligible ? c.label : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`, {
-            direction: "top",
-            offset: [0, -10],
-          });
+          m.bindTooltip(
+            c.eligible
+              ? c.label
+              : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`,
+            {
+              direction: "top",
+              offset: [0, -10],
+            },
+          );
           if (c.eligible && onCandidateClick) m.on("click", () => onCandidateClick(c.key));
           layer.addLayer(m);
           candPts.push(L.latLng(c.lat, c.lng));
@@ -176,9 +223,7 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
       return;
     }
 
-    const validStops = stops.filter(
-      (s) => Number.isFinite(s.lat) && Number.isFinite(s.lng),
-    );
+    const validStops = stops.filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lng));
     if (!validStops.length) return;
     const points = validStops.map((s) => L.latLng(s.lat, s.lng));
     const cs = getComputedStyle(document.documentElement);
@@ -206,7 +251,10 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
     stopPointsRef.current = points;
     points.forEach((p, i) => {
       const m = L.marker(p, { icon: pin(i + 1, false) });
-      m.bindTooltip(emotionalMode ? `${mergeLocale(CHIP_I18N, locale).stop} ${i + 1}` : validStops[i].label, { direction: "top", offset: [0, -28] });
+      m.bindTooltip(
+        emotionalMode ? `${mergeLocale(CHIP_I18N, locale).stop} ${i + 1}` : validStops[i].label,
+        { direction: "top", offset: [0, -28] },
+      );
       layer.addLayer(m);
       stopMarkersRef.current.push(m);
     });
@@ -257,7 +305,9 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
         if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue;
         const m = L.marker([c.lat, c.lng], { icon: candidateIcon(c.eligible) });
         m.bindTooltip(
-          c.eligible ? c.label : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`,
+          c.eligible
+            ? c.label
+            : `${c.label} — ${c.reason ?? mergeLocale(CHIP_I18N, locale).outOfRange}`,
           { direction: "top", offset: [0, -10] },
         );
         if (c.eligible && onCandidateClick) {
@@ -324,29 +374,34 @@ export function BuilderMap({ stops, regionCenter, regionKey, emotionalMode = fal
 
   return (
     <div className="relative h-full w-full">
-      {chrome && (() => {
-        const tr = mergeLocale(CHIP_I18N, locale);
-        const n = stops.length;
-        const liveLabel = emotionalMode ? tr.live : tr.liveStatic;
-        const stopWord = emotionalMode
-          ? (n === 1 ? tr.stop : tr.stops)
-          : (n === 1 ? tr.stopStatic : tr.stopsStatic);
-        return (
-          <>
-            <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
-              <span className="relative inline-flex h-1.5 w-1.5">
-                <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
-                <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
-              </span>
-              {liveLabel}
-            </div>
-            <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
-              <MapPin size={11} aria-hidden="true" />
-              {n} {stopWord}
-            </div>
-          </>
-        );
-      })()}
+      {chrome &&
+        (() => {
+          const tr = mergeLocale(CHIP_I18N, locale);
+          const n = stops.length;
+          const liveLabel = emotionalMode ? tr.live : tr.liveStatic;
+          const stopWord = emotionalMode
+            ? n === 1
+              ? tr.stop
+              : tr.stops
+            : n === 1
+              ? tr.stopStatic
+              : tr.stopsStatic;
+          return (
+            <>
+              <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
+                <span className="relative inline-flex h-1.5 w-1.5">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
+                  <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+                </span>
+                {liveLabel}
+              </div>
+              <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
+                <MapPin size={11} aria-hidden="true" />
+                {n} {stopWord}
+              </div>
+            </>
+          );
+        })()}
       <div
         ref={ref}
         className="h-full w-full bg-[color:var(--sand)]"

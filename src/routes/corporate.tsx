@@ -24,13 +24,13 @@ export const Route = createFileRoute("/corporate")({
           "Private group days, designed end to end by a local team — never the generic formula.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
-      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      {
+        property: "twitter:image",
+        content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
+      },
       { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/corporate" },
-    ],
-
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/corporate" }],
   }),
   component: CorporatePage,
 });
@@ -55,20 +55,16 @@ const BLOCKS = [
       "Space to think, eat well, and feel the place — without the conference-hotel feeling.",
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
-    local:
-      "Coordinated by a local host who knows how each piece of the day connects.",
+    local: "Coordinated by a local host who knows how each piece of the day connects.",
     image: imgSintraEstates,
     icon: Compass,
   },
   {
     eyebrow: "Client Hosting & VIP",
     title: "Quiet, considered, fully discreet.",
-    emotional:
-      "When it matters who's in the room and how the day feels — we shape it accordingly.",
-    practical:
-      "Small groups · private settings · careful pacing · NDAs welcome.",
-    local:
-      "Planned end to end with our local team — every detail confirmed before the day.",
+    emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
+    practical: "Small groups · private settings · careful pacing · NDAs welcome.",
+    local: "Planned end to end with our local team — every detail confirmed before the day.",
     image: imgFatimaNazare,
     icon: ClipboardCheck,
   },
@@ -82,17 +78,17 @@ function CorporatePage() {
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>For Teams &amp; Private Groups</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private group days,{" "}
-            <SectionTitle.Em>without the generic formula.</SectionTitle.Em>
+            Private group days, <SectionTitle.Em>without the generic formula.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            For teams, incentives and private groups, we combine local
-            experiences, timing, transport and logistics into a day that feels{" "}
-            <span className="kw">effortless</span>.
+            For teams, incentives and private groups, we combine local experiences, timing,
+            transport and logistics into a day that feels <span className="kw">effortless</span>.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/contact" variant="primary">Plan a Group Experience</CtaButton>
+            <CtaButton to="/contact" variant="primary">
+              Plan a Group Experience
+            </CtaButton>
             <CtaButton
               to="/contact"
               variant="ghost"
@@ -154,12 +150,13 @@ function CorporatePage() {
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            Real driving times, real venues, real partners. We shape the
-            proposal around what your team actually needs — never a copy-paste
-            template.
+            Real driving times, real venues, real partners. We shape the proposal around what your
+            team actually needs — never a copy-paste template.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/contact" variant="primary">Request a Proposal</CtaButton>
+            <CtaButton to="/contact" variant="primary">
+              Request a Proposal
+            </CtaButton>
             <CtaButton
               to="/contact"
               variant="ghost"

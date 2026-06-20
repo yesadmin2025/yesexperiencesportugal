@@ -46,9 +46,7 @@ async function probe(page: Page, durationMs: number): Promise<Sample[]> {
       const tick = () => {
         const now = performance.now() - t0;
         for (let i = 0; i < N; i++) {
-          const p = document.querySelector(
-            `[data-hero-phrase-index="${i}"]`,
-          ) as HTMLElement | null;
+          const p = document.querySelector(`[data-hero-phrase-index="${i}"]`) as HTMLElement | null;
           const v = document.querySelector(
             `video[data-hero-phrase-video="${i}"]`,
           ) as HTMLElement | null;
@@ -101,15 +99,13 @@ for (const vp of VIEWPORTS) {
 
       const rows = samples.map((s) => {
         const delta =
-          s.tPhrase != null && s.tVideo != null
-            ? Math.round(s.tVideo - s.tPhrase)
-            : null;
+          s.tPhrase != null && s.tVideo != null ? Math.round(s.tVideo - s.tPhrase) : null;
         const fadeDelta = Math.abs(s.txFadeMs - s.vFadeMs);
         return { ...s, deltaMs: delta, fadeDeltaMs: fadeDelta };
       });
 
       // Compact CI log.
-      // eslint-disable-next-line no-console
+
       console.log(
         `[hero-phrase-video-sync] ${vp.name}\n` +
           rows

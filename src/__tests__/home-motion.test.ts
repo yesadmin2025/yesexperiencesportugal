@@ -112,7 +112,17 @@ describe("home-motion controller", () => {
     const legacy = document.createElement("div");
     legacy.className = "reveal";
     legacy.getBoundingClientRect = () =>
-      ({ top: 100, bottom: 300, left: 0, right: 0, width: 0, height: 200, x: 0, y: 100, toJSON: () => ({}) }) as DOMRect;
+      ({
+        top: 100,
+        bottom: 300,
+        left: 0,
+        right: 0,
+        width: 0,
+        height: 200,
+        x: 0,
+        y: 100,
+        toJSON: () => ({}),
+      }) as DOMRect;
     document.body.appendChild(legacy);
     dispose = startHomeMotion();
     await flushRaf();

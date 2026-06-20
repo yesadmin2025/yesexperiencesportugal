@@ -7,7 +7,6 @@ import { Logo } from "@/components/Logo";
  * social handles yet). Cols: Experiences · Occasions · Company.
  */
 
-
 export function Footer() {
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
@@ -45,8 +44,8 @@ export function Footer() {
             className="mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
             style={{ fontWeight: 400, letterSpacing: "0.005em" }}
           >
-            Private Portugal experiences, designed with you and confirmed in minutes —
-            700+ five-star reviews, real local hosts, instant booking.
+            Private Portugal experiences, designed with you and confirmed in minutes — 700+
+            five-star reviews, real local hosts, instant booking.
           </p>
         </div>
 
@@ -78,7 +77,6 @@ export function Footer() {
               { to: "/contact", label: "Contact" },
             ]}
           />
-
         </div>
 
         {/* Bottom bar — copyright + discreet legal links. Single quiet line. */}
@@ -98,7 +96,9 @@ export function Footer() {
               >
                 Terms
               </Link>
-              <span aria-hidden="true" className="text-[color:var(--ivory)]/55">·</span>
+              <span aria-hidden="true" className="text-[color:var(--ivory)]/55">
+                ·
+              </span>
               <Link
                 to="/privacy"
                 className="text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
@@ -125,7 +125,10 @@ function FooterCol({ title, links }: { title: string; links: { to: string; label
       >
         {title}
       </h4>
-      <ul className="space-y-3 font-[family-name:var(--font-sans)] text-[14px]" style={{ fontWeight: 400 }}>
+      <ul
+        className="space-y-3 font-[family-name:var(--font-sans)] text-[14px]"
+        style={{ fontWeight: 400 }}
+      >
         {links.map((l) => (
           <li key={l.to}>
             <Link

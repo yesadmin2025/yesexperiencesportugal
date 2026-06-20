@@ -3,7 +3,12 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { composeDay, pickRegion, type ComposedDay, type ComposerProfile } from "@/lib/drift/composer";
+import {
+  composeDay,
+  pickRegion,
+  type ComposedDay,
+  type ComposerProfile,
+} from "@/lib/drift/composer";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { recordDriftBehaviorEvent, recordDriftEvent } from "@/lib/drift/telemetry";
 import { revealJourney } from "@/lib/driftEngine.functions";
@@ -30,12 +35,15 @@ import { RevealInvestment } from "./RevealInvestment";
 import { SmartRecommendations } from "./SmartRecommendations";
 import { useDriftBehavior, type Mood as SceneMood } from "@/lib/drift/behavior";
 import { derivePrediction, type TonalRegister } from "@/lib/drift/predict";
-import { snapshotAdaptation, diffAdaptation, type AdaptationSnapshot } from "@/lib/drift/adaptation";
+import {
+  snapshotAdaptation,
+  diffAdaptation,
+  type AdaptationSnapshot,
+} from "@/lib/drift/adaptation";
 import { shouldShowBuildPreview } from "@/lib/drift/build-preview-visibility";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useStudioVariant } from "@/hooks/useStudioVariant";
 import { useDriftLocale, t as tt, tName, type DriftLocale } from "@/lib/drift/i18n";
-
 
 import wineHandImg from "@/assets/drift/wine-pour.jpg";
 import sharedTableImg from "@/assets/drift/shared-table.jpg";
@@ -47,9 +55,7 @@ import quietChapelImg from "@/assets/drift/quiet-chapel.jpg";
 import linenBreezeImg from "@/assets/drift/linen-breeze.jpg";
 
 // Lazy-load Leaflet-based map to avoid SSR window crashes.
-const BuilderMap = lazy(() =>
-  import("../BuilderMap").then((m) => ({ default: m.BuilderMap })),
-);
+const BuilderMap = lazy(() => import("../BuilderMap").then((m) => ({ default: m.BuilderMap })));
 
 /**
  * StudioDrift — an emotionally intelligent discovery engine for real
@@ -254,11 +260,11 @@ const SCENES: Record<string, Scene> = {
  *  visual when the predictive engine's top mood matches the option's mood.
  *  Keeps the imprint mapping intact (we only swap the visible source). */
 const MOOD_STILLS: Partial<Record<SceneMood, Scene[]>> = {
-  intimacy:    [SCENES.candleBread, SCENES.sharedTable],
-  ritual:      [SCENES.wineHand, SCENES.candleBread],
-  slowness:    [SCENES.silentVineyard, SCENES.quietChapel, SCENES.linenBreeze],
-  arrival:     [SCENES.dawnDouro],
-  discovery:   [SCENES.atlanticHands],
+  intimacy: [SCENES.candleBread, SCENES.sharedTable],
+  ritual: [SCENES.wineHand, SCENES.candleBread],
+  slowness: [SCENES.silentVineyard, SCENES.quietChapel, SCENES.linenBreeze],
+  arrival: [SCENES.dawnDouro],
+  discovery: [SCENES.atlanticHands],
   celebration: [SCENES.sharedTable],
 };
 
@@ -273,17 +279,24 @@ function pickStillForMood(mood: SceneMood | undefined, seed: string): Scene | nu
 }
 
 const MOTIF_TINT: Record<Motif, string> = {
-  amber:   "radial-gradient(ellipse at 50% 78%, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 62%)",
-  candle:  "radial-gradient(ellipse at 50% 82%, color-mix(in oklab, var(--gold-soft, var(--gold)) 26%, transparent) 0%, transparent 58%)",
-  salt:    "radial-gradient(ellipse at 50% 30%, color-mix(in oklab, var(--ivory) 14%, transparent) 0%, transparent 65%)",
-  linen:   "radial-gradient(ellipse at 50% 70%, color-mix(in oklab, var(--ivory) 10%, transparent) 0%, transparent 60%)",
-  stone:   "radial-gradient(ellipse at 30% 60%, color-mix(in oklab, var(--teal) 14%, transparent) 0%, transparent 65%)",
-  rain:    "radial-gradient(ellipse at 60% 45%, color-mix(in oklab, var(--teal-2, var(--teal)) 16%, transparent) 0%, transparent 65%)",
-  vine:    "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--gold) 18%, transparent) 0%, transparent 58%)",
-  harbour: "radial-gradient(ellipse at 50% 50%, color-mix(in oklab, var(--teal) 18%, transparent) 0%, transparent 65%)",
-  fado:    "radial-gradient(ellipse at 40% 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 12%, transparent) 0%, transparent 65%)",
-  basil:   "radial-gradient(ellipse at 70% 55%, color-mix(in oklab, var(--ivory) 9%, transparent) 0%, transparent 60%)",
-  bread:   "radial-gradient(ellipse at 50% 75%, color-mix(in oklab, var(--gold) 12%, transparent) 0%, transparent 58%)",
+  amber:
+    "radial-gradient(ellipse at 50% 78%, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 62%)",
+  candle:
+    "radial-gradient(ellipse at 50% 82%, color-mix(in oklab, var(--gold-soft, var(--gold)) 26%, transparent) 0%, transparent 58%)",
+  salt: "radial-gradient(ellipse at 50% 30%, color-mix(in oklab, var(--ivory) 14%, transparent) 0%, transparent 65%)",
+  linen:
+    "radial-gradient(ellipse at 50% 70%, color-mix(in oklab, var(--ivory) 10%, transparent) 0%, transparent 60%)",
+  stone:
+    "radial-gradient(ellipse at 30% 60%, color-mix(in oklab, var(--teal) 14%, transparent) 0%, transparent 65%)",
+  rain: "radial-gradient(ellipse at 60% 45%, color-mix(in oklab, var(--teal-2, var(--teal)) 16%, transparent) 0%, transparent 65%)",
+  vine: "radial-gradient(ellipse at 50% 80%, color-mix(in oklab, var(--gold) 18%, transparent) 0%, transparent 58%)",
+  harbour:
+    "radial-gradient(ellipse at 50% 50%, color-mix(in oklab, var(--teal) 18%, transparent) 0%, transparent 65%)",
+  fado: "radial-gradient(ellipse at 40% 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 12%, transparent) 0%, transparent 65%)",
+  basil:
+    "radial-gradient(ellipse at 70% 55%, color-mix(in oklab, var(--ivory) 9%, transparent) 0%, transparent 60%)",
+  bread:
+    "radial-gradient(ellipse at 50% 75%, color-mix(in oklab, var(--gold) 12%, transparent) 0%, transparent 58%)",
 };
 
 // Tour matching is now handled by `src/lib/drift/composer.ts`, which assembles
@@ -296,16 +309,43 @@ const MOTIF_TINT: Record<Motif, string> = {
 // dimension's confidence up without ever fully claiming it. Explicit picks
 // always win (EXPLICIT = 1.0); these only contribute < 0.4.
 const MOTIF_NUDGE: Partial<Record<Motif, Array<[DriftDimension, string]>>> = {
-  salt: [["style", "coast"], ["energy", "vivid"]],
-  linen: [["style", "coast"], ["social", "intimate"]],
-  harbour: [["style", "coast"], ["energy", "vivid"]],
-  stone: [["style", "heritage"], ["energy", "slow"]],
+  salt: [
+    ["style", "coast"],
+    ["energy", "vivid"],
+  ],
+  linen: [
+    ["style", "coast"],
+    ["social", "intimate"],
+  ],
+  harbour: [
+    ["style", "coast"],
+    ["energy", "vivid"],
+  ],
+  stone: [
+    ["style", "heritage"],
+    ["energy", "slow"],
+  ],
   basil: [["style", "heritage"]],
-  rain: [["style", "heritage"], ["energy", "slow"]],
-  vine: [["style", "wine"], ["energy", "slow"]],
-  fado: [["style", "wine"], ["social", "shared"]],
-  candle: [["style", "table"], ["social", "intimate"]],
-  amber: [["social", "intimate"], ["energy", "slow"]],
+  rain: [
+    ["style", "heritage"],
+    ["energy", "slow"],
+  ],
+  vine: [
+    ["style", "wine"],
+    ["energy", "slow"],
+  ],
+  fado: [
+    ["style", "wine"],
+    ["social", "shared"],
+  ],
+  candle: [
+    ["style", "table"],
+    ["social", "intimate"],
+  ],
+  amber: [
+    ["social", "intimate"],
+    ["energy", "slow"],
+  ],
   bread: [["style", "table"]],
 };
 
@@ -318,7 +358,15 @@ const DRIFT_DIMENSIONS: DriftDimension[] = [
   "social",
 ];
 
-const ALWAYS_ASK_CHAPTERS = new Set(["companions", "guests", "pickup", "duration", "radius", "enhancements", "tier"]);
+const ALWAYS_ASK_CHAPTERS = new Set([
+  "companions",
+  "guests",
+  "pickup",
+  "duration",
+  "radius",
+  "enhancements",
+  "tier",
+]);
 const OPTIONAL_CHAPTER_IDS = ["energy", "style", "social"] as const;
 type OptionalChapterId = (typeof OPTIONAL_CHAPTER_IDS)[number];
 
@@ -386,22 +434,41 @@ const greet = (p: DriftProfile, fallback: string) =>
 /** Two-pace entry: travellers who chose "60 segundos" reveal faster. */
 const isFastPace = (): boolean => {
   if (typeof window === "undefined") return false;
-  try { return window.sessionStorage.getItem("studio.fastPace") === "1"; } catch { return false; }
+  try {
+    return window.sessionStorage.getItem("studio.fastPace") === "1";
+  } catch {
+    return false;
+  }
 };
 
-function narrativeStageFor(chapter: Chapter, profile: DriftProfile, prediction?: ReturnType<typeof derivePrediction>) {
+function narrativeStageFor(
+  chapter: Chapter,
+  profile: DriftProfile,
+  prediction?: ReturnType<typeof derivePrediction>,
+) {
   if (chapter.kind === "convergence") return "reveal" as const;
-  const resolved = [profile.companions, profile.pickup, profile.radius, profile.energy, profile.style, profile.social]
-    .filter(Boolean).length;
+  const resolved = [
+    profile.companions,
+    profile.pickup,
+    profile.radius,
+    profile.energy,
+    profile.style,
+    profile.social,
+  ].filter(Boolean).length;
   const fast = isFastPace();
   const emergenceThreshold = fast ? 0.32 : 0.62;
   const minResolved = fast ? 1 : 4;
-  if ((prediction?.revealConfidence ?? 0) >= emergenceThreshold || resolved >= minResolved) return "emergence" as const;
+  if ((prediction?.revealConfidence ?? 0) >= emergenceThreshold || resolved >= minResolved)
+    return "emergence" as const;
   if (resolved >= 1 || profile.name) return "recognition" as const;
   return "invitation" as const;
 }
 
-function chapterSortKey(chapter: Chapter, confidence: ConfidenceMap, prediction: ReturnType<typeof derivePrediction>) {
+function chapterSortKey(
+  chapter: Chapter,
+  confidence: ConfidenceMap,
+  prediction: ReturnType<typeof derivePrediction>,
+) {
   if (chapter.kind !== "choice") return -1;
   if (ALWAYS_ASK_CHAPTERS.has(chapter.id)) return -1;
   const dim = chapter.dim ?? (chapter.id as DriftDimension);
@@ -410,8 +477,10 @@ function chapterSortKey(chapter: Chapter, confidence: ConfidenceMap, prediction:
   const chapterMood = chapter.options
     .map((o) => o.scene.mood)
     .filter((m): m is SceneMood => Boolean(m))
-    .sort((a, b) => (prediction.sceneWeighting[b] ?? 0.5) - (prediction.sceneWeighting[a] ?? 0.5))[0];
-  const affinity = chapterMood ? prediction.sceneWeighting[chapterMood] ?? 0.5 : 0.5;
+    .sort(
+      (a, b) => (prediction.sceneWeighting[b] ?? 0.5) - (prediction.sceneWeighting[a] ?? 0.5),
+    )[0];
+  const affinity = chapterMood ? (prediction.sceneWeighting[chapterMood] ?? 0.5) : 0.5;
   return (1 - top) * 0.72 + affinity * 0.28;
 }
 
@@ -419,20 +488,60 @@ const PROFILE_LABELS: Record<string, Record<DriftLocale, string>> = {
   solo: { en: "solo", pt: "a sós", es: "a solas", fr: "seul" },
   couple: { en: "for two", pt: "a dois", es: "para dos", fr: "à deux" },
   group: { en: "with your people", pt: "com os seus", es: "con su gente", fr: "avec vos proches" },
-  lisbon: { en: "from Lisbon", pt: "a partir de Lisboa", es: "desde Lisboa", fr: "depuis Lisbonne" },
-  centro: { en: "through Central Portugal", pt: "pelo Centro", es: "por el Centro", fr: "dans le Centre" },
+  lisbon: {
+    en: "from Lisbon",
+    pt: "a partir de Lisboa",
+    es: "desde Lisboa",
+    fr: "depuis Lisbonne",
+  },
+  centro: {
+    en: "through Central Portugal",
+    pt: "pelo Centro",
+    es: "por el Centro",
+    fr: "dans le Centre",
+  },
   alentejo: { en: "in Alentejo", pt: "no Alentejo", es: "en Alentejo", fr: "en Alentejo" },
-  near: { en: "close and slow", pt: "perto e devagar", es: "cerca y despacio", fr: "proche et lent" },
-  far: { en: "a full day out", pt: "um dia inteiro fora", es: "un día completo fuera", fr: "une journée entière dehors" },
-  anywhere: { en: "where it is worth it", pt: "onde valer a pena", es: "donde valga la pena", fr: "là où cela vaut le détour" },
+  near: {
+    en: "close and slow",
+    pt: "perto e devagar",
+    es: "cerca y despacio",
+    fr: "proche et lent",
+  },
+  far: {
+    en: "a full day out",
+    pt: "um dia inteiro fora",
+    es: "un día completo fuera",
+    fr: "une journée entière dehors",
+  },
+  anywhere: {
+    en: "where it is worth it",
+    pt: "onde valer a pena",
+    es: "donde valga la pena",
+    fr: "là où cela vaut le détour",
+  },
   slow: { en: "slow", pt: "lento", es: "lento", fr: "lent" },
   vivid: { en: "vivid", pt: "vivo", es: "vivo", fr: "vivant" },
   coast: { en: "Atlantic", pt: "Atlântico", es: "Atlántico", fr: "Atlantique" },
   heritage: { en: "old stone", pt: "pedra antiga", es: "piedra antigua", fr: "pierre ancienne" },
-  wine: { en: "vineyard ritual", pt: "ritual da vinha", es: "ritual de viñedo", fr: "rituel des vignes" },
+  wine: {
+    en: "vineyard ritual",
+    pt: "ritual da vinha",
+    es: "ritual de viñedo",
+    fr: "rituel des vignes",
+  },
   table: { en: "long table", pt: "mesa longa", es: "mesa larga", fr: "longue table" },
-  intimate: { en: "quietly private", pt: "discreto e privado", es: "discreto y privado", fr: "discret et privé" },
-  shared: { en: "generously shared", pt: "generosamente partilhado", es: "generosamente compartido", fr: "généreusement partagé" },
+  intimate: {
+    en: "quietly private",
+    pt: "discreto e privado",
+    es: "discreto y privado",
+    fr: "discret et privé",
+  },
+  shared: {
+    en: "generously shared",
+    pt: "generosamente partilhado",
+    es: "generosamente compartido",
+    fr: "généreusement partagé",
+  },
 };
 
 function labelValue(value: string | undefined, locale: DriftLocale): string | null {
@@ -440,8 +549,12 @@ function labelValue(value: string | undefined, locale: DriftLocale): string | nu
   return PROFILE_LABELS[value]?.[locale] ?? PROFILE_LABELS[value]?.en ?? value;
 }
 
-function optionScore(opt: ChoiceOption, confidence: ConfidenceMap, prediction: ReturnType<typeof derivePrediction>) {
-  const moodScore = opt.scene.mood ? prediction.sceneWeighting[opt.scene.mood] ?? 0.5 : 0.5;
+function optionScore(
+  opt: ChoiceOption,
+  confidence: ConfidenceMap,
+  prediction: ReturnType<typeof derivePrediction>,
+) {
+  const moodScore = opt.scene.mood ? (prediction.sceneWeighting[opt.scene.mood] ?? 0.5) : 0.5;
   let explicitPull = 0;
   for (const [dim, value] of Object.entries(opt.imprint)) {
     if (!value || !isDriftDimension(dim)) continue;
@@ -451,10 +564,29 @@ function optionScore(opt: ChoiceOption, confidence: ConfidenceMap, prediction: R
 }
 
 function predictiveCue(confidence: number, locale: DriftLocale): string {
-  if (locale === "pt") return confidence >= 0.72 ? "isto segue naturalmente" : confidence >= 0.48 ? "isto encaixa a seguir" : "talvez também goste disto";
-  if (locale === "es") return confidence >= 0.72 ? "esto sigue con naturalidad" : confidence >= 0.48 ? "esto encaja a continuación" : "quizá también le guste";
-  if (locale === "fr") return confidence >= 0.72 ? "cela vient naturellement" : confidence >= 0.48 ? "cela s’enchaîne bien" : "vous pourriez aussi aimer";
-  return confidence >= 0.72 ? "this follows naturally" : confidence >= 0.48 ? "this feels right next" : "you might also love";
+  if (locale === "pt")
+    return confidence >= 0.72
+      ? "isto segue naturalmente"
+      : confidence >= 0.48
+        ? "isto encaixa a seguir"
+        : "talvez também goste disto";
+  if (locale === "es")
+    return confidence >= 0.72
+      ? "esto sigue con naturalidad"
+      : confidence >= 0.48
+        ? "esto encaja a continuación"
+        : "quizá también le guste";
+  if (locale === "fr")
+    return confidence >= 0.72
+      ? "cela vient naturellement"
+      : confidence >= 0.48
+        ? "cela s’enchaîne bien"
+        : "vous pourriez aussi aimer";
+  return confidence >= 0.72
+    ? "this follows naturally"
+    : confidence >= 0.48
+      ? "this feels right next"
+      : "you might also love";
 }
 
 const CHAPTERS: Chapter[] = [
@@ -723,7 +855,9 @@ export function StudioDrift({ onExit }: Props) {
   const [audioOn, setAudioOn] = useState(false);
   const [narrativeLine, setNarrativeLine] = useState<string | null>(null);
   const [narrativeAt, setNarrativeAt] = useState<number | null>(null);
-  const [askedOptionalChapters, setAskedOptionalChapters] = useState<Set<OptionalChapterId>>(() => new Set());
+  const [askedOptionalChapters, setAskedOptionalChapters] = useState<Set<OptionalChapterId>>(
+    () => new Set(),
+  );
   const [interludeWhisper, setInterludeWhisper] = useState<string | null>(null);
   const gravityRef = useRef<Map<Motif, number>>(new Map());
   const confidenceRef = useRef<ConfidenceMap>({});
@@ -748,13 +882,17 @@ export function StudioDrift({ onExit }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [profile, chapterIdx, prediction.revealConfidence],
   );
-  const liveRegion = useMemo(() => pickRegion(inferredProfile as ComposerProfile), [inferredProfile]);
+  const liveRegion = useMemo(
+    () => pickRegion(inferredProfile as ComposerProfile),
+    [inferredProfile],
+  );
   const liveDay = useMemo(
-    () => composeDay(inferredProfile as ComposerProfile, liveRegion, {
-      confidence: confidenceRef.current,
-      tonalRegister: prediction.tonalRegister,
-      intensityPreference: prediction.intensity,
-    }),
+    () =>
+      composeDay(inferredProfile as ComposerProfile, liveRegion, {
+        confidence: confidenceRef.current,
+        tonalRegister: prediction.tonalRegister,
+        intensityPreference: prediction.intensity,
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [inferredProfile, liveRegion, chapterIdx, prediction.tonalRegister],
   );
@@ -788,9 +926,6 @@ export function StudioDrift({ onExit }: Props) {
   });
   const buildPreviewIsDense = choiceCount >= 3;
   const studioAb = useStudioVariant();
-
-
-
 
   // Adaptation telemetry — emit `prediction_update` ONLY when the engine
   // actually moved (top mood, itinerary, collapse list, pacing, …).
@@ -840,11 +975,11 @@ export function StudioDrift({ onExit }: Props) {
     behavior.state.lingerEvents.length,
   ]);
 
-
   useEffect(() => {
     if (!sessionId || !chapter) return;
     const key = `${stage}:${chapter.id}`;
-    if (stage === "invitation" || firedStagesRef.current.has(key) || aiBudgetRef.current >= 4) return;
+    if (stage === "invitation" || firedStagesRef.current.has(key) || aiBudgetRef.current >= 4)
+      return;
     firedStagesRef.current.add(key);
     aiBudgetRef.current += 1;
     let cancelled = false;
@@ -857,7 +992,7 @@ export function StudioDrift({ onExit }: Props) {
         who: profile.companions ?? null,
         intention: profile.style ?? null,
         journeyType: profile.duration === "multi" ? "multi" : "day",
-        travellerName: stage === "reveal" ? profile.name ?? null : null,
+        travellerName: stage === "reveal" ? (profile.name ?? null) : null,
         narrativeStage: stage,
         confidence: prediction.revealConfidence,
         acceptedCount: Object.values(profile).filter(Boolean).length,
@@ -875,7 +1010,14 @@ export function StudioDrift({ onExit }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [sessionId, chapter?.id, stage, locale, prediction.tonalRegister, prediction.revealConfidence]);
+  }, [
+    sessionId,
+    chapter?.id,
+    stage,
+    locale,
+    prediction.tonalRegister,
+    prediction.revealConfidence,
+  ]);
 
   /** Soft reinforce: motifs nudge gravity (audio + tint) AND inferred
    *  confidence on the dimensions they correlate with. */
@@ -914,24 +1056,29 @@ export function StudioDrift({ onExit }: Props) {
     setChapterIdx((i) => {
       let next = i + 1;
       const conf = confidenceRef.current;
-      const optionalCandidates = CHAPTERS
-        .map((c, idx) => ({ c, idx }))
-        .filter(({ c }) => c.kind === "choice" && OPTIONAL_CHAPTER_IDS.includes(c.id as OptionalChapterId))
+      const optionalCandidates = CHAPTERS.map((c, idx) => ({ c, idx }))
+        .filter(
+          ({ c }) =>
+            c.kind === "choice" && OPTIONAL_CHAPTER_IDS.includes(c.id as OptionalChapterId),
+        )
         .filter(({ c }) => !askedOptionalChapters.has(c.id as OptionalChapterId));
       if (i >= 6 && optionalCandidates.length > 0 && !prediction.shouldCollapseAhead) {
-        const targetDim = prediction.nextBestDimensions.find((dim) => !askedOptionalChapters.has(dim));
+        const targetDim = prediction.nextBestDimensions.find(
+          (dim) => !askedOptionalChapters.has(dim),
+        );
         const best = targetDim
           ? optionalCandidates.find(({ c }) => c.id === targetDim)
           : optionalCandidates.sort(
-            (a, b) => chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
-          )[0];
+              (a, b) =>
+                chapterSortKey(b.c, conf, prediction) - chapterSortKey(a.c, conf, prediction),
+            )[0];
         if (best) return best.idx;
       }
       while (next < CHAPTERS.length - 1) {
         const c = CHAPTERS[next];
         if (c.kind !== "choice") break;
         if (ALWAYS_ASK_CHAPTERS.has(c.id)) break;
-        const dim = (c.dim ?? (c.id as DriftDimension));
+        const dim = c.dim ?? (c.id as DriftDimension);
         const top = topValue(conf, dim);
         // Only skip dimensions the inference engine actually owns.
         if (!DRIFT_DIMENSIONS.includes(dim)) break;
@@ -1011,7 +1158,10 @@ export function StudioDrift({ onExit }: Props) {
       const clean = raw.trim().slice(0, 32);
       if (clean) {
         if (field === "guests") {
-          const n = Math.max(chapter.min ?? 1, Math.min(chapter.max ?? 20, Number.parseInt(clean, 10) || 0));
+          const n = Math.max(
+            chapter.min ?? 1,
+            Math.min(chapter.max ?? 20, Number.parseInt(clean, 10) || 0),
+          );
           if (n > 0) {
             setProfile((p) => ({ ...p, guests: n }));
             void recordDriftEvent("signal_captured", {
@@ -1021,7 +1171,7 @@ export function StudioDrift({ onExit }: Props) {
             });
           }
         } else {
-          setProfile((p) => ({ ...p, [field]: clean } as DriftProfile));
+          setProfile((p) => ({ ...p, [field]: clean }) as DriftProfile);
           void recordDriftEvent("signal_captured", {
             chapterId: chapter.id,
             signalKey: field,
@@ -1093,17 +1243,15 @@ export function StudioDrift({ onExit }: Props) {
           confidence={confidenceRef.current}
           hasBuildPreview={showBuildPreview}
           onSceneShown={behavior.markSceneShown}
-          onAttraction={(opt) =>
-            {
-              behavior.recordAttraction({
-                sceneId: opt.scene.id,
-                mood: opt.scene.mood,
-                intensity: opt.scene.intensity,
-                weight: 1.2,
-              });
-              reinforce(opt.reinforce, 0.75);
-            }
-          }
+          onAttraction={(opt) => {
+            behavior.recordAttraction({
+              sceneId: opt.scene.id,
+              mood: opt.scene.mood,
+              intensity: opt.scene.intensity,
+              weight: 1.2,
+            });
+            reinforce(opt.reinforce, 0.75);
+          }}
         />
       )}
 
@@ -1139,26 +1287,28 @@ export function StudioDrift({ onExit }: Props) {
               Show during the mid-flow doubt window (chapters 6-9: duration→style)
               where travellers most often stall before committing to a tier. */}
           {chapterIdx >= 6 && chapterIdx <= 9 && (
-            <StudioTrustStrip
-              reviewsLabel={tt("trust.reviews", locale) || "reviews"}
-            />
+            <StudioTrustStrip reviewsLabel={tt("trust.reviews", locale) || "reviews"} />
           )}
           {/* EncouragementBar only on text-input chapters. On drift chapters
               the cinematic headline already carries the same idea (e.g.
               "your day is starting to take shape") — surfacing the bar there
               creates duplicate copy and breaks rhythm. */}
           {chapter.kind === "text" && (
-            <EncouragementBar index={chapterIdx} total={CHAPTERS.length} locale={locale} name={profile.name} />
+            <EncouragementBar
+              index={chapterIdx}
+              total={CHAPTERS.length}
+              locale={locale}
+              name={profile.name}
+            />
           )}
           <EmergingThemes
             sceneWeighting={prediction.sceneWeighting}
             locale={locale}
-            hasSignal={Boolean(profile.companions || profile.pickup || profile.energy || profile.style)}
+            hasSignal={Boolean(
+              profile.companions || profile.pickup || profile.energy || profile.style,
+            )}
           />
-          <PriceWhisper
-            revealConfidence={prediction.revealConfidence}
-            locale={locale}
-          />
+          <PriceWhisper revealConfidence={prediction.revealConfidence} locale={locale} />
         </>
       )}
       {/* Predictive AI whisper — only render in drift/text chapters where the
@@ -1166,9 +1316,10 @@ export function StudioDrift({ onExit }: Props) {
           tiles already fill the canvas and the whisper at bottom-[156px]
           overlapped the third card on mobile. Per Studio Bible §5: never
           stack text on top of choice tiles. */}
-      {chapter.kind !== "convergence" && chapter.kind !== "choice" && narrativeLine && narrativeAt && (
-        <AiWhisper key={narrativeAt} text={narrativeLine} locale={locale} />
-      )}
+      {chapter.kind !== "convergence" &&
+        chapter.kind !== "choice" &&
+        narrativeLine &&
+        narrativeAt && <AiWhisper key={narrativeAt} text={narrativeLine} locale={locale} />}
       {showBuildPreview && (
         <StudioLivePreview
           day={liveDay}
@@ -1214,11 +1365,12 @@ export function StudioDrift({ onExit }: Props) {
             opacity: 0.82,
           }}
         >
-          <span aria-hidden="true" style={{ fontSize: "15px", lineHeight: 1 }}>‹</span>
+          <span aria-hidden="true" style={{ fontSize: "15px", lineHeight: 1 }}>
+            ‹
+          </span>
           {(tt("ui.back", locale) || "Back").toLowerCase()}
         </button>
       )}
-
 
       {interludeWhisper && (
         <div
@@ -1248,7 +1400,6 @@ export function StudioDrift({ onExit }: Props) {
   );
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────
 // Drift phase
 // ─────────────────────────────────────────────────────────────────────────
@@ -1275,8 +1426,12 @@ function DriftPhase({
 
   const onDoneRef = useRef(onDone);
   const onLingerRef = useRef(onLinger);
-  useEffect(() => { onDoneRef.current = onDone; }, [onDone]);
-  useEffect(() => { onLingerRef.current = onLinger; }, [onLinger]);
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
+  useEffect(() => {
+    onLingerRef.current = onLinger;
+  }, [onLinger]);
 
   useEffect(() => {
     const hold = Math.max(1500, chapter.holdMs * holdScale);
@@ -1285,16 +1440,12 @@ function DriftPhase({
       if (idx < chapter.scenes.length - 1) setIdx((i) => i + 1);
       else onDoneRef.current();
     }, hold);
-    const soft = window.setTimeout(
-      () => onLingerRef.current(motifs, hold * 0.55),
-      hold * 0.55,
-    );
+    const soft = window.setTimeout(() => onLingerRef.current(motifs, hold * 0.55), hold * 0.55);
     return () => {
       window.clearTimeout(t);
       window.clearTimeout(soft);
     };
   }, [idx, chapter.id, chapter.holdMs, chapter.scenes.length, scene.motifs, holdScale]);
-
 
   return (
     <>
@@ -1422,7 +1573,8 @@ function TextPhase({
             fontFamily: "'Inter', system-ui, sans-serif",
             background: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
             color: "var(--charcoal)",
-            boxShadow: "0 10px 28px rgba(0,0,0,0.30), 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent)",
+            boxShadow:
+              "0 10px 28px rgba(0,0,0,0.30), 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent)",
             minWidth: "168px",
           }}
         >
@@ -1478,12 +1630,18 @@ function ChoicePhase({
   // strong ones remain. Keeps the choice rhythm honest, never empties it.
   const ordered = useMemo(() => {
     const w = (o: ChoiceOption) =>
-      o.scene.mood && sceneWeighting ? sceneWeighting[o.scene.mood] ?? 0.5 : 0.5;
+      o.scene.mood && sceneWeighting ? (sceneWeighting[o.scene.mood] ?? 0.5) : 0.5;
     const sorted = [...chapter.options].sort((a, b) => {
-      if (prediction && confidence) return optionScore(b, confidence, prediction) - optionScore(a, confidence, prediction);
+      if (prediction && confidence)
+        return optionScore(b, confidence, prediction) - optionScore(a, confidence, prediction);
       return w(b) - w(a);
     });
-    if (prediction && sorted.length >= 3 && prediction.revealConfidence >= (isFastPace() ? 0.38 : 0.72)) return sorted.slice(0, 2);
+    if (
+      prediction &&
+      sorted.length >= 3 &&
+      prediction.revealConfidence >= (isFastPace() ? 0.38 : 0.72)
+    )
+      return sorted.slice(0, 2);
     if (sceneWeighting && sorted.length >= 3) {
       const last = sorted[sorted.length - 1]!;
       if (w(last) < 0.22) return sorted.slice(0, sorted.length - 1);
@@ -1554,7 +1712,10 @@ function ChoicePhase({
           {tt("choice.idle_hint", locale)}
         </p>
       )}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3" style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "108px" : 0 }}>
+      <div
+        className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 px-3 pb-3"
+        style={{ top: hasBuildPreview ? "25%" : "30%", bottom: hasBuildPreview ? "108px" : 0 }}
+      >
         {ordered.map((opt, i) => {
           const isPicked = picked === opt.scene.id;
           const isDimmed = picked !== null && !isPicked;
@@ -1563,11 +1724,16 @@ function ChoicePhase({
           // has no video). Imprint mapping is untouched.
           const upgradeMoods: SceneMood[] = (() => {
             switch (tonalRegister) {
-              case "intimate": return ["intimacy", "slowness"];
-              case "ritual": return ["ritual", "intimacy"];
-              case "playful": return ["celebration"];
-              case "expansive": return ["arrival", "discovery"];
-              default: return [];
+              case "intimate":
+                return ["intimacy", "slowness"];
+              case "ritual":
+                return ["ritual", "intimacy"];
+              case "playful":
+                return ["celebration"];
+              case "expansive":
+                return ["arrival", "discovery"];
+              default:
+                return [];
             }
           })();
           const shouldUpgrade =
@@ -1601,16 +1767,11 @@ function ChoicePhase({
               className="relative flex-1 min-h-11 overflow-hidden rounded-[7px] outline-none transition-all duration-[1000ms] ease-out focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
               style={{
                 opacity: !tilesIn ? 0 : isDimmed ? 0.12 : 1,
-                transform: !tilesIn
-                  ? "translateY(14px)"
-                  : isPicked
-                    ? "scale(1.02)"
-                    : "scale(1)",
+                transform: !tilesIn ? "translateY(14px)" : isPicked ? "scale(1.02)" : "scale(1)",
                 transitionDelay: !tilesIn ? `${i * 140}ms` : "0ms",
                 boxShadow: "0 16px 42px rgba(0,0,0,0.34)",
               }}
             >
-
               <SceneCanvas source={sceneSource(renderedScene)} />
               <div
                 aria-hidden="true"
@@ -1655,7 +1816,6 @@ function ChoicePhase({
                   ),
                 )}
               </span>
-
             </button>
           );
         })}
@@ -1663,7 +1823,6 @@ function ChoicePhase({
     </>
   );
 }
-
 
 function ProgressiveBuildPreview({
   day,
@@ -1705,7 +1864,10 @@ function ProgressiveBuildPreview({
     labelValue(profile?.companions, locale),
     labelValue(profile?.style, locale),
     labelValue(profile?.energy, locale),
-  ].filter(Boolean).slice(0, 2).join(" · ");
+  ]
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(" · ");
   const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
 
   return (
@@ -1717,27 +1879,65 @@ function ProgressiveBuildPreview({
       aria-label={tt("build.region_label", locale)}
       aria-live="polite"
       className={`studio-build-preview${dense ? " is-dense" : ""} absolute inset-x-3 bottom-3 z-30 overflow-hidden rounded-[7px] motion-safe:animate-[fade-in_0.55s_ease-out_both]`}
-      style={{ height: 84, background: "color-mix(in oklab, var(--charcoal) 72%, transparent)", boxShadow: "0 18px 45px rgba(0,0,0,0.42)", border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)" }}
+      style={{
+        height: 84,
+        background: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+        boxShadow: "0 18px 45px rgba(0,0,0,0.42)",
+        border: "1px solid color-mix(in oklab, var(--ivory) 16%, transparent)",
+      }}
     >
-
-
       <div className="grid grid-cols-[96px_1fr] items-stretch">
         <div className="relative h-[84px] overflow-hidden">
           <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
-            <BuilderMap stops={mapStops} regionCenter={{ lat: origin.lat, lng: origin.lng }} regionKey={region} emotionalMode activeStopIndex={mapStops.length - 1} chrome={false} locale={locale} />
+            <BuilderMap
+              stops={mapStops}
+              regionCenter={{ lat: origin.lat, lng: origin.lng }}
+              regionKey={region}
+              emotionalMode
+              activeStopIndex={mapStops.length - 1}
+              chrome={false}
+              locale={locale}
+            />
           </Suspense>
         </div>
         <div className="relative px-3 py-2">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="mb-0.5 text-[9px] uppercase" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gold)" }}>
-                {tt("build.eyebrow", locale)}{confidencePct > 0 ? ` · ${confidencePct}%` : ""}
+              <p
+                className="mb-0.5 text-[9px] uppercase"
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontWeight: 700,
+                  letterSpacing: "0.2em",
+                  color: "var(--gold)",
+                }}
+              >
+                {tt("build.eyebrow", locale)}
+                {confidencePct > 0 ? ` · ${confidencePct}%` : ""}
               </p>
-              <p className="truncate" style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontSize: "12.5px", fontWeight: 700, lineHeight: 1.2, color: "var(--ivory)", letterSpacing: 0 }}>
+              <p
+                className="truncate"
+                style={{
+                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontSize: "12.5px",
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                  color: "var(--ivory)",
+                  letterSpacing: 0,
+                }}
+              >
                 {last.name}
               </p>
               {signals && (
-                <p className="mt-0.5 truncate" style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9.5px", lineHeight: 1.25, color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))" }}>
+                <p
+                  className="mt-0.5 truncate"
+                  style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: "9.5px",
+                    lineHeight: 1.25,
+                    color: "color-mix(in oklab, var(--gold) 72%, var(--ivory))",
+                  }}
+                >
                   {signals}
                 </p>
               )}
@@ -1773,7 +1973,6 @@ function ProgressiveBuildPreview({
   );
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────
 // Convergence — a composed day, assembled from the regional stops pool
 // under operational rules. Not a static tour card — a personal itinerary
@@ -1795,11 +1994,12 @@ function ConvergencePhase({
 }) {
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
   const day = useMemo(
-    () => composeDay(profile as ComposerProfile, region, {
-      confidence,
-      tonalRegister: prediction?.tonalRegister,
-      intensityPreference: prediction?.intensity,
-    }),
+    () =>
+      composeDay(profile as ComposerProfile, region, {
+        confidence,
+        tonalRegister: prediction?.tonalRegister,
+        intensityPreference: prediction?.intensity,
+      }),
     [profile, region, confidence, prediction?.tonalRegister, prediction?.intensity],
   );
   const localLead = useMemo(() => composeLead(profile), [profile]);
@@ -1813,9 +2013,9 @@ function ConvergencePhase({
   // Server-driven reveal — fetches AI tone-only story + editable voice CTAs.
   // Falls back gracefully to local composition if the call fails.
   const reveal = useServerFn(revealJourney);
-  const [serverPayload, setServerPayload] = useState<Awaited<ReturnType<typeof revealJourney>> | null>(
-    null,
-  );
+  const [serverPayload, setServerPayload] = useState<Awaited<
+    ReturnType<typeof revealJourney>
+  > | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -1873,26 +2073,29 @@ function ConvergencePhase({
     const stopCount = day.stops.length;
     const timers: number[] = [];
     for (let i = 0; i < lineCount; i++) {
-      const stopIdx = Math.min(stopCount - 1, Math.round((i / Math.max(1, lineCount - 1)) * (stopCount - 1)));
-      timers.push(
-        window.setTimeout(() => setActiveStopIndex(stopIdx), 900 + i * 1600),
+      const stopIdx = Math.min(
+        stopCount - 1,
+        Math.round((i / Math.max(1, lineCount - 1)) * (stopCount - 1)),
       );
+      timers.push(window.setTimeout(() => setActiveStopIndex(stopIdx), 900 + i * 1600));
     }
-    timers.push(
-      window.setTimeout(() => setActiveStopIndex(null), 900 + lineCount * 1600 + 2400),
-    );
+    timers.push(window.setTimeout(() => setActiveStopIndex(null), 900 + lineCount * 1600 + 2400));
     return () => {
       for (const t of timers) window.clearTimeout(t);
     };
   }, [ready, serverPayload?.story.arc, day.stops.length]);
 
-
   const lead = serverPayload?.story.microStory ?? localLead;
   const arc = serverPayload?.story.arc ?? [];
   const heroLine = serverPayload?.story.hero;
-  const ctaBook = locale === "en" ? tt("cta.book", locale) : (serverPayload?.cta.book ?? tt("cta.book", locale));
-  const ctaSave = locale === "en" ? tt("cta.save", locale) : (serverPayload?.cta.save ?? tt("cta.save", locale));
-  const ctaRefine = locale === "en" ? tt("cta.refine", locale) : (serverPayload?.cta.refine ?? tt("cta.refine", locale));
+  const ctaBook =
+    locale === "en" ? tt("cta.book", locale) : (serverPayload?.cta.book ?? tt("cta.book", locale));
+  const ctaSave =
+    locale === "en" ? tt("cta.save", locale) : (serverPayload?.cta.save ?? tt("cta.save", locale));
+  const ctaRefine =
+    locale === "en"
+      ? tt("cta.refine", locale)
+      : (serverPayload?.cta.refine ?? tt("cta.refine", locale));
 
   // Contextual WhatsApp message — optional, soft, never primary (per Bible).
   // Threads the user's actual profile into a hand-written-feeling intro so the
@@ -1902,9 +2105,11 @@ function ConvergencePhase({
     if (profile.name) lines.push(tt("wa.with_name", locale).replace("{name}", profile.name));
     if (profile.pickup) {
       const regionLabel =
-        profile.pickup === "lisbon" ? "Lisboa"
-          : profile.pickup === "centro" ? "Centro"
-          : "Alentejo";
+        profile.pickup === "lisbon"
+          ? "Lisboa"
+          : profile.pickup === "centro"
+            ? "Centro"
+            : "Alentejo";
       lines.push(tt("wa.region", locale).replace("{region}", regionLabel));
     }
     if (profile.companions) {
@@ -1915,7 +2120,10 @@ function ConvergencePhase({
         group: { pt: "em grupo", en: "a group" },
       };
       const c = companionsMap[profile.companions];
-      if (c) lines.push(tt("wa.companions", locale).replace("{companions}", locale === "en" ? c.en : c.pt));
+      if (c)
+        lines.push(
+          tt("wa.companions", locale).replace("{companions}", locale === "en" ? c.en : c.pt),
+        );
     }
     lines.push("");
     lines.push(tt("wa.closing", locale));
@@ -1954,7 +2162,14 @@ function ConvergencePhase({
       <div className="relative h-[54vh] min-h-[340px] w-full overflow-hidden">
         {mapStops.length > 0 && regionCenter ? (
           <Suspense fallback={<SceneVideo scene={heroScene} />}>
-            <BuilderMap stops={mapStops} regionCenter={regionCenter} regionKey={region} emotionalMode activeStopIndex={activeStopIndex} locale={locale} />
+            <BuilderMap
+              stops={mapStops}
+              regionCenter={regionCenter}
+              regionKey={region}
+              emotionalMode
+              activeStopIndex={activeStopIndex}
+              locale={locale}
+            />
           </Suspense>
         ) : (
           <SceneVideo scene={heroScene} />
@@ -1963,7 +2178,11 @@ function ConvergencePhase({
         <div className="absolute inset-x-0 bottom-8 z-20 px-6 pointer-events-none">
           <p
             className="mx-auto mb-3 text-center text-[9.5px] uppercase text-[color:var(--gold)]"
-            style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 700, letterSpacing: "0.2em" }}
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+            }}
           >
             {tt("reveal.map_label", locale)}
           </p>
@@ -2022,7 +2241,15 @@ function ConvergencePhase({
         >
           {tt("reveal.signed_by", locale)}
         </p>
-        <p className="mx-auto mb-4 max-w-[34ch] text-center italic" style={{ fontFamily: "Georgia, serif", fontSize: "17px", lineHeight: 1.55, color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
+        <p
+          className="mx-auto mb-4 max-w-[34ch] text-center italic"
+          style={{
+            fontFamily: "Georgia, serif",
+            fontSize: "17px",
+            lineHeight: 1.55,
+            color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+          }}
+        >
           {lead}
         </p>
         <p
@@ -2033,7 +2260,8 @@ function ConvergencePhase({
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
-          {day.stops.length} {tt("reveal.stops", locale)} · {driveLabel} {tt("reveal.road", locale)} · {tt("reveal.departure", locale)} {day.originLabel}
+          {day.stops.length} {tt("reveal.stops", locale)} · {driveLabel} {tt("reveal.road", locale)}{" "}
+          · {tt("reveal.departure", locale)} {day.originLabel}
         </p>
 
         {serverPayload && serverPayload.dna.length > 0 && (
@@ -2119,7 +2347,6 @@ function ConvergencePhase({
                     animationDelay: `${500 + i * 110}ms`,
                   }}
                 >
-
                   <span
                     aria-hidden="true"
                     className="absolute left-2 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full"
@@ -2141,7 +2368,9 @@ function ConvergencePhase({
                         color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
                       }}
                     >
-                      {cs.driveFromPrev}{tt("reveal.drive_from_prev", locale).startsWith("min") ? "" : " "}{tt("reveal.drive_from_prev", locale)}
+                      {cs.driveFromPrev}
+                      {tt("reveal.drive_from_prev", locale).startsWith("min") ? "" : " "}
+                      {tt("reveal.drive_from_prev", locale)}
                     </p>
                   )}
                   <p
@@ -2222,7 +2451,6 @@ function ConvergencePhase({
         )}
 
         <div className="mt-10 flex flex-col items-center gap-4">
-
           {anchorTour ? (
             <Link
               to="/tours/$tourId"
@@ -2329,7 +2557,6 @@ function ConvergencePhase({
   );
 }
 
-
 function pickHeroScene(profile: DriftProfile): Scene {
   if (profile.social === "intimate") return SCENES.candleTable;
   if (profile.social === "shared") return SCENES.celebration;
@@ -2408,7 +2635,9 @@ function Whisper({
       <p
         className="text-center"
         style={{
-          fontFamily: isOpening ? "Georgia, 'Times New Roman', serif" : "'Montserrat', system-ui, sans-serif",
+          fontFamily: isOpening
+            ? "Georgia, 'Times New Roman', serif"
+            : "'Montserrat', system-ui, sans-serif",
           fontStyle: isOpening ? "italic" : "normal",
           fontSize: isChoice ? "27px" : isOpening ? "21px" : "25px",
           fontWeight: isOpening ? 400 : 700,
@@ -2416,8 +2645,7 @@ function Whisper({
           letterSpacing: "0",
           color: "var(--ivory)",
           maxWidth: isChoice ? "14ch" : isOpening ? "22ch" : "17ch",
-          textShadow:
-            "0 1px 2px rgba(0,0,0,0.94), 0 4px 30px rgba(0,0,0,0.82)",
+          textShadow: "0 1px 2px rgba(0,0,0,0.94), 0 4px 30px rgba(0,0,0,0.82)",
           opacity: isOpening ? 0.95 : 0.98,
         }}
       >
@@ -2499,7 +2727,6 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
   );
 }
 
-
 /**
  * AiWhisper — surfaces the personalized AI fragment produced by
  * composeStudioMoment. This is the visible proof of the predictive
@@ -2526,10 +2753,7 @@ function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
       className="pointer-events-none absolute inset-x-0 bottom-[156px] z-[55] flex flex-col items-center justify-center px-7 transition-opacity duration-[1100ms] ease-out"
       style={{ opacity }}
     >
-      <span
-        aria-hidden="true"
-        className="mb-2 inline-flex items-center gap-2"
-      >
+      <span aria-hidden="true" className="mb-2 inline-flex items-center gap-2">
         <span
           className="h-1 w-1 rounded-full motion-safe:animate-pulse"
           style={{ background: "var(--gold)", boxShadow: "0 0 6px var(--gold)" }}
@@ -2567,7 +2791,6 @@ function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
     </div>
   );
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────
 // Ambient audio
@@ -2619,7 +2842,8 @@ function AmbientAudio({ gravity }: { gravity: Map<Motif, number> }) {
         let warm = 0;
         let cool = 0;
         for (const [m, w] of gravity) {
-          if (m === "amber" || m === "candle" || m === "fado" || m === "vine" || m === "bread") warm += w;
+          if (m === "amber" || m === "candle" || m === "fado" || m === "vine" || m === "bread")
+            warm += w;
           else cool += w;
         }
         const target = Math.max(220, 380 + warm * 55 - cool * 38);

@@ -30,13 +30,16 @@ Deno.serve(async (req) => {
   try {
     const body = (await req.json()) as BuilderCheckoutBody;
 
-    if (!body || typeof body !== "object")
-      return jsonError("Invalid body", 400);
+    if (!body || typeof body !== "object") return jsonError("Invalid body", 400);
     if (!Number.isInteger(body.guests) || body.guests < 1 || body.guests > 12)
       return jsonError("Guests must be between 1 and 12", 400);
     if (!body.regionLabel || typeof body.regionLabel !== "string" || body.regionLabel.length > 80)
       return jsonError("Invalid region", 400);
-    if (!Array.isArray(body.stopLabels) || body.stopLabels.length === 0 || body.stopLabels.length > 10)
+    if (
+      !Array.isArray(body.stopLabels) ||
+      body.stopLabels.length === 0 ||
+      body.stopLabels.length > 10
+    )
       return jsonError("Invalid stops", 400);
     // Validate returnUrl origin against an allowlist to prevent open-redirect
     // post-checkout. Allow yesexperiences.pt, lovable.app domains, and an
@@ -71,8 +74,7 @@ Deno.serve(async (req) => {
       return jsonError("Return URL not allowed", 400);
     if (body.environment !== "sandbox" && body.environment !== "live")
       return jsonError("Invalid environment", 400);
-    if (!["relaxed", "balanced", "full"].includes(body.pace))
-      return jsonError("Invalid pace", 400);
+    if (!["relaxed", "balanced", "full"].includes(body.pace)) return jsonError("Invalid pace", 400);
 
     const elements = Array.isArray(body.elements)
       ? body.elements.filter((e) => typeof e === "string" && e.length <= 40).slice(0, 10)
@@ -88,7 +90,9 @@ Deno.serve(async (req) => {
     });
     const { data: rules, error: rulesErr } = await admin
       .from("builder_routing_rules")
-      .select("base_price_per_person_eur,pace_multiplier_relaxed,pace_multiplier_balanced,pace_multiplier_full,min_stops")
+      .select(
+        "base_price_per_person_eur,pace_multiplier_relaxed,pace_multiplier_balanced,pace_multiplier_full,min_stops",
+      )
       .eq("is_active", true)
       .limit(1)
       .maybeSingle();
@@ -107,15 +111,18 @@ Deno.serve(async (req) => {
     const stopFactor = 1 + Math.max(0, body.stopLabels.length - minStops) * 0.08;
     const pricePerPersonEur = Math.round(base * paceMult * stopFactor);
     const amountInCents = pricePerPersonEur * body.guests * 100;
-    if (amountInCents < 5000)
-      return jsonError("Computed amount below minimum", 400);
+    if (amountInCents < 5000) return jsonError("Computed amount below minimum", 400);
 
     const stripe = createStripeClient(body.environment);
 
     const stopsSummary = body.stopLabels.slice(0, 6).join(" · ");
     const elementsSummary = elements.length > 0 ? ` · concierge: ${elements.join(", ")}` : "";
     const productName = `Private experience — ${body.regionLabel}`;
-    const description = `${body.guests} guest${body.guests > 1 ? "s" : ""} · ${body.pace} pace · ${stopsSummary}${elementsSummary}`.slice(0, 500);
+    const description =
+      `${body.guests} guest${body.guests > 1 ? "s" : ""} · ${body.pace} pace · ${stopsSummary}${elementsSummary}`.slice(
+        0,
+        500,
+      );
 
     const session = await stripe.checkout.sessions.create({
       line_items: [

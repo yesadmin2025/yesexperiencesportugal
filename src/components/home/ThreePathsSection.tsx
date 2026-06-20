@@ -105,9 +105,7 @@ export function ThreePathsSection() {
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             Four ways in.{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              One conversation.
-            </span>
+            <span className="italic font-normal text-[color:var(--teal)]">One conversation.</span>
           </h2>
 
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
@@ -162,12 +160,7 @@ export function ThreePathsSection() {
             if (p.external) {
               return (
                 <li key={p.label} className="contents">
-                  <a
-                    href={p.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cardClass}
-                  >
+                  <a href={p.href} target="_blank" rel="noopener noreferrer" className={cardClass}>
                     {Inner}
                   </a>
                 </li>

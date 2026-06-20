@@ -109,10 +109,7 @@ export async function runTourLinkAudit(): Promise<TourLinkAuditReport> {
 
       const lines = text.split("\n");
 
-      const recordHit = (
-        match: RegExpExecArray,
-        source: TourLinkHit["source"],
-      ) => {
+      const recordHit = (match: RegExpExecArray, source: TourLinkHit["source"]) => {
         const id = match[1];
         // Compute 1-based line number from match index
         const upTo = text.slice(0, match.index);

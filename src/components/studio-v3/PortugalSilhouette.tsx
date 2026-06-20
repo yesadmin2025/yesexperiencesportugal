@@ -47,7 +47,11 @@ function PortugalSilhouetteBase({ fill, region = null }: Props) {
       data-testid="studio-v3-anticipation-layer"
       data-region={region ?? "none"}
       className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center opacity-100"
-      style={{ contain: "layout paint style", transform: "translateZ(0)", willChange: "transform, opacity" }}
+      style={{
+        contain: "layout paint style",
+        transform: "translateZ(0)",
+        willChange: "transform, opacity",
+      }}
     >
       <svg
         viewBox="0 0 100 220"
@@ -83,7 +87,11 @@ function PortugalSilhouetteBase({ fill, region = null }: Props) {
         />
         {/* Region pulse — gold dot at the inferred destination. */}
         {dot ? (
-          <g key={region} data-testid="studio-v3-region-pulse" style={{ transformOrigin: `${dot.x}px ${dot.y}px`, transformBox: "fill-box" }}>
+          <g
+            key={region}
+            data-testid="studio-v3-region-pulse"
+            style={{ transformOrigin: `${dot.x}px ${dot.y}px`, transformBox: "fill-box" }}
+          >
             <circle
               cx={dot.x}
               cy={dot.y}

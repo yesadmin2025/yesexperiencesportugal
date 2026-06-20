@@ -20,17 +20,19 @@ export const Route = createFileRoute("/proposals")({
       { property: "og:title", content: "Proposals & Celebrations in Portugal" },
       {
         property: "og:description",
-        content:
-          "Private moments, shaped with care. Local knowledge behind every detail.",
+        content: "Private moments, shaped with care. Local knowledge behind every detail.",
       },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}` },
-      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}` },
+      {
+        property: "og:image",
+        content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}`,
+      },
+      {
+        property: "twitter:image",
+        content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}`,
+      },
       { property: "og:url", content: "https://yesexperiencesportugal.com/proposals" },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/proposals" },
-    ],
-
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/proposals" }],
   }),
   component: ProposalsPage,
 });
@@ -43,8 +45,7 @@ const BLOCKS = [
       "From the setting to the timing, we help shape the moment discreetly, with local knowledge behind every detail.",
     practical:
       "Discreet location · careful timing · surprise logistics · planned with full discretion.",
-    local:
-      "Planned end to end with our local team — every detail confirmed before the day.",
+    local: "Planned end to end with our local team — every detail confirmed before the day.",
     image: imgArrabidaWineLunch,
     icon: Heart,
     cta: "Plan a Proposal",
@@ -54,10 +55,8 @@ const BLOCKS = [
     title: "For days worth remembering.",
     emotional:
       "Birthdays, anniversaries, honeymoons or family moments — shaped around your rhythm, your people and the way you want to feel Portugal.",
-    practical:
-      "Up to 14 guests · private host · multi-activity planning · flexible scheduling.",
-    local:
-      "Coordinated by a local host who knows how each piece of the day connects.",
+    practical: "Up to 14 guests · private host · multi-activity planning · flexible scheduling.",
+    local: "Coordinated by a local host who knows how each piece of the day connects.",
     image: imgSintraEstates,
     icon: Sparkles,
     cta: "Plan a Celebration",
@@ -67,8 +66,7 @@ const BLOCKS = [
     title: "Your people, your pace, your Portugal.",
     emotional:
       "When it's the people that matter most, the day shouldn't feel like a tour. It should feel like yours.",
-    practical:
-      "Small group days · private transport · personal touches · adjusted to your rhythm.",
+    practical: "Small group days · private transport · personal touches · adjusted to your rhythm.",
     local:
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
     image: imgTroiaBeach,
@@ -85,15 +83,17 @@ function ProposalsPage() {
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Proposals &amp; Celebrations</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Moments worth{" "}
-            <SectionTitle.Em>saying yes to.</SectionTitle.Em>
+            Moments worth <SectionTitle.Em>saying yes to.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            A private moment, shaped with <span className="kw">care</span> — with local knowledge behind every detail.
+            A private moment, shaped with <span className="kw">care</span> — with local knowledge
+            behind every detail.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/contact" variant="primary">Plan a Proposal</CtaButton>
+            <CtaButton to="/contact" variant="primary">
+              Plan a Proposal
+            </CtaButton>
             <CtaButton
               to="/contact"
               variant="ghost"
@@ -158,11 +158,12 @@ function ProposalsPage() {
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            We'll help you shape it — discreetly, with people who know the
-            place. No pressure.
+            We'll help you shape it — discreetly, with people who know the place. No pressure.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/contact" variant="primary">Plan with us</CtaButton>
+            <CtaButton to="/contact" variant="primary">
+              Plan with us
+            </CtaButton>
             <CtaButton
               to="/contact"
               variant="ghost"

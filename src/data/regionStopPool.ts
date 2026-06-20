@@ -45,10 +45,7 @@ export type OptionalStopType =
   | "nature"
   | "heritage";
 
-export type OptionalStopSource =
-  | "signature-core"
-  | "research-link"
-  | "operator-confirmed";
+export type OptionalStopSource = "signature-core" | "research-link" | "operator-confirmed";
 
 export interface OptionalStop {
   id: string;
@@ -172,7 +169,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "troia-comporta",
     active: true,
-    notes: "Source-verified itinerary stop from P18. Winery/tasting suitability depends on supplier availability.",
+    notes:
+      "Source-verified itinerary stop from P18. Winery/tasting suitability depends on supplier availability.",
   },
   {
     id: "comporta-beach",
@@ -293,7 +291,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "tomar-coimbra",
     active: true,
-    notes: "Source-verified itinerary stop from P8. May require ticket/access confirmation depending on operating conditions.",
+    notes:
+      "Source-verified itinerary stop from P8. May require ticket/access confirmation depending on operating conditions.",
   },
   {
     id: "fatima-sanctuary",
@@ -310,7 +309,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "fatima-nazare-obidos",
     active: true,
-    notes: "Source-verified itinerary stop from P5. Includes Sanctuary of Our Lady of Fátima, Basilica of Our Lady of the Rosary and Chapel of the Apparitions.",
+    notes:
+      "Source-verified itinerary stop from P5. Includes Sanctuary of Our Lady of Fátima, Basilica of Our Lady of the Rosary and Chapel of the Apparitions.",
   },
   {
     id: "nazare-town",
@@ -327,7 +327,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "fatima-nazare-obidos",
     active: true,
-    notes: "Source-verified itinerary stop from P5. Includes Nazaré town and Sítio da Nazaré viewpoint.",
+    notes:
+      "Source-verified itinerary stop from P5. Includes Nazaré town and Sítio da Nazaré viewpoint.",
   },
   {
     id: "praia-da-nazare",
@@ -413,7 +414,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "sintra-cascais",
     active: true,
-    notes: "Source-verified itinerary option from P10. Treat as one-of-N Sintra monument option, not automatically combined with every palace.",
+    notes:
+      "Source-verified itinerary option from P10. Treat as one-of-N Sintra monument option, not automatically combined with every palace.",
   },
   {
     id: "pena-palace",
@@ -431,7 +433,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "sintra-cascais",
     active: true,
-    notes: "Source-verified itinerary option from P10. Treat as one-of-N Sintra monument/garden option. Access and timing need confirmation.",
+    notes:
+      "Source-verified itinerary option from P10. Treat as one-of-N Sintra monument/garden option. Access and timing need confirmation.",
   },
   {
     id: "quinta-da-regaleira",
@@ -449,7 +452,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "sintra-cascais",
     active: true,
-    notes: "Source-verified itinerary option from P10. Treat as one-of-N Sintra monument/garden option. Access and timing need confirmation.",
+    notes:
+      "Source-verified itinerary option from P10. Treat as one-of-N Sintra monument/garden option. Access and timing need confirmation.",
   },
   {
     id: "azenhas-do-mar",
@@ -483,7 +487,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "sintra-cascais",
     active: true,
-    notes: "Source-verified itinerary stop from P10. Winery/tasting suitability depends on supplier availability.",
+    notes:
+      "Source-verified itinerary stop from P10. Winery/tasting suitability depends on supplier availability.",
   },
   {
     id: "cascais-town",
@@ -585,7 +590,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     signatureTourId: "evora-alentejo",
     routeCluster: "evora-city-classical-wineries",
     active: true,
-    notes: "Source-verified itinerary stop from P6. Cork/craft context. Operational availability should be confirmed.",
+    notes:
+      "Source-verified itinerary stop from P6. Cork/craft context. Operational availability should be confirmed.",
   },
   {
     id: "joao-portugal-ramos-wines",
@@ -603,7 +609,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "evora-city-classical-wineries",
     oneOfGroup: "alentejo-classical-winery-choice",
     active: true,
-    notes: "Source-verified itinerary option from P6. Treat as one-of-N winery option, not automatically combined with every winery.",
+    notes:
+      "Source-verified itinerary option from P6. Treat as one-of-N winery option, not automatically combined with every winery.",
   },
   {
     id: "enoturismo-cartuxa",
@@ -621,7 +628,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "evora-city-classical-wineries",
     oneOfGroup: "alentejo-classical-winery-choice",
     active: true,
-    notes: "Source-verified itinerary option from P6. Treat as one-of-N winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary option from P6. Treat as one-of-N winery option. Supplier availability required.",
   },
   {
     id: "pera-grave-peramanca",
@@ -639,7 +647,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "evora-city-classical-wineries",
     oneOfGroup: "alentejo-classical-winery-choice",
     active: true,
-    notes: "Source-verified itinerary option from P6. Treat as one-of-N winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary option from P6. Treat as one-of-N winery option. Supplier availability required.",
   },
   {
     id: "ervideira-winery",
@@ -657,7 +666,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "evora-city-classical-wineries",
     oneOfGroup: "alentejo-classical-winery-choice",
     active: true,
-    notes: "Source-verified itinerary option from P6. Treat as one-of-N winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary option from P6. Treat as one-of-N winery option. Supplier availability required.",
   },
   {
     id: "herdade-do-esporao",
@@ -675,7 +685,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "evora-city-classical-wineries",
     oneOfGroup: "alentejo-classical-winery-choice",
     active: true,
-    notes: "Source-verified itinerary option from P6. Treat as one-of-N winery option, not automatically combined with other wineries. Supplier availability required.",
+    notes:
+      "Source-verified itinerary option from P6. Treat as one-of-N winery option, not automatically combined with other wineries. Supplier availability required.",
   },
   // ---------------------------------------------------------------------------
   // P17 — Roman Heritage & Hidden Alentejo (Vidigueira / Vila de Frades / Alvito)
@@ -700,7 +711,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     signatureTourId: "roman-heritage-talha-wines",
     routeCluster: "vidigueira-roman-talha",
     active: false,
-    notes: "Source-verified itinerary stop from P17. Do NOT auto-combine with evora-alentejo P6 route — separate route family in the Vidigueira / Vila de Frades / Alvito cluster.",
+    notes:
+      "Source-verified itinerary stop from P17. Do NOT auto-combine with evora-alentejo P6 route — separate route family in the Vidigueira / Vila de Frades / Alvito cluster.",
   },
   {
     id: "centro-interpretativo-vinho-talha",
@@ -717,7 +729,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     signatureTourId: "roman-heritage-talha-wines",
     routeCluster: "vidigueira-roman-talha",
     active: false,
-    notes: "Source-verified itinerary stop from P17. Do NOT auto-combine with evora-alentejo P6 route — separate route family.",
+    notes:
+      "Source-verified itinerary stop from P17. Do NOT auto-combine with evora-alentejo P6 route — separate route family.",
   },
   {
     id: "vila-alva",
@@ -734,7 +747,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     signatureTourId: "roman-heritage-talha-wines",
     routeCluster: "vidigueira-roman-talha",
     active: false,
-    notes: "Source-verified itinerary stop from P17. Do NOT auto-combine with evora-alentejo P6 route — separate route family.",
+    notes:
+      "Source-verified itinerary stop from P17. Do NOT auto-combine with evora-alentejo P6 route — separate route family.",
   },
   {
     id: "adega-mestre-daniel-xxvi-talhas",
@@ -751,7 +765,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     signatureTourId: "roman-heritage-talha-wines",
     routeCluster: "vidigueira-roman-talha",
     active: false,
-    notes: "Source-verified itinerary stop from P17 (talha-wine tasting + table). Do NOT auto-combine with evora-alentejo P6 route — separate route family. Supplier availability required.",
+    notes:
+      "Source-verified itinerary stop from P17 (talha-wine tasting + table). Do NOT auto-combine with evora-alentejo P6 route — separate route family. Supplier availability required.",
   },
   {
     id: "albergaria-dos-fusos",
@@ -768,7 +783,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     signatureTourId: "roman-heritage-talha-wines",
     routeCluster: "vidigueira-roman-talha",
     active: false,
-    notes: "Source-verified itinerary stop from P17 (river beach, seasonal — warmer months only). Do NOT auto-combine with evora-alentejo P6 route — separate route family.",
+    notes:
+      "Source-verified itinerary stop from P17 (river beach, seasonal — warmer months only). Do NOT auto-combine with evora-alentejo P6 route — separate route family.",
   },
   // ---------------------------------------------------------------------------
   // Arrábida / Azeitão / Sesimbra / Setúbal — 18 stops
@@ -785,10 +801,17 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     suitsInvestment: ["considered", "elevated", "bespoke"],
     durationMin: 45,
     source: "signature-core",
-    sourceTourIds: ["arrabida-wine-allinclusive", "arrabida-boat", "azeitao-cheese", "tiles-workshop", "wild-beaches-picnic"],
+    sourceTourIds: [
+      "arrabida-wine-allinclusive",
+      "arrabida-boat",
+      "azeitao-cheese",
+      "tiles-workshop",
+      "wild-beaches-picnic",
+    ],
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
-    notes: "Source-verified itinerary stop across multiple Arrábida / Setúbal Signature tours. Local market / food context.",
+    notes:
+      "Source-verified itinerary stop across multiple Arrábida / Setúbal Signature tours. Local market / food context.",
   },
   {
     id: "parque-natural-arrabida",
@@ -805,7 +828,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     sourceTourIds: ["arrabida-wine-allinclusive", "arrabida-boat", "wild-beaches-picnic"],
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
-    notes: "Source-verified itinerary stop across Arrábida tours. Nature / coastal landscape anchor.",
+    notes:
+      "Source-verified itinerary stop across Arrábida tours. Nature / coastal landscape anchor.",
   },
   {
     id: "portinho-da-arrabida",
@@ -823,7 +847,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "arrabida-beach-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P1. Treat as one-of-N Arrábida beach option, not automatically stacked with every beach.",
+    notes:
+      "Source-verified itinerary stop from P1. Treat as one-of-N Arrábida beach option, not automatically stacked with every beach.",
   },
   {
     id: "praia-de-galapinhos",
@@ -841,7 +866,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "arrabida-beach-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P1. Treat as one-of-N Arrábida beach option. Access/seasonal conditions may need confirmation.",
+    notes:
+      "Source-verified itinerary stop from P1. Treat as one-of-N Arrábida beach option. Access/seasonal conditions may need confirmation.",
   },
   {
     id: "praia-das-bicas",
@@ -894,7 +920,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     sourceTourIds: ["arrabida-boat", "wild-beaches-picnic"],
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
-    notes: "Source-verified itinerary stop from P12 and P1. Sea cave / coastal heritage context. May not suit reduced-mobility guests.",
+    notes:
+      "Source-verified itinerary stop from P12 and P1. Sea cave / coastal heritage context. May not suit reduced-mobility guests.",
   },
   {
     id: "azulejos-de-azeitao",
@@ -912,7 +939,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-workshop-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P3 and P4. Tile workshop / studio context. Treat as one-of-N Azeitão workshop option.",
+    notes:
+      "Source-verified itinerary stop from P3 and P4. Tile workshop / studio context. Treat as one-of-N Azeitão workshop option.",
   },
   {
     id: "quinta-velha-cheese-workshop",
@@ -930,7 +958,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-workshop-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P9. Cheese workshop context. Treat as one-of-N Azeitão workshop option.",
+    notes:
+      "Source-verified itinerary stop from P9. Cheese workshop context. Treat as one-of-N Azeitão workshop option.",
   },
   {
     id: "azeitao-village",
@@ -965,7 +994,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-palmela-winery-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P3 and P4. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary stop from P3 and P4. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
   },
   {
     id: "quinta-de-catralvos",
@@ -983,7 +1013,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-palmela-winery-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P3, P9 and P4. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary stop from P3, P9 and P4. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
   },
   {
     id: "quinta-do-piloto",
@@ -1001,7 +1032,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-palmela-winery-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P3. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary stop from P3. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
   },
   {
     id: "adega-cooperativa-palmela",
@@ -1019,7 +1051,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-palmela-winery-choice",
     active: true,
-    notes: "Source-verified optional itinerary stop from P3. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
+    notes:
+      "Source-verified optional itinerary stop from P3. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
   },
   {
     id: "bacalhoa-vinhos-de-portugal",
@@ -1037,7 +1070,8 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     oneOfGroup: "azeitao-palmela-winery-choice",
     active: true,
-    notes: "Source-verified itinerary stop from P3 and P4. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
+    notes:
+      "Source-verified itinerary stop from P3 and P4. Treat as one-of-N Azeitão/Palmela winery option. Supplier availability required.",
   },
   {
     id: "castelo-de-sesimbra",
@@ -1051,10 +1085,17 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     suitsInvestment: ["considered", "elevated", "bespoke"],
     durationMin: 30,
     source: "signature-core",
-    sourceTourIds: ["arrabida-wine-allinclusive", "arrabida-boat", "azeitao-cheese", "tiles-workshop", "wild-beaches-picnic"],
+    sourceTourIds: [
+      "arrabida-wine-allinclusive",
+      "arrabida-boat",
+      "azeitao-cheese",
+      "tiles-workshop",
+      "wild-beaches-picnic",
+    ],
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
-    notes: "Source-verified itinerary stop across multiple Arrábida / Sesimbra Signature tours. Castle / viewpoint context.",
+    notes:
+      "Source-verified itinerary stop across multiple Arrábida / Sesimbra Signature tours. Castle / viewpoint context.",
   },
   {
     id: "sesimbra-village",
@@ -1091,4 +1132,3 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     notes: "Source-verified itinerary stop from P12 and P1. Viewpoint / heritage context.",
   },
 ];
-

@@ -29,7 +29,6 @@ const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
   compose: "Beat 4 of 4",
 };
 
-
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
@@ -149,77 +148,77 @@ export function StudioV3ProgressStepper({
         data-active-beat={STUDIO_V3_BEATS[active].id}
         className="mt-4 mb-1 flex w-full items-center justify-between gap-2 px-5"
       >
-      {STUDIO_V3_BEATS.map((beat, i) => {
-        const isActive = i === active;
-        const isDone = i < active;
-        const isReachable = isActive || isDone;
-        const canJump = isDone && typeof onJumpToBeat === "function";
+        {STUDIO_V3_BEATS.map((beat, i) => {
+          const isActive = i === active;
+          const isDone = i < active;
+          const isReachable = isActive || isDone;
+          const canJump = isDone && typeof onJumpToBeat === "function";
 
-        const bar = (
-          <span
-            aria-hidden
-            className="block h-[3px] w-full rounded-full transition-colors duration-300"
-            style={{
-              background: isActive
-                ? "var(--gold)"
-                : isDone
-                  ? "color-mix(in oklab, var(--gold) 55%, transparent)"
-                  : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
-            }}
-          />
-        );
-        const label = (
-          <span
-            className="text-[9.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{
-              fontFamily: "var(--font-display)",
-              color: isReachable
-                ? "var(--charcoal)"
-                : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-            }}
-          >
-            {beat.label}
-          </span>
-        );
-
-        const sharedProps = {
-          "data-testid": "studio-v3-phase-tab",
-          "data-beat": beat.id,
-          "data-state": isActive ? "active" : isDone ? "done" : "upcoming",
-          "aria-current": isActive ? ("step" as const) : undefined,
-        };
-
-        if (canJump) {
-          return (
-            <button
-              key={beat.id}
-              type="button"
-              ref={(el) => {
-                buttonsRef.current[i] = el;
+          const bar = (
+            <span
+              aria-hidden
+              className="block h-[3px] w-full rounded-full transition-colors duration-300"
+              style={{
+                background: isActive
+                  ? "var(--gold)"
+                  : isDone
+                    ? "color-mix(in oklab, var(--gold) 55%, transparent)"
+                    : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
               }}
-              onClick={() => onJumpToBeat?.(beat.id, BEAT_ENTRY_PHASE[beat.id])}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              aria-label={`Return to ${beat.label}`}
-              className="group flex flex-1 flex-col items-center gap-1.5 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
+            />
+          );
+          const label = (
+            <span
+              className="text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+              style={{
+                fontFamily: "var(--font-display)",
+                color: isReachable
+                  ? "var(--charcoal)"
+                  : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              }}
+            >
+              {beat.label}
+            </span>
+          );
+
+          const sharedProps = {
+            "data-testid": "studio-v3-phase-tab",
+            "data-beat": beat.id,
+            "data-state": isActive ? "active" : isDone ? "done" : "upcoming",
+            "aria-current": isActive ? ("step" as const) : undefined,
+          };
+
+          if (canJump) {
+            return (
+              <button
+                key={beat.id}
+                type="button"
+                ref={(el) => {
+                  buttonsRef.current[i] = el;
+                }}
+                onClick={() => onJumpToBeat?.(beat.id, BEAT_ENTRY_PHASE[beat.id])}
+                onKeyDown={(e) => handleKeyDown(e, i)}
+                aria-label={`Return to ${beat.label}`}
+                className="group flex flex-1 flex-col items-center gap-1.5 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
+                {...sharedProps}
+              >
+                {bar}
+                {label}
+              </button>
+            );
+          }
+
+          return (
+            <div
+              key={beat.id}
+              className="flex flex-1 flex-col items-center gap-1.5"
               {...sharedProps}
             >
               {bar}
               {label}
-            </button>
+            </div>
           );
-        }
-
-        return (
-          <div
-            key={beat.id}
-            className="flex flex-1 flex-col items-center gap-1.5"
-            {...sharedProps}
-          >
-            {bar}
-            {label}
-          </div>
-        );
-      })}
+        })}
       </nav>
       <p
         data-testid="studio-v3-beat-reassurance"
@@ -232,4 +231,3 @@ export function StudioV3ProgressStepper({
     </div>
   );
 }
-

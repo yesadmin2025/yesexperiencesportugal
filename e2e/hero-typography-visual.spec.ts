@@ -25,12 +25,8 @@
 import { test, expect, type Page } from "@playwright/test";
 
 async function prepHero(page: Page) {
-  await page
-    .locator('[data-hero-cinematic="true"]')
-    .waitFor({ state: "visible" });
-  await page
-    .locator('[data-hero-field="headlineLine1"]:not(h1)')
-    .waitFor({ state: "visible" });
+  await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
+  await page.locator('[data-hero-field="headlineLine1"]:not(h1)').waitFor({ state: "visible" });
 
   // Mask the background film — its frames are non-deterministic and
   // would dominate any pixel diff. We screenshot the copy column only.
@@ -38,34 +34,24 @@ async function prepHero(page: Page) {
     type FontFaceSetLike = { ready?: Promise<unknown> };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
     if (fonts?.ready) await fonts.ready;
-    const video = document.querySelector(
-      '[data-hero-film="true"]',
-    ) as HTMLVideoElement | null;
+    const video = document.querySelector('[data-hero-film="true"]') as HTMLVideoElement | null;
     if (video) {
       try {
         video.pause();
       } catch {}
       video.style.visibility = "hidden";
     }
-    document
-      .querySelectorAll('[data-hero-cinematic="true"] [aria-hidden="true"]')
-      .forEach((el) => {
-        (el as HTMLElement).style.visibility = "hidden";
-      });
-    await new Promise<void>((r) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => r())),
-    );
+    document.querySelectorAll('[data-hero-cinematic="true"] [aria-hidden="true"]').forEach((el) => {
+      (el as HTMLElement).style.visibility = "hidden";
+    });
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
   });
 }
 
 async function captureHeroRegion(page: Page) {
   const region = await page.evaluate(() => {
-    const eb = document.querySelector(
-      '[data-hero-field="eyebrow"]',
-    ) as HTMLElement | null;
-    const sh = document.querySelector(
-      '[data-hero-field="subheadline"]',
-    ) as HTMLElement | null;
+    const eb = document.querySelector('[data-hero-field="eyebrow"]') as HTMLElement | null;
+    const sh = document.querySelector('[data-hero-field="subheadline"]') as HTMLElement | null;
     if (!eb || !sh) throw new Error("hero copy bounds not found");
     const a = eb.getBoundingClientRect();
     const b = sh.getBoundingClientRect();
@@ -136,4 +122,3 @@ test.describe("Hero typography — screenshot visual regression", () => {
     });
   });
 });
-

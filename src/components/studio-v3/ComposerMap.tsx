@@ -33,8 +33,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
   if (hidden) return null;
 
   // First meaningful pick — any of the DNA axes is set.
-  const hasMeaningfulPick =
-    !!state.feeling || !!state.companions || !!state.rhythm;
+  const hasMeaningfulPick = !!state.feeling || !!state.companions || !!state.rhythm;
   if (!hasMeaningfulPick) return null;
 
   // DNA chips (max 4): feeling · who · rhythm · top interest.
@@ -49,8 +48,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
 
   // Only resolve a route once we have enough state — otherwise the helper
   // returns a "tailor-made" fallback with no routePoints, which is fine.
-  const canResolveRoute =
-    !!state.feeling && !!state.companions && !!state.rhythm;
+  const canResolveRoute = !!state.feeling && !!state.companions && !!state.rhythm;
   const resolved = canResolveRoute
     ? resolveStudioV3Route({
         feeling: state.feeling!,
@@ -73,18 +71,17 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
 
   // Anticipation beat — drives progressive geometry + tone (Track 2 fusion).
   // Monotonic: never regresses once a deeper beat has been reached.
-  const anticipation: Anticipation =
-    resolved?.skeletonTourKey
-      ? "compose"
-      : state.dateMode
-        ? "dates"
-        : state.rhythm
-          ? "rhythm"
-          : "feeling";
+  const anticipation: Anticipation = resolved?.skeletonTourKey
+    ? "compose"
+    : state.dateMode
+      ? "dates"
+      : state.rhythm
+        ? "rhythm"
+        : "feeling";
 
   // Real Signature data — never invented. Hidden until skeleton resolves.
   const tour = resolved?.skeletonTourKey
-    ? signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null
+    ? (signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null)
     : null;
   const scopeStops = tour?.stops.length ?? 0;
   const scopeDuration = tour?.durationHours ?? null;
@@ -131,7 +128,6 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
       ? `Investment direction: ${investmentLabel}`
       : "Composing your day";
 
-
   // Build aria summary.
   const ariaParts: string[] = ["Journey composer"];
   if (dnaChips.length) ariaParts.push(dnaChips.join(", "));
@@ -149,8 +145,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
         style={{
           background: "var(--charcoal-deep, #1a1a1a)",
           borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
-          boxShadow:
-            "0 12px 30px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          boxShadow: "0 12px 30px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
         }}
       >
         {/* Adaptive progress whisper — thin gold line + quiet label.
@@ -242,11 +237,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             minHeight: "112px",
           }}
         >
-          <CanvasInner
-            hasPickup={hasPickup}
-            pinCount={pinCount}
-            showRoute={showRoute}
-          />
+          <CanvasInner hasPickup={hasPickup} pinCount={pinCount} showRoute={showRoute} />
         </div>
 
         {/* Desktop canvas height override via inline class trick — second
@@ -269,8 +260,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             className="flex gap-1.5 overflow-x-auto px-3 py-2 no-scrollbar"
             style={{
               background: "color-mix(in oklab, #0d0d0d 70%, transparent)",
-              borderTop:
-                "1px solid color-mix(in oklab, var(--gold) 14%, transparent)",
+              borderTop: "1px solid color-mix(in oklab, var(--gold) 14%, transparent)",
             }}
           >
             {dnaChips.map((label) => (
@@ -278,8 +268,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
                 key={label}
                 className="shrink-0 rounded-full px-2.5 py-[5px] text-[9.5px] uppercase tracking-[0.22em] font-semibold leading-none"
                 style={{
-                  border:
-                    "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
                   color: "color-mix(in oklab, var(--ivory) 88%, transparent)",
                   background: "transparent",
                 }}
@@ -300,8 +289,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             className="flex flex-col gap-1 px-3 py-2"
             style={{
               background: "color-mix(in oklab, #0d0d0d 80%, transparent)",
-              borderTop:
-                "1px solid color-mix(in oklab, var(--gold) 18%, transparent)",
+              borderTop: "1px solid color-mix(in oklab, var(--gold) 18%, transparent)",
             }}
           >
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -437,14 +425,7 @@ function CanvasInner({
         {visible.map((p, i) => (
           <g key={i}>
             <circle cx={p.x} cy={p.y} r="2.4" fill="var(--teal)" />
-            <circle
-              cx={p.x}
-              cy={p.y}
-              r="2.4"
-              fill="none"
-              stroke="var(--ivory)"
-              strokeWidth="0.3"
-            />
+            <circle cx={p.x} cy={p.y} r="2.4" fill="none" stroke="var(--ivory)" strokeWidth="0.3" />
             <text
               x={p.x}
               y={p.y + 0.9}

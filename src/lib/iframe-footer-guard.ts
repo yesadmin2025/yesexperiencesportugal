@@ -32,7 +32,9 @@ export interface IframeFooterGuardOptions {
   userInputWindowMs?: number;
 }
 
-export function isInIframe(win: Window | undefined = typeof window !== "undefined" ? window : undefined): boolean {
+export function isInIframe(
+  win: Window | undefined = typeof window !== "undefined" ? window : undefined,
+): boolean {
   if (!win) return false;
   try {
     return win.self !== win.top;
@@ -44,16 +46,12 @@ export function isInIframe(win: Window | undefined = typeof window !== "undefine
 
 export function installIframeFooterGuard(
   options: IframeFooterGuardOptions = {},
-  win: Window = window
+  win: Window = window,
 ): () => void {
   if (typeof window === "undefined") return () => {};
   if (!isInIframe(win)) return () => {};
 
-  const {
-    bottomThreshold = 120,
-    minJumpDelta = 800,
-    userInputWindowMs = 600,
-  } = options;
+  const { bottomThreshold = 120, minJumpDelta = 800, userInputWindowMs = 600 } = options;
 
   // -Infinity so we don't accidentally treat install-time as "recent
   // user input" under faked timers / SSR-like clocks where
@@ -92,9 +90,7 @@ export function installIframeFooterGuard(
     "pointerdown",
   ];
 
-  inputEvents.forEach((evt) =>
-    win.addEventListener(evt, markUserInput, { passive: true })
-  );
+  inputEvents.forEach((evt) => win.addEventListener(evt, markUserInput, { passive: true }));
   win.addEventListener("scroll", onScroll, { passive: true });
 
   return () => {

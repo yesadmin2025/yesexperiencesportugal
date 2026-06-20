@@ -24,10 +24,10 @@ interface Props {
 
 /** Editorial region label — drives the opening whisper. */
 const REGION_NAME: Record<Props["region"], string> = {
-  "arrabida":      "Arrábida",
-  "lisbon-coast":  "the Lisbon coast",
-  "alentejo":      "the Alentejo",
-  "centro":        "central Portugal",
+  arrabida: "Arrábida",
+  "lisbon-coast": "the Lisbon coast",
+  alentejo: "the Alentejo",
+  centro: "central Portugal",
 };
 
 /** Minimum on-screen time so the beat reads as restraint, not lag. */
@@ -59,7 +59,10 @@ export function RevelationScene({ profile, region, topIntent, onContinue }: Prop
   useEffect(() => {
     const t1 = window.setTimeout(() => setPhase(1), prefersReducedMotion ? 200 : 700);
     const t2 = window.setTimeout(() => setPhase(2), prefersReducedMotion ? 600 : 1500);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
   }, [prefersReducedMotion]);
 
   // Fetch real itinerary stops.
@@ -78,23 +81,30 @@ export function RevelationScene({ profile, region, topIntent, onContinue }: Prop
         const labels = (r?.stops ?? []).map((s) => s.label).slice(0, 5);
         setStops(labels);
       })
-      .catch(() => { /* swallow — beat still advances on timer */ });
-    return () => { cancelled = true; };
+      .catch(() => {
+        /* swallow — beat still advances on timer */
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [composeReal, profile, region]);
 
   // Surface stops one-by-one once they arrive and the stop phase is active.
   useEffect(() => {
     if (phase < 2 || stops.length === 0) return;
     setVisibleCount(0);
-    const id = window.setInterval(() => {
-      setVisibleCount((n) => {
-        if (n >= stops.length) {
-          window.clearInterval(id);
-          return n;
-        }
-        return n + 1;
-      });
-    }, prefersReducedMotion ? 180 : STOP_INTERVAL_MS);
+    const id = window.setInterval(
+      () => {
+        setVisibleCount((n) => {
+          if (n >= stops.length) {
+            window.clearInterval(id);
+            return n;
+          }
+          return n + 1;
+        });
+      },
+      prefersReducedMotion ? 180 : STOP_INTERVAL_MS,
+    );
     return () => window.clearInterval(id);
   }, [phase, stops, prefersReducedMotion]);
 
@@ -210,8 +220,7 @@ export function RevelationScene({ profile, region, topIntent, onContinue }: Prop
                 className="inline-block h-1.5 w-1.5 flex-none rounded-full"
                 style={{
                   background: "var(--gold)",
-                  boxShadow:
-                    "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
+                  boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent)",
                 }}
               />
               <span

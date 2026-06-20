@@ -41,7 +41,13 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
     if (confidence < 0.5 || day.stops.length === 0) return null;
 
     // Profile coverage — explicit signals on the 5 drift dimensions
-    const dims = [profile.companions, profile.pickup, profile.energy, profile.style, profile.social];
+    const dims = [
+      profile.companions,
+      profile.pickup,
+      profile.energy,
+      profile.style,
+      profile.social,
+    ];
     const coverage = dims.filter(Boolean).length / dims.length; // 0..1
 
     // Day breadth — distinct stop kinds / target 4
@@ -61,7 +67,9 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
     const totalH = day.totals.dayMin / 60;
     const budget = totalH <= 9 ? 1 : totalH <= 11 ? 0.75 : 0.45;
 
-    const score = Math.round((coverage * 0.35 + breadth * 0.25 + balance * 0.2 + budget * 0.2) * 100);
+    const score = Math.round(
+      (coverage * 0.35 + breadth * 0.25 + balance * 0.2 + budget * 0.2) * 100,
+    );
 
     // Affinity bars (0..5 ticks) — count stops matching each lens
     const tick = (set: Set<string>): number => {
@@ -74,7 +82,11 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
       bars: [
         { key: "wine", label: tt("quality.wine", locale), n: tick(AFFINITY_KINDS.wine) },
         { key: "coast", label: tt("quality.coast", locale), n: tick(AFFINITY_KINDS.coast) },
-        { key: "heritage", label: tt("quality.heritage", locale), n: tick(AFFINITY_KINDS.heritage) },
+        {
+          key: "heritage",
+          label: tt("quality.heritage", locale),
+          n: tick(AFFINITY_KINDS.heritage),
+        },
         { key: "table", label: tt("quality.table", locale), n: tick(AFFINITY_KINDS.table) },
       ],
     };

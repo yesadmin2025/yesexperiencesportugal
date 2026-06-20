@@ -36,9 +36,7 @@ function makeToken(bytes = 16): string {
 /* ───────── createJourney: returns share + owner tokens ───────── */
 
 export const createJourney = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z.object({ state: stateSchema, sessionId }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ state: stateSchema, sessionId }).parse(input))
   .handler(async ({ data }) => {
     const rl = await rateLimit({
       sessionId: data.sessionId,
@@ -72,11 +70,13 @@ export const createJourney = createServerFn({ method: "POST" })
 
 export const loadJourney = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({
-      shareToken: z.string().min(8).max(64),
-      ownerToken: z.string().min(8).max(128).optional(),
-      sessionId: sessionId.optional(),
-    }).parse(input),
+    z
+      .object({
+        shareToken: z.string().min(8).max(64),
+        ownerToken: z.string().min(8).max(128).optional(),
+        sessionId: sessionId.optional(),
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     if (data.sessionId) {
@@ -99,9 +99,7 @@ export const loadJourney = createServerFn({ method: "POST" })
     if (!row) return { found: false as const };
     if (row.revoked_at) return { found: false as const, revoked: true as const };
 
-    const isOwner = data.ownerToken
-      ? hashOwner(data.ownerToken) === row.owner_token_hash
-      : false;
+    const isOwner = data.ownerToken ? hashOwner(data.ownerToken) === row.owner_token_hash : false;
 
     return {
       found: true as const,
@@ -115,11 +113,13 @@ export const loadJourney = createServerFn({ method: "POST" })
 
 export const saveJourney = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({
-      shareToken: z.string().min(8).max(64),
-      ownerToken: z.string().min(8).max(128),
-      state: stateSchema,
-    }).parse(input),
+    z
+      .object({
+        shareToken: z.string().min(8).max(64),
+        ownerToken: z.string().min(8).max(128),
+        state: stateSchema,
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin
@@ -148,10 +148,12 @@ export const saveJourney = createServerFn({ method: "POST" })
 
 export const rotateShareToken = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({
-      shareToken: z.string().min(8).max(64),
-      ownerToken: z.string().min(8).max(128),
-    }).parse(input),
+    z
+      .object({
+        shareToken: z.string().min(8).max(64),
+        ownerToken: z.string().min(8).max(128),
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin
@@ -177,10 +179,12 @@ export const rotateShareToken = createServerFn({ method: "POST" })
 
 export const revokeShareToken = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({
-      shareToken: z.string().min(8).max(64),
-      ownerToken: z.string().min(8).max(128),
-    }).parse(input),
+    z
+      .object({
+        shareToken: z.string().min(8).max(64),
+        ownerToken: z.string().min(8).max(128),
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin

@@ -128,7 +128,6 @@ export function emptyProfile(): TravelerProfile {
   };
 }
 
-
 // ─── derivations ───────────────────────────────────────────────────────────
 
 const INTENT_SEEDS: Record<IntentAtmosphere, Partial<TravelerProfile>> = {
@@ -194,11 +193,14 @@ const INTENT_SEEDS: Record<IntentAtmosphere, Partial<TravelerProfile>> = {
   },
 };
 
-const PACE_OVERRIDES: Record<PaceV2, Pick<TravelerProfile, "stopDensityTarget" | "driveToleranceMin">> = {
-  light:    { stopDensityTarget: 3, driveToleranceMin: 40 },
+const PACE_OVERRIDES: Record<
+  PaceV2,
+  Pick<TravelerProfile, "stopDensityTarget" | "driveToleranceMin">
+> = {
+  light: { stopDensityTarget: 3, driveToleranceMin: 40 },
   balanced: { stopDensityTarget: 4, driveToleranceMin: 50 },
-  rich:     { stopDensityTarget: 5, driveToleranceMin: 60 },
-  full:     { stopDensityTarget: 6, driveToleranceMin: 70 },
+  rich: { stopDensityTarget: 5, driveToleranceMin: 60 },
+  full: { stopDensityTarget: 6, driveToleranceMin: 70 },
 };
 
 export function applyIntent(p: TravelerProfile, intent: IntentAtmosphere): TravelerProfile {

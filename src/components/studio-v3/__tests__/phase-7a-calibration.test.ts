@@ -12,10 +12,7 @@
 //      less "picnic/cove/sunset/romantic").
 
 import { describe, it, expect } from "vitest";
-import {
-  applyMobilitySafety,
-  resolveStudioV3Route,
-} from "@/components/studio-v3/curation";
+import { applyMobilitySafety, resolveStudioV3Route } from "@/components/studio-v3/curation";
 
 const UNSAFE_RE =
   /\bcliffs?\b|\bcoves?\b|\bcaves?\b|\bsteep\b|\bstairs?\b|\bwild beach\b|kayak|snorkel|miradouro/i;
@@ -41,10 +38,9 @@ describe("Phase 7A — mobility safety filter on skeleton stops", () => {
     // unsafe label / story patterns at all.
     for (const p of restricted.routePoints) {
       const hay = `${p.label} ${p.story}`;
-      expect(
-        UNSAFE_RE.test(hay),
-        `restricted route still contains unsafe stop: "${p.label}"`,
-      ).toBe(false);
+      expect(UNSAFE_RE.test(hay), `restricted route still contains unsafe stop: "${p.label}"`).toBe(
+        false,
+      );
     }
     // Sanity: control case at least exists (no false-positive if both empty).
     expect(unrestricted.routePoints.length).toBeGreaterThan(0);
@@ -113,9 +109,7 @@ describe("Phase 7A — bespoke does not shrink the route", () => {
       investment: "bespoke",
     });
     expect(bespoke.routePoints.length).toBeGreaterThanOrEqual(3);
-    expect(bespoke.routePoints.length).toBeGreaterThanOrEqual(
-      considered.routePoints.length,
-    );
+    expect(bespoke.routePoints.length).toBeGreaterThanOrEqual(considered.routePoints.length);
   });
 
   it("slow + bespoke keeps a meaningful arc (>=3 unless solo/couple stillness)", () => {
@@ -164,9 +158,7 @@ describe("Phase 7A — corporate vs couple wine/bespoke differs in ingredients",
       investment: "bespoke",
     });
 
-    const corporateHay = corporate.routePoints
-      .map((p) => `${p.label} ${p.story}`)
-      .join(" | ");
+    const corporateHay = corporate.routePoints.map((p) => `${p.label} ${p.story}`).join(" | ");
     expect(
       CORPORATE_PENALTY_RE.test(corporateHay),
       `corporate route should avoid romantic/picnic cues — got: ${corporateHay}`,

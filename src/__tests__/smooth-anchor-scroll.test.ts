@@ -22,7 +22,17 @@ function setupTarget(id = "section-a", topOffsetPx = 1200) {
   const target = document.getElementById(id)!;
   // jsdom doesn't lay out — fake getBoundingClientRect.
   target.getBoundingClientRect = () =>
-    ({ top: topOffsetPx, left: 0, right: 0, bottom: topOffsetPx + 200, width: 0, height: 200, x: 0, y: topOffsetPx, toJSON: () => ({}) }) as DOMRect;
+    ({
+      top: topOffsetPx,
+      left: 0,
+      right: 0,
+      bottom: topOffsetPx + 200,
+      width: 0,
+      height: 200,
+      x: 0,
+      y: topOffsetPx,
+      toJSON: () => ({}),
+    }) as DOMRect;
   return target;
 }
 
@@ -31,10 +41,21 @@ describe("smooth-anchor-scroll", () => {
 
   beforeEach(() => {
     scrollToMock = vi.fn();
-    Object.defineProperty(window, "scrollTo", { value: scrollToMock, writable: true, configurable: true });
+    Object.defineProperty(window, "scrollTo", {
+      value: scrollToMock,
+      writable: true,
+      configurable: true,
+    });
     Object.defineProperty(window, "scrollY", { value: 0, writable: true, configurable: true });
     Object.defineProperty(window, "innerWidth", { value: 393, writable: true, configurable: true });
-    window.matchMedia = vi.fn().mockImplementation(() => ({ matches: false, addListener: vi.fn(), removeListener: vi.fn(), addEventListener: vi.fn(), removeEventListener: vi.fn(), dispatchEvent: vi.fn() })) as never;
+    window.matchMedia = vi.fn().mockImplementation(() => ({
+      matches: false,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })) as never;
     dispose = installSmoothAnchorScroll();
   });
 
@@ -52,7 +73,11 @@ describe("smooth-anchor-scroll", () => {
   });
 
   it("uses the desktop offset (96px) at >=1024px", () => {
-    Object.defineProperty(window, "innerWidth", { value: 1280, writable: true, configurable: true });
+    Object.defineProperty(window, "innerWidth", {
+      value: 1280,
+      writable: true,
+      configurable: true,
+    });
     setupTarget("hello", 1000);
     document.getElementById("link")!.click();
     expect(scrollToMock).toHaveBeenCalledWith({ top: 1000 - 96, behavior: "smooth" });
@@ -80,7 +105,9 @@ describe("smooth-anchor-scroll", () => {
   it("ignores meta-clicks (open in new tab)", () => {
     setupTarget("hello", 1000);
     const link = document.getElementById("link")! as HTMLAnchorElement;
-    link.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, button: 0, metaKey: true }));
+    link.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true, button: 0, metaKey: true }),
+    );
     expect(scrollToMock).not.toHaveBeenCalled();
   });
 
@@ -102,7 +129,17 @@ describe("smooth-anchor-scroll", () => {
     document.body.innerHTML = `<a id="link" href="${path}#hello">Go</a><section id="hello"></section>`;
     const target = document.getElementById("hello")!;
     target.getBoundingClientRect = () =>
-      ({ top: 500, left: 0, right: 0, bottom: 700, width: 0, height: 200, x: 0, y: 500, toJSON: () => ({}) }) as DOMRect;
+      ({
+        top: 500,
+        left: 0,
+        right: 0,
+        bottom: 700,
+        width: 0,
+        height: 200,
+        x: 0,
+        y: 500,
+        toJSON: () => ({}),
+      }) as DOMRect;
     document.getElementById("link")!.click();
     expect(scrollToMock).toHaveBeenCalledWith({ top: 420, behavior: "smooth" });
   });

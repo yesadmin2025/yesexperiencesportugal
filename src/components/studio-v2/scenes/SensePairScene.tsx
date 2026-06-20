@@ -21,17 +21,17 @@ const ROMAN = ["I", "II", "III", "IV"];
 // places — pure atmosphere.
 const SENSORY: Record<string, { verb: string; hint: string }> = {
   // scene-table-vs-view
-  "long-table":     { verb: "Linen warmed by sun.",           hint: "the table that holds the afternoon" },
-  "open-horizon":   { verb: "Wind on an empty road.",          hint: "the silence between two villages" },
+  "long-table": { verb: "Linen warmed by sun.", hint: "the table that holds the afternoon" },
+  "open-horizon": { verb: "Wind on an empty road.", hint: "the silence between two villages" },
   // scene-coast-vs-stone
-  "atlantic-edge":  { verb: "Salt drying on skin.",            hint: "the cliff at five in the afternoon" },
-  "quiet-stone":    { verb: "Cool stone under the palm.",      hint: "a corridor that holds its breath" },
+  "atlantic-edge": { verb: "Salt drying on skin.", hint: "the cliff at five in the afternoon" },
+  "quiet-stone": { verb: "Cool stone under the palm.", hint: "a corridor that holds its breath" },
   // scene-two-vs-many
-  "two-at-dusk":    { verb: "Two glasses, one bottle.",        hint: "the hour that belongs to no one else" },
-  "raised-glasses": { verb: "Glasses meeting in soft light.",  hint: "the day that lifts the room" },
+  "two-at-dusk": { verb: "Two glasses, one bottle.", hint: "the hour that belongs to no one else" },
+  "raised-glasses": { verb: "Glasses meeting in soft light.", hint: "the day that lifts the room" },
   // optional clarifier fragments
-  "morning-light":  { verb: "First light on a closed shutter.",hint: "an unhurried beginning" },
-  "late-shadow":    { verb: "Long shadows on warm tile.",      hint: "the evening, taken slowly" },
+  "morning-light": { verb: "First light on a closed shutter.", hint: "an unhurried beginning" },
+  "late-shadow": { verb: "Long shadows on warm tile.", hint: "the evening, taken slowly" },
 };
 
 export function SensePairScene({ scene, index, onSignal }: Props) {
@@ -39,7 +39,10 @@ export function SensePairScene({ scene, index, onSignal }: Props) {
   const enteredAt = useRef<number>(Date.now());
   const [chosen, setChosen] = useState<string | null>(null);
 
-  useEffect(() => { enteredAt.current = Date.now(); setChosen(null); }, [scene.id]);
+  useEffect(() => {
+    enteredAt.current = Date.now();
+    setChosen(null);
+  }, [scene.id]);
 
   const choose = (which: "a" | "b") => {
     if (chosen) return;

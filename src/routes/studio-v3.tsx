@@ -24,8 +24,7 @@ export const Route = createFileRoute("/studio-v3")({
       { property: "og:title", content: "Design your Portugal day." },
       {
         property: "og:description",
-        content:
-          "A cinematic, guided composer — not a form. Portugal responds as you choose.",
+        content: "A cinematic, guided composer — not a form. Portugal responds as you choose.",
       },
       { property: "og:url", content: CANONICAL_URL },
     ],
@@ -41,9 +40,8 @@ function StudioV3Page() {
       <header className="sr-only">
         <h1>Design your private Portugal day.</h1>
         <p>
-          A cinematic composer in three quiet steps — choose how the day should
-          feel, who is travelling and the rhythm you want. The map and stops
-          reveal themselves as you go.
+          A cinematic composer in three quiet steps — choose how the day should feel, who is
+          travelling and the rhythm you want. The map and stops reveal themselves as you go.
         </p>
       </header>
       <StudioV3 />

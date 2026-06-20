@@ -12,10 +12,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { scrapeViatorImagesForStop } from "@/lib/builderImages.server";
 
-async function assertAdmin(
-  supabase: { from: (t: string) => any },
-  userId: string,
-): Promise<void> {
+async function assertAdmin(supabase: { from: (t: string) => any }, userId: string): Promise<void> {
   const { data, error } = await supabase
     .from("user_roles")
     .select("role")
@@ -255,8 +252,7 @@ export const pickImagesForRoute = createServerFn({ method: "POST" })
     // Story image — prefer mood match within region, fall back to any region image
     const storyPool = all.filter(
       (i) =>
-        i.region_key === data.regionKey &&
-        (data.mood ? i.mood_tags.includes(data.mood) : true),
+        i.region_key === data.regionKey && (data.mood ? i.mood_tags.includes(data.mood) : true),
     );
     const storyImage = pickBest(storyPool, data.mood, data.occasion) ?? hero;
 
@@ -274,11 +270,7 @@ export const pickImagesForRoute = createServerFn({ method: "POST" })
     };
   });
 
-function pickBest(
-  pool: BuilderImage[],
-  mood?: string,
-  occasion?: string,
-): BuilderImage | null {
+function pickBest(pool: BuilderImage[], mood?: string, occasion?: string): BuilderImage | null {
   if (pool.length === 0) return null;
   const scored = pool.map((img) => {
     let bonus = 0;
@@ -306,9 +298,7 @@ export const pickMoodCardImages = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { data: imgs, error } = await supabaseAdmin
       .from("experience_images")
-      .select(
-        "image_url,alt_text,mood_tags,priority_score,usage_role,related_stop_key,region_key",
-      )
+      .select("image_url,alt_text,mood_tags,priority_score,usage_role,related_stop_key,region_key")
       .eq("is_active", true)
       .overlaps("mood_tags", data.moods)
       .order("priority_score", { ascending: false })
@@ -318,11 +308,8 @@ export const pickMoodCardImages = createServerFn({ method: "POST" })
     const out: Record<string, { image_url: string; alt_text: string } | null> = {};
     for (const mood of data.moods) {
       // Prefer images explicitly marked as builder_mood, else any with the tag.
-      const tagged = (imgs ?? []).filter((i) =>
-        (i.mood_tags as string[]).includes(mood),
-      );
-      const best =
-        tagged.find((i) => i.usage_role === "builder_mood") ?? tagged[0] ?? null;
+      const tagged = (imgs ?? []).filter((i) => (i.mood_tags as string[]).includes(mood));
+      const best = tagged.find((i) => i.usage_role === "builder_mood") ?? tagged[0] ?? null;
       out[mood] = best
         ? { image_url: best.image_url as string, alt_text: best.alt_text as string }
         : null;

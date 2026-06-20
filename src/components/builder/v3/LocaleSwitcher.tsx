@@ -40,7 +40,6 @@ export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = f
     );
   }
 
-
   return (
     <div
       role="group"
@@ -51,7 +50,13 @@ export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = f
           : "bg-[color:var(--charcoal)]/55 border-[color:var(--ivory)]/15"
       }`}
     >
-      <Globe size={12} className={isLight ? "text-[color:var(--ivory)]/70 ml-1" : "text-[color:var(--ivory)]/60 ml-1"} aria-hidden="true" />
+      <Globe
+        size={12}
+        className={
+          isLight ? "text-[color:var(--ivory)]/70 ml-1" : "text-[color:var(--ivory)]/60 ml-1"
+        }
+        aria-hidden="true"
+      />
       {items.map((l) => {
         const active = l === locale;
         return (
@@ -67,8 +72,8 @@ export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = f
               active
                 ? "bg-[color:var(--gold)]/85 text-[color:var(--charcoal)]"
                 : isLight
-                ? "text-[color:var(--ivory)]/75 hover:text-[color:var(--ivory)]"
-                : "text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)]"
+                  ? "text-[color:var(--ivory)]/75 hover:text-[color:var(--ivory)]"
+                  : "text-[color:var(--ivory)]/65 hover:text-[color:var(--ivory)]"
             }`}
           >
             {LOCALE_LABELS[l]}

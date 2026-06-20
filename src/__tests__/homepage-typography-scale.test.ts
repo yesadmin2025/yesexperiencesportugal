@@ -75,15 +75,13 @@ describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
 // — locked in that component's own ramp (1.7 / 1.95 / 2.4) and not
 // re-validated here because this suite scans src/routes/index.tsx.
 
-
 describe("Homepage eyebrow labels — canonical utility usage", () => {
   it("every major section intro uses .he-eyebrow-bar", () => {
-    const requiredEyebrows = [
-      "Experience Studio",
-      "Signature",
-    ];
+    const requiredEyebrows = ["Experience Studio", "Signature"];
     for (const label of requiredEyebrows) {
-      const re = new RegExp(`he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`);
+      const re = new RegExp(
+        `he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`,
+      );
       expect(re.test(src), `missing .he-eyebrow-bar wrapper for "${label}"`).toBe(true);
     }
   });

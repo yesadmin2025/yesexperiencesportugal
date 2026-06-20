@@ -51,9 +51,7 @@ const TARGETS: Array<{ key: keyof typeof SLOT_ALLOW; selector: string; label: st
 ];
 
 function parseColor(input: string): RGB | null {
-  const m = input
-    .replace(/\s+/g, "")
-    .match(/^rgba?\((\d+),(\d+),(\d+)(?:,([0-9.]+))?\)$/i);
+  const m = input.replace(/\s+/g, "").match(/^rgba?\((\d+),(\d+),(\d+)(?:,([0-9.]+))?\)$/i);
   if (!m) return null;
   return { r: +m[1], g: +m[2], b: +m[3] };
 }
@@ -62,10 +60,7 @@ function nearest(rgb: RGB) {
   let best = TOKENS[0];
   let bestDelta = Number.POSITIVE_INFINITY;
   for (const t of TOKENS) {
-    const d =
-      Math.abs(rgb.r - t.rgb.r) +
-      Math.abs(rgb.g - t.rgb.g) +
-      Math.abs(rgb.b - t.rgb.b);
+    const d = Math.abs(rgb.r - t.rgb.r) + Math.abs(rgb.g - t.rgb.g) + Math.abs(rgb.b - t.rgb.b);
     if (d < bestDelta) {
       best = t;
       bestDelta = d;
@@ -198,9 +193,7 @@ export function HeroColorDebugOverlay() {
                 alignItems: "center",
                 padding: "6px 8px",
                 borderRadius: 6,
-                background: s.inAllowList
-                  ? "rgba(41,91,97,0.22)"
-                  : "rgba(180,52,52,0.28)",
+                background: s.inAllowList ? "rgba(41,91,97,0.22)" : "rgba(180,52,52,0.28)",
                 border: `1px solid ${s.inAllowList ? "rgba(201,169,106,0.35)" : "rgba(220,80,80,0.55)"}`,
               }}
             >

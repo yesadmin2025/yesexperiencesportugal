@@ -47,7 +47,14 @@ function paceLabel(pace?: string): string {
 }
 
 function buildDraftMessage({
-  profile, region, stops, pax, pickup, totalPrice, perGuest, durationHours,
+  profile,
+  region,
+  stops,
+  pax,
+  pickup,
+  totalPrice,
+  perGuest,
+  durationHours,
 }: {
   profile: TravelerProfile;
   region: string;
@@ -59,9 +66,13 @@ function buildDraftMessage({
   durationHours: [number, number];
 }): string {
   const who = profile.name?.trim() ?? "a traveller";
-  const intent = profile.intent ? (INTENT_LABEL[profile.intent] ?? profile.intent) : "a curated day";
+  const intent = profile.intent
+    ? (INTENT_LABEL[profile.intent] ?? profile.intent)
+    : "a curated day";
   const stopList = stops
-    .map((s, i) => `  ${i + 1}. ${s.label}${s.duration_minutes ? ` (${s.duration_minutes} min)` : ""}`)
+    .map(
+      (s, i) => `  ${i + 1}. ${s.label}${s.duration_minutes ? ` (${s.duration_minutes} min)` : ""}`,
+    )
     .join("\n");
 
   return [
@@ -88,7 +99,13 @@ function buildDraftMessage({
 }
 
 export function FinalBookingPanel({
-  profile, region, archetype, stops, pax, pickup, blueprint,
+  profile,
+  region,
+  archetype,
+  stops,
+  pax,
+  pickup,
+  blueprint,
 }: Props) {
   const [demoOpen, setDemoOpen] = useState(false);
 
@@ -97,19 +114,33 @@ export function FinalBookingPanel({
   const durationHours: [number, number] = blueprint?.durationHours ?? [7, 9];
 
   const draftMsg = buildDraftMessage({
-    profile, region, stops, pax, pickup, totalPrice, perGuest, durationHours,
+    profile,
+    region,
+    stops,
+    pax,
+    pickup,
+    totalPrice,
+    perGuest,
+    durationHours,
   });
 
   const onSayYes = () => {
     void trackBuilderEvent("studio_v2_say_yes_click", {
-      archetype, region, intent: profile.intent, pax, totalPrice,
+      archetype,
+      region,
+      intent: profile.intent,
+      pax,
+      totalPrice,
     });
     setDemoOpen(true);
   };
 
   const onRefineWithLocal = () => {
     void trackBuilderEvent("studio_v2_refine_with_local_click", {
-      archetype, region, intent: profile.intent, pax,
+      archetype,
+      region,
+      intent: profile.intent,
+      pax,
     });
   };
 
@@ -134,8 +165,8 @@ export function FinalBookingPanel({
         className="mt-3 text-[14px] leading-[1.5]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
       >
-        Everything below is exactly what you shaped — review it, then choose how
-        you'd like to confirm.
+        Everything below is exactly what you shaped — review it, then choose how you'd like to
+        confirm.
       </p>
 
       {/* Summary card */}
@@ -149,7 +180,10 @@ export function FinalBookingPanel({
         {/* Stops */}
         <p
           className="text-[10.5px] uppercase tracking-[0.32em]"
-          style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+          style={{
+            color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+            fontWeight: 700,
+          }}
         >
           Itinerary · {stops.length} stops
         </p>
@@ -188,10 +222,7 @@ export function FinalBookingPanel({
         <dl className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <FactCell label="Group" value={`${pax} ${pax === 1 ? "guest" : "guests"}`} />
           <FactCell label="Pickup" value={pickup || "Lisboa"} />
-          <FactCell
-            label="Duration"
-            value={`${durationHours[0]}–${durationHours[1]} h`}
-          />
+          <FactCell label="Duration" value={`${durationHours[0]}–${durationHours[1]} h`} />
           <FactCell label="Style" value="Private throughout" />
         </dl>
 
@@ -199,7 +230,10 @@ export function FinalBookingPanel({
         <div className="mt-6">
           <p
             className="text-[10.5px] uppercase tracking-[0.32em]"
-            style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+            style={{
+              color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+              fontWeight: 700,
+            }}
           >
             Included
           </p>
@@ -222,7 +256,10 @@ export function FinalBookingPanel({
           <div>
             <p
               className="text-[10.5px] uppercase tracking-[0.32em]"
-              style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+                fontWeight: 700,
+              }}
             >
               Total
             </p>
@@ -307,8 +344,8 @@ export function FinalBookingPanel({
           lineHeight: 1.5,
         }}
       >
-        Free cancellation up to 48h · Pay securely · Book now or shape it with a
-        local — your choice.
+        Free cancellation up to 48h · Pay securely · Book now or shape it with a local — your
+        choice.
       </p>
 
       {/* Demo modal — placeholder until Stripe checkout is enabled. */}
@@ -350,8 +387,14 @@ function FactCell({ label, value }: { label: string; value: string }) {
 }
 
 function DemoCheckoutModal({
-  totalPrice, whatsappFallback, onClose,
-}: { totalPrice: number; whatsappFallback: string; onClose: () => void }) {
+  totalPrice,
+  whatsappFallback,
+  onClose,
+}: {
+  totalPrice: number;
+  whatsappFallback: string;
+  onClose: () => void;
+}) {
   return (
     <div
       role="dialog"
@@ -377,7 +420,10 @@ function DemoCheckoutModal({
         </button>
         <p
           className="text-[10.5px] uppercase tracking-[0.32em]"
-          style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+          style={{
+            color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+            fontWeight: 700,
+          }}
         >
           Secure checkout
         </p>
@@ -398,9 +444,8 @@ function DemoCheckoutModal({
           className="mt-4 text-[14px] leading-[1.5]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
         >
-          We're finalising the secure payment surface. In the meantime, your
-          local designer can lock the date and timings, and send you the
-          payment link directly — same day, no surprises.
+          We're finalising the secure payment surface. In the meantime, your local designer can lock
+          the date and timings, and send you the payment link directly — same day, no surprises.
         </p>
         <p
           className="mt-4 text-[13px]"

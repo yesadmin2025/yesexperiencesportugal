@@ -69,16 +69,19 @@ afterEach(() => {
 
 describe("reduced-motion validation", () => {
   it("reduced-motion users get .is-visible immediately (synchronously after mount)", () => {
-    vi.stubGlobal(
-      "matchMedia",
-      makeMatchMedia({ "(prefers-reduced-motion: reduce)": true }),
-    );
+    vi.stubGlobal("matchMedia", makeMatchMedia({ "(prefers-reduced-motion: reduce)": true }));
 
     const { container } = render(
       <SiteLayout>
-        <div className="reveal" data-testid="r1">a</div>
-        <div className="reveal-stagger" data-testid="r2">b</div>
-        <section className="section-enter" data-testid="s1">c</section>
+        <div className="reveal" data-testid="r1">
+          a
+        </div>
+        <div className="reveal-stagger" data-testid="r2">
+          b
+        </div>
+        <section className="section-enter" data-testid="s1">
+          c
+        </section>
       </SiteLayout>,
     );
 
@@ -109,8 +112,14 @@ describe("reduced-motion validation", () => {
     // Scenario A — off-screen: stay pending even after fail-safe.
     Element.prototype.getBoundingClientRect = function () {
       return {
-        top: 5000, bottom: 5400, left: 0, right: 100,
-        width: 100, height: 400, x: 0, y: 5000,
+        top: 5000,
+        bottom: 5400,
+        left: 0,
+        right: 100,
+        width: 100,
+        height: 400,
+        x: 0,
+        y: 5000,
         toJSON: () => ({}),
       } as DOMRect;
     };
@@ -118,17 +127,19 @@ describe("reduced-motion validation", () => {
     try {
       const { container, unmount } = render(
         <SiteLayout>
-          <div className="reveal" data-testid="r1">a</div>
-          <section className="section-enter" data-testid="s1">b</section>
+          <div className="reveal" data-testid="r1">
+            a
+          </div>
+          <section className="section-enter" data-testid="s1">
+            b
+          </section>
         </SiteLayout>,
       );
 
       const targets = container.querySelectorAll(".reveal, .section-enter");
 
       // Right after mount: nothing visible yet.
-      const earlyVisible = Array.from(targets).filter((el) =>
-        el.classList.contains("is-visible"),
-      );
+      const earlyVisible = Array.from(targets).filter((el) => el.classList.contains("is-visible"));
       expect(
         earlyVisible.length,
         "Normal-motion users must not be treated as reduced-motion at mount",
@@ -150,15 +161,25 @@ describe("reduced-motion validation", () => {
       // Scenario B — on-screen: fail-safe rescues them.
       Element.prototype.getBoundingClientRect = function () {
         return {
-          top: 100, bottom: 500, left: 0, right: 100,
-          width: 100, height: 400, x: 0, y: 100,
+          top: 100,
+          bottom: 500,
+          left: 0,
+          right: 100,
+          width: 100,
+          height: 400,
+          x: 0,
+          y: 100,
           toJSON: () => ({}),
         } as DOMRect;
       };
       const r2 = render(
         <SiteLayout>
-          <div className="reveal" data-testid="r2">a</div>
-          <section className="section-enter" data-testid="s2">b</section>
+          <div className="reveal" data-testid="r2">
+            a
+          </div>
+          <section className="section-enter" data-testid="s2">
+            b
+          </section>
         </SiteLayout>,
       );
       const onscreen = r2.container.querySelectorAll(".reveal, .section-enter");

@@ -148,7 +148,11 @@ function SceneTile({
           ? "border-[color:var(--gold)]/85 shadow-[0_0_0_1px_oklch(0.78_0.12_85_/_0.45),0_22px_50px_rgba(0,0,0,0.5)]"
           : "border-[color:var(--ivory)]/10 shadow-[0_16px_38px_rgba(0,0,0,0.45)] hover:border-[color:var(--ivory)]/30"
       }`}
-      style={{ animationDelay: `${delayMs}ms`, animationFillMode: "both", animationDuration: "1100ms" }}
+      style={{
+        animationDelay: `${delayMs}ms`,
+        animationFillMode: "both",
+        animationDuration: "1100ms",
+      }}
       aria-pressed={isActive}
       aria-label={option.label}
     >

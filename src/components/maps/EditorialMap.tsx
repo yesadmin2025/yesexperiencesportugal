@@ -79,7 +79,9 @@ function projectStopCoord(x: number, y: number): { x: number; y: number } {
   };
 }
 
-function resolveStopPoints(stops: ReadonlyArray<EditorialMapStop>): { x: number; y: number; label: string }[] {
+function resolveStopPoints(
+  stops: ReadonlyArray<EditorialMapStop>,
+): { x: number; y: number; label: string }[] {
   const n = stops.length;
   return stops.map((s, i) => {
     if (typeof s.x === "number" && typeof s.y === "number") {
@@ -137,11 +139,18 @@ export function EditorialMap({
     if (!el) return;
     if (typeof window === "undefined") return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) { setActive(true); return; }
+    if (reduce) {
+      setActive(true);
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (e.isIntersecting) { setActive(true); io.disconnect(); break; }
+          if (e.isIntersecting) {
+            setActive(true);
+            io.disconnect();
+            break;
+          }
         }
       },
       { threshold: 0.25 },
@@ -154,7 +163,9 @@ export function EditorialMap({
   const surface = isDark
     ? "var(--charcoal-deep, #14181a)"
     : "color-mix(in oklab, var(--ivory) 96%, var(--gold) 4%)";
-  const eyebrowColor = isDark ? "var(--gold)" : "color-mix(in oklab, var(--gold) 90%, var(--charcoal))";
+  const eyebrowColor = isDark
+    ? "var(--gold)"
+    : "color-mix(in oklab, var(--gold) 90%, var(--charcoal))";
   const metaColor = isDark
     ? "color-mix(in oklab, var(--ivory) 55%, transparent)"
     : "color-mix(in oklab, var(--charcoal) 55%, transparent)";
@@ -162,7 +173,9 @@ export function EditorialMap({
     ? "color-mix(in oklab, var(--ivory) 95%, transparent)"
     : "color-mix(in oklab, var(--charcoal) 88%, transparent)";
 
-  const a11y = ariaLabel ?? `Schematic route through Portugal with ${shown.length} stop${shown.length === 1 ? "" : "s"}.`;
+  const a11y =
+    ariaLabel ??
+    `Schematic route through Portugal with ${shown.length} stop${shown.length === 1 ? "" : "s"}.`;
 
   return (
     <div
@@ -263,7 +276,11 @@ export function EditorialMap({
                 fill="var(--gold)"
                 opacity="0.18"
                 className={active && isLast ? "em-pulse" : ""}
-                style={{ animationDelay: `${delay + 600}ms`, transformOrigin: `${p.x}px ${p.y}px`, transformBox: "fill-box" }}
+                style={{
+                  animationDelay: `${delay + 600}ms`,
+                  transformOrigin: `${p.x}px ${p.y}px`,
+                  transformBox: "fill-box",
+                }}
               />
               <circle cx={p.x} cy={p.y} r="2.6" fill="var(--gold)" />
               {isLast ? (
@@ -304,43 +321,48 @@ export function EditorialMap({
 
       {/* Pin labels — projected to percent so they stick to their pin in any container size. */}
       {showLabels ? (
-      <ul className="pointer-events-none absolute inset-0 m-0 list-none p-0">
-        {shown.map((p, i) => {
-          const xPct = (p.x / VB_W) * 100;
-          const yPct = (p.y / VB_H) * 100;
-          const flipLeft = xPct > 58;
-          const delay = i * 320 + 200;
-          return (
-            <li
-              key={`label-${p.label}-${i}`}
-              className="absolute text-[10px] uppercase tracking-[0.24em] font-semibold"
-              style={{
-                left: `${xPct}%`,
-                top: `${yPct}%`,
-                maxWidth: "44%",
-                transform: flipLeft ? "translate(calc(-100% - 10px), -50%)" : "translate(10px, -50%)",
-                textAlign: flipLeft ? "right" : "left",
-                color: isDark
-                  ? "color-mix(in oklab, var(--ivory) 88%, transparent)"
-                  : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                opacity: active ? 1 : 0,
-                transition: `opacity 700ms ease ${delay}ms`,
-                textShadow: isDark ? "0 1px 4px rgba(0,0,0,0.55)" : "none",
-              }}
-            >
-              {p.label}
-            </li>
-          );
-        })}
-      </ul>
+        <ul className="pointer-events-none absolute inset-0 m-0 list-none p-0">
+          {shown.map((p, i) => {
+            const xPct = (p.x / VB_W) * 100;
+            const yPct = (p.y / VB_H) * 100;
+            const flipLeft = xPct > 58;
+            const delay = i * 320 + 200;
+            return (
+              <li
+                key={`label-${p.label}-${i}`}
+                className="absolute text-[10px] uppercase tracking-[0.24em] font-semibold"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${yPct}%`,
+                  maxWidth: "44%",
+                  transform: flipLeft
+                    ? "translate(calc(-100% - 10px), -50%)"
+                    : "translate(10px, -50%)",
+                  textAlign: flipLeft ? "right" : "left",
+                  color: isDark
+                    ? "color-mix(in oklab, var(--ivory) 88%, transparent)"
+                    : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                  opacity: active ? 1 : 0,
+                  transition: `opacity 700ms ease ${delay}ms`,
+                  textShadow: isDark ? "0 1px 4px rgba(0,0,0,0.55)" : "none",
+                }}
+              >
+                {p.label}
+              </li>
+            );
+          })}
+        </ul>
       ) : null}
 
       {/* Bottom strip */}
-      {(caption || footerRight) ? (
+      {caption || footerRight ? (
         <div className="absolute left-4 bottom-4 right-4 flex items-end justify-between gap-3">
           {caption ? (
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.32em] font-semibold" style={{ color: eyebrowColor }}>
+              <p
+                className="text-[9.5px] uppercase tracking-[0.32em] font-semibold"
+                style={{ color: eyebrowColor }}
+              >
                 Today's draft
               </p>
               <p
@@ -350,9 +372,14 @@ export function EditorialMap({
                 {caption}
               </p>
             </div>
-          ) : <span />}
+          ) : (
+            <span />
+          )}
           {footerRight ? (
-            <span className="text-[9.5px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap" style={{ color: metaColor }}>
+            <span
+              className="text-[9.5px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
+              style={{ color: metaColor }}
+            >
               {footerRight}
             </span>
           ) : null}

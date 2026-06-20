@@ -62,7 +62,7 @@ export function CurtainRise({ state, onDone }: CurtainRiseProps) {
         })
       : null;
   const tour = resolved?.skeletonTourKey
-    ? signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null
+    ? (signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null)
     : null;
   const voice = tour ? regionalVoiceFor(tour.region) : null;
 
@@ -71,7 +71,8 @@ export function CurtainRise({ state, onDone }: CurtainRiseProps) {
     const parts: string[] = [];
     if (state.feeling) parts.push(getOptionLabel(FEELINGS, state.feeling).toLowerCase());
     if (state.companions) parts.push(getOptionLabel(COMPANIONS, state.companions).toLowerCase());
-    if (state.interests?.[0]) parts.push(getOptionLabel(INTERESTS, state.interests[0]).toLowerCase());
+    if (state.interests?.[0])
+      parts.push(getOptionLabel(INTERESTS, state.interests[0]).toLowerCase());
     if (state.rhythm) parts.push(`${getOptionLabel(RHYTHMS, state.rhythm).toLowerCase()} rhythm`);
     if (parts.length < 2) return null;
     return parts.join(" · ");

@@ -123,18 +123,16 @@ describe("Drift adaptation telemetry", () => {
       topMoodWeight: 0.56, // delta 0.06
     };
     expect(diffAdaptation(before, after).reasons).not.toContain("top_mood");
-    expect(
-      diffAdaptation(before, after, { topMoodWeight: 0.04 }).reasons,
-    ).toContain("top_mood");
+    expect(diffAdaptation(before, after, { topMoodWeight: 0.04 }).reasons).toContain("top_mood");
   });
 
   it("honors custom thresholds: a looser revealConfidence ignores micro-drift", () => {
     const before = { ...snapFor({ "style:wine": 0.6 }), revealConfidence: 0.5 };
     const after = { ...before, revealConfidence: 0.58 }; // delta 0.08, default fires
     expect(diffAdaptation(before, after).reasons).toContain("confidence");
-    expect(
-      diffAdaptation(before, after, { revealConfidence: 0.2 }).reasons,
-    ).not.toContain("confidence");
+    expect(diffAdaptation(before, after, { revealConfidence: 0.2 }).reasons).not.toContain(
+      "confidence",
+    );
   });
 
   it("honors custom thresholds: topInferredConfidence override", () => {
@@ -145,8 +143,8 @@ describe("Drift adaptation telemetry", () => {
     };
     const after = { ...before, topInferredConfidence: 0.68 }; // delta 0.08
     expect(diffAdaptation(before, after).reasons).not.toContain("top_inferred");
-    expect(
-      diffAdaptation(before, after, { topInferredConfidence: 0.05 }).reasons,
-    ).toContain("top_inferred");
+    expect(diffAdaptation(before, after, { topInferredConfidence: 0.05 }).reasons).toContain(
+      "top_inferred",
+    );
   });
 });

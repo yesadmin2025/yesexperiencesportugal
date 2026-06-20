@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-
 // Pages from a real, anonymized private travel file we delivered.
 import pageCover from "@/assets/travel-file/cover.jpg";
 import pageRoute from "@/assets/travel-file/route.jpg";
@@ -23,11 +22,31 @@ import pageAccommodations from "@/assets/travel-file/accommodations.jpg";
  */
 
 const PAGES = [
-  { src: pageCover, label: "Cover", alt: "Cover of a private travel file — Portugal, Beyond the Postcards" },
-  { src: pageRoute, label: "Route", alt: "The route — a hand-designed multi-region itinerary across Portugal" },
-  { src: pageReservations, label: "Reservations", alt: "Confirmed reservations — every overnight reserved before departure" },
-  { src: pageDay, label: "A day", alt: "A day in the file — morning, lunch, afternoon, sunset, evening" },
-  { src: pageAccommodations, label: "Stays", alt: "Where you stay — properties chosen to deepen each region" },
+  {
+    src: pageCover,
+    label: "Cover",
+    alt: "Cover of a private travel file — Portugal, Beyond the Postcards",
+  },
+  {
+    src: pageRoute,
+    label: "Route",
+    alt: "The route — a hand-designed multi-region itinerary across Portugal",
+  },
+  {
+    src: pageReservations,
+    label: "Reservations",
+    alt: "Confirmed reservations — every overnight reserved before departure",
+  },
+  {
+    src: pageDay,
+    label: "A day",
+    alt: "A day in the file — morning, lunch, afternoon, sunset, evening",
+  },
+  {
+    src: pageAccommodations,
+    label: "Stays",
+    alt: "Where you stay — properties chosen to deepen each region",
+  },
 ] as const;
 
 const PILLARS = [
@@ -402,9 +421,7 @@ export function RecentJourney() {
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             A Portugal{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              written around you.
-            </span>
+            <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
           </h2>
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Multi-day Portugal, composed by a local — delivered as a book, not a booking.

@@ -13,9 +13,7 @@ export type CrawlerErrorInfo = {
   raw: string | null;
 };
 
-const LOG_PATHS = [
-  "/tmp/dev-server-logs/dev-server.log",
-];
+const LOG_PATHS = ["/tmp/dev-server-logs/dev-server.log"];
 
 // Strip ANSI color codes so regex matching is reliable.
 function stripAnsi(s: string): string {
@@ -39,11 +37,9 @@ async function readLogTail(): Promise<string | null> {
 export type CrawlerErrorStrategy = "root-cause" | "last-error";
 
 export const getLastCrawlerError = createServerFn({ method: "GET" })
-  .inputValidator(
-    (data: { strategy?: CrawlerErrorStrategy; _ts?: number } | undefined) => ({
-      strategy: (data?.strategy ?? "root-cause") as CrawlerErrorStrategy,
-    }),
-  )
+  .inputValidator((data: { strategy?: CrawlerErrorStrategy; _ts?: number } | undefined) => ({
+    strategy: (data?.strategy ?? "root-cause") as CrawlerErrorStrategy,
+  }))
   .handler(async ({ data }): Promise<CrawlerErrorInfo> => {
     // Production guard: this endpoint reads server log tails and is for
     // local dev / preview debugging only. Match the guard used by sibling
@@ -97,8 +93,7 @@ export const getLastCrawlerError = createServerFn({ method: "GET" })
     ];
 
     // File:line:col pattern (absolute or relative path ending in source ext).
-    const fileLineRe =
-      /([\/\\w.\-@]+\.(?:tsx?|jsx?|mts|cts|mjs|cjs))(?::(\d+))(?::(\d+))?/;
+    const fileLineRe = /([\/\\w.\-@]+\.(?:tsx?|jsx?|mts|cts|mjs|cjs))(?::(\d+))(?::(\d+))?/;
 
     let lastIdx = -1;
     let matchedSource: string | null = null;

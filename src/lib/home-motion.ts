@@ -66,15 +66,12 @@ export function startHomeMotion(): () => void {
 
   // Auto-tag legacy reveal classes so the new controller is the single
   // source of truth on the homepage.
-  const legacy = document.querySelectorAll<HTMLElement>(
-    ".reveal, .reveal-stagger, .section-enter",
-  );
+  const legacy = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
   legacy.forEach((el) => {
     if (!el.hasAttribute("data-motion")) el.setAttribute("data-motion", "fade-up");
   });
 
-  const all = () =>
-    Array.from(document.querySelectorAll<HTMLElement>("[data-motion]"));
+  const all = () => Array.from(document.querySelectorAll<HTMLElement>("[data-motion]"));
 
   // Reduced motion: never hide anything, mark everything triggered, exit.
   if (reduced) {
@@ -104,7 +101,7 @@ export function startHomeMotion(): () => void {
     }
   };
 
-  let pending = new Set<HTMLElement>(all());
+  const pending = new Set<HTMLElement>(all());
   const triggered = new Set<HTMLElement>();
   const telemetry: HomeMotionTelemetry = {
     total: pending.size,

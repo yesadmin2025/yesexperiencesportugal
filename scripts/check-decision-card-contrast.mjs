@@ -24,7 +24,7 @@ const ROOT = resolve(__dirname, "..");
 // We aim higher because of motion/blur and varied photo content.
 const TARGETS = {
   headline: 5.5, // serif H3 — generous safety margin
-  body: 4.5,    // 14.5px body — WCAG AA
+  body: 4.5, // 14.5px body — WCAG AA
 };
 const WHITE_REL_LUM = 1.0;
 
@@ -45,43 +45,43 @@ const CARDS = [
     slug: "signature",
     file: "src/assets/decision-signature.jpg",
     gradient: [
-      { pos: 0.00, alpha: 0.94 },
+      { pos: 0.0, alpha: 0.94 },
       { pos: 0.22, alpha: 0.86 },
       { pos: 0.55, alpha: 0.55 },
-      { pos: 0.80, alpha: 0.35 },
-      { pos: 1.00, alpha: 0.45 },
+      { pos: 0.8, alpha: 0.35 },
+      { pos: 1.0, alpha: 0.45 },
     ],
   },
   {
     slug: "tailor",
     file: "src/assets/decision-tailor.jpg",
     gradient: [
-      { pos: 0.00, alpha: 0.80 },
+      { pos: 0.0, alpha: 0.8 },
       { pos: 0.28, alpha: 0.62 },
-      { pos: 0.60, alpha: 0.32 },
-      { pos: 1.00, alpha: 0.18 },
+      { pos: 0.6, alpha: 0.32 },
+      { pos: 1.0, alpha: 0.18 },
     ],
   },
   {
     slug: "studio",
     file: "src/assets/decision-studio.jpg",
     gradient: [
-      { pos: 0.00, alpha: 0.88 },
+      { pos: 0.0, alpha: 0.88 },
       { pos: 0.25, alpha: 0.72 },
       { pos: 0.58, alpha: 0.42 },
       { pos: 0.85, alpha: 0.22 },
-      { pos: 1.00, alpha: 0.32 },
+      { pos: 1.0, alpha: 0.32 },
     ],
   },
   {
     slug: "moment",
     file: "src/assets/decision-moment.jpg",
     gradient: [
-      { pos: 0.00, alpha: 0.78 },
+      { pos: 0.0, alpha: 0.78 },
       { pos: 0.22, alpha: 0.62 },
       { pos: 0.55, alpha: 0.42 },
-      { pos: 0.80, alpha: 0.40 },
-      { pos: 1.00, alpha: 0.55 },
+      { pos: 0.8, alpha: 0.4 },
+      { pos: 1.0, alpha: 0.55 },
     ],
   },
 ];
@@ -90,7 +90,8 @@ const CARDS = [
 /** Linear interpolation of gradient alpha at a given position (0..1, 0=bottom). */
 function alphaAt(stops, pos) {
   for (let i = 0; i < stops.length - 1; i++) {
-    const a = stops[i], b = stops[i + 1];
+    const a = stops[i],
+      b = stops[i + 1];
     if (pos >= a.pos && pos <= b.pos) {
       const t = (pos - a.pos) / (b.pos - a.pos || 1);
       return a.alpha + (b.alpha - a.alpha) * t;
@@ -112,7 +113,8 @@ function relLum(r, g, b) {
 
 /** WCAG contrast ratio between two relative luminances. */
 function contrastRatio(L1, L2) {
-  const hi = Math.max(L1, L2), lo = Math.min(L1, L2);
+  const hi = Math.max(L1, L2),
+    lo = Math.min(L1, L2);
   return (hi + 0.05) / (lo + 0.05);
 }
 
@@ -131,7 +133,8 @@ function overlaidLum(r, g, b, a) {
 async function sampleBand(file, gradient, band) {
   const img = sharp(resolve(ROOT, file));
   const meta = await img.metadata();
-  const W = meta.width, H = meta.height;
+  const W = meta.width,
+    H = meta.height;
   const top = Math.floor(H * band.top);
   const bottom = Math.floor(H * band.bottom);
   const region = await img
@@ -141,13 +144,16 @@ async function sampleBand(file, gradient, band) {
   const { data, info } = region;
   const ch = info.channels; // 3 or 4
 
-  let minC = Infinity, maxC = -Infinity, sum = 0, n = 0;
+  let minC = Infinity,
+    maxC = -Infinity,
+    sum = 0,
+    n = 0;
   // Sample on a coarse grid to keep it fast.
   const step = 4;
   for (let y = 0; y < info.height; y += step) {
     // Position in card coords (0 = bottom of CARD, gradient assumes to_top)
-    const cardY = (top + y) / H;     // 0..1 from top of card
-    const gradPos = 1 - cardY;       // bottom-up for `to_top` gradient
+    const cardY = (top + y) / H; // 0..1 from top of card
+    const gradPos = 1 - cardY; // bottom-up for `to_top` gradient
     const a = alphaAt(gradient, gradPos);
     for (let x = 0; x < info.width; x += step) {
       const i = (y * info.width + x) * ch;
@@ -175,11 +181,11 @@ const COLOR = {
 let failed = 0;
 console.log(
   `${COLOR.bold}Decision card contrast check${COLOR.reset} ` +
-    `${COLOR.dim}(white text vs gradient-overlaid photo)${COLOR.reset}\n`
+    `${COLOR.dim}(white text vs gradient-overlaid photo)${COLOR.reset}\n`,
 );
 console.log(
   `Targets: headline ≥ ${TARGETS.headline.toFixed(1)}:1, ` +
-    `body ≥ ${TARGETS.body.toFixed(1)}:1 (worst-pixel)\n`
+    `body ≥ ${TARGETS.body.toFixed(1)}:1 (worst-pixel)\n`,
 );
 
 for (const card of CARDS) {
@@ -191,22 +197,22 @@ for (const card of CARDS) {
   const ok = headOk && bodyOk;
   if (!ok) failed++;
 
-  const tag = ok
-    ? `${COLOR.green}PASS${COLOR.reset}`
-    : `${COLOR.red}FAIL${COLOR.reset}`;
+  const tag = ok ? `${COLOR.green}PASS${COLOR.reset}` : `${COLOR.red}FAIL${COLOR.reset}`;
   const fmt = (v, target) => {
     const c = v >= target ? COLOR.green : v >= target * 0.85 ? COLOR.yellow : COLOR.red;
     return `${c}${v.toFixed(2)}:1${COLOR.reset}`;
   };
 
-  console.log(`${tag}  ${COLOR.bold}${card.slug.padEnd(10)}${COLOR.reset} ${COLOR.dim}${card.file}${COLOR.reset}`);
+  console.log(
+    `${tag}  ${COLOR.bold}${card.slug.padEnd(10)}${COLOR.reset} ${COLOR.dim}${card.file}${COLOR.reset}`,
+  );
   console.log(
     `       headline  worst ${fmt(head.min, TARGETS.headline)}  ` +
-      `mean ${head.mean.toFixed(2)}:1  best ${head.max.toFixed(2)}:1`
+      `mean ${head.mean.toFixed(2)}:1  best ${head.max.toFixed(2)}:1`,
   );
   console.log(
     `       body      worst ${fmt(body.min, TARGETS.body)}  ` +
-      `mean ${body.mean.toFixed(2)}:1  best ${body.max.toFixed(2)}:1`
+      `mean ${body.mean.toFixed(2)}:1  best ${body.max.toFixed(2)}:1`,
   );
 
   if (!headOk) {
@@ -214,14 +220,14 @@ for (const card of CARDS) {
     const suggest = Math.min(0.95, alphaAt(card.gradient, 0.25) + 0.04 + deficit * 0.03);
     console.log(
       `       ${COLOR.yellow}⚠ headline below threshold by ${deficit.toFixed(2)}:1 — ` +
-        `try increasing bottom-band alpha toward ~${suggest.toFixed(2)}${COLOR.reset}`
+        `try increasing bottom-band alpha toward ~${suggest.toFixed(2)}${COLOR.reset}`,
     );
   }
   if (!bodyOk) {
     const deficit = TARGETS.body - body.min;
     console.log(
       `       ${COLOR.yellow}⚠ body below threshold by ${deficit.toFixed(2)}:1 — ` +
-        `darken stops in the 0–25% range or shift mid stop down${COLOR.reset}`
+        `darken stops in the 0–25% range or shift mid stop down${COLOR.reset}`,
     );
   }
   console.log();

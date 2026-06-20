@@ -19,14 +19,8 @@
 //  - flag-off → `resolveStudioV3Route` output is identical to today
 
 import { describe, it, expect } from "vitest";
-import {
-  resolveStudioV3Route,
-  selectOptionalRefinements,
-} from "@/components/studio-v3/curation";
-import {
-  REGION_STOP_POOL,
-  STUDIO_V3_OPTIONAL_STOPS_ENABLED,
-} from "@/data/regionStopPool";
+import { resolveStudioV3Route, selectOptionalRefinements } from "@/components/studio-v3/curation";
+import { REGION_STOP_POOL, STUDIO_V3_OPTIONAL_STOPS_ENABLED } from "@/data/regionStopPool";
 
 describe("Studio V3 — Phase 5D flag default", () => {
   it("STUDIO_V3_OPTIONAL_STOPS_ENABLED stays false in committed code", () => {
@@ -129,9 +123,9 @@ describe("Studio V3 — selectOptionalRefinements eligibility", () => {
 
 describe("Studio V3 — P17 isolation", () => {
   const P17_NAMES = new Set(
-    REGION_STOP_POOL.filter(
-      (s) => s.signatureTourId === "roman-heritage-talha-wines",
-    ).map((s) => s.name),
+    REGION_STOP_POOL.filter((s) => s.signatureTourId === "roman-heritage-talha-wines").map(
+      (s) => s.name,
+    ),
   );
 
   it("there is at least one P17 stop seeded (sanity)", () => {

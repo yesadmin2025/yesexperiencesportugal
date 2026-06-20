@@ -50,8 +50,7 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   const dLng = toRad(b.lng - a.lng);
   const lat1 = toRad(a.lat);
   const lat2 = toRad(b.lat);
-  const h =
-    Math.sin(dLat / 2) ** 2 + Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  const h = Math.sin(dLat / 2) ** 2 + Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
@@ -194,10 +193,12 @@ export function composeDay(
   region: RegionKey,
   opts: ComposeOptions = {},
 ): ComposedDay {
-  const weekday = opts.weekday ?? (() => {
-    const w = new Date().getDay(); // 0=Sun
-    return w === 0 ? 7 : w;
-  })();
+  const weekday =
+    opts.weekday ??
+    (() => {
+      const w = new Date().getDay(); // 0=Sun
+      return w === 0 ? 7 : w;
+    })();
   const month = opts.month ?? new Date().getMonth() + 1;
   const confidence = opts.confidence;
 
@@ -209,8 +210,7 @@ export function composeDay(
   const warnings: string[] = [];
 
   // 1. Filter pool by operational rules.
-  const candidates = REGION_STOPS
-    .filter((s) => s.region === region)
+  const candidates = REGION_STOPS.filter((s) => s.region === region)
     .filter((s) => isOpenOnDay(s, weekday))
     .filter((s) => isInSeason(s, month));
 
@@ -234,9 +234,7 @@ export function composeDay(
     if (cap !== undefined && used >= cap) continue;
 
     // Tentative ordering for fit check: insert and order by time-of-day.
-    const tentative = [...picked, stop].sort(
-      (a, b) => preferredSlot(a) - preferredSlot(b),
-    );
+    const tentative = [...picked, stop].sort((a, b) => preferredSlot(a) - preferredSlot(b));
     const fit = simulateDay(tentative, origin);
     if (fit.maxHop > rules.maxHopMinutes) continue;
     if (fit.drive > rules.maxDriveMinutes) continue;

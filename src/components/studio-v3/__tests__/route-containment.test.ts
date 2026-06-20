@@ -121,16 +121,13 @@ function buildAllowedLabelsForSkeleton(
     if (stop.region !== cluster.region) continue;
     if (stop.routeCluster !== cluster.routeCluster) continue;
 
-    const sigOk =
-      !!stop.signatureTourId &&
-      stop.signatureTourId === cluster.signatureTourId;
+    const sigOk = !!stop.signatureTourId && stop.signatureTourId === cluster.signatureTourId;
     const srcOk =
       !!stop.sourceTourIds &&
       stop.sourceTourIds.length > 0 &&
       stop.sourceTourIds.includes(cluster.signatureTourId);
     const generic =
-      !stop.signatureTourId &&
-      (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
+      !stop.signatureTourId && (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
 
     if (sigOk || srcOk || generic) {
       allowed.add(norm(stop.name));
@@ -272,9 +269,7 @@ describe("Studio V3 — curateJourney route containment", () => {
                 interests,
                 pickup,
               });
-              const primaryLabels = new Set(
-                journey.tour.stops.map((s) => norm(s.label)),
-              );
+              const primaryLabels = new Set(journey.tour.stops.map((s) => norm(s.label)));
 
               for (const m of journey.moments) {
                 if (!primaryLabels.has(norm(m.label))) {

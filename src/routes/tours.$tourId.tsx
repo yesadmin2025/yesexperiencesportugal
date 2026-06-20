@@ -1,17 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import {
-  Clock,
-  MapPin,
-  ArrowLeft,
-  Check,
-  Sparkles,
-  Info,
-  Heart,
-  Shield,
-  Star,
-  
-} from "lucide-react";
+import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } from "lucide-react";
 import {
   signatureTours,
   findTour,
@@ -22,11 +11,7 @@ import {
   type TourStop,
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
-import {
-  bookableIncluded,
-  validateTour,
-  logTourValidation,
-} from "@/lib/viatorValidation";
+import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
 import { SimpleTailorForm } from "@/components/SimpleTailorForm";
@@ -92,7 +77,10 @@ export const Route = createFileRoute("/tours/$tourId")({
         <div className="container-x max-w-xl text-center">
           <h1 className="serif text-3xl">Something went sideways</h1>
           <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
-          <Link to="/experiences" className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[color:var(--teal)]">
+          <Link
+            to="/experiences"
+            className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[color:var(--teal)]"
+          >
             <ArrowLeft size={12} /> Back to experiences
           </Link>
         </div>
@@ -214,8 +202,12 @@ function TourHero({
                       <Star key={i} size={11} fill="currentColor" strokeWidth={0} />
                     ))}
                   </span>
-                  <span className="tracking-tight font-semibold leading-none">{meta.rating.toFixed(1)}</span>
-                  <span className="text-[color:var(--charcoal-soft)] leading-none">· {meta.reviewCount} reviews</span>
+                  <span className="tracking-tight font-semibold leading-none">
+                    {meta.rating.toFixed(1)}
+                  </span>
+                  <span className="text-[color:var(--charcoal-soft)] leading-none">
+                    · {meta.reviewCount} reviews
+                  </span>
                 </div>
               )}
 
@@ -239,12 +231,13 @@ function TourHero({
                 <span aria-hidden className="h-3 w-px bg-[color:var(--ivory)]/30" />
                 <span className="flex items-baseline gap-1.5">
                   <span className="text-[color:var(--ivory)]/70">From</span>
-                  <span className="serif normal-case tracking-normal text-[15px] text-[color:var(--gold-soft)]">€{tour.priceFrom}</span>
+                  <span className="serif normal-case tracking-normal text-[15px] text-[color:var(--gold-soft)]">
+                    €{tour.priceFrom}
+                  </span>
                 </span>
               </div>
             </div>
           </div>
-
 
           {/* CTA bar — directly under hero, mobile-first thumb-friendly */}
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -277,7 +270,10 @@ function TrustStrip({ meta }: { meta?: ViatorMeta }) {
     { icon: <Check size={14} />, label: "No forms. No waiting." },
     {
       icon: <Star size={14} />,
-      label: meta && meta.reviewCount > 0 ? `${meta.rating.toFixed(1)} · ${meta.reviewCount} reviews` : "Trusted local guide",
+      label:
+        meta && meta.reviewCount > 0
+          ? `${meta.rating.toFixed(1)} · ${meta.reviewCount} reviews`
+          : "Trusted local guide",
     },
   ];
   return (
@@ -324,7 +320,9 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
-          <SectionTitle size="compact">What you'll <SectionTitle.Em>actually do</SectionTitle.Em></SectionTitle>
+          <SectionTitle size="compact">
+            What you'll <SectionTitle.Em>actually do</SectionTitle.Em>
+          </SectionTitle>
         </div>
         <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
           {(tour.highlights ?? []).map((h) => (
@@ -353,7 +351,9 @@ function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
         <div className="flex items-end justify-between mb-10 flex-wrap gap-3">
           <div>
             <Eyebrow>Itinerary</Eyebrow>
-            <SectionTitle size="compact">The story, <SectionTitle.Em>stop by stop</SectionTitle.Em></SectionTitle>
+            <SectionTitle size="compact">
+              The story, <SectionTitle.Em>stop by stop</SectionTitle.Em>
+            </SectionTitle>
           </div>
           <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             {stops.length} chapters · in this order
@@ -407,9 +407,11 @@ function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function RouteMap({ tour }: { tour: SignatureTour }) {
   const region = tour.seed.region ?? "lisbon";
-  const points: (StopCoord & { idx: number; raw: TourStop })[] = (tour.stops ?? []).map(
-    (s, i) => ({ ...snapStop(s.label, region, i), idx: i, raw: s }),
-  );
+  const points: (StopCoord & { idx: number; raw: TourStop })[] = (tour.stops ?? []).map((s, i) => ({
+    ...snapStop(s.label, region, i),
+    idx: i,
+    raw: s,
+  }));
 
   if (points.length === 0) return null;
 
@@ -423,16 +425,16 @@ function RouteMap({ tour }: { tour: SignatureTour }) {
   const w = Math.max(40, maxX - minX);
   const h = Math.max(40, maxY - minY);
 
-  const path = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
-    .join(" ");
+  const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
 
   return (
     <section className="py-14 md:py-20">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>The route</Eyebrow>
-          <SectionTitle size="compact">Where the <SectionTitle.Em>day goes</SectionTitle.Em></SectionTitle>
+          <SectionTitle size="compact">
+            Where the <SectionTitle.Em>day goes</SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] max-w-lg mx-auto">
             Real stops, in the order you'll see them.
           </p>
@@ -448,7 +450,12 @@ function RouteMap({ tour }: { tour: SignatureTour }) {
             viewBox="0 0 200 400"
           >
             <defs>
-              <pattern id={`rmap-grid-${tour.id}`} width="20" height="20" patternUnits="userSpaceOnUse">
+              <pattern
+                id={`rmap-grid-${tour.id}`}
+                width="20"
+                height="20"
+                patternUnits="userSpaceOnUse"
+              >
                 <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--gold)" strokeWidth="0.4" />
               </pattern>
             </defs>
@@ -550,10 +557,7 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
           <ul className="space-y-3 text-[14.5px] leading-relaxed">
             {inc.items.map((h) => (
               <li key={h} className="flex gap-2.5">
-                <Check
-                  size={15}
-                  className="mt-0.5 text-[color:var(--teal)] flex-shrink-0"
-                />
+                <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
                 <span>{h}</span>
               </li>
             ))}
@@ -634,7 +638,9 @@ function GalleryStrip({
         <div className="flex items-end justify-between mb-8 flex-wrap gap-3">
           <div>
             <Eyebrow>Gallery</Eyebrow>
-            <SectionTitle size="compact">Inside <SectionTitle.Em>the day</SectionTitle.Em></SectionTitle>
+            <SectionTitle size="compact">
+              Inside <SectionTitle.Em>the day</SectionTitle.Em>
+            </SectionTitle>
           </div>
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             Real photos · real stops
@@ -700,8 +706,8 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
               <SectionTitle.Em>Adjust the details.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-lg">
-              This Signature is designed as it is. You can fine-tune a few details
-              inside this specific tour — without redesigning the day.
+              This Signature is designed as it is. You can fine-tune a few details inside this
+              specific tour — without redesigning the day.
             </p>
 
             <ul className="mt-6 space-y-2.5 text-[14px]">
@@ -715,7 +721,10 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
 
             <p className="mt-6 text-[12px] italic text-[color:var(--charcoal-soft)] leading-relaxed max-w-md">
               Want to start from a blank page instead?{" "}
-              <Link to="/builder" className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]">
+              <Link
+                to="/builder"
+                className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]"
+              >
                 Open the Studio
               </Link>{" "}
               and build your own day.
@@ -735,22 +744,19 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
 const FALLBACK_REVIEWS = [
   {
     title: "Quiet, private, perfectly paced",
-    text:
-      "Felt like a private day with a Portuguese friend who happens to know everyone. Nothing rushed, nothing generic.",
+    text: "Felt like a private day with a Portuguese friend who happens to know everyone. Nothing rushed, nothing generic.",
     author: "Sarah T.",
     date: null as string | null,
   },
   {
     title: "Booked in five minutes",
-    text:
-      "We booked in five minutes, confirmed instantly, and the day exceeded every expectation. Quiet luxury done properly.",
+    text: "We booked in five minutes, confirmed instantly, and the day exceeded every expectation. Quiet luxury done properly.",
     author: "Pierre L.",
     date: null as string | null,
   },
   {
     title: "Cared for, end to end",
-    text:
-      "Our small group felt completely cared for. Beautiful pace, beautiful stops, beautiful people.",
+    text: "Our small group felt completely cared for. Beautiful pace, beautiful stops, beautiful people.",
     author: "Akiko M.",
     date: null as string | null,
   },
@@ -768,7 +774,9 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
     <section className="py-14 md:py-20 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)]">
       <div className="container-x max-w-6xl">
         <div className="text-center mb-10">
-          <Eyebrow flank tone="onDark">What guests say</Eyebrow>
+          <Eyebrow flank tone="onDark">
+            What guests say
+          </Eyebrow>
           <SectionTitle size="compact">
             <SectionTitle.Em className="text-[color:var(--gold-soft)]">{headline}</SectionTitle.Em>
           </SectionTitle>
@@ -831,7 +839,9 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
       </div>
 
       <div className="relative container-x max-w-3xl text-center text-[color:var(--ivory)]">
-        <Eyebrow flank tone="onDark">Ready when you are</Eyebrow>
+        <Eyebrow flank tone="onDark">
+          Ready when you are
+        </Eyebrow>
         <SectionTitle size="default" spacing="loose" className="text-[color:var(--ivory)]">
           {tour.title.split("—")[0].trim()}
         </SectionTitle>
@@ -847,11 +857,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           >
             Reserve instantly
           </CtaButton>
-          <CtaButton
-            to="/tours/$tourId/tailor"
-            params={{ tourId: tour.id }}
-            variant="ghostDark"
-          >
+          <CtaButton to="/tours/$tourId/tailor" params={{ tourId: tour.id }} variant="ghostDark">
             Make it yours
           </CtaButton>
         </div>
@@ -897,7 +903,9 @@ function RelatedTours({ currentId }: { currentId: string }) {
     <section className="py-16 bg-[color:var(--ivory)] border-t border-[color:var(--border)]">
       <div className="container-x max-w-5xl">
         <Eyebrow>More like this</Eyebrow>
-        <SectionTitle size="compact">Other <SectionTitle.Em>Signature Experiences</SectionTitle.Em></SectionTitle>
+        <SectionTitle size="compact">
+          Other <SectionTitle.Em>Signature Experiences</SectionTitle.Em>
+        </SectionTitle>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {others.map((t) => (
             <Link

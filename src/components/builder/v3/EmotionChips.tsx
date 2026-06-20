@@ -29,7 +29,12 @@ const PHASE_ORDER: PhaseKind[] = ["mood", "who", "intention", "pace"];
 interface Props {
   t: StudioDict;
   tone?: "light" | "dark";
-  active?: { mood?: Mood | null; who?: Who | null; intention?: Intention | null; pace?: Pace | null };
+  active?: {
+    mood?: Mood | null;
+    who?: Who | null;
+    intention?: Intention | null;
+    pace?: Pace | null;
+  };
   onPick: (p: EmotionPick) => void;
 }
 

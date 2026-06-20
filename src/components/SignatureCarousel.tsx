@@ -95,9 +95,7 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
 
     const tick = () => {
       raf = 0;
-      const cards = Array.from(
-        track.querySelectorAll<HTMLElement>("[data-carousel-card]"),
-      );
+      const cards = Array.from(track.querySelectorAll<HTMLElement>("[data-carousel-card]"));
       if (cards.length === 0) return;
       const trackCenter = track.scrollLeft + track.clientWidth / 2;
       let bestIdx = 0;
@@ -126,27 +124,23 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
     };
   }, [items.length]);
 
-  const scrollToIndex = useCallback(
-    (idx: number, opts: { smooth?: boolean } = {}) => {
-      const track = trackRef.current;
-      if (!track) return;
-      const cards = track.querySelectorAll<HTMLElement>("[data-carousel-card]");
-      const target = cards[idx];
-      if (!target) return;
-      const reduce =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const behavior: ScrollBehavior =
-        opts.smooth === false || reduce ? "auto" : "smooth";
-      // Use scrollTo on the track rather than scrollIntoView, which on
-      // some mobile browsers also scrolls the page vertically.
-      track.scrollTo({
-        left: target.offsetLeft,
-        behavior,
-      });
-    },
-    [],
-  );
+  const scrollToIndex = useCallback((idx: number, opts: { smooth?: boolean } = {}) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const cards = track.querySelectorAll<HTMLElement>("[data-carousel-card]");
+    const target = cards[idx];
+    if (!target) return;
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const behavior: ScrollBehavior = opts.smooth === false || reduce ? "auto" : "smooth";
+    // Use scrollTo on the track rather than scrollIntoView, which on
+    // some mobile browsers also scrolls the page vertically.
+    track.scrollTo({
+      left: target.offsetLeft,
+      behavior,
+    });
+  }, []);
 
   // ── Pause-state listeners (hover, focus, touch, visibility, viewport) ──
   useEffect(() => {
@@ -177,10 +171,9 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
     document.addEventListener("visibilitychange", onVisibility);
 
     // Pause when carousel is offscreen.
-    const io = new IntersectionObserver(
-      ([entry]) => setFlag("offscreen", !entry.isIntersecting),
-      { threshold: 0.25 },
-    );
+    const io = new IntersectionObserver(([entry]) => setFlag("offscreen", !entry.isIntersecting), {
+      threshold: 0.25,
+    });
     io.observe(root);
 
     return () => {

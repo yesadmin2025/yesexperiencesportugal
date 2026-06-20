@@ -12,10 +12,7 @@ const ARRABIDA_TOUR_ID = "arrabida-wine-allinclusive";
 const ARRABIDA_REGION = "lisbon";
 const ARRABIDA_REGION_LABEL = "Setúbal · Arrábida";
 
-async function assertAdmin(
-  supabase: { from: (t: string) => any },
-  userId: string,
-): Promise<void> {
+async function assertAdmin(supabase: { from: (t: string) => any }, userId: string): Promise<void> {
   const { data: roleRow, error } = await supabase
     .from("user_roles")
     .select("role")
@@ -34,10 +31,12 @@ export const fetchViatorArrabida = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
     z.object({
-      url: z.string().url().refine(
-        (u) => /^https?:\/\/(www\.)?viator\.com\//i.test(u),
-        { message: "Must be a viator.com URL" },
-      ),
+      url: z
+        .string()
+        .url()
+        .refine((u) => /^https?:\/\/(www\.)?viator\.com\//i.test(u), {
+          message: "Must be a viator.com URL",
+        }),
     }),
   )
   .handler(async ({ data, context }) => {
@@ -62,14 +61,16 @@ export const saveViatorArrabida = createServerFn({ method: "POST" })
         pickupZone: z.string(),
         groupType: z.string(),
         blurb: z.string(),
-        itinerary: z.array(
-          z.object({
-            order: z.number().int(),
-            label: z.string().min(1),
-            description: z.string(),
-            optional: z.boolean(),
-          }),
-        ).min(1),
+        itinerary: z
+          .array(
+            z.object({
+              order: z.number().int(),
+              label: z.string().min(1),
+              description: z.string(),
+              optional: z.boolean(),
+            }),
+          )
+          .min(1),
         inclusions: z.array(z.string()),
         exclusions: z.array(z.string()),
         variesByOption: z.array(z.string()),
@@ -117,9 +118,7 @@ export const saveViatorArrabida = createServerFn({ method: "POST" })
       ai_model: "google/gemini-3-flash-preview",
     };
 
-    const { error } = await supabaseAdmin
-      .from("imported_tours")
-      .upsert(row, { onConflict: "id" });
+    const { error } = await supabaseAdmin.from("imported_tours").upsert(row, { onConflict: "id" });
 
     if (error) throw new Error(`DB upsert failed: ${error.message}`);
 
@@ -153,10 +152,12 @@ function regionFor(id: string, fallback: string): { region: string; region_label
 
 const BulkItemSchema = z.object({
   id: z.string().min(1),
-  url: z.string().url().refine(
-    (u) => /^https?:\/\/(www\.)?viator\.com\//i.test(u),
-    { message: "Must be a viator.com URL" },
-  ),
+  url: z
+    .string()
+    .url()
+    .refine((u) => /^https?:\/\/(www\.)?viator\.com\//i.test(u), {
+      message: "Must be a viator.com URL",
+    }),
 });
 
 export const bulkImportViatorTours = createServerFn({ method: "POST" })
@@ -235,4 +236,3 @@ export const bulkImportViatorTours = createServerFn({ method: "POST" })
       results,
     };
   });
-

@@ -15,7 +15,10 @@ vi.mock("@/lib/studio-v3-telemetry", () => ({
 
 function renderInTheme(theme: "light" | "dark", ui: React.ReactNode) {
   return render(
-    <div data-theme={theme} style={theme === "dark" ? { background: "#111" } : { background: "#fff" }}>
+    <div
+      data-theme={theme}
+      style={theme === "dark" ? { background: "#111" } : { background: "#fff" }}
+    >
       {ui}
     </div>,
   );
@@ -53,11 +56,7 @@ describe("StudioV3ProgressStepper · accessibility", () => {
     // reachable: region, rhythm, dates (buttons) + compose (active, div).
     // → buttons in DOM order: region, rhythm, dates.
     const buttons = screen.getAllByRole("button");
-    expect(buttons.map((b) => b.getAttribute("data-beat"))).toEqual([
-      "region",
-      "rhythm",
-      "dates",
-    ]);
+    expect(buttons.map((b) => b.getAttribute("data-beat"))).toEqual(["region", "rhythm", "dates"]);
 
     buttons[0].focus();
     expect(document.activeElement).toBe(buttons[0]);

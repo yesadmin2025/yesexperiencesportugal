@@ -117,7 +117,6 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       if (!prev || s.weight > prev.weight) dedupeMap.set(identity, s);
     }
     const fullPool: DbStop[] = Array.from(dedupeMap.values()).map(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ({ canonical_key, ...rest }) => rest,
     );
 
@@ -135,9 +134,7 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
         const isAnchor = s.source_tour_keys.some((k) => filterSet.has(k));
         return isAnchor ? { ...s, weight: (s.weight ?? 50) + 40 } : s;
       });
-      anchored = pool.some((s) =>
-        s.source_tour_keys.some((k) => filterSet.has(k)),
-      );
+      anchored = pool.some((s) => s.source_tour_keys.some((k) => filterSet.has(k)));
     }
 
     const target = data.targetStops ?? data.profile.stopDensityTarget ?? 4;

@@ -25,9 +25,7 @@ const baseInput = {
   considerations: [] as ReadonlyArray<string>,
 };
 
-function makeRoutePoints(
-  parts: Array<{ label: string; story?: string }>,
-) {
+function makeRoutePoints(parts: Array<{ label: string; story?: string }>) {
   return parts.map((p, i) => ({
     index: i,
     label: p.label,
@@ -44,9 +42,27 @@ describe("Phase 5H — flag state (preview QA)", () => {
 
   it("resolveStudioV3Route is deterministic and never exceeds 4 route points", () => {
     const inputs = [
-      { feeling: "wine-food" as const, companions: "couple" as const, rhythm: "balanced" as const, interests: ["wine", "gastronomy"] as const, pickup: "lisbon" as const },
-      { feeling: "coastal" as const, companions: "family" as const, rhythm: "slow" as const, interests: ["coast", "nature"] as const, pickup: "lisbon" as const },
-      { feeling: "culture" as const, companions: "couple" as const, rhythm: "full" as const, interests: ["heritage"] as const, pickup: "lisbon" as const },
+      {
+        feeling: "wine-food" as const,
+        companions: "couple" as const,
+        rhythm: "balanced" as const,
+        interests: ["wine", "gastronomy"] as const,
+        pickup: "lisbon" as const,
+      },
+      {
+        feeling: "coastal" as const,
+        companions: "family" as const,
+        rhythm: "slow" as const,
+        interests: ["coast", "nature"] as const,
+        pickup: "lisbon" as const,
+      },
+      {
+        feeling: "culture" as const,
+        companions: "couple" as const,
+        rhythm: "full" as const,
+        interests: ["heritage"] as const,
+        pickup: "lisbon" as const,
+      },
     ];
     for (const i of inputs) {
       const a = resolveStudioV3Route(i);
@@ -465,9 +481,7 @@ describe("Phase 5G — one personalised extra moment", () => {
     expect(out.length).toBeLessThanOrEqual(4);
     expect(out.length).toBeGreaterThanOrEqual(route.length);
     if (out.length === route.length + 1) {
-      const added = out.find(
-        (p) => !route.some((r) => r.label === p.label),
-      );
+      const added = out.find((p) => !route.some((r) => r.label === p.label));
       expect(added).toBeDefined();
       const stop = REGION_STOP_POOL.find((s) => s.name === added!.label);
       expect(stop).toBeDefined();
@@ -511,10 +525,7 @@ describe("Phase 5G — one personalised extra moment", () => {
   it("never picks a oneOfGroup member already present in the route", () => {
     // Seed route with a pool stop that belongs to a oneOfGroup, if any.
     const grouped = REGION_STOP_POOL.find(
-      (s) =>
-        s.routeCluster === "arrabida-azeitao-sesimbra" &&
-        !!s.oneOfGroup &&
-        s.active,
+      (s) => s.routeCluster === "arrabida-azeitao-sesimbra" && !!s.oneOfGroup && s.active,
     );
     if (!grouped) return; // no grouped stop in cluster — skip silently
     const route = makeRoutePoints([

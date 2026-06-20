@@ -66,19 +66,20 @@ export function LivingStoryStrip({
         style={{ minHeight: 64 }}
       >
         <div className="flex min-w-0 flex-1 items-center gap-3">
-          <span
-            className="relative inline-flex h-1.5 w-1.5 shrink-0"
-            aria-hidden
-          >
+          <span className="relative inline-flex h-1.5 w-1.5 shrink-0" aria-hidden>
             <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
             <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
           </span>
           <div className="min-w-0 flex-1">
             <p
               className="text-[9.5px] uppercase tracking-[0.32em]"
-              style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+                fontWeight: 600,
+              }}
             >
-              {profile.name?.trim() ? `${profile.name.trim()}'s story` : "Your story"} · {stops} {stops === 1 ? "stop" : "stops"} · {region}
+              {profile.name?.trim() ? `${profile.name.trim()}'s story` : "Your story"} · {stops}{" "}
+              {stops === 1 ? "stop" : "stops"} · {region}
             </p>
             <p
               className="mt-0.5 truncate text-[13px]"
@@ -152,13 +153,19 @@ export function LivingStoryStrip({
             <div>
               <p
                 className="text-[9.5px] uppercase tracking-[0.3em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  fontWeight: 600,
+                }}
               >
                 Experience investment
               </p>
               <p
                 className="mt-1 text-[14px]"
-                style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+                style={{
+                  fontFamily: "var(--font-display, Montserrat), sans-serif",
+                  fontWeight: 600,
+                }}
               >
                 {tierLabel ? `${tierLabel} tier` : "Shaped to your tier"}
                 <span
@@ -176,13 +183,19 @@ export function LivingStoryStrip({
             <div className="text-right">
               <p
                 className="text-[9.5px] uppercase tracking-[0.3em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  fontWeight: 600,
+                }}
               >
                 Rhythm
               </p>
               <p
                 className="mt-1 text-[14px]"
-                style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+                style={{
+                  fontFamily: "var(--font-display, Montserrat), sans-serif",
+                  fontWeight: 600,
+                }}
               >
                 {stops} {stops === 1 ? "stop" : "stops"}
               </p>
@@ -202,9 +215,13 @@ function derivePills(p: TravelerProfile): string[] {
   }
   if (p.pace) {
     out.push(
-      p.pace === "light"    ? "Slow" :
-      p.pace === "balanced" ? "Balanced" :
-      p.pace === "rich"     ? "Rich" : "Full",
+      p.pace === "light"
+        ? "Slow"
+        : p.pace === "balanced"
+          ? "Balanced"
+          : p.pace === "rich"
+            ? "Rich"
+            : "Full",
     );
   }
   const must = Object.entries(p.priorityWeights)
@@ -226,17 +243,22 @@ function derivePills(p: TravelerProfile): string[] {
 function deriveLines(p: TravelerProfile): string[] {
   const out: string[] = [storyOpener(p.name)];
   if (p.intent) out.push(storyAfterIntent(p.intent));
-  if (p.pace)   out.push(storyAfterPace(p.pace));
-  if (p.group)  out.push(storyAfterGroup(p.group));
+  if (p.pace) out.push(storyAfterPace(p.pace));
+  if (p.group) out.push(storyAfterGroup(p.group));
   return out;
 }
 
 function regionShort(r: string): string {
   switch (r) {
-    case "arrabida":     return "Arrábida";
-    case "lisbon-coast": return "Atlantic edge";
-    case "alentejo":     return "Alentejo";
-    case "centro":       return "Centro";
-    default:             return r;
+    case "arrabida":
+      return "Arrábida";
+    case "lisbon-coast":
+      return "Atlantic edge";
+    case "alentejo":
+      return "Alentejo";
+    case "centro":
+      return "Centro";
+    default:
+      return r;
   }
 }

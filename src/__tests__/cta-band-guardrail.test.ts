@@ -57,10 +57,10 @@ const CTA_LABEL_PATTERNS: { label: string; regex: RegExp }[] = [
   // Match the label as visible JSX text content. We intentionally use
   // `>Label<` framing so we hit rendered copy and not className strings,
   // comments, or aria-labels.
-  { label: "Talk to a Local",     regex: />\s*Talk to a Local\s*</g },
-  { label: "Create Your Story",   regex: />\s*Create Your Story\s*</g },
-  { label: "Reserve instantly",   regex: />\s*Reserve instantly\s*</g },
-  { label: "Open the Studio",     regex: />\s*Open the Studio\s*</g },
+  { label: "Talk to a Local", regex: />\s*Talk to a Local\s*</g },
+  { label: "Create Your Story", regex: />\s*Create Your Story\s*</g },
+  { label: "Reserve instantly", regex: />\s*Reserve instantly\s*</g },
+  { label: "Open the Studio", regex: />\s*Open the Studio\s*</g },
   { label: "Plan a Multi-Day Journey", regex: />\s*Plan a Multi-Day Journey\s*</g },
 ];
 
@@ -99,9 +99,7 @@ const DUPLICATE_BAND_EXEMPTIONS: { route: string; label: string; reason: string 
 ];
 
 function isExempt(route: string, label: string): boolean {
-  return DUPLICATE_BAND_EXEMPTIONS.some(
-    (e) => e.route === route && e.label === label,
-  );
+  return DUPLICATE_BAND_EXEMPTIONS.some((e) => e.route === route && e.label === label);
 }
 
 describe("Brand guardrail — duplicate CTA bands", () => {
@@ -141,15 +139,23 @@ describe("Brand guardrail — duplicate CTA bands", () => {
  */
 const FORBIDDEN_CTA_CLASS_PATTERNS: { name: string; regex: RegExp }[] = [
   // Raw white / black utilities (brand uses --ivory / --charcoal-deep).
-  { name: "bg-white",  regex: /\bbg-white\b/ },
-  { name: "bg-black",  regex: /\bbg-black\b/ },
+  { name: "bg-white", regex: /\bbg-white\b/ },
+  { name: "bg-black", regex: /\bbg-black\b/ },
   { name: "text-white", regex: /\btext-white\b/ },
   { name: "text-black", regex: /\btext-black\b/ },
   // Tailwind palette colors — brand bans them site-wide for CTAs.
-  { name: "bg-<palette>",   regex: /\bbg-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)\b/ },
-  { name: "text-<palette>", regex: /\btext-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)\b/ },
+  {
+    name: "bg-<palette>",
+    regex:
+      /\bbg-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)\b/,
+  },
+  {
+    name: "text-<palette>",
+    regex:
+      /\btext-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)\b/,
+  },
   // Arbitrary hex bg/text — only allowed via `var(--token)`.
-  { name: "bg-[#hex]",   regex: /\bbg-\[#[0-9a-fA-F]{3,8}\]/ },
+  { name: "bg-[#hex]", regex: /\bbg-\[#[0-9a-fA-F]{3,8}\]/ },
   { name: "text-[#hex]", regex: /\btext-\[#[0-9a-fA-F]{3,8}\]/ },
 ];
 
@@ -160,8 +166,7 @@ const FORBIDDEN_CTA_CLASS_PATTERNS: { name: string; regex: RegExp }[] = [
  * catches the editorial CTA shape used throughout the site (hero,
  * sections, footer, sticky bar) without flagging plain links.
  */
-const CTA_TAG_REGEX =
-  /<(Link|a|button)\b[^>]*\bclassName=("([^"]*)"|\{`([^`]*)`\})[^>]*>/g;
+const CTA_TAG_REGEX = /<(Link|a|button)\b[^>]*\bclassName=("([^"]*)"|\{`([^`]*)`\})[^>]*>/g;
 
 const CTA_HEIGHT_REGEX = /\bmin-h-\[(\d{2,3})px\]/;
 

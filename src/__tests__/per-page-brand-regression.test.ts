@@ -89,9 +89,7 @@ describe("Per-page brand regression — typography", () => {
     it(`${page.label} — no blacklisted webfont families`, () => {
       const src = readAll(page.files);
       for (const re of FORBIDDEN_FONTS) {
-        expect(src, `${page.label}: forbidden font matched ${re}`).not.toMatch(
-          re
-        );
+        expect(src, `${page.label}: forbidden font matched ${re}`).not.toMatch(re);
       }
     });
   }
@@ -112,10 +110,7 @@ describe("Per-page brand regression — palette", () => {
       const src = readAll(page.files);
       for (const re of FORBIDDEN_COLOR_PATTERNS) {
         const matches = src.match(re);
-        expect(
-          matches,
-          `${page.label}: off-brand colour ${matches?.[0]}`
-        ).toBeNull();
+        expect(matches, `${page.label}: off-brand colour ${matches?.[0]}`).toBeNull();
       }
     });
   }
@@ -140,7 +135,7 @@ describe("Per-page brand regression — CTA contract", () => {
       const hasPrimitive = CTA_BUTTON_PRIMARY.test(src);
       expect(
         hasInline || hasUtility || hasPrimitive,
-        `${page.label}: missing primary CTA — need teal background + gold border (raw, .cta-primary, or <CtaButton variant="primary">)`
+        `${page.label}: missing primary CTA — need teal background + gold border (raw, .cta-primary, or <CtaButton variant="primary">)`,
       ).toBe(true);
     });
   }
@@ -164,10 +159,7 @@ describe("Per-page brand regression — gold restraint", () => {
     it(`${page.label} — gold is never used as a large background`, () => {
       const src = readAll(page.files);
       for (const re of FORBIDDEN_GOLD_BG) {
-        expect(
-          src,
-          `${page.label}: gold used as a large background fill`
-        ).not.toMatch(re);
+        expect(src, `${page.label}: gold used as a large background fill`).not.toMatch(re);
       }
     });
   }

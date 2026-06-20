@@ -13,14 +13,7 @@ interface StepHeadProps {
   italicSub?: string;
 }
 
-export function StepHead({
-  num,
-  eyebrow,
-  title,
-  onBack,
-  totalChapters,
-  italicSub,
-}: StepHeadProps) {
+export function StepHead({ num, eyebrow, title, onBack, totalChapters, italicSub }: StepHeadProps) {
   const chapterMark =
     totalChapters && num > 0
       ? `${String(num).padStart(2, "0")} / ${String(totalChapters).padStart(2, "0")}`
@@ -78,14 +71,7 @@ interface MoodCardProps {
   realCover?: { url: string; alt: string } | null;
 }
 
-export function MoodCard({
-  selected,
-  onClick,
-  label,
-  sub,
-  cover,
-  realCover,
-}: MoodCardProps) {
+export function MoodCard({ selected, onClick, label, sub, cover, realCover }: MoodCardProps) {
   const src = realCover?.url ?? cover;
   const alt = realCover?.alt ?? "";
   return (
@@ -115,7 +101,9 @@ export function MoodCard({
           </span>
         )}
         <span className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-1 p-4 sm:p-5 text-[color:var(--ivory)]">
-          <span className="serif text-[1.25rem] sm:text-[1.4rem] leading-[1.1] font-semibold">{label}</span>
+          <span className="serif text-[1.25rem] sm:text-[1.4rem] leading-[1.1] font-semibold">
+            {label}
+          </span>
           <span className="text-[12.5px] tracking-wide opacity-90">{sub}</span>
         </span>
       </BuilderImage>
@@ -217,7 +205,6 @@ export function ChoiceRow({
     </button>
   );
 }
-
 
 /**
  * Step indicator rendered above each selection step.
