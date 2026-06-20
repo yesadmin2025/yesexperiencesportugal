@@ -197,23 +197,20 @@ function AdminPricingPage() {
 }
 
 function TourRow({
-  tourId,
-  title,
-  region,
-  priceFrom,
+  tour,
   initialTiers,
   onSaved,
 }: {
-  tourId: string;
-  title: string;
-  region: string;
-  priceFrom: number;
+  tour: SignatureTour;
   initialTiers: PriceTiersEUR | undefined;
   onSaved: () => Promise<void> | void;
 }) {
+  const { id: tourId, title, region, priceFrom } = tour;
   const [form, setForm] = useState<TierFormState>(() => toFormState(initialTiers));
   const [busy, setBusy] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewGuests, setPreviewGuests] = useState<number>(2);
 
   // Keep the form in sync when the cached query refetches.
   useEffect(() => {
@@ -262,15 +259,26 @@ function TourRow({
             {region} · id: {tourId} · priceFrom €{priceFrom}
           </p>
         </div>
-        <button
-          type="button"
-          disabled={!dirty || busy}
-          onClick={save}
-          className="inline-flex items-center gap-2 bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-4 py-2 text-xs uppercase tracking-[0.18em] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black"
-        >
-          {justSaved ? <Check size={14} /> : <Save size={14} />}
-          {busy ? "Saving…" : justSaved ? "Saved" : "Save"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPreviewOpen((v) => !v)}
+            className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs uppercase tracking-[0.18em] hover:border-[color:var(--gold)]"
+            aria-expanded={previewOpen}
+          >
+            {previewOpen ? <EyeOff size={14} /> : <Eye size={14} />}
+            {previewOpen ? "Hide preview" : "Preview"}
+          </button>
+          <button
+            type="button"
+            disabled={!dirty || busy}
+            onClick={save}
+            className="inline-flex items-center gap-2 bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-4 py-2 text-xs uppercase tracking-[0.18em] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black"
+          >
+            {justSaved ? <Check size={14} /> : <Save size={14} />}
+            {busy ? "Saving…" : justSaved ? "Saved" : "Save"}
+          </button>
+        </div>
       </header>
 
       <div className="mt-4 grid grid-cols-4 sm:grid-cols-8 gap-2">
@@ -307,6 +315,42 @@ function TourRow({
           (€{priceFrom}). Update the tour&rsquo;s `priceFrom` in code to match,
           or set tier 8 to €{priceFrom}.
         </p>
+      ) : null}
+
+      {previewOpen ? (
+        <div className="mt-5 border-t border-[color:var(--border)] pt-5">
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+              Public card preview{dirty ? " · unsaved tiers" : " · saved tiers"}
+            </p>
+            <label className="flex items-center gap-2 text-xs">
+              <span className="text-[color:var(--charcoal-soft)]">Guests</span>
+              <select
+                value={previewGuests}
+                onChange={(e) => setPreviewGuests(Number(e.target.value))}
+                className="border border-[color:var(--border)] bg-white px-2 py-1 text-sm"
+              >
+                {TIERS.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="max-w-md mx-auto">
+            <SignaturePriceCard
+              tour={tour}
+              stopCount={tour.stops?.length ?? 0}
+              dateExact={null}
+              onSecure={() => {}}
+              onRefine={() => {}}
+              guests={previewGuests}
+              showAddOns={false}
+              previewTiers={parsed}
+            />
+          </div>
+        </div>
       ) : null}
     </article>
   );
