@@ -2620,6 +2620,32 @@ function StoryboardHandoff({
           {heroOrigin}
         </p>
 
+        {/* Quiet price eyebrow — real per-pax when tier data exists,
+            otherwise the "from" anchor. Guests fall back to 2 for the
+            indicative line, never invented. */}
+        {(() => {
+          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2);
+          if (!px) return null;
+          const guestsForLine = typeof state.guests === "number" && state.guests > 0
+            ? state.guests
+            : 2;
+          return (
+            <p
+              data-testid="studio-v3-hero-price"
+              className="mt-5 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
+              style={{ color: "var(--gold)" }}
+            >
+              <span style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+                {px.real ? "" : "From "}
+              </span>
+              €{px.eurPerPax} per person
+              <span style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}>
+                {" · "}{guestsForLine} guest{guestsForLine === 1 ? "" : "s"}
+              </span>
+            </p>
+          );
+        })()}
+
         <span
           aria-hidden
           className="mt-6 inline-block h-px w-10"
