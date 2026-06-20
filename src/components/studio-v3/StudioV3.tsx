@@ -2561,11 +2561,12 @@ function StoryboardHandoff({
           {heroSub}
         </p>
         <p
-          className="mt-4 text-[12.5px] leading-[1.55] [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px] mx-auto"
+          className="hidden sm:block mt-4 text-[12.5px] leading-[1.55] [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px] mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
           {heroOrigin}
         </p>
+
         <span
           aria-hidden
           className="mt-6 inline-block h-px w-10"
