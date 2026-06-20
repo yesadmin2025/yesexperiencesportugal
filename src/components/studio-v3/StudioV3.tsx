@@ -3155,6 +3155,13 @@ function StoryboardHandoff({
         guests={state.guests}
         included={skeletonTour?.included ?? []}
         showAddOns={true}
+        onGuestsChange={(n) =>
+          onStateChange((s) => ({
+            ...s,
+            guests: Math.min(12, Math.max(1, Math.round(n))),
+            guestsInferred: false,
+          }))
+        }
       />
 
 
