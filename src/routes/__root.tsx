@@ -186,10 +186,15 @@ function RootComponent() {
   useAppReadyFlag();
   useIframeFooterGuard();
   useEffect(() => installClientErrorLogger(), []);
+  // Single QueryClient per browser session — keeps SignaturePriceCard and
+  // any future useQuery hook resolvable without each route wiring its own.
+  const [queryClient] = useState(
+    () => new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 1 } } }),
+  );
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Outlet />
       <Toaster position="bottom-left" richColors closeButton />
-    </>
+    </QueryClientProvider>
   );
 }
