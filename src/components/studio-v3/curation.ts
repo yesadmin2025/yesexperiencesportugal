@@ -1702,18 +1702,24 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 // reveal), THEN refines via Interests/Rhythm. Logistics (date/pickup/guests)
 // follow tier so financial + temporal friction land together. Occasion,
 // considerations and language remain skipped (not asked in builder).
+// Destination first (partial reveal of the region), then logistics that
+// determine real per-pax pricing — pickup + guests — so when the traveller
+// reaches the Investment tier we can show the REAL per-person price for
+// their chosen group size (Viator tiers), not just a "from" anchor. Then
+// interests / rhythm refine the day, occasion / date close it out. Add-ons
+// only appear at the final Reveal.
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
   "who",
   "destination",
+  "pickup",
+  "guests",
   "investment",
   "interests",
   "rhythm",
   "occasion",
   "date",
-  "pickup",
-  "guests",
   "considerations",
   "language",
   "map",
