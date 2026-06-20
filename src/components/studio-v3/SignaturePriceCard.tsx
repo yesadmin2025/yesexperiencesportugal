@@ -204,15 +204,19 @@ export function SignaturePriceCard({
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              From
+              {realPerPax?.real
+                ? `For ${realPerPax.tier === 8 ? "8+" : realPerPax.tier} ${realPerPax.tier === 1 ? "guest" : "guests"}`
+                : "From"}
             </p>
             <p
               data-testid="studio-v3-base-price"
               data-eur={priceEur ?? ""}
+              data-per-pax-eur={displayPerPaxEur ?? ""}
+              data-per-pax-real={realPerPax?.real ? "true" : "false"}
               className="mt-1 text-[40px] leading-none font-bold tabular-nums"
               style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
             >
-              €{priceEur}
+              €{realPerPax?.real ? displayPerPaxEur : priceEur}
               <span
                 className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
@@ -227,7 +231,9 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              A private day, just for you — driver, guide and every detail handled. You only show up.
+              {realPerPax?.real
+                ? "Real per-pax for your group — driver, guide and every detail handled."
+                : "A private day, just for you — driver, guide and every detail handled. You only show up."}
             </p>
             {partyTotalEur != null ? (
               <p
