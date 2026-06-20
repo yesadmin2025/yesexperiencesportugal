@@ -49,6 +49,9 @@ import {
   selectReplacementCandidates,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 /** Real minimum priceFrom across every Signature in the catalogue. Used as
  *  the anchor for indicative per-tier price hints — never invented. */
