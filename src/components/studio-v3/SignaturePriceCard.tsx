@@ -355,7 +355,10 @@ export function SignaturePriceCard({
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      onClick={() => setPreviewGuests(r.tier)}
+                      onClick={() => {
+                        setPreviewGuests(r.tier);
+                        onGuestsChange?.(r.tier);
+                      }}
                       data-tier={r.tier}
                       data-active={active ? "true" : "false"}
                       data-real={r.real ? "true" : "false"}
