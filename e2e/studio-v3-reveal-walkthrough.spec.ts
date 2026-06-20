@@ -147,15 +147,22 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
       finalPhase = phase;
 
       if (phase === "storyboard" || phase === "map") {
-        // Give MapAwakens its cinematic beat to settle before we click "Hold this journey".
-        await page.waitForTimeout(1_400);
+        // MapAwakens auto-advances through moments at 3.4s/beat. Speed it
+        // up by tapping the "Next moment" stepper until "Hold this journey"
+        // appears, then click it to enter storyboard.
         await dismissReactionOverlay(page);
-        if ((await currentPhase(page)) === "map") {
-          const hold = page.locator('[data-phase-cta="hold-journey"]').first();
-          if (await hold.isVisible({ timeout: 8_000 }).catch(() => false)) {
-            await hold.click();
-            await page.waitForTimeout(900);
+        const hold = page.locator('[data-phase-cta="hold-journey"]').first();
+        const nextMoment = page.locator('button[aria-label="Next moment"]').first();
+        for (let j = 0; j < 12; j++) {
+          if (await hold.isVisible({ timeout: 400 }).catch(() => false)) break;
+          if (await nextMoment.isVisible({ timeout: 200 }).catch(() => false)) {
+            await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
           }
+          await page.waitForTimeout(500);
+        }
+        if (await hold.isVisible({ timeout: 4_000 }).catch(() => false)) {
+          await hold.click();
+          await page.waitForTimeout(1_200);
         }
         if ((await currentPhase(page)) === "storyboard") break;
       }
