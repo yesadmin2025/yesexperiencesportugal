@@ -13,7 +13,7 @@
 // "Price on request" + a WhatsApp escape hatch. No fabricated numbers.
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ChevronDown } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
