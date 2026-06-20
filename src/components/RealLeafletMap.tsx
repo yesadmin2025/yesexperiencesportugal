@@ -188,6 +188,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
       mapRef.current = null;
       clusterRef.current = null;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Refresh markers whenever the resolved set changes

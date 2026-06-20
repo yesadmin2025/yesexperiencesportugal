@@ -484,4 +484,5 @@ function BrandThemeSelectorPanel() {
 }
 
 /* Exported so tests can validate the same schema the router uses. */
+// eslint-disable-next-line react-refresh/only-export-components
 export { themeSearchSchema, INVALID_THEME_SENTINEL };

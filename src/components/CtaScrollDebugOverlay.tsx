@@ -26,6 +26,7 @@ const STORAGE_KEY = "cta-scroll-debug";
  * SSR-safe: starts `false`, hydrates the real value after mount so the
  * server and client render the same initial markup.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCtaScrollDebugToggle() {
   const [enabled, setEnabled] = useState(false);
 

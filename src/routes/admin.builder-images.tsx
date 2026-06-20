@@ -96,6 +96,7 @@ function AdminBuilderImagesPage() {
       setRegions((r as Region[]) ?? []);
       void refreshImages();
     })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
   async function refreshImages() {

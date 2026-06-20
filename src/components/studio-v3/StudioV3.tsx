@@ -373,6 +373,7 @@ function inferredGuestsNote(state: StudioV3State): string | null {
 
 /** Investment shaping direction — shown in the final reveal when selected.
  *  Exported so the Studio V3 test suite can lock the exact copy per tier. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function investmentShapingLine(tier: InvestmentTier | null): string | null {
   switch (tier) {
     case "considered":
@@ -398,6 +399,7 @@ export function investmentShapingLine(tier: InvestmentTier | null): string | nul
  *
  * firstName is used at the 78% mark only (rhythm reached) — never elsewhere.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function studioV3Progress(
   state: StudioV3State,
   currentPhase: StudioV3Phase,

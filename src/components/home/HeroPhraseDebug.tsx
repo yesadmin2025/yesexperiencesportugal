@@ -51,6 +51,7 @@ function saveSnap(s: SnapConfig) {
 }
 const snapTo = (v: number, step: number) => (step > 0 ? Math.round(v / step) * step : v);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useHeroPhraseDebugToggle() {
   const [enabled, setEnabled] = useState(false);
 

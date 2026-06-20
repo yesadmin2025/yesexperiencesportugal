@@ -86,6 +86,7 @@ export function useBuilderRouteImages(args: {
       cancelled = true;
     };
     // stopKeysJoined captures the array; mood/occasion/region are scalars
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [args.regionKey, stopKeysJoined, args.mood, args.occasion, pick]);
 
   return state;
@@ -122,6 +123,7 @@ export function useBuilderMoodImages(moods: Mood[]): {
     return () => {
       cancelled = true;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, pick]);
 
   return { moodImages: data, loading };

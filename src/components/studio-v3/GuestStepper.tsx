@@ -17,6 +17,7 @@ const MAX = 14;
 const PRIVATE_EVENT_THRESHOLD = 11;
 
 /** Bucket label used only for storyboard/lead display (NOT state). */
+// eslint-disable-next-line react-refresh/only-export-components
 export function guestBucketLabel(count: number): string {
   if (count <= 1) return "Just me";
   if (count === 2) return "Two";

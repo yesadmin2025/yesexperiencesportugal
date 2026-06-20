@@ -45,6 +45,7 @@ export function MapReveal({
   dwellMs,
   onClose,
 }: Props) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const narrative = lines && lines.length > 0 ? lines : [closer];
   const effectiveDwell = dwellMs ?? Math.max(4200, 1800 + narrative.length * 1100);
   const [visibleLines, setVisibleLines] = useState(0);

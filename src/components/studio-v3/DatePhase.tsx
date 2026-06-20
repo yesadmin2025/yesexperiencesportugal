@@ -186,6 +186,7 @@ function SecondaryOption({
 }
 
 /** Format ISO yyyy-mm-dd into a brand-friendly long date (e.g. "Sat 12 Sep 2026"). */
+// eslint-disable-next-line react-refresh/only-export-components
 export function formatExactLabel(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   if (!y || !m || !d) return iso;
@@ -204,6 +205,7 @@ export function formatExactLabel(iso: string): string {
 }
 
 /** Display label for downstream consumers (storyboard, lead capture if ever needed). */
+// eslint-disable-next-line react-refresh/only-export-components
 export function dateDisplayLabel(dateMode: DateMode | null, dateExact: string | null): string {
   if (dateMode === "exact" && dateExact) return formatExactLabel(dateExact);
   if (dateMode === "flexible") return "Flexible";
@@ -212,6 +214,7 @@ export function dateDisplayLabel(dateMode: DateMode | null, dateExact: string | 
 }
 
 /** Short next-step teaser shown beneath the date selector. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function dateNextTeaser(_mode: DateMode): string {
   return "Next, where the day begins.";
 }

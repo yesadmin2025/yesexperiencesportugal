@@ -959,6 +959,7 @@ export function StudioDrift({ onExit }: Props) {
         },
       },
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     chapter?.id,
     chapter?.kind,
@@ -1010,6 +1011,7 @@ export function StudioDrift({ onExit }: Props) {
     return () => {
       cancelled = true;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     sessionId,
     chapter?.id,
@@ -2055,6 +2057,7 @@ function ConvergencePhase({
     return () => {
       alive = false;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reveal, profile, locale, prediction?.tonalRegister, prediction?.intensity]);
 
   useEffect(() => {

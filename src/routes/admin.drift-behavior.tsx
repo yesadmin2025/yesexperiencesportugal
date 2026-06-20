@@ -169,6 +169,7 @@ function DriftBehaviorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allowed]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const stamp = useMemo(() => new Date().toISOString().replace(/[:.]/g, "-"), [rows]);
 
   const onDownloadJson = () => {

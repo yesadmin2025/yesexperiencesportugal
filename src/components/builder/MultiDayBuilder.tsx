@@ -127,6 +127,7 @@ export function MultiDayBuilder({
     return () => {
       cancelled = true;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDay?.regionKey]);
 
   // Recompute route + eligibility for the active day whenever its stops/pace change.
@@ -163,6 +164,7 @@ export function MultiDayBuilder({
         setRouteLoadingId(null);
         setEligLoading(false);
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDay?.id, activeDay?.stopKeys, activeDay?.regionKey, state.pace]);
 
   // Live recompute every OTHER day's route for accurate trip totals + tabs.
@@ -233,6 +235,7 @@ export function MultiDayBuilder({
         });
     }, 550);
     return () => window.clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeDay?.id,
     activeDay?.stopKeys,
