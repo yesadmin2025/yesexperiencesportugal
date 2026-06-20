@@ -358,6 +358,12 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               scopePartyCount={partyCount}
               scopePartyTotalEur={scopePartyTotalEur}
               memoryLine={memoryLine}
+              tourId={resolved?.skeletonTourKey ?? null}
+              stopCount={routePoints.length}
+              feeling={state.feeling}
+              interests={state.interests}
+              rhythm={state.rhythm}
+              companions={state.companions}
             />,
 
             document.body,
