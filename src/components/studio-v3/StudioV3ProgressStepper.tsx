@@ -20,14 +20,15 @@ export const STUDIO_V3_BEATS = [
 
 export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
 
-/** Quiet reassurance line under the stepper — tells the traveller where they
- *  are in the four-beat arc without inflating the step count. */
+/** Quiet reassurance line under the stepper — short and uniform so the
+ *  mobile header stays calm. Desktop keeps the same line for parity. */
 const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
-  region: "Beat 1 of 4 — settling the stage",
-  rhythm: "Beat 2 of 4 — halfway there",
-  dates: "Beat 3 of 4 — almost composed",
-  compose: "Beat 4 of 4 — your Signature",
+  region: "Beat 1 of 4",
+  rhythm: "Beat 2 of 4",
+  dates: "Beat 3 of 4",
+  compose: "Beat 4 of 4",
 };
+
 
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
