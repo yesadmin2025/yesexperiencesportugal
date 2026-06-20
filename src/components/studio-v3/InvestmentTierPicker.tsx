@@ -79,8 +79,17 @@ export function InvestmentTierPicker({
   onSelect,
   options = INVESTMENT_TIERS,
   priceFromEur = null,
+  guests = null,
 }: InvestmentTierPickerProps) {
   const showPriceHint = !!priceFromEur && priceFromEur > 0;
+  const guestLabel =
+    typeof guests === "number" && guests >= 1
+      ? guests === 1
+        ? "for 1 guest"
+        : guests >= 8
+          ? "for 8+ guests"
+          : `for ${guests} guests`
+      : null;
   return (
     <>
       <ul
