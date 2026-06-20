@@ -49,6 +49,9 @@ import {
   selectReplacementCandidates,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 /** Real minimum priceFrom across every Signature in the catalogue. Used as
  *  the anchor for indicative per-tier price hints — never invented. */
@@ -582,6 +585,56 @@ export function StudioV3() {
   const closeLeadSheet = useCallback(
     () => setLeadSheet((s) => ({ ...s, open: false })),
     [],
+  );
+
+  // Stripe sandbox checkout — Say YES on the Signature reveal. Prices and
+  // tour identity are validated server-side; the client only passes the
+  // resolved tour id and party size. On success we redirect to Stripe's
+  // hosted checkout (test mode). On failure we surface a quiet toast and
+  // fall back to the lead-capture sheet so the conversion never dead-ends.
+  const [checkoutPending, setCheckoutPending] = useState(false);
+  const handleStripeCheckout = useCallback(
+    async (currentState: StudioV3State) => {
+      if (checkoutPending) return;
+      const tour = currentState.tourId ? findTour(currentState.tourId) : null;
+      if (!tour) {
+        openLeadSheet("book");
+        return;
+      }
+      const guests = typeof currentState.guests === "number" && currentState.guests > 0
+        ? Math.min(12, Math.max(1, Math.round(currentState.guests)))
+        : 2;
+      setCheckoutPending(true);
+      try {
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
+          body: {
+            tourId: tour.id,
+            tourTitle: tour.title ?? tour.id,
+            guests,
+            stopLabels: (tour.stops ?? []).map((s) => s.label).slice(0, 6),
+            pickupLabel: pickupCityLabel(currentState.pickup) ?? "",
+            dateExact: currentState.dateExact ?? null,
+            journeyTitle: currentState.journeyTitle ?? null,
+            priceFromEur: tour.priceFrom ?? 180,
+            returnUrl: `${origin}/studio-v3?checkout=success`,
+            cancelUrl: `${origin}/studio-v3?checkout=cancelled`,
+            environment: "sandbox",
+          },
+        });
+        if (error) throw error;
+        const url = (data as { url?: string } | null)?.url;
+        if (!url) throw new Error("No checkout URL returned");
+        window.location.href = url;
+      } catch (e) {
+        console.error("Stripe checkout failed", e);
+        toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
+        openLeadSheet("book");
+      } finally {
+        setCheckoutPending(false);
+      }
+    },
+    [checkoutPending, openLeadSheet],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -1774,7 +1827,7 @@ export function StudioV3() {
               state={state}
               onStateChange={setState}
               onBack={() => back("map")}
-              onSecure={() => openLeadSheet("book")}
+              onSecure={() => handleStripeCheckout(state)}
               onRefine={() => openLeadSheet("refine")}
             />
           </PhaseShell>
@@ -2567,6 +2620,32 @@ function StoryboardHandoff({
           {heroOrigin}
         </p>
 
+        {/* Quiet price eyebrow — real per-pax when tier data exists,
+            otherwise the "from" anchor. Guests fall back to 2 for the
+            indicative line, never invented. */}
+        {(() => {
+          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2);
+          if (!px) return null;
+          const guestsForLine = typeof state.guests === "number" && state.guests > 0
+            ? state.guests
+            : 2;
+          return (
+            <p
+              data-testid="studio-v3-hero-price"
+              className="mt-5 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
+              style={{ color: "var(--gold)" }}
+            >
+              <span style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+                {px.real ? "" : "From "}
+              </span>
+              €{px.eurPerPax} per person
+              <span style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}>
+                {" · "}{guestsForLine} guest{guestsForLine === 1 ? "" : "s"}
+              </span>
+            </p>
+          );
+        })()}
+
         <span
           aria-hidden
           className="mt-6 inline-block h-px w-10"
@@ -2721,7 +2800,7 @@ function StoryboardHandoff({
       {editedStops.length > 0 ? (
         <div
           data-testid="studio-v3-stops-editor"
-          className="mt-12 sm:mt-10 max-w-[520px] mx-auto px-1"
+          className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
         >
           <p
             className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
@@ -2730,12 +2809,12 @@ function StoryboardHandoff({
             <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
           </p>
           <p
-            className="mt-2 mb-5 text-center text-[12px] leading-[1.55] max-w-[320px] mx-auto"
+            className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
             style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
           >
             Reorder, swap or remove a moment. The route stays inside the same region.
           </p>
-          <ol className="space-y-2.5 sm:space-y-3">
+          <ol className="space-y-3 sm:space-y-3">
             {editedStops.map((s, i) => {
               const isFirst = i === 0;
               const isLast = i === editedStops.length - 1;
@@ -2744,14 +2823,14 @@ function StoryboardHandoff({
                 <li
                   key={`${s.label}-${i}`}
                   data-testid="studio-v3-stop-row"
-                  className="rounded-[10px] px-3.5 py-3 sm:px-4 sm:py-3.5"
+                  className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
                   style={{
                     background: "color-mix(in oklab, var(--sand) 45%, transparent)",
                     border:
                       "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
                   }}
                 >
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <span
                       aria-hidden
                       className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
