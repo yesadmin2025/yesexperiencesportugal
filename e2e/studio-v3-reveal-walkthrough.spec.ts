@@ -148,21 +148,24 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
 
       if (phase === "storyboard" || phase === "map") {
         // MapAwakens auto-advances through moments at 3.4s/beat. Speed it
-        // up by tapping the "Next moment" stepper until "Hold this journey"
-        // appears, then click it to enter storyboard.
+        // up by tapping the "Next moment" stepper until it disables (last
+        // beat reached) then wait for "Hold this journey" to fade in.
         await dismissReactionOverlay(page);
         const hold = page.locator('[data-phase-cta="hold-journey"]').first();
         const nextMoment = page.locator('button[aria-label="Next moment"]').first();
-        for (let j = 0; j < 12; j++) {
-          if (await hold.isVisible({ timeout: 400 }).catch(() => false)) break;
-          if (await nextMoment.isVisible({ timeout: 200 }).catch(() => false)) {
+        for (let j = 0; j < 20; j++) {
+          if (await hold.isVisible({ timeout: 200 }).catch(() => false)) break;
+          const isDisabled = await nextMoment.isDisabled({ timeout: 200 }).catch(() => true);
+          if (!isDisabled) {
             await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
           }
-          await page.waitForTimeout(500);
+          await page.waitForTimeout(400);
         }
-        if (await hold.isVisible({ timeout: 4_000 }).catch(() => false)) {
+        // After the last beat, the hold-journey button fades in (~520ms).
+        await page.waitForTimeout(1_200);
+        if (await hold.isVisible({ timeout: 6_000 }).catch(() => false)) {
           await hold.click();
-          await page.waitForTimeout(1_200);
+          await page.waitForTimeout(1_400);
         }
         if ((await currentPhase(page)) === "storyboard") break;
       }
