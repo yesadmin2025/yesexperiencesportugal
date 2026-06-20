@@ -212,7 +212,9 @@ export function InvestmentTierPicker({
                             ? "color-mix(in oklab, var(--gold) 22%, var(--ivory))"
                             : "color-mix(in oklab, var(--sand) 60%, var(--ivory))",
                           color: "var(--charcoal)",
-                          border: `1px solid color-mix(in oklab, var(--gold) ${active ? 60 : 28}%, transparent)`,
+                          borderWidth: 1,
+                          borderStyle: "solid",
+                          borderColor: `color-mix(in oklab, var(--gold) ${active ? 60 : 28}%, transparent)`,
                         }}
                       >
                         <span
