@@ -507,6 +507,9 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/82/03/caption.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
     ],
+    // Source: supplier.viator.com — TG1, May 6 2026 – no end date.
+    // Per-pax EUR by group size: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Min 2 pax.
+    priceTiersEUR: { 2: 399, 3: 345, 4: 345, 5: 320, 6: 320, 7: 299, 8: 299 },
   },
 };
 
