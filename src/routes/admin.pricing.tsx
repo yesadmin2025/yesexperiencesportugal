@@ -9,16 +9,17 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Save, RefreshCw, AlertTriangle, Check } from "lucide-react";
+import { Save, RefreshCw, AlertTriangle, Check, Eye, EyeOff } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import {
   TOUR_PRICE_TIERS_QUERY_KEY,
   useTourPriceTiers,
   type TourPriceTiersMap,
 } from "@/hooks/use-tour-price-tiers";
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
+import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
 
 export const Route = createFileRoute("/admin/pricing")({
   head: () => ({
