@@ -1,17 +1,22 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
 import type { DateMode } from "./types";
 
 /**
  * DatePhaseControls — Phase 2 operational date selection.
  *
- * Replaces the vague "this week / next 2 weeks / flexible / exploring" cards
- * with a real operational choice:
- *   - Exact date (native <input type="date">, past dates disabled client-side)
+ * Uses an inline shadcn Calendar (react-day-picker) so the picker stays
+ * visible until the traveller confirms a day — the previous native
+ * `<input type="date">` fired and faded away on iOS, leaving people
+ * unsure whether anything was picked. The calendar reads as a quiet
+ * editorial surface (ivory, gold accent, hairline border) and respects
+ * the brand tokens used elsewhere in Studio.
+ *
+ * Below the calendar two secondary options stay available:
  *   - I'm flexible
  *   - I don't know yet
  *
  * No backend, no availability check, no fake "available" labels.
- * Mobile-first, brand-token styled, sentence-case copy.
  */
 export function DatePhaseControls({
   dateExact,
@@ -26,22 +31,28 @@ export function DatePhaseControls({
   onPickFlexible: () => void;
   onPickUndecided: () => void;
 }) {
-  const todayIso = useMemo(() => {
+  const today = useMemo(() => {
     const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
+    d.setHours(0, 0, 0, 0);
+    return d;
   }, []);
 
+  const initialSelected = useMemo(() => {
+    if (dateMode === "exact" && dateExact) {
+      const [y, m, d] = dateExact.split("-").map(Number);
+      if (y && m && d) return new Date(y, m - 1, d);
+    }
+    return undefined;
+  }, [dateExact, dateMode]);
+
+  const [selected, setSelected] = useState<Date | undefined>(initialSelected);
+  const [month, setMonth] = useState<Date>(initialSelected ?? today);
+
   const exactSelected = dateMode === "exact" && !!dateExact;
-  const exactLabel = exactSelected ? formatExactLabel(dateExact!) : "Choose a date";
 
   return (
     <div className="mt-8 w-full max-w-[520px]">
-      {/* Primary: exact date */}
       <label
-        htmlFor="studio-v3-date-input"
         className="block text-[11px] uppercase tracking-[0.22em]"
         style={{
           fontFamily: "var(--font-display)",
@@ -51,77 +62,52 @@ export function DatePhaseControls({
         Choose a date
       </label>
 
-      {/* Relative wrapper holds the visible styled button AND an invisible
-          native <input type="date"> overlaid on top. The native input owns
-          the tap, so mobile browsers (notably iOS Safari) reliably open the
-          picker — `showPicker()` from a button has historically failed on
-          iOS / inside sr-only inputs. The button below is purely cosmetic. */}
-      <div className="relative mt-2">
-        <div
-          aria-hidden
-          className="relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none"
-          style={{
-            background: exactSelected
-              ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
-              : "var(--ivory)",
-            borderColor: exactSelected
+      {/* Inline calendar card */}
+      <div
+        className="mt-2 px-2 py-2 transition-[border-color,box-shadow] duration-[220ms] ease-out"
+        style={{
+          background: "var(--ivory)",
+          border: `1px solid ${
+            exactSelected
               ? "var(--teal)"
-              : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
-            boxShadow: exactSelected
-              ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
-              : "0 6px 18px -14px rgba(46,46,46,0.18)",
+              : "color-mix(in oklab, var(--charcoal) 14%, transparent)"
+          }`,
+          boxShadow: exactSelected
+            ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
+            : "0 6px 18px -14px rgba(46,46,46,0.18)",
+        }}
+      >
+        <Calendar
+          mode="single"
+          selected={selected}
+          onSelect={(d) => {
+            if (!d) return;
+            if (d < today) return;
+            setSelected(d);
+            const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            onPickExact(iso);
           }}
-        >
-          <span
-            className="block text-[14px] leading-tight font-semibold"
-            style={{
-              fontFamily: "var(--font-display)",
-              color: "var(--charcoal)",
-              letterSpacing: "-0.005em",
-            }}
-          >
-            {exactLabel}
-          </span>
-          <span
-            className="mt-1 block text-[12px] leading-snug italic"
+          month={month}
+          onMonthChange={setMonth}
+          disabled={{ before: today }}
+          showOutsideDays={false}
+          className="pointer-events-auto mx-auto"
+        />
+        {exactSelected && selected ? (
+          <p
+            className="px-3 pb-2 text-center text-[12px] italic"
             style={{
               fontFamily: "var(--font-serif)",
               color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
             }}
           >
-            We'll shape the day around it.
-          </span>
-          {exactSelected ? (
-            <span
-              aria-hidden
-              className="absolute right-3 top-3 inline-block h-1.5 w-1.5 rounded-full"
-              style={{ background: "var(--gold)" }}
-            />
-          ) : null}
-        </div>
-
-        {/* Real native input — full-area, transparent, owns the tap. */}
-        <input
-          id="studio-v3-date-input"
-          type="date"
-          min={todayIso}
-          value={dateExact ?? ""}
-          onChange={(e) => {
-            const v = e.target.value;
-            if (!v) return;
-            if (v < todayIso) return; // belt-and-braces past-date guard
-            onPickExact(v);
-          }}
-          aria-label="Choose a date"
-          className="absolute inset-0 h-full w-full opacity-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{ colorScheme: "light", WebkitAppearance: "none" }}
-        />
+            {formatExactLabel(toIso(selected))} — we'll shape the day around it.
+          </p>
+        ) : null}
       </div>
 
-
-
       {/* Secondary options */}
-      <div className="mt-3 grid grid-cols-1 gap-3">
+      <div className="mt-4 grid grid-cols-1 gap-3">
         <SecondaryOption
           label="I'm flexible"
           helper="We'll suggest the best fit."
@@ -137,6 +123,10 @@ export function DatePhaseControls({
       </div>
     </div>
   );
+}
+
+function toIso(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function SecondaryOption({
@@ -227,8 +217,6 @@ export function dateDisplayLabel(
 }
 
 /** Short next-step teaser shown beneath the date selector. */
-export function dateNextTeaser(mode: DateMode): string {
-  if (mode === "exact") return "Next, where the day begins.";
-  if (mode === "flexible") return "Next, where the day begins.";
+export function dateNextTeaser(_mode: DateMode): string {
   return "Next, where the day begins.";
 }

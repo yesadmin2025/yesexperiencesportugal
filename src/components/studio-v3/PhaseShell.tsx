@@ -94,7 +94,7 @@ export function PhaseShell({
       {progress ? (
         <div
           data-testid="studio-v3-progress"
-          className="absolute left-1/2 top-4 -translate-x-1/2 w-[min(92vw,520px)] px-1 select-none"
+          className="hidden sm:block absolute left-1/2 top-4 -translate-x-1/2 w-[min(92vw,520px)] px-1 select-none"
           aria-label={`${Math.round(progress.percent)}% shaped`}
           style={{ animation: "studioV3RiseIn 520ms ease-out both" }}
         >
@@ -123,7 +123,7 @@ export function PhaseShell({
         </div>
       ) : step && totalSteps ? (
         <div
-          className="absolute left-1/2 top-5 -translate-x-1/2 text-[9.5px] uppercase tracking-[0.3em] font-semibold select-none"
+          className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 text-[9.5px] uppercase tracking-[0.3em] font-semibold select-none"
           style={{ color: "color-mix(in oklab, var(--charcoal) 30%, transparent)" }}
           aria-label={`Step ${step} of ${totalSteps}`}
         >
@@ -133,9 +133,11 @@ export function PhaseShell({
         </div>
       ) : null}
 
-      <div data-testid="studio-v3-content-layer" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-28 pb-28 sm:justify-center sm:py-20">
+
+      <div data-testid="studio-v3-content-layer" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-14 pb-28 sm:pt-28 sm:justify-center sm:py-20">
         {children}
       </div>
+
 
       {/* Local keyframes — scoped via style tag to avoid polluting global CSS. */}
       <style>{`
