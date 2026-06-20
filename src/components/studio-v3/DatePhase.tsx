@@ -67,11 +67,11 @@ export function DatePhaseControls({
         className="mt-2 px-2 py-2 transition-[border-color,box-shadow] duration-[220ms] ease-out"
         style={{
           background: "var(--ivory)",
-          border: `1px solid ${
-            exactSelected
-              ? "var(--teal)"
-              : "color-mix(in oklab, var(--charcoal) 14%, transparent)"
-          }`,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: exactSelected
+            ? "var(--teal)"
+            : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
           boxShadow: exactSelected
             ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
             : "0 6px 18px -14px rgba(46,46,46,0.18)",
