@@ -1354,6 +1354,42 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_v3_funnel_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          session_id: string
+          step_key: string
+          step_number: number
+          user_agent: string | null
+          value: Json | null
+          variant: string | null
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          session_id: string
+          step_key: string
+          step_number: number
+          user_agent?: string | null
+          value?: Json | null
+          variant?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          session_id?: string
+          step_key?: string
+          step_number?: number
+          user_agent?: string | null
+          value?: Json | null
+          variant?: string | null
+        }
+        Relationships: []
+      }
       studio_v3_leads: {
         Row: {
           contact_email: string
