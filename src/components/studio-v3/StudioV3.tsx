@@ -2137,6 +2137,8 @@ function ContinueCta({
       type="button"
       onClick={onClick}
       disabled={disabled}
+      data-phase-cta="continue"
+      data-phase-cta-disabled={disabled ? "true" : "false"}
       className={`mt-6 inline-flex items-center gap-2 px-6 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}

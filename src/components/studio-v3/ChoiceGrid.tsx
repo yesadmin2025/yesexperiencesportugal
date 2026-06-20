@@ -54,6 +54,7 @@ export function ChoiceGrid<T extends string>({
               role={isMulti ? "checkbox" : "radio"}
               aria-checked={selected}
               data-testid="studio-v3-choice"
+              data-phase-cta="choice"
               data-option-id={opt.id}
               data-selected={selected ? "true" : "false"}
               onClick={() => {

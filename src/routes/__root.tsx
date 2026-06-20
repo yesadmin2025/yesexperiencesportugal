@@ -7,7 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
@@ -185,10 +186,15 @@ function RootComponent() {
   useAppReadyFlag();
   useIframeFooterGuard();
   useEffect(() => installClientErrorLogger(), []);
+  // Single QueryClient per browser session — keeps SignaturePriceCard and
+  // any future useQuery hook resolvable without each route wiring its own.
+  const [queryClient] = useState(
+    () => new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 1 } } }),
+  );
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Outlet />
       <Toaster position="bottom-left" richColors closeButton />
-    </>
+    </QueryClientProvider>
   );
 }

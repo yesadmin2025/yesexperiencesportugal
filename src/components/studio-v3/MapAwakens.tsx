@@ -519,6 +519,7 @@ export function MapAwakens({
             <button
               type="button"
               onClick={() => onContinue(journey.tour.id)}
+              data-phase-cta="hold-journey"
               className="inline-flex items-center gap-2 px-6 py-3.5 text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
             >

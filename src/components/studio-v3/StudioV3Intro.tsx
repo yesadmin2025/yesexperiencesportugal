@@ -114,6 +114,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             <button
               type="button"
               onClick={() => setStep("name")}
+              data-phase-cta="intro-begin"
               className="mt-10 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
@@ -182,6 +183,7 @@ export function StudioV3Intro({ onComplete }: Props) {
 
             <button
               type="submit"
+              data-phase-cta="intro-name"
               className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
@@ -278,6 +280,8 @@ function PathCard({
     <button
       type="button"
       onClick={onClick}
+      data-phase-cta="intro-path"
+      data-phase-cta-recommended={recommended ? "true" : "false"}
       className="group relative w-full rounded-[10px] px-5 py-4 text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{
         background: "color-mix(in oklab, var(--ivory) 6%, transparent)",

@@ -113,6 +113,8 @@ export function InvestmentTierPicker({
                 onClick={() => onSelect(tier.id)}
                 data-tier={tier.id}
                 data-state={active ? "active" : "inactive"}
+                data-phase-cta="tier"
+                data-selected={active ? "true" : "false"}
                 className="group relative w-full text-left rounded-[6px] border px-4 py-3.5 min-h-[96px] transition-all duration-200 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   background: active
