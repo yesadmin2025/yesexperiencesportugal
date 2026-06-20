@@ -111,7 +111,7 @@ export function trackStep(input: TrackInput): void {
     step_number: input.stepNumber,
     step_key: input.stepKey,
     event: input.event,
-    value: input.value ?? null,
+    value: (input.value ?? null) as never,
     variant,
     user_agent: window.navigator?.userAgent?.slice(0, 256) ?? null,
   };
