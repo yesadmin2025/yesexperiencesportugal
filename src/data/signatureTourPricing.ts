@@ -10,8 +10,9 @@
 //   3. When tier data is absent, we NEVER invent it — we fall back to the
 //      "from" anchor and the UI labels it as such.
 
-import { VIATOR_META } from "./signatureToursViator";
+import { VIATOR_META, type PriceTiersEUR } from "./signatureToursViator";
 import type { SignatureTour } from "./signatureTours";
+
 
 export type PerPaxResolution = {
   /** EUR per person — either real (tier-matched) or the "from" anchor. */
