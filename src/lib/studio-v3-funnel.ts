@@ -32,7 +32,10 @@ export type StudioFunnelEvent =
   | "tab_switch"
   | "addon_toggle"
   | "secure_open"
-  | "secure_confirm";
+  | "secure_confirm"
+  | "purchase_intent"
+  | "tier_chosen"
+  | "reveal_seen";
 
 function isBrowser(): boolean {
   return typeof window !== "undefined";
