@@ -138,6 +138,10 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
     let finalPhase: string | null = null;
 
     for (let i = 0; i < 40; i++) {
+      // Always dismiss a cinematic reaction overlay if one is on screen.
+      // These cover the next phase's UI and block clicks otherwise.
+      await dismissReactionOverlay(page);
+
       const phase = await currentPhase(page);
       if (phase) seenPhases.add(phase);
       finalPhase = phase;
@@ -145,6 +149,7 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
       if (phase === "storyboard" || phase === "map") {
         // Give MapAwakens its cinematic beat to settle before we click "Hold this journey".
         await page.waitForTimeout(1_400);
+        await dismissReactionOverlay(page);
         if ((await currentPhase(page)) === "map") {
           const hold = page.locator('[data-phase-cta="hold-journey"]').first();
           if (await hold.isVisible({ timeout: 8_000 }).catch(() => false)) {
