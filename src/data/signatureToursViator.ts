@@ -277,6 +277,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 30,
     rating: 5,
     recommendedPct: 100,
+    priceTiersEUR: { 2: 215, 3: 215, 4: 199, 5: 199, 6: 199, 7: 189, 8: 189 },
     overview: "Discover the cultural gems and coastal charm of Sintra and Cascais on this customizable private tour from Lisbon. Travel in comfort with round-trip transport as you explore palaces, sip local wines, and enjoy scenic stops along Portugal’s scenic western coast. Perfect for travelers seeking a deeper, more flexible experience with expert local guidance.",
     included: [
       "Private transportation",
