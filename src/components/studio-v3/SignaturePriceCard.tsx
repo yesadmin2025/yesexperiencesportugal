@@ -49,6 +49,14 @@ export interface SignaturePriceCardProps {
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
   showAddOns?: boolean;
   /**
+   * Called when the traveller selects a tier in the hidden picker. Lets the
+   * parent persist the chosen guest size into Studio V3 state so the saved
+   * session + Stripe checkout always reflect the same per-person price and
+   * party total the user just confirmed. Optional — when omitted the picker
+   * still works as a local preview.
+   */
+  onGuestsChange?: (guests: number) => void;
+  /**
    * Admin preview only: override the DB-resolved price tiers for THIS tour
    * with unsaved values so the editor can render the public card before
    * persisting. Does not affect the rest of the app.
