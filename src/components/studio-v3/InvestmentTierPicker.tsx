@@ -76,6 +76,7 @@ export function InvestmentTierPicker({
   value,
   onSelect,
   options = INVESTMENT_TIERS,
+  priceFromEur = null,
 }: InvestmentTierPickerProps) {
   return (
     <ul
