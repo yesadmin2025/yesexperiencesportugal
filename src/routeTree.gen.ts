@@ -44,6 +44,7 @@ import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
+import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
@@ -230,6 +231,11 @@ const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
   path: '/admin/tour-link-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStudioV3FunnelRoute = AdminStudioV3FunnelRouteImport.update({
+  id: '/admin/studio-v3-funnel',
+  path: '/admin/studio-v3-funnel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
   id: '/admin/studio-v3-audit',
   path: '/admin/studio-v3-audit',
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
+  '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
@@ -359,6 +366,7 @@ export interface FileRoutesByTo {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
+  '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
@@ -407,6 +415,7 @@ export interface FileRoutesById {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
+  '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/api/health': typeof ApiHealthRoute
@@ -456,6 +465,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/studio-v3-audit'
+    | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/api/health'
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/studio-v3-audit'
+    | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/api/health'
@@ -550,6 +561,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/studio-v3-audit'
+    | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/api/health'
@@ -598,6 +610,7 @@ export interface RootRouteChildren {
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
+  AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
   AdminViatorValidationRoute: typeof AdminViatorValidationRoute
   ApiHealthRoute: typeof ApiHealthRoute
@@ -859,6 +872,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTourLinkAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/studio-v3-funnel': {
+      id: '/admin/studio-v3-funnel'
+      path: '/admin/studio-v3-funnel'
+      fullPath: '/admin/studio-v3-funnel'
+      preLoaderRoute: typeof AdminStudioV3FunnelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/studio-v3-audit': {
       id: '/admin/studio-v3-audit'
       path: '/admin/studio-v3-audit'
@@ -999,6 +1019,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
+  AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
   AdminViatorValidationRoute: AdminViatorValidationRoute,
   ApiHealthRoute: ApiHealthRoute,
