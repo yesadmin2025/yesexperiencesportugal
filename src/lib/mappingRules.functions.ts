@@ -7,6 +7,7 @@ import {
   type MappingRules,
 } from "@/data/defaultMappingRules";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function ensureAdmin(supabase: any, userId: string) {
   const { data, error } = await supabase
     .from("user_roles")

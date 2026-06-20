@@ -17,6 +17,30 @@ import { TOUR_PRICE_TIERS_QUERY_KEY, useTourPriceTiers } from "@/hooks/use-tour-
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
 
+function AdminPricingErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+  return (
+    <SiteLayout>
+      <section className="pt-32 pb-20">
+        <div className="container-x max-w-2xl">
+          <h1 className="text-2xl">Pricing editor failed</h1>
+          <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
+          <button
+            type="button"
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="mt-5 inline-flex items-center gap-2 border border-[color:var(--border)] px-4 py-2 text-sm hover:border-[color:var(--gold)]"
+          >
+            <RefreshCw size={14} /> Retry
+          </button>
+        </div>
+      </section>
+    </SiteLayout>
+  );
+}
+
 export const Route = createFileRoute("/admin/pricing")({
   head: () => ({
     meta: [
@@ -25,29 +49,7 @@ export const Route = createFileRoute("/admin/pricing")({
     ],
   }),
   component: AdminPricingPage,
-  errorComponent: ({ error, reset }) => {
-    const router = useRouter();
-    return (
-      <SiteLayout>
-        <section className="pt-32 pb-20">
-          <div className="container-x max-w-2xl">
-            <h1 className="text-2xl">Pricing editor failed</h1>
-            <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
-            <button
-              type="button"
-              onClick={() => {
-                router.invalidate();
-                reset();
-              }}
-              className="mt-5 inline-flex items-center gap-2 border border-[color:var(--border)] px-4 py-2 text-sm hover:border-[color:var(--gold)]"
-            >
-              <RefreshCw size={14} /> Retry
-            </button>
-          </div>
-        </section>
-      </SiteLayout>
-    );
-  },
+  errorComponent: AdminPricingErrorComponent,
   notFoundComponent: () => (
     <SiteLayout>
       <section className="pt-32 pb-20 container-x max-w-2xl">

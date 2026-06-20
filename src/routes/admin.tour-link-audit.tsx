@@ -24,6 +24,30 @@ import {
   RotateCcw,
 } from "lucide-react";
 
+function TourLinkAuditErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+  return (
+    <SiteLayout>
+      <section className="pt-32 pb-20 min-h-[60vh]">
+        <div className="container-x max-w-2xl">
+          <h1 className="serif text-3xl">Audit failed</h1>
+          <p className="mt-4 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
+          <button
+            type="button"
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="mt-6 inline-flex items-center gap-2 border border-[color:var(--border)] px-4 py-2 text-sm hover:border-[color:var(--gold)]"
+          >
+            <RefreshCw size={14} /> Retry
+          </button>
+        </div>
+      </section>
+    </SiteLayout>
+  );
+}
+
 export const Route = createFileRoute("/admin/tour-link-audit")({
   beforeLoad: () => {
     if (!import.meta.env.DEV) {
@@ -31,29 +55,7 @@ export const Route = createFileRoute("/admin/tour-link-audit")({
     }
   },
   component: TourLinkAuditPage,
-  errorComponent: ({ error, reset }) => {
-    const router = useRouter();
-    return (
-      <SiteLayout>
-        <section className="pt-32 pb-20 min-h-[60vh]">
-          <div className="container-x max-w-2xl">
-            <h1 className="serif text-3xl">Audit failed</h1>
-            <p className="mt-4 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
-            <button
-              type="button"
-              onClick={() => {
-                router.invalidate();
-                reset();
-              }}
-              className="mt-6 inline-flex items-center gap-2 border border-[color:var(--border)] px-4 py-2 text-sm hover:border-[color:var(--gold)]"
-            >
-              <RefreshCw size={14} /> Retry
-            </button>
-          </div>
-        </section>
-      </SiteLayout>
-    );
-  },
+  errorComponent: TourLinkAuditErrorComponent,
   notFoundComponent: () => (
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
@@ -283,9 +285,11 @@ function RouteTreeTroubleshooting() {
     setProbe({ status: "loading" });
     try {
       // Dynamic import so a generator failure surfaces here instead of crashing the page.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mod: any = await import("@/routeTree.gen");
       const tree = mod.routeTree;
       const ids: string[] = [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const walk = (node: any) => {
         if (!node) return;
         if (node.id) ids.push(node.id);

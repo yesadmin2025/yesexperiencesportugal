@@ -12,6 +12,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { scrapeViatorImagesForStop } from "@/lib/builderImages.server";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function assertAdmin(supabase: { from: (t: string) => any }, userId: string): Promise<void> {
   const { data, error } = await supabase
     .from("user_roles")

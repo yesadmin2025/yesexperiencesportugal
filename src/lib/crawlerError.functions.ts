@@ -16,8 +16,9 @@ export type CrawlerErrorInfo = {
 const LOG_PATHS = ["/tmp/dev-server-logs/dev-server.log"];
 
 // Strip ANSI color codes so regex matching is reliable.
+const ANSI_RE = new RegExp(String.fromCharCode(27) + "\\[[0-9;]*m", "g");
 function stripAnsi(s: string): string {
-  return s.replace(/\x1b\[[0-9;]*m/g, "");
+  return s.replace(ANSI_RE, "");
 }
 
 async function readLogTail(): Promise<string | null> {
@@ -93,7 +94,7 @@ export const getLastCrawlerError = createServerFn({ method: "GET" })
     ];
 
     // File:line:col pattern (absolute or relative path ending in source ext).
-    const fileLineRe = /([\/\\w.\-@]+\.(?:tsx?|jsx?|mts|cts|mjs|cjs))(?::(\d+))(?::(\d+))?/;
+    const fileLineRe = /([/\\w.\-@]+\.(?:tsx?|jsx?|mts|cts|mjs|cjs))(?::(\d+))(?::(\d+))?/;
 
     let lastIdx = -1;
     let matchedSource: string | null = null;

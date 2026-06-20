@@ -38,7 +38,9 @@ async function prepHero(page: Page) {
     if (video) {
       try {
         video.pause();
-      } catch {}
+      } catch {
+        /* noop */
+      }
       video.style.visibility = "hidden";
     }
     document.querySelectorAll('[data-hero-cinematic="true"] [aria-hidden="true"]').forEach((el) => {

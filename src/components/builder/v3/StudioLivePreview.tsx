@@ -64,6 +64,27 @@ export function StudioLivePreview(props: Props) {
     }
   }, [defaultOpen]);
 
+  // Timeline clock: start at 09:30, add drive + dwell after each stop.
+  // MUST be declared before any early return — hooks run unconditionally.
+  const timeline = useMemo(() => {
+    let mins = 9 * 60 + 30;
+    return day.stops.map((cs, i) => {
+      mins += cs.driveFromPrev || 0;
+      const start = mins;
+      mins += cs.stop.dwellMin;
+      const fmt = (m: number) =>
+        `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+      return {
+        idx: i,
+        time: fmt(start),
+        name: cs.stop.name,
+        drive: cs.driveFromPrev,
+        dwell: cs.stop.dwellMin,
+        blurb: cs.stop.blurb,
+      };
+    });
+  }, [day.stops]);
+
   const visibleStops = Math.max(1, Math.min(day.stops.length, activeStopIndex + 1));
   const previewStops = day.stops.slice(0, visibleStops);
   const origin = REGION_ORIGIN[region];
@@ -83,26 +104,6 @@ export function StudioLivePreview(props: Props) {
   }));
 
   const confidencePct = Math.round((prediction?.revealConfidence ?? 0) * 100);
-
-  // Timeline clock: start at 09:30, add drive + dwell after each stop.
-  const timeline = useMemo(() => {
-    let mins = 9 * 60 + 30;
-    return day.stops.map((cs, i) => {
-      mins += cs.driveFromPrev || 0;
-      const start = mins;
-      mins += cs.stop.dwellMin;
-      const fmt = (m: number) =>
-        `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-      return {
-        idx: i,
-        time: fmt(start),
-        name: cs.stop.name,
-        drive: cs.driveFromPrev,
-        dwell: cs.stop.dwellMin,
-        blurb: cs.stop.blurb,
-      };
-    });
-  }, [day.stops]);
 
   return (
     <>

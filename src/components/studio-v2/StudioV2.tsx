@@ -2055,6 +2055,7 @@ function RevealStory({
 
       {/* StoryOpener kept on a hidden flag — restore later if cinematic
           opener is reinstated. */}
+      {/* eslint-disable-next-line no-constant-binary-expression */}
       {false && <StoryOpener profile={profile} region={region} signals={signals ?? []} />}
 
       {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
