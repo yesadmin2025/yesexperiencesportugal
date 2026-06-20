@@ -52,6 +52,7 @@ const TIER_META: Record<
 export function InvestmentTierPicker({
   value,
   onSelect,
+  options = INVESTMENT_TIERS,
 }: InvestmentTierPickerProps) {
   return (
     <ul
@@ -60,7 +61,7 @@ export function InvestmentTierPicker({
       role="radiogroup"
       aria-label="Experience investment"
     >
-      {INVESTMENT_TIERS.map((tier) => {
+      {options.map((tier) => {
         const meta = TIER_META[tier.id];
         const Icon = meta.icon;
         const active = value === tier.id;
