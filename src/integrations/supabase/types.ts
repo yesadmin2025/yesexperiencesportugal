@@ -1444,6 +1444,27 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_price_tiers: {
+        Row: {
+          tiers: Json
+          tour_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          tiers?: Json
+          tour_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          tiers?: Json
+          tour_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

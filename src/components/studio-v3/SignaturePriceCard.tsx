@@ -22,6 +22,8 @@ import {
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
 
@@ -107,10 +109,12 @@ export function SignaturePriceCard({
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND
   // we know the guest count, `realPerPax.real === true` and we display the
   // exact per-person rate; otherwise we keep the "from" anchor.
+  const { data: tierOverrides } = useTourPriceTiers();
   const realPerPax = useMemo(
-    () => resolvePerPaxEur(tour, guests ?? null),
-    [tour, guests],
+    () => resolvePerPaxEur(tour, guests ?? null, tierOverrides ?? null),
+    [tour, guests, tierOverrides],
   );
+
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyCount = guests && guests >= 2 ? guests : null;
