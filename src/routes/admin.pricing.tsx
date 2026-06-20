@@ -179,10 +179,7 @@ function AdminPricingPage() {
             {tours.map((tour) => (
               <TourRow
                 key={tour.id}
-                tourId={tour.id}
-                title={tour.title}
-                region={tour.region}
-                priceFrom={tour.priceFrom}
+                tour={tour}
                 initialTiers={overrides?.[tour.id]}
                 onSaved={async () => {
                   await queryClient.invalidateQueries({
