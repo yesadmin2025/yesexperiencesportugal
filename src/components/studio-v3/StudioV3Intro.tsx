@@ -84,14 +84,14 @@ export function StudioV3Intro({ onComplete }: Props) {
             <h2
               className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-bold"
               style={{
-                fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
+                fontFamily: "var(--font-display, 'Montserrat', system-ui, sans-serif)",
                 color: "var(--ivory)",
               }}
             >
               Let's compose your{" "}
               <span
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-serif, Georgia, 'Times New Roman', serif)",
                   fontStyle: "italic",
                   fontWeight: 400,
                   color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
@@ -104,7 +104,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               className="mt-5 text-[14px] leading-[1.6]"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-serif, Georgia, 'Times New Roman', serif)",
                 fontStyle: "italic",
               }}
             >
@@ -139,14 +139,14 @@ export function StudioV3Intro({ onComplete }: Props) {
             <h2
               className="mt-5 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.01em] font-bold"
               style={{
-                fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
+                fontFamily: "var(--font-display, 'Montserrat', system-ui, sans-serif)",
                 color: "var(--ivory)",
               }}
             >
               What should we call{" "}
               <span
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-serif, Georgia, 'Times New Roman', serif)",
                   fontStyle: "italic",
                   fontWeight: 400,
                   color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
@@ -174,7 +174,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               aria-label="Your first name (optional)"
               className="mt-7 w-full border-0 border-b bg-transparent py-3 text-center text-[20px] italic outline-none transition-colors"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-serif, Georgia, 'Times New Roman', serif)",
                 color: "var(--ivory)",
                 borderColor: "color-mix(in oklab, var(--gold) 45%, transparent)",
               }}
@@ -222,14 +222,14 @@ export function StudioV3Intro({ onComplete }: Props) {
             <h2
               className="mt-5 text-[22px] sm:text-[28px] leading-[1.18] tracking-[-0.01em] font-bold"
               style={{
-                fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
+                fontFamily: "var(--font-display, 'Montserrat', system-ui, sans-serif)",
                 color: "var(--ivory)",
               }}
             >
               {pendingName ? `${pendingName}, ` : ""}
               <span
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-serif, Georgia, 'Times New Roman', serif)",
                   fontStyle: "italic",
                   fontWeight: 400,
                   color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
@@ -309,7 +309,7 @@ function PathCard({
       <h3
         className="mt-2 text-[16px] sm:text-[18px] leading-[1.2] font-bold"
         style={{
-          fontFamily: "var(--font-display, 'Montserrat', sans-serif)",
+          fontFamily: "var(--font-display, 'Montserrat', system-ui, sans-serif)",
           color: "var(--ivory)",
         }}
       >
@@ -319,7 +319,7 @@ function PathCard({
         className="mt-1.5 text-[12.5px] leading-[1.5]"
         style={{
           color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif, Georgia, 'Times New Roman', serif)",
           fontStyle: "italic",
         }}
       >
