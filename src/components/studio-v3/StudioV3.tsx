@@ -614,6 +614,38 @@ export function StudioV3() {
     };
   }, [load]);
 
+  // Funnel analytics: emit `enter` whenever the active phase changes, and
+  // `abandon` if the tab is hidden / page is unloaded mid-flow. Reveal
+  // (storyboard) is the terminal step — no abandon counted there.
+  useEffect(() => {
+    trackStep({
+      stepNumber: stepOf(state.phase),
+      stepKey: state.phase,
+      event: "enter",
+    });
+  }, [state.phase]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onHide = () => {
+      if (document.visibilityState !== "hidden") return;
+      if (state.phase === "intro" || state.phase === "storyboard") return;
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "abandon",
+      });
+    };
+    window.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", onHide);
+    return () => {
+      window.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", onHide);
+    };
+  }, [state.phase]);
+
+
+
 
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
