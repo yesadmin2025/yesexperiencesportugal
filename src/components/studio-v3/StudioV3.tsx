@@ -664,14 +664,16 @@ export function StudioV3() {
     }, 380);
   }, []);
 
-  const back = useCallback((prev: StudioV3Phase) => {
+  const back = useCallback((_hint?: StudioV3Phase) => {
     setReaction(null);
     setExiting(true);
-    // Walk backwards over phases that aren't relevant in the current mode
-    // (Fast path skips occasion / date / considerations / language /
-    // investment). Without this, back-link targets land on a dead phase.
-    let target = prev;
-    let idx = PHASE_ORDER.indexOf(target);
+    // Robust to phase reordering: walk backwards from the CURRENT phase
+    // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
+    // out (occasion / considerations / language, plus investment/date on
+    // the fast path). The hint is accepted but ignored — kept as an arg
+    // so existing call-sites compile without churn.
+    let idx = PHASE_ORDER.indexOf(state.phase) - 1;
+    let target: StudioV3Phase = PHASE_ORDER[Math.max(0, idx)];
     while (idx > 0 && !isPhaseRelevant(target, state)) {
       idx -= 1;
       target = PHASE_ORDER[idx];
