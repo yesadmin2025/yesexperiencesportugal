@@ -98,6 +98,9 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/15/30/73/04.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
     ],
+    // Source: supplier.viator.com — All-Inclusive Experience (TG7), May 20 2026 – Nov 1 2026.
+    // Per-pax EUR by group size: 2→€279, 3-4→€249, 5-7→€229, 8-15→€209. Min 2 pax.
+    priceTiersEUR: { 2: 279, 3: 249, 4: 249, 5: 229, 6: 229, 7: 229, 8: 209 },
   },
   "wild-beaches-picnic": {
     viatorUrl: "https://www.viator.com/tours/Lisbon/Wild-Beaches-and-Picnic-Experience/d538-349639P1",
