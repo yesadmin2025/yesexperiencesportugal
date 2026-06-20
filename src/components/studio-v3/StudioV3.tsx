@@ -1069,6 +1069,14 @@ export function StudioV3() {
   const onInvestment = (id: InvestmentTier) => {
     const next = getNextPhase({ ...state, investment: id }, "investment");
     const label = getOptionLabel(INVESTMENT_TIERS, id);
+    // Dedicated conversion event — tier explicitly chosen.
+    trackStep({
+      stepNumber: stepOf("investment"),
+      stepKey: "investment",
+      event: "tier_chosen",
+      value: { tier: id, label },
+    });
+
 
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({
