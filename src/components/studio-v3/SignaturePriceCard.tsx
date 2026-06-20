@@ -48,6 +48,12 @@ export interface SignaturePriceCardProps {
   included?: ReadonlyArray<string>;
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
   showAddOns?: boolean;
+  /**
+   * Admin preview only: override the DB-resolved price tiers for THIS tour
+   * with unsaved values so the editor can render the public card before
+   * persisting. Does not affect the rest of the app.
+   */
+  previewTiers?: import("@/data/signatureToursViator").PriceTiersEUR | null;
 }
 
 export function SignaturePriceCard({
