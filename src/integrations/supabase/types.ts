@@ -1,1624 +1,1632 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5";
-  };
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       ai_usage_logs: {
         Row: {
-          config_hash: string | null;
-          created_at: string;
-          error_code: string | null;
-          error_message: string | null;
-          feature: string;
-          id: string;
-          latency_ms: number | null;
-          metadata: Json;
-          model: string | null;
-          provider: string;
-          status: string;
-        };
+          config_hash: string | null
+          created_at: string
+          error_code: string | null
+          error_message: string | null
+          feature: string
+          id: string
+          latency_ms: number | null
+          metadata: Json
+          model: string | null
+          provider: string
+          status: string
+        }
         Insert: {
-          config_hash?: string | null;
-          created_at?: string;
-          error_code?: string | null;
-          error_message?: string | null;
-          feature: string;
-          id?: string;
-          latency_ms?: number | null;
-          metadata?: Json;
-          model?: string | null;
-          provider: string;
-          status: string;
-        };
+          config_hash?: string | null
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          feature: string
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          model?: string | null
+          provider: string
+          status: string
+        }
         Update: {
-          config_hash?: string | null;
-          created_at?: string;
-          error_code?: string | null;
-          error_message?: string | null;
-          feature?: string;
-          id?: string;
-          latency_ms?: number | null;
-          metadata?: Json;
-          model?: string | null;
-          provider?: string;
-          status?: string;
-        };
-        Relationships: [];
-      };
+          config_hash?: string | null
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          feature?: string
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          model?: string | null
+          provider?: string
+          status?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
-          amount_total: number;
-          booking_type: Database["public"]["Enums"]["booking_type"];
-          created_at: string;
-          currency: string;
-          customer_email: string;
-          customer_name: string | null;
-          customer_phone: string | null;
-          guests: number;
-          id: string;
-          metadata: Json;
-          notes: string | null;
-          preferred_date: string | null;
-          source_journey_id: string | null;
-          source_tour_id: string | null;
-          status: Database["public"]["Enums"]["booking_status"];
-          stripe_payment_intent_id: string | null;
-          stripe_session_id: string | null;
-          updated_at: string;
-        };
+          amount_total: number
+          booking_type: Database["public"]["Enums"]["booking_type"]
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_name: string | null
+          customer_phone: string | null
+          guests: number
+          id: string
+          metadata: Json
+          notes: string | null
+          preferred_date: string | null
+          source_journey_id: string | null
+          source_tour_id: string | null
+          status: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+        }
         Insert: {
-          amount_total: number;
-          booking_type: Database["public"]["Enums"]["booking_type"];
-          created_at?: string;
-          currency?: string;
-          customer_email: string;
-          customer_name?: string | null;
-          customer_phone?: string | null;
-          guests?: number;
-          id?: string;
-          metadata?: Json;
-          notes?: string | null;
-          preferred_date?: string | null;
-          source_journey_id?: string | null;
-          source_tour_id?: string | null;
-          status?: Database["public"]["Enums"]["booking_status"];
-          stripe_payment_intent_id?: string | null;
-          stripe_session_id?: string | null;
-          updated_at?: string;
-        };
+          amount_total: number
+          booking_type: Database["public"]["Enums"]["booking_type"]
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          guests?: number
+          id?: string
+          metadata?: Json
+          notes?: string | null
+          preferred_date?: string | null
+          source_journey_id?: string | null
+          source_tour_id?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
         Update: {
-          amount_total?: number;
-          booking_type?: Database["public"]["Enums"]["booking_type"];
-          created_at?: string;
-          currency?: string;
-          customer_email?: string;
-          customer_name?: string | null;
-          customer_phone?: string | null;
-          guests?: number;
-          id?: string;
-          metadata?: Json;
-          notes?: string | null;
-          preferred_date?: string | null;
-          source_journey_id?: string | null;
-          source_tour_id?: string | null;
-          status?: Database["public"]["Enums"]["booking_status"];
-          stripe_payment_intent_id?: string | null;
-          stripe_session_id?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          amount_total?: number
+          booking_type?: Database["public"]["Enums"]["booking_type"]
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          guests?: number
+          id?: string
+          metadata?: Json
+          notes?: string | null
+          preferred_date?: string | null
+          source_journey_id?: string | null
+          source_tour_id?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_compatibility_rules: {
         Row: {
-          cooccurrence_count: number;
-          created_at: string;
-          id: string;
-          stop_a: string;
-          stop_b: string;
-        };
+          cooccurrence_count: number
+          created_at: string
+          id: string
+          stop_a: string
+          stop_b: string
+        }
         Insert: {
-          cooccurrence_count?: number;
-          created_at?: string;
-          id?: string;
-          stop_a: string;
-          stop_b: string;
-        };
+          cooccurrence_count?: number
+          created_at?: string
+          id?: string
+          stop_a: string
+          stop_b: string
+        }
         Update: {
-          cooccurrence_count?: number;
-          created_at?: string;
-          id?: string;
-          stop_a?: string;
-          stop_b?: string;
-        };
-        Relationships: [];
-      };
+          cooccurrence_count?: number
+          created_at?: string
+          id?: string
+          stop_a?: string
+          stop_b?: string
+        }
+        Relationships: []
+      }
       builder_events: {
         Row: {
-          anonymous_id: string;
-          event: string;
-          id: string;
-          meta: Json | null;
-          occurred_at: string;
-          route: string | null;
-        };
+          anonymous_id: string
+          event: string
+          id: string
+          meta: Json | null
+          occurred_at: string
+          route: string | null
+        }
         Insert: {
-          anonymous_id: string;
-          event: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          route?: string | null;
-        };
+          anonymous_id: string
+          event: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+        }
         Update: {
-          anonymous_id?: string;
-          event?: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          route?: string | null;
-        };
-        Relationships: [];
-      };
+          anonymous_id?: string
+          event?: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+        }
+        Relationships: []
+      }
       builder_experience_types: {
         Row: {
-          blurb: string | null;
-          created_at: string;
-          default_mood: string;
-          default_pace: string;
-          id: string;
-          key: string;
-          label: string;
-          sort_order: number;
-          updated_at: string;
-        };
+          blurb: string | null
+          created_at: string
+          default_mood: string
+          default_pace: string
+          id: string
+          key: string
+          label: string
+          sort_order: number
+          updated_at: string
+        }
         Insert: {
-          blurb?: string | null;
-          created_at?: string;
-          default_mood?: string;
-          default_pace?: string;
-          id?: string;
-          key: string;
-          label: string;
-          sort_order?: number;
-          updated_at?: string;
-        };
+          blurb?: string | null
+          created_at?: string
+          default_mood?: string
+          default_pace?: string
+          id?: string
+          key: string
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
         Update: {
-          blurb?: string | null;
-          created_at?: string;
-          default_mood?: string;
-          default_pace?: string;
-          id?: string;
-          key?: string;
-          label?: string;
-          sort_order?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          blurb?: string | null
+          created_at?: string
+          default_mood?: string
+          default_pace?: string
+          id?: string
+          key?: string
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_journeys: {
         Row: {
-          created_at: string;
-          id: string;
-          intent: string | null;
-          owner_token_hash: string;
-          revoked_at: string | null;
-          share_token: string;
-          state: Json;
-          updated_at: string;
-        };
+          created_at: string
+          id: string
+          intent: string | null
+          owner_token_hash: string
+          revoked_at: string | null
+          share_token: string
+          state: Json
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          intent?: string | null;
-          owner_token_hash: string;
-          revoked_at?: string | null;
-          share_token: string;
-          state?: Json;
-          updated_at?: string;
-        };
+          created_at?: string
+          id?: string
+          intent?: string | null
+          owner_token_hash: string
+          revoked_at?: string | null
+          share_token: string
+          state?: Json
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          intent?: string | null;
-          owner_token_hash?: string;
-          revoked_at?: string | null;
-          share_token?: string;
-          state?: Json;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          intent?: string | null
+          owner_token_hash?: string
+          revoked_at?: string | null
+          share_token?: string
+          state?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_rate_limits: {
         Row: {
-          bucket: string;
-          call_count: number;
-          created_at: string;
-          id: string;
-          last_call_at: string;
-          session_id: string;
-        };
+          bucket: string
+          call_count: number
+          created_at: string
+          id: string
+          last_call_at: string
+          session_id: string
+        }
         Insert: {
-          bucket: string;
-          call_count?: number;
-          created_at?: string;
-          id?: string;
-          last_call_at?: string;
-          session_id: string;
-        };
+          bucket: string
+          call_count?: number
+          created_at?: string
+          id?: string
+          last_call_at?: string
+          session_id: string
+        }
         Update: {
-          bucket?: string;
-          call_count?: number;
-          created_at?: string;
-          id?: string;
-          last_call_at?: string;
-          session_id?: string;
-        };
-        Relationships: [];
-      };
+          bucket?: string
+          call_count?: number
+          created_at?: string
+          id?: string
+          last_call_at?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
       builder_reference_uploads: {
         Row: {
-          analyzed_at: string | null;
-          created_at: string;
-          expires_at: string;
-          file_name: string;
-          file_path: string;
-          file_size_bytes: number;
-          file_url: string;
-          id: string;
-          mime_type: string;
-          session_id: string;
-          tone_keywords: string[];
-          tone_summary: string | null;
-        };
+          analyzed_at: string | null
+          created_at: string
+          expires_at: string
+          file_name: string
+          file_path: string
+          file_size_bytes: number
+          file_url: string
+          id: string
+          mime_type: string
+          session_id: string
+          tone_keywords: string[]
+          tone_summary: string | null
+        }
         Insert: {
-          analyzed_at?: string | null;
-          created_at?: string;
-          expires_at?: string;
-          file_name: string;
-          file_path: string;
-          file_size_bytes: number;
-          file_url: string;
-          id?: string;
-          mime_type: string;
-          session_id: string;
-          tone_keywords?: string[];
-          tone_summary?: string | null;
-        };
+          analyzed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          file_name: string
+          file_path: string
+          file_size_bytes: number
+          file_url: string
+          id?: string
+          mime_type: string
+          session_id: string
+          tone_keywords?: string[]
+          tone_summary?: string | null
+        }
         Update: {
-          analyzed_at?: string | null;
-          created_at?: string;
-          expires_at?: string;
-          file_name?: string;
-          file_path?: string;
-          file_size_bytes?: number;
-          file_url?: string;
-          id?: string;
-          mime_type?: string;
-          session_id?: string;
-          tone_keywords?: string[];
-          tone_summary?: string | null;
-        };
-        Relationships: [];
-      };
+          analyzed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          file_name?: string
+          file_path?: string
+          file_size_bytes?: number
+          file_url?: string
+          id?: string
+          mime_type?: string
+          session_id?: string
+          tone_keywords?: string[]
+          tone_summary?: string | null
+        }
+        Relationships: []
+      }
       builder_regions: {
         Row: {
-          blurb: string | null;
-          created_at: string;
-          hero_image_url: string | null;
-          id: string;
-          key: string;
-          label: string;
-          lat: number;
-          lng: number;
-          sort_order: number;
-          updated_at: string;
-        };
+          blurb: string | null
+          created_at: string
+          hero_image_url: string | null
+          id: string
+          key: string
+          label: string
+          lat: number
+          lng: number
+          sort_order: number
+          updated_at: string
+        }
         Insert: {
-          blurb?: string | null;
-          created_at?: string;
-          hero_image_url?: string | null;
-          id?: string;
-          key: string;
-          label: string;
-          lat: number;
-          lng: number;
-          sort_order?: number;
-          updated_at?: string;
-        };
+          blurb?: string | null
+          created_at?: string
+          hero_image_url?: string | null
+          id?: string
+          key: string
+          label: string
+          lat: number
+          lng: number
+          sort_order?: number
+          updated_at?: string
+        }
         Update: {
-          blurb?: string | null;
-          created_at?: string;
-          hero_image_url?: string | null;
-          id?: string;
-          key?: string;
-          label?: string;
-          lat?: number;
-          lng?: number;
-          sort_order?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          blurb?: string | null
+          created_at?: string
+          hero_image_url?: string | null
+          id?: string
+          key?: string
+          label?: string
+          lat?: number
+          lng?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_route_cache: {
         Row: {
-          created_at: string;
-          distance_km: number;
-          drive_minutes: number;
-          from_key: string;
-          id: string;
-          polyline: string;
-          provider: string;
-          refreshed_at: string;
-          to_key: string;
-        };
+          created_at: string
+          distance_km: number
+          drive_minutes: number
+          from_key: string
+          id: string
+          polyline: string
+          provider: string
+          refreshed_at: string
+          to_key: string
+        }
         Insert: {
-          created_at?: string;
-          distance_km: number;
-          drive_minutes: number;
-          from_key: string;
-          id?: string;
-          polyline: string;
-          provider?: string;
-          refreshed_at?: string;
-          to_key: string;
-        };
+          created_at?: string
+          distance_km: number
+          drive_minutes: number
+          from_key: string
+          id?: string
+          polyline: string
+          provider?: string
+          refreshed_at?: string
+          to_key: string
+        }
         Update: {
-          created_at?: string;
-          distance_km?: number;
-          drive_minutes?: number;
-          from_key?: string;
-          id?: string;
-          polyline?: string;
-          provider?: string;
-          refreshed_at?: string;
-          to_key?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          distance_km?: number
+          drive_minutes?: number
+          from_key?: string
+          id?: string
+          polyline?: string
+          provider?: string
+          refreshed_at?: string
+          to_key?: string
+        }
+        Relationships: []
+      }
       builder_routing_rules: {
         Row: {
-          base_price_per_person_eur: number;
-          created_at: string;
-          default_pace: string;
-          id: string;
-          is_active: boolean;
-          max_driving_hours: number;
-          max_experience_hours: number;
-          max_km_between_stops: number;
-          max_stops: number;
-          max_total_km_per_day: number;
-          min_stops: number;
-          pace_multiplier_balanced: number;
-          pace_multiplier_full: number;
-          pace_multiplier_relaxed: number;
-          updated_at: string;
-        };
+          base_price_per_person_eur: number
+          created_at: string
+          default_pace: string
+          id: string
+          is_active: boolean
+          max_driving_hours: number
+          max_experience_hours: number
+          max_km_between_stops: number
+          max_stops: number
+          max_total_km_per_day: number
+          min_stops: number
+          pace_multiplier_balanced: number
+          pace_multiplier_full: number
+          pace_multiplier_relaxed: number
+          updated_at: string
+        }
         Insert: {
-          base_price_per_person_eur?: number;
-          created_at?: string;
-          default_pace?: string;
-          id?: string;
-          is_active?: boolean;
-          max_driving_hours?: number;
-          max_experience_hours?: number;
-          max_km_between_stops?: number;
-          max_stops?: number;
-          max_total_km_per_day?: number;
-          min_stops?: number;
-          pace_multiplier_balanced?: number;
-          pace_multiplier_full?: number;
-          pace_multiplier_relaxed?: number;
-          updated_at?: string;
-        };
+          base_price_per_person_eur?: number
+          created_at?: string
+          default_pace?: string
+          id?: string
+          is_active?: boolean
+          max_driving_hours?: number
+          max_experience_hours?: number
+          max_km_between_stops?: number
+          max_stops?: number
+          max_total_km_per_day?: number
+          min_stops?: number
+          pace_multiplier_balanced?: number
+          pace_multiplier_full?: number
+          pace_multiplier_relaxed?: number
+          updated_at?: string
+        }
         Update: {
-          base_price_per_person_eur?: number;
-          created_at?: string;
-          default_pace?: string;
-          id?: string;
-          is_active?: boolean;
-          max_driving_hours?: number;
-          max_experience_hours?: number;
-          max_km_between_stops?: number;
-          max_stops?: number;
-          max_total_km_per_day?: number;
-          min_stops?: number;
-          pace_multiplier_balanced?: number;
-          pace_multiplier_full?: number;
-          pace_multiplier_relaxed?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          base_price_per_person_eur?: number
+          created_at?: string
+          default_pace?: string
+          id?: string
+          is_active?: boolean
+          max_driving_hours?: number
+          max_experience_hours?: number
+          max_km_between_stops?: number
+          max_stops?: number
+          max_total_km_per_day?: number
+          min_stops?: number
+          pace_multiplier_balanced?: number
+          pace_multiplier_full?: number
+          pace_multiplier_relaxed?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_stops: {
         Row: {
-          blurb: string | null;
-          canonical_key: string | null;
-          compatible_with: string[];
-          created_at: string;
-          duration_minutes: number;
-          id: string;
-          image_url: string | null;
-          intention_tags: string[];
-          is_active: boolean;
-          key: string;
-          label: string;
-          lat: number;
-          lng: number;
-          mood_tags: string[];
-          open_from: string | null;
-          open_to: string | null;
-          pace_tags: string[];
-          region_key: string;
-          source_tour_keys: string[];
-          tag: string | null;
-          updated_at: string;
-          variant_bucket: string | null;
-          variant_label: string | null;
-          weight: number;
-          who_tags: string[];
-        };
+          blurb: string | null
+          canonical_key: string | null
+          compatible_with: string[]
+          created_at: string
+          duration_minutes: number
+          id: string
+          image_url: string | null
+          intention_tags: string[]
+          is_active: boolean
+          key: string
+          label: string
+          lat: number
+          lng: number
+          mood_tags: string[]
+          open_from: string | null
+          open_to: string | null
+          pace_tags: string[]
+          region_key: string
+          source_tour_keys: string[]
+          tag: string | null
+          updated_at: string
+          variant_bucket: string | null
+          variant_label: string | null
+          weight: number
+          who_tags: string[]
+        }
         Insert: {
-          blurb?: string | null;
-          canonical_key?: string | null;
-          compatible_with?: string[];
-          created_at?: string;
-          duration_minutes?: number;
-          id?: string;
-          image_url?: string | null;
-          intention_tags?: string[];
-          is_active?: boolean;
-          key: string;
-          label: string;
-          lat: number;
-          lng: number;
-          mood_tags?: string[];
-          open_from?: string | null;
-          open_to?: string | null;
-          pace_tags?: string[];
-          region_key: string;
-          source_tour_keys?: string[];
-          tag?: string | null;
-          updated_at?: string;
-          variant_bucket?: string | null;
-          variant_label?: string | null;
-          weight?: number;
-          who_tags?: string[];
-        };
+          blurb?: string | null
+          canonical_key?: string | null
+          compatible_with?: string[]
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          image_url?: string | null
+          intention_tags?: string[]
+          is_active?: boolean
+          key: string
+          label: string
+          lat: number
+          lng: number
+          mood_tags?: string[]
+          open_from?: string | null
+          open_to?: string | null
+          pace_tags?: string[]
+          region_key: string
+          source_tour_keys?: string[]
+          tag?: string | null
+          updated_at?: string
+          variant_bucket?: string | null
+          variant_label?: string | null
+          weight?: number
+          who_tags?: string[]
+        }
         Update: {
-          blurb?: string | null;
-          canonical_key?: string | null;
-          compatible_with?: string[];
-          created_at?: string;
-          duration_minutes?: number;
-          id?: string;
-          image_url?: string | null;
-          intention_tags?: string[];
-          is_active?: boolean;
-          key?: string;
-          label?: string;
-          lat?: number;
-          lng?: number;
-          mood_tags?: string[];
-          open_from?: string | null;
-          open_to?: string | null;
-          pace_tags?: string[];
-          region_key?: string;
-          source_tour_keys?: string[];
-          tag?: string | null;
-          updated_at?: string;
-          variant_bucket?: string | null;
-          variant_label?: string | null;
-          weight?: number;
-          who_tags?: string[];
-        };
+          blurb?: string | null
+          canonical_key?: string | null
+          compatible_with?: string[]
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          image_url?: string | null
+          intention_tags?: string[]
+          is_active?: boolean
+          key?: string
+          label?: string
+          lat?: number
+          lng?: number
+          mood_tags?: string[]
+          open_from?: string | null
+          open_to?: string | null
+          pace_tags?: string[]
+          region_key?: string
+          source_tour_keys?: string[]
+          tag?: string | null
+          updated_at?: string
+          variant_bucket?: string | null
+          variant_label?: string | null
+          weight?: number
+          who_tags?: string[]
+        }
         Relationships: [
           {
-            foreignKeyName: "builder_stops_region_key_fkey";
-            columns: ["region_key"];
-            isOneToOne: false;
-            referencedRelation: "builder_regions";
-            referencedColumns: ["key"];
+            foreignKeyName: "builder_stops_region_key_fkey"
+            columns: ["region_key"]
+            isOneToOne: false
+            referencedRelation: "builder_regions"
+            referencedColumns: ["key"]
           },
-        ];
-      };
+        ]
+      }
       builder_tour_sources: {
         Row: {
-          blurb: string | null;
-          created_at: string;
-          duration_text: string | null;
-          exclusions: string[];
-          id: string;
-          inclusions: string[];
-          pickup_zone: string | null;
-          source_url: string;
-          title: string;
-          tour_key: string;
-          updated_at: string;
-          varies_by_option: string[];
-        };
+          blurb: string | null
+          created_at: string
+          duration_text: string | null
+          exclusions: string[]
+          id: string
+          inclusions: string[]
+          pickup_zone: string | null
+          source_url: string
+          title: string
+          tour_key: string
+          updated_at: string
+          varies_by_option: string[]
+        }
         Insert: {
-          blurb?: string | null;
-          created_at?: string;
-          duration_text?: string | null;
-          exclusions?: string[];
-          id?: string;
-          inclusions?: string[];
-          pickup_zone?: string | null;
-          source_url: string;
-          title: string;
-          tour_key: string;
-          updated_at?: string;
-          varies_by_option?: string[];
-        };
+          blurb?: string | null
+          created_at?: string
+          duration_text?: string | null
+          exclusions?: string[]
+          id?: string
+          inclusions?: string[]
+          pickup_zone?: string | null
+          source_url: string
+          title: string
+          tour_key: string
+          updated_at?: string
+          varies_by_option?: string[]
+        }
         Update: {
-          blurb?: string | null;
-          created_at?: string;
-          duration_text?: string | null;
-          exclusions?: string[];
-          id?: string;
-          inclusions?: string[];
-          pickup_zone?: string | null;
-          source_url?: string;
-          title?: string;
-          tour_key?: string;
-          updated_at?: string;
-          varies_by_option?: string[];
-        };
-        Relationships: [];
-      };
+          blurb?: string | null
+          created_at?: string
+          duration_text?: string | null
+          exclusions?: string[]
+          id?: string
+          inclusions?: string[]
+          pickup_zone?: string | null
+          source_url?: string
+          title?: string
+          tour_key?: string
+          updated_at?: string
+          varies_by_option?: string[]
+        }
+        Relationships: []
+      }
       builder_tour_stops: {
         Row: {
-          created_at: string;
-          duration_minutes: number;
-          id: string;
-          optional: boolean;
-          position: number;
-          stop_canonical: string;
-          tour_key: string;
-          variant_bucket: string;
-        };
+          created_at: string
+          duration_minutes: number
+          id: string
+          optional: boolean
+          position: number
+          stop_canonical: string
+          tour_key: string
+          variant_bucket: string
+        }
         Insert: {
-          created_at?: string;
-          duration_minutes: number;
-          id?: string;
-          optional?: boolean;
-          position: number;
-          stop_canonical: string;
-          tour_key: string;
-          variant_bucket: string;
-        };
+          created_at?: string
+          duration_minutes: number
+          id?: string
+          optional?: boolean
+          position: number
+          stop_canonical: string
+          tour_key: string
+          variant_bucket: string
+        }
         Update: {
-          created_at?: string;
-          duration_minutes?: number;
-          id?: string;
-          optional?: boolean;
-          position?: number;
-          stop_canonical?: string;
-          tour_key?: string;
-          variant_bucket?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          optional?: boolean
+          position?: number
+          stop_canonical?: string
+          tour_key?: string
+          variant_bucket?: string
+        }
+        Relationships: []
+      }
       client_error_logs: {
         Row: {
-          created_at: string;
-          id: string;
-          message: string;
-          metadata: Json;
-          route: string | null;
-          session_id: string | null;
-          severity: string;
-          source: string | null;
-          stack: string | null;
-          url: string | null;
-          user_agent: string | null;
-          viewport_height: number | null;
-          viewport_width: number | null;
-        };
+          created_at: string
+          id: string
+          message: string
+          metadata: Json
+          route: string | null
+          session_id: string | null
+          severity: string
+          source: string | null
+          stack: string | null
+          url: string | null
+          user_agent: string | null
+          viewport_height: number | null
+          viewport_width: number | null
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          message: string;
-          metadata?: Json;
-          route?: string | null;
-          session_id?: string | null;
-          severity?: string;
-          source?: string | null;
-          stack?: string | null;
-          url?: string | null;
-          user_agent?: string | null;
-          viewport_height?: number | null;
-          viewport_width?: number | null;
-        };
+          created_at?: string
+          id?: string
+          message: string
+          metadata?: Json
+          route?: string | null
+          session_id?: string | null
+          severity?: string
+          source?: string | null
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          viewport_height?: number | null
+          viewport_width?: number | null
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          message?: string;
-          metadata?: Json;
-          route?: string | null;
-          session_id?: string | null;
-          severity?: string;
-          source?: string | null;
-          stack?: string | null;
-          url?: string | null;
-          user_agent?: string | null;
-          viewport_height?: number | null;
-          viewport_width?: number | null;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          message?: string
+          metadata?: Json
+          route?: string | null
+          session_id?: string | null
+          severity?: string
+          source?: string | null
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          viewport_height?: number | null
+          viewport_width?: number | null
+        }
+        Relationships: []
+      }
       drift_behavior_events: {
         Row: {
-          attraction_target: string | null;
-          chapter_id: string | null;
-          decision_latency_ms: number | null;
-          id: string;
-          linger_ms: number | null;
-          meta: Json;
-          occurred_at: string;
-          predicted_archetype: string | null;
-          predicted_intensity: string | null;
-          predicted_tonal_register: string | null;
-          reveal_confidence: number | null;
-          session_id: string;
-          signal_type: string;
-        };
+          attraction_target: string | null
+          chapter_id: string | null
+          decision_latency_ms: number | null
+          id: string
+          linger_ms: number | null
+          meta: Json
+          occurred_at: string
+          predicted_archetype: string | null
+          predicted_intensity: string | null
+          predicted_tonal_register: string | null
+          reveal_confidence: number | null
+          session_id: string
+          signal_type: string
+        }
         Insert: {
-          attraction_target?: string | null;
-          chapter_id?: string | null;
-          decision_latency_ms?: number | null;
-          id?: string;
-          linger_ms?: number | null;
-          meta?: Json;
-          occurred_at?: string;
-          predicted_archetype?: string | null;
-          predicted_intensity?: string | null;
-          predicted_tonal_register?: string | null;
-          reveal_confidence?: number | null;
-          session_id: string;
-          signal_type: string;
-        };
+          attraction_target?: string | null
+          chapter_id?: string | null
+          decision_latency_ms?: number | null
+          id?: string
+          linger_ms?: number | null
+          meta?: Json
+          occurred_at?: string
+          predicted_archetype?: string | null
+          predicted_intensity?: string | null
+          predicted_tonal_register?: string | null
+          reveal_confidence?: number | null
+          session_id: string
+          signal_type: string
+        }
         Update: {
-          attraction_target?: string | null;
-          chapter_id?: string | null;
-          decision_latency_ms?: number | null;
-          id?: string;
-          linger_ms?: number | null;
-          meta?: Json;
-          occurred_at?: string;
-          predicted_archetype?: string | null;
-          predicted_intensity?: string | null;
-          predicted_tonal_register?: string | null;
-          reveal_confidence?: number | null;
-          session_id?: string;
-          signal_type?: string;
-        };
-        Relationships: [];
-      };
+          attraction_target?: string | null
+          chapter_id?: string | null
+          decision_latency_ms?: number | null
+          id?: string
+          linger_ms?: number | null
+          meta?: Json
+          occurred_at?: string
+          predicted_archetype?: string | null
+          predicted_intensity?: string | null
+          predicted_tonal_register?: string | null
+          reveal_confidence?: number | null
+          session_id?: string
+          signal_type?: string
+        }
+        Relationships: []
+      }
       drift_dna_tokens: {
         Row: {
-          created_at: string;
-          dimension: string;
-          id: string;
-          is_active: boolean;
-          key: string;
-          label: string;
-          priority: number;
-          threshold: number;
-          updated_at: string;
-          value: string;
-        };
+          created_at: string
+          dimension: string
+          id: string
+          is_active: boolean
+          key: string
+          label: string
+          priority: number
+          threshold: number
+          updated_at: string
+          value: string
+        }
         Insert: {
-          created_at?: string;
-          dimension: string;
-          id?: string;
-          is_active?: boolean;
-          key: string;
-          label: string;
-          priority?: number;
-          threshold?: number;
-          updated_at?: string;
-          value: string;
-        };
+          created_at?: string
+          dimension: string
+          id?: string
+          is_active?: boolean
+          key: string
+          label: string
+          priority?: number
+          threshold?: number
+          updated_at?: string
+          value: string
+        }
         Update: {
-          created_at?: string;
-          dimension?: string;
-          id?: string;
-          is_active?: boolean;
-          key?: string;
-          label?: string;
-          priority?: number;
-          threshold?: number;
-          updated_at?: string;
-          value?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          dimension?: string
+          id?: string
+          is_active?: boolean
+          key?: string
+          label?: string
+          priority?: number
+          threshold?: number
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       drift_session_events: {
         Row: {
-          chapter_id: string | null;
-          event: string;
-          id: string;
-          meta: Json | null;
-          occurred_at: string;
-          session_id: string;
-          signal_key: string | null;
-          signal_value: string | null;
-        };
+          chapter_id: string | null
+          event: string
+          id: string
+          meta: Json | null
+          occurred_at: string
+          session_id: string
+          signal_key: string | null
+          signal_value: string | null
+        }
         Insert: {
-          chapter_id?: string | null;
-          event: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          session_id: string;
-          signal_key?: string | null;
-          signal_value?: string | null;
-        };
+          chapter_id?: string | null
+          event: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          session_id: string
+          signal_key?: string | null
+          signal_value?: string | null
+        }
         Update: {
-          chapter_id?: string | null;
-          event?: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          session_id?: string;
-          signal_key?: string | null;
-          signal_value?: string | null;
-        };
-        Relationships: [];
-      };
+          chapter_id?: string | null
+          event?: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          session_id?: string
+          signal_key?: string | null
+          signal_value?: string | null
+        }
+        Relationships: []
+      }
       drift_voice: {
         Row: {
-          created_at: string;
-          id: string;
-          is_active: boolean;
-          locale: string;
-          notes: string | null;
-          slot: string;
-          slots: string[];
-          text: string;
-          updated_at: string;
-        };
+          created_at: string
+          id: string
+          is_active: boolean
+          locale: string
+          notes: string | null
+          slot: string
+          slots: string[]
+          text: string
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          is_active?: boolean;
-          locale?: string;
-          notes?: string | null;
-          slot: string;
-          slots?: string[];
-          text: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          notes?: string | null
+          slot: string
+          slots?: string[]
+          text: string
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          is_active?: boolean;
-          locale?: string;
-          notes?: string | null;
-          slot?: string;
-          slots?: string[];
-          text?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          notes?: string | null
+          slot?: string
+          slots?: string[]
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       experience_images: {
         Row: {
-          alt_text: string;
-          created_at: string;
-          id: string;
-          image_type: string;
-          image_url: string;
-          is_active: boolean;
-          mood_tags: string[];
-          occasion_tags: string[];
-          priority_score: number;
-          region_key: string | null;
-          related_stop_key: string | null;
-          related_tour_id: string | null;
-          source_url: string | null;
-          title: string | null;
-          updated_at: string;
-          usage_role: string;
-        };
+          alt_text: string
+          created_at: string
+          id: string
+          image_type: string
+          image_url: string
+          is_active: boolean
+          mood_tags: string[]
+          occasion_tags: string[]
+          priority_score: number
+          region_key: string | null
+          related_stop_key: string | null
+          related_tour_id: string | null
+          source_url: string | null
+          title: string | null
+          updated_at: string
+          usage_role: string
+        }
         Insert: {
-          alt_text: string;
-          created_at?: string;
-          id?: string;
-          image_type?: string;
-          image_url: string;
-          is_active?: boolean;
-          mood_tags?: string[];
-          occasion_tags?: string[];
-          priority_score?: number;
-          region_key?: string | null;
-          related_stop_key?: string | null;
-          related_tour_id?: string | null;
-          source_url?: string | null;
-          title?: string | null;
-          updated_at?: string;
-          usage_role?: string;
-        };
+          alt_text: string
+          created_at?: string
+          id?: string
+          image_type?: string
+          image_url: string
+          is_active?: boolean
+          mood_tags?: string[]
+          occasion_tags?: string[]
+          priority_score?: number
+          region_key?: string | null
+          related_stop_key?: string | null
+          related_tour_id?: string | null
+          source_url?: string | null
+          title?: string | null
+          updated_at?: string
+          usage_role?: string
+        }
         Update: {
-          alt_text?: string;
-          created_at?: string;
-          id?: string;
-          image_type?: string;
-          image_url?: string;
-          is_active?: boolean;
-          mood_tags?: string[];
-          occasion_tags?: string[];
-          priority_score?: number;
-          region_key?: string | null;
-          related_stop_key?: string | null;
-          related_tour_id?: string | null;
-          source_url?: string | null;
-          title?: string | null;
-          updated_at?: string;
-          usage_role?: string;
-        };
+          alt_text?: string
+          created_at?: string
+          id?: string
+          image_type?: string
+          image_url?: string
+          is_active?: boolean
+          mood_tags?: string[]
+          occasion_tags?: string[]
+          priority_score?: number
+          region_key?: string | null
+          related_stop_key?: string | null
+          related_tour_id?: string | null
+          source_url?: string | null
+          title?: string | null
+          updated_at?: string
+          usage_role?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "experience_images_region_key_fkey";
-            columns: ["region_key"];
-            isOneToOne: false;
-            referencedRelation: "builder_regions";
-            referencedColumns: ["key"];
+            foreignKeyName: "experience_images_region_key_fkey"
+            columns: ["region_key"]
+            isOneToOne: false
+            referencedRelation: "builder_regions"
+            referencedColumns: ["key"]
           },
           {
-            foreignKeyName: "experience_images_related_stop_key_fkey";
-            columns: ["related_stop_key"];
-            isOneToOne: false;
-            referencedRelation: "builder_stops";
-            referencedColumns: ["key"];
+            foreignKeyName: "experience_images_related_stop_key_fkey"
+            columns: ["related_stop_key"]
+            isOneToOne: false
+            referencedRelation: "builder_stops"
+            referencedColumns: ["key"]
           },
-        ];
-      };
+        ]
+      }
       hero_ab_assignments: {
         Row: {
-          anonymous_id: string;
-          assigned_at: string;
-          experiment_key: string;
-          id: string;
-          user_agent: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          assigned_at: string
+          experiment_key: string
+          id: string
+          user_agent: string | null
+          variant: string
+        }
         Insert: {
-          anonymous_id: string;
-          assigned_at?: string;
-          experiment_key: string;
-          id?: string;
-          user_agent?: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          assigned_at?: string
+          experiment_key: string
+          id?: string
+          user_agent?: string | null
+          variant: string
+        }
         Update: {
-          anonymous_id?: string;
-          assigned_at?: string;
-          experiment_key?: string;
-          id?: string;
-          user_agent?: string | null;
-          variant?: string;
-        };
-        Relationships: [];
-      };
+          anonymous_id?: string
+          assigned_at?: string
+          experiment_key?: string
+          id?: string
+          user_agent?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
       hero_ab_events: {
         Row: {
-          anonymous_id: string;
-          event: string;
-          experiment_key: string;
-          id: string;
-          meta: Json | null;
-          occurred_at: string;
-          route: string | null;
-          scene_id: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          event: string
+          experiment_key: string
+          id: string
+          meta: Json | null
+          occurred_at: string
+          route: string | null
+          scene_id: string | null
+          variant: string
+        }
         Insert: {
-          anonymous_id: string;
-          event: string;
-          experiment_key: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          route?: string | null;
-          scene_id?: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          event: string
+          experiment_key: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+          scene_id?: string | null
+          variant: string
+        }
         Update: {
-          anonymous_id?: string;
-          event?: string;
-          experiment_key?: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          route?: string | null;
-          scene_id?: string | null;
-          variant?: string;
-        };
-        Relationships: [];
-      };
+          anonymous_id?: string
+          event?: string
+          experiment_key?: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+          scene_id?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
       import_mapping_rules: {
         Row: {
-          created_at: string;
-          id: string;
-          is_active: boolean;
-          name: string;
-          notes: string | null;
-          rules: Json;
-          updated_at: string;
-        };
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          rules: Json
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          is_active?: boolean;
-          name: string;
-          notes?: string | null;
-          rules?: Json;
-          updated_at?: string;
-        };
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          rules?: Json
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          is_active?: boolean;
-          name?: string;
-          notes?: string | null;
-          rules?: Json;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          rules?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       import_runs: {
         Row: {
-          created_at: string;
-          error: string | null;
-          id: string;
-          ran_by: string | null;
-          status: string;
-          tours_failed: number;
-          tours_imported: number;
-        };
+          created_at: string
+          error: string | null
+          id: string
+          ran_by: string | null
+          status: string
+          tours_failed: number
+          tours_imported: number
+        }
         Insert: {
-          created_at?: string;
-          error?: string | null;
-          id?: string;
-          ran_by?: string | null;
-          status: string;
-          tours_failed?: number;
-          tours_imported?: number;
-        };
+          created_at?: string
+          error?: string | null
+          id?: string
+          ran_by?: string | null
+          status: string
+          tours_failed?: number
+          tours_imported?: number
+        }
         Update: {
-          created_at?: string;
-          error?: string | null;
-          id?: string;
-          ran_by?: string | null;
-          status?: string;
-          tours_failed?: number;
-          tours_imported?: number;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          error?: string | null
+          id?: string
+          ran_by?: string | null
+          status?: string
+          tours_failed?: number
+          tours_imported?: number
+        }
+        Relationships: []
+      }
       imported_tours: {
         Row: {
-          ai_model: string | null;
-          blurb: string;
-          duration: string;
-          duration_hours: string;
-          duration_label: string;
-          fits_best: string;
-          highlights: string[];
-          id: string;
-          image_url: string | null;
-          imported_at: string;
-          pace: string;
-          pace_cues: string[];
-          price_from: number;
-          region: string;
-          region_label: string;
-          source_url: string;
-          stops: Json;
-          styles: string[];
-          theme: string;
-          tier: string;
-          title: string;
-          updated_at: string;
-        };
+          ai_model: string | null
+          blurb: string
+          duration: string
+          duration_hours: string
+          duration_label: string
+          fits_best: string
+          highlights: string[]
+          id: string
+          image_url: string | null
+          imported_at: string
+          pace: string
+          pace_cues: string[]
+          price_from: number
+          region: string
+          region_label: string
+          source_url: string
+          stops: Json
+          styles: string[]
+          theme: string
+          tier: string
+          title: string
+          updated_at: string
+        }
         Insert: {
-          ai_model?: string | null;
-          blurb: string;
-          duration: string;
-          duration_hours: string;
-          duration_label: string;
-          fits_best: string;
-          highlights?: string[];
-          id: string;
-          image_url?: string | null;
-          imported_at?: string;
-          pace: string;
-          pace_cues?: string[];
-          price_from: number;
-          region: string;
-          region_label: string;
-          source_url: string;
-          stops?: Json;
-          styles?: string[];
-          theme: string;
-          tier: string;
-          title: string;
-          updated_at?: string;
-        };
+          ai_model?: string | null
+          blurb: string
+          duration: string
+          duration_hours: string
+          duration_label: string
+          fits_best: string
+          highlights?: string[]
+          id: string
+          image_url?: string | null
+          imported_at?: string
+          pace: string
+          pace_cues?: string[]
+          price_from: number
+          region: string
+          region_label: string
+          source_url: string
+          stops?: Json
+          styles?: string[]
+          theme: string
+          tier: string
+          title: string
+          updated_at?: string
+        }
         Update: {
-          ai_model?: string | null;
-          blurb?: string;
-          duration?: string;
-          duration_hours?: string;
-          duration_label?: string;
-          fits_best?: string;
-          highlights?: string[];
-          id?: string;
-          image_url?: string | null;
-          imported_at?: string;
-          pace?: string;
-          pace_cues?: string[];
-          price_from?: number;
-          region?: string;
-          region_label?: string;
-          source_url?: string;
-          stops?: Json;
-          styles?: string[];
-          theme?: string;
-          tier?: string;
-          title?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          ai_model?: string | null
+          blurb?: string
+          duration?: string
+          duration_hours?: string
+          duration_label?: string
+          fits_best?: string
+          highlights?: string[]
+          id?: string
+          image_url?: string | null
+          imported_at?: string
+          pace?: string
+          pace_cues?: string[]
+          price_from?: number
+          region?: string
+          region_label?: string
+          source_url?: string
+          stops?: Json
+          styles?: string[]
+          theme?: string
+          tier?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       journal_posts: {
         Row: {
-          author_name: string | null;
-          body: string;
-          created_at: string;
-          excerpt: string | null;
-          hero_image_alt: string | null;
-          hero_image_url: string | null;
-          id: string;
-          published_at: string | null;
-          region: string | null;
-          signature_slug: string | null;
-          slug: string;
-          status: string;
-          title: string;
-          updated_at: string;
-        };
+          author_name: string | null
+          body: string
+          created_at: string
+          excerpt: string | null
+          hero_image_alt: string | null
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          region: string | null
+          signature_slug: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
         Insert: {
-          author_name?: string | null;
-          body?: string;
-          created_at?: string;
-          excerpt?: string | null;
-          hero_image_alt?: string | null;
-          hero_image_url?: string | null;
-          id?: string;
-          published_at?: string | null;
-          region?: string | null;
-          signature_slug?: string | null;
-          slug: string;
-          status?: string;
-          title: string;
-          updated_at?: string;
-        };
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          excerpt?: string | null
+          hero_image_alt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          region?: string | null
+          signature_slug?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
         Update: {
-          author_name?: string | null;
-          body?: string;
-          created_at?: string;
-          excerpt?: string | null;
-          hero_image_alt?: string | null;
-          hero_image_url?: string | null;
-          id?: string;
-          published_at?: string | null;
-          region?: string | null;
-          signature_slug?: string | null;
-          slug?: string;
-          status?: string;
-          title?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          excerpt?: string | null
+          hero_image_alt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          region?: string | null
+          signature_slug?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_ab_assignments: {
         Row: {
-          anonymous_id: string;
-          assigned_at: string;
-          experiment_key: string;
-          id: string;
-          user_agent: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          assigned_at: string
+          experiment_key: string
+          id: string
+          user_agent: string | null
+          variant: string
+        }
         Insert: {
-          anonymous_id: string;
-          assigned_at?: string;
-          experiment_key: string;
-          id?: string;
-          user_agent?: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          assigned_at?: string
+          experiment_key: string
+          id?: string
+          user_agent?: string | null
+          variant: string
+        }
         Update: {
-          anonymous_id?: string;
-          assigned_at?: string;
-          experiment_key?: string;
-          id?: string;
-          user_agent?: string | null;
-          variant?: string;
-        };
-        Relationships: [];
-      };
+          anonymous_id?: string
+          assigned_at?: string
+          experiment_key?: string
+          id?: string
+          user_agent?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
       studio_ab_events: {
         Row: {
-          anonymous_id: string;
-          event: string;
-          experiment_key: string;
-          id: string;
-          meta: Json | null;
-          occurred_at: string;
-          route: string | null;
-          scene_id: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          event: string
+          experiment_key: string
+          id: string
+          meta: Json | null
+          occurred_at: string
+          route: string | null
+          scene_id: string | null
+          variant: string
+        }
         Insert: {
-          anonymous_id: string;
-          event: string;
-          experiment_key: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          route?: string | null;
-          scene_id?: string | null;
-          variant: string;
-        };
+          anonymous_id: string
+          event: string
+          experiment_key: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+          scene_id?: string | null
+          variant: string
+        }
         Update: {
-          anonymous_id?: string;
-          event?: string;
-          experiment_key?: string;
-          id?: string;
-          meta?: Json | null;
-          occurred_at?: string;
-          route?: string | null;
-          scene_id?: string | null;
-          variant?: string;
-        };
-        Relationships: [];
-      };
+          anonymous_id?: string
+          event?: string
+          experiment_key?: string
+          id?: string
+          meta?: Json | null
+          occurred_at?: string
+          route?: string | null
+          scene_id?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
       studio_drafts: {
         Row: {
-          created_at: string;
-          draft: Json;
-          email: string | null;
-          expires_at: string;
-          id: string;
-          resume_token: string;
-          updated_at: string;
-        };
+          created_at: string
+          draft: Json
+          email: string | null
+          expires_at: string
+          id: string
+          resume_token: string
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          draft: Json;
-          email?: string | null;
-          expires_at?: string;
-          id?: string;
-          resume_token: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          draft: Json
+          email?: string | null
+          expires_at?: string
+          id?: string
+          resume_token: string
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          draft?: Json;
-          email?: string | null;
-          expires_at?: string;
-          id?: string;
-          resume_token?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          draft?: Json
+          email?: string | null
+          expires_at?: string
+          id?: string
+          resume_token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_v2_bookings: {
         Row: {
-          archetype: string | null;
-          contact_email: string | null;
-          contact_name: string | null;
-          contact_phone: string | null;
-          created_at: string;
-          draft_token: string;
-          guests: number | null;
-          id: string;
-          notes: string | null;
-          preferred_date: string | null;
-          profile: Json;
-          region: string | null;
-          status: string;
-          stops: Json;
-          total_drive_minutes: number;
-          total_km: number;
-          total_minutes: number;
-          updated_at: string;
-        };
+          archetype: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          draft_token: string
+          guests: number | null
+          id: string
+          notes: string | null
+          preferred_date: string | null
+          profile: Json
+          region: string | null
+          status: string
+          stops: Json
+          total_drive_minutes: number
+          total_km: number
+          total_minutes: number
+          updated_at: string
+        }
         Insert: {
-          archetype?: string | null;
-          contact_email?: string | null;
-          contact_name?: string | null;
-          contact_phone?: string | null;
-          created_at?: string;
-          draft_token: string;
-          guests?: number | null;
-          id?: string;
-          notes?: string | null;
-          preferred_date?: string | null;
-          profile: Json;
-          region?: string | null;
-          status?: string;
-          stops?: Json;
-          total_drive_minutes?: number;
-          total_km?: number;
-          total_minutes?: number;
-          updated_at?: string;
-        };
+          archetype?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          draft_token: string
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          profile: Json
+          region?: string | null
+          status?: string
+          stops?: Json
+          total_drive_minutes?: number
+          total_km?: number
+          total_minutes?: number
+          updated_at?: string
+        }
         Update: {
-          archetype?: string | null;
-          contact_email?: string | null;
-          contact_name?: string | null;
-          contact_phone?: string | null;
-          created_at?: string;
-          draft_token?: string;
-          guests?: number | null;
-          id?: string;
-          notes?: string | null;
-          preferred_date?: string | null;
-          profile?: Json;
-          region?: string | null;
-          status?: string;
-          stops?: Json;
-          total_drive_minutes?: number;
-          total_km?: number;
-          total_minutes?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          archetype?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          draft_token?: string
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          profile?: Json
+          region?: string | null
+          status?: string
+          stops?: Json
+          total_drive_minutes?: number
+          total_km?: number
+          total_minutes?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_v2_predictions: {
         Row: {
-          created_at: string;
-          mood_vector: Json;
-          pace_confidence: number;
-          session_id: string;
-          signal_count: number;
-          updated_at: string;
-          weights: Json;
-        };
+          created_at: string
+          mood_vector: Json
+          pace_confidence: number
+          session_id: string
+          signal_count: number
+          updated_at: string
+          weights: Json
+        }
         Insert: {
-          created_at?: string;
-          mood_vector?: Json;
-          pace_confidence?: number;
-          session_id: string;
-          signal_count?: number;
-          updated_at?: string;
-          weights?: Json;
-        };
+          created_at?: string
+          mood_vector?: Json
+          pace_confidence?: number
+          session_id: string
+          signal_count?: number
+          updated_at?: string
+          weights?: Json
+        }
         Update: {
-          created_at?: string;
-          mood_vector?: Json;
-          pace_confidence?: number;
-          session_id?: string;
-          signal_count?: number;
-          updated_at?: string;
-          weights?: Json;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          mood_vector?: Json
+          pace_confidence?: number
+          session_id?: string
+          signal_count?: number
+          updated_at?: string
+          weights?: Json
+        }
+        Relationships: []
+      }
       studio_v2_sessions: {
         Row: {
-          archetype: string | null;
-          created_at: string;
-          id: string;
-          profile: Json;
-          region: string | null;
-          revoked_at: string | null;
-          share_token: string;
-          updated_at: string;
-        };
+          archetype: string | null
+          created_at: string
+          id: string
+          profile: Json
+          region: string | null
+          revoked_at: string | null
+          share_token: string
+          updated_at: string
+        }
         Insert: {
-          archetype?: string | null;
-          created_at?: string;
-          id?: string;
-          profile: Json;
-          region?: string | null;
-          revoked_at?: string | null;
-          share_token: string;
-          updated_at?: string;
-        };
+          archetype?: string | null
+          created_at?: string
+          id?: string
+          profile: Json
+          region?: string | null
+          revoked_at?: string | null
+          share_token: string
+          updated_at?: string
+        }
         Update: {
-          archetype?: string | null;
-          created_at?: string;
-          id?: string;
-          profile?: Json;
-          region?: string | null;
-          revoked_at?: string | null;
-          share_token?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          archetype?: string | null
+          created_at?: string
+          id?: string
+          profile?: Json
+          region?: string | null
+          revoked_at?: string | null
+          share_token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_v3_funnel_events: {
         Row: {
-          created_at: string;
-          event: string;
-          id: string;
-          session_id: string;
-          step_key: string;
-          step_number: number;
-          user_agent: string | null;
-          value: Json | null;
-          variant: string | null;
-        };
+          created_at: string
+          event: string
+          id: string
+          session_id: string
+          step_key: string
+          step_number: number
+          user_agent: string | null
+          value: Json | null
+          variant: string | null
+        }
         Insert: {
-          created_at?: string;
-          event: string;
-          id?: string;
-          session_id: string;
-          step_key: string;
-          step_number: number;
-          user_agent?: string | null;
-          value?: Json | null;
-          variant?: string | null;
-        };
+          created_at?: string
+          event: string
+          id?: string
+          session_id: string
+          step_key: string
+          step_number: number
+          user_agent?: string | null
+          value?: Json | null
+          variant?: string | null
+        }
         Update: {
-          created_at?: string;
-          event?: string;
-          id?: string;
-          session_id?: string;
-          step_key?: string;
-          step_number?: number;
-          user_agent?: string | null;
-          value?: Json | null;
-          variant?: string | null;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          event?: string
+          id?: string
+          session_id?: string
+          step_key?: string
+          step_number?: number
+          user_agent?: string | null
+          value?: Json | null
+          variant?: string | null
+        }
+        Relationships: []
+      }
       studio_v3_leads: {
         Row: {
-          contact_email: string;
-          contact_name: string;
-          contact_note: string | null;
-          contact_phone: string | null;
-          created_at: string;
-          id: string;
-          intent: string;
-          journey_title: string | null;
-          saved_at: string | null;
-          share_token: string | null;
-          skeleton_tour_key: string | null;
-          state: Json;
-          status: string;
-          updated_at: string;
-          user_agent: string | null;
-        };
+          contact_email: string
+          contact_name: string
+          contact_note: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          intent: string
+          journey_title: string | null
+          saved_at: string | null
+          share_token: string | null
+          skeleton_tour_key: string | null
+          state: Json
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
         Insert: {
-          contact_email: string;
-          contact_name: string;
-          contact_note?: string | null;
-          contact_phone?: string | null;
-          created_at?: string;
-          id?: string;
-          intent?: string;
-          journey_title?: string | null;
-          saved_at?: string | null;
-          share_token?: string | null;
-          skeleton_tour_key?: string | null;
-          state?: Json;
-          status?: string;
-          updated_at?: string;
-          user_agent?: string | null;
-        };
+          contact_email: string
+          contact_name: string
+          contact_note?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          intent?: string
+          journey_title?: string | null
+          saved_at?: string | null
+          share_token?: string | null
+          skeleton_tour_key?: string | null
+          state?: Json
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
         Update: {
-          contact_email?: string;
-          contact_name?: string;
-          contact_note?: string | null;
-          contact_phone?: string | null;
-          created_at?: string;
-          id?: string;
-          intent?: string;
-          journey_title?: string | null;
-          saved_at?: string | null;
-          share_token?: string | null;
-          skeleton_tour_key?: string | null;
-          state?: Json;
-          status?: string;
-          updated_at?: string;
-          user_agent?: string | null;
-        };
-        Relationships: [];
-      };
+          contact_email?: string
+          contact_name?: string
+          contact_note?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          intent?: string
+          journey_title?: string | null
+          saved_at?: string | null
+          share_token?: string | null
+          skeleton_tour_key?: string | null
+          state?: Json
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       tour_price_tiers: {
         Row: {
-          tiers: Json;
-          tour_id: string;
-          updated_at: string;
-          updated_by: string | null;
-        };
+          tiers: Json
+          tour_id: string
+          updated_at: string
+          updated_by: string | null
+        }
         Insert: {
-          tiers?: Json;
-          tour_id: string;
-          updated_at?: string;
-          updated_by?: string | null;
-        };
+          tiers?: Json
+          tour_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
         Update: {
-          tiers?: Json;
-          tour_id?: string;
-          updated_at?: string;
-          updated_by?: string | null;
-        };
-        Relationships: [];
-      };
+          tiers?: Json
+          tour_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
-          created_at: string;
-          id: string;
-          role: Database["public"]["Enums"]["app_role"];
-          user_id: string;
-        };
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          role: Database["public"]["Enums"]["app_role"];
-          user_id: string;
-        };
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          role?: Database["public"]["Enums"]["app_role"];
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-    };
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      cleanup_expired_builder_references: { Args: never; Returns: number };
+      cleanup_expired_builder_references: { Args: never; Returns: number }
       has_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"];
-          _user_id: string;
-        };
-        Returns: boolean;
-      };
-    };
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+    }
     Enums: {
-      app_role: "admin" | "moderator" | "user";
-      booking_status: "pending" | "paid" | "cancelled" | "refunded" | "failed";
-      booking_type: "tailored" | "builder" | "multi-day" | "signature";
-    };
+      app_role: "admin" | "moderator" | "user"
+      booking_status: "pending" | "paid" | "cancelled" | "refunded" | "failed"
+      booking_type: "tailored" | "builder" | "multi-day" | "signature"
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R;
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never;
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never;
+    : never
 
 export const Constants = {
   public: {
@@ -1628,4 +1636,4 @@ export const Constants = {
       booking_type: ["tailored", "builder", "multi-day", "signature"],
     },
   },
-} as const;
+} as const
