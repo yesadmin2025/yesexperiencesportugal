@@ -103,7 +103,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
           toast.error(`${file.name} is over 10 MB.`);
           continue;
         }
-        const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 80);
+        const safeName = file.name.replace(/[^\w.-]+/g, "_").slice(0, 80);
         const path = `${sessionId}/${Date.now()}-${safeName}`;
         const { error: upErr } = await supabase.storage
           .from("builder-references")

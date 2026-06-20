@@ -41,7 +41,9 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
     try {
       if (fast) sessionStorage.setItem("studio.fastPace", "1");
       else sessionStorage.removeItem("studio.fastPace");
-    } catch {}
+    } catch {
+      /* sessionStorage unavailable */
+    }
     onAwaken();
   };
 

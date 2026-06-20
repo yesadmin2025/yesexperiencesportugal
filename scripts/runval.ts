@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-expect-error -- dev-only script, loose typing OK
 import { signatureTours } from "../src/data/signatureTours";
 import { getViatorMeta } from "../src/data/signatureToursViator";
 import { validateTour } from "../src/lib/viatorValidation";

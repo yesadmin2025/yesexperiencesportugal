@@ -81,7 +81,7 @@ function extractRoots(file: string, src: string): RootChunk[] {
     // Walk forward until we find the closing `>` of this opening tag.
     let raw = lines[i];
     let j = i;
-    while (!/>(?!\=)/.test(raw.replace(/\/>/g, "/>"))) {
+    while (!/>(?!=)/.test(raw.replace(/\/>/g, "/>"))) {
       j++;
       if (j >= lines.length) break;
       raw += "\n" + lines[j];

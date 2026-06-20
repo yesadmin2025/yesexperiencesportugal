@@ -12,7 +12,10 @@ const ARRABIDA_TOUR_ID = "arrabida-wine-allinclusive";
 const ARRABIDA_REGION = "lisbon";
 const ARRABIDA_REGION_LABEL = "Setúbal · Arrábida";
 
-async function assertAdmin(supabase: { from: (t: string) => any }, userId: string): Promise<void> {
+async function assertAdmin(
+  supabase: { from: (t: string) => unknown },
+  userId: string,
+): Promise<void> {
   const { data: roleRow, error } = await supabase
     .from("user_roles")
     .select("role")

@@ -7,7 +7,7 @@ import {
   type MappingRules,
 } from "@/data/defaultMappingRules";
 
-async function ensureAdmin(supabase: any, userId: string) {
+async function ensureAdmin(supabase: { from: (t: string) => unknown }, userId: string) {
   const { data, error } = await supabase
     .from("user_roles")
     .select("role")

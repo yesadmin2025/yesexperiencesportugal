@@ -436,7 +436,9 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
         setSuggestionKeys(
           sug.suggestedStopKeys.length > 0 ? sug.suggestedStopKeys : sug.rankedKeys.slice(0, 4),
         );
-      } catch {}
+      } catch {
+        /* suggestion fetch failed */
+      }
     },
     [sessionId, suggestFn, state.acceptedStops],
   );
