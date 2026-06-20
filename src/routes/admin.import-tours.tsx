@@ -349,7 +349,7 @@ function AdminImportPage() {
       setTours((rows as ImportedRow[]) ?? []);
       if (roleRow) await refreshRules();
     })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const startNewRule = () => {

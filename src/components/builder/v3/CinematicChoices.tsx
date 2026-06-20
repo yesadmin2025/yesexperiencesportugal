@@ -188,7 +188,7 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
   const firstIncomplete = useMemo<PhaseKind | null>(() => {
     for (const p of PHASE_ORDER) if (!valueFor(p)) return p;
     return null;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
   const [phase, setPhase] = useState<PhaseKind | null>(firstIncomplete);
