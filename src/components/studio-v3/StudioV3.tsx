@@ -2800,7 +2800,7 @@ function StoryboardHandoff({
       {editedStops.length > 0 ? (
         <div
           data-testid="studio-v3-stops-editor"
-          className="mt-12 sm:mt-10 max-w-[520px] mx-auto px-1"
+          className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
         >
           <p
             className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
@@ -2809,12 +2809,12 @@ function StoryboardHandoff({
             <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
           </p>
           <p
-            className="mt-2 mb-5 text-center text-[12px] leading-[1.55] max-w-[320px] mx-auto"
+            className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
             style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
           >
             Reorder, swap or remove a moment. The route stays inside the same region.
           </p>
-          <ol className="space-y-2.5 sm:space-y-3">
+          <ol className="space-y-3 sm:space-y-3">
             {editedStops.map((s, i) => {
               const isFirst = i === 0;
               const isLast = i === editedStops.length - 1;
@@ -2823,14 +2823,14 @@ function StoryboardHandoff({
                 <li
                   key={`${s.label}-${i}`}
                   data-testid="studio-v3-stop-row"
-                  className="rounded-[10px] px-3.5 py-3 sm:px-4 sm:py-3.5"
+                  className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
                   style={{
                     background: "color-mix(in oklab, var(--sand) 45%, transparent)",
                     border:
                       "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
                   }}
                 >
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <span
                       aria-hidden
                       className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
