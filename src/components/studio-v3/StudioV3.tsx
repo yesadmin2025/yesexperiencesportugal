@@ -1721,11 +1721,12 @@ export function StudioV3() {
             value={state.investment}
             onSelect={onInvestment}
             priceFromEur={SIGNATURE_MIN_PRICE_EUR}
+            guests={state.guests}
           />
           {state.investment ? (
             <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
-            <FooterHint>This shapes the route — not a price. We'll share specifics together.</FooterHint>
+            <FooterHint>Shapes the route. Real per-pax shown on the next step.</FooterHint>
           )}
         </PhaseShell>
       ) : null}

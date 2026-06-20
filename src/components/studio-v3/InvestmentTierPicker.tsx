@@ -22,6 +22,8 @@ interface InvestmentTierPickerProps {
   options?: ReadonlyArray<{ id: InvestmentTier; label: string; whisper: string }>;
   /** Real Signature minimum priceFrom (EUR) used to anchor indicative per-tier price hints. */
   priceFromEur?: number | null;
+  /** Party size — when known, used to label "for N guests" on the price chip. */
+  guests?: number | null;
 }
 
 /** Tier → indicative multiplier on the base Signature priceFrom. Calibrated
@@ -77,8 +79,17 @@ export function InvestmentTierPicker({
   onSelect,
   options = INVESTMENT_TIERS,
   priceFromEur = null,
+  guests = null,
 }: InvestmentTierPickerProps) {
   const showPriceHint = !!priceFromEur && priceFromEur > 0;
+  const guestLabel =
+    typeof guests === "number" && guests >= 1
+      ? guests === 1
+        ? "for 1 guest"
+        : guests >= 8
+          ? "for 8+ guests"
+          : `for ${guests} guests`
+      : null;
   return (
     <>
       <ul
@@ -225,8 +236,9 @@ export function InvestmentTierPicker({
           className="mt-3 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Indicative · final
-          investment confirmed with your curator
+          <span style={{ color: "var(--gold)" }}>—</span> Indicative
+          {guestLabel ? <> · {guestLabel}</> : null} · real per-pax confirmed
+          on the next step
         </p>
       ) : null}
     </>

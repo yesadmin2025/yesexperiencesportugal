@@ -15,6 +15,21 @@ export type ViatorStop = {
   passBy?: boolean;
 };
 
+/**
+ * Real per-person price in EUR by party size (the Viator "tier" structure
+ * — most Viator private tours quote a different per-pax rate for 1, 2, 3…
+ * up to 8+ travellers, with 8+ as the lowest "from" anchor).
+ *
+ * Keys are integer group sizes (1..8). Key `8` MUST be present and equals
+ * the same EUR figure as `signatureTours[tour].priceFrom` (the 8+ anchor).
+ * Smaller groups carry a higher per-pax price.
+ *
+ * Leave undefined for tours we have NOT yet ingested real tier data for —
+ * the UI falls back to the "from €X / guest" anchor instead of inventing
+ * numbers.
+ */
+export type PriceTiersEUR = Partial<Record<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8, number>>;
+
 export type ViatorMeta = {
   viatorUrl: string;
   priceFromUSD: number | null;
@@ -31,6 +46,13 @@ export type ViatorMeta = {
   gallery: string[];
   overview: string | null;
   included: string[];
+  /**
+   * OPTIONAL — real per-pax EUR price by group size, scraped from the
+   * Viator product page. Populate per tour as data is verified. When
+   * absent, the UI shows the `priceFrom` (8+) anchor with a clear "from"
+   * label. Never invent values.
+   */
+  priceTiersEUR?: PriceTiersEUR;
 };
 
 export const VIATOR_META: Record<string, ViatorMeta> = {

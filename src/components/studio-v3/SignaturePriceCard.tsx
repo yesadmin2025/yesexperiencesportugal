@@ -21,6 +21,7 @@ import {
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
 
@@ -103,9 +104,19 @@ export function SignaturePriceCard({
       .filter((a) => selectedAddOnIds.includes(a.id))
       .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
+  // Real per-pax (Viator tier) resolution. When the tour has tier data AND
+  // we know the guest count, `realPerPax.real === true` and we display the
+  // exact per-person rate; otherwise we keep the "from" anchor.
+  const realPerPax = useMemo(
+    () => resolvePerPaxEur(tour, guests ?? null),
+    [tour, guests],
+  );
+  const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyCount = guests && guests >= 2 ? guests : null;
-  const partyTotalEur = totalEur != null && partyCount != null ? totalEur * partyCount : null;
+  const partyBaseEur = displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
+  const partyTotalEur =
+    partyBaseEur != null ? partyBaseEur + addOnsTotalEur * (partyCount ?? 1) : null;
 
   // S2 — Smart suggestion: the first eligible add-on the resolver returned,
   // dismissible, hidden once it's been selected. Never invented — sourced
@@ -193,15 +204,19 @@ export function SignaturePriceCard({
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              From
+              {realPerPax?.real
+                ? `For ${realPerPax.tier === 8 ? "8+" : realPerPax.tier} ${realPerPax.tier === 1 ? "guest" : "guests"}`
+                : "From"}
             </p>
             <p
               data-testid="studio-v3-base-price"
               data-eur={priceEur ?? ""}
+              data-per-pax-eur={displayPerPaxEur ?? ""}
+              data-per-pax-real={realPerPax?.real ? "true" : "false"}
               className="mt-1 text-[40px] leading-none font-bold tabular-nums"
               style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
             >
-              €{priceEur}
+              €{realPerPax?.real ? displayPerPaxEur : priceEur}
               <span
                 className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
@@ -216,7 +231,9 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              A private day, just for you — driver, guide and every detail handled. You only show up.
+              {realPerPax?.real
+                ? "Real per-pax for your group — driver, guide and every detail handled."
+                : "A private day, just for you — driver, guide and every detail handled. You only show up."}
             </p>
             {partyTotalEur != null ? (
               <p
