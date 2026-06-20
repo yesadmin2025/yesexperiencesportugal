@@ -280,6 +280,8 @@ function PathCard({
     <button
       type="button"
       onClick={onClick}
+      data-phase-cta="intro-path"
+      data-phase-cta-recommended={recommended ? "true" : "false"}
       className="group relative w-full rounded-[10px] px-5 py-4 text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{
         background: "color-mix(in oklab, var(--ivory) 6%, transparent)",
