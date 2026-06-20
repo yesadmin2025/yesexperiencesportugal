@@ -2055,9 +2055,8 @@ function RevealStory({
 
       {/* StoryOpener kept on a hidden flag — restore later if cinematic
           opener is reinstated. */}
-      {/* StoryOpener disabled — keep import live for future re-enable */}
-      {null as React.ReactNode | null}
-      {void StoryOpener}
+      {/* eslint-disable-next-line no-constant-binary-expression */}
+      {false && <StoryOpener profile={profile} region={region} signals={signals ?? []} />}
 
       {/* Cinematic full-bleed map reveal — fires once when real stops arrive.
           Map draws the day; sequenced narrative summarizes it in one breath. */}
