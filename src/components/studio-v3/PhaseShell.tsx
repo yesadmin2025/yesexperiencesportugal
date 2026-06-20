@@ -134,9 +134,10 @@ export function PhaseShell({
       ) : null}
 
 
-      <div data-testid="studio-v3-content-layer" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-28 pb-28 sm:justify-center sm:py-20">
+      <div data-testid="studio-v3-content-layer" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-14 pb-28 sm:pt-28 sm:justify-center sm:py-20">
         {children}
       </div>
+
 
       {/* Local keyframes — scoped via style tag to avoid polluting global CSS. */}
       <style>{`
