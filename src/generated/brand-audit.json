@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-20T22:15:26.741Z",
+  "generatedAt": "2026-06-20T22:48:12.991Z",
   "filesScanned": 403,
   "approvedPalette": {
     "teal": "#295B61",
@@ -404,7 +404,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 471,
+      "line": 472,
       "col": 66,
       "raw": "#9ca3af",
       "normalized": "#9ca3af",
@@ -413,7 +413,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 482,
+      "line": 483,
       "col": 19,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -422,7 +422,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 482,
+      "line": 483,
       "col": 37,
       "raw": "#ef4444",
       "normalized": "#ef4444",
@@ -431,7 +431,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 512,
+      "line": 513,
       "col": 63,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -440,7 +440,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 525,
+      "line": 526,
       "col": 63,
       "raw": "#9ca3af",
       "normalized": "#9ca3af",
@@ -449,7 +449,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 574,
+      "line": 575,
       "col": 31,
       "raw": "#f59e0b",
       "normalized": "#f59e0b",
@@ -458,7 +458,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 580,
+      "line": 581,
       "col": 63,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -467,7 +467,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 581,
+      "line": 582,
       "col": 63,
       "raw": "#ef4444",
       "normalized": "#ef4444",
@@ -476,7 +476,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 582,
+      "line": 583,
       "col": 63,
       "raw": "#f59e0b",
       "normalized": "#f59e0b",
@@ -485,7 +485,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 650,
+      "line": 651,
       "col": 14,
       "raw": "#f59e0b",
       "normalized": "#f59e0b",
@@ -494,7 +494,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 695,
+      "line": 696,
       "col": 57,
       "raw": "#9ca3af",
       "normalized": "#9ca3af",
@@ -503,7 +503,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 724,
+      "line": 725,
       "col": 18,
       "raw": "#9ca3af",
       "normalized": "#9ca3af",
@@ -512,7 +512,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 740,
+      "line": 741,
       "col": 20,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -521,7 +521,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 752,
+      "line": 753,
       "col": 83,
       "raw": "#ef4444",
       "normalized": "#ef4444",
@@ -530,7 +530,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 760,
+      "line": 761,
       "col": 80,
       "raw": "#9ca3af",
       "normalized": "#9ca3af",
@@ -539,7 +539,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 915,
+      "line": 916,
       "col": 23,
       "raw": "#0f0f0f",
       "normalized": "#0f0f0f",
@@ -548,7 +548,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 916,
+      "line": 917,
       "col": 18,
       "raw": "#fafafa",
       "normalized": "#fafafa",
@@ -557,7 +557,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 940,
+      "line": 941,
       "col": 21,
       "raw": "#fafafa",
       "normalized": "#fafafa",
@@ -566,7 +566,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 970,
+      "line": 971,
       "col": 25,
       "raw": "#fafafa",
       "normalized": "#fafafa",
@@ -575,7 +575,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1013,
+      "line": 1014,
       "col": 69,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -584,7 +584,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1013,
+      "line": 1014,
       "col": 81,
       "raw": "#dc2626",
       "normalized": "#dc2626",
@@ -593,7 +593,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1014,
+      "line": 1015,
       "col": 29,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -602,7 +602,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1044,
+      "line": 1045,
       "col": 30,
       "raw": "#dc2626",
       "normalized": "#dc2626",
@@ -611,7 +611,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1045,
+      "line": 1046,
       "col": 25,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -620,7 +620,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1065,
+      "line": 1066,
       "col": 25,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -629,7 +629,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1089,
+      "line": 1090,
       "col": 26,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -638,7 +638,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1097,
+      "line": 1098,
       "col": 25,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -647,7 +647,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1114,
+      "line": 1115,
       "col": 24,
       "raw": "#10b981",
       "normalized": "#10b981",
@@ -656,7 +656,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1116,
+      "line": 1117,
       "col": 26,
       "raw": "#dc2626",
       "normalized": "#dc2626",
@@ -665,7 +665,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1118,
+      "line": 1119,
       "col": 25,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -674,7 +674,7 @@
     },
     {
       "file": "src/components/HeroCopyDiff.tsx",
-      "line": 1172,
+      "line": 1173,
       "col": 14,
       "raw": "#f59e0b",
       "normalized": "#f59e0b",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 207,
+      "line": 208,
       "col": 29,
       "raw": "#0c5b66",
       "normalized": "#0c5b66",
@@ -782,7 +782,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 215,
+      "line": 216,
       "col": 60,
       "raw": "#555",
       "normalized": "#555555",
@@ -791,7 +791,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 225,
+      "line": 226,
       "col": 60,
       "raw": "#888",
       "normalized": "#888888",
@@ -800,7 +800,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 228,
+      "line": 229,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -809,7 +809,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 194,
+      "line": 195,
       "col": 106,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -818,7 +818,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 296,
+      "line": 297,
       "col": 45,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -827,7 +827,7 @@
     },
     {
       "file": "src/components/builder/MultiDayBuilder.tsx",
-      "line": 735,
+      "line": 738,
       "col": 76,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -1124,7 +1124,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 133,
+      "line": 134,
       "col": 10,
       "raw": "#888",
       "normalized": "#888888",
@@ -1133,7 +1133,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 134,
+      "line": 135,
       "col": 12,
       "raw": "#7BD389",
       "normalized": "#7bd389",
@@ -1142,7 +1142,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 136,
+      "line": 137,
       "col": 13,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1151,7 +1151,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 137,
+      "line": 138,
       "col": 10,
       "raw": "#7AA7C7",
       "normalized": "#7aa7c7",
@@ -1160,7 +1160,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 490,
+      "line": 491,
       "col": 37,
       "raw": "#7BD389",
       "normalized": "#7bd389",
@@ -1169,7 +1169,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 490,
+      "line": 491,
       "col": 49,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1178,7 +1178,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 801,
+      "line": 802,
       "col": 56,
       "raw": "#7BD389",
       "normalized": "#7bd389",
@@ -1187,7 +1187,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 801,
+      "line": 802,
       "col": 68,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1196,7 +1196,7 @@
     },
     {
       "file": "src/components/home/HeroScrimRuler.tsx",
-      "line": 62,
+      "line": 63,
       "col": 58,
       "raw": "#5BB0BA",
       "normalized": "#5bb0ba",
@@ -1205,7 +1205,7 @@
     },
     {
       "file": "src/components/home/HeroScrimRuler.tsx",
-      "line": 63,
+      "line": 64,
       "col": 74,
       "raw": "#5BB0BA",
       "normalized": "#5bb0ba",
@@ -1214,7 +1214,7 @@
     },
     {
       "file": "src/components/home/HeroScrimRuler.tsx",
-      "line": 123,
+      "line": 124,
       "col": 63,
       "raw": "#5BB0BA",
       "normalized": "#5bb0ba",
