@@ -40,6 +40,8 @@ import {
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { TimelineView } from "./TimelineView";
+import { AffinityBars } from "./AffinityBars";
+import { SmartRecommendation } from "./SmartRecommendation";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 
@@ -356,6 +358,12 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               scopePartyCount={partyCount}
               scopePartyTotalEur={scopePartyTotalEur}
               memoryLine={memoryLine}
+              tourId={resolved?.skeletonTourKey ?? null}
+              stopCount={routePoints.length}
+              feeling={state.feeling}
+              interests={state.interests}
+              rhythm={state.rhythm}
+              companions={state.companions}
             />,
 
             document.body,
@@ -387,6 +395,12 @@ interface DrawerProps {
   scopePartyCount: number | null;
   scopePartyTotalEur: number | null;
   memoryLine: string | null;
+  tourId: string | null;
+  stopCount: number;
+  feeling: import("./types").Feeling | null;
+  interests: import("./types").Interest[];
+  rhythm: import("./types").Rhythm | null;
+  companions: import("./types").Companions | null;
 }
 
 
@@ -411,6 +425,12 @@ function JourneyDraftDrawer({
   scopePartyCount,
   scopePartyTotalEur,
   memoryLine,
+  tourId,
+  stopCount,
+  feeling,
+  interests,
+  rhythm,
+  companions,
 }: DrawerProps) {
 
   const totalPins = Math.max(0, Math.min(4, moments.length));
@@ -744,6 +764,17 @@ function JourneyDraftDrawer({
                   </ol>
                 </div>
               ) : null}
+              <SmartRecommendation
+                tourId={tourId}
+                stopCount={stopCount}
+                durationLabel={durationLabel}
+              />
+              <AffinityBars
+                feeling={feeling}
+                interests={interests}
+                rhythm={rhythm}
+                companions={companions}
+              />
             </>
           ) : null}
 
