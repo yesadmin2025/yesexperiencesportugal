@@ -44,11 +44,11 @@ const INTENT_TO_POOL_REGIONS: Record<
   Exclude<DestinationIntent, "no-preference" | "anywhere-special">,
   ReadonlyArray<string>
 > = {
-  "lisbon-sintra-cascais": ["sintra-cascais", "lisbon-coast"],
-  "arrabida-setubal-azeitao": ["arrabida"],
-  "alentejo-evora-wine": ["alentejo", "evora"],
-  "spiritual-coast": ["centro", "fatima-nazare-obidos"],
-  "central-portugal": ["centro", "tomar-coimbra"],
+  "lisbon-sintra-cascais": ["sintra-cascais"],
+  "arrabida-setubal-azeitao": ["arrabida-setubal"],
+  "alentejo-evora-wine": ["alentejo-evora"],
+  "spiritual-coast": ["fatima-nazare-obidos"],
+  "central-portugal": ["tomar-coimbra"],
   "comporta-troia": ["comporta-troia"],
 };
 
