@@ -3110,9 +3110,9 @@ function StoryboardHandoff({
       </div>
 
       {/* ---------- 8. CTA stack ---------- */}
-      <div className="mt-12 flex flex-col items-center gap-4">
+      <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
         <p
-          className="text-[15px] sm:text-[16px] italic leading-[1.45] text-center text-balance [text-wrap:pretty] max-w-[360px] sm:max-w-[440px]"
+          className="hidden sm:block text-[15px] sm:text-[16px] italic leading-[1.45] text-center text-balance [text-wrap:pretty] max-w-[360px] sm:max-w-[440px]"
           style={{
             fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
@@ -3122,12 +3122,12 @@ function StoryboardHandoff({
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px]"
+          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[320px] sm:max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          Saying YES opens a private conversation — your date, pickup and final
-          details are confirmed with you before anything is reserved.
+          Reserve your date now — pickup and final details are confirmed with you before anything is finalised.
         </p>
+
         <button
           type="button"
           onClick={onSecure}
