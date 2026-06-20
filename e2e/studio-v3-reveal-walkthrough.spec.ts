@@ -55,6 +55,19 @@ async function currentPhase(page: Page): Promise<string | null> {
   if ((await root.count()) === 0) return "intro";
   return root.getAttribute("data-phase", { timeout: 2_000 }).catch(() => null);
 }
+async function dismissReactionOverlay(page: Page): Promise<boolean> {
+  // The cinematic "reaction beat" between phases is a full-screen button
+  // (`fixed inset-0`, aria-label="Continue") that intercepts pointer events.
+  // Tap it once and it dismisses, revealing the next phase underneath.
+  const overlay = page.locator('button[aria-label="Continue"].fixed.inset-0').first();
+  if (await overlay.isVisible({ timeout: 200 }).catch(() => false)) {
+    await overlay.click({ timeout: 2_000 }).catch(() => undefined);
+    await page.waitForTimeout(350);
+    return true;
+  }
+  return false;
+}
+
 
 async function walkOnce(page: Page): Promise<{ clicked: boolean; via: string }> {
   // Prefer enabled Continue ONLY when at least one selection on this phase
