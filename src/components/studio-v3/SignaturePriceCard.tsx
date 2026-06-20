@@ -66,6 +66,7 @@ export function SignaturePriceCard({
   guests,
   included,
   showAddOns = true,
+  previewTiers = null,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
