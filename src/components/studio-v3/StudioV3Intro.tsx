@@ -114,6 +114,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             <button
               type="button"
               onClick={() => setStep("name")}
+              data-phase-cta="intro-begin"
               className="mt-10 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
