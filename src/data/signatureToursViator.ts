@@ -186,6 +186,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/17/14/fb.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
     ],
+    priceTiersEUR: { 2: 209, 3: 209, 4: 199, 5: 199, 6: 159, 7: 159, 8: 159 },
   },
   "tiles-workshop": {
     viatorUrl: "https://www.viator.com/tours/Lisbon/Full-Day-Golf-and-Wine-tasting-Private-Tour-in-South-Lisbon/d538-349639P4",
