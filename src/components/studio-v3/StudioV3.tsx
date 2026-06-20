@@ -3122,10 +3122,11 @@ function StoryboardHandoff({
         </p>
         <p
           data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[320px] sm:max-w-[420px]"
+          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[300px] sm:max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          Reserve your date now — pickup and final details are confirmed with you before anything is finalised.
+          <span className="sm:hidden">When you're ready — pickup and final details are confirmed before anything is locked in.</span>
+          <span className="hidden sm:inline">Reserve your date now — pickup and final details are confirmed with you before anything is finalised.</span>
         </p>
 
         <button
