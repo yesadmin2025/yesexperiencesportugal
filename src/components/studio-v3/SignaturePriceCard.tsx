@@ -21,6 +21,7 @@ import {
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
 
