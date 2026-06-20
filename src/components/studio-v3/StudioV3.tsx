@@ -623,7 +623,26 @@ export function StudioV3() {
       stepKey: state.phase,
       event: "enter",
     });
-  }, [state.phase]);
+    // Conversion-funnel milestones (additive, never replace `enter`):
+    //   purchase_intent — traveller has reached the tier ask
+    //   reveal_seen    — traveller has reached the final Signature reveal
+    if (state.phase === "investment") {
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "secure_open",
+        value: { milestone: "purchase_intent" },
+      });
+    }
+    if (state.phase === "storyboard") {
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "secure_open",
+        value: { milestone: "reveal_seen", tier: state.investment, tourId: state.tourId },
+      });
+    }
+  }, [state.phase, state.investment, state.tourId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
