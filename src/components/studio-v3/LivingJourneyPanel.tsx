@@ -395,6 +395,12 @@ interface DrawerProps {
   scopePartyCount: number | null;
   scopePartyTotalEur: number | null;
   memoryLine: string | null;
+  tourId: string | null;
+  stopCount: number;
+  feeling: import("./types").Feeling | null;
+  interests: import("./types").Interest[];
+  rhythm: import("./types").Rhythm | null;
+  companions: import("./types").Companions | null;
 }
 
 
