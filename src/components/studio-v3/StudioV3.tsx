@@ -49,6 +49,18 @@ import {
   selectReplacementCandidates,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
+
+/** Real minimum priceFrom across every Signature in the catalogue. Used as
+ *  the anchor for indicative per-tier price hints — never invented. */
+const SIGNATURE_MIN_PRICE_EUR: number = (() => {
+  let min = Infinity;
+  for (const t of signatureTours) {
+    if (typeof t.priceFrom === "number" && t.priceFrom > 0 && t.priceFrom < min) {
+      min = t.priceFrom;
+    }
+  }
+  return Number.isFinite(min) ? min : 0;
+})();
 import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
