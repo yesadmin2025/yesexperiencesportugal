@@ -46,6 +46,7 @@ import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
+import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
@@ -241,6 +242,11 @@ const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
   path: '/admin/studio-v3-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPricingRoute = AdminPricingRouteImport.update({
+  id: '/admin/pricing',
+  path: '/admin/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminImportToursRoute = AdminImportToursRouteImport.update({
   id: '/admin/import-tours',
   path: '/admin/import-tours',
@@ -317,6 +323,7 @@ export interface FileRoutesByFullPath {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/pricing': typeof AdminPricingRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByTo {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/pricing': typeof AdminPricingRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -414,6 +422,7 @@ export interface FileRoutesById {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/pricing': typeof AdminPricingRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -464,6 +473,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/pricing'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -512,6 +522,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/pricing'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -560,6 +571,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/pricing'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -609,6 +621,7 @@ export interface RootRouteChildren {
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
+  AdminPricingRoute: typeof AdminPricingRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
@@ -886,6 +899,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudioV3AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/pricing': {
+      id: '/admin/pricing'
+      path: '/admin/pricing'
+      fullPath: '/admin/pricing'
+      preLoaderRoute: typeof AdminPricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/import-tours': {
       id: '/admin/import-tours'
       path: '/admin/import-tours'
@@ -1018,6 +1038,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
+  AdminPricingRoute: AdminPricingRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
