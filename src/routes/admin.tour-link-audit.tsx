@@ -48,7 +48,6 @@ function TourLinkAuditErrorComponent({ error, reset }: { error: Error; reset: ()
   );
 }
 
-
 export const Route = createFileRoute("/admin/tour-link-audit")({
   beforeLoad: () => {
     if (!import.meta.env.DEV) {
