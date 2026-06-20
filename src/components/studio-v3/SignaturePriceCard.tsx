@@ -367,11 +367,11 @@ export function SignaturePriceCard({
                         background: active
                           ? "color-mix(in oklab, var(--gold) 18%, var(--ivory))"
                           : "var(--ivory)",
-                        border: `1px solid ${
-                          active
-                            ? "color-mix(in oklab, var(--gold) 70%, transparent)"
-                            : "color-mix(in oklab, var(--charcoal) 10%, transparent)"
-                        }`,
+                        borderWidth: 1,
+                        borderStyle: "solid",
+                        borderColor: active
+                          ? "color-mix(in oklab, var(--gold) 70%, transparent)"
+                          : "color-mix(in oklab, var(--charcoal) 10%, transparent)",
                       }}
                     >
                       <span
