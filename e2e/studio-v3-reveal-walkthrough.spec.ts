@@ -188,11 +188,22 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
       if (stuckOnSamePhase > 4) break;
     }
 
-    // Diagnostic: dump the walker's path for the trace.
+    // Diagnostic: dump the walker's path + a screenshot for the trace.
     // eslint-disable-next-line no-console
     console.log("[walker] phases seen:", Array.from(seenPhases).join(" → "));
     // eslint-disable-next-line no-console
     console.log("[walker] final phase:", finalPhase);
+    await page.screenshot({ path: `test-results/walker-final-${finalPhase ?? "unknown"}.png` });
+    const visibleButtons = await page.locator("button:visible").evaluateAll((els) =>
+      els.slice(0, 15).map((b) => ({
+        text: (b.textContent ?? "").trim().slice(0, 60),
+        aria: b.getAttribute("aria-label"),
+        cta: b.getAttribute("data-phase-cta"),
+        disabled: (b as HTMLButtonElement).disabled,
+      })),
+    );
+    // eslint-disable-next-line no-console
+    console.log("[walker] visible buttons at final:", JSON.stringify(visibleButtons, null, 2));
 
     expect(finalPhase, "walker should reach storyboard").toBe("storyboard");
 
