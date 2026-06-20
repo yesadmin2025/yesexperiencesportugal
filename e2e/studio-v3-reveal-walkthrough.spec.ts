@@ -29,9 +29,7 @@ type CapturedEvent = { kind: string; detail: unknown; ts: number };
 
 async function installTelemetryCapture(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    type Window = typeof window & { __studioV3Events?: CapturedEvent[] };
-    type CapturedEvent = { kind: string; detail: unknown; ts: number };
-    const w = window as Window;
+    const w = window as unknown as { __studioV3Events?: Array<{ kind: string; detail: unknown; ts: number }> };
     w.__studioV3Events = [];
     const kinds = [
       "curation.decision",
