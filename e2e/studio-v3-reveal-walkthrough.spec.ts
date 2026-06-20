@@ -51,7 +51,9 @@ async function installTelemetryCapture(page: Page): Promise<void> {
 }
 
 async function currentPhase(page: Page): Promise<string | null> {
-  return page.locator(STUDIO_ROOT).first().getAttribute("data-phase");
+  const root = page.locator(STUDIO_ROOT).first();
+  if ((await root.count()) === 0) return "intro";
+  return root.getAttribute("data-phase", { timeout: 2_000 }).catch(() => null);
 }
 
 async function walkOnce(page: Page): Promise<{ clicked: boolean; via: string }> {
