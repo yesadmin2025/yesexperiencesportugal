@@ -117,9 +117,13 @@ export function SignaturePriceCard({
   // we know the guest count, `realPerPax.real === true` and we display the
   // exact per-person rate; otherwise we keep the "from" anchor.
   const { data: tierOverrides } = useTourPriceTiers();
+  const effectiveOverrides = useMemo(() => {
+    if (!previewTiers || !tour) return tierOverrides ?? null;
+    return { ...(tierOverrides ?? {}), [tour.id]: previewTiers };
+  }, [tierOverrides, previewTiers, tour]);
   const realPerPax = useMemo(
-    () => resolvePerPaxEur(tour, guests ?? null, tierOverrides ?? null),
-    [tour, guests, tierOverrides],
+    () => resolvePerPaxEur(tour, guests ?? null, effectiveOverrides),
+    [tour, guests, effectiveOverrides],
   );
 
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
