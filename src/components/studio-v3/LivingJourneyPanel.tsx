@@ -40,6 +40,8 @@ import {
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { TimelineView } from "./TimelineView";
+import { AffinityBars } from "./AffinityBars";
+import { SmartRecommendation } from "./SmartRecommendation";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 
