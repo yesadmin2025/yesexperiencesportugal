@@ -239,11 +239,9 @@ export function InvestmentTierPicker({
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
           <span style={{ color: "var(--gold)" }}>—</span> Indicative
-          {guestLabel ? <> · {guestLabel}</> : null} · real per-pax confirmed
-          on the next step
+          {guestLabel ? <> · {guestLabel}</> : null} · real per-pax confirmed on the next step
         </p>
       ) : null}
     </>
   );
 }
-

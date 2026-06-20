@@ -83,7 +83,12 @@ export function SignaturePriceCard({
     if (!meta?.priceFromUSD || meta.priceFromUSD <= 0) return null;
     return usdToEurAnchor(meta.priceFromUSD);
   }, [meta, tour?.priceFrom]);
-  const priceSource = tour?.priceFrom && tour.priceFrom > 0 ? "signature" : meta?.priceFromUSD ? "viator-usd" : "missing";
+  const priceSource =
+    tour?.priceFrom && tour.priceFrom > 0
+      ? "signature"
+      : meta?.priceFromUSD
+        ? "viator-usd"
+        : "missing";
 
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
   const hasPrice = priceEur != null;
@@ -146,7 +151,8 @@ export function SignaturePriceCard({
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyCount = effectiveGuests && effectiveGuests >= 2 ? effectiveGuests : null;
-  const partyBaseEur = displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
+  const partyBaseEur =
+    displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
   const partyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsTotalEur * (partyCount ?? 1) : null;
 
@@ -179,13 +185,19 @@ export function SignaturePriceCard({
   // Signature's real `included[]`. Pure data, never invented copy.
   const whyThisWorks = useMemo<string[]>(() => {
     if (!included || included.length === 0) return [];
-    return included.slice(0, 3).map((s) => s.trim()).filter(Boolean);
+    return included
+      .slice(0, 3)
+      .map((s) => s.trim())
+      .filter(Boolean);
   }, [included]);
 
   // S4 — Inclusions footnote: up to 4 short items from the real `included[]`.
   const inclusionFootnote = useMemo<string[]>(() => {
     if (!included || included.length === 0) return [];
-    return included.slice(0, 4).map((s) => s.trim()).filter(Boolean);
+    return included
+      .slice(0, 4)
+      .map((s) => s.trim())
+      .filter(Boolean);
   }, [included]);
 
   useEffect(() => {
@@ -226,7 +238,8 @@ export function SignaturePriceCard({
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> {journeyTitle ? "Your Signature" : "The journey you composed"}
+          <span style={{ color: "var(--gold)" }}>—</span>{" "}
+          {journeyTitle ? "Your Signature" : "The journey you composed"}
         </p>
         {journeyTitle ? (
           <p
@@ -239,7 +252,6 @@ export function SignaturePriceCard({
             “{journeyTitle}”
           </p>
         ) : null}
-
 
         {hasPrice ? (
           <>
@@ -284,8 +296,7 @@ export function SignaturePriceCard({
                 className="mt-2 text-[12px] font-semibold tabular-nums"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
               >
-                × {partyCount} guests{" "}
-                <span style={{ color: "var(--gold)" }}>—</span>{" "}
+                × {partyCount} guests <span style={{ color: "var(--gold)" }}>—</span>{" "}
                 <span style={{ color: "var(--charcoal)" }}>€{partyTotalEur}</span>{" "}
                 <span className="text-[9.5px] uppercase tracking-[0.2em] opacity-70">total</span>
               </p>
@@ -306,8 +317,8 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
               }}
             >
-              This Signature is bespoke — a YES curator confirms the
-              investment before anything is reserved.
+              This Signature is bespoke — a YES curator confirms the investment before anything is
+              reserved.
             </p>
           </>
         )}
@@ -347,8 +358,9 @@ export function SignaturePriceCard({
                 }}
               >
                 {tierRows.map((r) => {
-                  const active = (effectiveGuests ?? 0) === r.tier
-                    || (r.tier === 8 && (effectiveGuests ?? 0) >= 8);
+                  const active =
+                    (effectiveGuests ?? 0) === r.tier ||
+                    (r.tier === 8 && (effectiveGuests ?? 0) >= 8);
                   return (
                     <button
                       key={r.tier}
@@ -417,26 +429,37 @@ export function SignaturePriceCard({
           </div>
         ) : null}
 
-
         <ul
           className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] uppercase tracking-[0.18em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
           {durationLabel ? (
             <li className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full"
+                style={{ background: "var(--gold)" }}
+              />
               {durationLabel}
             </li>
           ) : null}
           {stopCount > 0 ? (
             <li className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full"
+                style={{ background: "var(--gold)" }}
+              />
               {stopCount} {stopCount === 1 ? "moment" : "moments"}
             </li>
           ) : null}
           {dateExact ? (
             <li className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="block h-1 w-1 rounded-full" style={{ background: "var(--gold)" }} />
+              <span
+                aria-hidden
+                className="block h-1 w-1 rounded-full"
+                style={{ background: "var(--gold)" }}
+              />
               {formatPriceDate(dateExact)}
             </li>
           ) : null}
@@ -542,10 +565,8 @@ export function SignaturePriceCard({
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
             <ul className="flex flex-col gap-2">
-
               {availableAddOns.map((a) => {
                 const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
-
 
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
@@ -694,7 +715,6 @@ export function SignaturePriceCard({
             </p>
           </footer>
         ) : null}
-
 
         <div className="mt-6 flex flex-col items-center gap-2.5">
           {hasPrice ? (

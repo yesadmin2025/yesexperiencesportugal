@@ -27,16 +27,68 @@ type Locale = "pt" | "en" | "es" | "fr";
 type Result = { line: string; source: "ai" | "fallback" | "rate_limited" };
 
 const MOOD_BY_LOCALE: Record<Locale, Record<string, string>> = {
-  pt: { slow: "lenta", curious: "curiosa", romantic: "romântica", open: "aberta", energetic: "vibrante" },
-  en: { slow: "slow", curious: "curious", romantic: "romantic", open: "open", energetic: "vibrant" },
-  es: { slow: "lenta", curious: "curiosa", romantic: "romántica", open: "abierta", energetic: "vibrante" },
-  fr: { slow: "lente", curious: "curieuse", romantic: "romantique", open: "ouverte", energetic: "vibrante" },
+  pt: {
+    slow: "lenta",
+    curious: "curiosa",
+    romantic: "romântica",
+    open: "aberta",
+    energetic: "vibrante",
+  },
+  en: {
+    slow: "slow",
+    curious: "curious",
+    romantic: "romantic",
+    open: "open",
+    energetic: "vibrant",
+  },
+  es: {
+    slow: "lenta",
+    curious: "curiosa",
+    romantic: "romántica",
+    open: "abierta",
+    energetic: "vibrante",
+  },
+  fr: {
+    slow: "lente",
+    curious: "curieuse",
+    romantic: "romantique",
+    open: "ouverte",
+    energetic: "vibrante",
+  },
 };
 const WHO_BY_LOCALE: Record<Locale, Record<string, string>> = {
-  pt: { couple: "para dois", family: "em família", friends: "entre amigos", solo: "a sós", corporate: "para um grupo", group: "para o grupo" },
-  en: { couple: "for two", family: "as a family", friends: "with friends", solo: "alone", corporate: "for a group", group: "for the group" },
-  es: { couple: "para dos", family: "en familia", friends: "entre amigos", solo: "a solas", corporate: "para un grupo", group: "para el grupo" },
-  fr: { couple: "à deux", family: "en famille", friends: "entre amis", solo: "en solo", corporate: "pour un groupe", group: "pour le groupe" },
+  pt: {
+    couple: "para dois",
+    family: "em família",
+    friends: "entre amigos",
+    solo: "a sós",
+    corporate: "para um grupo",
+    group: "para o grupo",
+  },
+  en: {
+    couple: "for two",
+    family: "as a family",
+    friends: "with friends",
+    solo: "alone",
+    corporate: "for a group",
+    group: "for the group",
+  },
+  es: {
+    couple: "para dos",
+    family: "en familia",
+    friends: "entre amigos",
+    solo: "a solas",
+    corporate: "para un grupo",
+    group: "para el grupo",
+  },
+  fr: {
+    couple: "à deux",
+    family: "en famille",
+    friends: "entre amis",
+    solo: "en solo",
+    corporate: "pour un groupe",
+    group: "pour le groupe",
+  },
 };
 
 function deterministic(
@@ -59,32 +111,51 @@ function deterministic(
     return `Uma história ${mLabel} em ${place}${wLabel ? `, ${wLabel}` : ""}.`;
   }
   if (stopCount === 0) {
-    if (locale === "en") return `A ${mLabel} story taking shape in ${place}${wLabel ? `, ${wLabel}` : ""}.`;
-    if (locale === "es") return `Una historia ${mLabel} tomando forma en ${place}${wLabel ? `, ${wLabel}` : ""}.`;
-    if (locale === "fr") return `Une histoire ${mLabel} qui prend forme à ${place}${wLabel ? `, ${wLabel}` : ""}.`;
+    if (locale === "en")
+      return `A ${mLabel} story taking shape in ${place}${wLabel ? `, ${wLabel}` : ""}.`;
+    if (locale === "es")
+      return `Una historia ${mLabel} tomando forma en ${place}${wLabel ? `, ${wLabel}` : ""}.`;
+    if (locale === "fr")
+      return `Une histoire ${mLabel} qui prend forme à ${place}${wLabel ? `, ${wLabel}` : ""}.`;
     return `Uma história ${mLabel} a desenhar-se em ${place}${wLabel ? `, ${wLabel}` : ""}.`;
   }
-  const word = stopCount === 1 ? { pt: "momento", en: "moment", es: "momento", fr: "moment" }[locale] : { pt: "momentos", en: "moments", es: "momentos", fr: "moments" }[locale];
-  const onMap = { pt: "já no mapa", en: "on the map", es: "ya en el mapa", fr: "déjà sur la carte" }[locale];
+  const word =
+    stopCount === 1
+      ? { pt: "momento", en: "moment", es: "momento", fr: "moment" }[locale]
+      : { pt: "momentos", en: "moments", es: "momentos", fr: "moments" }[locale];
+  const onMap = {
+    pt: "já no mapa",
+    en: "on the map",
+    es: "ya en el mapa",
+    fr: "déjà sur la carte",
+  }[locale];
   return `${place}, ${mLabel}${wLabel ? `, ${wLabel}` : ""} — ${stopCount} ${word} ${onMap}.`;
 }
 
 const SYS_BY_LOCALE: Record<Locale, { chapter: string; farewell: string }> = {
   pt: {
-    chapter: "Escreves UMA frase editorial em PT-PT (≤80 caracteres) que captura o capítulo emergente desta viagem. Tom: italic-friendly, sereno, sem clichés, sem marketing. Nunca inventes paragens nem regiões; usa apenas o contexto dado.",
-    farewell: "Escreves UMA frase final editorial em PT-PT (≤80 caracteres) que despede o viajante da história que acabou de desenhar. Tom: caloroso, sem clichés, sem exclamações, sem palavras como 'incrível' ou 'inesquecível'. Nunca inventes paragens; usa apenas o contexto dado.",
+    chapter:
+      "Escreves UMA frase editorial em PT-PT (≤80 caracteres) que captura o capítulo emergente desta viagem. Tom: italic-friendly, sereno, sem clichés, sem marketing. Nunca inventes paragens nem regiões; usa apenas o contexto dado.",
+    farewell:
+      "Escreves UMA frase final editorial em PT-PT (≤80 caracteres) que despede o viajante da história que acabou de desenhar. Tom: caloroso, sem clichés, sem exclamações, sem palavras como 'incrível' ou 'inesquecível'. Nunca inventes paragens; usa apenas o contexto dado.",
   },
   en: {
-    chapter: "Write ONE editorial sentence in English (≤80 characters) that captures the emerging chapter of this journey. Tone: italic-friendly, serene, no clichés, no marketing. Never invent stops or regions; use only the given context.",
-    farewell: "Write ONE final editorial sentence in English (≤80 characters) that bids the traveler farewell. Tone: warm, no clichés, no exclamation marks, no words like 'amazing' or 'unforgettable'. Never invent stops; use only the given context.",
+    chapter:
+      "Write ONE editorial sentence in English (≤80 characters) that captures the emerging chapter of this journey. Tone: italic-friendly, serene, no clichés, no marketing. Never invent stops or regions; use only the given context.",
+    farewell:
+      "Write ONE final editorial sentence in English (≤80 characters) that bids the traveler farewell. Tone: warm, no clichés, no exclamation marks, no words like 'amazing' or 'unforgettable'. Never invent stops; use only the given context.",
   },
   es: {
-    chapter: "Escribe UNA frase editorial en español (≤80 caracteres) que capture el capítulo emergente de este viaje. Tono: italic-friendly, sereno, sin clichés, sin marketing. Nunca inventes paradas ni regiones; usa solo el contexto dado.",
-    farewell: "Escribe UNA frase final editorial en español (≤80 caracteres) que despida al viajero. Tono: cálido, sin clichés, sin exclamaciones, sin palabras como 'increíble' o 'inolvidable'. Nunca inventes paradas; usa solo el contexto dado.",
+    chapter:
+      "Escribe UNA frase editorial en español (≤80 caracteres) que capture el capítulo emergente de este viaje. Tono: italic-friendly, sereno, sin clichés, sin marketing. Nunca inventes paradas ni regiones; usa solo el contexto dado.",
+    farewell:
+      "Escribe UNA frase final editorial en español (≤80 caracteres) que despida al viajero. Tono: cálido, sin clichés, sin exclamaciones, sin palabras como 'increíble' o 'inolvidable'. Nunca inventes paradas; usa solo el contexto dado.",
   },
   fr: {
-    chapter: "Écris UNE phrase éditoriale en français (≤80 caractères) qui capte le chapitre émergent de ce voyage. Ton : italique, serein, sans clichés, sans marketing. N'invente jamais d'étapes ni de régions ; utilise uniquement le contexte donné.",
-    farewell: "Écris UNE phrase finale éditoriale en français (≤80 caractères) qui prend congé du voyageur. Ton : chaleureux, sans clichés, sans exclamation, sans mots comme 'incroyable' ou 'inoubliable'. N'invente jamais d'étapes ; utilise uniquement le contexte donné.",
+    chapter:
+      "Écris UNE phrase éditoriale en français (≤80 caractères) qui capte le chapitre émergent de ce voyage. Ton : italique, serein, sans clichés, sans marketing. N'invente jamais d'étapes ni de régions ; utilise uniquement le contexte donné.",
+    farewell:
+      "Écris UNE phrase finale éditoriale en français (≤80 caractères) qui prend congé du voyageur. Ton : chaleureux, sans clichés, sans exclamation, sans mots comme 'incroyable' ou 'inoubliable'. N'invente jamais d'étapes ; utilise uniquement le contexte donné.",
   },
 };
 
@@ -129,11 +200,59 @@ export const generateChapter = createServerFn({ method: "POST" })
 
     try {
       const sys = SYS_BY_LOCALE[data.locale][data.kind];
-      const labels: Record<Locale, { mood: string; with: string; seeks: string; pace: string; region: string; stops: string; none: string; instruct: string }> = {
-        pt: { mood: "Mood", with: "Com", seeks: "Procura", pace: "Ritmo", region: "Região", stops: "Paragens já escolhidas", none: "nenhuma ainda", instruct: "Devolve apenas a frase, sem aspas, sem prefixos." },
-        en: { mood: "Mood", with: "With", seeks: "Seeks", pace: "Pace", region: "Region", stops: "Stops chosen", none: "none yet", instruct: "Return only the sentence, no quotes, no prefixes." },
-        es: { mood: "Mood", with: "Con", seeks: "Busca", pace: "Ritmo", region: "Región", stops: "Paradas elegidas", none: "ninguna aún", instruct: "Devuelve solo la frase, sin comillas, sin prefijos." },
-        fr: { mood: "Mood", with: "Avec", seeks: "Cherche", pace: "Rythme", region: "Région", stops: "Étapes choisies", none: "aucune pour l'instant", instruct: "Retourne uniquement la phrase, sans guillemets, sans préfixes." },
+      const labels: Record<
+        Locale,
+        {
+          mood: string;
+          with: string;
+          seeks: string;
+          pace: string;
+          region: string;
+          stops: string;
+          none: string;
+          instruct: string;
+        }
+      > = {
+        pt: {
+          mood: "Mood",
+          with: "Com",
+          seeks: "Procura",
+          pace: "Ritmo",
+          region: "Região",
+          stops: "Paragens já escolhidas",
+          none: "nenhuma ainda",
+          instruct: "Devolve apenas a frase, sem aspas, sem prefixos.",
+        },
+        en: {
+          mood: "Mood",
+          with: "With",
+          seeks: "Seeks",
+          pace: "Pace",
+          region: "Region",
+          stops: "Stops chosen",
+          none: "none yet",
+          instruct: "Return only the sentence, no quotes, no prefixes.",
+        },
+        es: {
+          mood: "Mood",
+          with: "Con",
+          seeks: "Busca",
+          pace: "Ritmo",
+          region: "Región",
+          stops: "Paradas elegidas",
+          none: "ninguna aún",
+          instruct: "Devuelve solo la frase, sin comillas, sin prefijos.",
+        },
+        fr: {
+          mood: "Mood",
+          with: "Avec",
+          seeks: "Cherche",
+          pace: "Rythme",
+          region: "Région",
+          stops: "Étapes choisies",
+          none: "aucune pour l'instant",
+          instruct: "Retourne uniquement la phrase, sans guillemets, sans préfixes.",
+        },
       };
       const L = labels[data.locale];
       const usr = `${L.mood}: ${data.mood ?? "—"}

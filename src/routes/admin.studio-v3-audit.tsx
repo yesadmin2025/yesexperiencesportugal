@@ -159,12 +159,10 @@ function StudioV3AuditPage() {
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
             Internal · Studio V3
           </p>
-          <h1 className="mt-2 font-display text-3xl font-semibold">
-            Curation & Builder audit
-          </h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold">Curation & Builder audit</h1>
           <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-            Live buffer of the last {events.length} events on this device
-            (localStorage, max 200). Open Studio V3 in another tab to populate.
+            Live buffer of the last {events.length} events on this device (localStorage, max 200).
+            Open Studio V3 in another tab to populate.
           </p>
         </div>
         <button
@@ -215,9 +213,7 @@ function StudioV3AuditPage() {
           </section>
 
           <section className="mb-10">
-            <h2 className="mb-1 font-display text-lg font-semibold">
-              Phase 4 timing by device
-            </h2>
+            <h2 className="mb-1 font-display text-lg font-semibold">Phase 4 timing by device</h2>
             <p className="mb-3 text-xs text-[color:var(--charcoal-soft)]">
               Median / p95 ms · reduced-motion: {reducedMotion.rm}/{reducedMotion.total}
             </p>
@@ -231,7 +227,9 @@ function StudioV3AuditPage() {
                   <tr className="border-b border-[color:var(--charcoal)]/10 text-left text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                     <th className="py-2">Device</th>
                     {phase4Stats.phases.map((ph) => (
-                      <th key={ph} className="py-2 text-right">{ph}</th>
+                      <th key={ph} className="py-2 text-right">
+                        {ph}
+                      </th>
                     ))}
                   </tr>
                 </thead>
@@ -243,13 +241,20 @@ function StudioV3AuditPage() {
                         const arr = phase4Stats.cell(b, ph);
                         if (arr.length === 0) {
                           return (
-                            <td key={ph} className="py-2 text-right text-[color:var(--charcoal-soft)]">—</td>
+                            <td
+                              key={ph}
+                              className="py-2 text-right text-[color:var(--charcoal-soft)]"
+                            >
+                              —
+                            </td>
                           );
                         }
                         return (
                           <td key={ph} className="py-2 text-right tabular-nums">
                             {p(arr, 0.5)} / {p(arr, 0.95)}
-                            <span className="ml-1 text-[10px] text-[color:var(--charcoal-soft)]">({arr.length})</span>
+                            <span className="ml-1 text-[10px] text-[color:var(--charcoal-soft)]">
+                              ({arr.length})
+                            </span>
                           </td>
                         );
                       })}
@@ -289,14 +294,19 @@ function StudioV3AuditPage() {
                     <div className="mt-2 grid grid-cols-1 gap-3 md:grid-cols-2">
                       <div>
                         <div className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
-                          Picked ({d.picked.length}/{d.target}) · pool {d.poolSizeAfterClosures}/{d.poolSizeRaw}
+                          Picked ({d.picked.length}/{d.target}) · pool {d.poolSizeAfterClosures}/
+                          {d.poolSizeRaw}
                         </div>
                         <ul className="mt-1 list-disc pl-4">
-                          {d.picked.map((label) => <li key={label}>{label}</li>)}
+                          {d.picked.map((label) => (
+                            <li key={label}>{label}</li>
+                          ))}
                         </ul>
                       </div>
                       <div>
-                        <div className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">Rejections</div>
+                        <div className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                          Rejections
+                        </div>
                         {d.rejections.length === 0 ? (
                           <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">None.</p>
                         ) : (
@@ -324,7 +334,8 @@ function StudioV3AuditPage() {
             </h2>
             {builderSteps.length === 0 ? (
               <p className="text-sm text-[color:var(--charcoal-soft)]">
-                No builder step events recorded yet. Open Studio V3 in another tab and progress through the beats.
+                No builder step events recorded yet. Open Studio V3 in another tab and progress
+                through the beats.
               </p>
             ) : (
               <table className="w-full border-collapse text-sm">
@@ -347,11 +358,10 @@ function StudioV3AuditPage() {
           </section>
 
           <section className="mb-10">
-            <h2 className="mb-1 font-display text-lg font-semibold">
-              Premium reveals
-            </h2>
+            <h2 className="mb-1 font-display text-lg font-semibold">Premium reveals</h2>
             <p className="mb-3 text-xs text-[color:var(--charcoal-soft)]">
-              Total {revealStats.total} · with price {revealStats.withPrice} · without price {revealStats.withoutPrice} · median €{revealStats.medianEur}
+              Total {revealStats.total} · with price {revealStats.withPrice} · without price{" "}
+              {revealStats.withoutPrice} · median €{revealStats.medianEur}
             </p>
             {reveals.length === 0 ? (
               <p className="text-sm text-[color:var(--charcoal-soft)]">

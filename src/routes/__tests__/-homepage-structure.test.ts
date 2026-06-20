@@ -135,8 +135,7 @@ function resolveApprovedToSource(): {
         };
       }
     } else if (spec.ariaLabelledBy) {
-      match =
-        allSections.find((s) => s.ariaLabelledBy === spec.ariaLabelledBy) ?? null;
+      match = allSections.find((s) => s.ariaLabelledBy === spec.ariaLabelledBy) ?? null;
       index = match?.index ?? -1;
     } else if (spec.marker) {
       const candidates = allSections.filter((s) => {
@@ -219,9 +218,9 @@ describe("Approved homepage structure (source lock)", () => {
                 `Either restore the component or update the spec.`
             : spec.ariaLabelledBy
               ? `Could not find a <section aria-labelledby="${spec.ariaLabelledBy}"> in src/routes/index.tsx. ` +
-                  `Either restore the section or update the spec.`
+                `Either restore the section or update the spec.`
               : `Could not find a <section> immediately preceded by the comment ` +
-                  `{/* ${spec.marker} */} in src/routes/index.tsx.`,
+                `{/* ${spec.marker} */} in src/routes/index.tsx.`,
         ).not.toBeNull();
       });
     }

@@ -38,11 +38,7 @@ function srgbToLinear(c: number): number {
   return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
 }
 function relLum([r, g, b]: [number, number, number]): number {
-  return (
-    0.2126 * srgbToLinear(r) +
-    0.7152 * srgbToLinear(g) +
-    0.0722 * srgbToLinear(b)
-  );
+  return 0.2126 * srgbToLinear(r) + 0.7152 * srgbToLinear(g) + 0.0722 * srgbToLinear(b);
 }
 function contrast(a: string, b: string): number {
   const la = relLum(hexToRgb(a));

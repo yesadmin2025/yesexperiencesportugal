@@ -14,12 +14,13 @@ export const Route = createFileRoute("/about")({
         content: "We design private, meaningful Portugal experiences — not tours. Get to know YES.",
       },
       { property: "og:title", content: "About — YES experiences Portugal" },
-      { property: "og:description", content: "We design private, meaningful Portugal experiences — not tours. Get to know YES." },
+      {
+        property: "og:description",
+        content: "We design private, meaningful Portugal experiences — not tours. Get to know YES.",
+      },
       { property: "og:url", content: "https://yesexperiencesportugal.com/about" },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/about" },
-    ],
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/about" }],
   }),
 
   component: Page,

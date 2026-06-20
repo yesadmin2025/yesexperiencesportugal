@@ -13,10 +13,7 @@
 import { useMemo, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
-import {
-  addOnEurFromBase,
-  selectSignatureAddOns,
-} from "@/data/signatureAddOns";
+import { addOnEurFromBase, selectSignatureAddOns } from "@/data/signatureAddOns";
 import { trackStep } from "@/lib/studio-v3-funnel";
 
 interface SmartRecommendationProps {
@@ -73,11 +70,7 @@ export function SmartRecommendation({
       }}
     >
       <div className="flex items-center gap-1.5">
-        <Sparkles
-          size={12}
-          aria-hidden
-          style={{ color: "var(--gold)" }}
-        />
+        <Sparkles size={12} aria-hidden style={{ color: "var(--gold)" }} />
         <p
           className="text-[9px] uppercase tracking-[0.26em] font-bold"
           style={{ color: "var(--gold)" }}

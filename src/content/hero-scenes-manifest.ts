@@ -42,12 +42,7 @@ export const HERO_FILM = {
 
 export type HeroPan = "drift-left" | "drift-right" | "push-in" | "pull-back";
 
-export type HeroAssetSource =
-  | "viator"
-  | "pexels"
-  | "unsplash"
-  | "in-house"
-  | "yes-experiences";
+export type HeroAssetSource = "viator" | "pexels" | "unsplash" | "in-house" | "yes-experiences";
 
 export type HeroAssetCredit = {
   kind: "video" | "photo";
@@ -247,9 +242,7 @@ export type HeroChapterWindow = {
  *   • For every adjacent pair, chapter[i].endTime === chapter[i+1].startTime
  *     so the active-chapter rAF lookup never falls into a gap.
  */
-export function scaleHeroTimeline(
-  actualDuration: number,
-): readonly HeroChapterWindow[] {
+export function scaleHeroTimeline(actualDuration: number): readonly HeroChapterWindow[] {
   const base: readonly HeroChapterWindow[] = HERO_SCENES.map((s) => ({
     id: s.id,
     startTime: s.startTime,
@@ -257,8 +250,7 @@ export function scaleHeroTimeline(
   }));
   if (!Number.isFinite(actualDuration) || actualDuration <= 0) return base;
   if (
-    Math.abs(actualDuration - HERO_FILM_CANONICAL_DURATION_S) <=
-    HERO_FILM_CANONICAL_TOLERANCE_S
+    Math.abs(actualDuration - HERO_FILM_CANONICAL_DURATION_S) <= HERO_FILM_CANONICAL_TOLERANCE_S
   ) {
     return base;
   }
@@ -269,4 +261,3 @@ export function scaleHeroTimeline(
     endTime: s.endTime * ratio,
   }));
 }
-

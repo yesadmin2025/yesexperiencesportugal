@@ -1,8 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  installResetBlankCheckFilter,
-  isResetBlankMessage,
-} from "../silence-reset-blank-check";
+import { installResetBlankCheckFilter, isResetBlankMessage } from "../silence-reset-blank-check";
 
 describe("isResetBlankMessage", () => {
   it("matches plain string payloads", () => {
@@ -65,16 +62,12 @@ describe("installResetBlankCheckFilter", () => {
 
     // Noise — must be swallowed
     window.dispatchEvent(new MessageEvent("message", { data: "RESET_BLANK_CHECK" }));
-    window.dispatchEvent(
-      new MessageEvent("message", { data: { type: "RESET_BLANK_CHECK" } }),
-    );
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "RESET_BLANK_CHECK" } }));
 
     // Unrelated — must pass through
     window.dispatchEvent(new MessageEvent("message", { data: "hello" }));
     window.dispatchEvent(new MessageEvent("message", { data: { type: "ROUTE_CHANGE" } }));
-    window.dispatchEvent(
-      new MessageEvent("message", { data: { type: "app:ready", ts: 1 } }),
-    );
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "app:ready", ts: 1 } }));
     window.dispatchEvent(new MessageEvent("message", { data: null }));
 
     expect(downstream).toHaveBeenCalledTimes(4);

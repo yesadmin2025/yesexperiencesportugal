@@ -13,7 +13,7 @@ import type { SceneSignal } from "@/lib/studio-v2/intent-infer";
 
 interface Props {
   scene: MoodScene;
-  index: number;          // 1-based scene number for chapter eyebrow
+  index: number; // 1-based scene number for chapter eyebrow
   onSignal: (sig: SceneSignal) => void;
 }
 
@@ -24,7 +24,9 @@ export function DriftScene({ scene, index, onSignal }: Props) {
   const enteredAt = useRef<number>(Date.now());
   const [hovered, setHovered] = useState<"left" | "right" | null>(null);
 
-  useEffect(() => { enteredAt.current = Date.now(); }, [scene.id]);
+  useEffect(() => {
+    enteredAt.current = Date.now();
+  }, [scene.id]);
 
   const choose = (which: "left" | "right") => {
     const frag = which === "left" ? left : right;

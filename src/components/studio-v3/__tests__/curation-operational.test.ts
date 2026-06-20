@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { curateJourney, resolveStudioV3Route } from "../curation";
 
-const WINE_RE = /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
+const WINE_RE =
+  /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
 const LIVRAMENTO_RE = /mercado\s+do\s+livramento/i;
 
 /**
@@ -25,9 +26,7 @@ describe("Studio V3 curation — operational truth", () => {
         dateExact: MONDAY,
       });
       expect(journey.moments.length).toBeGreaterThan(0);
-      expect(
-        journey.moments.some((m) => LIVRAMENTO_RE.test(m.label)),
-      ).toBe(false);
+      expect(journey.moments.some((m) => LIVRAMENTO_RE.test(m.label))).toBe(false);
     });
 
     it("allows Livramento back on a non-Monday (Tuesday) for the same inputs", () => {
@@ -37,9 +36,7 @@ describe("Studio V3 curation — operational truth", () => {
         destinationIntent: "arrabida-setubal-azeitao",
         dateExact: TUESDAY,
       });
-      expect(
-        journey.moments.some((m) => LIVRAMENTO_RE.test(m.label)),
-      ).toBe(true);
+      expect(journey.moments.some((m) => LIVRAMENTO_RE.test(m.label))).toBe(true);
     });
 
     it("forwards dateExact through resolveStudioV3Route end-to-end", () => {
@@ -52,9 +49,7 @@ describe("Studio V3 curation — operational truth", () => {
         destinationIntent: "arrabida-setubal-azeitao",
         dateExact: MONDAY,
       });
-      expect(
-        route.routePoints.some((p) => LIVRAMENTO_RE.test(p.label)),
-      ).toBe(false);
+      expect(route.routePoints.some((p) => LIVRAMENTO_RE.test(p.label))).toBe(false);
     });
 
     it("ignores malformed dateExact (returns the unfiltered pool)", () => {
@@ -139,9 +134,7 @@ describe("Studio V3 curation — operational truth", () => {
         destinationIntent: "lisbon-sintra-cascais",
         investment: "bespoke",
       });
-      const wineryRejections = journey.audit.rejections.filter(
-        (r) => r.reason === "winery-cap",
-      );
+      const wineryRejections = journey.audit.rejections.filter((r) => r.reason === "winery-cap");
       for (const r of wineryRejections) {
         expect(r.detail ?? "").toMatch(/region=/);
         expect(r.detail ?? "").toMatch(/cap=\d+/);

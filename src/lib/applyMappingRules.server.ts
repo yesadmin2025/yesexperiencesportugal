@@ -26,11 +26,7 @@ export type AIFields = {
   stops: string[];
 };
 
-function resolveSource(
-  src: FieldSource,
-  scraped: ScrapedFields,
-  aiValue: string,
-): string {
+function resolveSource(src: FieldSource, scraped: ScrapedFields, aiValue: string): string {
   switch (src.kind) {
     case "ai":
       return aiValue;

@@ -15,10 +15,7 @@
  */
 import { test, expect, devices, type Page } from "@playwright/test";
 import path from "path";
-import {
-  FIRST_FRAME_JITTER_RATIO,
-  isFirstFrameJitter,
-} from "./hero-film-playback.helpers";
+import { FIRST_FRAME_JITTER_RATIO, isFirstFrameJitter } from "./hero-film-playback.helpers";
 
 const VIDEO_SELECTOR = ".hero-story-stage video[data-hero-film='true']";
 
@@ -76,9 +73,7 @@ async function probePlayback(page: Page): Promise<PlaybackProbe> {
 
     const startTime = v.currentTime;
     const startQuality =
-      typeof v.getVideoPlaybackQuality === "function"
-        ? v.getVideoPlaybackQuality()
-        : null;
+      typeof v.getVideoPlaybackQuality === "function" ? v.getVideoPlaybackQuality() : null;
     const startFrames = startQuality?.totalVideoFrames ?? 0;
     const startDropped = startQuality?.droppedVideoFrames ?? 0;
 
@@ -87,9 +82,7 @@ async function probePlayback(page: Page): Promise<PlaybackProbe> {
 
     const endTime = v.currentTime;
     const endQuality =
-      typeof v.getVideoPlaybackQuality === "function"
-        ? v.getVideoPlaybackQuality()
-        : null;
+      typeof v.getVideoPlaybackQuality === "function" ? v.getVideoPlaybackQuality() : null;
     const endFrames = endQuality?.totalVideoFrames ?? 0;
     const endDropped = endQuality?.droppedVideoFrames ?? 0;
 
@@ -140,10 +133,9 @@ for (const vp of VIEWPORTS) {
         probe.readyState,
         `video readyState too low: ${probe.readyState}`,
       ).toBeGreaterThanOrEqual(2);
-      expect(
-        probe.paused,
-        "video remained paused — autoplay rejected or decode failed",
-      ).toBe(false);
+      expect(probe.paused, "video remained paused — autoplay rejected or decode failed").toBe(
+        false,
+      );
 
       // 2. currentTime advanced at near-real-time during the 1.2s window.
       //    Allow 30% slack for CI scheduling jitter.
@@ -167,9 +159,7 @@ for (const vp of VIEWPORTS) {
       }
     });
 
-    test("hero film source is 30fps (catches re-encode regressions)", async ({
-      page,
-    }) => {
+    test("hero film source is 30fps (catches re-encode regressions)", async ({ page }) => {
       // We can't read fps directly from HTMLVideoElement, but we can
       // approximate it: getVideoPlaybackQuality counts decoded frames,
       // and the canonical film is ~39.6s. After 1.2s playback we expect
@@ -240,11 +230,7 @@ for (const vp of VIEWPORTS) {
               };
             }
 
-            if (
-              !v.paused &&
-              v.currentTime > 0 &&
-              v.readyState >= 2 /* HAVE_CURRENT_DATA */
-            ) {
+            if (!v.paused && v.currentTime > 0 && v.readyState >= 2 /* HAVE_CURRENT_DATA */) {
               return { ok: true, reason: "already playing", ms: 0 };
             }
 
@@ -352,7 +338,7 @@ for (const vp of VIEWPORTS) {
         }
         classifications.push("jitter-retry");
         // Jitter — log and retry. Cool-down lets the worker settle.
-        // eslint-disable-next-line no-console
+
         console.warn(
           `[hero-film-playback] attempt ${attempt}/${MAX_ATTEMPTS} jittered: ` +
             `${r.reason} (post-metadata=${r.ms.toFixed(0)}ms, ` +
@@ -380,7 +366,7 @@ for (const vp of VIEWPORTS) {
           );
         })
         .join("\n");
-      // eslint-disable-next-line no-console
+
       console.log(
         `[hero-film-playback] ${vp.name} — budget=${vp.firstFrameBudgetMs}ms, ` +
           `attempts=${attempts.length}\n${compactLog}`,
@@ -411,16 +397,13 @@ for (const vp of VIEWPORTS) {
               path: tracePath,
               contentType: "application/zip",
             });
-            // eslint-disable-next-line no-console
+
             console.error(
               `[hero-film-playback] trace saved → ${path.basename(tracePath)} ` +
                 `(open with: bunx playwright show-trace ${tracePath})`,
             );
           } catch (err) {
-            // eslint-disable-next-line no-console
-            console.error(
-              `[hero-film-playback] failed to save trace: ${(err as Error).message}`,
-            );
+            console.error(`[hero-film-playback] failed to save trace: ${(err as Error).message}`);
           }
         } else {
           // Test recovered on the final attempt — discard the trace.

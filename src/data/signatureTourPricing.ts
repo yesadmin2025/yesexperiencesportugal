@@ -13,7 +13,6 @@
 import { VIATOR_META, type PriceTiersEUR } from "./signatureToursViator";
 import type { SignatureTour } from "./signatureTours";
 
-
 export type PerPaxResolution = {
   /** EUR per person — either real (tier-matched) or the "from" anchor. */
   eurPerPax: number;
@@ -48,9 +47,10 @@ export function resolvePerPaxEur(
 
   const tier = clampTier(guests);
   const tiers = overrides?.[tour.id] ?? VIATOR_META[tour.id]?.priceTiersEUR;
-  const real = tiers && typeof tiers[tier as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8] === "number"
-    ? (tiers[tier as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8] as number)
-    : null;
+  const real =
+    tiers && typeof tiers[tier as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8] === "number"
+      ? (tiers[tier as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8] as number)
+      : null;
 
   const eurPerPax = real ?? anchor;
   const partyGuests = typeof guests === "number" && guests > 0 ? guests : 1;
@@ -61,7 +61,6 @@ export function resolvePerPaxEur(
     partyTotalEur: eurPerPax * partyGuests,
   };
 }
-
 
 function clampTier(guests: number | null | undefined): number {
   if (typeof guests !== "number" || !Number.isFinite(guests) || guests < 1) return 8;

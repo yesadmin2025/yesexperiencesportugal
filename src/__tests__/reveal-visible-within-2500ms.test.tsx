@@ -98,13 +98,21 @@ describe("reveal visibility SLA — .is-visible within 2500ms", () => {
   it("forces .is-visible on every reveal/reveal-stagger/section-enter element when IO never fires", () => {
     const { container } = render(
       <SiteLayout>
-        <div data-testid="r1" className="reveal">reveal</div>
+        <div data-testid="r1" className="reveal">
+          reveal
+        </div>
         <div data-testid="r2" className="reveal-stagger">
           <span className="reveal-child">child</span>
         </div>
-        <section data-testid="s1" className="section-enter">section</section>
-        <div data-testid="r3" className="reveal">below-fold</div>
-        <section data-testid="s2" className="section-enter">below-fold-section</section>
+        <section data-testid="s1" className="section-enter">
+          section
+        </section>
+        <div data-testid="r3" className="reveal">
+          below-fold
+        </div>
+        <section data-testid="s2" className="section-enter">
+          below-fold-section
+        </section>
       </SiteLayout>,
     );
 
@@ -118,9 +126,7 @@ describe("reveal visibility SLA — .is-visible within 2500ms", () => {
       vi.advanceTimersByTime(SLA_MS);
     });
 
-    const targets = container.querySelectorAll(
-      ".reveal, .reveal-stagger, .section-enter",
-    );
+    const targets = container.querySelectorAll(".reveal, .reveal-stagger, .section-enter");
     expect(targets.length).toBeGreaterThan(0);
 
     const stuck: string[] = [];
@@ -144,8 +150,14 @@ describe("reveal visibility SLA — .is-visible within 2500ms", () => {
     const origGetRect = Element.prototype.getBoundingClientRect;
     Element.prototype.getBoundingClientRect = function () {
       return {
-        top: 100, bottom: 500, left: 0, right: 100,
-        width: 100, height: 400, x: 0, y: 100,
+        top: 100,
+        bottom: 500,
+        left: 0,
+        right: 100,
+        width: 100,
+        height: 400,
+        x: 0,
+        y: 100,
         toJSON: () => ({}),
       } as DOMRect;
     };

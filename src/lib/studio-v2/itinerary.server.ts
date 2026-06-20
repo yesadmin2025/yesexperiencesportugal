@@ -50,10 +50,10 @@ export const DEFAULT_CAPS: RoutingCaps = {
 
 /** Engine region key → list of builder_stops region_keys that satisfy it. */
 const REGION_MAP: Record<string, string[]> = {
-  arrabida:        ["arrabida-setubal", "troia-comporta"],
-  "lisbon-coast":  ["lisbon", "sintra-cascais"],
-  alentejo:        ["alentejo", "evora-alentejo"],
-  centro:          ["centro-tomar-coimbra", "centro-fatima-nazare-obidos"],
+  arrabida: ["arrabida-setubal", "troia-comporta"],
+  "lisbon-coast": ["lisbon", "sintra-cascais"],
+  alentejo: ["alentejo", "evora-alentejo"],
+  centro: ["centro-tomar-coimbra", "centro-fatima-nazare-obidos"],
 };
 
 export function dbRegionsFor(engineRegion: string): string[] {
@@ -63,27 +63,27 @@ export function dbRegionsFor(engineRegion: string): string[] {
 /** Map studio intent → intention_tags we look for. Hardcoded but conservative;
  * no fabrication — tags come from the actual DB taxonomy. */
 const INTENT_TAGS: Record<string, string[]> = {
-  relaxed_scenic:     ["scenic", "nature", "viewpoint"],
-  elegant_cultural:   ["cultural", "heritage", "art"],
-  food_local:         ["food", "wine", "tasting", "gastronomy"],
+  relaxed_scenic: ["scenic", "nature", "viewpoint"],
+  elegant_cultural: ["cultural", "heritage", "art"],
+  food_local: ["food", "wine", "tasting", "gastronomy"],
   social_celebratory: ["celebration", "social", "tasting"],
-  romantic_intimate:  ["romantic", "intimate", "sunset"],
-  coastal_cinematic:  ["coastal", "beach", "viewpoint", "scenic"],
+  romantic_intimate: ["romantic", "intimate", "sunset"],
+  coastal_cinematic: ["coastal", "beach", "viewpoint", "scenic"],
 };
 
 const PRIORITY_TO_MOOD: Record<PriorityKey | string, string[]> = {
-  food:     ["food", "wine", "gastronomy", "tasting"],
-  culture:  ["cultural", "heritage", "art"],
-  coastal:  ["coastal", "beach", "sea"],
+  food: ["food", "wine", "gastronomy", "tasting"],
+  culture: ["cultural", "heritage", "art"],
+  coastal: ["coastal", "beach", "sea"],
   wellness: ["wellness", "nature", "calm"],
-  social:   ["social", "celebration"],
+  social: ["social", "celebration"],
 };
 
 const PACE_TAG: Record<string, string> = {
-  light:    "slow",
+  light: "slow",
   balanced: "balanced",
-  rich:     "rich",
-  full:     "full",
+  rich: "rich",
+  full: "full",
 };
 
 function tagOverlap(a: readonly string[] | null, b: readonly string[]): number {
@@ -101,7 +101,7 @@ export function scoreStop(stop: DbStop, profile: TravelerProfile): number {
   if (profile.intent) {
     const wanted = INTENT_TAGS[profile.intent] ?? [];
     s += tagOverlap(stop.intention_tags, wanted) * 22;
-    s += tagOverlap(stop.mood_tags,      wanted) * 8;
+    s += tagOverlap(stop.mood_tags, wanted) * 8;
   }
 
   // Priority weights — pull route toward what they care about.
@@ -270,14 +270,20 @@ export function composeItinerary(
   let feasible = true;
   if (totalKm > caps.maxTotalKmPerDay) {
     feasible = false;
-    warnings.push(`Total ${Math.round(totalKm)} km exceeds daily cap (${caps.maxTotalKmPerDay} km).`);
+    warnings.push(
+      `Total ${Math.round(totalKm)} km exceeds daily cap (${caps.maxTotalKmPerDay} km).`,
+    );
   }
   if (totalDriveMin / 60 > caps.maxDrivingHours) {
     feasible = false;
-    warnings.push(`Driving time ${Math.round(totalDriveMin / 60)} h exceeds cap (${caps.maxDrivingHours} h).`);
+    warnings.push(
+      `Driving time ${Math.round(totalDriveMin / 60)} h exceeds cap (${caps.maxDrivingHours} h).`,
+    );
   }
   if (totalExperienceMin / 60 > caps.maxExperienceHours) {
-    warnings.push(`Stops add up to ${Math.round(totalExperienceMin / 60)} h — consider trimming for a comfortable day.`);
+    warnings.push(
+      `Stops add up to ${Math.round(totalExperienceMin / 60)} h — consider trimming for a comfortable day.`,
+    );
   }
 
   return { stops, totalDriveMin, totalExperienceMin, totalKm, feasible, warnings };

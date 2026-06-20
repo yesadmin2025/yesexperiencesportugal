@@ -68,8 +68,15 @@ const EXTRACTOR_TOOL = {
         variesByOption: { type: "array", items: { type: "string" }, maxItems: 20 },
       },
       required: [
-        "title", "durationText", "pickupZone", "groupType", "blurb",
-        "itinerary", "inclusions", "exclusions", "variesByOption",
+        "title",
+        "durationText",
+        "pickupZone",
+        "groupType",
+        "blurb",
+        "itinerary",
+        "inclusions",
+        "exclusions",
+        "variesByOption",
       ],
       additionalProperties: false,
     },
@@ -99,8 +106,7 @@ export async function fetchViatorPageText(url: string): Promise<string> {
   }
   const res = await fetch(url, {
     headers: {
-      "User-Agent":
-        "Mozilla/5.0 (compatible; YesExperiencesViatorImport/1.0)",
+      "User-Agent": "Mozilla/5.0 (compatible; YesExperiencesViatorImport/1.0)",
       Accept: "text/html,application/xhtml+xml",
     },
     redirect: "follow",

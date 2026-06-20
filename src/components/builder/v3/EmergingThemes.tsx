@@ -15,12 +15,12 @@ import { type DriftLocale } from "@/lib/drift/i18n";
  */
 
 const THEME_LABELS: Partial<Record<SceneMood, Record<DriftLocale, string>>> = {
-  intimacy:    { en: "intimacy",     pt: "intimidade",   es: "intimidad",   fr: "intimité" },
-  ritual:      { en: "ritual",       pt: "ritual",       es: "ritual",      fr: "rituel" },
-  slowness:    { en: "slowness",     pt: "lentidão",     es: "calma",       fr: "lenteur" },
-  arrival:     { en: "arrival",      pt: "chegada",      es: "llegada",     fr: "arrivée" },
-  discovery:   { en: "discovery",    pt: "descoberta",   es: "descubrir",   fr: "découverte" },
-  celebration: { en: "celebration",  pt: "celebração",   es: "celebración", fr: "célébration" },
+  intimacy: { en: "intimacy", pt: "intimidade", es: "intimidad", fr: "intimité" },
+  ritual: { en: "ritual", pt: "ritual", es: "ritual", fr: "rituel" },
+  slowness: { en: "slowness", pt: "lentidão", es: "calma", fr: "lenteur" },
+  arrival: { en: "arrival", pt: "chegada", es: "llegada", fr: "arrivée" },
+  discovery: { en: "discovery", pt: "descoberta", es: "descubrir", fr: "découverte" },
+  celebration: { en: "celebration", pt: "celebração", es: "celebración", fr: "célébration" },
 };
 
 interface Props {
@@ -44,18 +44,13 @@ export function EmergingThemes({ sceneWeighting, locale, hasSignal }: Props) {
     }
     setActive((prev) => {
       const next = new Set(prev);
-      (Object.entries(sceneWeighting) as Array<[SceneMood, number]>).forEach(
-        ([mood, weight]) => {
-          if (weight >= SHOW) next.add(mood);
-          else if (weight <= HIDE) next.delete(mood);
-        },
-      );
+      (Object.entries(sceneWeighting) as Array<[SceneMood, number]>).forEach(([mood, weight]) => {
+        if (weight >= SHOW) next.add(mood);
+        else if (weight <= HIDE) next.delete(mood);
+      });
       // Cap at top 3 by current weight to keep the line readable.
       return Array.from(next)
-        .sort(
-          (a, b) =>
-            (sceneWeighting[b] ?? 0) - (sceneWeighting[a] ?? 0),
-        )
+        .sort((a, b) => (sceneWeighting[b] ?? 0) - (sceneWeighting[a] ?? 0))
         .slice(0, 3);
     });
   }, [sceneWeighting, hasSignal]);

@@ -109,10 +109,10 @@ export const Route = createFileRoute("/api/health")({
         const url = new URL(request.url);
         const stageParam = coerceStage(url.searchParams.get("stage"));
         const detailParam = url.searchParams.get("detail") ?? undefined;
-        return new Response(
-          JSON.stringify(buildPayload(stageParam, detailParam ?? undefined)),
-          { status: 200, headers: JSON_HEADERS },
-        );
+        return new Response(JSON.stringify(buildPayload(stageParam, detailParam ?? undefined)), {
+          status: 200,
+          headers: JSON_HEADERS,
+        });
       },
       POST: async ({ request }) => {
         let body: { stage?: unknown; detail?: unknown } = {};
@@ -124,8 +124,7 @@ export const Route = createFileRoute("/api/health")({
         const next = coerceStage(body.stage);
         if (next) {
           lastStage = next;
-          lastStageDetail =
-            typeof body.detail === "string" ? body.detail : undefined;
+          lastStageDetail = typeof body.detail === "string" ? body.detail : undefined;
           lastStageAt = new Date().toISOString();
         }
         return new Response(JSON.stringify(buildPayload()), {
@@ -133,8 +132,7 @@ export const Route = createFileRoute("/api/health")({
           headers: JSON_HEADERS,
         });
       },
-      OPTIONS: async () =>
-        new Response(null, { status: 204, headers: JSON_HEADERS }),
+      OPTIONS: async () => new Response(null, { status: 204, headers: JSON_HEADERS }),
     },
   },
 });

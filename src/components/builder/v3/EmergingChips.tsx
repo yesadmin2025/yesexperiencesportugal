@@ -25,7 +25,6 @@ interface Props {
   onAccept: (stop: StudioStop) => void;
 }
 
-
 const CARD_CLIPS = [
   "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4",
   "/__l5e/assets-v1/a5974d67-6f34-4365-8d96-ea82c4b83457/scene-azeitao-table.mp4",
@@ -55,7 +54,16 @@ function emotionalPhrase(s: StudioStop, fallback: string, index: number): string
   return fallbackPhrases[index % fallbackPhrases.length] ?? fallback;
 }
 
-export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLabel, cues, eyebrowOverride, pacing = 0.55, onAccept }: Props) {
+export function EmergingChips({
+  suggestions,
+  acceptedKeys,
+  fallbackPhrase,
+  addLabel,
+  cues,
+  eyebrowOverride,
+  pacing = 0.55,
+  onAccept,
+}: Props) {
   const [reveal, setReveal] = useState(0);
 
   useEffect(() => {
@@ -67,13 +75,10 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
     const step = Math.round(110 + pacing * 180);
     const lead = Math.round(120 + pacing * 80);
     suggestions.forEach((_, i) => {
-      timers.push(
-        window.setTimeout(() => setReveal((r) => Math.max(r, i + 1)), lead + i * step),
-      );
+      timers.push(window.setTimeout(() => setReveal((r) => Math.max(r, i + 1)), lead + i * step));
     });
     return () => timers.forEach(window.clearTimeout);
   }, [suggestions, pacing]);
-
 
   // Card-count ramp — fewer choices as confidence grows. The Studio should
   // feel knowing, not interactive. Each card still requires an explicit tap;
@@ -82,9 +87,7 @@ export function EmergingChips({ suggestions, acceptedKeys, fallbackPhrase, addLa
   const stage: "early" | "growing" | "settled" =
     accepted >= 4 ? "settled" : accepted >= 2 ? "growing" : "early";
   const maxCards = stage === "settled" ? 1 : 2;
-  const available = suggestions
-    .filter((s) => !acceptedKeys.includes(s.key))
-    .slice(0, maxCards);
+  const available = suggestions.filter((s) => !acceptedKeys.includes(s.key)).slice(0, maxCards);
   if (!available.length) return null;
 
   // Graceful fallback — if the AI sensory line is absent (reduced-motion,

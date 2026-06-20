@@ -35,7 +35,8 @@ const PT: Dict = {
   "chapter.companions": "Quem *viaja* consigo?",
   "chapter.pickup": "Onde gostaria de *começar* o dia?",
   "chapter.duration": "Um dia, ou *vários*?",
-  "chapter.duration_multi_whisper": "Várias jornadas — mais profundidade, mais descanso entre cada parada.",
+  "chapter.duration_multi_whisper":
+    "Várias jornadas — mais profundidade, mais descanso entre cada parada.",
   "chapter.radius": "Até que *distância* está disposto(a) a viajar?",
   "chapter.energy": "Que *ritmo* prefere?",
   "chapter.style": "O que mais o(a) *atrai* em Portugal?",
@@ -114,7 +115,8 @@ const PT: Dict = {
   "preview.tab_story": "História",
   "preview.tab_timeline": "Horário",
   "preview.tab_map": "Mapa",
-  "preview.story_intro": "o seu dia está a tomar forma com paragens reais, escolhidas para o ritmo que descreveu.",
+  "preview.story_intro":
+    "o seu dia está a tomar forma com paragens reais, escolhidas para o ritmo que descreveu.",
   "preview.min_drive": "min de carro",
   "preview.min_stay": "min no local",
   "preview.indicative": "indicativo",
@@ -158,7 +160,8 @@ const EN: Dict = {
   "chapter.companions": "Who is *travelling* with you?",
   "chapter.pickup": "Where would you like to *start* the day?",
   "chapter.duration": "One day, or *several*?",
-  "chapter.duration_multi_whisper": "Multi-day journeys unfold slower — more depth, more rest between stops.",
+  "chapter.duration_multi_whisper":
+    "Multi-day journeys unfold slower — more depth, more rest between stops.",
   "chapter.radius": "How *far* are you willing to travel?",
   "chapter.energy": "Your *pace*?",
   "chapter.style": "What *pulls* you in most?",
@@ -231,7 +234,8 @@ const EN: Dict = {
   "preview.tab_story": "Story",
   "preview.tab_timeline": "Timeline",
   "preview.tab_map": "Map",
-  "preview.story_intro": "your day is forming around real stops, chosen for the rhythm you described.",
+  "preview.story_intro":
+    "your day is forming around real stops, chosen for the rhythm you described.",
   "preview.min_drive": "min drive",
   "preview.min_stay": "min stay",
   "preview.indicative": "indicative",
@@ -348,7 +352,8 @@ const ES: Dict = {
   "preview.tab_story": "Historia",
   "preview.tab_timeline": "Horario",
   "preview.tab_map": "Mapa",
-  "preview.story_intro": "su día se está formando con paradas reales, elegidas para el ritmo que describió.",
+  "preview.story_intro":
+    "su día se está formando con paradas reales, elegidas para el ritmo que describió.",
   "preview.min_drive": "min de coche",
   "preview.min_stay": "min en el lugar",
   "preview.indicative": "indicativo",
@@ -376,7 +381,8 @@ const FR: Dict = {
   "chapter.companions": "Qui *voyage* avec vous ?",
   "chapter.pickup": "Où aimeriez-vous *commencer* la journée ?",
   "chapter.duration": "Un jour, ou *plusieurs* ?",
-  "chapter.duration_multi_whisper": "Plusieurs jours — plus de profondeur, plus de repos entre les étapes.",
+  "chapter.duration_multi_whisper":
+    "Plusieurs jours — plus de profondeur, plus de repos entre les étapes.",
   "chapter.radius": "Jusqu'*où* êtes-vous prêt(e) à voyager ?",
   "chapter.energy": "Quel *rythme* préférez-vous ?",
   "chapter.style": "Qu'est-ce qui vous *attire* le plus au Portugal ?",
@@ -449,7 +455,8 @@ const FR: Dict = {
   "preview.tab_story": "Récit",
   "preview.tab_timeline": "Horaire",
   "preview.tab_map": "Carte",
-  "preview.story_intro": "votre journée prend forme avec des étapes réelles, choisies pour le rythme que vous avez décrit.",
+  "preview.story_intro":
+    "votre journée prend forme avec des étapes réelles, choisies pour le rythme que vous avez décrit.",
   "preview.min_drive": "min de route",
   "preview.min_stay": "min sur place",
   "preview.indicative": "indicatif",
@@ -484,7 +491,11 @@ function detect(): DriftLocale {
   // (including de-DE, it-IT, nl-NL, …) falls back to EN for the US-heavy audience.
   const nav =
     typeof navigator !== "undefined"
-      ? ((navigator.languages && navigator.languages[0]) || navigator.language || "en").toLowerCase()
+      ? (
+          (navigator.languages && navigator.languages[0]) ||
+          navigator.language ||
+          "en"
+        ).toLowerCase()
       : "en";
   if (nav.startsWith("pt")) return "pt";
   if (nav.startsWith("es")) return "es";

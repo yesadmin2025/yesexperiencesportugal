@@ -61,10 +61,7 @@ export function PathfinderQuiz() {
   const reset = () => setState(INITIAL);
 
   return (
-    <section
-      aria-labelledby="pathfinder-title"
-      className="pf-section"
-    >
+    <section aria-labelledby="pathfinder-title" className="pf-section">
       <style>{`
         .pf-section {
           background: var(--teal);
@@ -313,9 +310,7 @@ export function PathfinderQuiz() {
             <h2 id="pathfinder-title" className="pf-title">
               Answer three questions.
             </h2>
-            <p className="pf-sub">
-              We'll point you in the right direction.
-            </p>
+            <p className="pf-sub">We'll point you in the right direction.</p>
           </div>
 
           {/* Q1 — Intent */}
@@ -323,10 +318,30 @@ export function PathfinderQuiz() {
             <span className="pf-qlabel">01</span>
             <p className="pf-qtitle">What kind of day do you want?</p>
             <div className="pf-grid-22">
-              <QButton selected={state.intent === "wine"} onClick={() => setState({ intent: "wine", travellers: null, pace: null })}>Wine &amp; food</QButton>
-              <QButton selected={state.intent === "coast"} onClick={() => setState({ intent: "coast", travellers: null, pace: null })}>Coast &amp; nature</QButton>
-              <QButton selected={state.intent === "history"} onClick={() => setState({ intent: "history", travellers: null, pace: null })}>History &amp; culture</QButton>
-              <QButton selected={state.intent === "unique"} onClick={() => setState({ intent: "unique", travellers: null, pace: null })}>Something unique</QButton>
+              <QButton
+                selected={state.intent === "wine"}
+                onClick={() => setState({ intent: "wine", travellers: null, pace: null })}
+              >
+                Wine &amp; food
+              </QButton>
+              <QButton
+                selected={state.intent === "coast"}
+                onClick={() => setState({ intent: "coast", travellers: null, pace: null })}
+              >
+                Coast &amp; nature
+              </QButton>
+              <QButton
+                selected={state.intent === "history"}
+                onClick={() => setState({ intent: "history", travellers: null, pace: null })}
+              >
+                History &amp; culture
+              </QButton>
+              <QButton
+                selected={state.intent === "unique"}
+                onClick={() => setState({ intent: "unique", travellers: null, pace: null })}
+              >
+                Something unique
+              </QButton>
             </div>
           </div>
 
@@ -336,9 +351,24 @@ export function PathfinderQuiz() {
               <span className="pf-qlabel">02</span>
               <p className="pf-qtitle">Who's travelling?</p>
               <div className="pf-stack">
-                <QButton selected={state.travellers === "couple"} onClick={() => setState((s) => ({ ...s, travellers: "couple", pace: null }))}>Just us two</QButton>
-                <QButton selected={state.travellers === "group"} onClick={() => setState((s) => ({ ...s, travellers: "group", pace: null }))}>Family or group</QButton>
-                <QButton selected={state.travellers === "journey"} onClick={() => setState((s) => ({ ...s, travellers: "journey", pace: null }))}>I want a full journey</QButton>
+                <QButton
+                  selected={state.travellers === "couple"}
+                  onClick={() => setState((s) => ({ ...s, travellers: "couple", pace: null }))}
+                >
+                  Just us two
+                </QButton>
+                <QButton
+                  selected={state.travellers === "group"}
+                  onClick={() => setState((s) => ({ ...s, travellers: "group", pace: null }))}
+                >
+                  Family or group
+                </QButton>
+                <QButton
+                  selected={state.travellers === "journey"}
+                  onClick={() => setState((s) => ({ ...s, travellers: "journey", pace: null }))}
+                >
+                  I want a full journey
+                </QButton>
               </div>
             </div>
           )}
@@ -349,15 +379,32 @@ export function PathfinderQuiz() {
               <span className="pf-qlabel">03</span>
               <p className="pf-qtitle">How do you like to move?</p>
               <div className="pf-stack">
-                <QButton selected={state.pace === "relaxed"} onClick={() => setState((s) => ({ ...s, pace: "relaxed" }))}>Relaxed &amp; slow</QButton>
-                <QButton selected={state.pace === "active"} onClick={() => setState((s) => ({ ...s, pace: "active" }))}>Active &amp; full</QButton>
-                <QButton selected={state.pace === "mix"} onClick={() => setState((s) => ({ ...s, pace: "mix" }))}>Mix of both</QButton>
+                <QButton
+                  selected={state.pace === "relaxed"}
+                  onClick={() => setState((s) => ({ ...s, pace: "relaxed" }))}
+                >
+                  Relaxed &amp; slow
+                </QButton>
+                <QButton
+                  selected={state.pace === "active"}
+                  onClick={() => setState((s) => ({ ...s, pace: "active" }))}
+                >
+                  Active &amp; full
+                </QButton>
+                <QButton
+                  selected={state.pace === "mix"}
+                  onClick={() => setState((s) => ({ ...s, pace: "mix" }))}
+                >
+                  Mix of both
+                </QButton>
               </div>
             </div>
           )}
 
           {/* Result */}
-          {result && <ResultCard key={result + JSON.stringify(state)} state={state} result={result} />}
+          {result && (
+            <ResultCard key={result + JSON.stringify(state)} state={state} result={result} />
+          )}
 
           {(state.intent || state.travellers || state.pace) && (
             <div className="text-center">
@@ -382,12 +429,7 @@ function QButton({
   children: React.ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      className="pf-btn"
-      aria-pressed={selected}
-      onClick={onClick}
-    >
+    <button type="button" className="pf-btn" aria-pressed={selected} onClick={onClick}>
       {children}
     </button>
   );
@@ -402,12 +444,19 @@ function ResultCard({ state, result }: { state: QuizState; result: ResultKey }) 
       {content.subtitle && <p className="pf-rsub">{content.subtitle}</p>}
       <div className="pf-pills">
         {content.pills.map((p) => (
-          <span key={p} className="pf-pill">{p}</span>
+          <span key={p} className="pf-pill">
+            {p}
+          </span>
         ))}
       </div>
       <div className="pf-ctas">
         {content.ctas.map((c) => (
-          <Link key={c.to + c.label} to={c.to} search={c.search} className={`pf-cta pf-cta--${c.variant}`}>
+          <Link
+            key={c.to + c.label}
+            to={c.to}
+            search={c.search}
+            className={`pf-cta pf-cta--${c.variant}`}
+          >
             {c.label}
             <span aria-hidden="true">→</span>
           </Link>
@@ -440,8 +489,18 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       title,
       pills: ["Wine", "Coast", "Private", "From €138"],
       ctas: [
-        { label: "Reserve this day", to: "/tours/$tourId", search: { tourId: "arrabida-wine-allinclusive" }, variant: "primary" },
-        { label: "Make it yours", to: "/tours/$tourId/tailor", search: { tourId: "arrabida-wine-allinclusive" }, variant: "outline" },
+        {
+          label: "Reserve this day",
+          to: "/tours/$tourId",
+          search: { tourId: "arrabida-wine-allinclusive" },
+          variant: "primary",
+        },
+        {
+          label: "Make it yours",
+          to: "/tours/$tourId/tailor",
+          search: { tourId: "arrabida-wine-allinclusive" },
+          variant: "outline",
+        },
       ],
     };
   }
@@ -451,19 +510,16 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       title: "No exact match — let's build it.",
       subtitle: "Open the Studio and design your day in real time. Takes about 90 seconds.",
       pills: ["Custom", "Any mood", "Instant price"],
-      ctas: [
-        { label: "Open Studio", to: "/studio-v3", variant: "gold" },
-      ],
+      ctas: [{ label: "Open Studio", to: "/studio-v3", variant: "gold" }],
     };
   }
   return {
     label: "Bespoke journey",
     title: "Sounds like you want more than a day.",
-    subtitle: "Let's plan your Portugal properly — multi-day, fully designed, every night confirmed.",
+    subtitle:
+      "Let's plan your Portugal properly — multi-day, fully designed, every night confirmed.",
     pills: ["Multi-day", "Private", "Curated"],
-    ctas: [
-      { label: "Start Planning", to: "/bespoke", variant: "ivory" },
-    ],
+    ctas: [{ label: "Start Planning", to: "/bespoke", variant: "ivory" }],
   };
 }
 

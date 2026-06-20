@@ -106,9 +106,16 @@ type Beat =
 // to Lisboa, intent is inferred from the cinematic signals. Naming and taste
 // fine-tuning can still happen on the Postcard / refine paths post-reveal.
 const SEQUENCE: Beat[] = [
-  "prologue", "opening", "feeling", "who-rhythm",
-  "mood-1", "mood-2", "mood-3", "mood-rhythm",
-  "thinking", "reveal",
+  "prologue",
+  "opening",
+  "feeling",
+  "who-rhythm",
+  "mood-1",
+  "mood-2",
+  "mood-3",
+  "mood-rhythm",
+  "thinking",
+  "reveal",
 ];
 
 /** Confidence threshold (0–1). Below this, the adaptive Rhythm scene fires
@@ -153,11 +160,17 @@ function readPersistedSession(): PersistedSession | null {
     if (Date.now() - s.savedAt > SESSION_TTL_MS) return null;
     if (s.beatIndex <= 0) return null;
     return s;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 function clearPersistedSession() {
-  try { window.localStorage.removeItem(SESSION_KEY); } catch { /* */ }
+  try {
+    window.localStorage.removeItem(SESSION_KEY);
+  } catch {
+    /* */
+  }
 }
 
 export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft }: StudioV2Props) {
@@ -176,9 +189,10 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
   const [beatIndex, setBeatIndex] = useState(() => {
     if (startAtReveal) return SEQUENCE.indexOf("reveal");
     if (initialResume) {
-      const safeBeat = SEQUENCE[initialResume.beatIndex] === "thinking"
-        ? SEQUENCE.indexOf("mood-rhythm")
-        : initialResume.beatIndex;
+      const safeBeat =
+        SEQUENCE[initialResume.beatIndex] === "thinking"
+          ? SEQUENCE.indexOf("mood-rhythm")
+          : initialResume.beatIndex;
       return Math.max(0, safeBeat);
     }
     return 0;
@@ -198,16 +212,19 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
     setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
   }, []);
 
-  const onSceneSignal = useCallback((sig: SceneSignal) => {
-    const updated = [...signals, sig];
-    setSignals(updated);
-    void trackBuilderEvent("studio_v2_predict_signal", {
-      sceneId: sig.sceneId,
-      tappedFragmentId: sig.tappedFragmentId,
-      lingerMs: sig.lingerMs,
-    });
-    setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
-  }, [signals]);
+  const onSceneSignal = useCallback(
+    (sig: SceneSignal) => {
+      const updated = [...signals, sig];
+      setSignals(updated);
+      void trackBuilderEvent("studio_v2_predict_signal", {
+        sceneId: sig.sceneId,
+        tappedFragmentId: sig.tappedFragmentId,
+        lingerMs: sig.lingerMs,
+      });
+      setBeatIndex((i) => Math.min(SEQUENCE.length - 1, i + 1));
+    },
+    [signals],
+  );
 
   const onWhoRhythmComplete = useCallback(
     (out: { pax: number; who: string; signal: SceneSignal }) => {
@@ -236,10 +253,11 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
   useEffect(() => {
     if (beat !== "thinking") return;
     if (result) return;
-    const { profile: inferredProfile, topIntent, confidence } = inferProfile(
-      signals,
-      { pax, pickup: pickup || "Lisboa" },
-    );
+    const {
+      profile: inferredProfile,
+      topIntent,
+      confidence,
+    } = inferProfile(signals, { pax, pickup: pickup || "Lisboa" });
     const merged: TravelerProfile = {
       ...inferredProfile,
       name: profile.name,
@@ -250,7 +268,9 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
     setResult(designExperience({ ...merged, archetype }));
     void trackBuilderEvent("studio_v2_predict_signal", {
       stage: "intent_inferred",
-      topIntent, confidence: Math.round(confidence * 100), pax,
+      topIntent,
+      confidence: Math.round(confidence * 100),
+      pax,
       pickup: pickup || "Lisboa",
     });
   }, [beat, profile, result, signals, pax, pickup]);
@@ -267,7 +287,12 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
   // prologue/opening, the silent "thinking" beat and the final Reveal so
   // the interface still "progressively disappears" per Studio philosophy.
   const CAPTURE_BEATS: Beat[] = [
-    "feeling", "who-rhythm", "mood-1", "mood-2", "mood-3", "mood-rhythm",
+    "feeling",
+    "who-rhythm",
+    "mood-1",
+    "mood-2",
+    "mood-3",
+    "mood-rhythm",
   ];
   const showBuilderChrome = CAPTURE_BEATS.includes(beat);
   const captureStepIndex = Math.max(0, CAPTURE_BEATS.indexOf(beat));
@@ -278,8 +303,11 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
     const base = 145;
     const groupAdj = pax <= 2 ? 30 : pax <= 4 ? 10 : pax <= 8 ? -10 : -25;
     const paceAdj =
-      inferred?.topIntent === "elegant_cultural" ? 25 :
-      inferred?.topIntent === "food_local" ? 15 : 0;
+      inferred?.topIntent === "elegant_cultural"
+        ? 25
+        : inferred?.topIntent === "food_local"
+          ? 15
+          : 0;
     return Math.max(95, Math.round((base + groupAdj + paceAdj) / 5) * 5);
   }, [pax, inferred]);
   const draftSnapshot = useMemo(
@@ -293,11 +321,23 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
     if (typeof window === "undefined") return;
     if (startAtReveal) return; // shared-token resume isn't local progress
     if (beat === "opening") return;
-    if (beat === "reveal") { clearPersistedSession(); return; }
+    if (beat === "reveal") {
+      clearPersistedSession();
+      return;
+    }
     const payload: PersistedSession = {
-      beatIndex, profile, signals, pax, pickup, savedAt: Date.now(),
+      beatIndex,
+      profile,
+      signals,
+      pax,
+      pickup,
+      savedAt: Date.now(),
     };
-    try { window.localStorage.setItem(SESSION_KEY, JSON.stringify(payload)); } catch { /* */ }
+    try {
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+    } catch {
+      /* */
+    }
   }, [beat, beatIndex, profile, signals, pax, pickup, startAtReveal]);
 
   // Auto-resume toast — dismisses itself after a few seconds.
@@ -306,7 +346,6 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
     const t = window.setTimeout(() => setAutoResumed(false), 3200);
     return () => window.clearTimeout(t);
   }, [autoResumed]);
-
 
   return (
     <div
@@ -370,11 +409,27 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
 
         {beat === "feeling" && <FeelingScene onSignal={onSceneSignal} />}
         {beat === "who-rhythm" && <WhoRhythmScene onComplete={onWhoRhythmComplete} />}
-        {beat === "mood-1" && <DriftScene        scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />}
-        {beat === "mood-2" && <SensePairScene    scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />}
-        {beat === "mood-3" && <MicroFictionScene scene={MOOD_SCENES[2]} index={3} onSignal={onSceneSignal} topIntent={inferred?.topIntent ?? null} />}
+        {beat === "mood-1" && (
+          <DriftScene scene={MOOD_SCENES[0]} index={1} onSignal={onSceneSignal} />
+        )}
+        {beat === "mood-2" && (
+          <SensePairScene scene={MOOD_SCENES[1]} index={2} onSignal={onSceneSignal} />
+        )}
+        {beat === "mood-3" && (
+          <MicroFictionScene
+            scene={MOOD_SCENES[2]}
+            index={3}
+            onSignal={onSceneSignal}
+            topIntent={inferred?.topIntent ?? null}
+          />
+        )}
         {beat === "mood-rhythm" && (
-          <MicroFictionScene scene={MOOD_SCENES[3]} index={4} onSignal={onSceneSignal} topIntent={inferred?.topIntent ?? null} />
+          <MicroFictionScene
+            scene={MOOD_SCENES[3]}
+            index={4}
+            onSignal={onSceneSignal}
+            topIntent={inferred?.topIntent ?? null}
+          />
         )}
         {/* Legacy quiz beats (logistics / tastes / conviction / name) were
             removed — Chapter III · Tone now hands directly to Revelation. */}
@@ -409,7 +464,8 @@ export function StudioV2({ onExit, initialProfile, startAtReveal, hydratedDraft 
 }
 
 // Suppress "unused" warnings for retained legacy types/helpers.
-void previewJourney; void emptyProfile;
+void previewJourney;
+void emptyProfile;
 
 // ─── opening scene — editorial cold open ────────────────────────────────
 
@@ -429,7 +485,11 @@ function OpeningScene({
     const t1 = window.setTimeout(() => setStage(1), 700);
     const t2 = window.setTimeout(() => setStage(2), 1700);
     const t3 = window.setTimeout(() => setStage(3), 3400);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
   }, []);
 
   // When a resume card is shown, suppress the full-bleed tap-to-begin so the
@@ -508,7 +568,9 @@ function OpeningScene({
             letterSpacing: "-0.005em",
           }}
         >
-          Let instinct<br/>guide the way.
+          Let instinct
+          <br />
+          guide the way.
         </h1>
 
         {!showResume && (
@@ -522,7 +584,10 @@ function OpeningScene({
             />
             <span
               className="text-[10.5px] uppercase tracking-[0.36em]"
-              style={{ color: "color-mix(in oklab, var(--ivory) 80%, transparent)", fontWeight: 600 }}
+              style={{
+                color: "color-mix(in oklab, var(--ivory) 80%, transparent)",
+                fontWeight: 600,
+              }}
             >
               tap to begin
             </span>
@@ -543,12 +608,16 @@ function OpeningScene({
               WebkitBackdropFilter: "blur(14px)",
               opacity: stage >= 2 ? 1 : 0,
               transform: stage >= 2 ? "translateY(0)" : "translateY(10px)",
-              transition: "opacity 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1)",
+              transition:
+                "opacity 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1)",
             }}
           >
             <p
               className="text-[10.5px] uppercase tracking-[0.36em]"
-              style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 700 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
+                fontWeight: 700,
+              }}
             >
               Welcome back
             </p>
@@ -577,7 +646,10 @@ function OpeningScene({
               </button>
               <button
                 type="button"
-                onClick={() => { onDeclineResume?.(); onTap(); }}
+                onClick={() => {
+                  onDeclineResume?.();
+                  onTap();
+                }}
                 className="h-10 px-4 text-[10.5px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
@@ -597,7 +669,8 @@ function OpeningScene({
 // ─── mood scene — magazine spread, dominant + inset alternative ────────
 
 function MoodSceneView({
-  scene, onSignal,
+  scene,
+  onSignal,
 }: {
   scene: (typeof MOOD_SCENES)[number];
   onSignal: (sig: SceneSignal) => void;
@@ -659,9 +732,10 @@ function MoodSceneView({
               className="block h-px transition-all duration-500"
               style={{
                 width: i + 1 === sceneNum ? 22 : 10,
-                background: i + 1 <= sceneNum
-                  ? "color-mix(in oklab, var(--gold) 85%, var(--ivory))"
-                  : "color-mix(in oklab, var(--ivory) 40%, transparent)",
+                background:
+                  i + 1 <= sceneNum
+                    ? "color-mix(in oklab, var(--gold) 85%, var(--ivory))"
+                    : "color-mix(in oklab, var(--ivory) 40%, transparent)",
               }}
             />
           ))}
@@ -704,7 +778,10 @@ function MoodSceneView({
           >
             <span
               className="block text-[9.5px] uppercase tracking-[0.34em]"
-              style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
+                fontWeight: 600,
+              }}
             >
               choose this
             </span>
@@ -713,7 +790,10 @@ function MoodSceneView({
               style={{ fontWeight: 600 }}
             >
               <span className="truncate">continue</span>
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+              <ArrowRight
+                className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-[3px]"
+                aria-hidden
+              />
             </span>
           </button>
 
@@ -735,12 +815,18 @@ function MoodSceneView({
             <span
               aria-hidden
               className="absolute inset-0"
-              style={{ background: "linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--charcoal) 75%, transparent) 100%)" }}
+              style={{
+                background:
+                  "linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--charcoal) 75%, transparent) 100%)",
+              }}
             />
             <span className="relative flex h-full flex-col justify-between p-2.5">
               <span
                 className="text-[8.5px] uppercase tracking-[0.32em]"
-                style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 600 }}
+                style={{
+                  color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
+                  fontWeight: 600,
+                }}
               >
                 or
               </span>
@@ -763,15 +849,23 @@ function MoodSceneView({
   );
 }
 
-
 // ─── logistics card — editorial pause, sand surface, gold detail ───────
 
 function LogisticsCard({
-  pax, setPax, pickup, setPickup, preferredDate, setPreferredDate, onSubmit,
+  pax,
+  setPax,
+  pickup,
+  setPickup,
+  preferredDate,
+  setPreferredDate,
+  onSubmit,
 }: {
-  pax: number; setPax: (n: number) => void;
-  pickup: string; setPickup: (s: string) => void;
-  preferredDate: string; setPreferredDate: (d: string) => void;
+  pax: number;
+  setPax: (n: number) => void;
+  pickup: string;
+  setPickup: (s: string) => void;
+  preferredDate: string;
+  setPreferredDate: (d: string) => void;
   onSubmit: () => void;
 }) {
   const ready = pickup.trim().length > 0;
@@ -796,7 +890,10 @@ function LogisticsCard({
           <span className="studio-v2-rule" />
           <span
             className="text-[10px] uppercase tracking-[0.42em]"
-            style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
+            style={{
+              color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))",
+              fontWeight: 600,
+            }}
           >
             Practicalities
           </span>
@@ -806,14 +903,16 @@ function LogisticsCard({
           className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
           style={{
             fontFamily: "var(--font-display, Montserrat), sans-serif",
-            fontWeight: 700, letterSpacing: "-0.012em",
+            fontWeight: 700,
+            letterSpacing: "-0.012em",
             color: "var(--charcoal)",
           }}
         >
           A few{" "}
           <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
             practical details
-          </span>.
+          </span>
+          .
         </h2>
 
         <p
@@ -833,7 +932,10 @@ function LogisticsCard({
           <div className="flex items-baseline justify-between">
             <span
               className="text-[10px] uppercase tracking-[0.36em]"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                fontWeight: 600,
+              }}
             >
               Guests
             </span>
@@ -853,9 +955,14 @@ function LogisticsCard({
               onClick={() => setPax(Math.max(1, pax - 1))}
               aria-label="Decrease guests"
               className="grid h-11 w-11 place-items-center text-[22px] transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)", opacity: pax > 1 ? 0.8 : 0.3 }}
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                opacity: pax > 1 ? 0.8 : 0.3,
+              }}
               disabled={pax <= 1}
-            >−</button>
+            >
+              −
+            </button>
             <span
               className="tabular-nums leading-none"
               style={{
@@ -874,9 +981,14 @@ function LogisticsCard({
               onClick={() => setPax(Math.min(20, pax + 1))}
               aria-label="Increase guests"
               className="grid h-11 w-11 place-items-center text-[22px] transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)", opacity: pax < 20 ? 0.8 : 0.3 }}
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                opacity: pax < 20 ? 0.8 : 0.3,
+              }}
               disabled={pax >= 20}
-            >+</button>
+            >
+              +
+            </button>
           </div>
         </div>
 
@@ -884,7 +996,10 @@ function LogisticsCard({
         <div className="studio-v2-reveal delay-4 mt-10">
           <p
             className="mb-4 text-[10px] uppercase tracking-[0.36em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              fontWeight: 600,
+            }}
           >
             Departing from
           </p>
@@ -898,7 +1013,9 @@ function LogisticsCard({
                   onClick={() => setPickup(c)}
                   className="group relative min-h-[44px] text-[15px] transition-all focus-visible:outline-none"
                   style={{
-                    color: active ? "var(--charcoal)" : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                    color: active
+                      ? "var(--charcoal)"
+                      : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                     fontWeight: active ? 600 : 500,
                     fontFamily: "var(--font-sans, Inter), sans-serif",
                   }}
@@ -922,9 +1039,15 @@ function LogisticsCard({
         <div className="studio-v2-reveal delay-5 mt-10">
           <p
             className="mb-3 text-[10px] uppercase tracking-[0.36em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              fontWeight: 600,
+            }}
           >
-            When <span className="lowercase" style={{ letterSpacing: "0.18em" }}>(optional)</span>
+            When{" "}
+            <span className="lowercase" style={{ letterSpacing: "0.18em" }}>
+              (optional)
+            </span>
           </p>
           <input
             type="date"
@@ -950,10 +1073,13 @@ function LogisticsCard({
             style={{
               background: "var(--charcoal)",
               color: "var(--ivory)",
-              minHeight: 56, minWidth: 240,
+              minHeight: 56,
+              minWidth: 240,
               fontFamily: "var(--font-sans, Inter), sans-serif",
-              fontWeight: 600, fontSize: 12.5,
-              letterSpacing: "0.26em", textTransform: "uppercase",
+              fontWeight: 600,
+              fontSize: 12.5,
+              letterSpacing: "0.26em",
+              textTransform: "uppercase",
               border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
             }}
           >
@@ -986,20 +1112,21 @@ const TASTE_CHIPS: Array<{
   label: string;
   weights: Partial<Record<string, number>>;
 }> = [
-  { key: "wine",         label: "Wine & cellars",     weights: { wine_cellar: 70, vineyard_lunch: 60 } },
-  { key: "sea",          label: "Coast & sea air",    weights: { coastal_scenery: 70, boat: 60 } },
-  { key: "long_lunch",   label: "Long lunch",         weights: { vineyard_lunch: 70, local_gastronomy: 70 } },
-  { key: "heritage",     label: "Heritage & stone",   weights: { heritage: 70, architecture: 60 } },
-  { key: "hidden",       label: "Hidden villages",    weights: { hidden_villages: 70 } },
-  { key: "photo",        label: "Photographic light", weights: { photography: 70 } },
-  { key: "quiet",        label: "Quiet luxury",       weights: { quiet_luxury: 70, wellness: 50 } },
-  { key: "boat",         label: "On the water",       weights: { boat: 80 } },
-  { key: "local_food",   label: "Local table",        weights: { local_gastronomy: 80 } },
-  { key: "sunset",       label: "Sunset hour",        weights: { coastal_scenery: 50, photography: 50 } },
+  { key: "wine", label: "Wine & cellars", weights: { wine_cellar: 70, vineyard_lunch: 60 } },
+  { key: "sea", label: "Coast & sea air", weights: { coastal_scenery: 70, boat: 60 } },
+  { key: "long_lunch", label: "Long lunch", weights: { vineyard_lunch: 70, local_gastronomy: 70 } },
+  { key: "heritage", label: "Heritage & stone", weights: { heritage: 70, architecture: 60 } },
+  { key: "hidden", label: "Hidden villages", weights: { hidden_villages: 70 } },
+  { key: "photo", label: "Photographic light", weights: { photography: 70 } },
+  { key: "quiet", label: "Quiet luxury", weights: { quiet_luxury: 70, wellness: 50 } },
+  { key: "boat", label: "On the water", weights: { boat: 80 } },
+  { key: "local_food", label: "Local table", weights: { local_gastronomy: 80 } },
+  { key: "sunset", label: "Sunset hour", weights: { coastal_scenery: 50, photography: 50 } },
 ];
 
 function TastesPicker({
-  initial, onSubmit,
+  initial,
+  onSubmit,
 }: {
   initial: string[];
   onSubmit: (tastes: string[], weights: Partial<Record<string, number>>) => void;
@@ -1031,7 +1158,10 @@ function TastesPicker({
           <span className="studio-v2-rule" />
           <span
             className="text-[10px] uppercase tracking-[0.42em]"
-            style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 600 }}
+            style={{
+              color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))",
+              fontWeight: 600,
+            }}
           >
             Tastes
           </span>
@@ -1041,14 +1171,16 @@ function TastesPicker({
           className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
           style={{
             fontFamily: "var(--font-display, Montserrat), sans-serif",
-            fontWeight: 700, letterSpacing: "-0.012em",
+            fontWeight: 700,
+            letterSpacing: "-0.012em",
             color: "var(--charcoal)",
           }}
         >
           What you{" "}
           <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
             actually love
-          </span>.
+          </span>
+          .
         </h2>
 
         <p
@@ -1079,7 +1211,9 @@ function TastesPicker({
                   background: active
                     ? "color-mix(in oklab, var(--gold) 18%, transparent)"
                     : "transparent",
-                  color: active ? "var(--charcoal)" : "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+                  color: active
+                    ? "var(--charcoal)"
+                    : "color-mix(in oklab, var(--charcoal) 75%, transparent)",
                   fontWeight: active ? 600 : 500,
                   fontFamily: "var(--font-sans, Inter), sans-serif",
                 }}
@@ -1098,10 +1232,13 @@ function TastesPicker({
             style={{
               background: "var(--charcoal)",
               color: "var(--ivory)",
-              minHeight: 56, minWidth: 240,
+              minHeight: 56,
+              minWidth: 240,
               fontFamily: "var(--font-sans, Inter), sans-serif",
-              fontWeight: 600, fontSize: 12.5,
-              letterSpacing: "0.26em", textTransform: "uppercase",
+              fontWeight: 600,
+              fontSize: 12.5,
+              letterSpacing: "0.26em",
+              textTransform: "uppercase",
               border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
             }}
           >
@@ -1129,11 +1266,13 @@ function TastesPicker({
   );
 }
 
-
 // ─── conviction moment — the "we read you" reveal ───────────────────────
 
 function ConvictionMoment({
-  topIntent, line, script, onContinue,
+  topIntent,
+  line,
+  script,
+  onContinue,
 }: {
   topIntent: IntentAtmosphere;
   line: { lead: string; body: string };
@@ -1155,14 +1294,23 @@ function ConvictionMoment({
   useEffect(() => {
     const timers: number[] = [];
     for (let i = 0; i < noticedCount; i++) {
-      timers.push(window.setTimeout(() => {
-        setStage((s) => ({ ...s, noticed: Math.max(s.noticed, i + 1) }));
-      }, 350 + i * PER_LINE));
+      timers.push(
+        window.setTimeout(
+          () => {
+            setStage((s) => ({ ...s, noticed: Math.max(s.noticed, i + 1) }));
+          },
+          350 + i * PER_LINE,
+        ),
+      );
     }
     timers.push(window.setTimeout(() => setStage((s) => ({ ...s, reading: true })), READING_DELAY));
-    timers.push(window.setTimeout(() => setStage((s) => ({ ...s, decision: true })), DECISION_DELAY));
+    timers.push(
+      window.setTimeout(() => setStage((s) => ({ ...s, decision: true })), DECISION_DELAY),
+    );
     timers.push(window.setTimeout(() => setStage((s) => ({ ...s, cta: true })), CTA_DELAY));
-    return () => { timers.forEach((t) => window.clearTimeout(t)); };
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+    };
   }, [noticedCount, READING_DELAY, DECISION_DELAY, CTA_DELAY]);
 
   const img = INTENT_IMAGE[topIntent] ?? INTENT_IMAGE.relaxed_scenic;
@@ -1203,7 +1351,10 @@ function ConvictionMoment({
         >
           <span
             className="inline-block h-1.5 w-1.5 rounded-full"
-            style={{ background: "var(--gold)", animation: "studioV2Pulse 1.6s ease-in-out infinite" }}
+            style={{
+              background: "var(--gold)",
+              animation: "studioV2Pulse 1.6s ease-in-out infinite",
+            }}
           />
           Composing
         </span>
@@ -1302,10 +1453,13 @@ function ConvictionMoment({
             style={{
               background: "color-mix(in oklab, var(--ivory) 96%, transparent)",
               color: "var(--charcoal)",
-              minHeight: 56, minWidth: 220,
+              minHeight: 56,
+              minWidth: 220,
               fontFamily: "var(--font-sans, Inter), sans-serif",
-              fontWeight: 600, fontSize: 12.5,
-              letterSpacing: "0.26em", textTransform: "uppercase",
+              fontWeight: 600,
+              fontSize: 12.5,
+              letterSpacing: "0.26em",
+              textTransform: "uppercase",
               border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
             }}
           >
@@ -1320,9 +1474,6 @@ function ConvictionMoment({
     </section>
   );
 }
-
-
-
 
 // ─── beat components ─────────────────────────────────────────────────────
 
@@ -1346,7 +1497,11 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
       </p>
       <h1
         className="studio-v2-reveal delay-1 relative mt-5 text-[36px] leading-[1.05] sm:text-[54px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em" }}
+        style={{
+          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontWeight: 700,
+          letterSpacing: "-0.01em",
+        }}
       >
         Begin your Portugal{" "}
         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
@@ -1358,7 +1513,8 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
         className="studio-v2-reveal delay-2 relative mt-5 text-[15px] leading-[1.55] max-w-[28ch]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
       >
-        Each choice writes the next line. By the end you'll have a day shaped around you — map, rhythm and moments already in place.
+        Each choice writes the next line. By the end you'll have a day shaped around you — map,
+        rhythm and moments already in place.
       </p>
       <div className="studio-v2-reveal delay-3 relative mt-10">
         <ContinueButton label="Begin" onClick={onBegin} />
@@ -1377,18 +1533,29 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
 }
 
 function NameBeat({
-  initial, onSubmit, onSkip,
-}: { initial: string; onSubmit: (name: string) => void; onSkip: () => void }) {
+  initial,
+  onSubmit,
+  onSkip,
+}: {
+  initial: string;
+  onSubmit: (name: string) => void;
+  onSkip: () => void;
+}) {
   const [v, setV] = useState(initial);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => { inputRef.current?.focus(); }, []);
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
   return (
     <section className="min-h-[60vh] flex flex-col justify-center">
       <Eyebrow>Your story</Eyebrow>
       <Headline>What should we call this story?</Headline>
       <Helper>Optional. We use it only to personalise your written journey.</Helper>
       <form
-        onSubmit={(e) => { e.preventDefault(); onSubmit(v); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(v);
+        }}
         className="mt-6"
       >
         <input
@@ -1490,9 +1657,7 @@ function InsightBeat({ line, onSkip }: { line: string; onSkip: () => void }) {
   );
 }
 
-function RewardImageBeat({
-  intent, onSkip,
-}: { intent: IntentAtmosphere; onSkip: () => void }) {
+function RewardImageBeat({ intent, onSkip }: { intent: IntentAtmosphere; onSkip: () => void }) {
   const atmo = INTENT_ATMOSPHERE[intent];
   const img = INTENT_IMAGE[intent];
   return (
@@ -1553,9 +1718,7 @@ function RewardImageBeat({
   );
 }
 
-function RewardMapBeat({
-  preview, onSkip,
-}: { preview: JourneyPreview; onSkip: () => void }) {
+function RewardMapBeat({ preview, onSkip }: { preview: JourneyPreview; onSkip: () => void }) {
   return (
     <section className="studio-v2-reveal">
       <Eyebrow>Route taking shape</Eyebrow>
@@ -1616,11 +1779,7 @@ function RewardMapBeat({
 
 function ThinkingBeat({ topIntent }: { topIntent: IntentAtmosphere }) {
   const img = INTENT_IMAGE[topIntent] ?? INTENT_IMAGE.relaxed_scenic;
-  const lines = [
-    "Matching atmosphere…",
-    "Pacing the day…",
-    "Tracing the route…",
-  ];
+  const lines = ["Matching atmosphere…", "Pacing the day…", "Tracing the route…"];
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const t = window.setInterval(() => setIdx((i) => (i + 1) % lines.length), 750);
@@ -1671,7 +1830,6 @@ function ThinkingBeat({ topIntent }: { topIntent: IntentAtmosphere }) {
   );
 }
 
-
 function ShimmerDot({ delay }: { delay: number }) {
   return (
     <span
@@ -1686,7 +1844,12 @@ function ShimmerDot({ delay }: { delay: number }) {
 }
 
 function RevealStory({
-  profile, region, signals, pax, pickup, onPickupChange,
+  profile,
+  region,
+  signals,
+  pax,
+  pickup,
+  onPickupChange,
 }: {
   profile: TravelerProfile;
   region: string;
@@ -1737,20 +1900,24 @@ function RevealStory({
       .then((r) => {
         if (cancelled) return;
         setReal(r);
-        setEditedStops(r.stops.map((s) => ({
-          key: s.key,
-          region_key: s.region_key,
-          label: s.label,
-          blurb: s.blurb,
-          tag: s.tag,
-          lat: s.lat,
-          lng: s.lng,
-          duration_minutes: s.duration_minutes,
-          source_tour_keys: s.source_tour_keys,
-        })));
+        setEditedStops(
+          r.stops.map((s) => ({
+            key: s.key,
+            region_key: s.region_key,
+            label: s.label,
+            blurb: s.blurb,
+            tag: s.tag,
+            lat: s.lat,
+            lng: s.lng,
+            duration_minutes: s.duration_minutes,
+            source_tour_keys: s.source_tour_keys,
+          })),
+        );
         // Cinematic full-bleed MapReveal disabled by request — the builder
         // now shows the real draft inline via DraftMapPreview instead.
-        void mapRevealShown; void setMapRevealOpen; void setMapRevealShown;
+        void mapRevealShown;
+        void setMapRevealOpen;
+        void setMapRevealShown;
         // Pre-create the share session silently so the postcard's
         // "Share" button has a live invitation URL ready the moment
         // the postcard opens. Best-effort — never blocks the flow.
@@ -1763,40 +1930,49 @@ function RevealStory({
               archetype: profile.archetype,
             },
           })
-            .then((s) => { if (!cancelled) setPostcardToken(s.shareToken); })
-            .catch(() => { /* postcard still works, share button just stays disabled */ });
+            .then((s) => {
+              if (!cancelled) setPostcardToken(s.shareToken);
+            })
+            .catch(() => {
+              /* postcard still works, share button just stays disabled */
+            });
         }
       })
-      .catch(() => { /* fall back to synthetic */ });
-    return () => { cancelled = true; };
+      .catch(() => {
+        /* fall back to synthetic */
+      });
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [composeReal, profile, region, blueprint]);
 
   // Map source: editedStops (real, mutable) when available, else synthetic.
-  const livePreview = editedStops && editedStops.length >= 2 && real
-    ? {
-        region: real.region,
-        regionCenter: {
-          lat: editedStops.reduce((a, s) => a + s.lat, 0) / editedStops.length,
-          lng: editedStops.reduce((a, s) => a + s.lng, 0) / editedStops.length,
-        },
-        stops: editedStops.map((s) => ({
-          key: s.key,
-          region_key: s.region_key,
-          label: s.label,
-          blurb: s.blurb,
-          tag: s.tag,
-          lat: s.lat,
-          lng: s.lng,
-          duration_minutes: s.duration_minutes,
-          driveMinutesFromPrev: 0,
-          source_tour_keys: s.source_tour_keys,
-          score: 0,
-        })),
-        density: editedStops.length,
-        driveBudgetMin: 0,
-      }
-    : syntheticPreview;
+  const livePreview =
+    editedStops && editedStops.length >= 2 && real
+      ? {
+          region: real.region,
+          regionCenter: {
+            lat: editedStops.reduce((a, s) => a + s.lat, 0) / editedStops.length,
+            lng: editedStops.reduce((a, s) => a + s.lng, 0) / editedStops.length,
+          },
+          stops: editedStops.map((s) => ({
+            key: s.key,
+            region_key: s.region_key,
+            label: s.label,
+            blurb: s.blurb,
+            tag: s.tag,
+            lat: s.lat,
+            lng: s.lng,
+            duration_minutes: s.duration_minutes,
+            driveMinutesFromPrev: 0,
+            source_tour_keys: s.source_tour_keys,
+            score: 0,
+          })),
+          density: editedStops.length,
+          driveBudgetMin: 0,
+        }
+      : syntheticPreview;
 
   // AI narrative layer removed (server module path blocked by client import-protection).
   // Static editorial framing carries the reveal.
@@ -1817,22 +1993,27 @@ function RevealStory({
   );
   const revealReady = real != null && revealValidation.ok;
 
-
   return (
     <section className="mb-10">
       {/* Concrete header — the builder shows what it just built, no riddle. */}
       <div className="mb-6">
-        <p className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}>
+        <p
+          className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
+        >
           Your draft is ready
         </p>
-        <h2 className="mt-3 text-[26px] leading-[1.1] sm:text-[32px] font-display"
-          style={{ fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}>
+        <h2
+          className="mt-3 text-[26px] leading-[1.1] sm:text-[32px] font-display"
+          style={{ fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}
+        >
           {profile.name?.trim() ? `${profile.name.trim()}, here's ` : "Here's "}
           your private day in Portugal.
         </h2>
-        <p className="mt-2 text-[14px] leading-[1.5]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
+        <p
+          className="mt-2 text-[14px] leading-[1.5]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        >
           Edit any stop below, change pickup, or share with a local designer.
         </p>
       </div>
@@ -1867,12 +2048,10 @@ function RevealStory({
             color: "var(--charcoal)",
           }}
         >
-          <strong>Reveal props invalid (dev only).</strong> Map and booking
-          surface skipped — fix the upstream payload. Issues:{" "}
-          {revealValidation.issues.join(" · ")}
+          <strong>Reveal props invalid (dev only).</strong> Map and booking surface skipped — fix
+          the upstream payload. Issues: {revealValidation.issues.join(" · ")}
         </div>
       )}
-
 
       {/* StoryOpener kept on a hidden flag — restore later if cinematic
           opener is reinstated. */}
@@ -1935,7 +2114,6 @@ function RevealStory({
         }
       />
 
-
       {/* Hero image — real, editorial, no overlay text */}
       {hero && (
         <div
@@ -1978,7 +2156,6 @@ function RevealStory({
         />
       )}
 
-
       {/* Refine stage — Swap / Remove / Reorder real stops */}
       {real && editedStops && (
         <div id="studio-v2-itinerary">
@@ -2005,7 +2182,10 @@ function RevealStory({
         >
           <p
             className="text-[10.5px] uppercase tracking-[0.32em]"
-            style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 700 }}
+            style={{
+              color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
+              fontWeight: 700,
+            }}
           >
             Closing moment
           </p>
@@ -2013,7 +2193,8 @@ function RevealStory({
             className="mt-2 text-[14px] leading-[1.5]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
           >
-            Your designer will add a final sunset stop matched to the day's rhythm — confirmed once you reserve.
+            Your designer will add a final sunset stop matched to the day's rhythm — confirmed once
+            you reserve.
           </p>
         </div>
       )}
@@ -2026,7 +2207,12 @@ function RevealStory({
       </p>
       <h2
         className="mt-3 text-[24px] leading-[1.15] sm:text-[28px]"
-        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--charcoal)" }}
+        style={{
+          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontWeight: 700,
+          letterSpacing: "-0.01em",
+          color: "var(--charcoal)",
+        }}
       >
         {ai?.title ?? "A private Portugal day, designed around you."}
       </h2>
@@ -2041,8 +2227,8 @@ function RevealStory({
         style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
       >
         {profile.intent && <li>· {storyAfterIntent(profile.intent)}</li>}
-        {profile.pace   && <li>· {storyAfterPace(profile.pace)}</li>}
-        {profile.group  && <li>· {storyAfterGroup(profile.group)}</li>}
+        {profile.pace && <li>· {storyAfterPace(profile.pace)}</li>}
+        {profile.group && <li>· {storyAfterGroup(profile.group)}</li>}
       </ul>
 
       {/* Experience Investment — no invented prices, tier label only */}
@@ -2055,13 +2241,20 @@ function RevealStory({
       >
         <p
           className="text-[10.5px] uppercase tracking-[0.32em]"
-          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 600 }}
+          style={{
+            color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
+            fontWeight: 600,
+          }}
         >
           Experience investment
         </p>
         <p
           className="mt-2 text-[17px] leading-[1.3]"
-          style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600, color: "var(--charcoal)" }}
+          style={{
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontWeight: 600,
+            color: "var(--charcoal)",
+          }}
         >
           {tier} tier · all-inclusive · private throughout
         </p>
@@ -2077,18 +2270,21 @@ function RevealStory({
       </div>
 
       {/* Trust band — micro, factual */}
-      <div
-        className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-center"
-      >
-        {["500+ travellers", "Private only", "Designed by locals", "Instant confirmation"].map((t) => (
-          <span
-            key={t}
-            className="text-[10.5px] uppercase tracking-[0.28em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
-          >
-            {t}
-          </span>
-        ))}
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-center">
+        {["500+ travellers", "Private only", "Designed by locals", "Instant confirmation"].map(
+          (t) => (
+            <span
+              key={t}
+              className="text-[10.5px] uppercase tracking-[0.28em]"
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                fontWeight: 600,
+              }}
+            >
+              {t}
+            </span>
+          ),
+        )}
       </div>
 
       {/* Final booking panel — "Your day is ready."
@@ -2117,7 +2313,10 @@ function RevealStory({
 // not a packaged Signature tour.
 
 function BespokeSecureCTA({
-  profile, region, archetype, stops,
+  profile,
+  region,
+  archetype,
+  stops,
 }: {
   profile: TravelerProfile;
   region: string;
@@ -2157,7 +2356,10 @@ function BespokeSecureCTA({
     setBusy(true);
     setErr(null);
     void trackBuilderEvent("studio_v2_secure_click", {
-      archetype, region, intent: profile.intent, stopCount: stops.length,
+      archetype,
+      region,
+      intent: profile.intent,
+      stopCount: stops.length,
     });
     try {
       const r = await createDraft({
@@ -2214,10 +2416,15 @@ function BespokeSecureCTA({
         }}
       >
         {busy ? "Securing…" : "Reserve this day"}
-        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+        <ArrowRight
+          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]"
+          aria-hidden
+        />
       </button>
       {err && (
-        <p className="text-center text-[12.5px]" style={{ color: "var(--charcoal)" }}>{err}</p>
+        <p className="text-center text-[12.5px]" style={{ color: "var(--charcoal)" }}>
+          {err}
+        </p>
       )}
       <p
         className="text-center text-[12.5px] italic"
@@ -2235,11 +2442,16 @@ function BespokeSecureCTA({
           rel="noopener noreferrer"
           onClick={() =>
             void trackBuilderEvent("studio_v2_secure_whatsapp_fallback", {
-              archetype, region, intent: profile.intent,
+              archetype,
+              region,
+              intent: profile.intent,
             })
           }
           className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] underline-offset-4 hover:underline min-h-[44px] px-2"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+            fontWeight: 600,
+          }}
         >
           Prefer to talk first? Chat with a local designer
         </a>
@@ -2250,9 +2462,13 @@ function BespokeSecureCTA({
 
 // ─── reusable chrome ─────────────────────────────────────────────────────
 
-
 function ChoiceBeat({
-  eyebrow, title, helper, children, onBack, footer,
+  eyebrow,
+  title,
+  helper,
+  children,
+  onBack,
+  footer,
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -2272,7 +2488,10 @@ function ChoiceBeat({
           type="button"
           onClick={onBack}
           className="text-[11px] uppercase tracking-[0.28em] min-h-[44px] px-2 focus-visible:outline-none focus-visible:ring-2 rounded-[2px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+            fontWeight: 600,
+          }}
         >
           ← Back
         </button>
@@ -2283,8 +2502,14 @@ function ChoiceBeat({
 }
 
 function ContinueButton({
-  label, onClick, disabled,
-}: { label: string; onClick: () => void; disabled?: boolean }) {
+  label,
+  onClick,
+  disabled,
+}: {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="button"
@@ -2343,8 +2568,16 @@ function RevealActions({
         });
         const url = `${window.location.origin}/s/${r.shareToken}`;
         setShareUrl(url);
-        try { await navigator.clipboard.writeText(url); } catch { /* ignore */ }
-        try { window.localStorage.setItem("yes.studio-v2.last-share", url); } catch { /* */ }
+        try {
+          await navigator.clipboard.writeText(url);
+        } catch {
+          /* ignore */
+        }
+        try {
+          window.localStorage.setItem("yes.studio-v2.last-share", url);
+        } catch {
+          /* */
+        }
         void trackBuilderEvent("studio_v2_save_success", { shareToken: r.shareToken });
       }
       setSaveState("saved");
@@ -2361,7 +2594,6 @@ function RevealActions({
   return (
     <div className="mt-12 flex flex-col gap-3">
       {/* Primary Secure CTA now lives in RevealStory (uses real edited stops). */}
-
 
       {/* 2 — Secondary: Save My Experience (ghost) */}
       <button
@@ -2384,24 +2616,34 @@ function RevealActions({
         {saveState === "saving"
           ? "Saving…"
           : saved
-          ? (shareUrl ? "Saved · link copied" : "Saved")
-          : saveState === "error"
-          ? "Try again"
-          : "Save my experience"}
+            ? shareUrl
+              ? "Saved · link copied"
+              : "Saved"
+            : saveState === "error"
+              ? "Try again"
+              : "Save my experience"}
       </button>
       {saved && shareUrl && (
         <p
           className="text-center text-[11px] tracking-[0.18em] uppercase break-all"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+          style={{
+            color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+            fontWeight: 600,
+          }}
         >
           {shareUrl.replace(/^https?:\/\//, "")}
         </p>
       )}
 
-
       {/* 3 — Tertiary: Refine with a Local Designer (text) */}
       <a
-        onClick={() => void trackBuilderEvent("studio_v2_refine_click", { archetype, region, intent: profile?.intent })}
+        onClick={() =>
+          void trackBuilderEvent("studio_v2_refine_click", {
+            archetype,
+            region,
+            intent: profile?.intent,
+          })
+        }
         href={whatsappHref(waMsg)}
         target="_blank"
         rel="noopener noreferrer"
@@ -2433,20 +2675,20 @@ function RevealActions({
   );
 }
 
-
-
-
-
-
-
 // ─── live journey layer ───────────────────────────────────────────────────
 //
 // Sticky cinematic map that reflects the current profile in real time.
 // The InsightStrip floats over its lower edge during transitions.
 
 function JourneyLayer({
-  preview, insight, insightVisible,
-}: { preview: JourneyPreview; insight: string; insightVisible: boolean }) {
+  preview,
+  insight,
+  insightVisible,
+}: {
+  preview: JourneyPreview;
+  insight: string;
+  insightVisible: boolean;
+}) {
   return (
     <div
       className="relative w-full h-[42vh] min-h-[260px] max-h-[420px] overflow-hidden border-y"
@@ -2458,7 +2700,10 @@ function JourneyLayer({
     >
       <Suspense
         fallback={
-          <div className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <div
+            className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
             shaping route…
           </div>
         }
@@ -2526,16 +2771,18 @@ function JourneyLayer({
 
 function regionShort(r: string): string {
   switch (r) {
-    case "arrabida":     return "Arrábida";
-    case "lisbon-coast": return "Atlantic edge";
-    case "alentejo":     return "Alentejo";
-    case "centro":       return "Centro";
-    default:             return r;
+    case "arrabida":
+      return "Arrábida";
+    case "lisbon-coast":
+      return "Atlantic edge";
+    case "alentejo":
+      return "Alentejo";
+    case "centro":
+      return "Centro";
+    default:
+      return r;
   }
 }
-
-
-
 
 // ─── primitives ───────────────────────────────────────────────────────────
 
@@ -2573,8 +2820,16 @@ function Helper({ children }: { children: React.ReactNode }) {
 }
 
 function OptionCard({
-  active, label, sub, onClick,
-}: { active: boolean; label: string; sub: string; onClick: () => void }) {
+  active,
+  label,
+  sub,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  sub: string;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"
@@ -2587,9 +2842,7 @@ function OptionCard({
         borderLeft: active
           ? "2px solid var(--gold)"
           : "2px solid color-mix(in oklab, var(--charcoal) 8%, transparent)",
-        boxShadow: active
-          ? "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent)"
-          : "none",
+        boxShadow: active ? "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent)" : "none",
       }}
     >
       <span
@@ -2616,7 +2869,12 @@ function OptionCard({
 }
 
 function PhotoOptionCard({
-  active, label, sub, image, alt, onClick,
+  active,
+  label,
+  sub,
+  image,
+  alt,
+  onClick,
 }: {
   active: boolean;
   label: string;
@@ -2681,7 +2939,10 @@ function PhotoOptionCard({
         <span
           aria-hidden
           className="absolute right-3 top-3 inline-flex h-2.5 w-2.5 rounded-full"
-          style={{ background: "var(--gold)", boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 30%, transparent)" }}
+          style={{
+            background: "var(--gold)",
+            boxShadow: "0 0 0 4px color-mix(in oklab, var(--gold) 30%, transparent)",
+          }}
         />
       )}
     </button>
@@ -2689,8 +2950,14 @@ function PhotoOptionCard({
 }
 
 function PriorityChip({
-  label, weight, onClick,
-}: { label: string; weight: number | undefined; onClick: () => void }) {
+  label,
+  weight,
+  onClick,
+}: {
+  label: string;
+  weight: number | undefined;
+  onClick: () => void;
+}) {
   const state = weight === undefined ? "off" : weight >= 100 ? "must" : "on";
   return (
     <button
@@ -2699,25 +2966,38 @@ function PriorityChip({
       className="inline-flex items-center rounded-full border px-4 text-[13px] transition-all min-h-[44px] focus-visible:outline-none focus-visible:ring-2"
       style={{
         borderColor:
-          state === "must" ? "color-mix(in oklab, var(--gold) 80%, transparent)" :
-          state === "on"   ? "color-mix(in oklab, var(--gold) 45%, transparent)" :
-                             "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+          state === "must"
+            ? "color-mix(in oklab, var(--gold) 80%, transparent)"
+            : state === "on"
+              ? "color-mix(in oklab, var(--gold) 45%, transparent)"
+              : "color-mix(in oklab, var(--charcoal) 18%, transparent)",
         background:
-          state === "must" ? "color-mix(in oklab, var(--gold) 18%, transparent)" :
-          state === "on"   ? "color-mix(in oklab, var(--sand) 60%, transparent)" :
-                             "transparent",
+          state === "must"
+            ? "color-mix(in oklab, var(--gold) 18%, transparent)"
+            : state === "on"
+              ? "color-mix(in oklab, var(--sand) 60%, transparent)"
+              : "transparent",
         color: "var(--charcoal)",
         fontWeight: state === "must" ? 600 : 500,
       }}
     >
-      {label}{state === "must" ? " · essential" : ""}
+      {label}
+      {state === "must" ? " · essential" : ""}
     </button>
   );
 }
 
 function StageFooter({
-  disabled, helper, ctaLabel = "Continue", onContinue,
-}: { disabled?: boolean; helper?: string; ctaLabel?: string; onContinue: () => void }) {
+  disabled,
+  helper,
+  ctaLabel = "Continue",
+  onContinue,
+}: {
+  disabled?: boolean;
+  helper?: string;
+  ctaLabel?: string;
+  onContinue: () => void;
+}) {
   return (
     <div className="mt-10 flex flex-col items-start gap-3">
       <button
@@ -2756,18 +3036,27 @@ function StageFooter({
 // ─── group form ───────────────────────────────────────────────────────────
 
 function GroupForm({
-  value, onChange,
-}: { value: GroupProfile | undefined; onChange: (g: GroupProfile) => void }) {
+  value,
+  onChange,
+}: {
+  value: GroupProfile | undefined;
+  onChange: (g: GroupProfile) => void;
+}) {
   const g: GroupProfile = value ?? {
-    adults: 2, children: 0, teens: 0, mobility: "none",
-    occasion: "none", decisionStyle: "collaborative", luxuryTier: "elevated",
+    adults: 2,
+    children: 0,
+    teens: 0,
+    mobility: "none",
+    occasion: "none",
+    decisionStyle: "collaborative",
+    luxuryTier: "elevated",
   };
   const set = (patch: Partial<GroupProfile>) => onChange({ ...g, ...patch });
 
   return (
     <div className="mt-6 space-y-6">
-      <CountRow label="Adults"   value={g.adults}   onChange={(v) => set({ adults: v })} min={1} />
-      <CountRow label="Teens"    value={g.teens}    onChange={(v) => set({ teens: v })} />
+      <CountRow label="Adults" value={g.adults} onChange={(v) => set({ adults: v })} min={1} />
+      <CountRow label="Teens" value={g.teens} onChange={(v) => set({ teens: v })} />
       <CountRow label="Children" value={g.children} onChange={(v) => set({ children: v })} />
 
       <SelectRow
@@ -2787,15 +3076,27 @@ function GroupForm({
         label="Mobility"
         value={g.mobility}
         onChange={(v) => set({ mobility: v as GroupProfile["mobility"] })}
-        options={[["none", "No constraints"], ["limited", "Some limitations"], ["wheelchair", "Wheelchair"]]}
+        options={[
+          ["none", "No constraints"],
+          ["limited", "Some limitations"],
+          ["wheelchair", "Wheelchair"],
+        ]}
       />
     </div>
   );
 }
 
 function CountRow({
-  label, value, onChange, min = 0,
-}: { label: string; value: number; onChange: (v: number) => void; min?: number }) {
+  label,
+  value,
+  onChange,
+  min = 0,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  min?: number;
+}) {
   return (
     <div className="flex items-center justify-between">
       <span className="text-[14px]">{label}</span>
@@ -2826,11 +3127,22 @@ function StepBtn({ onClick, label }: { onClick: () => void; label: string }) {
 }
 
 function SelectRow({
-  label, value, onChange, options,
-}: { label: string; value: string; onChange: (v: string) => void; options: [string, string][] }) {
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: [string, string][];
+}) {
   return (
     <div>
-      <p className="mb-2 text-[11px] uppercase tracking-[0.28em]" style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+      <p
+        className="mb-2 text-[11px] uppercase tracking-[0.28em]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+      >
         {label}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -2864,8 +3176,12 @@ function SelectRow({
 // ─── ops form ─────────────────────────────────────────────────────────────
 
 function OpsForm({
-  value, onChange,
-}: { value: TravelerProfile["ops"]; onChange: (v: TravelerProfile["ops"]) => void }) {
+  value,
+  onChange,
+}: {
+  value: TravelerProfile["ops"];
+  onChange: (v: TravelerProfile["ops"]) => void;
+}) {
   const set = (patch: Partial<TravelerProfile["ops"]>) => onChange({ ...value, ...patch });
   return (
     <div className="mt-6 space-y-5">
@@ -2885,21 +3201,43 @@ function OpsForm({
         label="Dietary notes"
         placeholder="Allergies, vegetarian, vegan…"
         value={(value.dietary ?? []).join(", ")}
-        onChange={(v) => set({ dietary: v.split(",").map((s) => s.trim()).filter(Boolean) })}
+        onChange={(v) =>
+          set({
+            dietary: v
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+          })
+        }
       />
       <TextRow
         label="Hard time constraints"
         placeholder="e.g. cruise back by 18:00"
         value={(value.hardConstraints ?? []).join(", ")}
-        onChange={(v) => set({ hardConstraints: v.split(",").map((s) => s.trim()).filter(Boolean) })}
+        onChange={(v) =>
+          set({
+            hardConstraints: v
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+          })
+        }
       />
     </div>
   );
 }
 
 function TextRow({
-  label, placeholder, value, onChange,
-}: { label: string; placeholder: string; value: string; onChange: (v: string) => void }) {
+  label,
+  placeholder,
+  value,
+  onChange,
+}: {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <label className="block">
       <span
@@ -2932,16 +3270,20 @@ function Reveal({ result }: { result: DesignResult }) {
   const [variant, setVariant] = useState<VariantKey>("signature");
 
   const day =
-    variant === "lighter" ? result.variants.lighter :
-    variant === "richer"  ? result.variants.richer  :
-    result.day;
+    variant === "lighter"
+      ? result.variants.lighter
+      : variant === "richer"
+        ? result.variants.richer
+        : result.day;
 
   const [reasoningOpen, setReasoningOpen] = useState(false);
 
   return (
     <div>
       <Eyebrow>Your experience</Eyebrow>
-      <Headline>A {paceLabel(result.profile.pace)} day in {regionLabel(region)}.</Headline>
+      <Headline>
+        A {paceLabel(result.profile.pace)} day in {regionLabel(region)}.
+      </Headline>
       <p
         className="mt-4 text-[14.5px] leading-relaxed"
         style={{
@@ -2972,15 +3314,25 @@ function Reveal({ result }: { result: DesignResult }) {
             <div className="flex-1">
               <p
                 className="text-[15px]"
-                style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+                style={{
+                  fontFamily: "var(--font-display, Montserrat), sans-serif",
+                  fontWeight: 600,
+                }}
               >
                 {stop.name}
               </p>
-              <p className="mt-0.5 text-[12.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+              <p
+                className="mt-0.5 text-[12.5px]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+              >
                 {stop.blurb}
               </p>
-              <p className="mt-1 text-[11px] uppercase tracking-[0.22em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
-                {driveFromPrev > 0 ? `${driveFromPrev} min drive · ` : ""}{fmtMinutes(stop.dwellMin)} on site
+              <p
+                className="mt-1 text-[11px] uppercase tracking-[0.22em]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                {driveFromPrev > 0 ? `${driveFromPrev} min drive · ` : ""}
+                {fmtMinutes(stop.dwellMin)} on site
               </p>
             </div>
           </li>
@@ -3031,9 +3383,9 @@ function Reveal({ result }: { result: DesignResult }) {
               Designed for the {archetypeLabel(archetype)}
             </p>
             <ScoreRow label="Overall match" value={score.total} primary />
-            <ScoreRow label="Fit"        value={score.fit} />
-            <ScoreRow label="Pacing"     value={score.pacing} />
-            <ScoreRow label="Logistics"  value={score.logistics} />
+            <ScoreRow label="Fit" value={score.fit} />
+            <ScoreRow label="Pacing" value={score.pacing} />
+            <ScoreRow label="Logistics" value={score.logistics} />
           </div>
 
           <div>
@@ -3060,7 +3412,9 @@ function Reveal({ result }: { result: DesignResult }) {
                     className="rounded-full px-4 py-1.5 text-[12px] tracking-[0.18em] lowercase transition min-h-[36px]"
                     style={{
                       background: active ? "var(--charcoal)" : "transparent",
-                      color: active ? "var(--ivory)" : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                      color: active
+                        ? "var(--ivory)"
+                        : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
                       fontWeight: active ? 600 : 500,
                     }}
                   >
@@ -3091,7 +3445,10 @@ function Reveal({ result }: { result: DesignResult }) {
                   >
                     <p
                       className="text-[14px]"
-                      style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+                      style={{
+                        fontFamily: "var(--font-display, Montserrat), sans-serif",
+                        fontWeight: 600,
+                      }}
                     >
                       {u.stop.name}
                     </p>
@@ -3118,8 +3475,6 @@ function Reveal({ result }: { result: DesignResult }) {
         </div>
       )}
 
-
-
       <RevealActions
         name={result.profile.name}
         profile={result.profile}
@@ -3127,28 +3482,35 @@ function Reveal({ result }: { result: DesignResult }) {
         archetype={result.archetype}
       />
 
-
-
       {import.meta.env.DEV && (
-        <details className="mt-10 text-[12px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+        <details
+          className="mt-10 text-[12px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        >
           <summary className="cursor-pointer">Operational data (dev)</summary>
-          <pre className="mt-2 overflow-x-auto rounded-[2px] border p-3 text-[11px]" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }}>
-{JSON.stringify(
-  {
-    archetype,
-    pace: result.profile.pace,
-    region,
-    priorityWeights: result.profile.priorityWeights,
-    score,
-    totals: day.totals,
-    stops: day.stops.map(({ stop, driveFromPrev }) => ({
-      id: stop.id, name: stop.name, kind: stop.kind,
-      driveFromPrev, dwell: stop.dwellMin,
-    })),
-  },
-  null,
-  2,
-)}
+          <pre
+            className="mt-2 overflow-x-auto rounded-[2px] border p-3 text-[11px]"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }}
+          >
+            {JSON.stringify(
+              {
+                archetype,
+                pace: result.profile.pace,
+                region,
+                priorityWeights: result.profile.priorityWeights,
+                score,
+                totals: day.totals,
+                stops: day.stops.map(({ stop, driveFromPrev }) => ({
+                  id: stop.id,
+                  name: stop.name,
+                  kind: stop.kind,
+                  driveFromPrev,
+                  dwell: stop.dwellMin,
+                })),
+              },
+              null,
+              2,
+            )}
           </pre>
         </details>
       )}
@@ -3188,21 +3550,31 @@ function ScoreRow({ label, value, primary }: { label: string; value: number; pri
 
 function paceLabel(p?: PaceV2): string {
   switch (p) {
-    case "light":    return "spacious";
-    case "balanced": return "balanced";
-    case "rich":     return "full but elegant";
-    case "full":     return "rich";
-    default:         return "considered";
+    case "light":
+      return "spacious";
+    case "balanced":
+      return "balanced";
+    case "rich":
+      return "full but elegant";
+    case "full":
+      return "rich";
+    default:
+      return "considered";
   }
 }
 
 function regionLabel(r: string): string {
   switch (r) {
-    case "arrabida":      return "Arrábida";
-    case "lisbon-coast":  return "Sintra & the Atlantic edge";
-    case "alentejo":      return "Alentejo";
-    case "centro":        return "Centro";
-    default:              return r;
+    case "arrabida":
+      return "Arrábida";
+    case "lisbon-coast":
+      return "Sintra & the Atlantic edge";
+    case "alentejo":
+      return "Alentejo";
+    case "centro":
+      return "Centro";
+    default:
+      return r;
   }
 }
 
@@ -3217,7 +3589,12 @@ function archetypeLabel(a: string): string {
 const PICKUP_PRESETS = ["Lisboa — hotel", "Lisboa — centro", "Cascais", "Setúbal"];
 
 function LogisticsStrip({
-  pax, pickup, onPickupChange, durationHours, pricePerGuestFrom, pickupNote,
+  pax,
+  pickup,
+  onPickupChange,
+  durationHours,
+  pricePerGuestFrom,
+  pickupNote,
 }: {
   pax: number;
   pickup: string;
@@ -3251,7 +3628,10 @@ function LogisticsStrip({
 
       <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
         <div>
-          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <dt
+            className="text-[10px] uppercase tracking-[0.24em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
             Pickup
           </dt>
           {editing ? (
@@ -3261,9 +3641,18 @@ function LogisticsStrip({
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onBlur={() => commit(draft)}
-                onKeyDown={(e) => { if (e.key === "Enter") commit(draft); if (e.key === "Escape") { setDraft(pickup); setEditing(false); } }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commit(draft);
+                  if (e.key === "Escape") {
+                    setDraft(pickup);
+                    setEditing(false);
+                  }
+                }}
                 className="w-full border-b bg-transparent py-1 text-[14px] outline-none"
-                style={{ borderColor: "color-mix(in oklab, var(--gold) 60%, transparent)", color: "var(--charcoal)" }}
+                style={{
+                  borderColor: "color-mix(in oklab, var(--gold) 60%, transparent)",
+                  color: "var(--charcoal)",
+                }}
               />
               <div className="flex flex-wrap gap-1.5">
                 {PICKUP_PRESETS.map((p) => (
@@ -3285,7 +3674,10 @@ function LogisticsStrip({
           ) : (
             <button
               type="button"
-              onClick={() => { setDraft(pickup); setEditing(true); }}
+              onClick={() => {
+                setDraft(pickup);
+                setEditing(true);
+              }}
               className="mt-1 block text-left text-[14px] leading-tight underline decoration-dotted underline-offset-4"
               style={{ color: "var(--charcoal)" }}
             >
@@ -3295,7 +3687,10 @@ function LogisticsStrip({
         </div>
 
         <div>
-          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <dt
+            className="text-[10px] uppercase tracking-[0.24em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
             Guests
           </dt>
           <dd className="mt-1 text-[14px]" style={{ color: "var(--charcoal)" }}>
@@ -3304,7 +3699,10 @@ function LogisticsStrip({
         </div>
 
         <div>
-          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <dt
+            className="text-[10px] uppercase tracking-[0.24em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
             Duration
           </dt>
           <dd className="mt-1 text-[14px]" style={{ color: "var(--charcoal)" }}>
@@ -3313,11 +3711,20 @@ function LogisticsStrip({
         </div>
 
         <div>
-          <dt className="text-[10px] uppercase tracking-[0.24em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <dt
+            className="text-[10px] uppercase tracking-[0.24em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
             From
           </dt>
           <dd className="mt-1 text-[14px]" style={{ color: "var(--charcoal)" }}>
-            €{pricePerGuestFrom} <span className="text-[11px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>/ guest</span>
+            €{pricePerGuestFrom}{" "}
+            <span
+              className="text-[11px]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              / guest
+            </span>
           </dd>
         </div>
       </dl>

@@ -20,8 +20,20 @@ import { useEffect, useState } from "react";
  */
 
 type Telemetry = {
-  reveal: { total: number; pending: number; io: number; sweepInitial: number; sweepDelayed: number };
-  sectionEnter: { total: number; pending: number; io: number; sweepInitial: number; sweepDelayed: number };
+  reveal: {
+    total: number;
+    pending: number;
+    io: number;
+    sweepInitial: number;
+    sweepDelayed: number;
+  };
+  sectionEnter: {
+    total: number;
+    pending: number;
+    io: number;
+    sweepInitial: number;
+    sweepDelayed: number;
+  };
   ioFired?: boolean;
   failSafeFired?: boolean;
   iframeFallbackFired?: boolean;
@@ -122,8 +134,9 @@ export function MotionQaPanel() {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const inIframe = detectIframe();
   const cssLoaded = probeRevealCssLoaded();
-  const scrollDebugClasses = Array.from(document.documentElement.classList)
-    .filter((c) => c.startsWith("scroll-debug-"));
+  const scrollDebugClasses = Array.from(document.documentElement.classList).filter((c) =>
+    c.startsWith("scroll-debug-"),
+  );
 
   const ioFired = t?.ioFired === true;
   const failSafeFired = t?.failSafeFired === true;
@@ -145,7 +158,6 @@ export function MotionQaPanel() {
 
   // One-shot console report so devs can grep without opening the panel.
   if (tick === 0) {
-    // eslint-disable-next-line no-console
     console.info("[motion-qa] active", {
       total: counts.total,
       visible: counts.visible,
@@ -197,7 +209,11 @@ export function MotionQaPanel() {
     >
       <div style={{ color: "var(--gold)", marginBottom: 2 }}>motion-qa · live</div>
       <Row k="total" v={counts.total} />
-      <Row k="visible" v={counts.visible} ok={counts.total > 0 && counts.visible === counts.total} />
+      <Row
+        k="visible"
+        v={counts.visible}
+        ok={counts.total > 0 && counts.visible === counts.total}
+      />
       <Row k="hidden" v={hidden} ok={hidden === 0} />
       <Row k="IO fired" v={ioFired ? "yes" : "no"} ok={ioFired} />
       <Row k="fail-safe fired" v={failSafeFired ? "yes" : "no"} />
@@ -208,12 +224,27 @@ export function MotionQaPanel() {
       <Row k="scroll-debug" v={scrollDebugClasses.length ? scrollDebugClasses.join(",") : "off"} />
       {/* Home motion controller (data-motion) — single source of truth on the homepage. */}
       {(() => {
-        const hm = (window as unknown as { __yesHomeMotion?: { total: number; triggered: number; pending: number; reducedMotion: boolean; ready: boolean; active: boolean } }).__yesHomeMotion;
+        const hm = (
+          window as unknown as {
+            __yesHomeMotion?: {
+              total: number;
+              triggered: number;
+              pending: number;
+              reducedMotion: boolean;
+              ready: boolean;
+              active: boolean;
+            };
+          }
+        ).__yesHomeMotion;
         if (!hm) return <Row k="data-motion" v="not active" ok={false} />;
         return (
           <>
             <Row k="data-motion total" v={hm.total} />
-            <Row k="data-motion in" v={hm.triggered} ok={hm.total > 0 && hm.triggered === hm.total} />
+            <Row
+              k="data-motion in"
+              v={hm.triggered}
+              ok={hm.total > 0 && hm.triggered === hm.total}
+            />
             <Row k="data-motion pending" v={hm.pending} ok={hm.pending === 0} />
             <Row k="motion-ready" v={hm.ready ? "yes" : "no"} ok={hm.ready || hm.reducedMotion} />
             <Row k="controller" v={hm.active ? "active" : "off"} ok={hm.active} />
@@ -224,17 +255,27 @@ export function MotionQaPanel() {
         <div style={{ opacity: 0.75, paddingTop: 4, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
           reveal io/init/late: {t.reveal.io}/{t.reveal.sweepInitial}/{t.reveal.sweepDelayed}
           <br />
-          section io/init/late: {t.sectionEnter.io}/{t.sectionEnter.sweepInitial}/{t.sectionEnter.sweepDelayed}
+          section io/init/late: {t.sectionEnter.io}/{t.sectionEnter.sweepInitial}/
+          {t.sectionEnter.sweepDelayed}
         </div>
       )}
       {t && (
-        <div style={{ opacity: 0.86, paddingTop: 4, borderTop: "1px solid rgba(255,255,255,0.1)", display: "grid", gap: 3 }}>
+        <div
+          style={{
+            opacity: 0.86,
+            paddingTop: 4,
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+            display: "grid",
+            gap: 3,
+          }}
+        >
           {sections.map(({ name, first, hits }) => (
             <div key={name}>
               <span style={{ color: "var(--gold)" }}>{name}</span>{" "}
               {first ? (
                 <span style={{ color: first.realisticallyVisible ? "#a6e3a1" : "#ffcf8a" }}>
-                  {first.source} · {first.atMs}ms · {first.fold} · {first.durationMs}+{first.delayMs}ms · {first.realisticallyVisible ? "seen" : first.note}
+                  {first.source} · {first.atMs}ms · {first.fold} · {first.durationMs}+
+                  {first.delayMs}ms · {first.realisticallyVisible ? "seen" : first.note}
                   {hits.length > 1 ? ` · ${hits.length} nodes` : ""}
                 </span>
               ) : (

@@ -12,7 +12,6 @@
 import { useState } from "react";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 
-
 interface AtmosphereBeatProps {
   /** Existing Studio V3 atmospheric image (must already be imported upstream). */
   imageSrc?: string;
@@ -66,7 +65,9 @@ export function AtmosphereBeat({ imageSrc, eyebrow, line }: AtmosphereBeatProps)
           style={{ color: "var(--gold)" }}
           data-testid="studio-v3-voice-mark"
         >
-          <span className="font-bold tracking-[0.32em]" style={{ color: "var(--ivory)" }}>YES</span>
+          <span className="font-bold tracking-[0.32em]" style={{ color: "var(--ivory)" }}>
+            YES
+          </span>
           <span aria-hidden>—</span>
           <span>{eyebrow}</span>
         </p>
@@ -122,14 +123,7 @@ function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
   }
 }
 
-export function MapBeat({
-  mode,
-  originLabel,
-  routeLabels,
-  rhythm,
-  eyebrow,
-  line,
-}: MapBeatProps) {
+export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line }: MapBeatProps) {
   // Pin reveal count per mode/rhythm — drives the schematic activeCount.
   const labels = routeLabels ?? [];
   const activeCount =
@@ -164,19 +158,18 @@ export function MapBeat({
           style={{ color: "var(--gold)" }}
           data-testid="studio-v3-voice-mark"
         >
-          <span className="font-bold tracking-[0.32em]" style={{ color: "var(--charcoal)" }}>YES</span>
+          <span className="font-bold tracking-[0.32em]" style={{ color: "var(--charcoal)" }}>
+            YES
+          </span>
           <span aria-hidden>—</span>
           <span>{eyebrow}</span>
         </p>
 
         {/* Cinematic map stage — shared visual language with homepage Studio
             preview and final Signature reveal. */}
-        <div
-          className="mt-5 mx-auto"
-          style={{ animation: "studioV3RiseIn 680ms ease-out both" }}
-        >
+        <div className="mt-5 mx-auto" style={{ animation: "studioV3RiseIn 680ms ease-out both" }}>
           <StudioV3SignatureMap
-            stops={labels.length > 0 ? labels : (originLabel ? [originLabel] : [])}
+            stops={labels.length > 0 ? labels : originLabel ? [originLabel] : []}
             originLabel={originLabel ?? null}
             activeCount={activeCount}
             paceLabel={paceLabel}
@@ -220,4 +213,3 @@ export function MapBeat({
     </div>
   );
 }
-

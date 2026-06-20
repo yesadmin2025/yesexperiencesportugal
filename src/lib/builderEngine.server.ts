@@ -121,9 +121,7 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   const dLng = ((b.lng - a.lng) * Math.PI) / 180;
   const lat1 = (a.lat * Math.PI) / 180;
   const lat2 = (b.lat * Math.PI) / 180;
-  const x =
-    Math.sin(dLat / 2) ** 2 +
-    Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  const x = Math.sin(dLat / 2) ** 2 + Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 function driveMinutesBetween(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
@@ -512,7 +510,10 @@ export function fallbackNarrative(route: BuilderRoute, input: BuilderInput): str
                 : input.intention === "wonder"
                   ? "places that make you stop and look"
                   : "ease and silence";
-  const placeList = route.stops.slice(0, 3).map((s) => s.label).join(", ");
+  const placeList = route.stops
+    .slice(0, 3)
+    .map((s) => s.label)
+    .join(", ");
   return `An ${moodWord} day across ${route.region.label} — built around ${intentionWord}. You'll move through ${placeList}${route.stops.length > 3 ? ", and a few more" : ""}, at a ${route.pace} rhythm.`;
 }
 
@@ -624,8 +625,7 @@ export function buildRouteFromStopKeys(
   allStops: StopRow[],
   rules: RoutingRules,
 ): BuilderRoute {
-  const region =
-    regions.find((r) => r.key === regionKey) ?? regions[0];
+  const region = regions.find((r) => r.key === regionKey) ?? regions[0];
   const stopsInOrder = stopKeys
     .map((k) => allStops.find((s) => s.key === k))
     .filter((s): s is StopRow => Boolean(s));
@@ -673,12 +673,12 @@ export function buildRouteFromStopKeys(
   if (routedStops.length < rules.min_stops) warnings.push("Fewer stops than ideal for this pace.");
   if (drive > maxDriveMin) {
     warnings.push(
-      `Driving time is ${Math.round(drive / 60 * 10) / 10}h — over the ${rules.max_driving_hours}h daily comfort limit. Remove a stop or split into another day.`,
+      `Driving time is ${Math.round((drive / 60) * 10) / 10}h — over the ${rules.max_driving_hours}h daily comfort limit. Remove a stop or split into another day.`,
     );
   }
   if (drive + stay > maxExpMin) {
     warnings.push(
-      `This day runs ${Math.round((drive + stay) / 60 * 10) / 10}h — over the ${rules.max_experience_hours}h limit. Try a lighter pace or fewer stops.`,
+      `This day runs ${Math.round(((drive + stay) / 60) * 10) / 10}h — over the ${rules.max_experience_hours}h limit. Try a lighter pace or fewer stops.`,
     );
   }
   if (driveKm > rules.max_total_km_per_day) {

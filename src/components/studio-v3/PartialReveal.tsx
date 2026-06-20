@@ -17,7 +17,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { DestinationIntent } from "./types";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 
-const REGION_LABEL: Record<Exclude<DestinationIntent, "no-preference" | "anywhere-special">, string> = {
+const REGION_LABEL: Record<
+  Exclude<DestinationIntent, "no-preference" | "anywhere-special">,
+  string
+> = {
   "lisbon-sintra-cascais": "Lisbon · Sintra · Cascais",
   "arrabida-setubal-azeitao": "Arrábida · Setúbal · Azeitão",
   "alentejo-evora-wine": "Alentejo · Évora · Wine country",
@@ -26,7 +29,10 @@ const REGION_LABEL: Record<Exclude<DestinationIntent, "no-preference" | "anywher
   "comporta-troia": "Comporta · Tróia",
 };
 
-const REGION_BRIDGE: Record<Exclude<DestinationIntent, "no-preference" | "anywhere-special">, string> = {
+const REGION_BRIDGE: Record<
+  Exclude<DestinationIntent, "no-preference" | "anywhere-special">,
+  string
+> = {
   "lisbon-sintra-cascais": "Palaces, pine and Atlantic light are taking shape.",
   "arrabida-setubal-azeitao": "Cellars, coves and quiet roads start to surface.",
   "alentejo-evora-wine": "Long lunches and open plains are gathering form.",
@@ -55,9 +61,7 @@ const INTENT_TO_POOL_REGIONS: Record<
 function ghostStopsFor(intent: DestinationIntent): string[] {
   if (intent === "no-preference" || intent === "anywhere-special") return [];
   const wanted = new Set(INTENT_TO_POOL_REGIONS[intent] ?? []);
-  const pool = REGION_STOP_POOL
-    .filter((s) => s.active && wanted.has(s.region))
-    .map((s) => s.name);
+  const pool = REGION_STOP_POOL.filter((s) => s.active && wanted.has(s.region)).map((s) => s.name);
   // Dedupe + cap at 3. Stable order from REGION_STOP_POOL declaration.
   const seen = new Set<string>();
   const out: string[] = [];
@@ -72,12 +76,14 @@ function ghostStopsFor(intent: DestinationIntent): string[] {
 
 export function PartialReveal({ intent }: { intent: DestinationIntent | null }) {
   const stops = useMemo(() => (intent ? ghostStopsFor(intent) : []), [intent]);
-  const label = intent && intent !== "no-preference" && intent !== "anywhere-special"
-    ? REGION_LABEL[intent]
-    : null;
-  const bridge = intent && intent !== "no-preference" && intent !== "anywhere-special"
-    ? REGION_BRIDGE[intent]
-    : null;
+  const label =
+    intent && intent !== "no-preference" && intent !== "anywhere-special"
+      ? REGION_LABEL[intent]
+      : null;
+  const bridge =
+    intent && intent !== "no-preference" && intent !== "anywhere-special"
+      ? REGION_BRIDGE[intent]
+      : null;
 
   // Stagger the ghost stops in with a tiny mount delay per index so the
   // reveal feels composed, not all-at-once. Reduced motion → instant.

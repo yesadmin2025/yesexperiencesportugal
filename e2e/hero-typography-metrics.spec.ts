@@ -99,9 +99,7 @@ for (const { key, selector } of TARGETS) {
 }
 
 test.describe("Hero typography metrics — leading / tracking / baseline regression", () => {
-  test("captures and compares against approved baseline", async ({
-    page,
-  }, testInfo) => {
+  test("captures and compares against approved baseline", async ({ page }, testInfo) => {
     // ?hero=last freezes every reveal at its final visible state so we
     // measure the locked end position, not a transient mid-animation frame.
     await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
@@ -114,16 +112,12 @@ test.describe("Hero typography metrics — leading / tracking / baseline regress
       type FontFaceSetLike = { ready?: Promise<unknown> };
       const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
       if (fonts?.ready) await fonts.ready;
-      await new Promise<void>((r) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => r())),
-      );
+      await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
     });
 
     const snapshot = await page.evaluate(
       ({ targets }) => {
-        const hero = document.querySelector(
-          '[data-hero-cinematic="true"]',
-        ) as HTMLElement | null;
+        const hero = document.querySelector('[data-hero-cinematic="true"]') as HTMLElement | null;
         if (!hero) throw new Error("hero section not found");
         const heroRect = hero.getBoundingClientRect();
         const out: Record<string, unknown> = {};
@@ -142,13 +136,10 @@ test.describe("Hero typography metrics — leading / tracking / baseline regress
           let letterSpacingEm = 0;
           if (lsRaw && lsRaw !== "normal") {
             const lsPx = parseFloat(lsRaw);
-            if (!Number.isNaN(lsPx) && fontSizePx > 0)
-              letterSpacingEm = lsPx / fontSizePx;
+            if (!Number.isNaN(lsPx) && fontSizePx > 0) letterSpacingEm = lsPx / fontSizePx;
           }
           const lineHeightPx =
-            cs.lineHeight === "normal"
-              ? fontSizePx * 1.2
-              : parseFloat(cs.lineHeight);
+            cs.lineHeight === "normal" ? fontSizePx * 1.2 : parseFloat(cs.lineHeight);
           // Approximate first-line baseline = top + ascent. We treat
           // ascent as 0.8 × line-height which matches Chrome's metrics
           // for the fonts in this project closely enough for a ±2px
@@ -210,9 +201,7 @@ test.describe("Hero typography metrics — leading / tracking / baseline regress
 
     // Viewport / hero size sanity — a different viewport invalidates
     // every position assertion below.
-    expect(snapshot.viewport.width, "viewport width drift").toBe(
-      baseline.viewport.width,
-    );
+    expect(snapshot.viewport.width, "viewport width drift").toBe(baseline.viewport.width);
 
     const failures: string[] = [];
     for (const { key } of TARGETS) {
@@ -244,11 +233,7 @@ test.describe("Hero typography metrics — leading / tracking / baseline regress
       const checks: Array<[keyof Metric, number, number]> = [
         ["fontSizePx", c.fontSizePx - b.fontSizePx, TOL.fontSizePx],
         ["lineHeightPx", c.lineHeightPx - b.lineHeightPx, TOL.lineHeightPx],
-        [
-          "letterSpacingEm",
-          c.letterSpacingEm - b.letterSpacingEm,
-          TOL.letterSpacingEm,
-        ],
+        ["letterSpacingEm", c.letterSpacingEm - b.letterSpacingEm, TOL.letterSpacingEm],
         ["topPx", c.topPx - b.topPx, TOL.positionPx],
         ["bottomPx", c.bottomPx - b.bottomPx, TOL.positionPx],
         ["baselinePx", c.baselinePx - b.baselinePx, TOL.positionPx],

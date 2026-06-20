@@ -132,8 +132,7 @@ function QaMobilePage() {
   const done = Object.values(checked).filter(Boolean).length;
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
 
-  const toggle = (key: string) =>
-    setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggle = (key: string) => setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const reset = () => {
     if (
@@ -273,7 +272,8 @@ function QaMobilePage() {
       const inner = obj.checked;
       if (!inner || typeof inner !== "object" || Array.isArray(inner)) {
         toast.error("Checklist payload is missing items", {
-          description: "Expected a `checked` object inside the envelope. Your current progress is unchanged.",
+          description:
+            "Expected a `checked` object inside the envelope. Your current progress is unchanged.",
         });
         return false;
       }
@@ -303,13 +303,11 @@ function QaMobilePage() {
       }
     }
     if (invalidEntries.length > 0) {
-      const sample = invalidEntries.slice(0, 2)
+      const sample = invalidEntries
+        .slice(0, 2)
         .map((e) => `"${e.key}": ${e.value} (${e.type})`)
         .join(", ");
-      const more =
-        invalidEntries.length > 2
-          ? ` …and ${invalidEntries.length - 2} more`
-          : "";
+      const more = invalidEntries.length > 2 ? ` …and ${invalidEntries.length - 2} more` : "";
       toast.error("Checklist has non-boolean values", {
         description: `Every \`checked\` value must be true or false. Got ${sample}${more}. Your current progress is unchanged.`,
       });
@@ -386,16 +384,18 @@ function QaMobilePage() {
       <section className="section-y bg-[color:var(--ivory)]">
         <div className="container-x max-w-3xl">
           <span className="inline-flex items-center gap-2.5 text-[10.5px] uppercase tracking-[0.32em] font-bold text-[color:var(--charcoal)]">
-            <span aria-hidden="true" className="inline-block h-[5px] w-[5px] rounded-full bg-[color:var(--gold)]" />
+            <span
+              aria-hidden="true"
+              className="inline-block h-[5px] w-[5px] rounded-full bg-[color:var(--gold)]"
+            />
             Internal · pre-publish
           </span>
           <h1 className="serif mt-5 text-[2.4rem] md:text-[3.4rem] leading-[1.04] tracking-[-0.016em] text-[color:var(--charcoal)] font-semibold">
-            Mobile visual regression{" "}
-            <span className="italic font-medium">checklist.</span>
+            Mobile visual regression <span className="italic font-medium">checklist.</span>
           </h1>
           <p className="mt-5 text-[15.5px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.65]">
-            Run through this list at <strong>393 × 852</strong> and spot-check
-            360 / 414 widths before publishing. Progress is saved on this device.
+            Run through this list at <strong>393 × 852</strong> and spot-check 360 / 414 widths
+            before publishing. Progress is saved on this device.
           </p>
 
           <div className="mt-8 rounded-[4px] border border-[color:var(--border)] bg-[color:var(--sand)]/60 p-4 md:p-5">
@@ -463,7 +463,8 @@ function QaMobilePage() {
                   Import a saved run
                 </p>
                 <p className="mt-2 text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
-                  Pick a previously exported <code>.json</code> file, or paste the JSON below. Your current progress will be replaced.
+                  Pick a previously exported <code>.json</code> file, or paste the JSON below. Your
+                  current progress will be replaced.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2.5">
                   <button

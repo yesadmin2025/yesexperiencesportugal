@@ -116,9 +116,7 @@ describe("scroll debug matrix — flag parser correctness", () => {
         expect(flags.disableStickyCta).toBe(mode.expect.disableStickyCta);
         expect(flags.disableMobileReveals).toBe(mode.expect.disableMobileReveals);
         expect(flags.staticMobileCarousels).toBe(mode.expect.staticMobileCarousels);
-        expect(flags.disableMobileStudioMotion).toBe(
-          mode.expect.disableMobileStudioMotion,
-        );
+        expect(flags.disableMobileStudioMotion).toBe(mode.expect.disableMobileStudioMotion);
       });
     }
   }
@@ -150,10 +148,7 @@ describe("scroll debug matrix — hash-sync removal is permanent", () => {
   it("no replaceState calls inside a scroll-driven observer/listener in index.tsx", async () => {
     const fs = await import("node:fs/promises");
     const path = await import("node:path");
-    const src = await fs.readFile(
-      path.resolve(process.cwd(), "src/routes/index.tsx"),
-      "utf8",
-    );
+    const src = await fs.readFile(path.resolve(process.cwd(), "src/routes/index.tsx"), "utf8");
 
     // The Effect-1 click handler still canonicalises the hash via
     // replaceState — that is fine and only fires on explicit anchor
@@ -163,9 +158,7 @@ describe("scroll debug matrix — hash-sync removal is permanent", () => {
     // named `compute` that called replaceState; ensure no such pairing
     // remains in the file.
     const hasComputeWithReplaceState =
-      /const\s+compute\s*=\s*\(\s*\)\s*=>\s*{[\s\S]*?history\.replaceState/.test(
-        src,
-      );
+      /const\s+compute\s*=\s*\(\s*\)\s*=>\s*{[\s\S]*?history\.replaceState/.test(src);
     expect(hasComputeWithReplaceState).toBe(false);
 
     // And ensure we did not accidentally re-add a passive scroll
@@ -190,9 +183,7 @@ describe("scroll debug matrix — DOM-level invariants per mode", () => {
    */
   for (const mode of MATRIX) {
     it(`mode ${mode.id} applies the expected html class set`, async () => {
-      const { applyScrollDebugClasses, getScrollDebugFlags } = await import(
-        "@/lib/scroll-debug"
-      );
+      const { applyScrollDebugClasses, getScrollDebugFlags } = await import("@/lib/scroll-debug");
       const win = makeFakeWindow(`?scroll-debug=${mode.flag}`, 393);
       const flags = getScrollDebugFlags(win);
       applyScrollDebugClasses(flags);

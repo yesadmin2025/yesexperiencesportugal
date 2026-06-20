@@ -21,11 +21,7 @@
  * without mounting React, and lets the rule be reused by future
  * surfaces (e.g. tailored summary, recap drawer).
  */
-export type BuildPreviewChapterKind =
-  | "drift"
-  | "text"
-  | "choice"
-  | "convergence";
+export type BuildPreviewChapterKind = "drift" | "text" | "choice" | "convergence";
 
 export interface BuildPreviewVisibilityInput {
   chapterKind: BuildPreviewChapterKind;
@@ -62,11 +58,8 @@ export function buildPreviewVhFloor(
  * Returns true when the BuildPreview card is safe to render
  * without overlapping the chapter's interactive content.
  */
-export function shouldShowBuildPreview(
-  input: BuildPreviewVisibilityInput,
-): boolean {
-  const { chapterKind, choiceCount, hasPickup, chapterIdx, liveStopsCount, vh } =
-    input;
+export function shouldShowBuildPreview(input: BuildPreviewVisibilityInput): boolean {
+  const { chapterKind, choiceCount, hasPickup, chapterIdx, liveStopsCount, vh } = input;
   if (chapterKind === "convergence") return false;
   if (!hasPickup) return false;
   if (chapterIdx < 4) return false;

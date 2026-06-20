@@ -175,7 +175,10 @@ function trackBeacon(input: TrackInput): void {
  * `ms_on_step`. The exit reason is read from a ref the parent updates
  * before unmounting (default "abandon").
  */
-export function useStepTimer(stepNumber: number, stepKey: string): {
+export function useStepTimer(
+  stepNumber: number,
+  stepKey: string,
+): {
   markExit: (reason: "continue" | "back") => void;
 } {
   const enteredAt = useRef<number>(0);

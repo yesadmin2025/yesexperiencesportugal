@@ -75,7 +75,10 @@ function Page() {
   }
 
   // Render body as paragraphs (simple markdown-lite: split by blank line)
-  const paragraphs = post.body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = post.body
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
 
   return (
     <SiteLayout>
@@ -138,7 +141,11 @@ function Page() {
                 <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6">
                   The places in this piece live inside one of our private days.
                 </p>
-                <CtaButton to="/tours/$tourId" params={{ tourId: post.signature_slug }} variant="primary">
+                <CtaButton
+                  to="/tours/$tourId"
+                  params={{ tourId: post.signature_slug }}
+                  variant="primary"
+                >
                   See the Signature
                 </CtaButton>
               </aside>

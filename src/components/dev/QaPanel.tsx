@@ -37,9 +37,7 @@ function applyReducedMotionOverride(on: boolean) {
 
 function showAllReveals() {
   if (typeof document === "undefined") return 0;
-  const els = document.querySelectorAll<HTMLElement>(
-    ".reveal, .reveal-stagger, .section-enter",
-  );
+  const els = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
   els.forEach((el) => {
     el.style.transitionDelay = "0ms";
     el.classList.add("is-visible");
@@ -49,9 +47,7 @@ function showAllReveals() {
 
 function getRevealCounts() {
   if (typeof document === "undefined") return { total: 0, visible: 0 };
-  const els = document.querySelectorAll(
-    ".reveal, .reveal-stagger, .section-enter",
-  );
+  const els = document.querySelectorAll(".reveal, .reveal-stagger, .section-enter");
   let visible = 0;
   els.forEach((el) => {
     if (el.classList.contains("is-visible")) visible += 1;
@@ -110,7 +106,7 @@ export function QaPanel() {
 
   const handleShowAll = () => {
     const n = showAllReveals();
-    // eslint-disable-next-line no-console
+
     console.info(`[qa] forced is-visible on ${n} elements`);
   };
 
@@ -269,9 +265,7 @@ export function QaPanel() {
         disable QA mode
       </button>
 
-      <div style={{ opacity: 0.55, fontSize: 10 }}>
-        Ctrl+Shift+Q · ?qa=on · ?qa=off
-      </div>
+      <div style={{ opacity: 0.55, fontSize: 10 }}>Ctrl+Shift+Q · ?qa=on · ?qa=off</div>
     </div>
   );
 }

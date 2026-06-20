@@ -26,21 +26,21 @@ const ROMAN = ["I", "II", "III", "IV"];
 const OPENERS: Record<string, string> = {
   "scene-table-vs-view": "The afternoon stretches, and we…",
   "scene-coast-vs-stone": "The light shifts at five, and we…",
-  "scene-two-vs-many":    "The table is set, and then…",
+  "scene-two-vs-many": "The table is set, and then…",
   // adaptive clarifier
-  "scene-pace-clarify":   "The morning is ours, and we…",
+  "scene-pace-clarify": "The morning is ours, and we…",
 };
 
 // Per-fragment ending — must read as a natural continuation of the opener.
 const ENDINGS: Record<string, string> = {
-  "long-table":     "…stay at the table until the bottle is empty.",
-  "open-horizon":   "…take the road that has no destination.",
-  "atlantic-edge":  "…follow the wind out to the cliff.",
-  "quiet-stone":    "…disappear into a cool, quiet room.",
-  "two-at-dusk":    "…stay just the two of us, all evening.",
+  "long-table": "…stay at the table until the bottle is empty.",
+  "open-horizon": "…take the road that has no destination.",
+  "atlantic-edge": "…follow the wind out to the cliff.",
+  "quiet-stone": "…disappear into a cool, quiet room.",
+  "two-at-dusk": "…stay just the two of us, all evening.",
   "raised-glasses": "…fill the room with people we love.",
-  "morning-light":  "…sit with coffee until the bells.",
-  "late-shadow":    "…push lunch toward the long shadows.",
+  "morning-light": "…sit with coffee until the bells.",
+  "late-shadow": "…push lunch toward the long shadows.",
 };
 
 export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) {
@@ -48,7 +48,10 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
   const enteredAt = useRef<number>(Date.now());
   const [chosen, setChosen] = useState<string | null>(null);
 
-  useEffect(() => { enteredAt.current = Date.now(); setChosen(null); }, [scene.id]);
+  useEffect(() => {
+    enteredAt.current = Date.now();
+    setChosen(null);
+  }, [scene.id]);
 
   const opener = OPENERS[scene.id] ?? "The day opens, and we…";
   const endA = ENDINGS[a.id] ?? a.whisper;
@@ -110,7 +113,6 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
         Chapter {ROMAN[index - 1] ?? index} · {scene.eyebrow}
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />
       </div>
-
 
       <div className="relative z-10 mx-auto mt-14 max-w-[34ch] flex-1">
         <p

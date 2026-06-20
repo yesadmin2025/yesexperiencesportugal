@@ -14,7 +14,6 @@ const desktopLinks = [
 
 const mobileLinks = desktopLinks;
 
-
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -67,8 +66,7 @@ export function Navbar() {
         aria-hidden="true"
         className="pointer-events-none absolute left-0 right-0 top-full h-[4px]"
         style={{
-          background:
-            "linear-gradient(to bottom, rgba(30,22,14,0.035) 0%, rgba(30,22,14,0) 100%)",
+          background: "linear-gradient(to bottom, rgba(30,22,14,0.035) 0%, rgba(30,22,14,0) 100%)",
         }}
       />
       <div className="container-x">
@@ -120,7 +118,6 @@ export function Navbar() {
             <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-2">
               Design &amp; Book
             </CtaButton>
-
           </nav>
 
           <button
@@ -167,7 +164,6 @@ export function Navbar() {
             >
               Design &amp; Book
             </CtaButton>
-
           </div>
         </div>
       )}

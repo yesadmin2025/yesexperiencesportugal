@@ -42,9 +42,7 @@ export const emailStudioDraft = createServerFn({ method: "POST" })
   });
 
 export const loadStudioDraft = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z.object({ token: z.string().min(8).max(64) }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ token: z.string().min(8).max(64) }).parse(input))
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin
       .from("studio_drafts")

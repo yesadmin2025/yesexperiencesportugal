@@ -11,9 +11,7 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign in — YES experiences Portugal" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/auth" },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/auth" },
-    ],
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/auth" }],
   }),
 
   component: AuthPage,
@@ -117,7 +115,10 @@ function AuthPage() {
             >
               {mode === "signin" ? "Need an account?" : "Have an account?"}
             </button>
-            <Link to="/" className="text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]">
+            <Link
+              to="/"
+              className="text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+            >
               ← Back home
             </Link>
           </div>

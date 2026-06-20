@@ -63,27 +63,41 @@ function atmosphereFromTag(tag: string | null, fallback: IntentAtmosphere): Inte
     case "cellar":
     case "table":
     case "market":
-    case "workshop":   return "food_local";
-    case "beach":      return "coastal_cinematic";
-    case "viewpoint":  return "relaxed_scenic";
-    case "village":    return "elegant_cultural";
-    case "heritage":   return "elegant_cultural";
-    default:           return fallback;
+    case "workshop":
+      return "food_local";
+    case "beach":
+      return "coastal_cinematic";
+    case "viewpoint":
+      return "relaxed_scenic";
+    case "village":
+      return "elegant_cultural";
+    case "heritage":
+      return "elegant_cultural";
+    default:
+      return fallback;
   }
 }
 
 function prioritiesFromTag(tag: string | null): PriorityKey[] {
   switch (tag) {
-    case "winery":     return ["vineyard_lunch"];
-    case "cellar":     return ["wine_cellar"];
-    case "beach":      return ["coastal_scenery", "boat"];
-    case "viewpoint":  return ["photography", "coastal_scenery"];
-    case "village":    return ["hidden_villages"];
-    case "heritage":   return ["heritage", "architecture"];
+    case "winery":
+      return ["vineyard_lunch"];
+    case "cellar":
+      return ["wine_cellar"];
+    case "beach":
+      return ["coastal_scenery", "boat"];
+    case "viewpoint":
+      return ["photography", "coastal_scenery"];
+    case "village":
+      return ["hidden_villages"];
+    case "heritage":
+      return ["heritage", "architecture"];
     case "table":
     case "market":
-    case "workshop":   return ["local_gastronomy"];
-    default:           return [];
+    case "workshop":
+      return ["local_gastronomy"];
+    default:
+      return [];
   }
 }
 
@@ -91,17 +105,17 @@ function prioritiesFromTag(tag: string | null): PriorityKey[] {
 // Kept local to avoid a server-only import. Used only to score alternates
 // against a returning visitor's stored mood vector.
 const PRIORITY_TO_MOOD_LOCAL: Record<string, string[]> = {
-  vineyard_lunch:   ["food", "social"],
-  wine_cellar:      ["culture", "quiet"],
-  coastal_scenery:  ["coastal", "quiet"],
-  hidden_villages:  ["culture", "quiet"],
-  architecture:     ["culture"],
-  heritage:         ["culture"],
+  vineyard_lunch: ["food", "social"],
+  wine_cellar: ["culture", "quiet"],
+  coastal_scenery: ["coastal", "quiet"],
+  hidden_villages: ["culture", "quiet"],
+  architecture: ["culture"],
+  heritage: ["culture"],
   local_gastronomy: ["food", "social"],
-  photography:      ["coastal", "culture"],
-  quiet_luxury:     ["quiet", "wellness"],
-  wellness:         ["wellness", "quiet"],
-  boat:             ["coastal", "social"],
+  photography: ["coastal", "culture"],
+  quiet_luxury: ["quiet", "wellness"],
+  wellness: ["wellness", "quiet"],
+  boat: ["coastal", "social"],
 };
 
 function moodAffinity(tag: string | null, mood: MoodVector | null): number {
@@ -122,16 +136,26 @@ function moodAffinity(tag: string | null, mood: MoodVector | null): number {
 
 function atmosphericLine(tag: string | null): string {
   switch (tag) {
-    case "winery":    return "Slow light through the vines, glass in hand.";
-    case "cellar":    return "Cool stone, the patience of old barrels.";
-    case "beach":     return "Salt air, the Atlantic doing the talking.";
-    case "viewpoint": return "A long pause where the country opens up.";
-    case "village":   return "Cobblestones and a quiet that holds.";
-    case "heritage":  return "Centuries layered under one roof.";
-    case "table":     return "A long table, no rush, no menu to chase.";
-    case "market":    return "Hands on the produce, voices overlapping.";
-    case "workshop":  return "Watching something made the way it should be.";
-    default:          return "A real moment, on real Portuguese ground.";
+    case "winery":
+      return "Slow light through the vines, glass in hand.";
+    case "cellar":
+      return "Cool stone, the patience of old barrels.";
+    case "beach":
+      return "Salt air, the Atlantic doing the talking.";
+    case "viewpoint":
+      return "A long pause where the country opens up.";
+    case "village":
+      return "Cobblestones and a quiet that holds.";
+    case "heritage":
+      return "Centuries layered under one roof.";
+    case "table":
+      return "A long table, no rush, no menu to chase.";
+    case "market":
+      return "Hands on the produce, voices overlapping.";
+    case "workshop":
+      return "Watching something made the way it should be.";
+    default:
+      return "A real moment, on real Portuguese ground.";
   }
 }
 
@@ -157,19 +181,19 @@ function fmtClock(min: number): string {
 
 function periodLabel(min: number): string {
   const h = min / 60;
-  if (h < 11)  return "morning";
-  if (h < 13)  return "late morning";
-  if (h < 15)  return "lunch";
-  if (h < 17)  return "afternoon";
-  if (h < 19)  return "late light";
-  if (h < 21)  return "early evening";
+  if (h < 11) return "morning";
+  if (h < 13) return "late morning";
+  if (h < 15) return "lunch";
+  if (h < 17) return "afternoon";
+  if (h < 19) return "late light";
+  if (h < 21) return "early evening";
   return "evening";
 }
 
 // Day-break threshold — once a day pushes past this clock, the next stop
 // becomes the opening beat of a new day (silence, then resume).
-const DAY_END_MIN = 19 * 60;       // 19:00
-const DAY_START_MIN = 10 * 60;     // 10:00 — next day resumes here
+const DAY_END_MIN = 19 * 60; // 19:00
+const DAY_START_MIN = 10 * 60; // 10:00 — next day resumes here
 
 // Computes arrival clock per stop and groups stops into days. When cumulative
 // time pushes past DAY_END_MIN, a new day starts and the clock resets.
@@ -179,7 +203,9 @@ function composeDays(stops: RefineStop[]): {
 } {
   const days: { stops: RefineStop[]; arrivals: number[]; indices: number[] }[] = [];
   let cur: { stops: RefineStop[]; arrivals: number[]; indices: number[] } = {
-    stops: [], arrivals: [], indices: [],
+    stops: [],
+    arrivals: [],
+    indices: [],
   };
   let t = DAY_START_MIN;
   for (let i = 0; i < stops.length; i++) {
@@ -207,7 +233,13 @@ function composeDays(stops: RefineStop[]): {
 // ─── component ───────────────────────────────────────────────────────────
 
 export function LivingItinerary({
-  stops, alternates, caps, onChange, intent, regionKey, regionCenter,
+  stops,
+  alternates,
+  caps,
+  onChange,
+  intent,
+  regionKey,
+  regionCenter,
 }: Props) {
   const fallback: IntentAtmosphere = intent ?? "relaxed_scenic";
   const [showControls, setShowControls] = useState(false);
@@ -242,29 +274,31 @@ export function LivingItinerary({
           signals: r.state.signalCount,
         });
       })
-      .catch(() => { /* silent — warm memory is optional */ });
-    return () => { cancelled = true; };
+      .catch(() => {
+        /* silent — warm memory is optional */
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [loadWarm]);
 
   const { days } = useMemo(() => composeDays(stops), [stops]);
   const isMultiDay = days.length > 1;
 
-
   // Telemetry: multi-day composition + day-break beats.
   useEffect(() => {
     if (!isMultiDay) return;
-    void trackBuilderEvent("studio_v2_multiday_composed", { days: days.length, stops: stops.length });
+    void trackBuilderEvent("studio_v2_multiday_composed", {
+      days: days.length,
+      stops: stops.length,
+    });
     for (let i = 1; i < days.length; i++) {
       void trackBuilderEvent("studio_v2_daybreak_shown", { day: i + 1 });
     }
   }, [isMultiDay, days.length, stops.length]);
 
-
   const inUse = useMemo(() => new Set(stops.map((s) => s.key)), [stops]);
-  const hasSwapPool = useMemo(
-    () => alternates.some((a) => !inUse.has(a.key)),
-    [alternates, inUse],
-  );
+  const hasSwapPool = useMemo(() => alternates.some((a) => !inUse.has(a.key)), [alternates, inUse]);
 
   // Ambient map source — RoutedStopUI-compatible shape from RefineStops.
   const mapStops = useMemo(
@@ -298,7 +332,10 @@ export function LivingItinerary({
     if (signalCount.current < REVEAL_SIGNAL_THRESHOLD) return;
     if (stops.length < 2) return;
     revealShown.current = true;
-    void trackBuilderEvent("studio_v2_map_reveal", { signals: signalCount.current, stops: stops.length });
+    void trackBuilderEvent("studio_v2_map_reveal", {
+      signals: signalCount.current,
+      stops: stops.length,
+    });
     setRevealOpen(true);
   };
 
@@ -332,7 +369,11 @@ export function LivingItinerary({
     const replacement = pool[next];
     const updated = stops.map((s) => (s.key === slotKey ? { ...replacement } : s));
     setSwapIdx((m) => ({ ...m, [slotKey]: next }));
-    void trackBuilderEvent("studio_v2_refine_swap", { from: slotKey, to: replacement.key, via: "swipe" });
+    void trackBuilderEvent("studio_v2_refine_swap", {
+      from: slotKey,
+      to: replacement.key,
+      via: "swipe",
+    });
     emitSignal({
       type: "swap",
       fromKey: slotKey,
@@ -421,11 +462,12 @@ export function LivingItinerary({
             zIndex: 0,
             filter: "saturate(0.94)",
             pointerEvents: "none",
-            boxShadow:
-              "0 18px 40px -22px color-mix(in oklab, var(--charcoal) 35%, transparent)",
+            boxShadow: "0 18px 40px -22px color-mix(in oklab, var(--charcoal) 35%, transparent)",
           }}
         >
-          <Suspense fallback={<div className="absolute inset-0" style={{ background: "var(--sand)" }} />}>
+          <Suspense
+            fallback={<div className="absolute inset-0" style={{ background: "var(--sand)" }} />}
+          >
             <BuilderMap
               stops={mapStops}
               regionCenter={computedCenter}
@@ -501,7 +543,6 @@ export function LivingItinerary({
         swipe a scene left to let the day substitute · long-press to anchor its mood
       </p>
 
-
       {/* Engine-triggered map reveal — one shot per session. */}
       <MapReveal
         open={revealOpen}
@@ -532,8 +573,18 @@ interface SceneProps {
 }
 
 function Scene({
-  index, stop, imgSrc, imgAlt, arrivalLabel, line,
-  isLast, hasSwapPool, onSwipeLeft, onLongPress, onDwell, onActive,
+  index,
+  stop,
+  imgSrc,
+  imgAlt,
+  arrivalLabel,
+  line,
+  isLast,
+  hasSwapPool,
+  onSwipeLeft,
+  onLongPress,
+  onDwell,
+  onActive,
 }: SceneProps) {
   const ref = useRef<HTMLLIElement>(null);
   const startX = useRef<number | null>(null);
@@ -577,7 +628,11 @@ function Scene({
       longPressFired.current = true;
       onLongPress();
       // subtle haptic
-      try { (navigator as Navigator & { vibrate?: (n: number) => void }).vibrate?.(8); } catch { /* */ }
+      try {
+        (navigator as Navigator & { vibrate?: (n: number) => void }).vibrate?.(8);
+      } catch {
+        /* */
+      }
     }, 520);
   };
 

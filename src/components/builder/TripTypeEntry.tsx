@@ -95,10 +95,8 @@ const CARDS: TripTypeCard[] = [
     preset: {},
     concierge: {
       headline: "Multi-day journeys are shaped with a human",
-      body:
-        "Real lodging, real driver hours, real bookings — designed with you over a short call or chat. We never invent a multi-day itinerary.",
-      waMessage:
-        "Hi YES — I'd like to design a multi-day private experience in Portugal.",
+      body: "Real lodging, real driver hours, real bookings — designed with you over a short call or chat. We never invent a multi-day itinerary.",
+      waMessage: "Hi YES — I'd like to design a multi-day private experience in Portugal.",
     },
   },
   {
@@ -110,10 +108,8 @@ const CARDS: TripTypeCard[] = [
     preset: { mood: "romantic", who: "couple", intention: "wonder" },
     concierge: {
       headline: "Proposals are set with our concierge",
-      body:
-        "Florals, photographer, the right cove at the right hour — these are coordinated by hand. We'll confirm every detail before you book.",
-      waMessage:
-        "Hi YES — I'd like help planning a proposal day in Portugal.",
+      body: "Florals, photographer, the right cove at the right hour — these are coordinated by hand. We'll confirm every detail before you book.",
+      waMessage: "Hi YES — I'd like help planning a proposal day in Portugal.",
     },
   },
   {
@@ -125,10 +121,8 @@ const CARDS: TripTypeCard[] = [
     preset: { mood: "open", intention: "wonder" },
     concierge: {
       headline: "Special celebrations get the concierge touch",
-      body:
-        "Cake, private terrace, surprise moment — we handle the bespoke layer. Or shape a private day instantly with the builder below.",
-      waMessage:
-        "Hi YES — I'd like to plan a celebration day in Portugal.",
+      body: "Cake, private terrace, surprise moment — we handle the bespoke layer. Or shape a private day instantly with the builder below.",
+      waMessage: "Hi YES — I'd like to plan a celebration day in Portugal.",
     },
   },
   {
@@ -140,10 +134,8 @@ const CARDS: TripTypeCard[] = [
     preset: { who: "corporate" },
     concierge: {
       headline: "Corporate days are quoted by our team",
-      body:
-        "Group logistics, invoicing, dietary, vehicles — confirmed in writing. We'll come back within a working day.",
-      waMessage:
-        "Hi YES — I'd like a quote for a private corporate experience in Portugal.",
+      body: "Group logistics, invoicing, dietary, vehicles — confirmed in writing. We'll come back within a working day.",
+      waMessage: "Hi YES — I'd like a quote for a private corporate experience in Portugal.",
     },
   },
 ];
@@ -201,7 +193,8 @@ export function TripTypeEntry({ onChoose }: Props) {
           </h1>
 
           <p className="mt-5 max-w-xl serif italic text-[1.1rem] sm:text-[1.25rem] leading-[1.35] text-[color:var(--charcoal)]/85">
-            Pick a starting point. Shape it in real time. Confirm instantly — or hand it to our concierge.
+            Pick a starting point. Shape it in real time. Confirm instantly — or hand it to our
+            concierge.
           </p>
         </div>
 
@@ -276,9 +269,7 @@ function TripCard({ card, onClick }: { card: TripTypeCard; onClick: () => void }
           <h3 className="serif mt-2 text-[1.15rem] md:text-[1.25rem] leading-tight font-semibold text-[color:var(--ivory)]">
             {card.label}
           </h3>
-          <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--ivory)]/80">
-            {card.sub}
-          </p>
+          <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--ivory)]/80">{card.sub}</p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             Begin <ArrowRight size={11} />
           </span>
@@ -327,17 +318,10 @@ function ConciergeSheet({
           </p>
 
           <div className="mt-6 flex flex-col gap-3">
-            <CtaButton
-              href={builderWaHref(waMessage)}
-              variant="primary"
-            >
+            <CtaButton href={builderWaHref(waMessage)} variant="primary">
               Chat with our concierge
             </CtaButton>
-            <CtaButton
-              type="button"
-              onClick={onBookInstantly}
-              variant="ghost"
-            >
+            <CtaButton type="button" onClick={onBookInstantly} variant="ghost">
               Or build & book instantly
             </CtaButton>
           </div>

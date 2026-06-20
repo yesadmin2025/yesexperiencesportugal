@@ -58,7 +58,11 @@ export function PacingChip({ route, who }: Props) {
       aria-live="polite"
       className="builder-reveal inline-flex max-w-full items-start gap-2 rounded-[2px] border border-[color:var(--gold)]/40 bg-[color:var(--gold)]/10 px-3 py-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]/85"
     >
-      <Sparkles size={13} className="mt-[2px] shrink-0 text-[color:var(--gold)]" aria-hidden="true" />
+      <Sparkles
+        size={13}
+        className="mt-[2px] shrink-0 text-[color:var(--gold)]"
+        aria-hidden="true"
+      />
       <span>
         <span className="font-semibold uppercase tracking-[0.18em] text-[10px] text-[color:var(--gold)] mr-2">
           Sugestão

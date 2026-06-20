@@ -21,12 +21,8 @@ export const Route = createFileRoute("/i/$token")({
     ],
   }),
   component: SharedItineraryPage,
-  errorComponent: () => (
-    <ErrorShell title="Não foi possível carregar este roteiro." />
-  ),
-  notFoundComponent: () => (
-    <ErrorShell title="Este roteiro foi removido ou nunca existiu." />
-  ),
+  errorComponent: () => <ErrorShell title="Não foi possível carregar este roteiro." />,
+  notFoundComponent: () => <ErrorShell title="Este roteiro foi removido ou nunca existiu." />,
 });
 
 function ErrorShell({ title }: { title: string }) {
@@ -180,9 +176,7 @@ function SharedItineraryPage() {
                   {i + 1}
                 </span>
                 <div className="flex items-start justify-between gap-3">
-                  <p className="serif text-[1.15rem] font-semibold leading-tight">
-                    {s.label}
-                  </p>
+                  <p className="serif text-[1.15rem] font-semibold leading-tight">{s.label}</p>
                   <span className="shrink-0 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55 tabular-nums">
                     {fmtMinutes(s.duration_minutes)}
                   </span>
@@ -293,15 +287,7 @@ function Stat({
   );
 }
 
-function Block({
-  title,
-  items,
-  muted,
-}: {
-  title: string;
-  items: string[];
-  muted?: boolean;
-}) {
+function Block({ title, items, muted }: { title: string; items: string[]; muted?: boolean }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5 print:border-[color:var(--charcoal)]/30">
       <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">

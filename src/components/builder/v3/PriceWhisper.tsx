@@ -37,12 +37,7 @@ const PER_GUEST: Record<DriftLocale, string> = {
   fr: "par personne",
 };
 
-export function PriceWhisper({
-  revealConfidence,
-  locale,
-  rangeFrom = 145,
-  rangeTo = 320,
-}: Props) {
+export function PriceWhisper({ revealConfidence, locale, rangeFrom = 145, rangeTo = 320 }: Props) {
   const visible = revealConfidence >= 0.6;
   const [mounted, setMounted] = useState(visible);
 

@@ -34,13 +34,7 @@ const HOMEPAGE_FILES = [
 ];
 
 // Pages that should each exhibit the brand contract.
-const CORE_ROUTES = [
-  "index.tsx",
-  "experiences.tsx",
-  "builder.tsx",
-  "contact.tsx",
-  "about.tsx",
-];
+const CORE_ROUTES = ["index.tsx", "experiences.tsx", "builder.tsx", "contact.tsx", "about.tsx"];
 
 function readIfExists(path: string): string | null {
   try {
@@ -73,19 +67,9 @@ describe("Brand palette — approved 8 tokens", () => {
 
   it("does not introduce forbidden accent tokens", () => {
     // Legacy / off-brand colour names that should never enter the system.
-    const FORBIDDEN = [
-      "--purple",
-      "--mauve",
-      "--emerald",
-      "--rose",
-      "--cyan",
-      "--magenta",
-    ];
+    const FORBIDDEN = ["--purple", "--mauve", "--emerald", "--rose", "--cyan", "--magenta"];
     for (const token of FORBIDDEN) {
-      expect(
-        css.includes(`${token}:`),
-        `forbidden brand token leaked: ${token}`,
-      ).toBe(false);
+      expect(css.includes(`${token}:`), `forbidden brand token leaked: ${token}`).toBe(false);
     }
   });
 });
@@ -126,7 +110,10 @@ describe("Primary CTA — teal fill + gold border + premium hover", () => {
     const goldBorder =
       /border-\[color:var\(--gold(?:-soft)?\)\]/.test(home) ||
       /<CtaButton(?![^>]*variant=["']ghost)/.test(home);
-    expect(tealBg, "homepage missing primary CTA — need teal background + gold border, raw or via <CtaButton variant='primary'>").toBe(true);
+    expect(
+      tealBg,
+      "homepage missing primary CTA — need teal background + gold border, raw or via <CtaButton variant='primary'>",
+    ).toBe(true);
     expect(goldBorder, "homepage missing var(--gold) border on CTA").toBe(true);
   });
 

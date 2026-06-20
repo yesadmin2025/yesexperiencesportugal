@@ -77,9 +77,7 @@ function StudioV3FunnelPage() {
     d.setDate(d.getDate() - 7);
     return d.toISOString().slice(0, 10);
   });
-  const [until, setUntil] = useState<string>(() =>
-    new Date().toISOString().slice(0, 10),
-  );
+  const [until, setUntil] = useState<string>(() => new Date().toISOString().slice(0, 10));
 
   async function load() {
     setErr(null);
@@ -153,8 +151,7 @@ function StudioV3FunnelPage() {
       if (r.event === "secure_confirm") sessionsConfirmed.add(r.session_id);
       if (r.event === "tier_chosen" || r.step_key === "investment") {
         const v = r.value as Record<string, unknown> | null;
-        const tier =
-          (v?.tier as string) || (v?.selection as string) || null;
+        const tier = (v?.tier as string) || (v?.selection as string) || null;
         if (tier) {
           tierCounts.set(tier, (tierCounts.get(tier) ?? 0) + 1);
           if (!tierConverted.has(tier)) tierConverted.set(tier, new Set());
@@ -211,10 +208,7 @@ function StudioV3FunnelPage() {
             </h1>
             <p className="mt-1 text-sm text-[color:var(--charcoal)]/70">
               Per-step conversion across the 10-beat Studio V3 sequence.
-              <Link
-                to="/admin/studio-v3-audit"
-                className="ml-2 underline text-[color:var(--teal)]"
-              >
+              <Link to="/admin/studio-v3-audit" className="ml-2 underline text-[color:var(--teal)]">
                 Audit buffer →
               </Link>
             </p>
@@ -254,9 +248,7 @@ function StudioV3FunnelPage() {
           </div>
         )}
 
-        {!rows && !err && (
-          <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p>
-        )}
+        {!rows && !err && <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p>}
 
         {stats && (
           <>
@@ -295,20 +287,13 @@ function StudioV3FunnelPage() {
                     {stats.perStep.map((s) => {
                       const danger = s.dropPct > 25 && s.reached >= 5;
                       return (
-                        <tr
-                          key={s.key}
-                          className="border-t border-[color:var(--charcoal)]/5"
-                        >
+                        <tr key={s.key} className="border-t border-[color:var(--charcoal)]/5">
                           <td className="px-3 py-2 tabular-nums text-[color:var(--charcoal)]/60">
                             {s.n}
                           </td>
                           <td className="px-3 py-2 font-medium">{s.label}</td>
-                          <td className="px-3 py-2 text-right tabular-nums">
-                            {s.reached}
-                          </td>
-                          <td className="px-3 py-2 text-right tabular-nums">
-                            {s.completed}
-                          </td>
+                          <td className="px-3 py-2 text-right tabular-nums">{s.reached}</td>
+                          <td className="px-3 py-2 text-right tabular-nums">{s.completed}</td>
                           <td
                             className={`px-3 py-2 text-right tabular-nums font-semibold ${
                               danger ? "text-red-600" : "text-[color:var(--charcoal)]/70"
@@ -358,19 +343,10 @@ function StudioV3FunnelPage() {
                   </thead>
                   <tbody>
                     {stats.tiers.map((t) => (
-                      <tr
-                        key={t.tier}
-                        className="border-t border-[color:var(--charcoal)]/5"
-                      >
-                        <td className="px-3 py-2 font-medium capitalize">
-                          {t.tier}
-                        </td>
-                        <td className="px-3 py-2 text-right tabular-nums">
-                          {t.picks}
-                        </td>
-                        <td className="px-3 py-2 text-right tabular-nums">
-                          {t.confirmed}
-                        </td>
+                      <tr key={t.tier} className="border-t border-[color:var(--charcoal)]/5">
+                        <td className="px-3 py-2 font-medium capitalize">{t.tier}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{t.picks}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{t.confirmed}</td>
                         <td className="px-3 py-2 text-right tabular-nums font-semibold text-[color:var(--teal)]">
                           {t.rate}%
                         </td>
@@ -382,9 +358,9 @@ function StudioV3FunnelPage() {
             </section>
 
             <p className="text-xs text-[color:var(--charcoal)]/50">
-              Showing up to 20 000 events. Drop-off &gt; 25% (with ≥5 reached)
-              highlighted in red. Non-admin viewers will see empty data — RLS
-              restricts SELECT to <code>has_role(admin)</code>.
+              Showing up to 20 000 events. Drop-off &gt; 25% (with ≥5 reached) highlighted in red.
+              Non-admin viewers will see empty data — RLS restricts SELECT to{" "}
+              <code>has_role(admin)</code>.
             </p>
           </>
         )}

@@ -1,4 +1,12 @@
-import { Outlet, Link, Navigate, redirect, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  Navigate,
+  redirect,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 
@@ -51,7 +59,7 @@ function useAppReadyFlag() {
       window.__APP_READY__ = true;
       window.__APP_READY_AT__ = Date.now();
       window.dispatchEvent(new CustomEvent("app:ready"));
-      reportStage("app-ready", `t+${Date.now() - performance.timeOrigin | 0}ms`);
+      reportStage("app-ready", `t+${(Date.now() - performance.timeOrigin) | 0}ms`);
     });
     return () => cancelAnimationFrame(raf);
   }, []);
@@ -69,7 +77,6 @@ function useSilenceResetBlankCheck() {
     return dispose;
   }, []);
 }
-
 
 function NotFoundComponent() {
   if (typeof window !== "undefined" && window.location.pathname === "/index") {

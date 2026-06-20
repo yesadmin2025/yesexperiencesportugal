@@ -91,7 +91,10 @@ export function BuilderStepper({ step, furthestCompleted = 0, onStepClick }: Pro
       case "Home":
         e.preventDefault();
         for (let i = 0; i < total; i++)
-          if (isReachable(i + 1)) { focusItem(i); break; }
+          if (isReachable(i + 1)) {
+            focusItem(i);
+            break;
+          }
         break;
       case "End":
         e.preventDefault();
@@ -163,7 +166,9 @@ export function BuilderStepper({ step, furthestCompleted = 0, onStepClick }: Pro
               {interactive ? (
                 <button
                   type="button"
-                  ref={(el) => { itemRefs.current[i] = el; }}
+                  ref={(el) => {
+                    itemRefs.current[i] = el;
+                  }}
                   onClick={() => onStepClick?.(n)}
                   onKeyDown={(e) => handleKeyDown(e, i, n)}
                   onFocus={() => setFocusIndex(i)}
@@ -176,7 +181,9 @@ export function BuilderStepper({ step, furthestCompleted = 0, onStepClick }: Pro
                 </button>
               ) : (
                 <span
-                  ref={(el) => { itemRefs.current[i] = el; }}
+                  ref={(el) => {
+                    itemRefs.current[i] = el;
+                  }}
                   role={isActive ? "button" : undefined}
                   tabIndex={isActive ? tabIndex : -1}
                   onKeyDown={isActive ? (e) => handleKeyDown(e, i, n) : undefined}

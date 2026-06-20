@@ -79,19 +79,23 @@ function confidenceMoodWeights(confidence: ConfidenceMap): Record<Mood, number> 
   return weights;
 }
 
-function blendMoodWeights(a: Record<Mood, number>, b: Record<Mood, number>, behaviorStrength: number): Record<Mood, number> {
+function blendMoodWeights(
+  a: Record<Mood, number>,
+  b: Record<Mood, number>,
+  behaviorStrength: number,
+): Record<Mood, number> {
   const behaviorShare = Math.min(0.72, behaviorStrength);
   const confidenceShare = 1 - behaviorShare;
-  return (Object.keys(DEFAULT_WEIGHTS) as Mood[]).reduce<Record<Mood, number>>((out, mood) => {
-    out[mood] = Math.max(0, Math.min(1, a[mood] * confidenceShare + b[mood] * behaviorShare));
-    return out;
-  }, { ...DEFAULT_WEIGHTS });
+  return (Object.keys(DEFAULT_WEIGHTS) as Mood[]).reduce<Record<Mood, number>>(
+    (out, mood) => {
+      out[mood] = Math.max(0, Math.min(1, a[mood] * confidenceShare + b[mood] * behaviorShare));
+      return out;
+    },
+    { ...DEFAULT_WEIGHTS },
+  );
 }
 
-export function derivePrediction(
-  confidence: ConfidenceMap,
-  behavior: BehaviorState,
-): Prediction {
+export function derivePrediction(confidence: ConfidenceMap, behavior: BehaviorState): Prediction {
   const pacingClass = classifyPacing(behavior);
   const intensity = intensityPreference(behavior);
   const confidenceWeights = confidenceMoodWeights(confidence);
@@ -102,8 +106,7 @@ export function derivePrediction(
   );
   const sceneWeighting = blendMoodWeights(confidenceWeights, behaviorWeights, behaviorStrength);
 
-  const holdScale =
-    pacingClass === "decisive" ? 0.55 : pacingClass === "exploratory" ? 1.35 : 1;
+  const holdScale = pacingClass === "decisive" ? 0.55 : pacingClass === "exploratory" ? 1.35 : 1;
 
   // Tonal register: combine top mood affinity with intensity.
   const topMood = (Object.entries(sceneWeighting) as [Mood, number][]).sort(
@@ -144,9 +147,12 @@ export function derivePrediction(
 
   function topConfidence(dim: (typeof optionalDims)[number]): number {
     const prefix = `${dim}:`;
-    return Math.max(0, ...Object.entries(confidence)
-      .filter(([key]) => key.startsWith(prefix))
-      .map(([, value]) => value));
+    return Math.max(
+      0,
+      ...Object.entries(confidence)
+        .filter(([key]) => key.startsWith(prefix))
+        .map(([, value]) => value),
+    );
   }
 
   function dimensionNeed(dim: (typeof optionalDims)[number]): number {

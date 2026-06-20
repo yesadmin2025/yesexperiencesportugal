@@ -1,7 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { DEFAULT_MAPPING_RULES, safeParseRules, type MappingRules } from "@/data/defaultMappingRules";
+import {
+  DEFAULT_MAPPING_RULES,
+  safeParseRules,
+  type MappingRules,
+} from "@/data/defaultMappingRules";
 
 async function ensureAdmin(supabase: any, userId: string) {
   const { data, error } = await supabase
@@ -100,10 +104,7 @@ export const deleteMappingRules = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const { supabase, userId } = context;
     await ensureAdmin(supabase, userId);
-    const { error } = await supabase
-      .from("import_mapping_rules")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await supabase.from("import_mapping_rules").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

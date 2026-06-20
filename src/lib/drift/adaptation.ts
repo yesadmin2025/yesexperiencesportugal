@@ -76,19 +76,13 @@ export const DEFAULT_ADAPTATION_THRESHOLDS: AdaptationThresholds = {
   revealConfidence: 0.06,
 };
 
-function resolveThresholds(
-  overrides?: Partial<AdaptationThresholds>,
-): AdaptationThresholds {
+function resolveThresholds(overrides?: Partial<AdaptationThresholds>): AdaptationThresholds {
   if (!overrides) return DEFAULT_ADAPTATION_THRESHOLDS;
   return {
-    topMoodWeight:
-      overrides.topMoodWeight ?? DEFAULT_ADAPTATION_THRESHOLDS.topMoodWeight,
+    topMoodWeight: overrides.topMoodWeight ?? DEFAULT_ADAPTATION_THRESHOLDS.topMoodWeight,
     topInferredConfidence:
-      overrides.topInferredConfidence ??
-      DEFAULT_ADAPTATION_THRESHOLDS.topInferredConfidence,
-    revealConfidence:
-      overrides.revealConfidence ??
-      DEFAULT_ADAPTATION_THRESHOLDS.revealConfidence,
+      overrides.topInferredConfidence ?? DEFAULT_ADAPTATION_THRESHOLDS.topInferredConfidence,
+    revealConfidence: overrides.revealConfidence ?? DEFAULT_ADAPTATION_THRESHOLDS.revealConfidence,
   };
 }
 
@@ -106,7 +100,10 @@ function topMoodOf(prediction: Prediction): { mood: Mood | null; weight: number 
   return { mood: bestMood, weight: bestMood ? round(bestWeight, 2) : 0 };
 }
 
-function topInferredOf(confidence: ConfidenceMap, floor = 0.4): {
+function topInferredOf(
+  confidence: ConfidenceMap,
+  floor = 0.4,
+): {
   key: string | null;
   conf: number;
 } {
@@ -169,8 +166,7 @@ export function diffAdaptation(
   if (!sameList(previous.collapseAhead, next.collapseAhead)) reasons.push("collapse_ahead");
   if (previous.topInferred !== next.topInferred) reasons.push("top_inferred");
   else if (
-    Math.abs(previous.topInferredConfidence - next.topInferredConfidence) >
-    t.topInferredConfidence
+    Math.abs(previous.topInferredConfidence - next.topInferredConfidence) > t.topInferredConfidence
   )
     reasons.push("top_inferred");
   if (!sameList(previous.dayStopIds, next.dayStopIds)) reasons.push("itinerary");

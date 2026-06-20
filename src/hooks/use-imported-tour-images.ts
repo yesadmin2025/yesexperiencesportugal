@@ -77,8 +77,7 @@ export function useImportedTourImages() {
       const live = byUrl.get(normalize(tour.bookingUrl));
       if (!live) return tour.img;
       if (opts?.raw) return live;
-      const baseWidth =
-        opts?.width ?? (opts?.size ? CARD_WIDTHS[opts.size] : CARD_WIDTHS.md);
+      const baseWidth = opts?.width ?? (opts?.size ? CARD_WIDTHS[opts.size] : CARD_WIDTHS.md);
       return proxied(live, scaleForQuality(baseWidth, quality));
     };
   }, [byUrl, quality]);

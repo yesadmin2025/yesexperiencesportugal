@@ -128,11 +128,16 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
     const w: string[] = [];
     if (caps) {
       if (stops.length < caps.minStops) w.push(`At least ${caps.minStops} stops recommended.`);
-      if (stops.length > caps.maxStops) w.push(`More than ${caps.maxStops} stops will feel rushed.`);
-      if (m.km > caps.maxTotalKmPerDay) w.push(`Long day on the road — ${m.km} km exceeds ${caps.maxTotalKmPerDay} km.`);
-      if (driveMin > caps.maxDrivingHours * 60) w.push(`Driving exceeds ${caps.maxDrivingHours} h.`);
-      if (exp > caps.maxExperienceHours * 60) w.push(`Experience time over ${caps.maxExperienceHours} h.`);
-      if (maxLeg > caps.maxKmBetweenStops) w.push(`A leg is ${m.maxLeg} km — over ${caps.maxKmBetweenStops} km cap.`);
+      if (stops.length > caps.maxStops)
+        w.push(`More than ${caps.maxStops} stops will feel rushed.`);
+      if (m.km > caps.maxTotalKmPerDay)
+        w.push(`Long day on the road — ${m.km} km exceeds ${caps.maxTotalKmPerDay} km.`);
+      if (driveMin > caps.maxDrivingHours * 60)
+        w.push(`Driving exceeds ${caps.maxDrivingHours} h.`);
+      if (exp > caps.maxExperienceHours * 60)
+        w.push(`Experience time over ${caps.maxExperienceHours} h.`);
+      if (maxLeg > caps.maxKmBetweenStops)
+        w.push(`A leg is ${m.maxLeg} km — over ${caps.maxKmBetweenStops} km cap.`);
     }
     return { metrics: m, warnings: w };
   }, [stops, caps]);
@@ -145,7 +150,10 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
       <div className="mb-4 flex items-baseline justify-between gap-3">
         <p
           className="text-[10.5px] uppercase tracking-[0.32em]"
-          style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))", fontWeight: 700 }}
+          style={{
+            color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
+            fontWeight: 700,
+          }}
         >
           Refine your day
         </p>
@@ -203,7 +211,10 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
                 )}
                 <div
                   className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] uppercase tracking-[0.22em]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)", fontWeight: 600 }}
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                    fontWeight: 600,
+                  }}
                 >
                   <span>{Math.round((s.duration_minutes ?? 60) / 5) * 5} min on site</span>
                   {s.tag && <span>· {s.tag}</span>}
@@ -248,9 +259,13 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
       <div className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
         <span
           className="text-[10px] uppercase tracking-[0.3em]"
-          style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
+          style={{
+            color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
+            fontWeight: 700,
+          }}
         >
-          {stops.length} stops · {Math.round((metrics.experienceMin / 60) * 10) / 10} h experience · {metrics.driveMin} min driving · {metrics.km} km
+          {stops.length} stops · {Math.round((metrics.experienceMin / 60) * 10) / 10} h experience ·{" "}
+          {metrics.driveMin} min driving · {metrics.km} km
         </span>
       </div>
 
@@ -303,8 +318,16 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
 }
 
 function IconBtn({
-  label, onClick, icon, disabled,
-}: { label: string; onClick: () => void; icon: React.ReactNode; disabled?: boolean }) {
+  label,
+  onClick,
+  icon,
+  disabled,
+}: {
+  label: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="button"

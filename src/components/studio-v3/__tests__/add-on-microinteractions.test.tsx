@@ -104,9 +104,7 @@ describe("SignaturePriceCard · add-on micro-interactions", () => {
       fireEvent.click(chip);
     });
     act(() => vi.advanceTimersByTime(200));
-    expect(screen.getByTestId("studio-v3-add-ons-total").textContent).toContain(
-      `€${expected}`,
-    );
+    expect(screen.getByTestId("studio-v3-add-ons-total").textContent).toContain(`€${expected}`);
   });
 
   it("cap of 3: a 4th selection is blocked, aria-disabled appears, total unchanged", () => {

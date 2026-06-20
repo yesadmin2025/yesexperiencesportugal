@@ -85,18 +85,15 @@ describe("Hero film — frame-sampled WCAG AA contrast (all resolutions)", () =>
       } catch (err) {
         const e = err as { stdout?: Buffer | string };
         const payload = e.stdout?.toString() ?? "";
-        throw new Error(
-          `hero-frame-contrast failed:\n${payload || (err as Error).message}`,
-        );
+        throw new Error(`hero-frame-contrast failed:\n${payload || (err as Error).message}`);
       }
 
       const report = JSON.parse(stdout) as Report;
       if (report.skipped) return; // matches it.skipIf belt-and-braces
 
-      expect(
-        report.passed,
-        `Failures: ${JSON.stringify(report.failures ?? [], null, 2)}`,
-      ).toBe(true);
+      expect(report.passed, `Failures: ${JSON.stringify(report.failures ?? [], null, 2)}`).toBe(
+        true,
+      );
 
       // We must have audited at least every MP4 we discovered locally —
       // catches a regression where the script's discovery silently misses
@@ -116,10 +113,7 @@ describe("Hero film — frame-sampled WCAG AA contrast (all resolutions)", () =>
 
   it("script is checked in", () => {
     if (!canRun) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `[hero-frame-contrast] skipped — ffmpeg=${ffmpegOk} videos=${videos.length}`,
-      );
+      console.warn(`[hero-frame-contrast] skipped — ffmpeg=${ffmpegOk} videos=${videos.length}`);
     }
     expect(existsSync(SCRIPT)).toBe(true);
   });

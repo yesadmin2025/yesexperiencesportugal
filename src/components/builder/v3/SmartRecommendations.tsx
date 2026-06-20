@@ -136,7 +136,10 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
         </span>
         <p
           className="text-[13px] italic max-w-[42ch]"
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+          }}
         >
           {t.subtitle}
         </p>
@@ -191,7 +194,10 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
                 <div className="flex flex-col gap-2 p-4">
                   <h3
                     className="text-[14.5px] leading-tight font-semibold"
-                    style={{ fontFamily: "Montserrat, system-ui, sans-serif", color: "var(--charcoal)" }}
+                    style={{
+                      fontFamily: "Montserrat, system-ui, sans-serif",
+                      color: "var(--charcoal)",
+                    }}
                   >
                     {tour.title}
                   </h3>
@@ -207,7 +213,9 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
                       style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
                     >
                       <span className="opacity-70">{t.from} </span>
-                      <span style={{ fontWeight: 700, color: "var(--charcoal)" }}>€{tour.priceFrom}</span>
+                      <span style={{ fontWeight: 700, color: "var(--charcoal)" }}>
+                        €{tour.priceFrom}
+                      </span>
                       <span className="opacity-70"> · {t.perGuest}</span>
                     </span>
                     <span

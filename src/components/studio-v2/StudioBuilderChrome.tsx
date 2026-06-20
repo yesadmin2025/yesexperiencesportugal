@@ -38,8 +38,7 @@ function progressPct(step: number, total: number): number {
   return Math.round((0.2 + 0.8 * t) * 100);
 }
 
-const HOST_WA_MSG =
-  "Olá Tiago! Estou a desenhar o meu dia no YES Studio e gostava da tua ajuda.";
+const HOST_WA_MSG = "Olá Tiago! Estou a desenhar o meu dia no YES Studio e gostava da tua ajuda.";
 
 export function StudioBuilderChrome({
   step,
@@ -83,14 +82,14 @@ export function StudioBuilderChrome({
           <span className="hidden sm:inline-flex flex-col leading-tight">
             <span
               className="text-[9.5px] uppercase tracking-[0.28em]"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                fontWeight: 600,
+              }}
             >
               Your host
             </span>
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--charcoal)", fontWeight: 600 }}
-            >
+            <span className="text-[11px]" style={{ color: "var(--charcoal)", fontWeight: 600 }}>
               Tiago · Sesimbra
             </span>
           </span>
@@ -109,15 +108,12 @@ export function StudioBuilderChrome({
 
       {/* Bottom strip — sits above the scene's own dock; gold hair progress
           + "from €X / guest" + optional Email-me pill. */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom),0.5rem)]"
-      >
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
         <div
           aria-hidden
           className="h-[2px] w-full"
           style={{
-            background:
-              "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+            background: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
           }}
         >
           <div
@@ -131,8 +127,7 @@ export function StudioBuilderChrome({
               width: `${pct}%`,
               background:
                 "linear-gradient(90deg, color-mix(in oklab, var(--gold) 65%, transparent), var(--gold))",
-              boxShadow:
-                "0 0 8px color-mix(in oklab, var(--gold) 45%, transparent)",
+              boxShadow: "0 0 8px color-mix(in oklab, var(--gold) 45%, transparent)",
             }}
           />
         </div>
@@ -151,7 +146,10 @@ export function StudioBuilderChrome({
           >
             <span
               className="text-[9.5px] uppercase tracking-[0.28em]"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                fontWeight: 600,
+              }}
             >
               From
             </span>
@@ -197,12 +195,7 @@ export function StudioBuilderChrome({
         </div>
       </div>
 
-      {emailOpen && (
-        <EmailDraftModal
-          draft={draftSnapshot}
-          onClose={() => setEmailOpen(false)}
-        />
-      )}
+      {emailOpen && <EmailDraftModal draft={draftSnapshot} onClose={() => setEmailOpen(false)} />}
     </>
   );
 }
@@ -243,7 +236,9 @@ function EmailDraftModal({
       await navigator.clipboard.writeText(resumeUrl);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
-    } catch { /* */ }
+    } catch {
+      /* */
+    }
   };
 
   return (
@@ -264,7 +259,10 @@ function EmailDraftModal({
           <div>
             <p
               className="text-[10px] uppercase tracking-[0.36em]"
-              style={{ color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))", fontWeight: 700 }}
+              style={{
+                color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))",
+                fontWeight: 700,
+              }}
             >
               Keep your draft
             </p>
@@ -296,7 +294,10 @@ function EmailDraftModal({
             <label className="block">
               <span
                 className="block text-[10px] uppercase tracking-[0.32em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                  fontWeight: 600,
+                }}
               >
                 Your email
               </span>
@@ -312,7 +313,9 @@ function EmailDraftModal({
               />
             </label>
             {state === "error" && errorMsg && (
-              <p className="text-[12px]" style={{ color: "#b3261e" }}>{errorMsg}</p>
+              <p className="text-[12px]" style={{ color: "#b3261e" }}>
+                {errorMsg}
+              </p>
             )}
             <button
               type="submit"
@@ -332,8 +335,7 @@ function EmailDraftModal({
         ) : (
           <div className="mt-5 space-y-4">
             <p className="text-[14px]" style={{ color: "var(--charcoal)" }}>
-              Saved. We'll email <strong>{email}</strong> the resume link.
-              You can also copy it now:
+              Saved. We'll email <strong>{email}</strong> the resume link. You can also copy it now:
             </p>
             <div
               className="flex items-center gap-2 rounded-[2px] border p-2"

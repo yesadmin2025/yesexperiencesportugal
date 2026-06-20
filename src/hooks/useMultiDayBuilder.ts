@@ -57,11 +57,13 @@ function read(): MultiDayState {
     const parsed = JSON.parse(raw) as Partial<MultiDayState>;
     if (!Array.isArray(parsed.days) || parsed.days.length === 0) return defaults();
     const days: DayState[] = parsed.days
-      .filter((d): d is DayState =>
-        typeof d === "object" && d !== null &&
-        typeof (d as DayState).id === "string" &&
-        typeof (d as DayState).regionKey === "string" &&
-        Array.isArray((d as DayState).stopKeys),
+      .filter(
+        (d): d is DayState =>
+          typeof d === "object" &&
+          d !== null &&
+          typeof (d as DayState).id === "string" &&
+          typeof (d as DayState).regionKey === "string" &&
+          Array.isArray((d as DayState).stopKeys),
       )
       .map((d) => ({
         id: d.id,
@@ -77,9 +79,14 @@ function read(): MultiDayState {
     return {
       days,
       activeDayId,
-      guests: typeof parsed.guests === "number" && parsed.guests >= 1 && parsed.guests <= 12 ? parsed.guests : 2,
-      pace: (parsed.pace === "relaxed" || parsed.pace === "full" || parsed.pace === "balanced")
-        ? parsed.pace : "balanced",
+      guests:
+        typeof parsed.guests === "number" && parsed.guests >= 1 && parsed.guests <= 12
+          ? parsed.guests
+          : 2,
+      pace:
+        parsed.pace === "relaxed" || parsed.pace === "full" || parsed.pace === "balanced"
+          ? parsed.pace
+          : "balanced",
       intent: typeof parsed.intent === "string" ? parsed.intent : undefined,
     };
   } catch {
@@ -189,133 +196,166 @@ export function useMultiDayBuilder() {
     };
   }, [state, hydrated, shareToken, ownerToken, readOnly]);
 
-  const activeDay =
-    state.days.find((d) => d.id === state.activeDayId) ?? state.days[0] ?? null;
+  const activeDay = state.days.find((d) => d.id === state.activeDayId) ?? state.days[0] ?? null;
 
-  const addDay = useCallback((regionKey?: string) => {
-    if (readOnly) return;
-    setState((s) => {
-      const id = makeId();
-      const seedRegion = regionKey ?? activeDay?.regionKey ?? s.days[0]?.regionKey ?? "arrabida-setubal";
-      return {
-        ...s,
-        days: [...s.days, { id, regionKey: seedRegion, stopKeys: [] }],
-        activeDayId: id,
-      };
-    });
-  }, [activeDay?.regionKey, readOnly]);
+  const addDay = useCallback(
+    (regionKey?: string) => {
+      if (readOnly) return;
+      setState((s) => {
+        const id = makeId();
+        const seedRegion =
+          regionKey ?? activeDay?.regionKey ?? s.days[0]?.regionKey ?? "arrabida-setubal";
+        return {
+          ...s,
+          days: [...s.days, { id, regionKey: seedRegion, stopKeys: [] }],
+          activeDayId: id,
+        };
+      });
+    },
+    [activeDay?.regionKey, readOnly],
+  );
 
-  const removeDay = useCallback((id: string) => {
-    if (readOnly) return;
-    setState((s) => {
-      if (s.days.length <= 1) return s;
-      const days = s.days.filter((d) => d.id !== id);
-      const activeDayId = s.activeDayId === id ? days[0].id : s.activeDayId;
-      return { ...s, days, activeDayId };
-    });
-  }, [readOnly]);
+  const removeDay = useCallback(
+    (id: string) => {
+      if (readOnly) return;
+      setState((s) => {
+        if (s.days.length <= 1) return s;
+        const days = s.days.filter((d) => d.id !== id);
+        const activeDayId = s.activeDayId === id ? days[0].id : s.activeDayId;
+        return { ...s, days, activeDayId };
+      });
+    },
+    [readOnly],
+  );
 
   const setActiveDay = useCallback((id: string) => {
     setState((s) => ({ ...s, activeDayId: id }));
   }, []);
 
-  const updateDay = useCallback((id: string, patch: Partial<DayState>) => {
-    if (readOnly) return;
-    setState((s) => ({
-      ...s,
-      days: s.days.map((d) => (d.id === id ? { ...d, ...patch } : d)),
-    }));
-  }, [readOnly]);
-
-  const moveDay = useCallback((id: string, dir: -1 | 1) => {
-    if (readOnly) return;
-    setState((s) => {
-      const idx = s.days.findIndex((d) => d.id === id);
-      const j = idx + dir;
-      if (idx < 0 || j < 0 || j >= s.days.length) return s;
-      const days = s.days.slice();
-      [days[idx], days[j]] = [days[j], days[idx]];
-      return { ...s, days };
-    });
-  }, [readOnly]);
-
-  const addStopToActive = useCallback((stopKey: string) => {
-    if (readOnly) return;
-    setState((s) => {
-      if (!s.activeDayId) return s;
-      return {
+  const updateDay = useCallback(
+    (id: string, patch: Partial<DayState>) => {
+      if (readOnly) return;
+      setState((s) => ({
         ...s,
-        days: s.days.map((d) =>
-          d.id === s.activeDayId && !d.stopKeys.includes(stopKey)
-            ? { ...d, stopKeys: [...d.stopKeys, stopKey] }
-            : d,
-        ),
-      };
-    });
-  }, [readOnly]);
+        days: s.days.map((d) => (d.id === id ? { ...d, ...patch } : d)),
+      }));
+    },
+    [readOnly],
+  );
 
-  const removeStopFromActive = useCallback((stopKey: string) => {
-    if (readOnly) return;
-    setState((s) => {
-      if (!s.activeDayId) return s;
-      return {
+  const moveDay = useCallback(
+    (id: string, dir: -1 | 1) => {
+      if (readOnly) return;
+      setState((s) => {
+        const idx = s.days.findIndex((d) => d.id === id);
+        const j = idx + dir;
+        if (idx < 0 || j < 0 || j >= s.days.length) return s;
+        const days = s.days.slice();
+        [days[idx], days[j]] = [days[j], days[idx]];
+        return { ...s, days };
+      });
+    },
+    [readOnly],
+  );
+
+  const addStopToActive = useCallback(
+    (stopKey: string) => {
+      if (readOnly) return;
+      setState((s) => {
+        if (!s.activeDayId) return s;
+        return {
+          ...s,
+          days: s.days.map((d) =>
+            d.id === s.activeDayId && !d.stopKeys.includes(stopKey)
+              ? { ...d, stopKeys: [...d.stopKeys, stopKey] }
+              : d,
+          ),
+        };
+      });
+    },
+    [readOnly],
+  );
+
+  const removeStopFromActive = useCallback(
+    (stopKey: string) => {
+      if (readOnly) return;
+      setState((s) => {
+        if (!s.activeDayId) return s;
+        return {
+          ...s,
+          days: s.days.map((d) =>
+            d.id === s.activeDayId
+              ? { ...d, stopKeys: d.stopKeys.filter((k) => k !== stopKey) }
+              : d,
+          ),
+        };
+      });
+    },
+    [readOnly],
+  );
+
+  const moveStopInActive = useCallback(
+    (idx: number, dir: -1 | 1) => {
+      if (readOnly) return;
+      setState((s) => {
+        const day = s.days.find((d) => d.id === s.activeDayId);
+        if (!day) return s;
+        const j = idx + dir;
+        if (j < 0 || j >= day.stopKeys.length) return s;
+        const next = day.stopKeys.slice();
+        [next[idx], next[j]] = [next[j], next[idx]];
+        return {
+          ...s,
+          days: s.days.map((d) => (d.id === s.activeDayId ? { ...d, stopKeys: next } : d)),
+        };
+      });
+    },
+    [readOnly],
+  );
+
+  const setGuests = useCallback(
+    (n: number) => {
+      if (readOnly) return;
+      setState((s) => ({ ...s, guests: Math.max(1, Math.min(12, n)) }));
+    },
+    [readOnly],
+  );
+
+  const setPace = useCallback(
+    (p: Pace) => {
+      if (readOnly) return;
+      setState((s) => ({ ...s, pace: p }));
+    },
+    [readOnly],
+  );
+
+  const setRegion = useCallback(
+    (dayId: string, regionKey: string) => {
+      if (readOnly) return;
+      setState((s) => ({
         ...s,
-        days: s.days.map((d) =>
-          d.id === s.activeDayId
-            ? { ...d, stopKeys: d.stopKeys.filter((k) => k !== stopKey) }
-            : d,
-        ),
-      };
-    });
-  }, [readOnly]);
+        days: s.days.map((d) => (d.id === dayId ? { ...d, regionKey, stopKeys: [] } : d)),
+      }));
+    },
+    [readOnly],
+  );
 
-  const moveStopInActive = useCallback((idx: number, dir: -1 | 1) => {
-    if (readOnly) return;
-    setState((s) => {
-      const day = s.days.find((d) => d.id === s.activeDayId);
-      if (!day) return s;
-      const j = idx + dir;
-      if (j < 0 || j >= day.stopKeys.length) return s;
-      const next = day.stopKeys.slice();
-      [next[idx], next[j]] = [next[j], next[idx]];
-      return {
-        ...s,
-        days: s.days.map((d) =>
-          d.id === s.activeDayId ? { ...d, stopKeys: next } : d,
-        ),
-      };
-    });
-  }, [readOnly]);
-
-  const setGuests = useCallback((n: number) => {
-    if (readOnly) return;
-    setState((s) => ({ ...s, guests: Math.max(1, Math.min(12, n)) }));
-  }, [readOnly]);
-
-  const setPace = useCallback((p: Pace) => {
-    if (readOnly) return;
-    setState((s) => ({ ...s, pace: p }));
-  }, [readOnly]);
-
-  const setRegion = useCallback((dayId: string, regionKey: string) => {
-    if (readOnly) return;
-    setState((s) => ({
-      ...s,
-      days: s.days.map((d) =>
-        d.id === dayId ? { ...d, regionKey, stopKeys: [] } : d,
-      ),
-    }));
-  }, [readOnly]);
-
-  const setIntent = useCallback((intent: string) => {
-    if (readOnly) return;
-    setState((s) => ({ ...s, intent }));
-  }, [readOnly]);
+  const setIntent = useCallback(
+    (intent: string) => {
+      if (readOnly) return;
+      setState((s) => ({ ...s, intent }));
+    },
+    [readOnly],
+  );
 
   const reset = useCallback(() => {
     if (readOnly) return;
     if (typeof window !== "undefined") {
-      try { window.localStorage.removeItem(KEY); } catch { /* ignore */ }
+      try {
+        window.localStorage.removeItem(KEY);
+      } catch {
+        /* ignore */
+      }
     }
     setState(defaults());
   }, [readOnly]);
@@ -343,7 +383,9 @@ export function useMultiDayBuilder() {
     if (!res.ok) return null;
     try {
       window.localStorage.removeItem(TOKEN_KEY_PREFIX + shareToken);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     writeOwnerToken(res.shareToken, ownerToken);
     setShareToken(res.shareToken);
     const u = new URL(window.location.href);
@@ -358,7 +400,9 @@ export function useMultiDayBuilder() {
     if (!res.ok) return false;
     try {
       window.localStorage.removeItem(TOKEN_KEY_PREFIX + shareToken);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     setShareToken(null);
     setOwnerToken(null);
     const u = new URL(window.location.href);

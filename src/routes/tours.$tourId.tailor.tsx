@@ -1,17 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  Check,
-  Clock,
-  MapPin,
-  Sparkles,
-  MessageCircle,
-  Lock,
-  Info,
-} from "lucide-react";
+import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { findTour, stopImage, stopFocal, type SignatureTour, type TourStop } from "@/data/signatureTours";
+import {
+  findTour,
+  stopImage,
+  stopFocal,
+  type SignatureTour,
+  type TourStop,
+} from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
@@ -55,8 +52,7 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
         { property: "og:title", content: `Tailor this Signature — ${t.title}` },
         {
           property: "og:description",
-          content:
-            "Keep the heart of this journey, adjust selected details to match your rhythm.",
+          content: "Keep the heart of this journey, adjust selected details to match your rhythm.",
         },
         { property: "og:image", content: img },
         { property: "twitter:image", content: img },
@@ -219,16 +215,15 @@ function TailorPage() {
               <Eyebrow>Tailor this Signature</Eyebrow>
               <SectionTitle as="h1" size="default" spacing="normal">
                 Keep the heart of this journey,{" "}
-                <SectionTitle.Em>adjust selected details</SectionTitle.Em>{" "}
-                to match your rhythm.
+                <SectionTitle.Em>adjust selected details</SectionTitle.Em> to match your rhythm.
               </SectionTitle>
               <p className="mt-5 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-lg">
                 You're tailoring{" "}
                 <span className="text-[color:var(--charcoal)]">
                   {tour.title.split("—")[0].trim()}
                 </span>
-                . The route, story and trusted local guide remain intact — only the
-                details below can be adjusted.
+                . The route, story and trusted local guide remain intact — only the details below
+                can be adjusted.
               </p>
             </div>
 
@@ -294,7 +289,11 @@ function TailorPage() {
                   "The region — only this Signature, no mixing",
                 ].map((line) => (
                   <li key={line} className="flex items-start gap-2.5">
-                    <Check size={13} className="mt-[3px] text-[color:var(--teal)] shrink-0" aria-hidden="true" />
+                    <Check
+                      size={13}
+                      className="mt-[3px] text-[color:var(--teal)] shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{line}</span>
                   </li>
                 ))}
@@ -304,7 +303,11 @@ function TailorPage() {
             {/* What you can adjust */}
             <div className="border border-[color:var(--border)] bg-[color:var(--sand)] p-5 md:p-6">
               <div className="flex items-center gap-2.5">
-                <Sparkles size={14} className="text-[color:var(--teal)] shrink-0" aria-hidden="true" />
+                <Sparkles
+                  size={14}
+                  className="text-[color:var(--teal)] shrink-0"
+                  aria-hidden="true"
+                />
                 <span className="text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]">
                   What you can adjust
                 </span>
@@ -335,8 +338,8 @@ function TailorPage() {
           {/* Plain-language clarification — sets the right mental model
               before the user touches any control. */}
           <p className="mt-5 text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)] italic max-w-2xl">
-            You're adjusting this tour a little — not starting from zero. To design
-            a day from scratch, open the Studio.
+            You're adjusting this tour a little — not starting from zero. To design a day from
+            scratch, open the Studio.
           </p>
         </div>
       </section>
@@ -413,8 +416,8 @@ function TailorPage() {
               {(tour.stops ?? []).length > 0 && (
                 <Group title="Stop variations">
                   <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
-                    Tap to skip a stop you'd rather trade for extra time elsewhere.
-                    The order of what stays is preserved.
+                    Tap to skip a stop you'd rather trade for extra time elsewhere. The order of
+                    what stays is preserved.
                   </p>
                   <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
                     {(tour.stops ?? []).map((s: TourStop, i: number) => {
@@ -423,9 +426,7 @@ function TailorPage() {
                         <li key={s.label + i}>
                           <button
                             type="button"
-                            onClick={() =>
-                              toggle(setSkipped, skipped, s.label)
-                            }
+                            onClick={() => toggle(setSkipped, skipped, s.label)}
                             aria-pressed={kept}
                             className={[
                               "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[64px]",
@@ -573,12 +574,10 @@ function TailorPage() {
                     <MessageCircle size={14} />
                   </span>
                   <div>
-                    <p className="serif text-[17px] leading-snug">
-                      Need help deciding?
-                    </p>
+                    <p className="serif text-[17px] leading-snug">Need help deciding?</p>
                     <p className="text-[13px] text-[color:var(--charcoal-soft)] mt-1 leading-relaxed">
-                      A local is available in real time. We'll suggest the right pace and
-                      add-ons for your group.
+                      A local is available in real time. We'll suggest the right pace and add-ons
+                      for your group.
                     </p>
                     <a
                       href={whatsappHref(
@@ -600,7 +599,8 @@ function TailorPage() {
               {import.meta.env?.DEV && validation.hasViatorMeta && validation.issueCount > 0 && (
                 <div className="mb-3 border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/40 p-3 text-[12px] text-[color:var(--charcoal)]">
                   <p className="font-semibold uppercase tracking-[0.2em] text-[10px] text-[color:var(--charcoal-soft)] mb-1">
-                    Viator validation · {validation.issueCount} mismatch{validation.issueCount === 1 ? "" : "es"}
+                    Viator validation · {validation.issueCount} mismatch
+                    {validation.issueCount === 1 ? "" : "es"}
                   </p>
                   {validation.stops.onlyInternal.length > 0 && (
                     <p>Stops not on Viator: {validation.stops.onlyInternal.join(", ")}</p>
@@ -614,7 +614,9 @@ function TailorPage() {
                   {validation.included.onlyViator.length > 0 && (
                     <p>Inclusions missing from tour: {validation.included.onlyViator.join(", ")}</p>
                   )}
-                  <Link to="/admin/viator-validation" className="mt-1 inline-block underline">Open full report →</Link>
+                  <Link to="/admin/viator-validation" className="mt-1 inline-block underline">
+                    Open full report →
+                  </Link>
                 </div>
               )}
               <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
@@ -795,13 +797,7 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <label className="block text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mb-1.5">

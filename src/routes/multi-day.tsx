@@ -27,10 +27,7 @@ export const Route = createFileRoute("/multi-day")({
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" },
-    ],
-
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" }],
   }),
   component: MultiDayPage,
 });
@@ -43,8 +40,7 @@ const BLOCKS = [
       "Not a checklist of regions — a real rhythm, with the right pacing between each day.",
     practical:
       "2–7 days · realistic driving times · curated overnight stops · transitions designed around your pace.",
-    local:
-      "Designed in conversation with a local team — never a copy-paste itinerary.",
+    local: "Designed in conversation with a local team — never a copy-paste itinerary.",
     image: imgTroiaBeach,
     icon: Calendar,
   },
@@ -82,13 +78,13 @@ function MultiDayPage() {
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Multi-Day Journeys</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            More than one day.{" "}
-            <SectionTitle.Em>One coherent journey.</SectionTitle.Em>
+            More than one day. <SectionTitle.Em>One coherent journey.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Build Portugal across regions with realistic timing, <span className="kw">local flow</span> and
-            support from people who know how each day should connect.
+            Build Portugal across regions with realistic timing,{" "}
+            <span className="kw">local flow</span> and support from people who know how each day
+            should connect.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/builder" variant="primary">
@@ -155,11 +151,13 @@ function MultiDayPage() {
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            Sketch the route yourself in real time, or tell us what you have in
-            mind and we'll shape it with you.
+            Sketch the route yourself in real time, or tell us what you have in mind and we'll shape
+            it with you.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/builder" variant="primary">Open the Studio</CtaButton>
+            <CtaButton to="/builder" variant="primary">
+              Open the Studio
+            </CtaButton>
             <CtaButton
               to="/contact"
               variant="ghost"

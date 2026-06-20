@@ -5,7 +5,11 @@ export const Route = createFileRoute("/typography-audit")({
   head: () => ({
     meta: [
       { title: "Typography Audit — YES experiences" },
-      { name: "description", content: "Per-route audit of which webfonts each typography token resolves to in the live DOM." },
+      {
+        name: "description",
+        content:
+          "Per-route audit of which webfonts each typography token resolves to in the live DOM.",
+      },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -39,27 +43,66 @@ type Token = {
 };
 
 const TOKENS: Token[] = [
-  { key: "h1", label: "H1 — display", selector: "h1", expectedFamily: "Cormorant Garamond",
-    thresholds: { minPx: 24, minLh: 1.0, minContrast: 3.0 /* large text */ } },
-  { key: "h2", label: "H2 — section", selector: "h2", expectedFamily: "Cormorant Garamond",
-    thresholds: { minPx: 20, minLh: 1.0, minContrast: 3.0 } },
-  { key: "h3", label: "H3 — sub-section", selector: "h3", expectedFamily: "Cormorant Garamond",
-    thresholds: { minPx: 18, minLh: 1.0, minContrast: 4.5 } },
-  { key: "body", label: "Body — paragraph", selector: "p", expectedFamily: "Inter",
-    thresholds: { minPx: 14, minLh: 1.5, minContrast: 4.5 } },
-  { key: "button", label: "Button / CTA", selector: "button, .hero-cta-button, a[role='button']", expectedFamily: "Inter",
-    thresholds: { minPx: 12, minLh: 1.2, minContrast: 4.5 } },
-  { key: "eyebrow", label: "Eyebrow caps", selector: ".eyebrow", expectedFamily: "Inter",
-    thresholds: { minPx: 11, minLh: 1.2, minContrast: 4.5 } },
-  { key: "script", label: "Script accent", selector: ".script", expectedFamily: "Kaushan Script",
-    thresholds: { minPx: 12, minLh: 1.0, minContrast: 4.5 } },
+  {
+    key: "h1",
+    label: "H1 — display",
+    selector: "h1",
+    expectedFamily: "Cormorant Garamond",
+    thresholds: { minPx: 24, minLh: 1.0, minContrast: 3.0 /* large text */ },
+  },
+  {
+    key: "h2",
+    label: "H2 — section",
+    selector: "h2",
+    expectedFamily: "Cormorant Garamond",
+    thresholds: { minPx: 20, minLh: 1.0, minContrast: 3.0 },
+  },
+  {
+    key: "h3",
+    label: "H3 — sub-section",
+    selector: "h3",
+    expectedFamily: "Cormorant Garamond",
+    thresholds: { minPx: 18, minLh: 1.0, minContrast: 4.5 },
+  },
+  {
+    key: "body",
+    label: "Body — paragraph",
+    selector: "p",
+    expectedFamily: "Inter",
+    thresholds: { minPx: 14, minLh: 1.5, minContrast: 4.5 },
+  },
+  {
+    key: "button",
+    label: "Button / CTA",
+    selector: "button, .hero-cta-button, a[role='button']",
+    expectedFamily: "Inter",
+    thresholds: { minPx: 12, minLh: 1.2, minContrast: 4.5 },
+  },
+  {
+    key: "eyebrow",
+    label: "Eyebrow caps",
+    selector: ".eyebrow",
+    expectedFamily: "Inter",
+    thresholds: { minPx: 11, minLh: 1.2, minContrast: 4.5 },
+  },
+  {
+    key: "script",
+    label: "Script accent",
+    selector: ".script",
+    expectedFamily: "Kaushan Script",
+    thresholds: { minPx: 12, minLh: 1.0, minContrast: 4.5 },
+  },
 ];
 
 // ─── Color helpers (sRGB → relative luminance → WCAG ratio) ───────
 const parseColor = (raw: string): [number, number, number] | null => {
   const m = raw.match(/rgba?\(([^)]+)\)/);
   if (!m) return null;
-  const parts = m[1].split(/[ ,/]+/).filter(Boolean).slice(0, 3).map(parseFloat);
+  const parts = m[1]
+    .split(/[ ,/]+/)
+    .filter(Boolean)
+    .slice(0, 3)
+    .map(parseFloat);
   if (parts.length < 3 || parts.some(Number.isNaN)) return null;
   return [parts[0], parts[1], parts[2]];
 };
@@ -71,9 +114,11 @@ const luminance = (rgb: [number, number, number]) => {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 const contrast = (a: string, b: string): number | null => {
-  const ra = parseColor(a), rb = parseColor(b);
+  const ra = parseColor(a),
+    rb = parseColor(b);
   if (!ra || !rb) return null;
-  const la = luminance(ra), lb = luminance(rb);
+  const la = luminance(ra),
+    lb = luminance(rb);
   const [hi, lo] = la > lb ? [la, lb] : [lb, la];
   return (hi + 0.05) / (lo + 0.05);
 };
@@ -113,10 +158,19 @@ const sampleToken = (doc: Document, win: Window, t: Token): Sample => {
   const el = visible[0] ?? all[0];
   if (!el) {
     return {
-      token: t, found: false, count: 0,
-      fontFamily: "—", resolvedFirst: "—", expectedMatched: false,
-      fontPx: 0, lineHeight: 0, fontWeight: "—",
-      fg: "—", bg: "—", contrast: null, issues: ["element not present on this route"],
+      token: t,
+      found: false,
+      count: 0,
+      fontFamily: "—",
+      resolvedFirst: "—",
+      expectedMatched: false,
+      fontPx: 0,
+      lineHeight: 0,
+      fontWeight: "—",
+      fg: "—",
+      bg: "—",
+      contrast: null,
+      issues: ["element not present on this route"],
     };
   }
   const cs = win.getComputedStyle(el);
@@ -127,32 +181,52 @@ const sampleToken = (doc: Document, win: Window, t: Token): Sample => {
 
   const fontPx = parseFloat(cs.fontSize) || 0;
   const lhRaw = cs.lineHeight;
-  const lh = lhRaw === "normal" ? 1.2 : lhRaw.endsWith("px") ? parseFloat(lhRaw) / fontPx : parseFloat(lhRaw);
+  const lh =
+    lhRaw === "normal"
+      ? 1.2
+      : lhRaw.endsWith("px")
+        ? parseFloat(lhRaw) / fontPx
+        : parseFloat(lhRaw);
 
   // Walk up to first non-transparent background
   let bgRaw = "rgba(0, 0, 0, 0)";
   let p: HTMLElement | null = el;
   while (p && p !== doc.documentElement) {
     const b = win.getComputedStyle(p).backgroundColor;
-    if (b && !/rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(b) && b !== "transparent") { bgRaw = b; break; }
+    if (b && !/rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(b) && b !== "transparent") {
+      bgRaw = b;
+      break;
+    }
     p = p.parentElement;
   }
-  if (/rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(bgRaw)) bgRaw = win.getComputedStyle(doc.body).backgroundColor || "rgb(255,255,255)";
+  if (/rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(bgRaw))
+    bgRaw = win.getComputedStyle(doc.body).backgroundColor || "rgb(255,255,255)";
   const fgRaw = cs.color;
   const ratio = contrast(fgRaw, bgRaw);
 
   const issues: string[] = [];
-  if (!expectedMatched) issues.push(`font fallback — got "${first}", expected "${t.expectedFamily}"`);
-  if (t.thresholds.minPx && fontPx < t.thresholds.minPx) issues.push(`font-size ${fontPx}px < ${t.thresholds.minPx}px`);
-  if (t.thresholds.minLh && lh < t.thresholds.minLh) issues.push(`line-height ${lh.toFixed(2)} < ${t.thresholds.minLh}`);
+  if (!expectedMatched)
+    issues.push(`font fallback — got "${first}", expected "${t.expectedFamily}"`);
+  if (t.thresholds.minPx && fontPx < t.thresholds.minPx)
+    issues.push(`font-size ${fontPx}px < ${t.thresholds.minPx}px`);
+  if (t.thresholds.minLh && lh < t.thresholds.minLh)
+    issues.push(`line-height ${lh.toFixed(2)} < ${t.thresholds.minLh}`);
   if (t.thresholds.minContrast && ratio != null && ratio < t.thresholds.minContrast) {
     issues.push(`contrast ${ratio.toFixed(2)}:1 < ${t.thresholds.minContrast}:1`);
   }
   return {
-    token: t, found: true, count: visible.length || all.length,
-    fontFamily: ff, resolvedFirst: first, expectedMatched,
-    fontPx, lineHeight: lh, fontWeight: cs.fontWeight,
-    fg: rgbToHex(fgRaw), bg: rgbToHex(bgRaw), contrast: ratio,
+    token: t,
+    found: true,
+    count: visible.length || all.length,
+    fontFamily: ff,
+    resolvedFirst: first,
+    expectedMatched,
+    fontPx,
+    lineHeight: lh,
+    fontWeight: cs.fontWeight,
+    fg: rgbToHex(fgRaw),
+    bg: rgbToHex(bgRaw),
+    contrast: ratio,
     issues,
   };
 };
@@ -164,9 +238,9 @@ type RouteResult = {
   status: "pending" | "loading" | "done" | "error";
   samples: Sample[];
   error?: string;
-  attempts?: number;          // total attempts taken (1–3)
-  via?: AuditVia;             // which path produced the final samples
-  attemptLog?: string[];      // per-attempt failure reasons (visible in UI)
+  attempts?: number; // total attempts taken (1–3)
+  via?: AuditVia; // which path produced the final samples
+  attemptLog?: string[]; // per-attempt failure reasons (visible in UI)
 };
 
 // Sample a route once via the shared iframe with a hard timeout.
@@ -181,67 +255,83 @@ const sampleViaIframe = (
   timeoutMs: number,
   ssrFallback: boolean,
   opts: SampleOpts,
-): Promise<AttemptResult> => new Promise((resolve) => {
-  let settled = false;
-  const settle = (r: AttemptResult) => {
-    if (settled) return;
-    settled = true;
-    iframe.removeEventListener("load", onLoad);
-    clearTimeout(timer);
-    resolve(r);
-  };
-  const onLoad = async () => {
-    try {
-      const win = iframe.contentWindow;
-      const doc = iframe.contentDocument;
-      if (!win || !doc) return settle({ ok: false, error: "iframe blocked (cross-origin or sandbox)" });
+): Promise<AttemptResult> =>
+  new Promise((resolve) => {
+    let settled = false;
+    const settle = (r: AttemptResult) => {
+      if (settled) return;
+      settled = true;
+      iframe.removeEventListener("load", onLoad);
+      clearTimeout(timer);
+      resolve(r);
+    };
+    const onLoad = async () => {
+      try {
+        const win = iframe.contentWindow;
+        const doc = iframe.contentDocument;
+        if (!win || !doc)
+          return settle({ ok: false, error: "iframe blocked (cross-origin or sandbox)" });
 
-      // Wait for webfonts so we sample the LOADED font, not fallback.
-      // Race against a soft cap so a stuck font.ready doesn't eat the budget.
-      if (doc.fonts && (doc.fonts as FontFaceSet & { ready?: Promise<unknown> }).ready) {
-        await Promise.race([
-          doc.fonts.ready.catch(() => undefined),
-          new Promise((r) => setTimeout(r, opts.fontsReadyCapMs)),
-        ]);
+        // Wait for webfonts so we sample the LOADED font, not fallback.
+        // Race against a soft cap so a stuck font.ready doesn't eat the budget.
+        if (doc.fonts && (doc.fonts as FontFaceSet & { ready?: Promise<unknown> }).ready) {
+          await Promise.race([
+            doc.fonts.ready.catch(() => undefined),
+            new Promise((r) => setTimeout(r, opts.fontsReadyCapMs)),
+          ]);
+        }
+        // Let async hero hooks (parallax, scroll-scale, hydration) settle.
+        await new Promise((r) => setTimeout(r, opts.postLoadSettleMs));
+        const samples = TOKENS.map((t) => sampleToken(doc, win, t));
+
+        // Sanity guard: if EVERY token is "not present", treat as a failed render
+        // (likely a hydration crash or a stripped-down SSR shell that lost layout).
+        const anyFound = samples.some((s) => s.found);
+        if (!anyFound)
+          return settle({
+            ok: false,
+            error: "no tokens found in document — likely hydration failure",
+          });
+        settle({ ok: true, samples });
+      } catch (e) {
+        settle({ ok: false, error: e instanceof Error ? e.message : String(e) });
       }
-      // Let async hero hooks (parallax, scroll-scale, hydration) settle.
-      await new Promise((r) => setTimeout(r, opts.postLoadSettleMs));
-      const samples = TOKENS.map((t) => sampleToken(doc, win, t));
+    };
+    iframe.addEventListener("load", onLoad);
 
-      // Sanity guard: if EVERY token is "not present", treat as a failed render
-      // (likely a hydration crash or a stripped-down SSR shell that lost layout).
-      const anyFound = samples.some((s) => s.found);
-      if (!anyFound) return settle({ ok: false, error: "no tokens found in document — likely hydration failure" });
-      settle({ ok: true, samples });
-    } catch (e) {
-      settle({ ok: false, error: e instanceof Error ? e.message : String(e) });
-    }
-  };
-  iframe.addEventListener("load", onLoad);
-
-  if (ssrFallback) {
-    // Load via srcdoc so the iframe contains the SSR HTML even if the runtime would crash.
-    fetch(`${path}${path.includes("?") ? "&" : "?"}__audit=${Date.now()}`, { credentials: "same-origin" })
-      .then(async (res) => {
-        if (!res.ok) throw new Error(`SSR fetch ${res.status}`);
-        const html = await res.text();
-        // Inject a <base> so relative asset URLs resolve and a no-script marker
-        // so we can tell this was the fallback path.
-        const withBase = html.replace(
-          /<head([^>]*)>/i,
-          `<head$1><base href="${location.origin}/"><meta name="x-audit-via" content="ssr-fallback">`,
-        );
-        iframe.srcdoc = withBase;
+    if (ssrFallback) {
+      // Load via srcdoc so the iframe contains the SSR HTML even if the runtime would crash.
+      fetch(`${path}${path.includes("?") ? "&" : "?"}__audit=${Date.now()}`, {
+        credentials: "same-origin",
       })
-      .catch((err) => settle({ ok: false, error: `SSR fetch failed: ${err instanceof Error ? err.message : String(err)}` }));
-  } else {
-    // Cache-bust so the iframe re-renders fresh on every attempt.
-    iframe.removeAttribute("srcdoc");
-    iframe.src = `${path}${path.includes("?") ? "&" : "?"}__audit=${Date.now()}`;
-  }
+        .then(async (res) => {
+          if (!res.ok) throw new Error(`SSR fetch ${res.status}`);
+          const html = await res.text();
+          // Inject a <base> so relative asset URLs resolve and a no-script marker
+          // so we can tell this was the fallback path.
+          const withBase = html.replace(
+            /<head([^>]*)>/i,
+            `<head$1><base href="${location.origin}/"><meta name="x-audit-via" content="ssr-fallback">`,
+          );
+          iframe.srcdoc = withBase;
+        })
+        .catch((err) =>
+          settle({
+            ok: false,
+            error: `SSR fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+          }),
+        );
+    } else {
+      // Cache-bust so the iframe re-renders fresh on every attempt.
+      iframe.removeAttribute("srcdoc");
+      iframe.src = `${path}${path.includes("?") ? "&" : "?"}__audit=${Date.now()}`;
+    }
 
-  const timer = setTimeout(() => settle({ ok: false, error: `timeout after ${Math.round(timeoutMs / 1000)}s` }), timeoutMs);
-});
+    const timer = setTimeout(
+      () => settle({ ok: false, error: `timeout after ${Math.round(timeoutMs / 1000)}s` }),
+      timeoutMs,
+    );
+  });
 
 // ─── Settings (persisted to localStorage) ─────────────────────────
 type StageSettings = { enabled: boolean; timeoutMs: number; backoffMs: number };
@@ -249,14 +339,14 @@ type AuditSettings = {
   iframeAttempt1: StageSettings;
   iframeAttempt2: StageSettings;
   ssrFallback: StageSettings;
-  fontsReadyCapMs: number;   // max time to wait for document.fonts.ready
-  postLoadSettleMs: number;  // delay after load before sampling (lets hydration finish)
+  fontsReadyCapMs: number; // max time to wait for document.fonts.ready
+  postLoadSettleMs: number; // delay after load before sampling (lets hydration finish)
 };
 
 const DEFAULT_SETTINGS: AuditSettings = {
-  iframeAttempt1: { enabled: true, timeoutMs: 8000,  backoffMs: 0 },
+  iframeAttempt1: { enabled: true, timeoutMs: 8000, backoffMs: 0 },
   iframeAttempt2: { enabled: true, timeoutMs: 12000, backoffMs: 600 },
-  ssrFallback:    { enabled: true, timeoutMs: 8000,  backoffMs: 400 },
+  ssrFallback: { enabled: true, timeoutMs: 8000, backoffMs: 400 },
   fontsReadyCapMs: 3000,
   postLoadSettleMs: 250,
 };
@@ -274,18 +364,24 @@ const loadSettings = (): AuditSettings => {
       ...parsed,
       iframeAttempt1: { ...DEFAULT_SETTINGS.iframeAttempt1, ...(parsed.iframeAttempt1 || {}) },
       iframeAttempt2: { ...DEFAULT_SETTINGS.iframeAttempt2, ...(parsed.iframeAttempt2 || {}) },
-      ssrFallback:    { ...DEFAULT_SETTINGS.ssrFallback,    ...(parsed.ssrFallback    || {}) },
+      ssrFallback: { ...DEFAULT_SETTINGS.ssrFallback, ...(parsed.ssrFallback || {}) },
     };
-  } catch { return DEFAULT_SETTINGS; }
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
 };
 
 const persistSettings = (s: AuditSettings) => {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch { /* quota/private mode */ }
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  } catch {
+    /* quota/private mode */
+  }
 };
 
 // Coerce an unknown value into a safe StageSettings, clamped to UI ranges.
 const coerceStage = (raw: unknown, fallback: StageSettings): StageSettings => {
-  const obj = (raw && typeof raw === "object") ? (raw as Record<string, unknown>) : {};
+  const obj = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
   const num = (v: unknown, fb: number, min: number, max: number) => {
     const n = typeof v === "number" ? v : Number(v);
     if (!Number.isFinite(n)) return fb;
@@ -303,20 +399,20 @@ const coerceStage = (raw: unknown, fallback: StageSettings): StageSettings => {
 // validation and coercion can't drift apart.
 type FieldRange = { min: number; max: number };
 const FIELD_RANGES = {
-  stageTimeoutMs:  { min: 500, max: 60000 } satisfies FieldRange,
-  stageBackoffMs:  { min: 0,   max: 5000 }  satisfies FieldRange,
-  fontsReadyCapMs: { min: 0,   max: 30000 } satisfies FieldRange,
-  postLoadSettleMs:{ min: 0,   max: 10000 } satisfies FieldRange,
+  stageTimeoutMs: { min: 500, max: 60000 } satisfies FieldRange,
+  stageBackoffMs: { min: 0, max: 5000 } satisfies FieldRange,
+  fontsReadyCapMs: { min: 0, max: 30000 } satisfies FieldRange,
+  postLoadSettleMs: { min: 0, max: 10000 } satisfies FieldRange,
 } as const;
 
 type ValidationIssue = {
   level: "error" | "warning" | "info";
-  path: string;     // dotted path, e.g. "iframeAttempt1.timeoutMs"
+  path: string; // dotted path, e.g. "iframeAttempt1.timeoutMs"
   message: string;
 };
 
 type ValidationReport = {
-  ok: boolean;                  // no errors (warnings allowed)
+  ok: boolean; // no errors (warnings allowed)
   shape: "envelope" | "bare" | "invalid";
   exportedAt?: string;
   issues: ValidationIssue[];
@@ -405,21 +501,44 @@ const validateSettingsJson = (text: string): ValidationReport => {
     if (obj.enabled === undefined) {
       warn(`${key}.enabled`, `Missing — defaulting to ${fallback.enabled}.`);
     } else if (typeof obj.enabled !== "boolean") {
-      err(`${key}.enabled`, `Expected boolean, got ${JSON.stringify(obj.enabled)}. Defaulting to ${fallback.enabled}.`);
+      err(
+        `${key}.enabled`,
+        `Expected boolean, got ${JSON.stringify(obj.enabled)}. Defaulting to ${fallback.enabled}.`,
+      );
     } else {
       enabled = obj.enabled;
     }
-    const timeoutMs = checkNum(`${key}.timeoutMs`, obj.timeoutMs, fallback.timeoutMs, FIELD_RANGES.stageTimeoutMs);
-    const backoffMs = checkNum(`${key}.backoffMs`, obj.backoffMs, fallback.backoffMs, FIELD_RANGES.stageBackoffMs);
+    const timeoutMs = checkNum(
+      `${key}.timeoutMs`,
+      obj.timeoutMs,
+      fallback.timeoutMs,
+      FIELD_RANGES.stageTimeoutMs,
+    );
+    const backoffMs = checkNum(
+      `${key}.backoffMs`,
+      obj.backoffMs,
+      fallback.backoffMs,
+      FIELD_RANGES.stageBackoffMs,
+    );
     return { enabled, timeoutMs, backoffMs };
   };
 
   const parsed: AuditSettings = {
     iframeAttempt1: checkStage("iframeAttempt1", DEFAULT_SETTINGS.iframeAttempt1),
     iframeAttempt2: checkStage("iframeAttempt2", DEFAULT_SETTINGS.iframeAttempt2),
-    ssrFallback:    checkStage("ssrFallback",    DEFAULT_SETTINGS.ssrFallback),
-    fontsReadyCapMs:  checkNum("fontsReadyCapMs",  candidate.fontsReadyCapMs,  DEFAULT_SETTINGS.fontsReadyCapMs,  FIELD_RANGES.fontsReadyCapMs),
-    postLoadSettleMs: checkNum("postLoadSettleMs", candidate.postLoadSettleMs, DEFAULT_SETTINGS.postLoadSettleMs, FIELD_RANGES.postLoadSettleMs),
+    ssrFallback: checkStage("ssrFallback", DEFAULT_SETTINGS.ssrFallback),
+    fontsReadyCapMs: checkNum(
+      "fontsReadyCapMs",
+      candidate.fontsReadyCapMs,
+      DEFAULT_SETTINGS.fontsReadyCapMs,
+      FIELD_RANGES.fontsReadyCapMs,
+    ),
+    postLoadSettleMs: checkNum(
+      "postLoadSettleMs",
+      candidate.postLoadSettleMs,
+      DEFAULT_SETTINGS.postLoadSettleMs,
+      FIELD_RANGES.postLoadSettleMs,
+    ),
   };
 
   if (!STAGE_KEYS.some((k) => parsed[k].enabled)) {
@@ -452,14 +571,15 @@ const parseSettingsJson = (text: string): AuditSettings => {
 const validateCurrentSettings = (s: AuditSettings): ValidationReport => {
   const issues: ValidationIssue[] = [];
   const warn = (path: string, message: string) => issues.push({ level: "warning", path, message });
-  const err  = (path: string, message: string) => issues.push({ level: "error", path, message });
+  const err = (path: string, message: string) => issues.push({ level: "error", path, message });
   const info = (path: string, message: string) => issues.push({ level: "info", path, message });
 
   const checkNum = (path: string, v: number, range: FieldRange) => {
-    if (!Number.isFinite(v))   err(path, `Not a finite number (${String(v)}).`);
-    else if (v < range.min)    err(path, `Below minimum (${v} < ${range.min}).`);
-    else if (v > range.max)    err(path, `Above maximum (${v} > ${range.max}).`);
-    else if (!Number.isInteger(v)) warn(path, `Non-integer value (${v}) — will be rounded on save.`);
+    if (!Number.isFinite(v)) err(path, `Not a finite number (${String(v)}).`);
+    else if (v < range.min) err(path, `Below minimum (${v} < ${range.min}).`);
+    else if (v > range.max) err(path, `Above maximum (${v} > ${range.max}).`);
+    else if (!Number.isInteger(v))
+      warn(path, `Non-integer value (${v}) — will be rounded on save.`);
   };
 
   for (const key of STAGE_KEYS) {
@@ -467,10 +587,13 @@ const validateCurrentSettings = (s: AuditSettings): ValidationReport => {
     checkNum(`${key}.timeoutMs`, stage.timeoutMs, FIELD_RANGES.stageTimeoutMs);
     checkNum(`${key}.backoffMs`, stage.backoffMs, FIELD_RANGES.stageBackoffMs);
     if (stage.enabled && stage.timeoutMs < 1000) {
-      warn(`${key}.timeoutMs`, `Very short timeout (${stage.timeoutMs}ms) — slow routes may fail this stage.`);
+      warn(
+        `${key}.timeoutMs`,
+        `Very short timeout (${stage.timeoutMs}ms) — slow routes may fail this stage.`,
+      );
     }
   }
-  checkNum("fontsReadyCapMs",  s.fontsReadyCapMs,  FIELD_RANGES.fontsReadyCapMs);
+  checkNum("fontsReadyCapMs", s.fontsReadyCapMs, FIELD_RANGES.fontsReadyCapMs);
   checkNum("postLoadSettleMs", s.postLoadSettleMs, FIELD_RANGES.postLoadSettleMs);
 
   const enabled = STAGE_KEYS.filter((k) => s[k].enabled);
@@ -484,13 +607,22 @@ const validateCurrentSettings = (s: AuditSettings): ValidationReport => {
     (sum, k) => sum + (s[k].enabled ? s[k].timeoutMs + s[k].backoffMs : 0),
     0,
   );
-  info("settings", `Worst-case budget per route: ${(worstCaseMs / 1000).toFixed(1)}s across ${enabled.length} stage${enabled.length === 1 ? "" : "s"}.`);
+  info(
+    "settings",
+    `Worst-case budget per route: ${(worstCaseMs / 1000).toFixed(1)}s across ${enabled.length} stage${enabled.length === 1 ? "" : "s"}.`,
+  );
   if (worstCaseMs > 30000) {
-    warn("settings", `Worst-case per-route budget is high (${(worstCaseMs / 1000).toFixed(1)}s) — full audits will be slow.`);
+    warn(
+      "settings",
+      `Worst-case per-route budget is high (${(worstCaseMs / 1000).toFixed(1)}s) — full audits will be slow.`,
+    );
   }
 
   if (s.fontsReadyCapMs > 0 && s.fontsReadyCapMs < 500) {
-    warn("fontsReadyCapMs", `Very short font-ready cap (${s.fontsReadyCapMs}ms) may sample before web fonts load.`);
+    warn(
+      "fontsReadyCapMs",
+      `Very short font-ready cap (${s.fontsReadyCapMs}ms) may sample before web fonts load.`,
+    );
   }
 
   const ok = !issues.some((i) => i.level === "error");
@@ -538,17 +670,37 @@ const autoFixSettings = (s: AuditSettings): AutoFix => {
     }
     return {
       enabled,
-      timeoutMs: clampNum(`${key}.timeoutMs`, stage.timeoutMs, fb.timeoutMs, FIELD_RANGES.stageTimeoutMs),
-      backoffMs: clampNum(`${key}.backoffMs`, stage.backoffMs, fb.backoffMs, FIELD_RANGES.stageBackoffMs),
+      timeoutMs: clampNum(
+        `${key}.timeoutMs`,
+        stage.timeoutMs,
+        fb.timeoutMs,
+        FIELD_RANGES.stageTimeoutMs,
+      ),
+      backoffMs: clampNum(
+        `${key}.backoffMs`,
+        stage.backoffMs,
+        fb.backoffMs,
+        FIELD_RANGES.stageBackoffMs,
+      ),
     };
   };
 
   const fixed: AuditSettings = {
     iframeAttempt1: fixStage("iframeAttempt1", DEFAULT_SETTINGS.iframeAttempt1),
     iframeAttempt2: fixStage("iframeAttempt2", DEFAULT_SETTINGS.iframeAttempt2),
-    ssrFallback:    fixStage("ssrFallback",    DEFAULT_SETTINGS.ssrFallback),
-    fontsReadyCapMs:  clampNum("fontsReadyCapMs",  s.fontsReadyCapMs,  DEFAULT_SETTINGS.fontsReadyCapMs,  FIELD_RANGES.fontsReadyCapMs),
-    postLoadSettleMs: clampNum("postLoadSettleMs", s.postLoadSettleMs, DEFAULT_SETTINGS.postLoadSettleMs, FIELD_RANGES.postLoadSettleMs),
+    ssrFallback: fixStage("ssrFallback", DEFAULT_SETTINGS.ssrFallback),
+    fontsReadyCapMs: clampNum(
+      "fontsReadyCapMs",
+      s.fontsReadyCapMs,
+      DEFAULT_SETTINGS.fontsReadyCapMs,
+      FIELD_RANGES.fontsReadyCapMs,
+    ),
+    postLoadSettleMs: clampNum(
+      "postLoadSettleMs",
+      s.postLoadSettleMs,
+      DEFAULT_SETTINGS.postLoadSettleMs,
+      FIELD_RANGES.postLoadSettleMs,
+    ),
   };
 
   // Cross-field repair: a fully-disabled config means the audit silently does
@@ -562,20 +714,26 @@ const autoFixSettings = (s: AuditSettings): AutoFix => {
 };
 
 function TypographyAuditPage() {
-  const [results, setResults] = useState<RouteResult[]>(() => ROUTES.map((p) => ({ path: p, status: "pending", samples: [] })));
+  const [results, setResults] = useState<RouteResult[]>(() =>
+    ROUTES.map((p) => ({ path: p, status: "pending", samples: [] })),
+  );
   const [running, setRunning] = useState(false);
   const [settings, setSettings] = useState<AuditSettings>(() => loadSettings());
   const [settingsOpen, setSettingsOpen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Persist whenever settings change.
-  useEffect(() => { persistSettings(settings); }, [settings]);
+  useEffect(() => {
+    persistSettings(settings);
+  }, [settings]);
 
   // Hold a live ref to settings so the in-flight audit always reads the LATEST
   // values (e.g. user adjusts a timeout mid-run). Without this, useCallback
   // would close over the snapshot at audit start.
   const settingsRef = useRef(settings);
-  useEffect(() => { settingsRef.current = settings; }, [settings]);
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
 
   // Per-route pipeline driven by settings: iframe attempt 1 → iframe attempt 2
   // → SSR HTML fallback. Disabled stages are skipped.
@@ -583,16 +741,30 @@ function TypographyAuditPage() {
     const iframe = iframeRef.current;
     if (!iframe) return { path, status: "error", samples: [], error: "iframe missing" };
     const s = settingsRef.current;
-    const opts: SampleOpts = { fontsReadyCapMs: s.fontsReadyCapMs, postLoadSettleMs: s.postLoadSettleMs };
+    const opts: SampleOpts = {
+      fontsReadyCapMs: s.fontsReadyCapMs,
+      postLoadSettleMs: s.postLoadSettleMs,
+    };
 
     const stages: Array<{ label: string; cfg: StageSettings; via: AuditVia; ssr: boolean }> = [
-      { label: "iframe attempt 1",  cfg: s.iframeAttempt1, via: "iframe" as AuditVia,       ssr: false },
-      { label: "iframe attempt 2",  cfg: s.iframeAttempt2, via: "iframe" as AuditVia,       ssr: false },
-      { label: "SSR HTML fallback", cfg: s.ssrFallback,    via: "ssr-fallback" as AuditVia, ssr: true  },
+      { label: "iframe attempt 1", cfg: s.iframeAttempt1, via: "iframe" as AuditVia, ssr: false },
+      { label: "iframe attempt 2", cfg: s.iframeAttempt2, via: "iframe" as AuditVia, ssr: false },
+      {
+        label: "SSR HTML fallback",
+        cfg: s.ssrFallback,
+        via: "ssr-fallback" as AuditVia,
+        ssr: true,
+      },
     ].filter((stage) => stage.cfg.enabled);
 
     if (stages.length === 0) {
-      return { path, status: "error", samples: [], error: "all retry stages disabled in settings", attemptLog: [] };
+      return {
+        path,
+        status: "error",
+        samples: [],
+        error: "all retry stages disabled in settings",
+        attemptLog: [],
+      };
     }
 
     const log: string[] = [];
@@ -601,14 +773,24 @@ function TypographyAuditPage() {
       if (stage.cfg.backoffMs) await new Promise((r) => setTimeout(r, stage.cfg.backoffMs));
       const r = await sampleViaIframe(iframe, path, stage.cfg.timeoutMs, stage.ssr, opts);
       if (r.ok) {
-        return { path, status: "done", samples: r.samples, attempts: i + 1, via: stage.via, attemptLog: log };
+        return {
+          path,
+          status: "done",
+          samples: r.samples,
+          attempts: i + 1,
+          via: stage.via,
+          attemptLog: log,
+        };
       }
       log.push(`${stage.label}: ${r.error}`);
     }
     return {
-      path, status: "error", samples: [],
+      path,
+      status: "error",
+      samples: [],
       error: `all ${stages.length} attempt${stages.length === 1 ? "" : "s"} failed`,
-      attempts: stages.length, attemptLog: log,
+      attempts: stages.length,
+      attemptLog: log,
     };
   }, []);
 
@@ -624,11 +806,18 @@ function TypographyAuditPage() {
   }, [auditRoute]);
 
   // Auto-run on mount
-  useEffect(() => { runAudit(); }, [runAudit]);
+  useEffect(() => {
+    runAudit();
+  }, [runAudit]);
 
   // ── Aggregate stats ──
   const stats = useMemo(() => {
-    let total = 0, ok = 0, fontFallbacks = 0, sizeIssues = 0, lhIssues = 0, contrastIssues = 0;
+    let total = 0,
+      ok = 0,
+      fontFallbacks = 0,
+      sizeIssues = 0,
+      lhIssues = 0,
+      contrastIssues = 0;
     for (const r of results) {
       for (const s of r.samples) {
         if (!s.found) continue;
@@ -658,11 +847,17 @@ function TypographyAuditPage() {
       <header className="border-b border-[color:var(--border)] px-6 py-8 md:px-10">
         <div className="mx-auto max-w-[1240px]">
           <p className="eyebrow mb-3">Internal · Typography Audit</p>
-          <h1 className="font-[var(--font-serif)] text-3xl md:text-5xl leading-[1.05]">Live typography audit</h1>
+          <h1 className="font-[var(--font-serif)] text-3xl md:text-5xl leading-[1.05]">
+            Live typography audit
+          </h1>
           <p className="mt-3 max-w-3xl text-sm md:text-base">
-            For each route, the page below loads in a hidden iframe, waits for fonts to be ready, and samples
-            <code className="mx-1 rounded bg-black/5 px-1 py-0.5 text-[12px]">getComputedStyle</code>
-            on representative elements. A row is flagged if the resolved family doesn't match the expected token, or if size / line-height / contrast falls below the WCAG threshold.
+            For each route, the page below loads in a hidden iframe, waits for fonts to be ready,
+            and samples
+            <code className="mx-1 rounded bg-black/5 px-1 py-0.5 text-[12px]">
+              getComputedStyle
+            </code>
+            on representative elements. A row is flagged if the resolved family doesn't match the
+            expected token, or if size / line-height / contrast falls below the WCAG threshold.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
@@ -703,11 +898,31 @@ function TypographyAuditPage() {
       <section className="border-b border-[color:var(--border)] bg-white/60 px-6 py-6 md:px-10">
         <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-3 md:grid-cols-6">
           <Stat label="Samples taken" value={stats.total} />
-          <Stat label="Passing" value={stats.ok} tone={stats.total && stats.ok === stats.total ? "ok" : "neutral"} />
-          <Stat label="Font fallbacks" value={stats.fontFallbacks} tone={stats.fontFallbacks ? "bad" : "ok"} />
-          <Stat label="Size issues" value={stats.sizeIssues} tone={stats.sizeIssues ? "warn" : "ok"} />
-          <Stat label="Line-height issues" value={stats.lhIssues} tone={stats.lhIssues ? "warn" : "ok"} />
-          <Stat label="Contrast issues" value={stats.contrastIssues} tone={stats.contrastIssues ? "bad" : "ok"} />
+          <Stat
+            label="Passing"
+            value={stats.ok}
+            tone={stats.total && stats.ok === stats.total ? "ok" : "neutral"}
+          />
+          <Stat
+            label="Font fallbacks"
+            value={stats.fontFallbacks}
+            tone={stats.fontFallbacks ? "bad" : "ok"}
+          />
+          <Stat
+            label="Size issues"
+            value={stats.sizeIssues}
+            tone={stats.sizeIssues ? "warn" : "ok"}
+          />
+          <Stat
+            label="Line-height issues"
+            value={stats.lhIssues}
+            tone={stats.lhIssues ? "warn" : "ok"}
+          />
+          <Stat
+            label="Contrast issues"
+            value={stats.contrastIssues}
+            tone={stats.contrastIssues ? "bad" : "ok"}
+          />
         </div>
       </section>
 
@@ -723,12 +938,23 @@ function TypographyAuditPage() {
   );
 }
 
-function Stat({ label, value, tone = "neutral" }: { label: string; value: number; tone?: "ok" | "warn" | "bad" | "neutral" }) {
+function Stat({
+  label,
+  value,
+  tone = "neutral",
+}: {
+  label: string;
+  value: number;
+  tone?: "ok" | "warn" | "bad" | "neutral";
+}) {
   const ring =
-    tone === "ok" ? "ring-emerald-500/40 bg-emerald-50" :
-    tone === "warn" ? "ring-amber-500/40 bg-amber-50" :
-    tone === "bad" ? "ring-rose-500/50 bg-rose-50" :
-    "ring-black/10 bg-white";
+    tone === "ok"
+      ? "ring-emerald-500/40 bg-emerald-50"
+      : tone === "warn"
+        ? "ring-amber-500/40 bg-amber-50"
+        : tone === "bad"
+          ? "ring-rose-500/50 bg-rose-50"
+          : "ring-black/10 bg-white";
   return (
     <div className={`rounded-lg px-4 py-3 ring-1 ${ring}`}>
       <div className="text-2xl font-semibold tabular-nums">{value}</div>
@@ -751,9 +977,15 @@ function RouteSection({ result }: { result: RouteResult }) {
           {result.via && (
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] ${
-                result.via === "ssr-fallback" ? "bg-amber-100 text-amber-800" : "bg-zinc-100 text-zinc-700"
+                result.via === "ssr-fallback"
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-zinc-100 text-zinc-700"
               }`}
-              title={result.via === "ssr-fallback" ? "Live runtime failed; sampled SSR HTML instead" : "Sampled live runtime"}
+              title={
+                result.via === "ssr-fallback"
+                  ? "Live runtime failed; sampled SSR HTML instead"
+                  : "Sampled live runtime"
+              }
             >
               via {result.via}
             </span>
@@ -765,17 +997,31 @@ function RouteSection({ result }: { result: RouteResult }) {
           )}
         </div>
         <div className="flex gap-2 text-[11px] uppercase tracking-[0.12em]">
-          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-800">{passing} ok</span>
-          {failing > 0 && <span className="rounded-full bg-rose-100 px-2.5 py-1 text-rose-800">{failing} flagged</span>}
-          {missing > 0 && <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-zinc-700">{missing} n/a</span>}
+          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-800">
+            {passing} ok
+          </span>
+          {failing > 0 && (
+            <span className="rounded-full bg-rose-100 px-2.5 py-1 text-rose-800">
+              {failing} flagged
+            </span>
+          )}
+          {missing > 0 && (
+            <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-zinc-700">
+              {missing} n/a
+            </span>
+          )}
         </div>
       </header>
       {(result.error || (result.attemptLog && result.attemptLog.length > 0)) && (
-        <div className={`border-b px-5 py-3 text-sm ${result.error ? "border-rose-100 bg-rose-50 text-rose-800" : "border-amber-100 bg-amber-50/60 text-amber-900"}`}>
+        <div
+          className={`border-b px-5 py-3 text-sm ${result.error ? "border-rose-100 bg-rose-50 text-rose-800" : "border-amber-100 bg-amber-50/60 text-amber-900"}`}
+        >
           {result.error && <div className="font-medium">Error: {result.error}</div>}
           {result.attemptLog && result.attemptLog.length > 0 && (
             <ul className="mt-1 space-y-0.5 text-[12px]">
-              {result.attemptLog.map((line, i) => <li key={i}>↳ {line}</li>)}
+              {result.attemptLog.map((line, i) => (
+                <li key={i}>↳ {line}</li>
+              ))}
             </ul>
           )}
         </div>
@@ -796,7 +1042,10 @@ function RouteSection({ result }: { result: RouteResult }) {
           </thead>
           <tbody>
             {result.samples.map((s) => (
-              <tr key={s.token.key} className={`border-b border-black/5 last:border-0 ${s.issues.length ? "bg-rose-50/40" : ""}`}>
+              <tr
+                key={s.token.key}
+                className={`border-b border-black/5 last:border-0 ${s.issues.length ? "bg-rose-50/40" : ""}`}
+              >
                 <td className="px-4 py-2.5">
                   <div className="font-medium">{s.token.label}</div>
                   <code className="text-[11px] opacity-60">{s.token.selector}</code>
@@ -804,33 +1053,59 @@ function RouteSection({ result }: { result: RouteResult }) {
                 <td className="px-4 py-2.5">
                   {s.found ? (
                     <span className="inline-flex items-center gap-2">
-                      <span className={`inline-block h-1.5 w-1.5 rounded-full ${s.expectedMatched ? "bg-emerald-500" : "bg-rose-500"}`} />
+                      <span
+                        className={`inline-block h-1.5 w-1.5 rounded-full ${s.expectedMatched ? "bg-emerald-500" : "bg-rose-500"}`}
+                      />
                       <span style={{ fontFamily: s.fontFamily }}>{s.resolvedFirst}</span>
-                      <span className="text-[11px] opacity-50">expected {s.token.expectedFamily}</span>
+                      <span className="text-[11px] opacity-50">
+                        expected {s.token.expectedFamily}
+                      </span>
                     </span>
-                  ) : <span className="opacity-40">—</span>}
+                  ) : (
+                    <span className="opacity-40">—</span>
+                  )}
                 </td>
-                <td className="px-4 py-2.5 text-right tabular-nums">{s.found ? `${s.fontPx}px` : "—"}</td>
-                <td className="px-4 py-2.5 text-right tabular-nums">{s.found ? s.lineHeight.toFixed(2) : "—"}</td>
-                <td className="px-4 py-2.5 text-right tabular-nums">{s.found ? s.fontWeight : "—"}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">
+                  {s.found ? `${s.fontPx}px` : "—"}
+                </td>
+                <td className="px-4 py-2.5 text-right tabular-nums">
+                  {s.found ? s.lineHeight.toFixed(2) : "—"}
+                </td>
+                <td className="px-4 py-2.5 text-right tabular-nums">
+                  {s.found ? s.fontWeight : "—"}
+                </td>
                 <td className="px-4 py-2.5">
                   {s.found ? (
                     <span className="inline-flex items-center gap-1.5">
-                      <span className="inline-block h-3 w-3 rounded-sm ring-1 ring-black/10" style={{ background: s.fg }} />
+                      <span
+                        className="inline-block h-3 w-3 rounded-sm ring-1 ring-black/10"
+                        style={{ background: s.fg }}
+                      />
                       <span className="text-[11px]">{s.fg}</span>
                       <span className="opacity-40">/</span>
-                      <span className="inline-block h-3 w-3 rounded-sm ring-1 ring-black/10" style={{ background: s.bg }} />
+                      <span
+                        className="inline-block h-3 w-3 rounded-sm ring-1 ring-black/10"
+                        style={{ background: s.bg }}
+                      />
                       <span className="text-[11px]">{s.bg}</span>
                     </span>
-                  ) : "—"}
+                  ) : (
+                    "—"
+                  )}
                 </td>
-                <td className="px-4 py-2.5 text-right tabular-nums">{s.contrast != null ? `${s.contrast.toFixed(2)}:1` : "—"}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">
+                  {s.contrast != null ? `${s.contrast.toFixed(2)}:1` : "—"}
+                </td>
                 <td className="px-4 py-2.5">
                   {s.issues.length === 0 ? (
                     <span className="text-emerald-700">✓ ok</span>
                   ) : (
                     <ul className="space-y-0.5">
-                      {s.issues.map((i, idx) => <li key={idx} className="text-[12px] text-rose-700">• {i}</li>)}
+                      {s.issues.map((i, idx) => (
+                        <li key={idx} className="text-[12px] text-rose-700">
+                          • {i}
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </td>
@@ -850,19 +1125,40 @@ function StatusBadge({ status }: { status: RouteResult["status"] }) {
     done: "bg-emerald-100 text-emerald-800",
     error: "bg-rose-100 text-rose-800",
   } as const;
-  return <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${map[status]}`}>{status}</span>;
+  return (
+    <span
+      className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] ${map[status]}`}
+    >
+      {status}
+    </span>
+  );
 }
 
 // ─── Settings panel ──────────────────────────────────────────────
 type StageKey = "iframeAttempt1" | "iframeAttempt2" | "ssrFallback";
 const STAGE_META: Array<{ key: StageKey; label: string; hint: string }> = [
-  { key: "iframeAttempt1", label: "Stage 1 · iframe (fast)",    hint: "First live render. Short timeout — fails fast on cold/slow routes so we can retry." },
-  { key: "iframeAttempt2", label: "Stage 2 · iframe (patient)", hint: "Second live render with a longer budget. Good for routes that legitimately take time to hydrate." },
-  { key: "ssrFallback",    label: "Stage 3 · SSR HTML",          hint: "Last resort. Fetches the SSR HTML and samples it via srcdoc — bypasses runtime crashes entirely." },
+  {
+    key: "iframeAttempt1",
+    label: "Stage 1 · iframe (fast)",
+    hint: "First live render. Short timeout — fails fast on cold/slow routes so we can retry.",
+  },
+  {
+    key: "iframeAttempt2",
+    label: "Stage 2 · iframe (patient)",
+    hint: "Second live render with a longer budget. Good for routes that legitimately take time to hydrate.",
+  },
+  {
+    key: "ssrFallback",
+    label: "Stage 3 · SSR HTML",
+    hint: "Last resort. Fetches the SSR HTML and samples it via srcdoc — bypasses runtime crashes entirely.",
+  },
 ];
 
 function SettingsPanel({
-  settings, onChange, onReset, disabled,
+  settings,
+  onChange,
+  onReset,
+  disabled,
 }: {
   settings: AuditSettings;
   onChange: (next: AuditSettings) => void;
@@ -874,7 +1170,8 @@ function SettingsPanel({
   };
   const enabledCount = STAGE_META.filter(({ key }) => settings[key].enabled).length;
   const totalBudget = STAGE_META.reduce(
-    (sum, { key }) => sum + (settings[key].enabled ? settings[key].timeoutMs + settings[key].backoffMs : 0),
+    (sum, { key }) =>
+      sum + (settings[key].enabled ? settings[key].timeoutMs + settings[key].backoffMs : 0),
     0,
   );
 
@@ -886,18 +1183,27 @@ function SettingsPanel({
   const AUTOFIX_KEY = "yes:typography-audit:autofix-on-import:v1";
   const [autoFixOnImport, setAutoFixOnImport] = useState<boolean>(() => {
     if (typeof localStorage === "undefined") return false;
-    try { return localStorage.getItem(AUTOFIX_KEY) === "1"; } catch { return false; }
+    try {
+      return localStorage.getItem(AUTOFIX_KEY) === "1";
+    } catch {
+      return false;
+    }
   });
   useEffect(() => {
-    try { localStorage.setItem(AUTOFIX_KEY, autoFixOnImport ? "1" : "0"); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(AUTOFIX_KEY, autoFixOnImport ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
   }, [autoFixOnImport]);
 
   // Hold full validation report so the panel can render a structured issue list,
   // not just a single one-line message.
-  const [importReport, setImportReport] = useState<
-    | { fileName: string; mode: "applied" | "validated" | "rejected" | "current"; report: ValidationReport }
-    | null
-  >(null);
+  const [importReport, setImportReport] = useState<{
+    fileName: string;
+    mode: "applied" | "validated" | "rejected" | "current";
+    report: ValidationReport;
+  } | null>(null);
   // Set by the "Validate, apply & publish" button after a successful run.
   // The actual publish happens in the Lovable editor — we just surface a CTA.
   // We store the settings snapshot that produced this CTA so any later edit
@@ -915,7 +1221,13 @@ function SettingsPanel({
           report: {
             ok: false,
             shape: "invalid",
-            issues: [{ level: "error", path: "$", message: `File too large (${file.size} bytes > 65536).` }],
+            issues: [
+              {
+                level: "error",
+                path: "$",
+                message: `File too large (${file.size} bytes > 65536).`,
+              },
+            ],
             parsed: null,
           },
         });
@@ -943,11 +1255,13 @@ function SettingsPanel({
           parsed: fixed,
           issues: [
             ...report.issues,
-            ...changes.map((c): ValidationIssue => ({
-              level: "info",
-              path: "auto-fix",
-              message: c,
-            })),
+            ...changes.map(
+              (c): ValidationIssue => ({
+                level: "info",
+                path: "auto-fix",
+                message: c,
+              }),
+            ),
           ],
         };
         setImportReport({ fileName: file.name, mode: "applied", report: augmented });
@@ -978,9 +1292,13 @@ function SettingsPanel({
   // Read toggle state through refs so the input's onChange (created once per
   // render) always sees the latest values without rebinding listeners.
   const validateOnlyRef = useRef(validateOnly);
-  useEffect(() => { validateOnlyRef.current = validateOnly; }, [validateOnly]);
+  useEffect(() => {
+    validateOnlyRef.current = validateOnly;
+  }, [validateOnly]);
   const autoFixOnImportRef = useRef(autoFixOnImport);
-  useEffect(() => { autoFixOnImportRef.current = autoFixOnImport; }, [autoFixOnImport]);
+  useEffect(() => {
+    autoFixOnImportRef.current = autoFixOnImport;
+  }, [autoFixOnImport]);
 
   return (
     <div className="mt-6 rounded-xl border border-[color:var(--border)] bg-white/80 p-5 md:p-6">
@@ -988,12 +1306,17 @@ function SettingsPanel({
         <div>
           <h2 className="font-[var(--font-serif)] text-xl">Reliability tuning</h2>
           <p className="mt-1 text-[12px] text-black/60">
-            Per-stage retry behaviour. Settings are saved to your browser and applied to the next audit run.
+            Per-stage retry behaviour. Settings are saved to your browser and applied to the next
+            audit run.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.12em]">
-          <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-zinc-700">{enabledCount}/3 stages on</span>
-          <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-zinc-700">≤{(totalBudget / 1000).toFixed(1)}s/route worst-case</span>
+          <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-zinc-700">
+            {enabledCount}/3 stages on
+          </span>
+          <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-zinc-700">
+            ≤{(totalBudget / 1000).toFixed(1)}s/route worst-case
+          </span>
           <input
             ref={fileInputRef}
             type="file"
@@ -1001,7 +1324,8 @@ function SettingsPanel({
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) void handleImportFile(file, validateOnlyRef.current, autoFixOnImportRef.current);
+              if (file)
+                void handleImportFile(file, validateOnlyRef.current, autoFixOnImportRef.current);
               // Reset so re-selecting the same file still fires onChange.
               e.target.value = "";
             }}
@@ -1020,10 +1344,12 @@ function SettingsPanel({
             <span className="uppercase tracking-[0.12em]">Validate only</span>
           </label>
           <label
-            className={`flex items-center gap-1.5 rounded-md border border-[color:var(--border)] px-2.5 py-1.5 text-[11px] font-semibold normal-case tracking-normal ${(disabled || validateOnly) ? "opacity-50" : "cursor-pointer hover:bg-zinc-50"}`}
-            title={validateOnly
-              ? "Disabled while \"Validate only\" is on — dry-run never modifies settings."
-              : "When on, imports silently apply auto-fix corrections (clamp out-of-range, fix typos, re-enable Stage 1 if all stages were off) without prompting. Persisted across sessions."}
+            className={`flex items-center gap-1.5 rounded-md border border-[color:var(--border)] px-2.5 py-1.5 text-[11px] font-semibold normal-case tracking-normal ${disabled || validateOnly ? "opacity-50" : "cursor-pointer hover:bg-zinc-50"}`}
+            title={
+              validateOnly
+                ? 'Disabled while "Validate only" is on — dry-run never modifies settings.'
+                : "When on, imports silently apply auto-fix corrections (clamp out-of-range, fix typos, re-enable Stage 1 if all stages were off) without prompting. Persisted across sessions."
+            }
           >
             <input
               type="checkbox"
@@ -1127,11 +1453,13 @@ function SettingsPanel({
                     ...finalReport,
                     issues: [
                       ...finalReport.issues,
-                      ...autoFixNotes.map((c): ValidationIssue => ({
-                        level: "info",
-                        path: "auto-fix",
-                        message: c,
-                      })),
+                      ...autoFixNotes.map(
+                        (c): ValidationIssue => ({
+                          level: "info",
+                          path: "auto-fix",
+                          message: c,
+                        }),
+                      ),
                     ],
                   }
                 : finalReport;
@@ -1164,44 +1492,51 @@ function SettingsPanel({
         </div>
       </div>
 
-      {importReport && (() => {
-        // Source for auto-fix: the parsed (clamped) result if available, else
-        // the live settings (so "Validate current" can also auto-fix).
-        const source = importReport.report.parsed ?? settings;
-        const autoFix = autoFixSettings(source);
-        // Only offer auto-fix when it would actually change something AND we
-        // either have errors or are clearly off the happy path.
-        const canAutoFix =
-          autoFix.changes.length > 0 &&
-          (importReport.report.issues.some((i) => i.level === "error" || i.level === "warning"));
-        return (
-          <ImportReportCard
-            fileName={importReport.fileName}
-            mode={importReport.mode}
-            report={importReport.report}
-            onApply={
-              importReport.mode === "validated" && importReport.report.ok && importReport.report.parsed
-                ? () => {
-                    onChange(importReport.report.parsed!);
-                    setImportReport({ ...importReport, mode: "applied" });
-                  }
-                : undefined
-            }
-            onAutoFix={canAutoFix ? () => {
-              onChange(autoFix.fixed);
-              // Re-validate against the freshly applied values so the card
-              // reflects the new (hopefully clean) state.
-              setImportReport({
-                fileName: importReport.fileName,
-                mode: "applied",
-                report: validateCurrentSettings(autoFix.fixed),
-              });
-            } : undefined}
-            autoFixChanges={canAutoFix ? autoFix.changes : undefined}
-            onDismiss={() => setImportReport(null)}
-          />
-        );
-      })()}
+      {importReport &&
+        (() => {
+          // Source for auto-fix: the parsed (clamped) result if available, else
+          // the live settings (so "Validate current" can also auto-fix).
+          const source = importReport.report.parsed ?? settings;
+          const autoFix = autoFixSettings(source);
+          // Only offer auto-fix when it would actually change something AND we
+          // either have errors or are clearly off the happy path.
+          const canAutoFix =
+            autoFix.changes.length > 0 &&
+            importReport.report.issues.some((i) => i.level === "error" || i.level === "warning");
+          return (
+            <ImportReportCard
+              fileName={importReport.fileName}
+              mode={importReport.mode}
+              report={importReport.report}
+              onApply={
+                importReport.mode === "validated" &&
+                importReport.report.ok &&
+                importReport.report.parsed
+                  ? () => {
+                      onChange(importReport.report.parsed!);
+                      setImportReport({ ...importReport, mode: "applied" });
+                    }
+                  : undefined
+              }
+              onAutoFix={
+                canAutoFix
+                  ? () => {
+                      onChange(autoFix.fixed);
+                      // Re-validate against the freshly applied values so the card
+                      // reflects the new (hopefully clean) state.
+                      setImportReport({
+                        fileName: importReport.fileName,
+                        mode: "applied",
+                        report: validateCurrentSettings(autoFix.fixed),
+                      });
+                    }
+                  : undefined
+              }
+              autoFixChanges={canAutoFix ? autoFix.changes : undefined}
+              onDismiss={() => setImportReport(null)}
+            />
+          );
+        })()}
 
       {publishReady && (
         <div
@@ -1211,7 +1546,8 @@ function SettingsPanel({
           <div className="flex flex-col">
             <span className="font-semibold">Settings applied · ready to publish</span>
             <span className="text-[11px] opacity-75">
-              Frontend changes go live only after you publish. Use your editor's Publish button to push the updated reliability settings.
+              Frontend changes go live only after you publish. Use your editor's Publish button to
+              push the updated reliability settings.
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -1237,7 +1573,9 @@ function SettingsPanel({
               key={key}
               className={`rounded-lg border p-4 transition ${cfg.enabled ? "border-[color:var(--border)] bg-white" : "border-dashed border-zinc-300 bg-zinc-50 opacity-70"}`}
             >
-              <legend className="px-1.5 text-[11px] font-semibold uppercase tracking-[0.12em]">{label}</legend>
+              <legend className="px-1.5 text-[11px] font-semibold uppercase tracking-[0.12em]">
+                {label}
+              </legend>
               <label className="mt-2 flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
@@ -1310,7 +1648,13 @@ function SettingsPanel({
 }
 
 function ImportReportCard({
-  fileName, mode, report, onApply, onAutoFix, autoFixChanges, onDismiss,
+  fileName,
+  mode,
+  report,
+  onApply,
+  onAutoFix,
+  autoFixChanges,
+  onDismiss,
 }: {
   fileName: string;
   mode: "applied" | "validated" | "rejected" | "current";
@@ -1322,9 +1666,9 @@ function ImportReportCard({
   autoFixChanges?: string[];
   onDismiss: () => void;
 }) {
-  const errors   = report.issues.filter((i) => i.level === "error");
+  const errors = report.issues.filter((i) => i.level === "error");
   const warnings = report.issues.filter((i) => i.level === "warning");
-  const infos    = report.issues.filter((i) => i.level === "info");
+  const infos = report.issues.filter((i) => i.level === "info");
 
   // Tone the banner by outcome:
   //  - applied   → green (settings updated)
@@ -1332,22 +1676,32 @@ function ImportReportCard({
   //  - current   → green if clean, amber if warnings, red if errors
   //  - rejected  → red (errors blocked the import)
   const toneClass =
-    mode === "applied"   ? "border-emerald-200 bg-emerald-50 text-emerald-900" :
-    mode === "validated" ? "border-amber-200 bg-amber-50 text-amber-900" :
-    mode === "current"   ? (
-      errors.length      ? "border-rose-200 bg-rose-50 text-rose-900" :
-      warnings.length    ? "border-amber-200 bg-amber-50 text-amber-900" :
-                           "border-emerald-200 bg-emerald-50 text-emerald-900"
-    ) :
-                           "border-rose-200 bg-rose-50 text-rose-900";
+    mode === "applied"
+      ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+      : mode === "validated"
+        ? "border-amber-200 bg-amber-50 text-amber-900"
+        : mode === "current"
+          ? errors.length
+            ? "border-rose-200 bg-rose-50 text-rose-900"
+            : warnings.length
+              ? "border-amber-200 bg-amber-50 text-amber-900"
+              : "border-emerald-200 bg-emerald-50 text-emerald-900"
+          : "border-rose-200 bg-rose-50 text-rose-900";
 
   const headline =
-    mode === "applied"   ? `Imported "${fileName}"` :
-    mode === "validated" ? (report.ok ? `Validated "${fileName}" — no errors` : `Validated "${fileName}" — ${errors.length} error${errors.length === 1 ? "" : "s"}`) :
-    mode === "current"   ? (report.ok
-        ? (warnings.length ? `Current settings — OK with ${warnings.length} warning${warnings.length === 1 ? "" : "s"}` : `Current settings — all checks passed`)
-        : `Current settings — ${errors.length} error${errors.length === 1 ? "" : "s"}`) :
-                           `Rejected "${fileName}" — ${errors.length} error${errors.length === 1 ? "" : "s"}`;
+    mode === "applied"
+      ? `Imported "${fileName}"`
+      : mode === "validated"
+        ? report.ok
+          ? `Validated "${fileName}" — no errors`
+          : `Validated "${fileName}" — ${errors.length} error${errors.length === 1 ? "" : "s"}`
+        : mode === "current"
+          ? report.ok
+            ? warnings.length
+              ? `Current settings — OK with ${warnings.length} warning${warnings.length === 1 ? "" : "s"}`
+              : `Current settings — all checks passed`
+            : `Current settings — ${errors.length} error${errors.length === 1 ? "" : "s"}`
+          : `Rejected "${fileName}" — ${errors.length} error${errors.length === 1 ? "" : "s"}`;
 
   return (
     <div role="status" className={`mt-3 rounded-md border p-3 text-[12px] ${toneClass}`}>
@@ -1403,7 +1757,9 @@ function ImportReportCard({
           </summary>
           <ul className="mt-2 space-y-1 text-[12px]">
             {autoFixChanges.map((c, i) => (
-              <li key={i} className="font-mono leading-snug">{c}</li>
+              <li key={i} className="font-mono leading-snug">
+                {c}
+              </li>
             ))}
           </ul>
         </details>
@@ -1415,7 +1771,7 @@ function ImportReportCard({
         // Lift them into a dedicated, collapsible section so users can scan
         // *what changed* separately from regular validation notes.
         const appliedFixes = report.issues.filter((i) => i.path === "auto-fix");
-        const otherIssues  = report.issues.filter((i) => i.path !== "auto-fix");
+        const otherIssues = report.issues.filter((i) => i.path !== "auto-fix");
         return (
           <>
             {appliedFixes.length > 0 && (
@@ -1424,11 +1780,14 @@ function ImportReportCard({
                 className="mt-2 rounded-md border border-current/20 bg-white/50 px-3 py-2"
               >
                 <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-[0.12em]">
-                  What changed? {appliedFixes.length} auto-fix adjustment{appliedFixes.length === 1 ? "" : "s"} applied
+                  What changed? {appliedFixes.length} auto-fix adjustment
+                  {appliedFixes.length === 1 ? "" : "s"} applied
                 </summary>
                 <ul className="mt-2 space-y-1 text-[12px]">
                   {appliedFixes.map((fix, i) => (
-                    <li key={i} className="font-mono leading-snug">{fix.message}</li>
+                    <li key={i} className="font-mono leading-snug">
+                      {fix.message}
+                    </li>
                   ))}
                 </ul>
               </details>
@@ -1440,14 +1799,18 @@ function ImportReportCard({
                   <li key={idx} className="flex items-start gap-2 leading-snug">
                     <span
                       className={`mt-0.5 inline-flex w-14 shrink-0 justify-center rounded-sm px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] ${
-                        issue.level === "error"   ? "bg-rose-200 text-rose-900" :
-                        issue.level === "warning" ? "bg-amber-200 text-amber-900" :
-                                                    "bg-zinc-200 text-zinc-800"
+                        issue.level === "error"
+                          ? "bg-rose-200 text-rose-900"
+                          : issue.level === "warning"
+                            ? "bg-amber-200 text-amber-900"
+                            : "bg-zinc-200 text-zinc-800"
                       }`}
                     >
                       {issue.level}
                     </span>
-                    <code className="shrink-0 rounded bg-white/70 px-1.5 py-0.5 text-[11px]">{issue.path}</code>
+                    <code className="shrink-0 rounded bg-white/70 px-1.5 py-0.5 text-[11px]">
+                      {issue.path}
+                    </code>
                     <span className="text-[12px]">{issue.message}</span>
                   </li>
                 ))}
@@ -1461,14 +1824,31 @@ function ImportReportCard({
 }
 
 function NumField({
-  label, value, onChange, min, max, step, suffix, hint, disabled,
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step,
+  suffix,
+  hint,
+  disabled,
 }: {
-  label: string; value: number; onChange: (v: number) => void;
-  min: number; max: number; step: number; suffix?: string; hint?: string; disabled?: boolean;
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  min: number;
+  max: number;
+  step: number;
+  suffix?: string;
+  hint?: string;
+  disabled?: boolean;
 }) {
   return (
     <label className={`mt-3 block ${disabled ? "opacity-50" : ""}`}>
-      <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-black/70">{label}</span>
+      <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-black/70">
+        {label}
+      </span>
       <span className="mt-1 flex items-center gap-2">
         <input
           type="range"

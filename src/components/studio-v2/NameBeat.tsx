@@ -27,7 +27,10 @@ export function NameBeat({ initial = "", onSubmit, onSkip }: Props) {
 
   const submit = () => {
     const trimmed = value.trim().slice(0, 40);
-    if (!trimmed) { onSkip(); return; }
+    if (!trimmed) {
+      onSkip();
+      return;
+    }
     onSubmit(trimmed);
   };
 
@@ -53,7 +56,10 @@ export function NameBeat({ initial = "", onSubmit, onSkip }: Props) {
       </p>
 
       <form
-        onSubmit={(e) => { e.preventDefault(); submit(); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
         className="mt-10 flex w-full max-w-[360px] items-center gap-3"
       >
         <input

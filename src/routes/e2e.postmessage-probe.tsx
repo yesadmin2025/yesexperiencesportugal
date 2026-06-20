@@ -127,8 +127,7 @@ function ProbePage() {
           fontWeight: 700,
           fontSize: 28,
           margin: 0,
-          color:
-            pass === null ? "var(--teal)" : pass ? "var(--teal)" : "#a3271f",
+          color: pass === null ? "var(--teal)" : pass ? "var(--teal)" : "#a3271f",
         }}
       >
         {pass === null
@@ -139,8 +138,7 @@ function ProbePage() {
       </h1>
       <p style={{ marginTop: 8, fontSize: 14, opacity: 0.8 }}>
         E2E probe for the postMessage noise filter. Read{" "}
-        <code>window.__E2E_POSTMESSAGE_RESULT__</code> for machine-readable
-        output.
+        <code>window.__E2E_POSTMESSAGE_RESULT__</code> for machine-readable output.
       </p>
       {results && (
         <table
@@ -168,9 +166,7 @@ function ProbePage() {
                 style={{ borderBottom: "1px solid #2E2E2E11" }}
               >
                 <td style={{ padding: "6px 4px" }}>{r.label}</td>
-                <td style={{ padding: "6px 4px" }}>
-                  {r.shouldPass ? "pass through" : "blocked"}
-                </td>
+                <td style={{ padding: "6px 4px" }}>{r.shouldPass ? "pass through" : "blocked"}</td>
                 <td style={{ padding: "6px 4px" }}>{r.received ? "yes" : "no"}</td>
                 <td
                   style={{

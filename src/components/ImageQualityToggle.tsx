@@ -10,12 +10,7 @@ import { useImageQuality, type ImageQuality } from "@/hooks/use-image-quality";
 export function ImageQualityToggle({ className = "" }: { className?: string }) {
   const { quality, setQuality } = useImageQuality();
 
-  const opt = (
-    value: ImageQuality,
-    label: string,
-    icon: React.ReactNode,
-    hint: string,
-  ) => {
+  const opt = (value: ImageQuality, label: string, icon: React.ReactNode, hint: string) => {
     const active = quality === value;
     return (
       <button

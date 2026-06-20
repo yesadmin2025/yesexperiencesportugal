@@ -98,8 +98,8 @@ export function ShareExport({ route, stops, guests }: Props) {
         Exportar & partilhar
       </p>
       <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]/70">
-        Gera uma página elegante do teu roteiro para partilhar com quem viaja contigo,
-        ou exporta como PDF.
+        Gera uma página elegante do teu roteiro para partilhar com quem viaja contigo, ou exporta
+        como PDF.
       </p>
 
       {!shareToken && (
@@ -111,8 +111,7 @@ export function ShareExport({ route, stops, guests }: Props) {
         >
           {busy ? (
             <>
-              <Loader2 size={14} className="animate-spin" />
-              A gerar…
+              <Loader2 size={14} className="animate-spin" />A gerar…
             </>
           ) : (
             <>
@@ -123,9 +122,7 @@ export function ShareExport({ route, stops, guests }: Props) {
         </button>
       )}
 
-      {error && (
-        <p className="mt-3 text-[11.5px] text-red-700/80">{error}</p>
-      )}
+      {error && <p className="mt-3 text-[11.5px] text-red-700/80">{error}</p>}
 
       {shareToken && shareUrl && (
         <div className="mt-4 flex flex-col gap-3">

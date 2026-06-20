@@ -14,7 +14,6 @@ const ALLOWED_ORIGINS = new Set<string>([
   "https://id-preview--5351efc5-c55a-4e41-b282-a4a019690d38.lovable.app",
 ]);
 
-
 /**
  * Validate a caller-supplied base URL. Must parse, must be https, and must
  * have an origin present in ALLOWED_ORIGINS. Returns null on rejection.

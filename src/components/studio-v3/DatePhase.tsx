@@ -146,9 +146,7 @@ function SecondaryOption({
       onClick={onClick}
       className="relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{
-        background: selected
-          ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
-          : "var(--ivory)",
+        background: selected ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))" : "var(--ivory)",
         borderColor: selected
           ? "var(--teal)"
           : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
@@ -206,10 +204,7 @@ export function formatExactLabel(iso: string): string {
 }
 
 /** Display label for downstream consumers (storyboard, lead capture if ever needed). */
-export function dateDisplayLabel(
-  dateMode: DateMode | null,
-  dateExact: string | null,
-): string {
+export function dateDisplayLabel(dateMode: DateMode | null, dateExact: string | null): string {
   if (dateMode === "exact" && dateExact) return formatExactLabel(dateExact);
   if (dateMode === "flexible") return "Flexible";
   if (dateMode === "undecided") return "Date to be confirmed";

@@ -55,10 +55,8 @@ type ButtonCtaProps = CommonProps &
 export type CtaButtonProps = LinkCtaProps | AnchorCtaProps | ButtonCtaProps;
 
 const sizeClasses: Record<Size, string> = {
-  md:
-    "px-7 py-3.5 min-h-[48px] text-[12.5px] sm:text-[13px] tracking-[0.18em]",
-  sm:
-    "px-5 py-3 min-h-[44px] text-[12px] tracking-[0.16em]",
+  md: "px-7 py-3.5 min-h-[48px] text-[12.5px] sm:text-[13px] tracking-[0.18em]",
+  sm: "px-5 py-3 min-h-[44px] text-[12px] tracking-[0.16em]",
 };
 
 const baseClasses =
@@ -67,16 +65,13 @@ const baseClasses =
 const variantClasses: Record<Variant, string> = {
   primary:
     "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)] he-cta-shift",
-  ghost:
-    "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)]/[0.06]",
-  ghostDark:
-    "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
+  ghost: "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)]/[0.06]",
+  ghostDark: "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
 };
 
 const variantStyle: Record<Variant, React.CSSProperties> = {
   primary: {
-    border:
-      "1px solid color-mix(in oklab, var(--gold-deep) 55%, transparent)",
+    border: "1px solid color-mix(in oklab, var(--gold-deep) 55%, transparent)",
     boxShadow:
       "inset 0 0 0 1px color-mix(in oklab, var(--gold) 22%, transparent), 0 8px 22px -10px color-mix(in oklab, var(--charcoal-deep) 35%, transparent)",
   },
@@ -102,26 +97,15 @@ function arrowClasses(variant: Variant) {
 }
 
 export function CtaButton(props: CtaButtonProps) {
-  const {
-    variant = "primary",
-    size = "md",
-    icon,
-    iconLeading,
-    className,
-    children,
-  } = props;
+  const { variant = "primary", size = "md", icon, iconLeading, className, children } = props;
 
   const arrowSize = variant === "primary" ? 14 : 12;
   const trailing =
     icon === null
       ? null
-      : icon ?? (
-          <ArrowRight
-            size={arrowSize}
-            aria-hidden="true"
-            className={arrowClasses(variant)}
-          />
-        );
+      : (icon ?? (
+          <ArrowRight size={arrowSize} aria-hidden="true" className={arrowClasses(variant)} />
+        ));
 
   const content = (
     <>
@@ -131,16 +115,20 @@ export function CtaButton(props: CtaButtonProps) {
     </>
   );
 
-  const sharedClassName = cn(
-    baseClasses,
-    sizeClasses[size],
-    variantClasses[variant],
-    className,
-  );
+  const sharedClassName = cn(baseClasses, sizeClasses[size], variantClasses[variant], className);
   const sharedStyle = className?.includes("hero-cta-button") ? undefined : variantStyle[variant];
 
   if ("href" in props && props.href !== undefined) {
-    const { href, variant: _v, size: _s, icon: _i, iconLeading: _il, className: _c, children: _ch, ...rest } = props;
+    const {
+      href,
+      variant: _v,
+      size: _s,
+      icon: _i,
+      iconLeading: _il,
+      className: _c,
+      children: _ch,
+      ...rest
+    } = props;
     return (
       <a href={href} className={sharedClassName} style={sharedStyle} {...rest}>
         {content}
@@ -149,7 +137,16 @@ export function CtaButton(props: CtaButtonProps) {
   }
 
   if ("to" in props && props.to !== undefined) {
-    const { to, variant: _v, size: _s, icon: _i, iconLeading: _il, className: _c, children: _ch, ...rest } = props;
+    const {
+      to,
+      variant: _v,
+      size: _s,
+      icon: _i,
+      iconLeading: _il,
+      className: _c,
+      children: _ch,
+      ...rest
+    } = props;
     return (
       <Link to={to} className={sharedClassName} style={sharedStyle} {...(rest as object)}>
         {content}
@@ -157,7 +154,15 @@ export function CtaButton(props: CtaButtonProps) {
     );
   }
 
-  const { variant: _v, size: _s, icon: _i, iconLeading: _il, className: _c, children: _ch, ...rest } = props;
+  const {
+    variant: _v,
+    size: _s,
+    icon: _i,
+    iconLeading: _il,
+    className: _c,
+    children: _ch,
+    ...rest
+  } = props;
   return (
     <button className={sharedClassName} style={sharedStyle} {...rest}>
       {content}

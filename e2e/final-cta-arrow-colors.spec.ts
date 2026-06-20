@@ -25,9 +25,9 @@ import { test, expect, type Locator, type Page } from "@playwright/test";
 
 // Hex values straight from src/styles.css :root — must match exactly.
 const ARROW_COLORS = {
-  gold:      "rgb(201, 169, 106)", // var(--gold)        #C9A96A
-  goldSoft:  "rgb(225, 207, 166)", // var(--gold-soft)   #E1CFA6
-  goldDeep:  "rgb(184, 148, 82)",  // var(--gold-deep)   #B89452
+  gold: "rgb(201, 169, 106)", // var(--gold)        #C9A96A
+  goldSoft: "rgb(225, 207, 166)", // var(--gold-soft)   #E1CFA6
+  goldDeep: "rgb(184, 148, 82)", // var(--gold-deep)   #B89452
 } as const;
 
 async function gotoFinalCta(page: Page) {
@@ -56,19 +56,23 @@ async function readColor(svg: Locator): Promise<string> {
 }
 
 test.describe("Final CTA arrow colors — primary vs ghost", () => {
-  test("default (rest) state — primary=gold-soft (on teal), ghost=gold (on ivory)", async ({ page }) => {
+  test("default (rest) state — primary=gold-soft (on teal), ghost=gold (on ivory)", async ({
+    page,
+  }) => {
     await gotoFinalCta(page);
 
     const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost   = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
 
     await page.mouse.move(0, 0);
 
     const primaryColor = await readColor(arrowOf(primary));
-    const ghostColor   = await readColor(arrowOf(ghost));
+    const ghostColor = await readColor(arrowOf(ghost));
 
-    expect.soft(primaryColor, "primary arrow rest = --gold-soft (on teal bg)").toBe(ARROW_COLORS.goldSoft);
-    expect.soft(ghostColor,   "ghost arrow rest = --gold (on ivory bg)").toBe(ARROW_COLORS.gold);
+    expect
+      .soft(primaryColor, "primary arrow rest = --gold-soft (on teal bg)")
+      .toBe(ARROW_COLORS.goldSoft);
+    expect.soft(ghostColor, "ghost arrow rest = --gold (on ivory bg)").toBe(ARROW_COLORS.gold);
 
     expect(primaryColor).not.toBe(ghostColor);
   });
@@ -77,7 +81,7 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
     await gotoFinalCta(page);
 
     const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost   = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
 
     // PRIMARY HOVER (teal bg → arrow lifts gold-soft → gold)
     await primary.hover();
@@ -99,17 +103,18 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
     await gotoFinalCta(page);
 
     const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost   = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
 
     await primary.focus();
     const primaryFocus = await readColor(arrowOf(primary));
-    expect.soft(primaryFocus, "primary arrow focus retains --gold-soft").toBe(ARROW_COLORS.goldSoft);
+    expect
+      .soft(primaryFocus, "primary arrow focus retains --gold-soft")
+      .toBe(ARROW_COLORS.goldSoft);
 
     const primaryRing = await primary.evaluate((el) => getComputedStyle(el).boxShadow);
-    expect.soft(
-      primaryRing,
-      "primary focus ring contains --gold (#C9A96A)",
-    ).toMatch(/rgb\(\s*201\s*,\s*169\s*,\s*106\s*\)/);
+    expect
+      .soft(primaryRing, "primary focus ring contains --gold (#C9A96A)")
+      .toMatch(/rgb\(\s*201\s*,\s*169\s*,\s*106\s*\)/);
 
     await primary.evaluate((el) => (el as HTMLElement).blur());
 
@@ -118,38 +123,39 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
     expect.soft(ghostFocus, "ghost arrow focus retains --gold").toBe(ARROW_COLORS.gold);
 
     const ghostRing = await ghost.evaluate((el) => getComputedStyle(el).boxShadow);
-    expect.soft(
-      ghostRing,
-      "ghost focus ring contains --gold (#C9A96A)",
-    ).toMatch(/rgb\(\s*201\s*,\s*169\s*,\s*106\s*\)/);
+    expect
+      .soft(ghostRing, "ghost focus ring contains --gold (#C9A96A)")
+      .toMatch(/rgb\(\s*201\s*,\s*169\s*,\s*106\s*\)/);
   });
 
-  test("approved palette boundary — arrows never resolve to white, black, or non-gold tokens", async ({ page }) => {
+  test("approved palette boundary — arrows never resolve to white, black, or non-gold tokens", async ({
+    page,
+  }) => {
     await gotoFinalCta(page);
 
     const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost   = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
 
     // Sample all three states for both buttons; flag any that resolve
     // outside the approved gold ramp (gold | gold-soft | gold-deep).
     const samples: { label: string; color: string }[] = [];
 
     await page.mouse.move(0, 0);
-    samples.push({ label: "primary rest",  color: await readColor(arrowOf(primary)) });
-    samples.push({ label: "ghost rest",    color: await readColor(arrowOf(ghost))   });
+    samples.push({ label: "primary rest", color: await readColor(arrowOf(primary)) });
+    samples.push({ label: "ghost rest", color: await readColor(arrowOf(ghost)) });
 
     await primary.hover();
     samples.push({ label: "primary hover", color: await readColor(arrowOf(primary)) });
     await page.mouse.move(0, 0);
     await ghost.hover();
-    samples.push({ label: "ghost hover",   color: await readColor(arrowOf(ghost))   });
+    samples.push({ label: "ghost hover", color: await readColor(arrowOf(ghost)) });
     await page.mouse.move(0, 0);
 
     await primary.focus();
     samples.push({ label: "primary focus", color: await readColor(arrowOf(primary)) });
     await primary.evaluate((el) => (el as HTMLElement).blur());
     await ghost.focus();
-    samples.push({ label: "ghost focus",   color: await readColor(arrowOf(ghost))   });
+    samples.push({ label: "ghost focus", color: await readColor(arrowOf(ghost)) });
 
     const approved = new Set<string>(Object.values(ARROW_COLORS));
     const offenders = samples.filter((s) => !approved.has(s.color));
@@ -185,11 +191,13 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
    * literally the string `currentColor`, locking in the inheritance
    * contract at the markup level.
    */
-  test("SVG stroke inherits via currentColor and matches link color across states", async ({ page }) => {
+  test("SVG stroke inherits via currentColor and matches link color across states", async ({
+    page,
+  }) => {
     await gotoFinalCta(page);
 
     const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost   = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
 
     /**
      * For a given CTA link, returns:
@@ -209,7 +217,7 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
 
         return {
           linkColor: getComputedStyle(link).color,
-          svgColor:  getComputedStyle(svg).color,
+          svgColor: getComputedStyle(svg).color,
           pathStrokeAttrs: paths.map((p) => p.getAttribute("stroke")),
           pathStrokeComputed: paths.map((p) => getComputedStyle(p).stroke),
         };
@@ -219,11 +227,13 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
     // ---------- REST ----------
     await page.mouse.move(0, 0);
     const primaryRest = await probe(primary);
-    const ghostRest   = await probe(ghost);
+    const ghostRest = await probe(ghost);
 
     // SVG inherits color from the link
-    expect.soft(primaryRest.svgColor, "primary svg inherits link color").toBe(primaryRest.linkColor);
-    expect.soft(ghostRest.svgColor,   "ghost svg inherits link color").toBe(ghostRest.linkColor);
+    expect
+      .soft(primaryRest.svgColor, "primary svg inherits link color")
+      .toBe(primaryRest.linkColor);
+    expect.soft(ghostRest.svgColor, "ghost svg inherits link color").toBe(ghostRest.linkColor);
 
     // Every stroked child uses stroke="currentColor" at the markup level
     for (const attr of primaryRest.pathStrokeAttrs) {
@@ -235,7 +245,9 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
 
     // Computed stroke paint matches the link's color exactly
     for (const stroke of primaryRest.pathStrokeComputed) {
-      expect.soft(stroke, "primary rest stroke = link color (gold-soft)").toBe(ARROW_COLORS.goldSoft);
+      expect
+        .soft(stroke, "primary rest stroke = link color (gold-soft)")
+        .toBe(ARROW_COLORS.goldSoft);
     }
     for (const stroke of ghostRest.pathStrokeComputed) {
       expect.soft(stroke, "ghost rest stroke = link color (gold)").toBe(ARROW_COLORS.gold);

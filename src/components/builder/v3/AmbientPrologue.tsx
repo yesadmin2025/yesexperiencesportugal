@@ -15,7 +15,8 @@ import type { StudioDict, StudioLocale } from "@/hooks/useStudioLocale";
  */
 
 const CONTINUE_DELAY_MS = 4200;
-const PROLOGUE_CLIP = "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4";
+const PROLOGUE_CLIP =
+  "/__l5e/assets-v1/e1a97610-5754-4c2c-b5dd-60d7dcc51406/scene-coast-arrabida.mp4";
 
 interface Props {
   locale: StudioLocale;
@@ -65,8 +66,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         aria-hidden="true"
         className="absolute inset-x-0 top-0 h-24 pointer-events-none"
         style={{
-          background:
-            "linear-gradient(180deg, oklch(0.18 0.02 240 / 0.55) 0%, transparent 100%)",
+          background: "linear-gradient(180deg, oklch(0.18 0.02 240 / 0.55) 0%, transparent 100%)",
         }}
       />
 
@@ -165,7 +165,6 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         >
           {t.arrivalPro} →
         </a>
-
       </div>
 
       <style>{`

@@ -15,27 +15,22 @@ import {
 import { REGION_STOPS, REGION_ORIGIN, type RegionKey, type RegionStop } from "@/data/regionStops";
 import type { RoutedStopUI } from "@/components/builder/types";
 import { REGION_RULES } from "@/data/regionRules";
-import {
-  deriveArchetype,
-  type Archetype,
-  type PriorityKey,
-  type TravelerProfile,
-} from "./profile";
+import { deriveArchetype, type Archetype, type PriorityKey, type TravelerProfile } from "./profile";
 
 // ─── priority → composer style/energy mapping ─────────────────────────────
 
 const PRIORITY_TO_STYLE: Record<PriorityKey, ComposerProfile["style"] | undefined> = {
-  vineyard_lunch:   "wine",
-  wine_cellar:      "wine",
-  coastal_scenery:  "coast",
-  hidden_villages:  "heritage",
-  architecture:     "heritage",
-  heritage:         "heritage",
+  vineyard_lunch: "wine",
+  wine_cellar: "wine",
+  coastal_scenery: "coast",
+  hidden_villages: "heritage",
+  architecture: "heritage",
+  heritage: "heritage",
   local_gastronomy: "table",
-  photography:      undefined,
-  quiet_luxury:     undefined,
-  wellness:         undefined,
-  boat:             "coast",
+  photography: undefined,
+  quiet_luxury: undefined,
+  wellness: undefined,
+  boat: "coast",
 };
 
 function dominantStyle(p: TravelerProfile): ComposerProfile["style"] | undefined {
@@ -88,33 +83,45 @@ function buildConfidenceMap(p: TravelerProfile): ConfidenceMap {
 function archetypeRegister(a: Archetype): "intimate" | "expansive" | "playful" | "ritual" {
   switch (a) {
     case "slow_luxury_couple":
-    case "coastal_romantic":   return "intimate";
-    case "celebration_group":  return "playful";
-    case "wine_connoisseur":   return "ritual";
-    case "food_led_duo":       return "ritual";
-    case "cultural_explorer":  return "expansive";
-    case "family_refined":     return "playful";
-    case "corporate_curated":  return "expansive";
+    case "coastal_romantic":
+      return "intimate";
+    case "celebration_group":
+      return "playful";
+    case "wine_connoisseur":
+      return "ritual";
+    case "food_led_duo":
+      return "ritual";
+    case "cultural_explorer":
+      return "expansive";
+    case "family_refined":
+      return "playful";
+    case "corporate_curated":
+      return "expansive";
   }
 }
 
 function intensityFromPace(p: TravelerProfile): number {
   switch (p.pace) {
-    case "light":    return 1.8;
-    case "balanced": return 3.0;
-    case "rich":     return 3.8;
-    case "full":     return 4.5;
-    default:         return 3.0;
+    case "light":
+      return 1.8;
+    case "balanced":
+      return 3.0;
+    case "rich":
+      return 3.8;
+    case "full":
+      return 4.5;
+    default:
+      return 3.0;
   }
 }
 
 // ─── match score ──────────────────────────────────────────────────────────
 
 export interface MatchScore {
-  total: number;        // 0–100
-  fit: number;          // priorities vs picked stops
-  pacing: number;       // day budget usage vs target density
-  logistics: number;    // drive budget vs tolerance
+  total: number; // 0–100
+  fit: number; // priorities vs picked stops
+  pacing: number; // day budget usage vs target density
+  logistics: number; // drive budget vs tolerance
 }
 
 function fitScore(stops: ComposedStop[], p: TravelerProfile): number {
@@ -124,7 +131,7 @@ function fitScore(stops: ComposedStop[], p: TravelerProfile): number {
   for (const { stop } of stops) {
     for (const [k, w] of Object.entries(p.priorityWeights)) {
       if (stopMatchesPriority(stop, k as PriorityKey)) {
-        matched += (w ?? 0);
+        matched += w ?? 0;
       }
     }
   }
@@ -133,17 +140,31 @@ function fitScore(stops: ComposedStop[], p: TravelerProfile): number {
 
 function stopMatchesPriority(stop: RegionStop, key: PriorityKey): boolean {
   switch (key) {
-    case "vineyard_lunch":   return stop.kind === "winery" || stop.kind === "cellar";
-    case "wine_cellar":      return stop.kind === "cellar" || stop.kind === "winery";
-    case "coastal_scenery":  return stop.kind === "beach" || stop.kind === "viewpoint" || (stop.affinity.style?.includes("coast") ?? false);
-    case "hidden_villages":  return stop.kind === "village";
+    case "vineyard_lunch":
+      return stop.kind === "winery" || stop.kind === "cellar";
+    case "wine_cellar":
+      return stop.kind === "cellar" || stop.kind === "winery";
+    case "coastal_scenery":
+      return (
+        stop.kind === "beach" ||
+        stop.kind === "viewpoint" ||
+        (stop.affinity.style?.includes("coast") ?? false)
+      );
+    case "hidden_villages":
+      return stop.kind === "village";
     case "architecture":
-    case "heritage":         return stop.kind === "heritage";
-    case "local_gastronomy": return stop.kind === "table" || stop.kind === "market" || stop.kind === "workshop";
-    case "photography":      return stop.kind === "viewpoint" || stop.kind === "village" || stop.kind === "beach";
-    case "quiet_luxury":     return (stop.affinity.social?.includes("intimate") ?? false);
-    case "wellness":         return stop.affinity.energy?.includes("slow") ?? false;
-    case "boat":             return stop.kind === "beach";
+    case "heritage":
+      return stop.kind === "heritage";
+    case "local_gastronomy":
+      return stop.kind === "table" || stop.kind === "market" || stop.kind === "workshop";
+    case "photography":
+      return stop.kind === "viewpoint" || stop.kind === "village" || stop.kind === "beach";
+    case "quiet_luxury":
+      return stop.affinity.social?.includes("intimate") ?? false;
+    case "wellness":
+      return stop.affinity.energy?.includes("slow") ?? false;
+    case "boat":
+      return stop.kind === "beach";
   }
 }
 
@@ -233,17 +254,17 @@ export function designExperience(input: TravelerProfile): DesignResult {
 // ─── upsells ──────────────────────────────────────────────────────────────
 
 const PRIORITY_LABEL: Record<PriorityKey, string> = {
-  vineyard_lunch:   "vineyard lunch",
-  wine_cellar:      "wine cellar",
-  coastal_scenery:  "coastal scenery",
-  hidden_villages:  "hidden village",
-  architecture:     "architecture",
-  heritage:         "heritage",
+  vineyard_lunch: "vineyard lunch",
+  wine_cellar: "wine cellar",
+  coastal_scenery: "coastal scenery",
+  hidden_villages: "hidden village",
+  architecture: "architecture",
+  heritage: "heritage",
   local_gastronomy: "local gastronomy",
-  photography:      "photography",
-  quiet_luxury:     "quiet luxury",
-  wellness:         "wellness",
-  boat:             "coastal boat",
+  photography: "photography",
+  quiet_luxury: "quiet luxury",
+  wellness: "wellness",
+  boat: "coastal boat",
 };
 
 function computeUpsells(
@@ -301,10 +322,14 @@ export interface JourneyPreview {
 
 function regionLabelShort(r: RegionKey): string {
   switch (r) {
-    case "arrabida":     return "Arrábida";
-    case "lisbon-coast": return "Sintra & the Atlantic edge";
-    case "alentejo":     return "Alentejo";
-    case "centro":       return "Centro";
+    case "arrabida":
+      return "Arrábida";
+    case "lisbon-coast":
+      return "Sintra & the Atlantic edge";
+    case "alentejo":
+      return "Alentejo";
+    case "centro":
+      return "Centro";
   }
 }
 
@@ -345,8 +370,7 @@ function intensityFromPaceSafe(p: TravelerProfile): number {
 
 // ─── insight phrasing — concise, operational, no poetry ──────────────────
 
-export type InsightReason =
-  | "intent" | "pace" | "priority" | "group" | "ops" | "none";
+export type InsightReason = "intent" | "pace" | "priority" | "group" | "ops" | "none";
 
 export function previewInsight(
   profile: TravelerProfile,
@@ -355,10 +379,13 @@ export function previewInsight(
 ): string {
   const region = regionLabelShort(preview.region);
   const paceWord =
-    profile.pace === "light"    ? "spacious" :
-    profile.pace === "rich"     ? "fuller" :
-    profile.pace === "full"     ? "intensive" :
-                                  "balanced";
+    profile.pace === "light"
+      ? "spacious"
+      : profile.pace === "rich"
+        ? "fuller"
+        : profile.pace === "full"
+          ? "intensive"
+          : "balanced";
   const stops = preview.density;
   const drive = preview.driveBudgetMin;
 
@@ -387,13 +414,20 @@ export function previewInsight(
 
 function atmosphereWord(p: TravelerProfile): string {
   switch (p.intent) {
-    case "relaxed_scenic":     return "scenic";
-    case "elegant_cultural":   return "cultural";
-    case "food_local":         return "gastronomic";
-    case "social_celebratory": return "celebratory";
-    case "romantic_intimate":  return "intimate";
-    case "coastal_cinematic":  return "Atlantic coastal";
-    default:                   return "considered";
+    case "relaxed_scenic":
+      return "scenic";
+    case "elegant_cultural":
+      return "cultural";
+    case "food_local":
+      return "gastronomic";
+    case "social_celebratory":
+      return "celebratory";
+    case "romantic_intimate":
+      return "intimate";
+    case "coastal_cinematic":
+      return "Atlantic coastal";
+    default:
+      return "considered";
   }
 }
 

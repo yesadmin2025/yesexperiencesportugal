@@ -11,10 +11,7 @@ import { StudioDrift } from "@/components/builder/v3/StudioDrift";
  */
 export const Route = createFileRoute("/studio-drift")({
   head: () => ({
-    meta: [
-      { title: "Drift — YES (prototype)" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Drift — YES (prototype)" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: DriftPage,
 });

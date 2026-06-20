@@ -174,7 +174,8 @@ export function pickBlueprint(
     const weight = w ?? 0;
     if (k === "vineyard_lunch" || k === "wine_cellar") styleScore.wine += weight;
     if (k === "coastal_scenery" || k === "boat") styleScore.coast += weight;
-    if (k === "heritage" || k === "architecture" || k === "hidden_villages") styleScore.heritage += weight;
+    if (k === "heritage" || k === "architecture" || k === "hidden_villages")
+      styleScore.heritage += weight;
     if (k === "local_gastronomy") styleScore.table += weight;
   }
 

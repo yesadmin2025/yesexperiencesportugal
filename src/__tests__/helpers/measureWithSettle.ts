@@ -44,9 +44,7 @@ import { act } from "react";
 export async function settleLayout(): Promise<void> {
   if (typeof document === "undefined") return;
 
-  const fontsReady = (
-    document as unknown as { fonts?: { ready?: Promise<unknown> } }
-  ).fonts?.ready;
+  const fontsReady = (document as unknown as { fonts?: { ready?: Promise<unknown> } }).fonts?.ready;
   if (fontsReady) await fontsReady;
 
   const raf = (cb: () => void) =>

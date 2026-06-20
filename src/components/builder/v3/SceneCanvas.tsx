@@ -21,9 +21,9 @@ interface Props {
 
 export function SceneCanvas({ source, tint }: Props) {
   // Keep the previous layer mounted long enough to cross-dissolve.
-  const [layers, setLayers] = useState<{ id: number; source: SceneSource }[]>(
-    () => [{ id: 0, source }],
-  );
+  const [layers, setLayers] = useState<{ id: number; source: SceneSource }[]>(() => [
+    { id: 0, source },
+  ]);
   const idRef = useRef(0);
   const prevKeyRef = useRef<string>(srcKey(source));
 

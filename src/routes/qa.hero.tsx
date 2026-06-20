@@ -6,7 +6,10 @@ export const Route = createFileRoute("/qa/hero")({
     meta: [
       { title: "QA · Hero stagger & video — internal" },
       { name: "robots", content: "noindex, nofollow" },
-      { name: "description", content: "Internal QA harness for the cinematic hero across breakpoints." },
+      {
+        name: "description",
+        content: "Internal QA harness for the cinematic hero across breakpoints.",
+      },
     ],
   }),
   component: HeroQAPage,
@@ -45,10 +48,12 @@ function HeroQAPage() {
       <header className="sticky top-0 z-10 border-b border-black/10 bg-[var(--ivory)]/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-[15px] font-semibold tracking-tight">Hero QA · stagger × video × breakpoints</h1>
+            <h1 className="text-[15px] font-semibold tracking-tight">
+              Hero QA · stagger × video × breakpoints
+            </h1>
             <p className="text-[12px] text-black/60">
-              Each frame loads <code>/</code> at its own width. Story cascade should always start at the same
-              moment relative to viewport entry, regardless of video state.
+              Each frame loads <code>/</code> at its own width. Story cascade should always start at
+              the same moment relative to viewport entry, regardless of video state.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-[12px]">
@@ -103,11 +108,22 @@ function HeroQAPage() {
         <section className="mt-8 rounded-md border border-black/10 bg-white p-4 text-[12.5px] leading-relaxed text-black/80">
           <h2 className="mb-2 text-[13px] font-semibold">What to confirm</h2>
           <ul className="list-disc space-y-1 pl-5">
-            <li>Cada beat aparece sozinho: eyebrow → headline L1 → headline L2 → subheadline → CTA primário → CTA secundário → microcopy.</li>
-            <li>Easing único <code>var(--ease-premium)</code> em todas as larguras.</li>
+            <li>
+              Cada beat aparece sozinho: eyebrow → headline L1 → headline L2 → subheadline → CTA
+              primário → CTA secundário → microcopy.
+            </li>
+            <li>
+              Easing único <code>var(--ease-premium)</code> em todas as larguras.
+            </li>
             <li>≤379px usa o tier xs (delays mais espaçados).</li>
-            <li>Vídeo entra no mobile; se não, poster fica visível e a sequência continua igual.</li>
-            <li>Painel <code>hero debug</code> regista <code>play-attempt</code>, <code>play-success</code>/<code>play-failed</code>, <code>story-trigger</code>, <code>story-active</code>.</li>
+            <li>
+              Vídeo entra no mobile; se não, poster fica visível e a sequência continua igual.
+            </li>
+            <li>
+              Painel <code>hero debug</code> regista <code>play-attempt</code>,{" "}
+              <code>play-success</code>/<code>play-failed</code>, <code>story-trigger</code>,{" "}
+              <code>story-active</code>.
+            </li>
           </ul>
         </section>
       </section>

@@ -31,10 +31,7 @@ export const checkRouteFile = createServerFn({ method: "POST" })
           .min(1)
           .max(300)
           .refine((p) => !p.includes("\0"), "invalid path")
-          .refine(
-            (p) => !p.split(/[\\/]/).includes(".."),
-            "path traversal not allowed",
-          ),
+          .refine((p) => !p.split(/[\\/]/).includes(".."), "path traversal not allowed"),
         expectedRoutePath: z.string().min(1).max(300),
       })
       .parse(data),
@@ -58,16 +55,10 @@ export const checkRouteFile = createServerFn({ method: "POST" })
     }
 
     // Match createFileRoute("...") with a plain string literal (single or double quotes).
-    const literalMatch = source.match(
-      /createFileRoute\(\s*(["'])([^"'`)]+)\1\s*\)/,
-    );
+    const literalMatch = source.match(/createFileRoute\(\s*(["'])([^"'`)]+)\1\s*\)/);
     const literalPath = literalMatch ? literalMatch[2] : null;
 
-    const cacheCandidates = [
-      "node_modules/.vite",
-      ".tanstack",
-      "dist",
-    ];
+    const cacheCandidates = ["node_modules/.vite", ".tanstack", "dist"];
     const cacheDirs = await Promise.all(
       cacheCandidates.map(async (p) => {
         try {
@@ -82,13 +73,11 @@ export const checkRouteFile = createServerFn({ method: "POST" })
     let routeTreeExists = false;
     let routeTreeContainsExpected = false;
     try {
-      const tree = await fs.readFile(
-        path.join(root, "src/routeTree.gen.ts"),
-        "utf8",
-      );
+      const tree = await fs.readFile(path.join(root, "src/routeTree.gen.ts"), "utf8");
       routeTreeExists = true;
-      routeTreeContainsExpected = tree.includes(`'${data.expectedRoutePath}'`)
-        || tree.includes(`"${data.expectedRoutePath}"`);
+      routeTreeContainsExpected =
+        tree.includes(`'${data.expectedRoutePath}'`) ||
+        tree.includes(`"${data.expectedRoutePath}"`);
     } catch {
       routeTreeExists = false;
     }

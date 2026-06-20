@@ -33,9 +33,7 @@ import { test, expect, type Page } from "@playwright/test";
 type RGB = { r: number; g: number; b: number };
 
 function parseColor(input: string): RGB {
-  const m = input
-    .replace(/\s+/g, "")
-    .match(/^rgba?\((\d+),(\d+),(\d+)(?:,([0-9.]+))?\)$/i);
+  const m = input.replace(/\s+/g, "").match(/^rgba?\((\d+),(\d+),(\d+)(?:,([0-9.]+))?\)$/i);
   if (!m) throw new Error(`Unparseable color: "${input}"`);
   return { r: +m[1], g: +m[2], b: +m[3] };
 }
@@ -63,11 +61,7 @@ const TOKENS = {
 const CHANNEL_TOL = 10;
 
 function within(a: RGB, b: RGB, tol = CHANNEL_TOL): boolean {
-  return (
-    Math.abs(a.r - b.r) <= tol &&
-    Math.abs(a.g - b.g) <= tol &&
-    Math.abs(a.b - b.b) <= tol
-  );
+  return Math.abs(a.r - b.r) <= tol && Math.abs(a.g - b.g) <= tol && Math.abs(a.b - b.b) <= tol;
 }
 
 function fmt(c: RGB): string {
@@ -83,9 +77,7 @@ function matchesAny(
   for (const t of allow) {
     if (within(actual, t.rgb)) return { ok: true, matched: t.name };
     const d =
-      Math.abs(actual.r - t.rgb.r) +
-      Math.abs(actual.g - t.rgb.g) +
-      Math.abs(actual.b - t.rgb.b);
+      Math.abs(actual.r - t.rgb.r) + Math.abs(actual.g - t.rgb.g) + Math.abs(actual.b - t.rgb.b);
     if (d < best.delta) best = { name: t.name, delta: d };
   }
   return { ok: false, nearest: best.name, delta: best.delta };
@@ -119,10 +111,11 @@ async function getHeroStyle(page: Page, selector: string): Promise<HeroStyleSnap
     const el = document.querySelector(sel) as HTMLElement | null;
     if (!el) throw new Error(`not found: ${sel}`);
     const cs = window.getComputedStyle(el);
-    const durationSeconds = cs.transitionDuration
-      .split(",")
-      .map((v) => v.trim())
-      .find(Boolean) ?? "0s";
+    const durationSeconds =
+      cs.transitionDuration
+        .split(",")
+        .map((v) => v.trim())
+        .find(Boolean) ?? "0s";
     const durationMs = durationSeconds.endsWith("ms")
       ? parseFloat(durationSeconds)
       : parseFloat(durationSeconds) * 1000;
@@ -145,14 +138,10 @@ async function getHeroStyle(page: Page, selector: string): Promise<HeroStyleSnap
 }
 
 test.describe("Hero typography colors — YES brand-token regression", () => {
-  test("eyebrow + headline computed colors match canonical tokens", async ({
-    page,
-  }) => {
+  test("eyebrow + headline computed colors match canonical tokens", async ({ page }) => {
     await page.goto("/?hero=last&heroColorDebug=1", { waitUntil: "domcontentloaded" });
     await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
-    await page
-      .locator('[data-hero-field="headlineLine1"]:not(h1)')
-      .waitFor({ state: "visible" });
+    await page.locator('[data-hero-field="headlineLine1"]:not(h1)').waitFor({ state: "visible" });
 
     // Wait for fonts so color resolution from CSS variables is stable.
     await page.evaluate(async () => {
@@ -188,12 +177,7 @@ test.describe("Hero typography colors — YES brand-token regression", () => {
     const line2Allow = [{ name: "gold-soft (#E1CFA6)", rgb: TOKENS.goldSoft }];
     for (const [label, c, allow, allowedDesc] of [
       ["headlineLine1", line1, line1Allow, "ivory #FAF8F3 only"],
-      [
-        "headlineLine2 (italic)",
-        line2,
-        line2Allow,
-        "gold-soft #E1CFA6 only",
-      ],
+      ["headlineLine2 (italic)", line2, line2Allow, "gold-soft #E1CFA6 only"],
     ] as const) {
       const m = matchesAny(c, allow);
       expect(
@@ -219,7 +203,10 @@ test.describe("Hero typography colors — YES brand-token regression", () => {
     const line2Style = await getHeroStyle(page, line2Sel);
     expect(line2Style.fontStyle, "headlineLine2 must remain italic").toBe("italic");
     expect(line2Style.fontWeight, "headlineLine2 must stay regular/refined").toBe("400");
-    expect(line2Style.fontFamily.toLowerCase(), "headlineLine2 must use the serif italic token").toContain("georgia");
+    expect(
+      line2Style.fontFamily.toLowerCase(),
+      "headlineLine2 must use the serif italic token",
+    ).toContain("georgia");
 
     await expect(page.locator('[data-hero-color-debug="true"] li >> text=OFF')).toHaveCount(0);
   });
@@ -251,4 +238,3 @@ test.describe("Hero typography colors — YES brand-token regression", () => {
     }
   });
 });
-

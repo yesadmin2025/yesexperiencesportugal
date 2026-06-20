@@ -52,11 +52,11 @@ describe("Mobile horizontal overflow guards", () => {
       if (selector.startsWith("@")) continue;
       if (selector.includes("full-bleed")) continue;
       // Find any width-ish 100vw declaration
-      const offending = body.match(
-        /\b(?:width|min-width|max-width)\s*:\s*100vw\b/,
-      );
+      const offending = body.match(/\b(?:width|min-width|max-width)\s*:\s*100vw\b/);
       if (offending) offenders.push(`${selector} → ${offending[0]}`);
     }
-    expect(offenders, `100vw widths found outside .full-bleed:\n${offenders.join("\n")}`).toEqual([]);
+    expect(offenders, `100vw widths found outside .full-bleed:\n${offenders.join("\n")}`).toEqual(
+      [],
+    );
   });
 });

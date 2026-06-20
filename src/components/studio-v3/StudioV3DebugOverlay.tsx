@@ -46,7 +46,8 @@ function readInitialEnabled(): boolean {
   } catch {
     /* noop */
   }
-  if ((import.meta as { env?: Record<string, string> }).env?.VITE_STUDIO_V3_DEBUG === "1") return true;
+  if ((import.meta as { env?: Record<string, string> }).env?.VITE_STUDIO_V3_DEBUG === "1")
+    return true;
   return false;
 }
 
@@ -136,7 +137,14 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
           marginBottom: collapsed ? 0 : 6,
         }}
       >
-        <strong style={{ color: "var(--gold)", letterSpacing: 1, textTransform: "uppercase", fontSize: 10 }}>
+        <strong
+          style={{
+            color: "var(--gold)",
+            letterSpacing: 1,
+            textTransform: "uppercase",
+            fontSize: 10,
+          }}
+        >
           Studio V3 · debug
         </strong>
         <div style={{ display: "flex", gap: 4 }}>

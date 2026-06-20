@@ -60,10 +60,9 @@ export function DecisionStepper({ sectionId, steps }: Props) {
     try {
       const section = document.getElementById(sectionId);
       if (!section) return;
-      const io = new IntersectionObserver(
-        ([entry]) => setVisible(entry.isIntersecting),
-        { threshold: 0.05 }
-      );
+      const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+        threshold: 0.05,
+      });
       io.observe(section);
       return () => io.disconnect();
     } catch (err) {
@@ -98,7 +97,7 @@ export function DecisionStepper({ sectionId, steps }: Props) {
         {
           threshold: [0, 0.25, 0.5, 0.75, 1],
           rootMargin: "-30% 0px -45% 0px",
-        }
+        },
       );
       els.forEach((el) => io.observe(el));
       return () => io.disconnect();

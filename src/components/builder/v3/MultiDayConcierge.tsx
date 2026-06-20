@@ -53,61 +53,74 @@ function nameHandoff(name: string, locale: StudioLocale): string {
 /** Quiet invitation eyebrow — replaces the "Concierge" sales badge. */
 function invitationLabel(locale: StudioLocale): string {
   switch (locale) {
-    case "pt": return "Por convite";
-    case "es": return "Por invitación";
-    case "fr": return "Sur invitation";
-    default:   return "By invitation";
+    case "pt":
+      return "Por convite";
+    case "es":
+      return "Por invitación";
+    case "fr":
+      return "Sur invitation";
+    default:
+      return "By invitation";
   }
 }
 
 /** One-line invitation above the handwritten-note field. Never "Describe…". */
 function notePrompt(locale: StudioLocale): string {
   switch (locale) {
-    case "pt": return "Por onde queres começar?";
-    case "es": return "¿Por dónde quieres empezar?";
-    case "fr": return "Par où veux-tu commencer ?";
-    default:   return "What should we begin with?";
+    case "pt":
+      return "Por onde queres começar?";
+    case "es":
+      return "¿Por dónde quieres empezar?";
+    case "fr":
+      return "Par où veux-tu commencer ?";
+    default:
+      return "What should we begin with?";
   }
 }
 
 /** Soft placeholder — feels like a margin in a private notebook. */
 function notePlaceholder(locale: StudioLocale): string {
   switch (locale) {
-    case "pt": return "uma manhã lenta, uma costa, alguém a chegar de longe…";
-    case "es": return "una mañana lenta, una costa, alguien que llega de lejos…";
-    case "fr": return "un matin lent, une côte, quelqu'un qui arrive de loin…";
-    default:   return "a slow morning, a coastline, someone arriving from afar…";
+    case "pt":
+      return "uma manhã lenta, uma costa, alguém a chegar de longe…";
+    case "es":
+      return "una mañana lenta, una costa, alguien que llega de lejos…";
+    case "fr":
+      return "un matin lent, une côte, quelqu'un qui arrive de loin…";
+    default:
+      return "a slow morning, a coastline, someone arriving from afar…";
   }
 }
 
 /** Single quiet contact line. No "WhatsApp" / no "email" labels. */
 function contactPlaceholder(locale: StudioLocale): string {
   switch (locale) {
-    case "pt": return "como te encontramos · email ou número";
-    case "es": return "cómo te encontramos · email o número";
-    case "fr": return "comment te joindre · e-mail ou numéro";
-    default:   return "where to reach you · email or number";
+    case "pt":
+      return "como te encontramos · email ou número";
+    case "es":
+      return "cómo te encontramos · email o número";
+    case "fr":
+      return "comment te joindre · e-mail ou numéro";
+    default:
+      return "where to reach you · email or number";
   }
 }
 
 /** Confirm label after the note is written. Editorial, never "Send". */
 function sendLabel(locale: StudioLocale): string {
   switch (locale) {
-    case "pt": return "Continuar em privado";
-    case "es": return "Continuar en privado";
-    case "fr": return "Continuer en privé";
-    default:   return "Continue privately";
+    case "pt":
+      return "Continuar em privado";
+    case "es":
+      return "Continuar en privado";
+    case "fr":
+      return "Continuer en privé";
+    default:
+      return "Continue privately";
   }
 }
 
-export function MultiDayConcierge({
-  t,
-  mood,
-  who,
-  intention,
-  travellerName,
-  onBack,
-}: Props) {
+export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBack }: Props) {
   const sessionId = useBuilderSessionId();
   const { locale } = useStudioLocale();
   const composeFn = useServerFn(composeStudioMoment);
@@ -190,12 +203,7 @@ export function MultiDayConcierge({
   const handleSend = () => {
     if (!canSend) return;
     // Mechanism stays invisible — compose a single private message.
-    const body = [
-      travellerName ? `— ${travellerName}` : null,
-      note.trim(),
-      "",
-      contact.trim(),
-    ]
+    const body = [travellerName ? `— ${travellerName}` : null, note.trim(), "", contact.trim()]
       .filter(Boolean)
       .join("\n");
     const href = `https://wa.me/${BUILDER_WA_NUMBER}?text=${encodeURIComponent(body)}`;
@@ -237,10 +245,7 @@ export function MultiDayConcierge({
         <div className="flex-1 flex flex-col justify-center max-w-[34ch] mx-auto text-center gap-7">
           {/* Editorial hairline — replaces the Sparkles/Concierge badge */}
           <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms]">
-            <span
-              aria-hidden="true"
-              className="block h-px w-10 bg-[color:var(--gold)]/70"
-            />
+            <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/70" />
             <p
               className="text-[10px] uppercase tracking-[0.36em] font-bold text-[color:var(--gold)]"
               style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}

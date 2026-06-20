@@ -42,7 +42,11 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
 }
 
 export function ConversionStage({
-  profile, region, archetype, stops, hasFeasibilityWarning,
+  profile,
+  region,
+  archetype,
+  stops,
+  hasFeasibilityWarning,
 }: Props) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -57,10 +61,7 @@ export function ConversionStage({
     };
   }, [stops, hasFeasibilityWarning]);
 
-  const decision = useMemo(
-    () => decideConversionPath(profile, summary),
-    [profile, summary],
-  );
+  const decision = useMemo(() => decideConversionPath(profile, summary), [profile, summary]);
 
   // Fire once per decision so we can tune the router from analytics.
   useMemo(() => {
@@ -110,7 +111,10 @@ export function ConversionStage({
           <InstantPrimary onClick={openSheet} variant="equal" />
           <p
             className="text-center text-[11px] uppercase tracking-[0.32em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)", fontWeight: 600 }}
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+              fontWeight: 600,
+            }}
           >
             — or —
           </p>
@@ -136,7 +140,13 @@ export function ConversionStage({
   );
 }
 
-function InstantPrimary({ onClick, variant = "primary" }: { onClick: () => void; variant?: "primary" | "equal" }) {
+function InstantPrimary({
+  onClick,
+  variant = "primary",
+}: {
+  onClick: () => void;
+  variant?: "primary" | "equal";
+}) {
   return (
     <div className="flex flex-col items-center gap-3">
       <button
@@ -157,12 +167,18 @@ function InstantPrimary({ onClick, variant = "primary" }: { onClick: () => void;
         }}
       >
         Reserve this day
-        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]" aria-hidden />
+        <ArrowRight
+          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]"
+          aria-hidden
+        />
       </button>
       {variant === "primary" && (
         <p
           className="text-center text-[12px] italic"
-          style={{ fontFamily: "Georgia, serif", color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+          style={{
+            fontFamily: "Georgia, serif",
+            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+          }}
         >
           Instant confirmation. A local designer reviews timings before any charge.
         </p>

@@ -78,7 +78,12 @@ export function decideConversionPath(
   if (itinerary.hasWarning) reasons.push("feasibility warning active");
 
   const mustRefine =
-    isUltra || isCorporate || isLargeGroup || hasHardConstraints || isMultiDay || !itinerary.allReal;
+    isUltra ||
+    isCorporate ||
+    isLargeGroup ||
+    hasHardConstraints ||
+    isMultiDay ||
+    !itinerary.allReal;
 
   if (mustRefine) {
     return { path: "refine", confidence, reasons };

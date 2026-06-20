@@ -37,10 +37,7 @@ test.describe("Hero fields visibility — no opacity:0 regressions", () => {
         if (!el) throw new Error(`not found: ${s}`);
         return parseFloat(window.getComputedStyle(el).opacity || "0");
       }, sel);
-      expect(
-        opacity,
-        `${sel} must be fully opaque on final beat, got opacity=${opacity}`,
-      ).toBe(1);
+      expect(opacity, `${sel} must be fully opaque on final beat, got opacity=${opacity}`).toBe(1);
     }
   });
 });

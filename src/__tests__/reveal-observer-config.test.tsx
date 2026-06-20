@@ -349,9 +349,7 @@ describe("reveal observers — prefers-reduced-motion fallback", () => {
 
     // Every reveal-flavoured element must be force-marked visible
     // synchronously, so content is never hidden for reduced-motion users.
-    const all = document.querySelectorAll<HTMLElement>(
-      ".reveal, .reveal-stagger, .section-enter",
-    );
+    const all = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
     expect(all.length).toBe(4);
     all.forEach((el) => {
       expect(el.classList.contains("is-visible")).toBe(true);
@@ -550,9 +548,7 @@ describe("reveal observers — sequenced firing on mobile", () => {
     );
     expect(container).toBeTruthy();
 
-    const els = Array.from(
-      document.querySelectorAll<HTMLElement>(".reveal"),
-    );
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
     expect(els.length).toBe(5);
 
     // Park them all below the fold so the initial sweep doesn't claim
@@ -636,9 +632,7 @@ describe("reveal observers — sequenced firing on mobile", () => {
       </SiteLayout>,
     );
 
-    const sections = Array.from(
-      document.querySelectorAll<HTMLElement>(".section-enter"),
-    );
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(".section-enter"));
     expect(sections.length).toBe(3);
 
     // Reset post-mount sweep + park below the fold.
@@ -683,9 +677,7 @@ describe("reveal observers — sequenced firing on mobile", () => {
         boundingClientRect: { top: 50, bottom: 550 } as DOMRectReadOnly,
       },
     ]);
-    sections.forEach((el) =>
-      expect(el.classList.contains("is-visible")).toBe(true),
-    );
+    sections.forEach((el) => expect(el.classList.contains("is-visible")).toBe(true));
   });
 
   it("no observer leaks: every target is unobserved after a full sweep of fires", () => {
@@ -729,9 +721,7 @@ describe("reveal observers — sequenced firing on mobile", () => {
     // Reset whatever the mount-time sweep already did so we can drive
     // a clean "all-below-the-fold → all-fire" scenario.
     const allTracked = Array.from(
-      document.querySelectorAll<HTMLElement>(
-        ".reveal, .reveal-stagger, .section-enter",
-      ),
+      document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter"),
     );
     expect(allTracked.length).toBe(12);
     allTracked.forEach((el, i) => {
@@ -793,9 +783,7 @@ describe("reveal observers — sequenced firing on mobile", () => {
 
     // Sanity: every tracked element ended up visible — we didn't
     // accidentally also disconnect before doing the work.
-    allTracked.forEach((el) =>
-      expect(el.classList.contains("is-visible")).toBe(true),
-    );
+    allTracked.forEach((el) => expect(el.classList.contains("is-visible")).toBe(true));
   });
 
   it("partial scroll: only fired targets are unobserved; the rest stay observed and invisible", () => {
@@ -827,9 +815,7 @@ describe("reveal observers — sequenced firing on mobile", () => {
       </SiteLayout>,
     );
 
-    const els = Array.from(
-      document.querySelectorAll<HTMLElement>(".reveal"),
-    );
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
     expect(els.length).toBe(6);
 
     // Reset post-mount sweep state and park each element below the
@@ -1262,9 +1248,7 @@ describe("FakeIO.observe — explicit 'classList missing' contract", () => {
     io.observe(makeElLocal("reveal"));
     expect(io.kind).toBe("reveal");
 
-    expect(() =>
-      io.observe({ classList: undefined } as unknown as Element),
-    ).not.toThrow();
+    expect(() => io.observe({ classList: undefined } as unknown as Element)).not.toThrow();
     expect(io.kind).toBe("reveal");
 
     io.observe(makeElLocal("reveal-stagger"));
@@ -1287,9 +1271,7 @@ describe("FakeIO.observe — explicit 'classList missing' contract", () => {
   it("repeated classList-less observes never throw and never mutate kind", () => {
     const io = new FakeIO(() => {});
     for (let i = 0; i < 25; i++) {
-      expect(() =>
-        io.observe({ classList: undefined } as unknown as Element),
-      ).not.toThrow();
+      expect(() => io.observe({ classList: undefined } as unknown as Element)).not.toThrow();
       expect(io.kind).toBe("other");
     }
     expect(io.pendingTargets.size).toBe(0);
@@ -1412,4 +1394,3 @@ describe("FakeIO — parallel instances are isolated under degenerate inputs", (
     expect(FakeIO.allOf("other")).toHaveLength(0);
   });
 });
-

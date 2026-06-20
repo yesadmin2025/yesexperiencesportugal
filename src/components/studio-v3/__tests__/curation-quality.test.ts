@@ -3,10 +3,15 @@ import { resolveStudioV3Route } from "../curation";
 import { findTour } from "@/data/signatureTours";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 
-const WINE_RE = /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
+const WINE_RE =
+  /\b(wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca|catralvos|palmela)\b/i;
 
 function norm(label: string) {
-  return label.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return label
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 describe("Studio V3 curation quality", () => {
@@ -50,7 +55,10 @@ describe("Studio V3 curation quality", () => {
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g, "")
+        .replace(
+          /\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g,
+          "",
+        )
         .replace(/[^a-z0-9]+/g, " ")
         .trim();
     const semantic = route.routePoints.map((p) => normalize(p.label));

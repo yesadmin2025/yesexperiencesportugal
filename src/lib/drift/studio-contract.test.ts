@@ -18,7 +18,9 @@ describe("Studio Drift contract", () => {
       t("chapter.radius", "pt"),
       t("reveal.hero_fallback", "pt"),
       t("build.eyebrow", "pt"),
-    ].join(" ").toLowerCase();
+    ]
+      .join(" ")
+      .toLowerCase();
 
     expect(visiblePt).not.toMatch(/\b(tu|teu|tua|teus|tuas|contigo|irias|respira|respirar)\b/);
     expect(visiblePt).not.toContain("portugal já está acordada");
@@ -71,7 +73,11 @@ describe("Studio Drift contract", () => {
     );
 
     expect(wineDay.stops.map((s) => s.stop.id)).not.toEqual(coastDay.stops.map((s) => s.stop.id));
-    expect(wineDay.stops.some((s) => s.stop.kind === "winery" || s.stop.kind === "cellar")).toBe(true);
-    expect(coastDay.stops.some((s) => s.stop.kind === "beach" || s.stop.kind === "viewpoint")).toBe(true);
+    expect(wineDay.stops.some((s) => s.stop.kind === "winery" || s.stop.kind === "cellar")).toBe(
+      true,
+    );
+    expect(coastDay.stops.some((s) => s.stop.kind === "beach" || s.stop.kind === "viewpoint")).toBe(
+      true,
+    );
   });
 });

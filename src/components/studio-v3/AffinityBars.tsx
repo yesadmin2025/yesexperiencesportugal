@@ -102,12 +102,7 @@ function scoreAxes(
   };
 }
 
-export function AffinityBars({
-  feeling,
-  interests,
-  rhythm,
-  companions,
-}: AffinityBarsProps) {
+export function AffinityBars({ feeling, interests, rhythm, companions }: AffinityBarsProps) {
   const scores = useMemo(
     () => scoreAxes(feeling, interests, rhythm, companions),
     [feeling, interests, rhythm, companions],
@@ -128,10 +123,7 @@ export function AffinityBars({
         {AXES.map((axis) => {
           const filled = scores[axis.key];
           return (
-            <li
-              key={axis.key}
-              className="flex items-center justify-between gap-3"
-            >
+            <li key={axis.key} className="flex items-center justify-between gap-3">
               <span
                 className="text-[10.5px] uppercase tracking-[0.18em] font-semibold"
                 style={{

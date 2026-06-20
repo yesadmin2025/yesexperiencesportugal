@@ -169,7 +169,9 @@ export const suggestFromIntent = createServerFn({ method: "POST" })
       };
 
       const validKeys = new Set(catalog.map((s) => s.key));
-      const suggested = (parsed.suggestedStopKeys ?? []).filter((k) => validKeys.has(k)).slice(0, 5);
+      const suggested = (parsed.suggestedStopKeys ?? [])
+        .filter((k) => validKeys.has(k))
+        .slice(0, 5);
       const ranked = (parsed.rankedKeys ?? []).filter((k) => validKeys.has(k));
       // Append any catalog keys the model omitted, preserving original order.
       for (const s of catalog) if (!ranked.includes(s.key)) ranked.push(s.key);

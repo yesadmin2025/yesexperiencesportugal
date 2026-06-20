@@ -18,8 +18,7 @@ import { listBuilderReferences } from "@/lib/builderReferences.list.functions";
 
 const MAX_FILES = 5;
 const MAX_BYTES = 10 * 1024 * 1024;
-const ACCEPT =
-  "image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf";
+const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf";
 
 interface ReferenceRow {
   id: string;
@@ -121,18 +120,16 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
           data: { publicUrl },
         } = supabase.storage.from("builder-references").getPublicUrl(path);
 
-        const { error: insErr } = await supabase
-          .from("builder_reference_uploads")
-          .insert({
-            session_id: sessionId,
-            file_path: path,
-            // file_url is legacy/NOT NULL — store storage path reference
-            // only; clients now read via short-lived signed URLs.
-            file_url: publicUrl,
-            file_name: file.name.slice(0, 200),
-            mime_type: file.type,
-            file_size_bytes: file.size,
-          });
+        const { error: insErr } = await supabase.from("builder_reference_uploads").insert({
+          session_id: sessionId,
+          file_path: path,
+          // file_url is legacy/NOT NULL — store storage path reference
+          // only; clients now read via short-lived signed URLs.
+          file_url: publicUrl,
+          file_name: file.name.slice(0, 200),
+          mime_type: file.type,
+          file_size_bytes: file.size,
+        });
         if (insErr) {
           console.error(insErr);
           await supabase.storage
@@ -181,19 +178,15 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     if (rows.length === 0 || analyzing) return;
     setAnalyzing(true);
     try {
-      const { data, error } = await supabase.functions.invoke(
-        "analyze-builder-references",
-        {
-          body: {
-            sessionId,
-            fileIds: rows.map((r) => r.id),
-          },
+      const { data, error } = await supabase.functions.invoke("analyze-builder-references", {
+        body: {
+          sessionId,
+          fileIds: rows.map((r) => r.id),
         },
-      );
+      });
       if (error) {
         const msg =
-          (error as { message?: string }).message ??
-          "Couldn't read your references right now.";
+          (error as { message?: string }).message ?? "Couldn't read your references right now.";
         toast.error(msg);
         return;
       }
@@ -226,8 +219,8 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
           </p>
           <p className="mt-1 text-[13px] text-[color:var(--charcoal)]/75 max-w-md">
             Add up to {MAX_FILES} photos or a PDF that capture the{" "}
-            <em className="serif italic">feel</em> you want. We read the tone
-            only — never the itinerary.
+            <em className="serif italic">feel</em> you want. We read the tone only — never the
+            itinerary.
           </p>
         </div>
         <span className="shrink-0 text-[11px] text-[color:var(--charcoal)]/55 tabular-nums">
@@ -259,11 +252,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               />
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-2 text-center">
-                <FileText
-                  size={20}
-                  strokeWidth={1.5}
-                  className="text-[color:var(--charcoal)]/55"
-                />
+                <FileText size={20} strokeWidth={1.5} className="text-[color:var(--charcoal)]/55" />
                 <span className="text-[10px] leading-tight text-[color:var(--charcoal)]/65 line-clamp-2">
                   {r.file_name}
                 </span>

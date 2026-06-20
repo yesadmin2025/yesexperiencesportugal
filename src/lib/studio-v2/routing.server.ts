@@ -39,8 +39,7 @@ function haversineKm(a: Pt, b: Pt): number {
   const dLng = toRad(b.lng - a.lng);
   const lat1 = toRad(a.lat);
   const lat2 = toRad(b.lat);
-  const h =
-    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
@@ -114,9 +113,7 @@ async function fetchOSRM(from: Pt, to: Pt): Promise<Leg | null> {
     const distance_km = +(r.distance / 1000).toFixed(2);
     const drive_minutes = Math.max(1, Math.round(r.duration / 60));
     // Convert [lng, lat] → [lat, lng] for the polyline encoder.
-    const latlng = r.geometry.coordinates.map(
-      ([lng, lat]) => [lat, lng] as [number, number],
-    );
+    const latlng = r.geometry.coordinates.map(([lng, lat]) => [lat, lng] as [number, number]);
     return {
       from_key: from.key,
       to_key: to.key,
@@ -164,9 +161,7 @@ export async function resolveLegs(stops: Pt[]): Promise<Leg[]> {
   for (let i = 0; i < pairs.length; i++) {
     if (!cache.has(`${pairs[i][0]}::${pairs[i][1]}`)) missIdx.push(i);
   }
-  const fetched = await Promise.all(
-    missIdx.map((i) => fetchOSRM(stops[i], stops[i + 1])),
-  );
+  const fetched = await Promise.all(missIdx.map((i) => fetchOSRM(stops[i], stops[i + 1])));
 
   for (let i = 0; i < pairs.length; i++) {
     const cached = cache.get(`${pairs[i][0]}::${pairs[i][1]}`);

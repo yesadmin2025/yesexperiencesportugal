@@ -2,12 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { createStudioV3Lead } from "@/lib/studio-v3/leads.functions";
-import {
-  CONSIDERATIONS,
-  LANGUAGES,
-  PICKUPS,
-  type StudioV3State,
-} from "./types";
+import { CONSIDERATIONS, LANGUAGES, PICKUPS, type StudioV3State } from "./types";
 
 export type LeadIntent = "book" | "refine";
 
@@ -63,17 +58,13 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
   const [note, setNote] = useState("");
 
   // Practical details (book mode only)
-  const [dateMode, setDateMode] = useState<"exact" | "flexible" | "undecided">(
-    prefillDateMode,
-  );
+  const [dateMode, setDateMode] = useState<"exact" | "flexible" | "undecided">(prefillDateMode);
   const [dateExact, setDateExact] = useState<string>(prefillDateExact);
   const [dateNote, setDateNote] = useState<string>("");
   const [pickupAddress, setPickupAddress] = useState<string>(prefillPickupArea);
   const [guests, setGuests] = useState<number>(prefillGuests);
   const [language, setLanguage] = useState<string>(prefillLanguage);
-  const [considerationsNote, setConsiderationsNote] = useState<string>(
-    prefillConsiderations,
-  );
+  const [considerationsNote, setConsiderationsNote] = useState<string>(prefillConsiderations);
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -181,7 +172,8 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
     if (isBook && practical) {
       const lines: string[] = ["— Practical details —"];
       if (practical.dateExact) lines.push(`Date: ${practical.dateExact} (exact)`);
-      else if (practical.dateNote) lines.push(`Date: ${practical.dateNote} (${practical.dateMode})`);
+      else if (practical.dateNote)
+        lines.push(`Date: ${practical.dateNote} (${practical.dateMode})`);
       else lines.push(`Date: ${practical.dateMode}`);
       if (practical.pickupAddress) lines.push(`Pickup: ${practical.pickupAddress}`);
       lines.push(`Guests: ${practical.guests}`);
@@ -210,9 +202,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
       setDone(true);
     } catch (err) {
       console.error("[LeadCaptureSheet] submit failed", err);
-      setErrorMsg(
-        "Something went wrong. Please try again or message YES directly.",
-      );
+      setErrorMsg("Something went wrong. Please try again or message YES directly.");
     } finally {
       setSubmitting(false);
     }
@@ -371,8 +361,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                     aria-labelledby="practical-title"
                     className="mt-6 pt-5 border-t"
                     style={{
-                      borderColor:
-                        "color-mix(in oklab, var(--charcoal) 14%, transparent)",
+                      borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)",
                     }}
                   >
                     <p
@@ -394,12 +383,10 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                     <p
                       className="mt-2 text-[12.5px] leading-[1.5]"
                       style={{
-                        color:
-                          "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+                        color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
                       }}
                     >
-                      We'll use this to check availability and prepare your
-                      private proposal.
+                      We'll use this to check availability and prepare your private proposal.
                     </p>
 
                     <div className="mt-4 space-y-4">
@@ -421,12 +408,8 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                                 aria-pressed={active}
                                 className="px-3 py-2 min-h-[40px] rounded-full text-[12px] font-medium border focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                                 style={{
-                                  background: active
-                                    ? "var(--charcoal)"
-                                    : "transparent",
-                                  color: active
-                                    ? "var(--ivory)"
-                                    : "var(--charcoal)",
+                                  background: active ? "var(--charcoal)" : "transparent",
+                                  color: active ? "var(--ivory)" : "var(--charcoal)",
                                   borderColor: active
                                     ? "var(--charcoal)"
                                     : "color-mix(in oklab, var(--charcoal) 24%, transparent)",
@@ -460,10 +443,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                         )}
                       </Field>
 
-                      <Field
-                        label="Pickup address"
-                        htmlFor="lead-pickup"
-                      >
+                      <Field label="Pickup address" htmlFor="lead-pickup">
                         <input
                           id="lead-pickup"
                           type="text"
@@ -490,12 +470,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                           max={40}
                           value={guests}
                           onChange={(e) =>
-                            setGuests(
-                              Math.max(
-                                1,
-                                Math.min(40, Number(e.target.value) || 1),
-                              ),
-                            )
+                            setGuests(Math.max(1, Math.min(40, Number(e.target.value) || 1)))
                           }
                           className={inputClass}
                           style={inputStyle}
@@ -504,8 +479,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                           <p
                             className="mt-1.5 text-[11.5px] leading-[1.45]"
                             style={{
-                              color:
-                                "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                             }}
                           >
                             We assumed {prefillGuests} — please confirm.
@@ -585,11 +559,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                   }`}
                   style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
                 >
-                  {submitting
-                    ? "Sending…"
-                    : isBook
-                      ? "Send to YES"
-                      : "Request refinements"}{" "}
+                  {submitting ? "Sending…" : isBook ? "Send to YES" : "Request refinements"}{" "}
                   {!submitting ? <ArrowRight size={14} aria-hidden /> : null}
                 </button>
 

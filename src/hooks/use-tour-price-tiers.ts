@@ -33,9 +33,7 @@ export function codeTierDefaults(): TourPriceTiersMap {
 }
 
 export async function fetchTourPriceTiers(): Promise<TourPriceTiersMap> {
-  const { data, error } = await supabase
-    .from("tour_price_tiers")
-    .select("tour_id, tiers");
+  const { data, error } = await supabase.from("tour_price_tiers").select("tour_id, tiers");
   if (error) throw error;
   const map: TourPriceTiersMap = {};
   for (const row of data ?? []) {

@@ -8,13 +8,7 @@
 // Pure TS, no I/O. Safe to import from both client (StudioDrift) and
 // server (driftEngine.server).
 
-export type DriftDimension =
-  | "companions"
-  | "pickup"
-  | "radius"
-  | "energy"
-  | "style"
-  | "social";
+export type DriftDimension = "companions" | "pickup" | "radius" | "energy" | "style" | "social";
 
 /** key = `${dimension}:${value}`  → confidence in [0, 1]. */
 export type ConfidenceMap = Record<string, number>;
@@ -73,18 +67,8 @@ export function topValue(
 
 /** Project the confidence map into a single inferred profile, treating any
  *  value ≥ minConfidence as a soft pick (explicit imprint always wins). */
-export function projectProfile(
-  map: ConfidenceMap,
-  minConfidence = 0.5,
-): InferredProfile {
-  const dims: DriftDimension[] = [
-    "companions",
-    "pickup",
-    "radius",
-    "energy",
-    "style",
-    "social",
-  ];
+export function projectProfile(map: ConfidenceMap, minConfidence = 0.5): InferredProfile {
+  const dims: DriftDimension[] = ["companions", "pickup", "radius", "energy", "style", "social"];
   const out: Record<string, string> = {};
   for (const d of dims) {
     const top = topValue(map, d);
@@ -96,14 +80,7 @@ export function projectProfile(
 /** Confidence gap per dimension (1 - top confidence). Higher gap = more
  *  uncertain = better candidate for the next explicit whisper. */
 export function gaps(map: ConfidenceMap): Array<{ dim: DriftDimension; gap: number }> {
-  const dims: DriftDimension[] = [
-    "companions",
-    "pickup",
-    "radius",
-    "energy",
-    "style",
-    "social",
-  ];
+  const dims: DriftDimension[] = ["companions", "pickup", "radius", "energy", "style", "social"];
   return dims
     .map((dim) => {
       const top = topValue(map, dim);
@@ -116,14 +93,7 @@ export function gaps(map: ConfidenceMap): Array<{ dim: DriftDimension; gap: numb
  *  the conversion layer to gate CTAs and by the scene router to know when
  *  the journey is "complete enough" to converge. */
 export function totalConfidence(map: ConfidenceMap): number {
-  const dims: DriftDimension[] = [
-    "companions",
-    "pickup",
-    "radius",
-    "energy",
-    "style",
-    "social",
-  ];
+  const dims: DriftDimension[] = ["companions", "pickup", "radius", "energy", "style", "social"];
   let sum = 0;
   for (const d of dims) sum += topValue(map, d)?.confidence ?? 0;
   return sum / dims.length;

@@ -62,8 +62,7 @@ const COPY: Record<
     indicativeFor: (n) => `indicative for ${n} ${n === 1 ? "guest" : "guests"}`,
     indicativeTotal: "estimated total",
     includedTitle: "All included",
-    finalNote:
-      "Final cost confirmed at booking, based on date, party size and any adjustments.",
+    finalNote: "Final cost confirmed at booking, based on date, party size and any adjustments.",
     expand: "view breakdown",
     collapse: "hide breakdown",
   },
@@ -213,7 +212,10 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
       </div>
 
       {included.length > 0 && (
-        <div className="border-t" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+        <div
+          className="border-t"
+          style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+        >
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

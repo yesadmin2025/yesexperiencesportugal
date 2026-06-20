@@ -46,10 +46,14 @@ export async function loadVoice(): Promise<Record<string, VoiceLine>> {
 }
 
 export function fillSlots(line: string, values: Record<string, string | undefined>): string {
-  return line.replace(/\{(\w+)\}/g, (_m, key: string) => {
-    const v = values[key];
-    return v && v.trim().length > 0 ? v : "";
-  }).replace(/\s+/g, " ").replace(/\s,/g, ",").trim();
+  return line
+    .replace(/\{(\w+)\}/g, (_m, key: string) => {
+      const v = values[key];
+      return v && v.trim().length > 0 ? v : "";
+    })
+    .replace(/\s+/g, " ")
+    .replace(/\s,/g, ",")
+    .trim();
 }
 
 // ─── DNA activation ───────────────────────────────────────────────────────
@@ -162,10 +166,10 @@ function fallbackStory(input: StoryInput): RevealStory {
     return { hero, microStory, arc, completion: "book this day", source: "fallback" };
   }
 
-  const hero = fillSlots(
-    "o seu dia em {region} está pronto.",
-    { region: regionLabel, name: profile.name },
-  );
+  const hero = fillSlots("o seu dia em {region} está pronto.", {
+    region: regionLabel,
+    name: profile.name,
+  });
   const completion = voice["completion.book"]?.text ?? "reservar este dia";
   const microStory =
     stops.length === 0
@@ -271,7 +275,10 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
                 type: "object",
                 properties: {
                   hero: { type: "string", description: "Single editorial line, ≤14 words." },
-                  microStory: { type: "string", description: "1 sentence using ONLY real stop names." },
+                  microStory: {
+                    type: "string",
+                    description: "1 sentence using ONLY real stop names.",
+                  },
                   arc: {
                     type: "array",
                     items: { type: "string" },
@@ -369,12 +376,25 @@ export async function assembleReveal(
     en: { book: "book this day", save: "save for later", refine: "refine with a local" },
     pt: { book: "reservar este dia", save: "guardar para depois", refine: "afinar com um local" },
     es: { book: "reservar este día", save: "guardar para después", refine: "afinar con un local" },
-    fr: { book: "réserver cette journée", save: "garder pour plus tard", refine: "affiner avec un local" },
+    fr: {
+      book: "réserver cette journée",
+      save: "garder pour plus tard",
+      refine: "affiner avec un local",
+    },
   }[hints.locale ?? "en"];
   const cta = {
-    book: hints.locale === "pt" ? voice["completion.book"]?.text ?? ctaFallback.book : ctaFallback.book,
-    save: hints.locale === "pt" ? voice["completion.save"]?.text ?? ctaFallback.save : ctaFallback.save,
-    refine: hints.locale === "pt" ? voice["completion.refine"]?.text ?? ctaFallback.refine : ctaFallback.refine,
+    book:
+      hints.locale === "pt"
+        ? (voice["completion.book"]?.text ?? ctaFallback.book)
+        : ctaFallback.book,
+    save:
+      hints.locale === "pt"
+        ? (voice["completion.save"]?.text ?? ctaFallback.save)
+        : ctaFallback.save,
+    refine:
+      hints.locale === "pt"
+        ? (voice["completion.refine"]?.text ?? ctaFallback.refine)
+        : ctaFallback.refine,
   };
   const anchor = day.anchorTourId
     ? signatureTours.find((t) => t.id === day.anchorTourId)
@@ -390,4 +410,3 @@ export async function assembleReveal(
     anchorTourTitle: anchor?.title,
   };
 }
-

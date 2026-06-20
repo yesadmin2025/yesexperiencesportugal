@@ -6,11 +6,7 @@
  * holds the two stanza lines; `HERO_COPY` carries the closing /
  * locked strings used by SEO, SSR probes and byte-exact e2e.
  */
-export const HERO_PHRASES = [
-  "Portugal is the stage.",
-  "You write the story.",
-] as const;
-
+export const HERO_PHRASES = ["Portugal is the stage.", "You write the story."] as const;
 
 export const HERO_COPY = {
   eyebrow: "PORTUGAL IS THE STAGE",

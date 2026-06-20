@@ -22,8 +22,7 @@ export const Route = createFileRoute("/studio-v2/i/$token")({
       { title: `Invitation · ${params.token.slice(0, 6)} · YES Experiences` },
       {
         name: "description",
-        content:
-          "A private Portuguese composition, hand-shaped for you by YES Experiences.",
+        content: "A private Portuguese composition, hand-shaped for you by YES Experiences.",
       },
       { name: "robots", content: "noindex,nofollow" },
     ],
@@ -65,11 +64,15 @@ function formatComposerLine(updatedAt: string | null): string {
     const weekday = d.toLocaleDateString("en-GB", { weekday: "long" });
     const hour = d.getHours();
     const partOfDay =
-      hour < 6 ? "before dawn"
-      : hour < 12 ? "morning"
-      : hour < 17 ? "afternoon"
-      : hour < 21 ? "evening"
-      : "late evening";
+      hour < 6
+        ? "before dawn"
+        : hour < 12
+          ? "morning"
+          : hour < 17
+            ? "afternoon"
+            : hour < 21
+              ? "evening"
+              : "late evening";
     return `Composed for you by YES · ${weekday} ${partOfDay}`;
   } catch {
     return "Composed for you by YES";
@@ -84,7 +87,8 @@ function regionWhisper(region: string | null): string {
   if (key.includes("arrabida") || key.includes("setubal"))
     return "Arrábida, the Atlantic close enough to taste";
   if (key.includes("sintra")) return "Sintra, granite and salt mist on the same breath";
-  if (key.includes("lisboa") || key.includes("lisbon")) return "Lisbon, hidden streets after the crowds";
+  if (key.includes("lisboa") || key.includes("lisbon"))
+    return "Lisbon, hidden streets after the crowds";
   if (key.includes("porto")) return "Porto, granite light and river-quiet cellars";
   return "a private composition, shaped to your rhythm";
 }
@@ -157,7 +161,10 @@ function InvitationPage() {
         </p>
 
         <h1 className="serif mt-6 text-[2.2rem] md:text-[2.8rem] leading-[1.06] tracking-[-0.01em] font-semibold">
-          <span className="italic font-normal" style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}>
+          <span
+            className="italic font-normal"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 75%, transparent)" }}
+          >
             For you —
           </span>
           <br />
@@ -180,8 +187,8 @@ function InvitationPage() {
           className="serif italic mt-10 text-[1.05rem] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
         >
-          The composition is set, but still yours to shape. Open it and the day
-          will continue to listen.
+          The composition is set, but still yours to shape. Open it and the day will continue to
+          listen.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-3">

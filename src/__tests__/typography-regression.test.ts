@@ -56,9 +56,7 @@ export async function settleLayout(): Promise<void> {
   if (typeof document === "undefined") return;
 
   // Wait for web fonts so font-size/line-height reflect real metrics.
-  const fontsReady = (
-    document as unknown as { fonts?: { ready?: Promise<unknown> } }
-  ).fonts?.ready;
+  const fontsReady = (document as unknown as { fonts?: { ready?: Promise<unknown> } }).fonts?.ready;
   if (fontsReady) await fontsReady;
 
   // Two rAFs to let style recalc + layout flush.
@@ -138,9 +136,7 @@ function lineOf(src: string, offset: number): number {
  */
 function selectorFor(tag: string, cls: string): string {
   const tokens = cls.split(/\s+/).filter(Boolean);
-  const typo = tokens.find((t) =>
-    /^(hero-h1|t-display|t-h1|t-h2|t-h3|t-eyebrow|t-lead)$/.test(t),
-  );
+  const typo = tokens.find((t) => /^(hero-h1|t-display|t-h1|t-h2|t-h3|t-eyebrow|t-lead)$/.test(t));
   const pick = typo ?? tokens[0] ?? "";
   return pick ? `${tag}.${pick}` : tag;
 }
@@ -225,10 +221,7 @@ function computeDrift(prev: Captured | null, next: Captured): DriftEntry[] {
   const drift: DriftEntry[] = [];
   if (!prev) return drift;
 
-  const allHeadlineKeys = new Set([
-    ...Object.keys(prev.headlines),
-    ...Object.keys(next.headlines),
-  ]);
+  const allHeadlineKeys = new Set([...Object.keys(prev.headlines), ...Object.keys(next.headlines)]);
   for (const key of allHeadlineKeys) {
     const p = prev.headlines[key]?.value ?? null;
     const n = next.headlines[key]?.value ?? null;
@@ -263,10 +256,7 @@ function computeDrift(prev: Captured | null, next: Captured): DriftEntry[] {
     }
   }
 
-  const allTokenKeys = new Set([
-    ...Object.keys(prev.tokenRules),
-    ...Object.keys(next.tokenRules),
-  ]);
+  const allTokenKeys = new Set([...Object.keys(prev.tokenRules), ...Object.keys(next.tokenRules)]);
   for (const key of allTokenKeys) {
     const p = prev.tokenRules[key]?.value ?? "";
     const n = next.tokenRules[key]?.value ?? "";
@@ -370,7 +360,6 @@ afterAll(() => {
   fs.writeFileSync(DIFF_JSON_PATH, JSON.stringify(drift, null, 2));
   fs.writeFileSync(DIFF_HTML_PATH, renderDiffHtml(drift));
 
-  // eslint-disable-next-line no-console
   console.log(
     `\n[typography] ${drift.length} drift entr${drift.length === 1 ? "y" : "ies"} → ${path.relative(ROOT, DIFF_HTML_PATH)}`,
   );
@@ -403,7 +392,8 @@ const HEADLINES: HeadlineSpec[] = [
     page: "home",
     role: "hero stanza line 2",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /<p\s+className="(font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
+    pattern:
+      /<p\s+className="(font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
   },
   {
     page: "home",
@@ -426,29 +416,19 @@ const HEADLINES: HeadlineSpec[] = [
     page: "multi-day",
     role: "hero subhead",
     file: "src/routes/multi-day.tsx",
-    pattern:
-      /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*Build Portugal across regions/,
+    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*Build Portugal across regions/,
   },
   {
     page: "proposals",
     role: "hero subhead",
     file: "src/routes/proposals.tsx",
-    pattern:
-      /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*A private moment/,
+    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*A private moment/,
   },
 ];
 
 /* ── 2. Typography token rules from styles.css ──────────────────── */
 
-const TOKENS = [
-  ".hero-h1",
-  ".t-display",
-  ".t-h1",
-  ".t-h2",
-  ".t-h3",
-  ".t-eyebrow",
-  ".t-lead",
-];
+const TOKENS = [".hero-h1", ".t-display", ".t-h1", ".t-h2", ".t-h3", ".t-eyebrow", ".t-lead"];
 
 /**
  * Extract every CSS rule (and its media-query overrides) for a
@@ -461,10 +441,7 @@ function extractTokenRules(css: string, selector: string): string {
   const lines: string[] = [];
 
   // Match `selector { ... }` not inside @media (i.e. with no preceding @)
-  const baseRe = new RegExp(
-    `(^|\\n)\\s*${escaped}\\s*\\{([^}]+)\\}`,
-    "g",
-  );
+  const baseRe = new RegExp(`(^|\\n)\\s*${escaped}\\s*\\{([^}]+)\\}`, "g");
   let m: RegExpExecArray | null;
   while ((m = baseRe.exec(css))) {
     const body = m[2].trim().replace(/\s+/g, " ");
@@ -477,10 +454,7 @@ function extractTokenRules(css: string, selector: string): string {
   while ((mm = mediaRe.exec(css))) {
     const cond = mm[1].trim();
     const inner = mm[2];
-    const innerRe = new RegExp(
-      `${escaped}\\s*\\{([^}]+)\\}`,
-      "g",
-    );
+    const innerRe = new RegExp(`${escaped}\\s*\\{([^}]+)\\}`, "g");
     let im: RegExpExecArray | null;
     while ((im = innerRe.exec(inner))) {
       const body = im[1].trim().replace(/\s+/g, " ");
@@ -598,10 +572,7 @@ describe("Typography regression — section headlines (token sweep)", () => {
           },
         });
       }
-      expect(
-        hits.length,
-        `No tokenized section headlines found in ${file}`,
-      ).toBeGreaterThan(0);
+      expect(hits.length, `No tokenized section headlines found in ${file}`).toBeGreaterThan(0);
       captured.sectionSweeps[page] = hits;
       expect(hits).toMatchSnapshot();
     });

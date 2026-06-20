@@ -54,18 +54,28 @@ test.describe("Studio V3 — PremiumMap destination path", () => {
     await page.reload();
 
     // Intro → name → guided
-    await page.locator("button:has-text('Begin')").first().click().catch(() => {});
+    await page
+      .locator("button:has-text('Begin')")
+      .first()
+      .click()
+      .catch(() => {});
     await page.waitForTimeout(500);
     const nameInput = page.locator("input").first();
     if (await nameInput.count()) await nameInput.fill("Alex");
     for (const t of ["Continue", "Skip"]) {
       const btn = page.locator(`button:has-text('${t}')`).first();
-      if (await btn.count()) { await btn.click().catch(() => {}); break; }
+      if (await btn.count()) {
+        await btn.click().catch(() => {});
+        break;
+      }
     }
     await page.waitForTimeout(500);
     for (const t of ["Guided", "Begin"]) {
       const btn = page.locator(`button:has-text('${t}')`).first();
-      if (await btn.count()) { await btn.click().catch(() => {}); break; }
+      if (await btn.count()) {
+        await btn.click().catch(() => {});
+        break;
+      }
     }
     await page.waitForTimeout(800);
 

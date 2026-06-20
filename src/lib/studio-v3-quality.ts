@@ -52,10 +52,10 @@ export function computeQualityScore(state: StudioV3State): QualityScore | null {
   // Pacing coherence — slow rhythm + family/group reads premium
   if (state.rhythm === "slow" && state.companions === "family") raw += 4;
   // Full/immersive rhythm + couple-romantic reads contradictory
-  if ((state.rhythm === "full" || state.rhythm === "immersive") && state.companions === "couple") raw -= 6;
+  if ((state.rhythm === "full" || state.rhythm === "immersive") && state.companions === "couple")
+    raw -= 6;
   // Slow rhythm + many themes = overload warning
   if (state.rhythm === "slow" && themeCount >= 4) raw -= 4;
-
 
   const score = round5(raw);
 
@@ -81,7 +81,6 @@ export function computeQualityScore(state: StudioV3State): QualityScore | null {
     score,
     label: "Consider easing pace",
     tone: "consider",
-    caption:
-      "A few more decisions will sharpen the day — pick a rhythm and your top interests.",
+    caption: "A few more decisions will sharpen the day — pick a rhythm and your top interests.",
   };
 }

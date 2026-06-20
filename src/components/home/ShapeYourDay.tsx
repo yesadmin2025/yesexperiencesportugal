@@ -288,7 +288,9 @@ function ShapeYourDayPanel(props: {
             aria-label="What kind of day"
           >
             {INTENT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
             ))}
           </select>
           <ChevronDown className="syd-chev" size={16} aria-hidden="true" />
@@ -302,7 +304,9 @@ function ShapeYourDayPanel(props: {
             aria-label="Who's travelling"
           >
             {GROUP_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
             ))}
           </select>
           <ChevronDown className="syd-chev" size={16} aria-hidden="true" />
@@ -316,17 +320,15 @@ function ShapeYourDayPanel(props: {
             aria-label="Pickup location"
           >
             {PICKUP_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
             ))}
           </select>
           <ChevronDown className="syd-chev" size={16} aria-hidden="true" />
         </Field>
 
-        <button
-          type="button"
-          className="syd-cta"
-          onClick={props.onSubmit}
-        >
+        <button type="button" className="syd-cta" onClick={props.onSubmit}>
           Shape my experience
           <span aria-hidden="true">→</span>
         </button>

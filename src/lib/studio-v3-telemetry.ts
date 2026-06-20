@@ -17,7 +17,6 @@ export type StudioV3RejectionReason =
   | "coherence-family-only"
   | "coherence-romantic-only";
 
-
 export interface StudioV3StopRejection {
   label: string;
   reason: StudioV3RejectionReason;
@@ -43,11 +42,7 @@ export interface StudioV3CurationDecision {
   confidence?: string;
 }
 
-export type StudioV3Phase4Phase =
-  | "silhouette-shown"
-  | "map-mounted"
-  | "first-stop"
-  | "complete";
+export type StudioV3Phase4Phase = "silhouette-shown" | "map-mounted" | "first-stop" | "complete";
 
 export interface StudioV3Phase4Timing {
   phase: StudioV3Phase4Phase;
@@ -150,15 +145,12 @@ export function emitStudioV3Event(event: StudioV3Event): void {
   // thousands of times) and pushes long-running suites past timeout.
   if (typeof process !== "undefined" && process.env?.VITEST) return;
   try {
-    // eslint-disable-next-line no-console
     console.info(`[studio-v3.${event.kind}]`, event.payload);
   } catch {
     /* console can be missing in exotic embeds — never throw */
   }
   try {
-    window.dispatchEvent(
-      new CustomEvent(`studio-v3:${event.kind}`, { detail: event.payload }),
-    );
+    window.dispatchEvent(new CustomEvent(`studio-v3:${event.kind}`, { detail: event.payload }));
   } catch {
     /* SSR / no-window — silent */
   }
@@ -166,21 +158,15 @@ export function emitStudioV3Event(event: StudioV3Event): void {
 }
 
 /** Convenience wrappers (typed call-sites, single import per consumer). */
-export function recordStudioV3CurationDecision(
-  payload: StudioV3CurationDecision,
-): void {
+export function recordStudioV3CurationDecision(payload: StudioV3CurationDecision): void {
   emitStudioV3Event({ kind: "curation.decision", payload });
 }
 
-export function recordStudioV3Phase4Timing(
-  payload: StudioV3Phase4Timing,
-): void {
+export function recordStudioV3Phase4Timing(payload: StudioV3Phase4Timing): void {
   emitStudioV3Event({ kind: "phase4.timing", payload });
 }
 
-export function recordStudioV3RevealValidation(
-  payload: StudioV3RevealValidation,
-): void {
+export function recordStudioV3RevealValidation(payload: StudioV3RevealValidation): void {
   emitStudioV3Event({ kind: "reveal.validation", payload });
 }
 
@@ -191,5 +177,3 @@ export function recordStudioV3BuilderStep(payload: StudioV3BuilderStep): void {
 export function recordStudioV3RevealPremium(payload: StudioV3RevealPremium): void {
   emitStudioV3Event({ kind: "reveal.premium", payload });
 }
-
-

@@ -37,7 +37,6 @@ const CTA_DELAY_MS = 8800;
 const FADE_MS = 2600;
 const CTA_FADE_MS = 1800;
 
-
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;
   try {
@@ -61,10 +60,7 @@ function isHeroLastFlag(): boolean {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function CinematicHero() {
-  const skipIntro = useMemo(
-    () => isHeroLastFlag() || prefersReducedMotion(),
-    [],
-  );
+  const skipIntro = useMemo(() => isHeroLastFlag() || prefersReducedMotion(), []);
 
   const [line1, setLine1] = useState<boolean>(skipIntro);
   const [line2, setLine2] = useState<boolean>(skipIntro);
@@ -144,15 +140,13 @@ export function CinematicHero() {
           <p
             className="font-serif italic font-normal"
             style={{
-              fontFamily:
-                'Georgia, "Cormorant Garamond", "Newsreader", serif',
+              fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
               color: "#F1D8AB",
-              textShadow:
-                "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
+              textShadow: "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
               fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line1 ? 1 : 0,
               transform: line1 ? "translateY(0)" : "translateY(8px)",
@@ -166,15 +160,13 @@ export function CinematicHero() {
           <p
             className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
-              fontFamily:
-                'Georgia, "Cormorant Garamond", "Newsreader", serif',
+              fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,
               letterSpacing: "-0.012em",
               color: "#F1D8AB",
-              textShadow:
-                "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
+              textShadow: "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
               fontSize: "clamp(28px, 4.6vw, 50px)",
               opacity: line2 ? 1 : 0,
               transform: line2 ? "translateY(0)" : "translateY(8px)",
@@ -185,7 +177,6 @@ export function CinematicHero() {
           >
             {HERO_PHRASES[1]}
           </p>
-
         </div>
       </div>
 
@@ -227,14 +218,25 @@ export function CinematicHero() {
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
               Plan a journey
-              <svg className="hero-cta__arrow" width="10" height="7" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-                <path d="M1 5h11M8.5 1.8L12.2 5l-3.7 3.2" stroke="currentColor" strokeWidth="0.85" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                className="hero-cta__arrow"
+                width="10"
+                height="7"
+                viewBox="0 0 14 10"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M1 5h11M8.5 1.8L12.2 5l-3.7 3.2"
+                  stroke="currentColor"
+                  strokeWidth="0.85"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </span>
           </Link>
         </div>
-
-
       </div>
 
       {/* ShapeYourDay removed from hero per design brief. */}
@@ -419,9 +421,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         style={{
           opacity: 1,
           filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
-          animation: skipMotion
-            ? undefined
-            : "heroDrift 42s ease-in-out infinite",
+          animation: skipMotion ? undefined : "heroDrift 42s ease-in-out infinite",
           transformOrigin: "center 60%",
           willChange: "transform",
         }}

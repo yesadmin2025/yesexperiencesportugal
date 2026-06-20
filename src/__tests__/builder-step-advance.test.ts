@@ -11,10 +11,7 @@
  * their answers when they go back. Covered by these assertions.
  */
 import { describe, expect, it } from "vitest";
-import {
-  advanceBuilderSearch,
-  parseBuilderSearch,
-} from "@/components/builder/searchParams";
+import { advanceBuilderSearch, parseBuilderSearch } from "@/components/builder/searchParams";
 
 describe("builder search-param contract", () => {
   it("defaults to step 0 (entry) when no search params are present", () => {

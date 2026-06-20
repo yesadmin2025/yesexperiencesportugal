@@ -26,7 +26,10 @@ async function walkToReveal(page: Page, opts: { pickInvestment: boolean }) {
 
   // Pickup
   await expect(page.getByText(/the day begin\?/i)).toBeVisible({ timeout: 8000 });
-  await page.getByRole("radio", { name: /Lisbon/i }).first().click();
+  await page
+    .getByRole("radio", { name: /Lisbon/i })
+    .first()
+    .click();
 
   // Interests — pick a couple, then continue
   await expect(page.getByText(/draws you/i)).toBeVisible({ timeout: 8000 });
@@ -57,9 +60,7 @@ test.describe("Studio V3 — reveal pacing", () => {
     await expect(shaping).toBeVisible({ timeout: 4000 });
 
     // Slower 720ms RiseIn — sample computed animation.
-    const dur = await shaping.evaluate(
-      (el) => getComputedStyle(el).animationDuration,
-    );
+    const dur = await shaping.evaluate((el) => getComputedStyle(el).animationDuration);
     expect(dur).toMatch(/(0\.72s|720ms)/);
   });
 });

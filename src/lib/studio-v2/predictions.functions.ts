@@ -16,12 +16,24 @@ import {
 } from "./predictions";
 import type { PriorityKey } from "./profile";
 
-const sessionIdSchema = z.string().min(8).max(64).regex(/^[a-zA-Z0-9_-]+$/);
+const sessionIdSchema = z
+  .string()
+  .min(8)
+  .max(64)
+  .regex(/^[a-zA-Z0-9_-]+$/);
 
 const priorityKeyValues = [
-  "vineyard_lunch","wine_cellar","coastal_scenery","hidden_villages",
-  "architecture","heritage","local_gastronomy","photography",
-  "quiet_luxury","wellness","boat",
+  "vineyard_lunch",
+  "wine_cellar",
+  "coastal_scenery",
+  "hidden_villages",
+  "architecture",
+  "heritage",
+  "local_gastronomy",
+  "photography",
+  "quiet_luxury",
+  "wellness",
+  "boat",
 ] as const;
 const priorityArray = z.array(z.enum(priorityKeyValues)).max(8).optional();
 
@@ -80,9 +92,7 @@ async function loadOrInit(sessionId: string): Promise<PredictionState> {
 }
 
 export const loadPredictions = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z.object({ sessionId: sessionIdSchema }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ sessionId: sessionIdSchema }).parse(input))
   .handler(async ({ data }) => {
     const state = await loadOrInit(data.sessionId);
     return { state };
@@ -90,18 +100,19 @@ export const loadPredictions = createServerFn({ method: "POST" })
 
 export const recordSignal = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({
-      sessionId: sessionIdSchema,
-      signal: signalSchema,
-    }).parse(input),
+    z
+      .object({
+        sessionId: sessionIdSchema,
+        signal: signalSchema,
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const prev = await loadOrInit(data.sessionId);
     const next = applySignal(prev, data.signal as GestureSignal);
 
-    const { error } = await supabaseAdmin
-      .from("studio_v2_predictions")
-      .upsert({
+    const { error } = await supabaseAdmin.from("studio_v2_predictions").upsert(
+      {
         session_id: data.sessionId,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         weights: next.weights as any,
@@ -109,7 +120,9 @@ export const recordSignal = createServerFn({ method: "POST" })
         mood_vector: next.moodVector as any,
         pace_confidence: next.paceConfidence,
         signal_count: next.signalCount,
-      }, { onConflict: "session_id" });
+      },
+      { onConflict: "session_id" },
+    );
 
     if (error) throw new Error(error.message);
     return { state: next };

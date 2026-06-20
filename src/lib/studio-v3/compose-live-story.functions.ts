@@ -56,14 +56,14 @@ function deterministicFallback(input: Input): string {
     input.feeling === "wine-food"
       ? " A slower table, an unhurried afternoon, Portugal felt without rush."
       : input.feeling === "coastal" || input.feeling === "adventure"
-      ? " Atlantic light leads the route, with room for the road to breathe."
-      : input.feeling === "romance" || input.companions === "couple"
-      ? " Soft pacing, space for two, the country meeting you quietly."
-      : input.feeling === "hidden"
-      ? " Quiet roads, small doors, places that do not perform."
-      : input.feeling === "slow-luxury"
-      ? " Fewer stops, deeper moments, nothing asked of you."
-      : " A few quiet decisions, and a private Portugal begins to settle.";
+        ? " Atlantic light leads the route, with room for the road to breathe."
+        : input.feeling === "romance" || input.companions === "couple"
+          ? " Soft pacing, space for two, the country meeting you quietly."
+          : input.feeling === "hidden"
+            ? " Quiet roads, small doors, places that do not perform."
+            : input.feeling === "slow-luxury"
+              ? " Fewer stops, deeper moments, nothing asked of you."
+              : " A few quiet decisions, and a private Portugal begins to settle.";
   return (open + tail).slice(0, 280);
 }
 

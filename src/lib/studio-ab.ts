@@ -57,10 +57,7 @@ function readOverride(experiment: StudioExperiment): string | null {
   }
 }
 
-function pickVariant(
-  experiment: StudioExperiment,
-  anonymousId: string,
-): { id: string } {
+function pickVariant(experiment: StudioExperiment, anonymousId: string): { id: string } {
   const variants = experiment.variants;
   if (variants.length === 0) throw new Error("Experiment has no variants");
   const weights = experiment.weights;
@@ -80,9 +77,7 @@ function pickVariant(
   return variants[idx];
 }
 
-export function resolveStudioVariant(
-  experiment: StudioExperiment,
-): { id: string } {
+export function resolveStudioVariant(experiment: StudioExperiment): { id: string } {
   if (!isBrowser()) return experiment.variants[0];
   const override = readOverride(experiment);
   if (override) {

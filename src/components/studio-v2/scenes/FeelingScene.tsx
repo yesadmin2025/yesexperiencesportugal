@@ -12,10 +12,7 @@ interface FeelingSceneProps {
  * Single tap commits and advances. Mobile-first: one column ≤480px, two above.
  */
 export function FeelingScene({ onSignal }: FeelingSceneProps) {
-  const scene = useMemo(
-    () => MOOD_SCENES.find((s) => s.id === "scene-feeling")!,
-    [],
-  );
+  const scene = useMemo(() => MOOD_SCENES.find((s) => s.id === "scene-feeling")!, []);
   const mountedAt = useRef<number>(Date.now());
   const [entered, setEntered] = useState(false);
   const [picked, setPicked] = useState<string | null>(null);

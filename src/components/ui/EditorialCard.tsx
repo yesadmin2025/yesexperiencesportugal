@@ -47,7 +47,12 @@ export interface EditorialCardProps {
   className?: string;
 }
 
-function ImageSide({ image, eyebrow, cta, reverse }: {
+function ImageSide({
+  image,
+  eyebrow,
+  cta,
+  reverse,
+}: {
   image: EditorialCardImage;
   eyebrow: string;
   cta?: EditorialCardCTA;

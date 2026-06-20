@@ -50,8 +50,7 @@ function makeIframe(html: string): {
       scrollIntoView as unknown as HTMLElement["scrollIntoView"];
   });
   // jsdom doesn't implement window.scrollTo — stub it.
-  (iframe.contentWindow as unknown as { scrollTo: typeof winScrollTo }).scrollTo =
-    winScrollTo;
+  (iframe.contentWindow as unknown as { scrollTo: typeof winScrollTo }).scrollTo = winScrollTo;
 
   return { iframe, scrollIntoView, winScrollTo };
 }
@@ -151,10 +150,7 @@ describe("performJump — iframe deep-link safety", () => {
 // ─── 2. Static guard on the homepage scrollToHash implementation ──────
 describe("Homepage scrollToHash — static contract", () => {
   it("scrolls into view via the resolved element, never to a bottom offset", () => {
-    const src = readFileSync(
-      resolve(__dirname, "../routes/index.tsx"),
-      "utf8",
-    );
+    const src = readFileSync(resolve(__dirname, "../routes/index.tsx"), "utf8");
 
     // Locate the scrollToHash function body.
     const fnStart = src.indexOf("const scrollToHash");
@@ -182,10 +178,7 @@ describe("Homepage scrollToHash — static contract", () => {
   });
 
   it("only scrolls inside the page when a tracked id is resolved", () => {
-    const src = readFileSync(
-      resolve(__dirname, "../routes/index.tsx"),
-      "utf8",
-    );
+    const src = readFileSync(resolve(__dirname, "../routes/index.tsx"), "utf8");
     // Tracked ids include studio + final-cta. Footer is NOT tracked.
     expect(src).toMatch(/TRACKED_IDS\s*=\s*\[[^\]]*"studio"[^\]]*\]/s);
     expect(src).not.toMatch(/TRACKED_IDS\s*=\s*\[[^\]]*"footer"[^\]]*\]/s);

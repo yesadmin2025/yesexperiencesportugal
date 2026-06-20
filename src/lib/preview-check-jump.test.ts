@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import {
-  HASH_ALIASES,
-  resolveTarget,
-  performJump,
-  type CheckItem,
-} from "./preview-check-jump";
+import { HASH_ALIASES, resolveTarget, performJump, type CheckItem } from "./preview-check-jump";
 
 function makeDoc(html: string): Document {
   const doc = document.implementation.createHTMLDocument("test");
@@ -64,9 +59,7 @@ describe("resolveTarget", () => {
   });
 
   it("prefers item-level aliases over global aliases", () => {
-    const doc = makeDoc(
-      `<div id="hero"></div><section data-custom>here</section>`,
-    );
+    const doc = makeDoc(`<div id="hero"></div><section data-custom>here</section>`);
     const item: CheckItem = { ...HERO_ITEM, aliases: ["[data-custom]"] };
     const found = resolveTarget(doc, item);
     expect(found?.getAttribute("data-custom")).not.toBeNull();
@@ -101,13 +94,17 @@ describe("performJump", () => {
     const origQuery = doc.querySelector.bind(doc);
     doc.querySelector = ((sel: string) => {
       const el = origQuery(sel);
-      if (el) (el as HTMLElement).scrollIntoView = scrollIntoView as unknown as HTMLElement["scrollIntoView"];
+      if (el)
+        (el as HTMLElement).scrollIntoView =
+          scrollIntoView as unknown as HTMLElement["scrollIntoView"];
       return el;
     }) as typeof doc.querySelector;
     const origGetById = doc.getElementById.bind(doc);
     doc.getElementById = ((id: string) => {
       const el = origGetById(id);
-      if (el) (el as HTMLElement).scrollIntoView = scrollIntoView as unknown as HTMLElement["scrollIntoView"];
+      if (el)
+        (el as HTMLElement).scrollIntoView =
+          scrollIntoView as unknown as HTMLElement["scrollIntoView"];
       return el;
     }) as typeof doc.getElementById;
 
@@ -152,11 +149,7 @@ describe("performJump", () => {
       block: "start",
     });
     expect(scrollTo).not.toHaveBeenCalled();
-    expect(replaceState).toHaveBeenCalledWith(
-      null,
-      "",
-      "/#signatures-title",
-    );
+    expect(replaceState).toHaveBeenCalledWith(null, "", "/#signatures-title");
   });
 
   it("falls back to a cache-busting reload when contentDocument is unreachable", () => {

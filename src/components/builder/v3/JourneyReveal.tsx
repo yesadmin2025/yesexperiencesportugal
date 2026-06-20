@@ -52,10 +52,7 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
         }`}
       >
         {/* Single editorial hairline — no icon, no pulse. */}
-        <span
-          aria-hidden="true"
-          className="block h-px w-10 bg-[color:var(--gold)]/70"
-        />
+        <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/70" />
 
         {hasProposal ? (
           <>
@@ -81,10 +78,7 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
                 {subtitle}
               </p>
             )}
-            <span
-              aria-hidden="true"
-              className="block h-px w-6 bg-[color:var(--ivory)]/35 mt-1"
-            />
+            <span aria-hidden="true" className="block h-px w-6 bg-[color:var(--ivory)]/35 mt-1" />
           </>
         ) : (
           <p
@@ -101,4 +95,3 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
     </div>
   );
 }
-

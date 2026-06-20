@@ -8,17 +8,18 @@
  *  · A genuine user scroll (after wheel/touch input) is left alone
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  installIframeFooterGuard,
-  isInIframe,
-} from "../lib/iframe-footer-guard";
+import { installIframeFooterGuard, isInIframe } from "../lib/iframe-footer-guard";
 
 type MockWin = Window & {
   scrollY: number;
   innerHeight: number;
 };
 
-function makeWindow(opts: { isIframe: boolean; scrollHeight: number; innerHeight: number }): MockWin {
+function makeWindow(opts: {
+  isIframe: boolean;
+  scrollHeight: number;
+  innerHeight: number;
+}): MockWin {
   const listeners = new Map<string, Set<EventListener>>();
   const scrollTo = vi.fn((arg: ScrollToOptions | number, y?: number) => {
     const top = typeof arg === "number" ? y! : arg.top!;
@@ -78,7 +79,9 @@ describe("installIframeFooterGuard", () => {
     const dispose = installIframeFooterGuard({}, win);
     win.scrollY = 4200; // would trigger if active
     (win as unknown as { __dispatch: (t: string) => void }).__dispatch("scroll");
-    expect((win as unknown as { scrollTo: ReturnType<typeof vi.fn> }).scrollTo).not.toHaveBeenCalled();
+    expect(
+      (win as unknown as { scrollTo: ReturnType<typeof vi.fn> }).scrollTo,
+    ).not.toHaveBeenCalled();
     dispose();
   });
 

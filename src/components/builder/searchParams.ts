@@ -11,10 +11,7 @@
  */
 
 import type { Intention, Mood, Pace, Who } from "@/components/builder/types";
-import {
-  BUILDER_REGION_KEYS,
-  type BuilderRegionKey,
-} from "@/components/builder/RegionStep";
+import { BUILDER_REGION_KEYS, type BuilderRegionKey } from "@/components/builder/RegionStep";
 
 export type BuilderStep = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -30,7 +27,14 @@ export interface BuilderSearch {
 
 export const BUILDER_STEP_VALUES: BuilderStep[] = [0, 1, 2, 3, 4, 5, 6, 7];
 export const BUILDER_MOOD_VALUES: Mood[] = ["slow", "curious", "romantic", "open", "energetic"];
-export const BUILDER_WHO_VALUES: Who[] = ["couple", "family", "friends", "solo", "corporate", "group"];
+export const BUILDER_WHO_VALUES: Who[] = [
+  "couple",
+  "family",
+  "friends",
+  "solo",
+  "corporate",
+  "group",
+];
 export const BUILDER_INTENTION_VALUES: Intention[] = [
   "wine",
   "gastronomy",

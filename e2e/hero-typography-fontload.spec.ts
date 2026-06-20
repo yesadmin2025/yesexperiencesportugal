@@ -33,12 +33,8 @@ type Computed = {
 
 async function waitForFontsAndHero(page: Page) {
   await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
-  await page
-    .locator('[data-hero-cinematic="true"]')
-    .waitFor({ state: "visible" });
-  await page
-    .locator('[data-hero-field="headlineLine1"]:not(h1)')
-    .waitFor({ state: "visible" });
+  await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
+  await page.locator('[data-hero-field="headlineLine1"]:not(h1)').waitFor({ state: "visible" });
 
   // Block until web fonts (Montserrat / Georgia / Inter) actually
   // finish loading — otherwise computed font-size/line-height reflect
@@ -50,9 +46,7 @@ async function waitForFontsAndHero(page: Page) {
     };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
     if (fonts?.ready) await fonts.ready;
-    await new Promise<void>((r) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => r())),
-    );
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
   });
 
   // Sanity: required font faces are actually loaded in the browser.
@@ -63,7 +57,7 @@ async function waitForFontsAndHero(page: Page) {
     return {
       montserrat: fonts.check('400 16px "Montserrat"'),
       inter: fonts.check('400 16px "Inter"'),
-      georgia: fonts.check('italic 400 16px Georgia'),
+      georgia: fonts.check("italic 400 16px Georgia"),
     };
   });
   expect(fontStatus.montserrat, "Montserrat 400 not loaded").toBe(true);
@@ -71,7 +65,9 @@ async function waitForFontsAndHero(page: Page) {
   // Georgia ships with the OS — `check()` should always be true; we
   // don't fail the run if a headless image lacks it, only log.
   if (!fontStatus.georgia)
-    console.warn("[hero-typography-fontload] Georgia not reported by document.fonts — italic line will use serif fallback");
+    console.warn(
+      "[hero-typography-fontload] Georgia not reported by document.fonts — italic line will use serif fallback",
+    );
 }
 
 async function readComputed(page: Page, selector: string): Promise<Computed> {
@@ -80,16 +76,12 @@ async function readComputed(page: Page, selector: string): Promise<Computed> {
     if (!el) throw new Error(`element not found: ${sel}`);
     const cs = window.getComputedStyle(el);
     const fontSizePx = parseFloat(cs.fontSize);
-    const lineHeightPx =
-      cs.lineHeight === "normal"
-        ? fontSizePx * 1.2
-        : parseFloat(cs.lineHeight);
+    const lineHeightPx = cs.lineHeight === "normal" ? fontSizePx * 1.2 : parseFloat(cs.lineHeight);
     const ls = cs.letterSpacing;
     let letterSpacingEm = 0;
     if (ls && ls !== "normal") {
       const lsPx = parseFloat(ls);
-      if (!Number.isNaN(lsPx) && fontSizePx > 0)
-        letterSpacingEm = lsPx / fontSizePx;
+      if (!Number.isNaN(lsPx) && fontSizePx > 0) letterSpacingEm = lsPx / fontSizePx;
     }
     const stack = cs.fontFamily ?? "";
     const primary = (stack.split(",")[0] ?? "")
@@ -117,10 +109,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     const isMobile = testInfo.project.name === "mobile-chromium";
 
     const eyebrow = await readComputed(page, '[data-hero-field="eyebrow"]');
-    const line1 = await readComputed(
-      page,
-      '[data-hero-field="headlineLine1"]:not(h1)',
-    );
+    const line1 = await readComputed(page, '[data-hero-field="headlineLine1"]:not(h1)');
     const line2 = await readComputed(page, '[data-hero-field="headlineLine2"]');
     const sub = await readComputed(page, '[data-hero-field="subheadline"]');
     const micro = await readComputed(page, '[data-hero-field="microcopy"]');
@@ -191,8 +180,6 @@ test.describe("Hero typography — font families & scale (post font load)", () =
 
     // ── Microcopy — Inter, tracked ─────────────────────────────────────
     expect(micro.primaryFamily, "microcopy font-family").toBe("inter");
-    expect(micro.letterSpacingEm, "microcopy tracking").toBeGreaterThanOrEqual(
-      0.03,
-    );
+    expect(micro.letterSpacingEm, "microcopy tracking").toBeGreaterThanOrEqual(0.03);
   });
 });

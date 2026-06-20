@@ -10,9 +10,7 @@ import type { derivePrediction } from "@/lib/drift/predict";
 import { StudioDrawerReco } from "./StudioDrawerReco";
 import { StudioQualityBand } from "./StudioQualityBand";
 
-const BuilderMap = lazy(() =>
-  import("../BuilderMap").then((m) => ({ default: m.BuilderMap })),
-);
+const BuilderMap = lazy(() => import("../BuilderMap").then((m) => ({ default: m.BuilderMap })));
 
 type Tab = "story" | "timeline" | "map";
 
@@ -44,7 +42,17 @@ interface Props {
  * Closes on tap-outside, X, or Escape. Reduced-motion safe.
  */
 export function StudioLivePreview(props: Props) {
-  const { day, region, locale, profile, prediction, activeStopIndex, dense = false, defaultOpen = false, onCtaBook } = props;
+  const {
+    day,
+    region,
+    locale,
+    profile,
+    prediction,
+    activeStopIndex,
+    dense = false,
+    defaultOpen = false,
+    onCtaBook,
+  } = props;
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("story");
   const autoOpenedRef = useRef(false);
@@ -83,7 +91,8 @@ export function StudioLivePreview(props: Props) {
       mins += cs.driveFromPrev || 0;
       const start = mins;
       mins += cs.stop.dwellMin;
-      const fmt = (m: number) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+      const fmt = (m: number) =>
+        `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
       return {
         idx: i,
         time: fmt(start),
@@ -311,7 +320,9 @@ export function StudioLivePreview(props: Props) {
               {tab === "map" && (
                 <div
                   className="h-full min-h-[260px] overflow-hidden rounded-[10px]"
-                  style={{ border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)" }}
+                  style={{
+                    border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                  }}
                 >
                   <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" />}>
                     <BuilderMap
@@ -330,7 +341,9 @@ export function StudioLivePreview(props: Props) {
             {/* footer CTA */}
             <div
               className="flex items-center justify-between gap-2 px-4 pt-2 pb-4"
-              style={{ borderTop: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+              style={{
+                borderTop: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              }}
             >
               <span
                 className="text-[10px] uppercase tracking-[0.18em] font-semibold"

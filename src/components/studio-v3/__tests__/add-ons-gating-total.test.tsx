@@ -12,11 +12,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { SignaturePriceCard } from "../SignaturePriceCard";
 import type { SignatureTour } from "@/data/signatureTours";
-import {
-  ADD_ON_CATALOG,
-  addOnEurFromBase,
-  regionBucket,
-} from "@/data/signatureAddOns";
+import { ADD_ON_CATALOG, addOnEurFromBase, regionBucket } from "@/data/signatureAddOns";
 
 vi.mock("@/data/signatureToursViator", () => ({
   VIATOR_META: {
@@ -138,7 +134,9 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
       );
       const fieldset = screen.queryByTestId("studio-v3-add-ons");
       const ids = fieldset
-        ? within(fieldset).getAllByRole("button").map((b) => b.getAttribute("data-addon-id"))
+        ? within(fieldset)
+            .getAllByRole("button")
+            .map((b) => b.getAttribute("data-addon-id"))
         : [];
       expect(ids).not.toContain("hidden-cove-picnic"); // minHours 6
       expect(ids).not.toContain("coastal-boat-ride"); // minHours 6
@@ -190,7 +188,9 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
       const pool = ADD_ON_CATALOG[regionBucket("Setúbal · Arrábida")];
       expect(pool.length).toBeGreaterThanOrEqual(3);
       render(<SignaturePriceCard {...defaultProps()} />);
-      expect(within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")).toHaveLength(3);
+      expect(within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")).toHaveLength(
+        3,
+      );
     });
   });
 

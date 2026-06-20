@@ -14,11 +14,7 @@ const leadSchema = z.object({
   journeyTitle: z.string().trim().max(200).nullable().optional(),
   skeletonTourKey: z.string().trim().max(120).nullable().optional(),
   contactName: z.string().trim().min(1, "Name is required").max(120),
-  contactEmail: z
-    .string()
-    .trim()
-    .email("Please enter a valid email")
-    .max(255),
+  contactEmail: z.string().trim().email("Please enter a valid email").max(255),
   contactPhone: z
     .string()
     .trim()
@@ -38,9 +34,7 @@ const leadSchema = z.object({
 export const createStudioV3Lead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => leadSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import(
-      "@/integrations/supabase/client.server"
-    );
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: row, error } = await supabaseAdmin
       .from("studio_v3_leads")

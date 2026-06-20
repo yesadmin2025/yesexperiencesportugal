@@ -19,8 +19,7 @@ describe("Studio V3 — Phase 5 telemetry", () => {
 
   it("emits a single studio-v3:curation.decision event per resolve, with picked stops and audit", () => {
     const seen: StudioV3CurationDecision[] = [];
-    const handler = (e: Event) =>
-      seen.push((e as CustomEvent<StudioV3CurationDecision>).detail);
+    const handler = (e: Event) => seen.push((e as CustomEvent<StudioV3CurationDecision>).detail);
     window.addEventListener("studio-v3:curation.decision", handler);
 
     const route = resolveStudioV3Route({
@@ -42,16 +41,13 @@ describe("Studio V3 — Phase 5 telemetry", () => {
     expect(decision.rhythm).toBe("balanced");
     expect(decision.picked.length).toBeGreaterThan(0);
     expect(decision.poolSizeRaw).toBeGreaterThan(0);
-    expect(decision.poolSizeAfterClosures).toBeLessThanOrEqual(
-      decision.poolSizeRaw,
-    );
+    expect(decision.poolSizeAfterClosures).toBeLessThanOrEqual(decision.poolSizeRaw);
     expect(Array.isArray(decision.rejections)).toBe(true);
   });
 
   it("records winery-cap rejections when the pool exceeds the cap of 3", () => {
     const seen: StudioV3CurationDecision[] = [];
-    const handler = (e: Event) =>
-      seen.push((e as CustomEvent<StudioV3CurationDecision>).detail);
+    const handler = (e: Event) => seen.push((e as CustomEvent<StudioV3CurationDecision>).detail);
     window.addEventListener("studio-v3:curation.decision", handler);
 
     resolveStudioV3Route({
@@ -65,17 +61,14 @@ describe("Studio V3 — Phase 5 telemetry", () => {
 
     window.removeEventListener("studio-v3:curation.decision", handler);
 
-    const wineryRejections = seen[0]?.rejections.filter(
-      (r) => r.reason === "winery-cap",
-    );
+    const wineryRejections = seen[0]?.rejections.filter((r) => r.reason === "winery-cap");
     expect(wineryRejections && wineryRejections.length).toBeGreaterThan(0);
     expect(wineryRejections?.[0].detail).toMatch(/region=.+cap=\d+/);
   });
 
   it("records closed-on-date rejections for Mercado do Livramento on Mondays", () => {
     const seen: StudioV3CurationDecision[] = [];
-    const handler = (e: Event) =>
-      seen.push((e as CustomEvent<StudioV3CurationDecision>).detail);
+    const handler = (e: Event) => seen.push((e as CustomEvent<StudioV3CurationDecision>).detail);
     window.addEventListener("studio-v3:curation.decision", handler);
 
     // 2026-06-15 is a Monday.
@@ -91,11 +84,7 @@ describe("Studio V3 — Phase 5 telemetry", () => {
 
     window.removeEventListener("studio-v3:curation.decision", handler);
 
-    const closed = seen[0]?.rejections.filter(
-      (r) => r.reason === "closed-on-date",
-    );
-    expect(
-      closed?.some((r) => /Livramento/i.test(r.label)),
-    ).toBe(true);
+    const closed = seen[0]?.rejections.filter((r) => r.reason === "closed-on-date");
+    expect(closed?.some((r) => /Livramento/i.test(r.label))).toBe(true);
   });
 });

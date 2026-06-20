@@ -38,18 +38,21 @@ export function TrustmarySection() {
       <div className="container-x">
         <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
           <span className="inline-flex items-center gap-2.5 text-[10.5px] md:text-[11px] uppercase tracking-[0.28em] md:tracking-[0.32em] font-bold text-[color:var(--charcoal)]">
-            <span aria-hidden="true" className="inline-block h-[5px] w-[5px] rounded-full bg-[color:var(--gold)]" />
+            <span
+              aria-hidden="true"
+              className="inline-block h-[5px] w-[5px] rounded-full bg-[color:var(--gold)]"
+            />
             What guests say
           </span>
           <h2
             id="reviews-title"
             className="serif mt-5 text-[2.3rem] md:text-[3.4rem] leading-[1.04] tracking-[-0.016em] text-[color:var(--charcoal)] font-semibold"
           >
-            Real words from{" "}
-            <span className="italic font-medium">our travellers.</span>
+            Real words from <span className="italic font-medium">our travellers.</span>
           </h2>
           <p className="mt-5 text-[15.5px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.65] max-w-md mx-auto">
-            Verified reviews from people who shaped their own journey with a local — collected independently, never edited.
+            Verified reviews from people who shaped their own journey with a local — collected
+            independently, never edited.
           </p>
           <div
             className="mt-6 inline-flex items-center gap-1.5 text-[color:var(--gold)]"
@@ -63,7 +66,10 @@ export function TrustmarySection() {
 
         {/* Soft gold rule, then the widget surface. The widget injects its
             own DOM into this container; we don't override its internals. */}
-        <span aria-hidden="true" className="block mx-auto h-px w-12 bg-[color:var(--gold)] mb-8 md:mb-10" />
+        <span
+          aria-hidden="true"
+          className="block mx-auto h-px w-12 bg-[color:var(--gold)] mb-8 md:mb-10"
+        />
 
         <div className="max-w-5xl mx-auto rounded-[4px] bg-[color:var(--sand)]/60 border border-[color:var(--border)] p-4 md:p-8">
           <div

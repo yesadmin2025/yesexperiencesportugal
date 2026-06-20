@@ -28,9 +28,17 @@ const DEFAULT_VOICE: RegionalVoice = {
  */
 export function regionalVoiceFor(region: string | null | undefined): RegionalVoice {
   if (!region) return DEFAULT_VOICE;
-  const r = region.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const r = region
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
-  if (r.includes("arrabida") || r.includes("sesimbra") || r.includes("azeitao") || r.includes("setubal")) {
+  if (
+    r.includes("arrabida") ||
+    r.includes("sesimbra") ||
+    r.includes("azeitao") ||
+    r.includes("setubal")
+  ) {
     return {
       eyebrow: "ARRÁBIDA VOICE",
       atmosphere: "Salt-light",
@@ -44,7 +52,12 @@ export function regionalVoiceFor(region: string | null | undefined): RegionalVoi
       whisper: "Cork oaks, low sun, time that widens.",
     };
   }
-  if (r.includes("sintra") || r.includes("cascais") || r.includes("cabo da roca") || r.includes("lisbon coast")) {
+  if (
+    r.includes("sintra") ||
+    r.includes("cascais") ||
+    r.includes("cabo da roca") ||
+    r.includes("lisbon coast")
+  ) {
     return {
       eyebrow: "LISBON COAST VOICE",
       atmosphere: "Atlantic edge",
@@ -58,7 +71,13 @@ export function regionalVoiceFor(region: string | null | undefined): RegionalVoi
       whisper: "Schist terraces, ports aged in patience.",
     };
   }
-  if (r.includes("centro") || r.includes("coimbra") || r.includes("obidos") || r.includes("nazare") || r.includes("fatima")) {
+  if (
+    r.includes("centro") ||
+    r.includes("coimbra") ||
+    r.includes("obidos") ||
+    r.includes("nazare") ||
+    r.includes("fatima")
+  ) {
     return {
       eyebrow: "CENTRO VOICE",
       atmosphere: "Old stones",

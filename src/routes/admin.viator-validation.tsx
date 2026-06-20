@@ -70,14 +70,11 @@ function ViatorValidationPage() {
     clean: withMeta.filter((r) => r.severity === "clean").length,
   };
 
-  const filtered =
-    filter === "all"
-      ? withMeta
-      : withMeta.filter((r) => r.severity === filter);
+  const filtered = filter === "all" ? withMeta : withMeta.filter((r) => r.severity === filter);
 
   // Sort: critical → major → minor → clean
   const sorted = [...filtered].sort(
-    (a, b) => SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity)
+    (a, b) => SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
   );
 
   return (
@@ -86,10 +83,9 @@ function ViatorValidationPage() {
         <Eyebrow>Admin · Source-of-truth check</Eyebrow>
         <SectionTitle>Viator validation report</SectionTitle>
         <p className="mt-4 text-[14.5px] text-[color:var(--charcoal-soft)] max-w-2xl">
-          Compares every Signature tour's <strong>stops</strong> and{" "}
-          <strong>inclusions</strong> against the canonical Viator product page.
-          Severity prioritizes invented claims (critical) over missing mentions
-          (major/minor).
+          Compares every Signature tour's <strong>stops</strong> and <strong>inclusions</strong>{" "}
+          against the canonical Viator product page. Severity prioritizes invented claims (critical)
+          over missing mentions (major/minor).
         </p>
 
         {/* Severity stats */}
@@ -126,9 +122,7 @@ function ViatorValidationPage() {
             <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
               No Viator meta yet
             </p>
-            <p className="mt-2 text-[13.5px]">
-              {missingMeta.map((m) => m.title).join(" · ")}
-            </p>
+            <p className="mt-2 text-[13.5px]">{missingMeta.map((m) => m.title).join(" · ")}</p>
           </div>
         )}
 
@@ -244,9 +238,7 @@ function TourCard({ v }: { v: TourValidation }) {
     <div
       className={[
         "border p-5 md:p-6 transition-colors",
-        clean
-          ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5"
-          : `${m.border} ${m.bg}`,
+        clean ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5" : `${m.border} ${m.bg}`,
       ].join(" ")}
     >
       <div className="flex items-start md:items-center justify-between flex-wrap gap-3">
@@ -282,13 +274,7 @@ function TourCard({ v }: { v: TourValidation }) {
   );
 }
 
-function DiffBlock({
-  title,
-  diff,
-}: {
-  title: string;
-  diff: TourValidation["stops"];
-}) {
+function DiffBlock({ title, diff }: { title: string; diff: TourValidation["stops"] }) {
   const hasInvented = diff.onlyInternal.length > 0;
   const hasMissing = diff.onlyViator.length > 0;
   return (

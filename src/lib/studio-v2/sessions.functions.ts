@@ -40,27 +40,26 @@ function makeToken(bytes = 9): string {
 
 export const createStudioSession = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({
-      profile: profileSchema,
-      region: z.string().max(40).optional(),
-      archetype: z.string().max(40).optional(),
-    }).parse(input),
+    z
+      .object({
+        profile: profileSchema,
+        region: z.string().max(40).optional(),
+        archetype: z.string().max(40).optional(),
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const shareToken = makeToken(9);
-    const { error } = await supabaseAdmin
-      .from("studio_v2_sessions")
-      .insert({
-        share_token: shareToken,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        profile: data.profile as any,
-        region: data.region ?? null,
-        archetype: data.archetype ?? null,
-      });
+    const { error } = await supabaseAdmin.from("studio_v2_sessions").insert({
+      share_token: shareToken,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      profile: data.profile as any,
+      region: data.region ?? null,
+      archetype: data.archetype ?? null,
+    });
     if (error) throw new Error(error.message);
     return { shareToken };
   });
-
 
 export const loadStudioSession = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
@@ -84,4 +83,3 @@ export const loadStudioSession = createServerFn({ method: "POST" })
       updatedAt: row.updated_at as string,
     };
   });
-

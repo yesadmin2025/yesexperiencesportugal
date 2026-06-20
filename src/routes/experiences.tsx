@@ -25,11 +25,8 @@ export const Route = createFileRoute("/experiences")({
           "Complete, curated private experiences. Reserve instantly — or adjust a few details within the experience to match your rhythm.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
-
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" },
-    ],
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" }],
   }),
 
   component: ExperiencesPage,
@@ -39,15 +36,18 @@ function ExperiencesPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <section data-audit="experiences-hero" className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center">
+      <section
+        data-audit="experiences-hero"
+        className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
+      >
         <div className="container-x">
           <Eyebrow flank>Signature Collection</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Complete private experiences, designed to be enjoyed as they are.
-            Reserve instantly — or adjust a few details within the experience to match your rhythm.
+            Complete private experiences, designed to be enjoyed as they are. Reserve instantly — or
+            adjust a few details within the experience to match your rhythm.
           </p>
         </div>
       </section>
@@ -61,11 +61,7 @@ function ExperiencesPage() {
             {signatureTours.map((t) => {
               const topHighlights = t.highlights.slice(0, 3);
               return (
-                <article
-                  key={t.id}
-                  className="group flex flex-col text-left"
-                  aria-label={t.title}
-                >
+                <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   {/* Cover — clickable to source-of-truth detail page */}
                   <Link
                     to="/tours/$tourId"

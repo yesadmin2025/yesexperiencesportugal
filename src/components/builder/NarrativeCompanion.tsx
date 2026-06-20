@@ -83,10 +83,7 @@ export function NarrativeCompanion({
   useEffect(() => {
     if (!narrative || narrative === lastNarrativeRef.current) return;
     lastNarrativeRef.current = narrative;
-    setMessages((prev) => [
-      ...prev,
-      { id: `n-${Date.now()}`, role: "guide", text: narrative },
-    ]);
+    setMessages((prev) => [...prev, { id: `n-${Date.now()}`, role: "guide", text: narrative }]);
   }, [narrative]);
 
   // Step-aware prompt (changes the chip subtitle, not the message log)
@@ -128,8 +125,7 @@ export function NarrativeCompanion({
         intention: out.intention ?? null,
         pace: out.pace ?? null,
       };
-      const anything =
-        patch.mood || patch.who || patch.intention || patch.pace;
+      const anything = patch.mood || patch.who || patch.intention || patch.pace;
       if (anything) onApply(patch);
       setMessages((prev) => [
         ...prev,
@@ -138,9 +134,7 @@ export function NarrativeCompanion({
           role: "guide",
           text:
             out.rationale ??
-            (anything
-              ? "I've shaped that into your journey."
-              : "I heard you — keep narrating."),
+            (anything ? "I've shaped that into your journey." : "I heard you — keep narrating."),
           rationale: out.rationale ?? null,
         },
       ]);
@@ -178,9 +172,7 @@ export function NarrativeCompanion({
             className="h-3.5 w-3.5 text-[color:var(--gold)] transition-transform group-hover:scale-110"
             aria-hidden
           />
-          <span className="font-serif italic truncate max-w-[60vw] sm:max-w-none">
-            {stepHint}
-          </span>
+          <span className="font-serif italic truncate max-w-[60vw] sm:max-w-none">{stepHint}</span>
           <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--gold)]">
             AI
           </span>
@@ -196,113 +188,105 @@ export function NarrativeCompanion({
         aria-hidden={!open}
       >
         <div className="flex items-center gap-2 px-4 pt-3.5 pb-2 border-b border-[color:var(--charcoal)]/8">
-            <MessageCircle
-              className="h-4 w-4 text-[color:var(--gold)]"
-              aria-hidden
-            />
-            <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/70">
-              Narrate your trip
-            </span>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/50 hover:text-[color:var(--charcoal)]"
-              aria-label="Close"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </div>
+          <MessageCircle className="h-4 w-4 text-[color:var(--gold)]" aria-hidden />
+          <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/70">
+            Narrate your trip
+          </span>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/50 hover:text-[color:var(--charcoal)]"
+            aria-label="Close"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
 
-          <div className="max-h-[40vh] overflow-y-auto px-4 py-3 space-y-2.5">
-            {messages.map((m) => (
-              <div
-                key={m.id}
+        <div className="max-h-[40vh] overflow-y-auto px-4 py-3 space-y-2.5">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className={
+                m.role === "guide" ? "flex items-start gap-2" : "flex items-start gap-2 justify-end"
+              }
+            >
+              {m.role === "guide" && (
+                <Sparkles
+                  className="h-3 w-3 mt-1.5 shrink-0 text-[color:var(--gold)]"
+                  aria-hidden
+                />
+              )}
+              <p
                 className={
                   m.role === "guide"
-                    ? "flex items-start gap-2"
-                    : "flex items-start gap-2 justify-end"
+                    ? "font-serif italic text-[14px] leading-snug text-[color:var(--charcoal)]/85"
+                    : "rounded-2xl bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-3 py-1.5 text-[13px] leading-snug max-w-[80%]"
                 }
               >
-                {m.role === "guide" && (
-                  <Sparkles
-                    className="h-3 w-3 mt-1.5 shrink-0 text-[color:var(--gold)]"
-                    aria-hidden
-                  />
-                )}
-                <p
-                  className={
-                    m.role === "guide"
-                      ? "font-serif italic text-[14px] leading-snug text-[color:var(--charcoal)]/85"
-                      : "rounded-2xl bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-3 py-1.5 text-[13px] leading-snug max-w-[80%]"
-                  }
-                >
-                  {m.text}
-                </p>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex items-center gap-2 text-[12px] text-[color:var(--charcoal)]/60 font-serif italic">
-                <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
-                Listening…
-              </div>
-            )}
-          </div>
-
-          <div className="border-t border-[color:var(--charcoal)]/8 p-3">
-            <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/50 mb-1.5">
-              {stepHint}
-            </p>
-            <textarea
-              ref={inputRef}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  void submit();
-                }
-              }}
-              rows={2}
-              maxLength={500}
-              placeholder="Add a wish, mood, or moment…"
-              className="w-full rounded-xl border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-[14px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none focus:ring-1 focus:ring-[color:var(--gold)]/40"
-              disabled={loading}
-            />
-            <div className="flex items-center justify-between gap-3 mt-2">
-              <span className="text-[10px] text-[color:var(--charcoal)]/50">
-                {text.length}/500
-              </span>
-              <button
-                type="button"
-                onClick={submit}
-                disabled={loading || text.trim().length < 4}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--charcoal)] px-3.5 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] transition-all hover:bg-[color:var(--teal)] disabled:opacity-50 disabled:hover:bg-[color:var(--charcoal)]"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
-                    Shaping
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-3 w-3" aria-hidden />
-                    Shape it
-                  </>
-                )}
-              </button>
+                {m.text}
+              </p>
             </div>
-            {error && (
-              <p className="mt-2 text-[12px] text-[color:var(--charcoal)]/70 font-serif italic">
-                {error}
-              </p>
-            )}
-            {(mood || who || intention || pace) && (
-              <p className="mt-2 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/45">
-                Listening with:{" "}
-                {[mood, who, intention, pace].filter(Boolean).join(" · ")}
-              </p>
-            )}
+          ))}
+          {loading && (
+            <div className="flex items-center gap-2 text-[12px] text-[color:var(--charcoal)]/60 font-serif italic">
+              <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+              Listening…
+            </div>
+          )}
+        </div>
+
+        <div className="border-t border-[color:var(--charcoal)]/8 p-3">
+          <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/50 mb-1.5">
+            {stepHint}
+          </p>
+          <textarea
+            ref={inputRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                void submit();
+              }
+            }}
+            rows={2}
+            maxLength={500}
+            placeholder="Add a wish, mood, or moment…"
+            className="w-full rounded-xl border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-[14px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none focus:ring-1 focus:ring-[color:var(--gold)]/40"
+            disabled={loading}
+          />
+          <div className="flex items-center justify-between gap-3 mt-2">
+            <span className="text-[10px] text-[color:var(--charcoal)]/50">{text.length}/500</span>
+            <button
+              type="button"
+              onClick={submit}
+              disabled={loading || text.trim().length < 4}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--charcoal)] px-3.5 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] transition-all hover:bg-[color:var(--teal)] disabled:opacity-50 disabled:hover:bg-[color:var(--charcoal)]"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+                  Shaping
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3 w-3" aria-hidden />
+                  Shape it
+                </>
+              )}
+            </button>
           </div>
+          {error && (
+            <p className="mt-2 text-[12px] text-[color:var(--charcoal)]/70 font-serif italic">
+              {error}
+            </p>
+          )}
+          {(mood || who || intention || pace) && (
+            <p className="mt-2 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/45">
+              Listening with: {[mood, who, intention, pace].filter(Boolean).join(" · ")}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

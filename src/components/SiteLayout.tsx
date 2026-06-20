@@ -181,7 +181,10 @@ function getRevealTelemetry(): RevealTelemetry {
         const cs = window.getComputedStyle(target);
         const fold = rect.bottom <= 0 ? "above" : rect.top >= viewportHeight ? "below" : "inside";
         const delayMs = parseMs(cs.transitionDelay || "0ms") + parseMs(cs.animationDelay || "0ms");
-        const durationMs = Math.max(parseMs(cs.transitionDuration || "0ms"), parseMs(cs.animationDuration || "0ms"));
+        const durationMs = Math.max(
+          parseMs(cs.transitionDuration || "0ms"),
+          parseMs(cs.animationDuration || "0ms"),
+        );
         const atMs = Math.round(performance.now() - (window.__yesMotionStartedAt ?? 0));
         const realisticallyVisible = fold === "inside" && source === "io" && atMs >= 120;
         state.timings.push({
@@ -208,7 +211,6 @@ function getRevealTelemetry(): RevealTelemetry {
         });
       }
       if (debug) {
-        // eslint-disable-next-line no-console
         console.debug(
           `[reveal-telemetry] ${bucket} via ${source} (entry=${state.entry})`,
           selector ?? "",
@@ -256,11 +258,11 @@ function getRevealTelemetry(): RevealTelemetry {
         byEntry: state.byEntry,
         timings: state.timings,
       };
-      // eslint-disable-next-line no-console
+
       console.groupCollapsed(
         `[reveal-telemetry] entry=${state.entry}${state.hash ? ` ${state.hash}` : ""} y=${state.initialScrollY}`,
       );
-      // eslint-disable-next-line no-console
+
       console.table([
         { bucket: "reveal", ...snapshot.reveal },
         { bucket: "sectionEnter", ...snapshot.sectionEnter },
@@ -272,11 +274,11 @@ function getRevealTelemetry(): RevealTelemetry {
         rows.push({ entry: e, bucket: "reveal", ...state.byEntry[e].reveal });
         rows.push({ entry: e, bucket: "sectionEnter", ...state.byEntry[e].sectionEnter });
       });
-      // eslint-disable-next-line no-console
+
       console.table(rows);
-      // eslint-disable-next-line no-console
+
       console.table(state.timings);
-      // eslint-disable-next-line no-console
+
       console.groupEnd();
       return snapshot;
     },
@@ -296,7 +298,12 @@ function describeReveal(el: Element): string {
   const id = el.id ? `#${el.id}` : "";
   const cls =
     typeof el.className === "string"
-      ? el.className.split(/\s+/).filter(Boolean).slice(0, 2).map((c) => `.${c}`).join("")
+      ? el.className
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((c) => `.${c}`)
+          .join("")
       : "";
   return `${tag}${id}${cls}`;
 }
@@ -375,7 +382,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.__yesMotionStartedAt = performance.now();
-    const visibleTest = new URLSearchParams(window.location.search).get("motion-visible-test") === "1";
+    const visibleTest =
+      new URLSearchParams(window.location.search).get("motion-visible-test") === "1";
     document.documentElement.classList.toggle("motion-visible-test", visibleTest);
     return () => document.documentElement.classList.remove("motion-visible-test");
   }, []);
@@ -433,7 +441,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               el.classList.add("is-visible");
             }
           });
-          // eslint-disable-next-line no-console
+
           console.info(`[replay-reveals] retriggered ${els.length} elements`);
         });
       });
@@ -469,11 +477,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // prefers-reduced-motion fallback: ensure content is ALWAYS visible
     // even if any CSS/JS animation is blocked. We mark visible AND clear
     // any inline transition delay so nothing keeps content at opacity:0.
-    if (
-      mobileRevealsDisabled ||
-      typeof IntersectionObserver === "undefined" ||
-      reducedMotion
-    ) {
+    if (mobileRevealsDisabled || typeof IntersectionObserver === "undefined" || reducedMotion) {
       els.forEach((el) => {
         el.style.transitionDelay = "0ms";
         el.classList.add("is-visible");
@@ -587,7 +591,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     }
 
     if (revealDebug) {
-      // eslint-disable-next-line no-console
       console.info(
         `[reveal-debug] reveal observer: total=${els.length} mobile=${isMobile} threshold=${ioOptions.threshold} rootMargin="${ioOptions.rootMargin}"`,
       );
@@ -633,7 +636,11 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         const rect = el.getBoundingClientRect();
         // Only force-visible if the element is at or above the viewport
         // bottom (i.e. should already be on-screen). Below-fold stays.
-        if (rect.top >= viewportHeight || (telemetry.entry === "cold" && rect.top > viewportHeight * 0.72)) return;
+        if (
+          rect.top >= viewportHeight ||
+          (telemetry.entry === "cold" && rect.top > viewportHeight * 0.72)
+        )
+          return;
         el.style.transition = "none";
         el.style.transitionDelay = "0ms";
         el.classList.add("is-visible");
@@ -738,7 +745,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     els.forEach((el) => io.observe(el));
 
     if (revealDebug) {
-      // eslint-disable-next-line no-console
       console.info(
         `[reveal-debug] section-enter observer: total=${els.length} mobile=${isMobile} threshold=${ioOptions.threshold} rootMargin="${ioOptions.rootMargin}"`,
       );
@@ -773,7 +779,11 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       els.forEach((el) => {
         if (el.classList.contains("is-visible")) return;
         const rect = el.getBoundingClientRect();
-        if (rect.top >= viewportHeight || (telemetry.entry === "cold" && rect.top > viewportHeight * 0.72)) return;
+        if (
+          rect.top >= viewportHeight ||
+          (telemetry.entry === "cold" && rect.top > viewportHeight * 0.72)
+        )
+          return;
         el.style.transition = "none";
         el.classList.add("is-visible");
         telemetry.log("sectionEnter", "sweepDelayed", el, describeReveal(el));
@@ -832,8 +842,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     };
     tick();
     const interval = window.setInterval(tick, 500);
-    // eslint-disable-next-line no-console
-    console.info("[reveal-debug] HUD mounted. Add ?scroll-debug=reveal-debug or ?reveal-debug to URL.");
+
+    console.info(
+      "[reveal-debug] HUD mounted. Add ?scroll-debug=reveal-debug or ?reveal-debug to URL.",
+    );
 
     return () => {
       window.clearInterval(interval);
@@ -848,7 +860,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <Footer />
       <FloatingActions />
       <WhatsAppFab />
-      
+
       {/* Single polite SR announcer — fires once per tab when the user
           first scrolls past the hero, giving screen-reader users parity
           with sighted users who see the post-hero CTA surfaces appear. */}

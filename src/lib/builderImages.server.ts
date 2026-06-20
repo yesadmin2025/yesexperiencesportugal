@@ -171,9 +171,7 @@ export async function scrapeViatorImagesForStop(
       is_active: true,
     };
 
-    const { error } = await supabaseAdmin
-      .from("experience_images")
-      .insert(row);
+    const { error } = await supabaseAdmin.from("experience_images").insert(row);
     if (error) {
       // Unique-violation = already in library; treat as skipped, not failure.
       if (/duplicate key|unique constraint/i.test(error.message)) {

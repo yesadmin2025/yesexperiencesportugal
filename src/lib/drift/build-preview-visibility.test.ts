@@ -55,12 +55,9 @@ describe("shouldShowBuildPreview — 3rd option overlap guard (~600px)", () => {
     expect(shouldShowBuildPreview({ ...base, vh: 720 })).toBe(true);
   });
 
-  it.each([720, 812, 844, 896, 1024, 1180])(
-    "SHOWS preview at vh=%i with 3 options",
-    (vh) => {
-      expect(shouldShowBuildPreview({ ...base, vh })).toBe(true);
-    },
-  );
+  it.each([720, 812, 844, 896, 1024, 1180])("SHOWS preview at vh=%i with 3 options", (vh) => {
+    expect(shouldShowBuildPreview({ ...base, vh })).toBe(true);
+  });
 });
 
 describe("shouldShowBuildPreview — rotation / resize", () => {
@@ -83,9 +80,7 @@ describe("shouldShowBuildPreview — rotation / resize", () => {
   // The preview must hide as soon as vh crosses below the dense floor.
   it("hides preview on a continuous resize across the 720px threshold", () => {
     const heights = [900, 800, 750, 721, 720, 719, 700, 600];
-    const visibility = heights.map((vh) =>
-      shouldShowBuildPreview({ ...base, vh }),
-    );
+    const visibility = heights.map((vh) => shouldShowBuildPreview({ ...base, vh }));
     expect(visibility).toEqual([true, true, true, true, true, false, false, false]);
   });
 
@@ -102,9 +97,7 @@ describe("shouldShowBuildPreview — rotation / resize", () => {
 
 describe("shouldShowBuildPreview — non-overlap gating", () => {
   it("hides preview on convergence chapters regardless of vh", () => {
-    expect(
-      shouldShowBuildPreview({ ...base, chapterKind: "convergence", vh: 1200 }),
-    ).toBe(false);
+    expect(shouldShowBuildPreview({ ...base, chapterKind: "convergence", vh: 1200 })).toBe(false);
   });
 
   it("hides preview before pickup is selected", () => {
@@ -122,11 +115,7 @@ describe("shouldShowBuildPreview — non-overlap gating", () => {
   });
 
   it("allows preview at 640px when the chapter only has 2 options", () => {
-    expect(
-      shouldShowBuildPreview({ ...base, choiceCount: 2, vh: 640 }),
-    ).toBe(true);
-    expect(
-      shouldShowBuildPreview({ ...base, choiceCount: 2, vh: 639 }),
-    ).toBe(false);
+    expect(shouldShowBuildPreview({ ...base, choiceCount: 2, vh: 640 })).toBe(true);
+    expect(shouldShowBuildPreview({ ...base, choiceCount: 2, vh: 639 })).toBe(false);
   });
 });

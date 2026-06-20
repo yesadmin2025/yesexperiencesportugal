@@ -26,7 +26,10 @@ async function walkToReveal(page: Page) {
   await page.getByRole("button", { name: /I don't know yet/i }).click();
 
   await expect(page.getByText(/the day begin\?/i)).toBeVisible({ timeout: 8000 });
-  await page.getByRole("radio", { name: /Lisbon/i }).first().click();
+  await page
+    .getByRole("radio", { name: /Lisbon/i })
+    .first()
+    .click();
 
   await expect(page.getByText(/draws you/i)).toBeVisible({ timeout: 8000 });
   await page.getByRole("checkbox").first().click();
@@ -167,8 +170,7 @@ test.describe("Studio V3 — Story of the day containment", () => {
     }
 
     // 5. Same capitalised-token containment guard applied to the CTA bridge.
-    const bridgeTokens =
-      bridgeText.match(/\b[A-ZÁÂÃÀÉÊÍÓÔÕÚÇ][a-záâãàéêíóôõúç-]+\b/g) ?? [];
+    const bridgeTokens = bridgeText.match(/\b[A-ZÁÂÃÀÉÊÍÓÔÕÚÇ][a-záâãàéêíóôõúç-]+\b/g) ?? [];
     const bridgeSuspicious = bridgeTokens.filter((t) => !ALLOWED.has(t));
     expect(
       bridgeSuspicious,
@@ -176,4 +178,3 @@ test.describe("Studio V3 — Story of the day containment", () => {
     ).toEqual([]);
   });
 });
-

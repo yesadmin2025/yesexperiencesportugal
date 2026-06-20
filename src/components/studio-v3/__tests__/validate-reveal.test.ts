@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateResolvedSignature } from "../validateReveal";
-import type {
-  RevealValidationFailure,
-  RevealValidationResult,
-} from "../validateReveal";
+import type { RevealValidationFailure, RevealValidationResult } from "../validateReveal";
 import type { ResolvedStudioV3Route } from "../curation";
 import type { SignatureTour } from "@/data/signatureTours";
 import {
@@ -57,18 +54,12 @@ describe("validateResolvedSignature — baseline", () => {
   });
 
   it("tourId is null when skeleton key is null", () => {
-    const r = validateResolvedSignature(
-      { ...baseResolved, skeletonTourKey: null },
-      null,
-    );
+    const r = validateResolvedSignature({ ...baseResolved, skeletonTourKey: null }, null);
     expect(r.tourId).toBeNull();
   });
 
   it("does not double-flag tour-not-found when skeleton is also missing", () => {
-    const r = validateResolvedSignature(
-      { ...baseResolved, skeletonTourKey: null },
-      null,
-    );
+    const r = validateResolvedSignature({ ...baseResolved, skeletonTourKey: null }, null);
     expect(r.missing).toContain("no-skeleton");
     expect(r.missing).not.toContain("tour-not-found");
   });
@@ -77,7 +68,10 @@ describe("validateResolvedSignature — baseline", () => {
 // ---------- Per-field mutators ----------
 type Mutator = {
   key: string;
-  apply: (r: ResolvedSlice, t: TourSlice | null) => {
+  apply: (
+    r: ResolvedSlice,
+    t: TourSlice | null,
+  ) => {
     resolved: ResolvedSlice;
     tour: TourSlice | null;
   };
@@ -105,9 +99,7 @@ const MUTATORS: Mutator[] = [
     apply: (r, t) => ({
       resolved: {
         ...r,
-        routePoints: r.routePoints.map((p, i) =>
-          i === 0 ? { ...p, label: "" } : p,
-        ),
+        routePoints: r.routePoints.map((p, i) => (i === 0 ? { ...p, label: "" } : p)),
       },
       tour: t,
     }),
@@ -118,9 +110,7 @@ const MUTATORS: Mutator[] = [
     apply: (r, t) => ({
       resolved: {
         ...r,
-        routePoints: r.routePoints.map((p, i) =>
-          i === 0 ? { ...p, label: "   " } : p,
-        ),
+        routePoints: r.routePoints.map((p, i) => (i === 0 ? { ...p, label: "   " } : p)),
       },
       tour: t,
     }),
@@ -131,9 +121,7 @@ const MUTATORS: Mutator[] = [
     apply: (r, t) => ({
       resolved: {
         ...r,
-        routePoints: r.routePoints.map((p, i) =>
-          i === 1 ? { ...p, story: "" } : p,
-        ),
+        routePoints: r.routePoints.map((p, i) => (i === 1 ? { ...p, story: "" } : p)),
       },
       tour: t,
     }),
@@ -144,9 +132,7 @@ const MUTATORS: Mutator[] = [
     apply: (r, t) => ({
       resolved: {
         ...r,
-        routePoints: r.routePoints.map((p, i) =>
-          i === 1 ? { ...p, story: "  \t " } : p,
-        ),
+        routePoints: r.routePoints.map((p, i) => (i === 1 ? { ...p, story: "  \t " } : p)),
       },
       tour: t,
     }),
@@ -254,10 +240,9 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
             `trial ${trial} subset ${subset.map((s) => s.key).join("+")} should fail`,
           ).toBe(false);
           for (const f of expected) {
-            expect(
-              r.missing,
-              `trial ${trial} expected ${f} in ${r.missing.join(",")}`,
-            ).toContain(f);
+            expect(r.missing, `trial ${trial} expected ${f} in ${r.missing.join(",")}`).toContain(
+              f,
+            );
           }
           // Each entry in missing should be unique (no duplicate flags).
           expect(new Set(r.missing).size).toBe(r.missing.length);
@@ -270,7 +255,7 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
     const rng = mulberry32(31337);
     for (let i = 0; i < 200; i += 1) {
       const broken: ResolvedSlice = {
-        skeletonTourKey: rng() < 0.5 ? null : (rng() < 0.5 ? "" : "id"),
+        skeletonTourKey: rng() < 0.5 ? null : rng() < 0.5 ? "" : "id",
         routePoints:
           rng() < 0.3
             ? []
@@ -308,10 +293,7 @@ describe("validateResolvedSignature → telemetry payload", () => {
   });
 
   it("result is assignable to StudioV3RevealValidation (structural)", () => {
-    const r: RevealValidationResult = validateResolvedSignature(
-      baseResolved,
-      baseTour,
-    );
+    const r: RevealValidationResult = validateResolvedSignature(baseResolved, baseTour);
     const payload: StudioV3RevealValidation = {
       ok: r.ok,
       missing: r.missing,

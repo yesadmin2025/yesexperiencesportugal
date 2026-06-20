@@ -29,7 +29,15 @@ const FALLBACK_I18N = {
   fr: "Carte qui s'éveille…",
 } as const;
 
-export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, curtainLabel = "ver percurso", locale = "en" }: Props) {
+export function LivingMap({
+  stops,
+  regionCenter,
+  regionKey,
+  revealed,
+  ribbon,
+  curtainLabel = "ver percurso",
+  locale = "en",
+}: Props) {
   const [mounted, setMounted] = useState(revealed);
   const [visible, setVisible] = useState(false);
   const [curtainOpen, setCurtainOpen] = useState(false);
@@ -58,7 +66,9 @@ export function LivingMap({ stops, regionCenter, regionKey, revealed, ribbon, cu
         tone="dark"
         eyebrow="Composing"
         meta={regionKey ?? "Portugal"}
-        footerRight={stops.length > 0 ? `${stops.length} stop${stops.length === 1 ? "" : "s"}` : undefined}
+        footerRight={
+          stops.length > 0 ? `${stops.length} stop${stops.length === 1 ? "" : "s"}` : undefined
+        }
         className="w-full h-full"
         aspectRatio="auto"
         ariaLabel={FALLBACK_I18N[locale] ?? FALLBACK_I18N.en}

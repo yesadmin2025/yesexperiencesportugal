@@ -1,5 +1,17 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check, Copy, Eye, Loader2, Plus, RefreshCw, Share2, Sparkles, Trash2, Wand2, X } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Eye,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Share2,
+  Sparkles,
+  Trash2,
+  Wand2,
+  X,
+} from "lucide-react";
 import {
   buildDayRoute,
   computeAddStopEligibility,
@@ -7,8 +19,20 @@ import {
 } from "@/lib/builderEngine.functions";
 import { suggestFromIntent } from "@/lib/builderIntent.functions";
 import { narrateBuilderRoute } from "@/lib/builderEngine.functions";
-import { fmtMinutes, type Pace, type RouteUI, type RoutedStopUI, type Mood, type Who, type Intention } from "@/components/builder/types";
-import { AddStopSheet, type RegionStop, type StopEligibility } from "@/components/builder/AddStopSheet";
+import {
+  fmtMinutes,
+  type Pace,
+  type RouteUI,
+  type RoutedStopUI,
+  type Mood,
+  type Who,
+  type Intention,
+} from "@/components/builder/types";
+import {
+  AddStopSheet,
+  type RegionStop,
+  type StopEligibility,
+} from "@/components/builder/AddStopSheet";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { StickyBar } from "@/components/builder/StickyBar";
 import type { DayState, MultiDayState } from "@/hooks/useMultiDayBuilder";
@@ -75,7 +99,10 @@ export function MultiDayBuilder({
   const [regionCenter, setRegionCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [eligibility, setEligibility] = useState<Record<string, StopEligibility>>({});
   const [eligLoading, setEligLoading] = useState(false);
-  const [rules, setRules] = useState<{ max_km_between_stops: number; max_total_km_per_day: number } | null>(null);
+  const [rules, setRules] = useState<{
+    max_km_between_stops: number;
+    max_total_km_per_day: number;
+  } | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   // Mobile no longer toggles between map/build — they share one scroll.
   const [liveToast, setLiveToast] = useState<string | null>(null);
@@ -95,9 +122,7 @@ export function MultiDayBuilder({
     void listRegionStops({ data: { regionKey: activeDay.regionKey } }).then((r) => {
       if (cancelled) return;
       setRegionStops(r.stops);
-      setRegionCenter(
-        r.region ? { lat: Number(r.region.lat), lng: Number(r.region.lng) } : null,
-      );
+      setRegionCenter(r.region ? { lat: Number(r.region.lat), lng: Number(r.region.lng) } : null);
     });
     return () => {
       cancelled = true;
@@ -152,12 +177,16 @@ export function MultiDayBuilder({
           if (cancelled) return;
           setDayRoutes((prev) => ({ ...prev, [d.id]: r.route as RouteUI }));
         })
-        .catch(() => { /* ignore */ });
+        .catch(() => {
+          /* ignore */
+        });
     }
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [state.days, state.pace, activeDay?.id]);
 
-  const activeRoute = activeDay ? dayRoutes[activeDay.id] ?? null : null;
+  const activeRoute = activeDay ? (dayRoutes[activeDay.id] ?? null) : null;
 
   // ─── Live storytelling ─────────────────────────────────────────
   // Per-active-day narrative from narrateBuilderRoute. Debounced so
@@ -195,7 +224,9 @@ export function MultiDayBuilder({
           if (narrativeReqRef.current !== id) return;
           setNarrative(res.narrative);
         })
-        .catch(() => { /* keep previous narrative */ })
+        .catch(() => {
+          /* keep previous narrative */
+        })
         .finally(() => {
           if (narrativeReqRef.current !== id) return;
           setNarrativeLoading(false);
@@ -213,10 +244,11 @@ export function MultiDayBuilder({
     narrativeNonce,
   ]);
 
-
   // ─── AI user intent ─────────────────────────────────────────────
   const [intentDraft, setIntentDraft] = useState(state.intent ?? "");
-  useEffect(() => { setIntentDraft(state.intent ?? ""); }, [state.intent]);
+  useEffect(() => {
+    setIntentDraft(state.intent ?? "");
+  }, [state.intent]);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggested, setAiSuggested] = useState<string[]>([]);
   const [aiRanked, setAiRanked] = useState<string[]>([]);
@@ -323,18 +355,27 @@ export function MultiDayBuilder({
   }, [narrative, tripSummary]);
 
   const candidatesForMap = useMemo(() => {
-    return regionStops.map((s) => {
-      const e = eligibility[s.key];
-      if (activeDay?.stopKeys.includes(s.key)) return null;
-      return {
-        key: s.key,
-        label: s.label,
-        lat: s.lat,
-        lng: s.lng,
-        eligible: e?.eligible ?? false,
-        reason: e?.reason,
-      };
-    }).filter(Boolean) as { key: string; label: string; lat: number; lng: number; eligible: boolean; reason?: string }[];
+    return regionStops
+      .map((s) => {
+        const e = eligibility[s.key];
+        if (activeDay?.stopKeys.includes(s.key)) return null;
+        return {
+          key: s.key,
+          label: s.label,
+          lat: s.lat,
+          lng: s.lng,
+          eligible: e?.eligible ?? false,
+          reason: e?.reason,
+        };
+      })
+      .filter(Boolean) as {
+      key: string;
+      label: string;
+      lat: number;
+      lng: number;
+      eligible: boolean;
+      reason?: string;
+    }[];
   }, [regionStops, eligibility, activeDay?.stopKeys]);
 
   // Re-order region stops by AI ranking when present.
@@ -386,7 +427,12 @@ export function MultiDayBuilder({
     try {
       const url = await onRotateLink();
       if (url) {
-        try { await navigator.clipboard.writeText(url); setRotatedCopied(true); } catch { /* ignore */ }
+        try {
+          await navigator.clipboard.writeText(url);
+          setRotatedCopied(true);
+        } catch {
+          /* ignore */
+        }
         setRotatedUrl(url);
         flashLive("New link generated · old link disabled");
       }
@@ -409,7 +455,8 @@ export function MultiDayBuilder({
 
   const handleRevoke = useCallback(async () => {
     if (!onRevokeLink) return;
-    if (!window.confirm("Disable the public link? Anyone with the old link will lose access.")) return;
+    if (!window.confirm("Disable the public link? Anyone with the old link will lose access."))
+      return;
     const ok = await onRevokeLink();
     if (ok) {
       setRotatedUrl(null);
@@ -422,10 +469,7 @@ export function MultiDayBuilder({
   return (
     <>
       {liveToast && (
-        <div
-          aria-live="polite"
-          className="fixed top-20 left-1/2 z-[60] -translate-x-1/2"
-        >
+        <div aria-live="polite" className="fixed top-20 left-1/2 z-[60] -translate-x-1/2">
           <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)]/95 px-3.5 py-1.5 text-[11.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)] shadow-[0_8px_22px_-10px_rgba(46,46,46,0.35)] backdrop-blur">
             <Sparkles size={11} className="text-[color:var(--gold)]" />
             {liveToast}
@@ -440,7 +484,11 @@ export function MultiDayBuilder({
             <Sparkles size={12} aria-hidden="true" />
             {readOnly ? "Shared journey" : "Now shaping"}
             {syncing && !readOnly && (
-              <Loader2 size={11} className="animate-spin text-[color:var(--charcoal)]/50" aria-label="Saving" />
+              <Loader2
+                size={11}
+                className="animate-spin text-[color:var(--charcoal)]/50"
+                aria-label="Saving"
+              />
             )}
           </span>
           <div className="flex items-center gap-1.5">
@@ -451,7 +499,15 @@ export function MultiDayBuilder({
                 disabled={sharing}
                 className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--teal)] hover:bg-[color:var(--teal)]/8 disabled:opacity-50"
               >
-                {copied ? <Check size={12} /> : sharing ? <Loader2 size={12} className="animate-spin" /> : shareToken ? <Copy size={12} /> : <Share2 size={12} />}
+                {copied ? (
+                  <Check size={12} />
+                ) : sharing ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : shareToken ? (
+                  <Copy size={12} />
+                ) : (
+                  <Share2 size={12} />
+                )}
                 {copied ? "Copied" : shareToken ? "Copy link" : "Share"}
               </button>
             )}
@@ -463,7 +519,11 @@ export function MultiDayBuilder({
                 title="Disable old link, generate a new one"
                 className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--teal)] hover:bg-[color:var(--teal)]/8 disabled:opacity-50"
               >
-                {rotating ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
+                {rotating ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <RefreshCw size={12} />
+                )}
                 Regenerate
               </button>
             )}
@@ -491,7 +551,8 @@ export function MultiDayBuilder({
         </div>
         {readOnly && (
           <p className="mt-2 inline-flex items-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/50 px-3 py-1.5 text-[11px] text-[color:var(--charcoal)]/75">
-            <Eye size={12} aria-hidden="true" /> View only — only the original device can edit this journey.
+            <Eye size={12} aria-hidden="true" /> View only — only the original device can edit this
+            journey.
           </p>
         )}
         {!readOnly && rotatedUrl && (
@@ -501,7 +562,11 @@ export function MultiDayBuilder({
             className="mt-3 rounded-[3px] border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] px-3 py-2.5 shadow-[0_8px_22px_-14px_rgba(46,46,46,0.25)]"
           >
             <div className="flex items-start gap-2">
-              <Sparkles size={13} className="mt-0.5 text-[color:var(--gold)] shrink-0" aria-hidden="true" />
+              <Sparkles
+                size={13}
+                className="mt-0.5 text-[color:var(--gold)] shrink-0"
+                aria-hidden="true"
+              />
               <div className="min-w-0 flex-1">
                 <p className="text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]">
                   New share link ready
@@ -542,7 +607,8 @@ export function MultiDayBuilder({
           Your journey
           {state.days.length > 1 && (
             <span className="serif italic font-normal text-[color:var(--charcoal)]/70">
-              {" "}— {state.days.length} days · {tripTotals.stops} stops
+              {" "}
+              — {state.days.length} days · {tripTotals.stops} stops
             </span>
           )}
         </h2>
@@ -554,7 +620,9 @@ export function MultiDayBuilder({
               type="text"
               value={intentDraft}
               onChange={(e) => setIntentDraft(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") void runIntent(); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") void runIntent();
+              }}
               placeholder="Tell us the feeling — e.g. romantic slow weekend, wine + sea"
               maxLength={500}
               className="flex-1 min-w-0 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3 py-2 text-[13px] text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none"
@@ -573,8 +641,11 @@ export function MultiDayBuilder({
         {!readOnly && aiSuggested.length > 0 && (
           <div className="mt-2 flex items-center justify-between gap-2 rounded-[2px] border border-[color:var(--gold)]/30 bg-[color:var(--gold)]/5 px-3 py-2">
             <p className="text-[11.5px] text-[color:var(--charcoal)]/80">
-              <span className="font-semibold">{aiSuggested.length}</span> AI suggestion{aiSuggested.length === 1 ? "" : "s"} ·{" "}
-              <span className="text-[color:var(--charcoal)]/60">{eligibleSuggestedCount} fit this day's rules</span>
+              <span className="font-semibold">{aiSuggested.length}</span> AI suggestion
+              {aiSuggested.length === 1 ? "" : "s"} ·{" "}
+              <span className="text-[color:var(--charcoal)]/60">
+                {eligibleSuggestedCount} fit this day's rules
+              </span>
             </p>
             <button
               type="button"
@@ -639,7 +710,9 @@ export function MultiDayBuilder({
         <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1.25fr_1fr]">
           {/* MAP */}
           <div className="relative overflow-hidden rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)] shadow-[0_18px_40px_-24px_rgba(46,46,46,0.35)] h-[42svh] sm:h-[52svh] lg:h-[74svh] lg:sticky lg:top-20">
-            <Suspense fallback={<div className="h-full w-full bg-[color:var(--sand)]" aria-hidden="true" />}>
+            <Suspense
+              fallback={<div className="h-full w-full bg-[color:var(--sand)]" aria-hidden="true" />}
+            >
               <BuilderMap
                 stops={activeRoute?.stops ?? []}
                 regionCenter={regionCenter}
@@ -650,15 +723,23 @@ export function MultiDayBuilder({
             </Suspense>
             {/* Map legend */}
             <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[2px] bg-[color:var(--ivory)]/95 px-3 py-2 text-[9.5px] sm:text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/75 backdrop-blur shadow-sm">
-              <span className="inline-flex items-center gap-1.5"><span className="inline-block h-2.5 w-2.5 rounded-full bg-[color:var(--teal)]" /> In your day</span>
-              <span className="inline-flex items-center gap-1.5"><span className="inline-block h-2.5 w-2.5 rounded-full bg-[color:var(--gold)]" /> Reachable</span>
-              <span className="inline-flex items-center gap-1.5"><span className="inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60" /> Out of range</span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[color:var(--teal)]" /> In
+                your day
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[color:var(--gold)]" />{" "}
+                Reachable
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60" />{" "}
+                Out of range
+              </span>
             </div>
           </div>
 
           {/* BUILD PANEL */}
           <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] min-h-[40svh] flex flex-col">
-
             <div className="p-5 md:p-6 flex flex-col gap-5 flex-1">
               {/* Day header w/ remove */}
               <header className="flex items-start justify-between gap-3">
@@ -672,8 +753,8 @@ export function MultiDayBuilder({
                   {activeRoute && (
                     <p className="mt-1 text-[12px] text-[color:var(--charcoal)]/60">
                       {fmtMinutes(activeRoute.totals.experienceMinutes)} total ·{" "}
-                      {fmtMinutes(activeRoute.totals.drivingMinutes)} drive ·{" "}
-                      €{activeRoute.pricePerPersonEur} pp
+                      {fmtMinutes(activeRoute.totals.drivingMinutes)} drive · €
+                      {activeRoute.pricePerPersonEur} pp
                     </p>
                   )}
                 </div>
@@ -753,7 +834,11 @@ export function MultiDayBuilder({
                       aria-label="Rewrite this day's story"
                       className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3.5 text-[11.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)]/60 hover:text-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <RefreshCw size={13} className={narrativeLoading ? "animate-spin" : ""} aria-hidden="true" />
+                      <RefreshCw
+                        size={13}
+                        className={narrativeLoading ? "animate-spin" : ""}
+                        aria-hidden="true"
+                      />
                       Rewrite
                     </button>
                     <button
@@ -763,7 +848,11 @@ export function MultiDayBuilder({
                       aria-label="Copy this day's story"
                       className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3.5 text-[11.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)]/60 hover:text-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {narrativeCopied ? <Check size={13} aria-hidden="true" /> : <Copy size={13} aria-hidden="true" />}
+                      {narrativeCopied ? (
+                        <Check size={13} aria-hidden="true" />
+                      ) : (
+                        <Copy size={13} aria-hidden="true" />
+                      )}
                       {narrativeCopied ? "Copied" : "Copy"}
                     </button>
                   </div>
@@ -777,12 +866,14 @@ export function MultiDayBuilder({
                     Selected moments
                   </span>
                   <span className="text-[11px] text-[color:var(--charcoal)]/50 tabular-nums">
-                    {activeDay?.stopKeys.length ?? 0} stop{(activeDay?.stopKeys.length ?? 0) === 1 ? "" : "s"}
+                    {activeDay?.stopKeys.length ?? 0} stop
+                    {(activeDay?.stopKeys.length ?? 0) === 1 ? "" : "s"}
                   </span>
                 </div>
-                {(!activeDay || activeDay.stopKeys.length === 0) ? (
+                {!activeDay || activeDay.stopKeys.length === 0 ? (
                   <p className="mt-3 rounded-[2px] border border-dashed border-[color:var(--charcoal)]/15 p-4 text-[12.5px] text-[color:var(--charcoal)]/65">
-                    Empty day. Tap a gold pin on the map, or use Add stop below to pick from what's reachable here.
+                    Empty day. Tap a gold pin on the map, or use Add stop below to pick from what's
+                    reachable here.
                   </p>
                 ) : (
                   <ol className="mt-3 flex flex-col gap-2">
@@ -817,14 +908,18 @@ export function MultiDayBuilder({
                             disabled={i === 0}
                             aria-label="Move earlier"
                             className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25"
-                          >↑</button>
+                          >
+                            ↑
+                          </button>
                           <button
                             type="button"
                             onClick={() => onMoveStop(i, 1)}
                             disabled={i === (activeRoute?.stops.length ?? 0) - 1}
                             aria-label="Move later"
                             className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25"
-                          >↓</button>
+                          >
+                            ↓
+                          </button>
                           <button
                             type="button"
                             onClick={() => onRemoveStop(s.key)}
@@ -909,16 +1004,28 @@ export function MultiDayBuilder({
         {state.days.length > 0 && (
           <div className="mt-6 grid grid-cols-3 gap-3 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-4">
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">Days</p>
-              <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">{state.days.length}</p>
+              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">
+                Days
+              </p>
+              <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
+                {state.days.length}
+              </p>
             </div>
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">Total time</p>
-              <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">{fmtMinutes(tripTotals.mins)}</p>
+              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">
+                Total time
+              </p>
+              <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
+                {fmtMinutes(tripTotals.mins)}
+              </p>
             </div>
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">Per person</p>
-              <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">€{tripTotals.perPerson}</p>
+              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">
+                Per person
+              </p>
+              <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
+                €{tripTotals.perPerson}
+              </p>
             </div>
           </div>
         )}
@@ -946,8 +1053,6 @@ export function MultiDayBuilder({
         disabled={tripTotals.stops === 0}
         ctaLabel="Review & confirm"
       />
-
-
 
       <AddStopSheet
         open={sheetOpen}

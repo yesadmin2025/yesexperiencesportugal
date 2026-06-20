@@ -33,9 +33,7 @@ export const Route = createFileRoute("/local-stories")({
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/local-stories" },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/local-stories" },
-    ],
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/local-stories" }],
   }),
 
   component: Page,
@@ -68,8 +66,7 @@ function Page() {
         <div className="container-x">
           <Eyebrow flank>Local Stories</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            The Portugal{" "}
-            <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
+            The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
             Notes from the road — written by the locals who design our private experiences.

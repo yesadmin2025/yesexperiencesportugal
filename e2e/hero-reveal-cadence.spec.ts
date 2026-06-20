@@ -66,16 +66,17 @@ async function measureTransition(page: Page, selector: string): Promise<Measurem
             const t = (a as unknown as { transitionProperty?: string }).transitionProperty;
             return t === "opacity" || t === undefined;
           });
-          const opacityAnim = anims.find(
-            (a) => (a as unknown as { transitionProperty?: string }).transitionProperty === "opacity",
-          ) ?? anims[0];
+          const opacityAnim =
+            anims.find(
+              (a) =>
+                (a as unknown as { transitionProperty?: string }).transitionProperty === "opacity",
+            ) ?? anims[0];
           if (!opacityAnim) {
             return reject(new Error(`no active transition on ${sel}`));
           }
           const timing = opacityAnim.effect?.getTiming();
           if (!timing) return reject(new Error(`no timing for ${sel}`));
-          const durationMs =
-            typeof timing.duration === "number" ? timing.duration : 0;
+          const durationMs = typeof timing.duration === "number" ? timing.duration : 0;
           const easing = timing.easing ?? "";
           resolve({ durationMs, easing });
         });
@@ -110,11 +111,7 @@ test.describe("Hero reveal cadence — measured 220ms ease-out", () => {
       if (f?.ready) await f.ready;
     });
 
-    const ALLOWED_EASE = [
-      "ease-out",
-      "cubic-bezier(0, 0, 0.58, 1)",
-      "cubic-bezier(0, 0, 0.2, 1)",
-    ];
+    const ALLOWED_EASE = ["ease-out", "cubic-bezier(0, 0, 0.58, 1)", "cubic-bezier(0, 0, 0.2, 1)"];
 
     for (const sel of REVEAL_SELECTORS) {
       // Computed transition-timing-function must be one of the approved
@@ -133,9 +130,11 @@ test.describe("Hero reveal cadence — measured 220ms ease-out", () => {
       const durationMs = await page.evaluate((s) => {
         const el = document.querySelector(s) as HTMLElement | null;
         if (!el) throw new Error(`not found: ${s}`);
-        const raw = window.getComputedStyle(el).transitionDuration
-          .split(/,(?![^()]*\))/)[0]
-          ?.trim() ?? "0s";
+        const raw =
+          window
+            .getComputedStyle(el)
+            .transitionDuration.split(/,(?![^()]*\))/)[0]
+            ?.trim() ?? "0s";
         return raw.endsWith("ms") ? parseFloat(raw) : parseFloat(raw) * 1000;
       }, sel);
       expect(
@@ -151,18 +150,19 @@ test.describe("Hero reveal cadence — measured 220ms ease-out", () => {
     }
   });
 
-  test("data-hero-reveal-order declares strict sequential order 1→2→3→4", async ({
-    page,
-  }) => {
+  test("data-hero-reveal-order declares strict sequential order 1→2→3→4", async ({ page }) => {
     await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
     await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
 
-    const orders = await page.evaluate((selectors) => {
-      return selectors.map((sel) => {
-        const el = document.querySelector(sel) as HTMLElement | null;
-        return el?.dataset.heroRevealOrder ?? null;
-      });
-    }, [...REVEAL_SELECTORS]);
+    const orders = await page.evaluate(
+      (selectors) => {
+        return selectors.map((sel) => {
+          const el = document.querySelector(sel) as HTMLElement | null;
+          return el?.dataset.heroRevealOrder ?? null;
+        });
+      },
+      [...REVEAL_SELECTORS],
+    );
 
     expect(orders).toEqual(["1", "2", "3", "4"]);
   });

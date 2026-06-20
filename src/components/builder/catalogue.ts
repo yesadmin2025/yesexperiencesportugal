@@ -28,11 +28,41 @@ import type { Intention, Mood, Pace, Who } from "./types";
 // Mood — the feeling of the day. Labels lean toward the brief's vocabulary
 // ("Wine & food", "Coast & views", etc.) while engine IDs stay stable.
 export const MOODS: { id: Mood; label: string; sub: string; cover: string; icon: typeof Wine }[] = [
-  { id: "slow", label: "Coast & slow light", sub: "Sea breath, quiet roads, long views", cover: expCoastal, icon: Mountain },
-  { id: "curious", label: "Culture & history", sub: "Old stones, real stories, hidden corners", cover: expStreet, icon: Landmark },
-  { id: "romantic", label: "A special moment", sub: "An intimate day shaped for two", cover: expRomantic, icon: Heart },
-  { id: "open", label: "Wine & food", sub: "Cellars, markets, generous tables", cover: expGastro, icon: Wine },
-  { id: "energetic", label: "A bit of everything", sub: "More places, more pulse, real variety", cover: expNature, icon: Zap },
+  {
+    id: "slow",
+    label: "Coast & slow light",
+    sub: "Sea breath, quiet roads, long views",
+    cover: expCoastal,
+    icon: Mountain,
+  },
+  {
+    id: "curious",
+    label: "Culture & history",
+    sub: "Old stones, real stories, hidden corners",
+    cover: expStreet,
+    icon: Landmark,
+  },
+  {
+    id: "romantic",
+    label: "A special moment",
+    sub: "An intimate day shaped for two",
+    cover: expRomantic,
+    icon: Heart,
+  },
+  {
+    id: "open",
+    label: "Wine & food",
+    sub: "Cellars, markets, generous tables",
+    cover: expGastro,
+    icon: Wine,
+  },
+  {
+    id: "energetic",
+    label: "A bit of everything",
+    sub: "More places, more pulse, real variety",
+    cover: expNature,
+    icon: Zap,
+  },
 ];
 
 export const WHOS: { id: Who; label: string; sub: string; icon: typeof Users }[] = [
@@ -47,10 +77,30 @@ export const WHOS: { id: Who; label: string; sub: string; icon: typeof Users }[]
 // Intention — what matters most. Engine IDs stay; labels and subtitles
 // realigned to the brief's "what matters" vocabulary.
 export const INTENTIONS: { id: Intention; label: string; sub: string; icon: typeof Compass }[] = [
-  { id: "hidden", label: "Discovering places", sub: "Off the postcard, found in person", icon: Compass },
-  { id: "gastronomy", label: "Enjoying the moment", sub: "Real lunch, slow tasca, long table", icon: Utensils },
-  { id: "wonder", label: "Celebrating something", sub: "A day that lifts the occasion", icon: PartyPopper },
-  { id: "heritage", label: "Learning and exploring", sub: "Old stones that still talk", icon: Landmark },
+  {
+    id: "hidden",
+    label: "Discovering places",
+    sub: "Off the postcard, found in person",
+    icon: Compass,
+  },
+  {
+    id: "gastronomy",
+    label: "Enjoying the moment",
+    sub: "Real lunch, slow tasca, long table",
+    icon: Utensils,
+  },
+  {
+    id: "wonder",
+    label: "Celebrating something",
+    sub: "A day that lifts the occasion",
+    icon: PartyPopper,
+  },
+  {
+    id: "heritage",
+    label: "Learning and exploring",
+    sub: "Old stones that still talk",
+    icon: Landmark,
+  },
   { id: "wellness", label: "Taking it slow", sub: "Breath room, quiet rhythm", icon: Leaf },
   { id: "coast", label: "Coast & views", sub: "Cove, salt wind, sea light", icon: Waves },
   { id: "wine", label: "Wine country", sub: "Cellars, talha, long table", icon: GlassWater },

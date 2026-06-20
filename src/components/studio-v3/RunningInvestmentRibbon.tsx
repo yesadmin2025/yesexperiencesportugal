@@ -23,10 +23,7 @@ interface RunningInvestmentRibbonProps {
   hidden?: boolean;
 }
 
-export function RunningInvestmentRibbon({
-  state,
-  hidden = false,
-}: RunningInvestmentRibbonProps) {
+export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvestmentRibbonProps) {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -42,8 +39,7 @@ export function RunningInvestmentRibbon({
   // Beat 1 ("feeling") is too early — ribbon enters from beat 2 onward.
   if (state.phase === "feeling" || state.phase === "intro") return null;
 
-  const canResolve =
-    !!state.feeling && !!state.companions && !!state.rhythm;
+  const canResolve = !!state.feeling && !!state.companions && !!state.rhythm;
   const resolved = canResolve
     ? resolveStudioV3Route({
         feeling: state.feeling!,
@@ -59,14 +55,12 @@ export function RunningInvestmentRibbon({
     : null;
 
   const tour = resolved?.skeletonTourKey
-    ? signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null
+    ? (signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null)
     : null;
   const priceFromEur = tour?.priceFrom ?? null;
   const guests = state.guests ?? null;
   const partyTotalEur =
-    priceFromEur != null && guests != null && guests > 0
-      ? priceFromEur * guests
-      : null;
+    priceFromEur != null && guests != null && guests > 0 ? priceFromEur * guests : null;
 
   const voice = tour ? regionalVoiceFor(tour.region) : null;
 
@@ -91,7 +85,11 @@ export function RunningInvestmentRibbon({
   };
 
   return (
-    <div className="w-full px-3 pt-1.5" data-testid="studio-v3-investment-ribbon" data-region-voice={voice?.eyebrow ?? ""}>
+    <div
+      className="w-full px-3 pt-1.5"
+      data-testid="studio-v3-investment-ribbon"
+      data-region-voice={voice?.eyebrow ?? ""}
+    >
       <div
         className="mx-auto flex w-full max-w-[480px] flex-col gap-0.5 rounded-[4px] border px-3 py-1.5 transition-opacity duration-[220ms] motion-reduce:transition-none"
         style={{
@@ -111,8 +109,13 @@ export function RunningInvestmentRibbon({
             >
               YES
             </span>
-            <span style={{ color: "var(--gold)" }} aria-hidden>—</span>
-            <span className="shrink-0" style={{ color: "color-mix(in oklab, var(--charcoal) 70%, var(--ivory))" }}>
+            <span style={{ color: "var(--gold)" }} aria-hidden>
+              —
+            </span>
+            <span
+              className="shrink-0"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, var(--ivory))" }}
+            >
               Investment
             </span>
             <span className="truncate" style={{ color: "var(--charcoal)" }}>
@@ -140,8 +143,13 @@ export function RunningInvestmentRibbon({
             data-testid="studio-v3-region-voice"
           >
             <span style={{ color: "var(--teal)" }}>{voice.eyebrow}</span>
-            <span style={{ color: "var(--gold)" }} aria-hidden>·</span>
-            <span className="italic font-normal normal-case tracking-normal text-[11px]" style={{ fontFamily: "var(--font-serif)" }}>
+            <span style={{ color: "var(--gold)" }} aria-hidden>
+              ·
+            </span>
+            <span
+              className="italic font-normal normal-case tracking-normal text-[11px]"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
               {voice.whisper}
             </span>
           </span>

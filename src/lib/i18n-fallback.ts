@@ -24,9 +24,7 @@ export function mergeLocale<K extends string>(
   locale: SupportedLocale | string | undefined | null,
 ): Record<K, string> {
   const safe: SupportedLocale =
-    locale === "pt" || locale === "en" || locale === "es" || locale === "fr"
-      ? locale
-      : "en";
+    locale === "pt" || locale === "en" || locale === "es" || locale === "fr" ? locale : "en";
   // Per-key fallback: EN provides the safety net, locale overrides.
   return { ...dict.en, ...(dict[safe] ?? {}) } as Record<K, string>;
 }

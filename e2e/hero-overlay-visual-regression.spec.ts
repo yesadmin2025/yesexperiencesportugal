@@ -68,10 +68,7 @@ async function seekAndPause(page: Page, t: number) {
   // Two rAFs: one for the seek to land, one to commit the rAF tick that
   // updates heroSceneIndex/heroPrevIndex and React's render.
   await page.evaluate(
-    () =>
-      new Promise<void>((r) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => r())),
-      ),
+    () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))),
   );
 }
 
@@ -87,15 +84,9 @@ type OverlaySnapshot = {
 
 async function readOverlay(page: Page): Promise<OverlaySnapshot> {
   return page.evaluate(() => {
-    const section = document.querySelector<HTMLElement>(
-      "section[data-hero-scene]",
-    );
-    const prev = document.querySelector<HTMLElement>(
-      '[data-hero-overlay="prev"]',
-    );
-    const current = document.querySelector<HTMLElement>(
-      '[data-hero-overlay="current"]',
-    );
+    const section = document.querySelector<HTMLElement>("section[data-hero-scene]");
+    const prev = document.querySelector<HTMLElement>('[data-hero-overlay="prev"]');
+    const current = document.querySelector<HTMLElement>('[data-hero-overlay="current"]');
     const op = (el: HTMLElement | null) => {
       if (!el) return -1;
       return parseFloat(getComputedStyle(el).opacity || "1");
@@ -121,9 +112,7 @@ function midChapterSamplePoints(start: number, end: number): readonly number[] {
 }
 
 function otherMainLines(currentId: string): readonly string[] {
-  return HERO_SCENES.filter((s) => s.id !== currentId).flatMap(
-    (s) => s.main,
-  );
+  return HERO_SCENES.filter((s) => s.id !== currentId).flatMap((s) => s.main);
 }
 
 test.describe("Hero overlay — timing alignment & no copy bleed", () => {
@@ -138,13 +127,8 @@ test.describe("Hero overlay — timing alignment & no copy bleed", () => {
   });
 
   for (const scene of HERO_SCENES) {
-    test(`chapter "${scene.id}" — copy aligned to playback, no bleed`, async ({
-      page,
-    }) => {
-      const samplePoints = midChapterSamplePoints(
-        scene.startTime,
-        scene.endTime,
-      );
+    test(`chapter "${scene.id}" — copy aligned to playback, no bleed`, async ({ page }) => {
+      const samplePoints = midChapterSamplePoints(scene.startTime, scene.endTime);
       const foreignLines = otherMainLines(scene.id);
 
       for (const t of samplePoints) {
@@ -195,18 +179,15 @@ test.describe("Hero overlay — timing alignment & no copy bleed", () => {
   // Pixel-level lock for each chapter at its 50% point. Future styling
   // drift on the overlay (font, spacing, color) is caught here.
   for (const scene of HERO_SCENES) {
-    test(`chapter "${scene.id}" — overlay snapshot at midpoint`, async ({
-      page,
-    }) => {
+    test(`chapter "${scene.id}" — overlay snapshot at midpoint`, async ({ page }) => {
       const mid = scene.startTime + (scene.endTime - scene.startTime) * 0.5;
       await seekAndPause(page, mid);
       const copyColumn = page.locator(".hero-copy-column").first();
       await expect(copyColumn).toBeVisible();
       await copyColumn.scrollIntoViewIfNeeded();
-      await expect(copyColumn).toHaveScreenshot(
-        `hero-overlay-${scene.id}-midpoint.png`,
-        { maxDiffPixelRatio: 0.04 },
-      );
+      await expect(copyColumn).toHaveScreenshot(`hero-overlay-${scene.id}-midpoint.png`, {
+        maxDiffPixelRatio: 0.04,
+      });
     });
   }
 });
@@ -269,9 +250,7 @@ test.describe("Hero overlay — no abrupt transitions across boundaries", () => 
       // produce a delta close to 1.0 in a single step.
       for (let k = 1; k < inFlight.length; k += 1) {
         const dPrev = Math.abs(inFlight[k].prev - inFlight[k - 1].prev);
-        const dCurrent = Math.abs(
-          inFlight[k].current - inFlight[k - 1].current,
-        );
+        const dCurrent = Math.abs(inFlight[k].current - inFlight[k - 1].current);
         expect(
           dPrev,
           `prev-overlay opacity jumped ${dPrev.toFixed(2)} between samples (abrupt) at t≈${inFlight[k].t}ms`,
@@ -295,12 +274,8 @@ test.describe("Hero overlay — no abrupt transitions across boundaries", () => 
 
       // Direction check: prev should generally trend DOWN, current UP
       // across the ramp (allow tiny jitter — assert first vs last).
-      expect(inFlight[0].prev).toBeGreaterThan(
-        inFlight[inFlight.length - 1].prev,
-      );
-      expect(inFlight[inFlight.length - 1].current).toBeGreaterThan(
-        inFlight[0].current,
-      );
+      expect(inFlight[0].prev).toBeGreaterThan(inFlight[inFlight.length - 1].prev);
+      expect(inFlight[inFlight.length - 1].current).toBeGreaterThan(inFlight[0].current);
     });
   }
 });

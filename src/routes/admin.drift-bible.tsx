@@ -58,7 +58,11 @@ function AdminDriftBiblePage() {
     try {
       const [{ data: v }, { data: d }] = await Promise.all([
         supabase.from("drift_voice").select("*").order("slot"),
-        supabase.from("drift_dna_tokens").select("*").order("dimension").order("priority", { ascending: false }),
+        supabase
+          .from("drift_dna_tokens")
+          .select("*")
+          .order("dimension")
+          .order("priority", { ascending: false }),
       ]);
       setVoice((v as Voice[]) ?? []);
       setDna((d as Dna[]) ?? []);
@@ -94,8 +98,18 @@ function AdminDriftBiblePage() {
     else toast.success(`dna · ${row.key} guardado`);
   }
 
-  if (!authChecked) return <SiteLayout><div className="p-10 text-center">a verificar…</div></SiteLayout>;
-  if (!isAdmin) return <SiteLayout><div className="p-10 text-center">acesso restrito</div></SiteLayout>;
+  if (!authChecked)
+    return (
+      <SiteLayout>
+        <div className="p-10 text-center">a verificar…</div>
+      </SiteLayout>
+    );
+  if (!isAdmin)
+    return (
+      <SiteLayout>
+        <div className="p-10 text-center">acesso restrito</div>
+      </SiteLayout>
+    );
 
   return (
     <SiteLayout>
@@ -113,9 +127,14 @@ function AdminDriftBiblePage() {
           <h2 className="text-lg font-semibold mb-4">Voice ({voice.length})</h2>
           <div className="space-y-3">
             {voice.map((row, i) => (
-              <div key={row.id} className="grid grid-cols-12 gap-2 items-start p-3 bg-white rounded border">
+              <div
+                key={row.id}
+                className="grid grid-cols-12 gap-2 items-start p-3 bg-white rounded border"
+              >
                 <div className="col-span-3">
-                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{row.slot}</div>
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {row.slot}
+                  </div>
                   <div className="text-[10px] text-muted-foreground/70">{row.locale}</div>
                 </div>
                 <textarea
@@ -157,37 +176,53 @@ function AdminDriftBiblePage() {
           <h2 className="text-lg font-semibold mb-4">DNA Tokens ({dna.length})</h2>
           <div className="space-y-3">
             {dna.map((row, i) => (
-              <div key={row.id} className="grid grid-cols-12 gap-2 items-center p-3 bg-white rounded border">
+              <div
+                key={row.id}
+                className="grid grid-cols-12 gap-2 items-center p-3 bg-white rounded border"
+              >
                 <div className="col-span-3">
                   <div className="text-[11px] uppercase tracking-wider">{row.key}</div>
-                  <div className="text-[10px] text-muted-foreground">{row.dimension} = {row.value}</div>
+                  <div className="text-[10px] text-muted-foreground">
+                    {row.dimension} = {row.value}
+                  </div>
                 </div>
                 <input
                   className="col-span-3 text-sm p-1.5 border rounded"
                   value={row.label}
                   onChange={(e) => {
-                    const c = [...dna]; c[i] = { ...row, label: e.target.value }; setDna(c);
+                    const c = [...dna];
+                    c[i] = { ...row, label: e.target.value };
+                    setDna(c);
                   }}
                 />
                 <div className="col-span-2 flex flex-col gap-1">
                   <label className="text-[10px] text-muted-foreground">threshold</label>
                   <input
-                    type="number" step="0.05" min="0" max="1"
+                    type="number"
+                    step="0.05"
+                    min="0"
+                    max="1"
                     className="text-sm p-1.5 border rounded w-full"
                     value={row.threshold}
                     onChange={(e) => {
-                      const c = [...dna]; c[i] = { ...row, threshold: Number(e.target.value) }; setDna(c);
+                      const c = [...dna];
+                      c[i] = { ...row, threshold: Number(e.target.value) };
+                      setDna(c);
                     }}
                   />
                 </div>
                 <div className="col-span-2 flex flex-col gap-1">
                   <label className="text-[10px] text-muted-foreground">priority</label>
                   <input
-                    type="number" min="0" max="100"
+                    type="number"
+                    min="0"
+                    max="100"
                     className="text-sm p-1.5 border rounded w-full"
                     value={row.priority}
                     onChange={(e) => {
-                      const c = [...dna]; c[i] = { ...row, priority: Number(e.target.value) }; setDna(c);
+                      const c = [...dna];
+                      c[i] = { ...row, priority: Number(e.target.value) };
+                      setDna(c);
                     }}
                   />
                 </div>
@@ -197,7 +232,9 @@ function AdminDriftBiblePage() {
                       type="checkbox"
                       checked={row.is_active}
                       onChange={(e) => {
-                        const c = [...dna]; c[i] = { ...row, is_active: e.target.checked }; setDna(c);
+                        const c = [...dna];
+                        c[i] = { ...row, is_active: e.target.checked };
+                        setDna(c);
                       }}
                     />
                     ativo

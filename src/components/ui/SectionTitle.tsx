@@ -16,8 +16,7 @@ import { cn } from "@/lib/utils";
  * `italic font-normal text-[color:var(--teal)]`, the locked emphasis token.
  */
 
-const baseClasses =
-  "serif text-[color:var(--charcoal)] font-medium";
+const baseClasses = "serif text-[color:var(--charcoal)] font-medium";
 
 const sizeClasses = {
   default:
@@ -30,8 +29,7 @@ const sizeClasses = {
 
 export type SectionTitleSize = keyof typeof sizeClasses;
 
-export interface SectionTitleProps
-  extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface SectionTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   as?: "h1" | "h2" | "h3";
   size?: SectionTitleSize;
   /** Margin-top spacing relative to the eyebrow. Defaults to mt-3. */
@@ -55,12 +53,7 @@ function SectionTitleRoot({
 }: SectionTitleProps) {
   return (
     <Tag
-      className={cn(
-        baseClasses,
-        sizeClasses[size],
-        spacingClasses[spacing],
-        className,
-      )}
+      className={cn(baseClasses, sizeClasses[size], spacingClasses[spacing], className)}
       {...rest}
     >
       {children}
@@ -68,19 +61,9 @@ function SectionTitleRoot({
   );
 }
 
-function Em({
-  children,
-  className,
-  ...rest
-}: React.HTMLAttributes<HTMLSpanElement>) {
+function Em({ children, className, ...rest }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span
-      className={cn(
-        "italic font-normal text-[color:var(--teal)]",
-        className,
-      )}
-      {...rest}
-    >
+    <span className={cn("italic font-normal text-[color:var(--teal)]", className)} {...rest}>
       {children}
     </span>
   );

@@ -38,9 +38,7 @@ export function NarrativeIntro({ onApply, applied, onReset }: NarrativeIntroProp
     return (
       <div className="mt-4 mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] px-3 py-1.5 text-[12px] text-[color:var(--charcoal)] shadow-[0_1px_0_rgba(46,46,46,0.04)]">
         <Sparkles className="h-3 w-3 text-[color:var(--gold)]" aria-hidden />
-        <span className="font-serif italic">
-          {rationale ?? "Pre-filled from your story"}
-        </span>
+        <span className="font-serif italic">{rationale ?? "Pre-filled from your story"}</span>
         {onReset && (
           <button
             type="button"
@@ -137,9 +135,7 @@ export function NarrativeIntro({ onApply, applied, onReset }: NarrativeIntroProp
         disabled={loading}
       />
       <div className="flex items-center justify-between gap-3 mt-3">
-        <span className="text-[11px] text-[color:var(--charcoal)]/50">
-          {text.length}/500
-        </span>
+        <span className="text-[11px] text-[color:var(--charcoal)]/50">{text.length}/500</span>
         <button
           type="button"
           onClick={submit}

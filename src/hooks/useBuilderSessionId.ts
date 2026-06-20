@@ -17,9 +17,7 @@ function newSessionId(): string {
   const uuid =
     typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
-      : Array.from({ length: 32 }, () =>
-          Math.floor(Math.random() * 16).toString(16),
-        ).join("");
+      : Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
   return uuid.replace(/-/g, "").toLowerCase();
 }
 
