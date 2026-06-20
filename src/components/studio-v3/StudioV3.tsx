@@ -5,6 +5,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
+import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MapAwakens } from "./MapAwakens";
