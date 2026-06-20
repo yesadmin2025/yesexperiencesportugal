@@ -261,12 +261,12 @@ function RouteTreeTroubleshooting() {
     setProbe({ status: "loading" });
     try {
       // Dynamic import so a generator failure surfaces here instead of crashing the page.
-      const mod = (await import("@/routeTree.gen")) as { routeTree: unknown };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mod: any = await import("@/routeTree.gen");
       const tree = mod.routeTree;
       const ids: string[] = [];
-      const walk = (node: unknown) => {
-        const n = node as { id?: string; children?: unknown } | null;
-        node = n;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const walk = (node: any) => {
         if (!node) return;
         if (node.id) ids.push(node.id);
         const children = node.children
