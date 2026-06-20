@@ -183,6 +183,7 @@ export function StudioV3Intro({ onComplete }: Props) {
 
             <button
               type="submit"
+              data-phase-cta="intro-name"
               className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
