@@ -405,6 +405,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 26,
     rating: 5,
     recommendedPct: null,
+    priceTiersEUR: { 2: 318, 3: 189, 4: 189, 5: 189, 6: 189, 7: 189, 8: 179 },
     overview: "Discover Portugal’s historic heartlands on this private full‑day tour to Tomar—home to the medieval Templar fortress—and the scholarly city of Coimbra, with its ancient university and rich traditions. With a dedicated driver and guide, enjoy a relaxed pace, insightful stories, and a seamless route through two of Portugal’s most culturally significant cities.",
     included: [
       "All Fees and Taxes",
