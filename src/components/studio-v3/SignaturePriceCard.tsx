@@ -74,6 +74,7 @@ export function SignaturePriceCard({
   guests,
   included,
   showAddOns = true,
+  onGuestsChange,
   previewTiers = null,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
