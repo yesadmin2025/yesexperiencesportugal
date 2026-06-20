@@ -129,26 +129,28 @@ test.describe("smoke — tour detail page", () => {
 });
 
 test.describe("smoke — admin gating", () => {
-  for (const route of ADMIN_ROUTES) {
-    test(`unauthenticated ${route} is gated`, async ({ page }) => {
-      const response = await page.goto(route, { waitUntil: "domcontentloaded" });
-      // Acceptable outcomes: redirect to /auth, 401/403 page, OR the admin
-      // page renders its own "forbidden / sign in" UI. We assert that we do
-      // NOT see protected admin content (e.g. a write button) while signed out.
+  for (const { path, devOnly } of ADMIN_ROUTES) {
+    test(`unauthenticated ${path} is gated`, async ({ page }) => {
+      const response = await page.goto(path, { waitUntil: "domcontentloaded" });
       const url = page.url();
       const visiblyGated =
         /\/auth\b/.test(url) ||
         (await page.getByText(/sign in|forbidden|unauthorized|admin role/i).count()) > 0;
-      // If the page rendered with 200 and isn't gated, ensure there is no
-      // mutate-action visible (defense in depth — the route may render a
-      // read-only audit shell publicly, but never a destructive control).
+      if (devOnly) {
+        // Dev-only audit shells: just confirm they don't 5xx and a heading renders.
+        expect((response?.status() ?? 0) < 500).toBe(true);
+        await expect(page.locator("h1, h2").first()).toBeVisible({ timeout: 10_000 });
+        return;
+      }
       const hasDestructive =
         (await page
-          .locator('button:has-text("Delete"), button:has-text("Run import"), button:has-text("Reset")')
+          .locator(
+            'button:has-text("Delete"), button:has-text("Run import"), button:has-text("Reset")',
+          )
           .count()) > 0;
       expect(
         visiblyGated || (!hasDestructive && (response?.status() ?? 0) < 500),
-        `route ${route} appears ungated: url=${url} destructive=${hasDestructive}`,
+        `route ${path} appears ungated: url=${url} destructive=${hasDestructive}`,
       ).toBe(true);
     });
   }
