@@ -768,6 +768,9 @@ function JourneyDraftDrawer({
                   </ol>
                 </div>
               ) : null}
+              <div className="-mx-5 mt-1">
+                <QualityScore state={fullState} />
+              </div>
               <SmartRecommendation
                 tourId={tourId}
                 stopCount={stopCount}
