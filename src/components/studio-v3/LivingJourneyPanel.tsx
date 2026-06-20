@@ -434,6 +434,7 @@ function JourneyDraftDrawer({
   interests,
   rhythm,
   companions,
+  fullState,
 }: DrawerProps) {
 
   const totalPins = Math.max(0, Math.min(4, moments.length));
