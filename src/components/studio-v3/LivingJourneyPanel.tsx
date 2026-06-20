@@ -425,6 +425,12 @@ function JourneyDraftDrawer({
   scopePartyCount,
   scopePartyTotalEur,
   memoryLine,
+  tourId,
+  stopCount,
+  feeling,
+  interests,
+  rhythm,
+  companions,
 }: DrawerProps) {
 
   const totalPins = Math.max(0, Math.min(4, moments.length));
