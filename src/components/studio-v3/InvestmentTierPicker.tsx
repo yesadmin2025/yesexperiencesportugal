@@ -18,6 +18,8 @@ import { INVESTMENT_TIERS } from "./types";
 interface InvestmentTierPickerProps {
   value: InvestmentTier | null;
   onSelect: (tier: InvestmentTier) => void;
+  /** Optional ordered list (e.g. couples-first prioritisation). Defaults to INVESTMENT_TIERS. */
+  options?: ReadonlyArray<{ id: InvestmentTier; label: string; whisper: string }>;
 }
 
 const TIER_META: Record<
