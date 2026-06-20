@@ -281,7 +281,9 @@ function PathCard({
       className="group relative w-full rounded-[10px] px-5 py-4 text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{
         background: "color-mix(in oklab, var(--ivory) 6%, transparent)",
-        border: `1px solid color-mix(in oklab, var(--gold) ${recommended ? 55 : 28}%, transparent)`,
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: `color-mix(in oklab, var(--gold) ${recommended ? 55 : 28}%, transparent)`,
       }}
     >
       <div className="flex items-center justify-between gap-3">
