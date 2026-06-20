@@ -365,6 +365,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               interests={state.interests}
               rhythm={state.rhythm}
               companions={state.companions}
+              fullState={state}
             />,
 
             document.body,
