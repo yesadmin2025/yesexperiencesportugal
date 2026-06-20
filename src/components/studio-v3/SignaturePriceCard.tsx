@@ -572,11 +572,11 @@ export function SignaturePriceCard({
                         background: selected
                           ? "color-mix(in oklab, var(--gold) 12%, var(--ivory))"
                           : "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
-                        border: `1px solid ${
-                          selected
-                            ? "color-mix(in oklab, var(--gold) 70%, transparent)"
-                            : "color-mix(in oklab, var(--charcoal) 12%, transparent)"
-                        }`,
+                        borderWidth: 1,
+                        borderStyle: "solid",
+                        borderColor: selected
+                          ? "color-mix(in oklab, var(--gold) 70%, transparent)"
+                          : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
                         opacity: disabled ? 0.45 : 1,
                       }}
                     >
@@ -585,9 +585,11 @@ export function SignaturePriceCard({
                         className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full transition-transform duration-200"
                         style={{
                           background: selected ? "var(--gold)" : "transparent",
-                          border: `1px solid ${
-                            selected ? "var(--gold)" : "color-mix(in oklab, var(--charcoal) 30%, transparent)"
-                          }`,
+                          borderWidth: 1,
+                          borderStyle: "solid",
+                          borderColor: selected
+                            ? "var(--gold)"
+                            : "color-mix(in oklab, var(--charcoal) 30%, transparent)",
                           transform: pending ? "scale(0.85)" : "scale(1)",
                         }}
                       >
