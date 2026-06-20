@@ -42,6 +42,7 @@ import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { TimelineView } from "./TimelineView";
 import { AffinityBars } from "./AffinityBars";
 import { SmartRecommendation } from "./SmartRecommendation";
+import { QualityScore } from "./QualityScore";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 
@@ -364,6 +365,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               interests={state.interests}
               rhythm={state.rhythm}
               companions={state.companions}
+              fullState={state}
             />,
 
             document.body,
@@ -401,6 +403,7 @@ interface DrawerProps {
   interests: import("./types").Interest[];
   rhythm: import("./types").Rhythm | null;
   companions: import("./types").Companions | null;
+  fullState: StudioV3State;
 }
 
 
@@ -431,6 +434,7 @@ function JourneyDraftDrawer({
   interests,
   rhythm,
   companions,
+  fullState,
 }: DrawerProps) {
 
   const totalPins = Math.max(0, Math.min(4, moments.length));
@@ -764,6 +768,9 @@ function JourneyDraftDrawer({
                   </ol>
                 </div>
               ) : null}
+              <div className="-mx-5 mt-1">
+                <QualityScore state={fullState} />
+              </div>
               <SmartRecommendation
                 tourId={tourId}
                 stopCount={stopCount}
