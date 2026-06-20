@@ -1827,7 +1827,7 @@ export function StudioV3() {
               state={state}
               onStateChange={setState}
               onBack={() => back("map")}
-              onSecure={() => openLeadSheet("book")}
+              onSecure={() => handleStripeCheckout(state)}
               onRefine={() => openLeadSheet("refine")}
             />
           </PhaseShell>
