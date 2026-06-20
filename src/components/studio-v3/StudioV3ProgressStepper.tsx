@@ -38,6 +38,7 @@ const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
 };
 
 /** Phase → beat index (0..3) or null when no beat should be highlighted. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   switch (phase) {
     case "intro":

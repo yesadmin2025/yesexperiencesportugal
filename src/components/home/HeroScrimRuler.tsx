@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "hero-scrim-ruler";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useHeroScrimRulerToggle() {
   const [enabled, setEnabled] = useState(false);
 

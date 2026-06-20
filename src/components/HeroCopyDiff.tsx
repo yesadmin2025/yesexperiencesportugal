@@ -314,6 +314,7 @@ export type RefreshDecision = {
   reason: RefreshDecisionReason;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function evaluateRefreshDecision(input: {
   isIndex: boolean;
   forced: boolean;

@@ -154,6 +154,7 @@ export function BuilderMap({
       mapRef.current = null;
       layerRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Restore per-region view when region changes
@@ -328,6 +329,7 @@ export function BuilderMap({
       const first = points[0];
       map.setView(first, 9);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stops, regionCenter, candidates, onCandidateClick, emotionalMode]);
 
   // Active stop highlight — driven by the Studio reveal as the arc unfolds.

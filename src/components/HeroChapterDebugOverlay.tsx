@@ -10,6 +10,7 @@ const STORAGE_KEY = "yes:hero-chapter-debug";
  *
  * SSR-safe: starts false, hydrates after mount.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useHeroChapterDebugToggle() {
   const [enabled, setEnabled] = useState(false);
 

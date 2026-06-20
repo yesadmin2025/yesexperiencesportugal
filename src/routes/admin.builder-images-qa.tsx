@@ -83,6 +83,7 @@ function BuilderImagesQAPage() {
       setStops((data as Stop[]) ?? []);
       void refresh();
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
   async function refresh() {

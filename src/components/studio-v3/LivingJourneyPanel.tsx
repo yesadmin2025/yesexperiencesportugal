@@ -439,6 +439,7 @@ function JourneyDraftDrawer({
       timers.push(setTimeout(() => setActivePins(i), 280 + i * 360));
     }
     return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalPins, moments.join("|")]);
 
   return (
