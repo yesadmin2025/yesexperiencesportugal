@@ -147,6 +147,9 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/0e/c0/cd/ea.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/ec/e4.jpg",
     ],
+    // Source: supplier.viator.com — Wild Beaches and Picnic Experience (TG1).
+    // Per-pax EUR by group size: 2-6→€159, 7-8→€139.
+    priceTiersEUR: { 2: 159, 3: 159, 4: 159, 5: 159, 6: 159, 7: 139, 8: 139 },
   },
   "arrabida-boat": {
     viatorUrl: "https://www.viator.com/tours/Lisbon/Private-Full-Day-Arrabida-and-Sesimbra-with-Boat-Tour-from-Lisbon/d538-349639P12",
