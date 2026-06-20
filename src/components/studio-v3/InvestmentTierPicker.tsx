@@ -20,6 +20,29 @@ interface InvestmentTierPickerProps {
   onSelect: (tier: InvestmentTier) => void;
   /** Optional ordered list (e.g. couples-first prioritisation). Defaults to INVESTMENT_TIERS. */
   options?: ReadonlyArray<{ id: InvestmentTier; label: string; whisper: string }>;
+  /** Real Signature minimum priceFrom (EUR) used to anchor indicative per-tier price hints. */
+  priceFromEur?: number | null;
+}
+
+/** Tier → indicative multiplier on the base Signature priceFrom. Calibrated
+ *  against the real spread in `signatureTours` (€135–€262). `open` shows a
+ *  range — never invents a single number. */
+const TIER_PRICE_MULTIPLIER: Record<InvestmentTier, number | "range"> = {
+  considered: 1.0,
+  elevated: 1.35,
+  bespoke: 1.8,
+  open: "range",
+};
+
+function priceHintFor(tier: InvestmentTier, base: number | null | undefined): string | null {
+  if (!base || base <= 0) return null;
+  const m = TIER_PRICE_MULTIPLIER[tier];
+  if (m === "range") {
+    const hi = Math.round((base * 1.9) / 5) * 5;
+    return `€${base} – €${hi}+ / guest`;
+  }
+  const v = Math.round((base * m) / 5) * 5;
+  return `from €${v} / guest`;
 }
 
 const TIER_META: Record<
