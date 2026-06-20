@@ -1671,16 +1671,16 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   if (
     phase === "occasion" ||
     phase === "considerations" ||
-    phase === "language" ||
-    phase === "investment"
+    phase === "language"
   ) {
     return false;
   }
 
   // Fast path — traveller chose "Compose it quickly" on the intro.
-  // Keep only the essentials, skipping date as well.
+  // Keep only the essentials, skipping date and investment as well.
   if (state.pathMode === "fast") {
     if (phase === "date") return false;
+    if (phase === "investment") return false;
   }
   switch (phase) {
     case "guests": {
@@ -1696,18 +1696,24 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 }
 
 
+// Reordered (Studio V3 hybrid funnel): Investment is now positioned BETWEEN
+// Destination and Interests — the traveller first sees a partial reveal of
+// the region (hero + ghost stops), THEN commits to a tier (anchored by the
+// reveal), THEN refines via Interests/Rhythm. Logistics (date/pickup/guests)
+// follow tier so financial + temporal friction land together. Occasion,
+// considerations and language remain skipped (not asked in builder).
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
-  "destination",
   "who",
+  "destination",
+  "investment",
+  "interests",
+  "rhythm",
   "occasion",
   "date",
   "pickup",
   "guests",
-  "investment",
-  "interests",
-  "rhythm",
   "considerations",
   "language",
   "map",

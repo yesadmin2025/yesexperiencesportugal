@@ -24,6 +24,7 @@ import { QualityScore } from "./QualityScore";
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 import { trackStep } from "@/lib/studio-v3-funnel";
+import { PartialReveal } from "./PartialReveal";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -161,15 +162,15 @@ const TOTAL_STEPS = 14;
 const PHASE_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
-  "destination",
   "who",
+  "destination",
+  "investment",
+  "interests",
+  "rhythm",
   "occasion",
   "date",
   "pickup",
   "guests",
-  "investment",
-  "interests",
-  "rhythm",
   "considerations",
   "language",
   "map",
@@ -623,7 +624,25 @@ export function StudioV3() {
       stepKey: state.phase,
       event: "enter",
     });
-  }, [state.phase]);
+    // Conversion-funnel milestones (additive, never replace `enter`):
+    //   purchase_intent — traveller has reached the tier ask
+    //   reveal_seen    — traveller has reached the final Signature reveal
+    if (state.phase === "investment") {
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "purchase_intent",
+      });
+    }
+    if (state.phase === "storyboard") {
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "reveal_seen",
+        value: { tier: state.investment, tourId: state.tourId },
+      });
+    }
+  }, [state.phase, state.investment, state.tourId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -664,14 +683,16 @@ export function StudioV3() {
     }, 380);
   }, []);
 
-  const back = useCallback((prev: StudioV3Phase) => {
+  const back = useCallback((_hint?: StudioV3Phase) => {
     setReaction(null);
     setExiting(true);
-    // Walk backwards over phases that aren't relevant in the current mode
-    // (Fast path skips occasion / date / considerations / language /
-    // investment). Without this, back-link targets land on a dead phase.
-    let target = prev;
-    let idx = PHASE_ORDER.indexOf(target);
+    // Robust to phase reordering: walk backwards from the CURRENT phase
+    // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
+    // out (occasion / considerations / language, plus investment/date on
+    // the fast path). The hint is accepted but ignored — kept as an arg
+    // so existing call-sites compile without churn.
+    let idx = PHASE_ORDER.indexOf(state.phase) - 1;
+    let target: StudioV3Phase = PHASE_ORDER[Math.max(0, idx)];
     while (idx > 0 && !isPhaseRelevant(target, state)) {
       idx -= 1;
       target = PHASE_ORDER[idx];
@@ -1049,6 +1070,14 @@ export function StudioV3() {
   const onInvestment = (id: InvestmentTier) => {
     const next = getNextPhase({ ...state, investment: id }, "investment");
     const label = getOptionLabel(INVESTMENT_TIERS, id);
+    // Dedicated conversion event — tier explicitly chosen.
+    trackStep({
+      stepNumber: stepOf("investment"),
+      stepKey: "investment",
+      event: "tier_chosen",
+      value: { tier: id, label },
+    });
+
 
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({
@@ -1489,6 +1518,7 @@ export function StudioV3() {
               columns={1}
             />
           </div>
+          <PartialReveal intent={state.destinationIntent} />
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
