@@ -587,6 +587,56 @@ export function StudioV3() {
     [],
   );
 
+  // Stripe sandbox checkout — Say YES on the Signature reveal. Prices and
+  // tour identity are validated server-side; the client only passes the
+  // resolved tour id and party size. On success we redirect to Stripe's
+  // hosted checkout (test mode). On failure we surface a quiet toast and
+  // fall back to the lead-capture sheet so the conversion never dead-ends.
+  const [checkoutPending, setCheckoutPending] = useState(false);
+  const handleStripeCheckout = useCallback(
+    async (currentState: StudioV3State) => {
+      if (checkoutPending) return;
+      const tour = currentState.tourId ? findTour(currentState.tourId) : null;
+      if (!tour) {
+        openLeadSheet("book");
+        return;
+      }
+      const guests = typeof currentState.guests === "number" && currentState.guests > 0
+        ? Math.min(12, Math.max(1, Math.round(currentState.guests)))
+        : 2;
+      setCheckoutPending(true);
+      try {
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
+          body: {
+            tourId: tour.id,
+            tourTitle: tour.title ?? tour.id,
+            guests,
+            stopLabels: (tour.stops ?? []).map((s) => s.label).slice(0, 6),
+            pickupLabel: pickupCityLabel(currentState.pickup) ?? "",
+            dateExact: currentState.dateExact ?? null,
+            journeyTitle: currentState.journeyTitle ?? null,
+            priceFromEur: tour.priceFrom ?? 180,
+            returnUrl: `${origin}/studio-v3?checkout=success`,
+            cancelUrl: `${origin}/studio-v3?checkout=cancelled`,
+            environment: "sandbox",
+          },
+        });
+        if (error) throw error;
+        const url = (data as { url?: string } | null)?.url;
+        if (!url) throw new Error("No checkout URL returned");
+        window.location.href = url;
+      } catch (e) {
+        console.error("Stripe checkout failed", e);
+        toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
+        openLeadSheet("book");
+      } finally {
+        setCheckoutPending(false);
+      }
+    },
+    [checkoutPending, openLeadSheet],
+  );
+
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
   // Reads ?saved=<token> once on mount, fetches the persisted state, then
   // jumps straight to the storyboard phase (skips intro + all questions).
