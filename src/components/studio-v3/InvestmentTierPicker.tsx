@@ -22,6 +22,8 @@ interface InvestmentTierPickerProps {
   options?: ReadonlyArray<{ id: InvestmentTier; label: string; whisper: string }>;
   /** Real Signature minimum priceFrom (EUR) used to anchor indicative per-tier price hints. */
   priceFromEur?: number | null;
+  /** Party size — when known, used to label "for N guests" on the price chip. */
+  guests?: number | null;
 }
 
 /** Tier → indicative multiplier on the base Signature priceFrom. Calibrated
