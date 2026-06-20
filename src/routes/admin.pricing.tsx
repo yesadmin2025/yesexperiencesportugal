@@ -99,18 +99,42 @@ function tiersEqual(a: PriceTiersEUR | undefined, b: PriceTiersEUR): boolean {
 function AdminPricingPage() {
   const queryClient = useQueryClient();
   const { data: overrides, isLoading, refetch } = useTourPriceTiers();
-  const [session, setSession] = useState<{ email?: string | null } | null>(null);
+  const [session, setSession] = useState<{ id: string; email?: string | null } | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session ? { email: data.session.user.email } : null);
-      setAuthChecked(true);
-    });
+    let cancelled = false;
+    async function loadSession(s: { user: { id: string; email?: string | null } } | null) {
+      if (!s) {
+        if (!cancelled) {
+          setSession(null);
+          setIsAdmin(null);
+          setAuthChecked(true);
+        }
+        return;
+      }
+      if (!cancelled) setSession({ id: s.user.id, email: s.user.email });
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", s.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (!cancelled) {
+        setIsAdmin(!error && !!data);
+        setAuthChecked(true);
+      }
+    }
+    supabase.auth.getSession().then(({ data }) => loadSession(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
-      setSession(s ? { email: s.user.email } : null);
+      setAuthChecked(false);
+      loadSession(s);
     });
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const tours = useMemo(
@@ -146,6 +170,23 @@ function AdminPricingPage() {
       </SiteLayout>
     );
   }
+
+  if (!isAdmin) {
+    return (
+      <SiteLayout>
+        <section className="pt-28 pb-20 container-x max-w-2xl">
+          <h1 className="text-3xl">Not authorized</h1>
+          <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
+            Your account ({session.email ?? session.id}) does not have the
+            <code className="mx-1 px-1 bg-[color:var(--sand)]">admin</code>
+            role. Ask a workspace owner to grant it before editing pricing.
+          </p>
+        </section>
+      </SiteLayout>
+    );
+  }
+
+
 
   return (
     <SiteLayout>
