@@ -42,6 +42,7 @@ import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { TimelineView } from "./TimelineView";
 import { AffinityBars } from "./AffinityBars";
 import { SmartRecommendation } from "./SmartRecommendation";
+import { QualityScore } from "./QualityScore";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 
