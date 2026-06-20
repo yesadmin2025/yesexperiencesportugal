@@ -1518,6 +1518,7 @@ export function StudioV3() {
               columns={1}
             />
           </div>
+          <PartialReveal intent={state.destinationIntent} />
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
