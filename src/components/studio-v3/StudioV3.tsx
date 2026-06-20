@@ -1704,7 +1704,7 @@ export function StudioV3() {
             title="How should we"
             titleAccent="shape the investment?"
           />
-          <ChoiceGrid options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
+          <InvestmentTierPicker options={orderedInvestment} value={state.investment} onSelect={onInvestment} />
           {state.investment ? (
             <NextTeaser>{contextualTeaser("investment", state)}</NextTeaser>
           ) : (
