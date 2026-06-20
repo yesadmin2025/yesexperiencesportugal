@@ -213,6 +213,3 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
   });
 });
 
-// Local type re-declaration (the addInitScript runs in the page context and
-// can't share TS types with the test file at runtime).
-type CapturedEvent = { kind: string; detail: unknown; ts: number };
