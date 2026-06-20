@@ -59,6 +59,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
   "arrabida-wine-allinclusive": {
     viatorUrl: "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3",
     priceFromUSD: 164.38,
+    priceTiersEUR: { 1: 279, 2: 215, 3: 215, 4: 189, 5: 189, 6: 189, 7: 159, 8: 159 },
     viatorReviewCount: 470,
     reviewCount: 490,
     rating: 5,
