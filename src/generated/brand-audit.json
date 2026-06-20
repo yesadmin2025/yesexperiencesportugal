@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-20T19:29:02.952Z",
+  "generatedAt": "2026-06-20T22:15:26.741Z",
   "filesScanned": 403,
   "approvedPalette": {
     "teal": "#295B61",
@@ -107,7 +107,7 @@
     },
     {
       "file": "src/__tests__/homepage-contrast.test.ts",
-      "line": 98,
+      "line": 94,
       "col": 12,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -116,7 +116,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 323,
+      "line": 313,
       "col": 106,
       "raw": "#0b0b0c",
       "normalized": "#0b0b0c",
@@ -125,7 +125,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 323,
+      "line": 313,
       "col": 122,
       "raw": "#e8e6df",
       "normalized": "#e8e6df",
@@ -134,7 +134,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 325,
+      "line": 315,
       "col": 18,
       "raw": "#8a8a8a",
       "normalized": "#8a8a8a",
@@ -143,7 +143,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 327,
+      "line": 317,
       "col": 58,
       "raw": "#2a2a2a",
       "normalized": "#2a2a2a",
@@ -152,7 +152,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 328,
+      "line": 318,
       "col": 24,
       "raw": "#c4a25a",
       "normalized": "#c4a25a",
@@ -161,7 +161,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 328,
+      "line": 318,
       "col": 40,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -170,7 +170,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 329,
+      "line": 319,
       "col": 25,
       "raw": "#131315",
       "normalized": "#131315",
@@ -179,7 +179,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 329,
+      "line": 319,
       "col": 52,
       "raw": "#25252a",
       "normalized": "#25252a",
@@ -188,7 +188,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 330,
+      "line": 320,
       "col": 64,
       "raw": "#c4a25a",
       "normalized": "#c4a25a",
@@ -197,7 +197,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 331,
+      "line": 321,
       "col": 33,
       "raw": "#8a8a8a",
       "normalized": "#8a8a8a",
@@ -206,7 +206,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 332,
+      "line": 322,
       "col": 26,
       "raw": "#1f1f24",
       "normalized": "#1f1f24",
@@ -215,7 +215,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 333,
+      "line": 323,
       "col": 36,
       "raw": "#8a8a8a",
       "normalized": "#8a8a8a",
@@ -224,7 +224,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 334,
+      "line": 324,
       "col": 29,
       "raw": "#1f1f24",
       "normalized": "#1f1f24",
@@ -233,7 +233,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 334,
+      "line": 324,
       "col": 83,
       "raw": "#c4a25a",
       "normalized": "#c4a25a",
@@ -242,7 +242,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 336,
+      "line": 326,
       "col": 30,
       "raw": "#08080a",
       "normalized": "#08080a",
@@ -251,7 +251,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 337,
+      "line": 327,
       "col": 34,
       "raw": "#6b2b2b",
       "normalized": "#6b2b2b",
@@ -260,7 +260,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 338,
+      "line": 328,
       "col": 34,
       "raw": "#2b6b3a",
       "normalized": "#2b6b3a",
@@ -269,7 +269,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 339,
+      "line": 329,
       "col": 18,
       "raw": "#6b6b6b",
       "normalized": "#6b6b6b",
@@ -278,7 +278,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 340,
+      "line": 330,
       "col": 23,
       "raw": "#3a1414",
       "normalized": "#3a1414",
@@ -287,7 +287,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 340,
+      "line": 330,
       "col": 39,
       "raw": "#ff8a8a",
       "normalized": "#ff8a8a",
@@ -296,7 +296,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 341,
+      "line": 331,
       "col": 23,
       "raw": "#143a1f",
       "normalized": "#143a1f",
@@ -305,7 +305,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 341,
+      "line": 331,
       "col": 39,
       "raw": "#8aff9c",
       "normalized": "#8aff9c",
@@ -314,7 +314,7 @@
     },
     {
       "file": "src/__tests__/typography-regression.test.ts",
-      "line": 342,
+      "line": 332,
       "col": 19,
       "raw": "#8a8a8a",
       "normalized": "#8a8a8a",
@@ -350,7 +350,7 @@
     },
     {
       "file": "src/components/HeroColorDebugOverlay.tsx",
-      "line": 221,
+      "line": 214,
       "col": 79,
       "raw": "#F2A9A9",
       "normalized": "#f2a9a9",
@@ -359,7 +359,7 @@
     },
     {
       "file": "src/components/HeroColorDebugOverlay.tsx",
-      "line": 231,
+      "line": 224,
       "col": 43,
       "raw": "#A9E1B6",
       "normalized": "#a9e1b6",
@@ -368,7 +368,7 @@
     },
     {
       "file": "src/components/HeroColorDebugOverlay.tsx",
-      "line": 231,
+      "line": 224,
       "col": 55,
       "raw": "#F2A9A9",
       "normalized": "#f2a9a9",
@@ -683,7 +683,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 46,
+      "line": 45,
       "col": 293,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +692,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 49,
+      "line": 48,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 78,
+      "line": 76,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,7 +710,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 154,
+      "line": 151,
       "col": 318,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -723,7 +723,7 @@
       "col": 12,
       "raw": "#0c5b66",
       "normalized": "#0c5b66",
-      "snippet": "lisbon: \"#0c5b66\",   // teal",
+      "snippet": "lisbon: \"#0c5b66\", // teal",
       "status": "mismatch"
     },
     {
@@ -732,7 +732,7 @@
       "col": 11,
       "raw": "#b3893f",
       "normalized": "#b3893f",
-      "snippet": "porto: \"#b3893f\",    // gold",
+      "snippet": "porto: \"#b3893f\", // gold",
       "status": "mismatch"
     },
     {
@@ -750,12 +750,12 @@
       "col": 13,
       "raw": "#2c7da0",
       "normalized": "#2c7da0",
-      "snippet": "algarve: \"#2c7da0\",  // ocean",
+      "snippet": "algarve: \"#2c7da0\", // ocean",
       "status": "mismatch"
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 56,
+      "line": 53,
       "col": 24,
       "raw": "#f5efdf",
       "normalized": "#f5efdf",
@@ -764,7 +764,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 58,
+      "line": 55,
       "col": 50,
       "raw": "#f5efdf",
       "normalized": "#f5efdf",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 211,
+      "line": 207,
       "col": 29,
       "raw": "#0c5b66",
       "normalized": "#0c5b66",
@@ -782,7 +782,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 219,
+      "line": 215,
       "col": 60,
       "raw": "#555",
       "normalized": "#555555",
@@ -791,7 +791,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 226,
+      "line": 225,
       "col": 60,
       "raw": "#888",
       "normalized": "#888888",
@@ -800,7 +800,7 @@
     },
     {
       "file": "src/components/RealLeafletMap.tsx",
-      "line": 229,
+      "line": 228,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -809,7 +809,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 152,
+      "line": 194,
       "col": 106,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -818,7 +818,7 @@
     },
     {
       "file": "src/components/builder/BuilderMap.tsx",
-      "line": 248,
+      "line": 296,
       "col": 45,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
@@ -827,16 +827,16 @@
     },
     {
       "file": "src/components/builder/MultiDayBuilder.tsx",
-      "line": 655,
-      "col": 125,
+      "line": 735,
+      "col": 76,
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
-      "snippet": "<span className=\"inline-flex items-center gap-1.5\"><span className=\"inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60\" /> Out of range</span>",
+      "snippet": "<span className=\"inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60\" />{\" \"}",
       "status": "mismatch"
     },
     {
       "file": "src/components/dev/ContrastAudit.tsx",
-      "line": 212,
+      "line": 214,
       "col": 18,
       "raw": "#16a34a",
       "normalized": "#16a34a",
@@ -854,7 +854,7 @@
     },
     {
       "file": "src/components/dev/ContrastAudit.tsx",
-      "line": 242,
+      "line": 241,
       "col": 20,
       "raw": "#6b7280",
       "normalized": "#6b7280",
@@ -863,7 +863,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 228,
+      "line": 233,
       "col": 48,
       "raw": "#16a34a",
       "normalized": "#16a34a",
@@ -872,7 +872,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 228,
+      "line": 233,
       "col": 60,
       "raw": "#dc2626",
       "normalized": "#dc2626",
@@ -881,7 +881,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 253,
+      "line": 258,
       "col": 26,
       "raw": "#0f172a",
       "normalized": "#0f172a",
@@ -890,7 +890,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 254,
+      "line": 259,
       "col": 21,
       "raw": "#f8fafc",
       "normalized": "#f8fafc",
@@ -899,7 +899,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 267,
+      "line": 272,
       "col": 28,
       "raw": "#111827",
       "normalized": "#111827",
@@ -908,7 +908,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 299,
+      "line": 304,
       "col": 50,
       "raw": "#86efac",
       "normalized": "#86efac",
@@ -917,7 +917,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 310,
+      "line": 315,
       "col": 76,
       "raw": "#dc2626",
       "normalized": "#dc2626",
@@ -926,7 +926,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 310,
+      "line": 315,
       "col": 88,
       "raw": "#f59e0b",
       "normalized": "#f59e0b",
@@ -935,7 +935,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 318,
+      "line": 323,
       "col": 61,
       "raw": "#fca5a5",
       "normalized": "#fca5a5",
@@ -944,7 +944,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 330,
+      "line": 335,
       "col": 56,
       "raw": "#fde68a",
       "normalized": "#fde68a",
@@ -953,7 +953,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 332,
+      "line": 337,
       "col": 55,
       "raw": "#a7f3d0",
       "normalized": "#a7f3d0",
@@ -962,7 +962,7 @@
     },
     {
       "file": "src/components/dev/ContrastAuditPanel.tsx",
-      "line": 345,
+      "line": 350,
       "col": 11,
       "raw": "#f8fafc",
       "normalized": "#f8fafc",
@@ -971,7 +971,7 @@
     },
     {
       "file": "src/components/dev/MotionQaPanel.tsx",
-      "line": 167,
+      "line": 179,
       "col": 45,
       "raw": "#ff8a8a",
       "normalized": "#ff8a8a",
@@ -980,7 +980,7 @@
     },
     {
       "file": "src/components/dev/MotionQaPanel.tsx",
-      "line": 167,
+      "line": 179,
       "col": 71,
       "raw": "#a6e3a1",
       "normalized": "#a6e3a1",
@@ -989,7 +989,7 @@
     },
     {
       "file": "src/components/dev/MotionQaPanel.tsx",
-      "line": 236,
+      "line": 276,
       "col": 69,
       "raw": "#a6e3a1",
       "normalized": "#a6e3a1",
@@ -998,7 +998,7 @@
     },
     {
       "file": "src/components/dev/MotionQaPanel.tsx",
-      "line": 236,
+      "line": 276,
       "col": 81,
       "raw": "#ffcf8a",
       "normalized": "#ffcf8a",
@@ -1007,7 +1007,7 @@
     },
     {
       "file": "src/components/dev/MotionQaPanel.tsx",
-      "line": 241,
+      "line": 282,
       "col": 40,
       "raw": "#ff8a8a",
       "normalized": "#ff8a8a",
@@ -1016,7 +1016,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 89,
+      "line": 85,
       "col": 80,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -1025,7 +1025,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 153,
+      "line": 148,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1034,7 +1034,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 175,
+      "line": 168,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1043,7 +1043,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 207,
+      "line": 198,
       "col": 265,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1052,7 +1052,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 220,
+      "line": 211,
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1061,7 +1061,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 376,
+      "line": 378,
       "col": 23,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1070,7 +1070,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 377,
+      "line": 379,
       "col": 25,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1079,7 +1079,7 @@
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
-      "line": 90,
+      "line": 87,
       "col": 47,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1088,7 +1088,7 @@
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
-      "line": 168,
+      "line": 175,
       "col": 60,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1097,7 +1097,7 @@
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
-      "line": 169,
+      "line": 176,
       "col": 60,
       "raw": "#7BD389",
       "normalized": "#7bd389",
@@ -1106,16 +1106,16 @@
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
-      "line": 180,
-      "col": 69,
+      "line": 191,
+      "col": 23,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
-      "snippet": "<div style={{ opacity: 0.85, margin: \"6px 0 4px\", color: \"#E58A6B\", letterSpacing: \"0.06em\" }}>",
+      "snippet": "color: \"#E58A6B\",",
       "status": "mismatch"
     },
     {
       "file": "src/components/home/HeroContractAssert.tsx",
-      "line": 197,
+      "line": 211,
       "col": 60,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1124,7 +1124,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 134,
+      "line": 133,
       "col": 10,
       "raw": "#888",
       "normalized": "#888888",
@@ -1133,7 +1133,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 135,
+      "line": 134,
       "col": 12,
       "raw": "#7BD389",
       "normalized": "#7bd389",
@@ -1142,7 +1142,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 137,
+      "line": 136,
       "col": 13,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1151,7 +1151,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 138,
+      "line": 137,
       "col": 10,
       "raw": "#7AA7C7",
       "normalized": "#7aa7c7",
@@ -1160,8 +1160,8 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 485,
-      "col": 35,
+      "line": 490,
+      "col": 37,
       "raw": "#7BD389",
       "normalized": "#7bd389",
       "snippet": "color: allPass ? \"#7BD389\" : \"#E58A6B\",",
@@ -1169,8 +1169,8 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 485,
-      "col": 47,
+      "line": 490,
+      "col": 49,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
       "snippet": "color: allPass ? \"#7BD389\" : \"#E58A6B\",",
@@ -1178,7 +1178,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 783,
+      "line": 801,
       "col": 56,
       "raw": "#7BD389",
       "normalized": "#7bd389",
@@ -1187,7 +1187,7 @@
     },
     {
       "file": "src/components/home/HeroPhraseDebug.tsx",
-      "line": 783,
+      "line": 801,
       "col": 68,
       "raw": "#E58A6B",
       "normalized": "#e58a6b",
@@ -1214,7 +1214,7 @@
     },
     {
       "file": "src/components/home/HeroScrimRuler.tsx",
-      "line": 125,
+      "line": 123,
       "col": 63,
       "raw": "#5BB0BA",
       "normalized": "#5bb0ba",
@@ -1232,7 +1232,7 @@
     },
     {
       "file": "src/components/home/ThreePathsSection.tsx",
-      "line": 119,
+      "line": 117,
       "col": 102,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1241,7 +1241,7 @@
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
-      "line": 155,
+      "line": 164,
       "col": 29,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1250,7 +1250,7 @@
     },
     {
       "file": "src/components/studio-v2/DraftMapPreview.tsx",
-      "line": 98,
+      "line": 115,
       "col": 43,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1259,7 +1259,7 @@
     },
     {
       "file": "src/components/studio-v2/DraftMapPreview.tsx",
-      "line": 196,
+      "line": 286,
       "col": 78,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1268,16 +1268,16 @@
     },
     {
       "file": "src/components/studio-v2/StudioBuilderChrome.tsx",
-      "line": 315,
+      "line": 316,
       "col": 59,
       "raw": "#b3261e",
       "normalized": "#b3261e",
-      "snippet": "<p className=\"text-[12px]\" style={{ color: \"#b3261e\" }}>{errorMsg}</p>",
+      "snippet": "<p className=\"text-[12px]\" style={{ color: \"#b3261e\" }}>",
       "status": "mismatch"
     },
     {
       "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
-      "line": 45,
+      "line": 42,
       "col": 95,
       "raw": "#6b6b6b",
       "normalized": "#6b6b6b",
@@ -1286,7 +1286,7 @@
     },
     {
       "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
-      "line": 54,
+      "line": 51,
       "col": 114,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -1295,7 +1295,7 @@
     },
     {
       "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
-      "line": 75,
+      "line": 72,
       "col": 48,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -1304,7 +1304,7 @@
     },
     {
       "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
-      "line": 75,
+      "line": 72,
       "col": 140,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1313,7 +1313,7 @@
     },
     {
       "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
-      "line": 79,
+      "line": 76,
       "col": 55,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1322,7 +1322,7 @@
     },
     {
       "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
-      "line": 93,
+      "line": 90,
       "col": 154,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1412,7 +1412,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 150,
+      "line": 146,
       "col": 45,
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
@@ -1421,7 +1421,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 180,
+      "line": 175,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1430,7 +1430,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 209,
+      "line": 204,
       "col": 46,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1439,7 +1439,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 271,
+      "line": 262,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1448,7 +1448,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 302,
+      "line": 291,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1457,7 +1457,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 388,
+      "line": 376,
       "col": 86,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1466,7 +1466,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 388,
+      "line": 376,
       "col": 99,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1475,7 +1475,7 @@
     },
     {
       "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
-      "line": 574,
+      "line": 548,
       "col": 38,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -1484,7 +1484,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
-      "line": 185,
+      "line": 193,
       "col": 70,
       "raw": "#FF8A8A",
       "normalized": "#ff8a8a",
@@ -1493,7 +1493,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 172,
+      "line": 173,
       "col": 43,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1502,7 +1502,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 275,
+      "line": 281,
       "col": 82,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1511,7 +1511,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 338,
+      "line": 356,
       "col": 76,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1520,7 +1520,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 348,
+      "line": 366,
       "col": 47,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1529,7 +1529,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 400,
+      "line": 420,
       "col": 74,
       "raw": "#050d0f",
       "normalized": "#050d0f",
@@ -1538,7 +1538,7 @@
     },
     {
       "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
-      "line": 48,
+      "line": 44,
       "col": 70,
       "raw": "#111",
       "normalized": "#111111",
@@ -1547,7 +1547,7 @@
     },
     {
       "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
-      "line": 48,
+      "line": 44,
       "col": 79,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -1556,20 +1556,20 @@
     },
     {
       "file": "src/components/studio-v3/__tests__/progress-stepper-a11y.test.tsx",
-      "line": 18,
-      "col": 70,
+      "line": 20,
+      "col": 48,
       "raw": "#111",
       "normalized": "#111111",
-      "snippet": "<div data-theme={theme} style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}>",
+      "snippet": "style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}",
       "status": "mismatch"
     },
     {
       "file": "src/components/studio-v3/__tests__/progress-stepper-a11y.test.tsx",
-      "line": 18,
-      "col": 95,
+      "line": 20,
+      "col": 73,
       "raw": "#fff",
       "normalized": "#ffffff",
-      "snippet": "<div data-theme={theme} style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}>",
+      "snippet": "style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}",
       "status": "allowlisted"
     },
     {
@@ -1880,16 +1880,16 @@
     },
     {
       "file": "src/routes/e2e.postmessage-probe.tsx",
-      "line": 131,
-      "col": 69,
+      "line": 130,
+      "col": 74,
       "raw": "#a3271f",
       "normalized": "#a3271f",
-      "snippet": "pass === null ? \"var(--teal)\" : pass ? \"var(--teal)\" : \"#a3271f\",",
+      "snippet": "color: pass === null ? \"var(--teal)\" : pass ? \"var(--teal)\" : \"#a3271f\",",
       "status": "mismatch"
     },
     {
       "file": "src/routes/e2e.postmessage-probe.tsx",
-      "line": 178,
+      "line": 174,
       "col": 52,
       "raw": "#a3271f",
       "normalized": "#a3271f",
@@ -1898,7 +1898,7 @@
     },
     {
       "file": "src/routes/i.$token.tsx",
-      "line": 332,
+      "line": 318,
       "col": 34,
       "raw": "#fff",
       "normalized": "#ffffff",
