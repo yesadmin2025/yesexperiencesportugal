@@ -630,16 +630,15 @@ export function StudioV3() {
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
-        event: "secure_open",
-        value: { milestone: "purchase_intent" },
+        event: "purchase_intent",
       });
     }
     if (state.phase === "storyboard") {
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
-        event: "secure_open",
-        value: { milestone: "reveal_seen", tier: state.investment, tourId: state.tourId },
+        event: "reveal_seen",
+        value: { tier: state.investment, tourId: state.tourId },
       });
     }
   }, [state.phase, state.investment, state.tourId]);
