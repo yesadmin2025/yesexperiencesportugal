@@ -403,6 +403,7 @@ interface DrawerProps {
   interests: import("./types").Interest[];
   rhythm: import("./types").Rhythm | null;
   companions: import("./types").Companions | null;
+  fullState: StudioV3State;
 }
 
 
