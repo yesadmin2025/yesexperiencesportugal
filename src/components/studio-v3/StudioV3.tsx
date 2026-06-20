@@ -3073,7 +3073,7 @@ function StoryboardHandoff({
         journeyTitle={state.journeyTitle}
         guests={state.guests}
         included={skeletonTour?.included ?? []}
-        showAddOns={false}
+        showAddOns={true}
       />
 
 
