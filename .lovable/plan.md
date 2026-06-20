@@ -1,61 +1,228 @@
-## Three tracks, one rollout
+# Studio V3 — Hybrid Cinematic Builder (Plano Final)
 
-### Track A — Accessibility & keyboard tests (MobileBeatReveal + CTAs)
+Combina o cinemático do nosso Studio com a praticidade do reference (tier, add-ons, configurador Story/Timeline/Map), reordenado para **revelar cedo**, **converter melhor** e **medir cada passo**.
 
-New file: `src/components/studio-v3/__tests__/mobile-beat-reveal-a11y.test.tsx`
+## 1. Princípios não-negociáveis
 
-Coverage:
-1. **Dialog semantics** — root has `role="dialog"`, `aria-modal="true"`, `aria-labelledby` wired to the beat title, `aria-describedby` to the narration paragraph.
-2. **Focus trap** — on open, focus lands on the close button; Tab cycles only between Close ↔ Continue/Reveal CTA; Shift+Tab reverses; Escape closes and returns focus to the originating beat trigger.
-3. **Map moment** — when the gold-pin constellation animates in, the decorative SVG is `aria-hidden="true"` and an off-screen `aria-live="polite"` region announces the current beat ("Region chosen: Arrábida").
-4. **Reduced motion** — with `prefers-reduced-motion: reduce`, pin animation collapses to instant fade, tested via mocked media query.
-5. **Theme parity** — `it.each(["light","dark"])` asserts: visible focus ring token (`--ring`) resolves to a non-transparent color, close icon button has accessible name in both themes, contrast of title vs surface ≥ 4.5:1 (computed via `getContrast` helper).
-6. **Close affordance** — confirm modal exit via (a) Close button click, (b) Escape key, (c) backdrop click only when `state.phase === "feeling"` (no progress); when progress exists, `window.confirm` is invoked.
+- Zero invenção: stops/preços/inclusions vêm de `signatureTours.ts`, `signatureAddOns.ts`, Viator meta (mem://constraints/yes-canonical-rules, mem://constraints/studio-v3-no-invented-stops).
+- Studio philosophy mantém-se: guiado não perguntado, AI = voz, restraint > features.
+- Editorial v2 + Typography v3 + Brand palette. Sem dark configurator copiado — traduzimos para charcoal-soft + gold rule + ivory cards.
+- Mobile-first (393×588). A11y 4.5:1, touch 44×44, prefers-reduced-motion.
 
-Extend existing `progress-stepper-a11y.test.tsx` with a focus-return test after MobileBeatReveal closes.
+## 2. Nova ordem dos steps (10, não 11)
 
-### Track B — Add-on micro-interactions + running total
+```text
+1  Feeling                → atmosfera começa, mapa ganha 1ª cor
+2  Companions             → 1ª imagem editorial fade-in
+3  Rhythm + Pickup        → 1 step, 2 escolhas rápidas lado a lado
+4  Destination            → REVEAL PARCIAL: hero da região + 2-3 stops fantasma
+5  Investment tier        → MEIO — âncora alta, influencia curation real
+6  Interests              → stops refinam (já filtrados pelo tier)
+7  Add-ons                → catálogo filtrado pelo tier + companions
+8  Date                   → quase a fechar, fricção temporal junto ao €
+9  Configurator completo  → Story / Timeline / Map tabs + Quality + Affinity + €
+10 Secure                 → modal deposit (50% Stripe) + opcional "Designer refine"
+```
 
-Edit `src/components/studio-v3/SignaturePriceCard.tsx`:
-- Each add-on chip becomes a `role="checkbox"` button with three visual states: `idle`, `pending` (200ms optimistic delay with a subtle shimmer on the checkmark slot only — scoped, ≤220ms, respects reduced-motion), `checked` (gold check icon scales 0→1 in 160ms, label weight 500).
-- Disable other unselected chips when 3 are selected; show inline helper "Up to 3 add-ons" in `--charcoal-soft`.
-- Running total uses a `useDeferredValue` + `requestAnimationFrame` swap so the number updates smoothly without layout jump; surrounding `<output aria-live="polite">` announces "Total per guest: €175".
-- Tokens only — no hardcoded colors. New utility classes added to `src/styles.css` under a `.addon-chip` scope.
+Por que esta ordem converte melhor:
 
-New test file: `src/components/studio-v3/__tests__/add-on-microinteractions.test.tsx`
-- Click → chip enters `data-state="pending"` → resolves to `data-state="checked"` within ≤250ms (fake timers).
-- Running total recomputes on every selection across both themes (`it.each`), matches `base + Σ(selected)` per pp, and the `<output>` text matches.
-- Selecting a 4th chip is blocked (`aria-disabled="true"`) and total does not change.
-- Deselecting re-enables previously disabled chips.
+- Reveal parcial no step 4 → utilizador imagina-se lá **antes** de ver preço.
+- Investment no 5 → âncora alta (já está investido emocionalmente) + curation realmente filtra.
+- Date só no 8 → não introduz "não tenho data" cedo (causa de abandono em booking funnels).
 
-### Track C — Studio structure plan (bible × reference site)
+## 3. Visual mobile — anti-clutter
 
-The reference site (customwebsitedesigns.org) ships an 11-step Studio with five ideas worth porting — adapted to our no-invention rule and real Signature data.
+Cada step ocupa **um ecrã limpo** (393px largura, conteúdo ~360px), max 3 unidades de informação:
 
-| Idea from reference | What it adds | How we adapt with our truth |
-|---|---|---|
-| **Story / Timeline / Map tabs** in the live panel | Lets the user choose how to feel the journey | Reuse `LivingJourneyPanel` (story prose) + new `Timeline` view (real `resolvedTour.stops[]` with hours) + existing `ComposerMap` — three tabs, same data, no new stops |
-| **Smart Recommendation card** ("Most couples add…") | One soft upsell that increases AOV without feeling salesy | Drive from `signatureAddOns.ts`: pick the highest-relevance add-on for the resolved region, show as a single dismissible suggestion above the chip list — never invented, always from a sibling Signature |
-| **Experience Quality affirmation** (92%) | Confidence-builder near the price | Replace the % gimmick with a 3-line **"Why this works"** block derived from the resolved tour's `inclusions` (rhythm/pacing/coverage). No invented score. |
-| **Investment line with footnote** (`€145/guest · Party of 2 · €290 total`) | Removes pricing ambiguity | Already partially in `SignaturePriceCard` — add party total + a single ivory footnote line listing what's included (real `included[]` from Signature) |
-| **Step counter** ("Step 1 of 11 · 9%") | Sense of progress | Our `StudioV3ProgressStepper` already does Region→Rhythm→Dates→Compose (4 beats) — keep 4, but show "Beat 2 of 4 · halfway there" copy underneath for the same reassurance without inflating steps |
+```text
+┌─────────────────────────┐
+│  STEP 5/10  ───────●··  │  ← stepper minimal, dot teal preenche
+│                         │
+│  EYEBROW GOLD           │  ← 10.5px tracking 0.26
+│  H2 Montserrat 28px     │  ← 2 linhas max
+│  Sub Inter 14px         │  ← 1 linha
+│                         │
+│  ┌───────────────────┐  │
+│  │ CARD opção 1      │  │  ← ivory, border charcoal 10%
+│  └───────────────────┘  │
+│  ┌───────────────────┐  │
+│  │ CARD opção 2 ✓    │  │  ← selected: teal border, sand bg
+│  └───────────────────┘  │
+│  ┌───────────────────┐  │
+│  │ CARD opção 3      │  │
+│  └───────────────────┘  │
+│                         │
+│  [< BACK]   [CONTINUE >]│  ← sticky bottom, 56px alto
+└─────────────────────────┘
+```
 
-What we **do NOT** copy from the reference:
-- 11-step funnel (violates "guided not asked")
-- Stock Unsplash imagery (violates real-image rule)
-- "Premium Class Private Route" + "Quality Score 92%" superlatives (violates no-invention)
-- Generic "Wine & Gastronomy / Coast & Nature" tag soup as primary nav inside Studio (we use rhythm + region beats instead)
+Regras:
 
-**Phased rollout (after Tracks A+B ship):**
-1. **Phase S1 — Live panel tabs.** Add `view: "story" | "timeline" | "map"` tab control inside `LivingJourneyPanel`; timeline pulls only from `resolvedTour.stops`. New file: `TimelineView.tsx`.
-2. **Phase S2 — Smart suggestion.** Promote one add-on from `selectSignatureAddOns()` into a `SuggestedAddOn` card above the chip fieldset; dismissible; respects the 3-max cap.
-3. **Phase S3 — Why this works.** New 3-bullet block in `SignaturePriceCard` driven by `resolvedTour.inclusions`/`pacingNote`. Pure data, zero copy invention.
-4. **Phase S4 — Party total + inclusions footnote.** Extend price card with `× guests` total and ivory `<footer>` listing real `included[]`.
-5. **Phase S5 — "Halfway there" reassurance line** under stepper, copy from a small dictionary keyed by phase.
+- Máximo 4 cards por step. Mais que isso = overload (referência tinha 3, manter).
+- Sem emojis dentro dos cards (referência usa 💎👑 — generic). Em vez disso, ícone Lucide pequeno teal ou letra capital Georgia.
+- Card altura mínima 96px, padding 16/20, gap entre cards 12px.
+- Botão CONTINUE sempre visível (sticky), gold sheen on hover (homepage scope), nunca espera scroll.
+- Stepper: dot preenchido teal por step completo, linha gold subtil entre.
 
-Each phase ships behind no flag (small surface), with its own test file, and respects all existing brand/motion guardrails (≤220ms, no parallax, no glassmorphism, scoped tokens).
+## 4. Reveal parcial no step 4 (Destination)
 
-### Order of work
-1. Track A (a11y) — ~1 file
-2. Track B (micro-interactions + total) — 1 component edit + 1 test file + scoped CSS
-3. Track C — only after you approve; each phase is a separate request
+Quando o utilizador escolhe região:
+
+1. Hero image da região (16:9, real Viator/operação) faz fade-in 320ms.
+2. 2-3 stops "fantasma" aparecem com 50% opacity + microcopy italic "Stops will sharpen as you choose…"
+3. 1ª linha de storyline aparece em Georgia italic teal.
+
+Isto é o **momento "wow"** que falta hoje. Não revela tudo (ainda faltam Interests + Investment para o curation final).
+
+## 5. Configurator step 9 — coração do hybrid
+
+Surface única editorial (charcoal-soft surface, NÃO preto puro do reference):
+
+```text
+┌─────────────────────────┐
+│  YOUR PORTUGAL DAY      │  ← H2 ivory sobre charcoal-soft
+│  Architected for 2      │
+│                         │
+│  [STORY][TIMELINE][MAP] │  ← tabs pill, active = teal fill
+│  ─────────────────────  │
+│                         │
+│  (conteúdo do tab)      │  ← min-height 480px, transição 220ms
+│                         │
+│  ─────────────────────  │
+│  ★ SMART RECOMMENDATION │  ← ivory card sobre dark, 1 sugestão
+│  Most couples add:      │
+│  boutique tasting + …   │
+│  [ADD IN 1-CLICK]       │
+│  ─────────────────────  │
+│  QUALITY 92%   ███████░ │  ← já existe, manter
+│  ─────────────────────  │
+│  Wine     ●●●●○         │  ← AffinityBars (4 axes, dots gold)
+│  Coast    ●●●○○         │
+│  Heritage ●●●●●         │
+│  Ease     ●●○○○         │
+│  ─────────────────────  │
+│  ESTIMATED INVESTMENT   │
+│  €145 /guest            │  ← Montserrat 36px ivory
+│  Total €290 (party 2)   │
+│  *includes private host…│  ← microcopy 11px charcoal-soft
+│                         │
+│  [RESHAPE DAY ↻]        │  ← gold rule, secondary CTA
+│  [SECURE EXPERIENCE →]  │  ← primary, gold sheen
+└─────────────────────────┘
+```
+
+**Story tab**: `JourneyStoryline` existente, prosa Georgia, hero region image.
+
+**Tempo de distâncias entre paragens** 
+
+**Map tab**: `PremiumMap` com rota Mapbox desenhada, markers, header "LISBON HUB · COORDINATE ROUTING" + "Length ~Xkm · Transfer ~Yh" (de `routeUI.totals`).
+
+## 6. Analytics por step (Supabase)
+
+**Nova tabela** `studio_v3_funnel_events`:
+
+```sql
+CREATE TABLE public.studio_v3_funnel_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id text NOT NULL,
+  step_number int NOT NULL,         -- 1..10
+  step_key text NOT NULL,           -- 'feeling' | 'companions' | …
+  event text NOT NULL,              -- 'enter' | 'select' | 'continue' | 'back' | 'abandon' | 'reshape' | 'tab_switch' | 'addon_toggle' | 'secure_open' | 'secure_confirm'
+  value jsonb,                      -- { selection, tier, addon_id, tab, ms_on_step, … }
+  variant text,                     -- A/B variant id (futuro)
+  user_agent text,
+  created_at timestamptz DEFAULT now()
+);
+GRANT INSERT ON public.studio_v3_funnel_events TO anon, authenticated;
+GRANT ALL ON public.studio_v3_funnel_events TO service_role;
+ALTER TABLE public.studio_v3_funnel_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "anyone can insert funnel events" ON public.studio_v3_funnel_events
+  FOR INSERT TO anon, authenticated WITH CHECK (true);
+CREATE POLICY "admins read funnel" ON public.studio_v3_funnel_events
+  FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
+CREATE INDEX idx_funnel_session ON public.studio_v3_funnel_events (session_id, created_at);
+CREATE INDEX idx_funnel_step ON public.studio_v3_funnel_events (step_key, event, created_at);
+```
+
+**Client lib** `src/lib/studio-v3-funnel.ts`:
+
+- `trackStep(stepNumber, stepKey, event, value?)` — batched, sendBeacon on `pagehide`/`visibilitychange=hidden` para capturar abandon.
+- `useStepTimer(stepKey)` hook — emite `enter` on mount, `continue`/`back`/`abandon` on unmount com `ms_on_step`.
+- Reuse `studioV3SessionId` já existente.
+
+**Edge function** já não — escrita direta via publishable key (RLS INSERT permissivo, sem PII, OK).
+
+**Admin dashboard** `src/routes/admin.studio-v3-funnel.tsx` (gated `has_role(admin)`):
+
+- Funil visual: % chegou / completou cada step.
+- Drop-off por step (highlight em vermelho > 25%).
+- Tempo médio por step.
+- Conversão por tier escolhido.
+- Comparação antes/depois da mudança de ordem (filtro por data).
+
+## 7. AI predictive coherence (reforço)
+
+- `investmentTier` entra em `curation.pickPrimaryTour` score (ultimate prefere tours `premium`, standard prefere `accessibility`).
+- Smart-recommendation derivada de `companions + interests + tier`:
+  - couple+wine+premium → boutique tasting + scenic lunch
+  - family+heritage+standard → palace visit + petiscos
+  - friends+gastronomy+ultimate → barrel reserve + yacht transfer
+- Guardrails FAMILY_ONLY_RE / ROMANTIC_ONLY_RE já existentes mantêm-se.
+- Reshape day seeded + per-stop swap já existem.
+
+## 8. Ficheiros
+
+**Novos**
+
+- `src/components/studio-v3/InvestmentTier.tsx`
+- `src/components/studio-v3/AddOnsStep.tsx`
+- `src/components/studio-v3/ConfiguratorTabs.tsx`
+- `src/components/studio-v3/TimelineView.tsx`
+- `src/components/studio-v3/SmartRecommendation.tsx`
+- `src/components/studio-v3/AffinityBars.tsx`
+- `src/components/studio-v3/PartialReveal.tsx` (hero + ghost stops no step 4)
+- `src/components/studio-v3/StudioStepper.tsx` (10-step minimal)
+- `src/lib/studio-v3-funnel.ts`
+- `src/lib/studio-v3-funnel.functions.ts` (server fn helper, opcional)
+- `src/routes/admin.studio-v3-funnel.tsx`
+- Migration: `studio_v3_funnel_events` table
+- Testes: `investment-tier.test.tsx`, `configurator-tabs.test.tsx`, `funnel-tracking.test.tsx`, `partial-reveal.test.tsx`
+
+**Editados**
+
+- `src/components/studio-v3/StudioV3.tsx` — nova ordem, novos steps, wire stepper + tracking
+- `src/components/studio-v3/types.ts` — `investmentTier`, `addOns[]`, `configuratorTab`
+- `src/hooks/useStudioState.ts` — persistir novos campos
+- `src/components/studio-v3/curation.ts` — tier entra no score
+- `src/components/studio-v3/SignaturePriceCard.tsx` — extrair add-ons, manter pricing source
+- `src/components/studio-v3/MapAwakens.tsx` — integrar no novo Configurator
+- `.lovable/plan.md` — atualizar
+
+## 9. Fora de scope
+
+- Homepage, navbar, footer, outras rotas.
+- Tours data, edge functions de checkout (reusar).
+- Bokun wiring (já existe).
+- A/B testing real do step order (infra fica preparada via `variant` na tabela, mas não ativar agora).
+
+## 10. Verificação
+
+- `bunx vitest run` — 214 atuais + ~12 novos, todos verdes.
+- Playwright mobile 393×588: screenshot de cada um dos 10 steps + 3 configurator tabs + secure modal.
+- Funnel: dispara `enter` em cada step na nova sessão; tabela recebe insert.
+- Build limpo, sem regressões nos guard workflows (hero, typography, homepage-structure).
+
+## 11. Ordem de execução
+
+1. Migration `studio_v3_funnel_events` + GRANTs + RLS.
+2. `studio-v3-funnel.ts` + `useStepTimer` hook + testes.
+3. Types + state (investmentTier, addOns, configuratorTab).
+4. `StudioStepper` (10 steps, minimal).
+5. `InvestmentTier` + `AddOnsStep` + `PartialReveal` componentes + testes.
+6. `ConfiguratorTabs` + `TimelineView` + `SmartRecommendation` + `AffinityBars` + testes.
+7. Reordenar `StudioV3.tsx` para nova sequência, wire stepper + tracking em cada transição.
+8. Polir Secure modal + (opcional) Designer modal.
+9. `admin.studio-v3-funnel` dashboard.
+10. Full vitest + Playwright screenshots mobile + verify funnel inserts.
+
+Aprovas?

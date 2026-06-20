@@ -23,6 +23,7 @@ import { SignaturePriceCard } from "./SignaturePriceCard";
 import { QualityScore } from "./QualityScore";
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
+import { trackStep } from "@/lib/studio-v3-funnel";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -613,9 +614,50 @@ export function StudioV3() {
     };
   }, [load]);
 
+  // Funnel analytics: emit `enter` whenever the active phase changes, and
+  // `abandon` if the tab is hidden / page is unloaded mid-flow. Reveal
+  // (storyboard) is the terminal step — no abandon counted there.
+  useEffect(() => {
+    trackStep({
+      stepNumber: stepOf(state.phase),
+      stepKey: state.phase,
+      event: "enter",
+    });
+  }, [state.phase]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onHide = () => {
+      if (document.visibilityState !== "hidden") return;
+      if (state.phase === "intro" || state.phase === "storyboard") return;
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "abandon",
+      });
+    };
+    window.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", onHide);
+    return () => {
+      window.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", onHide);
+    };
+  }, [state.phase]);
+
+
+
 
   const advance = useCallback((next: StudioV3Phase) => {
     setExiting(true);
+    setState((s) => {
+      trackStep({
+        stepNumber: stepOf(s.phase),
+        stepKey: s.phase,
+        event: "continue",
+        value: { to: next },
+      });
+      return s;
+    });
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: next }));
       setExiting(false);
@@ -634,6 +676,12 @@ export function StudioV3() {
       idx -= 1;
       target = PHASE_ORDER[idx];
     }
+    trackStep({
+      stepNumber: stepOf(state.phase),
+      stepKey: state.phase,
+      event: "back",
+      value: { to: target },
+    });
     window.setTimeout(() => {
       setState((s) => ({ ...s, phase: target }));
       setExiting(false);
@@ -667,7 +715,15 @@ export function StudioV3() {
     const hold = Math.min(rawHold, ceiling);
     setExiting(true);
     window.setTimeout(() => {
-      setState((s) => ({ ...s, phase: r.nextPhase }));
+      setState((s) => {
+        trackStep({
+          stepNumber: stepOf(s.phase),
+          stepKey: s.phase,
+          event: "continue",
+          value: { to: r.nextPhase, viaReaction: r.kind },
+        });
+        return { ...s, phase: r.nextPhase };
+      });
       setExiting(false);
       setReaction(r);
       window.setTimeout(() => {
@@ -686,7 +742,15 @@ export function StudioV3() {
     reactionInit?: Omit<Reaction, "nextPhase">,
     delay = 420,
   ) => {
-    setState((s) => ({ ...s, [key]: value }));
+    setState((s) => {
+      trackStep({
+        stepNumber: stepOf(s.phase),
+        stepKey: s.phase,
+        event: "select",
+        value: { field: String(key), selection: value as unknown },
+      });
+      return { ...s, [key]: value };
+    });
     if (reactionInit) {
       window.setTimeout(() => playReaction({ ...reactionInit, nextPhase: next }), delay);
     } else {
