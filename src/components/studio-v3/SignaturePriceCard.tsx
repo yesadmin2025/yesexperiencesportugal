@@ -104,9 +104,19 @@ export function SignaturePriceCard({
       .filter((a) => selectedAddOnIds.includes(a.id))
       .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
+  // Real per-pax (Viator tier) resolution. When the tour has tier data AND
+  // we know the guest count, `realPerPax.real === true` and we display the
+  // exact per-person rate; otherwise we keep the "from" anchor.
+  const realPerPax = useMemo(
+    () => resolvePerPaxEur(tour, guests ?? null),
+    [tour, guests],
+  );
+  const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyCount = guests && guests >= 2 ? guests : null;
-  const partyTotalEur = totalEur != null && partyCount != null ? totalEur * partyCount : null;
+  const partyBaseEur = displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
+  const partyTotalEur =
+    partyBaseEur != null ? partyBaseEur + addOnsTotalEur * (partyCount ?? 1) : null;
 
   // S2 — Smart suggestion: the first eligible add-on the resolver returned,
   // dismissible, hidden once it's been selected. Never invented — sourced
