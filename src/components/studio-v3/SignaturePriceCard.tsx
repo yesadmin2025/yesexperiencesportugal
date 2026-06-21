@@ -107,6 +107,37 @@ export function SignaturePriceCard({
       }),
     [tour, stopCount, durationLabel],
   );
+  // Fire-and-forget telemetry: snapshot the anchor region + filtered pool so
+  // future region/sub-region mismatches (e.g. Arrábida on Sintra) are caught
+  // in audit. No PII; just the surface, tour id, bucket, and pool ids.
+  useEffect(() => {
+    if (!tour) return;
+    const bucket = regionBucket(tour.region);
+    const anchorSub =
+      bucket === "lisbon-arrabida"
+        ? LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null
+        : null;
+    const mismatch =
+      bucket === "lisbon-arrabida" && anchorSub
+        ? availableAddOns.some(
+            (a) => a.lisbonSubRegion && a.lisbonSubRegion !== anchorSub,
+          )
+        : false;
+    recordStudioV3RevealAddOns({
+      surface: "price-card",
+      tourId: tour.id,
+      region: tour.region ?? null,
+      regionBucket: bucket,
+      lisbonSubRegion: anchorSub,
+      stopCount,
+      durationLabel,
+      poolSize: availableAddOns.length,
+      poolIds: availableAddOns.map((a) => a.id),
+      poolSourceTourIds: availableAddOns.map((a) => a.sourceTourId),
+      poolLisbonSubRegions: availableAddOns.map((a) => a.lisbonSubRegion ?? null),
+      mismatch,
+    });
+  }, [tour, availableAddOns, stopCount, durationLabel]);
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const [pendingAddOnId, setPendingAddOnId] = useState<string | null>(null);
   const MAX_ADDONS = 3;
