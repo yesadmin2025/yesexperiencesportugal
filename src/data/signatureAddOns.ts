@@ -231,8 +231,11 @@ export function parseDurationLowerHours(label: string | null | undefined): numbe
  * Filters applied (in order):
  *   1. drop any add-on whose `sourceTourId` IS the resolved tour —
  *      the resolved Signature already delivers that experience
- *   2. enforce `minStops` / `minHours` thresholds against the resolved day
- *   3. cap at 3
+ *   2. inside the "lisbon-arrabida" bucket, drop any add-on whose
+ *      `lisbonSubRegion` is on the other side of the Tejo from the
+ *      anchor (e.g. no Arrábida add-ons on a Sintra/Cascais anchor)
+ *   3. enforce `minStops` / `minHours` thresholds against the resolved day
+ *   4. cap at 3
  */
 export function selectSignatureAddOns(opts: {
   resolvedTour: Pick<SignatureTour, "id" | "region"> | null | undefined;
@@ -243,8 +246,17 @@ export function selectSignatureAddOns(opts: {
   const bucket = regionBucket(opts.resolvedTour.region);
   const hours = parseDurationLowerHours(opts.durationLabel);
   const pool = ADD_ON_CATALOG[bucket] ?? [];
+  const anchorSub: LisbonSubRegion | undefined =
+    bucket === "lisbon-arrabida"
+      ? LISBON_SUBREGION_BY_TOUR_ID[opts.resolvedTour.id]
+      : undefined;
   return pool
     .filter((a) => a.sourceTourId !== opts.resolvedTour!.id)
+    .filter((a) => {
+      if (bucket !== "lisbon-arrabida") return true;
+      if (!anchorSub || !a.lisbonSubRegion) return true;
+      return a.lisbonSubRegion === anchorSub;
+    })
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
     .slice(0, 3);
