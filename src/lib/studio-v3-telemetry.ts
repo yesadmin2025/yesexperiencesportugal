@@ -79,12 +79,34 @@ export interface StudioV3RevealPremium {
   dateExact: string | null;
 }
 
+/**
+ * Reveal add-on pool snapshot — emitted whenever a reveal surface
+ * (SignaturePriceCard / SmartRecommendation) computes its filtered
+ * add-on pool. Used to catch region/sub-region mismatches in the wild
+ * (e.g. Arrábida add-ons leaking onto a Sintra anchor).
+ */
+export interface StudioV3RevealAddOns {
+  surface: "price-card" | "smart-reco";
+  tourId: string | null;
+  region: string | null;
+  regionBucket: string;
+  lisbonSubRegion: string | null;
+  stopCount: number;
+  durationLabel: string | null;
+  poolSize: number;
+  poolIds: string[];
+  poolSourceTourIds: string[];
+  poolLisbonSubRegions: Array<string | null>;
+  mismatch: boolean;
+}
+
 type StudioV3Event =
   | { kind: "curation.decision"; payload: StudioV3CurationDecision }
   | { kind: "phase4.timing"; payload: StudioV3Phase4Timing }
   | { kind: "reveal.validation"; payload: StudioV3RevealValidation }
   | { kind: "builder.step"; payload: StudioV3BuilderStep }
-  | { kind: "reveal.premium"; payload: StudioV3RevealPremium };
+  | { kind: "reveal.premium"; payload: StudioV3RevealPremium }
+  | { kind: "reveal.addons"; payload: StudioV3RevealAddOns };
 
 export interface StudioV3BufferedEvent {
   kind: StudioV3Event["kind"];
@@ -94,7 +116,8 @@ export interface StudioV3BufferedEvent {
     | StudioV3Phase4Timing
     | StudioV3RevealValidation
     | StudioV3BuilderStep
-    | StudioV3RevealPremium;
+    | StudioV3RevealPremium
+    | StudioV3RevealAddOns;
 }
 
 const BUFFER_KEY = "studio-v3.audit.buffer.v1";
@@ -176,4 +199,8 @@ export function recordStudioV3BuilderStep(payload: StudioV3BuilderStep): void {
 
 export function recordStudioV3RevealPremium(payload: StudioV3RevealPremium): void {
   emitStudioV3Event({ kind: "reveal.premium", payload });
+}
+
+export function recordStudioV3RevealAddOns(payload: StudioV3RevealAddOns): void {
+  emitStudioV3Event({ kind: "reveal.addons", payload });
 }

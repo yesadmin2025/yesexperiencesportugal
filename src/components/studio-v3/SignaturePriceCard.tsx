@@ -18,6 +18,8 @@ import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
   selectSignatureAddOns,
+  regionBucket,
+  LISBON_SUBREGION_BY_TOUR_ID,
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -25,7 +27,10 @@ import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
-import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
+import {
+  recordStudioV3RevealPremium,
+  recordStudioV3RevealAddOns,
+} from "@/lib/studio-v3-telemetry";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
@@ -102,6 +107,37 @@ export function SignaturePriceCard({
       }),
     [tour, stopCount, durationLabel],
   );
+  // Fire-and-forget telemetry: snapshot the anchor region + filtered pool so
+  // future region/sub-region mismatches (e.g. Arrábida on Sintra) are caught
+  // in audit. No PII; just the surface, tour id, bucket, and pool ids.
+  useEffect(() => {
+    if (!tour) return;
+    const bucket = regionBucket(tour.region);
+    const anchorSub =
+      bucket === "lisbon-arrabida"
+        ? LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null
+        : null;
+    const mismatch =
+      bucket === "lisbon-arrabida" && anchorSub
+        ? availableAddOns.some(
+            (a) => a.lisbonSubRegion && a.lisbonSubRegion !== anchorSub,
+          )
+        : false;
+    recordStudioV3RevealAddOns({
+      surface: "price-card",
+      tourId: tour.id,
+      region: tour.region ?? null,
+      regionBucket: bucket,
+      lisbonSubRegion: anchorSub,
+      stopCount,
+      durationLabel,
+      poolSize: availableAddOns.length,
+      poolIds: availableAddOns.map((a) => a.id),
+      poolSourceTourIds: availableAddOns.map((a) => a.sourceTourId),
+      poolLisbonSubRegions: availableAddOns.map((a) => a.lisbonSubRegion ?? null),
+      mismatch,
+    });
+  }, [tour, availableAddOns, stopCount, durationLabel]);
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const [pendingAddOnId, setPendingAddOnId] = useState<string | null>(null);
   const MAX_ADDONS = 3;
