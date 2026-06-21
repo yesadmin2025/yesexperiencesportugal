@@ -200,3 +200,7 @@ export function recordStudioV3BuilderStep(payload: StudioV3BuilderStep): void {
 export function recordStudioV3RevealPremium(payload: StudioV3RevealPremium): void {
   emitStudioV3Event({ kind: "reveal.premium", payload });
 }
+
+export function recordStudioV3RevealAddOns(payload: StudioV3RevealAddOns): void {
+  emitStudioV3Event({ kind: "reveal.addons", payload });
+}
