@@ -94,6 +94,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
       minHours: 6,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "coastal-boat-ride",
@@ -103,6 +104,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
       minHours: 6,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "azulejo-workshop",
@@ -111,6 +113,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
       pricePctOfBase: 0.16,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "azeitao-cheese",
@@ -119,6 +122,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
       pricePctOfBase: 0.14,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "sintra-detour",
@@ -129,6 +133,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.2,
       minHours: 7,
       minStops: 4,
+      lisbonSubRegion: "sintra-cascais",
     },
   ],
   alentejo: [
