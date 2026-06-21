@@ -18,6 +18,27 @@ import type { SignatureTour } from "./signatureTours";
 
 export type RegionBucket = "lisbon-arrabida" | "alentejo" | "douro" | "centro" | "comporta";
 
+/**
+ * Inside the broad "lisbon-arrabida" bucket we still have two geographically
+ * distinct micro-regions, separated by the Tejo + 25 de Abril bridge:
+ *   - "sintra-cascais": north/west of Lisbon (Sintra, Cascais, Cabo da Roca)
+ *   - "arrabida-setubal": south of the Tejo (Arrábida, Sesimbra, Azeitão)
+ * An add-on from the "wrong" side of the Tejo doesn't belong on a tour
+ * anchored on the other side — we never propose Arrábida add-ons on a
+ * Sintra/Cascais signature and vice versa.
+ */
+export type LisbonSubRegion = "sintra-cascais" | "arrabida-setubal";
+
+/** Map of known signature tour ids → their Lisbon sub-region. */
+export const LISBON_SUBREGION_BY_TOUR_ID: Record<string, LisbonSubRegion> = {
+  "sintra-cascais": "sintra-cascais",
+  "arrabida-wine-allinclusive": "arrabida-setubal",
+  "wild-beaches-picnic": "arrabida-setubal",
+  "arrabida-boat": "arrabida-setubal",
+  "tiles-workshop": "arrabida-setubal",
+  "azeitao-cheese": "arrabida-setubal",
+};
+
 export interface SignatureAddOn {
   id: string;
   label: string;
@@ -30,6 +51,11 @@ export interface SignatureAddOn {
   minStops?: number;
   /** Minimum duration (hours) for this add-on to surface. */
   minHours?: number;
+  /**
+   * Optional Lisbon-bucket sub-region. When set, the add-on is only
+   * surfaced for anchors on the same side of the Tejo.
+   */
+  lisbonSubRegion?: LisbonSubRegion;
 }
 
 /** Bucket a free-text region string into a known region family. */
@@ -68,6 +94,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
       minHours: 6,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "coastal-boat-ride",
@@ -77,6 +104,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
       minHours: 6,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "azulejo-workshop",
@@ -85,6 +113,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
       pricePctOfBase: 0.16,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "azeitao-cheese",
@@ -93,6 +122,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
       pricePctOfBase: 0.14,
+      lisbonSubRegion: "arrabida-setubal",
     },
     {
       id: "sintra-detour",
@@ -103,6 +133,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.2,
       minHours: 7,
       minStops: 4,
+      lisbonSubRegion: "sintra-cascais",
     },
   ],
   alentejo: [
@@ -200,8 +231,11 @@ export function parseDurationLowerHours(label: string | null | undefined): numbe
  * Filters applied (in order):
  *   1. drop any add-on whose `sourceTourId` IS the resolved tour —
  *      the resolved Signature already delivers that experience
- *   2. enforce `minStops` / `minHours` thresholds against the resolved day
- *   3. cap at 3
+ *   2. inside the "lisbon-arrabida" bucket, drop any add-on whose
+ *      `lisbonSubRegion` is on the other side of the Tejo from the
+ *      anchor (e.g. no Arrábida add-ons on a Sintra/Cascais anchor)
+ *   3. enforce `minStops` / `minHours` thresholds against the resolved day
+ *   4. cap at 3
  */
 export function selectSignatureAddOns(opts: {
   resolvedTour: Pick<SignatureTour, "id" | "region"> | null | undefined;
@@ -212,8 +246,17 @@ export function selectSignatureAddOns(opts: {
   const bucket = regionBucket(opts.resolvedTour.region);
   const hours = parseDurationLowerHours(opts.durationLabel);
   const pool = ADD_ON_CATALOG[bucket] ?? [];
+  const anchorSub: LisbonSubRegion | undefined =
+    bucket === "lisbon-arrabida"
+      ? LISBON_SUBREGION_BY_TOUR_ID[opts.resolvedTour.id]
+      : undefined;
   return pool
     .filter((a) => a.sourceTourId !== opts.resolvedTour!.id)
+    .filter((a) => {
+      if (bucket !== "lisbon-arrabida") return true;
+      if (!anchorSub || !a.lisbonSubRegion) return true;
+      return a.lisbonSubRegion === anchorSub;
+    })
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
     .slice(0, 3);
