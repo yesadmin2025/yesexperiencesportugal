@@ -18,6 +18,8 @@ import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
   selectSignatureAddOns,
+  regionBucket,
+  LISBON_SUBREGION_BY_TOUR_ID,
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -25,7 +27,10 @@ import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
-import { recordStudioV3RevealPremium } from "@/lib/studio-v3-telemetry";
+import {
+  recordStudioV3RevealPremium,
+  recordStudioV3RevealAddOns,
+} from "@/lib/studio-v3-telemetry";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
