@@ -10,11 +10,17 @@
 // the funnel as `addon_toggle`. Actual add-on purchase happens later in
 // the booking flow; this is the cinematic moment of being seen.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
-import { addOnEurFromBase, selectSignatureAddOns } from "@/data/signatureAddOns";
+import {
+  addOnEurFromBase,
+  selectSignatureAddOns,
+  regionBucket,
+  LISBON_SUBREGION_BY_TOUR_ID,
+} from "@/data/signatureAddOns";
 import { trackStep } from "@/lib/studio-v3-funnel";
+import { recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
 
 interface SmartRecommendationProps {
   /** Resolved Signature tour id (from resolveStudioV3Route). */
@@ -32,21 +38,50 @@ export function SmartRecommendation({
 }: SmartRecommendationProps) {
   const [accepted, setAccepted] = useState(false);
 
-  const { addon, priceEur } = useMemo(() => {
-    if (!tourId) return { addon: null, priceEur: null };
-    const tour = signatureTours.find((t) => t.id === tourId) ?? null;
-    if (!tour) return { addon: null, priceEur: null };
+  const { addon, priceEur, pool, tour } = useMemo(() => {
+    if (!tourId) return { addon: null, priceEur: null, pool: [], tour: null };
+    const t = signatureTours.find((x) => x.id === tourId) ?? null;
+    if (!t) return { addon: null, priceEur: null, pool: [], tour: null };
     const picks = selectSignatureAddOns({
-      resolvedTour: tour,
+      resolvedTour: t,
       stopCount,
       durationLabel,
     });
     const first = picks[0] ?? null;
-    if (!first) return { addon: null, priceEur: null };
-    const base = tour.priceFrom && tour.priceFrom > 0 ? tour.priceFrom : null;
+    if (!first) return { addon: null, priceEur: null, pool: picks, tour: t };
+    const base = t.priceFrom && t.priceFrom > 0 ? t.priceFrom : null;
     const price = base ? addOnEurFromBase(base, first.pricePctOfBase) : null;
-    return { addon: first, priceEur: price };
+    return { addon: first, priceEur: price, pool: picks, tour: t };
   }, [tourId, stopCount, durationLabel]);
+
+  // Fire-and-forget telemetry: record the anchor region + filtered pool so
+  // we can detect future region/sub-region drift (e.g. Arrábida on Sintra).
+  useEffect(() => {
+    if (!tour) return;
+    const bucket = regionBucket(tour.region);
+    const anchorSub = bucket === "lisbon-arrabida"
+      ? LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null
+      : null;
+    const mismatch =
+      bucket === "lisbon-arrabida" && anchorSub
+        ? pool.some((a) => a.lisbonSubRegion && a.lisbonSubRegion !== anchorSub)
+        : false;
+    recordStudioV3RevealAddOns({
+      surface: "smart-reco",
+      tourId: tour.id,
+      region: tour.region ?? null,
+      regionBucket: bucket,
+      lisbonSubRegion: anchorSub,
+      stopCount,
+      durationLabel,
+      poolSize: pool.length,
+      poolIds: pool.map((a) => a.id),
+      poolSourceTourIds: pool.map((a) => a.sourceTourId),
+      poolLisbonSubRegions: pool.map((a) => a.lisbonSubRegion ?? null),
+      mismatch,
+    });
+  }, [tour, pool, stopCount, durationLabel]);
+
 
   if (!addon) return null;
 
