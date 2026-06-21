@@ -18,6 +18,27 @@ import type { SignatureTour } from "./signatureTours";
 
 export type RegionBucket = "lisbon-arrabida" | "alentejo" | "douro" | "centro" | "comporta";
 
+/**
+ * Inside the broad "lisbon-arrabida" bucket we still have two geographically
+ * distinct micro-regions, separated by the Tejo + 25 de Abril bridge:
+ *   - "sintra-cascais": north/west of Lisbon (Sintra, Cascais, Cabo da Roca)
+ *   - "arrabida-setubal": south of the Tejo (Arrábida, Sesimbra, Azeitão)
+ * An add-on from the "wrong" side of the Tejo doesn't belong on a tour
+ * anchored on the other side — we never propose Arrábida add-ons on a
+ * Sintra/Cascais signature and vice versa.
+ */
+export type LisbonSubRegion = "sintra-cascais" | "arrabida-setubal";
+
+/** Map of known signature tour ids → their Lisbon sub-region. */
+export const LISBON_SUBREGION_BY_TOUR_ID: Record<string, LisbonSubRegion> = {
+  "sintra-cascais": "sintra-cascais",
+  "arrabida-wine-allinclusive": "arrabida-setubal",
+  "wild-beaches-picnic": "arrabida-setubal",
+  "arrabida-boat": "arrabida-setubal",
+  "tiles-workshop": "arrabida-setubal",
+  "azeitao-cheese": "arrabida-setubal",
+};
+
 export interface SignatureAddOn {
   id: string;
   label: string;
@@ -30,6 +51,11 @@ export interface SignatureAddOn {
   minStops?: number;
   /** Minimum duration (hours) for this add-on to surface. */
   minHours?: number;
+  /**
+   * Optional Lisbon-bucket sub-region. When set, the add-on is only
+   * surfaced for anchors on the same side of the Tejo.
+   */
+  lisbonSubRegion?: LisbonSubRegion;
 }
 
 /** Bucket a free-text region string into a known region family. */
