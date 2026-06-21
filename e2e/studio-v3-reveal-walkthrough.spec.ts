@@ -120,6 +120,15 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
     await installTelemetryCapture(page);
     await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
 
+    // Wait for full React hydration before any interaction — the root layout
+    // sets `window.__APP_READY__ = true` once the tree mounts. Clicking
+    // before this fires can race the cinematic intro and miss handlers.
+    await page.waitForFunction(
+      () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
+      undefined,
+      { timeout: 20_000 },
+    );
+
     // Reset any stale buffer from a previous session.
     await page.evaluate(() => {
       try {
