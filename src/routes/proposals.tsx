@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
