@@ -19,6 +19,7 @@ import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { breadcrumbLd, tourProductLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
