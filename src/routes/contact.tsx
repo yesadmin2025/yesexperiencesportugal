@@ -22,6 +22,14 @@ export const Route = createFileRoute("/contact")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/contact" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ]),
+      ),
+    ],
   }),
 
   component: Page,
