@@ -34,6 +34,14 @@ export const Route = createFileRoute("/proposals")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/proposals" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/proposals" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Proposals & Celebrations", path: "/proposals" },
+        ]),
+      ),
+    ],
   }),
   component: ProposalsPage,
 });
