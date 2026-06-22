@@ -28,6 +28,14 @@ export const Route = createFileRoute("/experiences")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Signature Experiences", path: "/experiences" },
+        ]),
+      ),
+    ],
   }),
 
   component: ExperiencesPage,
