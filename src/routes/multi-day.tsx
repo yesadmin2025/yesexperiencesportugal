@@ -29,6 +29,14 @@ export const Route = createFileRoute("/multi-day")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Multi-Day Journeys", path: "/multi-day" },
+        ]),
+      ),
+    ],
   }),
   component: MultiDayPage,
 });
