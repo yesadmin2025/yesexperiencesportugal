@@ -32,6 +32,14 @@ export const Route = createFileRoute("/corporate")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/corporate" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Corporate & Private Groups", path: "/corporate" },
+        ]),
+      ),
+    ],
   }),
   component: CorporatePage,
 });
