@@ -35,6 +35,14 @@ export const Route = createFileRoute("/local-stories")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/local-stories" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/local-stories" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Local Stories", path: "/local-stories" },
+        ]),
+      ),
+    ],
   }),
 
   component: Page,
