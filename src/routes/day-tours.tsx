@@ -27,6 +27,14 @@ export const Route = createFileRoute("/day-tours")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/day-tours" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/day-tours" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Day Tours", path: "/day-tours" },
+        ]),
+      ),
+    ],
   }),
 
   component: DayToursPage,
