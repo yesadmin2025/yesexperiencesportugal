@@ -157,6 +157,7 @@ export const Route = createRootRoute({
         href: appCss,
       },
     ],
+    scripts: [jsonLdScript(organizationLd()), jsonLdScript(websiteLd())],
   }),
   shellComponent: RootShell,
   component: RootComponent,
