@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -21,6 +22,14 @@ export const Route = createFileRoute("/about")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/about" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/about" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ]),
+      ),
+    ],
   }),
 
   component: Page,

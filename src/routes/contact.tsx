@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
@@ -21,6 +22,14 @@ export const Route = createFileRoute("/contact")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/contact" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ]),
+      ),
+    ],
   }),
 
   component: Page,

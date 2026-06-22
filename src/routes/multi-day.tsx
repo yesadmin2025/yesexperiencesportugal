@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Compass, MapPin, Calendar } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -28,6 +29,14 @@ export const Route = createFileRoute("/multi-day")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Multi-Day Journeys", path: "/multi-day" },
+        ]),
+      ),
+    ],
   }),
   component: MultiDayPage,
 });

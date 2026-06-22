@@ -19,6 +19,7 @@ import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { breadcrumbLd, tourProductLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -50,6 +51,25 @@ export const Route = createFileRoute("/tours/$tourId")({
         { property: "og:type", content: "product" },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        jsonLdScript(
+          breadcrumbLd([
+            { name: "Home", path: "/" },
+            { name: "Signature Experiences", path: "/experiences" },
+            { name: t.title, path: `/tours/${params.tourId}` },
+          ]),
+        ),
+        jsonLdScript(
+          tourProductLd({
+            id: params.tourId,
+            title: t.title,
+            blurb: t.blurb,
+            img: t.img,
+            priceFrom: (t as { priceFrom?: number }).priceFrom,
+            currency: "EUR",
+          }),
+        ),
+      ],
     };
   },
 

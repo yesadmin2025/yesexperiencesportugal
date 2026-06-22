@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -33,6 +34,14 @@ export const Route = createFileRoute("/proposals")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/proposals" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/proposals" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Proposals & Celebrations", path: "/proposals" },
+        ]),
+      ),
+    ],
   }),
   component: ProposalsPage,
 });

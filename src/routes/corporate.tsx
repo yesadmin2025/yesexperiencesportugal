@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -31,6 +32,14 @@ export const Route = createFileRoute("/corporate")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/corporate" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Corporate & Private Groups", path: "/corporate" },
+        ]),
+      ),
+    ],
   }),
   component: CorporatePage,
 });

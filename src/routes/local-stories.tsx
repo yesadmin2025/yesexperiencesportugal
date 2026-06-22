@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +35,14 @@ export const Route = createFileRoute("/local-stories")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/local-stories" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/local-stories" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Local Stories", path: "/local-stories" },
+        ]),
+      ),
+    ],
   }),
 
   component: Page,

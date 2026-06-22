@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
 import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
+import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -156,6 +157,7 @@ export const Route = createRootRoute({
         href: appCss,
       },
     ],
+    scripts: [jsonLdScript(organizationLd()), jsonLdScript(websiteLd())],
   }),
   shellComponent: RootShell,
   component: RootComponent,
