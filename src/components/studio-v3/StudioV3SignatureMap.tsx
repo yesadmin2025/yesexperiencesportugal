@@ -203,6 +203,7 @@ export function StudioV3SignatureMap({
   className,
   ariaLabel,
   legMinutes,
+  silhouetteRegion = null,
 }: StudioV3SignatureMapProps) {
   const cleaned = useMemo(() => stops.map(cleanLabel).filter(Boolean), [stops]);
   const visible = Math.max(0, Math.min(cleaned.length, activeCount ?? cleaned.length));
