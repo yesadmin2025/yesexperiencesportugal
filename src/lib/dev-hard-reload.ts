@@ -23,16 +23,25 @@
 
 const BUILD_KEY = "__yes_build_id__";
 const INSTALL_KEY = "__yes_dev_hard_reload_installed__";
+const PREVIEW_TOKEN_PARAM = "_yes_preview";
+// Bump this when the Studio preview needs a forced one-time document reload
+// on hosted Lovable preview URLs. It is intentionally scoped away from the
+// published/custom domain, so public visitors never receive preview-only
+// cache-busting query params.
+const PREVIEW_CACHE_TOKEN = "studio-v3-visible-route-timings-v2-2026-06-23";
+const PUBLIC_HOSTS = new Set(["yesexperiencesportugal.com", "www.yesexperiencesportugal.com"]);
 
 declare global {
   interface Window {
     __yes_dev_hard_reload_installed__?: boolean;
+    __yes_preview_cache_token__?: string;
   }
 }
 
 export function installDevHardReload() {
   if (typeof window === "undefined") return;
-  if (!import.meta.env.DEV) return;
+  const isHostedPreview = isLovableHostedPreview();
+  if (!import.meta.env.DEV && !isHostedPreview) return;
   if (window[INSTALL_KEY]) return;
   // Skip inside automated browsers (Playwright/Selenium) — the reload loop
   // tears down React state mid-test and produces flaky failures.
@@ -44,9 +53,19 @@ export function installDevHardReload() {
     /* ignore */
   }
   window[INSTALL_KEY] = true;
+  window.__yes_preview_cache_token__ = PREVIEW_CACHE_TOKEN;
+
+  // Hosted preview builds run as production bundles, so `import.meta.env.DEV`
+  // is false and Vite HMR events do not exist. The preview can still be kept
+  // fresh by forcing one document-level reload per Studio update token; this
+  // avoids users staying inside a stale mobile iframe / bfcache page after a
+  // preview artifact upload succeeds.
+  if (isHostedPreview) {
+    if (ensureHostedPreviewToken()) return;
+  }
 
   // 1) Vite full-reload → purge caches, hard reload.
-  if (import.meta.hot) {
+  if (import.meta.env.DEV && import.meta.hot) {
     import.meta.hot.on("vite:beforeFullReload", () => {
       void purgeAndReload();
     });
@@ -55,9 +74,11 @@ export function installDevHardReload() {
   // Lovable's mobile preview can proxy HTTP correctly while Vite's websocket
   // HMR fails. In that case `import.meta.hot` never receives the reload event,
   // so poll the local HMR gate and flush pending edits ourselves.
-  window.setInterval(() => {
-    void flushGateIfPending();
-  }, 1800);
+  if (import.meta.env.DEV) {
+    window.setInterval(() => {
+      void flushGateIfPending();
+    }, 1800);
+  }
 
   // 2) bfcache restore → reload so latest JS evaluates.
   window.addEventListener("pageshow", (event) => {
@@ -87,6 +108,45 @@ export function installDevHardReload() {
   }
 }
 
+function isLovableHostedPreview(): boolean {
+  try {
+    const host = window.location.hostname;
+    if (PUBLIC_HOSTS.has(host)) return false;
+
+    // Lovable has used several preview host shapes over time
+    // (`id-preview--…`, `project--…-dev`, `preview--…`, and generic
+    // `*.lovable.app` iframes). Be deliberately broad here: this helper only
+    // appends a one-time query token, and it is blocked on the public custom
+    // domain above.
+    if (host.endsWith(".lovable.app")) return true;
+    if (host.includes("lovable") && (host.includes("preview") || host.includes("project"))) {
+      return true;
+    }
+
+    // Some preview shells proxy the app under a non-lovable iframe host while
+    // the parent/referrer is Lovable. `document.referrer` is readable even when
+    // the parent window is cross-origin.
+    const referrer = document.referrer ? new URL(document.referrer).hostname : "";
+    return referrer.includes("lovable") && !PUBLIC_HOSTS.has(referrer);
+  } catch {
+    return false;
+  }
+}
+
+function ensureHostedPreviewToken(): boolean {
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get(PREVIEW_TOKEN_PARAM) === PREVIEW_CACHE_TOKEN) return false;
+    url.searchParams.set(PREVIEW_TOKEN_PARAM, PREVIEW_CACHE_TOKEN);
+    url.searchParams.set("_r", Date.now().toString(36));
+    void purgeCachesOnly();
+    window.location.replace(url.toString());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function flushGateIfPending() {
   try {
     const gate = await fetch("/__hmr_gate", { cache: "no-store" });
@@ -102,14 +162,7 @@ async function flushGateIfPending() {
 }
 
 async function purgeAndReload() {
-  try {
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((k) => caches.delete(k)));
-    }
-  } catch {
-    /* best-effort */
-  }
+  await purgeCachesOnly();
   // Append a cache-bust query so any CDN/proxy in front of dev returns fresh.
   try {
     const url = new URL(window.location.href);
@@ -117,5 +170,16 @@ async function purgeAndReload() {
     window.location.replace(url.toString());
   } catch {
     window.location.reload();
+  }
+}
+
+async function purgeCachesOnly() {
+  try {
+    if ("caches" in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+    }
+  } catch {
+    /* best-effort */
   }
 }

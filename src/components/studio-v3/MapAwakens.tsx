@@ -366,8 +366,7 @@ export function MapAwakens({
             mounted ? "opacity-100" : "opacity-0"
           }`}
           aria-hidden={anticipating}
-          // @ts-expect-error — `inert` is a valid HTML attribute, React 19 supports it
-          inert={anticipating ? "" : undefined}
+          inert={anticipating}
           tabIndex={anticipating ? -1 : undefined}
         >
           <EditorialMap
