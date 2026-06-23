@@ -457,6 +457,7 @@ function JourneyDraftDrawer({
   rhythm,
   companions,
   fullState,
+  overBudgetNote,
 }: DrawerProps) {
   const totalPins = Math.max(0, Math.min(4, moments.length));
   const [view, setView] = useState<"story" | "timeline" | "map">("story");
