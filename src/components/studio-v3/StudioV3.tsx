@@ -1343,10 +1343,11 @@ export function StudioV3() {
           message,
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
+          originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           regionKey: tourRegionToRegionKey(
             (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ),
+          ) ?? pickupRegionKey(state.pickup) ?? undefined,
           nextPhase: next,
           holdMs: 6200,
         });
