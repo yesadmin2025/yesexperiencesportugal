@@ -509,6 +509,8 @@ export function StudioV3SignatureMap({
         >
           <span
             className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+            data-leg-legend="journey"
+            data-legend-value={`${journeyTotals.minLabel} · ${journeyTotals.kmLabel}`}
             style={{
               background: "color-mix(in oklab, #050d0f 78%, transparent)",
               border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
