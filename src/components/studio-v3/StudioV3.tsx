@@ -2859,13 +2859,47 @@ function StoryboardHandoff({
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
         <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
-          <StudioV3SignatureMap
-            stops={editedStops.map((s) => s.label)}
-            activeCount={revealedStops}
-            originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
-            aspectRatio="16 / 11"
-            ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
-          />
+          {(() => {
+            // Build geo-detailed stops for the cinematic map.
+            // Priority: resolved.routePoints (carry lat/lng from curation) →
+            // catalog lookup (lookupStopGeo) → label-only fallback.
+            const byLabel = new Map(
+              resolved.routePoints.map((p) => [p.label.toLowerCase(), p]),
+            );
+            const stopsDetailed = editedStops.map((s) => {
+              const rp = byLabel.get(s.label.toLowerCase());
+              if (rp && rp.lat != null && rp.lng != null) {
+                return { label: s.label, lat: rp.lat, lng: rp.lng };
+              }
+              const geo = lookupStopGeo(s.label);
+              if (geo) {
+                return {
+                  label: s.label,
+                  lat: geo.lat,
+                  lng: geo.lng,
+                  dwellMin: geo.dwellMin,
+                  kind: geo.kind,
+                };
+              }
+              return { label: s.label };
+            });
+            const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
+            const originCoord = REGION_ORIGIN[rk]
+              ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
+              : null;
+            return (
+              <StudioV3SignatureMap
+                stops={editedStops.map((s) => s.label)}
+                stopsDetailed={stopsDetailed}
+                originCoord={originCoord}
+                activeCount={revealedStops}
+                originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
+                aspectRatio="16 / 11"
+                ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
+              />
+            );
+          })()}
+
           {/* Numbered legend — full names live here so the map stays clean
               and labels never overlap at 393px mobile. */}
           <ol
