@@ -3602,10 +3602,12 @@ function ReactionOverlay({
           mode={reaction.mapMode ?? "origin"}
           originLabel={reaction.originLabel}
           routeLabels={reaction.routeLabels}
+          regionKey={reaction.regionKey ?? null}
           rhythm={reaction.rhythmBucket ?? null}
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
+
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
