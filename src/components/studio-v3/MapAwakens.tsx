@@ -257,8 +257,40 @@ export function MapAwakens({
     }));
   }, [journey]);
 
+  // Real OSRM driving minutes — origin (pickup city) + each moment with
+  // resolved coordinates. Falls back silently when offline.
+  const originCoord = useMemo(() => pickupOriginCoord(pickup ?? null), [pickup]);
+  const routeStops: RouteLegStop[] = useMemo(() => {
+    const stops: RouteLegStop[] = [];
+    if (originCoord) stops.push({ key: "pickup", lat: originCoord.lat, lng: originCoord.lng });
+    journey.moments.forEach((m, i) => {
+      if (typeof m.lat === "number" && typeof m.lng === "number") {
+        stops.push({ key: `m-${i}`, lat: m.lat, lng: m.lng });
+      }
+    });
+    return stops;
+  }, [originCoord, journey]);
+  const { legMinutes } = useRouteLegMinutes(routeStops, routeStops.length >= 2);
+  // Per-moment dwell (from catalog) — undefined when not in lookup.
+  const dwellByIndex = useMemo(
+    () => journey.moments.map((m) => lookupStopGeo(m.label)?.dwellMin ?? null),
+    [journey],
+  );
+
   const current = journey.moments[active];
   const isLast = active === journey.moments.length - 1 && revealed >= journey.moments.length;
+  // Drive-from-previous label for the active moment. Leg index lines up
+  // with `routeStops` (origin at index 0 when present).
+  const activeDriveMin: number | null = useMemo(() => {
+    if (!legMinutes || legMinutes.length === 0) return null;
+    // Find the routeStops index that matches the active moment.
+    const key = `m-${active}`;
+    const idx = routeStops.findIndex((s) => s.key === key);
+    if (idx <= 0) return null;
+    const m = legMinutes[idx - 1];
+    return typeof m === "number" ? m : null;
+  }, [legMinutes, routeStops, active]);
+  const activeDwellMin = dwellByIndex[active];
 
   return (
     <div className="relative w-full min-h-[100dvh]" style={{ background: "var(--ivory)" }}>
