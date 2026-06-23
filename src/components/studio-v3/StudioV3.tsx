@@ -513,6 +513,9 @@ type Reaction = {
   routeLabels?: ReadonlyArray<string>;
   /** Rhythm bucket used by the pace beat. */
   rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
+  /** Region key — drives origin coords for geographic map projection. */
+  regionKey?: RegionKey;
+
 };
 
 /** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
