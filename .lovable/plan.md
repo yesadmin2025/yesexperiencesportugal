@@ -1,101 +1,90 @@
-# Studio V3 — Logic, Coherence & Premium Polish
+# Plano: Studio V3 Builder — Conversão + Aparência Premium
 
-Scope: tighten the Studio so every beat makes sense (no contradictory add-ons, no mismatched inclusions), the creation feels like something is being **built** in front of the user, and the mobile stops screen stops feeling cluttered.
-
-No invented stops, no invented inclusions, no new prices. Pulling only from the resolved Signature tour (per Studio V3 no-invented-stops rule).
+Foco: remover fricção, aumentar confiança e elevar o "wow" sem inventar factos. Tudo medível via `studio_v3_funnel_events` (já existe).
 
 ---
 
-## 1. Interests counter chip — premium refinement
+## 1. Primeira impressão (Intro → Name → Pickup)
 
-File: `src/components/studio-v3/StudioV3.tsx` (interests phase)
+**Problema atual:** intro é forte mas os primeiros 3 passos têm rhythm desigual; em mobile o header ainda compete com o conteúdo.
 
-- Cap selection at **4** (sweet spot for a 1-day rhythm; matches dwell-budget logic).
-- Replace plain "n selected" with a token-driven chip:
-  - Eyebrow style: `text-[11px] tracking-[0.22em] uppercase`, gold rule, charcoal label.
-  - State machine:
-    - `0` → "Choose up to 4 moments"
-    - `1–3` → "{n} of 4 · room for more"
-    - `4` → "4 of 4 · perfectly paced" + gold check
-  - Disable further taps at 4 (visual: dim + cursor-not-allowed, not a toast).
-- Helper microcopy under the grid: *"Four moments make a day that breathes. Pick what calls you."* (Inter, charcoal/70, single line on ≥360px).
+- **Header invisível nos primeiros 2 beats** — só logo YES centrado + back discreto. Sem progress bar até ao 3º passo (reduz "form anxiety").
+- **Micro-prova social subtil no Intro** — uma linha Georgia italic em gold-soft: "Designed today by 12 travellers" (real count via Supabase, fallback escondido). Aumenta urgência sem ser pushy.
+- **Skeleton premium** durante hidratação (ivory shimmer 600ms) em vez do flash branco que ainda acontece em mobile lento.
 
----
+## 2. Ritmo cinematográfico (entre passos)
 
-## 2. Coherent add-ons + inclusions (the core logic fix)
+**Problema:** vídeos por vezes não casam com a escolha, e algumas transições parecem repetitivas.
 
-Today: a Signature skeleton ships with its **inclusions**, but Tailored/Studio add-ons are filtered only by region + time budget — not by what the skeleton already includes. So a "lunch included" tour can offer a picnic add-on. This is the bug.
+- **Beat audit**: mapear cada combinação (companions × style × pickup) a um clip único; criar matriz em `studio-scene-clips.ts` com fallback inteligente (nunca repetir o último clip).
+- **Crossfade 280ms + Ken Burns lento (scale 1→1.04, 6s)** em todos os beats — sensação de filme, não slideshow.
+- **Frase Georgia italic por beat** já existe mas tornar contextual ao input do user (ex: nome do user, região escolhida) — personalização = retenção.
 
-Fix in `src/data/signatureAddOns.ts` + `src/lib/studio/addon-selection.ts`:
+## 3. Mapa que evolui (Creation Moments)
 
-1. Add a `conflictsWith: string[]` field on each add-on (tags: `lunch`, `picnic`, `wine-tasting`, `tasting-paired`, `boat`, `sunset-drink`, etc.).
-2. Tag each Signature tour's existing inclusions with the same vocabulary in `signatureToursViator.ts` (`inclusionTags: string[]`).
-3. `selectSignatureAddOnsWithBudget(...)` now also filters out any add-on whose `conflictsWith` intersects the tour's `inclusionTags`.
-4. Reveal grouping: split into **"Elevate what's included"** (upgrades to existing inclusions, e.g. premium tasting flight when basic tasting is included) vs **"Add a new chapter"** (genuinely new moments). No more contradictory picnic-next-to-lunch.
+**Problema:** mapa ainda parece estático entre stops; em mobile a info compete com o mapa.
 
-Inclusions on `SignaturePriceCard`:
+- **Pin sequencing** — cada novo stop entra com spring + gold pulse + camera pan suave (já meio implementado, falta refinar timing: 420ms entrance, 600ms pan).
+- **Route polyline com gradient gold→teal** desenhada com `stroke-dasharray` animation (não apenas linha sólida).
+- **Chips drive/dwell** colapsam para um único chip "~2h 40min · 3 stops" em mobile <430px; expandem on-tap.
+- **Legend já tem aria** ✓ — adicionar tooltip "Real driving time" para reforçar confiança.
 
-- Source `inclusions` directly from the resolved Signature tour (already true in code) — audit and remove any hardcoded fallback strings that contradict.
-- Show the **itinerary spine** (stop names, in order, as a 3–5 line "Your day includes" list) above the inclusions, so the price reads against the real day, not a skeleton.
-- Surface dwell summary inline: "≈ {hours}h · {n} stops".
+## 4. Lógica de add-ons e inclusões (CRÍTICO p/ conversão)
 
----
+**Problema reportado:** add-ons sugerem picnic quando o tour já inclui almoço.
 
-## 3. Beats that match intent (imagery + video)
+- **Conflict matrix** em `deriveInclusionTags`: lunch_included → esconde picnic/lunch add-ons; wine_tasting_included → esconde wine_pairing add-on; etc. (parcialmente feito, fazer audit completo).
+- **Inclusion spine no Reveal** já existe ✓ — mostrar inclusões com ícone gold-soft + "Already included" badge.
+- **Add-ons mostram delta de preço E delta de tempo** ("+45 min · +€80") — transparência reduz hesitação.
 
-File: `src/content/studio-scene-clips.ts` + `CreationBeat.tsx`
+## 5. Reveal (momento da verdade)
 
-- Audit current mapping. Replace mismatched clips with intent-aligned ones using existing assets only — no new asset invention, no stock.
-- Mapping rules (deterministic, not random):
-  - `feeling` → ambient region atmosphere (no people pose).
-  - `destination` → landscape signature of that region (Sintra mist, Douro terraces, Alentejo plain).
-  - `companions` → human-scale candid matching party type.
-  - `interests` → per-interest clip (wine = barrel/pour, gastronomy = table, nature = trail, heritage = stone).
-  - `pace` → motion register only (slow pan vs energetic).
-- If no matching clip exists, **fall back to a still editorial image** in the same atmospheric family — never play a contradictory video.
-- Add `prefers-reduced-motion` → always still.
+**Problema:** o reveal é onde se decide a compra — precisa ser o ponto mais cinematográfico.
 
----
+- **Sequência de revelação**: fade-in título 0ms → mapa 200ms → spine 400ms → preço 700ms → CTA 900ms. Stagger premium.
+- **"Your day at a glance"** card sticky no topo em mobile com: duração total, drive total, idioma, guests.
+- **Trust strip** discreto antes do CTA: "Real itinerary · Local designer review · Free cancellation 48h". Texto pequeno (11px), tracking wide, charcoal-soft.
+- **Preço com âncora**: mostrar tier "Most chosen" com gold underline em vez de só listar 3 tiers iguais.
 
-## 4. Map that builds itself (the "creation" moment)
+## 6. CTA & Checkout
 
-File: `src/components/studio-v3/StudioV3SignatureMap.tsx` + `LivingJourneyPanel.tsx`
+- **"Say YES" button** com gold sheen sweep on hover (já existe nas home) — replicar no Studio.
+- **Microcopy abaixo do CTA**: "Secure your day · Stripe-protected · Cancel free for 48h" (já em test mode).
+- **Sticky CTA em mobile** após scroll do reveal — não perder o momento.
+- **Exit-intent suave** (desktop) ou scroll-up no mobile → "Save this day" (email capture) em vez de deixar abandonar.
 
-Right now the map is mostly static between choices. Make it the protagonist of the build:
+## 7. Acessibilidade & performance (afeta SEO + conversão)
 
-- **Progressive reveal:** stops appear one-by-one as the user advances phases (region pin first, then anchor stop, then interest-matched stops, then drive lines).
-- **Drive line draws:** when a new stop joins, the connecting polyline animates from prev → new over 600ms (mapbox `setData` with a tweened coordinate slice). Capped, reduced-motion safe.
-- **Camera ease:** `flyTo` with `duration: 900, curve: 1.4` to frame the growing route — no jump cuts.
-- **Subtle pulse** on the newest pin for ~1.2s, then settles.
-- This replaces the awkward "image/video that makes no sense" beat on the stops phase — the map *is* the visual.
+- Auditar contraste de todos os chips gold-soft sobre ivory (alguns falham 4.5:1).
+- Preload do clip do próximo beat assim que user faz seleção (reduzir buffering).
+- Lighthouse mobile target: LCP <2.5s, CLS <0.05 no /studio-v3.
+
+## 8. Telemetria & A/B
+
+- Eventos novos: `beat_skip` (user clica continue <2s = beat não engaging), `addon_view_time`, `reveal_scroll_depth`.
+- Dashboard `/admin/studio-v3-funnel` já existe — adicionar **drop-off heatmap por passo** + tempo médio por beat.
+- A/B candidatos: (a) número de add-ons mostrados (3 vs 5), (b) ordem do tier picker (cheapest first vs "most chosen" first), (c) sticky CTA on/off.
 
 ---
 
-## 5. Decluttered mobile stops screen (pre-reveal)
+## Ordem de execução proposta (3 batches)
 
-File: `src/components/studio-v3/StudioV3.tsx` (stops phase) + `LivingJourneyPanel.tsx`
+**Batch A — Quick wins (alto impacto, baixo risco):**
+1. Conflict matrix completa de add-ons (#4)
+2. Trust strip + microcopy no CTA (#6)
+3. Sticky CTA mobile (#6)
+4. Stagger sequence no Reveal (#5)
 
-Symptom: header + chips + timeline + CTA all stack on top of the map.
+**Batch B — Premium polish:**
+5. Header invisível primeiros 2 beats (#1)
+6. Beat audit + crossfade Ken Burns (#2)
+7. Chips colapsáveis no mapa mobile (#3)
+8. Inclusion spine com badges (#4)
 
-- Collapse the top into a single thin bar: phase title (Montserrat 14, charcoal) + tiny progress dots. Remove the secondary subtitle in this phase only.
-- Move the timeline into a **bottom sheet** (peek 88px showing "≈ {h}h · {n} stops · €{from}", drag-up for full list). Map gets full canvas.
-- Floating CTA: single primary pill "See your day" bottom-right, 48px tall, gold sheen on hover (existing `.home-energy` token, scoped here).
-- Hide the dwell/over-budget note inside the bottom sheet header; only surface as a soft gold dot on the bar when over budget.
+**Batch C — Conversion machine:**
+9. Preço com "Most chosen" anchor (#5)
+10. Eventos novos + heatmap admin (#8)
+11. Email capture exit-intent (#6)
+12. Preload do próximo clip (#7)
 
----
-
-## 6. Verification
-
-- TS check.
-- Mobile Playwright walk (393×852): interests cap, addon-vs-inclusion conflict assertion, map reveal screenshot at each phase, stops phase declutter screenshot.
-- Telemetry: log `addons.filtered_by_inclusion` count + `map.stops_revealed` sequence for future audits.
-
----
-
-## Out of scope (ask before doing)
-
-- Any new tour, stop, partner, price, or inclusion text.
-- Stripe changes.
-- Builder (non-Signature) flow — this pass is Studio V3 over Signature skeletons only; Builder gets its own pass next.
-
-Ship in this order so each step is independently verifiable: **2 → 5 → 4 → 3 → 1 → 6**.
+Queres que arranque pelo **Batch A** já?
