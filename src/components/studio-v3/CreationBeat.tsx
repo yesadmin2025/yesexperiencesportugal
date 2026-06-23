@@ -11,6 +11,9 @@
 
 import { useState } from "react";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+
 
 interface AtmosphereBeatProps {
   /** Existing Studio V3 atmospheric image (must already be imported upstream). */
