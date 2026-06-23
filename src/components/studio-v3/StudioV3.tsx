@@ -3512,7 +3512,11 @@ function ReactionOverlay({
   const [clickThrough, setClickThrough] = useState(false);
   useEffect(() => {
     setClickThrough(false);
-    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.55));
+    // Hold pointer-events on the overlay until the keyframe fade-out window
+    // begins (~94% of `hold`). Prevents the previous beat from bleeding into
+    // the next question — the next phase only becomes interactive when the
+    // overlay text is already fading away.
+    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.92));
     return () => window.clearTimeout(t);
   }, [hold, reaction]);
   const passThroughStyle = clickThrough ? { pointerEvents: "none" as const } : {};
