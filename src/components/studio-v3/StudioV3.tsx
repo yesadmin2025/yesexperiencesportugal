@@ -3446,7 +3446,7 @@ function StoryboardHandoff({
             }),
             region: skeletonTour?.region ?? null,
           });
-          const totalMin = (sum.dwellMin ?? 0) + (sum.driveMin ?? 0);
+          const totalMin = sum.totalMin ?? 0;
           return totalMin > 0 ? Math.round((totalMin / 60) * 10) / 10 : null;
         })()}
         onGuestsChange={(n) =>
