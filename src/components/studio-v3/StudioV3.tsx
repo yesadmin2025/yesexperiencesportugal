@@ -2955,7 +2955,7 @@ function StoryboardHandoff({
           <RevealRouteMap
             editedStops={editedStops}
             resolved={resolved}
-            skeletonTour={skeletonTour}
+            skeletonTour={skeletonTour ?? null}
             statePickup={state.pickup}
             revealedStops={revealedStops}
           />
