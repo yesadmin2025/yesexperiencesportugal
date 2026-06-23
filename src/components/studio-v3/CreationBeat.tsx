@@ -238,15 +238,16 @@ export function MapBeat({
   // Map regionKey → silhouette region so the Portugal anchor appears
   // even on the Pickup beat (mode="origin", no stops yet).
   const silhouetteRegion: SilhouetteRegion =
-    regionKey === "alentejo" || regionKey === "evora-alentejo" || regionKey === "comporta-troia"
+    regionKey === "alentejo"
       ? "alentejo"
-      : regionKey === "arrabida-setubal" || regionKey === "arrabida"
+      : regionKey === "arrabida"
         ? "arrabida"
-        : regionKey === "lisbon" || regionKey === "sintra-cascais" || regionKey === "lisbon-sintra-cascais"
+        : regionKey === "lisbon-coast"
           ? "lisbon-coast"
-          : regionKey === "centro" || regionKey === "central-portugal"
+          : regionKey === "centro"
             ? "centro"
             : null;
+
 
 
   return (
