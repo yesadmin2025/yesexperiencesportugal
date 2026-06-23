@@ -24,6 +24,11 @@ interface ChoiceGridProps<T extends string> {
   onToggle?: (id: T) => void;
   mode?: "single" | "multi";
   columns?: 1 | 2;
+  /**
+   * Multi-select cap. When reached, unselected tiles render disabled (dimmed,
+   * not interactive) so the user sees the ceiling without a toast.
+   */
+  maxSelected?: number;
 }
 
 export function ChoiceGrid<T extends string>({
@@ -34,8 +39,13 @@ export function ChoiceGrid<T extends string>({
   onToggle,
   mode = "single",
   columns = 2,
+  maxSelected,
 }: ChoiceGridProps<T>) {
   const isMulti = mode === "multi";
+  const atCap =
+    isMulti && typeof maxSelected === "number" && Array.isArray(values)
+      ? values.length >= maxSelected
+      : false;
   return (
     <ul
       className={`mt-8 grid w-full max-w-[520px] gap-3 ${
