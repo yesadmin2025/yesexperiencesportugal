@@ -219,6 +219,36 @@ export function MapBeat({
       ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
       : null);
 
+  // Real OSRM-backed minutes per leg (origin → s0 → s1 …). Falls back
+  // silently to haversine inside StudioV3SignatureMap while loading or
+  // when offline. Only fires when we have origin + all visible coords.
+  const legStops: RouteLegStop[] | null =
+    originCoord && stopsDetailed.every((d) => typeof d.lat === "number" && typeof d.lng === "number")
+      ? [
+          { key: "origin", lat: originCoord.lat, lng: originCoord.lng },
+          ...stopsDetailed.slice(0, activeCount).map((d, i) => ({
+            key: `s${i}:${d.label}`,
+            lat: d.lat as number,
+            lng: d.lng as number,
+          })),
+        ]
+      : null;
+  const { legMinutes } = useRouteLegMinutes(legStops, !!legStops && legStops.length >= 2);
+
+  // Map regionKey → silhouette region so the Portugal anchor appears
+  // even on the Pickup beat (mode="origin", no stops yet).
+  const silhouetteRegion: SilhouetteRegion =
+    regionKey === "alentejo" || regionKey === "evora-alentejo" || regionKey === "comporta-troia"
+      ? "alentejo"
+      : regionKey === "arrabida-setubal" || regionKey === "arrabida"
+        ? "arrabida"
+        : regionKey === "lisbon" || regionKey === "sintra-cascais" || regionKey === "lisbon-sintra-cascais"
+          ? "lisbon-coast"
+          : regionKey === "centro" || regionKey === "central-portugal"
+            ? "centro"
+            : null;
+
+
   return (
     <div
       className="relative w-full h-full flex items-center justify-center px-5"
