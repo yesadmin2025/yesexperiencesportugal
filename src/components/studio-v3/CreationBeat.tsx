@@ -162,7 +162,15 @@ function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
   }
 }
 
-export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line }: MapBeatProps) {
+export function MapBeat({
+  mode,
+  originLabel,
+  routeLabels,
+  regionKey,
+  rhythm,
+  eyebrow,
+  line,
+}: MapBeatProps) {
   // Pin reveal count per mode/rhythm — drives the schematic activeCount.
   const labels = routeLabels ?? [];
   const activeCount =
@@ -184,6 +192,25 @@ export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line 
               ? "Immersive"
               : null
       : null;
+
+  // Resolve real coords for each label (catalog lookup). Falls back to
+  // schematic mode automatically if any label can't be geo-resolved.
+  const stopsDetailed = labels.map((l) => {
+    const geo = lookupStopGeo(l);
+    if (geo) {
+      return {
+        label: l,
+        lat: geo.lat,
+        lng: geo.lng,
+        dwellMin: geo.dwellMin,
+        kind: geo.kind,
+      };
+    }
+    return { label: l };
+  });
+  const originCoord = regionKey && REGION_ORIGIN[regionKey]
+    ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
+    : null;
 
   return (
     <div
@@ -209,6 +236,8 @@ export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line 
         <div className="mt-5 mx-auto" style={{ animation: "studioV3RiseIn 680ms ease-out both" }}>
           <StudioV3SignatureMap
             stops={labels.length > 0 ? labels : originLabel ? [originLabel] : []}
+            stopsDetailed={stopsDetailed}
+            originCoord={originCoord}
             originLabel={originLabel ?? null}
             activeCount={activeCount}
             paceLabel={paceLabel}
@@ -220,6 +249,7 @@ export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line 
             }
           />
         </div>
+
 
         {/* Real route labels caption — quiet ivory row. */}
         {activeCount > 0 && labels.length > 0 ? (
