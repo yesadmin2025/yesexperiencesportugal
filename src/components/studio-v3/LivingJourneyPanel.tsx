@@ -116,7 +116,42 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const routeLine = resolved?.suggestedRouteLabel ?? null;
   const routePoints = (resolved?.routePoints ?? []).slice(0, 4);
   const moments = routePoints.map((p) => p.label);
-  const timelineMoments = routePoints.map((p) => ({ label: p.label, story: p.story }));
+  const timelineMoments = routePoints.map((p, i) => {
+    const kind = inferKind(p.label);
+    const prev = i > 0 ? routePoints[i - 1] : null;
+    const driveMinBefore =
+      prev && prev.lat != null && prev.lng != null && p.lat != null && p.lng != null
+        ? haversineDriveMinutes(
+            { lat: prev.lat, lng: prev.lng },
+            { lat: p.lat, lng: p.lng },
+          )
+        : null;
+    return {
+      label: p.label,
+      story: p.story,
+      durationMin: stopDurationMinutes({ label: p.label, kind }),
+      kindLabel: kind ? kindLabel(kind) : null,
+      driveMinBefore,
+    };
+  });
+
+  // Day summary against the regional rhythm — feeds the soft over-budget note.
+  const daySummary = useMemo(
+    () =>
+      summarizeDay({
+        stops: routePoints.map((p) => ({
+          label: p.label,
+          lat: p.lat ?? null,
+          lng: p.lng ?? null,
+          kind: inferKind(p.label),
+        })),
+        region: resolved?.skeletonTourKey ? null : null, // region resolved below
+      }),
+    [routePoints, resolved?.skeletonTourKey],
+  );
+  const overBudgetNote = daySummary.overBudget
+    ? "This day is shaping into a long one. Consider easing the pace before checkout."
+    : null;
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
