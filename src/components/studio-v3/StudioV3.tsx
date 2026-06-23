@@ -516,6 +516,9 @@ type Reaction = {
   rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
   /** Region key — drives origin coords for geographic map projection. */
   regionKey?: RegionKey;
+  /** Explicit origin lat/lng — overrides regionKey-derived origin. */
+  originCoord?: { lat: number; lng: number } | null;
+
 
 };
 
