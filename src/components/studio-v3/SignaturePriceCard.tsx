@@ -18,6 +18,7 @@ import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
   selectSignatureAddOns,
+  selectSignatureAddOnsWithBudget,
   regionBucket,
   LISBON_SUBREGION_BY_TOUR_ID,
   type SignatureAddOn,
@@ -67,6 +68,13 @@ export interface SignaturePriceCardProps {
    * persisting. Does not affect the rest of the app.
    */
   previewTiers?: import("@/data/signatureToursViator").PriceTiersEUR | null;
+  /**
+   * Remaining minutes in the day budget after stops + drive legs. When
+   * provided, add-ons that wouldn't fit are kept visible but dimmed and
+   * locked, so the traveller can see *why* an upgrade isn't offered without
+   * feeling the day shrinks invisibly.
+   */
+  remainingMinutes?: number | null;
 }
 
 export function SignaturePriceCard({
@@ -81,6 +89,7 @@ export function SignaturePriceCard({
   showAddOns = true,
   onGuestsChange,
   previewTiers = null,
+  remainingMinutes = null,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
