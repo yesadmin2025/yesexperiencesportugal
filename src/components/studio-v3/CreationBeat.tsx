@@ -13,6 +13,8 @@ import { useState } from "react";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
+import type { SilhouetteRegion } from "./PortugalSilhouette";
 
 
 interface AtmosphereBeatProps {
@@ -217,6 +219,37 @@ export function MapBeat({
       ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
       : null);
 
+  // Real OSRM-backed minutes per leg (origin → s0 → s1 …). Falls back
+  // silently to haversine inside StudioV3SignatureMap while loading or
+  // when offline. Only fires when we have origin + all visible coords.
+  const legStops: RouteLegStop[] | null =
+    originCoord && stopsDetailed.every((d) => typeof d.lat === "number" && typeof d.lng === "number")
+      ? [
+          { key: "origin", lat: originCoord.lat, lng: originCoord.lng },
+          ...stopsDetailed.slice(0, activeCount).map((d, i) => ({
+            key: `s${i}:${d.label}`,
+            lat: d.lat as number,
+            lng: d.lng as number,
+          })),
+        ]
+      : null;
+  const { legMinutes } = useRouteLegMinutes(legStops, !!legStops && legStops.length >= 2);
+
+  // Map regionKey → silhouette region so the Portugal anchor appears
+  // even on the Pickup beat (mode="origin", no stops yet).
+  const silhouetteRegion: SilhouetteRegion =
+    regionKey === "alentejo"
+      ? "alentejo"
+      : regionKey === "arrabida"
+        ? "arrabida"
+        : regionKey === "lisbon-coast"
+          ? "lisbon-coast"
+          : regionKey === "centro"
+            ? "centro"
+            : null;
+
+
+
   return (
     <div
       className="relative w-full h-full flex items-center justify-center px-5"
@@ -247,6 +280,8 @@ export function MapBeat({
             activeCount={activeCount}
             paceLabel={paceLabel}
             aspectRatio="16 / 11"
+            legMinutes={legMinutes}
+            silhouetteRegion={silhouetteRegion}
             ariaLabel={
               mode === "origin"
                 ? `The day begins in ${originLabel ?? "the chosen pickup"}.`
