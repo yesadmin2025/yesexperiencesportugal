@@ -135,6 +135,8 @@ interface MapBeatProps {
   originLabel?: string | null;
   /** Real route labels from resolveStudioV3Route. Never invented. */
   routeLabels?: ReadonlyArray<string>;
+  /** Optional region key — drives origin coords for geographic projection. */
+  regionKey?: RegionKey | null;
   /** Drives pin count cadence for mode="pace". */
   rhythm?: "slow" | "balanced" | "full" | "immersive" | null;
   /** Uppercase gold eyebrow. */
@@ -142,6 +144,7 @@ interface MapBeatProps {
   /** One Georgia italic line. */
   line: string;
 }
+
 
 /** Pin count by rhythm — slow = fewer, full/immersive = richer. */
 function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
