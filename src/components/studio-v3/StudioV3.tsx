@@ -34,6 +34,7 @@ import { QualityScore } from "./QualityScore";
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 import { trackStep } from "@/lib/studio-v3-funnel";
+import { inferKind, summarizeDay } from "@/lib/studio/timing";
 import { PartialReveal } from "./PartialReveal";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
@@ -3249,6 +3250,20 @@ function StoryboardHandoff({
         guests={state.guests}
         included={skeletonTour?.included ?? []}
         showAddOns={true}
+        remainingMinutes={
+          summarizeDay({
+            stops: editedStops.map((p) => {
+              const ep = p as { label: string; story: string; lat?: number | null; lng?: number | null };
+              return {
+                label: ep.label,
+                lat: ep.lat ?? null,
+                lng: ep.lng ?? null,
+                kind: inferKind(ep.label),
+              };
+            }),
+            region: skeletonTour?.region ?? null,
+          }).remainingMin
+        }
         onGuestsChange={(n) =>
           onStateChange((s) => ({
             ...s,

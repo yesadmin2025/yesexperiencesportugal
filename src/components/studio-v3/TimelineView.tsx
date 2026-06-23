@@ -10,6 +10,12 @@
 export interface TimelineMoment {
   label: string;
   story?: string | null;
+  /** Minutes the traveller spends at this stop (e.g. 90). */
+  durationMin?: number | null;
+  /** Short label for the kind ("tasting", "table", "viewpoint"…). */
+  kindLabel?: string | null;
+  /** Drive minutes from the previous moment to this one. Omit for the first. */
+  driveMinBefore?: number | null;
 }
 
 export interface TimelineViewProps {
@@ -18,9 +24,23 @@ export interface TimelineViewProps {
   durationLabel?: string | null;
   /** Origin label (e.g. "Lisbon hotel") so the timeline frames the day. */
   originLabel?: string | null;
+  /** Soft note shown when the composed day tips past the regional rhythm. */
+  overBudgetNote?: string | null;
 }
 
-export function TimelineView({ moments, durationLabel, originLabel }: TimelineViewProps) {
+function formatMinutes(min: number): string {
+  if (min < 60) return `${Math.round(min)} min`;
+  const h = Math.floor(min / 60);
+  const m = Math.round(min - h * 60);
+  return m === 0 ? `${h}h` : `${h}h ${m}m`;
+}
+
+export function TimelineView({
+  moments,
+  durationLabel,
+  originLabel,
+  overBudgetNote,
+}: TimelineViewProps) {
   if (moments.length === 0) {
     return (
       <p
@@ -97,12 +117,38 @@ export function TimelineView({ moments, durationLabel, originLabel }: TimelineVi
             >
               {i + 1}
             </span>
-            <p
-              className="text-[12px] font-semibold leading-snug"
-              style={{ color: "var(--charcoal)" }}
-            >
-              {m.label}
-            </p>
+            {m.driveMinBefore && m.driveMinBefore >= 5 ? (
+              <p
+                className="mb-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold tabular-nums"
+                style={{ color: "color-mix(in oklab, var(--teal) 75%, transparent)" }}
+              >
+                Drive · {formatMinutes(m.driveMinBefore)}
+              </p>
+            ) : null}
+            <div className="flex items-baseline justify-between gap-3">
+              <p
+                className="text-[12px] font-semibold leading-snug"
+                style={{ color: "var(--charcoal)" }}
+              >
+                {m.label}
+              </p>
+              {m.durationMin ? (
+                <span
+                  className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-semibold tabular-nums"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                >
+                  ≈ {formatMinutes(m.durationMin)}
+                </span>
+              ) : null}
+            </div>
+            {m.kindLabel ? (
+              <p
+                className="text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--gold) 85%, transparent)" }}
+              >
+                {m.kindLabel}
+              </p>
+            ) : null}
             {m.story ? (
               <p
                 className="mt-0.5 text-[11.5px] leading-snug"
@@ -138,6 +184,18 @@ export function TimelineView({ moments, durationLabel, originLabel }: TimelineVi
           </li>
         ) : null}
       </ol>
+      {overBudgetNote ? (
+        <p
+          data-testid="studio-v3-timeline-overbudget"
+          className="mt-3 text-[11px] leading-snug italic"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "color-mix(in oklab, var(--gold) 78%, transparent)",
+          }}
+        >
+          {overBudgetNote}
+        </p>
+      ) : null}
     </div>
   );
 }

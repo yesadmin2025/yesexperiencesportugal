@@ -25,6 +25,13 @@ import { X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { composeJourneyTitle, getOptionLabel, resolveStudioV3Route } from "./curation";
 import {
+  haversineDriveMinutes,
+  inferKind,
+  kindLabel,
+  stopDurationMinutes,
+  summarizeDay,
+} from "@/lib/studio/timing";
+import {
   COMPANIONS,
   FEELINGS,
   INTERESTS,
@@ -109,7 +116,47 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const routeLine = resolved?.suggestedRouteLabel ?? null;
   const routePoints = (resolved?.routePoints ?? []).slice(0, 4);
   const moments = routePoints.map((p) => p.label);
-  const timelineMoments = routePoints.map((p) => ({ label: p.label, story: p.story }));
+  const timelineMoments = routePoints.map((p, i) => {
+    const kind = inferKind(p.label);
+    const prev = i > 0 ? routePoints[i - 1] : null;
+    const driveMinBefore =
+      prev && prev.lat != null && prev.lng != null && p.lat != null && p.lng != null
+        ? haversineDriveMinutes(
+            { lat: prev.lat, lng: prev.lng },
+            { lat: p.lat, lng: p.lng },
+          )
+        : null;
+    return {
+      label: p.label,
+      story: p.story,
+      durationMin: stopDurationMinutes({ label: p.label, kind }),
+      kindLabel: kind ? kindLabel(kind) : null,
+      driveMinBefore,
+    };
+  });
+
+  const resolvedTour = useMemo(() => {
+    if (!resolved?.skeletonTourKey) return null;
+    return signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null;
+  }, [resolved?.skeletonTourKey]);
+
+  // Day summary against the regional rhythm — feeds the soft over-budget note.
+  const daySummary = useMemo(
+    () =>
+      summarizeDay({
+        stops: routePoints.map((p) => ({
+          label: p.label,
+          lat: p.lat ?? null,
+          lng: p.lng ?? null,
+          kind: inferKind(p.label),
+        })),
+        region: resolvedTour?.region ?? null,
+      }),
+    [routePoints, resolvedTour?.region],
+  );
+  const overBudgetNote = daySummary.overBudget
+    ? "This day is shaping into a long one. Consider easing the pace before checkout."
+    : null;
   const investmentLabel = state.investment
     ? getOptionLabel(INVESTMENT_TIERS, state.investment)
     : null;
@@ -118,10 +165,6 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   // -------- Scope strip (reference-builder DNA) --------
   // Pull the real Signature behind the resolved route so we can show
   // region · stops · duration · "from €N / guest" — never invented.
-  const resolvedTour = useMemo(() => {
-    if (!resolved?.skeletonTourKey) return null;
-    return signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null;
-  }, [resolved?.skeletonTourKey]);
 
   const scopeRegion = resolvedTour?.region ?? null;
   const scopeDuration = resolvedTour?.durationHours ?? null;
@@ -345,6 +388,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               rhythm={state.rhythm}
               companions={state.companions}
               fullState={state}
+              overBudgetNote={overBudgetNote}
             />,
 
             document.body,
@@ -360,7 +404,7 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
-  timelineMoments: Array<{ label: string; story?: string | null }>;
+  timelineMoments: import("./TimelineView").TimelineMoment[];
   durationLabel: string | null;
   originLabel: string | null;
   paceLabel: string | null;
@@ -383,6 +427,7 @@ interface DrawerProps {
   rhythm: import("./types").Rhythm | null;
   companions: import("./types").Companions | null;
   fullState: StudioV3State;
+  overBudgetNote: string | null;
 }
 
 function JourneyDraftDrawer({
@@ -413,6 +458,7 @@ function JourneyDraftDrawer({
   rhythm,
   companions,
   fullState,
+  overBudgetNote,
 }: DrawerProps) {
   const totalPins = Math.max(0, Math.min(4, moments.length));
   const [view, setView] = useState<"story" | "timeline" | "map">("story");
@@ -784,6 +830,7 @@ function JourneyDraftDrawer({
               moments={timelineMoments}
               durationLabel={durationLabel}
               originLabel={originLabel}
+              overBudgetNote={overBudgetNote}
             />
           ) : null}
 
