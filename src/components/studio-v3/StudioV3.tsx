@@ -77,6 +77,7 @@ import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 
 
 // Lazy — Leaflet ships only when the reveal mounts.
