@@ -3252,12 +3252,15 @@ function StoryboardHandoff({
         showAddOns={true}
         remainingMinutes={
           summarizeDay({
-            stops: editedStops.map((p) => ({
-              label: p.label,
-              lat: p.lat ?? null,
-              lng: p.lng ?? null,
-              kind: inferKind(p.label),
-            })),
+            stops: editedStops.map((p) => {
+              const ep = p as { label: string; story: string; lat?: number | null; lng?: number | null };
+              return {
+                label: ep.label,
+                lat: ep.lat ?? null,
+                lng: ep.lng ?? null,
+                kind: inferKind(ep.label),
+              };
+            }),
             region: skeletonTour?.region ?? null,
           }).remainingMin
         }
