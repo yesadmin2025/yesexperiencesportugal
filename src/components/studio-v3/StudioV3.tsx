@@ -3584,11 +3584,21 @@ function ReactionOverlay({
 
   // Map-beat — dark editorial map panel with origin / route / numbered
   // pins. Used between Pickup, Interests and Rhythm choices.
+  // NOTE: must NOT be a <button>: <MapBeat> renders interactive pin
+  // <button>s inside, and button-in-button is invalid HTML (React
+  // hydration error). Use a role="button" div instead.
   if (reaction.kind === "map-beat") {
     return (
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={onDismiss}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onDismiss();
+          }
+        }}
         aria-label="Continue"
         key={`${reaction.eyebrow}-${reaction.message}`}
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
@@ -3616,7 +3626,7 @@ function ReactionOverlay({
             100% { opacity: 0; }
           }
         `}</style>
-      </button>
+      </div>
     );
   }
 
