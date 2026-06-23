@@ -426,6 +426,7 @@ interface DrawerProps {
   rhythm: import("./types").Rhythm | null;
   companions: import("./types").Companions | null;
   fullState: StudioV3State;
+  overBudgetNote: string | null;
 }
 
 function JourneyDraftDrawer({
