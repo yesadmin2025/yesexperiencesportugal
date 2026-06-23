@@ -47,7 +47,33 @@ import { AffinityBars } from "./AffinityBars";
 import { SmartRecommendation } from "./SmartRecommendation";
 import { QualityScore } from "./QualityScore";
 import { signatureTours } from "@/data/signatureTours";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { regionalVoiceFor } from "./regionalVoice";
+
+/** Local copy of the Signature-region → RegionKey mapping. Keeps this
+ *  panel decoupled from StudioV3.tsx while preserving the same logic. */
+function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
+  const r = (region ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("comporta") || r.includes("évora") || r.includes("evora"))
+    return "alentejo";
+  if (
+    r.includes("centro") ||
+    r.includes("coimbra") ||
+    r.includes("fátima") ||
+    r.includes("nazaré") ||
+    r.includes("óbidos")
+  )
+    return "centro";
+  if (
+    r.includes("sintra") ||
+    r.includes("cascais") ||
+    r.includes("cabo da roca") ||
+    r.includes("lisbon coast")
+  )
+    return "lisbon-coast";
+  return "arrabida";
+}
+
 
 interface LivingJourneyPanelProps {
   state: StudioV3State;
@@ -366,7 +392,18 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               dna={dna}
               routeLine={routeLine}
               moments={moments}
+              momentsDetailed={routePoints.map((p) => ({
+                label: p.label,
+                lat: p.lat ?? null,
+                lng: p.lng ?? null,
+              }))}
+              originCoord={(() => {
+                const rk = tourRegionToRegionKey(resolvedTour?.region ?? null);
+                const o = REGION_ORIGIN[rk];
+                return o ? { lat: o.lat, lng: o.lng } : null;
+              })()}
               timelineMoments={timelineMoments}
+
               durationLabel={scopeDuration}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
@@ -404,7 +441,10 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
+  momentsDetailed: Array<{ label: string; lat?: number | null; lng?: number | null }>;
+  originCoord: { lat: number; lng: number } | null;
   timelineMoments: import("./TimelineView").TimelineMoment[];
+
   durationLabel: string | null;
   originLabel: string | null;
   paceLabel: string | null;
@@ -436,7 +476,10 @@ function JourneyDraftDrawer({
   dna,
   routeLine,
   moments,
+  momentsDetailed,
+  originCoord,
   timelineMoments,
+
   durationLabel,
   originLabel,
   paceLabel,
@@ -839,12 +882,15 @@ function JourneyDraftDrawer({
             <div className="relative mt-3">
               <StudioV3SignatureMap
                 stops={moments}
+                stopsDetailed={momentsDetailed}
+                originCoord={originCoord}
                 activeCount={activePins}
                 originLabel={originLabel}
                 paceLabel={paceLabel}
                 ariaLabel="Your journey, drawing live"
                 className="rounded-[4px] border"
               />
+
               <p
                 className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold pointer-events-none"
                 style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}

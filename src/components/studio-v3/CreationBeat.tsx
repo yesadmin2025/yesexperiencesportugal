@@ -11,6 +11,9 @@
 
 import { useState } from "react";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+
 
 interface AtmosphereBeatProps {
   /** Existing Studio V3 atmospheric image (must already be imported upstream). */
@@ -132,6 +135,8 @@ interface MapBeatProps {
   originLabel?: string | null;
   /** Real route labels from resolveStudioV3Route. Never invented. */
   routeLabels?: ReadonlyArray<string>;
+  /** Optional region key — drives origin coords for geographic projection. */
+  regionKey?: RegionKey | null;
   /** Drives pin count cadence for mode="pace". */
   rhythm?: "slow" | "balanced" | "full" | "immersive" | null;
   /** Uppercase gold eyebrow. */
@@ -139,6 +144,7 @@ interface MapBeatProps {
   /** One Georgia italic line. */
   line: string;
 }
+
 
 /** Pin count by rhythm — slow = fewer, full/immersive = richer. */
 function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
@@ -156,7 +162,15 @@ function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
   }
 }
 
-export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line }: MapBeatProps) {
+export function MapBeat({
+  mode,
+  originLabel,
+  routeLabels,
+  regionKey,
+  rhythm,
+  eyebrow,
+  line,
+}: MapBeatProps) {
   // Pin reveal count per mode/rhythm — drives the schematic activeCount.
   const labels = routeLabels ?? [];
   const activeCount =
@@ -178,6 +192,25 @@ export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line 
               ? "Immersive"
               : null
       : null;
+
+  // Resolve real coords for each label (catalog lookup). Falls back to
+  // schematic mode automatically if any label can't be geo-resolved.
+  const stopsDetailed = labels.map((l) => {
+    const geo = lookupStopGeo(l);
+    if (geo) {
+      return {
+        label: l,
+        lat: geo.lat,
+        lng: geo.lng,
+        dwellMin: geo.dwellMin,
+        kind: geo.kind,
+      };
+    }
+    return { label: l };
+  });
+  const originCoord = regionKey && REGION_ORIGIN[regionKey]
+    ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
+    : null;
 
   return (
     <div
@@ -203,6 +236,8 @@ export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line 
         <div className="mt-5 mx-auto" style={{ animation: "studioV3RiseIn 680ms ease-out both" }}>
           <StudioV3SignatureMap
             stops={labels.length > 0 ? labels : originLabel ? [originLabel] : []}
+            stopsDetailed={stopsDetailed}
+            originCoord={originCoord}
             originLabel={originLabel ?? null}
             activeCount={activeCount}
             paceLabel={paceLabel}
@@ -214,6 +249,7 @@ export function MapBeat({ mode, originLabel, routeLabels, rhythm, eyebrow, line 
             }
           />
         </div>
+
 
         {/* Real route labels caption — quiet ivory row. */}
         {activeCount > 0 && labels.length > 0 ? (

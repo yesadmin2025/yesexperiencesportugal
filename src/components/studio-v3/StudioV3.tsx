@@ -76,6 +76,8 @@ const SIGNATURE_MIN_PRICE_EUR: number = (() => {
 import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
+import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+
 
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
@@ -511,6 +513,9 @@ type Reaction = {
   routeLabels?: ReadonlyArray<string>;
   /** Rhythm bucket used by the pace beat. */
   rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
+  /** Region key — drives origin coords for geographic map projection. */
+  regionKey?: RegionKey;
+
 };
 
 /** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
@@ -1166,8 +1171,12 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
+          regionKey: tourRegionToRegionKey(
+            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
+          ),
           holdMs: 6200,
         });
+
         return;
       }
     }
@@ -1226,8 +1235,12 @@ export function StudioV3() {
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
+          regionKey: tourRegionToRegionKey(
+            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
+          ),
           holdMs: 6000,
         });
+
         return;
       }
     }
@@ -1321,9 +1334,13 @@ export function StudioV3() {
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
+          regionKey: tourRegionToRegionKey(
+            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
+          ),
           nextPhase: next,
           holdMs: 6200,
         });
+
         return;
       }
     }
@@ -2859,13 +2876,47 @@ function StoryboardHandoff({
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
         <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
-          <StudioV3SignatureMap
-            stops={editedStops.map((s) => s.label)}
-            activeCount={revealedStops}
-            originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
-            aspectRatio="16 / 11"
-            ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
-          />
+          {(() => {
+            // Build geo-detailed stops for the cinematic map.
+            // Priority: resolved.routePoints (carry lat/lng from curation) →
+            // catalog lookup (lookupStopGeo) → label-only fallback.
+            const byLabel = new Map(
+              resolved.routePoints.map((p) => [p.label.toLowerCase(), p]),
+            );
+            const stopsDetailed = editedStops.map((s) => {
+              const rp = byLabel.get(s.label.toLowerCase());
+              if (rp && rp.lat != null && rp.lng != null) {
+                return { label: s.label, lat: rp.lat, lng: rp.lng };
+              }
+              const geo = lookupStopGeo(s.label);
+              if (geo) {
+                return {
+                  label: s.label,
+                  lat: geo.lat,
+                  lng: geo.lng,
+                  dwellMin: geo.dwellMin,
+                  kind: geo.kind,
+                };
+              }
+              return { label: s.label };
+            });
+            const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
+            const originCoord = REGION_ORIGIN[rk]
+              ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
+              : null;
+            return (
+              <StudioV3SignatureMap
+                stops={editedStops.map((s) => s.label)}
+                stopsDetailed={stopsDetailed}
+                originCoord={originCoord}
+                activeCount={revealedStops}
+                originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
+                aspectRatio="16 / 11"
+                ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
+              />
+            );
+          })()}
+
           {/* Numbered legend — full names live here so the map stays clean
               and labels never overlap at 393px mobile. */}
           <ol
@@ -3551,10 +3602,12 @@ function ReactionOverlay({
           mode={reaction.mapMode ?? "origin"}
           originLabel={reaction.originLabel}
           routeLabels={reaction.routeLabels}
+          regionKey={reaction.regionKey ?? null}
           rhythm={reaction.rhythmBucket ?? null}
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
+
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }

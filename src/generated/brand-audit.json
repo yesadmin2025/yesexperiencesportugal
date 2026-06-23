@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T13:58:26.734Z",
+  "generatedAt": "2026-06-23T14:06:07.364Z",
   "filesScanned": 406,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1511,7 +1511,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 357,
+      "line": 377,
       "col": 76,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1520,7 +1520,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 367,
+      "line": 387,
       "col": 47,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1529,7 +1529,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 421,
+      "line": 441,
       "col": 74,
       "raw": "#050d0f",
       "normalized": "#050d0f",

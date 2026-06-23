@@ -1,29 +1,46 @@
-// Studio V3 — Signature Map (shared cinematic map language).
+// Studio V3 — Signature Map.
 //
-// Visually mirrors the homepage StudioLivePreview map stage so that
-// between-question creation beats AND the final Signature Story reveal
-// feel like the same artefact. We do NOT import the homepage component
-// directly — it bakes in its own chrome (stepper, chips, investment band,
-// CTA, hard-coded Lisbon→Azeitão→Sesimbra data) which is unsafe to reuse
-// inside Studio V3. Instead we mirror only its map stage: dark editorial
-// canvas, radial gradient, hairline gold grid, coastal silhouette,
-// gradient route line with soft glow, pulsing gold/teal pins with labels.
+// Two rendering modes:
 //
-// This component is presentational only. It accepts real label strings
-// from `resolveStudioV3Route` / `editedRoutePoints` and lays them out as
-// schematic pins on a fixed 200×260 viewBox — never claiming geographic
-// coordinates (the schematic is explicitly marked aria-hidden where it
-// would mislead, and the wrapper carries a descriptive aria-label).
+//  • Geographic mode — when `stopsDetailed` carries real lat/lng for at
+//    least one stop AND `originCoord` is provided, we project the actual
+//    locations into the viewBox via a padded bounding-box. Drive minutes
+//    between consecutive points are computed from haversine and rendered
+//    as small chips at each leg's midpoint. Dwell minutes are rendered as
+//    a chip below each pin. The route polyline progressively draws
+//    SEGMENT BY SEGMENT as `activeCount` increases — every new chosen
+//    moment visibly extends the route.
 //
-// Missing coordinates do NOT prevent rendering — the map is intentionally
-// schematic, so the only graceful-degradation case is "no labels at all"
-// (we return null in that case so callers can fall back).
+//  • Schematic mode — when no coords are available, we fall back to the
+//    original soft-S curve so the map never breaks for partial data.
+//
+// We intentionally never claim geographic accuracy in schematic mode and
+// never invent coordinates in geographic mode. Coordinates flow in from
+// `resolveStudioV3Route → routePoints` (the curated real stops).
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  haversineDriveMinutes,
+  inferKind,
+  stopDurationMinutes,
+} from "@/lib/studio/timing";
+import type { StopKind } from "@/data/regionStops";
+
+export interface StudioV3SignatureMapDetailedStop {
+  label: string;
+  lat?: number | null;
+  lng?: number | null;
+  dwellMin?: number | null;
+  kind?: StopKind | null;
+}
 
 export interface StudioV3SignatureMapProps {
   /** Real stop labels (1..6). First pin is the route start. */
   stops: ReadonlyArray<string>;
+  /** Optional geo-detailed stops (parallel to `stops`, same order). */
+  stopsDetailed?: ReadonlyArray<StudioV3SignatureMapDetailedStop>;
+  /** Optional pickup coords — enables geographic projection from origin. */
+  originCoord?: { lat: number; lng: number } | null;
   /** Optional pickup city label rendered on the bottom strip. */
   originLabel?: string | null;
   /** How many pins/route segments to reveal. Defaults to stops.length. */
@@ -40,7 +57,12 @@ export interface StudioV3SignatureMapProps {
 
 const VB_W = 200;
 const VB_H = 260;
-const ORIGIN = { x: 40, y: 44 };
+const SCHEMATIC_ORIGIN = { x: 40, y: 44 };
+// Margins for geographic projection.
+const GEO_X_MIN = 28;
+const GEO_X_MAX = 188;
+const GEO_Y_MIN = 36;
+const GEO_Y_MAX = 230;
 
 /** Stable label → small offset in [-10, 10] so adjacent runs don't look identical. */
 function labelJitter(label: string): number {
@@ -54,17 +76,11 @@ function cleanLabel(raw: string): string {
   return raw.split(/[—–-]/)[0].split(",")[0].trim();
 }
 
-/** Generate deterministic screen-space waypoints along a soft S-curve.
- *  Slots are distributed evenly across the full curve regardless of `n`,
- *  then deconflicted so no two pins land within `MIN_SEP` of each other —
- *  this prevents 4-stop routes (e.g. Évora / Alentejo) from visually
- *  collapsing into 2 pins when stops are geographically close.
- *  Geometry is schematic, not geographic. */
-const MIN_SEP = 22; // viewBox units (pin radius ≈ 8)
-function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: number }[] {
+/** Schematic S-curve waypoints — used when no real coords are available. */
+const MIN_SEP = 22;
+function schematicWaypoints(labels: ReadonlyArray<string>): { x: number; y: number }[] {
   const n = labels.length;
   if (n === 0) return [];
-  // Even fractions along the curve: 1→[0.5], 2→[0,1], 3→[0,0.5,1], 4→[0,.34,.67,1]
   const xMin = 70,
     xMax = 178;
   const yMin = 88,
@@ -72,7 +88,6 @@ function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: numb
   const out: { x: number; y: number }[] = [];
   for (let i = 0; i < n; i += 1) {
     const t = n === 1 ? 0.5 : i / (n - 1);
-    // Soft S-curve in Y so the route reads as a coastal arc.
     const sy = t + Math.sin(t * Math.PI) * 0.08;
     const baseX = xMin + (xMax - xMin) * t;
     const baseY = yMin + (yMax - yMin) * Math.max(0, Math.min(1, sy));
@@ -82,8 +97,6 @@ function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: numb
       y: Math.max(80, Math.min(236, baseY + (j % 5) * 0.6)),
     });
   }
-  // Deconflict — if any pin is too close to its predecessor, nudge it
-  // further along the natural curve direction.
   for (let i = 1; i < out.length; i += 1) {
     const a = out[i - 1];
     const b = out[i];
@@ -92,7 +105,6 @@ function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: numb
     const dist = Math.hypot(dx, dy);
     if (dist < MIN_SEP) {
       const push = MIN_SEP - dist + 1;
-      // Push primarily along +x/+y (route flows down-right).
       const nx = dx === 0 ? 1 : dx / dist;
       const ny = dy === 0 ? 1 : dy / dist;
       out[i] = {
@@ -104,23 +116,77 @@ function waypointsForLabels(labels: ReadonlyArray<string>): { x: number; y: numb
   return out;
 }
 
-/** Build a smooth route path through origin + waypoints (Catmull-Rom-ish). */
-function buildRoutePath(points: { x: number; y: number }[]): string {
-  if (points.length === 0) return "";
-  let d = `M ${ORIGIN.x} ${ORIGIN.y}`;
-  let prev = ORIGIN;
-  for (let i = 0; i < points.length; i += 1) {
-    const p = points[i];
-    const cx = (prev.x + p.x) / 2;
-    const cy = Math.min(prev.y, p.y) - 10;
-    d += ` Q ${cx} ${cy} ${p.x} ${p.y}`;
-    prev = p;
-  }
-  return d;
+/** Quadratic curve between two points, arching slightly upward. */
+function segmentPath(a: { x: number; y: number }, b: { x: number; y: number }): string {
+  const cx = (a.x + b.x) / 2;
+  const cy = Math.min(a.y, b.y) - 10;
+  return `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+}
+
+/** Approximate length of a quadratic arc (1.10× chord — close enough for stroke-dash). */
+function approxArcLen(a: { x: number; y: number }, b: { x: number; y: number }): number {
+  return Math.hypot(b.x - a.x, b.y - a.y) * 1.1;
+}
+
+interface GeoProjection {
+  origin: { x: number; y: number };
+  points: { x: number; y: number }[];
+}
+
+/** Project lat/lng into a padded viewBox so origin + all stops fit comfortably. */
+function projectGeo(
+  origin: { lat: number; lng: number },
+  stops: ReadonlyArray<{ lat: number; lng: number }>,
+): GeoProjection {
+  const all = [origin, ...stops];
+  const lats = all.map((p) => p.lat);
+  const lngs = all.map((p) => p.lng);
+  let minLat = Math.min(...lats);
+  let maxLat = Math.max(...lats);
+  let minLng = Math.min(...lngs);
+  let maxLng = Math.max(...lngs);
+  // Pad bbox 18% so pins aren't pressed against the frame.
+  const padLat = Math.max(0.02, (maxLat - minLat) * 0.18);
+  const padLng = Math.max(0.02, (maxLng - minLng) * 0.18);
+  minLat -= padLat;
+  maxLat += padLat;
+  minLng -= padLng;
+  maxLng += padLng;
+  // Preserve aspect — equalize lat/lng span so the route doesn't look squashed.
+  const latSpan = maxLat - minLat;
+  const lngSpan = maxLng - minLng;
+  // Lng degrees are shorter near 40°N — multiply by cos(latMid).
+  const latMid = (minLat + maxLat) / 2;
+  const lngScale = Math.cos((latMid * Math.PI) / 180);
+  const lngSpanScaled = lngSpan * lngScale;
+  const xRange = GEO_X_MAX - GEO_X_MIN;
+  const yRange = GEO_Y_MAX - GEO_Y_MIN;
+  const xPerUnit = xRange / Math.max(0.0001, lngSpanScaled);
+  const yPerUnit = yRange / Math.max(0.0001, latSpan);
+  const unit = Math.min(xPerUnit, yPerUnit);
+  // Center the route inside the viewBox.
+  const projWidth = lngSpanScaled * unit;
+  const projHeight = latSpan * unit;
+  const xOffset = GEO_X_MIN + (xRange - projWidth) / 2;
+  const yOffset = GEO_Y_MIN + (yRange - projHeight) / 2;
+  const project = (p: { lat: number; lng: number }) => ({
+    x: xOffset + (p.lng - minLng) * lngScale * unit,
+    y: yOffset + (maxLat - p.lat) * unit, // flip Y so north is up
+  });
+  return { origin: project(origin), points: stops.map(project) };
+}
+
+function formatChipMin(min: number): string {
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
 
 export function StudioV3SignatureMap({
   stops,
+  stopsDetailed,
+  originCoord,
   originLabel,
   activeCount,
   paceLabel,
@@ -131,29 +197,85 @@ export function StudioV3SignatureMap({
   const cleaned = useMemo(() => stops.map(cleanLabel).filter(Boolean), [stops]);
   const visible = Math.max(0, Math.min(cleaned.length, activeCount ?? cleaned.length));
   const shown = cleaned.slice(0, visible);
-  const waypoints = useMemo(() => waypointsForLabels(shown), [shown]);
-  const path = useMemo(() => buildRoutePath(waypoints), [waypoints]);
 
-  const pathRef = useRef<SVGPathElement>(null);
-  const [pathLen, setPathLen] = useState(280);
-  const [active, setActive] = useState(false);
+  // Geographic projection if we have coords for ALL visible stops + origin.
+  const detailed = stopsDetailed ?? [];
+  const allHaveCoords =
+    !!originCoord &&
+    shown.length > 0 &&
+    shown.every((_, i) => {
+      const d = detailed[i];
+      return d && typeof d.lat === "number" && typeof d.lng === "number";
+    });
 
-  useEffect(() => {
-    if (pathRef.current && typeof pathRef.current.getTotalLength === "function") {
-      try {
-        const l = pathRef.current.getTotalLength();
-        if (l > 0 && Number.isFinite(l)) setPathLen(l);
-      } catch {
-        /* noop */
-      }
+  const geo = useMemo(() => {
+    if (!allHaveCoords || !originCoord) return null;
+    const pts = shown.map((_, i) => ({
+      lat: detailed[i]!.lat as number,
+      lng: detailed[i]!.lng as number,
+    }));
+    return projectGeo(originCoord, pts);
+  }, [allHaveCoords, originCoord, shown, detailed]);
+
+  // Resolve waypoints + origin in viewBox coords.
+  const origin = geo ? geo.origin : SCHEMATIC_ORIGIN;
+  const waypoints = useMemo(() => {
+    if (geo) return geo.points;
+    return schematicWaypoints(shown);
+  }, [geo, shown]);
+
+  // Build segments: origin → p0 → p1 → ... per visible point.
+  const segments = useMemo(() => {
+    const segs: Array<{ d: string; len: number; mid: { x: number; y: number } }> = [];
+    let prev = origin;
+    for (let i = 0; i < waypoints.length; i++) {
+      const p = waypoints[i];
+      segs.push({
+        d: segmentPath(prev, p),
+        len: approxArcLen(prev, p),
+        mid: { x: (prev.x + p.x) / 2, y: Math.min(prev.y, p.y) - 6 },
+      });
+      prev = p;
     }
-  }, [path]);
+    return segs;
+  }, [origin, waypoints]);
 
+  // Track which segments / pins have ALREADY been revealed (so they don't
+  // re-animate on every render — only the newest one draws).
+  const [revealedCount, setRevealedCount] = useState(0);
+  const revealedRef = useRef(0);
   useEffect(() => {
-    setActive(false);
-    const t = window.setTimeout(() => setActive(true), 60);
-    return () => window.clearTimeout(t);
-  }, [path, visible]);
+    // Reset to 0 on context change (new path identity from non-geo to geo, etc.)
+  }, []);
+  useEffect(() => {
+    if (waypoints.length === 0) {
+      revealedRef.current = 0;
+      setRevealedCount(0);
+      return;
+    }
+    // Animate forward up to `visible`, never backwards (preserve previously drawn).
+    const target = visible;
+    if (target <= revealedRef.current) {
+      revealedRef.current = target;
+      setRevealedCount(target);
+      return;
+    }
+    // Stagger one segment at a time so each NEW moment visibly draws in.
+    let cancelled = false;
+    let i = revealedRef.current;
+    const tick = () => {
+      if (cancelled) return;
+      i += 1;
+      revealedRef.current = i;
+      setRevealedCount(i);
+      if (i < target) window.setTimeout(tick, 460);
+    };
+    const t = window.setTimeout(tick, 120);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, [visible, waypoints.length]);
 
   if (cleaned.length === 0) return null;
 
@@ -168,6 +290,7 @@ export function StudioV3SignatureMap({
       role="img"
       aria-label={a11y}
       className={`relative overflow-hidden ${className ?? ""}`}
+      data-map-mode={geo ? "geographic" : "schematic"}
       style={{
         aspectRatio,
         background: "var(--charcoal-deep, #14181a)",
@@ -177,7 +300,7 @@ export function StudioV3SignatureMap({
           "0 28px 70px -34px rgba(0,0,0,0.75), 0 0 60px -22px color-mix(in oklab, var(--gold) 18%, transparent) inset",
       }}
     >
-      {/* Radial wash — gold top-left, teal bottom-right. Mirrors homepage. */}
+      {/* Radial wash — gold top-left, teal bottom-right. */}
       <div
         aria-hidden
         className="absolute inset-0"
@@ -202,29 +325,31 @@ export function StudioV3SignatureMap({
         <rect width={VB_W} height={VB_H} fill="url(#sv3sm-grid)" />
       </svg>
 
-      {/* Coastal silhouette — abstract land/water divide. */}
-      <svg
-        aria-hidden
-        className="absolute inset-0 h-full w-full"
-        viewBox={`0 0 ${VB_W} ${VB_H}`}
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <path
-          d="M 0 70 C 30 78, 60 96, 90 120 S 130 168, 160 190 S 188 220, 200 232 L 200 260 L 0 260 Z"
-          fill="rgba(41,91,97,0.22)"
-          stroke="rgba(201,169,106,0.18)"
-          strokeWidth="0.6"
-        />
-        <path
-          d="M 0 60 C 28 70, 56 88, 86 112 S 126 158, 156 178 S 188 208, 200 220"
-          fill="none"
-          stroke="rgba(201,169,106,0.20)"
-          strokeWidth="0.5"
-          strokeDasharray="2 3"
-        />
-      </svg>
+      {/* Coastal silhouette — only meaningful in schematic mode. */}
+      {!geo ? (
+        <svg
+          aria-hidden
+          className="absolute inset-0 h-full w-full"
+          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <path
+            d="M 0 70 C 30 78, 60 96, 90 120 S 130 168, 160 190 S 188 220, 200 232 L 200 260 L 0 260 Z"
+            fill="rgba(41,91,97,0.22)"
+            stroke="rgba(201,169,106,0.18)"
+            strokeWidth="0.6"
+          />
+          <path
+            d="M 0 60 C 28 70, 56 88, 86 112 S 126 158, 156 178 S 188 208, 200 220"
+            fill="none"
+            stroke="rgba(201,169,106,0.20)"
+            strokeWidth="0.5"
+            strokeDasharray="2 3"
+          />
+        </svg>
+      ) : null}
 
-      {/* Hairline gold rule + corner ticks (editorial signature). */}
+      {/* Corner ticks (editorial signature). */}
       <span
         aria-hidden
         className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
@@ -265,73 +390,77 @@ export function StudioV3SignatureMap({
         {/* Origin halo + dot. */}
         <g>
           <circle
-            cx={ORIGIN.x}
-            cy={ORIGIN.y}
+            cx={origin.x}
+            cy={origin.y}
             r="7"
             fill="none"
             stroke="var(--gold)"
             strokeOpacity="0.5"
             strokeWidth="0.55"
             style={{
-              animation: active ? "sv3smPulse 2200ms ease-out 200ms infinite" : undefined,
-              transformOrigin: `${ORIGIN.x}px ${ORIGIN.y}px`,
+              animation: "sv3smPulse 2200ms ease-out 200ms infinite",
+              transformOrigin: `${origin.x}px ${origin.y}px`,
               transformBox: "fill-box",
             }}
           />
-          <circle cx={ORIGIN.x} cy={ORIGIN.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
-          <circle cx={ORIGIN.x} cy={ORIGIN.y} r="2.6" fill="var(--teal-2, var(--teal))" />
+          <circle cx={origin.x} cy={origin.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
+          <circle cx={origin.x} cy={origin.y} r="2.6" fill="var(--teal-2, var(--teal))" />
         </g>
 
-        {path ? (
-          <>
-            <path
-              d={path}
-              fill="none"
-              stroke="url(#sv3sm-route)"
-              strokeOpacity="0.45"
-              strokeWidth="3.6"
-              strokeLinecap="round"
-              filter="url(#sv3sm-soft)"
-              strokeDasharray={pathLen}
-              strokeDashoffset={active ? 0 : pathLen}
-              style={{
-                transition: "stroke-dashoffset 1900ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms",
-              }}
-            />
-            <path
-              ref={pathRef}
-              d={path}
-              fill="none"
-              stroke="url(#sv3sm-route)"
-              strokeOpacity="1"
-              strokeWidth="1.9"
-              strokeLinecap="round"
-              strokeDasharray={pathLen}
-              strokeDashoffset={active ? 0 : pathLen}
-              style={{
-                transition: "stroke-dashoffset 1900ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms",
-              }}
-            />
-          </>
-        ) : null}
+        {/* Per-segment progressive draw — each leg animates ONLY when it
+            becomes the newest revealed segment. Earlier legs stay solid. */}
+        {segments.map((seg, i) => {
+          const drawn = i < revealedCount;
+          return (
+            <g key={`seg-${i}`}>
+              <path
+                d={seg.d}
+                fill="none"
+                stroke="url(#sv3sm-route)"
+                strokeOpacity="0.45"
+                strokeWidth="3.6"
+                strokeLinecap="round"
+                filter="url(#sv3sm-soft)"
+                strokeDasharray={seg.len}
+                strokeDashoffset={drawn ? 0 : seg.len}
+                style={{
+                  transition:
+                    "stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+                }}
+              />
+              <path
+                d={seg.d}
+                fill="none"
+                stroke="url(#sv3sm-route)"
+                strokeOpacity="1"
+                strokeWidth="1.9"
+                strokeLinecap="round"
+                strokeDasharray={seg.len}
+                strokeDashoffset={drawn ? 0 : seg.len}
+                style={{
+                  transition:
+                    "stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+                }}
+              />
+            </g>
+          );
+        })}
 
         {waypoints.map((p, i) => {
           const isLast = i === waypoints.length - 1;
-          const delay = 600 + i * 380;
+          const arrived = i < revealedCount;
           return (
             <g
               key={i}
               style={{
-                opacity: active ? 1 : 0,
-                transform: active ? "scale(1)" : "scale(0.35)",
-                transition: `opacity 520ms ease ${delay}ms, transform 720ms cubic-bezier(0.22, 1.4, 0.36, 1) ${delay}ms`,
+                opacity: arrived ? 1 : 0,
+                transform: arrived ? "scale(1)" : "scale(0.35)",
+                transition: `opacity 420ms ease, transform 620ms cubic-bezier(0.22, 1.4, 0.36, 1)`,
                 transformBox: "fill-box",
                 transformOrigin: `${p.x}px ${p.y}px`,
               }}
             >
-              {/* Newest pin emits an expanding gold ring on arrival —
-                  the visual cue that something is being created. */}
-              {isLast ? (
+              {isLast && arrived ? (
                 <circle
                   cx={p.x}
                   cy={p.y}
@@ -341,9 +470,7 @@ export function StudioV3SignatureMap({
                   strokeOpacity="0.9"
                   strokeWidth="0.9"
                   style={{
-                    animation: active
-                      ? `sv3smArrive 1400ms ease-out ${delay + 120}ms both`
-                      : undefined,
+                    animation: "sv3smArrive 1400ms ease-out 120ms both",
                     transformOrigin: `${p.x}px ${p.y}px`,
                     transformBox: "fill-box",
                   }}
@@ -366,9 +493,7 @@ export function StudioV3SignatureMap({
                   fill="var(--gold)"
                   opacity="0.18"
                   style={{
-                    animation: active
-                      ? `sv3smPulse 2200ms ease-out ${delay + 700}ms infinite`
-                      : undefined,
+                    animation: "sv3smPulse 2200ms ease-out 700ms infinite",
                     transformOrigin: `${p.x}px ${p.y}px`,
                     transformBox: "fill-box",
                   }}
@@ -394,18 +519,92 @@ export function StudioV3SignatureMap({
         })}
       </svg>
 
-      {/* Only the active/last pin's full name floats on the map.
-          Hidden on mobile (≤520px) to prevent overlap with the legend
-          and the bottom strip. The numbered legend below the map
-          carries the full route on small screens. */}
-      {waypoints.length > 0
+      {/* Drive-minute chips at each segment midpoint — geographic mode only,
+          and only for segments that have already been drawn. */}
+      {geo
+        ? segments.map((seg, i) => {
+            const drawn = i < revealedCount;
+            if (!drawn) return null;
+            const a = i === 0 ? originCoord! : {
+              lat: detailed[i - 1]!.lat as number,
+              lng: detailed[i - 1]!.lng as number,
+            };
+            const b = {
+              lat: detailed[i]!.lat as number,
+              lng: detailed[i]!.lng as number,
+            };
+            const min = haversineDriveMinutes(a, b);
+            if (min < 4) return null; // suppress tiny chips
+            const xPct = (seg.mid.x / VB_W) * 100;
+            const yPct = (seg.mid.y / VB_H) * 100;
+            return (
+              <span
+                key={`drive-${i}`}
+                aria-hidden
+                className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${yPct}%`,
+                  transform: "translate(-50%, -120%)",
+                  background: "color-mix(in oklab, #050d0f 80%, transparent)",
+                  color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                  whiteSpace: "nowrap",
+                  opacity: 0.95,
+                  animation: "studioV3RiseIn 480ms ease-out both",
+                }}
+              >
+                ≈ {formatChipMin(min)} drive
+              </span>
+            );
+          })
+        : null}
+
+      {/* Dwell-minute chips next to each arrived pin. Hidden on very small
+          widths if the in-map label is shown — kept above the bottom strip. */}
+      {waypoints.map((p, i) => {
+        if (i >= revealedCount) return null;
+        const d = detailed[i];
+        const dwell =
+          d && typeof d.dwellMin === "number" && d.dwellMin > 0
+            ? d.dwellMin
+            : stopDurationMinutes({
+                label: shown[i],
+                kind: (d?.kind ?? inferKind(shown[i])) || undefined,
+              });
+        if (!dwell) return null;
+        const xPct = (p.x / VB_W) * 100;
+        const yPct = (p.y / VB_H) * 100;
+        return (
+          <span
+            key={`dwell-${i}`}
+            aria-hidden
+            className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
+            style={{
+              left: `${xPct}%`,
+              top: `${yPct}%`,
+              transform: "translate(-50%, 140%)",
+              background: "color-mix(in oklab, var(--gold) 88%, white)",
+              color: "var(--charcoal)",
+              whiteSpace: "nowrap",
+              boxShadow: "0 4px 12px -6px rgba(0,0,0,0.55)",
+              opacity: 0.96,
+              animation: "studioV3RiseIn 520ms ease-out both",
+            }}
+          >
+            {formatChipMin(dwell)}
+          </span>
+        );
+      })}
+
+      {/* Newest pin's full name floats on the map (sm+ only). */}
+      {waypoints.length > 0 && revealedCount > 0
         ? (() => {
-            const i = waypoints.length - 1;
+            const i = Math.min(revealedCount, waypoints.length) - 1;
             const p = waypoints[i];
             const xPct = (p.x / VB_W) * 100;
             const yPct = (p.y / VB_H) * 100;
             const flipLeft = xPct > 55;
-            const delay = 600 + i * 380 + 250;
             return (
               <div
                 aria-hidden
@@ -418,8 +617,7 @@ export function StudioV3SignatureMap({
                     ? "translate(calc(-100% - 12px), -50%)"
                     : "translate(12px, -50%)",
                   textAlign: flipLeft ? "right" : "left",
-                  opacity: active ? 1 : 0,
-                  transition: `opacity 600ms ease ${delay}ms`,
+                  animation: "studioV3RiseIn 520ms ease-out both",
                 }}
               >
                 <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]">
@@ -430,10 +628,7 @@ export function StudioV3SignatureMap({
           })()
         : null}
 
-      {/* Bottom strip — From X · pace/stops.
-          Hidden on mobile (≤520px) so the in-map captions never collide
-          with the pin labels. The numbered legend rendered by the caller
-          carries the full route on small screens. */}
+      {/* Bottom strip — From X · pace/stops. (sm+ only to avoid clutter on phones.) */}
       <div
         className="absolute left-0 right-0 bottom-0 hidden sm:flex items-end justify-between gap-3 px-3.5 py-2"
         style={{
