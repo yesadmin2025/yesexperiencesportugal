@@ -117,12 +117,38 @@ export function TimelineView({
             >
               {i + 1}
             </span>
-            <p
-              className="text-[12px] font-semibold leading-snug"
-              style={{ color: "var(--charcoal)" }}
-            >
-              {m.label}
-            </p>
+            {m.driveMinBefore && m.driveMinBefore >= 5 ? (
+              <p
+                className="mb-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold tabular-nums"
+                style={{ color: "color-mix(in oklab, var(--teal) 75%, transparent)" }}
+              >
+                Drive · {formatMinutes(m.driveMinBefore)}
+              </p>
+            ) : null}
+            <div className="flex items-baseline justify-between gap-3">
+              <p
+                className="text-[12px] font-semibold leading-snug"
+                style={{ color: "var(--charcoal)" }}
+              >
+                {m.label}
+              </p>
+              {m.durationMin ? (
+                <span
+                  className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-semibold tabular-nums"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                >
+                  ≈ {formatMinutes(m.durationMin)}
+                </span>
+              ) : null}
+            </div>
+            {m.kindLabel ? (
+              <p
+                className="text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--gold) 85%, transparent)" }}
+              >
+                {m.kindLabel}
+              </p>
+            ) : null}
             {m.story ? (
               <p
                 className="mt-0.5 text-[11.5px] leading-snug"
