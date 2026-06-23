@@ -1098,6 +1098,8 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
+        originCoord: pickupOriginCoord(id),
+        regionKey: pickupRegionKey(id) ?? undefined,
         holdMs: 5800,
       });
       return;
