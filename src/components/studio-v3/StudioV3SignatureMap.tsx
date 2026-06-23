@@ -707,3 +707,220 @@ export function StudioV3SignatureMap({
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Debug overlay — opt-in via ?debug=studio / Shift+D / localStorage.
+// Surfaces pin coordinates, segment order, and drive/dwell source data so
+// the geographic map can be validated against curated stop data on the
+// live preview without opening devtools.
+// ---------------------------------------------------------------------------
+
+const DEBUG_STORAGE_KEY = "studio-v3-debug";
+
+function useStudioDebugEnabled(): boolean {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const read = () => {
+      try {
+        if (typeof window === "undefined") return false;
+        const q = new URL(window.location.href).searchParams.get("debug");
+        if (q === "studio" || q === "1" || q === "on") return true;
+        if (q === "off" || q === "0") return false;
+        if (window.localStorage.getItem(DEBUG_STORAGE_KEY) === "1") return true;
+      } catch {
+        /* noop */
+      }
+      return false;
+    };
+    setOn(read());
+    const onKey = (e: KeyboardEvent) => {
+      if (e.shiftKey && (e.key === "D" || e.key === "d")) {
+        setTimeout(() => setOn(read()), 0);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  return on;
+}
+
+interface MapDebugOverlayProps {
+  mode: "geographic" | "schematic";
+  originCoord: { lat: number; lng: number } | null;
+  originLabel: string | null;
+  shown: ReadonlyArray<string>;
+  detailed: ReadonlyArray<StudioV3SignatureMapDetailedStop>;
+  waypoints: ReadonlyArray<{ x: number; y: number }>;
+  segments: ReadonlyArray<{
+    index: number;
+    driveMin: number | null;
+    from: { lat: number; lng: number } | null;
+    to: { lat: number; lng: number } | null;
+  }>;
+  revealedCount: number;
+  visible: number;
+}
+
+function fmtCoord(n: number | null | undefined): string {
+  return typeof n === "number" ? n.toFixed(4) : "—";
+}
+
+function MapDebugOverlay({
+  mode,
+  originCoord,
+  originLabel,
+  shown,
+  detailed,
+  waypoints,
+  segments,
+  revealedCount,
+  visible,
+}: MapDebugOverlayProps) {
+  const enabled = useStudioDebugEnabled();
+  const [collapsed, setCollapsed] = useState(false);
+  if (!enabled) return null;
+
+  return (
+    <div
+      role="status"
+      aria-label="Studio V3 map debug"
+      className="absolute left-2 top-2 z-30 pointer-events-auto select-text"
+      style={{
+        fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+        fontSize: 10,
+        lineHeight: 1.35,
+        color: "var(--ivory)",
+        background: "rgba(10,12,14,0.92)",
+        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+        borderRadius: 6,
+        padding: collapsed ? "4px 8px" : "8px 10px",
+        maxWidth: "min(360px, calc(100% - 16px))",
+        maxHeight: "calc(100% - 16px)",
+        overflow: "auto",
+        backdropFilter: "blur(4px)",
+        boxShadow: "0 6px 22px rgba(0,0,0,0.45)",
+      }}
+    >
+      <div className="flex items-center justify-between gap-2" style={{ marginBottom: collapsed ? 0 : 6 }}>
+        <strong
+          style={{
+            color: "var(--gold)",
+            letterSpacing: 1,
+            textTransform: "uppercase",
+            fontSize: 9,
+          }}
+        >
+          Map · {mode} · {revealedCount}/{visible}
+        </strong>
+        <button
+          type="button"
+          onClick={() => setCollapsed((c) => !c)}
+          aria-label={collapsed ? "Expand map debug" : "Collapse map debug"}
+          style={{
+            background: "transparent",
+            color: "var(--ivory)",
+            border: "1px solid rgba(250,248,243,0.25)",
+            borderRadius: 3,
+            padding: "0 5px",
+            fontSize: 10,
+            cursor: "pointer",
+          }}
+        >
+          {collapsed ? "▢" : "—"}
+        </button>
+      </div>
+
+      {!collapsed && (
+        <>
+          <div style={{ color: "rgba(250,248,243,0.6)", marginBottom: 4 }}>
+            origin: <span style={{ color: "var(--ivory)" }}>{originLabel ?? "—"}</span>{" "}
+            <span style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}>
+              [{fmtCoord(originCoord?.lat ?? null)}, {fmtCoord(originCoord?.lng ?? null)}]
+            </span>
+          </div>
+
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+            <thead>
+              <tr style={{ color: "rgba(250,248,243,0.45)", textAlign: "left" }}>
+                <th style={{ padding: "2px 4px 2px 0" }}>#</th>
+                <th style={{ padding: "2px 4px" }}>stop</th>
+                <th style={{ padding: "2px 4px" }}>lat,lng</th>
+                <th style={{ padding: "2px 4px" }}>dwell</th>
+                <th style={{ padding: "2px 0 2px 4px" }}>kind</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((label, i) => {
+                const d = detailed[i];
+                const arrived = i < revealedCount;
+                return (
+                  <tr
+                    key={`pin-${i}`}
+                    style={{
+                      color: arrived ? "var(--ivory)" : "rgba(250,248,243,0.4)",
+                    }}
+                  >
+                    <td style={{ padding: "1px 4px 1px 0", color: "var(--gold)" }}>{i + 1}</td>
+                    <td style={{ padding: "1px 4px", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {label}
+                    </td>
+                    <td style={{ padding: "1px 4px", whiteSpace: "nowrap" }}>
+                      {fmtCoord(d?.lat ?? null)}, {fmtCoord(d?.lng ?? null)}
+                    </td>
+                    <td style={{ padding: "1px 4px" }}>
+                      {typeof d?.dwellMin === "number" ? `${d.dwellMin}m` : "—"}
+                    </td>
+                    <td style={{ padding: "1px 0 1px 4px" }}>{d?.kind ?? "—"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <div style={{ color: "rgba(250,248,243,0.55)", marginTop: 6, marginBottom: 2 }}>
+            segments (drive minutes, haversine):
+          </div>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+            <tbody>
+              {segments.map((s) => {
+                const drawn = s.index < revealedCount;
+                return (
+                  <tr
+                    key={`seg-${s.index}`}
+                    style={{ color: drawn ? "var(--ivory)" : "rgba(250,248,243,0.4)" }}
+                  >
+                    <td style={{ padding: "1px 4px 1px 0", color: "var(--gold)", whiteSpace: "nowrap" }}>
+                      {s.index === 0 ? "O" : s.index}→{s.index + 1}
+                    </td>
+                    <td style={{ padding: "1px 4px", whiteSpace: "nowrap" }}>
+                      {fmtCoord(s.from?.lat)},{fmtCoord(s.from?.lng)} → {fmtCoord(s.to?.lat)},{fmtCoord(s.to?.lng)}
+                    </td>
+                    <td style={{ padding: "1px 0 1px 4px", whiteSpace: "nowrap" }}>
+                      {s.driveMin != null ? `${s.driveMin}m` : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <div style={{ color: "rgba(250,248,243,0.55)", marginTop: 6, marginBottom: 2 }}>
+            projected (viewBox 200×260):
+          </div>
+          <div style={{ color: "rgba(250,248,243,0.85)" }}>
+            {waypoints.map((p, i) => (
+              <span key={`vp-${i}`} style={{ marginRight: 8, whiteSpace: "nowrap" }}>
+                <span style={{ color: "var(--gold)" }}>{i + 1}</span>
+                :{p.x.toFixed(1)},{p.y.toFixed(1)}
+              </span>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 6, fontSize: 9, color: "rgba(250,248,243,0.45)" }}>
+            Shift+D toggles · ?debug=off to hide
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
