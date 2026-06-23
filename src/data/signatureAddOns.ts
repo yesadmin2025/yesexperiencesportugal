@@ -45,6 +45,27 @@ export const LISBON_SUBREGION_BY_TOUR_ID: Record<string, LisbonSubRegion> = {
   "azeitao-cheese": "arrabida-setubal",
 };
 
+/**
+ * Vocabulary used to detect when a Signature already delivers what an
+ * add-on would propose. Keep this list short and orthogonal — every tag
+ * must be detectable from the tour's existing `included[]` strings via
+ * `deriveInclusionTags`, and every add-on's `conflictsWith` must use the
+ * same vocabulary.
+ */
+export type InclusionTag =
+  | "lunch"
+  | "picnic"
+  | "wine-tasting"
+  | "boat"
+  | "azulejo"
+  | "cheese"
+  | "roman"
+  | "sintra"
+  | "evora"
+  | "tomar"
+  | "obidos"
+  | "nazare";
+
 export interface SignatureAddOn {
   id: string;
   label: string;
@@ -68,6 +89,45 @@ export interface SignatureAddOn {
    * surfaced for anchors on the same side of the Tejo.
    */
   lisbonSubRegion?: LisbonSubRegion;
+  /**
+   * Inclusion tags that, if already delivered by the resolved Signature,
+   * make this add-on redundant or contradictory (e.g. a picnic add-on on
+   * a tour that already includes lunch). The selector drops these.
+   */
+  conflictsWith?: InclusionTag[];
+}
+
+/**
+ * Derive a set of `InclusionTag`s from a Signature tour's `included[]`
+ * strings + its id (some Signatures have descriptive ids like
+ * `wild-beaches-picnic` that imply tags the prose may not spell out).
+ *
+ * Conservative on purpose — we'd rather miss a redundant add-on than
+ * silently drop a legitimate one. Tags only fire on unambiguous matches.
+ */
+export function deriveInclusionTags(input: {
+  id?: string | null;
+  included?: ReadonlyArray<string> | null;
+}): Set<InclusionTag> {
+  const tags = new Set<InclusionTag>();
+  const corpus = ((input.included ?? []).join(" ") + " " + (input.id ?? "")).toLowerCase();
+  const has = (re: RegExp) => re.test(corpus);
+
+  if (has(/\blunch\b|wine pairing|paired lunch|long lunch|gastronom/)) tags.add("lunch");
+  if (has(/\bpicnic\b/)) tags.add("picnic");
+  if (has(/winery|wine tasting|wine experience|cellar tasting|vineyard tasting|tasting at|wine pairing/))
+    tags.add("wine-tasting");
+  if (has(/\bboat\b|kayak|sail|dolphin|snorkel/)) tags.add("boat");
+  if (has(/azulejo|tile workshop|tile-painting|hand-painted tile/)) tags.add("azulejo");
+  if (has(/\bcheese\b/)) tags.add("cheese");
+  if (has(/roman ruin|roman heritage|roman site|tróia ruin|troia ruin/)) tags.add("roman");
+  if (has(/sintra|pena palace|cabo da roca/)) tags.add("sintra");
+  if (has(/évora|evora|chapel of bones/)) tags.add("evora");
+  if (has(/tomar|convent of christ|templar/)) tags.add("tomar");
+  if (has(/óbidos|obidos/)) tags.add("obidos");
+  if (has(/nazaré|nazare/)) tags.add("nazare");
+
+  return tags;
 }
 
 /** Bucket a free-text region string into a known region family. */
