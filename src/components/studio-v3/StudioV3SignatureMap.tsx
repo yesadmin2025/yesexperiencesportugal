@@ -224,8 +224,18 @@ export function StudioV3SignatureMap({
     return projectGeo(originCoord, pts);
   }, [allHaveCoords, originCoord, shown, detailed]);
 
+  // Origin-only geographic projection — used during the Pickup beat or any
+  // time we have an origin coordinate but no revealed stops yet. Without this
+  // the origin pulse defaults to SCHEMATIC_ORIGIN in the top-left corner and
+  // the map reads as "empty" to the traveller. Center the origin instead so
+  // the city is the visible anchor of the frame.
+  const originOnly = useMemo(() => {
+    if (geo || !originCoord || shown.length > 0) return null;
+    return { x: (GEO_X_MIN + GEO_X_MAX) / 2, y: (GEO_Y_MIN + GEO_Y_MAX) / 2 };
+  }, [geo, originCoord, shown.length]);
+
   // Resolve waypoints + origin in viewBox coords.
-  const origin = geo ? geo.origin : SCHEMATIC_ORIGIN;
+  const origin = geo ? geo.origin : originOnly ?? SCHEMATIC_ORIGIN;
   const waypoints = useMemo(() => {
     if (geo) return geo.points;
     return schematicWaypoints(shown);
@@ -472,7 +482,25 @@ export function StudioV3SignatureMap({
           />
           <circle cx={origin.x} cy={origin.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
           <circle cx={origin.x} cy={origin.y} r="2.6" fill="var(--teal-2, var(--teal))" />
+          {originLabel && originOnly ? (
+            <text
+              x={origin.x}
+              y={origin.y - 11}
+              textAnchor="middle"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: "7px",
+                letterSpacing: "0.18em",
+                fill: "var(--gold)",
+                textTransform: "uppercase",
+              }}
+            >
+              {cleanLabel(originLabel)}
+            </text>
+          ) : null}
         </g>
+
 
         {/* Per-segment progressive draw — each leg animates ONLY when it
             becomes the newest revealed segment. Earlier legs stay solid. */}
