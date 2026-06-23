@@ -165,10 +165,6 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   // -------- Scope strip (reference-builder DNA) --------
   // Pull the real Signature behind the resolved route so we can show
   // region · stops · duration · "from €N / guest" — never invented.
-  const resolvedTour = useMemo(() => {
-    if (!resolved?.skeletonTourKey) return null;
-    return signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null;
-  }, [resolved?.skeletonTourKey]);
 
   const scopeRegion = resolvedTour?.region ?? null;
   const scopeDuration = resolvedTour?.durationHours ?? null;
