@@ -34,6 +34,15 @@ export function installDevHardReload() {
   if (typeof window === "undefined") return;
   if (!import.meta.env.DEV) return;
   if (window[INSTALL_KEY]) return;
+  // Skip inside automated browsers (Playwright/Selenium) — the reload loop
+  // tears down React state mid-test and produces flaky failures.
+  if (typeof navigator !== "undefined" && navigator.webdriver) return;
+  // Allow explicit opt-out via query (`?e2e=1`).
+  try {
+    if (new URL(window.location.href).searchParams.has("e2e")) return;
+  } catch {
+    /* ignore */
+  }
   window[INSTALL_KEY] = true;
 
   // 1) Vite full-reload → purge caches, hard reload.
