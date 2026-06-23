@@ -254,10 +254,12 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           }
         `}</style>
 
-        {/* DNA chip row — horizontally scrollable on tight widths. */}
+        {/* DNA chip row — hidden on phones to declutter the pre-reveal
+            stack (chips duplicate context that's already visible in the
+            active phase below). Shown on tablet+ where space allows. */}
         {dnaChips.length > 0 ? (
           <div
-            className="flex gap-1.5 overflow-x-auto px-3 py-2 no-scrollbar"
+            className="hidden sm:flex gap-1.5 overflow-x-auto px-3 py-2 no-scrollbar"
             style={{
               background: "color-mix(in oklab, #0d0d0d 70%, transparent)",
               borderTop: "1px solid color-mix(in oklab, var(--gold) 14%, transparent)",
@@ -281,12 +283,14 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
 
         {/* Informative scope strip — only shown once a Signature resolves.
             Real data only (region · stops · duration · From €N/guest).
-            Never invented, never visible before resolution. */}
+            On mobile: one condensed line, no italic whisper, no price chip
+            (price appears at the dedicated investment beat). On sm+:
+            full editorial treatment. */}
         {tour ? (
           <div
             data-testid="studio-v3-composer-scope"
             data-region-voice={regionalVoiceFor(tour.region).eyebrow}
-            className="flex flex-col gap-1 px-3 py-2"
+            className="flex flex-col gap-1 px-3 py-1.5 sm:py-2"
             style={{
               background: "color-mix(in oklab, #0d0d0d 80%, transparent)",
               borderTop: "1px solid color-mix(in oklab, var(--gold) 18%, transparent)",
@@ -294,23 +298,25 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           >
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <span
-                className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5"
+                className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5 min-w-0 truncate"
                 style={{
                   color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
                 }}
               >
                 <span
-                  className="inline-block h-[3px] w-[3px] rounded-full"
+                  className="inline-block h-[3px] w-[3px] rounded-full shrink-0"
                   style={{ background: "var(--gold)" }}
                   aria-hidden
                 />
-                {scopeRegion}
-                {scopeStops > 0 ? ` · ${scopeStops} moments` : ""}
-                {scopeDuration ? ` · ~${scopeDuration}` : ""}
+                <span className="truncate">
+                  {scopeRegion}
+                  {scopeStops > 0 ? ` · ${scopeStops} moments` : ""}
+                  {scopeDuration ? ` · ~${scopeDuration}` : ""}
+                </span>
               </span>
               {scopePriceFromEur != null ? (
                 <span
-                  className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                  className="hidden sm:inline text-[9.5px] uppercase tracking-[0.22em] font-bold"
                   style={{ color: "var(--gold)" }}
                 >
                   From €{scopePriceFromEur} / guest
@@ -318,7 +324,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
               ) : null}
             </div>
             <p
-              className="text-[10.5px] italic leading-tight"
+              className="hidden sm:block text-[10.5px] italic leading-tight"
               style={{
                 fontFamily: "var(--font-serif)",
                 color: "color-mix(in oklab, var(--ivory) 68%, transparent)",
