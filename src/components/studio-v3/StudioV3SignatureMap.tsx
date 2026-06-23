@@ -492,10 +492,6 @@ export function StudioV3SignatureMap({
           key={cls}
           aria-hidden
           className={`absolute ${cls} h-2.5 w-2.5`}
-        <span
-          key={cls}
-          aria-hidden
-          className={`absolute ${cls} h-2.5 w-2.5`}
           style={{ borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)" }}
         />
       ))}
