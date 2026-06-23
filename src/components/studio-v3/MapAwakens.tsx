@@ -271,9 +271,10 @@ export function MapAwakens({
         <ArrowLeft size={14} aria-hidden /> Back
       </button>
 
-      {/* Eyebrow */}
+      {/* Eyebrow — hidden on mobile to declutter (EditorialMap already
+          carries the "Suggested route" eyebrow inside the canvas). */}
       <div
-        className="absolute left-1/2 top-5 -translate-x-1/2 z-20 text-[10px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
+        className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 z-20 text-[10px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
         <span style={{ color: "var(--gold)" }}>—</span> Suggested route · taking shape
