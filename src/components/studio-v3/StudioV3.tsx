@@ -1243,13 +1243,18 @@ export function StudioV3() {
   };
 
   // Multi-select toggles.
+  // Interests are capped at MAX_INTERESTS — four moments is the sweet spot
+  // for a 1-day rhythm and matches the dwell-budget logic downstream.
+  const MAX_INTERESTS = 4;
   const toggleInterest = (id: Interest) => {
-    setState((s) => ({
-      ...s,
-      interests: s.interests.includes(id)
-        ? s.interests.filter((x) => x !== id)
-        : [...s.interests, id],
-    }));
+    setState((s) => {
+      const has = s.interests.includes(id);
+      if (has) {
+        return { ...s, interests: s.interests.filter((x) => x !== id) };
+      }
+      if (s.interests.length >= MAX_INTERESTS) return s;
+      return { ...s, interests: [...s.interests, id] };
+    });
   };
   const toggleConsideration = (id: Consideration) => {
     setState((s) => {
