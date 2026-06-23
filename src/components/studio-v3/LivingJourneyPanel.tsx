@@ -392,7 +392,18 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               dna={dna}
               routeLine={routeLine}
               moments={moments}
+              momentsDetailed={routePoints.map((p) => ({
+                label: p.label,
+                lat: p.lat ?? null,
+                lng: p.lng ?? null,
+              }))}
+              originCoord={(() => {
+                const rk = tourRegionToRegionKey(resolvedTour?.region ?? null);
+                const o = REGION_ORIGIN[rk];
+                return o ? { lat: o.lat, lng: o.lng } : null;
+              })()}
               timelineMoments={timelineMoments}
+
               durationLabel={scopeDuration}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
