@@ -315,7 +315,34 @@ export function SignaturePriceCard({
       className="mx-auto mt-10 w-full max-w-[460px] px-5"
       aria-label="Your Signature — investment"
     >
+      {/* Reveal stagger — premium sequenced entrance. Direct children of
+          the inner card fade up one beat at a time. Disabled under
+          prefers-reduced-motion. */}
+      <style>{`
+        [data-sv3-stagger] > * {
+          opacity: 0;
+          animation: sv3-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        [data-sv3-stagger] > *:nth-child(1)  { animation-delay: 0ms; }
+        [data-sv3-stagger] > *:nth-child(2)  { animation-delay: 80ms; }
+        [data-sv3-stagger] > *:nth-child(3)  { animation-delay: 180ms; }
+        [data-sv3-stagger] > *:nth-child(4)  { animation-delay: 280ms; }
+        [data-sv3-stagger] > *:nth-child(5)  { animation-delay: 360ms; }
+        [data-sv3-stagger] > *:nth-child(6)  { animation-delay: 440ms; }
+        [data-sv3-stagger] > *:nth-child(7)  { animation-delay: 520ms; }
+        [data-sv3-stagger] > *:nth-child(8)  { animation-delay: 600ms; }
+        [data-sv3-stagger] > *:nth-child(9)  { animation-delay: 680ms; }
+        [data-sv3-stagger] > *:nth-child(n+10) { animation-delay: 760ms; }
+        @keyframes sv3-rise {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-sv3-stagger] > * { opacity: 1; animation: none; transform: none; }
+        }
+      `}</style>
       <div
+        data-sv3-stagger
         className="relative overflow-hidden rounded-[6px] px-5 py-6 text-center"
         style={{
           background: "color-mix(in oklab, var(--ivory) 88%, var(--sand))",
