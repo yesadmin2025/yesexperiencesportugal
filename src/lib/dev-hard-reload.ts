@@ -22,10 +22,19 @@
  */
 
 const BUILD_KEY = "__yes_build_id__";
+const INSTALL_KEY = "__yes_dev_hard_reload_installed__";
+
+declare global {
+  interface Window {
+    __yes_dev_hard_reload_installed__?: boolean;
+  }
+}
 
 export function installDevHardReload() {
   if (typeof window === "undefined") return;
   if (!import.meta.env.DEV) return;
+  if (window[INSTALL_KEY]) return;
+  window[INSTALL_KEY] = true;
 
   // 1) Vite full-reload → purge caches, hard reload.
   if (import.meta.hot) {
@@ -33,6 +42,13 @@ export function installDevHardReload() {
       void purgeAndReload();
     });
   }
+
+  // Lovable's mobile preview can proxy HTTP correctly while Vite's websocket
+  // HMR fails. In that case `import.meta.hot` never receives the reload event,
+  // so poll the local HMR gate and flush pending edits ourselves.
+  window.setInterval(() => {
+    void flushGateIfPending();
+  }, 1800);
 
   // 2) bfcache restore → reload so latest JS evaluates.
   window.addEventListener("pageshow", (event) => {
@@ -59,6 +75,20 @@ export function installDevHardReload() {
     }
   } catch {
     /* sessionStorage may be unavailable in private mode — ignore */
+  }
+}
+
+async function flushGateIfPending() {
+  try {
+    const gate = await fetch("/__hmr_gate", { cache: "no-store" });
+    if (!gate.ok) return;
+    const payload = (await gate.json()) as { count?: number };
+    if (!payload.count || payload.count < 1) return;
+
+    await fetch("/__hmr_flush", { method: "POST", cache: "no-store" }).catch(() => null);
+    await purgeAndReload();
+  } catch {
+    /* The endpoint only exists in preview/dev — ignore elsewhere. */
   }
 }
 
