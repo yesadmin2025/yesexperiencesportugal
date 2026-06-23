@@ -693,6 +693,15 @@ export function SignaturePriceCard({
                         >
                           {a.blurb}
                         </span>
+                        {!fits ? (
+                          <span
+                            className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                            data-testid="addon-budget-locked"
+                          >
+                            Won't fit this day ({a.durationMinutes}m)
+                          </span>
+                        ) : null}
                       </span>
                       <span
                         className="shrink-0 text-[12px] font-semibold tabular-nums"
