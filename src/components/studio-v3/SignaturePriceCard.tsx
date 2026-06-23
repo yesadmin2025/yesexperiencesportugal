@@ -75,6 +75,15 @@ export interface SignaturePriceCardProps {
    * feeling the day shrinks invisibly.
    */
   remainingMinutes?: number | null;
+  /**
+   * Ordered stop labels for the resolved/edited Signature route. When
+   * provided, the card surfaces a "Your day includes" spine above the
+   * inclusion footnote so the price reads against the real day, not a
+   * skeleton. Names only — never invented, sourced from the route.
+   */
+  itineraryStops?: ReadonlyArray<string>;
+  /** Approximate total day length in hours (drive + dwell), used in the spine summary. */
+  dwellHours?: number | null;
 }
 
 export function SignaturePriceCard({
