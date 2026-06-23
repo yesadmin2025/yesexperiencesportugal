@@ -3661,6 +3661,7 @@ function ReactionOverlay({
           originLabel={reaction.originLabel}
           routeLabels={reaction.routeLabels}
           regionKey={reaction.regionKey ?? null}
+          originCoord={reaction.originCoord ?? null}
           rhythm={reaction.rhythmBucket ?? null}
           eyebrow={reaction.eyebrow}
           line={reaction.message}
