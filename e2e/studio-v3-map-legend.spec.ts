@@ -182,7 +182,39 @@ test.describe("Studio V3 — map journey legend (data-leg-legend-value contract)
       expect(km, "journey km > 0").toBeGreaterThan(0);
       expect(min, "journey minutes > 0").toBeGreaterThan(0);
 
-      // 4. Resize to a smaller viewport mid-flight — attribute and text
+      // 4. Accessibility contract — the legend must expose an accessible
+      //    name describing the journey, be a live polite region, and the
+      //    decorative inner spans must be aria-hidden so AT only reads the
+      //    composed label once.
+      const wrapper = page.locator('[data-testid="studio-v3-map-legend"]').first();
+      await expect(wrapper).toHaveAttribute("role", "status");
+      await expect(wrapper).toHaveAttribute("aria-live", "polite");
+      await expect(wrapper).toHaveAttribute("aria-atomic", "true");
+      const wrapperLabel = await wrapper.getAttribute("aria-label");
+      expect(wrapperLabel ?? "", "wrapper aria-label describes journey").toMatch(
+        /Approximate total journey:.*driving,.*km\.?$/,
+      );
+
+      const chip = page.locator("[data-leg-legend-value]").first();
+      await expect(chip).toHaveAttribute("role", "group");
+      const chipLabel = await chip.getAttribute("aria-label");
+      expect(chipLabel, "chip aria-label matches wrapper aria-label").toBe(wrapperLabel);
+
+      // Inner spans (gold minutes, separator, km) must be hidden from AT
+      // so the composed accessible label is announced exactly once.
+      const innerSpansHidden = await chip.evaluate((el) =>
+        Array.from(el.querySelectorAll(":scope > span")).every(
+          (s) => s.getAttribute("aria-hidden") === "true",
+        ),
+      );
+      expect(innerSpansHidden, "decorative inner spans are aria-hidden").toBe(true);
+
+      // Accessible-name lookup by role must find the chip.
+      const byRole = page.getByRole("status", { name: /Approximate total journey/i }).first();
+      await expect(byRole).toBeVisible();
+
+      // 5. Resize to a smaller viewport mid-flight — attribute and text
+
       //    must STILL match. This guards against future refactors that
       //    cache the attribute separately from children.
       const shrink = vp.width > 400 ? { width: 360, height: 800 } : { width: 430, height: 900 };
