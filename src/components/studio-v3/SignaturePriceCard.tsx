@@ -18,6 +18,7 @@ import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
   selectSignatureAddOns,
+  selectSignatureAddOnsWithBudget,
   regionBucket,
   LISBON_SUBREGION_BY_TOUR_ID,
   type SignatureAddOn,
@@ -67,6 +68,13 @@ export interface SignaturePriceCardProps {
    * persisting. Does not affect the rest of the app.
    */
   previewTiers?: import("@/data/signatureToursViator").PriceTiersEUR | null;
+  /**
+   * Remaining minutes in the day budget after stops + drive legs. When
+   * provided, add-ons that wouldn't fit are kept visible but dimmed and
+   * locked, so the traveller can see *why* an upgrade isn't offered without
+   * feeling the day shrinks invisibly.
+   */
+  remainingMinutes?: number | null;
 }
 
 export function SignaturePriceCard({
@@ -81,6 +89,7 @@ export function SignaturePriceCard({
   showAddOns = true,
   onGuestsChange,
   previewTiers = null,
+  remainingMinutes = null,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
@@ -98,15 +107,28 @@ export function SignaturePriceCard({
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
   const hasPrice = priceEur != null;
 
-  const availableAddOns = useMemo<SignatureAddOn[]>(
+  // Budget-aware add-on pool: every eligible option stays visible so the
+  // traveller can read it, but ones that wouldn't fit the regional rhythm
+  // are flagged via `fitsBudget` and locked at the UI layer below.
+  const addOnPool = useMemo(
     () =>
-      selectSignatureAddOns({
+      selectSignatureAddOnsWithBudget({
         resolvedTour: tour,
         stopCount,
         durationLabel,
+        remainingMinutes: remainingMinutes ?? undefined,
       }),
-    [tour, stopCount, durationLabel],
+    [tour, stopCount, durationLabel, remainingMinutes],
   );
+  const availableAddOns = useMemo<SignatureAddOn[]>(
+    () => addOnPool.map((e) => e.addOn),
+    [addOnPool],
+  );
+  const fitsBudgetById = useMemo(() => {
+    const m: Record<string, boolean> = {};
+    for (const e of addOnPool) m[e.addOn.id] = e.fitsBudget;
+    return m;
+  }, [addOnPool]);
   // Fire-and-forget telemetry: snapshot the anchor region + filtered pool so
   // future region/sub-region mismatches (e.g. Arrábida on Sintra) are caught
   // in audit. No PII; just the surface, tour id, bucket, and pool ids.
@@ -145,6 +167,8 @@ export function SignaturePriceCard({
   const toggleAddOn = (id: string) => {
     const isSelected = selectedAddOnIds.includes(id);
     if (!isSelected && atCap) return; // gated
+    // Budget gate: never let the user push the day past the regional rhythm.
+    if (!isSelected && fitsBudgetById[id] === false) return;
     // Toggle synchronously so totals + a11y stay deterministic.
     setSelectedAddOnIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
@@ -606,7 +630,8 @@ export function SignaturePriceCard({
 
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
-                const disabled = !selected && atCap;
+                const fits = fitsBudgetById[a.id] !== false;
+                const disabled = !selected && (atCap || !fits);
                 const state = pending
                   ? "pending"
                   : selected
@@ -668,6 +693,15 @@ export function SignaturePriceCard({
                         >
                           {a.blurb}
                         </span>
+                        {!fits ? (
+                          <span
+                            className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                            data-testid="addon-budget-locked"
+                          >
+                            Won't fit this day ({a.durationMinutes}m)
+                          </span>
+                        ) : null}
                       </span>
                       <span
                         className="shrink-0 text-[12px] font-semibold tabular-nums"

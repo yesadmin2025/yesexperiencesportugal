@@ -157,6 +157,14 @@ const INTEREST_IMAGE: Record<string, string> = {
 };
 
 import {
+  videoForCompanions,
+  videoForDestination,
+  videoForFeeling,
+  videoForInterest,
+} from "@/content/studio-scene-clips";
+
+
+import {
   COMPANIONS,
   CONSIDERATIONS,
   DESTINATION_INTENTS,
@@ -494,6 +502,8 @@ type Reaction = {
   holdMs?: number;
   /** Optional atmospheric background image rendered inside the postcard. */
   bgImage?: string;
+  /** Optional cinematic scene clip for the beat canvas (auto-loops, muted). */
+  bgVideo?: string;
   /** Map-beat metadata (kind === "map-beat" only). */
   mapMode?: MapBeatMode;
   /** Real route labels from resolveStudioV3Route — never invented. */
@@ -884,6 +894,7 @@ export function StudioV3() {
       postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
       holdMs: 4400,
       bgImage: FEELING_IMAGE[id],
+      bgVideo: videoForFeeling(id),
     });
   };
   const onDestination = (id: DestinationIntent) => {
@@ -903,6 +914,7 @@ export function StudioV3() {
         eyebrow: "The direction",
         message,
         bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
+        bgVideo: videoForDestination(id) ?? videoForFeeling(state.feeling),
         nextPhase: next,
         holdMs: 4700,
       });
@@ -940,6 +952,7 @@ export function StudioV3() {
         eyebrow: "The company",
         message: companionsAtmosphereLine(id),
         bgImage: companionsAtmosphereImage(id, state.feeling),
+        bgVideo: videoForCompanions(id) ?? videoForFeeling(state.feeling),
         nextPhase: next,
         holdMs: 5100,
       });
@@ -975,6 +988,7 @@ export function StudioV3() {
         eyebrow: "The occasion",
         message: occasionAtmosphereLine(id, state.companions),
         bgImage: occasionAtmosphereImage(id, state.feeling),
+        bgVideo: videoForFeeling(state.feeling),
         nextPhase: next,
         holdMs: 5100,
       });
@@ -1002,6 +1016,7 @@ export function StudioV3() {
         eyebrow: "The when",
         message: dateModeAtmosphereLine(mode),
         bgImage: dateBgImage(),
+        bgVideo: videoForFeeling(state.feeling),
         nextPhase: next,
         holdMs: 4700,
       });
@@ -1069,6 +1084,7 @@ export function StudioV3() {
       postcardSubline: "Route forming",
       holdMs: 4800,
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
+      bgVideo: videoForFeeling(state.feeling),
     });
   };
   /** Phase 3 — exact guest count from the stepper (1–14). Manual change
@@ -1301,6 +1317,7 @@ export function StudioV3() {
       nextPhase: next,
       holdMs: 4600,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
+      bgVideo: videoForInterest(state.interests[0]) ?? videoForFeeling(state.feeling),
     });
   };
   const continueFromConsiderations = () => {
@@ -3420,6 +3437,7 @@ function ReactionOverlay({
       >
         <AtmosphereBeat
           imageSrc={reaction.bgImage}
+          videoSrc={reaction.bgVideo}
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />

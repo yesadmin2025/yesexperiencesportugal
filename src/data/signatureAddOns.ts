@@ -10,9 +10,15 @@
 //      already part of every Signature's `included` array — we do not
 //      sell them again as add-ons.
 //   3. The traveller never sees more than 3 add-ons, and only those
-//      whose itinerary thresholds (stops / hours) are met.
+//      whose itinerary thresholds (stops / hours / remaining time) are
+//      met.
 //   4. Pricing is derived at runtime as a % of the base "from" anchor
 //      and rounded to the nearest €5/pp. No invented numbers.
+//   5. `durationMinutes` is the time the add-on costs the day. The
+//      caller passes `remainingMinutes` (regional far-budget minus
+//      already-planned stops + drives) and we tag each add-on with
+//      `fitsBudget` so the UI can dim toggles that would push the day
+//      past the regional rhythm.
 
 import type { SignatureTour } from "./signatureTours";
 
@@ -51,6 +57,12 @@ export interface SignatureAddOn {
   minStops?: number;
   /** Minimum duration (hours) for this add-on to surface. */
   minHours?: number;
+  /**
+   * Minutes this add-on adds to the day (driving included where it would
+   * meaningfully change the budget). Used by the time-budget guard so we
+   * never suggest a stop that would push the day past the regional cap.
+   */
+  durationMinutes: number;
   /**
    * Optional Lisbon-bucket sub-region. When set, the add-on is only
    * surfaced for anchors on the same side of the Tejo.
@@ -94,6 +106,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
       minHours: 6,
+      durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
     },
     {
@@ -104,6 +117,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
       minHours: 6,
+      durationMinutes: 75,
       lisbonSubRegion: "arrabida-setubal",
     },
     {
@@ -113,6 +127,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
       pricePctOfBase: 0.16,
+      durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
     },
     {
@@ -122,6 +137,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
       pricePctOfBase: 0.14,
+      durationMinutes: 60,
       lisbonSubRegion: "arrabida-setubal",
     },
     {
@@ -133,6 +149,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.2,
       minHours: 7,
       minStops: 4,
+      durationMinutes: 120,
       lisbonSubRegion: "sintra-cascais",
     },
   ],
@@ -144,6 +161,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
       pricePctOfBase: 0.16,
+      durationMinutes: 60,
     },
     {
       id: "talha-amphora",
@@ -151,6 +169,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Talha amphora wine tasting",
       blurb: "Taste 2 000-year-old clay-vessel wines in a Vidigueira cellar with the winemaker.",
       pricePctOfBase: 0.18,
+      durationMinutes: 75,
     },
     {
       id: "roman-ruins-trail",
@@ -159,6 +178,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb: "A guided pause at a real Roman site — columns, mosaics, the same hills they walked.",
       pricePctOfBase: 0.12,
       minStops: 3,
+      durationMinutes: 45,
     },
   ],
   comporta: [
@@ -168,6 +188,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Roman ruins of Tróia",
       blurb: "A quiet guided walk through one of the Atlantic's largest Roman fish-salting sites.",
       pricePctOfBase: 0.14,
+      durationMinutes: 60,
     },
     {
       id: "herdade-tasting",
@@ -175,6 +196,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Herdade da Comporta wine tasting",
       blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
       pricePctOfBase: 0.2,
+      durationMinutes: 75,
     },
   ],
   centro: [
@@ -185,6 +207,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
       pricePctOfBase: 0.18,
+      durationMinutes: 75,
     },
     {
       id: "obidos-walls",
@@ -193,6 +216,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
       pricePctOfBase: 0.14,
+      durationMinutes: 60,
     },
     {
       id: "nazare-cliffs",
@@ -202,6 +226,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "Stand above the canyon that makes Nazaré's monster waves — the Atlantic stretching to the horizon.",
       pricePctOfBase: 0.16,
       minHours: 6,
+      durationMinutes: 45,
     },
   ],
   // No Douro Signature in the dataset yet — we refuse to fabricate one.
@@ -260,4 +285,31 @@ export function selectSignatureAddOns(opts: {
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
     .slice(0, 3);
+}
+
+/**
+ * Same selection as `selectSignatureAddOns`, but each item is tagged with
+ * `fitsBudget` against the caller's `remainingMinutes`. The UI keeps the
+ * add-on visible (so the traveller still sees the option) but dims it and
+ * blocks the toggle when it would push the day past the regional rhythm.
+ *
+ * When `remainingMinutes` is undefined, every add-on is considered to fit
+ * (back-compat path for surfaces that don't yet pass a day summary).
+ */
+export function selectSignatureAddOnsWithBudget(opts: {
+  resolvedTour: Pick<SignatureTour, "id" | "region"> | null | undefined;
+  stopCount: number;
+  durationLabel: string | null | undefined;
+  remainingMinutes?: number;
+}): Array<{ addOn: SignatureAddOn; fitsBudget: boolean }> {
+  const list = selectSignatureAddOns({
+    resolvedTour: opts.resolvedTour,
+    stopCount: opts.stopCount,
+    durationLabel: opts.durationLabel,
+  });
+  const budget = opts.remainingMinutes;
+  return list.map((addOn) => ({
+    addOn,
+    fitsBudget: budget == null ? true : budget >= addOn.durationMinutes,
+  }));
 }
