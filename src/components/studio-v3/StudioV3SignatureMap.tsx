@@ -346,6 +346,42 @@ export function StudioV3SignatureMap({
     });
   }, [shown, detailed, geo, originCoord, legMinutes]);
 
+  // Aggregated journey totals — drive minutes + on-road km — so the legend
+  // chip can quietly answer "how far is this really?" before the traveller
+  // asks. Geographic mode only; quietly hidden when we have no segments
+  // yet (Pickup beat) or no real coordinates.
+  const journeyTotals = useMemo(() => {
+    if (!geo || !originCoord || revealedCount < 1) return null;
+    let km = 0;
+    let min = 0;
+    let prev = originCoord;
+    for (let i = 0; i < revealedCount; i++) {
+      const d = detailed[i];
+      if (!d || typeof d.lat !== "number" || typeof d.lng !== "number") continue;
+      const to = { lat: d.lat as number, lng: d.lng as number };
+      // Haversine km × 1.12 = ~real road distance (matches drive-min model).
+      const R = 6371;
+      const toRad = (x: number) => (x * Math.PI) / 180;
+      const dLat = toRad(to.lat - prev.lat);
+      const dLng = toRad(to.lng - prev.lng);
+      const lat1 = toRad(prev.lat);
+      const lat2 = toRad(to.lat);
+      const h =
+        Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      const segKm = 2 * R * Math.asin(Math.sqrt(h)) * 1.12;
+      km += segKm;
+      const realMin = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+      min += realMin != null && realMin > 0 ? realMin : haversineDriveMinutes(prev, to);
+      prev = to;
+    }
+    if (min <= 0 || km <= 0) return null;
+    const kmRounded = km < 10 ? Math.round(km * 10) / 10 : Math.round(km);
+    const minLabel =
+      min < 60 ? `~${min} min` : `~${Math.floor(min / 60)}h${min % 60 ? ` ${min % 60}m` : ""}`;
+    return { minLabel, kmLabel: `${kmRounded} km`, min, km: kmRounded };
+  }, [geo, originCoord, revealedCount, detailed, legMinutes]);
+
+
   const handlePinKey = (e: React.KeyboardEvent, i: number) => {
     const last = waypoints.length - 1;
     if (last < 0) return;
