@@ -214,23 +214,29 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 
 const TOTAL_STEPS = 14;
 
+// Keep this aligned with LINEAR_ORDER in curation.ts — the advance() guard
+// uses PHASE_ORDER indices to reject out-of-sequence transitions, and
+// getNextPhase() walks LINEAR_ORDER to decide the next step. If the two
+// disagree (e.g. investment placed before guests here but after guests
+// there), valid transitions get silently dropped and the funnel dead-ends.
 const PHASE_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
   "who",
   "destination",
+  "pickup",
+  "guests",
   "investment",
   "interests",
   "rhythm",
   "occasion",
   "date",
-  "pickup",
-  "guests",
   "considerations",
   "language",
   "map",
   "storyboard",
 ];
+
 
 function stepOf(phase: StudioV3Phase): number {
   return PHASE_ORDER.indexOf(phase) + 1;
