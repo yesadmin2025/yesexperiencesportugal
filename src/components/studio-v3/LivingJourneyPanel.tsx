@@ -25,6 +25,13 @@ import { X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { composeJourneyTitle, getOptionLabel, resolveStudioV3Route } from "./curation";
 import {
+  haversineDriveMinutes,
+  inferKind,
+  kindLabel,
+  stopDurationMinutes,
+  summarizeDay,
+} from "@/lib/studio/timing";
+import {
   COMPANIONS,
   FEELINGS,
   INTERESTS,
