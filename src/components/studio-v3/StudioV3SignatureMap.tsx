@@ -506,12 +506,17 @@ export function StudioV3SignatureMap({
           assert `attr === visibleText` at any viewport / segment count. */}
       {journeyTotals ? (() => {
         const legendText = `${journeyTotals.minLabel} · ${journeyTotals.kmLabel}`;
+        const accessibleLabel = `Approximate total journey: ${journeyTotals.minLabel.replace("~", "").trim()} driving, ${journeyTotals.kmLabel}.`;
         return (
           <div
             className="absolute left-1/2 top-2.5 z-10 -translate-x-1/2 pointer-events-none"
             data-testid="studio-v3-map-legend"
             data-journey-min={journeyTotals.min}
             data-journey-km={journeyTotals.km}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label={accessibleLabel}
             style={{ animation: "studioV3RiseIn 520ms ease-out 180ms both" }}
           >
             <span
@@ -519,6 +524,8 @@ export function StudioV3SignatureMap({
               data-leg-legend="journey"
               data-legend-value={legendText}
               data-leg-legend-value={legendText}
+              role="group"
+              aria-label={accessibleLabel}
               style={{
                 background: "color-mix(in oklab, #050d0f 78%, transparent)",
                 border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
@@ -526,17 +533,15 @@ export function StudioV3SignatureMap({
                 boxShadow: "0 6px 20px -10px rgba(0,0,0,0.55)",
               }}
             >
-              <span style={{ color: "var(--gold)" }}>{journeyTotals.minLabel}</span>
-              <span aria-hidden style={{ opacity: 0.5 }}>·</span>
-              <span>{journeyTotals.kmLabel}</span>
+              <span aria-hidden="true" style={{ color: "var(--gold)" }}>{journeyTotals.minLabel}</span>
+              <span aria-hidden="true" style={{ opacity: 0.5 }}>·</span>
+              <span aria-hidden="true">{journeyTotals.kmLabel}</span>
             </span>
-            <span className="sr-only">
-              Approximate total journey: {journeyTotals.minLabel.replace("~", "")} driving,{" "}
-              {journeyTotals.kmLabel}.
-            </span>
+            <span className="sr-only">{accessibleLabel}</span>
           </div>
         );
       })() : null}
+
 
 
 
