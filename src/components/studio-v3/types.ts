@@ -324,9 +324,8 @@ export const LANGUAGES: ChoiceOption<Language>[] = [
   { id: "en", label: "English", whisper: "Hosted in English." },
   { id: "pt", label: "Portuguese", whisper: "Hosted in Portuguese." },
   { id: "es", label: "Spanish", whisper: "Hosted in Spanish." },
-  { id: "fr", label: "French", whisper: "Hosted in French." },
-  { id: "other", label: "Other", whisper: "Tell us — we'll do our best." },
 ];
+
 
 export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
   {
