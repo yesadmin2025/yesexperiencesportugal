@@ -3692,11 +3692,26 @@ function ReactionOverlay({
   // Per-kind soft "postcard" gradient using brand tokens only.
   // No external imagery: warm scenic washes drawn from --ivory / --sand /
   // --gold-soft / --teal-2. Acts as the visual layer behind/above the copy.
+  // Region-aware pickup wash — Sintra leans forest-teal, Arrábida coastal,
+  // Alentejo warm gold/sand, Comporta soft sand. Still token-only, no stock.
+  const pickupBgByRegion: Record<string, string> = {
+    "sintra-cascais":
+      "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 90%, transparent) 0%, color-mix(in oklab, var(--teal-2, var(--teal)) 22%, transparent) 100%)",
+    "arrabida-setubal":
+      "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 90%, transparent) 0%, color-mix(in oklab, var(--teal) 18%, transparent) 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 22%, transparent) 100%)",
+    alentejo:
+      "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 90%, transparent) 0%, color-mix(in oklab, var(--gold-soft, var(--gold)) 30%, transparent) 55%, color-mix(in oklab, var(--sand) 68%, transparent) 100%)",
+    "comporta-troia":
+      "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 92%, transparent) 0%, color-mix(in oklab, var(--sand) 72%, transparent) 60%, color-mix(in oklab, var(--gold-soft, var(--gold)) 22%, transparent) 100%)",
+    lisbon:
+      "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 92%, transparent) 0%, color-mix(in oklab, var(--teal-2, var(--teal)) 18%, transparent) 100%)",
+  };
   const postcardBg =
     reaction.kind === "feeling"
       ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 88%, transparent) 0%, color-mix(in oklab, var(--sand) 70%, transparent) 55%, color-mix(in oklab, var(--gold-soft, var(--gold)) 40%, transparent) 100%)"
       : reaction.kind === "pickup"
-        ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 92%, transparent) 0%, color-mix(in oklab, var(--teal-2, var(--teal)) 18%, transparent) 100%)"
+        ? (reaction.regionKey && pickupBgByRegion[reaction.regionKey]) ||
+          "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 92%, transparent) 0%, color-mix(in oklab, var(--teal-2, var(--teal)) 18%, transparent) 100%)"
         : reaction.kind === "interests"
           ? "linear-gradient(135deg, color-mix(in oklab, var(--ivory) 90%, transparent) 0%, color-mix(in oklab, var(--gold-soft, var(--gold)) 32%, transparent) 60%, color-mix(in oklab, var(--sand) 65%, transparent) 100%)"
           : reaction.kind === "considerations"
