@@ -15,7 +15,9 @@ import appCss from "../styles.css?url";
 import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
 import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
+import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
+
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -192,7 +194,9 @@ function RootComponent() {
   useAppReadyFlag();
   useIframeFooterGuard();
   useEffect(() => installClientErrorLogger(), []);
+  useEffect(() => installDevHardReload(), []);
   // Single QueryClient per browser session — keeps SignaturePriceCard and
+
   // any future useQuery hook resolvable without each route wiring its own.
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 1 } } }),
