@@ -1177,11 +1177,12 @@ export function StudioV3() {
           message: paceHint,
           mapMode: "pace",
           originLabel: pickupCityLabel(state.pickup) || undefined,
+          originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           rhythmBucket: id,
           regionKey: tourRegionToRegionKey(
             (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ),
+          ) ?? pickupRegionKey(state.pickup) ?? undefined,
           holdMs: 6200,
         });
 
