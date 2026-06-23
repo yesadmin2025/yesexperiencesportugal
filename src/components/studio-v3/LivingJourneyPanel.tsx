@@ -882,12 +882,15 @@ function JourneyDraftDrawer({
             <div className="relative mt-3">
               <StudioV3SignatureMap
                 stops={moments}
+                stopsDetailed={momentsDetailed}
+                originCoord={originCoord}
                 activeCount={activePins}
                 originLabel={originLabel}
                 paceLabel={paceLabel}
                 ariaLabel="Your journey, drawing live"
                 className="rounded-[4px] border"
               />
+
               <p
                 className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold pointer-events-none"
                 style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
