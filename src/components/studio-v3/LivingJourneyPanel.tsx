@@ -47,7 +47,33 @@ import { AffinityBars } from "./AffinityBars";
 import { SmartRecommendation } from "./SmartRecommendation";
 import { QualityScore } from "./QualityScore";
 import { signatureTours } from "@/data/signatureTours";
+import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { regionalVoiceFor } from "./regionalVoice";
+
+/** Local copy of the Signature-region → RegionKey mapping. Keeps this
+ *  panel decoupled from StudioV3.tsx while preserving the same logic. */
+function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
+  const r = (region ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("comporta") || r.includes("évora") || r.includes("evora"))
+    return "alentejo";
+  if (
+    r.includes("centro") ||
+    r.includes("coimbra") ||
+    r.includes("fátima") ||
+    r.includes("nazaré") ||
+    r.includes("óbidos")
+  )
+    return "centro";
+  if (
+    r.includes("sintra") ||
+    r.includes("cascais") ||
+    r.includes("cabo da roca") ||
+    r.includes("lisbon coast")
+  )
+    return "lisbon-coast";
+  return "arrabida";
+}
+
 
 interface LivingJourneyPanelProps {
   state: StudioV3State;
