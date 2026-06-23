@@ -1426,6 +1426,55 @@ export function pickupCityLabel(pickup: Pickup | null | undefined): string {
 export const PICKUP_CITY_LABELS = ["Lisbon", "Cascais", "Sintra", "Setúbal", "Comporta"] as const;
 
 /**
+ * Real lat/lng of the city the chosen pickup actually starts from, so the
+ * "origin" map beat plants a pin where the traveller stands — not the
+ * region centroid. Returns null when pickup hasn't been chosen yet.
+ */
+export function pickupOriginCoord(
+  pickup: Pickup | null | undefined,
+): { lat: number; lng: number } | null {
+  switch (pickup) {
+    case "lisbon":
+    case "lisbon-airport":
+    case "lisbon-cruise":
+      return { lat: 38.7223, lng: -9.1393 };
+    case "cascais-estoril":
+      return { lat: 38.6979, lng: -9.4215 };
+    case "sintra":
+      return { lat: 38.7979, lng: -9.3878 };
+    case "sesimbra-setubal-arrabida":
+      return { lat: 38.5244, lng: -8.8882 };
+    case "comporta-troia":
+      return { lat: 38.3848, lng: -8.7805 };
+    default:
+      return null;
+  }
+}
+
+/**
+ * Best-effort region key from a pickup, used to seed the map beat with
+ * a sensible cinematic frame before a full Signature has resolved.
+ */
+export function pickupRegionKey(
+  pickup: Pickup | null | undefined,
+): "lisbon-coast" | "arrabida" | "alentejo" | null {
+  switch (pickup) {
+    case "lisbon":
+    case "lisbon-airport":
+    case "lisbon-cruise":
+    case "cascais-estoril":
+    case "sintra":
+      return "lisbon-coast";
+    case "sesimbra-setubal-arrabida":
+      return "arrabida";
+    case "comporta-troia":
+      return "alentejo";
+    default:
+      return null;
+  }
+}
+
+/**
  * composeJourneyReasons — 2–3 short, factual reasons grounded in the
  * traveller's actual choices. No invented superlatives.
  */
