@@ -498,36 +498,46 @@ export function StudioV3SignatureMap({
 
       {/* Journey legend — total drive time + km. Honest, quiet, always
           visible once a route exists so travellers know the distance
-          before the reveal. Hidden during Pickup-only beat. */}
-      {journeyTotals ? (
-        <div
-          className="absolute left-1/2 top-2.5 z-10 -translate-x-1/2 pointer-events-none"
-          data-testid="studio-v3-map-legend"
-          data-journey-min={journeyTotals.min}
-          data-journey-km={journeyTotals.km}
-          style={{ animation: "studioV3RiseIn 520ms ease-out 180ms both" }}
-        >
-          <span
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
-            data-leg-legend="journey"
-            data-legend-value={`${journeyTotals.minLabel} · ${journeyTotals.kmLabel}`}
-            style={{
-              background: "color-mix(in oklab, #050d0f 78%, transparent)",
-              border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
-              color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
-              boxShadow: "0 6px 20px -10px rgba(0,0,0,0.55)",
-            }}
+          before the reveal. Hidden during Pickup-only beat.
+
+          The `data-leg-legend-value` attribute is the SINGLE source of
+          truth for the visible chip text — both the attribute and the
+          rendered children are derived from `legendText`, so E2E can
+          assert `attr === visibleText` at any viewport / segment count. */}
+      {journeyTotals ? (() => {
+        const legendText = `${journeyTotals.minLabel} · ${journeyTotals.kmLabel}`;
+        return (
+          <div
+            className="absolute left-1/2 top-2.5 z-10 -translate-x-1/2 pointer-events-none"
+            data-testid="studio-v3-map-legend"
+            data-journey-min={journeyTotals.min}
+            data-journey-km={journeyTotals.km}
+            style={{ animation: "studioV3RiseIn 520ms ease-out 180ms both" }}
           >
-            <span style={{ color: "var(--gold)" }}>{journeyTotals.minLabel}</span>
-            <span aria-hidden style={{ opacity: 0.5 }}>·</span>
-            <span>{journeyTotals.kmLabel}</span>
-          </span>
-          <span className="sr-only">
-            Approximate total journey: {journeyTotals.minLabel.replace("~", "")} driving,{" "}
-            {journeyTotals.kmLabel}.
-          </span>
-        </div>
-      ) : null}
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+              data-leg-legend="journey"
+              data-legend-value={legendText}
+              data-leg-legend-value={legendText}
+              style={{
+                background: "color-mix(in oklab, #050d0f 78%, transparent)",
+                border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
+                color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                boxShadow: "0 6px 20px -10px rgba(0,0,0,0.55)",
+              }}
+            >
+              <span style={{ color: "var(--gold)" }}>{journeyTotals.minLabel}</span>
+              <span aria-hidden style={{ opacity: 0.5 }}>·</span>
+              <span>{journeyTotals.kmLabel}</span>
+            </span>
+            <span className="sr-only">
+              Approximate total journey: {journeyTotals.minLabel.replace("~", "")} driving,{" "}
+              {journeyTotals.kmLabel}.
+            </span>
+          </div>
+        );
+      })() : null}
+
 
 
       {/* Route + pins. */}
