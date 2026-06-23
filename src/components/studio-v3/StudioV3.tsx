@@ -3542,8 +3542,8 @@ function ReactionOverlay({
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
-            10% { opacity: 1; }
-            85% { opacity: 1; }
+            8% { opacity: 1; }
+            94% { opacity: 1; }
             100% { opacity: 0; }
           }
         `}</style>
@@ -3590,8 +3590,8 @@ function ReactionOverlay({
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
-            10% { opacity: 1; }
-            85% { opacity: 1; }
+            8% { opacity: 1; }
+            94% { opacity: 1; }
             100% { opacity: 0; }
           }
         `}</style>
@@ -3723,8 +3723,8 @@ function ReactionOverlay({
       <style>{`
         @keyframes studioV3ReactionFade {
           0% { opacity: 0; }
-          8% { opacity: 1; }
-          85% { opacity: 1; }
+          6% { opacity: 1; }
+          94% { opacity: 1; }
           100% { opacity: 0; }
         }
       `}</style>
