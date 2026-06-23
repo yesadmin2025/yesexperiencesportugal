@@ -829,6 +829,7 @@ function JourneyDraftDrawer({
               moments={timelineMoments}
               durationLabel={durationLabel}
               originLabel={originLabel}
+              overBudgetNote={overBudgetNote}
             />
           ) : null}
 
