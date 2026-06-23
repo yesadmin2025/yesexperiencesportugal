@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -88,7 +88,12 @@ function Page() {
           <aside className="space-y-7">
             <Info icon={<Mail size={16} />} label="Email" value="hello@yesexperiences.pt" />
             <Info icon={<Phone size={16} />} label="Phone" value="+351 910 000 000" />
-            <Info icon={<MapPin size={16} />} label="Based in" value="Lisbon, Portugal" />
+            <Info
+              icon={<MapPin size={16} />}
+              label="Find us"
+              value="YES experiences Portugal on Google Maps"
+              href="https://share.google/7bTnRlabRJhLWACvE"
+            />
             <div className="gold-divider" />
             <p className="serif italic text-lg text-[color:var(--teal)]">
               "We design Portugal experiences with care. Every reply is personal."
@@ -135,8 +140,18 @@ function Field({
   );
 }
 
-function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
+function Info({
+  icon,
+  label,
+  value,
+  href,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const body = (
     <div className="flex items-start gap-3">
       <span className="mt-1 h-9 w-9 rounded-full bg-[color:var(--sand)] flex items-center justify-center text-[color:var(--teal)]">
         {icon}
@@ -149,4 +164,18 @@ function Info({ icon, label, value }: { icon: React.ReactNode; label: string; va
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+      >
+        {body}
+      </a>
+    );
+  }
+  return body;
 }

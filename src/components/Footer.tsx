@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
 
-/**
- * Footer — 3-column nav with logo + tagline on desktop, stacked on
- * mobile. Per Phase 1 ajuste: Connect column removed (no confirmed
- * social handles yet). Cols: Experiences · Occasions · Company.
- */
+interface FooterLink {
+  to: string;
+  label: string;
+  external?: boolean;
+}
 
 export function Footer() {
   return (
@@ -75,6 +75,11 @@ export function Footer() {
               { to: "/about", label: "About YES" },
               { to: "/local-stories", label: "Local Stories" },
               { to: "/contact", label: "Contact" },
+              {
+                to: "https://share.google/7bTnRlabRJhLWACvE",
+                label: "Google Maps",
+                external: true,
+              },
             ]}
           />
         </div>
@@ -116,7 +121,7 @@ export function Footer() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: { to: string; label: string }[] }) {
+function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div>
       <h4
@@ -131,12 +136,23 @@ function FooterCol({ title, links }: { title: string; links: { to: string; label
       >
         {links.map((l) => (
           <li key={l.to}>
-            <Link
-              to={l.to}
-              className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
-            >
-              {l.label}
-            </Link>
+            {l.external ? (
+              <a
+                href={l.to}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+              >
+                {l.label}
+              </a>
+            ) : (
+              <Link
+                to={l.to}
+                className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+              >
+                {l.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
