@@ -479,8 +479,13 @@ export function StudioV3SignatureMap({
           40% { opacity: 0.7; }
           100% { opacity: 0; transform: scale(1.8); }
         }
+        @keyframes sv3smArrive {
+          0% { opacity: 0; transform: scale(0.3); }
+          25% { opacity: 1; }
+          100% { opacity: 0; transform: scale(3.4); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          [style*="sv3smPulse"] { animation: none !important; opacity: 0 !important; }
+          [style*="sv3smPulse"], [style*="sv3smArrive"] { animation: none !important; opacity: 0 !important; }
         }
       `}</style>
     </div>
