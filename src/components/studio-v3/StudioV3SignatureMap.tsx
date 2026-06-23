@@ -492,9 +492,45 @@ export function StudioV3SignatureMap({
           key={cls}
           aria-hidden
           className={`absolute ${cls} h-2.5 w-2.5`}
+        <span
+          key={cls}
+          aria-hidden
+          className={`absolute ${cls} h-2.5 w-2.5`}
           style={{ borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)" }}
         />
       ))}
+
+      {/* Journey legend — total drive time + km. Honest, quiet, always
+          visible once a route exists so travellers know the distance
+          before the reveal. Hidden during Pickup-only beat. */}
+      {journeyTotals ? (
+        <div
+          className="absolute left-1/2 top-2.5 z-10 -translate-x-1/2 pointer-events-none"
+          data-testid="studio-v3-map-legend"
+          data-journey-min={journeyTotals.min}
+          data-journey-km={journeyTotals.km}
+          style={{ animation: "studioV3RiseIn 520ms ease-out 180ms both" }}
+        >
+          <span
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+            style={{
+              background: "color-mix(in oklab, #050d0f 78%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
+              color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+              boxShadow: "0 6px 20px -10px rgba(0,0,0,0.55)",
+            }}
+          >
+            <span style={{ color: "var(--gold)" }}>{journeyTotals.minLabel}</span>
+            <span aria-hidden style={{ opacity: 0.5 }}>·</span>
+            <span>{journeyTotals.kmLabel}</span>
+          </span>
+          <span className="sr-only">
+            Approximate total journey: {journeyTotals.minLabel.replace("~", "")} driving,{" "}
+            {journeyTotals.kmLabel}.
+          </span>
+        </div>
+      ) : null}
+
 
       {/* Route + pins. */}
       <svg
