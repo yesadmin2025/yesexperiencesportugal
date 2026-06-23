@@ -754,6 +754,70 @@ export function SignaturePriceCard({
           </fieldset>
         ) : null}
 
+        {/* Itinerary spine — real stop names in order, so the price reads
+            against the actual day. Names sourced from the resolved Signature
+            route; never invented. */}
+        {hasPrice && itineraryStops.length > 0 ? (
+          <section
+            data-testid="studio-v3-itinerary-spine"
+            className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
+              border: "1px solid color-mix(in oklab, var(--gold) 28%, transparent)",
+            }}
+            aria-label="Your day includes these stops"
+          >
+            <p
+              className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span>
+              Your day includes
+              <span
+                className="ml-auto text-[10px] font-semibold tabular-nums tracking-[0.16em]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                {dwellHours != null && dwellHours > 0
+                  ? `≈ ${dwellHours.toFixed(dwellHours < 10 ? 1 : 0)}h · ${itineraryStops.length} stops`
+                  : `${itineraryStops.length} stops`}
+              </span>
+            </p>
+            <ol className="mt-2 flex flex-col gap-1.5">
+              {itineraryStops.slice(0, 5).map((label, i) => (
+                <li
+                  key={`spine-${i}`}
+                  className="flex items-start gap-2 text-[12px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[1px] inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold tabular-nums"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 22%, transparent)",
+                      color: "var(--charcoal)",
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span>{label}</span>
+                </li>
+              ))}
+              {itineraryStops.length > 5 ? (
+                <li
+                  className="pl-[26px] text-[10.5px] italic"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                  }}
+                >
+                  …and {itineraryStops.length - 5} more
+                </li>
+              ) : null}
+            </ol>
+          </section>
+        ) : null}
+
+
         {/* S4 — Inclusions footnote: what's actually in the day. Real data
             from the resolved Signature's `included[]`; never invented. */}
         {hasPrice && inclusionFootnote.length > 0 ? (
