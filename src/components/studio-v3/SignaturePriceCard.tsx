@@ -107,15 +107,28 @@ export function SignaturePriceCard({
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
   const hasPrice = priceEur != null;
 
-  const availableAddOns = useMemo<SignatureAddOn[]>(
+  // Budget-aware add-on pool: every eligible option stays visible so the
+  // traveller can read it, but ones that wouldn't fit the regional rhythm
+  // are flagged via `fitsBudget` and locked at the UI layer below.
+  const addOnPool = useMemo(
     () =>
-      selectSignatureAddOns({
+      selectSignatureAddOnsWithBudget({
         resolvedTour: tour,
         stopCount,
         durationLabel,
+        remainingMinutes: remainingMinutes ?? undefined,
       }),
-    [tour, stopCount, durationLabel],
+    [tour, stopCount, durationLabel, remainingMinutes],
   );
+  const availableAddOns = useMemo<SignatureAddOn[]>(
+    () => addOnPool.map((e) => e.addOn),
+    [addOnPool],
+  );
+  const fitsBudgetById = useMemo(() => {
+    const m: Record<string, boolean> = {};
+    for (const e of addOnPool) m[e.addOn.id] = e.fitsBudget;
+    return m;
+  }, [addOnPool]);
   // Fire-and-forget telemetry: snapshot the anchor region + filtered pool so
   // future region/sub-region mismatches (e.g. Arrábida on Sintra) are caught
   // in audit. No PII; just the surface, tour id, bucket, and pool ids.
