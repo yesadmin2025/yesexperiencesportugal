@@ -494,6 +494,8 @@ type Reaction = {
   holdMs?: number;
   /** Optional atmospheric background image rendered inside the postcard. */
   bgImage?: string;
+  /** Optional cinematic scene clip for the beat canvas (auto-loops, muted). */
+  bgVideo?: string;
   /** Map-beat metadata (kind === "map-beat" only). */
   mapMode?: MapBeatMode;
   /** Real route labels from resolveStudioV3Route — never invented. */
@@ -3420,6 +3422,7 @@ function ReactionOverlay({
       >
         <AtmosphereBeat
           imageSrc={reaction.bgImage}
+          videoSrc={reaction.bgVideo}
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
