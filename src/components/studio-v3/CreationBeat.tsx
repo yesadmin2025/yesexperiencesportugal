@@ -169,6 +169,7 @@ export function MapBeat({
   originLabel,
   routeLabels,
   regionKey,
+  originCoord: originCoordProp,
   rhythm,
   eyebrow,
   line,
@@ -210,9 +211,11 @@ export function MapBeat({
     }
     return { label: l };
   });
-  const originCoord = regionKey && REGION_ORIGIN[regionKey]
-    ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
-    : null;
+  const originCoord =
+    originCoordProp ??
+    (regionKey && REGION_ORIGIN[regionKey]
+      ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
+      : null);
 
   return (
     <div
