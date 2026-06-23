@@ -255,6 +255,9 @@ export function MapBeat({
       className="relative w-full h-full flex items-center justify-center px-5"
       data-testid="studio-v3-map-beat"
       data-map-beat-mode={mode}
+      data-beat-rendered="true"
+      data-origin-coord={originCoord ? `${originCoord.lat.toFixed(4)},${originCoord.lng.toFixed(4)}` : "none"}
+      data-active-stops={activeCount}
     >
       <div className="relative z-10 w-full max-w-[480px]">
         <p
