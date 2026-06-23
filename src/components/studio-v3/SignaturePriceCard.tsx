@@ -167,6 +167,8 @@ export function SignaturePriceCard({
   const toggleAddOn = (id: string) => {
     const isSelected = selectedAddOnIds.includes(id);
     if (!isSelected && atCap) return; // gated
+    // Budget gate: never let the user push the day past the regional rhythm.
+    if (!isSelected && fitsBudgetById[id] === false) return;
     // Toggle synchronously so totals + a11y stay deterministic.
     setSelectedAddOnIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
@@ -628,7 +630,8 @@ export function SignaturePriceCard({
 
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
-                const disabled = !selected && atCap;
+                const fits = fitsBudgetById[a.id] !== false;
+                const disabled = !selected && (atCap || !fits);
                 const state = pending
                   ? "pending"
                   : selected
