@@ -168,6 +168,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       minHours: 6,
       durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
+      conflictsWith: ["picnic", "lunch"],
     },
     {
       id: "coastal-boat-ride",
@@ -179,6 +180,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       minHours: 6,
       durationMinutes: 75,
       lisbonSubRegion: "arrabida-setubal",
+      conflictsWith: ["boat"],
     },
     {
       id: "azulejo-workshop",
@@ -189,6 +191,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.16,
       durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
+      conflictsWith: ["azulejo"],
     },
     {
       id: "azeitao-cheese",
@@ -199,6 +202,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.14,
       durationMinutes: 60,
       lisbonSubRegion: "arrabida-setubal",
+      conflictsWith: ["cheese"],
     },
     {
       id: "sintra-detour",
@@ -211,6 +215,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       minStops: 4,
       durationMinutes: 120,
       lisbonSubRegion: "sintra-cascais",
+      conflictsWith: ["sintra"],
     },
   ],
   alentejo: [
@@ -222,6 +227,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
       pricePctOfBase: 0.16,
       durationMinutes: 60,
+      conflictsWith: ["evora"],
     },
     {
       id: "talha-amphora",
@@ -230,6 +236,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb: "Taste 2 000-year-old clay-vessel wines in a Vidigueira cellar with the winemaker.",
       pricePctOfBase: 0.18,
       durationMinutes: 75,
+      conflictsWith: ["wine-tasting"],
     },
     {
       id: "roman-ruins-trail",
@@ -239,6 +246,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.12,
       minStops: 3,
       durationMinutes: 45,
+      conflictsWith: ["roman"],
     },
   ],
   comporta: [
@@ -249,6 +257,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb: "A quiet guided walk through one of the Atlantic's largest Roman fish-salting sites.",
       pricePctOfBase: 0.14,
       durationMinutes: 60,
+      conflictsWith: ["roman"],
     },
     {
       id: "herdade-tasting",
@@ -257,6 +266,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
       pricePctOfBase: 0.2,
       durationMinutes: 75,
+      conflictsWith: ["wine-tasting"],
     },
   ],
   centro: [
@@ -268,6 +278,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
       pricePctOfBase: 0.18,
       durationMinutes: 75,
+      conflictsWith: ["tomar"],
     },
     {
       id: "obidos-walls",
@@ -277,6 +288,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
         "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
       pricePctOfBase: 0.14,
       durationMinutes: 60,
+      conflictsWith: ["obidos"],
     },
     {
       id: "nazare-cliffs",
@@ -287,6 +299,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       pricePctOfBase: 0.16,
       minHours: 6,
       durationMinutes: 45,
+      conflictsWith: ["nazare"],
     },
   ],
   // No Douro Signature in the dataset yet — we refuse to fabricate one.
