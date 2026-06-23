@@ -387,6 +387,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               rhythm={state.rhythm}
               companions={state.companions}
               fullState={state}
+              overBudgetNote={overBudgetNote}
             />,
 
             document.body,
