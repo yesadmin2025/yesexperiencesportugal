@@ -289,6 +289,56 @@ export function StudioV3SignatureMap({
       ? `Forming route from ${originLabel} with ${shown.length} stop${shown.length === 1 ? "" : "s"}.`
       : `Forming route with ${shown.length} stop${shown.length === 1 ? "" : "s"}.`);
 
+  // Precompute per-pin meta (drive-in minutes from previous + dwell minutes)
+  // — used by the accessible button overlay, the SR-only ordered route
+  // summary, and the chip pressed state. Geographic mode only for drive
+  // minutes; schematic mode still surfaces dwell where known.
+  const pinMeta = useMemo(() => {
+    return shown.map((label, i) => {
+      const d = detailed[i];
+      const dwell =
+        d && typeof d.dwellMin === "number" && d.dwellMin > 0
+          ? d.dwellMin
+          : stopDurationMinutes({
+              label,
+              kind: (d?.kind ?? inferKind(label)) || undefined,
+            });
+      let driveInMin: number | null = null;
+      if (geo && originCoord) {
+        const from =
+          i === 0
+            ? originCoord
+            : {
+                lat: detailed[i - 1]!.lat as number,
+                lng: detailed[i - 1]!.lng as number,
+              };
+        const to = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
+        driveInMin = haversineDriveMinutes(from, to);
+      }
+      return { label, dwell: dwell || null, driveInMin };
+    });
+  }, [shown, detailed, geo, originCoord]);
+
+  const handlePinKey = (e: React.KeyboardEvent, i: number) => {
+    const last = waypoints.length - 1;
+    if (last < 0) return;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedPin(Math.min(last, Math.min(revealedCount - 1, i + 1)));
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedPin(Math.max(0, i - 1));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setSelectedPin(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setSelectedPin(Math.min(last, revealedCount - 1));
+    } else if (e.key === "Escape") {
+      setSelectedPin(null);
+    }
+  };
+
   return (
     <div
       role="img"
