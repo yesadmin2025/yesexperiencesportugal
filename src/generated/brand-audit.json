@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T19:07:00.107Z",
+  "generatedAt": "2026-06-23T19:24:21.273Z",
   "filesScanned": 410,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1493,7 +1493,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 373,
+      "line": 377,
       "col": 43,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1502,7 +1502,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 483,
+      "line": 497,
       "col": 82,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1511,7 +1511,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 608,
+      "line": 622,
       "col": 76,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1520,7 +1520,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 618,
+      "line": 632,
       "col": 47,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1529,7 +1529,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 660,
+      "line": 674,
       "col": 222,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1538,7 +1538,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 740,
+      "line": 754,
       "col": 44,
       "raw": "#050d0f",
       "normalized": "#050d0f",
@@ -1547,7 +1547,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 836,
+      "line": 850,
       "col": 74,
       "raw": "#050d0f",
       "normalized": "#050d0f",
