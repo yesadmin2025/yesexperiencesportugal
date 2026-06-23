@@ -10,6 +10,12 @@
 export interface TimelineMoment {
   label: string;
   story?: string | null;
+  /** Minutes the traveller spends at this stop (e.g. 90). */
+  durationMin?: number | null;
+  /** Short label for the kind ("tasting", "table", "viewpoint"…). */
+  kindLabel?: string | null;
+  /** Drive minutes from the previous moment to this one. Omit for the first. */
+  driveMinBefore?: number | null;
 }
 
 export interface TimelineViewProps {
@@ -18,6 +24,8 @@ export interface TimelineViewProps {
   durationLabel?: string | null;
   /** Origin label (e.g. "Lisbon hotel") so the timeline frames the day. */
   originLabel?: string | null;
+  /** Soft note shown when the composed day tips past the regional rhythm. */
+  overBudgetNote?: string | null;
 }
 
 export function TimelineView({ moments, durationLabel, originLabel }: TimelineViewProps) {
