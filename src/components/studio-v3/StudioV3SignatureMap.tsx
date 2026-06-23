@@ -969,6 +969,8 @@ function MapDebugOverlay({
           type="button"
           onClick={() => setCollapsed((c) => !c)}
           aria-label={collapsed ? "Expand map debug" : "Collapse map debug"}
+          aria-pressed={!collapsed}
+          aria-expanded={!collapsed}
           style={{
             background: "transparent",
             color: "var(--ivory)",
