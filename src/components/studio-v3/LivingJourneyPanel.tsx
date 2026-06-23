@@ -403,7 +403,7 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
-  timelineMoments: Array<{ label: string; story?: string | null }>;
+  timelineMoments: import("./TimelineView").TimelineMoment[];
   durationLabel: string | null;
   originLabel: string | null;
   paceLabel: string | null;
