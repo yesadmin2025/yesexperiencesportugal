@@ -135,6 +135,11 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     };
   });
 
+  const resolvedTour = useMemo(() => {
+    if (!resolved?.skeletonTourKey) return null;
+    return signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null;
+  }, [resolved?.skeletonTourKey]);
+
   // Day summary against the regional rhythm — feeds the soft over-budget note.
   const daySummary = useMemo(
     () =>
@@ -145,9 +150,9 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           lng: p.lng ?? null,
           kind: inferKind(p.label),
         })),
-        region: resolved?.skeletonTourKey ? null : null, // region resolved below
+        region: resolvedTour?.region ?? null,
       }),
-    [routePoints, resolved?.skeletonTourKey],
+    [routePoints, resolvedTour?.region],
   );
   const overBudgetNote = daySummary.overBudget
     ? "This day is shaping into a long one. Consider easing the pace before checkout."
