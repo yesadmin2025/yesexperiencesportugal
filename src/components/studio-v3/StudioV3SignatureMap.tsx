@@ -855,7 +855,9 @@ export function StudioV3SignatureMap({
             ? originCoord
             : { lat: detailed[i - 1]!.lat as number, lng: detailed[i - 1]!.lng as number };
           const b = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
-          return { index: i, driveMin: haversineDriveMinutes(a, b), from: a, to: b };
+          const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+          const driveMin = real != null && real > 0 ? real : haversineDriveMinutes(a, b);
+          return { index: i, driveMin, from: a, to: b };
         })}
         revealedCount={revealedCount}
         visible={visible}
