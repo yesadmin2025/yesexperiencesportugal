@@ -60,6 +60,8 @@ export interface StudioV3SignatureMapProps {
    * haversine fallback for chips, accessibility labels and debug data.
    */
   legMinutes?: ReadonlyArray<number> | null;
+  /** Optional inferred Portugal region — renders a faint silhouette anchor behind the map. */
+  silhouetteRegion?: SilhouetteRegion;
 }
 
 const VB_W = 200;
