@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play, RefreshCw } from "lucide-react";
-import { curateJourney, type CuratedJourney } from "./curation";
+import { curateJourney, type CuratedJourney, pickupOriginCoord } from "./curation";
 import { QualityScore } from "./QualityScore";
 import type { StudioV3State } from "./types";
 
 import { recordStudioV3Phase4Timing, type StudioV3Phase4Phase } from "@/lib/studio-v3-telemetry";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
+import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
+import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import type {
   Companions,
   DestinationIntent,
@@ -255,8 +257,40 @@ export function MapAwakens({
     }));
   }, [journey]);
 
+  // Real OSRM driving minutes — origin (pickup city) + each moment with
+  // resolved coordinates. Falls back silently when offline.
+  const originCoord = useMemo(() => pickupOriginCoord(pickup ?? null), [pickup]);
+  const routeStops: RouteLegStop[] = useMemo(() => {
+    const stops: RouteLegStop[] = [];
+    if (originCoord) stops.push({ key: "pickup", lat: originCoord.lat, lng: originCoord.lng });
+    journey.moments.forEach((m, i) => {
+      if (typeof m.lat === "number" && typeof m.lng === "number") {
+        stops.push({ key: `m-${i}`, lat: m.lat, lng: m.lng });
+      }
+    });
+    return stops;
+  }, [originCoord, journey]);
+  const { legMinutes } = useRouteLegMinutes(routeStops, routeStops.length >= 2);
+  // Per-moment dwell (from catalog) — undefined when not in lookup.
+  const dwellByIndex = useMemo(
+    () => journey.moments.map((m) => lookupStopGeo(m.label)?.dwellMin ?? null),
+    [journey],
+  );
+
   const current = journey.moments[active];
   const isLast = active === journey.moments.length - 1 && revealed >= journey.moments.length;
+  // Drive-from-previous label for the active moment. Leg index lines up
+  // with `routeStops` (origin at index 0 when present).
+  const activeDriveMin: number | null = useMemo(() => {
+    if (!legMinutes || legMinutes.length === 0) return null;
+    // Find the routeStops index that matches the active moment.
+    const key = `m-${active}`;
+    const idx = routeStops.findIndex((s) => s.key === key);
+    if (idx <= 0) return null;
+    const m = legMinutes[idx - 1];
+    return typeof m === "number" ? m : null;
+  }, [legMinutes, routeStops, active]);
+  const activeDwellMin = dwellByIndex[active];
 
   return (
     <div className="relative w-full min-h-[100dvh]" style={{ background: "var(--ivory)" }}>
@@ -449,6 +483,29 @@ export function MapAwakens({
               >
                 {current.label}
               </h2>
+
+              {/* Real-time chip — drive from previous + dwell on site.
+                  Quiet, editorial. Only shown when at least one number is
+                  available so we never render an empty bar. */}
+              {activeDriveMin !== null || activeDwellMin !== null ? (
+                <p
+                  className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                  data-testid="studio-v3-moment-timings"
+                >
+                  {activeDriveMin !== null ? (
+                    <span>
+                      <span style={{ color: "var(--gold)" }}>—</span> {activeDriveMin} min drive
+                    </span>
+                  ) : null}
+                  {activeDriveMin !== null && activeDwellMin !== null ? (
+                    <span aria-hidden style={{ color: "var(--gold)" }}>
+                      ·
+                    </span>
+                  ) : null}
+                  {activeDwellMin !== null ? <span>~{activeDwellMin} min on site</span> : null}
+                </p>
+              ) : null}
               <p
                 className="mt-2 text-[13px] leading-relaxed italic"
                 style={{
