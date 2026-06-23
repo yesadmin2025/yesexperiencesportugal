@@ -381,6 +381,15 @@ export function StudioV3SignatureMap({
           "0 28px 70px -34px rgba(0,0,0,0.75), 0 0 60px -22px color-mix(in oklab, var(--gold) 18%, transparent) inset",
       }}
     >
+      {/* Portugal anchor — faint silhouette behind the wash so travellers
+          always know WHERE in the country the journey lives. Pointer-none,
+          decorative only. */}
+      {silhouetteRegion ? (
+        <div className="pointer-events-none absolute inset-0 opacity-[0.55] mix-blend-screen">
+          <PortugalSilhouette fill={1} region={silhouetteRegion} />
+        </div>
+      ) : null}
+
       {/* Radial wash — gold top-left, teal bottom-right. */}
       <div
         aria-hidden
@@ -390,6 +399,7 @@ export function StudioV3SignatureMap({
             "radial-gradient(120% 90% at 28% 18%, rgba(201,169,106,0.10) 0%, transparent 55%), radial-gradient(110% 80% at 72% 82%, rgba(41,91,97,0.50) 0%, transparent 60%)",
         }}
       />
+
 
       {/* Hairline gold grid. */}
       <svg
