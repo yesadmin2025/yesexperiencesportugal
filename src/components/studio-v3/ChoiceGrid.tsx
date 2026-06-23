@@ -57,21 +57,26 @@ export function ChoiceGrid<T extends string>({
         const selected = isMulti
           ? Array.isArray(values) && values.includes(opt.id)
           : value === opt.id;
+        const lockedByCap = isMulti && atCap && !selected;
         return (
           <li key={opt.id}>
             <button
               type="button"
               role={isMulti ? "checkbox" : "radio"}
               aria-checked={selected}
+              aria-disabled={lockedByCap || undefined}
+              disabled={lockedByCap}
               data-testid="studio-v3-choice"
               data-phase-cta="choice"
               data-option-id={opt.id}
               data-selected={selected ? "true" : "false"}
+              data-locked={lockedByCap ? "true" : "false"}
               onClick={() => {
+                if (lockedByCap) return;
                 if (isMulti) onToggle?.(opt.id);
                 else onSelect?.(opt.id);
               }}
-              className="group relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="group relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow,opacity] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:hover:translate-y-0 disabled:cursor-not-allowed"
               style={{
                 background: selected
                   ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
@@ -82,6 +87,7 @@ export function ChoiceGrid<T extends string>({
                 boxShadow: selected
                   ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
                   : "0 6px 18px -14px rgba(46,46,46,0.18)",
+                opacity: lockedByCap ? 0.45 : 1,
                 animation: `studioV3RiseIn 420ms ease-out ${60 + i * 45}ms both`,
               }}
             >
