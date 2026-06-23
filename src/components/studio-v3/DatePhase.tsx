@@ -62,9 +62,10 @@ export function DatePhaseControls({
         Choose a date
       </label>
 
-      {/* Inline calendar card */}
+      {/* Inline calendar card — gentle fade/rise on mount with a quiet delay
+          so it doesn't feel like it flashes away on iOS. */}
       <div
-        className="mt-2 px-2 py-2 transition-[border-color,box-shadow] duration-[220ms] ease-out"
+        className="mt-2 px-2 py-2 transition-[border-color,box-shadow] duration-[220ms] ease-out motion-reduce:animate-none"
         style={{
           background: "var(--ivory)",
           borderWidth: 1,
@@ -75,6 +76,7 @@ export function DatePhaseControls({
           boxShadow: exactSelected
             ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
             : "0 6px 18px -14px rgba(46,46,46,0.18)",
+          animation: "studioV3RiseIn 640ms ease-out 180ms both",
         }}
       >
         <Calendar
