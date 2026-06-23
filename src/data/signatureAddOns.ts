@@ -332,11 +332,17 @@ export function parseDurationLowerHours(label: string | null | undefined): numbe
  *   2. inside the "lisbon-arrabida" bucket, drop any add-on whose
  *      `lisbonSubRegion` is on the other side of the Tejo from the
  *      anchor (e.g. no Arrábida add-ons on a Sintra/Cascais anchor)
- *   3. enforce `minStops` / `minHours` thresholds against the resolved day
- *   4. cap at 3
+ *   3. drop any add-on whose `conflictsWith` intersects the inclusion
+ *      tags derived from the tour's own `included[]` (e.g. a picnic
+ *      add-on on a tour that already includes lunch)
+ *   4. enforce `minStops` / `minHours` thresholds against the resolved day
+ *   5. cap at 3
  */
 export function selectSignatureAddOns(opts: {
-  resolvedTour: Pick<SignatureTour, "id" | "region"> | null | undefined;
+  resolvedTour:
+    | (Pick<SignatureTour, "id" | "region"> & { included?: ReadonlyArray<string> })
+    | null
+    | undefined;
   stopCount: number;
   durationLabel: string | null | undefined;
 }): SignatureAddOn[] {
@@ -348,12 +354,20 @@ export function selectSignatureAddOns(opts: {
     bucket === "lisbon-arrabida"
       ? LISBON_SUBREGION_BY_TOUR_ID[opts.resolvedTour.id]
       : undefined;
+  const inclusionTags = deriveInclusionTags({
+    id: opts.resolvedTour.id,
+    included: opts.resolvedTour.included ?? null,
+  });
   return pool
     .filter((a) => a.sourceTourId !== opts.resolvedTour!.id)
     .filter((a) => {
       if (bucket !== "lisbon-arrabida") return true;
       if (!anchorSub || !a.lisbonSubRegion) return true;
       return a.lisbonSubRegion === anchorSub;
+    })
+    .filter((a) => {
+      if (!a.conflictsWith || a.conflictsWith.length === 0) return true;
+      return !a.conflictsWith.some((tag) => inclusionTags.has(tag));
     })
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
