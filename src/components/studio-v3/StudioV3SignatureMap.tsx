@@ -482,7 +482,25 @@ export function StudioV3SignatureMap({
           />
           <circle cx={origin.x} cy={origin.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
           <circle cx={origin.x} cy={origin.y} r="2.6" fill="var(--teal-2, var(--teal))" />
+          {originLabel && originOnly ? (
+            <text
+              x={origin.x}
+              y={origin.y - 11}
+              textAnchor="middle"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: "7px",
+                letterSpacing: "0.18em",
+                fill: "var(--gold)",
+                textTransform: "uppercase",
+              }}
+            >
+              {cleanLabel(originLabel)}
+            </text>
+          ) : null}
         </g>
+
 
         {/* Per-segment progressive draw — each leg animates ONLY when it
             becomes the newest revealed segment. Earlier legs stay solid. */}
