@@ -1814,6 +1814,31 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
+          <div
+            data-testid="studio-v3-interests-counter"
+            aria-live="polite"
+            className="mt-3 inline-flex items-center gap-2 self-start px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+            style={{
+              fontFamily: "var(--font-display)",
+              color: state.interests.length > 0
+                ? "var(--charcoal)"
+                : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: state.interests.length > 0
+                ? "var(--gold)"
+                : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
+              background: state.interests.length > 0
+                ? "color-mix(in oklab, var(--gold) 8%, var(--ivory))"
+                : "transparent",
+              transition: "color 220ms ease-out, border-color 220ms ease-out, background-color 220ms ease-out",
+            }}
+          >
+            <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+            {state.interests.length === 0
+              ? "None selected yet"
+              : `${state.interests.length} selected`}
+          </div>
           <ChoiceGrid
             mode="multi"
             options={orderedInterests}
@@ -1830,6 +1855,7 @@ export function StudioV3() {
             onClick={continueFromInterests}
             label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
           />
+
         </PhaseShell>
       ) : null}
 
