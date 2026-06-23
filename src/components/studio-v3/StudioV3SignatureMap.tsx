@@ -668,6 +668,27 @@ export function StudioV3SignatureMap({
         ) : null}
       </div>
 
+      <MapDebugOverlay
+        mode={geo ? "geographic" : "schematic"}
+        originCoord={originCoord ?? null}
+        originLabel={originLabel ?? null}
+        shown={shown}
+        detailed={detailed}
+        waypoints={waypoints}
+        segments={segments.map((s, i) => {
+          if (!geo || !originCoord) {
+            return { index: i, driveMin: null, from: null, to: null };
+          }
+          const a = i === 0
+            ? originCoord
+            : { lat: detailed[i - 1]!.lat as number, lng: detailed[i - 1]!.lng as number };
+          const b = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
+          return { index: i, driveMin: haversineDriveMinutes(a, b), from: a, to: b };
+        })}
+        revealedCount={revealedCount}
+        visible={visible}
+      />
+
       <style>{`
         @keyframes sv3smPulse {
           0% { opacity: 0; transform: scale(0.6); }
