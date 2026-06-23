@@ -787,6 +787,10 @@ export function StudioV3() {
   }, [state.phase]);
 
   const advance = useCallback((next: StudioV3Phase) => {
+    // If a previous cinematic beat is still dissolving, remove it before any
+    // explicit CTA transition. Otherwise mobile users can see the next screen
+    // but taps still hit the old overlay, which feels like the builder froze.
+    setReaction(null);
     setExiting(true);
     setState((s) => {
       // Phase-order guard — prevent CTA double-taps or stale handlers from
@@ -3614,17 +3618,14 @@ function ReactionOverlay({
       : 2400;
   const hold = Math.min(rawHold, ceiling);
 
-  // After the visible peak, surrender pointer events so taps fall through
-  // to the next phase already mounted underneath. Fixes the core bug of
-  // the user seeing the next question but being unable to tap it.
+  // Surrender pointer events shortly after the beat lands so taps fall through
+  // to the next phase already mounted underneath. This fixes the mobile bug
+  // where the user sees the next question but the old cinematic overlay still
+  // intercepts taps, especially around Guests → Investment.
   const [clickThrough, setClickThrough] = useState(false);
   useEffect(() => {
     setClickThrough(false);
-    // Hold pointer-events on the overlay until the keyframe fade-out window
-    // begins (~94% of `hold`). Prevents the previous beat from bleeding into
-    // the next question — the next phase only becomes interactive when the
-    // overlay text is already fading away.
-    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.92));
+    const t = window.setTimeout(() => setClickThrough(true), Math.min(900, hold * 0.35));
     return () => window.clearTimeout(t);
   }, [hold, reaction]);
   const passThroughStyle = clickThrough ? { pointerEvents: "none" as const } : {};
