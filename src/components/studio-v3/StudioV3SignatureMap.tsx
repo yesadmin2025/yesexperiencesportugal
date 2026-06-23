@@ -346,8 +346,9 @@ export function StudioV3SignatureMap({
                   fill="var(--gold)"
                   opacity="0.18"
                   style={{
-                    animation: active ? "sv3smPulse 2200ms ease-out infinite" : undefined,
-                    animationDelay: `${delay + 600}ms`,
+                    animation: active
+                      ? `sv3smPulse 2200ms ease-out ${delay + 600}ms infinite`
+                      : undefined,
                     transformOrigin: `${p.x}px ${p.y}px`,
                     transformBox: "fill-box",
                   }}

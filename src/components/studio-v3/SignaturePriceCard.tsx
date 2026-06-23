@@ -358,7 +358,9 @@ export function SignaturePriceCard({
               >
                 × {partyCount} guests <span style={{ color: "var(--gold)" }}>—</span>{" "}
                 <span style={{ color: "var(--charcoal)" }}>€{partyTotalEur}</span>{" "}
-                <span className="text-[9.5px] uppercase tracking-[0.2em] opacity-70">total</span>
+                <span className="text-[9.5px] uppercase tracking-[0.2em] opacity-70">
+                  investment
+                </span>
               </p>
             ) : null}
           </>
@@ -731,7 +733,7 @@ export function SignaturePriceCard({
             >
               {selectedAddOnIds.length > 0 && totalEur != null ? (
                 <>
-                  Total <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                  Investment <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
                   <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
                 </>
               ) : (

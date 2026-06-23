@@ -2042,8 +2042,7 @@ function PhaseHeader({
         style={{
           fontFamily: "var(--font-display)",
           color: "var(--charcoal)",
-          animation: "studioV3RiseIn 520ms ease-out both",
-          animationDelay: "60ms",
+          animation: "studioV3RiseIn 520ms ease-out 60ms both",
         }}
       >
         {title}{" "}
@@ -2065,8 +2064,7 @@ function FooterHint({ children }: { children: React.ReactNode }) {
       style={{
         fontFamily: "var(--font-serif)",
         color: "color-mix(in oklab, var(--charcoal) 52%, transparent)",
-        animation: "studioV3RiseIn 600ms ease-out both",
-        animationDelay: "320ms",
+        animation: "studioV3RiseIn 600ms ease-out 320ms both",
       }}
     >
       {children}
@@ -3210,8 +3208,7 @@ function StoryboardHandoff({
       {shapingLine ? (
         <div
           data-testid="studio-v3-shaping-direction"
-          className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_both] motion-reduce:opacity-100"
-          style={{ animationDelay: "220ms" }}
+          className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_220ms_both] motion-reduce:opacity-100"
         >
           <span
             aria-hidden
@@ -3554,8 +3551,7 @@ function ReactionOverlay({
           style={{
             fontFamily: "var(--font-serif)",
             color: "var(--charcoal)",
-            animation: "studioV3RiseIn 620ms ease-out both",
-            animationDelay: "160ms",
+            animation: "studioV3RiseIn 620ms ease-out 160ms both",
           }}
         >
           {reaction.message}
@@ -3568,8 +3564,7 @@ function ReactionOverlay({
             style={{
               fontFamily: "var(--font-serif)",
               color: "color-mix(in oklab, var(--charcoal) 58%, transparent)",
-              animation: "studioV3RiseIn 640ms ease-out both",
-              animationDelay: "260ms",
+              animation: "studioV3RiseIn 640ms ease-out 260ms both",
             }}
           >
             {reaction.postcardSubline}
@@ -3602,8 +3597,7 @@ function ReactionOverlay({
               className="mt-4 inline-flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.26em] font-bold"
               style={{
                 color: "var(--teal)",
-                animation: "studioV3RiseIn 540ms ease-out both",
-                animationDelay: "360ms",
+                animation: "studioV3RiseIn 540ms ease-out 360ms both",
               }}
               data-testid="studio-v3-region-voice"
             >
@@ -3620,8 +3614,7 @@ function ReactionOverlay({
             className="mt-3 text-[11px] uppercase tracking-[0.24em] font-semibold"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-              animation: "studioV3RiseIn 540ms ease-out both",
-              animationDelay: "260ms",
+              animation: "studioV3RiseIn 540ms ease-out 260ms both",
             }}
           >
             <span style={{ color: "var(--gold)" }}>—</span> {reaction.detail}

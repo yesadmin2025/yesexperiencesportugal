@@ -111,8 +111,7 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
             fontFamily: "var(--font-serif)",
             color: "var(--ivory)",
             opacity: ready ? 1 : 0,
-            animation: ready ? "studioV3RiseIn 620ms ease-out both" : undefined,
-            animationDelay: "120ms",
+            animation: ready ? "studioV3RiseIn 620ms ease-out 120ms both" : undefined,
             transition: "opacity 360ms ease",
           }}
         >
