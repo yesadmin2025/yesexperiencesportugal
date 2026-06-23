@@ -42,6 +42,8 @@ export function StudioV3Intro({ onComplete }: Props) {
   return (
     <main
       aria-label="Studio intro"
+      data-testid="studio-v3-root"
+      data-phase="intro"
       className="relative min-h-[100dvh] w-full overflow-hidden"
       style={{ background: "var(--charcoal)" }}
     >
@@ -110,6 +112,30 @@ export function StudioV3Intro({ onComplete }: Props) {
             >
               Not a form. A few quiet choices, and Portugal responds.
             </p>
+
+            <div
+              aria-label="Studio preview updates now active"
+              className="mx-auto mt-6 grid max-w-[18rem] grid-cols-1 gap-2 text-left sm:max-w-none sm:grid-cols-3"
+            >
+              {[
+                "Live route map",
+                "Drive-time checks",
+                "Region-aware moments",
+              ].map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex min-h-[34px] items-center justify-center border px-3 text-center text-[9.5px] font-semibold uppercase leading-tight"
+                  style={{
+                    borderColor: "color-mix(in oklab, var(--gold) 34%, transparent)",
+                    color: "color-mix(in oklab, var(--ivory) 76%, transparent)",
+                    background: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+                    letterSpacing: "0.18em",
+                  }}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
 
             <button
               type="button"
