@@ -3250,6 +3250,17 @@ function StoryboardHandoff({
         guests={state.guests}
         included={skeletonTour?.included ?? []}
         showAddOns={true}
+        remainingMinutes={
+          summarizeDay({
+            stops: editedStops.map((p) => ({
+              label: p.label,
+              lat: p.lat ?? null,
+              lng: p.lng ?? null,
+              kind: inferKind(p.label),
+            })),
+            region: skeletonTour?.region ?? null,
+          }).remainingMin
+        }
         onGuestsChange={(n) =>
           onStateChange((s) => ({
             ...s,
