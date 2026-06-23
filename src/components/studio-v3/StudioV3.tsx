@@ -1243,13 +1243,18 @@ export function StudioV3() {
   };
 
   // Multi-select toggles.
+  // Interests are capped at MAX_INTERESTS — four moments is the sweet spot
+  // for a 1-day rhythm and matches the dwell-budget logic downstream.
+  const MAX_INTERESTS = 4;
   const toggleInterest = (id: Interest) => {
-    setState((s) => ({
-      ...s,
-      interests: s.interests.includes(id)
-        ? s.interests.filter((x) => x !== id)
-        : [...s.interests, id],
-    }));
+    setState((s) => {
+      const has = s.interests.includes(id);
+      if (has) {
+        return { ...s, interests: s.interests.filter((x) => x !== id) };
+      }
+      if (s.interests.length >= MAX_INTERESTS) return s;
+      return { ...s, interests: [...s.interests, id] };
+    });
   };
   const toggleConsideration = (id: Consideration) => {
     setState((s) => {
@@ -1814,41 +1819,60 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
-          <div
-            data-testid="studio-v3-interests-counter"
-            aria-live="polite"
-            className="mt-3 inline-flex items-center gap-2 self-start px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{
-              fontFamily: "var(--font-display)",
-              color: state.interests.length > 0
-                ? "var(--charcoal)"
-                : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              borderWidth: 1,
-              borderStyle: "solid",
-              borderColor: state.interests.length > 0
-                ? "var(--gold)"
-                : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
-              background: state.interests.length > 0
-                ? "color-mix(in oklab, var(--gold) 8%, var(--ivory))"
-                : "transparent",
-              transition: "color 220ms ease-out, border-color 220ms ease-out, background-color 220ms ease-out",
-            }}
-          >
-            <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
-            {state.interests.length === 0
-              ? "None selected yet"
-              : `${state.interests.length} selected`}
-          </div>
+          {(() => {
+            const n = state.interests.length;
+            const max = 4;
+            const atCap = n >= max;
+            const label =
+              n === 0
+                ? `Choose up to ${max} moments`
+                : atCap
+                  ? `${max} of ${max} · perfectly paced`
+                  : `${n} of ${max} · room for more`;
+            return (
+              <div
+                data-testid="studio-v3-interests-counter"
+                data-at-cap={atCap ? "true" : "false"}
+                aria-live="polite"
+                className="mt-3 inline-flex items-center gap-2 self-start px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: n > 0
+                    ? "var(--charcoal)"
+                    : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  borderColor: n > 0
+                    ? "var(--gold)"
+                    : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
+                  background: n > 0
+                    ? "color-mix(in oklab, var(--gold) 8%, var(--ivory))"
+                    : "transparent",
+                  transition:
+                    "color 220ms ease-out, border-color 220ms ease-out, background-color 220ms ease-out",
+                }}
+              >
+                <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+                {label}
+                {atCap ? (
+                  <span aria-hidden style={{ color: "var(--gold)" }}>✓</span>
+                ) : null}
+              </div>
+            );
+          })()}
           <ChoiceGrid
             mode="multi"
             options={orderedInterests}
             values={state.interests}
             onToggle={toggleInterest}
+            maxSelected={4}
           />
           {state.interests.length > 0 ? (
             <NextTeaser>{contextualTeaser("interests", state)}</NextTeaser>
           ) : (
-            <FooterHint>Choose the moments that matter most — usually two to four.</FooterHint>
+            <FooterHint>
+              Four moments make a day that breathes. Pick what calls you.
+            </FooterHint>
           )}
           <ContinueCta
             disabled={state.interests.length < 1}

@@ -1,94 +1,101 @@
-# Studio V3 — Real timings, time-valid add-ons, cinematic videos
+# Studio V3 — Logic, Coherence & Premium Polish
 
-Three fixes, one pass. Aligned to the Studio philosophy (cinematic discovery, interface disappears, Portugal felt through atmosphere early, AI orchestrates not decorates).
+Scope: tighten the Studio so every beat makes sense (no contradictory add-ons, no mismatched inclusions), the creation feels like something is being **built** in front of the user, and the mobile stops screen stops feeling cluttered.
 
-## Today → target
-
-| Area | Today | Target |
-|---|---|---|
-| Per-stop time | Not shown | "≈ 90 min" chip per stop |
-| Drive between stops | Not computed | Real OSRM minutes per leg (cached) |
-| Total day length | Free-text "7–9h" | Computed: pickup + stops + drives + add-ons |
-| Over-budget guard | None | Soft warning vs. regional `dayLengthMinutes` / `maxDriveMinutes` |
-| Add-ons | Filtered only by `minStops` / `minHours` | Each add-on dimmed/disabled if it would push the day past the regional rhythm |
-| Cinematic selection | Static JPG behind every phase | Looped scene video that crossfades as the user chooses |
-| /studio-v2 | Redirects, but lib stays | OSRM client moved to `src/lib/studio/`, v2 components left untouched (separate cleanup) |
+No invented stops, no invented inclusions, no new prices. Pulling only from the resolved Signature tour (per Studio V3 no-invented-stops rule).
 
 ---
 
-## 1. Real timings
+## 1. Interests counter chip — premium refinement
 
-**New `src/lib/studio/timing.ts`** (client-safe pure utils):
-- `stopDurationMinutes(stop)` — reads existing `duration_minutes` on `stopOperational` rows when present, with safe defaults per kind (winery 90, table 75, viewpoint 25, beach 60, workshop 90, heritage 60, market 45, cellar 75, village 40).
-- `dayBudget(region, mode: "near"|"far")` — from `regionRules.ts`.
-- `summarizeDay({ routePoints, legs, addOns })` → `{ totalExperienceMin, totalDriveMin, totalMin, overBudget, overDrive, warnings[] }`.
+File: `src/components/studio-v3/StudioV3.tsx` (interests phase)
 
-**Move OSRM client**: `src/lib/studio-v2/routing.server.ts` → `src/lib/studio/routing.server.ts`. Keeps the `builder_route_cache` table. Update the one V2 importer (server fn in V2 itinerary lib).
+- Cap selection at **4** (sweet spot for a 1-day rhythm; matches dwell-budget logic).
+- Replace plain "n selected" with a token-driven chip:
+  - Eyebrow style: `text-[11px] tracking-[0.22em] uppercase`, gold rule, charcoal label.
+  - State machine:
+    - `0` → "Choose up to 4 moments"
+    - `1–3` → "{n} of 4 · room for more"
+    - `4` → "4 of 4 · perfectly paced" + gold check
+  - Disable further taps at 4 (visual: dim + cursor-not-allowed, not a toast).
+- Helper microcopy under the grid: *"Four moments make a day that breathes. Pick what calls you."* (Inter, charcoal/70, single line on ≥360px).
 
-**New server fn** `src/lib/studio/timing.functions.ts` → `resolveStudioLegs({ stops: [{ key, lat, lng }] })`. Public, no auth (no PII).
+---
 
-**Wire-up**: In `LivingJourneyPanel.tsx`, after `resolveStudioV3Route` returns `routePoints`, call the server fn and merge `driveMinutesFromPrev` into each point. While OSRM resolves, use a haversine fallback so nothing blocks.
+## 2. Coherent add-ons + inclusions (the core logic fix)
 
-**UI**:
-- `TimelineView.tsx` — per stop "≈ 90 min · tasting" chip, between stops a small "→ 22 min" drive chip, header total replaces the free-text label.
-- `LivingJourneyPanel.tsx` — soft inline note when `overBudget`: *"A touch beyond the unhurried rhythm — we can trim a stop."*
+Today: a Signature skeleton ships with its **inclusions**, but Tailored/Studio add-ons are filtered only by region + time budget — not by what the skeleton already includes. So a "lunch included" tour can offer a picnic add-on. This is the bug.
 
-## 2. Add-ons that fit the day
+Fix in `src/data/signatureAddOns.ts` + `src/lib/studio/addon-selection.ts`:
 
-**`src/data/signatureAddOns.ts`**:
-- Add `durationMinutes: number` to `SignatureAddOn`. Backfill each catalog item (tastings 60, workshops 90, table 75, viewpoints 25, cellar 75, picnic 90).
-- Extend `selectSignatureAddOns({ …, remainingMinutes })` to return `{ addOn, fitsBudget }[]`.
+1. Add a `conflictsWith: string[]` field on each add-on (tags: `lunch`, `picnic`, `wine-tasting`, `tasting-paired`, `boat`, `sunset-drink`, etc.).
+2. Tag each Signature tour's existing inclusions with the same vocabulary in `signatureToursViator.ts` (`inclusionTags: string[]`).
+3. `selectSignatureAddOnsWithBudget(...)` now also filters out any add-on whose `conflictsWith` intersects the tour's `inclusionTags`.
+4. Reveal grouping: split into **"Elevate what's included"** (upgrades to existing inclusions, e.g. premium tasting flight when basic tasting is included) vs **"Add a new chapter"** (genuinely new moments). No more contradictory picnic-next-to-lunch.
 
-**`SignaturePriceCard.tsx`**:
-- Receives the day summary. Add-ons that don't fit render dimmed and non-toggleable with one quiet line *"Would extend the day past your rhythm."*
-- Selecting a fitting add-on updates the live total; if the running total tips over, the ribbon shifts to gold-warning (no red — brand restraint).
+Inclusions on `SignaturePriceCard`:
 
-## 3. Cinematic videos during selection
+- Source `inclusions` directly from the resolved Signature tour (already true in code) — audit and remove any hardcoded fallback strings that contradict.
+- Show the **itinerary spine** (stop names, in order, as a 3–5 line "Your day includes" list) above the inclusions, so the price reads against the real day, not a skeleton.
+- Surface dwell summary inline: "≈ {hours}h · {n} stops".
 
-The interface disappears, Portugal arrives. Each choice swaps the canvas under the question.
+---
 
-**New `src/content/studio-scene-clips.ts`** — phase + answer → existing `public/video/scene-*.mp4` clip:
+## 3. Beats that match intent (imagery + video)
 
-| Phase | Trigger | Clip |
-|---|---|---|
-| `feeling` | `relaxed_scenic` | `scene-coast-arrabida.mp4` |
-| `feeling` | `elegant_cultural` | `scene-hidden-street.mp4` |
-| `feeling` | `food_local` | `scene-local-table.mp4` |
-| `feeling` | `social_celebratory` | `scene-celebration.mp4` |
-| `feeling` | `romantic_intimate` | `scene-hidden-cove.mp4` |
-| `feeling` | `coastal_cinematic` | `scene-arrabida-viewpoint.mp4` |
-| `destination` | region picked | `scene-route-portugal.mp4` |
-| `interests` | food/wine | `real/scene-taste.mp4` |
-| `rhythm` | any | `real/scene-imagine.mp4` |
-| `storyboard` enter | — | `real/scene-confirm.mp4` |
+File: `src/content/studio-scene-clips.ts` + `CreationBeat.tsx`
 
-**New `src/components/studio-v3/AtmosphereCanvas.tsx`** — fixed video layer behind `PhaseShell`:
-- `<video autoPlay muted loop playsInline preload="auto">` with `poster` = current JPG (SSR + slow-network safe).
-- 700ms crossfade on `src` change.
-- `prefers-reduced-motion` → falls back to current JPGs.
-- Single element, reused across phases — no remount.
+- Audit current mapping. Replace mismatched clips with intent-aligned ones using existing assets only — no new asset invention, no stock.
+- Mapping rules (deterministic, not random):
+  - `feeling` → ambient region atmosphere (no people pose).
+  - `destination` → landscape signature of that region (Sintra mist, Douro terraces, Alentejo plain).
+  - `companions` → human-scale candid matching party type.
+  - `interests` → per-interest clip (wine = barrel/pour, gastronomy = table, nature = trail, heritage = stone).
+  - `pace` → motion register only (slow pan vs energetic).
+- If no matching clip exists, **fall back to a still editorial image** in the same atmospheric family — never play a contradictory video.
+- Add `prefers-reduced-motion` → always still.
 
-**`CreationBeat.tsx` / `AtmosphereBeat`** — keep the italic line, render over the live canvas with a ≤30% charcoal scrim for legibility.
+---
 
-**Performance**: one `<video>` at a time, all clips ≤4 MB; preload next phase's clip on `requestIdleCallback` when the current answer lands.
+## 4. Map that builds itself (the "creation" moment)
 
-## Out of scope
+File: `src/components/studio-v3/StudioV3SignatureMap.tsx` + `LivingJourneyPanel.tsx`
 
-Phase order/copy changes, Bokun, map redesign, new AI calls, V2 component deletion (separate cleanup), share-token URL changes.
+Right now the map is mostly static between choices. Make it the protagonist of the build:
 
-## Verification
+- **Progressive reveal:** stops appear one-by-one as the user advances phases (region pin first, then anchor stop, then interest-matched stops, then drive lines).
+- **Drive line draws:** when a new stop joins, the connecting polyline animates from prev → new over 600ms (mapbox `setData` with a tweened coordinate slice). Capped, reduced-motion safe.
+- **Camera ease:** `flyTo` with `duration: 900, curve: 1.4` to frame the growing route — no jump cuts.
+- **Subtle pulse** on the newest pin for ~1.2s, then settles.
+- This replaces the awkward "image/video that makes no sense" beat on the stops phase — the map *is* the visual.
 
-- `bunx tsc --noEmit`.
-- Manual: pick each feeling → background video swaps; final timeline shows minute chips per stop and drive; toggle an add-on that doesn't fit → visibly dimmed with the rhythm message.
-- Existing e2e (`studio-v3-*.spec.ts`) — none of the asserted strings/structure change.
+---
 
-## Order of work
+## 5. Decluttered mobile stops screen (pre-reveal)
 
-1. `src/lib/studio/timing.ts` + move `routing.server.ts` + new server fn.
-2. `durationMinutes` on add-ons; gate in `selectSignatureAddOns`.
-3. Wire summary into `LivingJourneyPanel` → `TimelineView`.
-4. Gate add-on toggles in `SignaturePriceCard`.
-5. `AtmosphereCanvas` + `studio-scene-clips.ts` + integrate into `PhaseShell`.
-6. Typecheck + tidy.
+File: `src/components/studio-v3/StudioV3.tsx` (stops phase) + `LivingJourneyPanel.tsx`
 
-Estimate: ~6 new files, ~10 edits. No DB migrations. No new dependencies.
+Symptom: header + chips + timeline + CTA all stack on top of the map.
+
+- Collapse the top into a single thin bar: phase title (Montserrat 14, charcoal) + tiny progress dots. Remove the secondary subtitle in this phase only.
+- Move the timeline into a **bottom sheet** (peek 88px showing "≈ {h}h · {n} stops · €{from}", drag-up for full list). Map gets full canvas.
+- Floating CTA: single primary pill "See your day" bottom-right, 48px tall, gold sheen on hover (existing `.home-energy` token, scoped here).
+- Hide the dwell/over-budget note inside the bottom sheet header; only surface as a soft gold dot on the bar when over budget.
+
+---
+
+## 6. Verification
+
+- TS check.
+- Mobile Playwright walk (393×852): interests cap, addon-vs-inclusion conflict assertion, map reveal screenshot at each phase, stops phase declutter screenshot.
+- Telemetry: log `addons.filtered_by_inclusion` count + `map.stops_revealed` sequence for future audits.
+
+---
+
+## Out of scope (ask before doing)
+
+- Any new tour, stop, partner, price, or inclusion text.
+- Stripe changes.
+- Builder (non-Signature) flow — this pass is Studio V3 over Signature skeletons only; Builder gets its own pass next.
+
+Ship in this order so each step is independently verifiable: **2 → 5 → 4 → 3 → 1 → 6**.
