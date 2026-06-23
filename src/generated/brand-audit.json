@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-23T14:06:07.364Z",
-  "filesScanned": 406,
+  "generatedAt": "2026-06-23T15:46:47.862Z",
+  "filesScanned": 409,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 238,
+    "total": 240,
     "approved": 61,
     "allowlisted": 29,
-    "mismatch": 148
+    "mismatch": 150
   },
   "findings": [
     {
@@ -1439,7 +1439,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 262,
+      "line": 264,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1448,7 +1448,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 291,
+      "line": 295,
       "col": 48,
       "raw": "#0d0d0d",
       "normalized": "#0d0d0d",
@@ -1457,7 +1457,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 376,
+      "line": 382,
       "col": 86,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1466,7 +1466,7 @@
     },
     {
       "file": "src/components/studio-v3/ComposerMap.tsx",
-      "line": 376,
+      "line": 382,
       "col": 99,
       "raw": "#0c1a1d",
       "normalized": "#0c1a1d",
@@ -1493,7 +1493,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 173,
+      "line": 363,
       "col": 43,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1502,16 +1502,16 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 281,
+      "line": 473,
       "col": 82,
       "raw": "#14181a",
       "normalized": "#14181a",
-      "snippet": "<circle cx={ORIGIN.x} cy={ORIGIN.y} r=\"3.6\" fill=\"var(--charcoal-deep, #14181a)\" />",
+      "snippet": "<circle cx={origin.x} cy={origin.y} r=\"3.6\" fill=\"var(--charcoal-deep, #14181a)\" />",
       "status": "mismatch"
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 377,
+      "line": 580,
       "col": 76,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1520,7 +1520,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 387,
+      "line": 590,
       "col": 47,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1529,7 +1529,25 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 441,
+      "line": 632,
+      "col": 222,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "className=\"pointer-events-auto absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 712,
+      "col": 44,
+      "raw": "#050d0f",
+      "normalized": "#050d0f",
+      "snippet": ": \"color-mix(in oklab, #050d0f 80%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 808,
       "col": 74,
       "raw": "#050d0f",
       "normalized": "#050d0f",

@@ -54,6 +54,8 @@ import {
   getOptionLabel,
   inferGuests,
   pickupCityLabel,
+  pickupOriginCoord,
+  pickupRegionKey,
   resolveStudioV3Route,
   selectReplacementCandidates,
 } from "./curation";
@@ -516,6 +518,9 @@ type Reaction = {
   rhythmBucket?: "slow" | "balanced" | "full" | "immersive";
   /** Region key — drives origin coords for geographic map projection. */
   regionKey?: RegionKey;
+  /** Explicit origin lat/lng — overrides regionKey-derived origin. */
+  originCoord?: { lat: number; lng: number } | null;
+
 
 };
 
@@ -1093,6 +1098,8 @@ export function StudioV3() {
         message: line,
         mapMode: "origin",
         originLabel,
+        originCoord: pickupOriginCoord(id),
+        regionKey: pickupRegionKey(id) ?? undefined,
         holdMs: 5800,
       });
       return;
@@ -1170,11 +1177,12 @@ export function StudioV3() {
           message: paceHint,
           mapMode: "pace",
           originLabel: pickupCityLabel(state.pickup) || undefined,
+          originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           rhythmBucket: id,
           regionKey: tourRegionToRegionKey(
             (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ),
+          ) ?? pickupRegionKey(state.pickup) ?? undefined,
           holdMs: 6200,
         });
 
@@ -1235,10 +1243,11 @@ export function StudioV3() {
             : "The route is no longer a template. Its shape is becoming yours.",
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
+          originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           regionKey: tourRegionToRegionKey(
             (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ),
+          ) ?? pickupRegionKey(state.pickup) ?? undefined,
           holdMs: 6000,
         });
 
@@ -1334,10 +1343,11 @@ export function StudioV3() {
           message,
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
+          originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           regionKey: tourRegionToRegionKey(
             (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ),
+          ) ?? pickupRegionKey(state.pickup) ?? undefined,
           nextPhase: next,
           holdMs: 6200,
         });
@@ -3661,6 +3671,7 @@ function ReactionOverlay({
           originLabel={reaction.originLabel}
           routeLabels={reaction.routeLabels}
           regionKey={reaction.regionKey ?? null}
+          originCoord={reaction.originCoord ?? null}
           rhythm={reaction.rhythmBucket ?? null}
           eyebrow={reaction.eyebrow}
           line={reaction.message}

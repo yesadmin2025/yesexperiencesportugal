@@ -137,6 +137,8 @@ interface MapBeatProps {
   routeLabels?: ReadonlyArray<string>;
   /** Optional region key — drives origin coords for geographic projection. */
   regionKey?: RegionKey | null;
+  /** Optional explicit origin coordinate (overrides regionKey default). */
+  originCoord?: { lat: number; lng: number } | null;
   /** Drives pin count cadence for mode="pace". */
   rhythm?: "slow" | "balanced" | "full" | "immersive" | null;
   /** Uppercase gold eyebrow. */
@@ -167,6 +169,7 @@ export function MapBeat({
   originLabel,
   routeLabels,
   regionKey,
+  originCoord: originCoordProp,
   rhythm,
   eyebrow,
   line,
@@ -208,9 +211,11 @@ export function MapBeat({
     }
     return { label: l };
   });
-  const originCoord = regionKey && REGION_ORIGIN[regionKey]
-    ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
-    : null;
+  const originCoord =
+    originCoordProp ??
+    (regionKey && REGION_ORIGIN[regionKey]
+      ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
+      : null);
 
   return (
     <div
