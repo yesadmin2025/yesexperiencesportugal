@@ -1740,9 +1740,14 @@ export function filterCompanions(
   feeling: Feeling | null,
 ): ChoiceOption<Companions>[] {
   if (!feeling) return [...options];
+  // Tightened: romance days never sensibly include friends/solo/family —
+  // hide them so the next question stops feeling contradictory. Family
+  // days never include proposal/honeymoon/corporate. Adventure days drop
+  // proposal/corporate (still fine for solo/friends/couple). Slow-luxury
+  // simply drops corporate. Other feelings keep the full set.
   const HIDE: Partial<Record<Feeling, ReadonlyArray<Companions>>> = {
-    romance: ["corporate", "family"],
-    family: ["proposal", "corporate"],
+    romance: ["corporate", "family", "friends", "solo"],
+    family: ["proposal", "honeymoon", "corporate"],
     adventure: ["proposal", "corporate"],
     "slow-luxury": ["corporate"],
   };
