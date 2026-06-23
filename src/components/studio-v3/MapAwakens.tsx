@@ -483,6 +483,29 @@ export function MapAwakens({
               >
                 {current.label}
               </h2>
+
+              {/* Real-time chip — drive from previous + dwell on site.
+                  Quiet, editorial. Only shown when at least one number is
+                  available so we never render an empty bar. */}
+              {activeDriveMin !== null || activeDwellMin !== null ? (
+                <p
+                  className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                  data-testid="studio-v3-moment-timings"
+                >
+                  {activeDriveMin !== null ? (
+                    <span>
+                      <span style={{ color: "var(--gold)" }}>—</span> {activeDriveMin} min drive
+                    </span>
+                  ) : null}
+                  {activeDriveMin !== null && activeDwellMin !== null ? (
+                    <span aria-hidden style={{ color: "var(--gold)" }}>
+                      ·
+                    </span>
+                  ) : null}
+                  {activeDwellMin !== null ? <span>~{activeDwellMin} min on site</span> : null}
+                </p>
+              ) : null}
               <p
                 className="mt-2 text-[13px] leading-relaxed italic"
                 style={{
