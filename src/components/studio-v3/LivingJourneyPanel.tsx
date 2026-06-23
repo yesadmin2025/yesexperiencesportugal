@@ -476,7 +476,10 @@ function JourneyDraftDrawer({
   dna,
   routeLine,
   moments,
+  momentsDetailed,
+  originCoord,
   timelineMoments,
+
   durationLabel,
   originLabel,
   paceLabel,
