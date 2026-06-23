@@ -113,13 +113,31 @@ export function deriveInclusionTags(input: {
   const corpus = ((input.included ?? []).join(" ") + " " + (input.id ?? "")).toLowerCase();
   const has = (re: RegExp) => re.test(corpus);
 
-  if (has(/\blunch\b|wine pairing|paired lunch|long lunch|gastronom/)) tags.add("lunch");
-  if (has(/\bpicnic\b/)) tags.add("picnic");
-  if (has(/winery|wine tasting|wine experience|cellar tasting|vineyard tasting|tasting at|wine pairing/))
+  // Lunch — also fires on "long lunch", "paired lunch", chef-led meals,
+  // "lunch included", any region-and-lunch combo, and the wild-beaches
+  // picnic Signature (whose picnic counts as the lunch moment).
+  if (
+    has(
+      /\blunch\b|wine pairing|paired lunch|long lunch|gastronom|chef-led meal|chef's table|tasting menu|seasonal menu|farm-to-table|lunch included|hosted lunch|lunch at /,
+    )
+  )
+    tags.add("lunch");
+  // Picnic — explicit picnic moment OR the wild-beaches/picnic Signature
+  // OR any add-on already labelled as a beach-side hamper.
+  if (has(/\bpicnic\b|hamper on the sand|beach hamper|beach picnic|wild-beaches/)) {
+    tags.add("picnic");
+    // A picnic always plays the role of lunch in our itineraries.
+    tags.add("lunch");
+  }
+  if (
+    has(
+      /winery|wine tasting|wine experience|cellar tasting|vineyard tasting|tasting at|wine pairing|barrel tasting|estate tasting/,
+    )
+  )
     tags.add("wine-tasting");
-  if (has(/\bboat\b|kayak|sail|dolphin|snorkel/)) tags.add("boat");
+  if (has(/\bboat\b|kayak|sail|dolphin|snorkel|catamaran/)) tags.add("boat");
   if (has(/azulejo|tile workshop|tile-painting|hand-painted tile/)) tags.add("azulejo");
-  if (has(/\bcheese\b/)) tags.add("cheese");
+  if (has(/\bcheese\b|queijaria|cheesemaker/)) tags.add("cheese");
   if (has(/roman ruin|roman heritage|roman site|tróia ruin|troia ruin/)) tags.add("roman");
   if (has(/sintra|pena palace|cabo da roca/)) tags.add("sintra");
   if (has(/évora|evora|chapel of bones/)) tags.add("evora");
