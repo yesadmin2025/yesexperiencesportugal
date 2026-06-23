@@ -384,7 +384,10 @@ export function selectSignatureAddOns(opts: {
  * (back-compat path for surfaces that don't yet pass a day summary).
  */
 export function selectSignatureAddOnsWithBudget(opts: {
-  resolvedTour: Pick<SignatureTour, "id" | "region"> | null | undefined;
+  resolvedTour:
+    | (Pick<SignatureTour, "id" | "region"> & { included?: ReadonlyArray<string> })
+    | null
+    | undefined;
   stopCount: number;
   durationLabel: string | null | undefined;
   remainingMinutes?: number;
