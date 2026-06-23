@@ -244,9 +244,13 @@ export function StudioV3SignatureMap({
   // re-animate on every render — only the newest one draws).
   const [revealedCount, setRevealedCount] = useState(0);
   const revealedRef = useRef(0);
+  // Selection: which pin is "active" for keyboard/touch — drives the
+  // pressed state on the pin button and highlights its drive-in + dwell chips.
+  const [selectedPin, setSelectedPin] = useState<number | null>(null);
   useEffect(() => {
-    // Reset to 0 on context change (new path identity from non-geo to geo, etc.)
-  }, []);
+    // Clear selection when the route shape changes or the pin is no longer revealed.
+    setSelectedPin((cur) => (cur != null && cur < revealedCount ? cur : null));
+  }, [revealedCount]);
   useEffect(() => {
     if (waypoints.length === 0) {
       revealedRef.current = 0;
@@ -284,6 +288,56 @@ export function StudioV3SignatureMap({
     (originLabel
       ? `Forming route from ${originLabel} with ${shown.length} stop${shown.length === 1 ? "" : "s"}.`
       : `Forming route with ${shown.length} stop${shown.length === 1 ? "" : "s"}.`);
+
+  // Precompute per-pin meta (drive-in minutes from previous + dwell minutes)
+  // — used by the accessible button overlay, the SR-only ordered route
+  // summary, and the chip pressed state. Geographic mode only for drive
+  // minutes; schematic mode still surfaces dwell where known.
+  const pinMeta = useMemo(() => {
+    return shown.map((label, i) => {
+      const d = detailed[i];
+      const dwell =
+        d && typeof d.dwellMin === "number" && d.dwellMin > 0
+          ? d.dwellMin
+          : stopDurationMinutes({
+              label,
+              kind: (d?.kind ?? inferKind(label)) || undefined,
+            });
+      let driveInMin: number | null = null;
+      if (geo && originCoord) {
+        const from =
+          i === 0
+            ? originCoord
+            : {
+                lat: detailed[i - 1]!.lat as number,
+                lng: detailed[i - 1]!.lng as number,
+              };
+        const to = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
+        driveInMin = haversineDriveMinutes(from, to);
+      }
+      return { label, dwell: dwell || null, driveInMin };
+    });
+  }, [shown, detailed, geo, originCoord]);
+
+  const handlePinKey = (e: React.KeyboardEvent, i: number) => {
+    const last = waypoints.length - 1;
+    if (last < 0) return;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedPin(Math.min(last, Math.min(revealedCount - 1, i + 1)));
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedPin(Math.max(0, i - 1));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setSelectedPin(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setSelectedPin(Math.min(last, revealedCount - 1));
+    } else if (e.key === "Escape") {
+      setSelectedPin(null);
+    }
+  };
 
   return (
     <div
@@ -485,6 +539,17 @@ export function StudioV3SignatureMap({
                 strokeWidth="1.1"
                 strokeOpacity="0.55"
               />
+              {selectedPin === i && arrived ? (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="10.5"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeWidth="1.3"
+                  strokeOpacity="1"
+                />
+              ) : null}
               {isLast ? (
                 <circle
                   cx={p.x}
@@ -519,6 +584,81 @@ export function StudioV3SignatureMap({
         })}
       </svg>
 
+      {/* Accessible interactive overlay — invisible 44×44 buttons sit on
+          each arrived pin. Keyboard arrows move selection; Escape clears.
+          Pressed state mirrors `selectedPin` and is announced via
+          aria-pressed. The map itself stays decorative SVG. */}
+      <div
+        role="toolbar"
+        aria-label={
+          originLabel
+            ? `Route stops from ${originLabel}. Use arrow keys to step through.`
+            : "Route stops. Use arrow keys to step through."
+        }
+        className="pointer-events-none absolute inset-0"
+      >
+        {waypoints.map((p, i) => {
+          if (i >= revealedCount) return null;
+          const xPct = (p.x / VB_W) * 100;
+          const yPct = (p.y / VB_H) * 100;
+          const meta = pinMeta[i];
+          const isSel = selectedPin === i;
+          const parts: string[] = [`Stop ${i + 1}: ${shown[i]}`];
+          if (meta?.driveInMin && meta.driveInMin >= 4) {
+            parts.push(`about ${formatChipMin(meta.driveInMin)} drive from previous`);
+          }
+          if (meta?.dwell) parts.push(`${formatChipMin(meta.dwell)} on site`);
+          return (
+            <button
+              key={`pin-btn-${i}`}
+              type="button"
+              aria-label={parts.join(", ")}
+              aria-pressed={isSel}
+              onClick={() => setSelectedPin(isSel ? null : i)}
+              onKeyDown={(e) => handlePinKey(e, i)}
+              className="pointer-events-auto absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal-deep,#14181a)] active:scale-95 transition-transform"
+              style={{
+                left: `${xPct}%`,
+                top: `${yPct}%`,
+                transform: "translate(-50%, -50%)",
+                width: 44,
+                height: 44,
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* SR-only ordered route summary — gives screen readers and
+          keyboard users a structured, decluttered alternative to the
+          visual map. Always reflects current revealed state. */}
+      <ol
+        className="sr-only"
+        aria-label={
+          originLabel
+            ? `Route summary from ${originLabel}`
+            : "Route summary"
+        }
+      >
+        {pinMeta.slice(0, revealedCount).map((m, i) => {
+          const parts: string[] = [];
+          if (m.driveInMin && m.driveInMin >= 4) {
+            parts.push(`~${formatChipMin(m.driveInMin)} drive`);
+          }
+          parts.push(m.label);
+          if (m.dwell) parts.push(`${formatChipMin(m.dwell)} on site`);
+          return (
+            <li key={`sr-${i}`} aria-current={selectedPin === i ? "true" : undefined}>
+              {`Stop ${i + 1}: ${parts.join(" — ")}`}
+            </li>
+          );
+        })}
+      </ol>
+
+
       {/* Drive-minute chips at each segment midpoint — geographic mode only,
           and only for segments that have already been drawn. */}
       {geo
@@ -537,21 +677,28 @@ export function StudioV3SignatureMap({
             if (min < 4) return null; // suppress tiny chips
             const xPct = (seg.mid.x / VB_W) * 100;
             const yPct = (seg.mid.y / VB_H) * 100;
+            const isSel = selectedPin === i;
             return (
               <span
                 key={`drive-${i}`}
                 aria-hidden
+                data-selected={isSel || undefined}
                 className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
                 style={{
                   left: `${xPct}%`,
                   top: `${yPct}%`,
                   transform: "translate(-50%, -120%)",
-                  background: "color-mix(in oklab, #050d0f 80%, transparent)",
-                  color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
-                  border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                  background: isSel
+                    ? "color-mix(in oklab, var(--gold) 92%, white)"
+                    : "color-mix(in oklab, #050d0f 80%, transparent)",
+                  color: isSel
+                    ? "var(--charcoal)"
+                    : "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                  border: `1px solid color-mix(in oklab, var(--gold) ${isSel ? 90 : 40}%, transparent)`,
                   whiteSpace: "nowrap",
-                  opacity: 0.95,
+                  opacity: isSel ? 1 : 0.95,
                   animation: "studioV3RiseIn 480ms ease-out both",
+                  boxShadow: isSel ? "0 4px 14px -4px rgba(0,0,0,0.55)" : undefined,
                 }}
               >
                 ≈ {formatChipMin(min)} drive
@@ -575,20 +722,26 @@ export function StudioV3SignatureMap({
         if (!dwell) return null;
         const xPct = (p.x / VB_W) * 100;
         const yPct = (p.y / VB_H) * 100;
+        const isSel = selectedPin === i;
         return (
           <span
             key={`dwell-${i}`}
             aria-hidden
+            data-selected={isSel || undefined}
             className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
             style={{
               left: `${xPct}%`,
               top: `${yPct}%`,
               transform: "translate(-50%, 140%)",
-              background: "color-mix(in oklab, var(--gold) 88%, white)",
+              background: isSel
+                ? "var(--gold)"
+                : "color-mix(in oklab, var(--gold) 88%, white)",
               color: "var(--charcoal)",
               whiteSpace: "nowrap",
-              boxShadow: "0 4px 12px -6px rgba(0,0,0,0.55)",
-              opacity: 0.96,
+              boxShadow: isSel
+                ? "0 6px 16px -4px rgba(0,0,0,0.65), 0 0 0 1.5px var(--gold)"
+                : "0 4px 12px -6px rgba(0,0,0,0.55)",
+              opacity: isSel ? 1 : 0.96,
               animation: "studioV3RiseIn 520ms ease-out both",
             }}
           >
@@ -816,6 +969,8 @@ function MapDebugOverlay({
           type="button"
           onClick={() => setCollapsed((c) => !c)}
           aria-label={collapsed ? "Expand map debug" : "Collapse map debug"}
+          aria-pressed={!collapsed}
+          aria-expanded={!collapsed}
           style={{
             background: "transparent",
             color: "var(--ivory)",
