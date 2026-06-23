@@ -323,12 +323,32 @@ export function StudioV3SignatureMap({
               key={i}
               style={{
                 opacity: active ? 1 : 0,
-                transform: active ? "translateY(0)" : "translateY(4px)",
-                transition: `opacity 520ms ease ${delay}ms, transform 520ms ease ${delay}ms`,
+                transform: active ? "scale(1)" : "scale(0.35)",
+                transition: `opacity 520ms ease ${delay}ms, transform 720ms cubic-bezier(0.22, 1.4, 0.36, 1) ${delay}ms`,
                 transformBox: "fill-box",
                 transformOrigin: `${p.x}px ${p.y}px`,
               }}
             >
+              {/* Newest pin emits an expanding gold ring on arrival —
+                  the visual cue that something is being created. */}
+              {isLast ? (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="6"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeOpacity="0.9"
+                  strokeWidth="0.9"
+                  style={{
+                    animation: active
+                      ? `sv3smArrive 1400ms ease-out ${delay + 120}ms both`
+                      : undefined,
+                    transformOrigin: `${p.x}px ${p.y}px`,
+                    transformBox: "fill-box",
+                  }}
+                />
+              ) : null}
               <circle
                 cx={p.x}
                 cy={p.y}
@@ -347,7 +367,7 @@ export function StudioV3SignatureMap({
                   opacity="0.18"
                   style={{
                     animation: active
-                      ? `sv3smPulse 2200ms ease-out ${delay + 600}ms infinite`
+                      ? `sv3smPulse 2200ms ease-out ${delay + 700}ms infinite`
                       : undefined,
                     transformOrigin: `${p.x}px ${p.y}px`,
                     transformBox: "fill-box",
@@ -459,8 +479,13 @@ export function StudioV3SignatureMap({
           40% { opacity: 0.7; }
           100% { opacity: 0; transform: scale(1.8); }
         }
+        @keyframes sv3smArrive {
+          0% { opacity: 0; transform: scale(0.3); }
+          25% { opacity: 1; }
+          100% { opacity: 0; transform: scale(3.4); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          [style*="sv3smPulse"] { animation: none !important; opacity: 0 !important; }
+          [style*="sv3smPulse"], [style*="sv3smArrive"] { animation: none !important; opacity: 0 !important; }
         }
       `}</style>
     </div>
