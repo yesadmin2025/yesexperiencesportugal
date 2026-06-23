@@ -99,6 +99,8 @@ export function SignaturePriceCard({
   onGuestsChange,
   previewTiers = null,
   remainingMinutes = null,
+  itineraryStops = [],
+  dwellHours = null,
 }: SignaturePriceCardProps) {
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
