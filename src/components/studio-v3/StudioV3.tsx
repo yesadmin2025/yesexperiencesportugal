@@ -1171,8 +1171,12 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
           rhythmBucket: id,
+          regionKey: tourRegionToRegionKey(
+            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
+          ),
           holdMs: 6200,
         });
+
         return;
       }
     }
