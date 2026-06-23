@@ -1334,9 +1334,13 @@ export function StudioV3() {
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           routeLabels: labels,
+          regionKey: tourRegionToRegionKey(
+            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
+          ),
           nextPhase: next,
           holdMs: 6200,
         });
+
         return;
       }
     }
