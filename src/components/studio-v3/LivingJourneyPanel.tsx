@@ -42,6 +42,7 @@ import {
 } from "./types";
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
+import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { TimelineView } from "./TimelineView";
 import { AffinityBars } from "./AffinityBars";
 import { SmartRecommendation } from "./SmartRecommendation";
@@ -506,6 +507,28 @@ function JourneyDraftDrawer({
   const totalPins = Math.max(0, Math.min(4, moments.length));
   const [view, setView] = useState<"story" | "timeline" | "map">("story");
 
+  // Real OSRM driving minutes for the drawer's "Map" view. We only fetch
+  // when every moment has real lat/lng (otherwise the map already runs in
+  // schematic mode and haversine would be misleading).
+  const routeStops: RouteLegStop[] | null = useMemo(() => {
+    if (!originCoord) return null;
+    const detailed = momentsDetailed
+      .map((m, i) => ({ ...m, i }))
+      .filter(
+        (m): m is typeof m & { lat: number; lng: number } =>
+          typeof m.lat === "number" && typeof m.lng === "number",
+      );
+    if (detailed.length !== momentsDetailed.length) return null;
+    return [
+      { key: "origin", lat: originCoord.lat, lng: originCoord.lng },
+      ...detailed.map((m) => ({ key: `${m.i}-${m.label}`, lat: m.lat, lng: m.lng })),
+    ];
+  }, [originCoord, momentsDetailed]);
+  const { legMinutes: realLegMinutes } = useRouteLegMinutes(
+    routeStops,
+    view === "map" && !!routeStops,
+  );
+
   // Cinematic pin reveal — pins draw in sequence when the drawer opens,
   // giving the "journey being drawn in real time" sensation. Respects
   // prefers-reduced-motion: shows all pins immediately.
@@ -887,6 +910,7 @@ function JourneyDraftDrawer({
                 activeCount={activePins}
                 originLabel={originLabel}
                 paceLabel={paceLabel}
+                legMinutes={realLegMinutes}
                 ariaLabel="Your journey, drawing live"
                 className="rounded-[4px] border"
               />

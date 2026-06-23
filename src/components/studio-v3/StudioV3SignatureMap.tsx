@@ -53,6 +53,12 @@ export interface StudioV3SignatureMapProps {
   className?: string;
   /** Accessibility label for the whole map artefact. */
   ariaLabel?: string;
+  /**
+   * Optional real driving minutes per leg (origin → stop[0], stop[0] →
+   * stop[1], …). Length = `stops.length`. When provided, replaces the
+   * haversine fallback for chips, accessibility labels and debug data.
+   */
+  legMinutes?: ReadonlyArray<number> | null;
 }
 
 const VB_W = 200;
@@ -193,6 +199,7 @@ export function StudioV3SignatureMap({
   aspectRatio = "16 / 11",
   className,
   ariaLabel,
+  legMinutes,
 }: StudioV3SignatureMapProps) {
   const cleaned = useMemo(() => stops.map(cleanLabel).filter(Boolean), [stops]);
   const visible = Math.max(0, Math.min(cleaned.length, activeCount ?? cleaned.length));
@@ -305,19 +312,25 @@ export function StudioV3SignatureMap({
             });
       let driveInMin: number | null = null;
       if (geo && originCoord) {
-        const from =
-          i === 0
-            ? originCoord
-            : {
-                lat: detailed[i - 1]!.lat as number,
-                lng: detailed[i - 1]!.lng as number,
-              };
-        const to = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
-        driveInMin = haversineDriveMinutes(from, to);
+        // Prefer real OSRM-backed minutes when caller has supplied them.
+        const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+        if (real != null && real > 0) {
+          driveInMin = real;
+        } else {
+          const from =
+            i === 0
+              ? originCoord
+              : {
+                  lat: detailed[i - 1]!.lat as number,
+                  lng: detailed[i - 1]!.lng as number,
+                };
+          const to = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
+          driveInMin = haversineDriveMinutes(from, to);
+        }
       }
       return { label, dwell: dwell || null, driveInMin };
     });
-  }, [shown, detailed, geo, originCoord]);
+  }, [shown, detailed, geo, originCoord, legMinutes]);
 
   const handlePinKey = (e: React.KeyboardEvent, i: number) => {
     const last = waypoints.length - 1;
@@ -665,15 +678,21 @@ export function StudioV3SignatureMap({
         ? segments.map((seg, i) => {
             const drawn = i < revealedCount;
             if (!drawn) return null;
-            const a = i === 0 ? originCoord! : {
-              lat: detailed[i - 1]!.lat as number,
-              lng: detailed[i - 1]!.lng as number,
-            };
-            const b = {
-              lat: detailed[i]!.lat as number,
-              lng: detailed[i]!.lng as number,
-            };
-            const min = haversineDriveMinutes(a, b);
+            const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+            let min: number;
+            if (real != null && real > 0) {
+              min = real;
+            } else {
+              const a = i === 0 ? originCoord! : {
+                lat: detailed[i - 1]!.lat as number,
+                lng: detailed[i - 1]!.lng as number,
+              };
+              const b = {
+                lat: detailed[i]!.lat as number,
+                lng: detailed[i]!.lng as number,
+              };
+              min = haversineDriveMinutes(a, b);
+            }
             if (min < 4) return null; // suppress tiny chips
             const xPct = (seg.mid.x / VB_W) * 100;
             const yPct = (seg.mid.y / VB_H) * 100;
@@ -836,7 +855,9 @@ export function StudioV3SignatureMap({
             ? originCoord
             : { lat: detailed[i - 1]!.lat as number, lng: detailed[i - 1]!.lng as number };
           const b = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
-          return { index: i, driveMin: haversineDriveMinutes(a, b), from: a, to: b };
+          const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+          const driveMin = real != null && real > 0 ? real : haversineDriveMinutes(a, b);
+          return { index: i, driveMin, from: a, to: b };
         })}
         revealedCount={revealedCount}
         visible={visible}

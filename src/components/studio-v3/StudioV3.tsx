@@ -77,6 +77,7 @@ import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 
 
 // Lazy — Leaflet ships only when the reveal mounts.
@@ -2103,6 +2104,81 @@ export function StudioV3() {
 
 /* ---------- Sub-components ---------- */
 
+/**
+ * RevealRouteMap — extracted so we can call the OSRM `useRouteLegMinutes`
+ * hook at the top of a component (hooks can't run inside an IIFE).
+ * Wraps `StudioV3SignatureMap` with geo-detailed stops, the resolved
+ * origin coordinate, and real driving minutes per leg.
+ */
+function RevealRouteMap({
+  editedStops,
+  resolved,
+  skeletonTour,
+  statePickup,
+  revealedStops,
+}: {
+  editedStops: ReadonlyArray<{ label: string }>;
+  resolved: { routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }> };
+  skeletonTour: { region?: string | null } | null;
+  statePickup: StudioV3State["pickup"];
+  revealedStops: number;
+}) {
+  const byLabel = new Map(
+    resolved.routePoints.map((p) => [p.label.toLowerCase(), p] as const),
+  );
+  const stopsDetailed = editedStops.map((s) => {
+    const rp = byLabel.get(s.label.toLowerCase());
+    if (rp && rp.lat != null && rp.lng != null) {
+      return { label: s.label, lat: rp.lat, lng: rp.lng };
+    }
+    const geo = lookupStopGeo(s.label);
+    if (geo) {
+      return {
+        label: s.label,
+        lat: geo.lat,
+        lng: geo.lng,
+        dwellMin: geo.dwellMin,
+        kind: geo.kind,
+      };
+    }
+    return { label: s.label };
+  });
+  const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
+  const originCoord = REGION_ORIGIN[rk]
+    ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
+    : null;
+
+  // Build OSRM input only when every leg has real coordinates; otherwise
+  // skip the network call and let the map fall back to haversine.
+  const allGeo = originCoord && stopsDetailed.every(
+    (s) => typeof (s as { lat?: number }).lat === "number" && typeof (s as { lng?: number }).lng === "number",
+  );
+  const routeStops: RouteLegStop[] | null = allGeo
+    ? [
+        { key: "origin", lat: originCoord!.lat, lng: originCoord!.lng },
+        ...stopsDetailed.map((s, i) => ({
+          key: `${i}-${s.label}`,
+          lat: (s as { lat: number }).lat,
+          lng: (s as { lng: number }).lng,
+        })),
+      ]
+    : null;
+  const { legMinutes } = useRouteLegMinutes(routeStops, !!allGeo);
+
+  return (
+    <StudioV3SignatureMap
+      stops={editedStops.map((s) => s.label)}
+      stopsDetailed={stopsDetailed}
+      originCoord={originCoord}
+      activeCount={revealedStops}
+      originLabel={pickupCityLabel(statePickup) || (skeletonTour?.region ?? null)}
+      aspectRatio="16 / 11"
+      legMinutes={legMinutes}
+      ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
+    />
+  );
+}
+
 function PhaseHeader({
   eyebrow,
   title,
@@ -2876,46 +2952,14 @@ function StoryboardHandoff({
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
         <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
-          {(() => {
-            // Build geo-detailed stops for the cinematic map.
-            // Priority: resolved.routePoints (carry lat/lng from curation) →
-            // catalog lookup (lookupStopGeo) → label-only fallback.
-            const byLabel = new Map(
-              resolved.routePoints.map((p) => [p.label.toLowerCase(), p]),
-            );
-            const stopsDetailed = editedStops.map((s) => {
-              const rp = byLabel.get(s.label.toLowerCase());
-              if (rp && rp.lat != null && rp.lng != null) {
-                return { label: s.label, lat: rp.lat, lng: rp.lng };
-              }
-              const geo = lookupStopGeo(s.label);
-              if (geo) {
-                return {
-                  label: s.label,
-                  lat: geo.lat,
-                  lng: geo.lng,
-                  dwellMin: geo.dwellMin,
-                  kind: geo.kind,
-                };
-              }
-              return { label: s.label };
-            });
-            const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
-            const originCoord = REGION_ORIGIN[rk]
-              ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
-              : null;
-            return (
-              <StudioV3SignatureMap
-                stops={editedStops.map((s) => s.label)}
-                stopsDetailed={stopsDetailed}
-                originCoord={originCoord}
-                activeCount={revealedStops}
-                originLabel={pickupCityLabel(state.pickup) || (skeletonTour?.region ?? null)}
-                aspectRatio="16 / 11"
-                ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
-              />
-            );
-          })()}
+          <RevealRouteMap
+            editedStops={editedStops}
+            resolved={resolved}
+            skeletonTour={skeletonTour ?? null}
+            statePickup={state.pickup}
+            revealedStops={revealedStops}
+          />
+
 
           {/* Numbered legend — full names live here so the map stays clean
               and labels never overlap at 393px mobile. */}
@@ -3543,7 +3587,11 @@ function ReactionOverlay({
   const [clickThrough, setClickThrough] = useState(false);
   useEffect(() => {
     setClickThrough(false);
-    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.55));
+    // Hold pointer-events on the overlay until the keyframe fade-out window
+    // begins (~94% of `hold`). Prevents the previous beat from bleeding into
+    // the next question — the next phase only becomes interactive when the
+    // overlay text is already fading away.
+    const t = window.setTimeout(() => setClickThrough(true), Math.max(900, hold * 0.92));
     return () => window.clearTimeout(t);
   }, [hold, reaction]);
   const passThroughStyle = clickThrough ? { pointerEvents: "none" as const } : {};
@@ -3573,8 +3621,8 @@ function ReactionOverlay({
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
-            10% { opacity: 1; }
-            85% { opacity: 1; }
+            8% { opacity: 1; }
+            94% { opacity: 1; }
             100% { opacity: 0; }
           }
         `}</style>
@@ -3621,8 +3669,8 @@ function ReactionOverlay({
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
-            10% { opacity: 1; }
-            85% { opacity: 1; }
+            8% { opacity: 1; }
+            94% { opacity: 1; }
             100% { opacity: 0; }
           }
         `}</style>
@@ -3754,8 +3802,8 @@ function ReactionOverlay({
       <style>{`
         @keyframes studioV3ReactionFade {
           0% { opacity: 0; }
-          8% { opacity: 1; }
-          85% { opacity: 1; }
+          6% { opacity: 1; }
+          94% { opacity: 1; }
           100% { opacity: 0; }
         }
       `}</style>
