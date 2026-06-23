@@ -32,6 +32,7 @@ export function organizationLd() {
       { "@type": "AdministrativeArea", name: "Sesimbra" },
     ],
     sameAs: [
+      "https://share.google/7bTnRlabRJhLWACvE",
       "https://www.instagram.com/yesexperiencespt",
       "https://www.tripadvisor.com/Attraction_Review-g189158-d23586075-Reviews-Yes_Experiences_Portugal-Lisbon_Lisbon_District_Central_Portugal.html",
     ],
