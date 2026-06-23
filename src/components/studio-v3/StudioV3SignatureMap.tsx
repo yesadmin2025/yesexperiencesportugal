@@ -323,12 +323,32 @@ export function StudioV3SignatureMap({
               key={i}
               style={{
                 opacity: active ? 1 : 0,
-                transform: active ? "translateY(0)" : "translateY(4px)",
-                transition: `opacity 520ms ease ${delay}ms, transform 520ms ease ${delay}ms`,
+                transform: active ? "scale(1)" : "scale(0.35)",
+                transition: `opacity 520ms ease ${delay}ms, transform 720ms cubic-bezier(0.22, 1.4, 0.36, 1) ${delay}ms`,
                 transformBox: "fill-box",
                 transformOrigin: `${p.x}px ${p.y}px`,
               }}
             >
+              {/* Newest pin emits an expanding gold ring on arrival —
+                  the visual cue that something is being created. */}
+              {isLast ? (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="6"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeOpacity="0.9"
+                  strokeWidth="0.9"
+                  style={{
+                    animation: active
+                      ? `sv3smArrive 1400ms ease-out ${delay + 120}ms both`
+                      : undefined,
+                    transformOrigin: `${p.x}px ${p.y}px`,
+                    transformBox: "fill-box",
+                  }}
+                />
+              ) : null}
               <circle
                 cx={p.x}
                 cy={p.y}
@@ -347,7 +367,7 @@ export function StudioV3SignatureMap({
                   opacity="0.18"
                   style={{
                     animation: active
-                      ? `sv3smPulse 2200ms ease-out ${delay + 600}ms infinite`
+                      ? `sv3smPulse 2200ms ease-out ${delay + 700}ms infinite`
                       : undefined,
                     transformOrigin: `${p.x}px ${p.y}px`,
                     transformBox: "fill-box",
