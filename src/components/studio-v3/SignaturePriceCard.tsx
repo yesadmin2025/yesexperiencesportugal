@@ -12,8 +12,8 @@
 // If the base price is missing, the card degrades gracefully to
 // "Price on request" + a WhatsApp escape hatch. No fabricated numbers.
 
-import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Check, ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, Check, ChevronDown, ShieldCheck } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
