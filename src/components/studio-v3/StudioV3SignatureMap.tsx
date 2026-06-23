@@ -584,6 +584,81 @@ export function StudioV3SignatureMap({
         })}
       </svg>
 
+      {/* Accessible interactive overlay — invisible 44×44 buttons sit on
+          each arrived pin. Keyboard arrows move selection; Escape clears.
+          Pressed state mirrors `selectedPin` and is announced via
+          aria-pressed. The map itself stays decorative SVG. */}
+      <div
+        role="toolbar"
+        aria-label={
+          originLabel
+            ? `Route stops from ${originLabel}. Use arrow keys to step through.`
+            : "Route stops. Use arrow keys to step through."
+        }
+        className="pointer-events-none absolute inset-0"
+      >
+        {waypoints.map((p, i) => {
+          if (i >= revealedCount) return null;
+          const xPct = (p.x / VB_W) * 100;
+          const yPct = (p.y / VB_H) * 100;
+          const meta = pinMeta[i];
+          const isSel = selectedPin === i;
+          const parts: string[] = [`Stop ${i + 1}: ${shown[i]}`];
+          if (meta?.driveInMin && meta.driveInMin >= 4) {
+            parts.push(`about ${formatChipMin(meta.driveInMin)} drive from previous`);
+          }
+          if (meta?.dwell) parts.push(`${formatChipMin(meta.dwell)} on site`);
+          return (
+            <button
+              key={`pin-btn-${i}`}
+              type="button"
+              aria-label={parts.join(", ")}
+              aria-pressed={isSel}
+              onClick={() => setSelectedPin(isSel ? null : i)}
+              onKeyDown={(e) => handlePinKey(e, i)}
+              className="pointer-events-auto absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal-deep,#14181a)] active:scale-95 transition-transform"
+              style={{
+                left: `${xPct}%`,
+                top: `${yPct}%`,
+                transform: "translate(-50%, -50%)",
+                width: 44,
+                height: 44,
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* SR-only ordered route summary — gives screen readers and
+          keyboard users a structured, decluttered alternative to the
+          visual map. Always reflects current revealed state. */}
+      <ol
+        className="sr-only"
+        aria-label={
+          originLabel
+            ? `Route summary from ${originLabel}`
+            : "Route summary"
+        }
+      >
+        {pinMeta.slice(0, revealedCount).map((m, i) => {
+          const parts: string[] = [];
+          if (m.driveInMin && m.driveInMin >= 4) {
+            parts.push(`~${formatChipMin(m.driveInMin)} drive`);
+          }
+          parts.push(m.label);
+          if (m.dwell) parts.push(`${formatChipMin(m.dwell)} on site`);
+          return (
+            <li key={`sr-${i}`} aria-current={selectedPin === i ? "true" : undefined}>
+              {`Stop ${i + 1}: ${parts.join(" — ")}`}
+            </li>
+          );
+        })}
+      </ol>
+
+
       {/* Drive-minute chips at each segment midpoint — geographic mode only,
           and only for segments that have already been drawn. */}
       {geo
