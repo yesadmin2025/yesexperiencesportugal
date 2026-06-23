@@ -282,6 +282,29 @@ export function SignaturePriceCard({
     });
   }, [tour?.id, hasPrice, priceEur, durationLabel, stopCount, dateExact]);
 
+  // Mobile sticky CTA — visible only after the inline CTA scrolls out of view.
+  const ctaRef = useRef<HTMLDivElement | null>(null);
+  const [stickyVisible, setStickyVisible] = useState(false);
+  useEffect(() => {
+    if (!hasPrice) {
+      setStickyVisible(false);
+      return;
+    }
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        // Show the sticky bar once the inline CTA has scrolled past the viewport.
+        setStickyVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0, rootMargin: "0px 0px -20% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasPrice]);
+
   return (
     <section
       data-testid="studio-v3-price-card"
