@@ -224,8 +224,18 @@ export function StudioV3SignatureMap({
     return projectGeo(originCoord, pts);
   }, [allHaveCoords, originCoord, shown, detailed]);
 
+  // Origin-only geographic projection — used during the Pickup beat or any
+  // time we have an origin coordinate but no revealed stops yet. Without this
+  // the origin pulse defaults to SCHEMATIC_ORIGIN in the top-left corner and
+  // the map reads as "empty" to the traveller. Center the origin instead so
+  // the city is the visible anchor of the frame.
+  const originOnly = useMemo(() => {
+    if (geo || !originCoord || shown.length > 0) return null;
+    return { x: (GEO_X_MIN + GEO_X_MAX) / 2, y: (GEO_Y_MIN + GEO_Y_MAX) / 2 };
+  }, [geo, originCoord, shown.length]);
+
   // Resolve waypoints + origin in viewBox coords.
-  const origin = geo ? geo.origin : SCHEMATIC_ORIGIN;
+  const origin = geo ? geo.origin : originOnly ?? SCHEMATIC_ORIGIN;
   const waypoints = useMemo(() => {
     if (geo) return geo.points;
     return schematicWaypoints(shown);
