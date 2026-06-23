@@ -72,8 +72,7 @@ export function ChoiceGrid<T extends string>({
                 boxShadow: selected
                   ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
                   : "0 6px 18px -14px rgba(46,46,46,0.18)",
-                animation: "studioV3RiseIn 420ms ease-out both",
-                animationDelay: `${60 + i * 45}ms`,
+                animation: `studioV3RiseIn 420ms ease-out ${60 + i * 45}ms both`,
               }}
             >
               <span
