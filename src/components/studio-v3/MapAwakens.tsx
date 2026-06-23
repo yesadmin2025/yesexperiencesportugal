@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play, RefreshCw } from "lucide-react";
-import { curateJourney, type CuratedJourney } from "./curation";
+import { curateJourney, type CuratedJourney, pickupOriginCoord } from "./curation";
 import { QualityScore } from "./QualityScore";
 import type { StudioV3State } from "./types";
 
 import { recordStudioV3Phase4Timing, type StudioV3Phase4Phase } from "@/lib/studio-v3-telemetry";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
+import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
+import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import type {
   Companions,
   DestinationIntent,
