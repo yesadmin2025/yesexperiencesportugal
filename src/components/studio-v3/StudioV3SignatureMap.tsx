@@ -539,6 +539,17 @@ export function StudioV3SignatureMap({
                 strokeWidth="1.1"
                 strokeOpacity="0.55"
               />
+              {selectedPin === i && arrived ? (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="10.5"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeWidth="1.3"
+                  strokeOpacity="1"
+                />
+              ) : null}
               {isLast ? (
                 <circle
                   cx={p.x}
