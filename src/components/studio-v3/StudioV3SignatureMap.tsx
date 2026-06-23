@@ -602,21 +602,28 @@ export function StudioV3SignatureMap({
             if (min < 4) return null; // suppress tiny chips
             const xPct = (seg.mid.x / VB_W) * 100;
             const yPct = (seg.mid.y / VB_H) * 100;
+            const isSel = selectedPin === i;
             return (
               <span
                 key={`drive-${i}`}
                 aria-hidden
+                data-selected={isSel || undefined}
                 className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
                 style={{
                   left: `${xPct}%`,
                   top: `${yPct}%`,
                   transform: "translate(-50%, -120%)",
-                  background: "color-mix(in oklab, #050d0f 80%, transparent)",
-                  color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
-                  border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                  background: isSel
+                    ? "color-mix(in oklab, var(--gold) 92%, white)"
+                    : "color-mix(in oklab, #050d0f 80%, transparent)",
+                  color: isSel
+                    ? "var(--charcoal)"
+                    : "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                  border: `1px solid color-mix(in oklab, var(--gold) ${isSel ? 90 : 40}%, transparent)`,
                   whiteSpace: "nowrap",
-                  opacity: 0.95,
+                  opacity: isSel ? 1 : 0.95,
                   animation: "studioV3RiseIn 480ms ease-out both",
+                  boxShadow: isSel ? "0 4px 14px -4px rgba(0,0,0,0.55)" : undefined,
                 }}
               >
                 ≈ {formatChipMin(min)} drive
