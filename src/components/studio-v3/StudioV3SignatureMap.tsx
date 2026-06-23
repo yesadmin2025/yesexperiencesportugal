@@ -244,7 +244,13 @@ export function StudioV3SignatureMap({
   // re-animate on every render — only the newest one draws).
   const [revealedCount, setRevealedCount] = useState(0);
   const revealedRef = useRef(0);
+  // Selection: which pin is "active" for keyboard/touch — drives the
+  // pressed state on the pin button and highlights its drive-in + dwell chips.
+  const [selectedPin, setSelectedPin] = useState<number | null>(null);
   useEffect(() => {
+    // Clear selection when the route shape changes or the pin is no longer revealed.
+    setSelectedPin((cur) => (cur != null && cur < revealedCount ? cur : null));
+  }, [revealedCount]);
     // Reset to 0 on context change (new path identity from non-geo to geo, etc.)
   }, []);
   useEffect(() => {
