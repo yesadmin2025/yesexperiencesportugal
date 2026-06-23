@@ -404,7 +404,10 @@ interface DrawerProps {
   dna: string[];
   routeLine: string | null;
   moments: string[];
+  momentsDetailed: Array<{ label: string; lat?: number | null; lng?: number | null }>;
+  originCoord: { lat: number; lng: number } | null;
   timelineMoments: import("./TimelineView").TimelineMoment[];
+
   durationLabel: string | null;
   originLabel: string | null;
   paceLabel: string | null;
