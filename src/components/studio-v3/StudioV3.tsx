@@ -157,6 +157,14 @@ const INTEREST_IMAGE: Record<string, string> = {
 };
 
 import {
+  videoForCompanions,
+  videoForDestination,
+  videoForFeeling,
+  videoForInterest,
+} from "@/content/studio-scene-clips";
+
+
+import {
   COMPANIONS,
   CONSIDERATIONS,
   DESTINATION_INTENTS,
