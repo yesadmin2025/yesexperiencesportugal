@@ -280,6 +280,8 @@ export function MapBeat({
             activeCount={activeCount}
             paceLabel={paceLabel}
             aspectRatio="16 / 11"
+            legMinutes={legMinutes}
+            silhouetteRegion={silhouetteRegion}
             ariaLabel={
               mode === "origin"
                 ? `The day begins in ${originLabel ?? "the chosen pickup"}.`
