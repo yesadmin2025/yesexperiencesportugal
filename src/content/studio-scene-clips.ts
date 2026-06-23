@@ -99,12 +99,17 @@ export function videoForDestination(destination: string | null | undefined): str
     case "alentejo":
       return STUDIO_SCENE_CLIPS.route;
     case "no-preference":
+      // Distinct from alentejo so back-to-back beats never repeat the
+      // same hero footage — show an open viewpoint instead of the road.
+      return STUDIO_SCENE_CLIPS.viewpoint;
     default:
       return STUDIO_SCENE_CLIPS.route;
   }
 }
 
-/** Companions → scene clip (Who beat). */
+/** Companions → scene clip (Who beat). Tuned to avoid repeating the
+ *  clip the user just saw on the Feeling beat (wine-food / slow-luxury
+ *  both lean table/localTable). */
 export function videoForCompanions(companions: string | null | undefined): string | undefined {
   if (!companions) return undefined;
   switch (companions) {
@@ -112,14 +117,16 @@ export function videoForCompanions(companions: string | null | undefined): strin
     case "proposal":
       return STUDIO_SCENE_CLIPS.hiddenCove;
     case "family":
-      return STUDIO_SCENE_CLIPS.localTable;
+      // Family = wandering an old street together, not another table shot.
+      return STUDIO_SCENE_CLIPS.hiddenStreet;
     case "friends":
     case "celebration":
       return STUDIO_SCENE_CLIPS.celebration;
     case "solo":
       return STUDIO_SCENE_CLIPS.caboRoca;
     case "corporate":
-      return STUDIO_SCENE_CLIPS.route;
+      // Corporate = a quiet curated table, never the generic road clip.
+      return STUDIO_SCENE_CLIPS.table;
     default:
       return undefined;
   }
