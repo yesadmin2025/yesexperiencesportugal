@@ -2104,6 +2104,81 @@ export function StudioV3() {
 
 /* ---------- Sub-components ---------- */
 
+/**
+ * RevealRouteMap — extracted so we can call the OSRM `useRouteLegMinutes`
+ * hook at the top of a component (hooks can't run inside an IIFE).
+ * Wraps `StudioV3SignatureMap` with geo-detailed stops, the resolved
+ * origin coordinate, and real driving minutes per leg.
+ */
+function RevealRouteMap({
+  editedStops,
+  resolved,
+  skeletonTour,
+  statePickup,
+  revealedStops,
+}: {
+  editedStops: ReadonlyArray<{ label: string }>;
+  resolved: { routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }> };
+  skeletonTour: { region?: string | null } | null;
+  statePickup: StudioV3State["pickup"];
+  revealedStops: number;
+}) {
+  const byLabel = new Map(
+    resolved.routePoints.map((p) => [p.label.toLowerCase(), p] as const),
+  );
+  const stopsDetailed = editedStops.map((s) => {
+    const rp = byLabel.get(s.label.toLowerCase());
+    if (rp && rp.lat != null && rp.lng != null) {
+      return { label: s.label, lat: rp.lat, lng: rp.lng };
+    }
+    const geo = lookupStopGeo(s.label);
+    if (geo) {
+      return {
+        label: s.label,
+        lat: geo.lat,
+        lng: geo.lng,
+        dwellMin: geo.dwellMin,
+        kind: geo.kind,
+      };
+    }
+    return { label: s.label };
+  });
+  const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
+  const originCoord = REGION_ORIGIN[rk]
+    ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
+    : null;
+
+  // Build OSRM input only when every leg has real coordinates; otherwise
+  // skip the network call and let the map fall back to haversine.
+  const allGeo = originCoord && stopsDetailed.every(
+    (s) => typeof (s as { lat?: number }).lat === "number" && typeof (s as { lng?: number }).lng === "number",
+  );
+  const routeStops: RouteLegStop[] | null = allGeo
+    ? [
+        { key: "origin", lat: originCoord!.lat, lng: originCoord!.lng },
+        ...stopsDetailed.map((s, i) => ({
+          key: `${i}-${s.label}`,
+          lat: (s as { lat: number }).lat,
+          lng: (s as { lng: number }).lng,
+        })),
+      ]
+    : null;
+  const { legMinutes } = useRouteLegMinutes(routeStops, !!allGeo);
+
+  return (
+    <StudioV3SignatureMap
+      stops={editedStops.map((s) => s.label)}
+      stopsDetailed={stopsDetailed}
+      originCoord={originCoord}
+      activeCount={revealedStops}
+      originLabel={pickupCityLabel(statePickup) || (skeletonTour?.region ?? null)}
+      aspectRatio="16 / 11"
+      legMinutes={legMinutes}
+      ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
+    />
+  );
+}
+
 function PhaseHeader({
   eyebrow,
   title,
