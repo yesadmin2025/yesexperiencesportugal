@@ -251,8 +251,6 @@ export function StudioV3SignatureMap({
     // Clear selection when the route shape changes or the pin is no longer revealed.
     setSelectedPin((cur) => (cur != null && cur < revealedCount ? cur : null));
   }, [revealedCount]);
-    // Reset to 0 on context change (new path identity from non-geo to geo, etc.)
-  }, []);
   useEffect(() => {
     if (waypoints.length === 0) {
       revealedRef.current = 0;
