@@ -184,6 +184,18 @@ export function TimelineView({
           </li>
         ) : null}
       </ol>
+      {overBudgetNote ? (
+        <p
+          data-testid="studio-v3-timeline-overbudget"
+          className="mt-3 text-[11px] leading-snug italic"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "color-mix(in oklab, var(--gold) 78%, transparent)",
+          }}
+        >
+          {overBudgetNote}
+        </p>
+      ) : null}
     </div>
   );
 }
