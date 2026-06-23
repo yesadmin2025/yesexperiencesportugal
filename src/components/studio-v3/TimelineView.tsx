@@ -28,7 +28,19 @@ export interface TimelineViewProps {
   overBudgetNote?: string | null;
 }
 
-export function TimelineView({ moments, durationLabel, originLabel }: TimelineViewProps) {
+function formatMinutes(min: number): string {
+  if (min < 60) return `${Math.round(min)} min`;
+  const h = Math.floor(min / 60);
+  const m = Math.round(min - h * 60);
+  return m === 0 ? `${h}h` : `${h}h ${m}m`;
+}
+
+export function TimelineView({
+  moments,
+  durationLabel,
+  originLabel,
+  overBudgetNote,
+}: TimelineViewProps) {
   if (moments.length === 0) {
     return (
       <p
