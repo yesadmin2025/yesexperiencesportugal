@@ -12,8 +12,8 @@
 // If the base price is missing, the card degrades gracefully to
 // "Price on request" + a WhatsApp escape hatch. No fabricated numbers.
 
-import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Check, ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, Check, ChevronDown, ShieldCheck } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import {
   addOnEurFromBase,
@@ -281,6 +281,29 @@ export function SignaturePriceCard({
       dateExact,
     });
   }, [tour?.id, hasPrice, priceEur, durationLabel, stopCount, dateExact]);
+
+  // Mobile sticky CTA — visible only after the inline CTA scrolls out of view.
+  const ctaRef = useRef<HTMLDivElement | null>(null);
+  const [stickyVisible, setStickyVisible] = useState(false);
+  useEffect(() => {
+    if (!hasPrice) {
+      setStickyVisible(false);
+      return;
+    }
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        // Show the sticky bar once the inline CTA has scrolled past the viewport.
+        setStickyVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0, rootMargin: "0px 0px -20% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasPrice]);
 
   return (
     <section
@@ -863,15 +886,45 @@ export function SignaturePriceCard({
           </footer>
         ) : null}
 
-        <div className="mt-6 flex flex-col items-center gap-2.5">
+        {/* Trust strip — discreet, reduces hesitation right before the CTA. */}
+        {hasPrice ? (
+          <div
+            data-testid="studio-v3-trust-strip"
+            className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <span className="inline-flex items-center gap-1.5">
+              <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
+              Real itinerary
+            </span>
+            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}>·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
+              Local designer review
+            </span>
+            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}>·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
+              Free cancellation 48h
+            </span>
+          </div>
+        ) : null}
+
+        <div ref={ctaRef} className="mt-4 flex flex-col items-center gap-2.5">
           {hasPrice ? (
             <button
               type="button"
               onClick={onSecure}
-              className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-              style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
+              data-testid="studio-v3-cta-primary"
+              className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              style={{
+                background: "var(--charcoal)",
+                color: "var(--ivory)",
+                boxShadow: "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              }}
             >
-              Yes — make this day mine <ArrowRight size={14} aria-hidden />
+              Yes — make this day mine
+              <ArrowRight size={14} aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
           ) : (
             <a
@@ -882,22 +935,61 @@ export function SignaturePriceCard({
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
             >
               Request the investment <ArrowRight size={14} aria-hidden />
             </a>
           )}
+
+          {hasPrice ? (
+            <p
+              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+            >
+              <ShieldCheck size={12} aria-hidden style={{ color: "var(--gold)" }} />
+              Secure checkout · Stripe-protected · Cancel free for 48h
+            </p>
+          ) : null}
+
           <button
             type="button"
             onClick={onRefine}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
           >
             Adjust a few things first
           </button>
         </div>
       </div>
+
+      {/* Mobile sticky CTA — appears only after the inline CTA scrolls out of view. */}
+      {hasPrice && stickyVisible ? (
+        <div
+          data-testid="studio-v3-cta-sticky"
+          className="md:hidden fixed inset-x-0 bottom-0 z-40 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] animate-fade-in"
+          style={{
+            background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+            borderTop: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+            boxShadow: "0 -10px 30px -18px rgba(46,46,46,0.28)",
+          }}
+        >
+          <button
+            type="button"
+            onClick={onSecure}
+            className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
+          >
+            Yes — make this day mine <ArrowRight size={14} aria-hidden />
+          </button>
+          <p
+            className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            Stripe-protected · Free cancellation 48h
+          </p>
+        </div>
+      ) : null}
     </section>
   );
 }
