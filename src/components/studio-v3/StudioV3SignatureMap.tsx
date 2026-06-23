@@ -647,20 +647,26 @@ export function StudioV3SignatureMap({
         if (!dwell) return null;
         const xPct = (p.x / VB_W) * 100;
         const yPct = (p.y / VB_H) * 100;
+        const isSel = selectedPin === i;
         return (
           <span
             key={`dwell-${i}`}
             aria-hidden
+            data-selected={isSel || undefined}
             className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
             style={{
               left: `${xPct}%`,
               top: `${yPct}%`,
               transform: "translate(-50%, 140%)",
-              background: "color-mix(in oklab, var(--gold) 88%, white)",
+              background: isSel
+                ? "var(--gold)"
+                : "color-mix(in oklab, var(--gold) 88%, white)",
               color: "var(--charcoal)",
               whiteSpace: "nowrap",
-              boxShadow: "0 4px 12px -6px rgba(0,0,0,0.55)",
-              opacity: 0.96,
+              boxShadow: isSel
+                ? "0 6px 16px -4px rgba(0,0,0,0.65), 0 0 0 1.5px var(--gold)"
+                : "0 4px 12px -6px rgba(0,0,0,0.55)",
+              opacity: isSel ? 1 : 0.96,
               animation: "studioV3RiseIn 520ms ease-out both",
             }}
           >
