@@ -1243,10 +1243,11 @@ export function StudioV3() {
             : "The route is no longer a template. Its shape is becoming yours.",
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
+          originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           regionKey: tourRegionToRegionKey(
             (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ),
+          ) ?? pickupRegionKey(state.pickup) ?? undefined,
           holdMs: 6000,
         });
 
