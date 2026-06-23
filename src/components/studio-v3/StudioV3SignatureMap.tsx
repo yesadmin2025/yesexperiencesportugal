@@ -25,6 +25,7 @@ import {
   stopDurationMinutes,
 } from "@/lib/studio/timing";
 import type { StopKind } from "@/data/regionStops";
+import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 
 export interface StudioV3SignatureMapDetailedStop {
   label: string;
