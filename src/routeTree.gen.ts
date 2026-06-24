@@ -53,6 +53,7 @@ import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
 import { Route as AdminBokunMappingRouteImport } from './routes/admin.bokun-mapping'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
@@ -278,6 +279,11 @@ const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
   path: '/admin/builder-images',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/admin/bookings',
+  path: '/admin/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBokunMappingRoute = AdminBokunMappingRouteImport.update({
   id: '/admin/bokun-mapping',
   path: '/admin/bokun-mapping',
@@ -324,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -374,6 +381,7 @@ export interface FileRoutesByTo {
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -425,6 +433,7 @@ export interface FileRoutesById {
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -477,6 +486,7 @@ export interface FileRouteTypes {
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
+    | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/drift-behavior'
@@ -527,6 +537,7 @@ export interface FileRouteTypes {
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
+    | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/drift-behavior'
@@ -577,6 +588,7 @@ export interface FileRouteTypes {
     | '/typography-audit'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
+    | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/drift-behavior'
@@ -628,6 +640,7 @@ export interface RootRouteChildren {
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBokunMappingRoute: typeof AdminBokunMappingRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
@@ -961,6 +974,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBuilderImagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/bokun-mapping': {
       id: '/admin/bokun-mapping'
       path: '/admin/bokun-mapping'
@@ -1053,6 +1073,7 @@ const rootRouteChildren: RootRouteChildren = {
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBokunMappingRoute: AdminBokunMappingRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
@@ -1078,12 +1099,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
