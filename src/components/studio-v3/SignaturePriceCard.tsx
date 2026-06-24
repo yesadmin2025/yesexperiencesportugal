@@ -973,6 +973,7 @@ export function SignaturePriceCard({
               Free cancellation 48h
             </span>
           </div>
+          </>
         ) : null}
 
         <div ref={ctaRef} className="mt-4 flex flex-col items-center gap-2.5">
