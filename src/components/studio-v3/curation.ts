@@ -1803,6 +1803,35 @@ export function filterCompanions(
 }
 
 /**
+ * filterFeelings — when companions is chosen first (per Brand Bible
+ * group-type-first ordering), hide moods that read as illogical for the
+ * selected travel party. Keeps the list tight (≤6) and removes the
+ * "wait, that doesn't fit me" friction that hurts conversion.
+ *
+ *   solo        → hide romance (reads as for-two)
+ *   couple      → hide adventure only if list still has ≥5 options (no-op here)
+ *   family      → hide romance, slow-luxury (atmosphere doesn't fit kids)
+ *   proposal    → hide adventure, hidden (keep cinematic / romantic moods)
+ *   corporate   → hide romance, hidden, adventure (keep refined moods)
+ *   celebration → keep all
+ *   friends     → hide romance
+ */
+export function filterFeelings(
+  options: ReadonlyArray<ChoiceOption<Feeling>>,
+  companions: Companions | null,
+): ChoiceOption<Feeling>[] {
+  if (!companions) return [...options];
+  const HIDE: Partial<Record<Companions, ReadonlyArray<Feeling>>> = {
+    solo: ["romance"],
+    family: ["romance", "slow-luxury"],
+    proposal: ["adventure", "hidden"],
+    corporate: ["romance", "hidden", "adventure"],
+    friends: ["romance"],
+  };
+  const hidden = new Set<Feeling>(HIDE[companions] ?? []);
+  return options.filter((o) => !hidden.has(o.id));
+
+/**
  * filterDestinationIntents — drop redundant low-commitment options.
  * "no-preference" and "anywhere-special" carry the same user signal
  * ("let YES decide"); we keep only "no-preference" in the UI so the
