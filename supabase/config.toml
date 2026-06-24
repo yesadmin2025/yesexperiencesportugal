@@ -14,3 +14,7 @@ verify_jwt = false
 
 [functions.bokun-list-products]
 verify_jwt = false
+
+[functions.test-webhook-simulate]
+verify_jwt = false
+

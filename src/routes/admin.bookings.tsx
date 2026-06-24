@@ -8,7 +8,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, ExternalLink, AlertTriangle, CheckCircle2, Filter } from "lucide-react";
+import { RefreshCw, ExternalLink, AlertTriangle, CheckCircle2, Filter, Beaker } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -262,14 +262,17 @@ function AdminBookingsPage() {
               extranet link to finish the reservation manually, then update the status in Bokun.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={fetchRows}
-            disabled={loading}
-            className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-sm hover:border-[color:var(--gold)] disabled:opacity-50"
-          >
-            <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <TestWebhookButton onDone={fetchRows} />
+            <button
+              type="button"
+              onClick={fetchRows}
+              disabled={loading}
+              className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-sm hover:border-[color:var(--gold)] disabled:opacity-50"
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+            </button>
+          </div>
         </header>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -409,3 +412,151 @@ function AdminBookingsPage() {
     </SiteLayout>
   );
 }
+
+function TestWebhookButton({ onDone }: { onDone: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [tourId, setTourId] = useState("arrabida-boat");
+  const [dateExact, setDateExact] = useState(() =>
+    new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+  );
+  const [guests, setGuests] = useState(2);
+  const [reallyBook, setReallyBook] = useState(false);
+
+  async function run() {
+    setBusy(true);
+    try {
+      const { data: s } = await supabase.auth.getSession();
+      const token = s.session?.access_token;
+      if (!token) {
+        toast.error("Not signed in");
+        return;
+      }
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/test-webhook-simulate`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          tour_id: tourId,
+          date_exact: dateExact,
+          guests,
+          booking_type: "signature",
+          really_book_bokun: reallyBook,
+        }),
+      });
+      const json = (await res.json()) as {
+        ok?: boolean;
+        bookingId?: string;
+        bokun?: { status: string; error?: string };
+        error?: string;
+      };
+      if (!res.ok || !json.ok) {
+        toast.error(`Simulation failed: ${json.error ?? res.statusText}`);
+        return;
+      }
+      toast.success(
+        `Simulated booking created · Bokun: ${json.bokun?.status ?? "—"}${
+          json.bokun?.error ? ` (${json.bokun.error})` : ""
+        }`,
+      );
+      setOpen(false);
+      onDone();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-2 border border-[color:var(--gold)] bg-[color:var(--gold-soft)] px-3 py-2 text-sm hover:bg-[color:var(--gold)] hover:text-[color:var(--ivory)]"
+      >
+        <Beaker size={14} /> Test webhook
+      </button>
+      {open && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          onClick={() => !busy && setOpen(false)}
+        >
+          <div
+            className="bg-[color:var(--ivory)] max-w-md w-full p-6 border border-[color:var(--border)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl">Simulate Stripe webhook</h2>
+            <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">
+              Inserts a paid booking and runs the Bokun availability check exactly like the live
+              webhook would. By default, Bokun is queried in dry-run mode (no real reservation).
+            </p>
+            <div className="mt-4 space-y-3 text-sm">
+              <label className="block">
+                <span className="text-xs text-[color:var(--charcoal-soft)]">Tour ID</span>
+                <input
+                  value={tourId}
+                  onChange={(e) => setTourId(e.target.value)}
+                  className="mt-1 w-full border border-[color:var(--border)] px-2 py-1.5 text-sm"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs text-[color:var(--charcoal-soft)]">Date</span>
+                <input
+                  type="date"
+                  value={dateExact}
+                  onChange={(e) => setDateExact(e.target.value)}
+                  className="mt-1 w-full border border-[color:var(--border)] px-2 py-1.5 text-sm"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs text-[color:var(--charcoal-soft)]">Guests</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={guests}
+                  onChange={(e) => setGuests(Math.max(1, Number(e.target.value)))}
+                  className="mt-1 w-full border border-[color:var(--border)] px-2 py-1.5 text-sm"
+                />
+              </label>
+              <label className="flex items-start gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={reallyBook}
+                  onChange={(e) => setReallyBook(e.target.checked)}
+                  className="mt-0.5"
+                />
+                <span>
+                  <strong>Actually reserve in Bokun</strong> (creates a real booking — use only with
+                  a sandbox tour or be ready to cancel it manually).
+                </span>
+              </label>
+            </div>
+            <div className="mt-5 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                disabled={busy}
+                className="px-3 py-2 text-sm border border-[color:var(--border)] hover:border-[color:var(--gold)] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={run}
+                disabled={busy}
+                className="px-3 py-2 text-sm bg-[color:var(--charcoal)] text-[color:var(--ivory)] hover:bg-black disabled:opacity-50"
+              >
+                {busy ? "Simulating…" : "Run simulation"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
