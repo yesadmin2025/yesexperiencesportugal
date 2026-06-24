@@ -106,6 +106,10 @@ Deno.serve(async (req) => {
             availabilityCount: s.availabilityCount,
             enough_capacity: (s.availabilityCount ?? 1) >= guests,
             pricing_category: s.pricingCategories?.[0]?.title ?? null,
+            pricing_categories: (s.pricingCategories ?? []).map((c) => ({
+              id: c.id,
+              title: c.title,
+            })),
           })),
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -182,7 +186,17 @@ Deno.serve(async (req) => {
           dateExact,
         )) as AvailabilitySlot[];
         const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
-        if (usable.length === 0) {
+        const requestedSlotId = body.availability_id != null ? Number(body.availability_id) : null;
+        let chosen: AvailabilitySlot | undefined;
+        if (requestedSlotId != null) {
+          chosen = usable.find((s) => s.id === requestedSlotId);
+          if (!chosen) {
+            bokunResult = {
+              status: "needs_review",
+              error: `Selected slot ${requestedSlotId} not available for ${guests} guests on ${dateExact}`,
+            };
+          }
+        } else if (usable.length === 0) {
           bokunResult = {
             status: "needs_review",
             error: `No Bokun availability on ${dateExact} for ${guests} guests`,
@@ -193,8 +207,15 @@ Deno.serve(async (req) => {
             error: `Multiple Bokun slots on ${dateExact} (${usable.length}) — pick one manually`,
           };
         } else {
-          const slot = usable[0];
-          const cat = slot.pricingCategories?.[0];
+          chosen = usable[0];
+        }
+        if (chosen) {
+          const slot = chosen;
+          const requestedCatId = body.pricing_category_id != null ? Number(body.pricing_category_id) : null;
+          const cat =
+            (requestedCatId != null
+              ? slot.pricingCategories?.find((c) => c.id === requestedCatId)
+              : undefined) ?? slot.pricingCategories?.[0];
           if (!cat) {
             bokunResult = { status: "needs_review", error: "Bokun slot has no pricing category" };
           } else {

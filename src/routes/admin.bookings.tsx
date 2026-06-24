@@ -413,6 +413,7 @@ function AdminBookingsPage() {
   );
 }
 
+type BokunPricingCategory = { id: number; title: string };
 type BokunSlotPreview = {
   id: number;
   startTime: string;
@@ -420,6 +421,7 @@ type BokunSlotPreview = {
   availabilityCount: number;
   enough_capacity: boolean;
   pricing_category: string | null;
+  pricing_categories?: BokunPricingCategory[];
 };
 
 type PreviewResult =
@@ -444,10 +446,14 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
   const [guests, setGuests] = useState(2);
   const [reallyBook, setReallyBook] = useState(false);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
+  const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
+  const [selectedCatId, setSelectedCatId] = useState<number | null>(null);
 
   // Invalidate preview when inputs change.
   useEffect(() => {
     setPreview(null);
+    setSelectedSlotId(null);
+    setSelectedCatId(null);
   }, [tourId, dateExact, guests]);
 
   async function getToken() {
@@ -492,13 +498,21 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
         setPreview({ mapped: false });
         return;
       }
+      const slots = json.slots ?? [];
       setPreview({
         mapped: true,
         bokun_product_id: json.bokun_product_id ?? "",
         slot_count: json.slot_count ?? 0,
         usable_count: json.usable_count ?? 0,
-        slots: json.slots ?? [],
+        slots,
       });
+      // Auto-select when exactly one usable slot exists.
+      const usable = slots.filter((s) => s.enough_capacity);
+      if (usable.length === 1) {
+        setSelectedSlotId(usable[0].id);
+        const cats = usable[0].pricing_categories ?? [];
+        if (cats.length === 1) setSelectedCatId(cats[0].id);
+      }
     } catch (e) {
       setPreview({ error: e instanceof Error ? e.message : String(e) });
     } finally {
@@ -524,6 +538,8 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
           guests,
           booking_type: "signature",
           really_book_bokun: reallyBook,
+          availability_id: selectedSlotId,
+          pricing_category_id: selectedCatId,
         }),
       });
       const json = (await res.json()) as {
@@ -551,7 +567,12 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
     }
   }
 
-  const canRun = preview && "mapped" in preview && preview.mapped && preview.usable_count > 0;
+  const previewMapped = preview && "mapped" in preview && preview.mapped ? preview : null;
+  const selectedSlot = previewMapped?.slots.find((s) => s.id === selectedSlotId) ?? null;
+  const selectedSlotCats = selectedSlot?.pricing_categories ?? [];
+  const needsCatPick = selectedSlotCats.length > 1 && selectedCatId == null;
+  const canRun =
+    !!previewMapped && previewMapped.usable_count > 0 && selectedSlotId != null && !needsCatPick;
 
   return (
     <>
@@ -640,32 +661,77 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
                       {preview.slot_count === 1 ? "" : "s"} can fit {guests} guest
                       {guests === 1 ? "" : "s"}
                     </p>
-                    <ul className="mt-2 space-y-1">
-                      {preview.slots.map((s) => (
-                        <li
-                          key={s.id}
-                          className={`flex items-center justify-between gap-2 ${
-                            s.enough_capacity ? "text-[color:var(--charcoal)]" : "text-[color:var(--charcoal-soft)] line-through"
-                          }`}
-                        >
-                          <span>
-                            {s.startTime}
-                            {s.pricing_category ? ` · ${s.pricing_category}` : ""}
-                          </span>
-                          <span>{s.availabilityCount} seats</span>
-                        </li>
-                      ))}
+                    <p className="mt-2 text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                      Pick a slot
+                    </p>
+                    <ul className="mt-1 space-y-1">
+                      {preview.slots.map((s) => {
+                        const disabled = !s.enough_capacity;
+                        const checked = selectedSlotId === s.id;
+                        return (
+                          <li key={s.id}>
+                            <label
+                              className={`flex items-center justify-between gap-2 border px-2 py-1.5 cursor-pointer ${
+                                checked
+                                  ? "border-[color:var(--teal)] bg-[color:var(--ivory)]"
+                                  : "border-[color:var(--border)]"
+                              } ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-[color:var(--gold)]"}`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <input
+                                  type="radio"
+                                  name="bokun-slot"
+                                  value={s.id}
+                                  checked={checked}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    setSelectedSlotId(s.id);
+                                    const cats = s.pricing_categories ?? [];
+                                    setSelectedCatId(cats.length === 1 ? cats[0].id : null);
+                                  }}
+                                />
+                                <span>
+                                  {s.startTime}
+                                  {s.pricing_category ? ` · ${s.pricing_category}` : ""}
+                                </span>
+                              </span>
+                              <span>{s.availabilityCount} seats</span>
+                            </label>
+                          </li>
+                        );
+                      })}
                     </ul>
-                    {preview.usable_count === 1 && (
+                    {selectedSlot && selectedSlotCats.length > 1 && (
+                      <div className="mt-3">
+                        <p className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                          Pricing category
+                        </p>
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {selectedSlotCats.map((c) => (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onClick={() => setSelectedCatId(c.id)}
+                              className={`px-2 py-1 text-xs border ${
+                                selectedCatId === c.id
+                                  ? "border-[color:var(--teal)] bg-[color:var(--ivory)]"
+                                  : "border-[color:var(--border)] hover:border-[color:var(--gold)]"
+                              }`}
+                            >
+                              {c.title}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedSlotId != null && !needsCatPick && (
                       <p className="mt-2 text-emerald-800">
                         <CheckCircle2 size={11} className="inline mr-1" />
-                        Single matching slot — webhook would auto-confirm.
+                        Slot selected — ready to run.
                       </p>
                     )}
-                    {preview.usable_count > 1 && (
-                      <p className="mt-2 text-amber-800">
-                        Multiple slots — webhook marks needs_review for manual pick.
-                      </p>
+                    {needsCatPick && (
+                      <p className="mt-2 text-amber-800">Pick a pricing category to continue.</p>
                     )}
                   </>
                 )}
@@ -681,8 +747,8 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
                 className="mt-0.5"
               />
               <span className={!canRun ? "text-[color:var(--charcoal-soft)]" : ""}>
-                <strong>Actually reserve in Bokun</strong> (creates a real booking — only enabled
-                when preview shows exactly one matching slot).
+                <strong>Actually reserve in Bokun</strong> (creates a real booking — enabled once a
+                slot {selectedSlotCats.length > 1 ? "and pricing category " : ""}is selected).
               </span>
             </label>
 
