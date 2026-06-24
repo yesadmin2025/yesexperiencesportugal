@@ -246,6 +246,70 @@ function AdminBokunMappingPage() {
             </div>
           )}
 
+          {(() => {
+            const unmapped = tours.filter((t) => !mappings[t.id]);
+            const total = tours.length;
+            const mappedCount = total - unmapped.length;
+            const complete = unmapped.length === 0;
+            return (
+              <div
+                className={`mt-6 border px-4 py-4 ${
+                  complete
+                    ? "border-[color:var(--gold)]/50 bg-[color:var(--gold)]/5"
+                    : "border-amber-400/50 bg-amber-50"
+                }`}
+                role="status"
+                aria-live="polite"
+              >
+                <div className="flex items-start gap-3">
+                  {complete ? (
+                    <Check size={16} className="mt-0.5 text-[color:var(--gold)]" />
+                  ) : (
+                    <AlertTriangle size={16} className="mt-0.5 text-amber-700" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">
+                      {complete
+                        ? `All ${total} Signature tours are mapped to Bokun.`
+                        : `${mappedCount} of ${total} Signature tours mapped — ${unmapped.length} pending.`}
+                    </p>
+                    {!complete && (
+                      <ul className="mt-2 flex flex-wrap gap-1.5">
+                        {unmapped.map((t) => (
+                          <li
+                            key={t.id}
+                            className="text-[11px] bg-white border border-amber-300 px-2 py-0.5"
+                          >
+                            {t.title}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <button
+                      type="button"
+                      disabled={!complete}
+                      onClick={() =>
+                        toast.success(
+                          "Mapping complete — Bokun push will activate on next checkout.",
+                        )
+                      }
+                      className="mt-3 inline-flex items-center gap-1.5 bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-3 py-1.5 text-xs hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed"
+                      title={
+                        complete
+                          ? "Enable Bokun reservation push for Signature checkouts"
+                          : "Map every Signature tour before enabling Bokun push"
+                      }
+                    >
+                      {complete ? <Check size={12} /> : <Lock size={12} />}
+                      {complete ? "Enable Bokun sync" : "Bokun sync locked"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+
           <div className="mt-8 space-y-4">
             {tours.map((tour) => (
               <TourMappingRow
