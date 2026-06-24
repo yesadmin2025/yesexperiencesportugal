@@ -47,25 +47,23 @@ async function bokunFetch(path: string, method = "GET", body?: unknown) {
   if (!accessKey || !secretKey) throw new Error("Bokun keys not configured");
 
   const date = bokunDate();
-  // Bokun signs the full path including query string
-  const signature = await bokunSignature(secretKey, date, accessKey, method, path);
+  // Bokun signs path WITHOUT query string
+  const pathForSig = path.split("?")[0];
+  const signature = await bokunSignature(secretKey, date, accessKey, method, pathForSig);
 
   const headers: Record<string, string> = {
     "X-Bokun-Date": date,
     "X-Bokun-AccessKey": accessKey,
     "X-Bokun-Signature": signature,
+    "Content-Type": "application/json;charset=UTF-8",
   };
-  let bodyStr: string | undefined;
-  if (body !== undefined) {
-    bodyStr = JSON.stringify(body);
-    headers["Content-Type"] = "application/json";
-  }
+  const bodyStr = body !== undefined ? JSON.stringify(body) : undefined;
 
   const res = await fetch(`${BOKUN_HOST}${path}`, { method, headers, body: bodyStr });
 
   const text = await res.text();
   if (!res.ok) {
-    throw new Error(`Bokun ${method} ${path} → ${res.status}: ${text}`);
+    throw new Error(`Bokun ${method} ${path} → ${res.status}: ${text} :: sent body=${bodyStr ?? "<none>"}`);
   }
   return text ? JSON.parse(text) : null;
 }
