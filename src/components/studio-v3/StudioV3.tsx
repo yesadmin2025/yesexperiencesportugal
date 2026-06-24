@@ -1697,7 +1697,7 @@ export function StudioV3() {
             title="How would you like"
             titleAccent="Portugal to feel?"
           />
-          <ChoiceGrid options={FEELINGS} value={state.feeling} onSelect={onFeeling} />
+          <ChoiceGrid options={filterFeelings(FEELINGS, state.companions)} value={state.feeling} onSelect={onFeeling} />
           {state.feeling ? (
             <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (
