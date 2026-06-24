@@ -436,6 +436,24 @@ export function SignaturePriceCard({
                 </span>
               </p>
             ) : null}
+            {cheapestRealTier ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setPickerOpen(true);
+                  setPreviewGuests(cheapestRealTier.tier);
+                  onGuestsChange?.(cheapestRealTier.tier);
+                }}
+                data-testid="studio-v3-anchor-hint"
+                data-anchor-tier={cheapestRealTier.tier}
+                data-anchor-eur={cheapestRealTier.eur}
+                className="mt-2 inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded px-1.5 py-0.5"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span>
+                Drops to <span style={{ color: "var(--charcoal)" }}>€{cheapestRealTier.eur}</span> / pp with {cheapestRealTier.tier === 8 ? "8+" : cheapestRealTier.tier} guests
+              </button>
+            ) : null}
           </>
         ) : (
           <>
