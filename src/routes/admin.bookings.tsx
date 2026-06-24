@@ -413,6 +413,7 @@ function AdminBookingsPage() {
   );
 }
 
+type BokunPricingCategory = { id: number; title: string };
 type BokunSlotPreview = {
   id: number;
   startTime: string;
@@ -420,6 +421,7 @@ type BokunSlotPreview = {
   availabilityCount: number;
   enough_capacity: boolean;
   pricing_category: string | null;
+  pricing_categories?: BokunPricingCategory[];
 };
 
 type PreviewResult =
