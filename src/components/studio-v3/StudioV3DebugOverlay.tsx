@@ -15,6 +15,7 @@
  */
 import { useEffect, useState } from "react";
 import type { StudioV3State } from "./types";
+import { EXPECTED_MOUNTS, useMountRegistry } from "./useStudioDebug";
 
 const btnStyle: React.CSSProperties = {
   background: "transparent",
@@ -60,6 +61,8 @@ interface Props {
 export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: Props) {
   const [enabled, setEnabled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const mounted = useMountRegistry();
+  const mountedNames = new Set(mounted.map((m) => m.name));
 
   useEffect(() => {
     setEnabled(readInitialEnabled());
@@ -205,6 +208,59 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
             ))}
           </tbody>
         </table>
+      )}
+      {!collapsed && (
+        <div style={{ marginTop: 8, borderTop: "1px solid rgba(201,169,106,0.25)", paddingTop: 6 }}>
+          <div
+            style={{
+              color: "var(--gold)",
+              letterSpacing: 0.8,
+              textTransform: "uppercase",
+              fontSize: 9,
+              marginBottom: 4,
+            }}
+          >
+            Mount checklist
+          </div>
+          {EXPECTED_MOUNTS.map((exp) => {
+            const isExpectedPhase = exp.phases.includes(state.phase);
+            const isMounted = mountedNames.has(exp.name);
+            let icon = "·";
+            let color = "rgba(250,248,243,0.45)";
+            let label = "idle";
+            if (isMounted) {
+              icon = "✓";
+              color = "#7FE3A1";
+              label = "mounted";
+            } else if (isExpectedPhase) {
+              icon = "✕";
+              color = "#FF8A8A";
+              label = `missing (phase=${state.phase})`;
+            } else {
+              label = `waits for ${exp.phases.join(" / ")}`;
+            }
+            return (
+              <div
+                key={exp.name}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 6,
+                  fontSize: 10,
+                  lineHeight: 1.35,
+                  marginBottom: 2,
+                }}
+              >
+                <span style={{ color, fontWeight: 700, width: 10 }}>{icon}</span>
+                <span style={{ flex: 1 }}>
+                  <span style={{ fontWeight: 600 }}>{exp.name}</span>
+                  <span style={{ opacity: 0.6 }}> · {label}</span>
+                  <div style={{ opacity: 0.45, fontSize: 9 }}>{exp.hint}</div>
+                </span>
+              </div>
+            );
+          })}
+        </div>
       )}
       {!collapsed && (
         <div style={{ marginTop: 6, fontSize: 10, color: "rgba(250,248,243,0.45)" }}>
