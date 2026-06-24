@@ -74,8 +74,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // Try a simple GET first to confirm auth works end-to-end
-    const data = await bokunFetch("/activity.json/list?lang=EN&currency=EUR", "GET");
+    const data = await bokunFetch("/activity.json/search?lang=EN&currency=EUR", "POST", {});
 
     const items =
       (data?.items ?? []).map((it: Record<string, unknown>) => ({
