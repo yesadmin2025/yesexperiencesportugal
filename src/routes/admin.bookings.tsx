@@ -538,6 +538,8 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
           guests,
           booking_type: "signature",
           really_book_bokun: reallyBook,
+          availability_id: selectedSlotId,
+          pricing_category_id: selectedCatId,
         }),
       });
       const json = (await res.json()) as {
