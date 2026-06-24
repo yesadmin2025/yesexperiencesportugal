@@ -15,6 +15,7 @@
  */
 import { useEffect, useState } from "react";
 import type { StudioV3State } from "./types";
+import { EXPECTED_MOUNTS, useMountRegistry } from "./useStudioDebug";
 
 const btnStyle: React.CSSProperties = {
   background: "transparent",
