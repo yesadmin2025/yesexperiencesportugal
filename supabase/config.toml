@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.analyze-builder-references]
 verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.bokun-list-products]
+verify_jwt = false

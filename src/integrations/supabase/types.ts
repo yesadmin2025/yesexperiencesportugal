@@ -59,6 +59,11 @@ export type Database = {
       bookings: {
         Row: {
           amount_total: number
+          bokun_booking_id: string | null
+          bokun_confirmation_code: string | null
+          bokun_error: string | null
+          bokun_last_attempt_at: string | null
+          bokun_status: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
           created_at: string
           currency: string
@@ -79,6 +84,11 @@ export type Database = {
         }
         Insert: {
           amount_total: number
+          bokun_booking_id?: string | null
+          bokun_confirmation_code?: string | null
+          bokun_error?: string | null
+          bokun_last_attempt_at?: string | null
+          bokun_status?: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
           created_at?: string
           currency?: string
@@ -99,6 +109,11 @@ export type Database = {
         }
         Update: {
           amount_total?: number
+          bokun_booking_id?: string | null
+          bokun_confirmation_code?: string | null
+          bokun_error?: string | null
+          bokun_last_attempt_at?: string | null
+          bokun_status?: string | null
           booking_type?: Database["public"]["Enums"]["booking_type"]
           created_at?: string
           currency?: string
