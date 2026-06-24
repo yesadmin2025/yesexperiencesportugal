@@ -1,15 +1,17 @@
 /**
- * useStudioDebug — shared hook + MountBadge for Studio V3 debug instrumentation.
+ * useStudioDebug — shared hook + MountBadge + mount registry for Studio V3
+ * debug instrumentation.
  *
- * Reads the same enable signal as `StudioV3DebugOverlay`:
- *   ?debug=studio  ·  localStorage["studio-v3-debug"]="1"  ·  Shift+D toggles
+ * Enable signal (shared with StudioV3DebugOverlay):
+ *   ?debug=studio  ·  localStorage["studio-v3-debug"]="1"  ·  Shift+D
  *
- * MountBadge is a tiny pill rendered by individual components (SignaturePriceCard,
- * StudioV3SignatureMap, StudioTrustStrip, ExitIntentSave, …) so we can confirm
- * — on the actual mobile preview — which pieces are mounting at the current
- * phase. Invisible when debug is off.
+ * MountBadge is a tiny pill rendered inline by individual components so we
+ * can confirm — on a real mobile preview — which pieces are mounting at the
+ * current phase. Each MountBadge also registers itself in a module-scoped
+ * registry that `useMountRegistry()` subscribes to, so the overlay can show
+ * a live checklist of expected vs. actual mounts.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "studio-v3-debug";
 
@@ -52,20 +54,50 @@ export function useStudioDebugEnabled(): boolean {
   return enabled;
 }
 
+// ---------------------------------------------------------------------------
+// Mount registry — module-scoped store of currently-mounted MountBadge names.
+// Components import MountBadge; the registry powers the overlay checklist.
+// ---------------------------------------------------------------------------
+
+type MountEntry = { name: string; detail?: string | null; tone: "ok" | "warn" };
+const registry = new Map<string, MountEntry>();
+const listeners = new Set<() => void>();
+let snapshot: ReadonlyArray<MountEntry> = [];
+
+function publish() {
+  snapshot = Array.from(registry.values());
+  listeners.forEach((l) => l());
+}
+
+function registerMount(entry: MountEntry): () => void {
+  registry.set(entry.name, entry);
+  publish();
+  return () => {
+    registry.delete(entry.name);
+    publish();
+  };
+}
+
+export function useMountRegistry(): ReadonlyArray<MountEntry> {
+  return useSyncExternalStore(
+    (cb) => {
+      listeners.add(cb);
+      return () => listeners.delete(cb);
+    },
+    () => snapshot,
+    () => snapshot,
+  );
+}
+
 interface MountBadgeProps {
   name: string;
-  /** Extra one-liner shown under the name (e.g. tour id, guests). */
   detail?: string | null;
-  /** Visual tone — "ok" gold (default), "warn" amber. */
   tone?: "ok" | "warn";
 }
 
-/**
- * Inline pill rendered at the component root. Stays in normal flow so it
- * doesn't collide with the fixed overlay in the bottom-right.
- */
 export function MountBadge({ name, detail, tone = "ok" }: MountBadgeProps) {
   const enabled = useStudioDebugEnabled();
+  useEffect(() => registerMount({ name, detail, tone }), [name, detail, tone]);
   if (!enabled) return null;
   const border = tone === "warn" ? "rgba(255,170,80,0.7)" : "rgba(201,169,106,0.7)";
   const accent = tone === "warn" ? "#FFB060" : "var(--gold)";
@@ -96,3 +128,38 @@ export function MountBadge({ name, detail, tone = "ok" }: MountBadgeProps) {
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Expected mount checklist — describes which named badges *should* be mounted
+// at a given phase. The overlay walks this list to render OK / missing rows.
+// Keep names in sync with MountBadge call-sites.
+// ---------------------------------------------------------------------------
+
+export interface ExpectedMount {
+  name: string;
+  phases: ReadonlyArray<string>; // phases in which the badge is expected
+  hint: string;                  // human-friendly explanation
+}
+
+export const EXPECTED_MOUNTS: ReadonlyArray<ExpectedMount> = [
+  {
+    name: "StudioV3SignatureMap",
+    phases: ["map", "storyboard"],
+    hint: "Geographic map (phase: map → storyboard)",
+  },
+  {
+    name: "SignaturePriceCard",
+    phases: ["storyboard"],
+    hint: "Reveal price card (phase: storyboard)",
+  },
+  {
+    name: "TrustStrip",
+    phases: ["storyboard"],
+    hint: "Trust strip — only if a real price resolved",
+  },
+  {
+    name: "ExitIntent",
+    phases: ["storyboard"],
+    hint: "Exit-intent rescue (armed after 8s on reveal)",
+  },
+];
