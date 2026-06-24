@@ -298,7 +298,6 @@ function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
         return "Next, the route moves toward open air.";
       if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
       if (feeling === "romance") return "Next, we shape the beginning for two.";
-      if (feeling === "family") return "Next, we make the day easy for everyone.";
       break;
     }
     case "who": {
