@@ -46,6 +46,7 @@ async function bokunFetch(path: string, method = "GET", body?: unknown) {
   const secretKey = Deno.env.get("BOKUN_SECRET_KEY");
   if (!accessKey || !secretKey) throw new Error("Bokun keys not configured");
 
+  const date = bokunDate();
   // Bokun signs the full path including query string
   const signature = await bokunSignature(secretKey, date, accessKey, method, path);
 
