@@ -67,6 +67,61 @@ Deno.serve(async (req) => {
   const customerEmail = (body.customer_email as string) ?? userData.user.email ?? "test@yesexperiences.pt";
   const customerName = (body.customer_name as string) ?? "Test Customer";
   const skipBokun = body.skip_bokun === true;
+  const checkOnly = body.check_only === true;
+
+  // PREVIEW MODE: just query Bokun availability and return — no booking insert.
+  if (checkOnly) {
+    try {
+      const { data: mapping } = await admin
+        .from("tour_bokun_mapping")
+        .select("bokun_product_id")
+        .eq("tour_id", tourId)
+        .maybeSingle();
+      if (!mapping?.bokun_product_id) {
+        return new Response(
+          JSON.stringify({ ok: true, preview: true, mapped: false, slots: [] }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      const slots = (await getActivityAvailabilities(
+        mapping.bokun_product_id,
+        dateExact,
+      )) as AvailabilitySlot[];
+      const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          preview: true,
+          mapped: true,
+          bokun_product_id: mapping.bokun_product_id,
+          tour_id: tourId,
+          date: dateExact,
+          guests,
+          slot_count: slots.length,
+          usable_count: usable.length,
+          slots: slots.map((s) => ({
+            id: s.id,
+            startTime: s.startTime,
+            date: s.date,
+            availabilityCount: s.availabilityCount,
+            enough_capacity: (s.availabilityCount ?? 1) >= guests,
+            pricing_category: s.pricingCategories?.[0]?.title ?? null,
+          })),
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    } catch (e) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          preview: true,
+          error: e instanceof Error ? e.message : String(e),
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+  }
+
 
   const fakeSessionId = `cs_test_sim_${crypto.randomUUID().replace(/-/g, "")}`;
   const meta = {
