@@ -38,6 +38,34 @@ export const STUDIO_SCENE_CLIPS = {
 
 export type StudioSceneClip = keyof typeof STUDIO_SCENE_CLIPS;
 
+/**
+ * Warm the browser HTTP cache for upcoming scene clips so the AtmosphereBeat
+ * fades into a fully-buffered video instead of a black flash on slow networks.
+ * Adds `<link rel="preload" as="video">` once per URL; safe to call repeatedly.
+ * No-ops on SSR and when the user prefers reduced motion (then we never autoplay
+ * anyway, so prefetching the bytes would waste data).
+ */
+export function preloadStudioClips(urls: ReadonlyArray<string | undefined>): void {
+  if (typeof document === "undefined") return;
+  if (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
+  for (const url of urls) {
+    if (!url) continue;
+    const key = `sv3-preload:${url}`;
+    if (document.head.querySelector(`link[data-sv3-preload="${key}"]`)) continue;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "video";
+    link.href = url;
+    link.setAttribute("data-sv3-preload", key);
+    document.head.appendChild(link);
+  }
+}
+
 /** Feeling → scene clip. Falls back to viewpoint when unmapped. */
 export function videoForFeeling(feeling: string | null | undefined): string | undefined {
   if (!feeling) return undefined;
