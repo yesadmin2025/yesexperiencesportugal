@@ -1011,6 +1011,7 @@ export function StudioV3SignatureMap({
         }
       `}</style>
     </div>
+    </>
   );
 }
 
