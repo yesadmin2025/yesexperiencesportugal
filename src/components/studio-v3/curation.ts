@@ -1864,8 +1864,8 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 // only appear at the final Reveal.
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
-  "feeling",
   "who",
+  "feeling",
   "destination",
   "pickup",
   "guests",
