@@ -229,16 +229,39 @@ function AdminBokunMappingPage() {
                 mapping when pushing reservations into Bokun.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={fetchBokun}
-              disabled={loadingBokun}
-              className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
-            >
-              <RefreshCw size={12} className={loadingBokun ? "animate-spin" : ""} />
-              {loadingBokun ? "Loading Bokun…" : "Refresh catalog"}
-            </button>
-          </header>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={fetchBokun}
+                disabled={loadingBokun}
+                className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
+              >
+                <RefreshCw size={12} className={loadingBokun ? "animate-spin" : ""} />
+                {loadingBokun ? "Loading Bokun…" : "Refresh catalog"}
+              </button>
+              <button
+                type="button"
+                onClick={() => exportMappingsCsv(tours, mappings)}
+                className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)]"
+              >
+                <Download size={12} /> Export CSV
+              </button>
+              <label className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)] cursor-pointer">
+                <Upload size={12} /> Import CSV
+                <input
+                  type="file"
+                  accept=".csv,text/csv"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (!file) return;
+                    await importMappingsCsv(file, bokunItems ?? [], setMappings);
+                  }}
+                />
+              </label>
+            </div>
+
 
           {bokunError && (
             <div className="mt-6 border border-red-400/40 bg-red-50 px-4 py-3 text-sm text-red-800">
