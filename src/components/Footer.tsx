@@ -76,7 +76,7 @@ export function Footer() {
               { to: "/local-stories", label: "Local Stories" },
               { to: "/contact", label: "Contact" },
               {
-                to: "https://share.google/7bTnRlabRJhLWACvE",
+                to: "https://www.google.com/maps?cid=03208810033820295776",
                 label: "Google Maps",
                 external: true,
               },

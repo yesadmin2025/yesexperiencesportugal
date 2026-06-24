@@ -32,9 +32,9 @@ export function organizationLd() {
       { "@type": "AdministrativeArea", name: "Sesimbra" },
     ],
     sameAs: [
-      "https://share.google/7bTnRlabRJhLWACvE",
+      "https://www.google.com/maps?cid=03208810033820295776",
       "https://www.instagram.com/yesexperiencespt",
-      "https://www.tripadvisor.com/Attraction_Review-g189158-d23586075-Reviews-Yes_Experiences_Portugal-Lisbon_Lisbon_District_Central_Portugal.html",
+      "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
     ],
   } as const;
 }
