@@ -262,14 +262,17 @@ function AdminBookingsPage() {
               extranet link to finish the reservation manually, then update the status in Bokun.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={fetchRows}
-            disabled={loading}
-            className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-sm hover:border-[color:var(--gold)] disabled:opacity-50"
-          >
-            <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <TestWebhookButton onDone={fetchRows} />
+            <button
+              type="button"
+              onClick={fetchRows}
+              disabled={loading}
+              className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-sm hover:border-[color:var(--gold)] disabled:opacity-50"
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+            </button>
+          </div>
         </header>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
