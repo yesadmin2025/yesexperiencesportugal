@@ -45,6 +45,7 @@ import {
   composeSuggestedRoute,
   customerStopBlurb,
   filterCompanions,
+  filterFeelings,
   filterConsiderations,
   filterDestinationIntents,
   filterInterests,
