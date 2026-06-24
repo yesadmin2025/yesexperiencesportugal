@@ -788,6 +788,21 @@ export function StudioV3() {
     };
   }, [state.phase]);
 
+  // Batch C — clip preloading. Warm the HTTP cache for the most-likely scene
+  // clips once the traveller leaves the intro so AtmosphereBeats fade in fully
+  // buffered. Idempotent + reduced-motion safe (handled inside the helper).
+  useEffect(() => {
+    if (state.phase === "intro") return;
+    preloadStudioClips([
+      STUDIO_SCENE_CLIPS.viewpoint,
+      STUDIO_SCENE_CLIPS.coast,
+      STUDIO_SCENE_CLIPS.hiddenCove,
+      STUDIO_SCENE_CLIPS.localTable,
+      STUDIO_SCENE_CLIPS.route,
+      STUDIO_SCENE_CLIPS.celebration,
+    ]);
+  }, [state.phase]);
+
   const advance = useCallback((next: StudioV3Phase) => {
     // If a previous cinematic beat is still dissolving, remove it before any
     // explicit CTA transition. Otherwise mobile users can see the next screen
