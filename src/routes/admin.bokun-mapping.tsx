@@ -8,7 +8,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, Save, Check, ExternalLink, Search, AlertTriangle, Lock } from "lucide-react";
+import { RefreshCw, Save, Check, ExternalLink, Search, AlertTriangle, Lock, Download, Upload } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
@@ -229,16 +229,42 @@ function AdminBokunMappingPage() {
                 mapping when pushing reservations into Bokun.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={fetchBokun}
-              disabled={loadingBokun}
-              className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
-            >
-              <RefreshCw size={12} className={loadingBokun ? "animate-spin" : ""} />
-              {loadingBokun ? "Loading Bokun…" : "Refresh catalog"}
-            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={fetchBokun}
+                disabled={loadingBokun}
+                className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
+              >
+                <RefreshCw size={12} className={loadingBokun ? "animate-spin" : ""} />
+                {loadingBokun ? "Loading Bokun…" : "Refresh catalog"}
+              </button>
+              <button
+                type="button"
+                onClick={() => exportMappingsCsv(tours, mappings)}
+                className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)]"
+              >
+                <Download size={12} /> Export CSV
+              </button>
+              <label className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-2 text-xs hover:border-[color:var(--gold)] cursor-pointer">
+                <Upload size={12} /> Import CSV
+                <input
+                  type="file"
+                  accept=".csv,text/csv"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (!file) return;
+                    await importMappingsCsv(file, bokunItems ?? [], setMappings);
+                  }}
+                />
+              </label>
+            </div>
           </header>
+
+
+
 
           {bokunError && (
             <div className="mt-6 border border-red-400/40 bg-red-50 px-4 py-3 text-sm text-red-800">
@@ -552,3 +578,142 @@ function TourMappingRow({
     </div>
   );
 }
+
+/** CSV helpers — export current mappings and re-import to bulk-update. */
+function csvEscape(v: string | null | undefined): string {
+  const s = (v ?? "").toString();
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function exportMappingsCsv(
+  tours: SignatureTour[],
+  mappings: Record<string, Mapping>,
+) {
+  const header = ["tour_id", "tour_title", "bokun_product_id", "bokun_product_code", "bokun_title", "notes"];
+  const rows = tours.map((t) => {
+    const m = mappings[t.id];
+    return [
+      t.id,
+      t.title,
+      m?.bokun_product_id ?? "",
+      m?.bokun_product_code ?? "",
+      m?.bokun_title ?? "",
+      m?.notes ?? "",
+    ].map(csvEscape).join(",");
+  });
+  const csv = [header.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `bokun-mapping-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast.success(`Exported ${rows.length} rows`);
+}
+
+function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let cur: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQuotes = false;
+      else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ",") { cur.push(field); field = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (field.length || cur.length) { cur.push(field); rows.push(cur); cur = []; field = ""; }
+        if (c === "\r" && text[i + 1] === "\n") i++;
+      } else field += c;
+    }
+  }
+  if (field.length || cur.length) { cur.push(field); rows.push(cur); }
+  return rows.filter((r) => r.some((c) => c.trim().length));
+}
+
+async function importMappingsCsv(
+  file: File,
+  bokunItems: BokunItem[],
+  setMappings: React.Dispatch<React.SetStateAction<Record<string, Mapping>>>,
+) {
+  try {
+    const text = await file.text();
+    const rows = parseCsv(text);
+    if (!rows.length) { toast.error("Empty CSV"); return; }
+    const headerRow = rows[0].map((h) => h.trim().toLowerCase());
+    const idx = (name: string) => headerRow.indexOf(name);
+    const iTourId = idx("tour_id");
+    const iProductId = idx("bokun_product_id");
+    if (iTourId < 0 || iProductId < 0) {
+      toast.error("CSV needs at least tour_id and bokun_product_id columns");
+      return;
+    }
+    const iCode = idx("bokun_product_code");
+    const iTitle = idx("bokun_title");
+    const iNotes = idx("notes");
+
+    const upserts: Array<{
+      tour_id: string;
+      bokun_product_id: string;
+      bokun_title: string | null;
+      bokun_product_code: string | null;
+      currency: string;
+      notes: string | null;
+    }> = [];
+    const toDelete: string[] = [];
+
+    for (let r = 1; r < rows.length; r++) {
+      const row = rows[r];
+      const tourId = (row[iTourId] ?? "").trim();
+      if (!tourId) continue;
+      const productId = (row[iProductId] ?? "").trim();
+      if (!productId) { toDelete.push(tourId); continue; }
+      const match = bokunItems.find((it) => String(it.id) === productId);
+      upserts.push({
+        tour_id: tourId,
+        bokun_product_id: productId,
+        bokun_title: (iTitle >= 0 ? row[iTitle]?.trim() : "") || match?.title || null,
+        bokun_product_code: (iCode >= 0 ? row[iCode]?.trim() : "") || match?.productCode || null,
+        currency: match?.currency ?? "EUR",
+        notes: (iNotes >= 0 ? row[iNotes]?.trim() : "") || null,
+      });
+    }
+
+    let ok = 0;
+    if (upserts.length) {
+      const { error } = await supabase
+        .from("tour_bokun_mapping")
+        .upsert(upserts, { onConflict: "tour_id" });
+      if (error) { toast.error("Import failed: " + error.message); return; }
+      ok = upserts.length;
+    }
+    if (toDelete.length) {
+      await supabase.from("tour_bokun_mapping").delete().in("tour_id", toDelete);
+    }
+
+    setMappings((prev) => {
+      const next = { ...prev };
+      for (const u of upserts) {
+        next[u.tour_id] = {
+          tour_id: u.tour_id,
+          bokun_product_id: u.bokun_product_id,
+          bokun_title: u.bokun_title,
+          bokun_product_code: u.bokun_product_code,
+          notes: u.notes,
+        };
+      }
+      for (const id of toDelete) delete next[id];
+      return next;
+    });
+
+    toast.success(`Imported ${ok} mapping${ok === 1 ? "" : "s"}${toDelete.length ? ` · cleared ${toDelete.length}` : ""}`);
+  } catch (e) {
+    toast.error("Import error: " + (e instanceof Error ? e.message : String(e)));
+  }
+}
+
