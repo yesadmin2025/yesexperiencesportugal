@@ -1115,7 +1115,9 @@ function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
     }
   };
 
-  if (!open || dismissed) return null;
+  if (!open || dismissed) {
+    return <MountBadge name="ExitIntent" detail={dismissed ? "dismissed" : "armed (waiting for trigger)"} />;
+  }
 
   const message = journeyTitle
     ? `Hi YES — save my Signature in progress ("${journeyTitle}"). I'd like to confirm the investment with a curator before I commit.`
