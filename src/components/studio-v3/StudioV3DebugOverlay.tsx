@@ -86,10 +86,14 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
 
   if (!enabled) return null;
 
+  const vw = typeof window !== "undefined" ? window.innerWidth : 0;
+  const vh = typeof window !== "undefined" ? window.innerHeight : 0;
   const rows: Array<[string, string]> = [
     ["phase", state.phase],
+    ["viewport", `${vw}×${vh}`],
     ["composerHidden", composerHidden ? "true" : "false"],
     ["reaction", reactionActive ? "active" : "—"],
+    ["tourId", state.tourId || "—"],
     ["firstName", state.firstName || "—"],
     ["pathMode", state.pathMode || "—"],
     ["feeling", state.feeling || "—"],
