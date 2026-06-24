@@ -106,6 +106,10 @@ Deno.serve(async (req) => {
             availabilityCount: s.availabilityCount,
             enough_capacity: (s.availabilityCount ?? 1) >= guests,
             pricing_category: s.pricingCategories?.[0]?.title ?? null,
+            pricing_categories: (s.pricingCategories ?? []).map((c) => ({
+              id: c.id,
+              title: c.title,
+            })),
           })),
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
