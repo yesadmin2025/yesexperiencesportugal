@@ -223,8 +223,8 @@ const TOTAL_STEPS = 14;
 // there), valid transitions get silently dropped and the funnel dead-ends.
 const PHASE_ORDER: StudioV3Phase[] = [
   "intro",
-  "feeling",
   "who",
+  "feeling",
   "destination",
   "pickup",
   "guests",
