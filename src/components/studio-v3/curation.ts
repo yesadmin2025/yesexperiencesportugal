@@ -244,7 +244,7 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   "wine-food": ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo"],
   hidden: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
   romance: ["sintra-cascais", "arrabida-wine-allinclusive", "troia-comporta"],
-  family: ["sintra-cascais", "fatima-nazare-obidos", "troia-comporta"],
+  
   culture: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos"],
   adventure: ["arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
   "slow-luxury": ["arrabida-wine-allinclusive", "sintra-cascais", "evora-alentejo"],
