@@ -413,21 +413,53 @@ function AdminBookingsPage() {
   );
 }
 
+type BokunSlotPreview = {
+  id: number;
+  startTime: string;
+  date: string;
+  availabilityCount: number;
+  enough_capacity: boolean;
+  pricing_category: string | null;
+};
+
+type PreviewResult =
+  | { mapped: false }
+  | {
+      mapped: true;
+      bokun_product_id: string;
+      slot_count: number;
+      usable_count: number;
+      slots: BokunSlotPreview[];
+    }
+  | { error: string };
+
 function TestWebhookButton({ onDone }: { onDone: () => void }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [tourId, setTourId] = useState("arrabida-boat");
   const [dateExact, setDateExact] = useState(() =>
     new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
   );
   const [guests, setGuests] = useState(2);
   const [reallyBook, setReallyBook] = useState(false);
+  const [preview, setPreview] = useState<PreviewResult | null>(null);
 
-  async function run() {
-    setBusy(true);
+  // Invalidate preview when inputs change.
+  useEffect(() => {
+    setPreview(null);
+  }, [tourId, dateExact, guests]);
+
+  async function getToken() {
+    const { data: s } = await supabase.auth.getSession();
+    return s.session?.access_token ?? null;
+  }
+
+  async function checkAvailability() {
+    setChecking(true);
+    setPreview(null);
     try {
-      const { data: s } = await supabase.auth.getSession();
-      const token = s.session?.access_token;
+      const token = await getToken();
       if (!token) {
         toast.error("Not signed in");
         return;
@@ -435,10 +467,57 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/test-webhook-simulate`;
       const res = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          tour_id: tourId,
+          date_exact: dateExact,
+          guests,
+          check_only: true,
+        }),
+      });
+      const json = (await res.json()) as {
+        ok?: boolean;
+        mapped?: boolean;
+        bokun_product_id?: string;
+        slot_count?: number;
+        usable_count?: number;
+        slots?: BokunSlotPreview[];
+        error?: string;
+      };
+      if (!json.ok) {
+        setPreview({ error: json.error ?? "Unknown error" });
+        return;
+      }
+      if (!json.mapped) {
+        setPreview({ mapped: false });
+        return;
+      }
+      setPreview({
+        mapped: true,
+        bokun_product_id: json.bokun_product_id ?? "",
+        slot_count: json.slot_count ?? 0,
+        usable_count: json.usable_count ?? 0,
+        slots: json.slots ?? [],
+      });
+    } catch (e) {
+      setPreview({ error: e instanceof Error ? e.message : String(e) });
+    } finally {
+      setChecking(false);
+    }
+  }
+
+  async function run() {
+    setBusy(true);
+    try {
+      const token = await getToken();
+      if (!token) {
+        toast.error("Not signed in");
+        return;
+      }
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/test-webhook-simulate`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           tour_id: tourId,
           date_exact: dateExact,
@@ -463,6 +542,7 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
         }`,
       );
       setOpen(false);
+      setPreview(null);
       onDone();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : String(e));
@@ -470,6 +550,8 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
       setBusy(false);
     }
   }
+
+  const canRun = preview && "mapped" in preview && preview.mapped && preview.usable_count > 0;
 
   return (
     <>
@@ -483,16 +565,15 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
       {open && (
         <div
           className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-          onClick={() => !busy && setOpen(false)}
+          onClick={() => !busy && !checking && setOpen(false)}
         >
           <div
-            className="bg-[color:var(--ivory)] max-w-md w-full p-6 border border-[color:var(--border)]"
+            className="bg-[color:var(--ivory)] max-w-md w-full p-6 border border-[color:var(--border)] max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-xl">Simulate Stripe webhook</h2>
             <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">
-              Inserts a paid booking and runs the Bokun availability check exactly like the live
-              webhook would. By default, Bokun is queried in dry-run mode (no real reservation).
+              Step 1 — preview Bokun availability. Step 2 — run the simulation (dry run by default).
             </p>
             <div className="mt-4 space-y-3 text-sm">
               <label className="block">
@@ -522,24 +603,94 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
                   className="mt-1 w-full border border-[color:var(--border)] px-2 py-1.5 text-sm"
                 />
               </label>
-              <label className="flex items-start gap-2 text-xs">
-                <input
-                  type="checkbox"
-                  checked={reallyBook}
-                  onChange={(e) => setReallyBook(e.target.checked)}
-                  className="mt-0.5"
-                />
-                <span>
-                  <strong>Actually reserve in Bokun</strong> (creates a real booking — use only with
-                  a sandbox tour or be ready to cancel it manually).
-                </span>
-              </label>
             </div>
+
+            <button
+              type="button"
+              onClick={checkAvailability}
+              disabled={checking || busy}
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 border border-[color:var(--teal)] text-[color:var(--teal)] px-3 py-2 text-sm hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)] disabled:opacity-50"
+            >
+              <RefreshCw size={14} className={checking ? "animate-spin" : ""} />
+              {checking ? "Checking Bokun…" : "Check Bokun availability"}
+            </button>
+
+            {preview && (
+              <div className="mt-3 border border-[color:var(--border)] p-3 text-xs bg-[color:var(--sand)]">
+                {"error" in preview ? (
+                  <p className="text-red-700">
+                    <AlertTriangle size={11} className="inline mr-1" />
+                    {preview.error}
+                  </p>
+                ) : !preview.mapped ? (
+                  <p className="text-amber-800">
+                    <AlertTriangle size={11} className="inline mr-1" />
+                    No Bokun mapping for this tour ID. Booking will be created but Bokun push will
+                    be marked needs_review.
+                  </p>
+                ) : preview.slot_count === 0 ? (
+                  <p className="text-amber-800">
+                    <AlertTriangle size={11} className="inline mr-1" />
+                    No Bokun slots on {dateExact}. Try another date.
+                  </p>
+                ) : (
+                  <>
+                    <p className="font-medium text-[color:var(--charcoal)]">
+                      {preview.usable_count} of {preview.slot_count} slot
+                      {preview.slot_count === 1 ? "" : "s"} can fit {guests} guest
+                      {guests === 1 ? "" : "s"}
+                    </p>
+                    <ul className="mt-2 space-y-1">
+                      {preview.slots.map((s) => (
+                        <li
+                          key={s.id}
+                          className={`flex items-center justify-between gap-2 ${
+                            s.enough_capacity ? "text-[color:var(--charcoal)]" : "text-[color:var(--charcoal-soft)] line-through"
+                          }`}
+                        >
+                          <span>
+                            {s.startTime}
+                            {s.pricing_category ? ` · ${s.pricing_category}` : ""}
+                          </span>
+                          <span>{s.availabilityCount} seats</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {preview.usable_count === 1 && (
+                      <p className="mt-2 text-emerald-800">
+                        <CheckCircle2 size={11} className="inline mr-1" />
+                        Single matching slot — webhook would auto-confirm.
+                      </p>
+                    )}
+                    {preview.usable_count > 1 && (
+                      <p className="mt-2 text-amber-800">
+                        Multiple slots — webhook marks needs_review for manual pick.
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            <label className="mt-4 flex items-start gap-2 text-xs">
+              <input
+                type="checkbox"
+                checked={reallyBook}
+                onChange={(e) => setReallyBook(e.target.checked)}
+                disabled={!canRun}
+                className="mt-0.5"
+              />
+              <span className={!canRun ? "text-[color:var(--charcoal-soft)]" : ""}>
+                <strong>Actually reserve in Bokun</strong> (creates a real booking — only enabled
+                when preview shows exactly one matching slot).
+              </span>
+            </label>
+
             <div className="mt-5 flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                disabled={busy}
+                disabled={busy || checking}
                 className="px-3 py-2 text-sm border border-[color:var(--border)] hover:border-[color:var(--gold)] disabled:opacity-50"
               >
                 Cancel
@@ -547,10 +698,10 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
               <button
                 type="button"
                 onClick={run}
-                disabled={busy}
+                disabled={busy || checking}
                 className="px-3 py-2 text-sm bg-[color:var(--charcoal)] text-[color:var(--ivory)] hover:bg-black disabled:opacity-50"
               >
-                {busy ? "Simulating…" : "Run simulation"}
+                {busy ? "Simulating…" : preview ? "Run simulation" : "Skip preview & run"}
               </button>
             </div>
           </div>
@@ -558,5 +709,6 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
       )}
     </>
   );
+
 }
 
