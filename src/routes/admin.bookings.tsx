@@ -567,7 +567,12 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
     }
   }
 
-  const canRun = preview && "mapped" in preview && preview.mapped && preview.usable_count > 0;
+  const previewMapped = preview && "mapped" in preview && preview.mapped ? preview : null;
+  const selectedSlot = previewMapped?.slots.find((s) => s.id === selectedSlotId) ?? null;
+  const selectedSlotCats = selectedSlot?.pricing_categories ?? [];
+  const needsCatPick = selectedSlotCats.length > 1 && selectedCatId == null;
+  const canRun =
+    !!previewMapped && previewMapped.usable_count > 0 && selectedSlotId != null && !needsCatPick;
 
   return (
     <>
