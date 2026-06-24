@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
 
   try {
     // Activity search — returns paginated list of all activities in the vendor account.
-    const data = await bokunFetch("/activity.json/search?lang=EN&currency=EUR", "POST", {});
+    const data = await bokunFetch("/activity.json/search?lang=EN&currency=EUR", "POST", { textFilter: "", currency: "EUR" });
 
     const items =
       (data?.items ?? []).map((it: Record<string, unknown>) => ({
