@@ -26,6 +26,7 @@ import {
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
@@ -327,6 +328,11 @@ export function SignaturePriceCard({
       className="mx-auto mt-10 w-full max-w-[460px] px-5"
       aria-label="Your Signature — investment"
     >
+      <MountBadge
+        name="SignaturePriceCard"
+        detail={`tour=${tour?.id ?? "—"} · price=${priceEur ?? "—"}€ · src=${priceSource}`}
+        tone={hasPrice ? "ok" : "warn"}
+      />
       {/* Reveal stagger — premium sequenced entrance. Direct children of
           the inner card fade up one beat at a time. Disabled under
           prefers-reduced-motion. */}
@@ -945,6 +951,8 @@ export function SignaturePriceCard({
 
         {/* Trust strip — discreet, reduces hesitation right before the CTA. */}
         {hasPrice ? (
+          <>
+            <MountBadge name="TrustStrip" detail="rendered (hasPrice=true)" />
           <div
             data-testid="studio-v3-trust-strip"
             className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
@@ -965,6 +973,7 @@ export function SignaturePriceCard({
               Free cancellation 48h
             </span>
           </div>
+          </>
         ) : null}
 
         <div ref={ctaRef} className="mt-4 flex flex-col items-center gap-2.5">
@@ -1106,7 +1115,9 @@ function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
     }
   };
 
-  if (!open || dismissed) return null;
+  if (!open || dismissed) {
+    return <MountBadge name="ExitIntent" detail={dismissed ? "dismissed" : "armed (waiting for trigger)"} />;
+  }
 
   const message = journeyTitle
     ? `Hi YES — save my Signature in progress ("${journeyTitle}"). I'd like to confirm the investment with a curator before I commit.`

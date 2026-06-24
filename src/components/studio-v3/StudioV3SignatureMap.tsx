@@ -26,6 +26,7 @@ import {
 } from "@/lib/studio/timing";
 import type { StopKind } from "@/data/regionStops";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
+import { MountBadge } from "./useStudioDebug";
 
 export interface StudioV3SignatureMapDetailedStop {
   label: string;
@@ -403,6 +404,11 @@ export function StudioV3SignatureMap({
   };
 
   return (
+    <>
+      <MountBadge
+        name="StudioV3SignatureMap"
+        detail={`mode=${geo ? "geographic" : "schematic"} · stops=${stops.length}${silhouetteRegion ? ` · silhouette=${silhouetteRegion}` : ""}`}
+      />
     <div
       role="img"
       aria-label={a11y}
@@ -1006,6 +1012,7 @@ export function StudioV3SignatureMap({
         }
       `}</style>
     </div>
+    </>
   );
 }
 
