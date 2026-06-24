@@ -86,13 +86,13 @@ function Page() {
             )}
           </div>
           <aside className="space-y-7">
-            <Info icon={<Mail size={16} />} label="Email" value="hello@yesexperiences.pt" />
-            <Info icon={<Phone size={16} />} label="Phone" value="+351 910 000 000" />
+            <Info icon={<Mail size={16} />} label="Email" value="info@yesexperiences.pt" />
+            <Info icon={<Phone size={16} />} label="Phone" value="+351 911 889 992" />
             <Info
               icon={<MapPin size={16} />}
               label="Find us"
               value="YES experiences Portugal on Google Maps"
-              href="https://share.google/7bTnRlabRJhLWACvE"
+              href="https://www.google.com/maps?cid=03208810033820295776"
             />
             <div className="gold-divider" />
             <p className="serif italic text-lg text-[color:var(--teal)]">
