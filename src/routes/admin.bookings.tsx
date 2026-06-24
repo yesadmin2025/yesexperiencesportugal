@@ -8,7 +8,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, ExternalLink, AlertTriangle, CheckCircle2, Filter } from "lucide-react";
+import { RefreshCw, ExternalLink, AlertTriangle, CheckCircle2, Filter, Beaker } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
