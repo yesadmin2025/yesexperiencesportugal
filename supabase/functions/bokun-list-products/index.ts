@@ -70,12 +70,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // Activity search — returns paginated list of all activities in the vendor account.
-    const data = await bokunFetch(
-      "/activity.json/search?lang=EN&currency=EUR",
-      "POST",
-      { textFilter: "", productCategories: [], cityIds: [], countryCodes: [] },
-    );
+    // Try a simple GET first to confirm auth works end-to-end
+    const data = await bokunFetch("/activity.json/list?lang=EN&currency=EUR", "GET");
 
     const items =
       (data?.items ?? []).map((it: Record<string, unknown>) => ({
