@@ -951,6 +951,8 @@ export function SignaturePriceCard({
 
         {/* Trust strip — discreet, reduces hesitation right before the CTA. */}
         {hasPrice ? (
+          <>
+            <MountBadge name="TrustStrip" detail="rendered (hasPrice=true)" />
           <div
             data-testid="studio-v3-trust-strip"
             className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
