@@ -142,10 +142,34 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
 
     const seenPhases = await walkToReveal(page);
 
-    // Full questionnaire coverage — language must have been reached.
+    // Questionnaire coverage — every CANONICAL builder phase must appear.
+    // Note: occasion / considerations / language are intentionally skipped
+    // in the builder funnel (`isPhaseRelevant` in curation.ts) — they
+    // belong to the human confirmation step after Reveal, not the cinematic
+    // builder. The product decision is documented at curation.ts:1828-1834.
     // eslint-disable-next-line no-console
     console.log("[anchor-spec] phases seen:", Array.from(seenPhases).join(" → "));
-    expect(seenPhases.has("language"), "language phase must appear in the funnel").toBe(true);
+    const requiredPhases = [
+      "feeling",
+      "who",
+      "destination",
+      "pickup",
+      "investment",
+      "interests",
+      "rhythm",
+      "date",
+      "map",
+    ];
+    for (const p of requiredPhases) {
+      expect(seenPhases.has(p), `builder phase "${p}" must appear in the funnel`).toBe(true);
+    }
+    for (const skipped of ["occasion", "considerations", "language"]) {
+      expect(
+        seenPhases.has(skipped),
+        `phase "${skipped}" is intentionally skipped in builder (see curation.isPhaseRelevant)`,
+      ).toBe(false);
+    }
+
 
     const reveal = page.locator('[data-testid="studio-v3-reveal"]').first();
     await expect(reveal).toBeVisible({ timeout: 10_000 });
