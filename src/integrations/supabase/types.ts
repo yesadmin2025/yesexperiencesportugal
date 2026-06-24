@@ -1444,6 +1444,39 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_bokun_mapping: {
+        Row: {
+          bokun_product_code: string | null
+          bokun_product_id: string
+          bokun_title: string | null
+          created_at: string
+          currency: string | null
+          notes: string | null
+          tour_id: string
+          updated_at: string
+        }
+        Insert: {
+          bokun_product_code?: string | null
+          bokun_product_id: string
+          bokun_title?: string | null
+          created_at?: string
+          currency?: string | null
+          notes?: string | null
+          tour_id: string
+          updated_at?: string
+        }
+        Update: {
+          bokun_product_code?: string | null
+          bokun_product_id?: string
+          bokun_title?: string | null
+          created_at?: string
+          currency?: string | null
+          notes?: string | null
+          tour_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tour_price_tiers: {
         Row: {
           tiers: Json
