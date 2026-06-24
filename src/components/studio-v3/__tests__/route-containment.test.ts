@@ -37,7 +37,6 @@ const FEELINGS: Feeling[] = [
   "wine-food",
   "hidden",
   "romance",
-  "family",
   "culture",
   "adventure",
   "slow-luxury",

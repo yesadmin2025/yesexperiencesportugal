@@ -6,7 +6,6 @@ export type Feeling =
   | "wine-food"
   | "hidden"
   | "romance"
-  | "family"
   | "culture"
   | "adventure"
   | "slow-luxury";
@@ -230,7 +229,6 @@ export const FEELINGS: ChoiceOption<Feeling>[] = [
   { id: "wine-food", label: "Wine & food", whisper: "Long tables, slow afternoons." },
   { id: "hidden", label: "Hidden Portugal", whisper: "Quiet roads, unwritten places." },
   { id: "romance", label: "Romance", whisper: "Stolen views, the two of you." },
-  { id: "family", label: "Family time", whisper: "Easy days, real laughter." },
   { id: "culture", label: "Culture & heritage", whisper: "Stones, stories, centuries." },
   { id: "adventure", label: "Adventure", whisper: "Cliffs, currents, open horizons." },
   { id: "slow-luxury", label: "Slow luxury", whisper: "Few stops, deeply lived." },

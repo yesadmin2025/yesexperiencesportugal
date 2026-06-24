@@ -128,7 +128,7 @@ describe("Phase 7A — bespoke does not shrink the route", () => {
 describe("Phase 7A — family/nature/slow keeps substance", () => {
   it("family + nature + slow + considered does not collapse to 2 stops", () => {
     const route = resolveStudioV3Route({
-      feeling: "family",
+      feeling: "coastal",
       companions: "family",
       rhythm: "slow",
       interests: ["nature"],

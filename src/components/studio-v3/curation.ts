@@ -121,7 +121,6 @@ const FEELING_THEME: Record<Feeling, string> = {
   "wine-food": "wine and table",
   hidden: "hidden",
   romance: "romantic",
-  family: "family",
   culture: "heritage",
   adventure: "Atlantic",
   "slow-luxury": "slow",
@@ -245,7 +244,7 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   "wine-food": ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo"],
   hidden: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
   romance: ["sintra-cascais", "arrabida-wine-allinclusive", "troia-comporta"],
-  family: ["sintra-cascais", "fatima-nazare-obidos", "troia-comporta"],
+  
   culture: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos"],
   adventure: ["arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
   "slow-luxury": ["arrabida-wine-allinclusive", "sintra-cascais", "evora-alentejo"],
@@ -387,7 +386,7 @@ const FEELING_KEYWORDS: Record<Feeling, string[]> = {
     "view",
     "stroll",
   ],
-  family: ["family", "easy", "boat", "beach", "workshop", "swim", "snorkel", "garden", "village"],
+  
   culture: [
     "palace",
     "convent",
@@ -941,7 +940,6 @@ export function curateJourney(
   const allowTwoStop =
     rhythm === "slow" &&
     (companions === "solo" || companions === "couple" || companions === "proposal") &&
-    feeling !== "family" &&
     !interests.includes("nature");
   const minStops = allowTwoStop ? 2 : 3;
   const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
@@ -1796,13 +1794,45 @@ export function filterCompanions(
   // simply drops corporate. Other feelings keep the full set.
   const HIDE: Partial<Record<Feeling, ReadonlyArray<Companions>>> = {
     romance: ["corporate", "family", "friends", "solo"],
-    family: ["proposal", "corporate"],
+    
     adventure: ["proposal", "corporate"],
     "slow-luxury": ["corporate"],
   };
   const hidden = new Set<Companions>(HIDE[feeling] ?? []);
   return options.filter((o) => !hidden.has(o.id));
 }
+
+/**
+ * filterFeelings — when companions is chosen first (per Brand Bible
+ * group-type-first ordering), hide moods that read as illogical for the
+ * selected travel party. Keeps the list tight (≤6) and removes the
+ * "wait, that doesn't fit me" friction that hurts conversion.
+ *
+ *   solo        → hide romance (reads as for-two)
+ *   couple      → hide adventure only if list still has ≥5 options (no-op here)
+ *   family      → hide romance, slow-luxury (atmosphere doesn't fit kids)
+ *   proposal    → hide adventure, hidden (keep cinematic / romantic moods)
+ *   corporate   → hide romance, hidden, adventure (keep refined moods)
+ *   celebration → keep all
+ *   friends     → hide romance
+ */
+export function filterFeelings(
+  options: ReadonlyArray<ChoiceOption<Feeling>>,
+  companions: Companions | null,
+): ChoiceOption<Feeling>[] {
+  if (!companions) return [...options];
+  const HIDE: Partial<Record<Companions, ReadonlyArray<Feeling>>> = {
+    solo: ["romance"],
+    family: ["romance", "slow-luxury"],
+    proposal: ["adventure", "hidden"],
+    corporate: ["romance", "hidden", "adventure"],
+    friends: ["romance"],
+  };
+  const hidden = new Set<Feeling>(HIDE[companions] ?? []);
+  return options.filter((o) => !hidden.has(o.id));
+}
+
+
 
 /**
  * filterDestinationIntents — drop redundant low-commitment options.
@@ -1866,8 +1896,8 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 // only appear at the final Reveal.
 const LINEAR_ORDER: StudioV3Phase[] = [
   "intro",
-  "feeling",
   "who",
+  "feeling",
   "destination",
   "pickup",
   "guests",

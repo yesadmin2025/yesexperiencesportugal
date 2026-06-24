@@ -45,6 +45,7 @@ import {
   composeSuggestedRoute,
   customerStopBlurb,
   filterCompanions,
+  filterFeelings,
   filterConsiderations,
   filterDestinationIntents,
   filterInterests,
@@ -223,8 +224,8 @@ const TOTAL_STEPS = 14;
 // there), valid transitions get silently dropped and the funnel dead-ends.
 const PHASE_ORDER: StudioV3Phase[] = [
   "intro",
-  "feeling",
   "who",
+  "feeling",
   "destination",
   "pickup",
   "guests",
@@ -252,19 +253,23 @@ function prevPhase(phase: StudioV3Phase): StudioV3Phase | null {
  *  choosing a different answer feels distinct, not robotic. */
 const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   intro: [""],
+  who: [
+    "Next, the mood of the day",
+    "Next, the feeling we shape around you",
+    "Next, how Portugal should feel",
+  ],
   feeling: [
-    "Next, a direction begins to emerge",
     "Next, where Portugal calls you",
+    "Next, a direction begins to emerge",
     "Next, the region takes shape",
   ],
-  destination: ["Next, the company", "Next, who joins you", "Next, your travellers"],
-  who: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
+  destination: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
-  date: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
+  date: ["Next, we choose the route", "Next, the map awakens", "Next, the journey forms"],
   pickup: ["Next, the party size", "Next, your group", "Next, how many guests"],
-  guests: ["Next, the shape of the day", "Next, the comfort", "Next, how it's held"],
+  guests: ["Next, the investment", "Next, the comfort", "Next, how it's held"],
   interests: ["Next, we refine the rhythm", "Next, the pace", "Next, how it flows"],
-  rhythm: ["Next, the care", "Next, the details", "Next, what matters most"],
+  rhythm: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
   considerations: ["Next, the voice", "Next, your language", "Next, how you hear it"],
   language: ["Next, the route takes shape", "Next, the map awakens", "Next, the journey forms"],
   investment: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
@@ -298,7 +303,6 @@ function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
         return "Next, the route moves toward open air.";
       if (feeling === "slow-luxury") return "Next, we keep the rhythm spacious.";
       if (feeling === "romance") return "Next, we shape the beginning for two.";
-      if (feeling === "family") return "Next, we make the day easy for everyone.";
       break;
     }
     case "who": {
@@ -368,8 +372,6 @@ function feelingReactionMessage(id: Feeling): string {
       return "Long tables, local bottles, and time to stay.\nThe day begins around the table.";
     case "romance":
       return "Soft light, slower moves, and space for two.\nThe day begins quietly.";
-    case "family":
-      return "Easy timing, real laughter, and space for everyone.\nThe day begins gently.";
     case "hidden":
       return "Quiet roads, small doors, places that do not perform.\nThe route begins away from the obvious.";
     case "adventure":
@@ -1448,7 +1450,7 @@ export function StudioV3() {
           ? ["wellness", "gastronomy", "wine"]
           : state.feeling === "culture"
             ? ["heritage", "local-life", "photography"]
-            : state.feeling === "family"
+            : isFamily
               ? ["nature", "coast", "local-life"]
               : [];
 
@@ -1633,7 +1635,7 @@ export function StudioV3() {
       <StudioV3Intro
         onComplete={(name, pathMode) => {
           setState((s) => ({ ...s, firstName: name, pathMode }));
-          advance("feeling");
+          advance("who");
         }}
       />
     );
@@ -1664,7 +1666,7 @@ export function StudioV3() {
       />
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
-      <CloseStudio hasProgress={state.phase !== "feeling"} />
+      <CloseStudio hasProgress={state.phase !== "who"} />
       {chromeReady ? (
         <StudioV3ProgressStepper
           phase={state.phase}
@@ -1695,7 +1697,7 @@ export function StudioV3() {
             title="How would you like"
             titleAccent="Portugal to feel?"
           />
-          <ChoiceGrid options={FEELINGS} value={state.feeling} onSelect={onFeeling} />
+          <ChoiceGrid options={filterFeelings(FEELINGS, state.companions)} value={state.feeling} onSelect={onFeeling} />
           {state.feeling ? (
             <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (

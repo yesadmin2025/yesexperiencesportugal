@@ -63,9 +63,9 @@ function scoreAxes(
       s.atmosphere += 3;
       s.indulgence += 1;
       break;
-    case "family":
-      s.atmosphere += 1;
-      s.adventure += 1;
+    case "slow-luxury":
+      s.atmosphere += 2;
+      s.indulgence += 2;
       break;
     case "culture":
       s.culture += 3;
