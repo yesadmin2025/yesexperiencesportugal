@@ -8,7 +8,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, Save, Check, ExternalLink, Search, AlertTriangle, Lock } from "lucide-react";
+import { RefreshCw, Save, Check, ExternalLink, Search, AlertTriangle, Lock, Download, Upload } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
