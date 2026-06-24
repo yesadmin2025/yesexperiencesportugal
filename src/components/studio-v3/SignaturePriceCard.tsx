@@ -328,6 +328,11 @@ export function SignaturePriceCard({
       className="mx-auto mt-10 w-full max-w-[460px] px-5"
       aria-label="Your Signature — investment"
     >
+      <MountBadge
+        name="SignaturePriceCard"
+        detail={`tour=${tour?.id ?? "—"} · price=${priceEur ?? "—"}€ · src=${priceSource}`}
+        tone={hasPrice ? "ok" : "warn"}
+      />
       {/* Reveal stagger — premium sequenced entrance. Direct children of
           the inner card fade up one beat at a time. Disabled under
           prefers-reduced-motion. */}
