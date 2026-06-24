@@ -43,10 +43,23 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
   const ready = imgReady || videoReady;
   return (
     <div
-      className="relative w-full h-full flex items-center justify-center px-6"
+      className="relative w-full h-full flex items-center justify-center px-6 overflow-hidden"
       data-testid="studio-v3-atmosphere-beat"
       data-has-video={videoSrc ? "true" : "false"}
     >
+      {/* Scoped Ken Burns keyframes — slow, restrained pan/scale so the
+          canvas breathes under each beat without distracting from copy.
+          Disabled by prefers-reduced-motion via the utility class below. */}
+      <style>{`
+        @keyframes sv3KenBurns {
+          0%   { transform: scale(1.04) translate3d(0,0,0); }
+          100% { transform: scale(1.10) translate3d(-1.2%, -0.8%, 0); }
+        }
+        .sv3-kenburns { animation: sv3KenBurns 18s ease-out both; transform-origin: 50% 52%; will-change: transform; }
+        @media (prefers-reduced-motion: reduce) {
+          .sv3-kenburns { animation: none !important; transform: none !important; }
+        }
+      `}</style>
       {/* Poster layer — JPG behind the video so users see something
           premium before the clip first frame paints. */}
       {imageSrc ? (
@@ -56,7 +69,7 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
           aria-hidden
           onLoad={() => setImgReady(true)}
           onError={() => setImgReady(true)}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover sv3-kenburns"
           style={{
             filter: "saturate(0.92) contrast(1.04) brightness(0.6)",
             opacity: imgReady ? 1 : 0,
@@ -76,7 +89,7 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
           preload="auto"
           onCanPlay={() => setVideoReady(true)}
           onError={() => setVideoReady(true)}
-          className="absolute inset-0 w-full h-full object-cover motion-reduce:hidden"
+          className="absolute inset-0 w-full h-full object-cover motion-reduce:hidden sv3-kenburns"
           style={{
             filter: "saturate(0.85) contrast(1.04) brightness(0.62)",
             opacity: videoReady ? 1 : 0,
