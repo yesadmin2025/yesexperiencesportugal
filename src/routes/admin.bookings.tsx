@@ -446,10 +446,14 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
   const [guests, setGuests] = useState(2);
   const [reallyBook, setReallyBook] = useState(false);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
+  const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
+  const [selectedCatId, setSelectedCatId] = useState<number | null>(null);
 
   // Invalidate preview when inputs change.
   useEffect(() => {
     setPreview(null);
+    setSelectedSlotId(null);
+    setSelectedCatId(null);
   }, [tourId, dateExact, guests]);
 
   async function getToken() {
