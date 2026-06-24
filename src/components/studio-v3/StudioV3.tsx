@@ -163,6 +163,8 @@ const INTEREST_IMAGE: Record<string, string> = {
 };
 
 import {
+  STUDIO_SCENE_CLIPS,
+  preloadStudioClips,
   videoForCompanions,
   videoForDestination,
   videoForFeeling,
@@ -784,6 +786,21 @@ export function StudioV3() {
       window.removeEventListener("visibilitychange", onHide);
       window.removeEventListener("pagehide", onHide);
     };
+  }, [state.phase]);
+
+  // Batch C — clip preloading. Warm the HTTP cache for the most-likely scene
+  // clips once the traveller leaves the intro so AtmosphereBeats fade in fully
+  // buffered. Idempotent + reduced-motion safe (handled inside the helper).
+  useEffect(() => {
+    if (state.phase === "intro") return;
+    preloadStudioClips([
+      STUDIO_SCENE_CLIPS.viewpoint,
+      STUDIO_SCENE_CLIPS.coast,
+      STUDIO_SCENE_CLIPS.hiddenCove,
+      STUDIO_SCENE_CLIPS.localTable,
+      STUDIO_SCENE_CLIPS.route,
+      STUDIO_SCENE_CLIPS.celebration,
+    ]);
   }, [state.phase]);
 
   const advance = useCallback((next: StudioV3Phase) => {
