@@ -747,8 +747,8 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
                 className="mt-0.5"
               />
               <span className={!canRun ? "text-[color:var(--charcoal-soft)]" : ""}>
-                <strong>Actually reserve in Bokun</strong> (creates a real booking — only enabled
-                when preview shows exactly one matching slot).
+                <strong>Actually reserve in Bokun</strong> (creates a real booking — enabled once a
+                slot {selectedSlotCats.length > 1 ? "and pricing category " : ""}is selected).
               </span>
             </label>
 
