@@ -53,6 +53,7 @@ import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
+import { Route as AdminBokunMappingRouteImport } from './routes/admin.bokun-mapping'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
@@ -277,6 +278,11 @@ const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
   path: '/admin/builder-images',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBokunMappingRoute = AdminBokunMappingRouteImport.update({
+  id: '/admin/bokun-mapping',
+  path: '/admin/bokun-mapping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   id: '/admin/ai-audit',
   path: '/admin/ai-audit',
@@ -317,6 +323,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
+  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -366,6 +373,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
+  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -416,6 +424,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
+  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -467,6 +476,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
+    | '/admin/bokun-mapping'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/drift-behavior'
@@ -516,6 +526,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
+    | '/admin/bokun-mapping'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/drift-behavior'
@@ -565,6 +576,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/admin/ai-audit'
+    | '/admin/bokun-mapping'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/drift-behavior'
@@ -615,6 +627,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
+  AdminBokunMappingRoute: typeof AdminBokunMappingRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
@@ -948,6 +961,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBuilderImagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/bokun-mapping': {
+      id: '/admin/bokun-mapping'
+      path: '/admin/bokun-mapping'
+      fullPath: '/admin/bokun-mapping'
+      preLoaderRoute: typeof AdminBokunMappingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/ai-audit': {
       id: '/admin/ai-audit'
       path: '/admin/ai-audit'
@@ -1032,6 +1052,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
+  AdminBokunMappingRoute: AdminBokunMappingRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
