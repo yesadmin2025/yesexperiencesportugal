@@ -163,6 +163,8 @@ const INTEREST_IMAGE: Record<string, string> = {
 };
 
 import {
+  STUDIO_SCENE_CLIPS,
+  preloadStudioClips,
   videoForCompanions,
   videoForDestination,
   videoForFeeling,
