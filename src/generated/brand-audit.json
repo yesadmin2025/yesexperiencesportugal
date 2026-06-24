@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-24T16:22:49.012Z",
-  "filesScanned": 410,
+  "generatedAt": "2026-06-24T17:51:32.894Z",
+  "filesScanned": 411,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 241,
+    "total": 244,
     "approved": 61,
     "allowlisted": 29,
-    "mismatch": 151
+    "mismatch": 154
   },
   "findings": [
     {
@@ -1484,7 +1484,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
-      "line": 193,
+      "line": 200,
       "col": 70,
       "raw": "#FF8A8A",
       "normalized": "#ff8a8a",
@@ -1492,8 +1492,26 @@
       "status": "mismatch"
     },
     {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 233,
+      "col": 24,
+      "raw": "#7FE3A1",
+      "normalized": "#7fe3a1",
+      "snippet": "color = \"#7FE3A1\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 237,
+      "col": 24,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": "color = \"#FF8A8A\";",
+      "status": "mismatch"
+    },
+    {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 413,
+      "line": 419,
       "col": 43,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1502,7 +1520,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 530,
+      "line": 536,
       "col": 50,
       "raw": "#050d0f",
       "normalized": "#050d0f",
@@ -1511,7 +1529,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 582,
+      "line": 588,
       "col": 82,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1520,7 +1538,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 707,
+      "line": 713,
       "col": 76,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1529,7 +1547,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 717,
+      "line": 723,
       "col": 47,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1538,7 +1556,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 759,
+      "line": 765,
       "col": 222,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1547,7 +1565,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 839,
+      "line": 845,
       "col": 44,
       "raw": "#050d0f",
       "normalized": "#050d0f",
@@ -1556,7 +1574,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
-      "line": 935,
+      "line": 941,
       "col": 74,
       "raw": "#050d0f",
       "normalized": "#050d0f",
@@ -1598,6 +1616,15 @@
       "normalized": "#ffffff",
       "snippet": "style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}",
       "status": "allowlisted"
+    },
+    {
+      "file": "src/components/studio-v3/useStudioDebug.tsx",
+      "line": 103,
+      "col": 37,
+      "raw": "#FFB060",
+      "normalized": "#ffb060",
+      "snippet": "const accent = tone === \"warn\" ? \"#FFB060\" : \"var(--gold)\";",
+      "status": "mismatch"
     },
     {
       "file": "src/lib/brand-tokens.test.ts",
