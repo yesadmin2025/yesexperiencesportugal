@@ -1830,6 +1830,9 @@ export function filterFeelings(
   };
   const hidden = new Set<Feeling>(HIDE[companions] ?? []);
   return options.filter((o) => !hidden.has(o.id));
+}
+
+
 
 /**
  * filterDestinationIntents — drop redundant low-commitment options.
