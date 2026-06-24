@@ -386,7 +386,7 @@ const FEELING_KEYWORDS: Record<Feeling, string[]> = {
     "view",
     "stroll",
   ],
-  family: ["family", "easy", "boat", "beach", "workshop", "swim", "snorkel", "garden", "village"],
+  
   culture: [
     "palace",
     "convent",
