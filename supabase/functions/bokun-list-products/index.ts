@@ -32,7 +32,6 @@ async function bokunSignature(
 }
 
 function bokunDate(): string {
-  // Format: yyyy-MM-dd HH:mm:ss in UTC
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
@@ -47,7 +46,6 @@ async function bokunFetch(path: string, method = "GET", body?: unknown) {
   if (!accessKey || !secretKey) throw new Error("Bokun keys not configured");
 
   const date = bokunDate();
-  // Bokun signs the full path including query string
   const signature = await bokunSignature(secretKey, date, accessKey, method, path);
 
   const headers: Record<string, string> = {
@@ -65,7 +63,7 @@ async function bokunFetch(path: string, method = "GET", body?: unknown) {
 
   const text = await res.text();
   if (!res.ok) {
-    throw new Error(`Bokun ${method} ${path} → ${res.status}: ${text} :: sent body=${bodyStr ?? "<none>"}`);
+    throw new Error(`Bokun ${method} ${path} → ${res.status}: ${text}`);
   }
   return text ? JSON.parse(text) : null;
 }
@@ -74,20 +72,35 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const data = await bokunFetch("/activity.json/search?lang=EN&currency=EUR", "POST", {});
+    // Page through all activities (Bokun returns ~20/page).
+    const all: Array<Record<string, unknown>> = [];
+    let pageNum = 1;
+    const maxPages = 20;
+    while (pageNum <= maxPages) {
+      const data = await bokunFetch(
+        `/activity.json/search?lang=EN&currency=EUR`,
+        "POST",
+        { pageSize: 50, page: pageNum },
+      );
+      const items = (data?.items ?? []) as Array<Record<string, unknown>>;
+      if (!items.length) break;
+      all.push(...items);
+      const totalHits = Number(data?.totalHits ?? 0);
+      if (all.length >= totalHits) break;
+      pageNum++;
+    }
 
-    const items =
-      (data?.items ?? []).map((it: Record<string, unknown>) => ({
-        id: it.id,
-        title: it.title,
-        productCode: it.productCode ?? null,
-        durationText: it.durationText ?? null,
-        currency: it.currency ?? null,
-        nextDefaultPrice: it.nextDefaultPrice ?? null,
-      })) ?? [];
+    const items = all.map((it) => ({
+      id: it.id,
+      title: it.title,
+      productCode: it.productCode ?? null,
+      durationText: it.durationText ?? null,
+      currency: it.currency ?? null,
+      nextDefaultPrice: it.nextDefaultPrice ?? null,
+    }));
 
     return new Response(
-      JSON.stringify({ count: items.length, items }, null, 2),
+      JSON.stringify({ count: items.length, items }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
