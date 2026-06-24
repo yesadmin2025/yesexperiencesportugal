@@ -26,6 +26,7 @@ import {
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
