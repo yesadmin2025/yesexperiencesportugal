@@ -1665,7 +1665,7 @@ export function StudioV3() {
       />
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
-      <CloseStudio hasProgress={state.phase !== "feeling"} />
+      <CloseStudio hasProgress={state.phase !== "who"} />
       {chromeReady ? (
         <StudioV3ProgressStepper
           phase={state.phase}
