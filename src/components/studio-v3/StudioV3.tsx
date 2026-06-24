@@ -1630,7 +1630,7 @@ export function StudioV3() {
       <StudioV3Intro
         onComplete={(name, pathMode) => {
           setState((s) => ({ ...s, firstName: name, pathMode }));
-          advance("feeling");
+          advance("who");
         }}
       />
     );
