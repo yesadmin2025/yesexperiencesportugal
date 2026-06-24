@@ -1445,7 +1445,7 @@ export function StudioV3() {
           ? ["wellness", "gastronomy", "wine"]
           : state.feeling === "culture"
             ? ["heritage", "local-life", "photography"]
-            : state.feeling === "family"
+            : isFamily
               ? ["nature", "coast", "local-life"]
               : [];
 
