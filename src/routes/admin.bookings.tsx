@@ -498,13 +498,21 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
         setPreview({ mapped: false });
         return;
       }
+      const slots = json.slots ?? [];
       setPreview({
         mapped: true,
         bokun_product_id: json.bokun_product_id ?? "",
         slot_count: json.slot_count ?? 0,
         usable_count: json.usable_count ?? 0,
-        slots: json.slots ?? [],
+        slots,
       });
+      // Auto-select when exactly one usable slot exists.
+      const usable = slots.filter((s) => s.enough_capacity);
+      if (usable.length === 1) {
+        setSelectedSlotId(usable[0].id);
+        const cats = usable[0].pricing_categories ?? [];
+        if (cats.length === 1) setSelectedCatId(cats[0].id);
+      }
     } catch (e) {
       setPreview({ error: e instanceof Error ? e.message : String(e) });
     } finally {
