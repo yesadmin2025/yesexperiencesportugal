@@ -367,8 +367,6 @@ function feelingReactionMessage(id: Feeling): string {
       return "Long tables, local bottles, and time to stay.\nThe day begins around the table.";
     case "romance":
       return "Soft light, slower moves, and space for two.\nThe day begins quietly.";
-    case "family":
-      return "Easy timing, real laughter, and space for everyone.\nThe day begins gently.";
     case "hidden":
       return "Quiet roads, small doors, places that do not perform.\nThe route begins away from the obvious.";
     case "adventure":
