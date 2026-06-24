@@ -61,6 +61,8 @@ interface Props {
 export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: Props) {
   const [enabled, setEnabled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const mounted = useMountRegistry();
+  const mountedNames = new Set(mounted.map((m) => m.name));
 
   useEffect(() => {
     setEnabled(readInitialEnabled());
