@@ -940,7 +940,6 @@ export function curateJourney(
   const allowTwoStop =
     rhythm === "slow" &&
     (companions === "solo" || companions === "couple" || companions === "proposal") &&
-    companions !== "family" &&
     !interests.includes("nature");
   const minStops = allowTwoStop ? 2 : 3;
   const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
