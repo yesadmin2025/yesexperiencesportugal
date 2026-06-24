@@ -238,6 +238,18 @@ export function SignaturePriceCard({
     });
   }, [tour, priceEur, effectiveOverrides]);
 
+  // Batch C — price anchor. Surface the real cheapest tier so a solo/duo
+  // traveller can see "drops to €X/pp with N guests" before tapping the
+  // group picker. Sourced from real tier data only; silent when absent.
+  const cheapestRealTier = useMemo(() => {
+    const reals = tierRows.filter((r) => r.real);
+    if (reals.length === 0) return null;
+    const min = reals.reduce((acc, r) => (r.eur < acc.eur ? r : acc), reals[0]);
+    if (!displayPerPaxEur) return null;
+    if (min.eur >= displayPerPaxEur) return null;
+    return min;
+  }, [tierRows, displayPerPaxEur]);
+
   // S2 — Smart suggestion: the first eligible add-on the resolver returned,
   // dismissible, hidden once it's been selected. Never invented — sourced
   // from a real sibling Signature in the same region.
