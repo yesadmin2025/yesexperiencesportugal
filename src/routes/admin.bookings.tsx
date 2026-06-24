@@ -661,32 +661,77 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
                       {preview.slot_count === 1 ? "" : "s"} can fit {guests} guest
                       {guests === 1 ? "" : "s"}
                     </p>
-                    <ul className="mt-2 space-y-1">
-                      {preview.slots.map((s) => (
-                        <li
-                          key={s.id}
-                          className={`flex items-center justify-between gap-2 ${
-                            s.enough_capacity ? "text-[color:var(--charcoal)]" : "text-[color:var(--charcoal-soft)] line-through"
-                          }`}
-                        >
-                          <span>
-                            {s.startTime}
-                            {s.pricing_category ? ` · ${s.pricing_category}` : ""}
-                          </span>
-                          <span>{s.availabilityCount} seats</span>
-                        </li>
-                      ))}
+                    <p className="mt-2 text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                      Pick a slot
+                    </p>
+                    <ul className="mt-1 space-y-1">
+                      {preview.slots.map((s) => {
+                        const disabled = !s.enough_capacity;
+                        const checked = selectedSlotId === s.id;
+                        return (
+                          <li key={s.id}>
+                            <label
+                              className={`flex items-center justify-between gap-2 border px-2 py-1.5 cursor-pointer ${
+                                checked
+                                  ? "border-[color:var(--teal)] bg-[color:var(--ivory)]"
+                                  : "border-[color:var(--border)]"
+                              } ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-[color:var(--gold)]"}`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <input
+                                  type="radio"
+                                  name="bokun-slot"
+                                  value={s.id}
+                                  checked={checked}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    setSelectedSlotId(s.id);
+                                    const cats = s.pricing_categories ?? [];
+                                    setSelectedCatId(cats.length === 1 ? cats[0].id : null);
+                                  }}
+                                />
+                                <span>
+                                  {s.startTime}
+                                  {s.pricing_category ? ` · ${s.pricing_category}` : ""}
+                                </span>
+                              </span>
+                              <span>{s.availabilityCount} seats</span>
+                            </label>
+                          </li>
+                        );
+                      })}
                     </ul>
-                    {preview.usable_count === 1 && (
+                    {selectedSlot && selectedSlotCats.length > 1 && (
+                      <div className="mt-3">
+                        <p className="text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                          Pricing category
+                        </p>
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {selectedSlotCats.map((c) => (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onClick={() => setSelectedCatId(c.id)}
+                              className={`px-2 py-1 text-xs border ${
+                                selectedCatId === c.id
+                                  ? "border-[color:var(--teal)] bg-[color:var(--ivory)]"
+                                  : "border-[color:var(--border)] hover:border-[color:var(--gold)]"
+                              }`}
+                            >
+                              {c.title}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedSlotId != null && !needsCatPick && (
                       <p className="mt-2 text-emerald-800">
                         <CheckCircle2 size={11} className="inline mr-1" />
-                        Single matching slot — webhook would auto-confirm.
+                        Slot selected — ready to run.
                       </p>
                     )}
-                    {preview.usable_count > 1 && (
-                      <p className="mt-2 text-amber-800">
-                        Multiple slots — webhook marks needs_review for manual pick.
-                      </p>
+                    {needsCatPick && (
+                      <p className="mt-2 text-amber-800">Pick a pricing category to continue.</p>
                     )}
                   </>
                 )}
