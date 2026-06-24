@@ -1794,7 +1794,7 @@ export function filterCompanions(
   // simply drops corporate. Other feelings keep the full set.
   const HIDE: Partial<Record<Feeling, ReadonlyArray<Companions>>> = {
     romance: ["corporate", "family", "friends", "solo"],
-    family: ["proposal", "corporate"],
+    
     adventure: ["proposal", "corporate"],
     "slow-luxury": ["corporate"],
   };
