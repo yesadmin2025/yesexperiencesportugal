@@ -1047,7 +1047,137 @@ export function SignaturePriceCard({
           </p>
         </div>
       ) : null}
+
+      {/* Batch C — exit-intent rescue. Offers to save the composition via
+          WhatsApp when the traveller is about to leave the reveal. Real save:
+          the composed journey title goes into the message body, the YES team
+          replies with the confirmed investment. No fabricated urgency. */}
+      {hasPrice ? (
+        <ExitIntentSave journeyTitle={journeyTitle ?? null} />
+      ) : null}
     </section>
+  );
+}
+
+function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
+  const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (sessionStorage.getItem("sv3-exit-intent-dismissed") === "1") {
+        setDismissed(true);
+        return;
+      }
+    } catch {
+      /* ignore */
+    }
+    let armed = false;
+    const armT = window.setTimeout(() => {
+      armed = true;
+    }, 8000); // arm after ~8s on the reveal so it doesn't trigger on entry
+    const trigger = () => {
+      if (!armed || dismissed) return;
+      setOpen(true);
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !e.relatedTarget) trigger();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") trigger();
+    };
+    document.addEventListener("mouseout", onMouseOut);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.clearTimeout(armT);
+      document.removeEventListener("mouseout", onMouseOut);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [dismissed]);
+
+  const dismiss = () => {
+    setOpen(false);
+    setDismissed(true);
+    try {
+      sessionStorage.setItem("sv3-exit-intent-dismissed", "1");
+    } catch {
+      /* ignore */
+    }
+  };
+
+  if (!open || dismissed) return null;
+
+  const message = journeyTitle
+    ? `Hi YES — save my Signature in progress ("${journeyTitle}"). I'd like to confirm the investment with a curator before I commit.`
+    : `Hi YES — save my Signature in progress. I'd like to confirm the investment with a curator before I commit.`;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sv3-exit-title"
+      data-testid="studio-v3-exit-intent"
+      className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center px-4 pb-[max(16px,env(safe-area-inset-bottom))] sm:pb-4"
+      style={{ background: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+      onClick={dismiss}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-[420px] rounded-[6px] px-5 py-5 text-center animate-scale-in"
+        style={{
+          background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+          border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
+          boxShadow: "0 28px 60px -28px rgba(46,46,46,0.45)",
+        }}
+      >
+        <span
+          aria-hidden
+          className="absolute left-1/2 top-0 h-[2px] w-12 -translate-x-1/2 rounded-b-full"
+          style={{ background: "var(--gold)" }}
+        />
+        <p
+          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        >
+          <span style={{ color: "var(--gold)" }}>—</span> Before you go
+        </p>
+        <p
+          id="sv3-exit-title"
+          className="mt-2 text-[19px] leading-[1.25] italic text-balance"
+          style={{ fontFamily: "var(--font-serif)", color: "var(--charcoal)" }}
+        >
+          Save your Signature, decide later.
+        </p>
+        <p
+          className="mt-2 text-[12.5px] leading-snug"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+        >
+          A YES curator will hold the composition you just built and reply with
+          the exact investment for your dates — no payment, no pressure.
+        </p>
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <a
+            href={whatsappHref(message)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={dismiss}
+            className="inline-flex items-center gap-2 px-6 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
+          >
+            Save on WhatsApp <ArrowRight size={14} aria-hidden />
+          </a>
+          <button
+            type="button"
+            onClick={dismiss}
+            className="text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded px-2 py-1"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            Keep exploring
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
