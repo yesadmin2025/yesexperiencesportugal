@@ -121,7 +121,6 @@ const FEELING_THEME: Record<Feeling, string> = {
   "wine-food": "wine and table",
   hidden: "hidden",
   romance: "romantic",
-  family: "family",
   culture: "heritage",
   adventure: "Atlantic",
   "slow-luxury": "slow",
