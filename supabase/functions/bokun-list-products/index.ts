@@ -54,9 +54,12 @@ async function bokunFetch(path: string, method = "GET", body?: unknown) {
     "X-Bokun-Date": date,
     "X-Bokun-AccessKey": accessKey,
     "X-Bokun-Signature": signature,
-    "Content-Type": "application/json;charset=UTF-8",
   };
-  const bodyStr = body !== undefined ? JSON.stringify(body) : undefined;
+  let bodyStr: string | undefined;
+  if (body !== undefined) {
+    bodyStr = JSON.stringify(body);
+    headers["Content-Type"] = "application/json";
+  }
 
   const res = await fetch(`${BOKUN_HOST}${path}`, { method, headers, body: bodyStr });
 
