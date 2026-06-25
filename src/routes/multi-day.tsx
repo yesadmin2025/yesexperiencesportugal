@@ -48,7 +48,7 @@ const BLOCKS = [
     emotional:
       "Not a checklist of regions — a real rhythm, with the right pacing between each day.",
     practical:
-      "2–7 days · realistic driving times · curated overnight stops · transitions designed around your pace.",
+      "Any length, from a long weekend to a multi-week journey · realistic driving times · curated overnight stops · transitions designed around your pace.",
     local: "Designed in conversation with a local team — never a copy-paste itinerary.",
     image: imgTroiaBeach,
     icon: Calendar,
