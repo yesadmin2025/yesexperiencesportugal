@@ -424,35 +424,34 @@ function TailorPage() {
               {/* Stops — only those that exist on this tour */}
               {(tour.stops ?? []).length > 0 && (
                 <Group title="Stop variations">
-                  <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
-                    Tap to skip a stop you'd rather trade for extra time elsewhere. The order of
-                    what stays is preserved.
+                  <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-1 -mt-1">
+                    Remove a stop you'd rather trade for time elsewhere, or add an optional one
+                    listed by the local guide.
                   </p>
+                  <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--gold)]">
+                    Up to {MAX_EDITS} changes · {editsLeft} left
+                  </p>
+
                   <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
                     {(tour.stops ?? []).map((s: TourStop, i: number) => {
                       const kept = !skipped.has(s.label);
+                      const disabled = kept && editsLeft === 0;
                       return (
                         <li key={s.label + i}>
                           <button
                             type="button"
+                            disabled={disabled}
                             onClick={() => toggle(setSkipped, skipped, s.label)}
-                            aria-pressed={kept}
+                            aria-pressed={!kept}
                             className={[
-                              "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[64px]",
+                              "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
                               kept
                                 ? "border-[color:var(--teal)]/50 bg-[color:var(--teal)]/5"
                                 : "border-[color:var(--border)] opacity-60",
+                              disabled ? "cursor-not-allowed" : "",
                             ].join(" ")}
                           >
-                            <span className="relative w-16 shrink-0 overflow-hidden">
-                              <img
-                                src={stopImage(s)}
-                                alt=""
-                                style={{ objectPosition: stopFocal(s) }}
-                                className="absolute inset-0 w-full h-full object-cover"
-                              />
-                            </span>
-                            <span className="flex-1 py-2.5 pr-3 flex flex-col justify-center">
+                            <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
                               <span
                                 className={[
                                   "text-[13px] leading-snug",
@@ -464,7 +463,7 @@ function TailorPage() {
                                 {s.label}
                               </span>
                               <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
-                                {kept ? "Included" : "Skipping"}
+                                {kept ? "Included" : "Removed"}
                               </span>
                             </span>
                             <span
@@ -481,6 +480,56 @@ function TailorPage() {
                       );
                     })}
                   </ul>
+
+                  {/* Optional add-able stops from Viator (passBy=true) */}
+                  {optionalStops.length > 0 && (
+                    <>
+                      <p className="mt-5 mb-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                        Optional stops you can add
+                      </p>
+                      <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
+                        {optionalStops.map((label) => {
+                          const on = added.has(label);
+                          const disabled = !on && editsLeft === 0;
+                          return (
+                            <li key={"add:" + label}>
+                              <button
+                                type="button"
+                                disabled={disabled}
+                                onClick={() => toggle(setAdded, added, label)}
+                                aria-pressed={on}
+                                className={[
+                                  "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
+                                  on
+                                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                                    : "border-[color:var(--border)]",
+                                  disabled ? "opacity-50 cursor-not-allowed" : "",
+                                ].join(" ")}
+                              >
+                                <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                                  <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                                    {label}
+                                  </span>
+                                  <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                                    {on ? "Added" : "Optional"}
+                                  </span>
+                                </span>
+                                <span
+                                  className={[
+                                    "w-9 flex items-center justify-center text-[color:var(--ivory)]",
+                                    on ? "bg-[color:var(--gold)]" : "bg-[color:var(--border)]",
+                                  ].join(" ")}
+                                  aria-hidden
+                                >
+                                  {on ? <Check size={14} /> : "+"}
+                                </span>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </>
+                  )}
                 </Group>
               )}
 
