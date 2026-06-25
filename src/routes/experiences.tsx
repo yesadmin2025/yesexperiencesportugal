@@ -134,9 +134,11 @@ function ExperiencesPage() {
                     </ul>
                   )}
 
-                  <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
-                    Fits best · {t.fitsBest}
-                  </p>
+                  {/* `fitsBest` removed — internal copy, not a Viator/Bókun
+                      field. Card now exposes only data verifiable against
+                      the live product page. */}
+
+
 
                   {/* Subdued meta strip — region · duration · from €X.
                       Price kept (conversion) but reduced to body weight
