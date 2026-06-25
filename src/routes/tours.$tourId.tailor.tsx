@@ -4,8 +4,6 @@ import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info } 
 import { SiteLayout } from "@/components/SiteLayout";
 import {
   findTour,
-  stopImage,
-  stopFocal,
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
