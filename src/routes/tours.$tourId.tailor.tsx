@@ -110,6 +110,18 @@ function TailorPage() {
   const [guests, setGuests] = useState(2);
   const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
+  const [added, setAdded] = useState<Set<string>>(new Set());
+
+  // Optional stops surfaced by Viator (passBy=true). These can be
+  // promoted into the day. Capped at MAX_EDITS combined add/remove.
+  const MAX_EDITS = 3;
+  const meta = useMemo(() => getViatorMeta(tour.id), [tour.id]);
+  const optionalStops = useMemo(
+    () => (meta?.stops ?? []).filter((s) => s.passBy).map((s) => s.name),
+    [meta],
+  );
+  const editsUsed = skipped.size + added.size;
+  const editsLeft = Math.max(0, MAX_EDITS - editsUsed);
 
   // Tour-aware add-ons — only those plausible for this tour
   const addonOptions = useMemo(() => buildAddons(tour), [tour]);
