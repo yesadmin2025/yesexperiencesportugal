@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-25T05:20:49.641Z",
-  "filesScanned": 421,
+  "generatedAt": "2026-06-25T11:49:15.796Z",
+  "filesScanned": 422,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 250,
+    "total": 251,
     "approved": 66,
     "allowlisted": 29,
-    "mismatch": 155
+    "mismatch": 156
   },
   "findings": [
     {
@@ -683,7 +683,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 46,
+      "line": 49,
       "col": 293,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +692,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 49,
+      "line": 52,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 77,
+      "line": 80,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,7 +710,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 152,
+      "line": 155,
       "col": 318,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1079,7 +1079,7 @@
     },
     {
       "file": "src/components/home/FourWaysIn.tsx",
-      "line": 113,
+      "line": 110,
       "col": 114,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1246,6 +1246,15 @@
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
       "snippet": "\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_rgba(46,46,",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/WhyYesPillars.tsx",
+      "line": 84,
+      "col": 112,
+      "raw": "#EAE2D6",
+      "normalized": "#eae2d6",
+      "snippet": "className=\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_r",
       "status": "mismatch"
     },
     {
