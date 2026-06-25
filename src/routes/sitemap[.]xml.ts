@@ -26,7 +26,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/proposals", changefreq: "monthly", priority: "0.7" },
           { path: "/corporate", changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
-          { path: "/studio-v2", changefreq: "weekly", priority: "0.8" },
         ];
 
         const tourEntries: SitemapEntry[] = signatureTours.map((t) => ({
