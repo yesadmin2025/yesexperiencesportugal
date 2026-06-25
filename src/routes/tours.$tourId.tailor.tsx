@@ -167,43 +167,8 @@ function TailorPage() {
     return Math.max(floor, Math.round(p));
   }, [tour.priceFrom, added, skipped, addons, lunch]);
 
-  // ─── WhatsApp / submission message ──────────────────────────
-  const message = useMemo(() => {
-    const lines = [
-      `Hi! I'd like to confirm a Tailored Signature.`,
-      `• Tour: ${tour.title} (${tour.region})`,
-      `• Date: ${date || "flexible"}`,
-      `• Pickup: ${pickup}`,
-      `• Pace: ${pace}`,
-      `• Guests: ${guests}`,
-      `• Guide language: ${language.toUpperCase()}`,
-      `• Stops kept: ${keptStops.map((s: TourStop) => s.label).join(", ") || "guide's choice"}`,
-      skipped.size ? `• Removed stops: ${[...skipped].join(", ")}` : "",
-      added.size ? `• Added optional stops: ${[...added].join(", ")}` : "",
-      addons.size ? `• Add-ons: ${[...addons].join(", ")}` : "",
-      lunch ? `• Lunch: ${lunchOptions.find((l) => l.id === lunch)?.label ?? lunch}` : "",
-      accessibility.size ? `• Accessibility: ${[...accessibility].join(", ")}` : "",
-      notes ? `• Notes: ${notes}` : "",
-      `• Indicative total from €${estimatedPrice} pp`,
-    ].filter(Boolean);
-    return lines.join("\n");
-  }, [
-    tour,
-    date,
-    pickup,
-    pace,
-    guests,
-    language,
-    keptStops,
-    skipped,
-    added,
-    addons,
-    lunch,
-    lunchOptions,
-    accessibility,
-    notes,
-    estimatedPrice,
-  ]);
+
+
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
