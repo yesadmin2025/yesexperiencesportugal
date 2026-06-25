@@ -619,23 +619,12 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Viator gallery first (real, curated)
+  // Only real, curated Viator gallery — no themed stop fallbacks.
   if (meta?.gallery?.length) {
     meta.gallery.forEach((g, i) => push(g, i === 0 ? tour.title : `${tour.title} — ${i + 1}`));
-  } else {
-    const hero = resolveImg(tour, "hero");
-    push(hero.src, tour.title, tour.focal);
-  }
-  // Then stop photos in itinerary order
-  for (const s of tour.stops ?? []) {
-    push(stopImage(s), s.label, stopFocal(s));
-  }
-  // Then any local gallery
-  for (const g of tour.gallery ?? []) {
-    push(g, tour.title);
   }
 
-  if (photos.length < 2) return null;
+  if (photos.length < 3) return null;
 
   return (
     <section className="py-14 md:py-20">
