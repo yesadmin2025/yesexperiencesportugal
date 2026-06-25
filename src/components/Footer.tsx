@@ -101,7 +101,7 @@ export function Footer() {
                 external: true,
               },
               {
-                to: "https://www.facebook.com/share/192Po4xpEb/",
+                to: "https://www.facebook.com/yesexperiencesportugal",
                 label: "Facebook",
                 external: true,
               },
