@@ -330,6 +330,8 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
  * 4 · HIGHLIGHTS — clean bullets only
  * ════════════════════════════════════════════════════════════ */
 function HighlightsBlock({ tour }: { tour: SignatureTour }) {
+  const items = tour.highlights ?? [];
+  if (items.length === 0) return null;
   return (
     <section className="pb-14 md:pb-16">
       <div className="container-x max-w-5xl">
@@ -340,7 +342,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
           </SectionTitle>
         </div>
         <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
-          {(tour.highlights ?? []).map((h) => (
+          {items.map((h) => (
             <li
               key={h}
               className="flex gap-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]"
@@ -356,10 +358,20 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
 }
 
 /* ════════════════════════════════════════════════════════════════
- * 5 · ITINERARY — visual timeline (real stops only)
+ * 5 · ITINERARY — visual timeline (Viator stops when available)
  * ════════════════════════════════════════════════════════════ */
-function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
-  const stops = tour.stops ?? [];
+function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
+  // Source of truth: Viator real stops (passBy excluded). Fall back
+  // to internal `tour.stops` only when no Viator meta exists.
+  const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
+  type Chapter = { label: string; story?: string };
+  const chapters: Chapter[] =
+    viator.length > 0
+      ? viator.map((s) => ({ label: s.name, story: s.desc }))
+      : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
+
+  if (chapters.length === 0) return null;
+
   return (
     <section className="py-14 md:py-20 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)]">
       <div className="container-x max-w-5xl">
@@ -371,19 +383,17 @@ function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
             </SectionTitle>
           </div>
           <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            {stops.length} chapters · in this order
+            {chapters.length} chapters · in this order
           </span>
         </div>
 
         <ol className="relative space-y-8">
-          {/* Vertical timeline rail */}
           <span
             className="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-[color:var(--gold)]/60 via-[color:var(--gold)]/30 to-transparent md:left-[19px]"
             aria-hidden
           />
-          {stops.map((s, i) => (
+          {chapters.map((s, i) => (
             <li key={s.label + i} className="relative pl-12 md:pl-16">
-              {/* Numbered marker on the rail */}
               <span className="absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[12px] md:text-[13px] text-[color:var(--gold)] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15)]">
                 {i + 1}
               </span>
@@ -393,9 +403,11 @@ function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
                   Chapter {i + 1}
                 </span>
                 <h3 className="serif text-xl md:text-2xl leading-snug mt-2">{s.label}</h3>
-                <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
-                  {s.story}
-                </p>
+                {s.story && (
+                  <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
+                    {s.story}
+                  </p>
+                )}
               </div>
             </li>
           ))}
