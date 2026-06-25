@@ -806,6 +806,23 @@ function HomePage() {
                           {t.line}
                         </p>
 
+                        {t.highlights.length > 0 && (
+                          <ul className="flex flex-col gap-1.5 list-none p-0 m-0">
+                            {t.highlights.map((h) => (
+                              <li
+                                key={h}
+                                className="flex items-start gap-2 text-[12.5px] leading-[1.5] text-[color:var(--charcoal-soft)]"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  className="mt-[7px] inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[color:var(--gold)]"
+                                />
+                                <span>{h}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
                         <div className="mt-auto flex flex-col gap-2 pt-1">
                           <CtaButton
                             to="/tours/$tourId"
