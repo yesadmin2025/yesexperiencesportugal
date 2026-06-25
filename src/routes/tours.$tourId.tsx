@@ -5,8 +5,6 @@ import {
   signatureTours,
   findTour,
   isValidTourId,
-  stopImage,
-  stopFocal,
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
@@ -323,9 +321,6 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
         <p className="serif mt-5 text-[1.5rem] sm:text-2xl md:text-[1.85rem] leading-snug text-[color:var(--charcoal)]">
           {tour.intro}
         </p>
-        <p className="mt-6 text-[11px] uppercase tracking-[0.24em] text-[color:var(--gold)]">
-          Fits best · {tour.fitsBest}
-        </p>
       </div>
     </section>
   );
@@ -393,26 +388,14 @@ function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
                 {i + 1}
               </span>
 
-              <div className="grid md:grid-cols-[1fr_1.4fr] gap-5 bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
-                <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[180px] overflow-hidden">
-                  <img
-                    src={stopImage(s)}
-                    alt={s.label}
-                    loading="lazy"
-                    decoding="async"
-                    style={{ objectPosition: stopFocal(s) }}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                </div>
-                <div className="p-5 md:py-6 md:pr-6 md:pl-0 flex flex-col justify-center">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
-                    Chapter {i + 1}
-                  </span>
-                  <h3 className="serif text-xl md:text-2xl leading-snug mt-2">{s.label}</h3>
-                  <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                    {s.story}
-                  </p>
-                </div>
+              <div className="pt-1 pb-1">
+                <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+                  Chapter {i + 1}
+                </span>
+                <h3 className="serif text-xl md:text-2xl leading-snug mt-2">{s.label}</h3>
+                <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
+                  {s.story}
+                </p>
               </div>
             </li>
           ))}
@@ -634,23 +617,12 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Viator gallery first (real, curated)
+  // Only real, curated Viator gallery — no themed stop fallbacks.
   if (meta?.gallery?.length) {
     meta.gallery.forEach((g, i) => push(g, i === 0 ? tour.title : `${tour.title} — ${i + 1}`));
-  } else {
-    const hero = resolveImg(tour, "hero");
-    push(hero.src, tour.title, tour.focal);
-  }
-  // Then stop photos in itinerary order
-  for (const s of tour.stops ?? []) {
-    push(stopImage(s), s.label, stopFocal(s));
-  }
-  // Then any local gallery
-  for (const g of tour.gallery ?? []) {
-    push(g, tour.title);
   }
 
-  if (photos.length < 2) return null;
+  if (photos.length < 3) return null;
 
   return (
     <section className="py-14 md:py-20">
@@ -708,8 +680,6 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
     "Pick your date and pickup time",
     "Set the pace — slower, balanced, or full",
     "Choose your guide language",
-    "Swap between available stops within this tour",
-    "Add small extras when offered (lunch, tasting, transfer)",
   ];
   return (
     <section
