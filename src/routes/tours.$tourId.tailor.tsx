@@ -186,6 +186,7 @@ function TailorPage() {
     language,
     keptStops,
     skipped,
+    added,
     addons,
     lunch,
     lunchOptions,
