@@ -560,41 +560,50 @@ function RouteMap({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const inc = bookableIncluded(tour, meta);
+  const ideal = tour.idealFor ?? [];
+  const notes = tour.notes ?? [];
+  const hasInc = inc.items.length > 0;
+  const hasIdeal = ideal.length > 0;
+  if (!hasInc && !hasIdeal && notes.length === 0) return null;
   return (
     <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)]">
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
-        <Block icon={<Check size={14} />} title="What's included">
-          {inc.source === "viator" && (
-            <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-              Verified against Viator product page
-            </p>
-          )}
-          <ul className="space-y-3 text-[14.5px] leading-relaxed">
-            {inc.items.map((h) => (
-              <li key={h} className="flex gap-2.5">
-                <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
-                <span>{h}</span>
-              </li>
-            ))}
-          </ul>
-        </Block>
+        {hasInc && (
+          <Block icon={<Check size={14} />} title="What's included">
+            {inc.source === "viator" && (
+              <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                Verified against Viator product page
+              </p>
+            )}
+            <ul className="space-y-3 text-[14.5px] leading-relaxed">
+              {inc.items.map((h) => (
+                <li key={h} className="flex gap-2.5">
+                  <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
 
-        <Block icon={<Heart size={14} />} title="Who it's for">
-          <ul className="space-y-3 text-[14.5px] leading-relaxed">
-            {(tour.idealFor ?? []).map((h) => (
-              <li key={h} className="flex gap-2.5">
-                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--teal)] flex-shrink-0" />
-                <span>{h}</span>
-              </li>
-            ))}
-          </ul>
-        </Block>
+        {hasIdeal && (
+          <Block icon={<Heart size={14} />} title="Who it's for">
+            <ul className="space-y-3 text-[14.5px] leading-relaxed">
+              {ideal.map((h) => (
+                <li key={h} className="flex gap-2.5">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--teal)] flex-shrink-0" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
 
-        {(tour.notes?.length ?? 0) > 0 && (
+        {notes.length > 0 && (
           <div className="md:col-span-2">
             <Block icon={<Info size={14} />} title="Good to know">
               <ul className="space-y-2 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                {(tour.notes ?? []).map((h) => (
+                {notes.map((h) => (
                   <li key={h} className="flex gap-2.5">
                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--charcoal-soft)] flex-shrink-0" />
                     <span>{h}</span>
