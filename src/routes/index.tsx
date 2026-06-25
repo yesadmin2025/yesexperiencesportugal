@@ -21,6 +21,7 @@ import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { FourWaysIn } from "@/components/home/FourWaysIn";
+import { WhyYesPillars } from "@/components/home/WhyYesPillars";
 import { RecentJourney } from "@/components/home/RecentJourney";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
@@ -564,6 +565,9 @@ function HomePage() {
 
         <FourWaysIn />
 
+        <WhyYesPillars />
+
+
         {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
           innovation, not just another tile. The section opens with a
@@ -805,6 +809,23 @@ function HomePage() {
                         <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
                           {t.line}
                         </p>
+
+                        {t.highlights.length > 0 && (
+                          <ul className="flex flex-col gap-1.5 list-none p-0 m-0">
+                            {t.highlights.map((h) => (
+                              <li
+                                key={h}
+                                className="flex items-start gap-2 text-[12.5px] leading-[1.5] text-[color:var(--charcoal-soft)]"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  className="mt-[7px] inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[color:var(--gold)]"
+                                />
+                                <span>{h}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
 
                         <div className="mt-auto flex flex-col gap-2 pt-1">
                           <CtaButton
