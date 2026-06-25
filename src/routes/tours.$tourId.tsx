@@ -9,10 +9,10 @@ import {
   type TourStop,
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
-import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
+import { bookableIncluded, bookableStops, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
-import { SimpleTailorForm } from "@/components/SimpleTailorForm";
+import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
