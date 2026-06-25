@@ -13,7 +13,7 @@
  */
 
 import { Link } from "@tanstack/react-router";
-import { BookOpen, SlidersHorizontal, Wand2, Compass, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Sparkles, Compass, type LucideIcon } from "lucide-react";
 
 type Path = {
   num: string;
@@ -29,31 +29,18 @@ const PATHS: Path[] = [
   {
     num: "01",
     Icon: BookOpen,
-    label: "Signature",
+    label: "Signature & Tailored",
     title: (
       <>
-        Ready, validated <span className="italic">private day journeys.</span>
+        Ready private days, <span className="italic">yours to shape.</span>
       </>
     ),
-    body: "Flagship days across Lisbon, Sintra, Arrábida and beyond — already loved, ready for you.",
-    cta: "Reserve in minutes",
+    body: "Flagship journeys across Lisbon, Sintra, Arrábida and beyond — reserve as they are, or tailor inside the Signature you choose.",
+    cta: "Reserve or tailor",
     href: "/experiences",
   },
   {
     num: "02",
-    Icon: SlidersHorizontal,
-    label: "Tailored",
-    title: (
-      <>
-        Start from a Signature, <span className="italic">shape it to your day.</span>
-      </>
-    ),
-    body: "Adjust pace, swap an approved stop, add an upgrade — all inside the Signature you choose.",
-    cta: "Confirm in minutes",
-    href: "/experiences",
-  },
-  {
-    num: "03",
     Icon: Wand2,
     label: "Studio",
     title: (
@@ -66,6 +53,19 @@ const PATHS: Path[] = [
     href: "/studio-v3",
   },
   {
+    num: "03",
+    Icon: Sparkles,
+    label: "Moments",
+    title: (
+      <>
+        Proposals, celebrations <span className="italic">&amp; corporate days.</span>
+      </>
+    ),
+    body: "Engagements, anniversaries, birthdays and private corporate retreats — staged quietly, with local hands behind every detail.",
+    cta: "Tell us the occasion",
+    href: "/proposals",
+  },
+  {
     num: "04",
     Icon: Compass,
     label: "Travel Designer",
@@ -74,7 +74,7 @@ const PATHS: Path[] = [
         A full private journey, <span className="italic">written around you.</span>
       </>
     ),
-    body: "Any length, any shape — weddings, honeymoons, family journeys, corporate retreats. Composed by a designer.",
+    body: "Any length, any shape — weddings, honeymoons, family journeys, multi-day Portugal. Composed by a designer.",
     cta: "Begin with a designer",
     href: "/bespoke",
   },
