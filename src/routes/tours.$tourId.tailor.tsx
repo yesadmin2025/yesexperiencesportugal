@@ -213,6 +213,46 @@ function TailorPage() {
     setter(next);
   };
 
+  // ─── Instant booking — Stripe checkout ──────────────────────
+  // Tailored selection is sent to the same `create-signature-checkout`
+  // edge function as the Studio reveal. Server resolves the per-pax
+  // price; we pass `estimatedPrice` as the anchor so add-on / stop
+  // deltas flow through when no tier row exists.
+  const [checkoutPending, setCheckoutPending] = useState(false);
+  const handleReserve = async () => {
+    if (checkoutPending) return;
+    setCheckoutPending(true);
+    try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const stopLabels = keptStops.map((s: TourStop) => s.label);
+      [...added].forEach((label) => stopLabels.push(label));
+      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
+        body: {
+          tourId: tour.id,
+          tourTitle: tour.title,
+          guests,
+          stopLabels: stopLabels.slice(0, 8),
+          pickupLabel: pickup,
+          dateExact: date || null,
+          journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+          priceFromEur: estimatedPrice,
+          returnUrl: `${origin}/tours/${tour.id}/tailor?checkout=success`,
+          cancelUrl: `${origin}/tours/${tour.id}/tailor?checkout=cancelled`,
+          environment: "sandbox",
+        },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (!url) throw new Error("No checkout URL returned");
+      window.location.href = url;
+    } catch (e) {
+      console.error("Tailor checkout failed", e);
+      toast.error("Checkout unavailable right now. Please try again in a moment.");
+    } finally {
+      setCheckoutPending(false);
+    }
+  };
+
   return (
     <SiteLayout>
       {/* ── Breadcrumb ──────────────────────────────────────── */}
