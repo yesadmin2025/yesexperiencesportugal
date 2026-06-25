@@ -323,9 +323,6 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
         <p className="serif mt-5 text-[1.5rem] sm:text-2xl md:text-[1.85rem] leading-snug text-[color:var(--charcoal)]">
           {tour.intro}
         </p>
-        <p className="mt-6 text-[11px] uppercase tracking-[0.24em] text-[color:var(--gold)]">
-          Fits best · {tour.fitsBest}
-        </p>
       </div>
     </section>
   );
