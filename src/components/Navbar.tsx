@@ -8,8 +8,10 @@ import { CtaButton } from "@/components/ui/CtaButton";
 const desktopLinks = [
   { to: "/experiences", label: "Experiences", hidden: false },
   { to: "/studio-v3", label: "Studio", hidden: false },
-  { to: "/proposals", label: "Moments", hidden: false },
+  { to: "/proposals", label: "Proposals & Celebrations", hidden: false },
+  { to: "/corporate", label: "Corporate", hidden: false },
   { to: "/multi-day", label: "Travel Designer", hidden: false },
+  { to: "/local-stories", label: "Local Stories", hidden: false },
   { to: "/about", label: "About", hidden: false },
   { to: "/contact", label: "Contact", hidden: false },
 ];

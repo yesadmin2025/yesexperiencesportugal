@@ -96,13 +96,10 @@ export function FourWaysIn() {
           >
             Four ways in.{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
-              One Portugal, designed around you.
+              One conversation.
             </span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
-          <p className="mt-5 text-[13.5px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-[1.6]">
-            Signature, Studio and Moments book direct. Travel Designer is the human-led path.
-          </p>
         </div>
 
         <ul className="he-stagger max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-4 list-none p-0">
