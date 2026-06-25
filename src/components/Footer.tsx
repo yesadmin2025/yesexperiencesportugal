@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
+import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 
 interface FooterLink {
   to: string;
@@ -71,7 +72,7 @@ export function Footer() {
             links={[
               { to: "/experiences", label: "All Experiences" },
               { to: "/day-tours", label: "Day Experiences" },
-              { to: "/multi-day", label: "Bespoke Journeys" },
+              { to: "/multi-day", label: "Travel Designer" },
               { to: "/builder", label: "Experience Studio" },
             ]}
           />
