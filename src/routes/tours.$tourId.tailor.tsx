@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info } from "lucide-react";
+import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info, Loader2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import {
   findTour,
@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -149,51 +151,24 @@ function TailorPage() {
     [pickup, estimatedHours],
   );
 
+  // Per-stop deltas — added optional stops add a modest premium,
+  // removing a stop returns a small credit. Anchor never drops below
+  // the base "from" by more than 15% so the math stays honest.
+  const ADD_STOP_DELTA = 20;
+  const REMOVE_STOP_DELTA = 10;
   const estimatedPrice = useMemo(() => {
     let p = tour.priceFrom;
+    p += added.size * ADD_STOP_DELTA;
+    p -= skipped.size * REMOVE_STOP_DELTA;
     if (addons.has("photographer")) p += 75;
     if (addons.has("wine")) p += 25;
     if (lunch === "premium") p += 35;
-    return p;
-  }, [tour.priceFrom, addons, lunch]);
+    const floor = Math.round(tour.priceFrom * 0.85);
+    return Math.max(floor, Math.round(p));
+  }, [tour.priceFrom, added, skipped, addons, lunch]);
 
-  // ─── WhatsApp / submission message ──────────────────────────
-  const message = useMemo(() => {
-    const lines = [
-      `Hi! I'd like to confirm a Tailored Signature.`,
-      `• Tour: ${tour.title} (${tour.region})`,
-      `• Date: ${date || "flexible"}`,
-      `• Pickup: ${pickup}`,
-      `• Pace: ${pace}`,
-      `• Guests: ${guests}`,
-      `• Guide language: ${language.toUpperCase()}`,
-      `• Stops kept: ${keptStops.map((s: TourStop) => s.label).join(", ") || "guide's choice"}`,
-      skipped.size ? `• Removed stops: ${[...skipped].join(", ")}` : "",
-      added.size ? `• Added optional stops: ${[...added].join(", ")}` : "",
-      addons.size ? `• Add-ons: ${[...addons].join(", ")}` : "",
-      lunch ? `• Lunch: ${lunchOptions.find((l) => l.id === lunch)?.label ?? lunch}` : "",
-      accessibility.size ? `• Accessibility: ${[...accessibility].join(", ")}` : "",
-      notes ? `• Notes: ${notes}` : "",
-      `• Indicative total from €${estimatedPrice} pp`,
-    ].filter(Boolean);
-    return lines.join("\n");
-  }, [
-    tour,
-    date,
-    pickup,
-    pace,
-    guests,
-    language,
-    keptStops,
-    skipped,
-    added,
-    addons,
-    lunch,
-    lunchOptions,
-    accessibility,
-    notes,
-    estimatedPrice,
-  ]);
+
+
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
@@ -201,6 +176,46 @@ function TailorPage() {
     if (next.has(val)) next.delete(val);
     else next.add(val);
     setter(next);
+  };
+
+  // ─── Instant booking — Stripe checkout ──────────────────────
+  // Tailored selection is sent to the same `create-signature-checkout`
+  // edge function as the Studio reveal. Server resolves the per-pax
+  // price; we pass `estimatedPrice` as the anchor so add-on / stop
+  // deltas flow through when no tier row exists.
+  const [checkoutPending, setCheckoutPending] = useState(false);
+  const handleReserve = async () => {
+    if (checkoutPending) return;
+    setCheckoutPending(true);
+    try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const stopLabels = keptStops.map((s: TourStop) => s.label);
+      [...added].forEach((label) => stopLabels.push(label));
+      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
+        body: {
+          tourId: tour.id,
+          tourTitle: tour.title,
+          guests,
+          stopLabels: stopLabels.slice(0, 8),
+          pickupLabel: pickup,
+          dateExact: date || null,
+          journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+          priceFromEur: estimatedPrice,
+          returnUrl: `${origin}/tours/${tour.id}/tailor?checkout=success`,
+          cancelUrl: `${origin}/tours/${tour.id}/tailor?checkout=cancelled`,
+          environment: "sandbox",
+        },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (!url) throw new Error("No checkout URL returned");
+      window.location.href = url;
+    } catch (e) {
+      console.error("Tailor checkout failed", e);
+      toast.error("Checkout unavailable right now. Please try again in a moment.");
+    } finally {
+      setCheckoutPending(false);
+    }
   };
 
   return (
@@ -765,21 +780,29 @@ function TailorPage() {
                   </p>
                 </div>
 
-                {/* 6 · CTA */}
+                {/* 6 · CTA — instant Stripe checkout */}
                 <div className="p-5 pt-0">
-                  <a
-                    href={whatsappHref(message)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
+                  <button
+                    type="button"
+                    onClick={handleReserve}
+                    disabled={checkoutPending || keptStops.length === 0}
+                    className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
-                    <Sparkles size={15} /> Tailor this Signature
-                  </a>
+                    {checkoutPending ? (
+                      <>
+                        <Loader2 size={15} className="animate-spin" /> Opening checkout…
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={15} /> Reserve this day
+                      </>
+                    )}
+                  </button>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation. No forms. No waiting.
+                    Instant confirmation · Secured directly on this site.
                   </p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80 text-center">
-                    Secured directly on this site.
+                  <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+                    <Lock size={10} /> Stripe · Apple Pay · Google Pay
                   </p>
                 </div>
               </div>
