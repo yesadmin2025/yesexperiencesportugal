@@ -3,6 +3,7 @@ import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
+import { VIATOR_META } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import { ContrastAuditPanel } from "@/components/dev/ContrastAuditPanel";
@@ -68,7 +69,17 @@ function ExperiencesPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
-              const topHighlights = t.highlights.slice(0, 3);
+              // Real bullets sourced from the matching Viator product page
+              // (bookable stops, pass-bys excluded). Falls back to the
+              // tour's highlights only when no Viator meta exists. Never
+              // invented marketing copy.
+              const meta = VIATOR_META[t.id];
+              const realStopBullets = meta?.stops
+                ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
+                : [];
+              const topHighlights = (
+                realStopBullets.length > 0 ? realStopBullets : t.highlights
+              ).slice(0, 3);
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   {/* Cover — clickable to source-of-truth detail page */}
@@ -123,9 +134,11 @@ function ExperiencesPage() {
                     </ul>
                   )}
 
-                  <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
-                    Fits best · {t.fitsBest}
-                  </p>
+                  {/* `fitsBest` removed — internal copy, not a Viator/Bókun
+                      field. Card now exposes only data verifiable against
+                      the live product page. */}
+
+
 
                   {/* Subdued meta strip — region · duration · from €X.
                       Price kept (conversion) but reduced to body weight
