@@ -151,13 +151,21 @@ function TailorPage() {
     [pickup, estimatedHours],
   );
 
+  // Per-stop deltas — added optional stops add a modest premium,
+  // removing a stop returns a small credit. Anchor never drops below
+  // the base "from" by more than 15% so the math stays honest.
+  const ADD_STOP_DELTA = 20;
+  const REMOVE_STOP_DELTA = 10;
   const estimatedPrice = useMemo(() => {
     let p = tour.priceFrom;
+    p += added.size * ADD_STOP_DELTA;
+    p -= skipped.size * REMOVE_STOP_DELTA;
     if (addons.has("photographer")) p += 75;
     if (addons.has("wine")) p += 25;
     if (lunch === "premium") p += 35;
-    return p;
-  }, [tour.priceFrom, addons, lunch]);
+    const floor = Math.round(tour.priceFrom * 0.85);
+    return Math.max(floor, Math.round(p));
+  }, [tour.priceFrom, added, skipped, addons, lunch]);
 
   // ─── WhatsApp / submission message ──────────────────────────
   const message = useMemo(() => {
