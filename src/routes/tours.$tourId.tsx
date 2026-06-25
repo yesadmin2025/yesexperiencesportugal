@@ -265,14 +265,14 @@ function TourHero({
               href="#tailor"
               className="flex-1 inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
-              <Sparkles size={14} /> Reserve instantly
+              <Sparkles size={14} /> Reserve this day
             </a>
             <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
               className="flex-1 inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
-              Make it yours
+              Tailor this Signature
             </Link>
           </div>
         </div>
@@ -875,15 +875,15 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             variant="primary"
             iconLeading={<Sparkles size={14} aria-hidden="true" />}
           >
-            Reserve instantly
+            Reserve this day
           </CtaButton>
           <CtaButton to="/tours/$tourId/tailor" params={{ tourId: tour.id }} variant="ghostDark">
-            Make it yours
+            Tailor this Signature
           </CtaButton>
         </div>
 
         <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
-          Instant confirmation · Secured on this site
+          Confirmation in real time · Final price shown before payment
         </p>
       </div>
     </section>

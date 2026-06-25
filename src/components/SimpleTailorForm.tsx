@@ -230,7 +230,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
         rel="noopener noreferrer"
         className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all"
       >
-        <MessageCircle size={16} /> Reserve instantly
+        <MessageCircle size={16} /> Confirm in real time
       </a>
       <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
         Confirm in real time — secured directly on this site.
