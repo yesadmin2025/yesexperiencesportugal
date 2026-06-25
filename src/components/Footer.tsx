@@ -115,9 +115,19 @@ export function Footer() {
                 label: "Google Maps",
                 external: true,
               },
+              {
+                to: "https://wa.me/351911889992",
+                label: "WhatsApp Support",
+                external: true,
+              },
             ]}
           />
         </div>
+
+        {/* Payment-acceptance strip — visual trust mark only. The
+            wallet/card brands here mirror what Stripe Checkout exposes
+            for this account; no backend partner is named. */}
+        <PaymentMethodsRow />
 
         {/* Signature Experiences — full tour index. Every page links to every
             tour, so crawlers discover the whole catalog from a single hop. */}

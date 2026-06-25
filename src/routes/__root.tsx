@@ -17,6 +17,7 @@ import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
 import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
+import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 
 
 /* ──────────────────────────────────────────────────────────────────
@@ -207,6 +208,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <WhatsAppSupportButton />
       <Toaster position="bottom-left" richColors closeButton />
     </QueryClientProvider>
   );
