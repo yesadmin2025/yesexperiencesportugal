@@ -64,6 +64,8 @@ export type Database = {
           bokun_error: string | null
           bokun_last_attempt_at: string | null
           bokun_status: string | null
+          booking_details: Json | null
+          booking_details_completed_at: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
           created_at: string
           currency: string
@@ -89,6 +91,8 @@ export type Database = {
           bokun_error?: string | null
           bokun_last_attempt_at?: string | null
           bokun_status?: string | null
+          booking_details?: Json | null
+          booking_details_completed_at?: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
           created_at?: string
           currency?: string
@@ -114,6 +118,8 @@ export type Database = {
           bokun_error?: string | null
           bokun_last_attempt_at?: string | null
           bokun_status?: string | null
+          booking_details?: Json | null
+          booking_details_completed_at?: string | null
           booking_type?: Database["public"]["Enums"]["booking_type"]
           created_at?: string
           currency?: string
