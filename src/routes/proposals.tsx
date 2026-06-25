@@ -5,7 +5,8 @@ import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
+import imgRomantic from "@/assets/exp-romantic.jpg";
+import imgProposals from "@/assets/cat-proposals.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
 
@@ -25,11 +26,11 @@ export const Route = createFileRoute("/proposals")({
       },
       {
         property: "og:image",
-        content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}`,
+        content: `https://yesexperiencesportugal.com${imgRomantic}`,
       },
       {
         property: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgArrabidaWineLunch}`,
+        content: `https://yesexperiencesportugal.com${imgRomantic}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/proposals" },
     ],
@@ -55,7 +56,7 @@ const BLOCKS = [
     practical:
       "Discreet location · careful timing · surprise logistics · planned with full discretion.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgArrabidaWineLunch,
+    image: imgRomantic,
     icon: Heart,
     cta: "Plan a Proposal",
   },
