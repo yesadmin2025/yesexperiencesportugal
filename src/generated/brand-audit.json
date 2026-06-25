@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-25T12:17:13.684Z",
-  "filesScanned": 422,
+  "generatedAt": "2026-06-25T12:40:57.192Z",
+  "filesScanned": 423,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1646,7 +1646,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 60,
+      "line": 62,
       "col": 30,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -1655,7 +1655,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 60,
+      "line": 62,
       "col": 64,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1664,25 +1664,25 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 65,
+      "line": 64,
       "col": 39,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "ring-1 ring-[color:var(--gold,#C9A96A)]/30",
+      "snippet": "ring-1 ring-[color:var(--gold,#C9A96A)]/35",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/support/WhatsAppSupportButton.tsx",
+      "line": 65,
+      "col": 38,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "hover:ring-[color:var(--gold,#C9A96A)]/70 hover:scale-[1.04]",
       "status": "approved"
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
       "line": 66,
-      "col": 38,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "hover:ring-[color:var(--gold,#C9A96A)]/60",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 67,
       "col": 94,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
