@@ -694,56 +694,16 @@ function GalleryStrip({
 }
 
 /* ════════════════════════════════════════════════════════════════
- * 10 · TAILOR — adjust details inside this Signature
+ * 10 · BOOK — reserve the Signature as designed
  * ════════════════════════════════════════════════════════════ */
-function TailorBlock({ tour }: { tour: SignatureTour }) {
-  const adjustables = [
-    "Pick your date and pickup time",
-    "Set the pace — slower, balanced, or full",
-    "Choose your guide language",
-  ];
+function BookingBlock({ tour }: { tour: SignatureTour }) {
   return (
     <section
-      id="tailor"
+      id="book"
       className="py-14 md:py-20 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
     >
-      <div className="container-x max-w-6xl">
-        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-14 items-start">
-          <div>
-            <Eyebrow>Make it yours</Eyebrow>
-            <SectionTitle size="compact" spacing="loose">
-              Keep the experience.
-              <br />
-              <SectionTitle.Em>Adjust the details.</SectionTitle.Em>
-            </SectionTitle>
-            <p className="mt-5 text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-lg">
-              This Signature is designed as it is. You can fine-tune a few details inside this
-              specific tour — without redesigning the day.
-            </p>
-
-            <ul className="mt-6 space-y-2.5 text-[14px]">
-              {adjustables.map((a) => (
-                <li key={a} className="flex gap-2.5">
-                  <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
-                  <span>{a}</span>
-                </li>
-              ))}
-            </ul>
-
-            <p className="mt-6 text-[12px] italic text-[color:var(--charcoal-soft)] leading-relaxed max-w-md">
-              Want to start from a blank page instead?{" "}
-              <Link
-                to="/builder"
-                className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]"
-              >
-                Open the Studio
-              </Link>{" "}
-              and build your own day.
-            </p>
-          </div>
-
-          <SimpleTailorForm tour={tour} />
-        </div>
+      <div className="container-x max-w-3xl">
+        <SimpleBookingForm tour={tour} />
       </div>
     </section>
   );
