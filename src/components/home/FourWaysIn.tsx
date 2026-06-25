@@ -101,7 +101,7 @@ export function FourWaysIn() {
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
           <p className="mt-5 text-[13.5px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-[1.6]">
-            Signature, Tailored and Studio book direct. Travel Designer is the human-led path.
+            Signature, Studio and Moments book direct. Travel Designer is the human-led path.
           </p>
         </div>
 
