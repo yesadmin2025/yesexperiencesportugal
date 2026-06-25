@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-25T04:57:32.773Z",
-  "filesScanned": 416,
+  "generatedAt": "2026-06-25T05:20:49.641Z",
+  "filesScanned": 421,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 244,
-    "approved": 61,
+    "total": 250,
+    "approved": 66,
     "allowlisted": 29,
-    "mismatch": 154
+    "mismatch": 155
   },
   "findings": [
     {
@@ -683,7 +683,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 45,
+      "line": 46,
       "col": 293,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +692,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 48,
+      "line": 49,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 76,
+      "line": 77,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,7 +710,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 151,
+      "line": 152,
       "col": 318,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1075,6 +1075,15 @@
       "raw": "#B8985A",
       "normalized": "#b8985a",
       "snippet": "border-color: #B8985A;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/home/FourWaysIn.tsx",
+      "line": 113,
+      "col": 114,
+      "raw": "#EAE2D6",
+      "normalized": "#eae2d6",
+      "snippet": "className=\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_r",
       "status": "mismatch"
     },
     {
@@ -1625,6 +1634,51 @@
       "normalized": "#ffb060",
       "snippet": "const accent = tone === \"warn\" ? \"#FFB060\" : \"var(--gold)\";",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/support/WhatsAppSupportButton.tsx",
+      "line": 60,
+      "col": 30,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "bg-[color:var(--teal,#295B61)] text-[color:var(--ivory,#FAF8F3)]",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/support/WhatsAppSupportButton.tsx",
+      "line": 60,
+      "col": 64,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "bg-[color:var(--teal,#295B61)] text-[color:var(--ivory,#FAF8F3)]",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/support/WhatsAppSupportButton.tsx",
+      "line": 65,
+      "col": 39,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "ring-1 ring-[color:var(--gold,#C9A96A)]/30",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/support/WhatsAppSupportButton.tsx",
+      "line": 66,
+      "col": 38,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "hover:ring-[color:var(--gold,#C9A96A)]/60",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/support/WhatsAppSupportButton.tsx",
+      "line": 67,
+      "col": 94,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)]",
+      "status": "approved"
     },
     {
       "file": "src/lib/brand-tokens.test.ts",
