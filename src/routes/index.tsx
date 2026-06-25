@@ -20,7 +20,7 @@ import { Star, MessageCircle } from "lucide-react";
 import { PlatformBadge } from "@/components/PlatformBadge";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
-import { ThreePathsSection } from "@/components/home/ThreePathsSection";
+import { FourWaysIn } from "@/components/home/FourWaysIn";
 import { RecentJourney } from "@/components/home/RecentJourney";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
@@ -562,7 +562,7 @@ function HomePage() {
           </div>
         </section>
 
-        <ThreePathsSection />
+        <FourWaysIn />
 
         {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core

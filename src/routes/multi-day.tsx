@@ -12,17 +12,17 @@ import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
     meta: [
-      { title: "Multi-Day Journeys Across Portugal — YES experiences" },
+      { title: "Travel Designer — Private Portugal Journeys | YES Experiences" },
       {
         name: "description",
         content:
-          "Private multi-day journeys across Portugal — realistic timing, local flow, and support from people who know how each day should connect.",
+          "A full private Portugal journey, written around you. Any length, any shape — composed by a designer, supported on the ground every day.",
       },
-      { property: "og:title", content: "Multi-Day Journeys Across Portugal" },
+      { property: "og:title", content: "Travel Designer — YES Experiences Portugal" },
       {
         property: "og:description",
         content:
-          "More than one day. One coherent journey — built with realistic timing and local flow.",
+          "Honeymoons, family journeys, weddings, corporate retreats — composed by a designer, supported on the ground.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/multi-day")({
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
-          { name: "Multi-Day Journeys", path: "/multi-day" },
+          { name: "Travel Designer", path: "/multi-day" },
         ]),
       ),
     ],
@@ -48,7 +48,7 @@ const BLOCKS = [
     emotional:
       "Not a checklist of regions — a real rhythm, with the right pacing between each day.",
     practical:
-      "2–7 days · realistic driving times · curated overnight stops · transitions designed around your pace.",
+      "Any length, from a long weekend to a multi-week journey · realistic driving times · curated overnight stops · transitions designed around your pace.",
     local: "Designed in conversation with a local team — never a copy-paste itinerary.",
     image: imgTroiaBeach,
     icon: Calendar,
@@ -85,19 +85,18 @@ function MultiDayPage() {
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>Multi-Day Journeys</Eyebrow>
+          <Eyebrow flank>Travel Designer</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            More than one day. <SectionTitle.Em>One coherent journey.</SectionTitle.Em>
+            A full private journey, <SectionTitle.Em>written around you.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Build Portugal across regions with realistic timing,{" "}
-            <span className="kw">local flow</span> and support from people who know how each day
-            should connect.
+            Any length, any shape — honeymoons, family journeys, multi-region itineraries, weddings,
+            corporate retreats. Composed by a designer, supported on the ground every day.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/builder" variant="primary">
-              Plan a Multi-Day Journey
+            <CtaButton to="/contact" variant="primary">
+              Begin with a designer
             </CtaButton>
             <CtaButton
               to="/contact"
