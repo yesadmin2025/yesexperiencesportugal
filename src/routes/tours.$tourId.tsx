@@ -390,26 +390,14 @@ function ItineraryTimeline({ tour }: { tour: SignatureTour }) {
                 {i + 1}
               </span>
 
-              <div className="grid md:grid-cols-[1fr_1.4fr] gap-5 bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
-                <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[180px] overflow-hidden">
-                  <img
-                    src={stopImage(s)}
-                    alt={s.label}
-                    loading="lazy"
-                    decoding="async"
-                    style={{ objectPosition: stopFocal(s) }}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                </div>
-                <div className="p-5 md:py-6 md:pr-6 md:pl-0 flex flex-col justify-center">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
-                    Chapter {i + 1}
-                  </span>
-                  <h3 className="serif text-xl md:text-2xl leading-snug mt-2">{s.label}</h3>
-                  <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                    {s.story}
-                  </p>
-                </div>
+              <div className="pt-1 pb-1">
+                <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+                  Chapter {i + 1}
+                </span>
+                <h3 className="serif text-xl md:text-2xl leading-snug mt-2">{s.label}</h3>
+                <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
+                  {s.story}
+                </p>
               </div>
             </li>
           ))}
