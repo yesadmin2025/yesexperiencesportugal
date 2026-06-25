@@ -260,7 +260,7 @@ function TourHero({
           {/* CTA bar — directly under hero, mobile-first thumb-friendly */}
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <a
-              href="#tailor"
+              href="#book"
               className="flex-1 inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
               <Sparkles size={14} /> Reserve this day
