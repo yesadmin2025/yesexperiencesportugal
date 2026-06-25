@@ -815,21 +815,29 @@ function TailorPage() {
                   </p>
                 </div>
 
-                {/* 6 · CTA */}
+                {/* 6 · CTA — instant Stripe checkout */}
                 <div className="p-5 pt-0">
-                  <a
-                    href={whatsappHref(message)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
+                  <button
+                    type="button"
+                    onClick={handleReserve}
+                    disabled={checkoutPending || keptStops.length === 0}
+                    className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
-                    <Sparkles size={15} /> Tailor this Signature
-                  </a>
+                    {checkoutPending ? (
+                      <>
+                        <Loader2 size={15} className="animate-spin" /> Opening checkout…
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={15} /> Reserve this day
+                      </>
+                    )}
+                  </button>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation. No forms. No waiting.
+                    Instant confirmation · Secured directly on this site.
                   </p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80 text-center">
-                    Secured directly on this site.
+                  <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+                    <Lock size={10} /> Stripe · Apple Pay · Google Pay
                   </p>
                 </div>
               </div>
