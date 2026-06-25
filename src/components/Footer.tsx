@@ -7,6 +7,20 @@ interface FooterLink {
   external?: boolean;
 }
 
+const SIGNATURE_TOURS: { slug: string; label: string }[] = [
+  { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine & Coast" },
+  { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+  { slug: "arrabida-boat", label: "Arrábida Boat" },
+  { slug: "tiles-workshop", label: "Tiles Workshop" },
+  { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+  { slug: "sintra-cascais", label: "Sintra & Cascais" },
+  { slug: "troia-comporta", label: "Tróia & Comporta" },
+  { slug: "evora-alentejo", label: "Évora & Alentejo" },
+  { slug: "tomar-coimbra", label: "Tomar & Coimbra" },
+  { slug: "fatima-nazare-obidos", label: "Fátima, Nazaré & Óbidos" },
+  { slug: "roman-heritage-alentejo", label: "Roman Heritage Alentejo" },
+];
+
 export function Footer() {
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
@@ -102,6 +116,33 @@ export function Footer() {
               },
             ]}
           />
+        </div>
+
+        {/* Signature Experiences — full tour index. Every page links to every
+            tour, so crawlers discover the whole catalog from a single hop. */}
+        <div className="mt-10 pt-8 border-t border-[color:var(--gold-warm)]/15">
+          <h4
+            className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
+            style={{ fontWeight: 600 }}
+          >
+            Signature Experiences
+          </h4>
+          <ul
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-3 font-[family-name:var(--font-sans)] text-[13px]"
+            style={{ fontWeight: 400 }}
+          >
+            {SIGNATURE_TOURS.map((t) => (
+              <li key={t.slug}>
+                <Link
+                  to="/tours/$tourId"
+                  params={{ tourId: t.slug }}
+                  className="text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                >
+                  {t.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Bottom bar — copyright + discreet legal links. Single quiet line. */}
