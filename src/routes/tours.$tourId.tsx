@@ -682,8 +682,6 @@ function TailorBlock({ tour }: { tour: SignatureTour }) {
     "Pick your date and pickup time",
     "Set the pace — slower, balanced, or full",
     "Choose your guide language",
-    "Swap between available stops within this tour",
-    "Add small extras when offered (lunch, tasting, transfer)",
   ];
   return (
     <section
