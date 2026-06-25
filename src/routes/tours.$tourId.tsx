@@ -131,8 +131,8 @@ function TourDetailPage() {
       {/* ── 4 · HIGHLIGHTS ─────────────────────────────────────── */}
       <HighlightsBlock tour={tour} />
 
-      {/* ── 5 · ITINERARY (visual timeline) ────────────────────── */}
-      <ItineraryTimeline tour={tour} />
+      {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
+      <ItineraryTimeline tour={tour} meta={meta} />
 
       {/* ── 6 · MAP — branded markers, real stops only ──────── */}
       <RouteMap tour={tour} />
@@ -143,8 +143,8 @@ function TourDetailPage() {
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} />
 
-      {/* ── 10 · TAILOR THIS SIGNATURE ─────────────────────────── */}
-      <TailorBlock tour={tour} />
+      {/* ── 10 · RESERVE THIS DAY (simple booking) ─────────────── */}
+      <BookingBlock tour={tour} />
 
       {/* ── 11 · REVIEWS ───────────────────────────────────────── */}
       <ReviewsBlock meta={meta} />
