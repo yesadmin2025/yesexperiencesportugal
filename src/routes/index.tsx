@@ -12,9 +12,9 @@ import heroImg from "@/assets/hero-coast.jpg";
 // cards on this page. Hero-scene imagery is declared in the manifest at
 // `src/content/hero-scenes-manifest.ts` (single source of truth, feeds
 // both the route and the credits modal).
-import imgArrabidaViewpoint from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgSintraCaboDaRoca from "@/assets/tours/sintra-cascais/cabo-da-roca.jpg";
+import imgProposalsRomantic from "@/assets/exp-romantic.jpg";
+import imgCorporate from "@/assets/cat-corporate.jpg";
 
 import { Star, MessageCircle } from "lucide-react";
 import { PlatformBadge } from "@/components/PlatformBadge";
@@ -148,7 +148,7 @@ const groupsAndCelebrations = [
     detail: "Discreet · location of your choosing",
     cta: "Plan a Proposal",
     to: "/proposals",
-    img: imgArrabidaViewpoint,
+    img: imgProposalsRomantic,
   },
   {
     id: "celebrations",
@@ -178,7 +178,7 @@ const groupsAndCelebrations = [
     detail: "Any group size · invoice & DMC support",
     cta: "Plan a Corporate Day",
     to: "/corporate",
-    img: imgSintraCaboDaRoca,
+    img: imgCorporate,
   },
 ] as const;
 
@@ -802,30 +802,15 @@ function HomePage() {
                         </div>
                       </Link>
 
-                      {/* Body — short teaser + one primary CTA + a quiet
-                        secondary link. Highlights live on the detail
-                        page; the card stays calm and editorial. */}
+                      {/* Body — calm editorial card. Short teaser + one
+                        primary CTA + a quiet secondary link. Full
+                        itinerary, real Viator highlights, inclusions
+                        and pricing all live on the detail page so the
+                        homepage card stays uncluttered. */}
                       <div className="flex flex-col gap-4 p-5 md:p-6">
-                        <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
+                        <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)] line-clamp-3">
                           {t.line}
                         </p>
-
-                        {t.highlights.length > 0 && (
-                          <ul className="flex flex-col gap-1.5 list-none p-0 m-0">
-                            {t.highlights.map((h) => (
-                              <li
-                                key={h}
-                                className="flex items-start gap-2 text-[12.5px] leading-[1.5] text-[color:var(--charcoal-soft)]"
-                              >
-                                <span
-                                  aria-hidden="true"
-                                  className="mt-[7px] inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[color:var(--gold)]"
-                                />
-                                <span>{h}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
 
                         <div className="mt-auto flex flex-col gap-2 pt-1">
                           <CtaButton
@@ -841,9 +826,9 @@ function HomePage() {
                             to="/tours/$tourId/tailor"
                             params={{ tourId: t.id }}
                             className="self-start inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300"
-                            aria-label={`Make ${t.title} yours`}
+                            aria-label={`Tailor ${t.title}`}
                           >
-                            Make it yours
+                            Tailor it
                             <span aria-hidden="true" className="text-[color:var(--gold)]">
                               →
                             </span>
