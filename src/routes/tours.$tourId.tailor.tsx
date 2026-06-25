@@ -115,7 +115,6 @@ function TailorPage() {
   // Optional stops surfaced by Viator (passBy=true). These can be
   // promoted into the day. Capped at MAX_EDITS combined add/remove.
   const MAX_EDITS = 3;
-  const meta = useMemo(() => getViatorMeta(tour.id), [tour.id]);
   const optionalStops = useMemo(
     () => (meta?.stops ?? []).filter((s) => s.passBy).map((s) => s.name),
     [meta],
