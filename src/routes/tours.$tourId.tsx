@@ -5,8 +5,6 @@ import {
   signatureTours,
   findTour,
   isValidTourId,
-  stopImage,
-  stopFocal,
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
