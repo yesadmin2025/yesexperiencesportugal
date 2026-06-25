@@ -7,6 +7,20 @@ interface FooterLink {
   external?: boolean;
 }
 
+const SIGNATURE_TOURS: { slug: string; label: string }[] = [
+  { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine & Coast" },
+  { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+  { slug: "arrabida-boat", label: "Arrábida Boat" },
+  { slug: "tiles-workshop", label: "Tiles Workshop" },
+  { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+  { slug: "sintra-cascais", label: "Sintra & Cascais" },
+  { slug: "troia-comporta", label: "Tróia & Comporta" },
+  { slug: "evora-alentejo", label: "Évora & Alentejo" },
+  { slug: "tomar-coimbra", label: "Tomar & Coimbra" },
+  { slug: "fatima-nazare-obidos", label: "Fátima, Nazaré & Óbidos" },
+  { slug: "roman-heritage-alentejo", label: "Roman Heritage Alentejo" },
+];
+
 export function Footer() {
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
