@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info } from "lucide-react";
+import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info, Loader2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import {
   findTour,
@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
