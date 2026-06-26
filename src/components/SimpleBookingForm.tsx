@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
