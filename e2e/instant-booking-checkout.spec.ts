@@ -122,25 +122,21 @@ test.describe("instant booking checkout", () => {
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
   });
 
-  test("Bókun is wired — Signature tour has a Bókun product mapping", async () => {
-    // RLS allows anon SELECT on tour_bokun_mapping (public reference data).
-    // If RLS hides it for anon, the webhook (service role) still sees it —
-    // we surface that case with a clear message so CI fails loudly.
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/tour_bokun_mapping?tour_id=eq.${TOUR_ID}&select=tour_id,bokun_product_id`,
-      {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-      },
-    );
-    expect(res.status, "tour_bokun_mapping query failed").toBe(200);
-    const rows = (await res.json()) as Array<{ bokun_product_id: string }>;
+  test("Bókun is wired — checkout response confirms a Bókun product mapping", async () => {
+    // The edge function looks up `tour_bokun_mapping` server-side (service
+    // role, bypassing RLS) and surfaces a `bokunMapped` boolean. This is
+    // the same lookup the Stripe webhook uses post-payment to push the
+    // booking to Bókun — so a `true` here proves the wiring end-to-end.
+    const { status, json, raw } = await invokeCheckout({
+      ...baseBody,
+      stopLabels: ["Quinta da Regaleira", "Cabo da Roca", "Cascais Old Town"],
+      journeyTitle: TOUR_TITLE.split("—")[0].trim(),
+      tailored: false,
+    });
+    expect(status, `bokun-mapping probe failed: ${raw}`).toBe(200);
     expect(
-      rows.length,
-      `No Bókun mapping returned for ${TOUR_ID} — either the row is missing or RLS hides it from anon. The webhook still uses the service role, but tests can't see it; expose a narrow public SELECT or add an admin smoke test.`,
-    ).toBeGreaterThan(0);
-    expect(rows[0].bokun_product_id).toBeTruthy();
+      json.bokunMapped,
+      `No Bókun mapping for ${TOUR_ID}. The Stripe webhook will mark this booking as needs_review instead of confirming in Bókun.`,
+    ).toBe(true);
   });
 });
