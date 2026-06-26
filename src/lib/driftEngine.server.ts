@@ -123,6 +123,8 @@ export interface StoryHints {
   locale?: DriftLocale;
   tonalRegister?: TonalRegister;
   intensityPreference?: number;
+  /** When true, skip the AI tone call and use the deterministic fallback only. */
+  skipAi?: boolean;
 }
 
 interface StoryInput {
