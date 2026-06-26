@@ -197,7 +197,7 @@ export function Navbar() {
               ))}
               <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                {mobileSocialLinks.map((n, idx) => (
+                {mobileSocialLinks.map((n) => (
                   <a
                     key={n.label}
                     href={n.href}
