@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MapPin, Users, Clock3, ArrowRight, ShieldCheck } from "lucide-react";
+import { MapPin, Users, Clock3, ArrowRight } from "lucide-react";
 import type { RefineStop } from "./RefineStage";
 
 /**
@@ -337,22 +337,6 @@ export function DraftMapPreview({
           })}
         </ul>
 
-        {/* Quality badge — trust signal mirroring homepage */}
-        <div
-          className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 backdrop-blur-[2px]"
-          style={{
-            borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
-            background: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
-          }}
-        >
-          <ShieldCheck size={11} aria-hidden style={{ color: "var(--gold)" }} />
-          <span
-            className="text-[9.5px] uppercase tracking-[0.24em] font-semibold tabular-nums"
-            style={{ color: "var(--ivory)" }}
-          >
-            Quality 94
-          </span>
-        </div>
 
         {/* Caption overlay — same anchor as homepage */}
         <div

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Wine, Users, Clock3, Sparkles, MapPin, ArrowRight, ShieldCheck, Plus } from "lucide-react";
+import { Wine, Users, Clock3, Sparkles, MapPin, ArrowRight, Plus } from "lucide-react";
 import { useScrollDebugFlags } from "@/lib/scroll-debug";
 
 /**
@@ -46,8 +46,8 @@ const FALLBACK_LEN = 260;
 
 // Preview-only figures. Marked as a draft on screen so we never imply a
 // final, payable quote — actual pricing lands at /builder + Bokun.
-const DRAFT_STEP = 3;
-const DRAFT_STEPS_TOTAL = 11;
+const DRAFT_STEP = 2;
+const DRAFT_STEPS_TOTAL = 3;
 const DRAFT_INVESTMENT_EUR = 145;
 const DRAFT_PARTY = 2;
 
@@ -111,7 +111,7 @@ export function StudioLivePreview() {
       data-active={renderedActive ? "true" : "false"}
       className="studio-live relative overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]"
       role="img"
-      aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, draft investment one hundred and forty-five euros per guest"
+      aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, your day so far one hundred and forty-five euros per guest"
     >
       {/* ── Header strip — stepper + live status ─────────────────── */}
       <div className="relative z-20 flex items-center justify-between gap-3 border-b border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/90 px-4 md:px-5 py-2.5 md:py-3 backdrop-blur-[2px]">
@@ -121,9 +121,6 @@ export function StudioLivePreview() {
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
           </span>
           Step {DRAFT_STEP} of {DRAFT_STEPS_TOTAL}
-        </span>
-        <span className="text-[9.5px] md:text-[10px] uppercase tracking-[0.26em] text-[color:var(--ivory)]/65 tabular-nums">
-          {progressPct}% shaped
         </span>
       </div>
 
@@ -304,14 +301,6 @@ export function StudioLivePreview() {
           })}
         </ul>
 
-        {/* Quality badge — small trust signal sitting on the map */}
-        <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--charcoal-deep)]/75 px-2.5 py-1 backdrop-blur-[2px]">
-          <ShieldCheck size={11} className="text-[color:var(--gold)]" aria-hidden="true" />
-          <span className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)] tabular-nums">
-            Quality 94
-          </span>
-        </div>
-
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 text-[color:var(--ivory)]/90">
           <p className="text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
             Today's draft
@@ -334,10 +323,10 @@ export function StudioLivePreview() {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
-            Smart pick
+            A local touch
           </span>
           <span className="mt-0.5 block truncate text-[12px] md:text-[12.5px] text-[color:var(--ivory)]/90">
-            Most couples add a private cellar tasting.
+            many couples add a private cellar tasting.
           </span>
         </span>
         <span
@@ -361,7 +350,7 @@ export function StudioLivePreview() {
         <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
             <span className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
-              Draft investment
+              Your day so far —
             </span>
             <div className="mt-1 flex items-baseline gap-1.5">
               <span className="font-display text-[1.5rem] md:text-[1.85rem] leading-none font-semibold text-[color:var(--charcoal)] tabular-nums">
@@ -370,7 +359,7 @@ export function StudioLivePreview() {
               <span className="text-[11.5px] text-[color:var(--charcoal-soft)]">/ guest</span>
             </div>
             <span className="mt-1 block text-[10px] text-[color:var(--charcoal-soft)] tabular-nums">
-              Party of {DRAFT_PARTY} · concierge confirms
+              Party of {DRAFT_PARTY} · reserve when ready
             </span>
           </div>
           <Link
