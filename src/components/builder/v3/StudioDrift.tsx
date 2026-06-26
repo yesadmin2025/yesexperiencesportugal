@@ -2022,6 +2022,7 @@ function ConvergencePhase({
   useEffect(() => {
     let alive = true;
     void recordDriftEvent("drift_complete");
+    if (!sessionId) return;
     reveal({
       data: {
         name: profile.name,
@@ -2036,6 +2037,7 @@ function ConvergencePhase({
         locale,
         tonalRegister: prediction?.tonalRegister,
         intensityPreference: prediction?.intensity,
+        sessionId,
       },
     })
       .then((res) => {
