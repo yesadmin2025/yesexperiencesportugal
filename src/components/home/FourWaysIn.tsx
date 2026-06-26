@@ -13,7 +13,7 @@
  */
 
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Wand2, Sparkles, Compass, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Sparkles, Compass, Users, type LucideIcon } from "lucide-react";
 
 type Path = {
   num: string;
