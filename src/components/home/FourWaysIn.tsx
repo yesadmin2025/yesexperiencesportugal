@@ -13,7 +13,7 @@
  */
 
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Wand2, Sparkles, Compass, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Sparkles, Compass, Users, type LucideIcon } from "lucide-react";
 
 type Path = {
   num: string;
@@ -49,7 +49,7 @@ const PATHS: Path[] = [
       </>
     ),
     body: "A living canvas — choose stops, see the route, watch the price. Hold your date when it feels right.",
-    cta: "Book it live",
+    cta: "Build your private day",
     href: "/studio-v3",
   },
   {
@@ -58,15 +58,28 @@ const PATHS: Path[] = [
     label: "Moments",
     title: (
       <>
-        Proposals, celebrations <span className="italic">&amp; corporate days.</span>
+        Proposals & celebrations, <span className="italic">staged quietly.</span>
       </>
     ),
-    body: "Engagements, anniversaries, birthdays and private corporate retreats — staged quietly, with local hands behind every detail.",
+    body: "Engagements, anniversaries, birthdays and private celebrations — staged quietly, with local hands behind every detail.",
     cta: "Tell us the occasion",
     href: "/proposals",
   },
   {
     num: "04",
+    Icon: Users,
+    label: "Corporate & Groups",
+    title: (
+      <>
+        Team days, incentives <span className="italic">& private groups.</span>
+      </>
+    ),
+    body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and logistics handled end to end.",
+    cta: "Plan a group day",
+    href: "/corporate",
+  },
+  {
+    num: "05",
     Icon: Compass,
     label: "Travel Designer",
     title: (
@@ -94,15 +107,12 @@ export function FourWaysIn() {
             id="four-ways-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Four ways in.{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              One conversation.
-            </span>
+            Four ways into Portugal.
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 
-        <ul className="he-stagger max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-4 list-none p-0">
+        <ul className="he-stagger max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 md:gap-4 list-none p-0">
           {PATHS.map((p) => (
             <li key={p.label} className="contents">
               <Link

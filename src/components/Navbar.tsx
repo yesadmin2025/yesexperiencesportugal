@@ -8,12 +8,33 @@ import { CtaButton } from "@/components/ui/CtaButton";
 const desktopLinks = [
   { to: "/experiences", label: "Experiences", hidden: false },
   { to: "/studio-v3", label: "Studio", hidden: false },
-  { to: "/proposals", label: "Proposals & Celebrations", hidden: false },
-  { to: "/corporate", label: "Corporate", hidden: false },
   { to: "/multi-day", label: "Travel Designer", hidden: false },
-  { to: "/local-stories", label: "Local Stories", hidden: false },
-  { to: "/about", label: "About", hidden: false },
-  { to: "/contact", label: "Contact", hidden: false },
+  { to: "/corporate", label: "Corporate", hidden: false },
+  { to: "/proposals", label: "Moments", hidden: false },
+];
+
+const mobilePrimaryLinks = [
+  { to: "/experiences", label: "Experiences" },
+  { to: "/studio-v3", label: "Studio" },
+  { to: "/multi-day", label: "Travel Designer" },
+  { to: "/corporate", label: "Corporate" },
+  { to: "/proposals", label: "Moments" },
+];
+
+const mobileSecondaryLinks = [
+  { to: "/about", label: "About" },
+  { to: "/local-stories", label: "Local Stories" },
+  { to: "/contact", label: "Contact" },
+];
+
+const mobileSocialLinks = [
+  { href: "https://wa.me/351911889992", label: "WhatsApp" },
+  { href: "https://www.instagram.com/yesexperiencesportugal", label: "Instagram" },
+  {
+    href: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+    label: "Tripadvisor",
+  },
+  { href: "https://www.google.com/maps?cid=03208810033820295776", label: "Google" },
 ];
 
 const mobileLinks = desktopLinks;
@@ -139,32 +160,66 @@ export function Navbar() {
       {open && (
         <div
           id="mobile-nav"
-          className="lg:hidden border-t border-[color:var(--charcoal)]/[0.06]"
+          className="lg:hidden flex flex-col border-t border-[color:var(--charcoal)]/[0.06] overflow-hidden"
           style={{
+            height: "calc(100vh - 64px)",
             background: "rgba(247, 243, 236, 0.96)",
             backdropFilter: "blur(14px) saturate(1.05)",
             WebkitBackdropFilter: "blur(14px) saturate(1.05)",
           }}
         >
-          <div className="container-x py-7 flex flex-col gap-5 text-sm">
-            {mobileLinks.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setOpen(false)}
-                className={`text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]${n.hidden ? " hidden" : ""}`}
-                style={{ fontWeight: 380 }}
-                activeProps={{ className: "text-[color:var(--teal)]" }}
-              >
-                {n.label}
-              </Link>
-            ))}
+          <div className="flex-1 overflow-y-auto">
+            <div className="container-x py-7 flex flex-col gap-5 text-sm">
+              {mobilePrimaryLinks.map((n) => (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                  style={{ fontWeight: 380 }}
+                  activeProps={{ className: "text-[color:var(--teal)]" }}
+                >
+                  {n.label}
+                </Link>
+              ))}
+              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
+              {mobileSecondaryLinks.map((n) => (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                  style={{ fontWeight: 380 }}
+                  activeProps={{ className: "text-[color:var(--teal)]" }}
+                >
+                  {n.label}
+                </Link>
+              ))}
+              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {mobileSocialLinks.map((n) => (
+                  <a
+                    key={n.label}
+                    href={n.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpen(false)}
+                    className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                    style={{ fontWeight: 380 }}
+                  >
+                    {n.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="container-x py-4 border-t border-[color:var(--charcoal)]/[0.06] shrink-0">
             <CtaButton
               to="/studio-v3"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"
-              className="mt-3"
+              className="w-full"
             >
               Design &amp; Book
             </CtaButton>
