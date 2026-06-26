@@ -822,7 +822,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
 
         <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
           <CtaButton
-            href="#tailor"
+            href="#book"
             variant="primary"
             iconLeading={<Sparkles size={14} aria-hidden="true" />}
           >
