@@ -2089,12 +2089,29 @@ export function StudioV3() {
               state={state}
               onStateChange={setState}
               onBack={() => back("map")}
-              onSecure={() => handleStripeCheckout(state)}
+              onSecure={() => requestStripeCheckout(state)}
               onRefine={() => openLeadSheet("refine")}
             />
           </PhaseShell>
         </>
       ) : null}
+
+      <FinalDetailsDialog
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        submitting={checkoutPending}
+        initial={{
+          tourDate: detailsState?.dateExact ?? state.dateExact ?? null,
+          guests:
+            typeof (detailsState ?? state).guests === "number" && ((detailsState ?? state).guests as number) > 0
+              ? Math.min(12, Math.max(1, Math.round((detailsState ?? state).guests as number)))
+              : 2,
+          pickupAddress: pickupCityLabel((detailsState ?? state).pickup) ?? null,
+        }}
+        onConfirm={async (d) => {
+          await handleStripeCheckout(detailsState ?? state, d);
+        }}
+      />
 
       <LeadCaptureSheet
         open={leadSheet.open}
@@ -2102,6 +2119,7 @@ export function StudioV3() {
         state={state}
         onClose={closeLeadSheet}
       />
+
 
       {reaction ? (
         <ReactionOverlay reaction={reaction} state={state} onDismiss={() => setReaction(null)} />
