@@ -49,7 +49,7 @@ const PATHS: Path[] = [
       </>
     ),
     body: "A living canvas — choose stops, see the route, watch the price. Hold your date when it feels right.",
-    cta: "Book it live",
+    cta: "Build your private day",
     href: "/studio-v3",
   },
   {
@@ -58,15 +58,28 @@ const PATHS: Path[] = [
     label: "Moments",
     title: (
       <>
-        Proposals, celebrations <span className="italic">&amp; corporate days.</span>
+        Proposals & celebrations, <span className="italic">staged quietly.</span>
       </>
     ),
-    body: "Engagements, anniversaries, birthdays and private corporate retreats — staged quietly, with local hands behind every detail.",
+    body: "Engagements, anniversaries, birthdays and private celebrations — staged quietly, with local hands behind every detail.",
     cta: "Tell us the occasion",
     href: "/proposals",
   },
   {
     num: "04",
+    Icon: Users,
+    label: "Corporate & Groups",
+    title: (
+      <>
+        Team days, incentives <span className="italic">& private groups.</span>
+      </>
+    ),
+    body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and logistics handled end to end.",
+    cta: "Plan a group day",
+    href: "/corporate",
+  },
+  {
+    num: "05",
     Icon: Compass,
     label: "Travel Designer",
     title: (
