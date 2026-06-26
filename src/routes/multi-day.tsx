@@ -5,9 +5,15 @@ import { MessageCircle, Compass, MapPin, Calendar } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { whatsappHref } from "@/components/WhatsAppFab";
 import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import pageCover from "@/assets/travel-file/cover.jpg";
+import pageRoute from "@/assets/travel-file/route.jpg";
+import pageDay from "@/assets/travel-file/day.jpg";
+import pageReservations from "@/assets/travel-file/reservations.jpg";
+import pageAccommodations from "@/assets/travel-file/accommodations.jpg";
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
