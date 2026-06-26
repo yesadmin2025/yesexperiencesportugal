@@ -12,18 +12,38 @@
 
 export const SITE_URL = "https://yesexperiencesportugal.com";
 
-/** Sitewide Organization — used by Google's knowledge panel. */
+/**
+ * Sitewide Organization — emitted on every page from __root.tsx.
+ *
+ * Combines TravelAgency + LocalBusiness so Google can surface it both
+ * as the brand entity (knowledge panel, sitelinks) AND as a local
+ * place (Maps, "near me", local pack). RNAVT licence is declared via
+ * `identifier` so structured-data tests don't flag a free-text claim.
+ */
 export function organizationLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "TravelAgency",
+    "@type": ["TravelAgency", "LocalBusiness"],
     "@id": `${SITE_URL}/#organization`,
-    name: "YES experiences Portugal",
+    name: "YES Experiences Portugal",
+    legalName: "YES Experiences Portugal",
     url: `${SITE_URL}/`,
     logo: `${SITE_URL}/brand/svg/yes-experiences-portugal-horizontal-full.svg`,
     image: `${SITE_URL}/brand/svg/yes-experiences-portugal-horizontal-full.svg`,
     description:
-      "Private, meaningful Portugal experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+      "Licensed Portuguese tour operator (RNAVT) crafting private, meaningful experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "RNAVT",
+      name: "Registo Nacional dos Agentes de Viagens e Turismo",
+      description: "Licensed Portuguese tour operator (RNAVT).",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Sesimbra",
+      addressRegion: "Setúbal",
+      addressCountry: "PT",
+    },
     areaServed: [
       { "@type": "Country", name: "Portugal" },
       { "@type": "AdministrativeArea", name: "Lisbon" },
@@ -31,6 +51,14 @@ export function organizationLd() {
       { "@type": "AdministrativeArea", name: "Arrábida" },
       { "@type": "AdministrativeArea", name: "Sesimbra" },
     ],
+    telephone: "+351911889992",
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      telephone: "+351911889992",
+      availableLanguage: ["English", "Portuguese", "Spanish", "French"],
+      areaServed: "PT",
+    },
     sameAs: [
       "https://www.google.com/maps?cid=03208810033820295776",
       "https://www.instagram.com/yesexperiencesportugal",
@@ -75,7 +103,13 @@ export function breadcrumbLd(crumbs: Crumb[]) {
   };
 }
 
-/** Product node for a Signature tour detail page. */
+/**
+ * Product node for a Signature tour detail page.
+ *
+ * Emits a combined Product + TouristTrip so the same payload satisfies
+ * Google's Product rich result and travel-vertical surfaces. Includes
+ * AggregateRating when rating data is provided.
+ */
 export function tourProductLd(args: {
   id: string;
   title: string;
@@ -83,29 +117,61 @@ export function tourProductLd(args: {
   img: string; // absolute or root-relative
   priceFrom?: number;
   currency?: string;
+  rating?: number | null;
+  reviewCount?: number | null;
+  region?: string | null;
 }) {
   const url = `${SITE_URL}/tours/${args.id}`;
   const image = args.img.startsWith("http") ? args.img : `${SITE_URL}${args.img}`;
+  const currency = args.currency ?? "EUR";
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": ["Product", "TouristTrip"],
     "@id": `${url}#product`,
     name: args.title,
     description: args.blurb,
     image,
     url,
     brand: { "@id": `${SITE_URL}/#organization` },
+    provider: { "@id": `${SITE_URL}/#organization` },
+    ...(args.region ? { touristType: args.region } : {}),
     ...(args.priceFrom
       ? {
           offers: {
             "@type": "Offer",
             url,
-            priceCurrency: args.currency ?? "EUR",
+            priceCurrency: currency,
             price: args.priceFrom,
+            priceRange: `From ${currency === "EUR" ? "€" : ""}${args.priceFrom}`,
             availability: "https://schema.org/InStock",
+            seller: { "@id": `${SITE_URL}/#organization` },
           },
         }
       : {}),
+    ...(args.rating && args.reviewCount
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: args.rating,
+            reviewCount: args.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+  };
+}
+
+/** FAQPage node for routes that render a visible FAQ list. */
+export function faqPageLd(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: { "@type": "Answer", text: it.a },
+    })),
   };
 }
 
