@@ -46,6 +46,17 @@ export type ViatorMeta = {
   topReviews: ViatorReview[];
   /** Viator gallery URLs (CDN, 674x446). First item is the recommended cover. */
   gallery: string[];
+  /**
+   * OPTIONAL — locally-uploaded YES Experiences gallery photos. When present
+   * AND non-empty, this REPLACES the external Viator (`media.tacdn.com`)
+   * gallery on `/tours/<id>` pages. Each entry MUST include a descriptive
+   * `alt` using the tour name and a real location (e.g. "Private wine
+   * tasting at a family winery in Arrábida"). Use modern formats
+   * (WebP / AVIF) when possible and host files under `/public/tours/<id>/`.
+   * The number of slots is unconstrained; the page lays out whatever you
+   * provide using the existing gallery layout.
+   */
+  localGallery?: { src: string; alt: string }[];
   overview: string | null;
   included: string[];
   /**
