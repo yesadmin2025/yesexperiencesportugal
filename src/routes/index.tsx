@@ -962,6 +962,13 @@ function HomePage() {
           />
 
           <div className="container-x relative">
+            {/* Discreet free lead-magnet capture — "A Local's Map: Best
+              Day Trips from Lisbon". Sits inside the Final CTA section
+              so the approved 8-block homepage structure stays intact. */}
+            <div className="mb-12 md:mb-16">
+              <InlineEmailCapture />
+            </div>
+
             {/* Chapter divider above the card — gold dot + flanking rules */}
             <div className="reveal max-w-md mx-auto mb-10 md:mb-14" aria-hidden="true">
               <div className="chapter-divider">
