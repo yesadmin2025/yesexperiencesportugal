@@ -301,14 +301,6 @@ export function StudioLivePreview() {
           })}
         </ul>
 
-        {/* Quality badge — small trust signal sitting on the map */}
-        <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--charcoal-deep)]/75 px-2.5 py-1 backdrop-blur-[2px]">
-          <ShieldCheck size={11} className="text-[color:var(--gold)]" aria-hidden="true" />
-          <span className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)] tabular-nums">
-            Quality 94
-          </span>
-        </div>
-
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 text-[color:var(--ivory)]/90">
           <p className="text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
             Today's draft
