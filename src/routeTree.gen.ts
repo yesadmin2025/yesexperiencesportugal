@@ -37,6 +37,7 @@ import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as ITokenRouteImport } from './routes/i.$token'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
 import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
 import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
@@ -58,6 +59,9 @@ import { Route as AdminBokunMappingRouteImport } from './routes/admin.bokun-mapp
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -202,6 +206,11 @@ const ITokenRoute = ITokenRouteImport.update({
   path: '/i/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const E2ePostmessageProbeRoute = E2ePostmessageProbeRouteImport.update({
   id: '/e2e/postmessage-probe',
   path: '/e2e/postmessage-probe',
@@ -307,6 +316,23 @@ const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
   path: '/i/$token',
   getParentRoute: () => StudioV2Route,
 } as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -366,17 +392,21 @@ export interface FileRoutesByFullPath {
   '/api/verify-hero': typeof ApiVerifyHeroRoute
   '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/i/$token': typeof ITokenRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -420,17 +450,21 @@ export interface FileRoutesByTo {
   '/api/verify-hero': typeof ApiVerifyHeroRoute
   '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/i/$token': typeof ITokenRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -475,17 +509,21 @@ export interface FileRoutesById {
   '/api/verify-hero': typeof ApiVerifyHeroRoute
   '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/i/$token': typeof ITokenRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -531,17 +569,21 @@ export interface FileRouteTypes {
     | '/api/verify-hero'
     | '/checkout/$token'
     | '/e2e/postmessage-probe'
+    | '/email/unsubscribe'
     | '/i/$token'
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -585,17 +627,21 @@ export interface FileRouteTypes {
     | '/api/verify-hero'
     | '/checkout/$token'
     | '/e2e/postmessage-probe'
+    | '/email/unsubscribe'
     | '/i/$token'
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   id:
     | '__root__'
     | '/'
@@ -639,17 +685,21 @@ export interface FileRouteTypes {
     | '/api/verify-hero'
     | '/checkout/$token'
     | '/e2e/postmessage-probe'
+    | '/email/unsubscribe'
     | '/i/$token'
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -694,14 +744,18 @@ export interface RootRouteChildren {
   ApiVerifyHeroRoute: typeof ApiVerifyHeroRoute
   CheckoutTokenRoute: typeof CheckoutTokenRoute
   E2ePostmessageProbeRoute: typeof E2ePostmessageProbeRoute
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ITokenRoute: typeof ITokenRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -902,6 +956,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ITokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/e2e/postmessage-probe': {
       id: '/e2e/postmessage-probe'
       path: '/e2e/postmessage-probe'
@@ -1049,6 +1110,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioV2ITokenRouteImport
       parentRoute: typeof StudioV2Route
     }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -1151,25 +1233,19 @@ const rootRouteChildren: RootRouteChildren = {
   ApiVerifyHeroRoute: ApiVerifyHeroRoute,
   CheckoutTokenRoute: CheckoutTokenRoute,
   E2ePostmessageProbeRoute: E2ePostmessageProbeRoute,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ITokenRoute: ITokenRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
