@@ -568,8 +568,11 @@ function HomePage() {
                 )}
               </ul>
             </div>
+
+            <GuestQuotes />
           </div>
         </section>
+
 
         <FourWaysIn />
 
