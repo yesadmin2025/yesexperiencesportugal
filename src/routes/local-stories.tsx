@@ -115,7 +115,7 @@ function Page() {
                   </Link>
                 </article>
               ))}
-              {posts?.map((p) => (
+              {posts?.filter((p) => !LOCAL_STORIES_ARTICLES.some((a) => a.slug === p.slug)).map((p) => (
                 <article key={p.slug} className="group reveal-stagger">
                   <Link
                     to="/local-stories/$slug"
