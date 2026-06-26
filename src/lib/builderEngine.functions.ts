@@ -160,14 +160,14 @@ export const narrateBuilderRoute = createServerFn({ method: "POST" })
       region: data.regionKey,
     });
 
-    // No provider configured — fallback only
-    if (!openaiKey && !lovableKey) {
+    // Rate-limited or no provider — return deterministic fallback (no AI call).
+    if (!rl.ok || (!openaiKey && !lovableKey)) {
       await logAiUsage({
         provider: "none",
         feature: "builder_narrative",
-        status: "fallback",
+        status: rl.ok ? "fallback" : "rate_limited",
         configHash,
-        errorCode: "no_provider",
+        errorCode: rl.ok ? "no_provider" : "rate_limited",
       });
       return { narrative: fallback, source: "fallback" as const };
     }
