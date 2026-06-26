@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generateStoryOpener } from "@/lib/studio-v2/story.functions";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import type { TravelerProfile } from "@/lib/studio-v2/profile";
 import type { SceneSignal } from "@/lib/studio-v2/intent-infer";
 
