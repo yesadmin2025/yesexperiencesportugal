@@ -681,6 +681,7 @@ export function StudioV3() {
             returnUrl: `${origin}/studio-v3?checkout=success`,
             cancelUrl: `${origin}/studio-v3?checkout=cancelled`,
             environment: "sandbox",
+            flow: "studio",
           },
         });
         if (error) throw error;
