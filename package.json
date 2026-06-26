@@ -4,10 +4,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "postinstall": "node scripts/ensure-cheerio-entities.mjs",
-    "predev": "node scripts/ensure-cheerio-entities.mjs && node scripts/check-route-imports.mjs && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs",
+    "predev": "node scripts/check-route-imports.mjs && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs",
     "dev": "vite dev",
-    "prebuild": "node scripts/ensure-cheerio-entities.mjs && node scripts/check-route-imports.mjs && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs && bunx vitest run src/__tests__/hero-a11y-axe.test.tsx --reporter=dot",
+    "prebuild": "node scripts/check-route-imports.mjs && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs && bunx vitest run src/__tests__/hero-a11y-axe.test.tsx --reporter=dot",
     "a11y:hero": "vitest run src/__tests__/hero-a11y-axe.test.tsx",
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -129,22 +128,13 @@
   },
   "pnpm": {
     "overrides": {
-      "entities": "4.5.0",
-      "cheerio>htmlparser2>entities": "7.0.1",
-      "cheerio>entities": "7.0.1"
+      "entities": "4.5.0"
     }
   },
   "overrides": {
-    "entities": "4.5.0",
-    "cheerio": {
-      "entities": "7.0.1",
-      "htmlparser2": {
-        "entities": "7.0.1"
-      }
-    }
+    "entities": "4.5.0"
   },
   "resolutions": {
-    "entities": "4.5.0",
-    "cheerio/**/entities": "7.0.1"
+    "entities": "4.5.0"
   }
 }

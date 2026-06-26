@@ -28,14 +28,6 @@ export default defineConfig({
           process.cwd(),
           "node_modules/entities/lib/encode.js",
         ),
-        "entities/decode": path.resolve(
-          process.cwd(),
-          "node_modules/entities/lib/decode.js",
-        ),
-        "entities/escape": path.resolve(
-          process.cwd(),
-          "node_modules/entities/lib/encode.js",
-        ),
         entities: path.resolve(process.cwd(), "node_modules/entities"),
       },
     },
