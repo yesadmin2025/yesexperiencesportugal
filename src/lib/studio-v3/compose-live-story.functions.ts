@@ -18,6 +18,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/rateLimit.server";
 
 const inputSchema = z.object({
   firstName: z.string().trim().max(32).nullable().optional(),
@@ -29,6 +30,7 @@ const inputSchema = z.object({
   interests: z.array(z.string().trim().max(40)).max(8).optional(),
   rhythm: z.string().trim().max(40).nullable().optional(),
   investment: z.string().trim().max(40).nullable().optional(),
+  sessionId: z.string().min(8).max(64),
 });
 
 type Input = z.infer<typeof inputSchema>;
