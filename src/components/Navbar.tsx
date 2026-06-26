@@ -160,32 +160,66 @@ export function Navbar() {
       {open && (
         <div
           id="mobile-nav"
-          className="lg:hidden border-t border-[color:var(--charcoal)]/[0.06]"
+          className="lg:hidden flex flex-col border-t border-[color:var(--charcoal)]/[0.06] overflow-hidden"
           style={{
+            height: "calc(100vh - 64px)",
             background: "rgba(247, 243, 236, 0.96)",
             backdropFilter: "blur(14px) saturate(1.05)",
             WebkitBackdropFilter: "blur(14px) saturate(1.05)",
           }}
         >
-          <div className="container-x py-7 flex flex-col gap-5 text-sm">
-            {mobileLinks.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setOpen(false)}
-                className={`text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]${n.hidden ? " hidden" : ""}`}
-                style={{ fontWeight: 380 }}
-                activeProps={{ className: "text-[color:var(--teal)]" }}
-              >
-                {n.label}
-              </Link>
-            ))}
+          <div className="flex-1 overflow-y-auto">
+            <div className="container-x py-7 flex flex-col gap-5 text-sm">
+              {mobilePrimaryLinks.map((n) => (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                  style={{ fontWeight: 380 }}
+                  activeProps={{ className: "text-[color:var(--teal)]" }}
+                >
+                  {n.label}
+                </Link>
+              ))}
+              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
+              {mobileSecondaryLinks.map((n) => (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                  style={{ fontWeight: 380 }}
+                  activeProps={{ className: "text-[color:var(--teal)]" }}
+                >
+                  {n.label}
+                </Link>
+              ))}
+              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {mobileSocialLinks.map((n, idx) => (
+                  <a
+                    key={n.label}
+                    href={n.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpen(false)}
+                    className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                    style={{ fontWeight: 380 }}
+                  >
+                    {n.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="container-x py-4 border-t border-[color:var(--charcoal)]/[0.06] shrink-0">
             <CtaButton
               to="/studio-v3"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"
-              className="mt-3"
+              className="w-full"
             >
               Design &amp; Book
             </CtaButton>
