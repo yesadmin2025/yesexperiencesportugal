@@ -128,13 +128,22 @@
   },
   "pnpm": {
     "overrides": {
-      "entities": "4.5.0"
+      "entities": "4.5.0",
+      "cheerio>htmlparser2>entities": "7.0.1",
+      "cheerio>entities": "7.0.1"
     }
   },
   "overrides": {
-    "entities": "4.5.0"
+    "entities": "4.5.0",
+    "cheerio": {
+      "entities": "7.0.1",
+      "htmlparser2": {
+        "entities": "7.0.1"
+      }
+    }
   },
   "resolutions": {
-    "entities": "4.5.0"
+    "entities": "4.5.0",
+    "cheerio/**/entities": "7.0.1"
   }
 }
