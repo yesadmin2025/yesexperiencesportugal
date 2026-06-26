@@ -121,6 +121,12 @@ const narrateSchema = z.object({
 export const narrateBuilderRoute = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => narrateSchema.parse(input))
   .handler(async ({ data }) => {
+    const rl = await rateLimit({
+      sessionId: data.sessionId,
+      bucket: "builder_narrate",
+      limit: 10,
+      windowSec: 300,
+    });
     const openaiKey = process.env.OPENAI_API_KEY;
     const lovableKey = process.env.LOVABLE_API_KEY;
     const { regions, stops, rules, compatibility } = await loadCatalog();
