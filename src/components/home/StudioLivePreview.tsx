@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Wine, Users, Clock3, Sparkles, MapPin, ArrowRight, ShieldCheck, Plus } from "lucide-react";
+import { Wine, Users, Clock3, Sparkles, MapPin, ArrowRight, Plus } from "lucide-react";
 import { useScrollDebugFlags } from "@/lib/scroll-debug";
 
 /**
@@ -46,8 +46,8 @@ const FALLBACK_LEN = 260;
 
 // Preview-only figures. Marked as a draft on screen so we never imply a
 // final, payable quote — actual pricing lands at /builder + Bokun.
-const DRAFT_STEP = 3;
-const DRAFT_STEPS_TOTAL = 11;
+const DRAFT_STEP = 2;
+const DRAFT_STEPS_TOTAL = 3;
 const DRAFT_INVESTMENT_EUR = 145;
 const DRAFT_PARTY = 2;
 
@@ -111,7 +111,7 @@ export function StudioLivePreview() {
       data-active={renderedActive ? "true" : "false"}
       className="studio-live relative overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]"
       role="img"
-      aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, draft investment one hundred and forty-five euros per guest"
+      aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, your day so far one hundred and forty-five euros per guest"
     >
       {/* ── Header strip — stepper + live status ─────────────────── */}
       <div className="relative z-20 flex items-center justify-between gap-3 border-b border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/90 px-4 md:px-5 py-2.5 md:py-3 backdrop-blur-[2px]">
