@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assembleReveal } from "./driftEngine.server";
 import { sanitizeConfidence } from "@/lib/drift/inference";
+import { rateLimit } from "@/lib/rateLimit.server";
 
 /**
  * Drift engine — Phase 2 server functions.
@@ -9,10 +10,9 @@ import { sanitizeConfidence } from "@/lib/drift/inference";
  *   - revealJourney: compose final day + AI story + DNA, now powered by the
  *     adaptive confidence map (not just explicit profile fields).
  *
- * Scene routing remains client-side (chapter graph), but every dimension is
- * scored against confidence so the composer/DNA layer can act on soft
- * signals collected during drift. The predictive layer (tonalRegister +
- * intensityPreference + locale) influences AI tone and length, never facts.
+ * Anonymous endpoint protected by a per-session rate limit (5 calls / 60s)
+ * to prevent AI credit exhaustion. The handler always returns a deterministic
+ * composition; AI tone is layered on top inside assembleReveal.
  */
 
 const profileSchema = z
@@ -29,16 +29,32 @@ const profileSchema = z
     locale: z.enum(["pt", "en", "es", "fr"]).optional(),
     tonalRegister: z.enum(["intimate", "expansive", "playful", "ritual"]).optional(),
     intensityPreference: z.number().min(1).max(5).optional(),
+    sessionId: z.string().min(8).max(64),
   })
   .strict();
 
 export const revealJourney = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => profileSchema.parse(input))
   .handler(async ({ data }) => {
-    const { confidence, locale, tonalRegister, intensityPreference, ...profile } = data;
+    const rl = await rateLimit({
+      sessionId: data.sessionId,
+      bucket: "drift_reveal",
+      limit: 5,
+      windowSec: 60,
+    });
+    const {
+      confidence,
+      locale,
+      tonalRegister,
+      intensityPreference,
+      sessionId: _sid,
+      ...profile
+    } = data;
     return await assembleReveal(profile, sanitizeConfidence(confidence ?? {}), {
       locale: locale ?? "en",
       tonalRegister,
       intensityPreference,
+      skipAi: !rl.ok,
     });
   });
+
