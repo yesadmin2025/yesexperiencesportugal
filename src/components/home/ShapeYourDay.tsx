@@ -3,9 +3,8 @@
  *
  * Sits over the cinematic hero (desktop: bottom-left card; mobile:
  * collapsible bottom button). Three dropdowns (intent · group · pickup)
- * route to /studio-v2 with searchParams, EXCEPT when the user picks a
- * full multi-day journey or "Other" pickup → /bespoke or /studio-v2
- * with an explicit override per spec.
+ * route to /studio-v3 with searchParams, EXCEPT when the user picks a
+ * full multi-day journey → /multi-day, with an explicit override per spec.
  *
  * Strict rules respected:
  * - No raw colors; only brand tokens.

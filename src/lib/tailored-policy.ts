@@ -180,6 +180,6 @@ export function evaluateTailorAdjustment(
 export function routeForRefusal(evaluation: TailorEvaluation): string | null {
   if (evaluation.allowed) return null;
   if (evaluation.route === "studio") return "/studio-v3";
-  if (evaluation.route === "designer") return "/bespoke";
+  if (evaluation.route === "designer") return "/multi-day";
   return null;
 }
