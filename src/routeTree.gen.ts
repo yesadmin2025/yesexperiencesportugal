@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StudioV3RouteImport } from './routes/studio-v3'
@@ -66,6 +67,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TypographyAuditRoute = TypographyAuditRouteImport.update({
   id: '/typography-audit',
   path: '/typography-audit',
@@ -373,6 +379,7 @@ export interface FileRoutesByFullPath {
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -431,6 +438,7 @@ export interface FileRoutesByTo {
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -490,6 +498,7 @@ export interface FileRoutesById {
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -550,6 +559,7 @@ export interface FileRouteTypes {
     | '/studio-v3'
     | '/terms'
     | '/typography-audit'
+    | '/unsubscribe'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -608,6 +618,7 @@ export interface FileRouteTypes {
     | '/studio-v3'
     | '/terms'
     | '/typography-audit'
+    | '/unsubscribe'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -666,6 +677,7 @@ export interface FileRouteTypes {
     | '/studio-v3'
     | '/terms'
     | '/typography-audit'
+    | '/unsubscribe'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -725,6 +737,7 @@ export interface RootRouteChildren {
   StudioV3Route: typeof StudioV3Route
   TermsRoute: typeof TermsRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBokunMappingRoute: typeof AdminBokunMappingRoute
   AdminBookingsRoute: typeof AdminBookingsRoute
@@ -760,6 +773,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/typography-audit': {
       id: '/typography-audit'
       path: '/typography-audit'
@@ -1214,6 +1234,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudioV3Route: StudioV3Route,
   TermsRoute: TermsRoute,
   TypographyAuditRoute: TypographyAuditRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBokunMappingRoute: AdminBokunMappingRoute,
   AdminBookingsRoute: AdminBookingsRoute,
