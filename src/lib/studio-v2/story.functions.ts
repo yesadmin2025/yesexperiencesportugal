@@ -57,6 +57,8 @@ function fallback(input: StoryInput): { story: string } {
 export const generateStoryOpener = createServerFn({ method: "POST" })
   .inputValidator((data: StoryInput) => {
     if (!data || typeof data !== "object") throw new Error("invalid input");
+    const sid = typeof data.sessionId === "string" ? data.sessionId.trim() : "";
+    if (sid.length < 8 || sid.length > 64) throw new Error("invalid sessionId");
     return {
       name: typeof data.name === "string" ? data.name.slice(0, 40) : "",
       intent: String(data.intent ?? "relaxed_scenic"),
@@ -64,9 +66,17 @@ export const generateStoryOpener = createServerFn({ method: "POST" })
       region: String(data.region ?? "arrabida"),
       pax: Math.max(1, Math.min(12, Number(data.pax) || 2)),
       signals: Array.isArray(data.signals) ? data.signals.slice(0, 8) : [],
+      sessionId: sid,
     } satisfies StoryInput;
   })
   .handler(async ({ data }) => {
+    const rl = await rateLimit({
+      sessionId: data.sessionId,
+      bucket: "studio_v2_story",
+      limit: 5,
+      windowSec: 60,
+    });
+    if (!rl.ok) return fallback(data);
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) return fallback(data);
 
