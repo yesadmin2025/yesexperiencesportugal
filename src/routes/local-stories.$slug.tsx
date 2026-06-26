@@ -3,6 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
+import {
+  getLocalStoryArticle,
+  type LocalStoryArticle,
+} from "@/content/local-stories-articles";
 
 type JournalPostFull = {
   slug: string;
@@ -30,9 +35,68 @@ async function fetchPost(slug: string): Promise<JournalPostFull | null> {
   return (data ?? null) as JournalPostFull | null;
 }
 
+const BASE = "https://yesexperiencesportugal.com";
+
+function articleJsonLd(a: LocalStoryArticle) {
+  const url = `${BASE}/local-stories/${a.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: a.h1,
+    name: a.title,
+    description: a.metaDescription,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    datePublished: a.datePublished,
+    dateModified: a.datePublished,
+    inLanguage: "en",
+    author: {
+      "@type": "Organization",
+      name: "YES Experiences Portugal",
+      url: BASE,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "YES Experiences Portugal",
+      url: BASE,
+      logo: {
+        "@type": "ImageObject",
+        url: `${BASE}/favicon.ico`,
+      },
+    },
+  };
+}
+
 export const Route = createFileRoute("/local-stories/$slug")({
   head: ({ params }) => {
-    const url = `https://yesexperiencesportugal.com/local-stories/${params.slug}`;
+    const url = `${BASE}/local-stories/${params.slug}`;
+    const article = getLocalStoryArticle(params.slug);
+
+    if (article) {
+      return {
+        meta: [
+          { title: article.title },
+          { name: "description", content: article.metaDescription },
+          { property: "og:title", content: article.title },
+          { property: "og:description", content: article.metaDescription },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "article" },
+          { property: "article:published_time", content: article.datePublished },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [
+          jsonLdScript(articleJsonLd(article)),
+          jsonLdScript(
+            breadcrumbLd([
+              { name: "Home", path: "/" },
+              { name: "Local Stories", path: "/local-stories" },
+              { name: article.h1, path: `/local-stories/${article.slug}` },
+            ]),
+          ),
+        ],
+      };
+    }
+
     return {
       meta: [
         { title: `Local Story — YES experiences Portugal` },
@@ -54,6 +118,99 @@ export const Route = createFileRoute("/local-stories/$slug")({
 
 function Page() {
   const { slug } = Route.useParams();
+  const article = getLocalStoryArticle(slug);
+
+  // Static SEO articles render directly (no DB needed).
+  if (article) {
+    return <StaticArticleView article={article} />;
+  }
+
+  return <DbPostView slug={slug} />;
+}
+
+function StaticArticleView({ article }: { article: LocalStoryArticle }) {
+  return (
+    <SiteLayout>
+      <article>
+        <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
+          <div className="container-x max-w-3xl text-center">
+            <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
+              {article.eyebrow}
+            </span>
+            <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
+              {article.h1}
+            </h1>
+            {article.standfirst && (
+              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
+                {article.standfirst}
+              </p>
+            )}
+          </div>
+        </header>
+
+        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+          <div className="container-x max-w-2xl">
+            <div className="prose-yes">
+              {article.sections.map((s, i) => (
+                <div key={i} className="mb-12">
+                  <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.6rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
+                    {s.heading}
+                  </h2>
+                  <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+                    {s.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
+              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+                Travel this story
+              </span>
+              <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
+                {article.ctaLead}
+              </p>
+              <CtaButton
+                to="/tours/$tourId"
+                params={{ tourId: article.signatureSlug }}
+                variant="primary"
+              >
+                {article.ctaLabel}
+              </CtaButton>
+
+              {article.relatedSignatures && article.relatedSignatures.length > 0 && (
+                <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                  {article.relatedSignatures.map((r) => (
+                    <li key={r.slug}>
+                      <Link
+                        to="/tours/$tourId"
+                        params={{ tourId: r.slug }}
+                        className="hover:text-[color:var(--teal)] transition-colors"
+                      >
+                        {r.label} →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </aside>
+
+            <nav className="mt-16 text-center">
+              <Link
+                to="/local-stories"
+                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
+              >
+                ← All Local Stories
+              </Link>
+            </nav>
+          </div>
+        </section>
+      </article>
+    </SiteLayout>
+  );
+}
+
+function DbPostView({ slug }: { slug: string }) {
   const { data: post, isLoading } = useQuery({
     queryKey: ["journal_post", slug],
     queryFn: () => fetchPost(slug),
@@ -74,7 +231,6 @@ function Page() {
     throw notFound();
   }
 
-  // Render body as paragraphs (simple markdown-lite: split by blank line)
   const paragraphs = post.body
     .split(/\n\s*\n/)
     .map((p) => p.trim())
@@ -83,7 +239,6 @@ function Page() {
   return (
     <SiteLayout>
       <article>
-        {/* Hero */}
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             {post.region && (
@@ -113,7 +268,6 @@ function Page() {
           )}
         </header>
 
-        {/* Body */}
         <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             {post.excerpt && (
@@ -132,7 +286,6 @@ function Page() {
               ))}
             </div>
 
-            {/* Signature link (when set) */}
             {post.signature_slug && (
               <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
                 <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
