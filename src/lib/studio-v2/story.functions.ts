@@ -11,6 +11,7 @@
  */
 
 import { createServerFn } from "@tanstack/react-start";
+import { rateLimit } from "@/lib/rateLimit.server";
 
 interface StoryInput {
   name?: string; // optional, may be ""
@@ -19,6 +20,7 @@ interface StoryInput {
   region: string; // RegionKey
   pax: number;
   signals: Array<{ sceneId: string; tappedFragmentId: string; lingerMs: number }>;
+  sessionId: string;
 }
 
 const FALLBACK_INTENT_LINE: Record<string, string> = {
