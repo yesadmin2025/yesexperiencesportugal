@@ -34,9 +34,32 @@ interface Body {
 
 type Flow = "studio" | "signature" | "tailor";
 
+const VALID_FLOWS: Flow[] = ["studio", "signature", "tailor"];
+
 function resolveFlow(body: Body): Flow {
   if (body.flow === "studio" || body.flow === "signature" || body.flow === "tailor") return body.flow;
   return body.tailored ? "tailor" : "signature";
+}
+
+/**
+ * Validate `flow` against `tailored`. Returns an error message or null.
+ * - Unknown flow values are rejected.
+ * - `tailor` requires `tailored === true`.
+ * - `studio` / `signature` require `tailored !== true`.
+ */
+function validateFlow(body: Body): string | null {
+  if (body.flow !== undefined) {
+    if (typeof body.flow !== "string" || !VALID_FLOWS.includes(body.flow as Flow)) {
+      return `Invalid flow: must be one of ${VALID_FLOWS.join(", ")}`;
+    }
+    if (body.flow === "tailor" && body.tailored !== true) {
+      return "Flow mismatch: 'tailor' requires tailored=true";
+    }
+    if ((body.flow === "studio" || body.flow === "signature") && body.tailored === true) {
+      return `Flow mismatch: '${body.flow}' cannot be used with tailored=true`;
+    }
+  }
+  return null;
 }
 
 const FLOW_COPY: Record<Flow, { label: string; eyebrow: string; submit: string }> = {
