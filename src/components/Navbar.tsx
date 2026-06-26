@@ -8,12 +8,33 @@ import { CtaButton } from "@/components/ui/CtaButton";
 const desktopLinks = [
   { to: "/experiences", label: "Experiences", hidden: false },
   { to: "/studio-v3", label: "Studio", hidden: false },
-  { to: "/proposals", label: "Proposals & Celebrations", hidden: false },
-  { to: "/corporate", label: "Corporate", hidden: false },
   { to: "/multi-day", label: "Travel Designer", hidden: false },
-  { to: "/local-stories", label: "Local Stories", hidden: false },
-  { to: "/about", label: "About", hidden: false },
-  { to: "/contact", label: "Contact", hidden: false },
+  { to: "/corporate", label: "Corporate", hidden: false },
+  { to: "/proposals", label: "Moments", hidden: false },
+];
+
+const mobilePrimaryLinks = [
+  { to: "/experiences", label: "Experiences" },
+  { to: "/studio-v3", label: "Studio" },
+  { to: "/multi-day", label: "Travel Designer" },
+  { to: "/corporate", label: "Corporate" },
+  { to: "/proposals", label: "Moments" },
+];
+
+const mobileSecondaryLinks = [
+  { to: "/about", label: "About" },
+  { to: "/local-stories", label: "Local Stories" },
+  { to: "/contact", label: "Contact" },
+];
+
+const mobileSocialLinks = [
+  { href: "https://wa.me/351911889992", label: "WhatsApp" },
+  { href: "https://www.instagram.com/yesexperiencesportugal", label: "Instagram" },
+  {
+    href: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+    label: "Tripadvisor",
+  },
+  { href: "https://www.google.com/maps?cid=03208810033820295776", label: "Google" },
 ];
 
 const mobileLinks = desktopLinks;
