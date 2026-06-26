@@ -646,12 +646,13 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Only real, curated Viator gallery — no themed stop fallbacks.
-  if (meta?.gallery?.length) {
-    meta.gallery.forEach((g, i) => push(g, i === 0 ? tour.title : `${tour.title} — ${i + 1}`));
-  }
+  // Source priority: locally-uploaded YES photos (`meta.localGallery`),
+  // otherwise the curated Viator gallery. Both flow through getTourGallery
+  // so alt text is always tour-name + location aware.
+  for (const p of getTourGallery(tour, meta)) push(p.src, p.alt);
 
   if (photos.length < 3) return null;
+
 
   return (
     <section className="py-14 md:py-20">
