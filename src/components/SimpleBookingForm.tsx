@@ -42,6 +42,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           cancelUrl: `${origin}/tours/${tour.id}?checkout=cancelled`,
           environment: "sandbox",
           tailored: false,
+          flow: "signature",
         },
       });
       if (error) throw error;
