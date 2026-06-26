@@ -74,6 +74,10 @@ export function WhyYesPillars() {
             Portugal feels different{" "}
             <span className="italic font-normal text-[color:var(--teal)]">to everyone.</span>
           </h2>
+          <p className="mt-5 md:mt-6 text-[14px] md:text-[15px] leading-[1.62] text-[color:var(--charcoal-soft)] max-w-xl mx-auto">
+            YES began with one person and one belief — that Portugal is best shown the way a local
+            would show a friend. Real places, real people, nothing staged.
+          </p>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 

@@ -52,13 +52,11 @@ function Page() {
           <img src={img} alt="" loading="lazy" className="w-full aspect-[4/5] object-cover" />
           <div>
             <p className="text-[color:var(--charcoal-soft)] leading-relaxed">
-              YES experiences Portugal is a small studio of designers, hosts and local experts. We
-              don't sell tours. We craft journeys around the people taking them — quietly,
-              attentively, with absolute care for detail.
-            </p>
-            <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              Every experience is designed in Portugal, by people who live here, for travelers who
-              want something more than a checklist.
+              YES Experiences Portugal started from scratch, built by a Portuguese host who fell for
+              this work and never looked back. The idea was simple and a little stubborn: instead of
+              the tours everyone already runs, create something different — intimate, real, and
+              honestly Portuguese. Days that show the best of the country the way a local would show a
+              close friend, not the way a brochure sells it.
             </p>
             <p className="mt-8 serif italic text-2xl text-[color:var(--teal)]">
               Portugal, designed around you.
