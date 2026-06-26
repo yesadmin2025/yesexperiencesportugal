@@ -163,7 +163,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       <button
         type="button"
-        onClick={handleReserve}
+        onClick={() => setDetailsOpen(true)}
         disabled={pending}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
       >
@@ -196,6 +196,16 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           Tailor this Signature
         </Link>
       </div>
+
+      <FinalDetailsDialog
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        submitting={pending}
+        initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        onConfirm={async (details) => {
+          await handleReserve(details);
+        }}
+      />
     </div>
   );
 }
