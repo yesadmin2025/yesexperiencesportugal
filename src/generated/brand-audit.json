@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T23:04:42.243Z",
+  "generatedAt": "2026-06-26T23:12:16.065Z",
   "filesScanned": 441,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1268,7 +1268,7 @@
     },
     {
       "file": "src/components/home/WhyYesPillars.tsx",
-      "line": 84,
+      "line": 88,
       "col": 112,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
