@@ -24,6 +24,7 @@ import { CinematicHero } from "@/components/home/CinematicHero";
 import { FourWaysIn } from "@/components/home/FourWaysIn";
 import { WhyYesPillars } from "@/components/home/WhyYesPillars";
 import { RecentJourney } from "@/components/home/RecentJourney";
+import { InlineEmailCapture, ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
