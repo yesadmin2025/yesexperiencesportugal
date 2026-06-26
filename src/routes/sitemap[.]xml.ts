@@ -34,6 +34,12 @@ export const Route = createFileRoute("/sitemap.xml")({
           changefreq: "monthly",
           priority: "0.7",
         }));
+        const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.map((a) => ({
+          path: `/local-stories/${a.slug}`,
+          lastmod: a.datePublished,
+          changefreq: "monthly",
+          priority: "0.7",
+        }));
 
         let postEntries: SitemapEntry[] = [];
         try {
