@@ -242,7 +242,8 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: "/video/film/yes-hero-poster.jpg",
+        href: "/video/hero-sunset-road-poster.webp",
+        type: "image/webp",
         fetchPriority: "high",
       },
     ],
