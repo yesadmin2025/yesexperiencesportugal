@@ -236,6 +236,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   // Fires when at least feeling+companions exist. Debounced 700ms.
   // Re-fires on any meaningful state change. Graceful fallback if it errors.
   const fetchStory = useServerFn(composeLiveStory);
+  const sessionId = useBuilderSessionId();
   const [aiStory, setAiStory] = useState<{ text: string; source: "ai" | "fallback" } | null>(null);
   const [storyLoading, setStoryLoading] = useState(false);
   const reqIdRef = useRef(0);
