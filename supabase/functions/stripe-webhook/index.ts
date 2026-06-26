@@ -202,6 +202,9 @@ Deno.serve(async (req) => {
         } else {
           const [firstName, ...rest] = (customerName ?? "Guest Guest").split(" ");
           const lastName = rest.join(" ") || "—";
+          const isTailored = meta.tailored === "1";
+          const stopsLine = meta.stops ? ` · Stops: ${meta.stops.replace(/\|/g, ", ")}` : "";
+          const tailorPrefix = isTailored ? "[TAILORED — operator to verify stop changes] " : "";
           const r = await reserveAndConfirm({
             productId: mapping.bokun_product_id,
             availabilityId: slot.id,
@@ -217,17 +220,22 @@ Deno.serve(async (req) => {
               language: "EN",
             },
             externalBookingReference: session.id,
-            notes: `YES Studio booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}`.slice(
-              0,
-              500,
-            ),
+            notes:
+              `${tailorPrefix}YES booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}${stopsLine}`.slice(
+                0,
+                500,
+              ),
           });
           bokunResult = {
-            status: "confirmed",
+            // Tailored bookings always land in needs_review so the operator
+            // reconciles the stop changes against the base Bokun product.
+            status: isTailored ? "needs_review" : "confirmed",
             booking_id: r.bookingId,
             confirmation: r.confirmationCode,
+            error: isTailored ? "Tailored itinerary — verify stop changes in Bokun" : undefined,
           };
         }
+
       }
     }
   } catch (e) {
