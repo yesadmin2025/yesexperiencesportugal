@@ -102,6 +102,9 @@ Deno.serve(async (req) => {
     if (body.environment !== "sandbox" && body.environment !== "live")
       return jsonError("Invalid environment", 400);
 
+    const flowError = validateFlow(body);
+    if (flowError) return jsonError(flowError, 400);
+
     const allowOrigin =
       validateReturnOrigin(body.returnUrl) && validateReturnOrigin(body.cancelUrl);
     if (!allowOrigin) return jsonError("Return URL not allowed", 400);
