@@ -28,8 +28,37 @@ interface Body {
   priceFromEur: number;
   /** True when the booking comes from the Tailor flow (stop changes applied). */
   tailored?: boolean;
-
+  /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
+  flow?: "studio" | "signature" | "tailor";
 }
+
+type Flow = "studio" | "signature" | "tailor";
+
+function resolveFlow(body: Body): Flow {
+  if (body.flow === "studio" || body.flow === "signature" || body.flow === "tailor") return body.flow;
+  return body.tailored ? "tailor" : "signature";
+}
+
+const FLOW_COPY: Record<Flow, { label: string; eyebrow: string; submit: string }> = {
+  studio: {
+    label: "YES Studio",
+    eyebrow: "Built moment by moment",
+    submit:
+      "Your Studio day is reserved the moment payment clears. We'll confirm the rhythm of the day by email within minutes.",
+  },
+  signature: {
+    label: "YES Signature",
+    eyebrow: "Reserved as designed",
+    submit:
+      "Your Signature day is reserved the moment payment clears. You will receive your confirmation by email within minutes.",
+  },
+  tailor: {
+    label: "YES Tailored",
+    eyebrow: "Tailored stops applied",
+    submit:
+      "Your tailored day is reserved the moment payment clears. Our team will confirm the adjusted stops within 2 hours.",
+  },
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
@@ -80,19 +109,18 @@ Deno.serve(async (req) => {
 
     const stripe = createStripeClient(body.environment);
 
+    const flow = resolveFlow(body);
+    const copy = FLOW_COPY[flow];
+
     const stopsSummary = (body.stopLabels ?? []).slice(0, 6).join(" · ");
-    const description =
-      `${body.guests} guest${body.guests > 1 ? "s" : ""}${stopsSummary ? " · " + stopsSummary : ""}`.slice(
-        0,
-        500,
-      );
-    const productName = `YES Signature — ${body.tourTitle}`.slice(0, 180);
+    const description = `${copy.eyebrow} · ${body.guests} guest${body.guests > 1 ? "s" : ""}${
+      stopsSummary ? " · " + stopsSummary : ""
+    }`.slice(0, 500);
+    const productName = `${copy.label} — ${body.tourTitle}`.slice(0, 180);
 
     const dateLine = body.dateExact ? ` · ${body.dateExact}` : "";
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
-    const submitMessage = body.tailored
-      ? "Your tailored day is reserved the moment payment clears. Our team will confirm the adjusted stops within 2 hours."
-      : "Your Signature day is reserved the moment payment clears. You will receive your confirmation by email within minutes.";
+    const submitMessage = copy.submit;
 
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -132,6 +160,7 @@ Deno.serve(async (req) => {
       ...(body.customerEmail && { customer_email: body.customerEmail }),
       metadata: {
         booking_type: "signature",
+        flow,
         tour_id: body.tourId,
         guests: String(body.guests),
         per_pax_eur: String(eurPerPax),
@@ -142,13 +171,23 @@ Deno.serve(async (req) => {
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
       },
-
     });
 
-    return new Response(JSON.stringify({ url: session.url, sessionId: session.id, bokunMapped }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        url: session.url,
+        sessionId: session.id,
+        bokunMapped,
+        flow,
+        productName,
+        lineItemDescription: description,
+        submitMessage,
+      }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   } catch (e) {
     console.error("create-signature-checkout error:", e);
     return jsonError(e instanceof Error ? e.message : "Unknown error", 500);

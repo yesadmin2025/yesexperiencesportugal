@@ -205,6 +205,8 @@ function TailorPage() {
           cancelUrl: `${origin}/tours/${tour.id}/tailor?checkout=cancelled`,
           environment: "sandbox",
           tailored: true,
+          flow: "tailor",
+
 
         },
       });
