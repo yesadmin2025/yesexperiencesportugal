@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-26T18:54:36.500Z",
-  "filesScanned": 432,
+  "generatedAt": "2026-06-26T19:06:04.934Z",
+  "filesScanned": 440,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 286,
-    "approved": 66,
-    "allowlisted": 52,
-    "mismatch": 168
+    "total": 291,
+    "approved": 69,
+    "allowlisted": 53,
+    "mismatch": 169
   },
   "findings": [
     {
@@ -1813,6 +1813,51 @@
       "raw": "#1F1F1F",
       "normalized": "#1f1f1f",
       "snippet": "\"charcoal-deep\": \"#1F1F1F\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/booking-confirmation.tsx",
+      "line": 28,
+      "col": 15,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const TEAL = '#295B61'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/booking-confirmation.tsx",
+      "line": 29,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "const GOLD = '#C9A96A'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/booking-confirmation.tsx",
+      "line": 30,
+      "col": 19,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "const CHARCOAL = '#2E2E2E'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/booking-confirmation.tsx",
+      "line": 31,
+      "col": 15,
+      "raw": "#F4EEE2",
+      "normalized": "#f4eee2",
+      "snippet": "const SAND = '#F4EEE2'",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/booking-confirmation.tsx",
+      "line": 168,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, \"Times New Roman\", serif' } as const",
       "status": "allowlisted"
     },
     {
