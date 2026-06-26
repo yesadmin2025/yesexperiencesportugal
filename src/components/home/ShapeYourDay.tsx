@@ -63,9 +63,9 @@ export function ShapeYourDay() {
   }, [expanded]);
 
   const handleSubmit = () => {
-    // Spec: group = full journey → always /bespoke
+    // Spec: group = full journey → always /multi-day
     if (group === "journey") {
-      void navigate({ to: "/bespoke" });
+      void navigate({ to: "/multi-day" });
       return;
     }
     // Spec: pickup = other → /studio-v2 (with note flag) - studio still
@@ -333,7 +333,7 @@ function ShapeYourDayPanel(props: {
           <span aria-hidden="true">→</span>
         </button>
 
-        <Link to="/bespoke" className="syd-secondary">
+        <Link to="/multi-day" className="syd-secondary">
           Or plan a multi-day journey →
         </Link>
       </div>

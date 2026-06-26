@@ -73,7 +73,7 @@ export function Footer() {
               { to: "/experiences", label: "All Experiences" },
               { to: "/day-tours", label: "Day Experiences" },
               { to: "/multi-day", label: "Travel Designer" },
-              { to: "/builder", label: "Experience Studio" },
+              { to: "/studio-v3", label: "Experience Studio" },
             ]}
           />
           <FooterCol

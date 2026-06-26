@@ -76,7 +76,7 @@ const PATHS: Path[] = [
     ),
     body: "Any length, any shape — weddings, honeymoons, family journeys, multi-day Portugal. Composed by a designer.",
     cta: "Begin with a designer",
-    href: "/bespoke",
+    href: "/multi-day",
   },
 ];
 

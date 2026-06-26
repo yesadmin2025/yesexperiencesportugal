@@ -24,11 +24,11 @@ import {
  */
 const FAQS: { q: string; a: ReactNode }[] = [
   {
-    q: "What is the difference between Signature, Studio and Bespoke?",
+    q: "What is the difference between Signature, Studio and Travel Designer?",
     a: (
       <>
         Signature is a ready-to-book private day. Studio designs a private day in real time around
-        your mood, group and rhythm. Bespoke is a multi-day Portugal, composed by a local and
+        your mood, group and rhythm. Travel Designer is a full multi-day Portugal journey, composed by a local and
         delivered as a travel file.
       </>
     ),

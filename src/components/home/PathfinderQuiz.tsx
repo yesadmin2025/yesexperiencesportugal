@@ -514,12 +514,12 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
     };
   }
   return {
-    label: "Bespoke journey",
+    label: "Travel Designer",
     title: "Sounds like you want more than a day.",
     subtitle:
       "Let's plan your Portugal properly — multi-day, fully designed, every night confirmed.",
     pills: ["Multi-day", "Private", "Curated"],
-    ctas: [{ label: "Start Planning", to: "/bespoke", variant: "ivory" }],
+    ctas: [{ label: "Start Planning", to: "/multi-day", variant: "ivory" }],
   };
 }
 
