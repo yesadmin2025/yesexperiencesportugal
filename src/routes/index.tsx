@@ -618,7 +618,7 @@ function HomePage() {
                 <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                   Choose mood, group and rhythm. The Studio draws a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  real timings and a live price — then confirms in a single tap.
+                  real timings and a live price — then reserve when the route is ready — final price shown before payment.
                 </p>
 
                 {/* Three Studio inputs — small index, signposts the
