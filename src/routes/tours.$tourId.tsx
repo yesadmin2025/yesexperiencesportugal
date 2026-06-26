@@ -549,6 +549,11 @@ function RouteMap({ tour }: { tour: SignatureTour }) {
               ))}
             </ol>
           </div>
+
+          <p className="px-6 pb-6 pt-2 text-[13px] text-[color:var(--ivory)]/80 max-w-3xl leading-relaxed">
+            Your day is shaped from these stops — your guide sets the order and pace around you.
+            Not every stop, every time.
+          </p>
         </div>
       </div>
     </section>
