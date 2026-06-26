@@ -41,6 +41,7 @@ import {
   type StudioV3State,
 } from "./types";
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { TimelineView } from "./TimelineView";
