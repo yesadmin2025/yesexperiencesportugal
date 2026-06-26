@@ -60,7 +60,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           /* tolerate db failures — static entries still ship */
         }
 
-        const entries = [...staticEntries, ...tourEntries, ...postEntries];
+        const staticSlugSet = new Set(LOCAL_STORIES_ARTICLES.map((a) => `/local-stories/${a.slug}`));
+        const dedupedDbPosts = postEntries.filter((e) => !staticSlugSet.has(e.path));
+        const entries = [...staticEntries, ...tourEntries, ...staticArticleEntries, ...dedupedDbPosts];
         const urls = entries.map((e) =>
           [
             `  <url>`,
