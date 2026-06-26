@@ -1994,6 +1994,7 @@ function ConvergencePhase({
   locale: DriftLocale;
   onExit?: () => void;
 }) {
+  const sessionId = useBuilderSessionId();
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
   const day = useMemo(
     () =>
@@ -2022,6 +2023,7 @@ function ConvergencePhase({
   useEffect(() => {
     let alive = true;
     void recordDriftEvent("drift_complete");
+    if (!sessionId) return;
     reveal({
       data: {
         name: profile.name,
@@ -2036,6 +2038,7 @@ function ConvergencePhase({
         locale,
         tonalRegister: prediction?.tonalRegister,
         intensityPreference: prediction?.intensity,
+        sessionId,
       },
     })
       .then((res) => {

@@ -18,6 +18,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { rateLimit } from "@/lib/rateLimit.server";
 
 const inputSchema = z.object({
   firstName: z.string().trim().max(32).nullable().optional(),
@@ -29,6 +30,7 @@ const inputSchema = z.object({
   interests: z.array(z.string().trim().max(40)).max(8).optional(),
   rhythm: z.string().trim().max(40).nullable().optional(),
   investment: z.string().trim().max(40).nullable().optional(),
+  sessionId: z.string().min(8).max(64),
 });
 
 type Input = z.infer<typeof inputSchema>;
@@ -104,6 +106,15 @@ function sanitize(text: string): string {
 export const composeLiveStory = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {
+    const rl = await rateLimit({
+      sessionId: data.sessionId,
+      bucket: "studio_v3_live_story",
+      limit: 10,
+      windowSec: 60,
+    });
+    if (!rl.ok) {
+      return { text: deterministicFallback(data), source: "fallback" as const };
+    }
     const key = process.env.LOVABLE_API_KEY;
     // No key → graceful fallback, never throw to client.
     if (!key) {

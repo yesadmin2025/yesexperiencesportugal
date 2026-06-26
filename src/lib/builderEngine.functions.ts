@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { hashConfig, logAiUsage } from "@/lib/aiAuditLog.server";
+import { rateLimit } from "@/lib/rateLimit.server";
 import {
   type BuilderInput,
   type BuilderRoute,
@@ -114,11 +115,18 @@ const narrateSchema = z.object({
   ]),
   pace: z.enum(["relaxed", "balanced", "full"]),
   regionKey: z.string().min(1).max(64),
+  sessionId: z.string().min(8).max(64),
 });
 
 export const narrateBuilderRoute = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => narrateSchema.parse(input))
   .handler(async ({ data }) => {
+    const rl = await rateLimit({
+      sessionId: data.sessionId,
+      bucket: "builder_narrate",
+      limit: 10,
+      windowSec: 300,
+    });
     const openaiKey = process.env.OPENAI_API_KEY;
     const lovableKey = process.env.LOVABLE_API_KEY;
     const { regions, stops, rules, compatibility } = await loadCatalog();
@@ -152,14 +160,14 @@ export const narrateBuilderRoute = createServerFn({ method: "POST" })
       region: data.regionKey,
     });
 
-    // No provider configured — fallback only
-    if (!openaiKey && !lovableKey) {
+    // Rate-limited or no provider — return deterministic fallback (no AI call).
+    if (!rl.ok || (!openaiKey && !lovableKey)) {
       await logAiUsage({
         provider: "none",
         feature: "builder_narrative",
-        status: "fallback",
+        status: rl.ok ? "fallback" : "rate_limited",
         configHash,
-        errorCode: "no_provider",
+        errorCode: rl.ok ? "no_provider" : "rate_limited",
       });
       return { narrative: fallback, source: "fallback" as const };
     }

@@ -41,6 +41,7 @@ import {
   type StudioV3State,
 } from "./types";
 import { composeLiveStory } from "@/lib/studio-v3/compose-live-story.functions";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { TimelineView } from "./TimelineView";
@@ -235,6 +236,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   // Fires when at least feeling+companions exist. Debounced 700ms.
   // Re-fires on any meaningful state change. Graceful fallback if it errors.
   const fetchStory = useServerFn(composeLiveStory);
+  const sessionId = useBuilderSessionId();
   const [aiStory, setAiStory] = useState<{ text: string; source: "ai" | "fallback" } | null>(null);
   const [storyLoading, setStoryLoading] = useState(false);
   const reqIdRef = useRef(0);
@@ -282,6 +284,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           interests: state.interests,
           rhythm: state.rhythm,
           investment: state.investment,
+          sessionId,
         },
       })
         .then((res) => {
