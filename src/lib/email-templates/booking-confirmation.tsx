@@ -95,9 +95,7 @@ const BookingConfirmation = ({
           <Hr style={hr} />
           <Text style={cardLabel}>Shape of the day</Text>
           <Text style={cardValue}>
-            {stops.length} real stops · {formatHours(totalMinutes)} experience
-            {totalDriveMinutes ? ` · ${totalDriveMinutes} min driving` : ''}
-            {totalKm ? ` · ${totalKm} km` : ''}
+            {`${stops.length} real stops · ${formatHours(totalMinutes)} experience${totalDriveMinutes ? ` · ${totalDriveMinutes} min driving` : ''}${totalKm ? ` · ${totalKm} km` : ''}`}
           </Text>
         </Section>
 
