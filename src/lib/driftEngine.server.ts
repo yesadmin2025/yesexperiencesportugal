@@ -211,7 +211,7 @@ function toneClause(hints: StoryHints): string {
 
 export async function generateRevealStory(input: StoryInput): Promise<RevealStory> {
   const lovableKey = process.env.LOVABLE_API_KEY;
-  if (!lovableKey) return fallbackStory(input);
+  if (input.hints.skipAi || !lovableKey) return fallbackStory(input);
 
   const realStopNames = input.day.stops.map((s) => s.stop.name);
   if (realStopNames.length === 0) return fallbackStory(input);
