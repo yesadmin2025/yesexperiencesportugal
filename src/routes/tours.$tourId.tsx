@@ -722,18 +722,21 @@ const FALLBACK_REVIEWS = [
     text: "Felt like a private day with a Portuguese friend who happens to know everyone. Nothing rushed, nothing generic.",
     author: "Sarah T.",
     date: null as string | null,
+    source: "Google" as const,
   },
   {
     title: "Booked in five minutes",
     text: "We booked in five minutes, confirmed instantly, and the day exceeded every expectation. Quiet luxury done properly.",
     author: "Pierre L.",
     date: null as string | null,
+    source: "Tripadvisor" as const,
   },
   {
     title: "Cared for, end to end",
     text: "Our small group felt completely cared for. Beautiful pace, beautiful stops, beautiful people.",
     author: "Akiko M.",
     date: null as string | null,
+    source: "Viator" as const,
   },
 ];
 
