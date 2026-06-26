@@ -106,7 +106,9 @@ Deno.serve(async (req) => {
         pickup: (body.pickupLabel ?? "").slice(0, 120),
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
+        tailored: body.tailored ? "1" : "0",
       },
+
     });
 
     return new Response(JSON.stringify({ url: session.url, sessionId: session.id }), {
