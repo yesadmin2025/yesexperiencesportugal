@@ -115,6 +115,7 @@ const narrateSchema = z.object({
   ]),
   pace: z.enum(["relaxed", "balanced", "full"]),
   regionKey: z.string().min(1).max(64),
+  sessionId: z.string().min(8).max(64),
 });
 
 export const narrateBuilderRoute = createServerFn({ method: "POST" })
