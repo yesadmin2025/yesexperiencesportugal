@@ -1243,6 +1243,42 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_captures: {
+        Row: {
+          consent: boolean
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          lead_magnet: string
+          locale: string | null
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          consent?: boolean
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          lead_magnet?: string
+          locale?: string | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          consent?: boolean
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          lead_magnet?: string
+          locale?: string | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       studio_ab_assignments: {
         Row: {
           anonymous_id: string
