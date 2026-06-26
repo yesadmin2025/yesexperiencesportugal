@@ -84,7 +84,7 @@ const BookingConfirmation = ({
           <Text style={cardValue}>{formatDate(preferredDate)}</Text>
           <Hr style={hr} />
           <Text style={cardLabel}>Guests</Text>
-          <Text style={cardValue}>{guests ?? 2} {(guests ?? 2) === 1 ? 'guest' : 'guests'}</Text>
+          <Text style={cardValue}>{`${guests ?? 2} ${(guests ?? 2) === 1 ? 'guest' : 'guests'}`}</Text>
           {region ? (
             <>
               <Hr style={hr} />
