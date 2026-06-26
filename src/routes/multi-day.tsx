@@ -28,7 +28,7 @@ export const Route = createFileRoute("/multi-day")({
       {
         property: "og:description",
         content:
-          "Honeymoons, family journeys, weddings, corporate retreats — composed by a designer, supported on the ground.",
+          "Honeymoons, family journeys, multi-region itineraries — composed by a designer, supported on the ground.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
