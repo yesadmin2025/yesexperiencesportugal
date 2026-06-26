@@ -27,6 +27,8 @@ import { RecentJourney } from "@/components/home/RecentJourney";
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
+import { HOMEPAGE_FAQ } from "@/content/faq-data";
+import { faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 
@@ -243,6 +245,7 @@ export const Route = createFileRoute("/")({
         fetchPriority: "high",
       },
     ],
+    scripts: [jsonLdScript(faqPageLd(HOMEPAGE_FAQ))],
   }),
   component: HomePage,
 });
