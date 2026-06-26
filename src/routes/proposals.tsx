@@ -65,7 +65,7 @@ const BLOCKS = [
     title: "For days worth remembering.",
     emotional:
       "Birthdays, anniversaries, honeymoons or family moments — shaped around your rhythm, your people and the way you want to feel Portugal.",
-    practical: "Up to 14 guests · private host · multi-activity planning · flexible scheduling.",
+    practical: "Private host · any group size · multi-activity planning · flexible scheduling.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
     image: imgSintraEstates,
     icon: Sparkles,

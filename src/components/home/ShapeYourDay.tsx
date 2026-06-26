@@ -3,9 +3,8 @@
  *
  * Sits over the cinematic hero (desktop: bottom-left card; mobile:
  * collapsible bottom button). Three dropdowns (intent · group · pickup)
- * route to /studio-v2 with searchParams, EXCEPT when the user picks a
- * full multi-day journey or "Other" pickup → /bespoke or /studio-v2
- * with an explicit override per spec.
+ * route to /studio-v3 with searchParams, EXCEPT when the user picks a
+ * full multi-day journey → /multi-day, with an explicit override per spec.
  *
  * Strict rules respected:
  * - No raw colors; only brand tokens.
@@ -63,9 +62,9 @@ export function ShapeYourDay() {
   }, [expanded]);
 
   const handleSubmit = () => {
-    // Spec: group = full journey → always /bespoke
+    // Spec: group = full journey → always /multi-day
     if (group === "journey") {
-      void navigate({ to: "/bespoke" });
+      void navigate({ to: "/multi-day" });
       return;
     }
     // Spec: pickup = other → /studio-v2 (with note flag) - studio still
@@ -333,7 +332,7 @@ function ShapeYourDayPanel(props: {
           <span aria-hidden="true">→</span>
         </button>
 
-        <Link to="/bespoke" className="syd-secondary">
+        <Link to="/multi-day" className="syd-secondary">
           Or plan a multi-day journey →
         </Link>
       </div>

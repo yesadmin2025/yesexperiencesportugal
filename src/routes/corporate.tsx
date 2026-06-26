@@ -51,7 +51,7 @@ const BLOCKS = [
     emotional:
       "Your team arrives, the day unfolds, nothing feels stitched together. That's the work behind it.",
     practical:
-      "Up to 30 guests · private transport · invoice & DMC support · designed around your goals.",
+      "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
     image: imgArrabidaWineLunch,

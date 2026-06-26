@@ -15,7 +15,7 @@
  *
  * Anything outside these rails routes the guest to a different path:
  *   - "outside the Signature" → Experience Studio (`/studio-v3`)
- *   - "needs human judgement" → Travel Designer (`/bespoke`)
+ *   - "needs human judgement" → Travel Designer (`/multi-day`)
  *
  * This module is pure and safe to import from any layer (UI hooks,
  * server functions, edge functions). It does not fetch — callers
@@ -180,6 +180,6 @@ export function evaluateTailorAdjustment(
 export function routeForRefusal(evaluation: TailorEvaluation): string | null {
   if (evaluation.allowed) return null;
   if (evaluation.route === "studio") return "/studio-v3";
-  if (evaluation.route === "designer") return "/bespoke";
+  if (evaluation.route === "designer") return "/multi-day";
   return null;
 }
