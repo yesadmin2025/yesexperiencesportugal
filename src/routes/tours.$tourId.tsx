@@ -285,7 +285,7 @@ function TourHero({
 function TrustStrip({ meta }: { meta?: ViatorMeta }) {
   const items = [
     { icon: <Shield size={14} />, label: "Instant confirmation" },
-    { icon: <Check size={14} />, label: "No forms. No waiting." },
+    { icon: <Check size={14} />, label: "Instant confirmation · final price shown before payment · a local on WhatsApp." },
     {
       icon: <Star size={14} />,
       label:
