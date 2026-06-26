@@ -18,6 +18,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, tourProductLd, jsonLdScript } from "@/lib/jsonld";
+import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -173,8 +174,10 @@ function TourHero({
   meta: ViatorMeta | undefined;
 }) {
   const heroResolved = resolveImg(tour, "hero");
-  // If we have Viator gallery, use the first image (curated cover) instead.
-  const heroSrc = meta?.gallery?.[0] ?? heroResolved.src;
+  // Prefer locally-uploaded YES Experiences photos when present, then the
+  // curated Viator gallery cover, then the imported tour image.
+  const heroSrc = meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
+  const heroAlt = getHeroAlt(tour, meta);
   return (
     <>
       {/* Breadcrumb */}
@@ -195,12 +198,13 @@ function TourHero({
           <div className="relative aspect-[4/5] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] overflow-hidden shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]">
             <img
               src={heroSrc}
-              alt={tour.title}
+              alt={heroAlt}
               fetchPriority="high"
               decoding="async"
               style={{ objectPosition: tour.focal ?? "50% 50%" }}
               className="w-full h-full object-cover motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
             />
+
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/85 via-[color:var(--charcoal-deep)]/15 to-transparent" />
 
             {/* Top tags */}
@@ -642,12 +646,13 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Only real, curated Viator gallery — no themed stop fallbacks.
-  if (meta?.gallery?.length) {
-    meta.gallery.forEach((g, i) => push(g, i === 0 ? tour.title : `${tour.title} — ${i + 1}`));
-  }
+  // Source priority: locally-uploaded YES photos (`meta.localGallery`),
+  // otherwise the curated Viator gallery. Both flow through getTourGallery
+  // so alt text is always tour-name + location aware.
+  for (const p of getTourGallery(tour, meta)) push(p.src, p.alt);
 
   if (photos.length < 3) return null;
+
 
   return (
     <section className="py-14 md:py-20">
