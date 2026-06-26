@@ -174,8 +174,10 @@ function TourHero({
   meta: ViatorMeta | undefined;
 }) {
   const heroResolved = resolveImg(tour, "hero");
-  // If we have Viator gallery, use the first image (curated cover) instead.
-  const heroSrc = meta?.gallery?.[0] ?? heroResolved.src;
+  // Prefer locally-uploaded YES Experiences photos when present, then the
+  // curated Viator gallery cover, then the imported tour image.
+  const heroSrc = meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
+  const heroAlt = getHeroAlt(tour, meta);
   return (
     <>
       {/* Breadcrumb */}
@@ -196,12 +198,13 @@ function TourHero({
           <div className="relative aspect-[4/5] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] overflow-hidden shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]">
             <img
               src={heroSrc}
-              alt={tour.title}
+              alt={heroAlt}
               fetchPriority="high"
               decoding="async"
               style={{ objectPosition: tour.focal ?? "50% 50%" }}
               className="w-full h-full object-cover motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
             />
+
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/85 via-[color:var(--charcoal-deep)]/15 to-transparent" />
 
             {/* Top tags */}
