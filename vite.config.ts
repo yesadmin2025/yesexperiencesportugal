@@ -5,5 +5,31 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { loadEnv } from "vite";
+import path from "node:path";
 
-export default defineConfig();
+// Load non-VITE_ env vars (e.g. SUPABASE_SERVICE_ROLE_KEY, LOVABLE_API_KEY) into
+// process.env so server routes (email webhook/queue) can read them. Do NOT
+// add these to envDefine — keep them server-only.
+const serverEnv = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
+Object.assign(process.env, serverEnv);
+
+export default defineConfig({
+  vite: {
+    resolve: {
+      alias: {
+        // Pin entities to the hoisted v4.5.0 copy. React Email's htmlparser2
+        // path requires v4.5.0 — v5+ removed entities/lib/decode.js.
+        "entities/lib/decode.js": path.resolve(
+          process.cwd(),
+          "node_modules/entities/lib/decode.js",
+        ),
+        "entities/lib/encode.js": path.resolve(
+          process.cwd(),
+          "node_modules/entities/lib/encode.js",
+        ),
+        entities: path.resolve(process.cwd(), "node_modules/entities"),
+      },
+    },
+  },
+});
