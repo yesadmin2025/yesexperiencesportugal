@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { signatureTours } from "@/data/signatureTours";
+import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
