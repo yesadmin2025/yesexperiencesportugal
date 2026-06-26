@@ -19,11 +19,13 @@ const schema = z.object({
 });
 
 function makeToken(): string {
-  // 10-char url-safe token; collision-resistant enough for this scope and the
-  // DB has a unique index that will surface collisions as a retry.
+  // 26-char url-safe token from a 32-char alphabet = 130 bits of entropy
+  // (>=128-bit), making enumeration of share tokens infeasible. The DB has a
+  // unique index that surfaces the (vanishingly small) collision case as a
+  // retry.
   const alphabet = "abcdefghijkmnopqrstuvwxyz23456789";
   let out = "";
-  const arr = new Uint8Array(10);
+  const arr = new Uint8Array(26);
   crypto.getRandomValues(arr);
   for (const n of arr) out += alphabet[n % alphabet.length];
   return out;
