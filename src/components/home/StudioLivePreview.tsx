@@ -323,10 +323,10 @@ export function StudioLivePreview() {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
-            Smart pick
+            A local touch
           </span>
           <span className="mt-0.5 block truncate text-[12px] md:text-[12.5px] text-[color:var(--ivory)]/90">
-            Most couples add a private cellar tasting.
+            many couples add a private cellar tasting.
           </span>
         </span>
         <span
@@ -350,7 +350,7 @@ export function StudioLivePreview() {
         <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
             <span className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
-              Draft investment
+              Your day so far —
             </span>
             <div className="mt-1 flex items-baseline gap-1.5">
               <span className="font-display text-[1.5rem] md:text-[1.85rem] leading-none font-semibold text-[color:var(--charcoal)] tabular-nums">
@@ -359,7 +359,7 @@ export function StudioLivePreview() {
               <span className="text-[11.5px] text-[color:var(--charcoal-soft)]">/ guest</span>
             </div>
             <span className="mt-1 block text-[10px] text-[color:var(--charcoal-soft)] tabular-nums">
-              Party of {DRAFT_PARTY} · concierge confirms
+              Party of {DRAFT_PARTY} · reserve when ready
             </span>
           </div>
           <Link
