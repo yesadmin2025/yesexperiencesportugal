@@ -302,7 +302,37 @@ export function CinematicHero() {
 function HeldClip({ skipMotion }: { skipMotion: boolean }) {
   const ref = useRef<HTMLVideoElement | null>(null);
 
+  // Show video only on viewports wide enough to justify the extra bytes.
+  // On phones the poster is the LCP element and the video never loads,
+  // which keeps the homepage fast on mobile networks.
+  const [showVideo, setShowVideo] = useState<boolean>(false);
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width: 768px) and (min-device-width: 768px)");
+    const slowNet =
+      // @ts-expect-error — Network Information API is non-standard
+      navigator.connection?.saveData === true ||
+      // @ts-expect-error — Network Information API is non-standard
+      ["slow-2g", "2g", "3g"].includes(navigator.connection?.effectiveType ?? "");
+    if (!mq.matches || slowNet) return;
+
+    // Defer mounting the <video> until the browser is idle so it never
+    // competes with the LCP poster paint or critical hero CSS.
+    const schedule =
+      (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number })
+        .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 600));
+    const id = schedule(() => setShowVideo(true), { timeout: 1500 });
+    return () => {
+      const cancel =
+        (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback ??
+        ((i: number) => window.clearTimeout(i));
+      cancel(id as number);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showVideo) return;
     const v = ref.current;
     if (!v) return;
     v.muted = true;
@@ -310,7 +340,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
     v.play().catch(() => {
       /* autoplay blocked — poster remains */
     });
-  }, []);
+  }, [showVideo]);
 
   return (
     <>
