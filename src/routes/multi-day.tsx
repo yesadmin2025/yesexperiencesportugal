@@ -97,8 +97,8 @@ function MultiDayPage() {
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Any length, any shape — honeymoons, family journeys, multi-region itineraries, weddings,
-            corporate retreats. Composed by a designer, supported on the ground every day.
+            Any length, any shape — honeymoons, family journeys and multi-region itineraries,
+            composed by a designer, supported on the ground every day.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
