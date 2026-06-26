@@ -7,6 +7,8 @@ export type ViatorReview = {
   author: string;
   date: string | null;
   text: string;
+  /** Source platform label, e.g. "Google" or "Tripadvisor". Defaults to "Viator" when omitted. */
+  source?: "Viator" | "Google" | "Tripadvisor" | "GetYourGuide" | "Trustpilot";
 };
 
 export type ViatorStop = {
