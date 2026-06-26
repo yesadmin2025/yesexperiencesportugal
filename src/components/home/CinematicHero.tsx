@@ -442,26 +442,51 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
 
       `}</style>
 
-      <video
-        ref={ref}
-        poster={HERO_CLIP.poster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          opacity: 1,
-          filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
-          animation: skipMotion ? undefined : "heroDrift 42s ease-in-out infinite",
-          transformOrigin: "center 60%",
-          willChange: "transform",
-        }}
-      >
-        <source src={HERO_CLIP.src} type="video/mp4" />
-      </video>
+      {/* Poster — always present, reserves layout, paints instantly as LCP */}
+      <picture aria-hidden="true">
+        <source
+          type="image/webp"
+          media="(max-width: 767px)"
+          srcSet={HERO_CLIP.posterWebpMobile}
+        />
+        <source type="image/webp" srcSet={HERO_CLIP.posterWebp} />
+        <img
+          src={HERO_CLIP.posterJpg}
+          alt=""
+          width={1080}
+          height={1440}
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
+            transformOrigin: "center 60%",
+          }}
+        />
+      </picture>
+
+      {showVideo ? (
+        <video
+          ref={ref}
+          poster={HERO_CLIP.posterJpg}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            opacity: 1,
+            filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
+            animation: skipMotion ? undefined : "heroDrift 42s ease-in-out infinite",
+            transformOrigin: "center 60%",
+            willChange: "transform",
+          }}
+        >
+          <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
+        </video>
+      ) : null}
     </>
   );
 }
