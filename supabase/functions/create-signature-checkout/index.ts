@@ -26,6 +26,9 @@ interface Body {
   environment: StripeEnv;
   /** Anchor "from" EUR if no tier data exists. */
   priceFromEur: number;
+  /** True when the booking comes from the Tailor flow (stop changes applied). */
+  tailored?: boolean;
+
 }
 
 Deno.serve(async (req) => {
