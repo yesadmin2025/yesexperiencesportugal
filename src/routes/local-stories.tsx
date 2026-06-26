@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 
 type JournalPost = {
   slug: string;
