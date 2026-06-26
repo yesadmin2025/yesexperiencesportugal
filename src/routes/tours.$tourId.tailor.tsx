@@ -15,6 +15,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -184,7 +185,8 @@ function TailorPage() {
   // price; we pass `estimatedPrice` as the anchor so add-on / stop
   // deltas flow through when no tier row exists.
   const [checkoutPending, setCheckoutPending] = useState(false);
-  const handleReserve = async () => {
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
     setCheckoutPending(true);
     try {
@@ -195,10 +197,10 @@ function TailorPage() {
         body: {
           tourId: tour.id,
           tourTitle: tour.title,
-          guests,
+          guests: details.guests,
           stopLabels: stopLabels.slice(0, 8),
-          pickupLabel: pickup,
-          dateExact: date || null,
+          pickupLabel: details.pickupAddress || pickup,
+          dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
           priceFromEur: estimatedPrice,
           returnUrl: `${origin}/tours/${tour.id}/tailor?checkout=success`,
@@ -206,8 +208,7 @@ function TailorPage() {
           environment: "sandbox",
           tailored: true,
           flow: "tailor",
-
-
+          guestDetails: { ...details, pace, addons: [...addons], lunch, accessibility: [...accessibility], notes },
         },
       });
       if (error) throw error;
@@ -788,7 +789,7 @@ function TailorPage() {
                 <div className="p-5 pt-0">
                   <button
                     type="button"
-                    onClick={handleReserve}
+                    onClick={() => setDetailsOpen(true)}
                     disabled={checkoutPending || keptStops.length === 0}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
@@ -826,6 +827,15 @@ function TailorPage() {
           </div>
         </div>
       </section>
+      <FinalDetailsDialog
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        submitting={checkoutPending}
+        initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        onConfirm={async (d) => {
+          await handleReserve(d);
+        }}
+      />
     </SiteLayout>
   );
 }

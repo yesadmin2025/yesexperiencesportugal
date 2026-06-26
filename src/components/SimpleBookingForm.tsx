@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
@@ -21,8 +22,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [guests, setGuests] = useState(2);
   const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
   const [pending, setPending] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const handleReserve = async () => {
+  const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
     setPending(true);
     try {
@@ -32,10 +34,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         body: {
           tourId: tour.id,
           tourTitle: tour.title,
-          guests,
+          guests: details.guests,
           stopLabels,
-          pickupLabel: pickup,
-          dateExact: date || null,
+          pickupLabel: details.pickupAddress || pickup,
+          dateExact: details.tourDate || null,
           journeyTitle: tour.title.split("—")[0].trim(),
           priceFromEur: tour.priceFrom,
           returnUrl: `${origin}/tours/${tour.id}?checkout=success`,
@@ -43,6 +45,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           environment: "sandbox",
           tailored: false,
           flow: "signature",
+          guestDetails: details,
         },
       });
       if (error) throw error;
@@ -160,7 +163,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       <button
         type="button"
-        onClick={handleReserve}
+        onClick={() => setDetailsOpen(true)}
         disabled={pending}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
       >
@@ -193,6 +196,16 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           Tailor this Signature
         </Link>
       </div>
+
+      <FinalDetailsDialog
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        submitting={pending}
+        initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        onConfirm={async (details) => {
+          await handleReserve(details);
+        }}
+      />
     </div>
   );
 }
