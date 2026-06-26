@@ -18,6 +18,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, tourProductLd, jsonLdScript } from "@/lib/jsonld";
+import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
