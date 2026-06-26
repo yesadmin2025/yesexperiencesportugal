@@ -14,22 +14,5 @@ import path from "node:path";
 const serverEnv = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 Object.assign(process.env, serverEnv);
 
-export default defineConfig({
-  vite: {
-    resolve: {
-      alias: {
-        // Pin entities to the hoisted v4.5.0 copy. React Email's htmlparser2
-        // path requires v4.5.0 — v5+ removed entities/lib/decode.js.
-        "entities/lib/decode.js": path.resolve(
-          process.cwd(),
-          "node_modules/entities/lib/decode.js",
-        ),
-        "entities/lib/encode.js": path.resolve(
-          process.cwd(),
-          "node_modules/entities/lib/encode.js",
-        ),
-        entities: path.resolve(process.cwd(), "node_modules/entities"),
-      },
-    },
-  },
-});
+export default defineConfig({});
+
