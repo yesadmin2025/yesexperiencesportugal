@@ -122,9 +122,6 @@ export function StudioLivePreview() {
           </span>
           Step {DRAFT_STEP} of {DRAFT_STEPS_TOTAL}
         </span>
-        <span className="text-[9.5px] md:text-[10px] uppercase tracking-[0.26em] text-[color:var(--ivory)]/65 tabular-nums">
-          {progressPct}% shaped
-        </span>
       </div>
 
       {/* Progress bar — gold fill, animates on reveal */}
