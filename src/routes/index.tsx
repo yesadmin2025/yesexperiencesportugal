@@ -24,6 +24,7 @@ import { CinematicHero } from "@/components/home/CinematicHero";
 import { FourWaysIn } from "@/components/home/FourWaysIn";
 import { WhyYesPillars } from "@/components/home/WhyYesPillars";
 import { RecentJourney } from "@/components/home/RecentJourney";
+import { InlineEmailCapture, ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -961,6 +962,13 @@ function HomePage() {
           />
 
           <div className="container-x relative">
+            {/* Discreet free lead-magnet capture — "A Local's Map: Best
+              Day Trips from Lisbon". Sits inside the Final CTA section
+              so the approved 8-block homepage structure stays intact. */}
+            <div className="mb-12 md:mb-16">
+              <InlineEmailCapture />
+            </div>
+
             {/* Chapter divider above the card — gold dot + flanking rules */}
             <div className="reveal max-w-md mx-auto mb-10 md:mb-14" aria-hidden="true">
               <div className="chapter-divider">
@@ -1038,6 +1046,7 @@ function HomePage() {
           </div>
         </section>
       </div>
+      <ExitIntentEmailCapture />
     </SiteLayout>
   );
 }
