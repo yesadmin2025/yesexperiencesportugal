@@ -63,9 +63,7 @@ const BookingConfirmation = ({
 }: BookingConfirmationProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>
-      Your bespoke day in Portugal is in our hands — {stops.length} stops, {formatHours(totalMinutes)} crafted for you.
-    </Preview>
+      <Preview>{`Your bespoke day in Portugal is in our hands — ${stops.length} stops, ${formatHours(totalMinutes)} crafted for you.`}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Text style={eyebrow}>YES Experiences · Bespoke day · Received</Text>
