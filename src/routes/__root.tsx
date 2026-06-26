@@ -146,6 +146,11 @@ export const Route = createRootRoute({
         content:
           "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
       },
+      { name: "description", content: "YES Experiences Portugal crafts unique, narrative-driven travel itineraries with an interactive builder." },
+      { property: "og:description", content: "YES Experiences Portugal crafts unique, narrative-driven travel itineraries with an interactive builder." },
+      { name: "twitter:description", content: "YES Experiences Portugal crafts unique, narrative-driven travel itineraries with an interactive builder." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/b5biDmYjwqW69iIYyrlmbEq37UX2/social-images/social-1782454928160-35df0646-f851-4caf-8c0e-6616ff3a1046.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/b5biDmYjwqW69iIYyrlmbEq37UX2/social-images/social-1782454928160-35df0646-f851-4caf-8c0e-6616ff3a1046.webp" },
     ],
 
     links: [
