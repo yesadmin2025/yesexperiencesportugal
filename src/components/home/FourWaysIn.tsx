@@ -112,7 +112,7 @@ export function FourWaysIn() {
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 
-        <ul className="he-stagger max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-4 list-none p-0">
+        <ul className="he-stagger max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 md:gap-4 list-none p-0">
           {PATHS.map((p) => (
             <li key={p.label} className="contents">
               <Link
