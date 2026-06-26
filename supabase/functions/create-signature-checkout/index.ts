@@ -145,7 +145,7 @@ Deno.serve(async (req) => {
 
     });
 
-    return new Response(JSON.stringify({ url: session.url, sessionId: session.id }), {
+    return new Response(JSON.stringify({ url: session.url, sessionId: session.id, bokunMapped }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
