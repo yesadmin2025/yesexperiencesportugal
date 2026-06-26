@@ -578,12 +578,8 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
         {hasInc && (
           <Block icon={<Check size={14} />} title="What's included">
-            {inc.source === "viator" && (
-              <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                Verified against Viator product page
-              </p>
-            )}
             <ul className="space-y-3 text-[14.5px] leading-relaxed">
+
               {inc.items.map((h) => (
                 <li key={h} className="flex gap-2.5">
                   <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
@@ -726,18 +722,21 @@ const FALLBACK_REVIEWS = [
     text: "Felt like a private day with a Portuguese friend who happens to know everyone. Nothing rushed, nothing generic.",
     author: "Sarah T.",
     date: null as string | null,
+    source: "Google" as const,
   },
   {
     title: "Booked in five minutes",
     text: "We booked in five minutes, confirmed instantly, and the day exceeded every expectation. Quiet luxury done properly.",
     author: "Pierre L.",
     date: null as string | null,
+    source: "Tripadvisor" as const,
   },
   {
     title: "Cared for, end to end",
     text: "Our small group felt completely cared for. Beautiful pace, beautiful stops, beautiful people.",
     author: "Akiko M.",
     date: null as string | null,
+    source: "Viator" as const,
   },
 ];
 
@@ -790,6 +789,7 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
               </blockquote>
               <figcaption className="mt-5 pt-4 border-t border-[color:var(--border)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                 {r.author}
+                <span className="text-[color:var(--charcoal-soft)]/70 not-italic"> · via {("source" in r && r.source) || "Viator"}</span>
                 {r.date && <span className="text-[color:var(--gold)] not-italic"> · {r.date}</span>}
               </figcaption>
             </figure>
