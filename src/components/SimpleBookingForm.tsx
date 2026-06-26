@@ -22,8 +22,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [guests, setGuests] = useState(2);
   const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
   const [pending, setPending] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const handleReserve = async () => {
+  const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
     setPending(true);
     try {
@@ -33,10 +34,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         body: {
           tourId: tour.id,
           tourTitle: tour.title,
-          guests,
+          guests: details.guests,
           stopLabels,
-          pickupLabel: pickup,
-          dateExact: date || null,
+          pickupLabel: details.pickupAddress || pickup,
+          dateExact: details.tourDate || null,
           journeyTitle: tour.title.split("—")[0].trim(),
           priceFromEur: tour.priceFrom,
           returnUrl: `${origin}/tours/${tour.id}?checkout=success`,
@@ -44,6 +45,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           environment: "sandbox",
           tailored: false,
           flow: "signature",
+          guestDetails: details,
         },
       });
       if (error) throw error;
