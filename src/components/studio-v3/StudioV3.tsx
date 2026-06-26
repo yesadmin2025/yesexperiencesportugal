@@ -654,18 +654,25 @@ export function StudioV3() {
   // hosted checkout (test mode). On failure we surface a quiet toast and
   // fall back to the lead-capture sheet so the conversion never dead-ends.
   const [checkoutPending, setCheckoutPending] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
+  const requestStripeCheckout = useCallback((currentState: StudioV3State) => {
+    const tour = currentState.tourId ? findTour(currentState.tourId) : null;
+    if (!tour) {
+      openLeadSheet("book");
+      return;
+    }
+    setDetailsState(currentState);
+    setDetailsOpen(true);
+  }, [openLeadSheet]);
   const handleStripeCheckout = useCallback(
-    async (currentState: StudioV3State) => {
+    async (currentState: StudioV3State, details: GuestDetails) => {
       if (checkoutPending) return;
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
       if (!tour) {
         openLeadSheet("book");
         return;
       }
-      const guests =
-        typeof currentState.guests === "number" && currentState.guests > 0
-          ? Math.min(12, Math.max(1, Math.round(currentState.guests)))
-          : 2;
       setCheckoutPending(true);
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -673,16 +680,17 @@ export function StudioV3() {
           body: {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
-            guests,
+            guests: details.guests,
             stopLabels: (tour.stops ?? []).map((s) => s.label).slice(0, 6),
-            pickupLabel: pickupCityLabel(currentState.pickup) ?? "",
-            dateExact: currentState.dateExact ?? null,
+            pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
+            dateExact: details.tourDate || currentState.dateExact || null,
             journeyTitle: currentState.journeyTitle ?? null,
             priceFromEur: tour.priceFrom ?? 180,
             returnUrl: `${origin}/studio-v3?checkout=success`,
             cancelUrl: `${origin}/studio-v3?checkout=cancelled`,
             environment: "sandbox",
             flow: "studio",
+            guestDetails: details,
           },
         });
         if (error) throw error;
