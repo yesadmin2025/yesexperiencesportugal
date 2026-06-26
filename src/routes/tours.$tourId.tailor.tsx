@@ -827,6 +827,15 @@ function TailorPage() {
           </div>
         </div>
       </section>
+      <FinalDetailsDialog
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        submitting={checkoutPending}
+        initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        onConfirm={async (d) => {
+          await handleReserve(d);
+        }}
+      />
     </SiteLayout>
   );
 }
