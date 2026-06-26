@@ -109,7 +109,7 @@ const BookingConfirmation = ({
                   <Text style={stopLabel}>{s.label}</Text>
                   {s.tag ? <Text style={stopTag}>{s.tag}</Text> : null}
                   {s.duration_minutes ? (
-                    <Text style={stopMeta}>{s.duration_minutes} min</Text>
+                    <Text style={stopMeta}>{`${s.duration_minutes} min`}</Text>
                   ) : null}
                 </Section>
               ))}
