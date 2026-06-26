@@ -11,6 +11,8 @@ import { buildLegacyRedirectResponse } from "@/lib/legacy-domain-redirect";
  * domain's DNS must point here for that to happen.
  */
 const legacyDomainRedirect = createMiddleware().server(async ({ next, request }) => {
+  const url = new URL(request.url);
+  if (url.pathname.startsWith("/lovable/")) return next();
   const redirect = buildLegacyRedirectResponse(request);
   if (redirect) return redirect;
   return next();
