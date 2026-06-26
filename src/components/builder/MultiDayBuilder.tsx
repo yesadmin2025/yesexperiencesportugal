@@ -212,6 +212,10 @@ export function MultiDayBuilder({
     setNarrativeLoading(true);
     const id = ++narrativeReqRef.current;
     const t = window.setTimeout(() => {
+      if (!sessionId) {
+        setNarrativeLoading(false);
+        return;
+      }
       void narrateBuilderRoute({
         data: {
           routeStopKeys: activeDay.stopKeys,
@@ -220,6 +224,7 @@ export function MultiDayBuilder({
           intention: effIntention,
           pace: state.pace,
           regionKey: activeDay.regionKey,
+          sessionId,
         },
       })
         .then((res) => {
