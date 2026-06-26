@@ -91,6 +91,17 @@ const confirmSchema = z.object({
 export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => confirmSchema.parse(input))
   .handler(async ({ data }) => {
+    // Load the draft (need stops/timings for the confirmation email).
+    const { data: draft, error: loadErr } = await supabaseAdmin
+      .from("studio_v2_bookings")
+      .select(
+        "draft_token, region, archetype, stops, total_minutes, total_drive_minutes, total_km, status",
+      )
+      .eq("draft_token", data.draftToken)
+      .maybeSingle();
+    if (loadErr) throw new Error(loadErr.message);
+    if (!draft) throw new Error("Draft not found.");
+
     const { error } = await supabaseAdmin
       .from("studio_v2_bookings")
       .update({
@@ -105,5 +116,36 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
       .eq("draft_token", data.draftToken)
       .eq("status", "draft");
     if (error) throw new Error(error.message);
+
+    // Fire-and-forget confirmation email; never block the booking on email.
+    try {
+      const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const stops = ((draft.stops as any[]) ?? []).map((s) => ({
+        label: String(s?.label ?? ""),
+        tag: s?.tag ?? null,
+        duration_minutes: typeof s?.duration_minutes === "number" ? s.duration_minutes : undefined,
+      }));
+      await sendTransactionalInternal({
+        templateName: "booking-confirmation",
+        recipientEmail: data.contactEmail,
+        idempotencyKey: `booking-confirm-${data.draftToken}`,
+        templateData: {
+          contactName: data.contactName,
+          preferredDate: data.preferredDate ?? null,
+          guests: data.guests,
+          region: draft.region ?? null,
+          archetype: draft.archetype ?? null,
+          totalMinutes: draft.total_minutes ?? 0,
+          totalDriveMinutes: draft.total_drive_minutes ?? 0,
+          totalKm: draft.total_km ?? 0,
+          stops,
+          notes: data.notes ?? null,
+        },
+      });
+    } catch (e) {
+      console.error("[bookings] failed to enqueue confirmation email", e);
+    }
+
     return { ok: true };
   });
