@@ -1046,6 +1046,7 @@ function HomePage() {
           </div>
         </section>
       </div>
+      <ExitIntentEmailCapture />
     </SiteLayout>
   );
 }
