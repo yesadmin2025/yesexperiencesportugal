@@ -61,11 +61,15 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const { data: tierRow } = await admin
-      .from("tour_price_tiers")
-      .select("tiers")
-      .eq("tour_id", body.tourId)
-      .maybeSingle();
+    const [{ data: tierRow }, { data: bokunRow }] = await Promise.all([
+      admin.from("tour_price_tiers").select("tiers").eq("tour_id", body.tourId).maybeSingle(),
+      admin
+        .from("tour_bokun_mapping")
+        .select("bokun_product_id")
+        .eq("tour_id", body.tourId)
+        .maybeSingle(),
+    ]);
+    const bokunMapped = Boolean(bokunRow?.bokun_product_id);
 
     const tier = Math.min(8, Math.max(1, body.guests));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
