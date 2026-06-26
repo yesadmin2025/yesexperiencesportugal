@@ -72,6 +72,15 @@ async function bokunFetch(path: string, method = "GET", body?: unknown) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Require admin caller — protects credentialed Bókun calls from anonymous abuse.
+  const authz = await requireAdmin(req);
+  if (!authz.ok) {
+    return new Response(
+      JSON.stringify({ error: authz.error ?? "Unauthorized" }),
+      { status: authz.status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  }
+
   try {
     // Page through all activities (Bokun returns ~20/page).
     const all: Array<Record<string, unknown>> = [];
