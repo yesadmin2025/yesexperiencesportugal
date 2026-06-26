@@ -31,6 +31,8 @@ const TOUR_ID = "sintra-cascais";
 const TOUR_TITLE = "Sintra & Cascais — Palaces and Coast";
 const ORIGIN = "https://yesexperiencesportugal.com";
 
+type Flow = "studio" | "signature" | "tailor";
+
 type CheckoutBody = {
   tourId: string;
   tourTitle: string;
@@ -44,9 +46,10 @@ type CheckoutBody = {
   cancelUrl: string;
   environment: "sandbox" | "live";
   tailored: boolean;
+  flow?: Flow;
 };
 
-const baseBody: Omit<CheckoutBody, "tailored" | "stopLabels" | "journeyTitle"> = {
+const baseBody: Omit<CheckoutBody, "tailored" | "stopLabels" | "journeyTitle" | "flow"> = {
   tourId: TOUR_ID,
   tourTitle: TOUR_TITLE,
   guests: 2,
@@ -64,6 +67,17 @@ function tomorrowISO() {
   return d.toISOString().slice(0, 10);
 }
 
+type CheckoutResponse = {
+  url?: string;
+  sessionId?: string;
+  bokunMapped?: boolean;
+  flow?: Flow;
+  productName?: string;
+  lineItemDescription?: string;
+  submitMessage?: string;
+  error?: string;
+};
+
 async function invokeCheckout(body: CheckoutBody) {
   const res = await fetch(`${SUPABASE_URL}/functions/v1/create-signature-checkout`, {
     method: "POST",
@@ -75,7 +89,7 @@ async function invokeCheckout(body: CheckoutBody) {
     body: JSON.stringify(body),
   });
   const text = await res.text();
-  let json: { url?: string; sessionId?: string; bokunMapped?: boolean; error?: string } = {};
+  let json: CheckoutResponse = {};
   try {
     json = JSON.parse(text);
   } catch {
@@ -85,53 +99,63 @@ async function invokeCheckout(body: CheckoutBody) {
 }
 
 test.describe("instant booking checkout", () => {
-  test("Studio reveal — Say YES returns a Stripe checkout URL", async () => {
-    // Studio reveal posts the resolved Signature + chosen guest count.
+  test("Studio reveal — Say YES returns a Stripe checkout URL with Studio copy", async () => {
     const { status, json, raw } = await invokeCheckout({
       ...baseBody,
       stopLabels: ["Quinta da Regaleira", "Cabo da Roca", "Cascais Old Town"],
       journeyTitle: "Sintra & Cascais",
       tailored: false,
+      flow: "studio",
     });
     expect(status, `studio checkout failed: ${raw}`).toBe(200);
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
     expect(json.sessionId).toMatch(/^cs_/);
+    expect(json.flow).toBe("studio");
+    expect(json.productName).toBe(`YES Studio — ${TOUR_TITLE}`);
+    expect(json.lineItemDescription).toContain("Built moment by moment");
+    expect(json.submitMessage).toContain("Your Studio day is reserved");
   });
 
-  test("Signature — Reserve as designed returns a Stripe checkout URL", async () => {
+  test("Signature — Reserve as designed returns a Stripe checkout URL with Signature copy", async () => {
     const { status, json, raw } = await invokeCheckout({
       ...baseBody,
       stopLabels: ["Quinta da Regaleira", "Cabo da Roca", "Cascais Old Town"],
       journeyTitle: TOUR_TITLE.split("—")[0].trim(),
       tailored: false,
+      flow: "signature",
     });
     expect(status, `signature checkout failed: ${raw}`).toBe(200);
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
+    expect(json.flow).toBe("signature");
+    expect(json.productName).toBe(`YES Signature — ${TOUR_TITLE}`);
+    expect(json.lineItemDescription).toContain("Reserved as designed");
+    expect(json.submitMessage).toContain("Your Signature day is reserved");
   });
 
-  test("Tailor — Reserve with adjusted stops returns a Stripe checkout URL", async () => {
+  test("Tailor — Reserve with adjusted stops returns a Stripe checkout URL with Tailor copy", async () => {
     const { status, json, raw } = await invokeCheckout({
       ...baseBody,
-      // Tailored: one swapped stop. Booking goes through Stripe; the webhook
-      // routes it to needs_review in Bókun for operator reconciliation.
       stopLabels: ["Quinta da Regaleira", "Pena Palace", "Cascais Old Town"],
       journeyTitle: TOUR_TITLE.split("—")[0].trim(),
       tailored: true,
+      flow: "tailor",
     });
     expect(status, `tailor checkout failed: ${raw}`).toBe(200);
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
+    expect(json.flow).toBe("tailor");
+    expect(json.productName).toBe(`YES Tailored — ${TOUR_TITLE}`);
+    expect(json.lineItemDescription).toContain("Tailored stops applied");
+    expect(json.submitMessage).toContain("Your tailored day is reserved");
+    expect(json.submitMessage).toContain("within 2 hours");
   });
 
   test("Bókun is wired — checkout response confirms a Bókun product mapping", async () => {
-    // The edge function looks up `tour_bokun_mapping` server-side (service
-    // role, bypassing RLS) and surfaces a `bokunMapped` boolean. This is
-    // the same lookup the Stripe webhook uses post-payment to push the
-    // booking to Bókun — so a `true` here proves the wiring end-to-end.
     const { status, json, raw } = await invokeCheckout({
       ...baseBody,
       stopLabels: ["Quinta da Regaleira", "Cabo da Roca", "Cascais Old Town"],
       journeyTitle: TOUR_TITLE.split("—")[0].trim(),
       tailored: false,
+      flow: "signature",
     });
     expect(status, `bokun-mapping probe failed: ${raw}`).toBe(200);
     expect(
