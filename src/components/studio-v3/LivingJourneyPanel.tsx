@@ -284,6 +284,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           interests: state.interests,
           rhythm: state.rhythm,
           investment: state.investment,
+          sessionId,
         },
       })
         .then((res) => {
