@@ -28,8 +28,37 @@ interface Body {
   priceFromEur: number;
   /** True when the booking comes from the Tailor flow (stop changes applied). */
   tailored?: boolean;
-
+  /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
+  flow?: "studio" | "signature" | "tailor";
 }
+
+type Flow = "studio" | "signature" | "tailor";
+
+function resolveFlow(body: Body): Flow {
+  if (body.flow === "studio" || body.flow === "signature" || body.flow === "tailor") return body.flow;
+  return body.tailored ? "tailor" : "signature";
+}
+
+const FLOW_COPY: Record<Flow, { label: string; eyebrow: string; submit: string }> = {
+  studio: {
+    label: "YES Studio",
+    eyebrow: "Built moment by moment",
+    submit:
+      "Your Studio day is reserved the moment payment clears. We'll confirm the rhythm of the day by email within minutes.",
+  },
+  signature: {
+    label: "YES Signature",
+    eyebrow: "Reserved as designed",
+    submit:
+      "Your Signature day is reserved the moment payment clears. You will receive your confirmation by email within minutes.",
+  },
+  tailor: {
+    label: "YES Tailored",
+    eyebrow: "Tailored stops applied",
+    submit:
+      "Your tailored day is reserved the moment payment clears. Our team will confirm the adjusted stops within 2 hours.",
+  },
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
