@@ -47,9 +47,11 @@ export function StoryOpener({ profile, region, signals }: Props) {
   const [story, setStory] = useState<string>(() => deterministic(profile, region));
   const requested = useRef(false);
   const generate = useServerFn(generateStoryOpener);
+  const sessionId = useBuilderSessionId();
 
   useEffect(() => {
     if (requested.current) return;
+    if (!sessionId) return;
     requested.current = true;
     generate({
       data: {
@@ -59,6 +61,7 @@ export function StoryOpener({ profile, region, signals }: Props) {
         region,
         pax: profile.group?.adults ?? 2,
         signals,
+        sessionId,
       },
     })
       .then((r) => {
@@ -67,7 +70,7 @@ export function StoryOpener({ profile, region, signals }: Props) {
       .catch(() => {
         /* keep deterministic fallback */
       });
-  }, [generate, profile, region, signals]);
+  }, [generate, profile, region, signals, sessionId]);
 
   return (
     <div className="mx-auto mb-10 max-w-[36ch]">
