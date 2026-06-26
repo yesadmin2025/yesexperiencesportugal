@@ -75,7 +75,7 @@ async function invokeCheckout(body: CheckoutBody) {
     body: JSON.stringify(body),
   });
   const text = await res.text();
-  let json: { url?: string; sessionId?: string; error?: string } = {};
+  let json: { url?: string; sessionId?: string; bokunMapped?: boolean; error?: string } = {};
   try {
     json = JSON.parse(text);
   } catch {
