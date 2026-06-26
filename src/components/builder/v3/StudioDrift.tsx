@@ -1994,6 +1994,7 @@ function ConvergencePhase({
   locale: DriftLocale;
   onExit?: () => void;
 }) {
+  const sessionId = useBuilderSessionId();
   const region = useMemo(() => pickRegion(profile as ComposerProfile), [profile]);
   const day = useMemo(
     () =>
