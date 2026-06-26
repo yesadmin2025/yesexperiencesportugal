@@ -61,11 +61,15 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const { data: tierRow } = await admin
-      .from("tour_price_tiers")
-      .select("tiers")
-      .eq("tour_id", body.tourId)
-      .maybeSingle();
+    const [{ data: tierRow }, { data: bokunRow }] = await Promise.all([
+      admin.from("tour_price_tiers").select("tiers").eq("tour_id", body.tourId).maybeSingle(),
+      admin
+        .from("tour_bokun_mapping")
+        .select("bokun_product_id")
+        .eq("tour_id", body.tourId)
+        .maybeSingle(),
+    ]);
+    const bokunMapped = Boolean(bokunRow?.bokun_product_id);
 
     const tier = Math.min(8, Math.max(1, body.guests));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
@@ -84,18 +88,45 @@ Deno.serve(async (req) => {
       );
     const productName = `YES Signature — ${body.tourTitle}`.slice(0, 180);
 
+    const dateLine = body.dateExact ? ` · ${body.dateExact}` : "";
+    const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
+    const submitMessage = body.tailored
+      ? "Your tailored day is reserved the moment payment clears. Our team will confirm the adjusted stops within 2 hours."
+      : "Your Signature day is reserved the moment payment clears. You will receive your confirmation by email within minutes.";
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
           price_data: {
             currency: "eur",
-            product_data: { name: productName, description },
+            product_data: {
+              name: productName,
+              description,
+              images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+            },
             unit_amount: Math.round(eurPerPax * 100),
           },
           quantity: body.guests,
         },
       ],
       mode: "payment",
+      locale: "auto",
+      submit_type: "book",
+      billing_address_collection: "auto",
+      phone_number_collection: { enabled: true },
+      allow_promotion_codes: true,
+      custom_text: {
+        submit: { message: submitMessage.slice(0, 1200) },
+        terms_of_service_acceptance: {
+          message:
+            "By booking you accept the [YES Experiences Portugal terms](https://yesexperiencesportugal.com/terms) and [privacy policy](https://yesexperiencesportugal.com/privacy).",
+        },
+      },
+      consent_collection: { terms_of_service: "required" },
+      payment_intent_data: {
+        statement_descriptor_suffix: "YES EXPERIENCES",
+        description: `${productName}${dateLine}${pickupLine}`.slice(0, 1000),
+      },
       success_url: `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: body.cancelUrl,
       ...(body.customerEmail && { customer_email: body.customerEmail }),
@@ -114,7 +145,7 @@ Deno.serve(async (req) => {
 
     });
 
-    return new Response(JSON.stringify({ url: session.url, sessionId: session.id }), {
+    return new Response(JSON.stringify({ url: session.url, sessionId: session.id, bokunMapped }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
