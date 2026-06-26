@@ -22,8 +22,12 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 // ─────────────────────────────────────────────────────────────────────────────
 
 const HERO_CLIP = {
-  src: "/__l5e/assets-v1/43a722f9-fa03-41ac-a497-d210e4b4b625/hero-sunset-road.mp4",
-  poster: "/video/hero-sunset-road-poster.jpg",
+  // Web-optimized H.264 variants (replaces the 19 MB original).
+  srcMobile: "/__l5e/assets-v1/ff4f2c39-2fde-42f1-9b4a-7230c692f1e9/hero-sunset-road-720.mp4",
+  srcDesktop: "/__l5e/assets-v1/422f19b8-dad0-4ae0-b952-e4fc9a048abe/hero-sunset-road-1080.mp4",
+  posterWebp: "/video/hero-sunset-road-poster.webp",
+  posterWebpMobile: "/video/hero-sunset-road-poster-720.webp",
+  posterJpg: "/video/hero-sunset-road-poster.jpg",
   alt: "An empty coastal Portuguese road at golden hour sunset, seen from inside a car",
 } as const;
 
