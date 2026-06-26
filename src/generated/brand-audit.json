@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T20:34:55.473Z",
+  "generatedAt": "2026-06-26T22:43:39.652Z",
   "filesScanned": 440,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 291,
-    "approved": 69,
+    "total": 293,
+    "approved": 71,
     "allowlisted": 53,
     "mismatch": 169
   },
@@ -683,7 +683,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 49,
+      "line": 70,
       "col": 293,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +692,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 52,
+      "line": 73,
       "col": 317,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 80,
+      "line": 101,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,11 +710,29 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 155,
-      "col": 318,
+      "line": 178,
+      "col": 319,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className={`text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outli",
+      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "line": 191,
+      "col": 319,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "line": 207,
+      "col": 321,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
       "status": "approved"
     },
     {
@@ -1079,7 +1097,7 @@
     },
     {
       "file": "src/components/home/FourWaysIn.tsx",
-      "line": 110,
+      "line": 120,
       "col": 114,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1232,7 +1250,7 @@
     },
     {
       "file": "src/components/home/ShapeYourDay.tsx",
-      "line": 106,
+      "line": 105,
       "col": 23,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",

@@ -5,9 +5,15 @@ import { MessageCircle, Compass, MapPin, Calendar } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { whatsappHref } from "@/components/WhatsAppFab";
 import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import pageCover from "@/assets/travel-file/cover.jpg";
+import pageRoute from "@/assets/travel-file/route.jpg";
+import pageDay from "@/assets/travel-file/day.jpg";
+import pageReservations from "@/assets/travel-file/reservations.jpg";
+import pageAccommodations from "@/assets/travel-file/accommodations.jpg";
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
@@ -22,7 +28,7 @@ export const Route = createFileRoute("/multi-day")({
       {
         property: "og:description",
         content:
-          "Honeymoons, family journeys, weddings, corporate retreats — composed by a designer, supported on the ground.",
+          "Honeymoons, family journeys, multi-region itineraries — composed by a designer, supported on the ground.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgTroiaBeach}` },
@@ -91,8 +97,8 @@ function MultiDayPage() {
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Any length, any shape — honeymoons, family journeys, multi-region itineraries, weddings,
-            corporate retreats. Composed by a designer, supported on the ground every day.
+            Any length, any shape — honeymoons, family journeys and multi-region itineraries,
+            composed by a designer, supported on the ground every day.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
@@ -151,29 +157,62 @@ function MultiDayPage() {
         </div>
       </section>
 
+      {/* Travel Designer sample — same dossier shown on the homepage */}
+      <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal">
+        <div className="container-x max-w-5xl">
+          <div className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
+            <Eyebrow flank>Delivered as a travel file</Eyebrow>
+            <SectionTitle size="compact">
+              A journey you can <SectionTitle.Em>hold in your hands.</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+              Every multi-day design is delivered as a curated dossier — days, stays, route and local contacts in one place.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+            {[pageCover, pageRoute, pageReservations, pageDay, pageAccommodations].map((src, i) => (
+              <div
+                key={src}
+                className={`overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] ${i === 0 ? "col-span-2 md:col-span-2 row-span-2" : ""}`}
+              >
+                <img
+                  src={src}
+                  alt={`Travel file page ${i + 1}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-700"
+                />
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-center font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
+            From one of our bespoke journeys — names removed
+          </p>
+        </div>
+      </section>
+
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
           <SectionTitle size="compact">
-            Start in the Studio, or <SectionTitle.Em>talk to a local.</SectionTitle.Em>
+            Begin with a designer.
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            Sketch the route yourself in real time, or tell us what you have in mind and we'll shape
-            it with you.
+            Tell us what you have in mind and we'll shape the journey with you, day by day.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/builder" variant="primary">
-              Open the Studio
+            <CtaButton to="/contact" variant="primary">
+              Begin with a designer
             </CtaButton>
-            <CtaButton
-              to="/contact"
-              variant="ghost"
-              icon={null}
-              iconLeading={<MessageCircle size={14} aria-hidden="true" />}
+            <a
+              href={whatsappHref("Hi! I'm interested in a multi-day Travel Designer journey with YES Experiences.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-3 text-sm tracking-wide transition-all"
             >
-              Talk to a Local
-            </CtaButton>
+              <MessageCircle size={14} aria-hidden="true" /> Talk to a Local
+            </a>
           </div>
         </div>
       </section>
