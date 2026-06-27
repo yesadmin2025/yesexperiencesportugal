@@ -1,5 +1,18 @@
 import { test, expect } from "@playwright/test";
-import { signatureTours } from "../src/data/signatureTours";
+// Hardcoded — avoids pulling vite-only image imports into Playwright.
+const SIGNATURE_TOUR_IDS = [
+  "arrabida-boat",
+  "arrabida-wine-allinclusive",
+  "azeitao-cheese",
+  "evora-alentejo",
+  "fatima-nazare-obidos",
+  "roman-heritage-alentejo",
+  "sintra-cascais",
+  "tiles-workshop",
+  "tomar-coimbra",
+  "troia-comporta",
+  "wild-beaches-picnic",
+];
 
 /**
  * Full tour-by-tour verification:
