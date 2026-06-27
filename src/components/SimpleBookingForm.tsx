@@ -9,9 +9,9 @@ import { toast } from "sonner";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   BrandedCheckoutDrawer,
-  prewarmStripe,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
+
 import { getViatorMeta } from "@/data/signatureToursViator";
 
 /**
