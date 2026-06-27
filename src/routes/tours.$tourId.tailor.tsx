@@ -868,7 +868,33 @@ function TailorPage() {
           await handleReserve(d);
         }}
       />
+
+      <BrandedCheckoutDrawer
+        open={checkoutOpen}
+        onOpenChange={(o) => {
+          setCheckoutOpen(o);
+          if (!o) setClientSecret(null);
+        }}
+        clientSecret={clientSecret}
+        publishableKey={publishableKey}
+        summary={
+          checkoutSummary ?? {
+            tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+            guests,
+            pricePerPaxEur: estimatedPrice,
+            flowLabel: "Tailored",
+          }
+        }
+        onComplete={(sid) => {
+          setCheckoutOpen(false);
+          navigate({
+            to: "/booking-confirmed",
+            search: { session_id: sid ?? undefined, tour: tour.id },
+          });
+        }}
+      />
     </SiteLayout>
+
   );
 }
 
