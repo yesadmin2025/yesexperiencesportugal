@@ -553,15 +553,15 @@ function HomePage() {
                   </span>
                   <span className="ml-2 text-[1.1rem] md:text-[1.3rem]">five-star reviews</span>
                   <span className="block md:inline text-[10.5px] md:text-[11.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)] md:ml-3 mt-1.5 md:mt-0">
-                    Across Google · Tripadvisor · Viator · GetYourGuide · Trustpilot
+                    Across Google · Tripadvisor · Viator · GetYourGuide
                   </span>
                 </p>
               </div>
               <ul
                 className="he-stagger flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3 md:gap-x-8 list-none p-0 h-6 md:h-7 opacity-95"
-                aria-label="Featured on Google, Tripadvisor, Viator, GetYourGuide and Trustpilot"
+                aria-label="Featured on Google, Tripadvisor, Viator and GetYourGuide"
               >
-                {(["google", "tripadvisor", "viator", "getyourguide", "trustpilot"] as const).map(
+                {(["google", "tripadvisor", "viator", "getyourguide"] as const).map(
                   (p) => (
                     <li key={p} className="reveal-stagger h-full flex items-center">
                       <PlatformBadge platform={p} />
