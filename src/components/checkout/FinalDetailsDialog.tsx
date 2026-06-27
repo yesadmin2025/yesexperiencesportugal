@@ -74,6 +74,8 @@ export function FinalDetailsDialog({
   onConfirm,
   initial,
   submitting = false,
+  tourId,
+  bokunProductId,
 }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -89,6 +91,14 @@ export function FinalDetailsDialog({
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState("");
 
+  // Bókun time-slot state
+  const [slots, setSlots] = useState<SlotOption[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slotsError, setSlotsError] = useState<string | null>(null);
+  const [slotsMapped, setSlotsMapped] = useState(false);
+  const slotsFetchToken = useRef(0);
+
   useEffect(() => {
     if (!open) return;
     if (initial?.tourDate) setTourDate(initial.tourDate);
@@ -97,6 +107,48 @@ export function FinalDetailsDialog({
     if (initial?.language) setLanguage(initial.language);
     // mainContact defaults to fullName if left blank — keeps the form short.
   }, [open, initial?.tourDate, initial?.guests, initial?.pickupAddress, initial?.language]);
+
+  // Fetch availability whenever date or tour changes.
+  useEffect(() => {
+    if (!open) return;
+    if (!tourDate || (!tourId && !bokunProductId)) {
+      setSlots([]);
+      setSelectedSlot(null);
+      setSlotsMapped(false);
+      setSlotsError(null);
+      return;
+    }
+    const token = ++slotsFetchToken.current;
+    setSlotsLoading(true);
+    setSlotsError(null);
+    setSelectedSlot(null);
+    void (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("bokun-availability", {
+          body: { tourId, bokunProductId, date: tourDate },
+        });
+        if (token !== slotsFetchToken.current) return;
+        if (error) throw error;
+        const result = (data ?? {}) as {
+          slots?: SlotOption[];
+          mapped?: boolean;
+          error?: string;
+        };
+        setSlotsMapped(Boolean(result.mapped));
+        setSlots(Array.isArray(result.slots) ? result.slots : []);
+        if (result.error === "availability_unavailable") {
+          setSlotsError("Live availability unavailable — your host will confirm a time.");
+        }
+      } catch (e) {
+        if (token !== slotsFetchToken.current) return;
+        console.error("[FinalDetailsDialog] availability fetch failed", e);
+        setSlots([]);
+        setSlotsError("Live availability unavailable — your host will confirm a time.");
+      } finally {
+        if (token === slotsFetchToken.current) setSlotsLoading(false);
+      }
+    })();
+  }, [open, tourDate, tourId, bokunProductId]);
 
   const handleSubmit = async () => {
     if (submitting) return;
@@ -107,6 +159,8 @@ export function FinalDetailsDialog({
     if (!tourDate) missing.push("tour date");
     if (!guests || guests < 1) missing.push("number of guests");
     if (!pickupAddress.trim()) missing.push("pickup address");
+    // Time slot is only required when Bókun returned slots for this date.
+    if (slotsMapped && slots.length > 0 && !selectedSlot) missing.push("start time");
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -116,6 +170,8 @@ export function FinalDetailsDialog({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
+      startTime: selectedSlot?.startTime,
+      bokunAvailabilityId: selectedSlot?.availabilityId,
       guests,
       pickupAddress: pickupAddress.trim(),
       language,
@@ -127,6 +183,8 @@ export function FinalDetailsDialog({
       guideNotes: guideNotes.trim() || undefined,
     });
   };
+
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
