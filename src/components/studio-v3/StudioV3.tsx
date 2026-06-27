@@ -203,6 +203,11 @@ import {
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import {
+  BrandedCheckoutDrawer,
+  type CheckoutSummary,
+} from "@/components/checkout/BrandedCheckoutDrawer";
+
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
@@ -653,7 +658,13 @@ export function StudioV3() {
   // resolved tour id and party size. On success we redirect to Stripe's
   // hosted checkout (test mode). On failure we surface a quiet toast and
   // fall back to the lead-capture sheet so the conversion never dead-ends.
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [publishableKey, setPublishableKey] = useState<string | null>(null);
+  const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
+  const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
+
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
   const requestStripeCheckout = useCallback((currentState: StudioV3State) => {
@@ -676,27 +687,48 @@ export function StudioV3() {
       setCheckoutPending(true);
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
-            stopLabels: (tour.stops ?? []).map((s) => s.label).slice(0, 6),
+            stopLabels,
             pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
             dateExact: details.tourDate || currentState.dateExact || null,
             journeyTitle: currentState.journeyTitle ?? null,
             priceFromEur: tour.priceFrom ?? 180,
-            returnUrl: `${origin}/studio-v3?checkout=success`,
-            cancelUrl: `${origin}/studio-v3?checkout=cancelled`,
+            returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
             environment: "sandbox",
             flow: "studio",
+            uiMode: "embedded",
             guestDetails: details,
           },
         });
         if (error) throw error;
-        const url = (data as { url?: string } | null)?.url;
-        if (!url) throw new Error("No checkout URL returned");
-        window.location.href = url;
+        const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
+        if (!resp.clientSecret || !resp.publishableKey) {
+          throw new Error("Embedded checkout unavailable");
+        }
+        setCheckoutSummary({
+          tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
+          region: tour.region,
+          durationHours: tour.durationHours,
+          guests: details.guests,
+          dateExact: details.tourDate || currentState.dateExact || null,
+          startTime: details.startTime ?? null,
+          pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
+          pricePerPaxEur: tour.priceFrom ?? 180,
+          heroSrc: tour.img ?? null,
+          beats: stopLabels.slice(0, 4),
+          flowLabel: "Studio",
+        });
+        setCheckoutTourId(tour.id);
+        setClientSecret(resp.clientSecret);
+        setPublishableKey(resp.publishableKey);
+        setDetailsOpen(false);
+        setCheckoutOpen(true);
+
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
@@ -2113,6 +2145,34 @@ export function StudioV3() {
           await handleStripeCheckout(detailsState ?? state, d);
         }}
       />
+
+      <BrandedCheckoutDrawer
+        open={checkoutOpen}
+        onOpenChange={(o) => {
+          setCheckoutOpen(o);
+          if (!o) setClientSecret(null);
+        }}
+        clientSecret={clientSecret}
+        publishableKey={publishableKey}
+        summary={
+          checkoutSummary ?? {
+            tourTitle: state.journeyTitle ?? "Your Signature",
+            guests: typeof state.guests === "number" ? state.guests : 2,
+            pricePerPaxEur: null,
+            flowLabel: "Studio",
+          }
+        }
+        onComplete={(sid) => {
+          setCheckoutOpen(false);
+          const tid = checkoutTourId ?? state.tourId ?? "";
+          const qs = new URLSearchParams();
+          if (sid) qs.set("session_id", sid);
+          if (tid) qs.set("tour", tid);
+          window.location.assign(`/booking-confirmed?${qs.toString()}`);
+        }}
+      />
+
+
 
       <LeadCaptureSheet
         open={leadSheet.open}

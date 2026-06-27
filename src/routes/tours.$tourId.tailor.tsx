@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info, Loader2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -16,6 +16,11 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import {
+  BrandedCheckoutDrawer,
+  type CheckoutSummary,
+} from "@/components/checkout/BrandedCheckoutDrawer";
+
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -186,6 +191,12 @@ function TailorPage() {
   // deltas flow through when no tier row exists.
   const [checkoutPending, setCheckoutPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [publishableKey, setPublishableKey] = useState<string | null>(null);
+  const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
+  const navigate = useNavigate();
+
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
     setCheckoutPending(true);
@@ -203,18 +214,37 @@ function TailorPage() {
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
           priceFromEur: estimatedPrice,
-          returnUrl: `${origin}/tours/${tour.id}/tailor?checkout=success`,
-          cancelUrl: `${origin}/tours/${tour.id}/tailor?checkout=cancelled`,
+          returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: "sandbox",
           tailored: true,
           flow: "tailor",
+          uiMode: "embedded",
           guestDetails: { ...details, pace, addons: [...addons], lunch, accessibility: [...accessibility], notes },
         },
       });
       if (error) throw error;
-      const url = (data as { url?: string } | null)?.url;
-      if (!url) throw new Error("No checkout URL returned");
-      window.location.href = url;
+      const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
+      if (!resp.clientSecret || !resp.publishableKey) {
+        throw new Error("Embedded checkout unavailable");
+      }
+      const meta = getViatorMeta(tour.id);
+      setCheckoutSummary({
+        tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+        region: tour.region,
+        durationHours: tour.durationHours,
+        guests: details.guests,
+        dateExact: details.tourDate || null,
+        startTime: details.startTime ?? null,
+        pickupLabel: details.pickupAddress || pickup,
+        pricePerPaxEur: estimatedPrice,
+        heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
+        beats: stopLabels.slice(0, 4),
+        flowLabel: "Tailored",
+      });
+      setClientSecret(resp.clientSecret);
+      setPublishableKey(resp.publishableKey);
+      setDetailsOpen(false);
+      setCheckoutOpen(true);
     } catch (e) {
       console.error("Tailor checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
@@ -222,6 +252,7 @@ function TailorPage() {
       setCheckoutPending(false);
     }
   };
+
 
   return (
     <SiteLayout>
@@ -837,7 +868,33 @@ function TailorPage() {
           await handleReserve(d);
         }}
       />
+
+      <BrandedCheckoutDrawer
+        open={checkoutOpen}
+        onOpenChange={(o) => {
+          setCheckoutOpen(o);
+          if (!o) setClientSecret(null);
+        }}
+        clientSecret={clientSecret}
+        publishableKey={publishableKey}
+        summary={
+          checkoutSummary ?? {
+            tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+            guests,
+            pricePerPaxEur: estimatedPrice,
+            flowLabel: "Tailored",
+          }
+        }
+        onComplete={(sid) => {
+          setCheckoutOpen(false);
+          navigate({
+            to: "/booking-confirmed",
+            search: { session_id: sid ?? undefined, tour: tour.id },
+          });
+        }}
+      />
     </SiteLayout>
+
   );
 }
 

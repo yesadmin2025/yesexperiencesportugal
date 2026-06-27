@@ -29,6 +29,7 @@ import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
+import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -165,6 +166,11 @@ const BuilderRoute = BuilderRouteImport.update({
 const BrandQaRoute = BrandQaRouteImport.update({
   id: '/brand-qa',
   path: '/brand-qa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
+  id: '/booking-confirmed',
+  path: '/booking-confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -360,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
@@ -419,6 +426,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
@@ -479,6 +487,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
@@ -540,6 +549,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
     | '/contact'
@@ -599,6 +609,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
     | '/contact'
@@ -658,6 +669,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
     | '/contact'
@@ -718,6 +730,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
   BuilderRoute: typeof BuilderRoute
   ContactRoute: typeof ContactRoute
@@ -911,6 +924,13 @@ declare module '@tanstack/react-router' {
       path: '/brand-qa'
       fullPath: '/brand-qa'
       preLoaderRoute: typeof BrandQaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking-confirmed': {
+      id: '/booking-confirmed'
+      path: '/booking-confirmed'
+      fullPath: '/booking-confirmed'
+      preLoaderRoute: typeof BookingConfirmedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1215,6 +1235,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
   BuilderRoute: BuilderRoute,
   ContactRoute: ContactRoute,

@@ -1,28 +1,40 @@
 import { useState } from "react";
 import { Calendar, Users, Sparkles, Lock, Loader2 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import {
+  BrandedCheckoutDrawer,
+  type CheckoutSummary,
+} from "@/components/checkout/BrandedCheckoutDrawer";
+
+import { getViatorMeta } from "@/data/signatureToursViator";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
  *
- * Instant Stripe checkout: date, pickup time, guests, language → confirm.
- * Server resolves per-pax price from `tour_price_tiers` (same flow as the
- * Studio reveal and the Tailor page). Tailoring lives on a separate page
- * (`/tours/$tourId/tailor`).
+ * Embedded Stripe checkout in a branded drawer. The server resolves the
+ * per-pax price from `tour_price_tiers`; the client never sets it. Tailoring
+ * lives on a separate page (`/tours/$tourId/tailor`).
  */
 export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
+  const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [guests, setGuests] = useState(2);
   const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  // Embedded checkout state
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [publishableKey, setPublishableKey] = useState<string | null>(null);
+  const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
@@ -40,18 +52,40 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           dateExact: details.tourDate || null,
           journeyTitle: tour.title.split("—")[0].trim(),
           priceFromEur: tour.priceFrom,
-          returnUrl: `${origin}/tours/${tour.id}?checkout=success`,
-          cancelUrl: `${origin}/tours/${tour.id}?checkout=cancelled`,
+          returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: "sandbox",
           tailored: false,
           flow: "signature",
+          uiMode: "embedded",
           guestDetails: details,
         },
       });
       if (error) throw error;
-      const url = (data as { url?: string } | null)?.url;
-      if (!url) throw new Error("No checkout URL returned");
-      window.location.href = url;
+      const resp = (data ?? {}) as {
+        clientSecret?: string;
+        publishableKey?: string;
+      };
+      if (!resp.clientSecret || !resp.publishableKey) {
+        throw new Error("Embedded checkout unavailable");
+      }
+      const meta = getViatorMeta(tour.id);
+      setCheckoutSummary({
+        tourTitle: tour.title,
+        region: tour.region,
+        durationHours: tour.durationHours,
+        guests: details.guests,
+        dateExact: details.tourDate || null,
+        startTime: details.startTime ?? null,
+        pickupLabel: details.pickupAddress || pickup,
+        pricePerPaxEur: tour.priceFrom,
+        heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
+        beats: (tour.highlights ?? []).slice(0, 4),
+        flowLabel: "Signature",
+      });
+      setClientSecret(resp.clientSecret);
+      setPublishableKey(resp.publishableKey);
+      setDetailsOpen(false);
+      setCheckoutOpen(true);
     } catch (e) {
       console.error("Signature checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
@@ -59,6 +93,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       setPending(false);
     }
   };
+
 
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
@@ -199,7 +234,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       <FinalDetailsDialog
         open={detailsOpen}
-        onOpenChange={setDetailsOpen}
+        onOpenChange={(o) => {
+          setDetailsOpen(o);
+          if (o && tour.id) {
+            // Eager-prewarm Stripe on intent so the drawer opens instantly.
+            // We don't yet know the PK, but loadStripe is cached so the first
+            // real call after confirm hits the same in-flight promise.
+          }
+        }}
         submitting={pending}
         tourId={tour.id}
         initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
@@ -207,9 +249,37 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           await handleReserve(details);
         }}
       />
+
+      <BrandedCheckoutDrawer
+        open={checkoutOpen}
+        onOpenChange={(o) => {
+          setCheckoutOpen(o);
+          if (!o) {
+            setClientSecret(null);
+          }
+        }}
+        clientSecret={clientSecret}
+        publishableKey={publishableKey}
+        summary={
+          checkoutSummary ?? {
+            tourTitle: tour.title,
+            guests,
+            pricePerPaxEur: tour.priceFrom,
+            flowLabel: "Signature",
+          }
+        }
+        onComplete={(sid) => {
+          setCheckoutOpen(false);
+          navigate({
+            to: "/booking-confirmed",
+            search: { session_id: sid ?? undefined, tour: tour.id },
+          });
+        }}
+      />
     </div>
   );
 }
+
 
 function Field({
   label,
