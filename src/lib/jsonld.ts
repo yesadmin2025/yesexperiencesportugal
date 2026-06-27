@@ -63,7 +63,6 @@ export function organizationLd() {
       areaServed: "PT",
     },
     sameAs: [
-      "https://www.google.com/maps?cid=03208810033820295776",
       "https://www.instagram.com/yesexperiencesportugal",
       "https://www.facebook.com/yesexperiencesportugal",
       "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
