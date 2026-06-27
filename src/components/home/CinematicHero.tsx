@@ -302,20 +302,18 @@ export function CinematicHero() {
 function HeldClip({ skipMotion }: { skipMotion: boolean }) {
   const ref = useRef<HTMLVideoElement | null>(null);
 
-  // Show video only on viewports wide enough to justify the extra bytes.
-  // On phones the poster is the LCP element and the video never loads,
-  // which keeps the homepage fast on mobile networks.
+  // Show the looping video on all viewports once the page is idle,
+  // using the lightweight mobile clip on phones. The poster remains
+  // visible as the immediate LCP fallback and while the video loads.
   const [showVideo, setShowVideo] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(min-width: 768px) and (min-device-width: 768px)");
-    const slowNet =
+    // Honor explicit data-saver preference; otherwise show video even on mobile.
+    const saveData =
       // @ts-expect-error — Network Information API is non-standard
-      navigator.connection?.saveData === true ||
-      // @ts-expect-error — Network Information API is non-standard
-      ["slow-2g", "2g", "3g"].includes(navigator.connection?.effectiveType ?? "");
-    if (!mq.matches || slowNet) return;
+      navigator.connection?.saveData === true;
+    if (saveData) return;
 
     // Defer mounting the <video> until the browser is idle so it never
     // competes with the LCP poster paint or critical hero CSS.
