@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, notFound, useRouterState } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } from "lucide-react";
 import {
@@ -114,12 +114,17 @@ export const Route = createFileRoute("/tours/$tourId")({
 
 function TourDetailPage() {
   const { tour } = Route.useLoaderData();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
   const validation = validateTour(tour, meta);
   useEffect(() => {
     logTourValidation(validation);
   }, [validation]);
+
+  if (pathname.replace(/\/$/, "").endsWith(`/tours/${tour.id}/tailor`)) {
+    return <Outlet />;
+  }
 
   return (
     <SiteLayout>
