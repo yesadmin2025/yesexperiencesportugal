@@ -112,11 +112,7 @@ export function Footer() {
                 external: true,
               },
               {
-                to: "https://www.google.com/maps?cid=03208810033820295776",
-                label: "Google Maps",
-                external: true,
-              },
-              {
+
                 to: "https://wa.me/351911889992",
                 label: "WhatsApp Support",
                 external: true,
