@@ -454,7 +454,7 @@ function ResultCard({ state, result }: { state: QuizState; result: ResultKey }) 
           <Link
             key={c.to + c.label}
             to={c.to}
-            search={c.search}
+            params={c.params as never}
             className={`pf-cta pf-cta--${c.variant}`}
           >
             {c.label}
@@ -469,7 +469,7 @@ function ResultCard({ state, result }: { state: QuizState; result: ResultKey }) 
 interface ResultCta {
   label: string;
   to: string;
-  search?: Record<string, string>;
+  params?: Record<string, string>;
   variant: "primary" | "gold" | "ivory" | "outline";
 }
 
@@ -492,13 +492,13 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
         {
           label: "Reserve this day",
           to: "/tours/$tourId",
-          search: { tourId: "arrabida-wine-allinclusive" },
+          params: { tourId: "arrabida-wine-allinclusive" },
           variant: "primary",
         },
         {
-          label: "Make it yours",
+          label: "Tailor this Signature",
           to: "/tours/$tourId/tailor",
-          search: { tourId: "arrabida-wine-allinclusive" },
+          params: { tourId: "arrabida-wine-allinclusive" },
           variant: "outline",
         },
       ],
