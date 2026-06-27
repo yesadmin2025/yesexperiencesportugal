@@ -2146,6 +2146,34 @@ export function StudioV3() {
         }}
       />
 
+      <BrandedCheckoutDrawer
+        open={checkoutOpen}
+        onOpenChange={(o) => {
+          setCheckoutOpen(o);
+          if (!o) setClientSecret(null);
+        }}
+        clientSecret={clientSecret}
+        publishableKey={publishableKey}
+        summary={
+          checkoutSummary ?? {
+            tourTitle: state.journeyTitle ?? "Your Signature",
+            guests: typeof state.guests === "number" ? state.guests : 2,
+            pricePerPaxEur: null,
+            flowLabel: "Studio",
+          }
+        }
+        onComplete={(sid) => {
+          setCheckoutOpen(false);
+          const tid = checkoutTourId ?? state.tourId ?? "";
+          const qs = new URLSearchParams();
+          if (sid) qs.set("session_id", sid);
+          if (tid) qs.set("tour", tid);
+          window.location.assign(`/booking-confirmed?${qs.toString()}`);
+        }}
+      />
+
+
+
       <LeadCaptureSheet
         open={leadSheet.open}
         intent={leadSheet.intent}
