@@ -831,6 +831,7 @@ function TailorPage() {
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         submitting={checkoutPending}
+        tourId={tour.id}
         initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
         onConfirm={async (d) => {
           await handleReserve(d);
