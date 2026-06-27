@@ -218,7 +218,7 @@ function LegacyDomainsMonitorPage() {
           {!data && isFetching ? (
             <p className="text-sm text-[color:var(--charcoal-soft)]">A sondar domínios…</p>
           ) : null}
-          {data?.map((r) => <HostCard key={r.host} r={r} />)}
+          {data?.map((r: LegacyHostReport) => <HostCard key={r.host} r={r} />)}
         </section>
 
         <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5 text-sm text-[color:var(--charcoal-soft)]">
