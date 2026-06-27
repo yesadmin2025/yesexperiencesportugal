@@ -1,0 +1,31 @@
+# YES experiences Portugal
+
+> Private, premium experiences in Portugal — Signature day tours, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys with a Travel Designer, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra. Licensed tour operator (RNAVT), 700+ five-star reviews across Google, Tripadvisor and Viator.
+
+## Pages
+
+- [Home](/): Overview of YES experiences Portugal and the four ways in.
+- [Signature Experiences](/experiences): Complete private day experiences, reservable instantly.
+- [Day Tours](/day-tours): Half- and full-day private tours across Portugal.
+- [Experience Studio](/studio-v3): Design your own private day with live pricing and instant reservation.
+- [Travel Designer (Multi-day)](/multi-day): Bespoke multi-day journeys designed with you.
+- [Moments](/moments): Proposals, anniversaries and private celebrations.
+- [Corporate](/corporate): Private corporate days and incentives.
+- [About](/about): Who we are and how we work.
+- [Contact](/contact): Get in touch.
+- [FAQ](/faq): Common questions about booking, pricing and logistics.
+- [Local Stories](/local-stories): Editorial guides to Portugal's regions and experiences.
+
+## Local Stories
+
+- [Best Day Trips from Lisbon](/local-stories/best-day-trips-from-lisbon)
+- [Arrábida vs Sintra](/local-stories/arrabida-vs-sintra)
+- [Setúbal Wine Guide](/local-stories/setubal-wine-guide)
+- [What to Do in Sesimbra](/local-stories/what-to-do-in-sesimbra)
+- [Private Tour vs Group Tour](/local-stories/private-tour-vs-group-tour)
+- [Tróia & Comporta Guide](/local-stories/troia-comporta-guide)
+
+## Optional
+
+- [Terms](/terms)
+- [Privacy](/privacy)
