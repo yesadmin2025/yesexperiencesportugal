@@ -26,6 +26,38 @@ function StatusDot({ ready }: { ready: boolean }) {
   );
 }
 
+const VERDICT_LABEL: Record<string, { label: string; cls: string }> = {
+  ready: { label: "Pronto", cls: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+  "dns-missing": { label: "DNS em falta", cls: "bg-amber-100 text-amber-800 border-amber-300" },
+  "dns-wrong": { label: "DNS errado", cls: "bg-rose-100 text-rose-800 border-rose-300" },
+  "http-down": { label: "HTTPS em baixo", cls: "bg-rose-100 text-rose-800 border-rose-300" },
+  "http-error": { label: "HTTPS erro", cls: "bg-rose-100 text-rose-800 border-rose-300" },
+  "wrong-content": { label: "Conteúdo errado", cls: "bg-amber-100 text-amber-800 border-amber-300" },
+};
+
+function VerdictBadge({ verdict }: { verdict: string }) {
+  const v = VERDICT_LABEL[verdict] ?? { label: verdict, cls: "bg-slate-100 text-slate-800 border-slate-300" };
+  return (
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] ${v.cls}`}>
+      {v.label}
+    </span>
+  );
+}
+
+function CheckRow({ ok, label, detail }: { ok: boolean; label: string; detail: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-t border-[color:var(--sand)] py-1.5 text-xs">
+      <div className="flex items-center gap-2">
+        <span className={`inline-block h-1.5 w-1.5 rounded-full ${ok ? "bg-emerald-500" : "bg-rose-400"}`} />
+        <span className="font-medium text-[color:var(--charcoal)]">{label}</span>
+      </div>
+      <span className="text-right font-mono text-[11px] text-[color:var(--charcoal-soft)] break-all">
+        {detail}
+      </span>
+    </div>
+  );
+}
+
 function DnsWatchPage() {
   const getStatus = useServerFn(getDnsWatchStatus);
   const runNow = useServerFn(runDnsWatchNow);
