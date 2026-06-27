@@ -26,12 +26,15 @@ export function organizationLd() {
     "@type": ["TravelAgency", "LocalBusiness"],
     "@id": `${SITE_URL}/#organization`,
     name: "YES Experiences Portugal",
+    alternateName: ["YES experiences Portugal", "Yes Experiences"],
     legalName: "YES Experiences Portugal",
     url: `${SITE_URL}/`,
     logo: `${SITE_URL}/brand/svg/yes-experiences-portugal-horizontal-full.svg`,
     image: `${SITE_URL}/brand/svg/yes-experiences-portugal-horizontal-full.svg`,
     description:
       "Licensed Portuguese tour operator (RNAVT) crafting private, meaningful experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+    disambiguatingDescription:
+      "The only active and canonical entity for the YES Experiences Portugal brand is operated from https://yesexperiencesportugal.com. Any third-party listing using the spelling \"Yes!experiences Portugal\" or marked as permanently closed is unrelated to this business and is not endorsed, owned, or operated by us.",
     identifier: {
       "@type": "PropertyValue",
       propertyID: "RNAVT",
