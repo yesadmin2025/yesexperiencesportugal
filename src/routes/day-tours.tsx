@@ -79,7 +79,7 @@ function DayToursPage() {
                 >
                   <img
                     {...resolveImg(t, "lg")}
-                    alt={t.title}
+                    alt={`${t.title} — private day tour in ${t.region}, Portugal (${t.theme})`}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
