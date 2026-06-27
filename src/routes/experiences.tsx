@@ -93,7 +93,7 @@ function ExperiencesPage() {
                   >
                     <img
                       {...resolveImg(t, "lg")}
-                      alt={t.title}
+                      alt={`${t.title} — private ${t.theme.toLowerCase()} experience in ${t.region}, Portugal`}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
