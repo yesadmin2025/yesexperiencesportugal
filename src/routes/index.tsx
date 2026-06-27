@@ -698,7 +698,8 @@ function HomePage() {
                 id="signatures-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
-                Signature days, already loved.
+                Signature days,{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
               </h2>
             </div>
 
@@ -892,7 +893,8 @@ function HomePage() {
                 id="groups-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
-                Moments that deserve a setting.
+                Moments that{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
               </h2>
             </div>
 

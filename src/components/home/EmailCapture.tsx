@@ -225,7 +225,7 @@ export function InlineEmailCapture() {
       </div>
       <h3 className="serif mt-2 text-center text-[20px] sm:text-[22px] leading-snug text-[color:var(--charcoal)]">
         A Local&apos;s Map:{" "}
-        <span className="italic text-[color:var(--teal)]">
+        <span className="italic font-normal text-[color:var(--teal)]">
           the best day trips from Lisbon
         </span>
       </h3>
@@ -332,7 +332,7 @@ export function ExitIntentEmailCapture() {
           className="serif mt-2 text-center text-[22px] leading-snug text-[color:var(--charcoal)]"
         >
           A Local&apos;s Map:{" "}
-          <span className="italic text-[color:var(--teal)]">day trips from Lisbon</span>
+          <span className="italic font-normal text-[color:var(--teal)]">day trips from Lisbon</span>
         </h3>
         <p className="mt-2 text-center text-[13.5px] text-[color:var(--charcoal-soft)]">
           Planning a Portugal trip? Get our local day-trip map — free.
