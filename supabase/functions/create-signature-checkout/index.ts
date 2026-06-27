@@ -204,7 +204,7 @@ Deno.serve(async (req) => {
     };
 
     if (uiMode === "embedded") {
-      sessionParams.ui_mode = "embedded";
+      sessionParams.ui_mode = "embedded_page";
       sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
     } else {
       sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
