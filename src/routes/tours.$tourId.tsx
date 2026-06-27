@@ -79,7 +79,7 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-4xl">Experience not found</h1>
+          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">Experience not found</h1>
           <p className="mt-4 text-[color:var(--charcoal-soft)]">
             That Signature Experience doesn't exist anymore.
           </p>
@@ -97,7 +97,7 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-3xl">Something went sideways</h1>
+          <h1 className="serif text-3xl" data-mixed-emphasis="exempt">Something went sideways</h1>
           <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
           <Link
             to="/experiences"
