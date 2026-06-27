@@ -26,6 +26,38 @@ function StatusDot({ ready }: { ready: boolean }) {
   );
 }
 
+const VERDICT_LABEL: Record<string, { label: string; cls: string }> = {
+  ready: { label: "Pronto", cls: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+  "dns-missing": { label: "DNS em falta", cls: "bg-amber-100 text-amber-800 border-amber-300" },
+  "dns-wrong": { label: "DNS errado", cls: "bg-rose-100 text-rose-800 border-rose-300" },
+  "http-down": { label: "HTTPS em baixo", cls: "bg-rose-100 text-rose-800 border-rose-300" },
+  "http-error": { label: "HTTPS erro", cls: "bg-rose-100 text-rose-800 border-rose-300" },
+  "wrong-content": { label: "Conteúdo errado", cls: "bg-amber-100 text-amber-800 border-amber-300" },
+};
+
+function VerdictBadge({ verdict }: { verdict: string }) {
+  const v = VERDICT_LABEL[verdict] ?? { label: verdict, cls: "bg-slate-100 text-slate-800 border-slate-300" };
+  return (
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] ${v.cls}`}>
+      {v.label}
+    </span>
+  );
+}
+
+function CheckRow({ ok, label, detail }: { ok: boolean; label: string; detail: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-t border-[color:var(--sand)] py-1.5 text-xs">
+      <div className="flex items-center gap-2">
+        <span className={`inline-block h-1.5 w-1.5 rounded-full ${ok ? "bg-emerald-500" : "bg-rose-400"}`} />
+        <span className="font-medium text-[color:var(--charcoal)]">{label}</span>
+      </div>
+      <span className="text-right font-mono text-[11px] text-[color:var(--charcoal-soft)] break-all">
+        {detail}
+      </span>
+    </div>
+  );
+}
+
 function DnsWatchPage() {
   const getStatus = useServerFn(getDnsWatchStatus);
   const runNow = useServerFn(runDnsWatchNow);
@@ -110,6 +142,9 @@ function DnsWatchPage() {
                   <h2 className="mt-1 text-xl font-semibold text-[color:var(--charcoal)]">
                     {data.allReady ? "✓ Todos os domínios prontos" : "Aguardar propagação"}
                   </h2>
+                  <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+                    {data.hosts.filter((h) => h.ready).length} / {data.hosts.length} prontos
+                  </p>
                   {data.readySince && (
                     <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
                       Pronto desde {new Date(data.readySince).toLocaleString("pt-PT")}
@@ -125,6 +160,18 @@ function DnsWatchPage() {
                   {checkNow.isPending ? "A verificar…" : "Verificar agora"}
                 </button>
               </div>
+
+              <ul className="mt-4 grid gap-1.5 sm:grid-cols-2">
+                {data.hosts.map((h) => (
+                  <li key={`sum-${h.host}`} className="flex items-center justify-between gap-2 rounded-md border border-white/60 bg-white/60 px-3 py-1.5 text-xs">
+                    <span className="flex items-center gap-2">
+                      <StatusDot ready={h.ready} />
+                      <span className="font-mono text-[11px] text-[color:var(--charcoal)]">{h.host}</span>
+                    </span>
+                    <VerdictBadge verdict={h.verdict} />
+                  </li>
+                ))}
+              </ul>
             </section>
 
             <section className="grid gap-3">
@@ -133,35 +180,42 @@ function DnsWatchPage() {
                   key={h.host}
                   className="rounded-lg border border-[color:var(--sand)] bg-white p-4"
                 >
-                  <header className="flex items-center justify-between gap-3">
+                  <header className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <StatusDot ready={h.ready} />
                       <h3 className="font-medium text-[color:var(--charcoal)]">{h.host}</h3>
+                      <VerdictBadge verdict={h.verdict} />
                     </div>
                     <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                       {new Date(h.checkedAt).toLocaleTimeString("pt-PT")}
                     </span>
                   </header>
-                  <dl className="mt-3 grid gap-1 text-xs text-[color:var(--charcoal)] sm:grid-cols-2">
-                    <div>
-                      <dt className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                        A records
-                      </dt>
-                      <dd className="font-mono">
-                        {h.aRecords.length ? h.aRecords.join(", ") : "—"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                        HTTPS
-                      </dt>
-                      <dd className="font-mono">{h.httpStatus ?? "sem resposta"}</dd>
-                    </div>
-                  </dl>
-                  <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">{h.notes}</p>
+
+                  <div className="mt-3">
+                    {h.checks.map((c) => (
+                      <CheckRow key={c.label} ok={c.ok} label={c.label} detail={c.detail} />
+                    ))}
+                  </div>
+
+                  {(h.httpLocation || h.httpServer || h.httpContentType) && (
+                    <dl className="mt-3 grid gap-1 border-t border-[color:var(--sand)] pt-2 text-[11px] text-[color:var(--charcoal-soft)] sm:grid-cols-3">
+                      {h.httpServer && (
+                        <div><dt className="opacity-70">Server</dt><dd className="font-mono">{h.httpServer}</dd></div>
+                      )}
+                      {h.httpContentType && (
+                        <div><dt className="opacity-70">Content-Type</dt><dd className="font-mono">{h.httpContentType}</dd></div>
+                      )}
+                      {h.httpLocation && (
+                        <div><dt className="opacity-70">Location</dt><dd className="font-mono break-all">{h.httpLocation}</dd></div>
+                      )}
+                    </dl>
+                  )}
+
+                  <p className="mt-3 text-xs text-[color:var(--charcoal-soft)]">{h.notes}</p>
                 </article>
               ))}
             </section>
+
 
             <section className="mt-10">
               <h2 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
