@@ -64,10 +64,12 @@ function ExperiencesPage() {
 
       <section className="section-y">
         <div className="container-x">
+          <h2 className="sr-only">Our Signature Collection</h2>
           <div className="flex justify-end mb-6">
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
             {signatureTours.map((t) => {
               // Real bullets sourced from the matching Viator product page
               // (bookable stops, pass-bys excluded). Falls back to the
@@ -91,7 +93,7 @@ function ExperiencesPage() {
                   >
                     <img
                       {...resolveImg(t, "lg")}
-                      alt={t.title}
+                      alt={`${t.title} — private ${t.theme.toLowerCase()} experience in ${t.region}, Portugal`}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -199,9 +201,9 @@ function CtaStrip() {
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="serif text-3xl md:text-4xl">
+            <h2 className="serif text-3xl md:text-4xl">
               Want to start from scratch? <span className="italic">Open the Studio.</span>
-            </h3>
+            </h2>
             <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
               Start your way — with a place, a region or a feeling. We'll guide you as you build,
               shaping it within what works best on the ground.
