@@ -50,6 +50,7 @@ import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
+import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
@@ -274,6 +275,11 @@ const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
   path: '/admin/seo-monitor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
+  id: '/admin/redirects-monitor',
+  path: '/admin/redirects-monitor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPricingRoute = AdminPricingRouteImport.update({
   id: '/admin/pricing',
   path: '/admin/pricing',
@@ -403,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/pricing': typeof AdminPricingRoute
+  '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -464,6 +471,7 @@ export interface FileRoutesByTo {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/pricing': typeof AdminPricingRoute
+  '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -526,6 +534,7 @@ export interface FileRoutesById {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/pricing': typeof AdminPricingRoute
+  '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -589,6 +598,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/pricing'
+    | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -650,6 +660,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/pricing'
+    | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -711,6 +722,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/pricing'
+    | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -773,6 +785,7 @@ export interface RootRouteChildren {
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminPricingRoute: typeof AdminPricingRoute
+  AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
@@ -1086,6 +1099,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSeoMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/redirects-monitor': {
+      id: '/admin/redirects-monitor'
+      path: '/admin/redirects-monitor'
+      fullPath: '/admin/redirects-monitor'
+      preLoaderRoute: typeof AdminRedirectsMonitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/pricing': {
       id: '/admin/pricing'
       path: '/admin/pricing'
@@ -1286,6 +1306,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminPricingRoute: AdminPricingRoute,
+  AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
