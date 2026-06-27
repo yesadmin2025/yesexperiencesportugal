@@ -90,10 +90,10 @@ function Page() {
             <Info icon={<Phone size={16} />} label="Phone" value="+351 911 889 992" />
             <Info
               icon={<MapPin size={16} />}
-              label="Find us"
-              value="YES experiences Portugal on Google Maps"
-              href="https://www.google.com/maps?cid=03208810033820295776"
+              label="Based in"
+              value="Lisbon · Sintra · Arrábida, Portugal"
             />
+
             <div className="gold-divider" />
             <p className="serif italic text-lg text-[color:var(--teal)]">
               "We design Portugal experiences with care. Every reply is personal."
