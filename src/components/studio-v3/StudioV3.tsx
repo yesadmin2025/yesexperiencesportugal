@@ -203,6 +203,11 @@ import {
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import {
+  BrandedCheckoutDrawer,
+  type CheckoutSummary,
+} from "@/components/checkout/BrandedCheckoutDrawer";
+
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
