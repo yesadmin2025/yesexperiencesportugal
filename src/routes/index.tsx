@@ -17,7 +17,7 @@ import imgProposalsRomantic from "@/assets/exp-romantic.jpg";
 import imgCorporate from "@/assets/cat-corporate.jpg";
 
 import { Star, MessageCircle } from "lucide-react";
-import { PlatformBadge } from "@/components/PlatformBadge";
+
 import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
