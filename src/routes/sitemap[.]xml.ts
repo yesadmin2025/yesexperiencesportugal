@@ -17,24 +17,26 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        const today = new Date().toISOString().slice(0, 10);
         const staticEntries: SitemapEntry[] = [
-          { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/about", changefreq: "monthly", priority: "0.6" },
-          { path: "/contact", changefreq: "monthly", priority: "0.6" },
-          { path: "/experiences", changefreq: "weekly", priority: "0.9" },
-          { path: "/studio-v3", changefreq: "weekly", priority: "0.9" },
-          { path: "/day-tours", changefreq: "weekly", priority: "0.8" },
-          { path: "/multi-day", changefreq: "weekly", priority: "0.8" },
-          { path: "/proposals", changefreq: "monthly", priority: "0.7" },
-          { path: "/corporate", changefreq: "monthly", priority: "0.7" },
-          { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
-          { path: "/day-trips-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/terms", changefreq: "yearly", priority: "0.4" },
-          { path: "/privacy", changefreq: "yearly", priority: "0.4" },
+          { path: "/", lastmod: today, changefreq: "weekly", priority: "1.0" },
+          { path: "/about", lastmod: today, changefreq: "monthly", priority: "0.6" },
+          { path: "/contact", lastmod: today, changefreq: "monthly", priority: "0.6" },
+          { path: "/experiences", lastmod: today, changefreq: "weekly", priority: "0.9" },
+          { path: "/studio-v3", lastmod: today, changefreq: "weekly", priority: "0.9" },
+          { path: "/day-tours", lastmod: today, changefreq: "weekly", priority: "0.8" },
+          { path: "/multi-day", lastmod: today, changefreq: "weekly", priority: "0.8" },
+          { path: "/proposals", lastmod: today, changefreq: "monthly", priority: "0.7" },
+          { path: "/corporate", lastmod: today, changefreq: "monthly", priority: "0.7" },
+          { path: "/local-stories", lastmod: today, changefreq: "weekly", priority: "0.7" },
+          { path: "/day-trips-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.8" },
+          { path: "/terms", lastmod: today, changefreq: "yearly", priority: "0.4" },
+          { path: "/privacy", lastmod: today, changefreq: "yearly", priority: "0.4" },
         ];
 
         const tourEntries: SitemapEntry[] = signatureTours.map((t) => ({
           path: `/tours/${t.id}`,
+          lastmod: today,
           changefreq: "monthly",
           priority: "0.7",
         }));
