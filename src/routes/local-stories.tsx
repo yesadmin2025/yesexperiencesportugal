@@ -91,30 +91,33 @@ function Page() {
         <div className="container-x">
           {hasContent ? (
             <div className="grid md:grid-cols-2 gap-10 md:gap-14">
-              {staticArticles.map((a) => (
-                <article key={a.slug} className="group reveal-stagger">
-                  <Link
-                    to="/local-stories/$slug"
-                    params={{ slug: a.slug }}
-                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
-                  >
-                    <div>
-                      <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
-                        {a.eyebrow}
-                      </span>
-                      <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
-                        {a.h1}
-                      </h2>
-                      <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
-                        {a.standfirst}
-                      </p>
-                      <span className="mt-4 inline-block font-sans text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)]">
-                        Read the story →
-                      </span>
-                    </div>
-                  </Link>
-                </article>
-              ))}
+              {staticArticles.map((a) => {
+                const isDayTripsGuide = a.slug === "best-day-trips-from-lisbon";
+                return (
+                  <article key={a.slug} className="group reveal-stagger">
+                    <Link
+                      to={isDayTripsGuide ? "/day-trips-from-lisbon" : "/local-stories/$slug"}
+                      params={isDayTripsGuide ? undefined : { slug: a.slug }}
+                      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+                    >
+                      <div>
+                        <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+                          {a.eyebrow}
+                        </span>
+                        <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
+                          {a.h1}
+                        </h2>
+                        <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
+                          {a.standfirst}
+                        </p>
+                        <span className="mt-4 inline-block font-sans text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)]">
+                          Read the story →
+                        </span>
+                      </div>
+                    </Link>
+                  </article>
+                );
+              })}
               {posts?.filter((p) => !LOCAL_STORIES_ARTICLES.some((a) => a.slug === p.slug)).map((p) => (
                 <article key={p.slug} className="group reveal-stagger">
                   <Link

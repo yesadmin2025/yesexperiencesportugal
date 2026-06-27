@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useRouter, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,10 +69,27 @@ function articleJsonLd(a: LocalStoryArticle) {
 
 export const Route = createFileRoute("/local-stories/$slug")({
   head: ({ params }) => {
-    const url = `${BASE}/local-stories/${params.slug}`;
     const article = getLocalStoryArticle(params.slug);
 
+    // The day-trips guide now lives at its dedicated SEO route.
+    if (article && article.slug === "best-day-trips-from-lisbon") {
+      const canonicalUrl = `${BASE}/day-trips-from-lisbon`;
+      return {
+        meta: [
+          { title: article.title },
+          { name: "description", content: article.metaDescription },
+          { property: "og:title", content: article.title },
+          { property: "og:description", content: article.metaDescription },
+          { property: "og:url", content: canonicalUrl },
+          { property: "og:type", content: "article" },
+          { property: "article:published_time", content: article.datePublished },
+        ],
+        links: [{ rel: "canonical", href: canonicalUrl }],
+      };
+    }
+
     if (article) {
+      const url = `${BASE}/local-stories/${params.slug}`;
       return {
         meta: [
           { title: article.title },
@@ -97,6 +114,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
       };
     }
 
+    const url = `${BASE}/local-stories/${params.slug}`;
     return {
       meta: [
         { title: `Local Story — YES experiences Portugal` },
@@ -109,6 +127,13 @@ export const Route = createFileRoute("/local-stories/$slug")({
       ],
       links: [{ rel: "canonical", href: url }],
     };
+  },
+
+  beforeLoad: ({ params }) => {
+    // The day-trips guide now lives at its own SEO-focused route.
+    if (params.slug === "best-day-trips-from-lisbon") {
+      throw redirect({ to: "/day-trips-from-lisbon" });
+    }
   },
 
   errorComponent: ErrorView,
