@@ -23,6 +23,7 @@ import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
+import { Route as DayTripsFromLisbonRouteImport } from './routes/day-trips-from-lisbon'
 import { Route as DayToursRouteImport } from './routes/day-tours'
 import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -134,6 +135,11 @@ const HeroVerifyRoute = HeroVerifyRouteImport.update({
 const ExperiencesRoute = ExperiencesRouteImport.update({
   id: '/experiences',
   path: '/experiences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DayTripsFromLisbonRoute = DayTripsFromLisbonRouteImport.update({
+  id: '/day-trips-from-lisbon',
+  path: '/day-trips-from-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DayToursRoute = DayToursRouteImport.update({
@@ -359,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
+  '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
@@ -417,6 +424,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
+  '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
@@ -476,6 +484,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
+  '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
@@ -536,6 +545,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corporate'
     | '/day-tours'
+    | '/day-trips-from-lisbon'
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
@@ -594,6 +604,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corporate'
     | '/day-tours'
+    | '/day-trips-from-lisbon'
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
@@ -652,6 +663,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corporate'
     | '/day-tours'
+    | '/day-trips-from-lisbon'
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
@@ -711,6 +723,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CorporateRoute: typeof CorporateRoute
   DayToursRoute: typeof DayToursRoute
+  DayTripsFromLisbonRoute: typeof DayTripsFromLisbonRoute
   ExperiencesRoute: typeof ExperiencesRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
@@ -856,6 +869,13 @@ declare module '@tanstack/react-router' {
       path: '/experiences'
       fullPath: '/experiences'
       preLoaderRoute: typeof ExperiencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/day-trips-from-lisbon': {
+      id: '/day-trips-from-lisbon'
+      path: '/day-trips-from-lisbon'
+      fullPath: '/day-trips-from-lisbon'
+      preLoaderRoute: typeof DayTripsFromLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/day-tours': {
@@ -1200,6 +1220,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CorporateRoute: CorporateRoute,
   DayToursRoute: DayToursRoute,
+  DayTripsFromLisbonRoute: DayTripsFromLisbonRoute,
   ExperiencesRoute: ExperiencesRoute,
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,

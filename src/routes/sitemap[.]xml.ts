@@ -28,6 +28,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/proposals", changefreq: "monthly", priority: "0.7" },
           { path: "/corporate", changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
+          { path: "/day-trips-from-lisbon", changefreq: "monthly", priority: "0.8" },
           { path: "/terms", changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", changefreq: "yearly", priority: "0.4" },
         ];
@@ -37,7 +38,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           changefreq: "monthly",
           priority: "0.7",
         }));
-        const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.map((a) => ({
+        const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter(
+          (a) => a.slug !== "best-day-trips-from-lisbon",
+        ).map((a) => ({
           path: `/local-stories/${a.slug}`,
           lastmod: a.datePublished,
           changefreq: "monthly",
