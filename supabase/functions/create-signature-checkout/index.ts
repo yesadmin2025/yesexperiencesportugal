@@ -22,7 +22,7 @@ interface Body {
   journeyTitle?: string | null;
   customerEmail?: string;
   returnUrl: string; // success url (we append session_id)
-  cancelUrl: string;
+  cancelUrl?: string;
   environment: StripeEnv;
   /** Anchor "from" EUR if no tier data exists. */
   priceFromEur: number;
@@ -30,6 +30,8 @@ interface Body {
   tailored?: boolean;
   /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
   flow?: "studio" | "signature" | "tailor";
+  /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
+  uiMode?: "hosted" | "embedded";
 }
 
 type Flow = "studio" | "signature" | "tailor";
