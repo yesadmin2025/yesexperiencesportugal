@@ -39,6 +39,24 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
     setPending(true);
+    // Open the drawer immediately so the user sees a branded skeleton
+    // while the edge function is in flight (saves the "blank" feeling).
+    const meta = getViatorMeta(tour.id);
+    setCheckoutSummary({
+      tourTitle: tour.title,
+      region: tour.region,
+      durationHours: tour.durationHours,
+      guests: details.guests,
+      dateExact: details.tourDate || null,
+      startTime: details.startTime ?? null,
+      pickupLabel: details.pickupAddress || pickup,
+      pricePerPaxEur: tour.priceFrom,
+      heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
+      beats: (tour.highlights ?? []).slice(0, 4),
+      flowLabel: "Signature",
+    });
+    setDetailsOpen(false);
+    setCheckoutOpen(true);
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const stopLabels = (tour.stops ?? []).slice(0, 6).map((s) => s.label);
@@ -57,7 +75,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           tailored: false,
           flow: "signature",
           uiMode: "embedded",
-          guestDetails: details,
+          guestDetails: { ...details, hotelPickupIncluded: true },
         },
       });
       if (error) throw error;
@@ -68,27 +86,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       if (!resp.clientSecret || !resp.publishableKey) {
         throw new Error("Embedded checkout unavailable");
       }
-      const meta = getViatorMeta(tour.id);
-      setCheckoutSummary({
-        tourTitle: tour.title,
-        region: tour.region,
-        durationHours: tour.durationHours,
-        guests: details.guests,
-        dateExact: details.tourDate || null,
-        startTime: details.startTime ?? null,
-        pickupLabel: details.pickupAddress || pickup,
-        pricePerPaxEur: tour.priceFrom,
-        heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
-        beats: (tour.highlights ?? []).slice(0, 4),
-        flowLabel: "Signature",
-      });
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
-      setDetailsOpen(false);
-      setCheckoutOpen(true);
     } catch (e) {
       console.error("Signature checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
+      setCheckoutOpen(false);
     } finally {
       setPending(false);
     }

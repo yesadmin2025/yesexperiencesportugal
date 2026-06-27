@@ -11,6 +11,7 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 
 /**
  * Final details before payment — the last step before Stripe checkout
@@ -101,6 +102,7 @@ export function FinalDetailsDialog({
 
   useEffect(() => {
     if (!open) return;
+    prewarmStripeScript();
     if (initial?.tourDate) setTourDate(initial.tourDate);
     if (initial?.guests) setGuests(initial.guests);
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);

@@ -133,7 +133,7 @@ function TailorPage() {
   // Tour-aware add-ons — only those plausible for this tour
   const addonOptions = useMemo(() => buildAddons(tour), [tour]);
   const lunchOptions = useMemo(() => buildLunch(tour, inc.items), [tour, inc.items]);
-  const [addons, setAddons] = useState<Set<string>>(new Set(["pickup"]));
+  const [addons, setAddons] = useState<Set<string>>(new Set());
   const [lunch, setLunch] = useState<string>(lunchOptions[0]?.id ?? "");
 
   const [accessibility, setAccessibility] = useState<Set<string>>(new Set());
@@ -200,10 +200,28 @@ function TailorPage() {
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
     setCheckoutPending(true);
+    // Open the drawer immediately so a branded skeleton appears while
+    // the edge function is in flight — avoids "blank screen" feel.
+    const metaForSummary = getViatorMeta(tour.id);
+    const stopLabels = keptStops.map((s: TourStop) => s.label);
+    [...added].forEach((label) => stopLabels.push(label));
+    setCheckoutSummary({
+      tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+      region: tour.region,
+      durationHours: tour.durationHours,
+      guests: details.guests,
+      dateExact: details.tourDate || null,
+      startTime: details.startTime ?? null,
+      pickupLabel: details.pickupAddress || pickup,
+      pricePerPaxEur: estimatedPrice,
+      heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
+      beats: stopLabels.slice(0, 4),
+      flowLabel: "Tailored",
+    });
+    setDetailsOpen(false);
+    setCheckoutOpen(true);
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const stopLabels = keptStops.map((s: TourStop) => s.label);
-      [...added].forEach((label) => stopLabels.push(label));
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
         body: {
           tourId: tour.id,
@@ -219,7 +237,15 @@ function TailorPage() {
           tailored: true,
           flow: "tailor",
           uiMode: "embedded",
-          guestDetails: { ...details, pace, addons: [...addons], lunch, accessibility: [...accessibility], notes },
+          guestDetails: {
+            ...details,
+            hotelPickupIncluded: true,
+            pace,
+            addons: [...addons],
+            lunch,
+            accessibility: [...accessibility],
+            notes,
+          },
         },
       });
       if (error) throw error;
@@ -227,27 +253,12 @@ function TailorPage() {
       if (!resp.clientSecret || !resp.publishableKey) {
         throw new Error("Embedded checkout unavailable");
       }
-      const meta = getViatorMeta(tour.id);
-      setCheckoutSummary({
-        tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-        region: tour.region,
-        durationHours: tour.durationHours,
-        guests: details.guests,
-        dateExact: details.tourDate || null,
-        startTime: details.startTime ?? null,
-        pickupLabel: details.pickupAddress || pickup,
-        pricePerPaxEur: estimatedPrice,
-        heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
-        beats: stopLabels.slice(0, 4),
-        flowLabel: "Tailored",
-      });
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
-      setDetailsOpen(false);
-      setCheckoutOpen(true);
     } catch (e) {
       console.error("Tailor checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
+      setCheckoutOpen(false);
     } finally {
       setCheckoutPending(false);
     }
@@ -597,12 +608,16 @@ function TailorPage() {
                 </Group>
               )}
 
-              {/* Add-ons — tour-aware */}
-              {addonOptions.length > 0 && (
-                <Group title="Small additions">
-                  <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
-                    Optional. Available within this Signature only.
-                  </p>
+              {/* Add-ons — tour-aware. Hotel pickup is always included
+                  and surfaced statically (never toggleable). */}
+              <Group title="Small additions">
+                <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
+                  Hotel pickup is always included. Other additions are optional.
+                </p>
+                <div className="mb-3 inline-flex items-center gap-2 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/8 px-2.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)]">
+                  <Check size={12} /> Hotel pickup included
+                </div>
+                {addonOptions.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {addonOptions.map((a) => {
                       const on = addons.has(a.id);
@@ -629,8 +644,8 @@ function TailorPage() {
                       );
                     })}
                   </div>
-                </Group>
-              )}
+                )}
+              </Group>
 
               {/* Accessibility / comfort */}
               <Group title="Accessibility & comfort">
@@ -902,9 +917,9 @@ function TailorPage() {
  * Per-tour option builders (tour-aware, never global)
  * ──────────────────────────────────────────────────────────── */
 function buildAddons(tour: SignatureTour): { id: string; label: string; priceDelta?: number }[] {
-  const out: { id: string; label: string; priceDelta?: number }[] = [
-    { id: "pickup", label: "Hotel pickup" },
-  ];
+  // Hotel pickup is always included on every Signature — never a toggleable
+  // add-on. It's surfaced as a static "Included" note in the UI instead.
+  const out: { id: string; label: string; priceDelta?: number }[] = [];
   const styles = tour.seed.styles ?? [];
   const text = (tour.title + " " + tour.blurb + " " + tour.intro).toLowerCase();
 
