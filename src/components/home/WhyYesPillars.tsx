@@ -30,7 +30,7 @@ const PILLARS: Pillar[] = [
     eyebrow: "Local from the start",
     title: (
       <>
-        Real locals, <span className="italic">not call centres.</span>
+        Real locals, <span className="italic font-normal">not call centres.</span>
       </>
     ),
     body: "Routes, timings and the hidden details that change a day are shaped by people who live here — not a script written abroad.",
