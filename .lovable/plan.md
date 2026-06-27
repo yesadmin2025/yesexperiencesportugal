@@ -1,63 +1,84 @@
-## Reference site — what to extract
+## Scope (two changes, no other rebuild)
 
-I compared `yesexperiences.customwebsitedesigns.org` (the reference dev) against our current preview and live `yesexperiencesportugal.com`. The reference is a static design comp — its **structure and content choices are gold**, but its execution (Unsplash imagery, generic copy, "Configurator™" voice) is **not brand-aligned** and must not be copied verbatim.
+### 1) Stripe Embedded Checkout — native, branded, fast
 
-### What's worth extracting (and how it lands in our dev)
+Replace the full-page Stripe redirect with **Stripe Embedded Checkout** rendered inside a brand-styled drawer on our domain. The existing `FinalDetailsDialog` (Final details before payment) stays exactly as it is; only the step *after* it changes.
 
+**Edge function (`supabase/functions/create-signature-checkout/index.ts`)**
 
-| #   | Reference idea                                                                                                                         | Our action                                                                                                              |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 1   | Hero with cinematic overlay, eyebrow + serif headline + supporting line + dual CTA                                                     | **Already on live.** No change to our locked hero copy.                                                                 |
-| 2   | "Three Ways In" minimal numbered stepper (Signature / Tailored / Studio)                                                               | Keep our merged **Signature & Tailored** card from today. **Add a 4th card = Moments** (already done).                  |
-| 3   | **"Why YES" 4-pillar editorial block** (You decide / Local from the start / Any occasion / Three ways to shape it)                     | **New on homepage.** Reuse `<EditorialCard>` primitive. Real YES voice, not "shape the story" template prose.           |
-| 4   | Signature cards with **3 highlight bullets** + Book/Tailor dual CTA                                                                    | Add 3 truthful bullets per Signature on the homepage carousel — sourced from `signatureToursViator.ts`, never invented. |
-| 5   | **"For moments bigger than a tour" — 4-card block** (Proposals / Celebrations / Corporate / Multi-day) with "What we handle" checklist | **New on homepage** as the Occasions deep-dive under FourWaysIn → expands the Moments card we just merged.              |
-| 6   | YES Experience Studio™ interactive preview (story/timeline/map tabs)                                                                   | **Defer.** Our live Studio teaser is already real and routed; the reference is decorative.                              |
-| 7   | Footer/final CTA + "A local on WhatsApp" reassurance                                                                                   | Already present on live — keep.                                                                                         |
+- Add `uiMode?: "hosted" | "embedded"` (default `"hosted"` so nothing else breaks).
+- When `embedded`:
+  - `ui_mode: "embedded"`
+  - `return_url: "<origin>/booking-confirmed?session_id={CHECKOUT_SESSION_ID}&tour=<tourId>"` (replaces `success_url`, no `cancel_url`).
+  - Keep all existing price-resolution, metadata, terms acceptance, custom_text, and Bókun mapping logic untouched.
+  - Response: `{ clientSecret, sessionId, bokunMapped, flow, publishableKey }`.
+- Read `STRIPE_SANDBOX_PUBLISHABLE_KEY` / `STRIPE_LIVE_PUBLISHABLE_KEY` from env and include `publishableKey` in the response (so the client doesn't need its own env var per environment).
 
+**New client component `src/components/checkout/BrandedCheckoutDrawer.tsx**`
 
-### What we explicitly REJECT from the reference
+- Uses `@stripe/react-stripe-js` (`EmbeddedCheckoutProvider`, `EmbeddedCheckout`) and `@stripe/stripe-js` `loadStripe` (already installed).
+- Renders inside a right-side `Sheet`/`Drawer` (mobile = bottom sheet, desktop = right drawer), ivory background, gold rule, "YES Experiences · Secure checkout" eyebrow, Stripe + Apple Pay + Google Pay micro-label.
+- Eager-prewarms `loadStripe()` on mount of `FinalDetailsDialog` so opening is instant.
+- Shows a skeleton (no spinner) for the ~150–300ms initial Stripe iframe mount.
 
-- All Unsplash imagery — we use only real operation / Viator imagery (brand guardrail).
-- "YES Experience Studio™" trademark voice, "Configurator", "Quality Assessment System: 92%", "Premium Class Private Route" — generic AI travel copy, violates YES canonical rules.
-- "Build my experience fast / 60 Sec" — speed-as-feature framing.
-- Nav bloat (Local Stories, Corporate, Proposals as separate nav items). Keep our clean nav: Experiences · Studio · Moments · Travel Designer · About · Contact.
-- Generic "★ Smart Recommendation / Quality Score" decoration.
+**Wire the three instant-book call sites** (all currently do `window.location.href = data.url`):
 
-### Concrete homepage changes
+- `src/components/SimpleBookingForm.tsx` (Signature page Reserve)
+- `src/routes/tours.$tourId.tailor.tsx` (Tailor flow)
+- `src/components/studio-v3/StudioV3.tsx` (Studio reveal)
 
-1. **FourWaysIn** — already updated today (Signature & Tailored merged · Studio · Moments · Travel Designer). Update headline copy to *"Four ways in. One conversation."* (live wording).
-2. **NEW: `<OccasionsSection />**` — three editorial cards on the homepage under FourWaysIn:
-  - Proposals → `/proposals`
-  - Celebrations → `/proposals`
-  - Corporate → `/corporate`
-   Each card uses an existing real asset (`viewpoint`, `lunch`, `cabo-da-roca` — already on live) and a short "What we shape" 3-line list. No invented features.
-3. **NEW: `<WhyYesPillars />**` — 4 numbered editorial cards above the Signature carousel:
-  - 01 You decide the rhythm
-  - 02 Local from the start
-  - 03 Any occasion
-  - 04 Four ways to shape it
-   Real YES voice; reuses the same card primitive as FourWaysIn for consistency.
-4. **Signature carousel** — append 3 truthful highlight bullets per card, sourced from existing `signatureToursViator.ts` data. No new fields, no DB.
-5. **Navbar Moments link** — point to `/#occasions` on home, `/proposals` elsewhere.
+Each one: invoke the function with `uiMode: "embedded"`, receive `clientSecret`, open `<BrandedCheckoutDrawer>` instead of redirecting. On Stripe `complete` event, navigate to `/booking-confirmed?session_id=...` (existing route).
 
-### What stays untouched
+**Secrets required**
 
-- Hero copy (locked).
-- Studio teaser.
-- Travel Designer book section.
-- FAQ.
-- Final CTA & footer.
-- All routes, all data, all edge functions, no DB writes.
+- `STRIPE_SANDBOX_PUBLISHABLE_KEY` and `STRIPE_LIVE_PUBLISHABLE_KEY` — I'll request these via `add_secret` after you approve (publishable keys are safe to expose but cleanest to store as secrets so we can swap envs).
 
-### Out of scope (later sprint)
+### 2) Remove Viator-sourced attribution from public UI (keep the data, keep prices)
 
-- Porting the reference's interactive Studio configurator preview.
-- "Local Stories" surfacing in nav.
-- Animation rework.
+The **content** stays accurate — Signature pages remain source-of-truth to the matching Viator tours (per the canonical rule). Only **user-visible attribution and "Viator"-labelled UI** is neutralised.
 
-If approved, I'll implement in this order: FourWaysIn headline → OccasionsSection → WhyYesPillars → Signature bullets → Navbar Moments anchor. No publish until you confirm in preview.
+Changes:
 
-&nbsp;
+- `src/routes/tours.$tourId.tsx`
+  - `ReviewsBlock` figcaption: drop the  `· via {source}` suffix entirely. Reviews show author + date only. Removes "via Viator" specifically (and the now-inconsistent "via Tripadvisor / via Google" labels per your earlier request to add — those were added before this neutrality pass; consolidating to no source label is the cleaner premium move).
+  - `FALLBACK_REVIEWS`: remove the `source` field.
+  - Gallery footer "Real photos · real stops" → "Real photos · real stops" stays (no Viator reference).
+- `src/components/home/GuestQuotes.tsx`: keep "700+ five-star reviews across platforms" line as-is (already neutral) — no change needed.
+- `src/routes/index.tsx`:
+  - Homepage Signature cards: **keep `€{t.priceFrom}` price chip** (this is the booking-relevant signal you asked to preserve).
+  - No other UI text references "Viator" today (the existing mentions are dev/code comments only — left untouched, they don't render).
+- `src/components/PlatformBadge.tsx`: no UI changes (component already platform-neutral on render; "Viator" remains an internal data label, never shown unless explicitly used).
 
-On nav bar add corporate separate from proposals abd celebrations. Local stories as a blog for seo 
+Out of scope:
+
+- Internal data files (`signatureToursViator.ts`, `viatorUrlMatch.ts`, code comments) — these are not user-visible.
+- `ItineraryTimeline`, `IncludedAndIdeal`, `HighlightsBlock`, `RouteMap` — these already render through `bookableIncluded` / our own neutral copy; data origin is internal and never labelled "Viator" on the rendered page.
+
+## Technical details
+
+- Embedded Checkout requires `clientSecret`, not `sessionId`, on the client. The function continues to return both for backward compatibility (`url` for legacy hosted, `clientSecret` for embedded). Default remains hosted so no other surface breaks until I migrate them.
+- Drawer uses our existing `@/components/ui/sheet` (already in the design system); no new primitive.
+- A11y: focus-trap inside the drawer, ESC dismiss, body scroll lock.
+- Reduced motion safe.
+- E2E: extend `e2e/instant-booking-checkout.spec.ts` to assert the drawer opens with `[data-checkout="embedded"]` and that a `clientSecret` is received (without actually paying).
+
+## What I will NOT change
+
+- Stripe products, prices, tax behaviour, metadata, Bókun mapping logic — same function, same DB tables.
+- `FinalDetailsDialog` UI/fields.
+- Studio V3 logic, signature tour data, route logic, prices.
+- Builder checkout (`create-builder-checkout`) — only Signature/Tailor/Studio flow is in scope this round; I can do builder in a follow-up if you want.
+
+## Files touched
+
+- `supabase/functions/create-signature-checkout/index.ts` (extend, backward compatible)
+- `src/components/checkout/BrandedCheckoutDrawer.tsx` (new)
+- `src/components/SimpleBookingForm.tsx`
+- `src/routes/tours.$tourId.tailor.tsx`
+- `src/components/studio-v3/StudioV3.tsx`
+- `src/routes/tours.$tourId.tsx` (ReviewsBlock figcaption + FALLBACK_REVIEWS only)
+- `e2e/instant-booking-checkout.spec.ts` (assertion update)
+
+Approve and I'll request the two publishable-key secrets, then ship.
+
+also when curving out on tip of payment should be a card ou summary of the experience, in premmium design. After payment a confirmation page opens. Inside de website. Cliente receives email confirmation of the booking 
