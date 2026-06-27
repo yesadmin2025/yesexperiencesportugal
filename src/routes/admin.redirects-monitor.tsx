@@ -428,7 +428,151 @@ function RedirectsMonitorPage() {
           </ul>
         </section>
 
+        {/* Section 4.5: GSC correlation (Cobertura via URL Inspection) */}
+        <section className="mt-10">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+              4.5 · Google Search Console — cobertura por URL
+            </h2>
+            <button
+              onClick={runGsc}
+              disabled={gscLoading}
+              className="rounded-full bg-[color:var(--gold)] px-4 py-2 text-xs font-medium text-[color:var(--charcoal)] disabled:opacity-60"
+            >
+              {gscLoading ? "a consultar…" : gscInspect.length ? "Voltar a puxar" : "Puxar dados GSC"}
+            </button>
+          </div>
+          <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+            Inspeção de URL via GSC para cada rota antiga/canónica, correlacionada com o estado HTTP
+            local. (Cobertura e Remoções não têm endpoint de listagem — usamos URL Inspection +
+            Search Analytics.)
+          </p>
+          {gscError ? (
+            <p className="mt-3 rounded-md border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+              {gscError}
+            </p>
+          ) : null}
+
+          {gscInspect.length > 0 ? (
+            <div className="mt-4 overflow-x-auto rounded-lg border border-[color:var(--sand)] bg-white">
+              <table className="w-full text-xs">
+                <thead className="bg-[color:var(--ivory)] text-left text-[color:var(--charcoal-soft)]">
+                  <tr>
+                    <th className="px-3 py-2 font-medium">URL</th>
+                    <th className="px-3 py-2 font-medium">GSC veredicto</th>
+                    <th className="px-3 py-2 font-medium">Cobertura</th>
+                    <th className="px-3 py-2 font-medium">Último crawl</th>
+                    <th className="px-3 py-2 font-medium">HTTP local</th>
+                    <th className="px-3 py-2 font-medium">Correlação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {gscInspect.map((row) => {
+                    const localProbe =
+                      routeResults[row.url] ??
+                      Object.values(redirectResults).find((p) => p.finalUrl === row.url);
+                    const localStatus = localProbe?.status;
+                    // Heuristic correlation
+                    let corr = "—";
+                    let corrClass = "text-[color:var(--charcoal-soft)]";
+                    if (row.coverageState && localStatus) {
+                      const cov = row.coverageState.toLowerCase();
+                      if (localStatus === 404 && cov.includes("not found")) {
+                        corr = "✓ alinhado (404)";
+                        corrClass = "text-emerald-700";
+                      } else if (localStatus === 200 && cov.includes("submitted and indexed")) {
+                        corr = "✓ indexado";
+                        corrClass = "text-emerald-700";
+                      } else if (localStatus === 200 && cov.includes("not found")) {
+                        corr = "⚠ Google ainda 404, página está live — pedir indexação";
+                        corrClass = "text-amber-700";
+                      } else if (localStatus === 404 && cov.includes("indexed")) {
+                        corr = "⚠ Google ainda indexa, página retirada — submeter Remoção";
+                        corrClass = "text-rose-700";
+                      } else {
+                        corr = "↻ a propagar";
+                        corrClass = "text-amber-700";
+                      }
+                    }
+                    return (
+                      <tr key={row.url} className="border-t border-[color:var(--sand)]">
+                        <td className="px-3 py-2">
+                          <span className="break-all text-[color:var(--charcoal)]">
+                            {row.url.replace(CANONICAL, "") || "/"}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2">{row.verdict ?? (row.error ? "erro" : "—")}</td>
+                        <td className="px-3 py-2">{row.coverageState ?? "—"}</td>
+                        <td className="px-3 py-2">
+                          {row.lastCrawlTime
+                            ? new Date(row.lastCrawlTime).toLocaleDateString("pt-PT")
+                            : "—"}
+                        </td>
+                        <td className="px-3 py-2">{localStatus ?? "—"}</td>
+                        <td className={`px-3 py-2 font-medium ${corrClass}`}>{corr}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : !gscLoading ? (
+            <p className="mt-4 text-xs italic text-[color:var(--charcoal-soft)]">
+              Carrega "Puxar dados GSC" para consultar o estado de cobertura de cada URL.
+            </p>
+          ) : null}
+
+          {gscTopPages.length > 0 ? (
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-[color:var(--charcoal)]">
+                Top páginas em impressões (últimos 28 dias)
+              </h3>
+              <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+                Se aparecerem aqui URLs antigos ou de marca incorreta, são candidatos a Remoção.
+              </p>
+              <div className="mt-3 overflow-x-auto rounded-lg border border-[color:var(--sand)] bg-white">
+                <table className="w-full text-xs">
+                  <thead className="bg-[color:var(--ivory)] text-left text-[color:var(--charcoal-soft)]">
+                    <tr>
+                      <th className="px-3 py-2 font-medium">Página</th>
+                      <th className="px-3 py-2 font-medium text-right">Impressões</th>
+                      <th className="px-3 py-2 font-medium text-right">Cliques</th>
+                      <th className="px-3 py-2 font-medium text-right">Posição</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gscTopPages.map((row) => {
+                      const isLegacy = !row.page.startsWith(CANONICAL);
+                      return (
+                        <tr
+                          key={row.page}
+                          className={`border-t border-[color:var(--sand)] ${
+                            isLegacy ? "bg-rose-50" : ""
+                          }`}
+                        >
+                          <td className="px-3 py-2 break-all">
+                            {row.page.replace(CANONICAL, "") || "/"}
+                            {isLegacy ? (
+                              <span className="ml-2 rounded-sm bg-rose-200 px-1 text-[10px] text-rose-800">
+                                fora do domínio
+                              </span>
+                            ) : null}
+                          </td>
+                          <td className="px-3 py-2 text-right">{row.impressions}</td>
+                          <td className="px-3 py-2 text-right">{row.clicks}</td>
+                          <td className="px-3 py-2 text-right">{row.position.toFixed(1)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
+        </section>
+
         {/* Section 5: GSC shortcuts */}
+
         <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5 text-sm">
           <h3 className="text-base font-semibold text-[color:var(--charcoal)]">
             Próximos passos no Google Search Console
