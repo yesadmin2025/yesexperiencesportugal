@@ -36,16 +36,16 @@ type RouteCheck = {
 };
 
 /**
- * Legacy URLs that should 301 → canonical.
- * Includes the old .pt domain and old Google Business Profile share links.
+ * Legacy URLs that must now return 410 Gone (clean break — no redirect).
+ * The 301 was removed so Google does NOT associate the deprecated Google
+ * Business Profile attached to yesexperiences.pt with the canonical site.
  */
 const REDIRECT_CHECKS: RedirectCheck[] = [
   {
     label: "Legacy root — yesexperiences.pt",
     url: "https://yesexperiences.pt/",
     expectStatus: 410,
-    expectLocationHost: "yesexperiencesportugal.com",
-    note: "Depende de DNS apontar para Lovable. Se DNS ainda não propagou, falha de rede é esperada.",
+    note: "Deve devolver 410 Gone (sem redirect). Depende de DNS apontar para Lovable.",
   },
   {
     label: "Legacy www — www.yesexperiences.pt",
