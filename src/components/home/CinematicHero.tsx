@@ -482,6 +482,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
             willChange: "transform",
           }}
         >
+          <source src={HERO_CLIP.srcMobile} media="(max-width: 767px)" type="video/mp4" />
           <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
         </video>
       ) : null}
