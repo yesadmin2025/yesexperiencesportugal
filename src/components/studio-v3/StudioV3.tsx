@@ -2100,6 +2100,7 @@ export function StudioV3() {
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         submitting={checkoutPending}
+        tourId={(detailsState ?? state).tourId ?? undefined}
         initial={{
           tourDate: detailsState?.dateExact ?? state.dateExact ?? null,
           guests:
