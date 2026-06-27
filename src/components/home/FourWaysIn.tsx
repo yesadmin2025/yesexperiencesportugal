@@ -33,7 +33,7 @@ const PATHS: Path[] = [
     title: (
       <>
         Ready private days,{" "}
-        <span className="italic font-normal">yours to shape.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
       </>
     ),
     body: "Flagship journeys across Lisbon, Sintra, Arrábida and beyond — reserve as they are, or tailor inside the Signature you choose.",
@@ -46,7 +46,7 @@ const PATHS: Path[] = [
     label: "Studio",
     title: (
       <>
-        Design your day <span className="italic font-normal">in real time, with us.</span>
+        Design your day <span className="italic font-normal text-[color:var(--teal)]">in real time, with us.</span>
       </>
     ),
     body: "A living canvas — choose stops, see the route, watch the price. Hold your date when it feels right.",
@@ -60,7 +60,7 @@ const PATHS: Path[] = [
     title: (
       <>
         Proposals & celebrations,{" "}
-        <span className="italic font-normal">staged quietly.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">staged quietly.</span>
       </>
     ),
     body: "Engagements, anniversaries, birthdays and private celebrations — staged quietly, with local hands behind every detail.",
@@ -73,7 +73,7 @@ const PATHS: Path[] = [
     label: "Corporate & Groups",
     title: (
       <>
-        Team days, incentives <span className="italic font-normal">& private groups.</span>
+        Team days, incentives <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
       </>
     ),
     body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and logistics handled end to end.",
@@ -87,7 +87,7 @@ const PATHS: Path[] = [
     title: (
       <>
         A full private journey,{" "}
-        <span className="italic font-normal">written around you.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
       </>
     ),
     body: "Any length, any shape — weddings, honeymoons, family journeys, multi-day Portugal. Composed by a designer.",
