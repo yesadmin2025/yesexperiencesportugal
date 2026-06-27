@@ -74,7 +74,7 @@ export const runDnsWatchNow = createServerFn({ method: "POST" })
         http_ok: p.httpOk,
         ready: p.ready,
         notes: p.notes,
-        raw: p as unknown as Record<string, unknown>,
+        raw: JSON.parse(JSON.stringify(p)) as never,
       })),
     );
 
