@@ -275,6 +275,55 @@ export function FinalDetailsDialog({
                 </div>
               </Field>
             </Row>
+            {(tourId || bokunProductId) && tourDate ? (
+              <Field
+                label="Start time"
+                required={slotsMapped && slots.length > 0}
+                hint={
+                  slotsLoading
+                    ? "Checking live availability…"
+                    : slots.length > 0
+                    ? `${slots.length} time${slots.length > 1 ? "s" : ""} available`
+                    : undefined
+                }
+              >
+                {slotsLoading ? (
+                  <div className="flex items-center gap-2 border border-[color:var(--border)] px-3 py-2.5 text-sm text-[color:var(--charcoal-soft)]">
+                    <Loader2 size={14} className="animate-spin" />
+                    Checking live availability…
+                  </div>
+                ) : slots.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    {slots.map((s) => {
+                      const active = selectedSlot?.availabilityId === s.availabilityId;
+                      return (
+                        <button
+                          key={s.availabilityId}
+                          type="button"
+                          onClick={() => setSelectedSlot(s)}
+                          aria-pressed={active}
+                          className={[
+                            "flex items-center justify-center gap-1.5 border px-2.5 py-2.5 text-sm transition-colors min-h-[44px]",
+                            active
+                              ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-[color:var(--ivory)]"
+                              : "border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] hover:border-[color:var(--gold)]",
+                          ].join(" ")}
+                        >
+                          <Clock size={12} aria-hidden /> {s.startTime}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-[12px] text-[color:var(--charcoal-soft)] border border-dashed border-[color:var(--border)] px-3 py-2.5">
+                    {slotsError ??
+                      (slotsMapped
+                        ? "No live slots for this date — your host will confirm a start time after booking."
+                        : "Your host will confirm a start time after booking.")}
+                  </p>
+                )}
+              </Field>
+            ) : null}
             <Field label="Pickup address / hotel" required>
               <input
                 value={pickupAddress}
