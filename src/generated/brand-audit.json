@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-27T03:57:08.012Z",
+  "generatedAt": "2026-06-27T04:18:29.577Z",
   "filesScanned": 455,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1097,7 +1097,7 @@
     },
     {
       "file": "src/components/home/FourWaysIn.tsx",
-      "line": 120,
+      "line": 123,
       "col": 114,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",

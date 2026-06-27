@@ -144,7 +144,7 @@ function SharedItineraryPage() {
         </p>
         <h1 className="serif mt-3 text-[2.2rem] md:text-[3rem] leading-[1.04] tracking-[-0.01em] font-semibold">
           {route.region.label}
-          <span className="italic font-normal text-[color:var(--charcoal)]/70">
+          <span className="italic font-normal text-[color:var(--teal)]">
             {" "}
             · um dia desenhado para ti
           </span>

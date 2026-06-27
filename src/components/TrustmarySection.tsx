@@ -48,7 +48,7 @@ export function TrustmarySection() {
             id="reviews-title"
             className="serif mt-5 text-[2.3rem] md:text-[3.4rem] leading-[1.04] tracking-[-0.016em] text-[color:var(--charcoal)] font-semibold"
           >
-            Real words from <span className="italic font-medium">our travellers.</span>
+            Real words from <span className="italic font-normal text-[color:var(--teal)]">our travellers.</span>
           </h2>
           <p className="mt-5 text-[15.5px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.65] max-w-md mx-auto">
             Verified reviews from people who shaped their own journey with a local — collected
