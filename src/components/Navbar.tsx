@@ -34,7 +34,7 @@ const mobileSocialLinks = [
     href: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
     label: "Tripadvisor",
   },
-  { href: "https://www.google.com/maps?cid=03208810033820295776", label: "Google" },
+  
 ];
 
 const mobileLinks = desktopLinks;
