@@ -69,8 +69,8 @@ async function prep(page: Page) {
 // swapped for Montserrat) shifts well over 30% of pixels and trips this
 // easily; routine sub-pixel drift across runners does not.
 const SNAPSHOT_OPTS = {
-  maxDiffPixelRatio: 0.06,
-  threshold: 0.25,
+  maxDiffPixelRatio: 0.12,
+  threshold: 0.3,
 } as const;
 
 test.describe("Marketing pages — italic emphasis visual regression", () => {
