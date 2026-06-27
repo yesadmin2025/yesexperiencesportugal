@@ -201,6 +201,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         submitting={pending}
+        tourId={tour.id}
         initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
         onConfirm={async (details) => {
           await handleReserve(details);
