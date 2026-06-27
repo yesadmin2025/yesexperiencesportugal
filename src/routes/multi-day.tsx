@@ -195,7 +195,7 @@ function MultiDayPage() {
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
           <SectionTitle size="compact">
-            Begin with a designer.
+            Begin with <SectionTitle.Em>a designer.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
