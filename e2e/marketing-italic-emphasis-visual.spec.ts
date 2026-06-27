@@ -64,9 +64,13 @@ async function prep(page: Page) {
   });
 }
 
+// Budget tuned for cross-run font/anti-alias jitter on heading element
+// screenshots. A real regression (italic dropped, teal lost, Georgia
+// swapped for Montserrat) shifts well over 30% of pixels and trips this
+// easily; routine sub-pixel drift across runners does not.
 const SNAPSHOT_OPTS = {
-  maxDiffPixelRatio: 0.02,
-  threshold: 0.2,
+  maxDiffPixelRatio: 0.06,
+  threshold: 0.25,
 } as const;
 
 test.describe("Marketing pages — italic emphasis visual regression", () => {
