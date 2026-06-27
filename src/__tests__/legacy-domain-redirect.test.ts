@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  buildLegacyRedirectResponse,
-  CANONICAL_ORIGIN,
-} from "@/lib/legacy-domain-redirect";
+import { buildLegacyGoneResponse } from "@/lib/legacy-domain-redirect";
 
 function req(url: string, host?: string): Request {
   return new Request(url, {
@@ -10,74 +7,59 @@ function req(url: string, host?: string): Request {
   });
 }
 
-describe("legacy-domain-redirect", () => {
-  it("301s yesexperiences.pt root to canonical .com", () => {
-    const res = buildLegacyRedirectResponse(req("https://yesexperiences.pt/"));
+describe("legacy-domain-gone", () => {
+  it("returns 410 for yesexperiences.pt root", () => {
+    const res = buildLegacyGoneResponse(req("https://yesexperiences.pt/"));
     expect(res).not.toBeNull();
-    expect(res!.status).toBe(301);
-    expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}/`);
+    expect(res!.status).toBe(410);
   });
 
-  it("preserves path", () => {
-    const res = buildLegacyRedirectResponse(
+  it("does NOT set a Location header (no redirect back to canonical)", () => {
+    const res = buildLegacyGoneResponse(
       req("https://yesexperiences.pt/tours/sintra"),
     );
-    expect(res!.headers.get("location")).toBe(
-      `${CANONICAL_ORIGIN}/tours/sintra`,
-    );
-  });
-
-  it("preserves query string", () => {
-    const res = buildLegacyRedirectResponse(
-      req("https://yesexperiences.pt/checkout?token=abc&ref=x"),
-    );
-    expect(res!.headers.get("location")).toBe(
-      `${CANONICAL_ORIGIN}/checkout?token=abc&ref=x`,
-    );
+    expect(res!.headers.get("location")).toBeNull();
   });
 
   it("handles www.yesexperiences.pt", () => {
-    const res = buildLegacyRedirectResponse(
+    const res = buildLegacyGoneResponse(
       req("https://www.yesexperiences.pt/about"),
     );
-    expect(res!.status).toBe(301);
-    expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}/about`);
+    expect(res!.status).toBe(410);
   });
 
   it("is case-insensitive on Host header", () => {
-    const res = buildLegacyRedirectResponse(
+    const res = buildLegacyGoneResponse(
       req("http://example.test/path", "YesExperiences.PT"),
     );
     expect(res).not.toBeNull();
-    expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}/path`);
+    expect(res!.status).toBe(410);
   });
 
   it("uses Host header over URL host when both present", () => {
-    const res = buildLegacyRedirectResponse(
+    const res = buildLegacyGoneResponse(
       req("http://localhost:8080/x?y=1", "yesexperiences.pt"),
     );
     expect(res).not.toBeNull();
-    expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}/x?y=1`);
+    expect(res!.status).toBe(410);
   });
 
-  it("sets a long cache-control on the redirect", () => {
-    const res = buildLegacyRedirectResponse(req("https://yesexperiences.pt/"));
-    expect(res!.headers.get("cache-control")).toBe("public, max-age=3600");
+  it("sets noindex via X-Robots-Tag so crawlers drop the URL", () => {
+    const res = buildLegacyGoneResponse(req("https://yesexperiences.pt/"));
+    expect(res!.headers.get("x-robots-tag")).toContain("noindex");
   });
 
-  it("returns null for the canonical domain (no redirect loop)", () => {
-    const res = buildLegacyRedirectResponse(
+  it("returns null for the canonical domain", () => {
+    const res = buildLegacyGoneResponse(
       req("https://yesexperiencesportugal.com/"),
     );
     expect(res).toBeNull();
   });
 
   it("returns null for unrelated hosts", () => {
+    expect(buildLegacyGoneResponse(req("https://example.com/"))).toBeNull();
     expect(
-      buildLegacyRedirectResponse(req("https://example.com/")),
-    ).toBeNull();
-    expect(
-      buildLegacyRedirectResponse(req("http://localhost:8080/builder")),
+      buildLegacyGoneResponse(req("http://localhost:8080/builder")),
     ).toBeNull();
   });
 });

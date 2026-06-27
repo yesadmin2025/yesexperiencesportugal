@@ -36,28 +36,26 @@ type RouteCheck = {
 };
 
 /**
- * Legacy URLs that should 301 → canonical.
- * Includes the old .pt domain and old Google Business Profile share links.
+ * Legacy URLs that must now return 410 Gone (clean break — no redirect).
+ * The 301 was removed so Google does NOT associate the deprecated Google
+ * Business Profile attached to yesexperiences.pt with the canonical site.
  */
 const REDIRECT_CHECKS: RedirectCheck[] = [
   {
     label: "Legacy root — yesexperiences.pt",
     url: "https://yesexperiences.pt/",
-    expectStatus: 301,
-    expectLocationHost: "yesexperiencesportugal.com",
-    note: "Depende de DNS apontar para Lovable. Se DNS ainda não propagou, falha de rede é esperada.",
+    expectStatus: 410,
+    note: "Deve devolver 410 Gone (sem redirect). Depende de DNS apontar para Lovable.",
   },
   {
     label: "Legacy www — www.yesexperiences.pt",
     url: "https://www.yesexperiences.pt/",
-    expectStatus: 301,
-    expectLocationHost: "yesexperiencesportugal.com",
+    expectStatus: 410,
   },
   {
     label: "Legacy deep link — /tours/sintra",
     url: "https://yesexperiences.pt/tours/sintra",
-    expectStatus: 301,
-    expectLocationHost: "yesexperiencesportugal.com",
+    expectStatus: 410,
   },
 ];
 
@@ -270,8 +268,8 @@ function RedirectsMonitorPage() {
             1 · Redirects do domínio antigo
           </h2>
           <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
-            yesexperiences.pt deve fazer 301 para {CANONICAL.replace("https://", "")}, preservando
-            path e query.
+            yesexperiences.pt deve devolver 410 Gone (sem redirect) para que a Google trate o domínio antigo
+            como conteúdo extinto e o desassocie do perfil GBP antigo.
           </p>
           <div className="mt-4 space-y-3">
             {REDIRECT_CHECKS.map((c) => {
@@ -591,7 +589,7 @@ function RedirectsMonitorPage() {
               ainda for desatualizado.
             </li>
             <li>
-              Repete esta verificação aqui depois de cada submissão para confirmar 301/404 corretos.
+              Repete esta verificação aqui depois de cada submissão para confirmar 410/404 corretos.
             </li>
           </ol>
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
