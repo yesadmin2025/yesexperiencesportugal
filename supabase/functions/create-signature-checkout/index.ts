@@ -107,8 +107,11 @@ Deno.serve(async (req) => {
     const flowError = validateFlow(body);
     if (flowError) return jsonError(flowError, 400);
 
+    const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
+
     const allowOrigin =
-      validateReturnOrigin(body.returnUrl) && validateReturnOrigin(body.cancelUrl);
+      validateReturnOrigin(body.returnUrl) &&
+      (uiMode === "embedded" || (body.cancelUrl ? validateReturnOrigin(body.cancelUrl) : true));
     if (!allowOrigin) return jsonError("Return URL not allowed", 400);
 
     // Resolve per-pax EUR server-side from tour_price_tiers.
