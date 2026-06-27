@@ -40,7 +40,7 @@ const PILLARS: Pillar[] = [
     eyebrow: "Any occasion",
     title: (
       <>
-        Private days, proposals, <span className="italic">corporate moments.</span>
+        Private days, proposals, <span className="italic font-normal">corporate moments.</span>
       </>
     ),
     body: "Engagements, anniversaries, family gatherings, off-sites and full multi-day journeys — staged with the same quiet care.",
@@ -50,7 +50,7 @@ const PILLARS: Pillar[] = [
     eyebrow: "Four ways to shape it",
     title: (
       <>
-        Reserve, tailor, design — <span className="italic">or hand it to a designer.</span>
+        Reserve, tailor, design — <span className="italic font-normal">or hand it to a designer.</span>
       </>
     ),
     body: "Book a Signature in minutes, tailor it inside, design from scratch in the Studio, or let a Travel Designer compose the whole journey.",
