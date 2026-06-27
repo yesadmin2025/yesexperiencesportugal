@@ -10,7 +10,7 @@
  * Runs at mobile and desktop because the video is intentionally deferred
  * via requestIdleCallback and is not always present on initial paint.
  */
-import { test, expect, devices } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 const VIDEO_SELECTOR = 'section[aria-label="YES Experiences Portugal"] video';
 const POSTER_IMG_SELECTOR = 'section[aria-label="YES Experiences Portugal"] picture img[fetchPriority="high"]';
@@ -18,7 +18,7 @@ const POSTER_IMG_SELECTOR = 'section[aria-label="YES Experiences Portugal"] pict
 const VIEWPORTS = [
   {
     name: "mobile 393×851",
-    use: { ...devices["iPhone 14"], viewport: { width: 393, height: 851 } },
+    use: { viewport: { width: 393, height: 851 } },
   },
   {
     name: "desktop 1280×720",
