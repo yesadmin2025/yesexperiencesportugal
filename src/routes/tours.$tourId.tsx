@@ -115,17 +115,16 @@ export const Route = createFileRoute("/tours/$tourId")({
 function TourDetailPage() {
   const { tour } = Route.useLoaderData();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  if (pathname.replace(/\/$/, "").endsWith(`/tours/${tour.id}/tailor`)) {
-    return <Outlet />;
-  }
-
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
   const validation = validateTour(tour, meta);
   useEffect(() => {
     logTourValidation(validation);
   }, [validation]);
+
+  if (pathname.replace(/\/$/, "").endsWith(`/tours/${tour.id}/tailor`)) {
+    return <Outlet />;
+  }
 
   return (
     <SiteLayout>
