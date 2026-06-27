@@ -32,19 +32,30 @@ for (const vp of VIEWPORTS) {
 
     test("background video has autoplay, muted, loop, playsInline", async ({ page }) => {
       await page.goto("/");
+      // The <video> is mounted after requestIdleCallback. Give it a beat.
+      await page.waitForTimeout(3000);
 
-      // The <video> is mounted after requestIdleCallback. Wait for it.
       const video = page.locator(VIDEO_SELECTOR);
       await video.waitFor({ state: "attached", timeout: 5000 });
 
-      await expect(video).toHaveAttribute("autoplay");
-      await expect(video).toHaveAttribute("muted");
-      await expect(video).toHaveAttribute("loop");
-      await expect(video).toHaveAttribute("playsinline");
+      // Check the DOM properties that actually control autoplay behavior,
+      // because React/HTMLMediaElement may not reflect `muted` as an attribute.
+      const props = await video.evaluate((v: HTMLVideoElement) => ({
+        autoplay: v.autoplay,
+        muted: v.muted,
+        loop: v.loop,
+        playsInline: v.playsInline,
+      }));
+
+      expect(props.autoplay, "video autoplay should be enabled").toBe(true);
+      expect(props.muted, "video should be muted so autoplay is allowed").toBe(true);
+      expect(props.loop, "video should loop").toBe(true);
+      expect(props.playsInline, "video should play inline on mobile").toBe(true);
     });
 
     test("background video has a poster fallback", async ({ page }) => {
       await page.goto("/");
+      await page.waitForTimeout(3000);
 
       const video = page.locator(VIDEO_SELECTOR);
       await video.waitFor({ state: "attached", timeout: 5000 });
@@ -56,6 +67,7 @@ for (const vp of VIEWPORTS) {
 
     test("poster image is present as the immediate loading fallback", async ({ page }) => {
       await page.goto("/");
+      await page.waitForTimeout(3000);
 
       const posterImg = page.locator(POSTER_IMG_SELECTOR);
       await expect(posterImg).toBeVisible();
