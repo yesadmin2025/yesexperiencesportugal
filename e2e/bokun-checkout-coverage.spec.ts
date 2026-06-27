@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { SIGNATURE_TOURS } from "../src/data/signatureTours";
+import { signatureTours } from "../src/data/signatureTours";
 
 /**
  * Full tour-by-tour verification:
