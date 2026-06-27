@@ -110,7 +110,7 @@ export function FourWaysIn() {
             id="four-ways-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Four ways into Portugal.
+            Four ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
