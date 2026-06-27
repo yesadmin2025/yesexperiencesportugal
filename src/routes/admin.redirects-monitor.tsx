@@ -51,13 +51,11 @@ const REDIRECT_CHECKS: RedirectCheck[] = [
     label: "Legacy www — www.yesexperiences.pt",
     url: "https://www.yesexperiences.pt/",
     expectStatus: 410,
-    expectLocationHost: "yesexperiencesportugal.com",
   },
   {
     label: "Legacy deep link — /tours/sintra",
     url: "https://yesexperiences.pt/tours/sintra",
     expectStatus: 410,
-    expectLocationHost: "yesexperiencesportugal.com",
   },
 ];
 
