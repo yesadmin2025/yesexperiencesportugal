@@ -207,35 +207,8 @@ function TourHero({
 
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/85 via-[color:var(--charcoal-deep)]/15 to-transparent" />
 
-            {/* Top tags */}
-            <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
-              <span className="text-[10px] uppercase tracking-[0.28em] bg-[color:var(--ivory)]/95 text-[color:var(--teal)] px-3 py-1.5">
-                {tour.theme}
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.24em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
-                Signature
-              </span>
-            </div>
-
             {/* Bottom hero copy — premium editorial layout */}
             <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 md:p-12 text-[color:var(--ivory)]">
-              {/* Rating pill — at the top as the strongest social proof */}
-              {meta && meta.reviewCount > 0 && (
-                <div className="mb-4 inline-flex items-center gap-2 bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] px-3 py-1.5 text-[12px] rounded-full">
-                  <span className="flex gap-0.5 text-[color:var(--gold)]">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <Star key={i} size={11} fill="currentColor" strokeWidth={0} />
-                    ))}
-                  </span>
-                  <span className="tracking-tight font-semibold leading-none">
-                    {meta.rating.toFixed(1)}
-                  </span>
-                  <span className="text-[color:var(--charcoal-soft)] leading-none">
-                    · {meta.reviewCount} reviews
-                  </span>
-                </div>
-              )}
-
               <Eyebrow tone="onDark">Signature Experience</Eyebrow>
               <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] tracking-[-0.015em] max-w-3xl">
                 {tour.title}
@@ -244,7 +217,7 @@ function TourHero({
                 {tour.blurb}
               </p>
 
-              {/* Clean meta row — region · duration · price, divided by hairlines */}
+              {/* Clean meta row — region · duration. Price is confirmed at booking. */}
               <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/85">
                 <span className="flex items-center gap-2">
                   <MapPin size={12} className="text-[color:var(--gold-soft)]" /> {tour.region}
@@ -253,13 +226,16 @@ function TourHero({
                 <span className="flex items-center gap-2">
                   <Clock size={12} className="text-[color:var(--gold-soft)]" /> {tour.durationHours}
                 </span>
-                <span aria-hidden className="h-3 w-px bg-[color:var(--ivory)]/30" />
-                <span className="flex items-baseline gap-1.5">
-                  <span className="text-[color:var(--ivory)]/70">From</span>
-                  <span className="serif normal-case tracking-normal text-[15px] text-[color:var(--gold-soft)]">
-                    €{tour.priceFrom}
-                  </span>
-                </span>
+                {meta && meta.reviewCount > 0 && (
+                  <>
+                    <span aria-hidden className="h-3 w-px bg-[color:var(--ivory)]/30" />
+                    <span className="flex items-center gap-1.5 normal-case tracking-normal text-[12px]">
+                      <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold-soft)]" />
+                      <span className="font-semibold">{meta.rating.toFixed(1)}</span>
+                      <span className="text-[color:var(--ivory)]/70">· {meta.reviewCount} reviews</span>
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
