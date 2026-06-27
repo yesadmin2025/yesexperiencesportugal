@@ -144,6 +144,14 @@ function RedirectsMonitorPage() {
   const [routeResults, setRouteResults] = useState<Record<string, ProbeResult>>({});
   const [runAt, setRunAt] = useState<string>("");
 
+  // GSC integration
+  const inspectFn = useServerFn(inspectGscUrls);
+  const topPagesFn = useServerFn(getGscTopPages);
+  const [gscInspect, setGscInspect] = useState<UrlInspectionResult[]>([]);
+  const [gscTopPages, setGscTopPages] = useState<TopPageRow[]>([]);
+  const [gscLoading, setGscLoading] = useState(false);
+  const [gscError, setGscError] = useState<string | null>(null);
+
   async function runAll() {
     setRunAt(new Date().toLocaleString("pt-PT"));
     const init = (urls: string[]) =>
@@ -166,9 +174,48 @@ function RedirectsMonitorPage() {
     ]);
   }
 
+  async function runGsc() {
+    setGscLoading(true);
+    setGscError(null);
+    try {
+      // Inspect canonical equivalents of every legacy redirect target, plus
+      // every retired route and the canonical live routes. GSC URL Inspection
+      // only accepts URLs under the verified property — so we map legacy URLs
+      // to the canonical host.
+      const inspectUrls = [
+        ...REDIRECT_CHECKS.map((c) => {
+          try {
+            const u = new URL(c.url);
+            return `${CANONICAL}${u.pathname}${u.search}`;
+          } catch {
+            return null;
+          }
+        }).filter(Boolean) as string[],
+        ...RETIRED_ROUTES.map((r) => `${CANONICAL}${r.path}`),
+        ...LIVE_ROUTES.filter(
+          (r) => !r.path.endsWith(".xml") && !r.path.endsWith(".txt"),
+        ).map((r) => `${CANONICAL}${r.path}`),
+      ];
+      // De-duplicate
+      const unique = Array.from(new Set(inspectUrls));
+      const [inspect, topPages] = await Promise.all([
+        inspectFn({ data: { urls: unique } }),
+        topPagesFn({ data: { days: 28, rowLimit: 25 } }),
+      ]);
+      setGscInspect(inspect.results);
+      setGscTopPages(topPages.rows);
+      if (topPages.error) setGscError(topPages.error);
+    } catch (e) {
+      setGscError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setGscLoading(false);
+    }
+  }
+
   useEffect(() => {
     runAll();
   }, []);
+
 
   function judgeRedirect(c: RedirectCheck, r: ProbeResult | undefined): boolean | undefined {
     if (!r || r.checking) return undefined;
