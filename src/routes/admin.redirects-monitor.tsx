@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
+import {
+  inspectGscUrls,
+  getGscTopPages,
+  type UrlInspectionResult,
+  type TopPageRow,
+} from "@/lib/gscMonitor.functions";
 
 export const Route = createFileRoute("/admin/redirects-monitor")({
   head: () => ({
