@@ -685,9 +685,26 @@ export function StudioV3() {
         return;
       }
       setCheckoutPending(true);
+      // Open the drawer immediately with a branded skeleton.
+      const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
+      setCheckoutSummary({
+        tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
+        region: tour.region,
+        durationHours: tour.durationHours,
+        guests: details.guests,
+        dateExact: details.tourDate || currentState.dateExact || null,
+        startTime: details.startTime ?? null,
+        pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
+        pricePerPaxEur: tour.priceFrom ?? 180,
+        heroSrc: tour.img ?? null,
+        beats: stopLabels.slice(0, 4),
+        flowLabel: "Studio",
+      });
+      setCheckoutTourId(tour.id);
+      setDetailsOpen(false);
+      setCheckoutOpen(true);
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
-        const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
@@ -702,7 +719,7 @@ export function StudioV3() {
             environment: "sandbox",
             flow: "studio",
             uiMode: "embedded",
-            guestDetails: details,
+            guestDetails: { ...details, hotelPickupIncluded: true },
           },
         });
         if (error) throw error;
@@ -710,28 +727,12 @@ export function StudioV3() {
         if (!resp.clientSecret || !resp.publishableKey) {
           throw new Error("Embedded checkout unavailable");
         }
-        setCheckoutSummary({
-          tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
-          region: tour.region,
-          durationHours: tour.durationHours,
-          guests: details.guests,
-          dateExact: details.tourDate || currentState.dateExact || null,
-          startTime: details.startTime ?? null,
-          pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-          pricePerPaxEur: tour.priceFrom ?? 180,
-          heroSrc: tour.img ?? null,
-          beats: stopLabels.slice(0, 4),
-          flowLabel: "Studio",
-        });
-        setCheckoutTourId(tour.id);
         setClientSecret(resp.clientSecret);
         setPublishableKey(resp.publishableKey);
-        setDetailsOpen(false);
-        setCheckoutOpen(true);
-
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
+        setCheckoutOpen(false);
         openLeadSheet("book");
       } finally {
         setCheckoutPending(false);

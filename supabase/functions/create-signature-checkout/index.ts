@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
     const copy = FLOW_COPY[flow];
 
     const stopsSummary = (body.stopLabels ?? []).slice(0, 6).join(" · ");
-    const description = `${copy.eyebrow} · ${body.guests} guest${body.guests > 1 ? "s" : ""}${
+    const description = `${copy.eyebrow} · ${body.guests} guest${body.guests > 1 ? "s" : ""} · Hotel pickup included${
       stopsSummary ? " · " + stopsSummary : ""
     }`.slice(0, 500);
     const productName = `${copy.label} — ${body.tourTitle}`.slice(0, 180);
@@ -196,6 +196,7 @@ Deno.serve(async (req) => {
         price_source: real != null ? "tier" : "anchor",
         date_exact: body.dateExact ?? "",
         pickup: (body.pickupLabel ?? "").slice(0, 120),
+        hotel_pickup_included: "1",
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",

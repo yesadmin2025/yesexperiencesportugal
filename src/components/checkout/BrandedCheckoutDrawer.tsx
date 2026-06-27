@@ -59,6 +59,23 @@ export function prewarmStripe(publishableKey: string | undefined | null) {
   if (publishableKey) void getStripePromise(publishableKey);
 }
 
+/** Inject the Stripe.js script tag once so the network/parse cost is
+ * paid in parallel with the edge-function round-trip. Safe to call
+ * repeatedly. */
+let stripeScriptInjected = false;
+export function prewarmStripeScript() {
+  if (stripeScriptInjected || typeof document === "undefined") return;
+  if (document.querySelector('script[src^="https://js.stripe.com/v3"]')) {
+    stripeScriptInjected = true;
+    return;
+  }
+  const s = document.createElement("script");
+  s.src = "https://js.stripe.com/v3/";
+  s.async = true;
+  document.head.appendChild(s);
+  stripeScriptInjected = true;
+}
+
 export function BrandedCheckoutDrawer({
   open,
   onOpenChange,
@@ -97,6 +114,10 @@ export function BrandedCheckoutDrawer({
       : summary.pricePerPaxEur != null
       ? Math.round(summary.pricePerPaxEur * summary.guests)
       : null;
+
+  useEffect(() => {
+    if (open) prewarmStripeScript();
+  }, [open]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
