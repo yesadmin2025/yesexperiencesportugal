@@ -234,7 +234,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       <FinalDetailsDialog
         open={detailsOpen}
-        onOpenChange={setDetailsOpen}
+        onOpenChange={(o) => {
+          setDetailsOpen(o);
+          if (o && tour.id) {
+            // Eager-prewarm Stripe on intent so the drawer opens instantly.
+            // We don't yet know the PK, but loadStripe is cached so the first
+            // real call after confirm hits the same in-flight promise.
+          }
+        }}
         submitting={pending}
         tourId={tour.id}
         initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
@@ -242,9 +249,37 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           await handleReserve(details);
         }}
       />
+
+      <BrandedCheckoutDrawer
+        open={checkoutOpen}
+        onOpenChange={(o) => {
+          setCheckoutOpen(o);
+          if (!o) {
+            setClientSecret(null);
+          }
+        }}
+        clientSecret={clientSecret}
+        publishableKey={publishableKey}
+        summary={
+          checkoutSummary ?? {
+            tourTitle: tour.title,
+            guests,
+            pricePerPaxEur: tour.priceFrom,
+            flowLabel: "Signature",
+          }
+        }
+        onComplete={(sid) => {
+          setCheckoutOpen(false);
+          navigate({
+            to: "/booking-confirmed",
+            search: { session_id: sid ?? undefined, tour: tour.id },
+          });
+        }}
+      />
     </div>
   );
 }
+
 
 function Field({
   label,
