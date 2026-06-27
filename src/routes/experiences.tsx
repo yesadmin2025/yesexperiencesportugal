@@ -201,9 +201,9 @@ function CtaStrip() {
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="serif text-3xl md:text-4xl">
+            <h2 className="serif text-3xl md:text-4xl">
               Want to start from scratch? <span className="italic">Open the Studio.</span>
-            </h3>
+            </h2>
             <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
               Start your way — with a place, a region or a feeling. We'll guide you as you build,
               shaping it within what works best on the ground.
