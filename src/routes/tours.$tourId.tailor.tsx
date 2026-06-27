@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info, Loader2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -16,6 +16,11 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import {
+  BrandedCheckoutDrawer,
+  type CheckoutSummary,
+} from "@/components/checkout/BrandedCheckoutDrawer";
+
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
