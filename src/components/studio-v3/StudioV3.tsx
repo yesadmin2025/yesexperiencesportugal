@@ -687,27 +687,48 @@ export function StudioV3() {
       setCheckoutPending(true);
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
-            stopLabels: (tour.stops ?? []).map((s) => s.label).slice(0, 6),
+            stopLabels,
             pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
             dateExact: details.tourDate || currentState.dateExact || null,
             journeyTitle: currentState.journeyTitle ?? null,
             priceFromEur: tour.priceFrom ?? 180,
-            returnUrl: `${origin}/studio-v3?checkout=success`,
-            cancelUrl: `${origin}/studio-v3?checkout=cancelled`,
+            returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
             environment: "sandbox",
             flow: "studio",
+            uiMode: "embedded",
             guestDetails: details,
           },
         });
         if (error) throw error;
-        const url = (data as { url?: string } | null)?.url;
-        if (!url) throw new Error("No checkout URL returned");
-        window.location.href = url;
+        const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
+        if (!resp.clientSecret || !resp.publishableKey) {
+          throw new Error("Embedded checkout unavailable");
+        }
+        setCheckoutSummary({
+          tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
+          region: tour.region,
+          durationHours: tour.durationHours,
+          guests: details.guests,
+          dateExact: details.tourDate || currentState.dateExact || null,
+          startTime: details.startTime ?? null,
+          pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
+          pricePerPaxEur: tour.priceFrom ?? 180,
+          heroSrc: tour.img ?? null,
+          beats: stopLabels.slice(0, 4),
+          flowLabel: "Studio",
+        });
+        setCheckoutTourId(tour.id);
+        setClientSecret(resp.clientSecret);
+        setPublishableKey(resp.publishableKey);
+        setDetailsOpen(false);
+        setCheckoutOpen(true);
+
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
