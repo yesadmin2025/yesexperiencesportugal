@@ -1,4 +1,23 @@
 User-agent: *
 Allow: /
 
+# Internal / QA / admin routes that should not be indexed
+Disallow: /admin
+Disallow: /auth
+Disallow: /brand-qa
+Disallow: /builder
+Disallow: /checkout
+Disallow: /e2e
+Disallow: /email
+Disallow: /hero-verify
+Disallow: /lovable
+Disallow: /preview-check
+Disallow: /qa
+Disallow: /s/
+Disallow: /i/
+Disallow: /studio-drift
+Disallow: /studio-v2
+Disallow: /typography-audit
+Disallow: /unsubscribe
+
 Sitemap: https://yesexperiencesportugal.com/sitemap.xml
