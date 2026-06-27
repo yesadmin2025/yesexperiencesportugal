@@ -64,10 +64,12 @@ function ExperiencesPage() {
 
       <section className="section-y">
         <div className="container-x">
+          <h2 className="sr-only">Our Signature Collection</h2>
           <div className="flex justify-end mb-6">
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
             {signatureTours.map((t) => {
               // Real bullets sourced from the matching Viator product page
               // (bookable stops, pass-bys excluded). Falls back to the
