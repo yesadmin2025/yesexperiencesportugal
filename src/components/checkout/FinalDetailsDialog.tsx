@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Loader2, Lock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Clock, Loader2, Lock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Final details before payment — the last step before Stripe checkout
