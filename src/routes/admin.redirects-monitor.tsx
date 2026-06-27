@@ -43,20 +43,20 @@ const REDIRECT_CHECKS: RedirectCheck[] = [
   {
     label: "Legacy root — yesexperiences.pt",
     url: "https://yesexperiences.pt/",
-    expectStatus: 301,
+    expectStatus: 410,
     expectLocationHost: "yesexperiencesportugal.com",
     note: "Depende de DNS apontar para Lovable. Se DNS ainda não propagou, falha de rede é esperada.",
   },
   {
     label: "Legacy www — www.yesexperiences.pt",
     url: "https://www.yesexperiences.pt/",
-    expectStatus: 301,
+    expectStatus: 410,
     expectLocationHost: "yesexperiencesportugal.com",
   },
   {
     label: "Legacy deep link — /tours/sintra",
     url: "https://yesexperiences.pt/tours/sintra",
-    expectStatus: 301,
+    expectStatus: 410,
     expectLocationHost: "yesexperiencesportugal.com",
   },
 ];
