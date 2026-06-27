@@ -121,7 +121,7 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         name: "google-site-verification",
-        content: "Svpb5FhGi6Fku6J-X230o8nKyBH23ilH-5-0fKOMVQ4",
+        content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
       },
       { title: "YesExperiences Portugal" },
       {
