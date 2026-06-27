@@ -492,13 +492,13 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
         {
           label: "Reserve this day",
           to: "/tours/$tourId",
-          search: { tourId: "arrabida-wine-allinclusive" },
+          params: { tourId: "arrabida-wine-allinclusive" },
           variant: "primary",
         },
         {
-          label: "Make it yours",
+          label: "Tailor this Signature",
           to: "/tours/$tourId/tailor",
-          search: { tourId: "arrabida-wine-allinclusive" },
+          params: { tourId: "arrabida-wine-allinclusive" },
           variant: "outline",
         },
       ],
