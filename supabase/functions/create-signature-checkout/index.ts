@@ -153,7 +153,7 @@ Deno.serve(async (req) => {
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
     const submitMessage = copy.submit;
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionParams: Record<string, unknown> = {
       line_items: [
         {
           price_data: {
@@ -186,8 +186,6 @@ Deno.serve(async (req) => {
         statement_descriptor_suffix: "YES EXPERIENCES",
         description: `${productName}${dateLine}${pickupLine}`.slice(0, 1000),
       },
-      success_url: `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: body.cancelUrl,
       ...(body.customerEmail && { customer_email: body.customerEmail }),
       metadata: {
         booking_type: "signature",
@@ -201,18 +199,37 @@ Deno.serve(async (req) => {
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
+        ui_mode: uiMode,
       },
-    });
+    };
+
+    if (uiMode === "embedded") {
+      sessionParams.ui_mode = "embedded";
+      sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+    } else {
+      sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+      if (body.cancelUrl) sessionParams.cancel_url = body.cancelUrl;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
+
+    const publishableKey =
+      body.environment === "live"
+        ? Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? ""
+        : Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "";
 
     return new Response(
       JSON.stringify({
-        url: session.url,
+        url: (session as { url?: string }).url ?? null,
+        clientSecret: (session as { client_secret?: string }).client_secret ?? null,
         sessionId: session.id,
+        publishableKey,
         bokunMapped,
         flow,
         productName,
         lineItemDescription: description,
         submitMessage,
+        uiMode,
       }),
       {
         status: 200,
