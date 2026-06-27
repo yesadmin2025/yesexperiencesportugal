@@ -57,6 +57,7 @@ import { Route as AdminImportToursRouteImport } from './routes/admin.import-tour
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
+import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
@@ -70,6 +71,7 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
@@ -312,6 +314,11 @@ const AdminDriftBehaviorRoute = AdminDriftBehaviorRouteImport.update({
   path: '/admin/drift-behavior',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
+  id: '/admin/dns-watch',
+  path: '/admin/dns-watch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
   id: '/admin/builder-images-qa',
   path: '/admin/builder-images-qa',
@@ -380,6 +387,11 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
+  id: '/api/public/hooks/dns-watch',
+  path: '/api/public/hooks/dns-watch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -411,6 +423,7 @@ export interface FileRoutesByFullPath {
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
@@ -438,6 +451,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -474,6 +488,7 @@ export interface FileRoutesByTo {
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
@@ -501,6 +516,7 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -538,6 +554,7 @@ export interface FileRoutesById {
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
@@ -565,6 +582,7 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -603,6 +621,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/dns-watch'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
@@ -630,6 +649,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/api/public/hooks/dns-watch'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -666,6 +686,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/dns-watch'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
@@ -693,6 +714,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/api/public/hooks/dns-watch'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -729,6 +751,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/dns-watch'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
@@ -756,6 +779,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/api/public/hooks/dns-watch'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -793,6 +817,7 @@ export interface RootRouteChildren {
   AdminBookingsRoute: typeof AdminBookingsRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
+  AdminDnsWatchRoute: typeof AdminDnsWatchRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
@@ -817,6 +842,7 @@ export interface RootRouteChildren {
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -1162,6 +1188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDriftBehaviorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/dns-watch': {
+      id: '/admin/dns-watch'
+      path: '/admin/dns-watch'
+      fullPath: '/admin/dns-watch'
+      preLoaderRoute: typeof AdminDnsWatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/builder-images-qa': {
       id: '/admin/builder-images-qa'
       path: '/admin/builder-images-qa'
@@ -1253,6 +1286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/dns-watch': {
+      id: '/api/public/hooks/dns-watch'
+      path: '/api/public/hooks/dns-watch'
+      fullPath: '/api/public/hooks/dns-watch'
+      preLoaderRoute: typeof ApiPublicHooksDnsWatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1322,6 +1362,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBookingsRoute: AdminBookingsRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
+  AdminDnsWatchRoute: AdminDnsWatchRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
@@ -1346,6 +1387,7 @@ const rootRouteChildren: RootRouteChildren = {
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
@@ -1355,13 +1397,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

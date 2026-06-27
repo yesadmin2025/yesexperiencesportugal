@@ -679,6 +679,72 @@ export type Database = {
         }
         Relationships: []
       }
+      dns_watch_log: {
+        Row: {
+          a_records: string[]
+          checked_at: string
+          host: string
+          http_ok: boolean
+          http_status: number | null
+          id: string
+          notes: string | null
+          points_to_lovable: boolean
+          raw: Json | null
+          ready: boolean
+        }
+        Insert: {
+          a_records?: string[]
+          checked_at?: string
+          host: string
+          http_ok?: boolean
+          http_status?: number | null
+          id?: string
+          notes?: string | null
+          points_to_lovable?: boolean
+          raw?: Json | null
+          ready?: boolean
+        }
+        Update: {
+          a_records?: string[]
+          checked_at?: string
+          host?: string
+          http_ok?: boolean
+          http_status?: number | null
+          id?: string
+          notes?: string | null
+          points_to_lovable?: boolean
+          raw?: Json | null
+          ready?: boolean
+        }
+        Relationships: []
+      }
+      dns_watch_state: {
+        Row: {
+          all_ready: boolean
+          key: string
+          last_notified_at: string | null
+          last_summary: Json | null
+          ready_since: string | null
+          updated_at: string
+        }
+        Insert: {
+          all_ready?: boolean
+          key: string
+          last_notified_at?: string | null
+          last_summary?: Json | null
+          ready_since?: string | null
+          updated_at?: string
+        }
+        Update: {
+          all_ready?: boolean
+          key?: string
+          last_notified_at?: string | null
+          last_summary?: Json | null
+          ready_since?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       drift_behavior_events: {
         Row: {
           attraction_target: string | null
