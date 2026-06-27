@@ -26,6 +26,10 @@ export interface GuestDetails {
   email: string;
   phone: string;
   tourDate: string;
+  /** "HH:mm" — present when a Bókun availability slot was selected. */
+  startTime?: string;
+  /** Bókun availability slot id, when one was selected. */
+  bokunAvailabilityId?: number;
   guests: number;
   pickupAddress: string;
   language: "en" | "pt" | "es" | "fr";
@@ -50,6 +54,16 @@ interface Props {
   onConfirm: (details: GuestDetails) => Promise<void> | void;
   initial?: FinalDetailsInitial;
   submitting?: boolean;
+  /** Signature tour id used to resolve the Bókun product → time slots. */
+  tourId?: string;
+  /** Optional explicit Bókun product id (Studio custom paths). */
+  bokunProductId?: string | number;
+}
+
+interface SlotOption {
+  availabilityId: number;
+  startTime: string;
+  availabilityCount: number | null;
 }
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
