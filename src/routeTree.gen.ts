@@ -52,6 +52,7 @@ import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
+import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
@@ -285,6 +286,12 @@ const AdminPricingRoute = AdminPricingRouteImport.update({
   path: '/admin/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLegacyDomainsMonitorRoute =
+  AdminLegacyDomainsMonitorRouteImport.update({
+    id: '/admin/legacy-domains-monitor',
+    path: '/admin/legacy-domains-monitor',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminImportToursRoute = AdminImportToursRouteImport.update({
   id: '/admin/import-tours',
   path: '/admin/import-tours',
@@ -408,6 +415,7 @@ export interface FileRoutesByFullPath {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
@@ -470,6 +478,7 @@ export interface FileRoutesByTo {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
@@ -533,6 +542,7 @@ export interface FileRoutesById {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
+  '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
@@ -597,6 +607,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/legacy-domains-monitor'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
@@ -659,6 +670,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/legacy-domains-monitor'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
@@ -721,6 +733,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/error-logs'
     | '/admin/import-tours'
+    | '/admin/legacy-domains-monitor'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
@@ -784,6 +797,7 @@ export interface RootRouteChildren {
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
+  AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
   AdminPricingRoute: typeof AdminPricingRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
@@ -1113,6 +1127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/legacy-domains-monitor': {
+      id: '/admin/legacy-domains-monitor'
+      path: '/admin/legacy-domains-monitor'
+      fullPath: '/admin/legacy-domains-monitor'
+      preLoaderRoute: typeof AdminLegacyDomainsMonitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/import-tours': {
       id: '/admin/import-tours'
       path: '/admin/import-tours'
@@ -1305,6 +1326,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
+  AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
   AdminPricingRoute: AdminPricingRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
