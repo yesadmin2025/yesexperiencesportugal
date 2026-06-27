@@ -1,3 +1,6 @@
+# YES Experiences Portugal — canonical site: https://yesexperiencesportugal.com
+# Any other domain/profile referencing this brand is unrelated and not endorsed.
+
 User-agent: *
 Allow: /
 
@@ -20,4 +23,15 @@ Disallow: /studio-v2
 Disallow: /typography-audit
 Disallow: /unsubscribe
 
+# Allow major AI / search crawlers explicitly
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Host: https://yesexperiencesportugal.com
 Sitemap: https://yesexperiencesportugal.com/sitemap.xml
