@@ -20,7 +20,7 @@ const PILLARS: Pillar[] = [
     eyebrow: "You decide",
     title: (
       <>
-        Your rhythm, <span className="italic">your day.</span>
+        Your rhythm, <span className="italic font-normal">your day.</span>
       </>
     ),
     body: "Choose the pace, the stops and the feeling. Nothing locked, nothing templated — every Signature can be tailored, every Studio day designed from scratch.",
