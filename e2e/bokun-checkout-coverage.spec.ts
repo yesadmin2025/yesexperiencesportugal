@@ -40,7 +40,7 @@ async function callCheckout(tourId: string, uiMode: "embedded" | "hosted") {
   return { status: res.status, body: (await res.json()) as Record<string, unknown> };
 }
 
-for (const tour of SIGNATURE_TOURS) {
+for (const tour of signatureTours) {
   test(`[${tour.id}] embedded + hosted checkout resolve with bokunMapped`, async () => {
     const embedded = await callCheckout(tour.id, "embedded");
     expect(embedded.status, `embedded ${tour.id}`).toBe(200);
