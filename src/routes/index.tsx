@@ -515,10 +515,8 @@ function HomePage() {
         <CinematicHero />
 
         {/* 2 — TRUST STRIP
-          Restrained: review count, real platforms, one short line about
-          private guides + real local knowledge. No avatars carousel, no
-          repeated review block. This is the SINGLE review surface on the
-          page (per "no repeated review sections" guardrail). */}
+          A single, clean social proof surface: review count + platform marks.
+          No invented quotes, no repeated review blocks. */}
         <section
           id="reviews"
           className="he-trust-rule section-enter bg-[color:var(--ivory)] border-b border-[color:var(--border)] py-12 md:py-20 scroll-mt-24 md:scroll-mt-28"
@@ -528,34 +526,6 @@ function HomePage() {
             700+ five-star reviews across major platforms
           </h2>
           <div className="container-x">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8 text-center md:text-left">
-              <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
-                <p
-                  className="flex items-center justify-center md:justify-start gap-1 text-[color:var(--gold)]"
-                  role="img"
-                  aria-label="Rated 5 out of 5 stars"
-                >
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="he-trust-star"
-                      size={14}
-                      fill="currentColor"
-                      strokeWidth={0}
-                      aria-hidden="true"
-                      focusable="false"
-                    />
-                  ))}
-                </p>
-                <p className="serif text-[color:var(--charcoal)] leading-[1.15] font-normal">
-                  <span className="serif text-[1.85rem] md:text-[2.4rem] font-medium tabular-nums">
-                    700+
-                  </span>
-                  <span className="ml-2 text-[1.1rem] md:text-[1.3rem]">five-star reviews</span>
-                </p>
-              </div>
-            </div>
-
             <GuestQuotes />
           </div>
         </section>
