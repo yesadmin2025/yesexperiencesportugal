@@ -8,7 +8,7 @@ import {
   type DnsWatchStatus,
 } from "@/lib/dns-watch.functions";
 
-export const Route = createFileRoute("/_authenticated/admin/dns-watch")({
+export const Route = createFileRoute("/admin/dns-watch")({
   head: () => ({
     meta: [
       { title: "DNS Watch — YES Experiences" },

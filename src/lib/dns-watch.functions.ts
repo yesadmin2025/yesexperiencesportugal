@@ -17,10 +17,8 @@ export type DnsWatchStatus = {
   }[];
 };
 
-async function assertAdmin(context: {
-  supabase: ReturnType<typeof import("@supabase/supabase-js").createClient>;
-  userId: string;
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
   const { data: isAdmin, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
