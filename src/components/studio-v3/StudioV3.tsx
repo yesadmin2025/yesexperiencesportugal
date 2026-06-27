@@ -658,7 +658,13 @@ export function StudioV3() {
   // resolved tour id and party size. On success we redirect to Stripe's
   // hosted checkout (test mode). On failure we surface a quiet toast and
   // fall back to the lead-capture sheet so the conversion never dead-ends.
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [publishableKey, setPublishableKey] = useState<string | null>(null);
+  const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
+  const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
+
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
   const requestStripeCheckout = useCallback((currentState: StudioV3State) => {
