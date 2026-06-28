@@ -33,6 +33,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
+  // Live tier resolution — DB-backed, falls back to code defaults.
+  const { data: tierOverrides } = useTourPriceTiers();
+  const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
+  const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
+  const displayIsReal = perPax?.real === true;
+  const partyTotalEur = perPax?.partyTotalEur ?? displayPerPaxEur * Math.max(1, guests);
+
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
