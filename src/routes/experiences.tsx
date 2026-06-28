@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
@@ -35,6 +35,18 @@ export const Route = createFileRoute("/experiences")({
           { name: "Home", path: "/" },
           { name: "Signature Experiences", path: "/experiences" },
         ]),
+      ),
+      jsonLdScript(
+        itemListLd({
+          name: "Signature Experiences",
+          path: "/experiences",
+          items: signatureTours.map((t) => ({
+            id: t.id,
+            name: t.title,
+            description: t.blurb,
+            image: t.img,
+          })),
+        }),
       ),
     ],
   }),
