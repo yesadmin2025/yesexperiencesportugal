@@ -405,21 +405,28 @@ function CriticalSeoPanel() {
   const audit = useServerFn(auditSeoUrls);
   const [rows, setRows] = useState<SeoAuditResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [lastAt, setLastAt] = useState<string>("");
 
   async function run() {
     setLoading(true);
     try {
       const r = await audit({ data: { urls: KEY_URLS } });
       setRows(r.results);
+      setLastAt(new Date().toLocaleString("pt-PT"));
     } finally {
       setLoading(false);
+      window.dispatchEvent(new CustomEvent("seo-monitor:audit-done"));
     }
   }
 
   useEffect(() => {
     run();
+    const handler = () => run();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const totalCritical = rows.reduce(
     (s, r) => s + r.issues.filter((i) => i.level === "critical").length,
