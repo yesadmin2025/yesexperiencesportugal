@@ -225,7 +225,7 @@ Deno.serve(async (req) => {
             customer: {
               firstName,
               lastName,
-              email: customerEmail ?? "noreply@yesexperiences.pt",
+              email: customerEmail ?? "noreply@yesexperiencesportugal.com",
               phoneNumber: customerPhone ?? undefined,
               language: "EN",
             },

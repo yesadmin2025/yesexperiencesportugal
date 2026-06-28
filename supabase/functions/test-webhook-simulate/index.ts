@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
   const dateExact =
     (body.date_exact as string) ??
     new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const customerEmail = (body.customer_email as string) ?? userData.user.email ?? "test@yesexperiences.pt";
+  const customerEmail = (body.customer_email as string) ?? userData.user.email ?? "test@yesexperiencesportugal.com";
   const customerName = (body.customer_name as string) ?? "Test Customer";
   const skipBokun = body.skip_bokun === true;
   const checkOnly = body.check_only === true;

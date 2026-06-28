@@ -212,12 +212,48 @@ export function composeItinerary(
   chosenKeys.add(scored[0].stop.key);
   chosenIdentities.add(identityOf(scored[0].stop));
 
+  // Soft category caps — mirror Tailor feasibility rules so the Builder
+  // stops proposing absurd days (3-hour boat alongside 4 other stops,
+  // five wineries in a row, etc.). Detection is keyword-based against
+  // the stop's label + tag + mood_tags — conservative on purpose.
+  const categoryOf = (s: DbStop): "boat" | "winery" | "monument" | "other" => {
+    const hay = `${s.label} ${s.tag ?? ""} ${(s.mood_tags ?? []).join(" ")}`.toLowerCase();
+    if (/\bboat|sail|catamar|barco|kayak\b/.test(hay)) return "boat";
+    if (/\bwinery|adega|quinta|wine\s+tasting|vineyard\b/.test(hay)) return "winery";
+    if (/\bpalace|monaster|convent|castelo\s+(?!de\s+sesimbra)|pena|regaleira|jerónimos|jeronim\b/.test(hay))
+      return "monument";
+    return "other";
+  };
+  const wouldViolateCategoryCaps = (cand: DbStop): boolean => {
+    const cat = categoryOf(cand);
+    const counts = { boat: 0, winery: 0, monument: 0 };
+    for (const c of chosen) {
+      const k = categoryOf(c.stop);
+      if (k !== "other") counts[k]++;
+    }
+    // Boat: only one boat per day, and once a boat is in, cap remaining
+    // long stops (wineries/monuments) — the boat eats 2-3 hours.
+    if (cat === "boat" && counts.boat >= 1) return true;
+    if (counts.boat >= 1 && (cat === "winery" || cat === "monument")) {
+      // Allow at most ONE additional long stop after a boat.
+      if (counts.winery + counts.monument >= 1) return true;
+    }
+    // Wine: max 3 wineries/day.
+    if (cat === "winery" && counts.winery >= 3) return true;
+    // Sintra rule: max 2 monument interiors/day.
+    if (cat === "monument" && counts.monument >= 2) return true;
+    return false;
+  };
+
   while (chosen.length < want) {
     const last = chosen[chosen.length - 1].stop;
     // Re-rank remaining candidates by stop key + identity (prevents the same
     // physical place being added twice when DB rows duplicate it across tours).
     const remaining = scored.filter(
-      (c) => !chosenKeys.has(c.stop.key) && !chosenIdentities.has(identityOf(c.stop)),
+      (c) =>
+        !chosenKeys.has(c.stop.key) &&
+        !chosenIdentities.has(identityOf(c.stop)) &&
+        !wouldViolateCategoryCaps(c.stop),
     );
     if (remaining.length === 0) break;
     const ranked = remaining

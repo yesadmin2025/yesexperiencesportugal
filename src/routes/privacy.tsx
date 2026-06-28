@@ -60,9 +60,9 @@ function PrivacyPage() {
               Data requests:{" "}
               <a
                 className="underline decoration-[color:var(--gold)]/50 hover:text-[color:var(--teal)]"
-                href="mailto:info@yesexperiences.pt"
+                href="mailto:info@yesexperiencesportugal.com"
               >
-                info@yesexperiences.pt
+                info@yesexperiencesportugal.com
               </a>
               .
             </p>
