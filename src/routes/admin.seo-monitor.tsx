@@ -58,8 +58,93 @@ async function probe(url: string): Promise<Partial<CheckState>> {
   }
 }
 
+const REFRESH_EVENT = "seo-monitor:refresh-all";
+
+function GlobalRefresh({ probeRun, probeAt }: { probeRun: () => Promise<void>; probeAt: string }) {
+  const [busy, setBusy] = useState(false);
+  const [lastAt, setLastAt] = useState<string>("");
+  const [done, setDone] = useState({ probe: false, gsc: false, audit: false });
+
+  async function refreshAll() {
+    setBusy(true);
+    setDone({ probe: false, gsc: false, audit: false });
+    const finished: Record<string, boolean> = { probe: false, gsc: false, audit: false };
+    const markDone = (k: "gsc" | "audit") => {
+      finished[k] = true;
+      setDone((d) => ({ ...d, [k]: true }));
+      if (finished.probe && finished.gsc && finished.audit) {
+        setLastAt(new Date().toLocaleString("pt-PT"));
+        setBusy(false);
+      }
+    };
+    window.addEventListener("seo-monitor:gsc-done", () => markDone("gsc"), { once: true });
+    window.addEventListener("seo-monitor:audit-done", () => markDone("audit"), { once: true });
+    window.dispatchEvent(new CustomEvent(REFRESH_EVENT));
+    await probeRun();
+    finished.probe = true;
+    setDone((d) => ({ ...d, probe: true }));
+    if (finished.gsc && finished.audit) {
+      setLastAt(new Date().toLocaleString("pt-PT"));
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-8 rounded-xl border border-[color:var(--gold)]/40 bg-white p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+            Atualizar tudo
+          </p>
+          <p className="mt-1 text-sm font-medium text-[color:var(--charcoal)]">
+            GSC + Auditoria SEO + Ficheiros
+          </p>
+          <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+            Último refresh global:{" "}
+            <span className="font-medium text-[color:var(--charcoal)]">
+              {lastAt || probeAt || "—"}
+            </span>
+          </p>
+        </div>
+        <button
+          onClick={refreshAll}
+          disabled={busy}
+          className="rounded-full bg-[color:var(--charcoal)] px-5 py-2.5 text-xs font-medium text-white hover:bg-[color:var(--teal)] disabled:opacity-60"
+        >
+          {busy ? "A atualizar…" : "Atualizar agora"}
+        </button>
+      </div>
+      {busy ? (
+        <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+          <Pill label="Ficheiros" done={done.probe} />
+          <Pill label="GSC" done={done.gsc} />
+          <Pill label="Auditoria" done={done.audit} />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Pill({ label, done }: { label: string; done: boolean }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ${
+        done
+          ? "bg-emerald-50 text-emerald-700"
+          : "bg-[color:var(--sand)] text-[color:var(--charcoal-soft)]"
+      }`}
+    >
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${done ? "bg-emerald-500" : "bg-amber-400 animate-pulse"}`}
+      />
+      {label}
+    </span>
+  );
+}
+
 function SeoMonitorPage() {
   const [checks, setChecks] = useState<Record<string, CheckState>>(() =>
+
     Object.fromEntries(CHECKS.map((c) => [c.url, { url: c.url, checking: true }])),
   );
   const [runAt, setRunAt] = useState<string>("");
@@ -94,9 +179,11 @@ function SeoMonitorPage() {
           Estado dos ficheiros de indexação e atalhos para o Google Search Console.
         </p>
 
+        <GlobalRefresh probeRun={runAll} probeAt={runAt} />
+
         <div className="mt-8 flex items-center justify-between">
           <p className="text-xs text-[color:var(--charcoal-soft)]">
-            Última verificação: <span className="font-medium">{runAt || "—"}</span>
+            Ficheiros: <span className="font-medium">{runAt || "—"}</span>
           </p>
           <button
             onClick={runAll}
@@ -227,6 +314,7 @@ function IndexationPanel() {
   const [rows, setRows] = useState<UrlInspectionResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string>();
+  const [lastAt, setLastAt] = useState<string>("");
 
   async function run() {
     setLoading(true);
@@ -234,12 +322,22 @@ function IndexationPanel() {
     try {
       const r = await inspect({ data: { urls: KEY_URLS } });
       setRows(r.results);
+      setLastAt(new Date().toLocaleString("pt-PT"));
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
+      window.dispatchEvent(new CustomEvent("seo-monitor:gsc-done"));
     }
   }
+
+  useEffect(() => {
+    const handler = () => run();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   return (
     <section className="mt-10">
@@ -257,7 +355,9 @@ function IndexationPanel() {
       </div>
       <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
         Inspeção live da API do Search Console para as páginas-chave.
+        {lastAt ? <> · Atualizado <span className="font-medium">{lastAt}</span></> : null}
       </p>
+
       {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
       <div className="mt-4 space-y-2">
         {rows.length === 0 && !loading ? (
@@ -305,21 +405,28 @@ function CriticalSeoPanel() {
   const audit = useServerFn(auditSeoUrls);
   const [rows, setRows] = useState<SeoAuditResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [lastAt, setLastAt] = useState<string>("");
 
   async function run() {
     setLoading(true);
     try {
       const r = await audit({ data: { urls: KEY_URLS } });
       setRows(r.results);
+      setLastAt(new Date().toLocaleString("pt-PT"));
     } finally {
       setLoading(false);
+      window.dispatchEvent(new CustomEvent("seo-monitor:audit-done"));
     }
   }
 
   useEffect(() => {
     run();
+    const handler = () => run();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const totalCritical = rows.reduce(
     (s, r) => s + r.issues.filter((i) => i.level === "critical").length,
@@ -346,7 +453,9 @@ function CriticalSeoPanel() {
       </div>
       <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
         Audita title, description, canonical, H1, JSON-LD, og:* e robots em tempo real.
+        {lastAt ? <> · Atualizado <span className="font-medium">{lastAt}</span></> : null}
       </p>
+
       <p className="mt-2 text-xs">
         <span className="text-rose-600">{totalCritical} críticos</span>
         <span className="mx-2 text-[color:var(--charcoal-soft)]">·</span>
