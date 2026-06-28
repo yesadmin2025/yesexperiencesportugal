@@ -526,7 +526,7 @@ function TailorPage() {
               {blueprint && (
                 <Group title="What's included">
                   <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-4 -mt-1">
-                    {blueprint.intro}
+                    {blueprint.copy?.footnote}
                   </p>
 
                   {/* Core (always included) */}
@@ -561,7 +561,7 @@ function TailorPage() {
                         Choose {blueprint.choice.pickCount} · {blueprint.choice.label}
                       </p>
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
-                        {blueprint.choice.helper}
+                        {blueprint.choice.note}
                       </p>
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
@@ -673,7 +673,7 @@ function TailorPage() {
                     <div
                       className={[
                         "mt-5 border px-3 py-2.5 text-[12px]",
-                        blueprintFeasibility.ok
+                        blueprintFeasibility.feasible
                           ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 text-[color:var(--charcoal)]"
                           : "border-[color:var(--gold)] bg-[color:var(--gold)]/10 text-[color:var(--charcoal)]",
                       ].join(" ")}
@@ -683,7 +683,7 @@ function TailorPage() {
                           Day timing
                         </span>
                         ~{Math.round(blueprintFeasibility.totalMinutes / 60)}h of experience
-                        {blueprintFeasibility.ok ? " · fits a full day" : ""}
+                        {blueprintFeasibility.feasible ? " · fits a full day" : ""}
                       </p>
                       {blueprintFeasibility.warnings.length > 0 && (
                         <ul className="mt-1.5 list-disc pl-4 text-[11.5px] text-[color:var(--charcoal-soft)]">
