@@ -179,20 +179,22 @@ function Page() {
                 </li>
               </ul>
 
-              <div className="mt-10 p-6 md:p-8 bg-[color:var(--ivory)] border border-[color:var(--gold-soft)]/40 text-center">
-                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
-                  Prefer to design your own?
+              <div className="mt-10 p-6 md:p-8 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-center">
+                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)] mb-3">
+                  Only on YES
                 </span>
-                <h3 className="font-display font-semibold text-[1.15rem] md:text-[1.3rem] leading-[1.3] text-[color:var(--charcoal)] mb-4">
-                  Build a wine day in the YES Studio.
+                <h3 className="font-display font-semibold text-[1.15rem] md:text-[1.3rem] leading-[1.3] mb-4">
+                  The only private-day builder in Portugal that designs your wine day{" "}
+                  <span className="font-serif italic text-[color:var(--gold)]">live</span>.
                 </h3>
-                <p className="text-[14px] text-[color:var(--charcoal-soft)] leading-[1.7] mb-5 max-w-md mx-auto">
-                  Pick the wineries, the lunch, the close — see the route, timing and price in real time.
+                <p className="text-[14px] text-[color:var(--ivory)]/80 leading-[1.7] mb-5 max-w-md mx-auto">
+                  Pick the wineries, the lunch, the close — route, timing and price update as you go.
                 </p>
                 <CtaButton to="/studio-v3" variant="primary">
                   Open the Studio
                 </CtaButton>
               </div>
+
             </div>
 
             <aside className="mt-12 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
