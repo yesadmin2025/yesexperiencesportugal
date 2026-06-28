@@ -62,6 +62,7 @@ import {
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -716,7 +717,7 @@ export function StudioV3() {
             journeyTitle: currentState.journeyTitle ?? null,
             priceFromEur: tour.priceFrom ?? 180,
             returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-            environment: "sandbox",
+            environment: getStripeEnvironment(),
             flow: "studio",
             uiMode: "embedded",
             guestDetails: { ...details, hotelPickupIncluded: true },

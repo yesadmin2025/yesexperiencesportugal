@@ -12,6 +12,7 @@ import {
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
 
+import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
 
 /**
@@ -71,7 +72,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           journeyTitle: tour.title.split("—")[0].trim(),
           priceFromEur: tour.priceFrom,
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: "sandbox",
+          environment: getStripeEnvironment(),
           tailored: false,
           flow: "signature",
           uiMode: "embedded",
