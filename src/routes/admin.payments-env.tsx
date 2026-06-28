@@ -13,8 +13,6 @@ export const Route = createFileRoute("/admin/payments-env")({
   }),
   component: PaymentsEnvPage,
 });
-  component: PaymentsEnvPage,
-});
 
 function Row({ label, value, good }: { label: string; value: React.ReactNode; good?: boolean | null }) {
   const color = good === true ? "text-emerald-600" : good === false ? "text-red-600" : "text-charcoal";
