@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, SITE_URL } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
 
 const PAGE_PATH = "/arrabida-day-trip-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
