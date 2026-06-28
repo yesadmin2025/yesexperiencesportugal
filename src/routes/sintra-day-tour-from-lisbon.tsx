@@ -152,7 +152,49 @@ function Page() {
               </p>
             </div>
 
-            <aside className="mt-4 pt-12 border-t border-[color:var(--gold-soft)]/40 text-center">
+            <div className="mt-4 pt-12 border-t border-[color:var(--gold-soft)]/40">
+              <Eyebrow className="mb-4">Pair it with</Eyebrow>
+              <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-6">
+                Other Signature days near Lisbon.
+              </h2>
+              <ul className="grid sm:grid-cols-3 gap-5 not-prose">
+                <li>
+                  <Link to="/tours/$tourId" params={{ tourId: "arrabida-wine-allinclusive" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Arrábida Wine</span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">South of the river: family wineries and a long lunch.</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/tours/$tourId" params={{ tourId: "wild-beaches-picnic" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Wild Beaches & Picnic</span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Coves only locals know, with a long-table picnic.</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/tours/$tourId" params={{ tourId: "fatima-nazare-obidos" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Fátima · Nazaré · Óbidos</span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">A north-of-Lisbon day of pilgrimage, ocean and walls.</span>
+                  </Link>
+                </li>
+              </ul>
+
+              <div className="mt-10 p-6 md:p-8 bg-[color:var(--ivory)] border border-[color:var(--gold-soft)]/40 text-center">
+                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+                  Prefer to design your own?
+                </span>
+                <h3 className="font-display font-semibold text-[1.15rem] md:text-[1.3rem] leading-[1.3] text-[color:var(--charcoal)] mb-4">
+                  Build a Sintra day in the YES Studio.
+                </h3>
+                <p className="text-[14px] text-[color:var(--charcoal-soft)] leading-[1.7] mb-5 max-w-md mx-auto">
+                  Choose which palace, where to lunch and how to close in Cascais — route, timing and price update live.
+                </p>
+                <CtaButton to="/studio-v3" variant="primary">
+                  Open the Studio
+                </CtaButton>
+              </div>
+            </div>
+
+            <aside className="mt-12 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                 Book this day
               </span>
