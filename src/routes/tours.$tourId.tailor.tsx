@@ -23,6 +23,8 @@ import {
 } from "@/components/checkout/BrandedCheckoutDrawer";
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
 import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
+import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 
 
 /* ════════════════════════════════════════════════════════════════
