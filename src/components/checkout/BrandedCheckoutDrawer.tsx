@@ -168,7 +168,7 @@ export function BrandedCheckoutDrawer({
         {/* Trust footer */}
         <div className="px-5 sm:px-7 py-3 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
           <p className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            <Lock size={11} /> Stripe · Apple Pay · Google Pay · 256-bit secure
+            <Lock size={11} /> Secure checkout · 256-bit encrypted
           </p>
         </div>
       </SheetContent>
