@@ -47,6 +47,28 @@ export function organizationLd() {
       addressRegion: "Setúbal",
       addressCountry: "PT",
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 38.4438,
+      longitude: -9.1016,
+    },
+    priceRange: "€€€",
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "08:00",
+        closes: "20:00",
+      },
+    ],
     areaServed: [
       { "@type": "Country", name: "Portugal" },
       { "@type": "AdministrativeArea", name: "Lisbon" },
