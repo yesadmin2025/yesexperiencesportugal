@@ -121,10 +121,8 @@ export function Footer() {
           />
         </div>
 
-        {/* Payment-acceptance strip — visual trust mark only. The
-            wallet/card brands here mirror what Stripe Checkout exposes
-            for this account; no backend partner is named. */}
-        <PaymentMethodsRow />
+        {/* Payment-provider names intentionally hidden — guests see only
+            "Instant confirmation" and "Secure checkout" copy throughout. */}
 
         {/* Signature Experiences — full tour index. Every page links to every
             tour, so crawlers discover the whole catalog from a single hop. */}
