@@ -248,7 +248,21 @@ export const Route = createFileRoute("/")({
         fetchPriority: "high",
       },
     ],
-    scripts: [jsonLdScript(faqPageLd(HOMEPAGE_FAQ))],
+    scripts: [
+      jsonLdScript(faqPageLd(HOMEPAGE_FAQ)),
+      jsonLdScript(
+        itemListLd({
+          name: "Signature Experiences — YES experiences Portugal",
+          path: "/",
+          items: signatureTours.map((t) => ({
+            id: t.id,
+            name: t.title,
+            description: t.blurb,
+            image: t.img,
+          })),
+        }),
+      ),
+    ],
   }),
   component: HomePage,
 });
