@@ -13,6 +13,7 @@ import {
 } from "@/components/checkout/BrandedCheckoutDrawer";
 
 import { getStripeEnvironment } from "@/lib/stripe";
+import { getViatorMeta } from "@/data/signatureToursViator";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
