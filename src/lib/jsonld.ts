@@ -31,8 +31,22 @@ export function organizationLd() {
     url: `${SITE_URL}/`,
     logo: `${SITE_URL}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
     image: [
-      `${SITE_URL}/video/hero-sunset-road-poster.webp`,
-      `${SITE_URL}/video/hero-sunset-road-poster.jpg`,
+      {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/video/hero-sunset-road-poster.webp`,
+        contentUrl: `${SITE_URL}/video/hero-sunset-road-poster.webp`,
+        width: 1080,
+        height: 1620,
+        encodingFormat: "image/webp",
+      },
+      {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/video/hero-sunset-road-poster.jpg`,
+        contentUrl: `${SITE_URL}/video/hero-sunset-road-poster.jpg`,
+        width: 1080,
+        height: 1620,
+        encodingFormat: "image/jpeg",
+      },
     ],
     description:
       "Licensed Portuguese tour operator (RNAVT) crafting private, meaningful experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
