@@ -30,6 +30,22 @@ export const Route = createFileRoute("/studio-v3")({
       { property: "og:url", content: CANONICAL_URL },
     ],
     links: [{ rel: "canonical", href: CANONICAL_URL }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Experience Studio", path: "/studio-v3" },
+        ]),
+      ),
+      jsonLdScript(
+        studioServiceLd({
+          path: "/studio-v3",
+          name: "YES Experience Studio — Design your private Portugal day",
+          description:
+            "A cinematic, guided composer that designs and reserves a private Portugal day in minutes — feeling, company, rhythm, then live pricing and instant confirmation across Lisbon, Sintra, Arrábida and Sesimbra.",
+        }),
+      ),
+    ],
   }),
   component: StudioV3Page,
 });
