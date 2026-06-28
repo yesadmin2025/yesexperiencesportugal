@@ -146,11 +146,34 @@ export function breadcrumbLd(crumbs: Crumb[]) {
 }
 
 /**
+ * Convert a human-readable duration ("8–9h", "6+h", "Full Day") into an
+ * ISO 8601 duration suitable for schema.org. Returns `null` when no
+ * sensible mapping exists.
+ */
+export function durationToIso8601(durationHours?: string | null): string | null {
+  if (!durationHours) return null;
+  const s = String(durationHours).toLowerCase();
+  // Match the first integer ("8" from "8–9h", "6" from "6+h").
+  const m = s.match(/(\d{1,2})/);
+  if (m) return `PT${m[1]}H`;
+  if (s.includes("full")) return "PT8H";
+  if (s.includes("half")) return "PT4H";
+  return null;
+}
+
+interface StopForLd {
+  label: string;
+  story?: string;
+}
+
+/**
  * Product node for a Signature tour detail page.
  *
  * Emits a combined Product + TouristTrip so the same payload satisfies
  * Google's Product rich result and travel-vertical surfaces. Includes
- * AggregateRating when rating data is provided.
+ * AggregateRating when rating data is provided, ISO 8601 duration, and
+ * an itinerary ItemList when stops are supplied — these are the fields
+ * that drive richer experience cards on Google.
  */
 export function tourProductLd(args: {
   id: string;
@@ -162,10 +185,15 @@ export function tourProductLd(args: {
   rating?: number | null;
   reviewCount?: number | null;
   region?: string | null;
+  durationHours?: string | null;
+  stops?: StopForLd[];
 }) {
   const url = `${SITE_URL}/tours/${args.id}`;
+  const tailorUrl = `${url}/tailor`;
   const image = args.img.startsWith("http") ? args.img : `${SITE_URL}${args.img}`;
   const currency = args.currency ?? "EUR";
+  const iso = durationToIso8601(args.durationHours ?? null);
+  const stops = (args.stops ?? []).filter((s) => s && s.label);
   return {
     "@context": "https://schema.org",
     "@type": ["Product", "TouristTrip"],
@@ -176,7 +204,27 @@ export function tourProductLd(args: {
     url,
     brand: { "@id": `${SITE_URL}/#organization` },
     provider: { "@id": `${SITE_URL}/#organization` },
+    category: "Private day tour",
     ...(args.region ? { touristType: args.region } : {}),
+    ...(iso ? { duration: iso } : {}),
+    ...(stops.length
+      ? {
+          itinerary: {
+            "@type": "ItemList",
+            numberOfItems: stops.length,
+            itemListOrder: "https://schema.org/ItemListOrderAscending",
+            itemListElement: stops.map((s, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              item: {
+                "@type": "TouristAttraction",
+                name: s.label,
+                ...(s.story ? { description: s.story } : {}),
+              },
+            })),
+          },
+        }
+      : {}),
     ...(args.priceFrom
       ? {
           offers: {
@@ -201,6 +249,88 @@ export function tourProductLd(args: {
           },
         }
       : {}),
+    potentialAction: [
+      {
+        "@type": "ReserveAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: url,
+          actionPlatform: [
+            "https://schema.org/DesktopWebPlatform",
+            "https://schema.org/MobileWebPlatform",
+          ],
+        },
+        result: { "@type": "Reservation", name: `${args.title} reservation` },
+      },
+      {
+        "@type": "ReviewAction",
+        target: tailorUrl,
+        name: "Tailor this Signature",
+      },
+    ],
+  };
+}
+
+/**
+ * Tailored variant — the same Signature, opened in the customization
+ * flow. Emitted on /tours/$tourId/tailor so Google understands the page
+ * as a bookable, customizable version of the parent Product (not a
+ * duplicate). Canonical stays on the parent /tours/$tourId page.
+ */
+export function tourTailorProductLd(args: {
+  id: string;
+  title: string;
+  blurb: string;
+  img: string;
+  priceFrom?: number;
+  currency?: string;
+  region?: string | null;
+  durationHours?: string | null;
+}) {
+  const parent = `${SITE_URL}/tours/${args.id}`;
+  const url = `${parent}/tailor`;
+  const image = args.img.startsWith("http") ? args.img : `${SITE_URL}${args.img}`;
+  const currency = args.currency ?? "EUR";
+  const iso = durationToIso8601(args.durationHours ?? null);
+  return {
+    "@context": "https://schema.org",
+    "@type": ["Product", "TouristTrip"],
+    "@id": `${url}#product`,
+    name: `Tailor — ${args.title}`,
+    description: `Customize the ${args.title} Signature: keep the route and story, adjust pace, timing and small additions before booking.`,
+    image,
+    url,
+    isVariantOf: { "@id": `${parent}#product` },
+    brand: { "@id": `${SITE_URL}/#organization` },
+    provider: { "@id": `${SITE_URL}/#organization` },
+    category: "Private customizable day tour",
+    ...(args.region ? { touristType: args.region } : {}),
+    ...(iso ? { duration: iso } : {}),
+    ...(args.priceFrom
+      ? {
+          offers: {
+            "@type": "Offer",
+            url,
+            priceCurrency: currency,
+            price: args.priceFrom,
+            priceRange: `From ${currency === "EUR" ? "€" : ""}${args.priceFrom}`,
+            availability: "https://schema.org/InStock",
+            seller: { "@id": `${SITE_URL}/#organization` },
+          },
+        }
+      : {}),
+    potentialAction: {
+      "@type": "ReserveAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: url,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+      result: { "@type": "Reservation", name: `${args.title} — tailored reservation` },
+    },
   };
 }
 
