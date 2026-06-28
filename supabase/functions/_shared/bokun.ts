@@ -80,6 +80,78 @@ export async function getActivityAvailabilities(
   return [];
 }
 
+export interface BokunActivity {
+  id: number | string;
+  title: string;
+  summary?: string;
+  durationText?: string;
+  inclusions: string[];
+  exclusions: string[];
+  raw: unknown;
+}
+
+const activityCache = new Map<string, { at: number; data: BokunActivity }>();
+const ACTIVITY_TTL_MS = 60 * 60 * 1000; // 1h
+
+/**
+ * Fetch Bokun product details and normalise to a small, safe-to-render shape.
+ * Cached for 1h per worker instance so checkout stays fast.
+ */
+export async function getActivity(productId: string | number): Promise<BokunActivity | null> {
+  const key = String(productId);
+  const cached = activityCache.get(key);
+  if (cached && Date.now() - cached.at < ACTIVITY_TTL_MS) return cached.data;
+
+  try {
+    const data = (await bokunFetch(
+      `/activity.json/${productId}?lang=EN&currency=EUR`,
+      "GET",
+    )) as Record<string, unknown> | null;
+    if (!data) return null;
+
+    const pickString = (v: unknown): string => (typeof v === "string" ? v : "");
+    const pickArray = (v: unknown): string[] => {
+      if (!Array.isArray(v)) return [];
+      return v
+        .map((item) => {
+          if (typeof item === "string") return item;
+          if (item && typeof item === "object") {
+            const o = item as Record<string, unknown>;
+            return pickString(o.title) || pickString(o.name) || pickString(o.item) || pickString(o.description);
+          }
+          return "";
+        })
+        .filter((s): s is string => Boolean(s && s.length));
+    };
+
+    // Bokun field names vary by tenant. Probe the common ones.
+    const title =
+      pickString(data.title) || pickString(data.name) || pickString(data.externalId) || `Activity ${productId}`;
+    const summary = pickString(data.summary) || pickString(data.shortDescription);
+    const durationText =
+      pickString(data.durationText) ||
+      pickString(data.duration) ||
+      (typeof data.durationMinutes === "number" ? `${Math.round((data.durationMinutes as number) / 60)} h` : "");
+    const inclusions = pickArray(data.includedItems ?? data.included ?? data.inclusions);
+    const exclusions = pickArray(data.excludedItems ?? data.excluded ?? data.exclusions);
+
+    const normalised: BokunActivity = {
+      id: productId,
+      title,
+      summary: summary || undefined,
+      durationText: durationText || undefined,
+      inclusions,
+      exclusions,
+      raw: data,
+    };
+    activityCache.set(key, { at: Date.now(), data: normalised });
+    return normalised;
+  } catch (e) {
+    console.error("getActivity failed for", productId, e instanceof Error ? e.message : e);
+    return null;
+  }
+}
+
 export interface ReserveInput {
   productId: string | number;
   availabilityId: number;
