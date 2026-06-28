@@ -422,12 +422,28 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 /* ════════════════════════════════════════════════════════════════
  * 6 · ROUTE MAP — schematic Portugal w/ branded markers (real stops)
  * ════════════════════════════════════════════════════════════ */
-function RouteMap({ tour }: { tour: SignatureTour }) {
+function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const region = tour.seed.region ?? "lisbon";
-  const points: (StopCoord & { idx: number; raw: TourStop })[] = (tour.stops ?? []).map((s, i) => ({
-    ...snapStop(s.label, region, i),
+  // Prefer editorial chapters (curated, ≤6) over raw tour.stops, so the
+  // map mirrors the itinerary timeline instead of dumping every variant.
+  const editorial = meta?.editorialChapters ?? [];
+  const source: { label: string; raw: TourStop }[] =
+    editorial.length > 0
+      ? editorial.map((c) => {
+          const match =
+            (tour.stops ?? []).find(
+              (s) =>
+                c.representativeStop &&
+                s.label.toLowerCase().includes(c.representativeStop.toLowerCase()),
+            ) ?? (tour.stops ?? [])[0];
+          return { label: c.label, raw: { ...(match ?? { label: c.label }), label: c.label } as TourStop };
+        })
+      : (tour.stops ?? []).map((s) => ({ label: s.label, raw: s }));
+
+  const points: (StopCoord & { idx: number; raw: TourStop })[] = source.map((s, i) => ({
+    ...snapStop(s.raw.label, region, i),
     idx: i,
-    raw: s,
+    raw: s.raw,
   }));
 
   if (points.length === 0) return null;
