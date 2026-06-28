@@ -43,6 +43,7 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}/tailor`;
+    const parentUrl = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
     const t = loaderData?.tour;
     if (!t)
       return {
@@ -50,7 +51,7 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
           { title: "Tailor a Signature — YES experiences Portugal" },
           { property: "og:url", content: url },
         ],
-        links: [{ rel: "canonical", href: url }],
+        links: [{ rel: "canonical", href: parentUrl }],
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
     return {
@@ -68,8 +69,33 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
         { property: "og:image", content: img },
         { property: "twitter:image", content: img },
         { property: "og:url", content: url },
+        { property: "og:type", content: "product" },
       ],
-      links: [{ rel: "canonical", href: url }],
+      // Canonical points to the parent Signature page to avoid duplicate-content
+      // signals; the tailor URL is a customization surface, not a separate product.
+      links: [{ rel: "canonical", href: parentUrl }],
+      scripts: [
+        jsonLdScript(
+          breadcrumbLd([
+            { name: "Home", path: "/" },
+            { name: "Signature Experiences", path: "/experiences" },
+            { name: t.title, path: `/tours/${params.tourId}` },
+            { name: "Tailor", path: `/tours/${params.tourId}/tailor` },
+          ]),
+        ),
+        jsonLdScript(
+          tourTailorProductLd({
+            id: params.tourId,
+            title: t.title,
+            blurb: t.blurb,
+            img: t.img,
+            priceFrom: (t as { priceFrom?: number }).priceFrom,
+            currency: "EUR",
+            region: (t as { region?: string }).region ?? null,
+            durationHours: (t as { durationHours?: string }).durationHours ?? null,
+          }),
+        ),
+      ],
     };
   },
 
