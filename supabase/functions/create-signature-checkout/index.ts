@@ -150,11 +150,40 @@ Deno.serve(async (req) => {
     const flow = resolveFlow(body);
     const copy = FLOW_COPY[flow];
 
-    const stopsSummary = (body.stopLabels ?? []).slice(0, 6).join(" · ");
-    const description = `${copy.eyebrow} · ${body.guests} guest${body.guests > 1 ? "s" : ""} · Hotel pickup included${
-      stopsSummary ? " · " + stopsSummary : ""
-    }`.slice(0, 500);
-    const productName = `${copy.label} — ${body.tourTitle}`.slice(0, 180);
+    // Ground the Stripe line item in real Bokun product data when we have a mapping.
+    // This avoids inventing inclusions/descriptions: title and any "includes" line
+    // come straight from the operator's Bokun product. Client-passed stopLabels are
+    // intentionally NOT shown in the line-item description for tailored bookings —
+    // those are pending operator review and could mislead the customer.
+    const bokunProductId = bokunRow?.bokun_product_id ?? null;
+    const bokunActivity = bokunProductId ? await getActivity(bokunProductId) : null;
+
+    const isTailored = flow === "tailor";
+    const realTitle = bokunActivity?.title?.trim() || body.tourTitle;
+    const productName = `${copy.label} — ${realTitle}${isTailored ? " (tailored)" : ""}`.slice(0, 180);
+
+    // Build a truthful description: prefer Bokun inclusions over invented copy.
+    const guestsLine = `${body.guests} guest${body.guests > 1 ? "s" : ""}`;
+    const durationLine = bokunActivity?.durationText ? `Duration ${bokunActivity.durationText}` : null;
+    const includesLine =
+      bokunActivity && bokunActivity.inclusions.length > 0
+        ? `Includes: ${bokunActivity.inclusions.slice(0, 4).join(", ")}`
+        : null;
+    const tailoredNote = isTailored
+      ? "Tailored adjustments confirmed by our team within 2 hours after payment."
+      : null;
+    const fallbackEyebrow = !bokunActivity ? copy.eyebrow : null;
+
+    const description = [
+      guestsLine + " · Hotel pickup included",
+      durationLine,
+      includesLine,
+      tailoredNote,
+      fallbackEyebrow,
+    ]
+      .filter(Boolean)
+      .join(" · ")
+      .slice(0, 500);
 
     const dateLine = body.dateExact ? ` · ${body.dateExact}` : "";
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
