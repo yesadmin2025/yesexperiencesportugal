@@ -52,6 +52,7 @@ import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
+import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
@@ -288,6 +289,11 @@ const AdminPricingRoute = AdminPricingRouteImport.update({
   path: '/admin/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
+  id: '/admin/payments-env',
+  path: '/admin/payments-env',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLegacyDomainsMonitorRoute =
   AdminLegacyDomainsMonitorRouteImport.update({
     id: '/admin/legacy-domains-monitor',
@@ -429,6 +435,7 @@ export interface FileRoutesByFullPath {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
+  '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
@@ -494,6 +501,7 @@ export interface FileRoutesByTo {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
+  '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
@@ -560,6 +568,7 @@ export interface FileRoutesById {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
+  '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
@@ -627,6 +636,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/legacy-domains-monitor'
+    | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
@@ -692,6 +702,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/legacy-domains-monitor'
+    | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
@@ -757,6 +768,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/import-tours'
     | '/admin/legacy-domains-monitor'
+    | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/seo-monitor'
@@ -823,6 +835,7 @@ export interface RootRouteChildren {
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
+  AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPricingRoute: typeof AdminPricingRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
@@ -1153,6 +1166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/payments-env': {
+      id: '/admin/payments-env'
+      path: '/admin/payments-env'
+      fullPath: '/admin/payments-env'
+      preLoaderRoute: typeof AdminPaymentsEnvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/legacy-domains-monitor': {
       id: '/admin/legacy-domains-monitor'
       path: '/admin/legacy-domains-monitor'
@@ -1368,6 +1388,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
+  AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPricingRoute: AdminPricingRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
@@ -1397,13 +1418,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
