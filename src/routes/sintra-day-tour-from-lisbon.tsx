@@ -74,10 +74,15 @@ export const Route = createFileRoute("/sintra-day-tour-from-lisbon")({
       { property: "og:url", content: PAGE_URL },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [{ rel: "canonical", href: PAGE_URL }],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+      ...hreflangUsCaLinks(PAGE_PATH),
+    ],
     scripts: [
       jsonLdScript(productLd),
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
