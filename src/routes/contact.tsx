@@ -86,7 +86,7 @@ function Page() {
             )}
           </div>
           <aside className="space-y-7">
-            <Info icon={<Mail size={16} />} label="Email" value="info@yesexperiences.pt" />
+            <Info icon={<Mail size={16} />} label="Email" value="info@yesexperiencesportugal.com" />
             <Info icon={<Phone size={16} />} label="Phone" value="+351 911 889 992" />
             <Info
               icon={<MapPin size={16} />}
