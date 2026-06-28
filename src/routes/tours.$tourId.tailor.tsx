@@ -258,6 +258,7 @@ function TailorPage() {
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
       pricePerPaxEur: estimatedPrice,
+      totalEur: Math.round(estimatedPrice * details.guests),
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels.slice(0, 4),
       flowLabel: "Tailored",
