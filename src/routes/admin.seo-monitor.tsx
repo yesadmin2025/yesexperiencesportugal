@@ -58,7 +58,91 @@ async function probe(url: string): Promise<Partial<CheckState>> {
   }
 }
 
-function SeoMonitorPage() {
+const REFRESH_EVENT = "seo-monitor:refresh-all";
+
+function GlobalRefresh({ probeRun, probeAt }: { probeRun: () => Promise<void>; probeAt: string }) {
+  const [busy, setBusy] = useState(false);
+  const [lastAt, setLastAt] = useState<string>("");
+  const [done, setDone] = useState({ probe: false, gsc: false, audit: false });
+
+  async function refreshAll() {
+    setBusy(true);
+    setDone({ probe: false, gsc: false, audit: false });
+    const finished: Record<string, boolean> = { probe: false, gsc: false, audit: false };
+    const markDone = (k: "gsc" | "audit") => {
+      finished[k] = true;
+      setDone((d) => ({ ...d, [k]: true }));
+      if (finished.probe && finished.gsc && finished.audit) {
+        setLastAt(new Date().toLocaleString("pt-PT"));
+        setBusy(false);
+      }
+    };
+    window.addEventListener("seo-monitor:gsc-done", () => markDone("gsc"), { once: true });
+    window.addEventListener("seo-monitor:audit-done", () => markDone("audit"), { once: true });
+    window.dispatchEvent(new CustomEvent(REFRESH_EVENT));
+    await probeRun();
+    finished.probe = true;
+    setDone((d) => ({ ...d, probe: true }));
+    if (finished.gsc && finished.audit) {
+      setLastAt(new Date().toLocaleString("pt-PT"));
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-8 rounded-xl border border-[color:var(--gold)]/40 bg-white p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+            Atualizar tudo
+          </p>
+          <p className="mt-1 text-sm font-medium text-[color:var(--charcoal)]">
+            GSC + Auditoria SEO + Ficheiros
+          </p>
+          <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+            Último refresh global:{" "}
+            <span className="font-medium text-[color:var(--charcoal)]">
+              {lastAt || probeAt || "—"}
+            </span>
+          </p>
+        </div>
+        <button
+          onClick={refreshAll}
+          disabled={busy}
+          className="rounded-full bg-[color:var(--charcoal)] px-5 py-2.5 text-xs font-medium text-white hover:bg-[color:var(--teal)] disabled:opacity-60"
+        >
+          {busy ? "A atualizar…" : "Atualizar agora"}
+        </button>
+      </div>
+      {busy ? (
+        <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+          <Pill label="Ficheiros" done={done.probe} />
+          <Pill label="GSC" done={done.gsc} />
+          <Pill label="Auditoria" done={done.audit} />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Pill({ label, done }: { label: string; done: boolean }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ${
+        done
+          ? "bg-emerald-50 text-emerald-700"
+          : "bg-[color:var(--sand)] text-[color:var(--charcoal-soft)]"
+      }`}
+    >
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${done ? "bg-emerald-500" : "bg-amber-400 animate-pulse"}`}
+      />
+      {label}
+    </span>
+  );
+}
+
+
   const [checks, setChecks] = useState<Record<string, CheckState>>(() =>
     Object.fromEntries(CHECKS.map((c) => [c.url, { url: c.url, checking: true }])),
   );
