@@ -1073,7 +1073,7 @@ export function SignaturePriceCard({
               style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
             >
               <ShieldCheck size={12} aria-hidden style={{ color: "var(--gold)" }} />
-              Secure checkout · Stripe-protected · Cancel free for 48h
+              Secure checkout · Cancel free for 48h
             </p>
           ) : null}
 
