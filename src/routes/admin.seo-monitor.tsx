@@ -203,29 +203,214 @@ function SeoMonitorPage() {
           </ul>
         </section>
 
+        <IndexationPanel />
+        <CriticalSeoPanel />
+
         <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5 text-sm text-[color:var(--charcoal-soft)]">
           <h3 className="text-base font-semibold text-[color:var(--charcoal)]">
             Checklist de recrawl
           </h3>
           <ol className="mt-3 list-decimal space-y-2 pl-5">
             <li>Confirmar que sitemap.xml e robots.txt retornam HTTP 200 acima.</li>
-            <li>
-              Em <strong>Sitemaps</strong>, submeter{" "}
-              <code className="rounded bg-[color:var(--ivory)] px-1">/sitemap.xml</code> se ainda
-              não estiver listado.
-            </li>
-            <li>
-              Em <strong>Inspeção de URL</strong>, colar uma página chave e clicar
-              "Pedir indexação".
-            </li>
-            <li>
-              Em <strong>Remoções → Conteúdo desatualizado</strong>, submeter URLs antigos a
-              limpar do cache.
-            </li>
-            <li>Repetir verificação aqui após 24–72h para confirmar lastmod refletido.</li>
+            <li>Resolver erros críticos do painel "Erros críticos de SEO".</li>
+            <li>Em <strong>Inspeção de URL</strong>, pedir indexação das páginas com problemas.</li>
+            <li>Repetir verificação após 24–72h.</li>
           </ol>
         </section>
       </div>
     </div>
+  );
+}
+
+function IndexationPanel() {
+  const inspect = useServerFn(inspectGscUrls);
+  const [rows, setRows] = useState<UrlInspectionResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string>();
+
+  async function run() {
+    setLoading(true);
+    setErr(undefined);
+    try {
+      const r = await inspect({ data: { urls: KEY_URLS } });
+      setRows(r.results);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+          Estado de indexação (Google)
+        </h2>
+        <button
+          onClick={run}
+          disabled={loading}
+          className="rounded-full bg-[color:var(--teal)] px-4 py-2 text-xs font-medium text-white hover:bg-[color:var(--teal-2)] disabled:opacity-50"
+        >
+          {loading ? "A consultar…" : "Consultar GSC"}
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+        Inspeção live da API do Search Console para as páginas-chave.
+      </p>
+      {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
+      <div className="mt-4 space-y-2">
+        {rows.length === 0 && !loading ? (
+          <p className="text-xs text-[color:var(--charcoal-soft)]">
+            Clica em "Consultar GSC" para carregar.
+          </p>
+        ) : null}
+        {rows.map((r) => {
+          const indexed = r.verdict === "PASS";
+          const dot = !r.ok ? "bg-rose-500" : indexed ? "bg-emerald-500" : "bg-amber-500";
+          return (
+            <div
+              key={r.url}
+              className="rounded-lg border border-[color:var(--sand)] bg-white p-4 text-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <span className={`mt-1.5 inline-block h-2 w-2 rounded-full ${dot}`} />
+                  <div>
+                    <p className="font-medium text-[color:var(--charcoal)] break-all">
+                      {r.url.replace("https://yesexperiencesportugal.com", "") || "/"}
+                    </p>
+                    {r.error ? (
+                      <p className="mt-1 text-xs text-rose-600">{r.error}</p>
+                    ) : (
+                      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+                        {r.verdict ?? "—"} · {r.coverageState ?? "—"}
+                        {r.lastCrawlTime
+                          ? ` · crawl ${new Date(r.lastCrawlTime).toLocaleDateString("pt-PT")}`
+                          : ""}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function CriticalSeoPanel() {
+  const audit = useServerFn(auditSeoUrls);
+  const [rows, setRows] = useState<SeoAuditResult[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  async function run() {
+    setLoading(true);
+    try {
+      const r = await audit({ data: { urls: KEY_URLS } });
+      setRows(r.results);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const totalCritical = rows.reduce(
+    (s, r) => s + r.issues.filter((i) => i.level === "critical").length,
+    0,
+  );
+  const totalWarn = rows.reduce(
+    (s, r) => s + r.issues.filter((i) => i.level === "warn").length,
+    0,
+  );
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+          Erros críticos de SEO
+        </h2>
+        <button
+          onClick={run}
+          disabled={loading}
+          className="rounded-full border border-[color:var(--teal)] px-4 py-2 text-xs font-medium text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white disabled:opacity-50"
+        >
+          {loading ? "A analisar…" : "Re-analisar"}
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+        Audita title, description, canonical, H1, JSON-LD, og:* e robots em tempo real.
+      </p>
+      <p className="mt-2 text-xs">
+        <span className="text-rose-600">{totalCritical} críticos</span>
+        <span className="mx-2 text-[color:var(--charcoal-soft)]">·</span>
+        <span className="text-amber-600">{totalWarn} avisos</span>
+      </p>
+      <div className="mt-4 space-y-2">
+        {rows.map((r) => {
+          const critical = r.issues.filter((i) => i.level === "critical");
+          const warn = r.issues.filter((i) => i.level === "warn");
+          const dot =
+            critical.length > 0 ? "bg-rose-500" : warn.length > 0 ? "bg-amber-500" : "bg-emerald-500";
+          return (
+            <details
+              key={r.url}
+              className="rounded-lg border border-[color:var(--sand)] bg-white p-4 text-sm"
+            >
+              <summary className="flex cursor-pointer items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+                  <span className="font-medium text-[color:var(--charcoal)] break-all">
+                    {r.url.replace("https://yesexperiencesportugal.com", "") || "/"}
+                  </span>
+                </div>
+                <span className="text-xs text-[color:var(--charcoal-soft)]">
+                  {critical.length}C · {warn.length}W
+                </span>
+              </summary>
+              <div className="mt-3 space-y-2 text-xs text-[color:var(--charcoal-soft)]">
+                <p>
+                  <strong>HTTP:</strong> {r.status ?? "—"} ·{" "}
+                  <strong>H1:</strong> {r.h1Count ?? 0} ·{" "}
+                  <strong>JSON-LD:</strong> {r.jsonLdBlocks ?? 0}
+                </p>
+                <p>
+                  <strong>Title</strong> ({r.titleLength ?? 0}): {r.title ?? "—"}
+                </p>
+                <p>
+                  <strong>Description</strong> ({r.descriptionLength ?? 0}):{" "}
+                  {r.description ?? "—"}
+                </p>
+                <p className="break-all">
+                  <strong>Canonical:</strong> {r.canonical ?? "—"}
+                </p>
+                {r.issues.length > 0 ? (
+                  <ul className="mt-2 space-y-1">
+                    {r.issues.map((i, idx) => (
+                      <li
+                        key={idx}
+                        className={
+                          i.level === "critical" ? "text-rose-600" : "text-amber-600"
+                        }
+                      >
+                        • {i.message}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-emerald-600">✓ Sem problemas detetados</p>
+                )}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </section>
   );
 }
