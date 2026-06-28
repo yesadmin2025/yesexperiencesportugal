@@ -123,6 +123,38 @@ function TailorPage() {
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
 
+  // ─── Tailor Blueprint (truthful core / choice / optional) ────
+  // When a blueprint exists for this tour, it REPLACES the legacy
+  // "Stop variations" panel below — the legacy panel reads from
+  // tour.stops which is the full Viator list and overstates what the
+  // anchor price actually includes.
+  const blueprint = useMemo(() => getTailorBlueprint(tour.id), [tour.id]);
+  const [choiceSelected, setChoiceSelected] = useState<Set<string>>(() => {
+    // Pre-select the first N options to match the "pickCount" by default.
+    const bp = getTailorBlueprint(tour.id);
+    if (!bp?.choice) return new Set();
+    return new Set(bp.choice.options.slice(0, bp.choice.pickCount).map((o) => o.id));
+  });
+  const [optionalSelected, setOptionalSelected] = useState<Set<string>>(new Set());
+
+  const blueprintFeasibility = useMemo(() => {
+    if (!blueprint) return null;
+    const toFs = (s: BlueprintStop): FeasibilityStop => ({
+      id: s.id,
+      label: s.label,
+      category: s.category,
+      dwellMinutesOverride: s.dwellMinutesOverride,
+    });
+    const stops: FeasibilityStop[] = [
+      ...blueprint.core.map(toFs),
+      ...(blueprint.choice
+        ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map(toFs)
+        : []),
+      ...blueprint.optional.filter((o) => optionalSelected.has(o.id)).map(toFs),
+    ];
+    return evaluateDay({ stops });
+  }, [blueprint, choiceSelected, optionalSelected]);
+
   // Optional stops surfaced by Viator (passBy=true). These can be
   // promoted into the day. Capped at MAX_EDITS combined add/remove.
   const MAX_EDITS = 3;
