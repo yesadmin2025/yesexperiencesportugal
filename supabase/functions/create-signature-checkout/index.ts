@@ -233,6 +233,7 @@ Deno.serve(async (req) => {
         date_exact: body.dateExact ?? "",
         pickup: (body.pickupLabel ?? "").slice(0, 120),
         hotel_pickup_included: "1",
+        ...(bokunActivity?.title ? { bokun_title: bokunActivity.title.slice(0, 160) } : {}),
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
