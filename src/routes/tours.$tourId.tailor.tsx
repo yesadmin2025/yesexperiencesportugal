@@ -520,8 +520,185 @@ function TailorPage() {
                 </div>
               </Group>
 
-              {/* Stops — only those that exist on this tour */}
-              {(tour.stops ?? []).length > 0 && (
+              {/* Truthful Blueprint — replaces the legacy "Stop variations"
+                  panel when we have an accurate Core / Choice / Optional
+                  breakdown for this tour. */}
+              {blueprint && (
+                <Group title="What's included">
+                  <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-4 -mt-1">
+                    {blueprint.intro}
+                  </p>
+
+                  {/* Core (always included) */}
+                  <p className="mb-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
+                    Always included
+                  </p>
+                  <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
+                    {blueprint.core.map((s) => (
+                      <li
+                        key={s.id}
+                        className="flex items-stretch gap-3 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 min-h-[56px]"
+                      >
+                        <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                          <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                            {s.label}
+                          </span>
+                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                            Core
+                          </span>
+                        </span>
+                        <span className="w-9 flex items-center justify-center bg-[color:var(--teal)] text-[color:var(--ivory)]">
+                          <Check size={14} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Choice pool */}
+                  {blueprint.choice && (
+                    <>
+                      <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                        Choose {blueprint.choice.pickCount} · {blueprint.choice.label}
+                      </p>
+                      <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
+                        {blueprint.choice.helper}
+                      </p>
+                      <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
+                        {blueprint.choice.options.map((o) => {
+                          const on = choiceSelected.has(o.id);
+                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickCount;
+                          return (
+                            <li key={o.id}>
+                              <button
+                                type="button"
+                                disabled={atLimit}
+                                onClick={() => {
+                                  const next = new Set(choiceSelected);
+                                  if (on) next.delete(o.id);
+                                  else next.add(o.id);
+                                  setChoiceSelected(next);
+                                }}
+                                aria-pressed={on}
+                                className={[
+                                  "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
+                                  on
+                                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                                    : "border-[color:var(--border)]",
+                                  atLimit ? "opacity-50 cursor-not-allowed" : "",
+                                ].join(" ")}
+                              >
+                                <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                                  <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                                    {o.label}
+                                  </span>
+                                  {o.note && (
+                                    <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                                      {o.note}
+                                    </span>
+                                  )}
+                                </span>
+                                <span
+                                  className={[
+                                    "w-9 flex items-center justify-center text-[color:var(--ivory)]",
+                                    on ? "bg-[color:var(--gold)]" : "bg-[color:var(--border)]",
+                                  ].join(" ")}
+                                  aria-hidden
+                                >
+                                  {on ? <Check size={14} /> : "+"}
+                                </span>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </>
+                  )}
+
+                  {/* Optional (subject to time & availability) */}
+                  {blueprint.optional.length > 0 && (
+                    <>
+                      <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                        Optional · subject to time & availability
+                      </p>
+                      <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
+                        {blueprint.optional.map((o) => {
+                          const on = optionalSelected.has(o.id);
+                          return (
+                            <li key={o.id}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const next = new Set(optionalSelected);
+                                  if (on) next.delete(o.id);
+                                  else next.add(o.id);
+                                  setOptionalSelected(next);
+                                }}
+                                aria-pressed={on}
+                                className={[
+                                  "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
+                                  on
+                                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                                    : "border-[color:var(--border)]",
+                                ].join(" ")}
+                              >
+                                <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                                  <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                                    {o.label}
+                                  </span>
+                                  {o.note && (
+                                    <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                                      {o.note}
+                                    </span>
+                                  )}
+                                </span>
+                                <span
+                                  className={[
+                                    "w-9 flex items-center justify-center text-[color:var(--ivory)]",
+                                    on ? "bg-[color:var(--gold)]" : "bg-[color:var(--border)]",
+                                  ].join(" ")}
+                                  aria-hidden
+                                >
+                                  {on ? <Check size={14} /> : "+"}
+                                </span>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </>
+                  )}
+
+                  {/* Day timing strip */}
+                  {blueprintFeasibility && (
+                    <div
+                      className={[
+                        "mt-5 border px-3 py-2.5 text-[12px]",
+                        blueprintFeasibility.ok
+                          ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 text-[color:var(--charcoal)]"
+                          : "border-[color:var(--gold)] bg-[color:var(--gold)]/10 text-[color:var(--charcoal)]",
+                      ].join(" ")}
+                    >
+                      <p>
+                        <span className="uppercase tracking-[0.22em] text-[10.5px] mr-2 text-[color:var(--charcoal-soft)]">
+                          Day timing
+                        </span>
+                        ~{Math.round(blueprintFeasibility.totalMinutes / 60)}h of experience
+                        {blueprintFeasibility.ok ? " · fits a full day" : ""}
+                      </p>
+                      {blueprintFeasibility.warnings.length > 0 && (
+                        <ul className="mt-1.5 list-disc pl-4 text-[11.5px] text-[color:var(--charcoal-soft)]">
+                          {blueprintFeasibility.warnings.map((w, i) => (
+                            <li key={i}>{w}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </Group>
+              )}
+
+              {/* Stops — legacy panel, hidden when a blueprint is present */}
+              {!blueprint && (tour.stops ?? []).length > 0 && (
                 <Group title="Stop variations">
                   <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-1 -mt-1">
                     Remove a stop you'd rather trade for time elsewhere, or add an optional one
