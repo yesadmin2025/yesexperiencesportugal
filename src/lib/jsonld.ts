@@ -178,6 +178,97 @@ export function faqPageLd(items: { q: string; a: string }[]) {
   };
 }
 
+/**
+ * ItemList — used on collection pages (homepage Signature carousel,
+ * /experiences index) to surface a carousel-style rich result and help
+ * Google understand the relationship between the page and each Tour.
+ */
+export function itemListLd(args: {
+  name: string;
+  path: string; // canonical path of the listing page, e.g. "/experiences"
+  items: {
+    id: string; // tour id → /tours/{id}
+    name: string;
+    description?: string;
+    image?: string;
+  }[];
+}) {
+  const listUrl = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${listUrl}#itemlist`,
+    name: args.name,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: args.items.length,
+    itemListElement: args.items.map((it, i) => {
+      const url = `${SITE_URL}/tours/${it.id}`;
+      const image = it.image
+        ? it.image.startsWith("http")
+          ? it.image
+          : `${SITE_URL}${it.image}`
+        : undefined;
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        url,
+        item: {
+          "@type": ["Product", "TouristTrip"],
+          "@id": `${url}#product`,
+          name: it.name,
+          url,
+          ...(it.description ? { description: it.description } : {}),
+          ...(image ? { image } : {}),
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
+      };
+    }),
+  };
+}
+
+/**
+ * Service / WebPage node for the Experience Studio.
+ *
+ * Studio isn't a single bookable Product (it composes one in real time),
+ * so we describe it as a Service offered by the Organization plus a
+ * WebPage anchor so Google can pick it up as a sitelink target.
+ */
+export function studioServiceLd(args: { path: string; name: string; description: string }) {
+  const url = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: args.name,
+    description: args.description,
+    serviceType: "Private custom day tour design",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Lisbon" },
+      { "@type": "AdministrativeArea", name: "Sintra" },
+      { "@type": "AdministrativeArea", name: "Arrábida" },
+      { "@type": "AdministrativeArea", name: "Sesimbra" },
+    ],
+    url,
+    audience: {
+      "@type": "Audience",
+      audienceType: "Luxury and experiential travellers",
+    },
+    potentialAction: {
+      "@type": "ReserveAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: url,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+      result: { "@type": "Reservation", name: "Private custom day reservation" },
+    },
+  };
+}
+
 /** Convenience: build a head().scripts entry for one JSON-LD node. */
 export function jsonLdScript(node: unknown) {
   return {
@@ -185,3 +276,4 @@ export function jsonLdScript(node: unknown) {
     children: JSON.stringify(node),
   };
 }
+
