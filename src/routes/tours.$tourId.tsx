@@ -144,7 +144,7 @@ function TourDetailPage() {
       <ItineraryTimeline tour={tour} meta={meta} />
 
       {/* ── 6 · MAP — branded markers, real stops only ──────── */}
-      <RouteMap tour={tour} />
+      <RouteMap tour={tour} meta={meta} />
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
