@@ -1119,6 +1119,7 @@ function TailorPage() {
             tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
             guests,
             pricePerPaxEur: estimatedPrice,
+            totalEur: Math.round(estimatedPrice * guests),
             flowLabel: "Tailored",
           }
         }
