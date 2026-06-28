@@ -30,6 +30,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/corporate", lastmod: today, changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", lastmod: today, changefreq: "weekly", priority: "0.7" },
           { path: "/day-trips-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.8" },
+          { path: "/private-wine-tour-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          { path: "/sintra-day-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          { path: "/arrabida-day-trip-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
           { path: "/terms", lastmod: today, changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", lastmod: today, changefreq: "yearly", priority: "0.4" },
         ];
