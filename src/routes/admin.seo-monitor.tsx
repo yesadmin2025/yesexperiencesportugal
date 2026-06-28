@@ -314,6 +314,7 @@ function IndexationPanel() {
   const [rows, setRows] = useState<UrlInspectionResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string>();
+  const [lastAt, setLastAt] = useState<string>("");
 
   async function run() {
     setLoading(true);
@@ -321,12 +322,22 @@ function IndexationPanel() {
     try {
       const r = await inspect({ data: { urls: KEY_URLS } });
       setRows(r.results);
+      setLastAt(new Date().toLocaleString("pt-PT"));
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
+      window.dispatchEvent(new CustomEvent("seo-monitor:gsc-done"));
     }
   }
+
+  useEffect(() => {
+    const handler = () => run();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   return (
     <section className="mt-10">
