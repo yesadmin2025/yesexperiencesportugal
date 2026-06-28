@@ -123,3 +123,122 @@ export const getPaymentsEnvStatus = createServerFn({ method: "GET" })
 
     return { server, stripePing: ping, verdict: { ready, reason } };
   });
+
+export type WebhookSignatureTestResult = {
+  ok: boolean;
+  steps: {
+    secretPresent: boolean;
+    secretPrefixOk: boolean; // starts with "whsec_"
+    validSignatureAccepted: { ok: boolean; status: number | null; body: string | null };
+    invalidSignatureRejected: { ok: boolean; status: number | null; body: string | null };
+  };
+  endpoint: string;
+  reason: string;
+};
+
+async function hmacSha256Hex(secret: string, payload: string): Promise<string> {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(payload));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export const testStripeWebhookSignature = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<WebhookSignatureTestResult> => {
+    await assertAdmin(context);
+
+    const secret = process.env.STRIPE_WEBHOOK_SECRET_LIVE;
+    const supabaseUrl = process.env.SUPABASE_URL!;
+    const endpoint = `${supabaseUrl}/functions/v1/stripe-webhook`;
+
+    const result: WebhookSignatureTestResult = {
+      ok: false,
+      steps: {
+        secretPresent: Boolean(secret),
+        secretPrefixOk: Boolean(secret && secret.startsWith("whsec_")),
+        validSignatureAccepted: { ok: false, status: null, body: null },
+        invalidSignatureRejected: { ok: false, status: null, body: null },
+      },
+      endpoint,
+      reason: "",
+    };
+
+    if (!secret) {
+      result.reason = "STRIPE_WEBHOOK_SECRET_LIVE is not configured.";
+      return result;
+    }
+    if (!result.steps.secretPrefixOk) {
+      result.reason = "STRIPE_WEBHOOK_SECRET_LIVE does not start with whsec_ — likely wrong value.";
+      return result;
+    }
+
+    // Build a benign synthetic Stripe event the webhook will accept-then-ignore
+    // (the handler short-circuits any event type other than checkout.session.*).
+    const timestamp = Math.floor(Date.now() / 1000);
+    const payload = JSON.stringify({
+      id: `evt_selftest_${timestamp}`,
+      object: "event",
+      type: "ping.selftest",
+      livemode: true,
+      created: timestamp,
+      data: { object: { id: "selftest" } },
+    });
+
+    const signedPayload = `${timestamp}.${payload}`;
+    const v1 = await hmacSha256Hex(secret, signedPayload);
+    const validHeader = `t=${timestamp},v1=${v1}`;
+    const invalidHeader = `t=${timestamp},v1=${"0".repeat(64)}`;
+
+    // 1) Valid signature → should verify and return 200 with ignored:"ping.selftest"
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "stripe-signature": validHeader },
+        body: payload,
+      });
+      const body = (await res.text()).slice(0, 300);
+      result.steps.validSignatureAccepted = {
+        ok: res.status === 200 && body.includes("ping.selftest"),
+        status: res.status,
+        body,
+      };
+    } catch (e) {
+      result.steps.validSignatureAccepted.body = (e as Error).message.slice(0, 300);
+    }
+
+    // 2) Invalid signature → must be rejected with 400
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "stripe-signature": invalidHeader },
+        body: payload,
+      });
+      const body = (await res.text()).slice(0, 300);
+      result.steps.invalidSignatureRejected = {
+        ok: res.status === 400,
+        status: res.status,
+        body,
+      };
+    } catch (e) {
+      result.steps.invalidSignatureRejected.body = (e as Error).message.slice(0, 300);
+    }
+
+    result.ok =
+      result.steps.validSignatureAccepted.ok && result.steps.invalidSignatureRejected.ok;
+    result.reason = result.ok
+      ? "Webhook secret verified end-to-end: live signature accepted, forged signature rejected."
+      : !result.steps.validSignatureAccepted.ok
+        ? "Live-signed payload was NOT accepted by the webhook — secret mismatch between this env and the deployed function."
+        : "Webhook accepted a forged signature — this is a critical security failure.";
+
+    return result;
+  });
