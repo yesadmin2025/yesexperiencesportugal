@@ -1,0 +1,15 @@
+{
+  "name": "YES experiences Portugal",
+  "short_name": "YES experiences",
+  "description": "Private Portugal experiences — Signature days, Experience Studio, bespoke multi-day journeys.",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/brand/svg/yes-experiences-portugal-centered-full.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#295B61",
+  "background_color": "#FAF8F3",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}
