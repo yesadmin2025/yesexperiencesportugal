@@ -199,18 +199,34 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-      {/* Price anchor */}
-      <div className="mt-6 flex items-baseline justify-between border-t border-[color:var(--border)] pt-4">
-        <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-          From
-        </span>
-        <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-          €{tour.priceFrom}
-          <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            / pp
+      {/* Price for chosen party — tier-resolved, real */}
+      <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
+        <div className="flex items-baseline justify-between">
+          <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+            {displayIsReal ? `For ${guests} guest${guests > 1 ? "s" : ""}` : "From"}
           </span>
-        </span>
+          <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
+            €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
+            <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+              / pp
+            </span>
+          </span>
+        </div>
+        {displayIsReal && guests > 1 ? (
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+              Party total
+            </span>
+            <span className="serif text-[1.05rem] text-[color:var(--charcoal)]">
+              €{Math.round(partyTotalEur).toLocaleString("en-GB")}
+              <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
+                €{Math.round(displayPerPaxEur)} × {guests}
+              </span>
+            </span>
+          </div>
+        ) : null}
       </div>
+
 
       <button
         type="button"
