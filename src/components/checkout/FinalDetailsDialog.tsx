@@ -407,7 +407,7 @@ export function FinalDetailsDialog({
             )}
           </button>
           <p className="text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-            Stripe · Apple Pay · Google Pay · Final price shown before payment
+            Secure checkout · Final price shown before payment
           </p>
         </DialogFooter>
       </DialogContent>
