@@ -16,7 +16,9 @@ import { Route as StudioV3RouteImport } from './routes/studio-v3'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as ProposalsRouteImport } from './routes/proposals'
+import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
@@ -31,6 +33,7 @@ import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
@@ -109,9 +112,19 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
+  id: '/sintra-day-tour-from-lisbon',
+  path: '/sintra-day-tour-from-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProposalsRoute = ProposalsRouteImport.update({
   id: '/proposals',
   path: '/proposals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateWineTourLisbonRoute = PrivateWineTourLisbonRouteImport.update({
+  id: '/private-wine-tour-lisbon',
+  path: '/private-wine-tour-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -184,6 +197,12 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArrabidaDayTripFromLisbonRoute =
+  ArrabidaDayTripFromLisbonRouteImport.update({
+    id: '/arrabida-day-trip-from-lisbon',
+    path: '/arrabida-day-trip-from-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -402,6 +421,7 @@ const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -416,7 +436,9 @@ export interface FileRoutesByFullPath {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
+  '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
@@ -468,6 +490,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -482,7 +505,9 @@ export interface FileRoutesByTo {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
+  '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
@@ -535,6 +560,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -549,7 +575,9 @@ export interface FileRoutesById {
   '/multi-day': typeof MultiDayRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
+  '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
@@ -603,6 +631,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/arrabida-day-trip-from-lisbon'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -617,7 +646,9 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/privacy'
+    | '/private-wine-tour-lisbon'
     | '/proposals'
+    | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
@@ -669,6 +700,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/arrabida-day-trip-from-lisbon'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -683,7 +715,9 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/privacy'
+    | '/private-wine-tour-lisbon'
     | '/proposals'
+    | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
@@ -735,6 +769,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/arrabida-day-trip-from-lisbon'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -749,7 +784,9 @@ export interface FileRouteTypes {
     | '/multi-day'
     | '/preview-check'
     | '/privacy'
+    | '/private-wine-tour-lisbon'
     | '/proposals'
+    | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
     | '/studio-v2'
@@ -802,6 +839,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ArrabidaDayTripFromLisbonRoute: typeof ArrabidaDayTripFromLisbonRoute
   AuthRoute: typeof AuthRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
@@ -816,7 +854,9 @@ export interface RootRouteChildren {
   MultiDayRoute: typeof MultiDayRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   PrivacyRoute: typeof PrivacyRoute
+  PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
   ProposalsRoute: typeof ProposalsRoute
+  SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
   StudioV2Route: typeof StudioV2RouteWithChildren
@@ -914,11 +954,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sintra-day-tour-from-lisbon': {
+      id: '/sintra-day-tour-from-lisbon'
+      path: '/sintra-day-tour-from-lisbon'
+      fullPath: '/sintra-day-tour-from-lisbon'
+      preLoaderRoute: typeof SintraDayTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/proposals': {
       id: '/proposals'
       path: '/proposals'
       fullPath: '/proposals'
       preLoaderRoute: typeof ProposalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-wine-tour-lisbon': {
+      id: '/private-wine-tour-lisbon'
+      path: '/private-wine-tour-lisbon'
+      fullPath: '/private-wine-tour-lisbon'
+      preLoaderRoute: typeof PrivateWineTourLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -1017,6 +1071,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arrabida-day-trip-from-lisbon': {
+      id: '/arrabida-day-trip-from-lisbon'
+      path: '/arrabida-day-trip-from-lisbon'
+      fullPath: '/arrabida-day-trip-from-lisbon'
+      preLoaderRoute: typeof ArrabidaDayTripFromLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -1355,6 +1416,7 @@ const ToursTourIdRouteWithChildren = ToursTourIdRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ArrabidaDayTripFromLisbonRoute: ArrabidaDayTripFromLisbonRoute,
   AuthRoute: AuthRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
@@ -1369,7 +1431,9 @@ const rootRouteChildren: RootRouteChildren = {
   MultiDayRoute: MultiDayRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   PrivacyRoute: PrivacyRoute,
+  PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
   ProposalsRoute: ProposalsRoute,
+  SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
   StudioV2Route: StudioV2RouteWithChildren,
