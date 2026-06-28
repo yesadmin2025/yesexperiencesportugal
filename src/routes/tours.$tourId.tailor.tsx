@@ -1072,10 +1072,10 @@ function TailorPage() {
                     )}
                   </button>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation · Secured directly on this site.
+                    Instant confirmation
                   </p>
                   <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-                    <Lock size={10} /> Stripe · Apple Pay · Google Pay
+                    <Lock size={10} /> Secure checkout
                   </p>
                 </div>
               </div>

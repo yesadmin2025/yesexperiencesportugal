@@ -245,10 +245,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         )}
       </button>
       <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-        Instant confirmation · Final price shown before payment
+        Instant confirmation
       </p>
       <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-        <Lock size={10} /> Stripe · Apple Pay · Google Pay
+        <Lock size={10} /> Secure checkout
       </p>
 
       <div className="mt-5 pt-4 border-t border-[color:var(--border)] text-center">

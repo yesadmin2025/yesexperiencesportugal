@@ -274,7 +274,7 @@ function TourHero({
 function TrustStrip({ meta }: { meta?: ViatorMeta }) {
   const items = [
     { icon: <Shield size={14} />, label: "Instant confirmation" },
-    { icon: <Check size={14} />, label: "Instant confirmation · final price shown before payment · a local on WhatsApp." },
+    { icon: <Check size={14} />, label: "A local on WhatsApp if you need help" },
     {
       icon: <Star size={14} />,
       label:
@@ -858,7 +858,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
         </div>
 
         <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
-          Confirmation in real time · Final price shown before payment
+          Instant confirmation · A local on WhatsApp if you need help
         </p>
       </div>
     </section>
