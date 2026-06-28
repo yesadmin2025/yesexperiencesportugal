@@ -180,45 +180,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     // Source: supplier.viator.com — Wine & Tile Painting / Sesimbra & Traditions (TG1).
     // Per-pax EUR by group size: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
     priceTiersEUR: { 1: 279, 2: 215, 3: 215, 4: 189, 5: 189, 6: 189, 7: 159, 8: 159 },
-    editorialChapters: [
-      {
-        label: "Livramento Market, Setúbal",
-        story:
-          "A 145-year-old fresh market — fish straight off the boat, regional cheese, oysters and Moscatel before the day begins.",
-        representativeStop: "Mercado do Livramento",
-      },
-      {
-        label: "Arrábida Natural Park",
-        story:
-          "The panoramic road above the bay — turquoise water, cork-oak hills, no crowds.",
-        representativeStop: "Parque Natural da Arrabida",
-      },
-      {
-        label: "Azulejos de Azeitão tile workshop",
-        story:
-          "A working azulejo factory — five centuries of cobalt-blue tile, still hand-painted in front of you.",
-        representativeStop: "Azulejos de Azeitao",
-      },
-      {
-        label: "Two or three family wineries",
-        story:
-          "Private tastings at small family producers in the Setúbal wine region — your guide curates the pairing to your palate.",
-        representativeStop: "House & Museum José Maria Da Fonseca",
-      },
-      {
-        label: "Long traditional lunch in Azeitão",
-        story:
-          "Regional plates and paired wines at a quiet restaurant in the wine village — unhurried, the way locals eat.",
-        representativeStop: "Azeitao",
-      },
-      {
-        label: "Cristo Rei or Sesimbra Castle",
-        story:
-          "An optional close — sweeping Lisbon viewpoint over the Tagus, or the medieval castle by the sea above Sesimbra harbour. Your guide reads the day.",
-        optional: true,
-        representativeStop: "Castelo de Sesimbra",
-      },
-    ],
+    // Editorial chapters now derived from src/data/tailorBlueprints.ts
+    // via toEditorialChapters() — single source of truth. Do not re-add.
   },
   "wild-beaches-picnic": {
     viatorUrl:
