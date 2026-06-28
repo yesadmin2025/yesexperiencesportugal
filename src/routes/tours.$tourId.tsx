@@ -144,7 +144,7 @@ function TourDetailPage() {
       <ItineraryTimeline tour={tour} meta={meta} />
 
       {/* ── 6 · MAP — branded markers, real stops only ──────── */}
-      <RouteMap tour={tour} />
+      <RouteMap tour={tour} meta={meta} />
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
@@ -349,14 +349,19 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
  * 5 · ITINERARY — visual timeline (Viator stops when available)
  * ════════════════════════════════════════════════════════════ */
 function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
-  // Source of truth: Viator real stops (passBy excluded). Fall back
-  // to internal `tour.stops` only when no Viator meta exists.
+  // Source of truth (in order of preference):
+  //   1. Curated editorial chapters (truthful, 4–6 entries, marks optionals)
+  //   2. Raw Viator stops (passBy excluded) — fallback when no editorial set
+  //   3. Internal tour.stops — last resort
+  type Chapter = { label: string; story?: string; optional?: boolean };
+  const editorial = meta?.editorialChapters ?? [];
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
-  type Chapter = { label: string; story?: string };
   const chapters: Chapter[] =
-    viator.length > 0
-      ? viator.map((s) => ({ label: s.name, story: s.desc }))
-      : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
+    editorial.length > 0
+      ? editorial.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
+      : viator.length > 0
+        ? viator.map((s) => ({ label: s.name, story: s.desc }))
+        : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
 
   if (chapters.length === 0) return null;
 
@@ -367,7 +372,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           <div>
             <Eyebrow>Itinerary</Eyebrow>
             <SectionTitle size="compact">
-              The story, <SectionTitle.Em>stop by stop</SectionTitle.Em>
+              The day, <SectionTitle.Em>chapter by chapter</SectionTitle.Em>
             </SectionTitle>
           </div>
           <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
@@ -375,7 +380,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           </span>
         </div>
 
-        <ol className="relative space-y-8">
+        <ol className="relative space-y-7">
           <span
             className="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-[color:var(--gold)]/60 via-[color:var(--gold)]/30 to-transparent md:left-[19px]"
             aria-hidden
@@ -387,12 +392,21 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
               </span>
 
               <div className="pt-1 pb-1">
-                <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
-                  Chapter {i + 1}
-                </span>
-                <h3 className="serif text-xl md:text-2xl leading-snug mt-2">{s.label}</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+                    Chapter {i + 1}
+                  </span>
+                  {s.optional && (
+                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--gold)] bg-[color:var(--gold)]/[0.06]">
+                      Optional
+                    </span>
+                  )}
+                </div>
+                <h3 className="serif text-[17px] md:text-[19px] leading-snug mt-2 text-[color:var(--charcoal)] font-normal" data-mixed-emphasis="exempt">
+                  {s.label}
+                </h3>
                 {s.story && (
-                  <p className="mt-2.5 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
+                  <p className="mt-2 text-[13.5px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
                     {s.story}
                   </p>
                 )}
@@ -408,12 +422,28 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 /* ════════════════════════════════════════════════════════════════
  * 6 · ROUTE MAP — schematic Portugal w/ branded markers (real stops)
  * ════════════════════════════════════════════════════════════ */
-function RouteMap({ tour }: { tour: SignatureTour }) {
+function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const region = tour.seed.region ?? "lisbon";
-  const points: (StopCoord & { idx: number; raw: TourStop })[] = (tour.stops ?? []).map((s, i) => ({
-    ...snapStop(s.label, region, i),
+  // Prefer editorial chapters (curated, ≤6) over raw tour.stops, so the
+  // map mirrors the itinerary timeline instead of dumping every variant.
+  const editorial = meta?.editorialChapters ?? [];
+  const source: { label: string; raw: TourStop }[] =
+    editorial.length > 0
+      ? editorial.map((c) => {
+          const match =
+            (tour.stops ?? []).find(
+              (s) =>
+                c.representativeStop &&
+                s.label.toLowerCase().includes(c.representativeStop.toLowerCase()),
+            ) ?? (tour.stops ?? [])[0];
+          return { label: c.label, raw: { ...(match ?? { label: c.label }), label: c.label } as TourStop };
+        })
+      : (tour.stops ?? []).map((s) => ({ label: s.label, raw: s }));
+
+  const points: (StopCoord & { idx: number; raw: TourStop })[] = source.map((s, i) => ({
+    ...snapStop(s.raw.label, region, i),
     idx: i,
-    raw: s,
+    raw: s.raw,
   }));
 
   if (points.length === 0) return null;

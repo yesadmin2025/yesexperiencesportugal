@@ -18,6 +18,24 @@ export type ViatorStop = {
 };
 
 /**
+ * Curated, truthful chapter list for the tour detail page itinerary.
+ * Replaces the raw Viator stop dump (which lists every winery variant
+ * and every optional viewpoint as separate stops, making the tour look
+ * impossibly long). Write 4–6 chapters max. Mark anything not always
+ * included as `optional: true`.
+ */
+export type EditorialChapter = {
+  /** Short editorial title, e.g. "Two or three family wineries". */
+  label: string;
+  /** One concise sentence — what actually happens here. ≤ 180 chars. */
+  story: string;
+  /** Mark as optional when the chapter is "depending on pace / preference". */
+  optional?: boolean;
+  /** Canonical stop name (from `stops`) for map coordinate lookup. */
+  representativeStop?: string;
+};
+
+/**
  * Real per-person price in EUR by party size (the Viator "tier" structure
  * — most Viator private tours quote a different per-pax rate for 1, 2, 3…
  * up to 8+ travellers, with 8+ as the lowest "from" anchor).
@@ -59,6 +77,12 @@ export type ViatorMeta = {
   localGallery?: { src: string; alt: string }[];
   overview: string | null;
   included: string[];
+  /**
+   * OPTIONAL — curated truthful itinerary chapters used on the tour
+   * detail page. When present, replaces the raw `stops` list in the
+   * itinerary timeline UI. Keep to 4–6 entries.
+   */
+  editorialChapters?: EditorialChapter[];
   /**
    * OPTIONAL — real per-pax EUR price by group size, scraped from the
    * Viator product page. Populate per tour as data is verified. When
@@ -156,6 +180,45 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     // Source: supplier.viator.com — Wine & Tile Painting / Sesimbra & Traditions (TG1).
     // Per-pax EUR by group size: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
     priceTiersEUR: { 1: 279, 2: 215, 3: 215, 4: 189, 5: 189, 6: 189, 7: 159, 8: 159 },
+    editorialChapters: [
+      {
+        label: "Livramento Market, Setúbal",
+        story:
+          "A 145-year-old fresh market — fish straight off the boat, regional cheese, oysters and Moscatel before the day begins.",
+        representativeStop: "Mercado do Livramento",
+      },
+      {
+        label: "Arrábida Natural Park",
+        story:
+          "The panoramic road above the bay — turquoise water, cork-oak hills, no crowds.",
+        representativeStop: "Parque Natural da Arrabida",
+      },
+      {
+        label: "Azulejos de Azeitão tile workshop",
+        story:
+          "A working azulejo factory — five centuries of cobalt-blue tile, still hand-painted in front of you.",
+        representativeStop: "Azulejos de Azeitao",
+      },
+      {
+        label: "Two or three family wineries",
+        story:
+          "Private tastings at small family producers in the Setúbal wine region — your guide curates the pairing to your palate.",
+        representativeStop: "House & Museum José Maria Da Fonseca",
+      },
+      {
+        label: "Long traditional lunch in Azeitão",
+        story:
+          "Regional plates and paired wines at a quiet restaurant in the wine village — unhurried, the way locals eat.",
+        representativeStop: "Azeitao",
+      },
+      {
+        label: "Cristo Rei or Sesimbra Castle",
+        story:
+          "An optional close — sweeping Lisbon viewpoint over the Tagus, or the medieval castle by the sea above Sesimbra harbour. Your guide reads the day.",
+        optional: true,
+        representativeStop: "Castelo de Sesimbra",
+      },
+    ],
   },
   "wild-beaches-picnic": {
     viatorUrl:

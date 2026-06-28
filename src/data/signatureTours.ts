@@ -166,11 +166,11 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 138,
     theme: "Wine",
     blurb:
-      "A complete Arrábida day from Lisbon — three family wineries, market visit, traditional lunch and Sesimbra by the sea.",
+      "Two or three family wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
     intro:
-      "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, slip into three small family wineries, sit down for a long traditional lunch, and walk Sesimbra harbour as the boats come in. Nothing extra to plan or pay for.",
+      "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
     fitsBest: "Couples · friends · wine-curious travelers",
-    pace: ["Two to three wineries", "Local lunch", "Sesimbra harbour"],
+    pace: ["Two or three wineries", "Long Azeitão lunch", "Optional viewpoint close"],
     stops: [
       {
         label: "Mercado do Livramento",
