@@ -32,6 +32,12 @@ interface Body {
   flow?: "studio" | "signature" | "tailor";
   /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
   uiMode?: "hosted" | "embedded";
+  /** Forwarded from FinalDetailsDialog — used to lock the Bókun slot the customer chose. */
+  guestDetails?: {
+    bokunAvailabilityId?: number | string | null;
+    startTime?: string | null;
+    [key: string]: unknown;
+  };
 }
 
 type Flow = "studio" | "signature" | "tailor";
@@ -201,6 +207,12 @@ Deno.serve(async (req) => {
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
         ui_mode: uiMode,
+        ...(body.guestDetails?.bokunAvailabilityId
+          ? { bokun_availability_id: String(body.guestDetails.bokunAvailabilityId) }
+          : {}),
+        ...(body.guestDetails?.startTime
+          ? { start_time: String(body.guestDetails.startTime).slice(0, 16) }
+          : {}),
       },
     };
 

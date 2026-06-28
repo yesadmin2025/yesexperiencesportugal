@@ -181,18 +181,28 @@ Deno.serve(async (req) => {
       )) as AvailabilitySlot[];
       const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
 
-      if (usable.length === 0) {
-        bokunResult = {
-          status: "needs_review",
-          error: `No Bokun availability on ${dateExact} for ${guests} guests`,
-        };
-      } else if (usable.length > 1) {
-        bokunResult = {
-          status: "needs_review",
-          error: `Multiple Bokun slots on ${dateExact} (${usable.length}) — pick one manually`,
-        };
+      // If the customer picked a specific slot in FinalDetailsDialog, lock to it.
+      const lockedId = Number(meta.bokun_availability_id ?? 0);
+      const lockedSlot =
+        lockedId > 0 ? usable.find((s) => Number(s.id) === lockedId) ?? null : null;
+
+      let chosen: AvailabilitySlot | null = lockedSlot;
+      let ambiguousReason: string | null = null;
+
+      if (!chosen) {
+        if (usable.length === 0) {
+          ambiguousReason = `No Bokun availability on ${dateExact} for ${guests} guests`;
+        } else if (usable.length === 1) {
+          chosen = usable[0];
+        } else {
+          ambiguousReason = `Multiple Bokun slots on ${dateExact} (${usable.length}) — pick one manually`;
+        }
+      }
+
+      if (!chosen) {
+        bokunResult = { status: "needs_review", error: ambiguousReason ?? "No slot resolved" };
       } else {
-        const slot = usable[0];
+        const slot = chosen;
         const cat = slot.pricingCategories?.[0];
         if (!cat) {
           bokunResult = {
