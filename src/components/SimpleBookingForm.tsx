@@ -14,6 +14,8 @@ import {
 
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
@@ -31,6 +33,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
+  // Live tier resolution — DB-backed, falls back to code defaults.
+  const { data: tierOverrides } = useTourPriceTiers();
+  const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
+  const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
+  const displayIsReal = perPax?.real === true;
+  const partyTotalEur = perPax?.partyTotalEur ?? displayPerPaxEur * Math.max(1, guests);
+
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -43,6 +52,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     // Open the drawer immediately so the user sees a branded skeleton
     // while the edge function is in flight (saves the "blank" feeling).
     const meta = getViatorMeta(tour.id);
+    const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
+    const perPaxForSummary = resolved?.eurPerPax ?? tour.priceFrom;
     setCheckoutSummary({
       tourTitle: tour.title,
       region: tour.region,
@@ -51,7 +62,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       dateExact: details.tourDate || null,
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
-      pricePerPaxEur: tour.priceFrom,
+      pricePerPaxEur: perPaxForSummary,
+      totalEur: Math.round(perPaxForSummary * details.guests),
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: (tour.highlights ?? []).slice(0, 4),
       flowLabel: "Signature",
@@ -187,18 +199,34 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-      {/* Price anchor */}
-      <div className="mt-6 flex items-baseline justify-between border-t border-[color:var(--border)] pt-4">
-        <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-          From
-        </span>
-        <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-          €{tour.priceFrom}
-          <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            / pp
+      {/* Price for chosen party — tier-resolved, real */}
+      <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
+        <div className="flex items-baseline justify-between">
+          <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+            {displayIsReal ? `For ${guests} guest${guests > 1 ? "s" : ""}` : "From"}
           </span>
-        </span>
+          <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
+            €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
+            <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+              / pp
+            </span>
+          </span>
+        </div>
+        {displayIsReal && guests > 1 ? (
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+              Party total
+            </span>
+            <span className="serif text-[1.05rem] text-[color:var(--charcoal)]">
+              €{Math.round(partyTotalEur).toLocaleString("en-GB")}
+              <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
+                €{Math.round(displayPerPaxEur)} × {guests}
+              </span>
+            </span>
+          </div>
+        ) : null}
       </div>
+
 
       <button
         type="button"
@@ -268,7 +296,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           checkoutSummary ?? {
             tourTitle: tour.title,
             guests,
-            pricePerPaxEur: tour.priceFrom,
+            pricePerPaxEur: displayPerPaxEur,
+            totalEur: Math.round(partyTotalEur),
             flowLabel: "Signature",
           }
         }
