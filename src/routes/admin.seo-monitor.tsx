@@ -453,7 +453,9 @@ function CriticalSeoPanel() {
       </div>
       <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
         Audita title, description, canonical, H1, JSON-LD, og:* e robots em tempo real.
+        {lastAt ? <> · Atualizado <span className="font-medium">{lastAt}</span></> : null}
       </p>
+
       <p className="mt-2 text-xs">
         <span className="text-rose-600">{totalCritical} críticos</span>
         <span className="mx-2 text-[color:var(--charcoal-soft)]">·</span>
