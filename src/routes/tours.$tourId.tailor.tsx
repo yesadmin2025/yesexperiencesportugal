@@ -199,16 +199,23 @@ function TailorPage() {
   // the base "from" by more than 15% so the math stays honest.
   const ADD_STOP_DELTA = 20;
   const REMOVE_STOP_DELTA = 10;
+  const { data: tierOverrides } = useTourPriceTiers();
+  const basePerPax = useMemo(() => {
+    const r = resolvePerPaxEur(tour, guests, tierOverrides);
+    return r?.eurPerPax ?? tour.priceFrom;
+  }, [tour, guests, tierOverrides]);
+
   const estimatedPrice = useMemo(() => {
-    let p = tour.priceFrom;
+    let p = basePerPax;
     p += added.size * ADD_STOP_DELTA;
     p -= skipped.size * REMOVE_STOP_DELTA;
     if (addons.has("photographer")) p += 75;
     if (addons.has("wine")) p += 25;
     if (lunch === "premium") p += 35;
-    const floor = Math.round(tour.priceFrom * 0.85);
+    const floor = Math.round(basePerPax * 0.85);
     return Math.max(floor, Math.round(p));
-  }, [tour.priceFrom, added, skipped, addons, lunch]);
+  }, [basePerPax, added, skipped, addons, lunch]);
+
 
 
 
