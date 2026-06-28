@@ -146,3 +146,62 @@ function PaymentsEnvPage() {
     </div>
   );
 }
+
+function WebhookSignatureTest() {
+  const runner = useServerFn(testStripeWebhookSignature);
+  const m = useMutation({ mutationFn: () => runner() });
+  const r = m.data;
+
+  return (
+    <section className="rounded-xl border border-black/10 bg-white p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-base font-semibold text-charcoal">Webhook signature self-test</h2>
+          <p className="text-xs text-charcoal/60 mt-1">
+            Sends a synthetic event to the deployed <code>stripe-webhook</code> function with both a
+            valid HMAC (signed by <code>STRIPE_WEBHOOK_SECRET_LIVE</code>) and a forged one.
+            Confirms the secret here matches the deployed function before Stripe sends real events.
+          </p>
+        </div>
+        <button
+          onClick={() => m.mutate()}
+          disabled={m.isPending}
+          className="shrink-0 px-3 py-2 rounded-lg bg-charcoal text-ivory text-xs disabled:opacity-50"
+        >
+          {m.isPending ? "Testing…" : "Run test"}
+        </button>
+      </div>
+
+      {m.error && <p className="text-xs text-red-600 mt-3">{(m.error as Error).message}</p>}
+
+      {r && (
+        <div className="mt-4 space-y-1">
+          <Row label="Secret present" value={String(r.steps.secretPresent)} good={r.steps.secretPresent} />
+          <Row
+            label="Secret looks like whsec_…"
+            value={String(r.steps.secretPrefixOk)}
+            good={r.steps.secretPrefixOk}
+          />
+          <Row
+            label={`Valid signature accepted (HTTP ${r.steps.validSignatureAccepted.status ?? "—"})`}
+            value={r.steps.validSignatureAccepted.ok ? "pass" : "fail"}
+            good={r.steps.validSignatureAccepted.ok}
+          />
+          <Row
+            label={`Forged signature rejected (HTTP ${r.steps.invalidSignatureRejected.status ?? "—"})`}
+            value={r.steps.invalidSignatureRejected.ok ? "pass" : "fail"}
+            good={r.steps.invalidSignatureRejected.ok}
+          />
+          <p
+            className={`text-sm mt-3 ${
+              r.ok ? "text-emerald-700" : "text-red-700"
+            }`}
+          >
+            {r.ok ? "✅ " : "⚠ "} {r.reason}
+          </p>
+          <p className="text-[10px] text-charcoal/40 break-all mt-1">Endpoint: {r.endpoint}</p>
+        </div>
+      )}
+    </section>
+  );
+}
