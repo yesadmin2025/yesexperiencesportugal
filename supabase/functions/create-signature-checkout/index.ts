@@ -32,6 +32,12 @@ interface Body {
   flow?: "studio" | "signature" | "tailor";
   /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
   uiMode?: "hosted" | "embedded";
+  /** Forwarded from FinalDetailsDialog — used to lock the Bókun slot the customer chose. */
+  guestDetails?: {
+    bokunAvailabilityId?: number | string | null;
+    startTime?: string | null;
+    [key: string]: unknown;
+  };
 }
 
 type Flow = "studio" | "signature" | "tailor";
