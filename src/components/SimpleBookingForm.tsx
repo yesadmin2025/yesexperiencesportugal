@@ -296,7 +296,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           checkoutSummary ?? {
             tourTitle: tour.title,
             guests,
-            pricePerPaxEur: tour.priceFrom,
+            pricePerPaxEur: displayPerPaxEur,
+            totalEur: Math.round(partyTotalEur),
             flowLabel: "Signature",
           }
         }
