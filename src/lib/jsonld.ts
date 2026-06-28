@@ -203,24 +203,16 @@ export function itemListLd(args: {
     numberOfItems: args.items.length,
     itemListElement: args.items.map((it, i) => {
       const url = `${SITE_URL}/tours/${it.id}`;
-      const image = it.image
-        ? it.image.startsWith("http")
-          ? it.image
-          : `${SITE_URL}${it.image}`
-        : undefined;
+      // NOTE: inner items intentionally do NOT declare @type "Product".
+      // Without offers/review/aggregateRating on every item, Google's
+      // Product-snippet validator flags them as invalid. The detail
+      // pages (/tours/{id}) carry the full Product+Offer+AggregateRating
+      // payload — this ItemList just points at them.
       return {
         "@type": "ListItem",
         position: i + 1,
         url,
-        item: {
-          "@type": ["Product", "TouristTrip"],
-          "@id": `${url}#product`,
-          name: it.name,
-          url,
-          ...(it.description ? { description: it.description } : {}),
-          ...(image ? { image } : {}),
-          provider: { "@id": `${SITE_URL}/#organization` },
-        },
+        name: it.name,
       };
     }),
   };
