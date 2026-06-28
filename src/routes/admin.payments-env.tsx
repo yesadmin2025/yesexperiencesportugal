@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
-import { getPaymentsEnvStatus } from "@/lib/payments-env.functions";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getPaymentsEnvStatus, testStripeWebhookSignature } from "@/lib/payments-env.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
 
 export const Route = createFileRoute("/admin/payments-env")({
@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/payments-env")({
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
+  component: PaymentsEnvPage,
+});
   component: PaymentsEnvPage,
 });
 
