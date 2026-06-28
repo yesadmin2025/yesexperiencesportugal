@@ -123,35 +123,99 @@ export const Route = createRootRoute({
         name: "google-site-verification",
         content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
       },
-      { title: "YesExperiences Portugal" },
+      {
+        title:
+          "YES experiences Portugal — Private Tours, Signature Days & Bespoke Journeys",
+      },
       {
         name: "description",
         content:
-          "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
+          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys and private celebrations. Licensed (RNAVT). 700+ five-star reviews.",
+      },
+      {
+        name: "keywords",
+        content:
+          "private tours Portugal, Portugal private experiences, Lisbon private tour, Sintra private tour, Arrábida wine tour, Sesimbra private tour, bespoke Portugal travel, multi-day Portugal journey, luxury Portugal experiences, Portugal travel designer, YES experiences Portugal, private wine tour Setúbal, Cabo da Roca private tour, Évora private tour, beach picnic Arrábida",
       },
       { name: "author", content: "YES experiences Portugal" },
+      { name: "robots", content: "index,follow,max-image-preview:large" },
+      { name: "geo.region", content: "PT" },
+      { name: "geo.placename", content: "Sesimbra, Setúbal, Portugal" },
+      { name: "geo.position", content: "38.4451;-9.1018" },
+      { name: "ICBM", content: "38.4451, -9.1018" },
       { property: "og:site_name", content: "YES experiences Portugal" },
-      { property: "og:title", content: "YesExperiences Portugal" },
+      {
+        property: "og:title",
+        content:
+          "YES experiences Portugal — Private Tours, Signature Days & Bespoke Journeys",
+      },
       {
         property: "og:description",
         content:
-          "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
+          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra. Signature days, an Experience Studio that reserves in minutes, bespoke multi-day journeys. Licensed (RNAVT) · 700+ five-star reviews.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_GB" },
+      { property: "og:locale:alternate", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "es_ES" },
+      {
+        property: "og:image",
+        content:
+          "https://yesexperiencesportugal.com/brand/png/yes-experiences-portugal-horizontal-full@3x.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
-      { name: "twitter:title", content: "YesExperiences Portugal" },
+      {
+        name: "twitter:title",
+        content:
+          "YES experiences Portugal — Private Tours & Bespoke Journeys",
+      },
       {
         name: "twitter:description",
         content:
-          "YES Experiences Portugal crafts personalized Portuguese journeys with an interactive builder and dynamic storytelling.",
+          "Private Portugal experiences — Signature days, an Experience Studio that reserves in minutes, and bespoke multi-day journeys.",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://yesexperiencesportugal.com/brand/png/yes-experiences-portugal-horizontal-full@3x.png",
       },
     ],
 
     links: [
+      // Favicons — multiple sizes so Google's image crawler can pick a
+      // sharp variant for the SERP icon. A single .ico is often ignored
+      // when there is no high-resolution PNG counterpart.
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      { rel: "apple-touch-icon", sizes: "512x512", href: "/apple-touch-icon.png" },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/brand/svg/yes-experiences-portugal-centered-full.svg",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/icon-192.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "192x192",
+        href: "/icon-192.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "512x512",
+        href: "/apple-touch-icon.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "512x512",
+        href: "/apple-touch-icon.png",
+      },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
