@@ -18,6 +18,24 @@ export type ViatorStop = {
 };
 
 /**
+ * Curated, truthful chapter list for the tour detail page itinerary.
+ * Replaces the raw Viator stop dump (which lists every winery variant
+ * and every optional viewpoint as separate stops, making the tour look
+ * impossibly long). Write 4–6 chapters max. Mark anything not always
+ * included as `optional: true`.
+ */
+export type EditorialChapter = {
+  /** Short editorial title, e.g. "Two or three family wineries". */
+  label: string;
+  /** One concise sentence — what actually happens here. ≤ 180 chars. */
+  story: string;
+  /** Mark as optional when the chapter is "depending on pace / preference". */
+  optional?: boolean;
+  /** Canonical stop name (from `stops`) for map coordinate lookup. */
+  representativeStop?: string;
+};
+
+/**
  * Real per-person price in EUR by party size (the Viator "tier" structure
  * — most Viator private tours quote a different per-pax rate for 1, 2, 3…
  * up to 8+ travellers, with 8+ as the lowest "from" anchor).
