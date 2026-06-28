@@ -1,84 +1,68 @@
-## Scope (two changes, no other rebuild)
+# Tailor + Builder truthfulness pass
 
-### 1) Stripe Embedded Checkout — native, branded, fast
+Three problems to fix together, all driven by the same root cause: nothing today encodes what each tour **really** includes, what is **optional under availability**, and how much **time** each stop actually takes.
 
-Replace the full-page Stripe redirect with **Stripe Embedded Checkout** rendered inside a brand-styled drawer on our domain. The existing `FinalDetailsDialog` (Final details before payment) stays exactly as it is; only the step *after* it changes.
+## 1. Tailor: what's *included* vs *optional* (per Signature)
 
-**Edge function (`supabase/functions/create-signature-checkout/index.ts`)**
+Currently the Tailor screen shows everything as "included" or "add-on" with no relation to the Viator/Bókun reality. Example — Wine & Heritage: Viator says **"visit to 2–3 wineries (subject to availability)"** at a fixed price; we list 5 as included. Cristo Rei and Castelo de Sesimbra are also **optional viewpoints**, not core stops.
 
-- Add `uiMode?: "hosted" | "embedded"` (default `"hosted"` so nothing else breaks).
-- When `embedded`:
-  - `ui_mode: "embedded"`
-  - `return_url: "<origin>/booking-confirmed?session_id={CHECKOUT_SESSION_ID}&tour=<tourId>"` (replaces `success_url`, no `cancel_url`).
-  - Keep all existing price-resolution, metadata, terms acceptance, custom_text, and Bókun mapping logic untouched.
-  - Response: `{ clientSecret, sessionId, bokunMapped, flow, publishableKey }`.
-- Read `STRIPE_SANDBOX_PUBLISHABLE_KEY` / `STRIPE_LIVE_PUBLISHABLE_KEY` from env and include `publishableKey` in the response (so the client doesn't need its own env var per environment).
+Fix: add a per-tour `tailorBlueprint` in `src/data/signatureTours*.ts` with three buckets per Signature:
+- **Core (always included)** — what the anchor price actually buys. Wine tour core = lunch + 2 wineries.
+- **Choice pool (pick N, subject to availability)** — e.g. "Choose 1 additional winery from: Bacalhôa · José Maria da Fonseca · Venâncio Costa Lima · Casa Ermelinda Freitas". Price stays flat; availability is checked at booking.
+- **Optional viewpoints / add-ons (time-priced)** — Cristo Rei, Castelo de Sesimbra, Cabo Espichel, sunset extension. Each carries a real time cost and (where it exists) a real upcharge.
 
-**New client component `src/components/checkout/BrandedCheckoutDrawer.tsx**`
+Tailor UI (`/tours/$tourId/tailor`) becomes 3 sections instead of one flat list, with a live **"Day timing"** strip at the top.
 
-- Uses `@stripe/react-stripe-js` (`EmbeddedCheckoutProvider`, `EmbeddedCheckout`) and `@stripe/stripe-js` `loadStripe` (already installed).
-- Renders inside a right-side `Sheet`/`Drawer` (mobile = bottom sheet, desktop = right drawer), ivory background, gold rule, "YES Experiences · Secure checkout" eyebrow, Stripe + Apple Pay + Google Pay micro-label.
-- Eager-prewarms `loadStripe()` on mount of `FinalDetailsDialog` so opening is instant.
-- Shows a skeleton (no spinner) for the ~150–300ms initial Stripe iframe mount.
+## 2. Time-feasibility rules (Tailor *and* Builder)
 
-**Wire the three instant-book call sites** (all currently do `window.location.href = data.url`):
+Put one shared rule engine in `src/lib/feasibility.ts`:
 
-- `src/components/SimpleBookingForm.tsx` (Signature page Reserve)
-- `src/routes/tours.$tourId.tailor.tsx` (Tailor flow)
-- `src/components/studio-v3/StudioV3.tsx` (Studio reveal)
+```text
+- Dwell minimums (cannot be shorter):
+    winery visit + tasting: 90 min
+    lunch (sit-down):       75 min
+    boat trip:             150 min   (≥120 even shortest variant)
+    monastery / palace:     60 min
+    viewpoint / chapel:     20 min
+    beach / picnic:         90 min
+- Drive: real OSRM minutes between consecutive stops + 10 min buffer
+- Day envelope: 09:00 → 19:00 = 600 min total
+- Hard caps: max driving 180 min/day, max experience 480 min/day
+- Boat rule: if any boat stop is chosen → max 3 other stops, no second
+  "long" stop (winery/lunch counted long; viewpoint short)
+- Wine rule: max 3 wineries/day (Viator constraint), lunch mandatory between
+- Sintra rule: max 2 monument interiors/day (queues)
+```
 
-Each one: invoke the function with `uiMode: "embedded"`, receive `clientSecret`, open `<BrandedCheckoutDrawer>` instead of redirecting. On Stripe `complete` event, navigate to `/booking-confirmed?session_id=...` (existing route).
+Both Tailor and Builder call `evaluateDay(stops[])` → returns `{ feasible, totalMin, drivingMin, warnings[], suggestions[] }`. UI shows warnings inline ("Adding the boat means you'd need to drop one winery") instead of silently overpacking.
 
-**Secrets required**
+The Builder composer in `src/lib/studio-v2/itinerary.server.ts` already has `DEFAULT_CAPS`; extend it with per-tag dwell minimums and the boat/wine rules above so it stops proposing 3-hour boats alongside 4 other stops.
 
-- `STRIPE_SANDBOX_PUBLISHABLE_KEY` and `STRIPE_LIVE_PUBLISHABLE_KEY` — I'll request these via `add_secret` after you approve (publishable keys are safe to expose but cleanest to store as secrets so we can swap envs).
+## 3. Email domain switch
 
-### 2) Remove Viator-sourced attribution from public UI (keep the data, keep prices)
-
-The **content** stays accurate — Signature pages remain source-of-truth to the matching Viator tours (per the canonical rule). Only **user-visible attribution and "Viator"-labelled UI** is neutralised.
-
-Changes:
-
-- `src/routes/tours.$tourId.tsx`
-  - `ReviewsBlock` figcaption: drop the  `· via {source}` suffix entirely. Reviews show author + date only. Removes "via Viator" specifically (and the now-inconsistent "via Tripadvisor / via Google" labels per your earlier request to add — those were added before this neutrality pass; consolidating to no source label is the cleaner premium move).
-  - `FALLBACK_REVIEWS`: remove the `source` field.
-  - Gallery footer "Real photos · real stops" → "Real photos · real stops" stays (no Viator reference).
-- `src/components/home/GuestQuotes.tsx`: keep "700+ five-star reviews across platforms" line as-is (already neutral) — no change needed.
-- `src/routes/index.tsx`:
-  - Homepage Signature cards: **keep `€{t.priceFrom}` price chip** (this is the booking-relevant signal you asked to preserve).
-  - No other UI text references "Viator" today (the existing mentions are dev/code comments only — left untouched, they don't render).
-- `src/components/PlatformBadge.tsx`: no UI changes (component already platform-neutral on render; "Viator" remains an internal data label, never shown unless explicitly used).
-
-Out of scope:
-
-- Internal data files (`signatureToursViator.ts`, `viatorUrlMatch.ts`, code comments) — these are not user-visible.
-- `ItineraryTimeline`, `IncludedAndIdeal`, `HighlightsBlock`, `RouteMap` — these already render through `bookableIncluded` / our own neutral copy; data origin is internal and never labelled "Viator" on the rendered page.
-
-## Technical details
-
-- Embedded Checkout requires `clientSecret`, not `sessionId`, on the client. The function continues to return both for backward compatibility (`url` for legacy hosted, `clientSecret` for embedded). Default remains hosted so no other surface breaks until I migrate them.
-- Drawer uses our existing `@/components/ui/sheet` (already in the design system); no new primitive.
-- A11y: focus-trap inside the drawer, ESC dismiss, body scroll lock.
-- Reduced motion safe.
-- E2E: extend `e2e/instant-booking-checkout.spec.ts` to assert the drawer opens with `[data-checkout="embedded"]` and that a `clientSecret` is received (without actually paying).
-
-## What I will NOT change
-
-- Stripe products, prices, tax behaviour, metadata, Bókun mapping logic — same function, same DB tables.
-- `FinalDetailsDialog` UI/fields.
-- Studio V3 logic, signature tour data, route logic, prices.
-- Builder checkout (`create-builder-checkout`) — only Signature/Tailor/Studio flow is in scope this round; I can do builder in a follow-up if you want.
+Replace every literal `@yesexperiences.pt` with `@yesexperiencesportugal.com` in copy, footer, Stripe receipts, edge-function senders, JSON-LD, and `notify.` templates. The MX on the `.pt` domain stays alive for legacy inbox forwarding (separate concern), but no outbound surface references `.pt` anymore.
 
 ## Files touched
 
-- `supabase/functions/create-signature-checkout/index.ts` (extend, backward compatible)
-- `src/components/checkout/BrandedCheckoutDrawer.tsx` (new)
-- `src/components/SimpleBookingForm.tsx`
-- `src/routes/tours.$tourId.tailor.tsx`
-- `src/components/studio-v3/StudioV3.tsx`
-- `src/routes/tours.$tourId.tsx` (ReviewsBlock figcaption + FALLBACK_REVIEWS only)
-- `e2e/instant-booking-checkout.spec.ts` (assertion update)
+- `src/data/signatureTours*.ts` — add `tailorBlueprint` per tour (core / choice / optional)
+- `src/data/stopOperational.ts` — fill dwell minutes for every stop key
+- `src/lib/feasibility.ts` *(new)* — shared rule engine
+- `src/components/tailor/*` — 3-section Tailor UI + live day-timing strip
+- `src/lib/studio-v2/itinerary.server.ts` — wire feasibility rules into composer (boat/wine caps, dwell minimums)
+- Search/replace `yesexperiences.pt` → `yesexperiencesportugal.com` in copy + edge fns
+- E2E: extend `e2e/bokun-checkout-coverage.spec.ts` with a "Tailor truthfulness" assertion (no tour shows >3 wineries as "included")
 
-Approve and I'll request the two publishable-key secrets, then ship.
+## Out of scope (this pass)
 
-also when curving out on tip of payment should be a card ou summary of the experience, in premmium design. After payment a confirmation page opens. Inside de website. Cliente receives email confirmation of the booking 
+- Stripe / Bókun integration changes
+- Studio V3 visual changes
+- Real-time availability calls during Tailor (we mark "subject to availability" in copy; actual lock happens at checkout via existing `bokun-availability`)
+
+## Order of work
+
+1. Author `tailorBlueprint` for the 3 most-booked Signatures first (Wine & Heritage, Sintra Royal, Arrábida Coastal) — verify against the live Viator pages.
+2. Build `feasibility.ts` + unit tests.
+3. Refactor Tailor UI to 3 sections + day-timing strip.
+4. Wire feasibility into Builder composer.
+5. Email domain sweep.
+6. Roll out remaining 8 Signatures using the same blueprint shape.
