@@ -355,7 +355,9 @@ function IndexationPanel() {
       </div>
       <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
         Inspeção live da API do Search Console para as páginas-chave.
+        {lastAt ? <> · Atualizado <span className="font-medium">{lastAt}</span></> : null}
       </p>
+
       {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
       <div className="mt-4 space-y-2">
         {rows.length === 0 && !loading ? (
