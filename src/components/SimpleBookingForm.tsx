@@ -52,6 +52,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     // Open the drawer immediately so the user sees a branded skeleton
     // while the edge function is in flight (saves the "blank" feeling).
     const meta = getViatorMeta(tour.id);
+    const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
+    const perPaxForSummary = resolved?.eurPerPax ?? tour.priceFrom;
     setCheckoutSummary({
       tourTitle: tour.title,
       region: tour.region,
@@ -60,7 +62,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       dateExact: details.tourDate || null,
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
-      pricePerPaxEur: tour.priceFrom,
+      pricePerPaxEur: perPaxForSummary,
+      totalEur: Math.round(perPaxForSummary * details.guests),
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: (tour.highlights ?? []).slice(0, 4),
       flowLabel: "Signature",
