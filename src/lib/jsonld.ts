@@ -438,3 +438,48 @@ export function jsonLdScript(node: unknown) {
   };
 }
 
+/**
+ * hreflang link entries for English-language landing pages that target
+ * the US and Canada markets. Page content is identical for both
+ * locales, so en-US, en-CA and x-default all point at the same URL —
+ * Google's recommended pattern when one English page serves multiple
+ * English-speaking regions.
+ */
+export function hreflangUsCaLinks(path: string) {
+  const url = `${SITE_URL}${path}`;
+  return [
+    { rel: "alternate", hrefLang: "en", href: url },
+    { rel: "alternate", hrefLang: "en-US", href: url },
+    { rel: "alternate", hrefLang: "en-CA", href: url },
+    { rel: "alternate", hrefLang: "x-default", href: url },
+  ] as const;
+}
+
+/**
+ * Per-page Organization node that reinforces US/Canada targeting on a
+ * landing page. Reuses the sitewide Organization @id so linked-data
+ * consumers merge it with the canonical entity rather than creating a
+ * duplicate brand. Adds `areaServed`, `audience` and `knowsLanguage`
+ * scoped to North-American English travellers.
+ */
+export function organizationUsCaAudienceLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["TravelAgency", "LocalBusiness"],
+    "@id": `${SITE_URL}/#organization`,
+    knowsLanguage: ["en", "en-US", "en-CA"],
+    areaServed: [
+      { "@type": "Country", name: "United States" },
+      { "@type": "Country", name: "Canada" },
+    ],
+    audience: {
+      "@type": "Audience",
+      audienceType: "International travellers from the United States and Canada",
+      geographicArea: [
+        { "@type": "Country", name: "United States" },
+        { "@type": "Country", name: "Canada" },
+      ],
+    },
+  } as const;
+}
+

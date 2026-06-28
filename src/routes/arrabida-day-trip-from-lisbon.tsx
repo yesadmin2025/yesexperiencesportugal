@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, SITE_URL } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
 
 const PAGE_PATH = "/arrabida-day-trip-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
@@ -74,10 +74,15 @@ export const Route = createFileRoute("/arrabida-day-trip-from-lisbon")({
       { property: "og:url", content: PAGE_URL },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [{ rel: "canonical", href: PAGE_URL }],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+      ...hreflangUsCaLinks(PAGE_PATH),
+    ],
     scripts: [
       jsonLdScript(productLd),
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
