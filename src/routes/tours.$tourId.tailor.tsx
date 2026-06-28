@@ -591,9 +591,9 @@ function TailorPage() {
                                   <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
                                     {o.label}
                                   </span>
-                                  {o.note && (
+                                  {o.blurb && (
                                     <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
-                                      {o.note}
+                                      {o.blurb}
                                     </span>
                                   )}
                                 </span>
@@ -645,9 +645,9 @@ function TailorPage() {
                                   <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
                                     {o.label}
                                   </span>
-                                  {o.note && (
+                                  {o.blurb && (
                                     <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
-                                      {o.note}
+                                      {o.blurb}
                                     </span>
                                   )}
                                 </span>
