@@ -142,8 +142,9 @@ function Pill({ label, done }: { label: string; done: boolean }) {
   );
 }
 
-
+function SeoMonitorPage() {
   const [checks, setChecks] = useState<Record<string, CheckState>>(() =>
+
     Object.fromEntries(CHECKS.map((c) => [c.url, { url: c.url, checking: true }])),
   );
   const [runAt, setRunAt] = useState<string>("");
