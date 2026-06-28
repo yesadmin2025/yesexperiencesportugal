@@ -70,6 +70,8 @@ export const Route = createFileRoute("/tours/$tourId")({
             rating: getViatorMeta(params.tourId)?.rating ?? null,
             reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
             region: (t as { region?: string }).region ?? null,
+            durationHours: (t as { durationHours?: string }).durationHours ?? null,
+            stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
           }),
         ),
       ],
