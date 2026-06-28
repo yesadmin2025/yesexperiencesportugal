@@ -36,6 +36,18 @@ export const Route = createFileRoute("/experiences")({
           { name: "Signature Experiences", path: "/experiences" },
         ]),
       ),
+      jsonLdScript(
+        itemListLd({
+          name: "Signature Experiences",
+          path: "/experiences",
+          items: signatureTours.map((t) => ({
+            id: t.id,
+            name: t.title,
+            description: t.blurb,
+            image: t.img,
+          })),
+        }),
+      ),
     ],
   }),
 
