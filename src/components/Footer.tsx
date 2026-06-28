@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
-import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
+
 
 interface FooterLink {
   to: string;
