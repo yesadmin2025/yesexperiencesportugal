@@ -9,6 +9,7 @@ import {
   type TourStop,
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
+import { toEditorialChapters } from "@/lib/tailor-chapters";
 import { bookableIncluded, bookableStops, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
@@ -424,9 +425,10 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
  * ════════════════════════════════════════════════════════════ */
 function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const region = tour.seed.region ?? "lisbon";
-  // Prefer editorial chapters (curated, ≤6) over raw tour.stops, so the
-  // map mirrors the itinerary timeline instead of dumping every variant.
-  const editorial = meta?.editorialChapters ?? [];
+  // Mirror the itinerary timeline: project the Tailor blueprint into
+  // editorial chapters and use those for the numbered list + dots.
+  // Falls back to raw tour.stops when the tour has no blueprint.
+  const editorial = toEditorialChapters(tour.id) ?? [];
   const source: { label: string; raw: TourStop }[] =
     editorial.length > 0
       ? editorial.map((c) => {
