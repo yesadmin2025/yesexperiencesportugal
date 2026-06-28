@@ -94,9 +94,11 @@ function SeoMonitorPage() {
           Estado dos ficheiros de indexação e atalhos para o Google Search Console.
         </p>
 
+        <GlobalRefresh probeRun={runAll} probeAt={runAt} />
+
         <div className="mt-8 flex items-center justify-between">
           <p className="text-xs text-[color:var(--charcoal-soft)]">
-            Última verificação: <span className="font-medium">{runAt || "—"}</span>
+            Ficheiros: <span className="font-medium">{runAt || "—"}</span>
           </p>
           <button
             onClick={runAll}
