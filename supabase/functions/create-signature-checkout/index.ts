@@ -207,6 +207,12 @@ Deno.serve(async (req) => {
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
         ui_mode: uiMode,
+        ...(body.guestDetails?.bokunAvailabilityId
+          ? { bokun_availability_id: String(body.guestDetails.bokunAvailabilityId) }
+          : {}),
+        ...(body.guestDetails?.startTime
+          ? { start_time: String(body.guestDetails.startTime).slice(0, 16) }
+          : {}),
       },
     };
 
