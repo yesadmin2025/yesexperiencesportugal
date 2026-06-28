@@ -21,6 +21,8 @@ import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
+import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
+import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 
 
 /* ════════════════════════════════════════════════════════════════
