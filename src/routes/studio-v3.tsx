@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
+import { breadcrumbLd, studioServiceLd, jsonLdScript } from "@/lib/jsonld";
 
 /**
  * /studio-v3 — Cinematic Journey Composer (prototype).
