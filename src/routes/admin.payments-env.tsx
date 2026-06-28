@@ -131,6 +131,8 @@ function PaymentsEnvPage() {
               <p className="text-xs text-red-600 mt-3">{data.stripePing.error}</p>
             )}
           </section>
+
+          <WebhookSignatureTest />
         </>
       ) : null}
 
