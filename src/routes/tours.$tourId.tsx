@@ -9,6 +9,7 @@ import {
   type TourStop,
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
+import { toEditorialChapters } from "@/lib/tailor-chapters";
 import { bookableIncluded, bookableStops, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
@@ -350,15 +351,15 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   // Source of truth (in order of preference):
-  //   1. Curated editorial chapters (truthful, 4–6 entries, marks optionals)
-  //   2. Raw Viator stops (passBy excluded) — fallback when no editorial set
+  //   1. Tailor blueprint, projected to editorial chapters (single source)
+  //   2. Raw Viator stops (passBy excluded) — fallback when no blueprint
   //   3. Internal tour.stops — last resort
   type Chapter = { label: string; story?: string; optional?: boolean };
-  const editorial = meta?.editorialChapters ?? [];
+  const fromBlueprint = toEditorialChapters(tour.id);
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
   const chapters: Chapter[] =
-    editorial.length > 0
-      ? editorial.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
+    fromBlueprint && fromBlueprint.length > 0
+      ? fromBlueprint.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
       : viator.length > 0
         ? viator.map((s) => ({ label: s.name, story: s.desc }))
         : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
@@ -424,9 +425,10 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
  * ════════════════════════════════════════════════════════════ */
 function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const region = tour.seed.region ?? "lisbon";
-  // Prefer editorial chapters (curated, ≤6) over raw tour.stops, so the
-  // map mirrors the itinerary timeline instead of dumping every variant.
-  const editorial = meta?.editorialChapters ?? [];
+  // Mirror the itinerary timeline: project the Tailor blueprint into
+  // editorial chapters and use those for the numbered list + dots.
+  // Falls back to raw tour.stops when the tour has no blueprint.
+  const editorial = toEditorialChapters(tour.id) ?? [];
   const source: { label: string; raw: TourStop }[] =
     editorial.length > 0
       ? editorial.map((c) => {

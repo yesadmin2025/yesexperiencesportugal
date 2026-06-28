@@ -1,68 +1,91 @@
-# Tailor + Builder truthfulness pass
+## Goal
 
-Three problems to fix together, all driven by the same root cause: nothing today encodes what each tour **really** includes, what is **optional under availability**, and how much **time** each stop actually takes.
+One source of truth per Signature — `**TailorBlueprints` (Core / Choice / Optional)** — consumed by:
 
-## 1. Tailor: what's *included* vs *optional* (per Signature)
+1. Tour detail page (itinerary timeline + route map)
+2. Tailor flow (already consumes it; complete coverage)
+3. Builder (optionals from blueprint surface as "Optional add-ons" inside that signature's region)
 
-Currently the Tailor screen shows everything as "included" or "add-on" with no relation to the Viator/Bókun reality. Example — Wine & Heritage: Viator says **"visit to 2–3 wineries (subject to availability)"** at a fixed price; we list 5 as included. Cristo Rei and Castelo de Sesimbra are also **optional viewpoints**, not core stops.
+No more parallel `editorialChapters` array to drift out of sync.
 
-Fix: add a per-tour `tailorBlueprint` in `src/data/signatureTours*.ts` with three buckets per Signature:
-- **Core (always included)** — what the anchor price actually buys. Wine tour core = lunch + 2 wineries.
-- **Choice pool (pick N, subject to availability)** — e.g. "Choose 1 additional winery from: Bacalhôa · José Maria da Fonseca · Venâncio Costa Lima · Casa Ermelinda Freitas". Price stays flat; availability is checked at booking.
-- **Optional viewpoints / add-ons (time-priced)** — Cristo Rei, Castelo de Sesimbra, Cabo Espichel, sunset extension. Each carries a real time cost and (where it exists) a real upcharge.
-
-Tailor UI (`/tours/$tourId/tailor`) becomes 3 sections instead of one flat list, with a live **"Day timing"** strip at the top.
-
-## 2. Time-feasibility rules (Tailor *and* Builder)
-
-Put one shared rule engine in `src/lib/feasibility.ts`:
+## Architecture
 
 ```text
-- Dwell minimums (cannot be shorter):
-    winery visit + tasting: 90 min
-    lunch (sit-down):       75 min
-    boat trip:             150 min   (≥120 even shortest variant)
-    monastery / palace:     60 min
-    viewpoint / chapel:     20 min
-    beach / picnic:         90 min
-- Drive: real OSRM minutes between consecutive stops + 10 min buffer
-- Day envelope: 09:00 → 19:00 = 600 min total
-- Hard caps: max driving 180 min/day, max experience 480 min/day
-- Boat rule: if any boat stop is chosen → max 3 other stops, no second
-  "long" stop (winery/lunch counted long; viewpoint short)
-- Wine rule: max 3 wineries/day (Viator constraint), lunch mandatory between
-- Sintra rule: max 2 monument interiors/day (queues)
+TailorBlueprint (src/data/tailorBlueprints.ts)
+  ├── core[]      → always included, anchor price
+  ├── choice{}    → pick N from pool (e.g. "2 of 5 wineries")
+  └── optional[]  → time-permitting / opt-in, may have upcharge
+        │
+        ├──→ tour page (ItineraryTimeline + RouteMap)
+        │       via toEditorialChapters(blueprint)
+        │       Core stops in order, then "Choose N…" grouped chapter,
+        │       then each Optional flagged optional:true.
+        │
+        ├──→ Tailor page (already wired)
+        │
+        └──→ Builder (StudioV3)
+                via getSignatureOptionalAddOns(tourId)
+                Optionals appear in the "Add to your day" pool when
+                the user picks a region that maps to a Signature.
 ```
 
-Both Tailor and Builder call `evaluateDay(stops[])` → returns `{ feasible, totalMin, drivingMin, warnings[], suggestions[] }`. UI shows warnings inline ("Adding the boat means you'd need to drop one winery") instead of silently overpacking.
+Existing `editorialChapters` field on `arrabida-wine-allinclusive` becomes redundant once derived — I'll remove it after migration so there's only one place to edit.
 
-The Builder composer in `src/lib/studio-v2/itinerary.server.ts` already has `DEFAULT_CAPS`; extend it with per-tag dwell minimums and the boat/wine rules above so it stops proposing 3-hour boats alongside 4 other stops.
+## Truth-pass rules
 
-## 3. Email domain switch
+- Only use stops that already appear in `signatureToursViator.ts` for that tour (or the matching tour.stops). **No invented partners or locations.**
+- When uncertain whether a stop is core vs optional, default to **core**. Only mark "Optional" when the Viator page explicitly says "depending on", "optional", or it's clearly an add-on (e.g. boat extension on a wine day).
+- When the Viator stops list contains 4+ wineries / viewpoints, that's the "Choice" pattern (pick 2–3 of N).
+- Blurbs ≤ 180 chars, factual not marketing.
 
-Replace every literal `@yesexperiences.pt` with `@yesexperiencesportugal.com` in copy, footer, Stripe receipts, edge-function senders, JSON-LD, and `notify.` templates. The MX on the `.pt` domain stays alive for legacy inbox forwarding (separate concern), but no outbound surface references `.pt` anymore.
+## Tour-by-tour classification (draft, mobile-readable)
 
-## Files touched
 
-- `src/data/signatureTours*.ts` — add `tailorBlueprint` per tour (core / choice / optional)
-- `src/data/stopOperational.ts` — fill dwell minutes for every stop key
-- `src/lib/feasibility.ts` *(new)* — shared rule engine
-- `src/components/tailor/*` — 3-section Tailor UI + live day-timing strip
-- `src/lib/studio-v2/itinerary.server.ts` — wire feasibility rules into composer (boat/wine caps, dwell minimums)
-- Search/replace `yesexperiences.pt` → `yesexperiencesportugal.com` in copy + edge fns
-- E2E: extend `e2e/bokun-checkout-coverage.spec.ts` with a "Tailor truthfulness" assertion (no tour shows >3 wineries as "included")
+| Tour                       | Core                                               | Choice          | Optional                       |
+| -------------------------- | -------------------------------------------------- | --------------- | ------------------------------ |
+| arrabida-wine-allinclusive | market, park, tiles, lunch                         | 2 of 5 wineries | Cristo Rei, Sesimbra Castle    |
+| wild-beaches-picnic        | market, drive, cove, picnic, village               | —               | Sesimbra Castle, Cabo Espichel |
+| arrabida-boat              | boat trip, swim stop, Sesimbra                     | —               | beach extension, lunch         |
+| tiles-workshop             | tile factory + workshop, Azeitão village, lunch    | —               | winery, market                 |
+| azeitao-cheese             | cheese producer, market, lunch, winery             | —               | tile factory, Arrábida drive   |
+| sintra-cascais             | Pena/Regaleira, Sintra vila, Cabo da Roca, Cascais | 1 of 2 palaces  | second palace, Boca do Inferno |
+| troia-comporta             | ferry, Comporta beach, lunch, rice fields          | —               | dolphin watch, Carrasqueira    |
+| evora-alentejo             | Évora old town, Chapel of Bones, lunch, winery     | —               | megaliths, cork farm           |
+| tomar-coimbra              | Convent of Christ, Tomar, Coimbra Univ, lunch      | —               | Conímbriga, Aqueduto           |
+| fatima-nazare-obidos       | Fátima, Nazaré, Óbidos, lunch                      | —               | Batalha monastery, Alcobaça    |
+| roman-heritage-alentejo    | Évora, Roman temple, lunch, Roman villa            | —               | aqueduct, megaliths            |
 
-## Out of scope (this pass)
 
-- Stripe / Bókun integration changes
-- Studio V3 visual changes
-- Real-time availability calls during Tailor (we mark "subject to availability" in copy; actual lock happens at checkout via existing `bokun-availability`)
+I will only commit the classifications I can confirm against each tour's existing `stops` array — if a row above doesn't match the actual Viator data, I'll downscope (smaller Core, no Choice) rather than invent.
 
-## Order of work
+## Files
 
-1. Author `tailorBlueprint` for the 3 most-booked Signatures first (Wine & Heritage, Sintra Royal, Arrábida Coastal) — verify against the live Viator pages.
-2. Build `feasibility.ts` + unit tests.
-3. Refactor Tailor UI to 3 sections + day-timing strip.
-4. Wire feasibility into Builder composer.
-5. Email domain sweep.
-6. Roll out remaining 8 Signatures using the same blueprint shape.
+1. `src/data/tailorBlueprints.ts` — add 9 missing blueprints (2 already exist). ~400 lines of curated data.
+2. `src/lib/tailor-chapters.ts` *(new)* — `toEditorialChapters(blueprint)` derivation + `getSignatureOptionalAddOns(tourId)` for builder.
+3. `src/data/signatureToursViator.ts` — remove the now-redundant `editorialChapters` field + type (or keep type but mark deprecated). Single source = blueprint.
+4. `src/routes/tours.$tourId.tsx` — `ItineraryTimeline` + `RouteMap` consume `toEditorialChapters(getTailorBlueprint(tourId))` first, fall back to raw Viator stops only when no blueprint exists.
+5. `src/data/signatureTours.ts` — tighten the `blurb`, `intro`, `pace` for each tour to match its blueprint Core (no inventions; remove marketing flourishes that contradict the truthful list).
+6. **Builder integration** — locate the Studio V3 add-on pool. If it already pulls from `regionStopPool`/`signatureAddOns`, layer the signature optionals on top when a tour is selected. Otherwise expose them as a new "Signature optionals" group inside the add-ons panel.
+
+## Validation
+
+- `tsgo` typecheck after each batch.
+- Playwright (mobile viewport 393×800): visit `/tours/<id>` for 3 sample tours (arrabida-wine, sintra-cascais, evora-alentejo) — verify chapter count drops to 4–7, "Optional" pill renders, map markers match.
+- Visit `/tours/<id>/tailor` for the same 3 — verify Core / Choice / Optional sections render and feasibility status updates when toggling optionals.
+- Builder: open Studio V3, pick Setúbal/Arrábida region — verify Sesimbra Castle + Cristo Rei appear as Optional add-ons.
+
+## Out of scope
+
+- No Stripe / Bókun / pricing changes.
+- No copy rewrites beyond truth-pass on blurb/intro/pace.
+- No new images, no layout changes beyond the "Optional" pill already shipped.
+
+## Risk / open question
+
+The Builder's current add-on logic is region-based, not signature-based. Surfacing **per-signature** optionals there might require a small refactor of the add-on panel. If that touches more than ~50 lines or breaks Studio philosophy (configurator vibe), I'll stop and propose a narrower wiring (e.g. only show signature optionals when the user has clearly anchored on one signature) before shipping.
+
+Confirm and I'll execute.
+
+&nbsp;
+
+O builder pode utilizar paragens da região desde que o timing faça sentido e exista truth 

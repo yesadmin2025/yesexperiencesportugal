@@ -26,6 +26,7 @@ import {
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
@@ -902,6 +903,64 @@ export function SignaturePriceCard({
             </ol>
           </section>
         ) : null}
+
+        {/* Blueprint truth — Optionals from the Tailor blueprint, surfaced
+            here read-only so the builder traveller sees what's *truthfully*
+            optional on this Signature. No invented prices, no toggles —
+            the day is already complete; these are "if the rhythm allows"
+            additions a host confirms after booking. Single source of truth:
+            src/data/tailorBlueprints.ts via getSignatureOptionalAddOns(). */}
+        {hasPrice && tour ? (() => {
+          const optionals = getSignatureOptionalAddOns(tour.id);
+          if (!optionals || optionals.length === 0) return null;
+          return (
+            <section
+              data-testid="studio-v3-blueprint-optionals"
+              className="mt-3 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
+              style={{
+                background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+                border: "1px dashed color-mix(in oklab, var(--gold) 32%, transparent)",
+              }}
+              aria-label="Optional stops on this Signature"
+            >
+              <p
+                className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span>
+                Optional, if the day allows
+              </p>
+              <ul className="mt-2 flex flex-col gap-1.5">
+                {optionals.slice(0, 3).map((o) => (
+                  <li
+                    key={`bp-opt-${o.id}`}
+                    className="flex items-start gap-2 text-[12px] leading-snug"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-[6px] inline-block h-[5px] w-[5px] shrink-0 rounded-full"
+                      style={{ background: "var(--gold)" }}
+                    />
+                    <span>
+                      <span className="font-medium">{o.label}</span>
+                      {o.blurb ? (
+                        <span
+                          className="block text-[11px] mt-0.5"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                        >
+                          {o.blurb}
+                        </span>
+                      ) : null}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })() : null}
+
+
 
 
         {/* S4 — Inclusions footnote: what's actually in the day. Real data
