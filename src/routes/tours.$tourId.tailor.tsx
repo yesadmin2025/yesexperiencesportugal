@@ -15,6 +15,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getStripeEnvironment } from "@/lib/stripe";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   BrandedCheckoutDrawer,
@@ -233,7 +234,7 @@ function TailorPage() {
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
           priceFromEur: estimatedPrice,
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: "sandbox",
+          environment: getStripeEnvironment(),
           tailored: true,
           flow: "tailor",
           uiMode: "embedded",

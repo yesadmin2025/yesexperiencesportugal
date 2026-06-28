@@ -12,7 +12,7 @@ import {
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
 
-import { getViatorMeta } from "@/data/signatureToursViator";
+import { getStripeEnvironment } from "@/lib/stripe";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
@@ -71,7 +71,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           journeyTitle: tour.title.split("—")[0].trim(),
           priceFromEur: tour.priceFrom,
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: "sandbox",
+          environment: getStripeEnvironment(),
           tailored: false,
           flow: "signature",
           uiMode: "embedded",
