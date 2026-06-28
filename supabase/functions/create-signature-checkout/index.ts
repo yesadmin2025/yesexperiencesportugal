@@ -3,6 +3,7 @@
 // source the admin editor writes to). The client cannot influence price.
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { getActivity } from "../_shared/bokun.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
