@@ -78,6 +78,12 @@ export type ViatorMeta = {
   overview: string | null;
   included: string[];
   /**
+   * OPTIONAL — curated truthful itinerary chapters used on the tour
+   * detail page. When present, replaces the raw `stops` list in the
+   * itinerary timeline UI. Keep to 4–6 entries.
+   */
+  editorialChapters?: EditorialChapter[];
+  /**
    * OPTIONAL — real per-pax EUR price by group size, scraped from the
    * Viator product page. Populate per tour as data is verified. When
    * absent, the UI shows the `priceFrom` (8+) anchor with a clear "from"
