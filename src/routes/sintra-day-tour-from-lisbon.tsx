@@ -4,6 +4,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
 const PAGE_PATH = "/sintra-day-tour-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
@@ -81,7 +83,7 @@ export const Route = createFileRoute("/sintra-day-tour-from-lisbon")({
       ...hreflangUsCaLinks(PAGE_PATH),
     ],
     scripts: [
-      jsonLdScript(productLd),
+      jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
@@ -228,6 +230,7 @@ function Page() {
             </aside>
           </div>
         </section>
+        <LandingTourCredibility parentTourId={PARENT_TOUR_ID} />
       </article>
     </SiteLayout>
   );
