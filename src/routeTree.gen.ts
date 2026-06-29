@@ -54,6 +54,7 @@ import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
+import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
@@ -71,7 +72,6 @@ import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -305,6 +305,11 @@ const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
   path: '/admin/seo-monitor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/admin/reviews',
+  path: '/admin/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
   id: '/admin/redirects-monitor',
   path: '/admin/redirects-monitor',
@@ -391,12 +396,6 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminReviewsRoute =
-  AuthenticatedAdminReviewsRouteImport.update({
-    id: '/_authenticated/admin/reviews',
-    path: '/admin/reviews',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -473,6 +472,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -491,7 +491,6 @@ export interface FileRoutesByFullPath {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
-  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
@@ -544,6 +543,7 @@ export interface FileRoutesByTo {
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -562,7 +562,6 @@ export interface FileRoutesByTo {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
-  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
@@ -616,6 +615,7 @@ export interface FileRoutesById {
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -634,7 +634,6 @@ export interface FileRoutesById {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
-  '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
@@ -689,6 +688,7 @@ export interface FileRouteTypes {
     | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
+    | '/admin/reviews'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -707,7 +707,6 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
-    | '/admin/reviews'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
@@ -760,6 +759,7 @@ export interface FileRouteTypes {
     | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
+    | '/admin/reviews'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -778,7 +778,6 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
-    | '/admin/reviews'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
@@ -831,6 +830,7 @@ export interface FileRouteTypes {
     | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
+    | '/admin/reviews'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -849,7 +849,6 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
-    | '/_authenticated/admin/reviews'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
@@ -903,6 +902,7 @@ export interface RootRouteChildren {
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPricingRoute: typeof AdminPricingRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
@@ -920,7 +920,6 @@ export interface RootRouteChildren {
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
-  AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1247,6 +1246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSeoMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/admin/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/redirects-monitor': {
       id: '/admin/redirects-monitor'
       path: '/admin/redirects-monitor'
@@ -1364,13 +1370,6 @@ declare module '@tanstack/react-router' {
       path: '/lovable/email/suppression'
       fullPath: '/lovable/email/suppression'
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/admin/reviews': {
-      id: '/_authenticated/admin/reviews'
-      path: '/admin/reviews'
-      fullPath: '/admin/reviews'
-      preLoaderRoute: typeof AuthenticatedAdminReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/transactional/send': {
@@ -1496,6 +1495,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPricingRoute: AdminPricingRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
@@ -1513,7 +1513,6 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
-  AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
