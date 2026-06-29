@@ -51,17 +51,20 @@ function articleJsonLd(a: LocalStoryArticle) {
     dateModified: a.datePublished,
     inLanguage: "en",
     author: {
-      "@type": "Organization",
-      name: "YES Experiences Portugal",
-      url: BASE,
+      "@type": "Person",
+      "@id": FOUNDER_ID,
+      name: "Nidia Almeida",
+      url: `${BASE}/about`,
+      sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
     },
     publisher: {
       "@type": "Organization",
+      "@id": `${BASE}/#organization`,
       name: "YES Experiences Portugal",
       url: BASE,
       logo: {
         "@type": "ImageObject",
-        url: `${BASE}/favicon.ico`,
+        url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
       },
     },
   };
