@@ -200,16 +200,28 @@ export const Route = createFileRoute("/local-stories/$slug")({
 function Page() {
   const { slug } = Route.useParams();
   const article = getLocalStoryArticle(slug);
+  const loaderData = Route.useLoaderData();
 
   // Static SEO articles render directly (no DB needed).
   if (article) {
-    return <StaticArticleView article={article} />;
+    return (
+      <StaticArticleView
+        article={article}
+        reviews={loaderData?.reviews ?? []}
+      />
+    );
   }
 
   return <DbPostView slug={slug} />;
 }
 
-function StaticArticleView({ article }: { article: LocalStoryArticle }) {
+function StaticArticleView({
+  article,
+  reviews,
+}: {
+  article: LocalStoryArticle;
+  reviews: LocalStoryReviewInput[];
+}) {
   return (
     <SiteLayout>
       <article>
