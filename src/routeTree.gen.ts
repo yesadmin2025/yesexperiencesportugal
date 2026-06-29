@@ -17,6 +17,7 @@ import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -120,6 +121,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
   id: '/sintra-day-tour-from-lisbon',
   path: '/sintra-day-tour-from-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProposalsRoute = ProposalsRouteImport.update({
@@ -473,6 +479,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
+  '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -547,6 +554,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
+  '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -622,6 +630,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
+  '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -698,6 +707,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-wine-tour-lisbon'
     | '/proposals'
+    | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -772,6 +782,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-wine-tour-lisbon'
     | '/proposals'
+    | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -846,6 +857,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-wine-tour-lisbon'
     | '/proposals'
+    | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -921,6 +933,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
   ProposalsRoute: typeof ProposalsRoute
+  ReviewsRoute: typeof ReviewsRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
@@ -1026,6 +1039,13 @@ declare module '@tanstack/react-router' {
       path: '/sintra-day-tour-from-lisbon'
       fullPath: '/sintra-day-tour-from-lisbon'
       preLoaderRoute: typeof SintraDayTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/proposals': {
@@ -1538,6 +1558,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
   ProposalsRoute: ProposalsRoute,
+  ReviewsRoute: ReviewsRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
