@@ -22,6 +22,7 @@ import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
+import { Route as PressRouteImport } from './routes/press'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
@@ -146,6 +147,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PreviewCheckRoute = PreviewCheckRouteImport.update({
   id: '/preview-check',
   path: '/preview-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MultiDayRoute = MultiDayRouteImport.update({
@@ -475,6 +481,7 @@ export interface FileRoutesByFullPath {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
+  '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
@@ -550,6 +557,7 @@ export interface FileRoutesByTo {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
+  '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
@@ -626,6 +634,7 @@ export interface FileRoutesById {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/multi-day': typeof MultiDayRoute
+  '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
@@ -703,6 +712,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/multi-day'
+    | '/press'
     | '/preview-check'
     | '/privacy'
     | '/private-wine-tour-lisbon'
@@ -778,6 +788,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/multi-day'
+    | '/press'
     | '/preview-check'
     | '/privacy'
     | '/private-wine-tour-lisbon'
@@ -853,6 +864,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/multi-day'
+    | '/press'
     | '/preview-check'
     | '/privacy'
     | '/private-wine-tour-lisbon'
@@ -929,6 +941,7 @@ export interface RootRouteChildren {
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   MultiDayRoute: typeof MultiDayRoute
+  PressRoute: typeof PressRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   PrivacyRoute: typeof PrivacyRoute
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
@@ -1074,6 +1087,13 @@ declare module '@tanstack/react-router' {
       path: '/preview-check'
       fullPath: '/preview-check'
       preLoaderRoute: typeof PreviewCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/multi-day': {
@@ -1554,6 +1574,7 @@ const rootRouteChildren: RootRouteChildren = {
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   MultiDayRoute: MultiDayRoute,
+  PressRoute: PressRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   PrivacyRoute: PrivacyRoute,
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
@@ -1610,13 +1631,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
