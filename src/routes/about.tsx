@@ -71,18 +71,18 @@ function Page() {
             </p>
 
             <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed" itemProp="description">
-              YES Experiences Portugal started from scratch in 2022, built by a Portuguese host who
-              fell for this work and never looked back. The idea was simple and a little stubborn:
-              instead of the tours everyone already runs, create something different — intimate, real,
-              and honestly Portuguese. Days that show the best of the country the way a local would
-              show a close friend, not the way a brochure sells it.
+              YES Experiences Portugal started from scratch in 2022 — concept, brand, website and
+              every itinerary designed solo, with no agency and no team behind the curtain. The idea
+              was simple and a little stubborn: instead of the tours everyone already runs, create
+              something different — intimate, real, and honestly Portuguese. Days that show the best
+              of the country the way a local would show a close friend, not the way a brochure sells it.
             </p>
 
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              Every Signature day, Studio composition and bespoke journey on this site is designed by
-              Nidia and her team of local guides, drivers and partners across Lisbon, Sintra, Arrábida,
-              Sesimbra and the Alentejo. We only run private experiences. We never resell another
-              operator's coach tour as our own.
+              Every Signature day, Studio composition and bespoke journey on this site is designed
+              personally, then delivered together with a small circle of trusted local guides, drivers
+              and partners across Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo. Only private
+              experiences. Never another operator's coach tour resold as ours.
             </p>
 
             <a
@@ -92,7 +92,7 @@ function Page() {
               itemProp="sameAs"
               className="mt-6 inline-flex items-center text-sm uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--gold)]"
             >
-              Nidia on LinkedIn →
+              LinkedIn →
             </a>
           </div>
         </div>
