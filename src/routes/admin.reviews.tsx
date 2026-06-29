@@ -737,3 +737,248 @@ function TokenSection() {
     </section>
   );
 }
+
+// -------------------- Approval Queue --------------------
+
+type QueueRow = ReviewRow & {
+  moderation_status: "pending" | "approved" | "rejected";
+  scraped_at: string | null;
+  language: string | null;
+  external_id: string | null;
+  created_at?: string;
+};
+
+function ApprovalQueueSection() {
+  const listFn = useServerFn(listPendingReviews);
+  const moderateFn = useServerFn(moderateReview);
+  const bulkFn = useServerFn(bulkModerateReviews);
+  const [tab, setTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [tourId, setTourId] = useState<string>("");
+  const [rows, setRows] = useState<QueueRow[]>([]);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  async function refresh() {
+    setLoading(true);
+    try {
+      const out = (await listFn({
+        data: { status: tab, ...(tourId ? { tourId } : {}) },
+      })) as QueueRow[];
+      setRows(out);
+      setSelected(new Set());
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, tourId]);
+
+  function toggle(id: string) {
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setSelected(next);
+  }
+  function toggleAll() {
+    if (selected.size === rows.length) setSelected(new Set());
+    else setSelected(new Set(rows.map((r) => r.id)));
+  }
+
+  async function decide(id: string, decision: "approve" | "reject") {
+    setBusy(true);
+    try {
+      await moderateFn({ data: { id, decision } });
+      await refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function bulk(decision: "approve" | "reject") {
+    if (selected.size === 0) return;
+    if (!confirm(`${decision === "approve" ? "Approve" : "Reject"} ${selected.size} review(s)?`)) return;
+    setBusy(true);
+    try {
+      await bulkFn({ data: { ids: Array.from(selected), decision } });
+      await refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const pendingCount = tab === "pending" ? rows.length : null;
+
+  return (
+    <section className="mt-10 border border-[color:var(--gold)]/40 bg-[color:var(--ivory)] rounded-lg p-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <h2 className="text-xl font-medium">
+            Approval queue
+            {pendingCount !== null && pendingCount > 0 && (
+              <span className="ml-2 inline-flex items-center justify-center text-[11px] font-medium px-2 py-0.5 rounded-full bg-[color:var(--teal)] text-white">
+                {pendingCount}
+              </span>
+            )}
+          </h2>
+          <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
+            Scraped reviews from Viator / Tripadvisor / GetYourGuide. Only approved
+            reviews appear on the public /reviews page and in aggregate counts.
+          </p>
+        </div>
+        <div className="flex gap-1 text-sm">
+          {(["pending", "approved", "rejected"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-3 py-1.5 rounded ${
+                tab === t
+                  ? "bg-[color:var(--charcoal)] text-white"
+                  : "bg-white border border-[color:var(--charcoal)]/15"
+              }`}
+            >
+              {t[0].toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <label className="text-sm">
+          Filter by tour:{" "}
+          <select
+            value={tourId}
+            onChange={(e) => setTourId(e.target.value)}
+            className="border rounded px-2 py-1 text-sm"
+          >
+            <option value="">All</option>
+            {TOUR_IDS.map((t) => (
+              <option key={t}>{t}</option>
+            ))}
+          </select>
+        </label>
+        {rows.length > 0 && (
+          <>
+            <button
+              onClick={toggleAll}
+              className="text-xs underline text-[color:var(--charcoal)]/70"
+            >
+              {selected.size === rows.length ? "Clear" : "Select all"}
+            </button>
+            {tab === "pending" && selected.size > 0 && (
+              <div className="ml-auto flex gap-2">
+                <button
+                  disabled={busy}
+                  onClick={() => bulk("approve")}
+                  className="bg-[color:var(--teal)] text-white text-sm px-3 py-1.5 rounded disabled:opacity-60"
+                >
+                  Approve {selected.size}
+                </button>
+                <button
+                  disabled={busy}
+                  onClick={() => bulk("reject")}
+                  className="bg-white border border-red-700/40 text-red-700 text-sm px-3 py-1.5 rounded disabled:opacity-60"
+                >
+                  Reject {selected.size}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <div className="mt-5">
+        {loading && <p className="text-sm">Loading…</p>}
+        {!loading && rows.length === 0 && (
+          <p className="text-sm text-[color:var(--charcoal)]/60">
+            {tab === "pending"
+              ? "Nothing waiting — the queue is clear."
+              : `No ${tab} reviews.`}
+          </p>
+        )}
+        <ul className="space-y-3 list-none p-0">
+          {rows.map((r) => (
+            <li
+              key={r.id}
+              className="border border-[color:var(--charcoal)]/10 bg-white rounded p-3 text-sm"
+            >
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={selected.has(r.id)}
+                  onChange={() => toggle(r.id)}
+                  className="mt-1"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <strong>{r.tour_id}</strong>
+                    <span className="uppercase text-[11px] tracking-wide text-[color:var(--charcoal)]/60">
+                      {r.source}
+                    </span>
+                    <span className="text-[color:var(--gold)] font-medium">
+                      {r.rating}★
+                    </span>
+                    {r.language && r.language !== "en" && (
+                      <span className="text-[10px] uppercase tracking-wide text-[color:var(--charcoal)]/50">
+                        {r.language}
+                      </span>
+                    )}
+                    {r.source_url && (
+                      <a
+                        href={r.source_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs underline text-[color:var(--teal)]"
+                      >
+                        source
+                      </a>
+                    )}
+                  </div>
+                  {r.title && (
+                    <p className="mt-1 font-medium text-[color:var(--charcoal)]">
+                      {r.title}
+                    </p>
+                  )}
+                  <p className="mt-1 text-[color:var(--charcoal)]/85">{r.body}</p>
+                  <p className="mt-2 text-[11px] text-[color:var(--charcoal)]/55">
+                    {r.reviewer_name ?? "Anonymous"}
+                    {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
+                    {r.scraped_at
+                      ? ` · scraped ${new Date(r.scraped_at).toLocaleDateString()}`
+                      : ""}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  {tab !== "approved" && (
+                    <button
+                      disabled={busy}
+                      onClick={() => decide(r.id, "approve")}
+                      className="bg-[color:var(--teal)] text-white text-xs px-3 py-1.5 rounded disabled:opacity-60"
+                    >
+                      Approve
+                    </button>
+                  )}
+                  {tab !== "rejected" && (
+                    <button
+                      disabled={busy}
+                      onClick={() => decide(r.id, "reject")}
+                      className="bg-white border border-red-700/40 text-red-700 text-xs px-3 py-1.5 rounded disabled:opacity-60"
+                    >
+                      Reject
+                    </button>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
