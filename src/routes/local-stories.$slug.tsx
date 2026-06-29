@@ -9,8 +9,10 @@ import {
   FOUNDER_ID,
   personFounderLd,
   localStoryReviewsLd,
-  type LocalStoryReviewInput,
+  normalizeLocalStoryReviews,
+  type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
+
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import {
