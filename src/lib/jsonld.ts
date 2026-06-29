@@ -127,6 +127,40 @@ export function websiteLd() {
   } as const;
 }
 
+/**
+ * Founder Person node — emitted on /about so Google can attach an
+ * Expertise/Authoritativeness signal to a real human behind the brand.
+ * Re-used as the `author` of editorial Local Stories articles.
+ */
+export const FOUNDER_ID = `${SITE_URL}/about#nidia-almeida`;
+
+export function personFounderLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": FOUNDER_ID,
+    name: "Nidia Almeida",
+    givenName: "Nidia",
+    familyName: "Almeida",
+    jobTitle: "Founder & Lead Experience Designer",
+    description:
+      "Portuguese host and founder of YES Experiences Portugal. Designs private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo since 2022.",
+    nationality: { "@type": "Country", name: "Portugal" },
+    knowsLanguage: ["en", "pt", "es", "fr"],
+    knowsAbout: [
+      "Private day tours in Portugal",
+      "Lisbon, Sintra, Arrábida and Sesimbra travel",
+      "Setúbal Peninsula wineries",
+      "Bespoke multi-day Portugal journeys",
+      "Luxury experiential travel",
+    ],
+    worksFor: { "@id": `${SITE_URL}/#organization` },
+    url: `${SITE_URL}/about`,
+    sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
+  } as const;
+}
+
+
 export interface Crumb {
   name: string;
   path: string; // absolute path beginning with "/"
