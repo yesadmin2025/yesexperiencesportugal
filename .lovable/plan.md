@@ -1,91 +1,86 @@
-## Goal
+# Real review aggregation — Viator + TripAdvisor + GetYourGuide
 
-One source of truth per Signature — `**TailorBlueprints` (Core / Choice / Optional)** — consumed by:
+## Honest note up front
 
-1. Tour detail page (itinerary timeline + route map)
-2. Tailor flow (already consumes it; complete coverage)
-3. Builder (optionals from blueprint surface as "Optional add-ons" inside that signature's region)
+There is no public API for Viator/TripAdvisor/GetYourGuide review feeds. The realistic way to pull *real* per-review text is to scrape the platform's own tour pages with **Firecrawl** (already connected). Limitations to expect:
 
-No more parallel `editorialChapters` array to drift out of sync.
+- ~5–10 visible reviews per platform per tour per scrape (platforms paginate the rest behind JS).
+- Author names are first-name only; country sometimes missing — exactly as shown publicly.
+- A scraped review can go stale if the platform removes it. We store `source_url` + `scraped_at` so you can re-verify.
+- The "700+" claim must come from your manually entered per-platform totals (`tour_external_ratings`) — those are the only authoritative counts.
 
-## Architecture
+Per your answers: **counts mixed first-party + external; AggregateRating uses first-party only; build `/reviews` now.**
 
-```text
-TailorBlueprint (src/data/tailorBlueprints.ts)
-  ├── core[]      → always included, anchor price
-  ├── choice{}    → pick N from pool (e.g. "2 of 5 wineries")
-  └── optional[]  → time-permitting / opt-in, may have upcharge
-        │
-        ├──→ tour page (ItineraryTimeline + RouteMap)
-        │       via toEditorialChapters(blueprint)
-        │       Core stops in order, then "Choose N…" grouped chapter,
-        │       then each Optional flagged optional:true.
-        │
-        ├──→ Tailor page (already wired)
-        │
-        └──→ Builder (StudioV3)
-                via getSignatureOptionalAddOns(tourId)
-                Optionals appear in the "Add to your day" pool when
-                the user picks a region that maps to a Signature.
-```
+## What I'll build
 
-Existing `editorialChapters` field on `arrabida-wine-allinclusive` becomes redundant once derived — I'll remove it after migration so there's only one place to edit.
+### 1. Data — extend existing tables, no breaking changes
 
-## Truth-pass rules
+- `tour_reviews` already has `source`, `body`, `rating`, `reviewer_name`, `reviewer_country`, `source_url`, `verified`, `is_published`, `is_featured`. Add: `scraped_at timestamptz`, `external_id text` (to dedupe across scrapes), `language text default 'en'`. Unique index on `(source, external_id)` where `external_id is not null`.
+- `tour_external_ratings` stays as-is (per-platform counts/averages, manual via `/admin/reviews`).
+- Add `tour_review_scrapes` (id, tour_id, source, source_url, status, fetched_count, error, created_at) for audit.
 
-- Only use stops that already appear in `signatureToursViator.ts` for that tour (or the matching tour.stops). **No invented partners or locations.**
-- When uncertain whether a stop is core vs optional, default to **core**. Only mark "Optional" when the Viator page explicitly says "depending on", "optional", or it's clearly an add-on (e.g. boat extension on a wine day).
-- When the Viator stops list contains 4+ wineries / viewpoints, that's the "Choice" pattern (pick 2–3 of N).
-- Blurbs ≤ 180 chars, factual not marketing.
+### 2. Server fn — `scrapeTourReviews({ tourId, source })`
 
-## Tour-by-tour classification (draft, mobile-readable)
+- Admin-only (`requireSupabaseAuth` + `has_role('admin')`).
+- Reads `signatureTours[tourId].externalUrls.{viator,tripadvisor,getyourguide}` (we already store these).
+- Calls Firecrawl `scrape` with structured JSON extraction (schema = array of `{ author, country?, rating, body, dateText? }`).
+- Normalizes, generates stable `external_id` (hash of `source + author + first 80 chars of body`), upserts into `tour_reviews` with `source_url`, `scraped_at`, `verified=true`, `is_published=false` (admin reviews before publishing).
+- Writes a `tour_review_scrapes` audit row.
 
+### 3. Admin — extend `/admin/reviews`
 
-| Tour                       | Core                                               | Choice          | Optional                       |
-| -------------------------- | -------------------------------------------------- | --------------- | ------------------------------ |
-| arrabida-wine-allinclusive | market, park, tiles, lunch                         | 2 of 5 wineries | Cristo Rei, Sesimbra Castle    |
-| wild-beaches-picnic        | market, drive, cove, picnic, village               | —               | Sesimbra Castle, Cabo Espichel |
-| arrabida-boat              | boat trip, swim stop, Sesimbra                     | —               | beach extension, lunch         |
-| tiles-workshop             | tile factory + workshop, Azeitão village, lunch    | —               | winery, market                 |
-| azeitao-cheese             | cheese producer, market, lunch, winery             | —               | tile factory, Arrábida drive   |
-| sintra-cascais             | Pena/Regaleira, Sintra vila, Cabo da Roca, Cascais | 1 of 2 palaces  | second palace, Boca do Inferno |
-| troia-comporta             | ferry, Comporta beach, lunch, rice fields          | —               | dolphin watch, Carrasqueira    |
-| evora-alentejo             | Évora old town, Chapel of Bones, lunch, winery     | —               | megaliths, cork farm           |
-| tomar-coimbra              | Convent of Christ, Tomar, Coimbra Univ, lunch      | —               | Conímbriga, Aqueduto           |
-| fatima-nazare-obidos       | Fátima, Nazaré, Óbidos, lunch                      | —               | Batalha monastery, Alcobaça    |
-| roman-heritage-alentejo    | Évora, Roman temple, lunch, Roman villa            | —               | aqueduct, megaliths            |
+- Per tour, per platform: "Refresh from Viator/TripAdvisor/GYG" button → calls scrape fn → shows new draft reviews → bulk-publish + feature picker (5–8 per tour).
+- Keeps the existing manual counts/averages section (`tour_external_ratings`) — that's the source for the "700+ across platforms" line.
 
+### 4. Aggregation server fns (public, read-only, RLS-respecting)
 
-I will only commit the classifications I can confirm against each tour's existing `stops` array — if a row above doesn't match the actual Viator data, I'll downscope (smaller Core, no Choice) rather than invent.
+- `getGlobalReviewSummary()` → `{ totalAcrossPlatforms, averageAcrossPlatforms, firstPartyCount, firstPartyAverage }`. Totals/averages are weighted across `tour_external_ratings` + first-party reviews.
+- `getTourReviewSummary(tourId)` → same shape per tour.
+- `getCuratedReviews({ tourId?, limit })` → published, featured-first, mix of sources, capped 5–8.
+- `getAllReviewsGroupedByTour()` → for `/reviews` page.
 
-## Files
+### 5. Frontend wiring (mobile-first, brand-token only)
 
-1. `src/data/tailorBlueprints.ts` — add 9 missing blueprints (2 already exist). ~400 lines of curated data.
-2. `src/lib/tailor-chapters.ts` *(new)* — `toEditorialChapters(blueprint)` derivation + `getSignatureOptionalAddOns(tourId)` for builder.
-3. `src/data/signatureToursViator.ts` — remove the now-redundant `editorialChapters` field + type (or keep type but mark deprecated). Single source = blueprint.
-4. `src/routes/tours.$tourId.tsx` — `ItineraryTimeline` + `RouteMap` consume `toEditorialChapters(getTailorBlueprint(tourId))` first, fall back to raw Viator stops only when no blueprint exists.
-5. `src/data/signatureTours.ts` — tighten the `blurb`, `intro`, `pace` for each tour to match its blueprint Core (no inventions; remove marketing flourishes that contradict the truthful list).
-6. **Builder integration** — locate the Studio V3 add-on pool. If it already pulls from `regionStopPool`/`signatureAddOns`, layer the signature optionals on top when a tour is selected. Otherwise expose them as a new "Signature optionals" group inside the add-ons panel.
+- Homepage `GuestQuotes`: switch to `getGlobalReviewSummary` + `getCuratedReviews({ limit: 6 })`. Keep the existing platform-icons strip with the manual totals.
+- Signature tour pages `<TourReviews>`: per-tour summary + 5–8 reviews, source labels per card.
+- New `/reviews` route: grouped by tour, summary band, breadcrumbs.
 
-## Validation
+### 6. Structured data
 
-- `tsgo` typecheck after each batch.
-- Playwright (mobile viewport 393×800): visit `/tours/<id>` for 3 sample tours (arrabida-wine, sintra-cascais, evora-alentejo) — verify chapter count drops to 4–7, "Optional" pill renders, map markers match.
-- Visit `/tours/<id>/tailor` for the same 3 — verify Core / Choice / Optional sections render and feasibility status updates when toggling optionals.
-- Builder: open Studio V3, pick Setúbal/Arrábida region — verify Sesimbra Castle + Cristo Rei appear as Optional add-ons.
+- AggregateRating JSON-LD on home, tour, and `/reviews`: **first-party reviews only** (your choice). Counts and averages computed from published `tour_reviews` where `is_first_party=true`.
+- Review JSON-LD: only for reviews actually rendered on the page (visible content match).
+- No schema generated from external scraped reviews — they appear as visible "via Viator / via TripAdvisor / via GetYourGuide" cards without `Review` markup, which keeps us compliant with Google's policy and your no-fake-data rule.
 
-## Out of scope
+### 7. Trust copy
 
-- No Stripe / Bókun / pricing changes.
-- No copy rewrites beyond truth-pass on blurb/intro/pace.
-- No new images, no layout changes beyond the "Optional" pill already shipped.
+- Single line above the reviews block: "Based on verified guest reviews across major booking platforms."
+- Per-card source label: "via Viator" / "via TripAdvisor" / "via GetYourGuide" / "via YES guest" (first-party).
 
-## Risk / open question
+## What I will NOT do
 
-The Builder's current add-on logic is region-based, not signature-based. Surfacing **per-signature** optionals there might require a small refactor of the add-on panel. If that touches more than ~50 lines or breaks Studio philosophy (configurator vibe), I'll stop and propose a narrower wiring (e.g. only show signature optionals when the user has clearly anchored on one signature) before shipping.
+- No invented reviews, no invented ratings, no padded counts.
+- No `Review` JSON-LD for scraped platform reviews (would risk schema-mismatch penalties).
+- No hidden content; everything in JSON-LD is on the page.
+- No changes to Stripe/Bókun/Studio/pricing/booking flow.
 
-Confirm and I'll execute.
+## Technical details
+
+- Migration adds 3 columns + 1 audit table + 1 unique index. Public reads stay restricted to `is_published=true`.
+- Scrape fn returns `{ inserted, updated, skipped, errors }` for the admin UI.
+- Firecrawl call uses `formats: [{ type: 'json', schema, prompt }]` with `onlyMainContent: true` and a sensible `waitFor` for JS-rendered review widgets.
+- Aggregation fns are server fns (RLS-respecting) and called from public route loaders via Query (no bearer needed).
+- `/reviews` is a public top-level route, SSR on, with breadcrumb + AggregateRating JSON-LD scoped to first-party.
+
+## Output you'll get
+
+- Per-tour totals (counts + averages) on each signature page.
+- Global totals on homepage + `/reviews`.
+- 5–8 curated cards per tour, with real source attribution.
+- AggregateRating schema, first-party only, matching visible content.
+- Audit trail of every scrape in `tour_review_scrapes`.
+
+Approve to proceed and I'll start with the migration.
 
 &nbsp;
 
-O builder pode utilizar paragens da região desde que o timing faça sentido e exista truth 
+If possible hide a few negative ones
