@@ -46,6 +46,7 @@ export const Route = createFileRoute("/studio-v3")({
             "A cinematic, guided composer that designs and reserves a private Portugal day in minutes — feeling, company, rhythm, then live pricing and instant confirmation across Lisbon, Sintra, Arrábida and Sesimbra.",
         }),
       ),
+      jsonLdScript(faqPageLd(STUDIO_FAQ)),
     ],
   }),
   component: StudioV3Page,
