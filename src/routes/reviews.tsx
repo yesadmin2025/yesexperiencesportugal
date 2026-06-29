@@ -21,7 +21,8 @@ import {
   type TourStats,
 } from "@/lib/reviews.functions";
 import { VIATOR_META } from "@/data/signatureToursViator";
-import { SITE_URL } from "@/lib/site";
+import { findTour } from "@/data/signatureTours";
+import { SITE_URL } from "@/lib/seo";
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -181,7 +182,7 @@ function ReviewsPage() {
                   params={{ tourId: id }}
                   className="serif text-[1.4rem] md:text-[1.7rem] font-medium text-[color:var(--charcoal)] hover:underline underline-offset-4"
                 >
-                  {meta?.title ?? id}
+                  {findTour(id)?.title ?? id}
                 </Link>
                 <div className="text-sm text-[color:var(--charcoal)]/70">
                   {b.stats.average_rating && (
