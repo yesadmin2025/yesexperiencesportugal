@@ -200,7 +200,7 @@ function Page() {
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow flank>Talk to us</Eyebrow>
           <SectionTitle as="h2" size="default">
-            Reach Nidia <SectionTitle.Em>directly</SectionTitle.Em>.
+            Reach the founder <SectionTitle.Em>directly</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
             Email{" "}
