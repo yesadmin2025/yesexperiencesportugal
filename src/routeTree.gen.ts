@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WineToursLisbonRouteImport } from './routes/wine-tours-lisbon'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -37,6 +38,7 @@ import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
 import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
@@ -84,6 +86,11 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 
+const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
+  id: '/wine-tours-lisbon',
+  path: '/wine-tours-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
@@ -223,6 +230,11 @@ const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArrabidaWineTourRoute = ArrabidaWineTourRouteImport.update({
+  id: '/arrabida-wine-tour',
+  path: '/arrabida-wine-tour',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArrabidaDayTripFromLisbonRoute =
@@ -467,6 +479,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
+  '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -495,6 +508,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -543,6 +557,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
+  '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -571,6 +586,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -620,6 +636,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
+  '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -648,6 +665,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -698,6 +716,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
+    | '/arrabida-wine-tour'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -726,6 +745,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/unsubscribe'
+    | '/wine-tours-lisbon'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -774,6 +794,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
+    | '/arrabida-wine-tour'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -802,6 +823,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/unsubscribe'
+    | '/wine-tours-lisbon'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -850,6 +872,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
+    | '/arrabida-wine-tour'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -878,6 +901,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/unsubscribe'
+    | '/wine-tours-lisbon'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -927,6 +951,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AlentejoWineTourFromLisbonRoute: typeof AlentejoWineTourFromLisbonRoute
   ArrabidaDayTripFromLisbonRoute: typeof ArrabidaDayTripFromLisbonRoute
+  ArrabidaWineTourRoute: typeof ArrabidaWineTourRoute
   AuthRoute: typeof AuthRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
@@ -955,6 +980,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  WineToursLisbonRoute: typeof WineToursLisbonRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBokunMappingRoute: typeof AdminBokunMappingRoute
   AdminBookingsRoute: typeof AdminBookingsRoute
@@ -998,6 +1024,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wine-tours-lisbon': {
+      id: '/wine-tours-lisbon'
+      path: '/wine-tours-lisbon'
+      fullPath: '/wine-tours-lisbon'
+      preLoaderRoute: typeof WineToursLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unsubscribe': {
       id: '/unsubscribe'
       path: '/unsubscribe'
@@ -1192,6 +1225,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arrabida-wine-tour': {
+      id: '/arrabida-wine-tour'
+      path: '/arrabida-wine-tour'
+      fullPath: '/arrabida-wine-tour'
+      preLoaderRoute: typeof ArrabidaWineTourRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/arrabida-day-trip-from-lisbon': {
@@ -1560,6 +1600,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AlentejoWineTourFromLisbonRoute: AlentejoWineTourFromLisbonRoute,
   ArrabidaDayTripFromLisbonRoute: ArrabidaDayTripFromLisbonRoute,
+  ArrabidaWineTourRoute: ArrabidaWineTourRoute,
   AuthRoute: AuthRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
@@ -1588,6 +1629,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  WineToursLisbonRoute: WineToursLisbonRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBokunMappingRoute: AdminBokunMappingRoute,
   AdminBookingsRoute: AdminBookingsRoute,
@@ -1631,13 +1673,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
