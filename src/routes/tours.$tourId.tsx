@@ -76,6 +76,7 @@ export const Route = createFileRoute("/tours/$tourId")({
             stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
           }),
         ),
+        jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
       ],
     };
   },
