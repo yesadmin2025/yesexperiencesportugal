@@ -162,6 +162,120 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     signatureSlug: "troia-comporta",
     datePublished: "2026-06-06",
   },
+  {
+    slug: "is-a-wine-tour-from-lisbon-worth-it",
+    title: "Is a Wine Tour from Lisbon Worth It? An Honest Local Answer",
+    metaDescription:
+      "Is a wine tour from Lisbon actually worth it? A local operator's honest answer — when it's brilliant, when it isn't, and how to choose the right day.",
+    h1: "Is a Wine Tour from Lisbon Worth It?",
+    eyebrow: "Lisbon · Wine",
+    standfirst:
+      "The short answer is yes — if you go private, go south, and skip the bus. Here is the longer one.",
+    sections: [
+      {
+        heading: "The short answer",
+        body: "Yes — a wine tour from Lisbon is one of the best days you can have in Portugal, provided you do it well. Within an hour of the city you have three serious wine regions (Setúbal, Palmela, Arrábida) and within two hours, Alentejo opens up. The mistake most travellers make is booking a 40-seat coach with three tastings and a buffet lunch. That is not a wine tour. That is a logistics exercise with wine in it.",
+      },
+      {
+        heading: "When it's absolutely worth it",
+        body: "When the day is private, paced, and built around one or two real wineries rather than five. When the lunch is sit-down, local, and lasts longer than the tastings. When the host is someone who actually knows the winemakers — not a driver reading a script. That is the day people remember a year later. It is also why our Arrábida wine Signature is our most-booked experience: it does exactly this, and nothing more.",
+      },
+      {
+        heading: "When it isn't",
+        body: "If you have one day in Lisbon and have never seen the city, do Lisbon. If you don't drink, a wine-led day will feel long. And if you are travelling on a group coach tour — skip it. The drive south is short but the experience compresses badly at scale. Better to wait for a private day, even if it means doing it on a different trip.",
+      },
+      {
+        heading: "How to choose the right day",
+        body: "Three honest questions: do you want wine, or wine and a view? Do you want one deep visit or a sampler? And do you want lunch to be the centre of the day, or a stop along the way? Arrábida answers the coast-and-view version. Alentejo answers the deep, slow, table-led version. If you are unsure, the Studio lets you build the day around your own answers — pace, stops, lunch, and how much driving you actually want.",
+      },
+    ],
+    ctaLead:
+      "Our Arrábida wine Signature is the day most guests are imagining when they ask this question — private, sit-down lunch, two family wineries, home by early evening.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
+      { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine" },
+    ],
+    datePublished: "2026-06-10",
+  },
+  {
+    slug: "best-wine-regions-near-lisbon",
+    title: "The Best Wine Regions Near Lisbon — A Local's Guide",
+    metaDescription:
+      "Setúbal, Palmela, Arrábida, Alentejo — a local's guide to the best wine regions within reach of Lisbon, what each tastes like, and which suits your day.",
+    h1: "The Best Wine Regions Near Lisbon",
+    eyebrow: "Wine · Regions",
+    standfirst:
+      "Four regions, four very different days. How we choose between them when guests ask.",
+    sections: [
+      {
+        heading: "Setúbal — the closest, the most underrated",
+        body: "Twenty-five minutes south of Lisbon and almost no one outside Portugal knows the name. Setúbal is Moscatel country — fortified, aromatic, the kind of wine you keep thinking about a week later. The estates here are family-run, the tastings are quiet, and the drive in is along the Sado estuary. If you have half a day, this is the answer.",
+      },
+      {
+        heading: "Palmela — reds with character",
+        body: "Castelão is the grape that defines Palmela: dark, structured, a little wild. The cooperative tradition here means some of the best value bottles in Portugal come from this small region. We use Palmela as the second stop on a slower day — usually paired with a long lunch in a village that hasn't changed much in thirty years.",
+      },
+      {
+        heading: "Arrábida — wine with a view",
+        body: "Arrábida isn't only a wine region — it's a natural park dropping into the Atlantic. Vineyards sit between the mountain and the sea, the light is different here, and the lunch options (Sesimbra, Portinho) are some of the best on the coast. If you want one day that combines wine, scenery, and a proper Portuguese lunch by the water, this is it.",
+      },
+      {
+        heading: "Alentejo — the deep one",
+        body: "Ninety minutes east of Lisbon and the landscape changes completely: cork oaks, wheat plains, white villages, and wineries that have been making wine in clay amphorae (talhas) for two thousand years. Alentejo is a longer day — and a better one if you want to slow down properly. Évora makes the perfect base, and the wines (Antão Vaz, Aragonez, Trincadeira) reward the drive.",
+      },
+      {
+        heading: "Which region for which traveller",
+        body: "Short on time and want one beautiful day — Arrábida. Wine-obsessed and prepared to drive — Alentejo. First trip to Portugal and want something genuinely local without the distance — Setúbal and Palmela together. If you can't decide, the Studio lets you mix two regions across a slow day, or stretch it into a two-day private journey south.",
+      },
+    ],
+    ctaLead:
+      "Most guests start with our Arrábida wine Signature — the most-loved private day from Lisbon. If you want to design your own combination, the Studio is built for exactly that.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
+      { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine" },
+    ],
+    datePublished: "2026-06-11",
+  },
+  {
+    slug: "arrabida-vs-alentejo",
+    title: "Arrábida vs Alentejo: Which Wine Region Should You Visit?",
+    metaDescription:
+      "Arrábida or Alentejo from Lisbon? A local's honest comparison — coast and Moscatel vs cork oaks and talhas — to help you pick the right wine day.",
+    h1: "Arrábida vs Alentejo — Which Wine Region Should You Visit?",
+    eyebrow: "Compare · Wine",
+    standfirst:
+      "Both are brilliant. They are also very different days. Here is how we help guests choose.",
+    sections: [
+      {
+        heading: "What Arrábida feels like",
+        body: "Arrábida is short and cinematic. Forty minutes from Lisbon, you are inside a natural park where the mountain falls into the Atlantic. The vineyards sit between the two — Moscatel de Setúbal, Castelão reds, a handful of small family estates. Lunch is by the water in Sesimbra or Portinho. You are home by early evening, slightly sun-tired, with a bottle in the boot.",
+      },
+      {
+        heading: "What Alentejo feels like",
+        body: "Alentejo is slower and quieter. Ninety minutes east of Lisbon the world opens up — cork oaks, wheat fields, white villages, almost no traffic. The wines are bigger, the lunches longer, and the tasting in a talha cellar (clay amphorae buried in the ground, used since Roman times) is something you simply cannot do in Arrábida. Évora itself is a UNESCO town worth two hours of slow walking.",
+      },
+      {
+        heading: "Driving, pace, and how a day actually feels",
+        body: "Arrábida: forty-minute transfer, two stops, long lunch, scenic coast drive home — about 8 hours door to door. Alentejo: ninety-minute transfer each way, fewer stops but deeper ones, slower lunch — closer to 10 hours and the right call only if you want the drive to be part of the day. Neither is better. They are answering different questions.",
+      },
+      {
+        heading: "Our honest recommendation",
+        body: "First trip to Portugal, one wine day, and you want the coast — Arrábida, every time. Second trip, more time, more curious about how Portugal made wine before glass bottles existed — Alentejo. Have two days? Do both, with a quiet night in Évora in between. That is the journey most wine-led guests end up wishing they had booked from the start.",
+      },
+    ],
+    ctaLead:
+      "If Arrábida is calling, the all-inclusive wine Signature is our most-loved version of this day. Want the Alentejo one? The Évora Signature does that, in the same private, slow rhythm.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
+    ],
+    datePublished: "2026-06-12",
+  },
 ];
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> =

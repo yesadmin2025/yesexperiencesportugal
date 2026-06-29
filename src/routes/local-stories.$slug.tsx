@@ -284,6 +284,17 @@ function StaticArticleView({
                 {article.ctaLabel}
               </CtaButton>
 
+              <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+                Or{" "}
+                <Link
+                  to="/studio-v3"
+                  className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+                >
+                  design your own private Portugal day in the Studio
+                </Link>
+                .
+              </p>
+
               {article.relatedSignatures && article.relatedSignatures.length > 0 && (
                 <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                   {article.relatedSignatures.map((r) => (
