@@ -226,8 +226,13 @@ function StaticArticleView({
   reviews,
 }: {
   article: LocalStoryArticle;
-  reviews: LocalStoryReviewInput[];
+  reviews: NormalizedLocalStoryReview[];
 }) {
+  const dateFmt = new Intl.DateTimeFormat("en-GB", {
+    year: "numeric",
+    month: "long",
+  });
+
   return (
     <SiteLayout>
       <article>
