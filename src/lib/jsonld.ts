@@ -101,11 +101,15 @@ export function organizationLd() {
       availableLanguage: ["English", "Portuguese", "Spanish", "French"],
       areaServed: "PT",
     },
+    foundingDate: "2022",
+    founder: { "@id": `${SITE_URL}/about#nidia-almeida` },
+    employee: [{ "@id": `${SITE_URL}/about#nidia-almeida` }],
     sameAs: [
       "https://www.google.com/search?q=Yes+Experiences+Portugal&stick=H4sIAAAAAAAA_-NgU1I1qLAwNkpMtjRKTjIytDA3NDO1MqhISzJNMTVONTFMMTZOSzZLXMQqEZlarOBaUZBalJmalwxkB-QXlZSmJ-YAALUyfiJEAAAA",
       "https://www.instagram.com/yesexperiencesportugal",
       "https://www.facebook.com/yesexperiencesportugal",
       "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+      "https://www.linkedin.com/in/nidiadealmeida",
     ],
   } as const;
 }
@@ -122,6 +126,40 @@ export function websiteLd() {
     inLanguage: "en",
   } as const;
 }
+
+/**
+ * Founder Person node — emitted on /about so Google can attach an
+ * Expertise/Authoritativeness signal to a real human behind the brand.
+ * Re-used as the `author` of editorial Local Stories articles.
+ */
+export const FOUNDER_ID = `${SITE_URL}/about#nidia-almeida`;
+
+export function personFounderLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": FOUNDER_ID,
+    name: "Nidia Almeida",
+    givenName: "Nidia",
+    familyName: "Almeida",
+    jobTitle: "Founder & Lead Experience Designer",
+    description:
+      "Portuguese host and founder of YES Experiences Portugal. Designs private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo since 2022.",
+    nationality: { "@type": "Country", name: "Portugal" },
+    knowsLanguage: ["en", "pt", "es", "fr"],
+    knowsAbout: [
+      "Private day tours in Portugal",
+      "Lisbon, Sintra, Arrábida and Sesimbra travel",
+      "Setúbal Peninsula wineries",
+      "Bespoke multi-day Portugal journeys",
+      "Luxury experiential travel",
+    ],
+    worksFor: { "@id": `${SITE_URL}/#organization` },
+    url: `${SITE_URL}/about`,
+    sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
+  } as const;
+}
+
 
 export interface Crumb {
   name: string;

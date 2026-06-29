@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, FOUNDER_ID, personFounderLd } from "@/lib/jsonld";
 import {
   getLocalStoryArticle,
   type LocalStoryArticle,
@@ -51,17 +51,20 @@ function articleJsonLd(a: LocalStoryArticle) {
     dateModified: a.datePublished,
     inLanguage: "en",
     author: {
-      "@type": "Organization",
-      name: "YES Experiences Portugal",
-      url: BASE,
+      "@type": "Person",
+      "@id": FOUNDER_ID,
+      name: "Nidia Almeida",
+      url: `${BASE}/about`,
+      sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
     },
     publisher: {
       "@type": "Organization",
+      "@id": `${BASE}/#organization`,
       name: "YES Experiences Portugal",
       url: BASE,
       logo: {
         "@type": "ImageObject",
-        url: `${BASE}/favicon.ico`,
+        url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
       },
     },
   };
@@ -103,6 +106,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         links: [{ rel: "canonical", href: url }],
         scripts: [
           jsonLdScript(articleJsonLd(article)),
+          jsonLdScript(personFounderLd()),
           jsonLdScript(
             breadcrumbLd([
               { name: "Home", path: "/" },
