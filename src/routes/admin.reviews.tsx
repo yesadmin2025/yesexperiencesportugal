@@ -22,7 +22,7 @@ import {
   type ReviewSource,
 } from "@/lib/reviewsAdmin.functions";
 
-export const Route = createFileRoute("/_authenticated/admin/reviews")({
+export const Route = createFileRoute("/admin/reviews")({
   component: AdminReviewsPage,
   head: () => ({
     meta: [
