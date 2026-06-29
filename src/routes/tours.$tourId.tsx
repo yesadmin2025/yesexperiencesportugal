@@ -20,6 +20,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, tourProductLd, jsonLdScript } from "@/lib/jsonld";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
+import { TourReviews } from "@/components/TourReviews";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -159,6 +160,9 @@ function TourDetailPage() {
       <BookingBlock tour={tour} />
 
       {/* ── 11 · REVIEWS ───────────────────────────────────────── */}
+      <section className="container-x py-6">
+        <TourReviews tourId={tour.id} />
+      </section>
       <ReviewsBlock meta={meta} />
 
       {/* ── 12 · FINAL CTA ─────────────────────────────────────── */}

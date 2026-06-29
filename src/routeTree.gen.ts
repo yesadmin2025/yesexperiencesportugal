@@ -38,6 +38,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
+import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
@@ -53,6 +54,7 @@ import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
+import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
@@ -223,6 +225,11 @@ const STokenRoute = STokenRouteImport.update({
   path: '/s/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewTokenRoute = ReviewTokenRouteImport.update({
+  id: '/review/$token',
+  path: '/review/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QaMobileRoute = QaMobileRouteImport.update({
   id: '/qa/mobile',
   path: '/qa/mobile',
@@ -296,6 +303,11 @@ const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
 const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
   id: '/admin/seo-monitor',
   path: '/admin/seo-monitor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/admin/reviews',
+  path: '/admin/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
@@ -460,6 +472,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -475,6 +488,7 @@ export interface FileRoutesByFullPath {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -529,6 +543,7 @@ export interface FileRoutesByTo {
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -544,6 +559,7 @@ export interface FileRoutesByTo {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -599,6 +615,7 @@ export interface FileRoutesById {
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -614,6 +631,7 @@ export interface FileRoutesById {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -670,6 +688,7 @@ export interface FileRouteTypes {
     | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
+    | '/admin/reviews'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -685,6 +704,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
     | '/lovable/email/suppression'
@@ -739,6 +759,7 @@ export interface FileRouteTypes {
     | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
+    | '/admin/reviews'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -754,6 +775,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
     | '/lovable/email/suppression'
@@ -808,6 +830,7 @@ export interface FileRouteTypes {
     | '/admin/payments-env'
     | '/admin/pricing'
     | '/admin/redirects-monitor'
+    | '/admin/reviews'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -823,6 +846,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
     | '/lovable/email/suppression'
@@ -878,6 +902,7 @@ export interface RootRouteChildren {
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPricingRoute: typeof AdminPricingRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
@@ -892,6 +917,7 @@ export interface RootRouteChildren {
   ITokenRoute: typeof ITokenRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
+  ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -1108,6 +1134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof STokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review/$token': {
+      id: '/review/$token'
+      path: '/review/$token'
+      fullPath: '/review/$token'
+      preLoaderRoute: typeof ReviewTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qa/mobile': {
       id: '/qa/mobile'
       path: '/qa/mobile'
@@ -1211,6 +1244,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/seo-monitor'
       fullPath: '/admin/seo-monitor'
       preLoaderRoute: typeof AdminSeoMonitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/admin/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/redirects-monitor': {
@@ -1455,6 +1495,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPricingRoute: AdminPricingRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
@@ -1469,6 +1510,7 @@ const rootRouteChildren: RootRouteChildren = {
   ITokenRoute: ITokenRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
+  ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
@@ -1482,13 +1524,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
