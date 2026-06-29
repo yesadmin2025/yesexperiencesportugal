@@ -102,7 +102,7 @@ function Page() {
       <section className="py-16 bg-[color:var(--sand)]">
         <div className="container-x">
           <Eyebrow flank>Credentials &amp; trust</Eyebrow>
-          <SectionTitle as="h2" size="section">
+          <SectionTitle as="h2" size="default">
             Licensed, insured, <SectionTitle.Em>and signed by a real person</SectionTitle.Em>.
           </SectionTitle>
 
@@ -199,7 +199,7 @@ function Page() {
       <section className="py-16 bg-[color:var(--sand)] text-center">
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow flank>Talk to us</Eyebrow>
-          <SectionTitle as="h2" size="section">
+          <SectionTitle as="h2" size="default">
             Reach Nidia <SectionTitle.Em>directly</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
