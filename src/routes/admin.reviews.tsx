@@ -21,6 +21,7 @@ import {
   createReviewToken,
   type ReviewSource,
 } from "@/lib/reviewsAdmin.functions";
+import { scrapeTourReviews, listScrapeRuns } from "@/lib/reviewsScrape.functions";
 
 export const Route = createFileRoute("/admin/reviews")({
   component: AdminReviewsPage,
@@ -89,9 +90,166 @@ function AdminReviewsPage() {
       </p>
 
       <ExternalRatingsSection />
+      <ScrapeSection />
       <ReviewsSection />
       <TokenSection />
     </div>
+  );
+}
+
+// -------------------- Scrape platform reviews --------------------
+
+type ScrapeRun = {
+  id: string;
+  tour_id: string;
+  source: string;
+  source_url: string | null;
+  status: string;
+  fetched_count: number;
+  inserted_count: number;
+  updated_count: number;
+  error: string | null;
+  created_at: string;
+};
+
+function ScrapeSection() {
+  const scrapeFn = useServerFn(scrapeTourReviews);
+  const runsFn = useServerFn(listScrapeRuns);
+  const [tourId, setTourId] = useState(TOUR_IDS[0]);
+  const [source, setSource] = useState<"viator" | "tripadvisor" | "getyourguide">("viator");
+  const [url, setUrl] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [runs, setRuns] = useState<ScrapeRun[]>([]);
+
+  async function refresh() {
+    try {
+      setRuns(((await runsFn({})) as ScrapeRun[]).slice(0, 12));
+    } catch {
+      /* noop */
+    }
+  }
+  useEffect(() => {
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function onScrape(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = (await scrapeFn({
+        data: { tour_id: tourId, source, source_url: url },
+      })) as { fetched: number; inserted: number; updated: number; skipped: number };
+      setMsg(
+        `Fetched ${res.fetched} · inserted ${res.inserted} · updated ${res.updated} · skipped ${res.skipped}. Low-rated reviews are unpublished by default.`,
+      );
+      await refresh();
+    } catch (err) {
+      setMsg(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="mt-12">
+      <h2 className="text-xl font-medium">Scrape platform reviews</h2>
+      <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
+        Paste the public Viator / Tripadvisor / GetYourGuide listing URL. Real review
+        cards are extracted by Firecrawl, deduped per source, and stored verbatim.
+        Ratings &lt; 4 are inserted as <em>unpublished</em>; you choose what to show.
+      </p>
+
+      <form onSubmit={onScrape} className="mt-4 grid gap-2 md:grid-cols-6 items-end">
+        <label className="md:col-span-2 text-sm">
+          Tour
+          <select
+            value={tourId}
+            onChange={(e) => setTourId(e.target.value)}
+            className="mt-1 w-full border rounded px-2 py-1.5 text-sm"
+          >
+            {TOUR_IDS.map((t) => (
+              <option key={t}>{t}</option>
+            ))}
+          </select>
+        </label>
+        <label className="text-sm">
+          Source
+          <select
+            value={source}
+            onChange={(e) => setSource(e.target.value as typeof source)}
+            className="mt-1 w-full border rounded px-2 py-1.5 text-sm"
+          >
+            <option value="viator">Viator</option>
+            <option value="tripadvisor">Tripadvisor</option>
+            <option value="getyourguide">GetYourGuide</option>
+          </select>
+        </label>
+        <label className="md:col-span-2 text-sm">
+          Public listing URL
+          <input
+            required
+            type="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://…"
+            className="mt-1 w-full border rounded px-2 py-1.5 text-sm"
+          />
+        </label>
+        <button
+          disabled={busy}
+          className="bg-[color:var(--teal)] text-white px-3 py-2 rounded text-sm disabled:opacity-60"
+        >
+          {busy ? "Scraping…" : "Scrape now"}
+        </button>
+      </form>
+
+      {msg && (
+        <p className="mt-3 text-sm text-[color:var(--charcoal)]/80">{msg}</p>
+      )}
+
+      {runs.length > 0 && (
+        <div className="mt-5">
+          <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55">
+            Recent runs
+          </div>
+          <ul className="mt-2 divide-y divide-[color:var(--charcoal)]/10 text-sm list-none p-0">
+            {runs.map((r) => (
+              <li key={r.id} className="py-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                <span className="font-medium">{r.tour_id}</span>
+                <span className="uppercase text-[11px] tracking-wide text-[color:var(--charcoal)]/60">
+                  {r.source}
+                </span>
+                <span
+                  className={
+                    r.status === "ok"
+                      ? "text-emerald-700"
+                      : r.status === "error"
+                        ? "text-red-700"
+                        : "text-[color:var(--charcoal)]/60"
+                  }
+                >
+                  {r.status}
+                </span>
+                <span className="text-[color:var(--charcoal)]/70">
+                  fetched {r.fetched_count} · inserted {r.inserted_count}
+                </span>
+                <span className="text-[11px] text-[color:var(--charcoal)]/50">
+                  {new Date(r.created_at).toLocaleString()}
+                </span>
+                {r.error && (
+                  <span className="text-[11px] text-red-700/80 basis-full">
+                    {r.error}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
   );
 }
 
