@@ -775,6 +775,18 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
         date: "Jun 2024",
         text: "We had a wonderful full day in the Alentejo with Ricardo. We enjoyed lovely wine tastings at family wineries, learned about local wine production, and had a super interesting visit to the cork factory. (Buy your cork products there rather than in Lisbon!) He adjusted the itinerary a bit to our interests and helped us to get a taste of the local food, drink, and culture. We would absolutely tour with Ricardo again.",
       },
+      {
+        title: "Above and Beyond!",
+        author: "George_E",
+        date: "Apr 2024",
+        text: "Excellent! Our guide, Ricardo, was great! He is knowledgeable of the area, flexible, and entertaining. We felt this is the only way to go. Have your own guide with just a few people. Ricardo had some great suggestions that made the trip very enjoyable. Thanks!",
+      },
+      {
+        title: "Great wine tour and local landmarks",
+        author: "Gregory_H",
+        date: "Oct 2023",
+        text: "What a great day of wine tasting, scenic area and history. Pedro was an excellent guide. Not only did he take us to some great wineries for tastings. Also took us to the historical center in Evora and took us around to see the sights. The bonus on top was visiting the cork factory to see how cork is taken from the trees and made into amazing things other than wine bottle stoppers. Highly recommend if you like wine and history.",
+      },
     ],
     gallery: [
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2b/cb/8a/caption.jpg",
