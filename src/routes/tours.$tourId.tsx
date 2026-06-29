@@ -20,6 +20,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, tourProductLd, jsonLdScript } from "@/lib/jsonld";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
+import { TourReviews } from "@/components/TourReviews";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
