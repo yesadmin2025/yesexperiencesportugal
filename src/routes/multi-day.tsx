@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { TRAVEL_DESIGNER_FAQ } from "@/content/seo-faq";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Compass, MapPin, Calendar } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -42,6 +43,7 @@ export const Route = createFileRoute("/multi-day")({
           { name: "Travel Designer", path: "/multi-day" },
         ]),
       ),
+      jsonLdScript(faqPageLd(TRAVEL_DESIGNER_FAQ)),
     ],
   }),
   component: MultiDayPage,

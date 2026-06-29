@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
-import { breadcrumbLd, studioServiceLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { STUDIO_FAQ } from "@/content/seo-faq";
 
 /**
  * /studio-v3 — Cinematic Journey Composer (prototype).
@@ -45,6 +46,7 @@ export const Route = createFileRoute("/studio-v3")({
             "A cinematic, guided composer that designs and reserves a private Portugal day in minutes — feeling, company, rhythm, then live pricing and instant confirmation across Lisbon, Sintra, Arrábida and Sesimbra.",
         }),
       ),
+      jsonLdScript(faqPageLd(STUDIO_FAQ)),
     ],
   }),
   component: StudioV3Page,
