@@ -107,6 +107,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
         )}
       </div>
 
+
       {reviews.length > 0 && (
         <ul className="mt-10 grid gap-5 md:grid-cols-2 list-none p-0">
           {reviews.map((r) => (
@@ -129,24 +130,15 @@ export function TourReviews({ tourId }: { tourId: string }) {
               <p className="mt-3 text-[12px] text-[color:var(--charcoal)]/60">
                 {r.reviewer_name ?? "Guest"}
                 {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
-                {r.source_url && !r.is_first_party && (
-                  <>
-                    {" · "}
-                    <a
-                      href={r.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="underline underline-offset-2"
-                    >
-                      Read on {SOURCE_LABEL[r.source]}
-                    </a>
-                  </>
-                )}
               </p>
             </li>
           ))}
         </ul>
       )}
+
+      <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
+        Based on verified guest reviews across major booking platforms.
+      </p>
     </section>
   );
 }

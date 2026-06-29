@@ -1804,18 +1804,60 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_review_scrapes: {
+        Row: {
+          created_at: string
+          error: string | null
+          fetched_count: number
+          id: string
+          inserted_count: number
+          source: string
+          source_url: string | null
+          status: string
+          tour_id: string
+          updated_count: number
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          fetched_count?: number
+          id?: string
+          inserted_count?: number
+          source: string
+          source_url?: string | null
+          status: string
+          tour_id: string
+          updated_count?: number
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          fetched_count?: number
+          id?: string
+          inserted_count?: number
+          source?: string
+          source_url?: string | null
+          status?: string
+          tour_id?: string
+          updated_count?: number
+        }
+        Relationships: []
+      }
       tour_reviews: {
         Row: {
           body: string
           created_at: string
+          external_id: string | null
           id: string
           is_featured: boolean
           is_first_party: boolean
           is_published: boolean
+          language: string
           published_at: string
           rating: number
           reviewer_country: string | null
           reviewer_name: string | null
+          scraped_at: string | null
           source: string
           source_url: string | null
           title: string | null
@@ -1826,14 +1868,17 @@ export type Database = {
         Insert: {
           body: string
           created_at?: string
+          external_id?: string | null
           id?: string
           is_featured?: boolean
           is_first_party?: boolean
           is_published?: boolean
+          language?: string
           published_at?: string
           rating: number
           reviewer_country?: string | null
           reviewer_name?: string | null
+          scraped_at?: string | null
           source: string
           source_url?: string | null
           title?: string | null
@@ -1844,14 +1889,17 @@ export type Database = {
         Update: {
           body?: string
           created_at?: string
+          external_id?: string | null
           id?: string
           is_featured?: boolean
           is_first_party?: boolean
           is_published?: boolean
+          language?: string
           published_at?: string
           rating?: number
           reviewer_country?: string | null
           reviewer_name?: string | null
+          scraped_at?: string | null
           source?: string
           source_url?: string | null
           title?: string | null
