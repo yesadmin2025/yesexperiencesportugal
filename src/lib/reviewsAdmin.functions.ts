@@ -225,7 +225,7 @@ export const moderateReview = createServerFn({ method: "POST" })
       moderation_notes: data.notes ?? null,
     };
     if (approve) patch.published_at = new Date().toISOString();
-    const { data: row, error } = await context.supabase
+    const { data: row, error } = await (context.supabase as any)
       .from("tour_reviews")
       .update(patch)
       .eq("id", data.id)
