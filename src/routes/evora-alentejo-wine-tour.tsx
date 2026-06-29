@@ -5,6 +5,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
 const PAGE_PATH = "/evora-alentejo-wine-tour";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
@@ -81,7 +83,7 @@ export const Route = createFileRoute("/evora-alentejo-wine-tour")({
       ...hreflangUsCaLinks(PAGE_PATH),
     ],
     scripts: [
-      jsonLdScript(productLd),
+      jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
@@ -210,6 +212,7 @@ function EvoraAlentejoLanding() {
             </aside>
           </div>
         </section>
+        <LandingTourCredibility parentTourId={PARENT_TOUR_ID} />
       </article>
     </SiteLayout>
   );

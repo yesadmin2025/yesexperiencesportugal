@@ -19,6 +19,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
@@ -63,19 +64,22 @@ export const Route = createFileRoute("/tours/$tourId")({
           ]),
         ),
         jsonLdScript(
-          tourProductLd({
-            id: params.tourId,
-            title: t.title,
-            blurb: t.blurb,
-            img: t.img,
-            priceFrom: (t as { priceFrom?: number }).priceFrom,
-            currency: "EUR",
-            rating: getViatorMeta(params.tourId)?.rating ?? null,
-            reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
-            region: (t as { region?: string }).region ?? null,
-            durationHours: (t as { durationHours?: string }).durationHours ?? null,
-            stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
-          }),
+          withAggregateAndReviews(
+            tourProductLd({
+              id: params.tourId,
+              title: t.title,
+              blurb: t.blurb,
+              img: t.img,
+              priceFrom: (t as { priceFrom?: number }).priceFrom,
+              currency: "EUR",
+              rating: getViatorMeta(params.tourId)?.rating ?? null,
+              reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
+              region: (t as { region?: string }).region ?? null,
+              durationHours: (t as { durationHours?: string }).durationHours ?? null,
+              stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
+            }),
+            params.tourId,
+          ),
         ),
         jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
       ],

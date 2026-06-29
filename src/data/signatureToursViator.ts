@@ -169,7 +169,38 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
         desc: "Experience awe-inspiring views and spiritual significance at Cristo Rei, a monumental stop for travelers coming from Lisbon. Situated on the opposite bank of the Tagus River, Cristo Rei stands tall as a symbol of faith and unity, reminiscent of the iconic Cristo Redentor in Rio de Janeiro, Brazil. Marvel at the breathtaking panoramic vistas of Lisbon and the river below as you  …",
       },
     ],
-    topReviews: [],
+    topReviews: [
+      {
+        title: "Unforgettable Arrábida wine day",
+        author: "Helga_W",
+        date: "Mar 2025",
+        text: "We were picked up at our hotel and our wonderful adventure began. Unforgettable local market, studio of a tile artisan, 3 lovely wineries, beautiful vistas, delicious Portuguese lunch, and a much broader understanding of Portugal's history. Miguel was attentive and incredibly knowledgeable. I would urge you to take this tour.",
+      },
+      {
+        title: "Good food and wine",
+        author: "Deborah_L",
+        date: "Mar 2025",
+        text: "This tour took us to 3 wineries and they all were very impressive. To visit the local market was a wonderful experience too where we bought some really fresh local produce and ate fresh oysters. Lunch was also included in a local restaurant — the charcoal grilled fish and pork were delicious. João was very friendly and full of positive energy.",
+      },
+      {
+        title: "A fantastic time while in Lisbon",
+        author: "Steve_R",
+        date: "Nov 2024",
+        text: "Had a fantastic time our last day in Lisbon. Our tour included a visit to a local market where we saw many species of seafood unheard in the US, a visit to three wineries where we sampled delicious regional wines and a fabulous lunch tasting the local cuisine. Bernardo was very knowledgeable. We would highly recommend this excursion.",
+      },
+      {
+        title: "Lovely outing outside of Lisbon",
+        author: "William_L",
+        date: "Nov 2024",
+        text: "We had a wonderful day with our guide Nuno. He was a genuinely kind, caring man and made sure we were comfortable at all times. Wine tastings were plentiful as were the presentations at the 3 wineries we attended. An excellent lunch was provided. We thank you for a great day.",
+      },
+      {
+        title: "Simply the best tour!",
+        author: "Diane_G",
+        date: "Oct 2024",
+        text: "This was the best tour on our trip! Our guide, João, was wonderful. The private tour had the right balance of vineyards to visit along with a trip to a small family owned tile facility, and a visit to the fish market. The luncheon provided was exceptional.",
+      },
+    ],
     gallery: [
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/db/dd/b6.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/89.jpg",

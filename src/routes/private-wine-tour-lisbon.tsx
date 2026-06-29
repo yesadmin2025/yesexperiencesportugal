@@ -4,6 +4,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 
 const PAGE_PATH = "/private-wine-tour-lisbon";
@@ -82,7 +84,7 @@ export const Route = createFileRoute("/private-wine-tour-lisbon")({
       ...hreflangUsCaLinks(PAGE_PATH),
     ],
     scripts: [
-      jsonLdScript(productLd),
+      jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
@@ -237,6 +239,7 @@ function Page() {
         </section>
 
         <RecognisedByGuides placement="wine-landing" />
+        <LandingTourCredibility parentTourId={PARENT_TOUR_ID} />
       </article>
     </SiteLayout>
   );
