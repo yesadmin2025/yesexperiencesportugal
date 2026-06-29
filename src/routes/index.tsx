@@ -268,8 +268,8 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-/* ════════════════════════════════════════════════════════════════
- * HOMEPAGE — 8 sections (structural pass: dedup + reorder)
+ /* ════════════════════════════════════════════════════════════════
+ * HOMEPAGE — 9 sections (structural pass: dedup + reorder)
  * 1. Hero
  * 2. Social proof — trust strip
  * 3. Why YES — editorial manifesto (5 blocks)
@@ -277,7 +277,8 @@ export const Route = createFileRoute("/")({
  * 5. Real Signature Experiences preview
  * 6. Proposals / Celebrations / Corporate / Multi-Day (combined band)
  * 7. FAQ
- * 8. Final CTA — Talk to a local
+ * 8. Recognised by travel guides — editorial trust strip (after content)
+ * 9. Final CTA — Talk to a local
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
   const scrollDebug = useScrollDebugFlags();
@@ -1018,7 +1019,12 @@ function HomePage() {
 
 
 
-        {/* 8 — FINAL CTA — Talk to a local
+        {/* 8 — Recognised by travel guides — editorial trust strip.
+          Real third-party mentions only. Moved after the content sections
+          so the hero-to-CTA flow stays clean and conversion-focused. */}
+        <RecognisedByGuides placement="homepage" />
+
+        {/* 9 — FINAL CTA — Talk to a local
           Distinct from the hero CTAs (Explore Signatures / Build) — this
           is the human escape hatch. No duplicate CTA band; one purpose,
           one button. */}
@@ -1122,11 +1128,6 @@ function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* 9 — Recognised by travel guides — editorial trust strip.
-          Real third-party mentions only. Moved to the end of the page
-          so the hero-to-CTA flow stays clean and conversion-focused. */}
-        <RecognisedByGuides placement="homepage" />
 
       </div>
       <ExitIntentEmailCapture />
