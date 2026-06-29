@@ -36,10 +36,10 @@ export const submitFirstPartyReview = createServerFn({ method: "POST" })
     const { data: rev, error } = await sb.rpc("submit_first_party_review", {
       _token: data.token,
       _rating: data.rating,
-      _title: data.title ?? null,
+      _title: data.title ?? "",
       _body: data.body,
-      _reviewer_name: data.reviewer_name ?? null,
-      _reviewer_country: data.reviewer_country ?? null,
+      _reviewer_name: data.reviewer_name ?? "",
+      _reviewer_country: data.reviewer_country ?? "",
     });
     if (error) throw new Error(error.message);
     return { ok: true, id: rev as unknown as string };

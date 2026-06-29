@@ -38,6 +38,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
+import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
@@ -221,6 +222,11 @@ const ToursTourIdRoute = ToursTourIdRouteImport.update({
 const STokenRoute = STokenRouteImport.update({
   id: '/s/$token',
   path: '/s/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewTokenRoute = ReviewTokenRouteImport.update({
+  id: '/review/$token',
+  path: '/review/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QaMobileRoute = QaMobileRouteImport.update({
@@ -475,6 +481,7 @@ export interface FileRoutesByFullPath {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -544,6 +551,7 @@ export interface FileRoutesByTo {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -614,6 +622,7 @@ export interface FileRoutesById {
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -685,6 +694,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
     | '/lovable/email/suppression'
@@ -754,6 +764,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
     | '/lovable/email/suppression'
@@ -823,6 +834,7 @@ export interface FileRouteTypes {
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
+    | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
     | '/lovable/email/suppression'
@@ -892,6 +904,7 @@ export interface RootRouteChildren {
   ITokenRoute: typeof ITokenRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
+  ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -1106,6 +1119,13 @@ declare module '@tanstack/react-router' {
       path: '/s/$token'
       fullPath: '/s/$token'
       preLoaderRoute: typeof STokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review/$token': {
+      id: '/review/$token'
+      path: '/review/$token'
+      fullPath: '/review/$token'
+      preLoaderRoute: typeof ReviewTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qa/mobile': {
@@ -1469,6 +1489,7 @@ const rootRouteChildren: RootRouteChildren = {
   ITokenRoute: ITokenRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
+  ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
