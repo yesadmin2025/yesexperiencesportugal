@@ -1018,7 +1018,12 @@ function HomePage() {
 
 
 
-        {/* 8 — FINAL CTA — Talk to a local
+        {/* 8 — Recognised by travel guides — editorial trust strip.
+          Real third-party mentions only. Moved after the content sections
+          so the hero-to-CTA flow stays clean and conversion-focused. */}
+        <RecognisedByGuides placement="homepage" />
+
+        {/* 9 — FINAL CTA — Talk to a local
           Distinct from the hero CTAs (Explore Signatures / Build) — this
           is the human escape hatch. No duplicate CTA band; one purpose,
           one button. */}
