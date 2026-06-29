@@ -163,7 +163,7 @@ function ScrapeSection() {
       <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
         Paste the public Viator / Tripadvisor / GetYourGuide listing URL. Real review
         cards are extracted by Firecrawl, deduped per source, and stored verbatim.
-        Ratings &lt; 4 are inserted as <em>unpublished</em>; you choose what to show.
+        Every scraped review lands in the <strong>approval queue</strong> at the top — nothing is published until you approve it.
       </p>
 
       <form onSubmit={onScrape} className="mt-4 grid gap-2 md:grid-cols-6 items-end">
