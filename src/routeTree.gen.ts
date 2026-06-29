@@ -38,6 +38,7 @@ import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
 import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
@@ -229,6 +230,11 @@ const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArrabidaWineTourRoute = ArrabidaWineTourRouteImport.update({
+  id: '/arrabida-wine-tour',
+  path: '/arrabida-wine-tour',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArrabidaDayTripFromLisbonRoute =
@@ -473,6 +479,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
+  '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -550,6 +557,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
+  '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -628,6 +636,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
+  '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
@@ -707,6 +716,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
+    | '/arrabida-wine-tour'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -784,6 +794,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
+    | '/arrabida-wine-tour'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -861,6 +872,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
+    | '/arrabida-wine-tour'
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
@@ -939,6 +951,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AlentejoWineTourFromLisbonRoute: typeof AlentejoWineTourFromLisbonRoute
   ArrabidaDayTripFromLisbonRoute: typeof ArrabidaDayTripFromLisbonRoute
+  ArrabidaWineTourRoute: typeof ArrabidaWineTourRoute
   AuthRoute: typeof AuthRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
@@ -1212,6 +1225,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arrabida-wine-tour': {
+      id: '/arrabida-wine-tour'
+      path: '/arrabida-wine-tour'
+      fullPath: '/arrabida-wine-tour'
+      preLoaderRoute: typeof ArrabidaWineTourRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/arrabida-day-trip-from-lisbon': {
@@ -1580,6 +1600,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AlentejoWineTourFromLisbonRoute: AlentejoWineTourFromLisbonRoute,
   ArrabidaDayTripFromLisbonRoute: ArrabidaDayTripFromLisbonRoute,
+  ArrabidaWineTourRoute: ArrabidaWineTourRoute,
   AuthRoute: AuthRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
