@@ -1128,7 +1128,3 @@ function HomePage() {
     </SiteLayout>
   );
 }
-      <ExitIntentEmailCapture />
-    </SiteLayout>
-  );
-}
