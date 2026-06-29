@@ -545,11 +545,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Recognised by travel guides — editorial trust strip.
-            Real third-party mentions only (see externalAuthorityMentions).
-            Visible content only; no fake schema is generated from these. */}
-        <RecognisedByGuides placement="homepage" />
-
         <FourWaysIn />
 
         <WhyYesPillars />
@@ -1127,6 +1122,12 @@ function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* 9 — Recognised by travel guides — editorial trust strip.
+          Real third-party mentions only. Moved to the end of the page
+          so the hero-to-CTA flow stays clean and conversion-focused. */}
+        <RecognisedByGuides placement="homepage" />
+
       </div>
       <ExitIntentEmailCapture />
     </SiteLayout>
