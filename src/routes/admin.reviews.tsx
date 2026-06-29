@@ -147,7 +147,7 @@ function ScrapeSection() {
         data: { tour_id: tourId, source, source_url: url },
       })) as { fetched: number; inserted: number; updated: number; skipped: number };
       setMsg(
-        `Fetched ${res.fetched} · inserted ${res.inserted} · updated ${res.updated} · skipped ${res.skipped}. Low-rated reviews are unpublished by default.`,
+        `Fetched ${res.fetched} · inserted ${res.inserted} · updated ${res.updated} · skipped ${res.skipped}. All scraped reviews are queued for approval above.`,
       );
       await refresh();
     } catch (err) {
