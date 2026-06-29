@@ -268,8 +268,8 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-/* ════════════════════════════════════════════════════════════════
- * HOMEPAGE — 8 sections (structural pass: dedup + reorder)
+ /* ════════════════════════════════════════════════════════════════
+ * HOMEPAGE — 9 sections (structural pass: dedup + reorder)
  * 1. Hero
  * 2. Social proof — trust strip
  * 3. Why YES — editorial manifesto (5 blocks)
@@ -277,7 +277,8 @@ export const Route = createFileRoute("/")({
  * 5. Real Signature Experiences preview
  * 6. Proposals / Celebrations / Corporate / Multi-Day (combined band)
  * 7. FAQ
- * 8. Final CTA — Talk to a local
+ * 8. Recognised by travel guides — editorial trust strip (after content)
+ * 9. Final CTA — Talk to a local
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
   const scrollDebug = useScrollDebugFlags();
