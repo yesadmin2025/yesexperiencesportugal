@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WineToursLisbonRouteImport } from './routes/wine-tours-lisbon'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -84,6 +85,11 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 
+const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
+  id: '/wine-tours-lisbon',
+  path: '/wine-tours-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
@@ -495,6 +501,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -571,6 +578,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -648,6 +656,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/bokun-mapping': typeof AdminBokunMappingRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -726,6 +735,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/unsubscribe'
+    | '/wine-tours-lisbon'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -802,6 +812,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/unsubscribe'
+    | '/wine-tours-lisbon'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -878,6 +889,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/typography-audit'
     | '/unsubscribe'
+    | '/wine-tours-lisbon'
     | '/admin/ai-audit'
     | '/admin/bokun-mapping'
     | '/admin/bookings'
@@ -955,6 +967,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  WineToursLisbonRoute: typeof WineToursLisbonRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBokunMappingRoute: typeof AdminBokunMappingRoute
   AdminBookingsRoute: typeof AdminBookingsRoute
@@ -998,6 +1011,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wine-tours-lisbon': {
+      id: '/wine-tours-lisbon'
+      path: '/wine-tours-lisbon'
+      fullPath: '/wine-tours-lisbon'
+      preLoaderRoute: typeof WineToursLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unsubscribe': {
       id: '/unsubscribe'
       path: '/unsubscribe'
@@ -1588,6 +1608,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  WineToursLisbonRoute: WineToursLisbonRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBokunMappingRoute: AdminBokunMappingRoute,
   AdminBookingsRoute: AdminBookingsRoute,
@@ -1631,13 +1652,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
