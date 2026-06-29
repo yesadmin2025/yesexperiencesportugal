@@ -61,7 +61,7 @@ export function Footer() {
           >
             Private Portugal, shown the way a local shows a friend. Intimate, real, and
             genuinely different — designed with you and confirmed in minutes. 700+ five-star
-            reviews · Licensed tour operator (RNAVT) · Lisbon & Sesimbra.
+            reviews · Licensed tour operator (RNAAT) · Lisbon & Sesimbra.
           </p>
         </div>
 
@@ -159,7 +159,7 @@ export function Footer() {
           >
             <p className="leading-[1.6]">
               © {new Date().getFullYear()} YES experiences Portugal. All rights reserved.
-              <span className="hidden md:inline"> · Licensed tour operator (RNAVT) · Lisbon.</span>
+              <span className="hidden md:inline"> · Licensed tour operator (RNAAT) · Lisbon.</span>
             </p>
             <nav aria-label="Legal" className="flex items-center gap-5">
               <Link
@@ -180,7 +180,7 @@ export function Footer() {
             </nav>
           </div>
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--ivory)]/55 font-[family-name:var(--font-sans)]">
-            Licensed tour operator (RNAVT) · Lisbon, Portugal
+            Licensed tour operator (RNAAT) · Lisbon, Portugal
           </p>
         </div>
       </div>

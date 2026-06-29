@@ -6,13 +6,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 
 const TITLE = "Press & Brand Kit — YES Experiences Portugal";
 const DESCRIPTION =
-  "Press resources, NAP citation block, founder bio and brand assets for YES Experiences Portugal — licensed Portuguese tour operator RNAVT 31/2023.";
+  "Press resources, NAP citation block, founder bio and brand assets for YES Experiences Portugal — licensed Portuguese tour operator RNAAT 31/2023.";
 const URL = "https://yesexperiencesportugal.com/press";
 
 // Canonical NAP — keep in lockstep with src/lib/jsonld.ts
 const NAP = {
   name: "YES Experiences Portugal",
-  legal: "Licensed Portuguese tour operator — RNAVT 31/2023",
+  legal: "Licensed Portuguese tour operator — RNAAT 31/2023",
   founder: "Nidia Almeida (Founder & Lead Travel Designer)",
   founded: "2022",
   locality: "Sesimbra, Setúbal, Portugal",
@@ -37,10 +37,10 @@ const CITATION_BLOCK = [
 ].join("\n");
 
 const FOUNDER_BIO_SHORT =
-  "Nidia Almeida is the founder and lead travel designer of YES Experiences Portugal, a licensed Portuguese tour operator (RNAVT 31/2023) crafting private, meaningful experiences across Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
+  "Nidia Almeida is the founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT 31/2023) crafting private, meaningful experiences across Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
 
 const FOUNDER_BIO_LONG =
-  "Nidia Almeida founded YES Experiences Portugal in 2022 to offer travellers something Portugal had long missed: private, emotionally intelligent days designed by a real person, not a marketplace algorithm. With deep local relationships in wine, gastronomy and culture, she leads every itinerary personally — from the first conversation to the last sunset.";
+  "YES Experiences Portugal was founded in 2022 and designed end-to-end by one person — concept, brand, website and every itinerary, with no agency and no team behind the curtain. The aim was to offer travellers something Portugal had long missed: private, emotionally intelligent days shaped by a real host with deep local relationships in wine, gastronomy and culture, not by a marketplace algorithm.";
 
 export const Route = createFileRoute("/press")({
   head: () => ({

@@ -6,9 +6,9 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import img from "@/assets/why-image.jpg";
 
-const TITLE = "About YES Experiences Portugal — Founder, RNAVT 31/2023";
+const TITLE = "About YES Experiences Portugal — Founder, RNAAT 31/2023";
 const DESCRIPTION =
-  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAVT 31/2023) founded in 2022 by Nidia Almeida. Private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
+  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT 31/2023) founded in 2022 by Nidia Almeida. Private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -45,8 +45,8 @@ function Page() {
             We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            A licensed Portuguese tour operator (RNAVT 31/2023), founded in 2022 by Nidia Almeida —
-            host, designer, and the person who answers when you write to us.
+            A licensed Portuguese tour operator (RNAAT 31/2023), founded in 2022 and designed
+            end-to-end by one person — host, designer, and the voice that answers when you write to us.
           </p>
         </div>
       </section>
@@ -71,18 +71,18 @@ function Page() {
             </p>
 
             <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed" itemProp="description">
-              YES Experiences Portugal started from scratch in 2022, built by a Portuguese host who
-              fell for this work and never looked back. The idea was simple and a little stubborn:
-              instead of the tours everyone already runs, create something different — intimate, real,
-              and honestly Portuguese. Days that show the best of the country the way a local would
-              show a close friend, not the way a brochure sells it.
+              YES Experiences Portugal started from scratch in 2022 — concept, brand, website and
+              every itinerary designed solo, with no agency and no team behind the curtain. The idea
+              was simple and a little stubborn: instead of the tours everyone already runs, create
+              something different — intimate, real, and honestly Portuguese. Days that show the best
+              of the country the way a local would show a close friend, not the way a brochure sells it.
             </p>
 
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              Every Signature day, Studio composition and bespoke journey on this site is designed by
-              Nidia and her team of local guides, drivers and partners across Lisbon, Sintra, Arrábida,
-              Sesimbra and the Alentejo. We only run private experiences. We never resell another
-              operator's coach tour as our own.
+              Every Signature day, Studio composition and bespoke journey on this site is designed
+              personally, then delivered together with a small circle of trusted local guides, drivers
+              and partners across Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo. Only private
+              experiences. Never another operator's coach tour resold as ours.
             </p>
 
             <a
@@ -92,7 +92,7 @@ function Page() {
               itemProp="sameAs"
               className="mt-6 inline-flex items-center text-sm uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--gold)]"
             >
-              Nidia on LinkedIn →
+              LinkedIn →
             </a>
           </div>
         </div>
@@ -109,7 +109,7 @@ function Page() {
           <dl className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
               <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Licence</dt>
-              <dd className="mt-2 font-display text-lg">RNAVT 31/2023</dd>
+              <dd className="mt-2 font-display text-lg">RNAAT 31/2023</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Registered Portuguese tour operator (Registo Nacional dos Agentes de Viagens e Turismo).
               </p>
@@ -145,7 +145,7 @@ function Page() {
           <div>
             <Eyebrow>How we work</Eyebrow>
             <h2 className="mt-3 font-display text-2xl md:text-3xl font-semibold tracking-tight">
-              Private, designed in real time, signed by Nidia.
+              Private, designed in real time, signed by a real human.
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
@@ -162,7 +162,7 @@ function Page() {
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Real humans, fast.</strong> WhatsApp
-                and email replies usually within the hour, by Nidia or the team.
+                and email replies usually within the hour.
               </li>
             </ul>
           </div>
@@ -200,7 +200,7 @@ function Page() {
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow flank>Talk to us</Eyebrow>
           <SectionTitle as="h2" size="default">
-            Reach Nidia <SectionTitle.Em>directly</SectionTitle.Em>.
+            Reach the founder <SectionTitle.Em>directly</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
             Email{" "}
