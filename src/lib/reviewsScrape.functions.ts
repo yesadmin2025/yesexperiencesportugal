@@ -183,8 +183,10 @@ export const scrapeTourReviews = createServerFn({ method: "POST" })
         source_url: data.source_url,
         is_first_party: false,
         verified: true,
-        // Hide low ratings by default — operator can reclassify in admin.
-        is_published: rating >= 4,
+        // Scraped reviews ALWAYS land in the moderation queue — operator
+        // must approve before they appear on /reviews or count in JSON-LD.
+        is_published: false,
+        moderation_status: "pending",
         is_featured: false,
         language: (r.language || "en").slice(0, 8),
         external_id: externalId,
@@ -195,7 +197,7 @@ export const scrapeTourReviews = createServerFn({ method: "POST" })
       };
 
       // Upsert on (source, external_id) unique index
-      const { data: row, error } = await context.supabase
+      const { data: row, error } = await (context.supabase as any)
         .from("tour_reviews")
         .upsert(payload, { onConflict: "source,external_id" })
         .select("id, scraped_at")

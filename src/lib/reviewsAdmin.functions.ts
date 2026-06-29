@@ -185,3 +185,74 @@ export const createReviewToken = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return row;
   });
+
+// -------------------- Moderation queue (scraped reviews) --------------------
+
+export const listPendingReviews = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (d: { tourId?: string; status?: "pending" | "approved" | "rejected" }) => d,
+  )
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context);
+    const status = data.status ?? "pending";
+    let q = context.supabase
+      .from("tour_reviews")
+      .select("*")
+      .eq("moderation_status", status)
+      .eq("is_first_party", false)
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (data.tourId) q = q.eq("tour_id", data.tourId);
+    const { data: rows, error } = await q;
+    if (error) throw new Error(error.message);
+    return rows ?? [];
+  });
+
+export const moderateReview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (d: { id: string; decision: "approve" | "reject"; notes?: string | null }) => d,
+  )
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context);
+    const approve = data.decision === "approve";
+    const patch: Record<string, unknown> = {
+      moderation_status: approve ? "approved" : "rejected",
+      is_published: approve,
+      moderated_at: new Date().toISOString(),
+      moderated_by: context.userId,
+      moderation_notes: data.notes ?? null,
+    };
+    if (approve) patch.published_at = new Date().toISOString();
+    const { data: row, error } = await (context.supabase as any)
+      .from("tour_reviews")
+      .update(patch)
+      .eq("id", data.id)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return row;
+  });
+
+export const bulkModerateReviews = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { ids: string[]; decision: "approve" | "reject" }) => d)
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context);
+    if (!data.ids.length) return { count: 0 };
+    const approve = data.decision === "approve";
+    const patch: Record<string, unknown> = {
+      moderation_status: approve ? "approved" : "rejected",
+      is_published: approve,
+      moderated_at: new Date().toISOString(),
+      moderated_by: context.userId,
+    };
+    if (approve) patch.published_at = new Date().toISOString();
+    const { error, count } = await (context.supabase as any)
+      .from("tour_reviews")
+      .update(patch, { count: "exact" })
+      .in("id", data.ids);
+    if (error) throw new Error(error.message);
+    return { count: count ?? 0 };
+  });
