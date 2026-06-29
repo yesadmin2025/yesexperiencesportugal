@@ -882,6 +882,16 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
         <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
           Instant confirmation · A local on WhatsApp if you need help
         </p>
+        <p className="mt-6 text-[13px] text-[color:var(--ivory)]/75">
+          Want a different shape of day?{" "}
+          <Link
+            to="/studio-v3"
+            className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--gold)] transition-colors"
+          >
+            Design your own private Portugal day in the Studio
+          </Link>
+          .
+        </p>
       </div>
     </section>
   );
