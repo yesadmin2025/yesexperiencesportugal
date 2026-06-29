@@ -22,6 +22,7 @@ import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/json
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
+import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
