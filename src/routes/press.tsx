@@ -98,7 +98,7 @@ function PressPage() {
           <dl className="mt-4">
             <Row label="Brand name" value={NAP.name} />
             <Row label="Legal status" value={NAP.legal} />
-            <Row label="Founder" value={NAP.founder} />
+            <Row label="Founder" value={NAP.founderRole} />
             <Row label="Founded" value={NAP.founded} />
             <Row label="Location" value={NAP.locality} />
             <Row label="Service area" value={NAP.serviceArea} />
