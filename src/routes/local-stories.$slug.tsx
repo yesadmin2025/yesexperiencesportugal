@@ -315,9 +315,9 @@ function StaticArticleView({
                     >
                       <div
                         className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
-                        aria-label={`Rated ${r.rating} out of 5`}
+                        aria-label={`Rated ${r.ratingValue} out of 5`}
                       >
-                        {"★".repeat(Math.round(r.rating))}
+                        {"★".repeat(r.ratingValue)}
                       </div>
                       {r.title && (
                         <p className="font-display font-semibold text-[1rem] md:text-[1.05rem] text-[color:var(--charcoal)] mb-2">
@@ -328,12 +328,17 @@ function StaticArticleView({
                         “{r.body}”
                       </p>
                       <p className="mt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        {r.reviewer_name?.trim() || "Verified guest"}
-                        {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
+                        <span>{r.authorName}</span>
+                        {r.country ? <span> · {r.country}</span> : null}
+                        <span> · </span>
+                        <time dateTime={r.publishedAt}>
+                          {dateFmt.format(new Date(r.publishedAt))}
+                        </time>
                       </p>
                     </li>
                   ))}
                 </ul>
+
               </section>
             )}
 
