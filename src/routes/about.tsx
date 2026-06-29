@@ -145,7 +145,7 @@ function Page() {
           <div>
             <Eyebrow>How we work</Eyebrow>
             <h2 className="mt-3 font-display text-2xl md:text-3xl font-semibold tracking-tight">
-              Private, designed in real time, signed by Nidia.
+              Private, designed in real time, signed by a real human.
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
