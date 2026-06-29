@@ -124,7 +124,7 @@ function ScrapeSection() {
 
   async function refresh() {
     try {
-      setRuns(((await runsFn({})) as ScrapeRun[]).slice(0, 12));
+      setRuns(((await runsFn({ data: {} })) as ScrapeRun[]).slice(0, 12));
     } catch {
       /* noop */
     }
