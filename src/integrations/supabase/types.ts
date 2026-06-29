@@ -1747,6 +1747,42 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_external_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          last_verified_at: string
+          rating: number
+          review_count: number
+          source: string
+          source_url: string | null
+          tour_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_verified_at?: string
+          rating: number
+          review_count: number
+          source: string
+          source_url?: string | null
+          tour_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_verified_at?: string
+          rating?: number
+          review_count?: number
+          source?: string
+          source_url?: string | null
+          tour_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tour_price_tiers: {
         Row: {
           tiers: Json
@@ -1848,6 +1884,17 @@ export type Database = {
       }
     }
     Views: {
+      global_review_aggregate: {
+        Row: {
+          average_rating: number | null
+          external_count: number | null
+          external_weighted_avg: number | null
+          first_party_avg: number | null
+          first_party_count: number | null
+          total_reviews: number | null
+        }
+        Relationships: []
+      }
       global_review_stats: {
         Row: {
           average_rating: number | null
