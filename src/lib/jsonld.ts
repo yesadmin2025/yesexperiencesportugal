@@ -501,18 +501,18 @@ export type LocalStoryReviewInput = {
 
 export type NormalizedLocalStoryReview = {
   id: string;
-  /** Integer 1–5, exactly what the visible star row renders. */
-  ratingValue: number;
-  /** Verbatim body — rendered on page and emitted as reviewBody. */
-  body: string;
+  /** Integer 1–5, exactly what the visible star row renders. Null = no visible rating, omit reviewRating. */
+  ratingValue: number | null;
+  /** Verbatim body — rendered on page and emitted as reviewBody. Null = no visible body, review is skipped. */
+  body: string | null;
   /** Null when no visible title is rendered; JSON-LD omits `name` then. */
   title: string | null;
-  /** Same fallback used by the visible byline. */
-  authorName: string;
+  /** Null when no visible byline name is rendered; JSON-LD omits `author` then. */
+  authorName: string | null;
   /** Null when no visible country chip is rendered. */
   country: string | null;
-  /** ISO date — rendered as a human date on page; emitted as datePublished. */
-  publishedAt: string;
+  /** ISO date — null when no visible <time> is rendered; JSON-LD omits `datePublished` then. */
+  publishedAt: string | null;
 };
 
 const FALLBACK_AUTHOR = "Verified guest";
@@ -520,26 +520,44 @@ const FALLBACK_AUTHOR = "Verified guest";
 export function normalizeLocalStoryReviews(
   reviews: LocalStoryReviewInput[],
 ): NormalizedLocalStoryReview[] {
-  return reviews.map((r) => {
+  const out: NormalizedLocalStoryReview[] = [];
+  for (const r of reviews) {
+    const body = r.body?.trim() ? r.body.trim() : null;
+    if (!body) continue; // No visible quote → skip review entirely.
+
     const ratingRaw = Number(r.rating);
-    const ratingValue = Math.max(
-      1,
-      Math.min(5, Math.round(Number.isFinite(ratingRaw) ? ratingRaw : 0)),
-    );
+    const ratingValue =
+      Number.isFinite(ratingRaw) && ratingRaw >= 1
+        ? Math.max(1, Math.min(5, Math.round(ratingRaw)))
+        : null;
+
     const title = r.title?.trim() ? r.title.trim() : null;
-    const authorName = r.reviewer_name?.trim() || FALLBACK_AUTHOR;
+
+    const trimmedName = r.reviewer_name?.trim();
+    const authorName = trimmedName
+      ? trimmedName
+      : // We always render *some* byline visibly when at least one byline
+        // segment exists. If everything is missing we omit author below.
+        FALLBACK_AUTHOR;
+
     const country = r.reviewer_country?.trim() ? r.reviewer_country.trim() : null;
-    const body = r.body.trim();
-    return {
+
+    const publishedAt =
+      r.published_at && !Number.isNaN(new Date(r.published_at).getTime())
+        ? r.published_at
+        : null;
+
+    out.push({
       id: r.id,
       ratingValue,
       body,
       title,
       authorName,
       country,
-      publishedAt: r.published_at,
-    };
-  });
+      publishedAt,
+    });
+  }
+  return out;
 }
 
 export function localStoryReviewsLd(args: {
@@ -548,24 +566,17 @@ export function localStoryReviewsLd(args: {
   reviews: NormalizedLocalStoryReview[];
 }) {
   const productId = `${SITE_URL}/tours/${args.signatureSlug}#product`;
-  return args.reviews.map((r) => {
+  const nodes: Record<string, unknown>[] = [];
+  for (const r of args.reviews) {
+    // reviewBody is the one mandatory anchor — if it is missing we skip
+    // the whole node so we never emit a Review with no visible quote.
+    if (!r.body) continue;
+
     const node: Record<string, unknown> = {
       "@context": "https://schema.org",
       "@type": "Review",
       "@id": `${SITE_URL}/local-stories#review-${r.id}`,
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: r.ratingValue,
-        bestRating: 5,
-        worstRating: 1,
-      },
       reviewBody: r.body,
-      datePublished: r.publishedAt,
-      author: {
-        "@type": "Person",
-        name: r.authorName,
-        ...(r.country ? { nationality: r.country } : {}),
-      },
       itemReviewed: {
         "@type": "Product",
         "@id": productId,
@@ -574,10 +585,31 @@ export function localStoryReviewsLd(args: {
       },
       publisher: { "@id": `${SITE_URL}/#organization` },
     };
+
+    if (r.ratingValue !== null) {
+      node.reviewRating = {
+        "@type": "Rating",
+        ratingValue: r.ratingValue,
+        bestRating: 5,
+        worstRating: 1,
+      };
+    }
     if (r.title) node.name = r.title;
-    return node;
-  });
+    if (r.publishedAt) node.datePublished = r.publishedAt;
+    if (r.authorName) {
+      const author: Record<string, unknown> = {
+        "@type": "Person",
+        name: r.authorName,
+      };
+      if (r.country) author.nationality = r.country;
+      node.author = author;
+    }
+
+    nodes.push(node);
+  }
+  return nodes;
 }
+
 
 
 /**
