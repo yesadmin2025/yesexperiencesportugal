@@ -88,10 +88,11 @@ function AdminReviewsPage() {
     <div className="max-w-6xl mx-auto px-5 md:px-8 py-10">
       <h1 className="text-3xl font-medium text-[color:var(--charcoal)]">Reviews</h1>
       <p className="mt-2 text-[color:var(--charcoal)]/70 text-sm">
-        Real data only. Paste per-platform counts. Display quotes are curated;
-        Schema is emitted only for first-party reviews (Google policy).
+        Real data only. Scraped platform reviews go to the approval queue —
+        nothing appears on /reviews or in JSON-LD until you approve it.
       </p>
 
+      <ApprovalQueueSection />
       <ExternalRatingsSection />
       <ScrapeSection />
       <ReviewsSection />
