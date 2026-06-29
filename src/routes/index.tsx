@@ -1123,12 +1123,11 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 9 — Recognised by travel guides — editorial trust strip.
-          Real third-party mentions only. Moved to the end of the page
-          so the hero-to-CTA flow stays clean and conversion-focused. */}
-        <RecognisedByGuides placement="homepage" />
-
       </div>
+      <ExitIntentEmailCapture />
+    </SiteLayout>
+  );
+}
       <ExitIntentEmailCapture />
     </SiteLayout>
   );
