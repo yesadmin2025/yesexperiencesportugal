@@ -79,8 +79,40 @@ function articleJsonLd(a: LocalStoryArticle) {
   };
 }
 
+type LoaderData = {
+  reviews: LocalStoryReviewInput[];
+  signatureTitle: string | null;
+};
+
 export const Route = createFileRoute("/local-stories/$slug")({
-  head: ({ params }) => {
+  loader: async ({ params }): Promise<LoaderData> => {
+    const article = getLocalStoryArticle(params.slug);
+    if (!article) return { reviews: [], signatureTitle: null };
+    const tour = findTour(article.signatureSlug);
+    if (!tour) return { reviews: [], signatureTitle: null };
+    try {
+      const rows = await getTourReviews({
+        data: { tourId: article.signatureSlug, limit: 3 },
+      });
+      const reviews = (rows ?? [])
+        .filter((r) => r.is_first_party && r.rating >= 4 && !!r.body)
+        .slice(0, 3)
+        .map((r) => ({
+          id: r.id,
+          rating: Number(r.rating),
+          body: r.body,
+          title: r.title,
+          reviewer_name: r.reviewer_name,
+          reviewer_country: r.reviewer_country,
+          published_at: r.published_at,
+        }));
+      return { reviews, signatureTitle: tour.title };
+    } catch {
+      return { reviews: [], signatureTitle: tour.title };
+    }
+  },
+
+  head: ({ params, loaderData }) => {
     const article = getLocalStoryArticle(params.slug);
 
     // The day-trips guide now lives at its dedicated SEO route.
@@ -102,6 +134,16 @@ export const Route = createFileRoute("/local-stories/$slug")({
 
     if (article) {
       const url = `${BASE}/local-stories/${params.slug}`;
+      const reviews = loaderData?.reviews ?? [];
+      const signatureTitle = loaderData?.signatureTitle ?? article.ctaLabel;
+      const reviewScripts =
+        reviews.length > 0
+          ? localStoryReviewsLd({
+              signatureSlug: article.signatureSlug,
+              signatureTitle,
+              reviews,
+            }).map((node) => jsonLdScript(node))
+          : [];
       return {
         meta: [
           { title: article.title },
@@ -123,6 +165,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
               { name: article.h1, path: `/local-stories/${article.slug}` },
             ]),
           ),
+          ...reviewScripts,
         ],
       };
     }
