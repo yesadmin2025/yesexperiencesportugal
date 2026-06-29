@@ -171,7 +171,6 @@ function ReviewsPage() {
 
       <section className="mt-14 space-y-14">
         {TOUR_IDS.filter((id) => bundles[id]).map((id) => {
-          const meta = VIATOR_META[id];
           const b = bundles[id];
           if (!b) return null;
           return (
