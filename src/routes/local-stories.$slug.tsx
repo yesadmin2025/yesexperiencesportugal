@@ -308,36 +308,51 @@ function StaticArticleView({
                   Guest notes
                 </span>
                 <ul className="space-y-8">
-                  {reviews.map((r) => (
-                    <li
-                      key={r.id}
-                      className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5"
-                    >
-                      <div
-                        className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
-                        aria-label={`Rated ${r.ratingValue} out of 5`}
+                  {reviews.map((r) => {
+                    const bylineParts: React.ReactNode[] = [];
+                    if (r.authorName) bylineParts.push(<span key="n">{r.authorName}</span>);
+                    if (r.country) bylineParts.push(<span key="c"> · {r.country}</span>);
+                    if (r.publishedAt) {
+                      bylineParts.push(
+                        <span key="d">
+                          {" · "}
+                          <time dateTime={r.publishedAt}>
+                            {dateFmt.format(new Date(r.publishedAt))}
+                          </time>
+                        </span>,
+                      );
+                    }
+                    return (
+                      <li
+                        key={r.id}
+                        className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5"
                       >
-                        {"★".repeat(r.ratingValue)}
-                      </div>
-                      {r.title && (
-                        <p className="font-display font-semibold text-[1rem] md:text-[1.05rem] text-[color:var(--charcoal)] mb-2">
-                          {r.title}
+                        {r.ratingValue !== null && (
+                          <div
+                            className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
+                            aria-label={`Rated ${r.ratingValue} out of 5`}
+                          >
+                            {"★".repeat(r.ratingValue)}
+                          </div>
+                        )}
+                        {r.title && (
+                          <p className="font-display font-semibold text-[1rem] md:text-[1.05rem] text-[color:var(--charcoal)] mb-2">
+                            {r.title}
+                          </p>
+                        )}
+                        <p className="font-serif italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]">
+                          “{r.body}”
                         </p>
-                      )}
-                      <p className="font-serif italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]">
-                        “{r.body}”
-                      </p>
-                      <p className="mt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        <span>{r.authorName}</span>
-                        {r.country ? <span> · {r.country}</span> : null}
-                        <span> · </span>
-                        <time dateTime={r.publishedAt}>
-                          {dateFmt.format(new Date(r.publishedAt))}
-                        </time>
-                      </p>
-                    </li>
-                  ))}
+                        {bylineParts.length > 0 && (
+                          <p className="mt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                            {bylineParts}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
+
 
               </section>
             )}
