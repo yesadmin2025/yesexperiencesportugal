@@ -43,6 +43,7 @@ export const Route = createFileRoute("/multi-day")({
           { name: "Travel Designer", path: "/multi-day" },
         ]),
       ),
+      jsonLdScript(faqPageLd(TRAVEL_DESIGNER_FAQ)),
     ],
   }),
   component: MultiDayPage,
