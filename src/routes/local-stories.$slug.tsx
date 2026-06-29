@@ -3,7 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, FOUNDER_ID, personFounderLd } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  FOUNDER_ID,
+  personFounderLd,
+  localStoryReviewsLd,
+  type LocalStoryReviewInput,
+} from "@/lib/jsonld";
+import { getTourReviews } from "@/lib/reviews.functions";
+import { findTour } from "@/data/signatureTours";
 import {
   getLocalStoryArticle,
   type LocalStoryArticle,
