@@ -159,6 +159,9 @@ function TourDetailPage() {
       <BookingBlock tour={tour} />
 
       {/* ── 11 · REVIEWS ───────────────────────────────────────── */}
+      <section className="container-x py-6">
+        <TourReviews tourId={tour.id} />
+      </section>
       <ReviewsBlock meta={meta} />
 
       {/* ── 12 · FINAL CTA ─────────────────────────────────────── */}
