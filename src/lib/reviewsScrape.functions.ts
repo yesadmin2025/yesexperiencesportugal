@@ -197,7 +197,7 @@ export const scrapeTourReviews = createServerFn({ method: "POST" })
       };
 
       // Upsert on (source, external_id) unique index
-      const { data: row, error } = await context.supabase
+      const { data: row, error } = await (context.supabase as any)
         .from("tour_reviews")
         .upsert(payload, { onConflict: "source,external_id" })
         .select("id, scraped_at")
