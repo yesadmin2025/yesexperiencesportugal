@@ -25,6 +25,7 @@ import { FourWaysIn } from "@/components/home/FourWaysIn";
 import { WhyYesPillars } from "@/components/home/WhyYesPillars";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { InlineEmailCapture, ExitIntentEmailCapture } from "@/components/home/EmailCapture";
+import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 // PathfinderQuiz removed from homepage (component file kept).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -544,6 +545,10 @@ function HomePage() {
           </div>
         </section>
 
+        {/* Recognised by travel guides — editorial trust strip.
+            Real third-party mentions only (see externalAuthorityMentions).
+            Visible content only; no fake schema is generated from these. */}
+        <RecognisedByGuides placement="homepage" />
 
         <FourWaysIn />
 
