@@ -249,7 +249,7 @@ export const bulkModerateReviews = createServerFn({ method: "POST" })
       moderated_by: context.userId,
     };
     if (approve) patch.published_at = new Date().toISOString();
-    const { error, count } = await context.supabase
+    const { error, count } = await (context.supabase as any)
       .from("tour_reviews")
       .update(patch, { count: "exact" })
       .in("id", data.ids);
