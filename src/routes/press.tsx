@@ -155,7 +155,7 @@ function PressPage() {
         <section className="mt-14">
           <h2 className="font-display text-xl font-semibold">Press contact</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
-            {NAP.founder}
+            {NAP.founderRole}
             <br />
             <a className="text-[color:var(--teal)] underline underline-offset-4" href={`mailto:${NAP.email}`}>
               {NAP.email}
