@@ -1853,6 +1853,10 @@ export type Database = {
           is_first_party: boolean
           is_published: boolean
           language: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_notes: string | null
+          moderation_status: string
           published_at: string
           rating: number
           reviewer_country: string | null
@@ -1874,6 +1878,10 @@ export type Database = {
           is_first_party?: boolean
           is_published?: boolean
           language?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
+          moderation_status?: string
           published_at?: string
           rating: number
           reviewer_country?: string | null
@@ -1895,6 +1903,10 @@ export type Database = {
           is_first_party?: boolean
           is_published?: boolean
           language?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
+          moderation_status?: string
           published_at?: string
           rating?: number
           reviewer_country?: string | null
