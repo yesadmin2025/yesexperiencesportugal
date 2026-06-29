@@ -200,6 +200,84 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     placement: ["inventory-only"],
     lastCheckedAt: "2026-06-29",
   },
+  {
+    id: "happytovisit-evora-alentejo-wine",
+    sourceName: "Happy to Visit",
+    sourceDomain: "happytovisit.com",
+    articleTitle: "Lisbon: Private Full Day Évora & Alentejo Wine Tour — Review",
+    articleUrl:
+      "https://happytovisit.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
+    topic: "Évora & Alentejo private full-day wine tour",
+    mentionType: "product-mention",
+    linkedPlatform: "viator",
+    providerNameDetected: false,
+    relatedTourSlug: "evora-alentejo",
+    relatedRegion: "alentejo",
+    quote:
+      "What we love about this tour is how it balances cultural exploration with gastronomic delights.",
+    quality: "high",
+    placement: ["alentejo"],
+    lastCheckedAt: "2026-06-29",
+  },
+  {
+    id: "travelersuniverse-evora-alentejo-wine",
+    sourceName: "Travelers Universe",
+    sourceDomain: "travelersuniverse.com",
+    articleTitle:
+      "Exploring Portugal's Alentejo: A Private Full-Day Évora & Wine Tour Review",
+    articleUrl:
+      "https://www.travelersuniverse.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
+    topic: "Évora & Alentejo private full-day wine tour",
+    mentionType: "product-mention",
+    linkedPlatform: "viator",
+    providerNameDetected: false,
+    relatedTourSlug: "evora-alentejo",
+    relatedRegion: "alentejo",
+    quote:
+      "If you're considering a day trip from Lisbon into Portugal's lesser-known but utterly captivating wine country, the Lisbon: Private Full Day Evora & Alentejo Wine Tour might just be your best bet.",
+    quality: "high",
+    placement: ["alentejo"],
+    lastCheckedAt: "2026-06-29",
+  },
+  {
+    id: "travel-buddies-evora-alentejo-wine",
+    sourceName: "Travel Buddies",
+    sourceDomain: "travel-buddies.com",
+    articleTitle:
+      "Lisbon: Private Full Day Évora & Alentejo Wine Tour — Featured in 13 Best Full-Day Tours in Évora",
+    articleUrl:
+      "https://travel-buddies.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
+    topic: "Best full-day tours in Évora ranking",
+    mentionType: "best-list",
+    linkedPlatform: "viator",
+    providerNameDetected: false,
+    relatedTourSlug: "evora-alentejo",
+    relatedRegion: "alentejo",
+    quote:
+      "This experience made our list of the 13 Best Full-Day Tours In Evora.",
+    quality: "medium",
+    placement: ["alentejo"],
+    lastCheckedAt: "2026-06-29",
+  },
+  {
+    id: "world-tourism-9-top-evora",
+    sourceName: "World Tourism",
+    sourceDomain: "world-tourism.org",
+    articleTitle: "The 9 Top Full-Day Tours in Évora — Which Is Best?",
+    articleUrl:
+      "https://www.world-tourism.org/the-9-top-full-day-tours-in-evora-which-is-best/",
+    topic: "Best full-day tours in Évora ranking",
+    mentionType: "best-list",
+    linkedPlatform: "viator",
+    providerNameDetected: false,
+    relatedTourSlug: "evora-alentejo",
+    relatedRegion: "alentejo",
+    quote:
+      "A private Évora & Alentejo wine tour offers a perfect blend of culture and tastings, making it a favorite among travelers seeking a personalized experience.",
+    quality: "high",
+    placement: ["homepage", "alentejo"],
+    lastCheckedAt: "2026-06-29",
+  },
 ];
 
 /* ───── Helpers ───── */
