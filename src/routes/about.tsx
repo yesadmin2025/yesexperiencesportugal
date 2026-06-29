@@ -45,8 +45,8 @@ function Page() {
             We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            A licensed Portuguese tour operator (RNAAT 31/2023), founded in 2022 by Nidia Almeida —
-            host, designer, and the person who answers when you write to us.
+            A licensed Portuguese tour operator (RNAAT 31/2023), founded in 2022 and designed
+            end-to-end by one person — host, designer, and the voice that answers when you write to us.
           </p>
         </div>
       </section>
