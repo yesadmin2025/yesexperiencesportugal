@@ -34,10 +34,10 @@ export interface RecognisedByGuidesProps {
 }
 
 const DEFAULT_LIMITS: Record<AuthorityPlacement, number> = {
-  homepage: 3,
+  homepage: 4,
   "wine-landing": 5,
   "arrabida-tour": 3,
-  alentejo: 2,
+  alentejo: 4,
   "inventory-only": 0,
 };
 

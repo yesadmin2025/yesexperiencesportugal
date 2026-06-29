@@ -33,6 +33,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/private-wine-tour-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
           { path: "/sintra-day-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
           { path: "/arrabida-day-trip-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          { path: "/alentejo-wine-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          { path: "/evora-private-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          { path: "/evora-alentejo-wine-tour", lastmod: today, changefreq: "monthly", priority: "0.85" },
           { path: "/terms", lastmod: today, changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", lastmod: today, changefreq: "yearly", priority: "0.4" },
         ];

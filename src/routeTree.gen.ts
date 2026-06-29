@@ -25,6 +25,8 @@ import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
+import { Route as EvoraPrivateTourFromLisbonRouteImport } from './routes/evora-private-tour-from-lisbon'
+import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alentejo-wine-tour'
 import { Route as DayTripsFromLisbonRouteImport } from './routes/day-trips-from-lisbon'
 import { Route as DayToursRouteImport } from './routes/day-tours'
 import { Route as CorporateRouteImport } from './routes/corporate'
@@ -34,6 +36,7 @@ import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
+import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
@@ -159,6 +162,17 @@ const ExperiencesRoute = ExperiencesRouteImport.update({
   path: '/experiences',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EvoraPrivateTourFromLisbonRoute =
+  EvoraPrivateTourFromLisbonRouteImport.update({
+    id: '/evora-private-tour-from-lisbon',
+    path: '/evora-private-tour-from-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EvoraAlentejoWineTourRoute = EvoraAlentejoWineTourRouteImport.update({
+  id: '/evora-alentejo-wine-tour',
+  path: '/evora-alentejo-wine-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DayTripsFromLisbonRoute = DayTripsFromLisbonRouteImport.update({
   id: '/day-trips-from-lisbon',
   path: '/day-trips-from-lisbon',
@@ -203,6 +217,12 @@ const ArrabidaDayTripFromLisbonRoute =
   ArrabidaDayTripFromLisbonRouteImport.update({
     id: '/arrabida-day-trip-from-lisbon',
     path: '/arrabida-day-trip-from-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AlentejoWineTourFromLisbonRoute =
+  AlentejoWineTourFromLisbonRouteImport.update({
+    id: '/alentejo-wine-tour-from-lisbon',
+    path: '/alentejo-wine-tour-from-lisbon',
     getParentRoute: () => rootRouteImport,
   } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -433,6 +453,7 @@ const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
@@ -442,6 +463,8 @@ export interface FileRoutesByFullPath {
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
+  '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
+  '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
@@ -504,6 +527,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
@@ -513,6 +537,8 @@ export interface FileRoutesByTo {
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
+  '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
+  '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
@@ -576,6 +602,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
@@ -585,6 +612,8 @@ export interface FileRoutesById {
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
+  '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
+  '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
@@ -649,6 +678,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
     | '/auth'
     | '/booking-confirmed'
@@ -658,6 +688,8 @@ export interface FileRouteTypes {
     | '/corporate'
     | '/day-tours'
     | '/day-trips-from-lisbon'
+    | '/evora-alentejo-wine-tour'
+    | '/evora-private-tour-from-lisbon'
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
@@ -720,6 +752,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
     | '/auth'
     | '/booking-confirmed'
@@ -729,6 +762,8 @@ export interface FileRouteTypes {
     | '/corporate'
     | '/day-tours'
     | '/day-trips-from-lisbon'
+    | '/evora-alentejo-wine-tour'
+    | '/evora-private-tour-from-lisbon'
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
@@ -791,6 +826,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
     | '/auth'
     | '/booking-confirmed'
@@ -800,6 +836,8 @@ export interface FileRouteTypes {
     | '/corporate'
     | '/day-tours'
     | '/day-trips-from-lisbon'
+    | '/evora-alentejo-wine-tour'
+    | '/evora-private-tour-from-lisbon'
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
@@ -863,6 +901,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AlentejoWineTourFromLisbonRoute: typeof AlentejoWineTourFromLisbonRoute
   ArrabidaDayTripFromLisbonRoute: typeof ArrabidaDayTripFromLisbonRoute
   AuthRoute: typeof AuthRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
@@ -872,6 +911,8 @@ export interface RootRouteChildren {
   CorporateRoute: typeof CorporateRoute
   DayToursRoute: typeof DayToursRoute
   DayTripsFromLisbonRoute: typeof DayTripsFromLisbonRoute
+  EvoraAlentejoWineTourRoute: typeof EvoraAlentejoWineTourRoute
+  EvoraPrivateTourFromLisbonRoute: typeof EvoraPrivateTourFromLisbonRoute
   ExperiencesRoute: typeof ExperiencesRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
@@ -1043,6 +1084,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExperiencesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/evora-private-tour-from-lisbon': {
+      id: '/evora-private-tour-from-lisbon'
+      path: '/evora-private-tour-from-lisbon'
+      fullPath: '/evora-private-tour-from-lisbon'
+      preLoaderRoute: typeof EvoraPrivateTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evora-alentejo-wine-tour': {
+      id: '/evora-alentejo-wine-tour'
+      path: '/evora-alentejo-wine-tour'
+      fullPath: '/evora-alentejo-wine-tour'
+      preLoaderRoute: typeof EvoraAlentejoWineTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/day-trips-from-lisbon': {
       id: '/day-trips-from-lisbon'
       path: '/day-trips-from-lisbon'
@@ -1104,6 +1159,13 @@ declare module '@tanstack/react-router' {
       path: '/arrabida-day-trip-from-lisbon'
       fullPath: '/arrabida-day-trip-from-lisbon'
       preLoaderRoute: typeof ArrabidaDayTripFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alentejo-wine-tour-from-lisbon': {
+      id: '/alentejo-wine-tour-from-lisbon'
+      path: '/alentejo-wine-tour-from-lisbon'
+      fullPath: '/alentejo-wine-tour-from-lisbon'
+      preLoaderRoute: typeof AlentejoWineTourFromLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -1456,6 +1518,7 @@ const ToursTourIdRouteWithChildren = ToursTourIdRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AlentejoWineTourFromLisbonRoute: AlentejoWineTourFromLisbonRoute,
   ArrabidaDayTripFromLisbonRoute: ArrabidaDayTripFromLisbonRoute,
   AuthRoute: AuthRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
@@ -1465,6 +1528,8 @@ const rootRouteChildren: RootRouteChildren = {
   CorporateRoute: CorporateRoute,
   DayToursRoute: DayToursRoute,
   DayTripsFromLisbonRoute: DayTripsFromLisbonRoute,
+  EvoraAlentejoWineTourRoute: EvoraAlentejoWineTourRoute,
+  EvoraPrivateTourFromLisbonRoute: EvoraPrivateTourFromLisbonRoute,
   ExperiencesRoute: ExperiencesRoute,
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
