@@ -62,8 +62,30 @@ function StudioV3Page() {
           A cinematic composer in three quiet steps — choose how the day should feel, who is
           travelling and the rhythm you want. The map and stops reveal themselves as you go.
         </p>
+        <p>
+          For multi-day journeys across Portugal, a human designer composes it with you —{" "}
+          <a href="/multi-day">work with our Travel Designer</a>.
+        </p>
       </header>
       <StudioV3 />
+      <aside
+        aria-label="Beyond a single day"
+        className="bg-[color:var(--ivory)] border-t border-[color:var(--border)] py-10 text-center"
+      >
+        <div className="container-x max-w-xl">
+          <p className="text-[13px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+            Studio composes a single private day. For a multi-day Portugal — stitched across
+            regions, hotels and rhythm —{" "}
+            <a
+              href="/multi-day"
+              className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+            >
+              work with our Travel Designer
+            </a>
+            .
+          </p>
+        </div>
+      </aside>
     </>
   );
 }
