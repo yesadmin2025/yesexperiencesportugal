@@ -1,4 +1,6 @@
+import type React from "react";
 import { createFileRoute, Link, notFound, useRouter, redirect } from "@tanstack/react-router";
+
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
