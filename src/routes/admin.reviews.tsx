@@ -19,6 +19,9 @@ import {
   upsertReview,
   deleteReview,
   createReviewToken,
+  listPendingReviews,
+  moderateReview,
+  bulkModerateReviews,
   type ReviewSource,
 } from "@/lib/reviewsAdmin.functions";
 import { scrapeTourReviews, listScrapeRuns } from "@/lib/reviewsScrape.functions";
