@@ -167,6 +167,15 @@ function TourDetailPage() {
       </section>
       <ReviewsBlock meta={meta} />
 
+      {/* Editorial mentions — shown ONLY on Arrábida-region signatures
+          (the dataset's `arrabida-tour` placement) so other tours don't
+          get the same trust strip when no real article exists for them. */}
+      {(tour.id === "arrabida-wine-allinclusive" ||
+        tour.id === "arrabida-boat" ||
+        tour.id === "azeitao-cheese") && (
+        <RecognisedByGuides placement="arrabida-tour" compact />
+      )}
+
       {/* ── 12 · FINAL CTA ─────────────────────────────────────── */}
       <FinalCta tour={tour} />
 

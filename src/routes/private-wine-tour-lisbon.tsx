@@ -235,6 +235,8 @@ function Page() {
             </aside>
           </div>
         </section>
+
+        <RecognisedByGuides placement="wine-landing" />
       </article>
     </SiteLayout>
   );
