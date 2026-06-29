@@ -162,7 +162,7 @@ function Page() {
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Real humans, fast.</strong> WhatsApp
-                and email replies usually within the hour, by Nidia or the team.
+                and email replies usually within the hour.
               </li>
             </ul>
           </div>
