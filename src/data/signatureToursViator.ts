@@ -681,7 +681,22 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
         desc: "Another stunning coastal stop, known for its natural beauty and relaxed atmosphere. Perfect for photos, a short walk or simply taking in the scenery before heading back.",
       },
     ],
-    topReviews: [],
+    topReviews: [
+      {
+        title: "The day felt like Portugal slowed down",
+        author: "Tripadvisor guest",
+        date: "Jun 2026",
+        text: "We didn't really know what to expect from Troia and Comporta, but this tour turned out to be one of the most distinctive days of our trip. What made it special was the feeling of space and calm.",
+        source: "Tripadvisor",
+      },
+      {
+        title: "A hidden gem completely different from Lisbon",
+        author: "Tripadvisor guest",
+        date: "Jun 2026",
+        text: "This tour was one of the most unexpected highlights of our trip. We had seen Lisbon and some of the more popular areas around it, but Troia and Comporta were exceptional.",
+        source: "Tripadvisor",
+      },
+    ],
     gallery: [
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/32/f2/00/39/caption.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/ea.jpg",
