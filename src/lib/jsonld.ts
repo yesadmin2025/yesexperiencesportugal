@@ -482,6 +482,12 @@ export function jsonLdScript(node: unknown) {
  * also rendered visibly on the page (Google requirement). `itemReviewed`
  * points at the linked Signature tour Product so the credibility signal
  * attaches to the experience itself.
+ *
+ * STRICT VISIBLE-PARITY CONTRACT
+ * Every field below MUST also be rendered on the page. The visible Guest
+ * notes block consumes the same `normalizeLocalStoryReviews()` output, so
+ * the two surfaces never drift. If you add a field here, render it; if you
+ * remove a field from the UI, remove it here.
  */
 export type LocalStoryReviewInput = {
   id: string;
@@ -493,39 +499,86 @@ export type LocalStoryReviewInput = {
   published_at: string;
 };
 
+export type NormalizedLocalStoryReview = {
+  id: string;
+  /** Integer 1–5, exactly what the visible star row renders. */
+  ratingValue: number;
+  /** Verbatim body — rendered on page and emitted as reviewBody. */
+  body: string;
+  /** Null when no visible title is rendered; JSON-LD omits `name` then. */
+  title: string | null;
+  /** Same fallback used by the visible byline. */
+  authorName: string;
+  /** Null when no visible country chip is rendered. */
+  country: string | null;
+  /** ISO date — rendered as a human date on page; emitted as datePublished. */
+  publishedAt: string;
+};
+
+const FALLBACK_AUTHOR = "Verified guest";
+
+export function normalizeLocalStoryReviews(
+  reviews: LocalStoryReviewInput[],
+): NormalizedLocalStoryReview[] {
+  return reviews.map((r) => {
+    const ratingRaw = Number(r.rating);
+    const ratingValue = Math.max(
+      1,
+      Math.min(5, Math.round(Number.isFinite(ratingRaw) ? ratingRaw : 0)),
+    );
+    const title = r.title?.trim() ? r.title.trim() : null;
+    const authorName = r.reviewer_name?.trim() || FALLBACK_AUTHOR;
+    const country = r.reviewer_country?.trim() ? r.reviewer_country.trim() : null;
+    const body = r.body.trim();
+    return {
+      id: r.id,
+      ratingValue,
+      body,
+      title,
+      authorName,
+      country,
+      publishedAt: r.published_at,
+    };
+  });
+}
+
 export function localStoryReviewsLd(args: {
   signatureSlug: string;
   signatureTitle: string;
-  reviews: LocalStoryReviewInput[];
+  reviews: NormalizedLocalStoryReview[];
 }) {
   const productId = `${SITE_URL}/tours/${args.signatureSlug}#product`;
-  return args.reviews.map((r) => ({
-    "@context": "https://schema.org",
-    "@type": "Review",
-    "@id": `${SITE_URL}/local-stories#review-${r.id}`,
-    reviewRating: {
-      "@type": "Rating",
-      ratingValue: r.rating,
-      bestRating: 5,
-      worstRating: 1,
-    },
-    name: r.title ?? undefined,
-    reviewBody: r.body,
-    datePublished: r.published_at,
-    author: {
-      "@type": "Person",
-      name: r.reviewer_name?.trim() || "Verified guest",
-      ...(r.reviewer_country ? { nationality: r.reviewer_country } : {}),
-    },
-    itemReviewed: {
-      "@type": "Product",
-      "@id": productId,
-      name: args.signatureTitle,
-      url: `${SITE_URL}/tours/${args.signatureSlug}`,
-    },
-    publisher: { "@id": `${SITE_URL}/#organization` },
-  }));
+  return args.reviews.map((r) => {
+    const node: Record<string, unknown> = {
+      "@context": "https://schema.org",
+      "@type": "Review",
+      "@id": `${SITE_URL}/local-stories#review-${r.id}`,
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.ratingValue,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      reviewBody: r.body,
+      datePublished: r.publishedAt,
+      author: {
+        "@type": "Person",
+        name: r.authorName,
+        ...(r.country ? { nationality: r.country } : {}),
+      },
+      itemReviewed: {
+        "@type": "Product",
+        "@id": productId,
+        name: args.signatureTitle,
+        url: `${SITE_URL}/tours/${args.signatureSlug}`,
+      },
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    };
+    if (r.title) node.name = r.title;
+    return node;
+  });
 }
+
 
 /**
  * hreflang link entries for English-language landing pages that target
