@@ -288,6 +288,45 @@ function StaticArticleView({
               )}
             </aside>
 
+            {reviews.length > 0 && (
+              <section
+                aria-label="Guest notes from this experience"
+                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40"
+              >
+                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
+                  Guest notes
+                </span>
+                <ul className="space-y-8">
+                  {reviews.map((r) => (
+                    <li
+                      key={r.id}
+                      className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5"
+                    >
+                      <div
+                        className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
+                        aria-label={`Rated ${r.rating} out of 5`}
+                      >
+                        {"★".repeat(Math.round(r.rating))}
+                      </div>
+                      {r.title && (
+                        <p className="font-display font-semibold text-[1rem] md:text-[1.05rem] text-[color:var(--charcoal)] mb-2">
+                          {r.title}
+                        </p>
+                      )}
+                      <p className="font-serif italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]">
+                        “{r.body}”
+                      </p>
+                      <p className="mt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                        {r.reviewer_name?.trim() || "Verified guest"}
+                        {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
