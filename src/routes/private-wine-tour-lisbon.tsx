@@ -4,6 +4,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 
 const PAGE_PATH = "/private-wine-tour-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
