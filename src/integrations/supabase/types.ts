@@ -1345,6 +1345,42 @@ export type Database = {
         }
         Relationships: []
       }
+      review_submission_tokens: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          expires_at: string
+          guest_email: string
+          guest_name: string | null
+          id: string
+          token: string
+          tour_id: string
+          used_at: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          expires_at?: string
+          guest_email: string
+          guest_name?: string | null
+          id?: string
+          token: string
+          tour_id: string
+          used_at?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          expires_at?: string
+          guest_email?: string
+          guest_name?: string | null
+          id?: string
+          token?: string
+          tour_id?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       studio_ab_assignments: {
         Row: {
           anonymous_id: string
@@ -1732,6 +1768,63 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_reviews: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_featured: boolean
+          is_first_party: boolean
+          is_published: boolean
+          published_at: string
+          rating: number
+          reviewer_country: string | null
+          reviewer_name: string | null
+          source: string
+          source_url: string | null
+          title: string | null
+          tour_id: string
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_featured?: boolean
+          is_first_party?: boolean
+          is_published?: boolean
+          published_at?: string
+          rating: number
+          reviewer_country?: string | null
+          reviewer_name?: string | null
+          source: string
+          source_url?: string | null
+          title?: string | null
+          tour_id: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_featured?: boolean
+          is_first_party?: boolean
+          is_published?: boolean
+          published_at?: string
+          rating?: number
+          reviewer_country?: string | null
+          reviewer_name?: string | null
+          source?: string
+          source_url?: string | null
+          title?: string | null
+          tour_id?: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1755,7 +1848,31 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      global_review_stats: {
+        Row: {
+          average_rating: number | null
+          first_party_avg: number | null
+          first_party_count: number | null
+          total_reviews: number | null
+          tours_with_reviews: number | null
+        }
+        Relationships: []
+      }
+      tour_review_stats: {
+        Row: {
+          average_rating: number | null
+          first_party_avg: number | null
+          first_party_count: number | null
+          getyourguide_count: number | null
+          google_count: number | null
+          last_review_at: string | null
+          total_reviews: number | null
+          tour_id: string | null
+          tripadvisor_count: number | null
+          viator_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cleanup_expired_builder_references: { Args: never; Returns: number }
@@ -1790,6 +1907,17 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      submit_first_party_review: {
+        Args: {
+          _body: string
+          _rating: number
+          _reviewer_country: string
+          _reviewer_name: string
+          _title: string
+          _token: string
+        }
+        Returns: string
       }
     }
     Enums: {
