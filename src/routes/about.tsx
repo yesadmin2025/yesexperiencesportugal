@@ -6,9 +6,9 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import img from "@/assets/why-image.jpg";
 
-const TITLE = "About YES Experiences Portugal — Founder, RNAVT 31/2023";
+const TITLE = "About YES Experiences Portugal — Founder, RNAAT 31/2023";
 const DESCRIPTION =
-  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAVT 31/2023) founded in 2022 by Nidia Almeida. Private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
+  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT 31/2023) founded in 2022 by Nidia Almeida. Private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -45,7 +45,7 @@ function Page() {
             We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            A licensed Portuguese tour operator (RNAVT 31/2023), founded in 2022 by Nidia Almeida —
+            A licensed Portuguese tour operator (RNAAT 31/2023), founded in 2022 by Nidia Almeida —
             host, designer, and the person who answers when you write to us.
           </p>
         </div>
@@ -109,7 +109,7 @@ function Page() {
           <dl className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
               <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Licence</dt>
-              <dd className="mt-2 font-display text-lg">RNAVT 31/2023</dd>
+              <dd className="mt-2 font-display text-lg">RNAAT 31/2023</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Registered Portuguese tour operator (Registo Nacional dos Agentes de Viagens e Turismo).
               </p>

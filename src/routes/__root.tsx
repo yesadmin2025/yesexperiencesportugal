@@ -130,7 +130,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys and private celebrations. Licensed (RNAVT). 700+ five-star reviews.",
+          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys and private celebrations. Licensed (RNAAT). 700+ five-star reviews.",
       },
       {
         name: "keywords",
@@ -152,7 +152,7 @@ export const Route = createRootRoute({
       {
         property: "og:description",
         content:
-          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra. Signature days, an Experience Studio that reserves in minutes, bespoke multi-day journeys. Licensed (RNAVT) · 700+ five-star reviews.",
+          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra. Signature days, an Experience Studio that reserves in minutes, bespoke multi-day journeys. Licensed (RNAAT) · 700+ five-star reviews.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_GB" },

@@ -8,7 +8,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Terms and conditions for booking private experiences with YES experiences Portugal — a licensed Portuguese tour operator (RNAVT).",
+          "Terms and conditions for booking private experiences with YES experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
       },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/terms" }],
@@ -29,7 +29,7 @@ function TermsPage() {
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
-              YES experiences Portugal is a licensed Portuguese tour operator (RNAVT) based in
+              YES experiences Portugal is a licensed Portuguese tour operator (RNAAT) based in
               Lisbon. By making a reservation with us you agree to the terms below, which govern the
               booking, payment, cancellation and conduct of your private experience.
             </p>

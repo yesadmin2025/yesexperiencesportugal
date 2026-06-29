@@ -17,7 +17,7 @@ export const SITE_URL = "https://yesexperiencesportugal.com";
  *
  * Combines TravelAgency + LocalBusiness so Google can surface it both
  * as the brand entity (knowledge panel, sitelinks) AND as a local
- * place (Maps, "near me", local pack). RNAVT licence is declared via
+ * place (Maps, "near me", local pack). RNAAT licence is declared via
  * `identifier` so structured-data tests don't flag a free-text claim.
  */
 export function organizationLd() {
@@ -49,14 +49,14 @@ export function organizationLd() {
       },
     ],
     description:
-      "Licensed Portuguese tour operator (RNAVT) crafting private, meaningful experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+      "Licensed Portuguese tour operator (RNAAT) crafting private, meaningful experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
     disambiguatingDescription:
       "The only active and canonical entity for the YES Experiences Portugal brand is operated from https://yesexperiencesportugal.com. Any third-party listing using the spelling \"Yes!experiences Portugal\" or marked as permanently closed is unrelated to this business and is not endorsed, owned, or operated by us.",
     identifier: {
       "@type": "PropertyValue",
-      propertyID: "RNAVT",
+      propertyID: "RNAAT",
       name: "Registo Nacional dos Agentes de Viagens e Turismo",
-      description: "Licensed Portuguese tour operator (RNAVT).",
+      description: "Licensed Portuguese tour operator (RNAAT).",
     },
     address: {
       "@type": "PostalAddress",
