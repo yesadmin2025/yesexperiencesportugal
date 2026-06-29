@@ -14,6 +14,7 @@ const NAP = {
   name: "YES Experiences Portugal",
   legal: "Licensed Portuguese tour operator — RNAAT 31/2023",
   founder: "Nidia Almeida (Founder & Lead Travel Designer)",
+  founderRole: "Founder & Lead Travel Designer",
   founded: "2022",
   locality: "Sesimbra, Setúbal, Portugal",
   serviceArea: "Lisbon · Sintra · Arrábida · Sesimbra · Alentejo · Évora",
@@ -24,6 +25,8 @@ const NAP = {
   hours: "Daily 08:00–20:00 (WET/WEST)",
 };
 
+// Canonical citation block — the single place the founder's full name appears on this page.
+// Directories and press lists rely on this exact text, so it must remain intact.
 const CITATION_BLOCK = [
   NAP.name,
   NAP.legal,
@@ -37,7 +40,7 @@ const CITATION_BLOCK = [
 ].join("\n");
 
 const FOUNDER_BIO_SHORT =
-  "Nidia Almeida is the founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT 31/2023) crafting private, meaningful experiences across Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
+  "Founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT 31/2023) crafting private, meaningful experiences across Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
 
 const FOUNDER_BIO_LONG =
   "YES Experiences Portugal was founded in 2022 and designed end-to-end by one person — concept, brand, website and every itinerary, with no agency and no team behind the curtain. The aim was to offer travellers something Portugal had long missed: private, emotionally intelligent days shaped by a real host with deep local relationships in wine, gastronomy and culture, not by a marketplace algorithm.";
@@ -95,7 +98,7 @@ function PressPage() {
           <dl className="mt-4">
             <Row label="Brand name" value={NAP.name} />
             <Row label="Legal status" value={NAP.legal} />
-            <Row label="Founder" value={NAP.founder} />
+            <Row label="Founder" value={NAP.founderRole} />
             <Row label="Founded" value={NAP.founded} />
             <Row label="Location" value={NAP.locality} />
             <Row label="Service area" value={NAP.serviceArea} />
@@ -152,7 +155,7 @@ function PressPage() {
         <section className="mt-14">
           <h2 className="font-display text-xl font-semibold">Press contact</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
-            {NAP.founder}
+            {NAP.founderRole}
             <br />
             <a className="text-[color:var(--teal)] underline underline-offset-4" href={`mailto:${NAP.email}`}>
               {NAP.email}

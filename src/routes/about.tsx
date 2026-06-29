@@ -56,7 +56,7 @@ function Page() {
         <div className="container-x grid lg:grid-cols-2 gap-14 items-center">
           <img
             src={img}
-            alt="Nidia Almeida, founder of YES Experiences Portugal"
+            alt="Founder of YES Experiences Portugal"
             loading="lazy"
             className="w-full aspect-[4/5] object-cover"
             itemProp="image"
