@@ -477,6 +477,57 @@ export function jsonLdScript(node: unknown) {
 }
 
 /**
+ * Review nodes for a Local Story article whose linked Signature tour has
+ * first-party guest reviews. Emitted ONLY when matching review content is
+ * also rendered visibly on the page (Google requirement). `itemReviewed`
+ * points at the linked Signature tour Product so the credibility signal
+ * attaches to the experience itself.
+ */
+export type LocalStoryReviewInput = {
+  id: string;
+  rating: number;
+  body: string;
+  title: string | null;
+  reviewer_name: string | null;
+  reviewer_country: string | null;
+  published_at: string;
+};
+
+export function localStoryReviewsLd(args: {
+  signatureSlug: string;
+  signatureTitle: string;
+  reviews: LocalStoryReviewInput[];
+}) {
+  const productId = `${SITE_URL}/tours/${args.signatureSlug}#product`;
+  return args.reviews.map((r) => ({
+    "@context": "https://schema.org",
+    "@type": "Review",
+    "@id": `${SITE_URL}/local-stories#review-${r.id}`,
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: r.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    name: r.title ?? undefined,
+    reviewBody: r.body,
+    datePublished: r.published_at,
+    author: {
+      "@type": "Person",
+      name: r.reviewer_name?.trim() || "Verified guest",
+      ...(r.reviewer_country ? { nationality: r.reviewer_country } : {}),
+    },
+    itemReviewed: {
+      "@type": "Product",
+      "@id": productId,
+      name: args.signatureTitle,
+      url: `${SITE_URL}/tours/${args.signatureSlug}`,
+    },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  }));
+}
+
+/**
  * hreflang link entries for English-language landing pages that target
  * the US and Canada markets. Page content is identical for both
  * locales, so en-US, en-CA and x-default all point at the same URL —

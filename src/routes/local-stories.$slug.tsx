@@ -3,7 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, FOUNDER_ID, personFounderLd } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  FOUNDER_ID,
+  personFounderLd,
+  localStoryReviewsLd,
+  type LocalStoryReviewInput,
+} from "@/lib/jsonld";
+import { getTourReviews } from "@/lib/reviews.functions";
+import { findTour } from "@/data/signatureTours";
 import {
   getLocalStoryArticle,
   type LocalStoryArticle,
@@ -70,8 +79,40 @@ function articleJsonLd(a: LocalStoryArticle) {
   };
 }
 
+type LoaderData = {
+  reviews: LocalStoryReviewInput[];
+  signatureTitle: string | null;
+};
+
 export const Route = createFileRoute("/local-stories/$slug")({
-  head: ({ params }) => {
+  loader: async ({ params }): Promise<LoaderData> => {
+    const article = getLocalStoryArticle(params.slug);
+    if (!article) return { reviews: [], signatureTitle: null };
+    const tour = findTour(article.signatureSlug);
+    if (!tour) return { reviews: [], signatureTitle: null };
+    try {
+      const rows = await getTourReviews({
+        data: { tourId: article.signatureSlug, limit: 3 },
+      });
+      const reviews = (rows ?? [])
+        .filter((r) => r.is_first_party && r.rating >= 4 && !!r.body)
+        .slice(0, 3)
+        .map((r) => ({
+          id: r.id,
+          rating: Number(r.rating),
+          body: r.body,
+          title: r.title,
+          reviewer_name: r.reviewer_name,
+          reviewer_country: r.reviewer_country,
+          published_at: r.published_at,
+        }));
+      return { reviews, signatureTitle: tour.title };
+    } catch {
+      return { reviews: [], signatureTitle: tour.title };
+    }
+  },
+
+  head: ({ params, loaderData }) => {
     const article = getLocalStoryArticle(params.slug);
 
     // The day-trips guide now lives at its dedicated SEO route.
@@ -93,6 +134,16 @@ export const Route = createFileRoute("/local-stories/$slug")({
 
     if (article) {
       const url = `${BASE}/local-stories/${params.slug}`;
+      const reviews = loaderData?.reviews ?? [];
+      const signatureTitle = loaderData?.signatureTitle ?? article.ctaLabel;
+      const reviewScripts =
+        reviews.length > 0
+          ? localStoryReviewsLd({
+              signatureSlug: article.signatureSlug,
+              signatureTitle,
+              reviews,
+            }).map((node) => jsonLdScript(node))
+          : [];
       return {
         meta: [
           { title: article.title },
@@ -114,6 +165,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
               { name: article.h1, path: `/local-stories/${article.slug}` },
             ]),
           ),
+          ...reviewScripts,
         ],
       };
     }
@@ -148,16 +200,28 @@ export const Route = createFileRoute("/local-stories/$slug")({
 function Page() {
   const { slug } = Route.useParams();
   const article = getLocalStoryArticle(slug);
+  const loaderData = Route.useLoaderData();
 
   // Static SEO articles render directly (no DB needed).
   if (article) {
-    return <StaticArticleView article={article} />;
+    return (
+      <StaticArticleView
+        article={article}
+        reviews={loaderData?.reviews ?? []}
+      />
+    );
   }
 
   return <DbPostView slug={slug} />;
 }
 
-function StaticArticleView({ article }: { article: LocalStoryArticle }) {
+function StaticArticleView({
+  article,
+  reviews,
+}: {
+  article: LocalStoryArticle;
+  reviews: LocalStoryReviewInput[];
+}) {
   return (
     <SiteLayout>
       <article>
@@ -223,6 +287,45 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 </ul>
               )}
             </aside>
+
+            {reviews.length > 0 && (
+              <section
+                aria-label="Guest notes from this experience"
+                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40"
+              >
+                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
+                  Guest notes
+                </span>
+                <ul className="space-y-8">
+                  {reviews.map((r) => (
+                    <li
+                      key={r.id}
+                      className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5"
+                    >
+                      <div
+                        className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
+                        aria-label={`Rated ${r.rating} out of 5`}
+                      >
+                        {"★".repeat(Math.round(r.rating))}
+                      </div>
+                      {r.title && (
+                        <p className="font-display font-semibold text-[1rem] md:text-[1.05rem] text-[color:var(--charcoal)] mb-2">
+                          {r.title}
+                        </p>
+                      )}
+                      <p className="font-serif italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]">
+                        “{r.body}”
+                      </p>
+                      <p className="mt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                        {r.reviewer_name?.trim() || "Verified guest"}
+                        {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
 
             <nav className="mt-16 text-center">
               <Link
