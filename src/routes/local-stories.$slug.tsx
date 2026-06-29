@@ -106,6 +106,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         links: [{ rel: "canonical", href: url }],
         scripts: [
           jsonLdScript(articleJsonLd(article)),
+          jsonLdScript(personFounderLd()),
           jsonLdScript(
             breadcrumbLd([
               { name: "Home", path: "/" },
