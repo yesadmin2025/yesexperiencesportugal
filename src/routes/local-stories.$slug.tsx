@@ -82,7 +82,7 @@ function articleJsonLd(a: LocalStoryArticle) {
 }
 
 type LoaderData = {
-  reviews: LocalStoryReviewInput[];
+  reviews: NormalizedLocalStoryReview[];
   signatureTitle: string | null;
 };
 
@@ -96,7 +96,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
       const rows = await getTourReviews({
         data: { tourId: article.signatureSlug, limit: 3 },
       });
-      const reviews = (rows ?? [])
+      const filtered = (rows ?? [])
         .filter((r) => r.is_first_party && r.rating >= 4 && !!r.body)
         .slice(0, 3)
         .map((r) => ({
@@ -108,11 +108,15 @@ export const Route = createFileRoute("/local-stories/$slug")({
           reviewer_country: r.reviewer_country,
           published_at: r.published_at,
         }));
+      // Single normalization step — visible UI and JSON-LD consume the
+      // same shape so fields cannot drift.
+      const reviews = normalizeLocalStoryReviews(filtered);
       return { reviews, signatureTitle: tour.title };
     } catch {
       return { reviews: [], signatureTitle: tour.title };
     }
   },
+
 
   head: ({ params, loaderData }) => {
     const article = getLocalStoryArticle(params.slug);
