@@ -1,86 +1,93 @@
-# Real review aggregation — Viator + TripAdvisor + GetYourGuide
+## O que está realmente a acontecer
 
-## Honest note up front
+Pelo que descreves e pela screenshot:
 
-There is no public API for Viator/TripAdvisor/GetYourGuide review feeds. The realistic way to pull *real* per-review text is to scrape the platform's own tour pages with **Firecrawl** (already connected). Limitations to expect:
+1. O **Google Business Profile (GBP) é o novo**, mas no campo "Website" dele ainda está `http://www.yesexperiences.pt` em vez de `https://yesexperiencesportugal.com`.
+2. O domínio `.pt` está, de alguma forma, a servir o conteúdo do site novo (provavelmente por redirect/proxy ou por estar ligado ao mesmo backend), e por isso o Google mostra-o como resultado principal da marca.
+3. O domínio novo `yesexperiencesportugal.com` quase não aparece — porque o Google está a indexar o `.pt` como sendo "o site oficial" e a tratá-lo como o canónico de facto.
 
-- ~5–10 visible reviews per platform per tour per scrape (platforms paginate the rest behind JS).
-- Author names are first-name only; country sometimes missing — exactly as shown publicly.
-- A scraped review can go stale if the platform removes it. We store `source_url` + `scraped_at` so you can re-verify.
-- The "700+" claim must come from your manually entered per-platform totals (`tour_external_ratings`) — those are the only authoritative counts.
+Resultado: a marca tem dois sinais a competir, e o Google escolheu o errado.
 
-Per your answers: **counts mixed first-party + external; AggregateRating uses first-party only; build `/reviews` now.**
+## Estratégia
 
-## What I'll build
+Em vez de manter a estratégia "410 Gone no `.pt`" (que assume que controlamos o servidor do `.pt`), vamos fazer o oposto, que é mais rápido e seguro:
 
-### 1. Data — extend existing tables, no breaking changes
+1. **Mudar o link do GBP novo para `yesexperiencesportugal.com`.**
+2. **Consolidar o sinal canónico** para o domínio novo em todo o lado (schema, sitemap, robots, social, press, footer, autoridade externa, Tripadvisor listing se possível).
+3. **Forçar reindexação** via Search Console no domínio novo.
+4. **Tratar o `.pt**` de forma coerente com o que realmente controlas (ainda não sabemos se controlas o servidor `.pt` ou só o DNS).
 
-- `tour_reviews` already has `source`, `body`, `rating`, `reviewer_name`, `reviewer_country`, `source_url`, `verified`, `is_published`, `is_featured`. Add: `scraped_at timestamptz`, `external_id text` (to dedupe across scrapes), `language text default 'en'`. Unique index on `(source, external_id)` where `external_id is not null`.
-- `tour_external_ratings` stays as-is (per-platform counts/averages, manual via `/admin/reviews`).
-- Add `tour_review_scrapes` (id, tour_id, source, source_url, status, fetched_count, error, created_at) for audit.
+## Plano de execução
 
-### 2. Server fn — `scrapeTourReviews({ tourId, source })`
+### Fase 1 — Ações tuas (fora do código, mas críticas)
 
-- Admin-only (`requireSupabaseAuth` + `has_role('admin')`).
-- Reads `signatureTours[tourId].externalUrls.{viator,tripadvisor,getyourguide}` (we already store these).
-- Calls Firecrawl `scrape` with structured JSON extraction (schema = array of `{ author, country?, rating, body, dateText? }`).
-- Normalizes, generates stable `external_id` (hash of `source + author + first 80 chars of body`), upserts into `tour_reviews` with `source_url`, `scraped_at`, `verified=true`, `is_published=false` (admin reviews before publishing).
-- Writes a `tour_review_scrapes` audit row.
+Sem isto nada do resto resolve o que vês no Google:
 
-### 3. Admin — extend `/admin/reviews`
+- **GBP novo → editar campo Website** e mudar de `yesexperiences.pt` para `https://yesexperiencesportugal.com`. Guardar.
+- **GBP → editar nome** se aparecer "Yes Experiences Portugal" com link `.pt`: confirmar nome consistente com o site novo.
+- **Tripadvisor listing** (`Yes Experiences Portugal - O que saber antes de ir`): editar "Website" para `yesexperiencesportugal.com`.
+- **VisitPortugal listing**: pedir/atualizar URL para `yesexperiencesportugal.com`.
+- Confirmar comigo o que controlas no `.pt`:
+  - controlas DNS? (Cloudflare/registrar)
+  - controlas o servidor/host antigo (WordPress)?
+  - queres manter email forwarding `@yesexperiences.pt`?
 
-- Per tour, per platform: "Refresh from Viator/TripAdvisor/GYG" button → calls scrape fn → shows new draft reviews → bulk-publish + feature picker (5–8 per tour).
-- Keeps the existing manual counts/averages section (`tour_external_ratings`) — that's the source for the "700+ across platforms" line.
+A resposta à última pergunta decide se o `.pt` faz 410, 301, ou simplesmente desaparece.
 
-### 4. Aggregation server fns (public, read-only, RLS-respecting)
+### Fase 2 — Auditoria e limpeza canónica no código (quando passarmos a build)
 
-- `getGlobalReviewSummary()` → `{ totalAcrossPlatforms, averageAcrossPlatforms, firstPartyCount, firstPartyAverage }`. Totals/averages are weighted across `tour_external_ratings` + first-party reviews.
-- `getTourReviewSummary(tourId)` → same shape per tour.
-- `getCuratedReviews({ tourId?, limit })` → published, featured-first, mix of sources, capped 5–8.
-- `getAllReviewsGroupedByTour()` → for `/reviews` page.
+Tudo isto reforça o domínio novo como o único legítimo:
 
-### 5. Frontend wiring (mobile-first, brand-token only)
+- Auditar `src/`, `public/`, JSON-LD, schemas (`Organization`, `LocalBusiness`, `Person`, `Product`, `TouristTrip`), `sameAs`, footer, press page, `externalAuthorityMentions.ts`, sitemap, robots, manifest e og:url.
+- Garantir que **nenhuma referência ao `.pt**` sobra (só o handler de 410, que é interno e sem efeito visual).
+- Confirmar que o `GBP novo` é o único listado em `sameAs` dentro do `LocalBusiness`, e remover qualquer link para o perfil antigo.
+- Confirmar que o `canonical` e `og:url` em cada route são auto-referenciados ao domínio novo.
+- Confirmar `Host: https://yesexperiencesportugal.com` no `robots.txt` (já está).
+- Adicionar `<link rel="alternate" hreflang>` se aplicável (en/pt) — todos a apontar ao novo domínio.
 
-- Homepage `GuestQuotes`: switch to `getGlobalReviewSummary` + `getCuratedReviews({ limit: 6 })`. Keep the existing platform-icons strip with the manual totals.
-- Signature tour pages `<TourReviews>`: per-tour summary + 5–8 reviews, source labels per card.
-- New `/reviews` route: grouped by tour, summary band, breadcrumbs.
+### Fase 3 — Search Console (apenas no domínio novo)
 
-### 6. Structured data
+- Confirmar `yesexperiencesportugal.com` como propriedade verificada.
+- Submeter `sitemap.xml` (já existe a rota).
+- Inspeção de URL + "Request indexing" para:
+  - `/`
+  - `/experiences`
+  - `/studio-v3`
+  - `/multi-day`
+  - `/wine-tours-lisbon`
+  - `/arrabida-wine-tour`
+  - `/sintra-day-tour-from-lisbon`
+  - `/private-wine-tour-lisbon`
+  - todas as `tours/$tourId` principais
+- Verificar relatório de "Páginas" e tratar erros (canonical mismatch, duplicate, soft 404).
 
-- AggregateRating JSON-LD on home, tour, and `/reviews`: **first-party reviews only** (your choice). Counts and averages computed from published `tour_reviews` where `is_first_party=true`.
-- Review JSON-LD: only for reviews actually rendered on the page (visible content match).
-- No schema generated from external scraped reviews — they appear as visible "via Viator / via TripAdvisor / via GetYourGuide" cards without `Review` markup, which keeps us compliant with Google's policy and your no-fake-data rule.
+Tudo via o conector Google Search Console já ligado a `yesexperiences@gmail.com`.
 
-### 7. Trust copy
+### Fase 4 — Tratar o `.pt` conforme o que controlas
 
-- Single line above the reviews block: "Based on verified guest reviews across major booking platforms."
-- Per-card source label: "via Viator" / "via TripAdvisor" / "via GetYourGuide" / "via YES guest" (first-party).
+Três cenários, com base na tua resposta na Fase 1:
 
-## What I will NOT do
+A. **Controlas DNS + servidor antigo** → opcional: servir `301 → yesexperiencesportugal.com` durante 90 dias para passar autoridade, depois cortar; ou ligar `.pt` ao Lovable para o nosso 410 entrar em vigor.
 
-- No invented reviews, no invented ratings, no padded counts.
-- No `Review` JSON-LD for scraped platform reviews (would risk schema-mismatch penalties).
-- No hidden content; everything in JSON-LD is on the page.
-- No changes to Stripe/Bókun/Studio/pricing/booking flow.
+B. **Controlas só DNS, não o servidor** → ligar `yesexperiences.pt` ao Lovable como custom domain (A record para 185.158.133.1). A partir daí o nosso middleware serve 410 Gone, e o Google despromove. Email forwarding mantém-se se MX/TXT/SPF não forem mexidos.
 
-## Technical details
+C. **Não controlas nem DNS nem servidor** → só Fase 2 + Fase 3 + atualizar GBP/Tripadvisor/VisitPortugal. O `.pt` cairá lentamente porque o Google deixa de o ver como ligado à entidade.
 
-- Migration adds 3 columns + 1 audit table + 1 unique index. Public reads stay restricted to `is_published=true`.
-- Scrape fn returns `{ inserted, updated, skipped, errors }` for the admin UI.
-- Firecrawl call uses `formats: [{ type: 'json', schema, prompt }]` with `onlyMainContent: true` and a sensible `waitFor` for JS-rendered review widgets.
-- Aggregation fns are server fns (RLS-respecting) and called from public route loaders via Query (no bearer needed).
-- `/reviews` is a public top-level route, SSR on, with breadcrumb + AggregateRating JSON-LD scoped to first-party.
+### Fase 5 — Monitorização
 
-## Output you'll get
+Vamos usar o `/admin/legacy-domains-monitor` que já existe + estender:
 
-- Per-tour totals (counts + averages) on each signature page.
-- Global totals on homepage + `/reviews`.
-- 5–8 curated cards per tour, with real source attribution.
-- AggregateRating schema, first-party only, matching visible content.
-- Audit trail of every scrape in `tour_review_scrapes`.
+- adicionar uma checagem que diga "GBP novo aponta para domínio canónico?" (manual, lida do GBP via Google API se autorizada);
+- relatório semanal automático: o `.pt` ainda indexado? quantos resultados?
+- verificar inspeção de URL no GSC para os top 10 URLs do site novo.
 
-Approve to proceed and I'll start with the migration.
+## O que preciso de ti antes de avançar para build
 
-&nbsp;
+Duas respostas curtas:
 
-If possible hide a few negative ones
+1. Quem controla o `.pt` hoje (DNS, servidor, ambos, nenhum)?
+2. Queres manter o **email forwarding** `@yesexperiences.pt` ou já migraste tudo para `@yesexperiencesportugal.com`?
+
+Assim que respondas, mudo para build mode e executo Fases 2, 3, 4 e 5 de uma vez.
+
+[https://www.google.com/search?q=yes+experiences+portugal%C2%A0&sca_esv=9d11f09b99ad9e2b&rlz=1CDGOYI_enPT1074PT1074&hl=pt-PT&biw=393&bih=665&sxsrf=APpeQnvqbISLeY4FBrzm6fTwT8Q9RtEGlw%3A1782824634270&ei=HMBDatfxH_OokdUPvcSIwQc&cs=1&oq=yes+experiences+portugal%C2%A0&gs_lp=EhNtb2JpbGUtZ3dzLXdpei1zZXJwIhp5ZXMgZXhwZXJpZW5jZXMgcG9ydHVnYWzCoDIEECMYJzIEECMYJzIMECMYgAQYExgnGIoFMgYQABgWGB4yBRAhGKABMgUQIRigATIFECEYoAEyCBAAGIAEGKIESMUZUOwIWKURcAB4AJABAJgB9gGgAe0KqgEFMi44LjG4AQPIAQD4AQGYAgegAvAFwgIHECMYsAMYJ8ICCBAAGLADGO8FwgILEAAYgAQYsAMYogTCAgUQABjvBZgDAIgGAZAGBJIHAzIuNaAHgU2yBwMyLjW4B_AFwgcFMC41LjLIBw-ACAA&sclient=mobile-gws-wiz-serp#ip=1](https://www.google.com/search?q=yes+experiences+portugal%C2%A0&sca_esv=9d11f09b99ad9e2b&rlz=1CDGOYI_enPT1074PT1074&hl=pt-PT&biw=393&bih=665&sxsrf=APpeQnvqbISLeY4FBrzm6fTwT8Q9RtEGlw%3A1782824634270&ei=HMBDatfxH_OokdUPvcSIwQc&cs=1&oq=yes+experiences+portugal%C2%A0&gs_lp=EhNtb2JpbGUtZ3dzLXdpei1zZXJwIhp5ZXMgZXhwZXJpZW5jZXMgcG9ydHVnYWzCoDIEECMYJzIEECMYJzIMECMYgAQYExgnGIoFMgYQABgWGB4yBRAhGKABMgUQIRigATIFECEYoAEyCBAAGIAEGKIESMUZUOwIWKURcAB4AJABAJgB9gGgAe0KqgEFMi44LjG4AQPIAQD4AQGYAgegAvAFwgIHECMYsAMYJ8ICCBAAGLADGO8FwgILEAAYgAQYsAMYogTCAgUQABjvBZgDAIgGAZAGBJIHAzIuNaAHgU2yBwMyLjW4B_AFwgcFMC41LjLIBw-ACAA&sclient=mobile-gws-wiz-serp#ip=1)
