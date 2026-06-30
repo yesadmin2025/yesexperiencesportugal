@@ -174,6 +174,9 @@ export const Route = createFileRoute("/local-stories/$slug")({
               { name: article.h1, path: `/local-stories/${article.slug}` },
             ]),
           ),
+          ...(article.faq && article.faq.length > 0
+            ? [jsonLdScript(faqPageLd(article.faq))]
+            : []),
           ...reviewScripts,
         ],
       };
