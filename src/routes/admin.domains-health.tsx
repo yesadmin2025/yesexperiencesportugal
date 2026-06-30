@@ -184,14 +184,29 @@ function HostCard({ r }: { r: DomainHealth }) {
 
 function DomainsHealthPage() {
   const fetcher = useServerFn(probeDomainHealth);
-  const { data, isLoading, isFetching, refetch, error } = useQuery({
+  const [autoMs, setAutoMs] = useState<number>(0);
+  const { data, isLoading, isFetching, refetch, error, dataUpdatedAt } = useQuery({
     queryKey: ["domain-health"],
     queryFn: () => fetcher(),
     refetchOnWindowFocus: false,
+    refetchInterval: autoMs > 0 ? autoMs : false,
+    refetchIntervalInBackground: false,
   });
+
+  // Tick every second so the "next refresh in Xs" countdown updates live.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (autoMs <= 0) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [autoMs]);
 
   const canonical = data?.hosts.filter((h) => h.role === "canonical") ?? [];
   const legacy = data?.hosts.filter((h) => h.role === "legacy") ?? [];
+  const nextInSec =
+    autoMs > 0 && dataUpdatedAt
+      ? Math.max(0, Math.ceil((dataUpdatedAt + autoMs - now) / 1000))
+      : null;
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 md:py-14">
@@ -211,15 +226,48 @@ function DomainsHealthPage() {
             type="button"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="rounded border border-[color:var(--charcoal)] px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-[color:var(--charcoal)] transition hover:bg-[color:var(--charcoal)] hover:text-white disabled:opacity-50"
+            className="rounded bg-[color:var(--charcoal)] px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-white transition hover:opacity-90 disabled:opacity-50"
           >
-            {isFetching ? "A verificar…" : "Re-verificar"}
+            {isFetching ? "A revalidar…" : "Revalidar agora"}
           </button>
+
+          <div
+            role="radiogroup"
+            aria-label="Auto-refresh interval"
+            className="flex items-center gap-1 rounded border border-[color:var(--sand)] bg-white p-1"
+          >
+            <span className="px-2 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+              Auto
+            </span>
+            {AUTO_REFRESH_OPTIONS.map((opt) => {
+              const active = autoMs === opt.ms;
+              return (
+                <button
+                  key={opt.label}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => setAutoMs(opt.ms)}
+                  className={`rounded px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.14em] transition ${
+                    active
+                      ? "bg-[color:var(--teal)] text-white"
+                      : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+
           {data?.checkedAt && (
             <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-              Última verificação: {new Date(data.checkedAt).toLocaleString("pt-PT")}
+              Última: {new Date(data.checkedAt).toLocaleTimeString("pt-PT")}
+              {nextInSec !== null && <> · próxima em {nextInSec}s</>}
+              {isFetching && <> · a sondar…</>}
             </span>
           )}
+
           <Link
             to="/admin/legacy-domains-monitor"
             className="ml-auto text-xs underline text-[color:var(--teal)]"
