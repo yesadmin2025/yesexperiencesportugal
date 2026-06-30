@@ -115,6 +115,7 @@ export const Route = createFileRoute("/sintra-day-tour-from-lisbon")({
           { name: "Sintra Day Tour from Lisbon", path: PAGE_PATH },
         ]),
       ),
+      jsonLdScript(faqPageLd(SINTRA_FAQ)),
     ],
   }),
   component: Page,
