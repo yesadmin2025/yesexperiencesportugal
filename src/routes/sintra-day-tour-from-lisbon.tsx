@@ -11,9 +11,9 @@ const PAGE_PATH = "/sintra-day-tour-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const PARENT_TOUR_ID = "sintra-cascais";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Sintra Day Tour from Lisbon — Private, Hidden Gems & Cabo da Roca";
+const TITLE = "Sintra Day Tour from Lisbon — Private & Cabo da Roca";
 const DESCRIPTION =
-  "Private Sintra day tour from Lisbon — quieter palaces and forests, Cabo da Roca and Cascais, ending with a small wine tasting. Door-to-door from your Lisbon hotel.";
+  "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.";
 
 const productLd = {
   "@context": "https://schema.org",
