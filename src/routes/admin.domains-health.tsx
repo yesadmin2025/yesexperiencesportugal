@@ -1,7 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { probeDomainHealth, type DomainHealth, type PathProbe } from "@/lib/domain-health.functions";
+
+const AUTO_REFRESH_OPTIONS = [
+  { label: "Off", ms: 0 },
+  { label: "30s", ms: 30_000 },
+  { label: "1m", ms: 60_000 },
+  { label: "5m", ms: 5 * 60_000 },
+] as const;
 
 export const Route = createFileRoute("/admin/domains-health")({
   head: () => ({
