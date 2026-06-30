@@ -273,6 +273,29 @@ function StaticArticleView({
               ))}
             </div>
 
+            {article.faq && article.faq.length > 0 && (
+              <section
+                aria-label="Frequently asked questions"
+                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40"
+              >
+                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
+                  Frequently asked
+                </span>
+                <dl className="space-y-8">
+                  {article.faq.map((item, i) => (
+                    <div key={i}>
+                      <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] leading-[1.3] text-[color:var(--charcoal)] mb-3">
+                        {item.q}
+                      </dt>
+                      <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal)] leading-[1.8]">
+                        {item.a}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            )}
+
             <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                 Travel this story
