@@ -1,4 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 /**
  * Google Search Console integration for the redirects/404 monitor.
@@ -26,6 +28,17 @@ const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
 const SITE_URL = "https://yesexperiencesportugal.com/";
 
 type GscHeaders = { Authorization: string; "X-Connection-Api-Key": string };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  const { data: roleRow, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error || !roleRow) throw new Error("Forbidden");
+}
 
 function gscHeaders(): GscHeaders {
   const lovableKey = process.env.LOVABLE_API_KEY;
@@ -102,6 +115,7 @@ async function inspectOne(url: string): Promise<UrlInspectionResult> {
 }
 
 export const inspectGscUrls = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: { urls: string[] }) => {
     if (!input || !Array.isArray(input.urls)) {
       throw new Error("urls must be an array");
@@ -112,7 +126,9 @@ export const inspectGscUrls = createServerFn({ method: "POST" })
       .slice(0, 25);
     return { urls };
   })
-  .handler(async ({ data }): Promise<{ results: UrlInspectionResult[] }> => {
+  .handler(async ({ data, context }): Promise<{ results: UrlInspectionResult[] }> => {
+    await assertAdmin(context);
+
     // Sequential to be polite to the GSC quota (≈600 inspections/day, 2k/min).
     const results: UrlInspectionResult[] = [];
     for (const u of data.urls) {
@@ -131,11 +147,14 @@ export type TopPageRow = {
 };
 
 export const getGscTopPages = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: { days?: number; rowLimit?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 28), 1), 90),
     rowLimit: Math.min(Math.max(Number(input?.rowLimit ?? 25), 1), 100),
   }))
-  .handler(async ({ data }): Promise<{ rows: TopPageRow[]; error?: string }> => {
+  .handler(async ({ data, context }): Promise<{ rows: TopPageRow[]; error?: string }> => {
+    await assertAdmin(context);
+
     const end = new Date();
     const start = new Date();
     start.setDate(end.getDate() - data.days);

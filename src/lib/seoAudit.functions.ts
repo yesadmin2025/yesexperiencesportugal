@@ -1,4 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export type SeoAuditIssue = {
   level: "critical" | "warn";
@@ -22,6 +24,42 @@ export type SeoAuditResult = {
   issues: SeoAuditIssue[];
   error?: string;
 };
+
+const ALLOWED_AUDIT_HOSTS = new Set([
+  "yesexperiencesportugal.com",
+  "www.yesexperiencesportugal.com",
+  "yesexperiences.pt",
+  "www.yesexperiences.pt",
+  "yesexperiencesportugal.lovable.app",
+]);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  const { data: roleRow, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error || !roleRow) throw new Error("Forbidden");
+}
+
+function normalizeAuditUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:") return null;
+
+    const hostname = url.hostname.toLowerCase();
+    if (!ALLOWED_AUDIT_HOSTS.has(hostname)) return null;
+    if (url.username || url.password) return null;
+    if (url.port && url.port !== "443") return null;
+
+    url.hash = "";
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
 
 function pick(html: string, re: RegExp): string | undefined {
   const m = html.match(re);
@@ -88,10 +126,25 @@ function auditHtml(url: string, status: number, html: string): SeoAuditResult {
 
 async function auditOne(url: string): Promise<SeoAuditResult> {
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "YESExperiencesSEOAuditBot/1.0" },
-      redirect: "follow",
-    });
+    let currentUrl = url;
+    let res: Response | null = null;
+
+    for (let i = 0; i < 4; i += 1) {
+      res = await fetch(currentUrl, {
+        headers: { "User-Agent": "YESExperiencesSEOAuditBot/1.0" },
+        redirect: "manual",
+      });
+
+      if (![301, 302, 303, 307, 308].includes(res.status)) break;
+      const location = res.headers.get("location");
+      if (!location) break;
+
+      const nextUrl = normalizeAuditUrl(new URL(location, currentUrl).toString());
+      if (!nextUrl) throw new Error("Redirect blocked by audit hostname allowlist");
+      currentUrl = nextUrl;
+    }
+
+    if (!res) throw new Error("Fetch falhou");
     const html = await res.text();
     return auditHtml(url, res.status, html);
   } catch (e) {
@@ -105,14 +158,18 @@ async function auditOne(url: string): Promise<SeoAuditResult> {
 }
 
 export const auditSeoUrls = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: { urls: string[] }) => {
     if (!input || !Array.isArray(input.urls)) throw new Error("urls must be an array");
     const urls = input.urls
-      .filter((u) => typeof u === "string" && /^https?:\/\//i.test(u))
+      .map((u) => (typeof u === "string" ? normalizeAuditUrl(u) : null))
+      .filter((u): u is string => Boolean(u))
       .slice(0, 25);
     return { urls };
   })
-  .handler(async ({ data }): Promise<{ results: SeoAuditResult[] }> => {
+  .handler(async ({ data, context }): Promise<{ results: SeoAuditResult[] }> => {
+    await assertAdmin(context);
+
     const results = await Promise.all(data.urls.map(auditOne));
     return { results };
   });
