@@ -7,6 +7,7 @@ Allow: /
 # Internal / QA / admin routes that should not be indexed
 Disallow: /admin
 Disallow: /auth
+Disallow: /booking-confirmed
 Disallow: /brand-qa
 Disallow: /builder
 Disallow: /checkout
