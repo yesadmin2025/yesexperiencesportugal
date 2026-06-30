@@ -70,6 +70,7 @@ import { Route as AdminImportToursRouteImport } from './routes/admin.import-tour
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
+import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
 import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
@@ -395,6 +396,11 @@ const AdminDriftBehaviorRoute = AdminDriftBehaviorRouteImport.update({
   path: '/admin/drift-behavior',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDomainsHealthRoute = AdminDomainsHealthRouteImport.update({
+  id: '/admin/domains-health',
+  path: '/admin/domains-health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
   id: '/admin/dns-watch',
   path: '/admin/dns-watch',
@@ -515,6 +521,7 @@ export interface FileRoutesByFullPath {
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
+  '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
@@ -593,6 +600,7 @@ export interface FileRoutesByTo {
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
+  '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
@@ -672,6 +680,7 @@ export interface FileRoutesById {
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
+  '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
@@ -752,6 +761,7 @@ export interface FileRouteTypes {
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/dns-watch'
+    | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
@@ -830,6 +840,7 @@ export interface FileRouteTypes {
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/dns-watch'
+    | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
@@ -908,6 +919,7 @@ export interface FileRouteTypes {
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/dns-watch'
+    | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
@@ -987,6 +999,7 @@ export interface RootRouteChildren {
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
   AdminDnsWatchRoute: typeof AdminDnsWatchRoute
+  AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
@@ -1451,6 +1464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDriftBehaviorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/domains-health': {
+      id: '/admin/domains-health'
+      path: '/admin/domains-health'
+      fullPath: '/admin/domains-health'
+      preLoaderRoute: typeof AdminDomainsHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/dns-watch': {
       id: '/admin/dns-watch'
       path: '/admin/dns-watch'
@@ -1636,6 +1656,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
   AdminDnsWatchRoute: AdminDnsWatchRoute,
+  AdminDomainsHealthRoute: AdminDomainsHealthRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
