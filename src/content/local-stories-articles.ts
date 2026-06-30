@@ -301,6 +301,24 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
     ],
     datePublished: "2026-06-30",
+    faq: [
+      {
+        q: "What are the best wineries near Lisbon?",
+        a: "For a private day from Lisbon we go to small Arrábida producers like Quinta de Catralvos and José Maria da Fonseca, Setúbal Moscatel houses such as Bacalhôa, and — if you have a full day — talha wineries near Évora in the Alentejo. They're family-run, quiet, and within an easy drive of the city.",
+      },
+      {
+        q: "How far are the wineries from Lisbon?",
+        a: "Arrábida and Setúbal are 40–50 minutes south of Lisbon by car. Évora and the Alentejo talha producers are about 1h20–1h40 east. Both make a comfortable private day with hotel pickup; the Alentejo is better as a longer day or an overnight.",
+      },
+      {
+        q: "Is a private wine tour from Lisbon worth it?",
+        a: "Yes if you want to visit small family cellars that don't take walk-ins, taste with the producer rather than a counter assistant, and have a proper long lunch in between. The price difference vs a coach tour buys you access, pace, and a licensed local guide.",
+      },
+      {
+        q: "Arrábida or Alentejo — which wine region should I choose?",
+        a: "Arrábida is closer, cooler, coastal, and pairs naturally with a beach or Setúbal seafood lunch. Alentejo is warmer, older, and the talha (clay-amphora) wines are unlike anything else in Portugal. If it's your first wine day from Lisbon, start with Arrábida.",
+      },
+    ],
   },
 ];
 
