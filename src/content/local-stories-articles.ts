@@ -276,6 +276,30 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-06-12",
   },
+  {
+    slug: "best-wineries-near-lisbon",
+    title: "Best Wineries Near Lisbon — Arrábida & Alentejo (by a Local)",
+    metaDescription:
+      "A local's guide to the best wineries near Lisbon — small Arrábida cellars, Setúbal Moscatel houses and Alentejo talha producers worth the drive.",
+    h1: "The Best Wineries Near Lisbon",
+    eyebrow: "Wine · Lisbon Region",
+    standfirst:
+      "The cellars we actually take guests to — small, family-run, and within an easy private drive of Lisbon.",
+    sections: [
+      { heading: "Arrábida: the coast that quietly makes great wine", body: "[Body copy to be supplied.]" },
+      { heading: "Setúbal Moscatel — sweet, salty, and very Portuguese", body: "[Body copy to be supplied.]" },
+      { heading: "Alentejo talha wines — buried clay, ancient method", body: "[Body copy to be supplied.]" },
+      { heading: "How we choose which wineries to visit", body: "[Body copy to be supplied.]" },
+    ],
+    ctaLead:
+      "Most of these wineries are part of our private Signature wine days — door-to-door from your Lisbon hotel, with a quiet long lunch in between.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
+    ],
+    datePublished: "2026-06-30",
+  },
 ];
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> =

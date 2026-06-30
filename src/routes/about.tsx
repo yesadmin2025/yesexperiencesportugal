@@ -8,7 +8,7 @@ import img from "@/assets/why-image.jpg";
 
 const TITLE = "About YES Experiences Portugal — Founder, RNAAT 31/2023";
 const DESCRIPTION =
-  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT 31/2023) founded in 2022 by Nidia Almeida. Private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo.";
+  "Licensed Portuguese tour operator (RNAAT 31/2023) founded in 2022. Private Signature days and bespoke journeys in Lisbon, Sintra and Arrábida.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({

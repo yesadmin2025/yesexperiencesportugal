@@ -211,7 +211,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Private experiences in Portugal — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra. 700+ five-star reviews.",
+          "Private Portugal experiences — Signature days, Experience Studio and bespoke journeys in Lisbon, Sintra and Arrábida. 5-star rated.",
       },
       {
         property: "og:title",
@@ -220,7 +220,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Private experiences in Portugal — Signature days, Experience Studio with live pricing and instant reservation, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+          "Private Portugal experiences — Signature days, Experience Studio with instant reservation, and bespoke journeys.",
       },
       {
         property: "twitter:title",
@@ -229,7 +229,7 @@ export const Route = createFileRoute("/")({
       {
         property: "twitter:description",
         content:
-          "Private experiences in Portugal — Signature days, Experience Studio with live pricing and instant reservation, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+          "Private Portugal experiences — Signature days, Experience Studio with instant reservation, and bespoke journeys.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },

@@ -246,7 +246,7 @@ export function CinematicHero() {
       {/* ShapeYourDay removed from hero per design brief. */}
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
-      <div className="sr-only" aria-hidden="true">
+      <div className="sr-only">
         <h1 className="hero-h1">
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
