@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   probeLegacyDomains,
   type LegacyHostReport,
 } from "@/lib/legacy-domains-monitor.functions";
+import {
+  submitLegacyGscActions,
+  type LegacyActionsReport,
+} from "@/lib/gscLegacyActions.functions";
 
 export const Route = createFileRoute("/admin/legacy-domains-monitor")({
   head: () => ({
