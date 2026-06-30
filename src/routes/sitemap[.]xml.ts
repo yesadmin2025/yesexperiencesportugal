@@ -18,11 +18,17 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const today = new Date().toISOString().slice(0, 10);
+        // NOTE: internal / utility / auth / QA routes are intentionally excluded from the sitemap
+        // because they are blocked by robots.txt and should not be indexed. These include:
+        // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
+        // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
+        // /typography-audit, /unsubscribe.
         const staticEntries: SitemapEntry[] = [
           { path: "/", lastmod: today, changefreq: "weekly", priority: "1.0" },
           { path: "/about", lastmod: today, changefreq: "monthly", priority: "0.6" },
           { path: "/press", lastmod: today, changefreq: "monthly", priority: "0.5" },
           { path: "/contact", lastmod: today, changefreq: "monthly", priority: "0.6" },
+          { path: "/reviews", lastmod: today, changefreq: "weekly", priority: "0.7" },
           { path: "/experiences", lastmod: today, changefreq: "weekly", priority: "0.9" },
           { path: "/studio-v3", lastmod: today, changefreq: "weekly", priority: "0.9" },
           { path: "/day-tours", lastmod: today, changefreq: "weekly", priority: "0.8" },
