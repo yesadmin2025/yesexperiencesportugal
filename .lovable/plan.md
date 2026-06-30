@@ -1,93 +1,51 @@
-## O que está realmente a acontecer
 
-Pelo que descreves e pela screenshot:
+Boa — se o GBP e o Tripadvisor já apontam para `yesexperiencesportugal.com`, o sinal externo está corrigido. O que falta agora é forçar o Google a reconciliar isto. Hoje o `.pt` ainda responde com um 302 para `tututu.com` (controlado por DNS/WordPress antigo, fora do nosso projeto), por isso o nosso 410 nunca é entregue ao Googlebot — e enquanto isso não mudar, o Google continua a ver o `.pt` como "vivo mas estranho" e demora a transferir autoridade.
 
-1. O **Google Business Profile (GBP) é o novo**, mas no campo "Website" dele ainda está `http://www.yesexperiences.pt` em vez de `https://yesexperiencesportugal.com`.
-2. O domínio `.pt` está, de alguma forma, a servir o conteúdo do site novo (provavelmente por redirect/proxy ou por estar ligado ao mesmo backend), e por isso o Google mostra-o como resultado principal da marca.
-3. O domínio novo `yesexperiencesportugal.com` quase não aparece — porque o Google está a indexar o `.pt` como sendo "o site oficial" e a tratá-lo como o canónico de facto.
+Proponho 4 ações, sem mexer em código de produto, Stripe, Bókun ou preços.
 
-Resultado: a marca tem dois sinais a competir, e o Google escolheu o errado.
+## 1. Decidir o destino do domínio `.pt` (precisa de ti)
 
-## Estratégia
+Há três caminhos possíveis — só um resolve mesmo:
 
-Em vez de manter a estratégia "410 Gone no `.pt`" (que assume que controlamos o servidor do `.pt`), vamos fazer o oposto, que é mais rápido e seguro:
+- **A. Ligar `yesexperiences.pt` a este projeto Lovable** (recomendado).
+  Apontas o A record do `.pt` para `185.158.133.1` e adicionas o domínio em Settings → Domains. A partir daí o nosso middleware serve **HTTP 410 Gone + noindex** em todo o `.pt`, que é o sinal mais limpo para o Google desindexar.
+- **B. Desligar completamente o `.pt`** (remover o registo no registrar, ou apagar todos os DNS records). O Google vai acabar por desindexar por DNS failure, mas demora mais semanas.
+- **C. Não fazer nada.** O `.pt` continua a redirecionar para `tututu.com` e o Google continua confuso. Não recomendo.
 
-1. **Mudar o link do GBP novo para `yesexperiencesportugal.com`.**
-2. **Consolidar o sinal canónico** para o domínio novo em todo o lado (schema, sitemap, robots, social, press, footer, autoridade externa, Tripadvisor listing se possível).
-3. **Forçar reindexação** via Search Console no domínio novo.
-4. **Tratar o `.pt**` de forma coerente com o que realmente controlas (ainda não sabemos se controlas o servidor `.pt` ou só o DNS).
+Preciso que confirmes qual queres (A, B ou C) antes de avançar.
 
-## Plano de execução
+## 2. Limpar quaisquer referências residuais ao `.pt` no código
 
-### Fase 1 — Ações tuas (fora do código, mas críticas)
+Auditoria rápida a:
+- `src/lib/jsonld.ts`, `src/lib/seo.ts`, canonical tags, sitemap, robots
+- emails, footer, press kit, About, Local Stories
+- redirects e middleware
 
-Sem isto nada do resto resolve o que vês no Google:
+Garantir que nada no site novo menciona, linka ou faz canonical para `yesexperiences.pt`. Hoje já está quase limpo, mas faço um sweep final.
 
-- **GBP novo → editar campo Website** e mudar de `yesexperiences.pt` para `https://yesexperiencesportugal.com`. Guardar.
-- **GBP → editar nome** se aparecer "Yes Experiences Portugal" com link `.pt`: confirmar nome consistente com o site novo.
-- **Tripadvisor listing** (`Yes Experiences Portugal - O que saber antes de ir`): editar "Website" para `yesexperiencesportugal.com`.
-- **VisitPortugal listing**: pedir/atualizar URL para `yesexperiencesportugal.com`.
-- Confirmar comigo o que controlas no `.pt`:
-  - controlas DNS? (Cloudflare/registrar)
-  - controlas o servidor/host antigo (WordPress)?
-  - queres manter email forwarding `@yesexperiences.pt`?
+## 3. Reforçar sinais de canonicalização no `.com`
 
-A resposta à última pergunta decide se o `.pt` faz 410, 301, ou simplesmente desaparece.
+- Confirmar `<link rel="canonical">` absoluto em todas as rotas indexáveis
+- `og:url` e `twitter:url` absolutos no `.com`
+- `sitemap.xml` só com URLs `.com`
+- `robots.txt` no `.com` aponta apenas o sitemap do `.com`
+- JSON-LD (`LocalBusiness`, `Organization`, `WebSite`) com `url` e `sameAs` exclusivamente no `.com` (incluindo o link do novo GBP que já corrigiste)
 
-### Fase 2 — Auditoria e limpeza canónica no código (quando passarmos a build)
+## 4. Forçar reindexação no Google Search Console
 
-Tudo isto reforça o domínio novo como o único legítimo:
+Via API (já temos ligação ativa):
+- Re-submeter `sitemap.xml` do `.com`
+- URL Inspection + Request Indexing para: `/`, `/signature`, `/studio`, `/travel-designer`, `/about`, `/reviews`, e as 3-5 landing pages SEO de maior intenção
+- Se confirmares opção **A** acima, adicionar também a propriedade `yesexperiences.pt` no GSC e pedir **Removals** (URL removal tool) para o domínio inteiro — só funciona se formos donos verificados da propriedade no GSC, o que requer A.
 
-- Auditar `src/`, `public/`, JSON-LD, schemas (`Organization`, `LocalBusiness`, `Person`, `Product`, `TouristTrip`), `sameAs`, footer, press page, `externalAuthorityMentions.ts`, sitemap, robots, manifest e og:url.
-- Garantir que **nenhuma referência ao `.pt**` sobra (só o handler de 410, que é interno e sem efeito visual).
-- Confirmar que o `GBP novo` é o único listado em `sameAs` dentro do `LocalBusiness`, e remover qualquer link para o perfil antigo.
-- Confirmar que o `canonical` e `og:url` em cada route são auto-referenciados ao domínio novo.
-- Confirmar `Host: https://yesexperiencesportugal.com` no `robots.txt` (já está).
-- Adicionar `<link rel="alternate" hreflang>` se aplicável (en/pt) — todos a apontar ao novo domínio.
+## O que NÃO faço neste passo
+- Não mexo em Stripe, Bókun, preços, builder, Studio
+- Não rebuild de páginas
+- Não altero copy de produto
+- Não toco em emails transacionais
 
-### Fase 3 — Search Console (apenas no domínio novo)
+## Decisão que preciso de ti
+1. Caminho do `.pt`: **A** (ligar ao Lovable e servir 410), **B** (desligar DNS), ou **C** (deixar como está)?
+2. Tens acesso ao registrar do `.pt` para mudar o A record / remover DNS, se for A ou B?
 
-- Confirmar `yesexperiencesportugal.com` como propriedade verificada.
-- Submeter `sitemap.xml` (já existe a rota).
-- Inspeção de URL + "Request indexing" para:
-  - `/`
-  - `/experiences`
-  - `/studio-v3`
-  - `/multi-day`
-  - `/wine-tours-lisbon`
-  - `/arrabida-wine-tour`
-  - `/sintra-day-tour-from-lisbon`
-  - `/private-wine-tour-lisbon`
-  - todas as `tours/$tourId` principais
-- Verificar relatório de "Páginas" e tratar erros (canonical mismatch, duplicate, soft 404).
-
-Tudo via o conector Google Search Console já ligado a `yesexperiences@gmail.com`.
-
-### Fase 4 — Tratar o `.pt` conforme o que controlas
-
-Três cenários, com base na tua resposta na Fase 1:
-
-A. **Controlas DNS + servidor antigo** → opcional: servir `301 → yesexperiencesportugal.com` durante 90 dias para passar autoridade, depois cortar; ou ligar `.pt` ao Lovable para o nosso 410 entrar em vigor.
-
-B. **Controlas só DNS, não o servidor** → ligar `yesexperiences.pt` ao Lovable como custom domain (A record para 185.158.133.1). A partir daí o nosso middleware serve 410 Gone, e o Google despromove. Email forwarding mantém-se se MX/TXT/SPF não forem mexidos.
-
-C. **Não controlas nem DNS nem servidor** → só Fase 2 + Fase 3 + atualizar GBP/Tripadvisor/VisitPortugal. O `.pt` cairá lentamente porque o Google deixa de o ver como ligado à entidade.
-
-### Fase 5 — Monitorização
-
-Vamos usar o `/admin/legacy-domains-monitor` que já existe + estender:
-
-- adicionar uma checagem que diga "GBP novo aponta para domínio canónico?" (manual, lida do GBP via Google API se autorizada);
-- relatório semanal automático: o `.pt` ainda indexado? quantos resultados?
-- verificar inspeção de URL no GSC para os top 10 URLs do site novo.
-
-## O que preciso de ti antes de avançar para build
-
-Duas respostas curtas:
-
-1. Quem controla o `.pt` hoje (DNS, servidor, ambos, nenhum)?
-2. Queres manter o **email forwarding** `@yesexperiences.pt` ou já migraste tudo para `@yesexperiencesportugal.com`?
-
-Assim que respondas, mudo para build mode e executo Fases 2, 3, 4 e 5 de uma vez.
-
-[https://www.google.com/search?q=yes+experiences+portugal%C2%A0&sca_esv=9d11f09b99ad9e2b&rlz=1CDGOYI_enPT1074PT1074&hl=pt-PT&biw=393&bih=665&sxsrf=APpeQnvqbISLeY4FBrzm6fTwT8Q9RtEGlw%3A1782824634270&ei=HMBDatfxH_OokdUPvcSIwQc&cs=1&oq=yes+experiences+portugal%C2%A0&gs_lp=EhNtb2JpbGUtZ3dzLXdpei1zZXJwIhp5ZXMgZXhwZXJpZW5jZXMgcG9ydHVnYWzCoDIEECMYJzIEECMYJzIMECMYgAQYExgnGIoFMgYQABgWGB4yBRAhGKABMgUQIRigATIFECEYoAEyCBAAGIAEGKIESMUZUOwIWKURcAB4AJABAJgB9gGgAe0KqgEFMi44LjG4AQPIAQD4AQGYAgegAvAFwgIHECMYsAMYJ8ICCBAAGLADGO8FwgILEAAYgAQYsAMYogTCAgUQABjvBZgDAIgGAZAGBJIHAzIuNaAHgU2yBwMyLjW4B_AFwgcFMC41LjLIBw-ACAA&sclient=mobile-gws-wiz-serp#ip=1](https://www.google.com/search?q=yes+experiences+portugal%C2%A0&sca_esv=9d11f09b99ad9e2b&rlz=1CDGOYI_enPT1074PT1074&hl=pt-PT&biw=393&bih=665&sxsrf=APpeQnvqbISLeY4FBrzm6fTwT8Q9RtEGlw%3A1782824634270&ei=HMBDatfxH_OokdUPvcSIwQc&cs=1&oq=yes+experiences+portugal%C2%A0&gs_lp=EhNtb2JpbGUtZ3dzLXdpei1zZXJwIhp5ZXMgZXhwZXJpZW5jZXMgcG9ydHVnYWzCoDIEECMYJzIEECMYJzIMECMYgAQYExgnGIoFMgYQABgWGB4yBRAhGKABMgUQIRigATIFECEYoAEyCBAAGIAEGKIESMUZUOwIWKURcAB4AJABAJgB9gGgAe0KqgEFMi44LjG4AQPIAQD4AQGYAgegAvAFwgIHECMYsAMYJ8ICCBAAGLADGO8FwgILEAAYgAQYsAMYogTCAgUQABjvBZgDAIgGAZAGBJIHAzIuNaAHgU2yBwMyLjW4B_AFwgcFMC41LjLIBw-ACAA&sclient=mobile-gws-wiz-serp#ip=1)
+Assim que responderes, executo 2, 3 e 4 numa só passagem e mostro-te o resultado das inspections do GSC.
