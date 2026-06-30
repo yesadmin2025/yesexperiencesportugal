@@ -12,6 +12,7 @@ import {
   personFounderLd,
   localStoryReviewsLd,
   normalizeLocalStoryReviews,
+  faqPageLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
 
