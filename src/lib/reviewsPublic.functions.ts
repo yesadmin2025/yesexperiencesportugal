@@ -3,7 +3,6 @@
  * token in the URL authenticates the guest.
  */
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const submitFirstPartyReview = createServerFn({ method: "POST" })
   .inputValidator(
@@ -21,6 +20,7 @@ export const submitFirstPartyReview = createServerFn({ method: "POST" })
     if (data.rating < 1 || data.rating > 5) throw new Error("Rating must be 1–5");
     if (!data.body || data.body.length < 10) throw new Error("Please write at least one sentence");
 
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rev, error } = await supabaseAdmin.rpc("submit_first_party_review", {
       _token: data.token,
       _rating: data.rating,
