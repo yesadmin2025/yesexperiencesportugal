@@ -3,18 +3,7 @@
  * token in the URL authenticates the guest.
  */
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
-
-function publicClient() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    {
-      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-    },
-  );
-}
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const submitFirstPartyReview = createServerFn({ method: "POST" })
   .inputValidator(
@@ -32,8 +21,7 @@ export const submitFirstPartyReview = createServerFn({ method: "POST" })
     if (data.rating < 1 || data.rating > 5) throw new Error("Rating must be 1–5");
     if (!data.body || data.body.length < 10) throw new Error("Please write at least one sentence");
 
-    const sb = publicClient();
-    const { data: rev, error } = await sb.rpc("submit_first_party_review", {
+    const { data: rev, error } = await supabaseAdmin.rpc("submit_first_party_review", {
       _token: data.token,
       _rating: data.rating,
       _title: data.title ?? "",
