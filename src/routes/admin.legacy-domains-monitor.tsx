@@ -255,3 +255,167 @@ function LegacyDomainsMonitorPage() {
     </div>
   );
 }
+
+function GscActionsPanel() {
+  const submit = useServerFn(submitLegacyGscActions);
+  const [report, setReport] = useState<LegacyActionsReport | null>(null);
+  const mutation = useMutation({
+    mutationFn: () => submit(),
+    onSuccess: (data) => setReport(data),
+  });
+
+  const openAll = (urls: string[]) => {
+    urls.forEach((u) => window.open(u, "_blank", "noopener,noreferrer"));
+  };
+
+  return (
+    <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5">
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+            Search Console · ações em lote
+          </p>
+          <h2 className="mt-1 text-lg font-semibold text-[color:var(--charcoal)]">
+            Submeter Removals e Request Indexing
+          </h2>
+          <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+            Corre URL Inspection (API) em cada URL legacy e canónico, e abre os deep-links das
+            ferramentas Removals / Request Indexing que são UI-only no GSC.
+          </p>
+        </div>
+        <button
+          onClick={() => mutation.mutate()}
+          disabled={mutation.isPending}
+          className="rounded-full bg-[color:var(--charcoal)] px-4 py-2 text-xs font-medium text-white hover:bg-[color:var(--charcoal-soft)] disabled:opacity-60"
+        >
+          {mutation.isPending ? "a submeter…" : "Submeter ao GSC"}
+        </button>
+      </header>
+
+      {mutation.error ? (
+        <p className="mt-4 rounded border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+          {mutation.error instanceof Error ? mutation.error.message : String(mutation.error)}
+        </p>
+      ) : null}
+
+      {report ? (
+        <div className="mt-5 space-y-5 text-sm">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                URL Inspection · legacy ({report.legacyInspections.length})
+              </h3>
+              <ul className="mt-2 space-y-1 text-xs">
+                {report.legacyInspections.map((r) => (
+                  <li
+                    key={r.url}
+                    className="flex items-center justify-between gap-2 border-b border-[color:var(--sand)] py-1"
+                  >
+                    <span className="truncate text-[color:var(--charcoal)]">{r.url}</span>
+                    <span className={r.ok ? "text-emerald-700" : "text-rose-600"}>
+                      {r.ok ? (r.coverageState ?? r.verdict ?? "ok") : "erro"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                URL Inspection · canónico ({report.canonicalInspections.length})
+              </h3>
+              <ul className="mt-2 space-y-1 text-xs">
+                {report.canonicalInspections.map((r) => (
+                  <li
+                    key={r.url}
+                    className="flex items-center justify-between gap-2 border-b border-[color:var(--sand)] py-1"
+                  >
+                    <span className="truncate text-[color:var(--charcoal)]">{r.url}</span>
+                    <span className={r.ok ? "text-emerald-700" : "text-rose-600"}>
+                      {r.ok ? (r.coverageState ?? r.verdict ?? "ok") : "erro"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded border border-[color:var(--sand)] bg-[color:var(--ivory)]/50 p-3">
+              <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                Removals (UI-only)
+              </h3>
+              <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">
+                Abre a ferramenta Removals de cada propriedade legacy. Submete remoção temporária
+                (~6 meses) — tempo suficiente para o 410 consolidar a de-indexação.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={() => openAll(report.removalsDeepLinks.map((l) => l.gscRemovalsUrl))}
+                  className="rounded-full bg-[color:var(--teal)] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[color:var(--teal-2)]"
+                >
+                  Abrir Removals (todos)
+                </button>
+                {report.removalsDeepLinks.map((l) => (
+                  <a
+                    key={l.host}
+                    href={l.gscRemovalsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-[color:var(--teal)] px-3 py-1.5 text-[11px] text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white"
+                  >
+                    {l.host}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded border border-[color:var(--sand)] bg-[color:var(--ivory)]/50 p-3">
+              <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                Request Indexing (UI-only)
+              </h3>
+              <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">
+                Abre URL Inspection de cada canónico. Clica em <strong>Solicitar indexação</strong>{" "}
+                para acelerar o recrawl do novo domínio.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={() => openAll(report.reindexDeepLinks.map((l) => l.gscInspectUrl))}
+                  className="rounded-full bg-[color:var(--gold)] px-3 py-1.5 text-[11px] font-medium text-[color:var(--charcoal)] hover:opacity-90"
+                >
+                  Abrir Inspect (todos)
+                </button>
+                {report.reindexDeepLinks.map((l) => (
+                  <a
+                    key={l.url}
+                    href={l.gscInspectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-[color:var(--gold)] px-3 py-1.5 text-[11px] text-[color:var(--charcoal)] hover:bg-[color:var(--gold)]"
+                  >
+                    {new URL(l.url).pathname || "/"}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <ul className="rounded border border-dashed border-[color:var(--sand)] bg-[color:var(--ivory)]/60 p-3 text-[11px] text-[color:var(--charcoal-soft)]">
+            {report.notes.map((n, i) => (
+              <li key={i} className="list-disc pl-1">
+                {n}
+              </li>
+            ))}
+          </ul>
+          <p className="text-[10px] text-[color:var(--charcoal-soft)]">
+            Última execução: {new Date(report.ranAt).toLocaleString("pt-PT")}
+          </p>
+        </div>
+      ) : (
+        <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
+          Ainda não foi submetido. Carrega em <strong>Submeter ao GSC</strong> para correr URL
+          Inspection via API e gerar os deep-links de Removals / Request Indexing.
+        </p>
+      )}
+    </section>
+  );
+}
