@@ -26,6 +26,8 @@ export type LocalStoryArticle = {
   relatedSignatures?: { slug: string; label: string }[];
   /** ISO date for JSON-LD datePublished. */
   datePublished: string;
+  /** Optional FAQ block — rendered on page AND emitted as FAQPage JSON-LD. */
+  faq?: { q: string; a: string }[];
 };
 
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
