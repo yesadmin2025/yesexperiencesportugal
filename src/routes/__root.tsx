@@ -124,13 +124,12 @@ export const Route = createRootRoute({
         content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
       },
       {
-        title:
-          "YES experiences Portugal — Private Tours, Signature Days & Bespoke Journeys",
+        title: "YES experiences Portugal — Private Tours & Bespoke Journeys",
       },
       {
         name: "description",
         content:
-          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys and private celebrations. Licensed (RNAAT). 700+ five-star reviews.",
+          "Private Portugal experiences from Lisbon, Sintra and Arrábida. Signature days, bespoke journeys and an Experience Studio. Licensed, 5-star rated.",
       },
       {
         name: "keywords",
@@ -146,13 +145,12 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: "YES experiences Portugal" },
       {
         property: "og:title",
-        content:
-          "YES experiences Portugal — Private Tours, Signature Days & Bespoke Journeys",
+        content: "YES experiences Portugal — Private Tours & Bespoke Journeys",
       },
       {
         property: "og:description",
         content:
-          "Private Portugal experiences from Lisbon, Sintra, Arrábida & Sesimbra. Signature days, an Experience Studio that reserves in minutes, bespoke multi-day journeys. Licensed (RNAAT) · 700+ five-star reviews.",
+          "Private Portugal experiences from Lisbon, Sintra and Arrábida. Signature days, bespoke journeys and an Experience Studio. Licensed, 5-star rated.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_GB" },
