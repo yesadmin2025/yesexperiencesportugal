@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, faqPageLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
@@ -61,6 +61,29 @@ const productLd = {
   },
 };
 
+const SINTRA_FAQ: { q: string; a: string }[] = [
+  {
+    q: "How long is a Sintra day tour from Lisbon?",
+    a: "A full private day is about 8 hours door-to-door, with hotel pickup in Lisbon, two palaces or estates in Sintra, Cabo da Roca and a stop in Cascais before returning. We can shorten it to a half-day (~5 hours) on request.",
+  },
+  {
+    q: "Is a private Sintra tour worth it vs the train?",
+    a: "The Lisbon-to-Sintra train is fine for a half-day glance at the town. A private day means hotel pickup, a single car between Sintra, Cabo da Roca and Cascais, and a licensed local guide who decides which palace to skip when the queue is long — which matters in Sintra more than almost anywhere else in Portugal.",
+  },
+  {
+    q: "Which palaces are included on the Sintra day tour?",
+    a: "We typically visit two of: Pena Palace, Quinta da Regaleira, Monserrate and the National Palace of Sintra. The pair is chosen on the day based on opening times and crowds — your guide picks the calmest combination.",
+  },
+  {
+    q: "Do you include Cabo da Roca and Cascais?",
+    a: "Yes. After Sintra we drive west to Cabo da Roca — the westernmost point of mainland Europe — then down the Atlantic road to Cascais for late afternoon. A small private wine tasting at Adega Regional de Colares can be added on request.",
+  },
+  {
+    q: "Where does the Sintra tour start and end?",
+    a: "Hotel pickup and drop-off anywhere in central Lisbon, Cascais or Estoril is included. Pickups from Lisbon airport or cruise terminals can be arranged.",
+  },
+];
+
 export const Route = createFileRoute("/sintra-day-tour-from-lisbon")({
   head: () => ({
     meta: [
@@ -92,6 +115,7 @@ export const Route = createFileRoute("/sintra-day-tour-from-lisbon")({
           { name: "Sintra Day Tour from Lisbon", path: PAGE_PATH },
         ]),
       ),
+      jsonLdScript(faqPageLd(SINTRA_FAQ)),
     ],
   }),
   component: Page,
@@ -202,6 +226,27 @@ function Page() {
               </div>
 
             </div>
+
+            <section
+              aria-label="Sintra day tour — frequently asked questions"
+              className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40"
+            >
+              <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
+                Frequently asked
+              </span>
+              <dl className="space-y-8 max-w-2xl mx-auto">
+                {SINTRA_FAQ.map((item, i) => (
+                  <div key={i}>
+                    <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] leading-[1.3] text-[color:var(--charcoal)] mb-3">
+                      {item.q}
+                    </dt>
+                    <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal)] leading-[1.8]">
+                      {item.a}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
 
             <aside className="mt-12 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
