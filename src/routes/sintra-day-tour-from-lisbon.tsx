@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, faqPageLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
