@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 /**
  * Google Search Console integration for the redirects/404 monitor.
@@ -29,8 +28,8 @@ const SITE_URL = "https://yesexperiencesportugal.com/";
 
 type GscHeaders = { Authorization: string; "X-Connection-Api-Key": string };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function assertAdmin(context: { supabase: any; userId: string }) {
+async function assertAdmin(context: { userId: string }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: roleRow, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
