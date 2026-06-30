@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { LEGACY_HOSTS } from "@/lib/legacy-domain-redirect";
 
 /**
@@ -21,6 +22,17 @@ import { LEGACY_HOSTS } from "@/lib/legacy-domain-redirect";
  */
 
 const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
+
+async function assertAdmin(context: { userId: string }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: roleRow, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error || !roleRow) throw new Error("Forbidden");
+}
 
 function gscHeaders() {
   const lovableKey = process.env.LOVABLE_API_KEY;
@@ -121,8 +133,11 @@ export type LegacyActionsReport = {
   notes: string[];
 };
 
-export const submitLegacyGscActions = createServerFn({ method: "POST" }).handler(
-  async (): Promise<LegacyActionsReport> => {
+export const submitLegacyGscActions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<LegacyActionsReport> => {
+    await assertAdmin(context);
+
     const legacyHosts = Array.from(LEGACY_HOSTS);
     const legacyUrls = legacyHosts.flatMap((h) =>
       LEGACY_PATHS.map((p) => `https://${h}${p}`),
@@ -171,5 +186,4 @@ export const submitLegacyGscActions = createServerFn({ method: "POST" }).handler
         "'Request Indexing' também é UI-only. Os botões abrem o URL Inspection do canónico — basta clicar em 'Solicitar indexação'.",
       ],
     };
-  },
-);
+  });
