@@ -226,6 +226,10 @@ function LegacyDomainsMonitorPage() {
           {data?.map((r: LegacyHostReport) => <HostCard key={r.host} r={r} />)}
         </section>
 
+        <GscActionsPanel />
+
+
+
         <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5 text-sm text-[color:var(--charcoal-soft)]">
           <h3 className="text-base font-semibold text-[color:var(--charcoal)]">Como ler</h3>
           <ul className="mt-3 list-disc space-y-1.5 pl-5">
