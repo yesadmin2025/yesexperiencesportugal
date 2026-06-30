@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { LEGACY_HOSTS } from "@/lib/legacy-domain-redirect";
 
 /**
@@ -24,8 +23,8 @@ import { LEGACY_HOSTS } from "@/lib/legacy-domain-redirect";
 
 const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function assertAdmin(context: { supabase: any; userId: string }) {
+async function assertAdmin(context: { userId: string }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: roleRow, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
