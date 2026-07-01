@@ -33,7 +33,9 @@ export const Route = createFileRoute("/tours/$tourId")({
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
-    const t = loaderData?.tour;
+    // loaderData is undefined during SSR head evaluation in some cases —
+    // resolve the tour directly from params to guarantee JSON-LD is emitted.
+    const t = loaderData?.tour ?? findTour(params.tourId);
     if (!t)
       return {
         meta: [
@@ -43,6 +45,7 @@ export const Route = createFileRoute("/tours/$tourId")({
         links: [{ rel: "canonical", href: url }],
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
+
     return {
       meta: [
         { title: `${t.title} — YES experiences Portugal` },
