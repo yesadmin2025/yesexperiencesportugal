@@ -21,3 +21,6 @@ verify_jwt = false
 [functions.bokun-availability]
 verify_jwt = false
 
+[functions.stripe-session-status]
+verify_jwt = false
+
