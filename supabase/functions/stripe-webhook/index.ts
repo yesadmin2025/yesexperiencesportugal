@@ -265,6 +265,79 @@ Deno.serve(async (req) => {
     })
     .eq("id", bookingId);
 
+  // Fire-and-forget: send branded checkout confirmation email with receipt link.
+  // Non-blocking so a failure here never breaks Stripe delivery.
+  try {
+    if (customerEmail) {
+      const stripe = createStripeClient(stripeEnv);
+      let receiptUrl: string | null = null;
+      try {
+        const piId =
+          typeof session.payment_intent === "string" ? session.payment_intent : null;
+        if (piId) {
+          const pi = await stripe.paymentIntents.retrieve(piId, {
+            expand: ["latest_charge"],
+          });
+          const ch = pi.latest_charge;
+          if (ch && typeof ch !== "string") {
+            receiptUrl = ch.receipt_url ?? null;
+          }
+        }
+      } catch (e) {
+        console.warn("receipt_url lookup failed:", e instanceof Error ? e.message : e);
+      }
+
+      const amountFormatted =
+        amountTotal != null
+          ? new Intl.NumberFormat("en-GB", {
+              style: "currency",
+              currency: currency.toUpperCase(),
+            }).format(amountTotal / 100)
+          : null;
+
+      const siteUrl =
+        Deno.env.get("SITE_URL") ?? "https://yesexperiencesportugal.com";
+      const internalSecret = Deno.env.get("EMAIL_INTERNAL_SECRET");
+
+      if (internalSecret) {
+        const payload = {
+          recipientEmail: customerEmail,
+          sessionId: session.id,
+          customerName,
+          tourTitle: meta.journey_title || meta.tour_title || tourId || null,
+          bookingType,
+          dateExact,
+          guests,
+          amountFormatted,
+          bookingRef: session.id,
+          bokunConfirmation: bokunResult.confirmation ?? null,
+          receiptUrl,
+          bookingStatusUrl: `${siteUrl}/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
+          pickup: meta.pickup || null,
+        };
+        const resp = await fetch(`${siteUrl}/api/public/hooks/checkout-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${internalSecret}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!resp.ok) {
+          console.warn(
+            "checkout-email hook non-2xx:",
+            resp.status,
+            await resp.text().catch(() => ""),
+          );
+        }
+      } else {
+        console.warn("EMAIL_INTERNAL_SECRET not configured — skipping receipt email");
+      }
+    }
+  } catch (e) {
+    console.error("send checkout email failed:", e instanceof Error ? e.message : e);
+  }
+
   return new Response(JSON.stringify({ ok: true, bookingId, bokun: bokunResult }), {
     status: 200,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
