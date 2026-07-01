@@ -9,7 +9,11 @@ const getEnv = (key: string): string => {
 export type StripeEnv = "sandbox" | "live";
 
 export function getStripeApiKey(env: StripeEnv): string {
-  return env === "sandbox" ? getEnv("STRIPE_SANDBOX_API_KEY") : getEnv("STRIPE_LIVE_API_KEY");
+  if (env === "sandbox") return getEnv("STRIPE_SANDBOX_API_KEY");
+  // Prefer restricted key when configured (rk_live_…); fall back to full secret key.
+  const restricted = Deno.env.get("STRIPE_RESTRICTED_API_KEY");
+  if (restricted && restricted.startsWith("rk_")) return restricted;
+  return getEnv("STRIPE_LIVE_API_KEY");
 }
 
 // BYOK: calls api.stripe.com directly with the user's own secret key.
