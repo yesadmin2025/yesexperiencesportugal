@@ -1,6 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeaders } from "@tanstack/react-start/server";
 import { promises as fs } from "fs";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  const { data: isAdmin, error } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  if (error || !isAdmin) throw new Error("Forbidden");
+}
 
 export type CrawlerErrorInfo = {
   found: boolean;
@@ -38,13 +48,13 @@ async function readLogTail(): Promise<string | null> {
 export type CrawlerErrorStrategy = "root-cause" | "last-error";
 
 export const getLastCrawlerError = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: { strategy?: CrawlerErrorStrategy; _ts?: number } | undefined) => ({
     strategy: (data?.strategy ?? "root-cause") as CrawlerErrorStrategy,
   }))
-  .handler(async ({ data }): Promise<CrawlerErrorInfo> => {
-    // Production guard: this endpoint reads server log tails and is for
-    // local dev / preview debugging only. Match the guard used by sibling
-    // dev-only server functions (checkRouteFile, auditTourLinks).
+  .handler(async ({ data, context }): Promise<CrawlerErrorInfo> => {
+    // Admin-only + production guard: this endpoint reads server log tails.
+    await assertAdmin(context);
     if (process.env.NODE_ENV === "production") {
       throw new Error("Disabled in production.");
     }
