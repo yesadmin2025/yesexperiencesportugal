@@ -19,4 +19,5 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'booking-confirmation': bookingConfirmation,
   'checkout-receipt': checkoutReceipt,
+  'stripe-webhook-alert': stripeWebhookAlert,
 }
