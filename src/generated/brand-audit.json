@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-01T13:52:39.448Z",
-  "filesScanned": 500,
+  "generatedAt": "2026-07-01T14:01:14.644Z",
+  "filesScanned": 502,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 301,
-    "approved": 74,
+    "total": 307,
+    "approved": 75,
     "allowlisted": 57,
-    "mismatch": 170
+    "mismatch": 175
   },
   "findings": [
     {
@@ -2263,6 +2263,60 @@
       "raw": "#999999",
       "normalized": "#999999",
       "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
+      "line": 25,
+      "col": 22,
+      "raw": "#B42318",
+      "normalized": "#b42318",
+      "snippet": "const h1 = { color: '#B42318', fontSize: 20, margin: '0 0 12px' } as const",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
+      "line": 26,
+      "col": 25,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "const label = { color: '#666', fontSize: 12, textTransform: 'uppercase' as const, letterSpacing: '0.08em' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
+      "line": 27,
+      "col": 25,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "const value = { color: '#111', fontSize: 14, margin: '2px 0 12px' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
+      "line": 33,
+      "col": 38,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "<Body style={{ backgroundColor: '#FAF8F3', margin: 0 }}>",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
+      "line": 36,
+      "col": 32,
+      "raw": "#333",
+      "normalized": "#333333",
+      "snippet": "<Text style={{ color: '#333', fontSize: 14 }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
+      "line": 63,
+      "col": 32,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "<Text style={{ color: '#666', fontSize: 12, marginTop: 16 }}>",
       "status": "mismatch"
     },
     {
