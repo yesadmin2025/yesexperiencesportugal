@@ -15,22 +15,22 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  * email is dispatched, throttled so we don't spam (only if the last stored
  * check succeeded OR the last alert was more than 6h ago).
  *
- * Auth: shared bearer secret (`EMAIL_INTERNAL_SECRET`) — set the same
- * value in the `apikey` header when scheduling from pg_cron.
+ * Auth: accepts either the Supabase anon `apikey` header (canonical pg_cron
+ * pattern) or a bearer `EMAIL_INTERNAL_SECRET`. The endpoint is read-only
+ * side-effect-wise (writes a health row + throttled alert) so anon key is safe.
  */
 export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.EMAIL_INTERNAL_SECRET;
-        if (!secret) {
-          return Response.json({ ok: false, error: "not_configured" }, { status: 500 });
-        }
-        const provided =
-          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ||
-          request.headers.get("apikey") ||
-          "";
-        if (provided.length !== secret.length || provided !== secret) {
+        const internalSecret = process.env.EMAIL_INTERNAL_SECRET;
+        const anonKey = process.env.SUPABASE_ANON_KEY;
+        const bearer = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || "";
+        const apikey = request.headers.get("apikey") || "";
+        const authorized =
+          (internalSecret && (bearer === internalSecret || apikey === internalSecret)) ||
+          (anonKey && (bearer === anonKey || apikey === anonKey));
+        if (!authorized) {
           return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
         }
 
