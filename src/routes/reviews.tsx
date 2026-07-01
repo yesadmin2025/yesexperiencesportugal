@@ -56,30 +56,67 @@ export const Route = createFileRoute("/reviews")({
           "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions for our private tours from Lisbon.",
       },
       { name: "robots", content: "index, follow" },
-      { rel: "canonical", href: `${SITE_URL}/reviews` },
+      { property: "og:title", content: "Real guest reviews · YES Experiences Portugal" },
+      { property: "og:description", content: "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions." },
+      { property: "og:url", content: `${SITE_URL}/reviews` },
+      { property: "og:type", content: "website" },
     ];
     const links = [{ rel: "canonical", href: `${SITE_URL}/reviews` }];
-    const scripts =
-      fpCount >= 10 && fpAvg
-        ? [
+
+    const scripts: Array<{ type: string; children: string }> = [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
             {
-              type: "application/ld+json",
-              children: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "WebPage",
-                name: "YES Experiences Portugal — Real guest reviews",
-                url: `${SITE_URL}/reviews`,
-                aggregateRating: {
-                  "@type": "AggregateRating",
-                  ratingValue: fpAvg.toFixed(2),
-                  reviewCount: fpCount,
-                  bestRating: 5,
-                  worstRating: 1,
-                },
-              }),
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: `${SITE_URL}/`,
             },
-          ]
-        : [];
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Reviews",
+              item: `${SITE_URL}/reviews`,
+            },
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "@id": `${SITE_URL}/reviews#collection`,
+          name: "YES Experiences Portugal — Real guest reviews",
+          description:
+            "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions for our private tours from Lisbon.",
+          url: `${SITE_URL}/reviews`,
+          inLanguage: "en",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          about: { "@id": `${SITE_URL}/#organization` },
+          ...(fpCount >= 10 && fpAvg
+            ? {
+                mainEntity: {
+                  "@type": "Organization",
+                  "@id": `${SITE_URL}/#organization`,
+                  aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: Number(fpAvg.toFixed(2)),
+                    reviewCount: fpCount,
+                    bestRating: 5,
+                    worstRating: 1,
+                  },
+                },
+              }
+            : {}),
+        }),
+      },
+    ];
+
     return { meta, links, scripts };
   },
 });
