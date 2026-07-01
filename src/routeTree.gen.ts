@@ -85,6 +85,7 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
 
@@ -475,6 +476,12 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksStripeWebhookHealthRoute =
+  ApiPublicHooksStripeWebhookHealthRouteImport.update({
+    id: '/api/public/hooks/stripe-webhook-health',
+    path: '/api/public/hooks/stripe-webhook-health',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
   id: '/api/public/hooks/dns-watch',
   path: '/api/public/hooks/dns-watch',
@@ -561,6 +568,7 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
+  '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -641,6 +649,7 @@ export interface FileRoutesByTo {
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
+  '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -722,6 +731,7 @@ export interface FileRoutesById {
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
+  '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -804,6 +814,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
+    | '/api/public/hooks/stripe-webhook-health'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -884,6 +895,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
+    | '/api/public/hooks/stripe-webhook-health'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -964,6 +976,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
+    | '/api/public/hooks/stripe-webhook-health'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -1042,6 +1055,7 @@ export interface RootRouteChildren {
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
+  ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -1583,6 +1597,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/stripe-webhook-health': {
+      id: '/api/public/hooks/stripe-webhook-health'
+      path: '/api/public/hooks/stripe-webhook-health'
+      fullPath: '/api/public/hooks/stripe-webhook-health'
+      preLoaderRoute: typeof ApiPublicHooksStripeWebhookHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/dns-watch': {
       id: '/api/public/hooks/dns-watch'
       path: '/api/public/hooks/dns-watch'
@@ -1707,6 +1728,8 @@ const rootRouteChildren: RootRouteChildren = {
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
+  ApiPublicHooksStripeWebhookHealthRoute:
+    ApiPublicHooksStripeWebhookHealthRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,

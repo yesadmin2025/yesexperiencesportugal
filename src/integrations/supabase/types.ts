@@ -1381,6 +1381,45 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_webhook_health_checks: {
+        Row: {
+          alerted: boolean
+          checked_at: string
+          endpoint: string | null
+          id: string
+          invalid_status: number | null
+          reason: string | null
+          secret_prefix_ok: boolean
+          secret_present: boolean
+          status: string
+          valid_status: number | null
+        }
+        Insert: {
+          alerted?: boolean
+          checked_at?: string
+          endpoint?: string | null
+          id?: string
+          invalid_status?: number | null
+          reason?: string | null
+          secret_prefix_ok?: boolean
+          secret_present?: boolean
+          status: string
+          valid_status?: number | null
+        }
+        Update: {
+          alerted?: boolean
+          checked_at?: string
+          endpoint?: string | null
+          id?: string
+          invalid_status?: number | null
+          reason?: string | null
+          secret_prefix_ok?: boolean
+          secret_present?: boolean
+          status?: string
+          valid_status?: number | null
+        }
+        Relationships: []
+      }
       studio_ab_assignments: {
         Row: {
           anonymous_id: string
