@@ -1003,10 +1003,10 @@ function HomePage() {
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)] mb-4">
                 Only on YES
               </span>
-              <h3 className="font-display font-semibold text-[1.4rem] md:text-[1.8rem] leading-[1.25] mb-4 max-w-2xl mx-auto">
+              <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.8rem] leading-[1.25] mb-4 max-w-2xl mx-auto">
                 The one private-day builder in Portugal that designs your route, timing and price{" "}
                 <span className="font-serif italic text-[color:var(--gold)]">live, with you</span>.
-              </h3>
+              </h2>
               <p className="text-[14px] md:text-[15px] text-[color:var(--ivory)]/80 leading-[1.7] max-w-xl mx-auto mb-7">
                 No forms, no quotes by email. Pick the region, drop in the stops you want, and watch the day take shape — driving times, dwell windows and the price update as you go. Reserve instantly when it feels right.
               </p>
