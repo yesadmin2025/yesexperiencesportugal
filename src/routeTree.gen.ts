@@ -86,6 +86,7 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
+import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
 
 const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
   id: '/wine-tours-lisbon',
@@ -479,6 +480,12 @@ const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
   path: '/api/public/hooks/dns-watch',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksCheckoutEmailRoute =
+  ApiPublicHooksCheckoutEmailRouteImport.update({
+    id: '/api/public/hooks/checkout-email',
+    path: '/api/public/hooks/checkout-email',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -552,6 +559,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -631,6 +639,7 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -711,6 +720,7 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -792,6 +802,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -871,6 +882,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -950,6 +962,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -1027,6 +1040,7 @@ export interface RootRouteChildren {
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1576,6 +1590,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksDnsWatchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/checkout-email': {
+      id: '/api/public/hooks/checkout-email'
+      path: '/api/public/hooks/checkout-email'
+      fullPath: '/api/public/hooks/checkout-email'
+      preLoaderRoute: typeof ApiPublicHooksCheckoutEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1684,6 +1705,7 @@ const rootRouteChildren: RootRouteChildren = {
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
