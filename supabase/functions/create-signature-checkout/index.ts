@@ -257,10 +257,19 @@ Deno.serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
-    const publishableKey =
+    const rawPublishable =
       body.environment === "live"
         ? Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? ""
         : Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "";
+    // Defensive: NEVER echo a secret key back to the client. If the env var
+    // was misconfigured with an sk_… value, drop it and log a warning.
+    const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";
+    if (rawPublishable && !rawPublishable.startsWith("pk_")) {
+      console.error(
+        `[create-signature-checkout] Refusing to return non-publishable key for env=${body.environment}. ` +
+          `Set STRIPE_${body.environment === "live" ? "LIVE" : "SANDBOX"}_PUBLISHABLE_KEY to a pk_… value.`,
+      );
+    }
 
     return new Response(
       JSON.stringify({
