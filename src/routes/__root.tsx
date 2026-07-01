@@ -178,6 +178,14 @@ export const Route = createRootRoute({
         content:
           "https://yesexperiencesportugal.com/brand/png/yes-experiences-portugal-horizontal-full@3x.png",
       },
+      { title: "Yes Experiences Portugal" },
+      { property: "og:title", content: "Yes Experiences Portugal" },
+      { name: "twitter:title", content: "Yes Experiences Portugal" },
+      { name: "description", content: "Portugal, around you. Choose or design your own private day in real time and book instantly. A local Travel Designer crafts journeys and special occasions." },
+      { property: "og:description", content: "Portugal, around you. Choose or design your own private day in real time and book instantly. A local Travel Designer crafts journeys and special occasions." },
+      { name: "twitter:description", content: "Portugal, around you. Choose or design your own private day in real time and book instantly. A local Travel Designer crafts journeys and special occasions." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/b5biDmYjwqW69iIYyrlmbEq37UX2/social-images/social-1782918699069-FE316397-46C3-4E68-88E7-1128079AE4C4.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/b5biDmYjwqW69iIYyrlmbEq37UX2/social-images/social-1782918699069-FE316397-46C3-4E68-88E7-1128079AE4C4.webp" },
     ],
 
     links: [
