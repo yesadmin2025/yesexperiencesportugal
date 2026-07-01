@@ -55,6 +55,20 @@ Deno.serve(async (req) => {
     }
   }
 
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { persistSession: false },
+  });
+
+  const logEvent = async (row: Record<string, unknown>) => {
+    try {
+      await admin.from("stripe_webhook_events").insert(row);
+    } catch (e) {
+      console.error("Failed to log webhook event:", e);
+    }
+  };
+
   if (!event || !stripeEnv) {
     const diag = candidates.map((c, i) => {
       const s = c.secret ?? "";
@@ -63,14 +77,37 @@ Deno.serve(async (req) => {
     }).join(" | ");
     const sigPrefix = sig.slice(0, 40);
     console.error("Webhook signature verification failed:", lastError, "| diag:", diag, "| sig:", sigPrefix, "| bodyLen:", rawBody.length);
+    await logEvent({
+      verified: false,
+      status_code: 400,
+      error_message: lastError || "signature verification failed",
+      metadata: { diag, sig_prefix: sigPrefix, body_len: rawBody.length },
+    });
     return new Response(`Invalid signature: ${lastError}`, { status: 400, headers: corsHeaders });
   }
+
+  const sessionPreview = event.data.object as Stripe.Checkout.Session;
+  const baseLog = {
+    event_id: event.id,
+    event_type: event.type,
+    stripe_env: stripeEnv,
+    verified: true,
+    session_id: sessionPreview?.id ?? null,
+    payment_status: sessionPreview?.payment_status ?? null,
+    amount_total: sessionPreview?.amount_total ?? null,
+    currency: sessionPreview?.currency ?? null,
+    customer_email:
+      sessionPreview?.customer_details?.email ?? sessionPreview?.customer_email ?? null,
+    booking_type: (sessionPreview?.metadata?.booking_type as string) ?? null,
+    metadata: sessionPreview?.metadata ?? null,
+  };
 
   // Idempotency: ignore non-checkout events quickly.
   if (
     event.type !== "checkout.session.completed" &&
     event.type !== "checkout.session.async_payment_succeeded"
   ) {
+    await logEvent({ ...baseLog, status_code: 200, error_message: "ignored (non-checkout)" });
     return new Response(JSON.stringify({ received: true, ignored: event.type }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -79,11 +116,14 @@ Deno.serve(async (req) => {
 
   const session = event.data.object as Stripe.Checkout.Session;
   if (session.payment_status !== "paid") {
+    await logEvent({ ...baseLog, status_code: 200, error_message: `unpaid: ${session.payment_status}` });
     return new Response(JSON.stringify({ received: true, status: session.payment_status }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
+
+  await logEvent({ ...baseLog, status_code: 200 });
 
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
   const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
