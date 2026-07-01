@@ -56,9 +56,13 @@ export const Route = createFileRoute("/reviews")({
           "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions for our private tours from Lisbon.",
       },
       { name: "robots", content: "index, follow" },
-      { rel: "canonical", href: `${SITE_URL}/reviews` },
+      { property: "og:title", content: "Real guest reviews · YES Experiences Portugal" },
+      { property: "og:description", content: "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions." },
+      { property: "og:url", content: `${SITE_URL}/reviews` },
+      { property: "og:type", content: "website" },
     ];
     const links = [{ rel: "canonical", href: `${SITE_URL}/reviews` }];
+
     const scripts: Array<{ type: string; children: string }> = [
       {
         type: "application/ld+json",
