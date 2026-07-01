@@ -307,6 +307,7 @@ function validateReturnOrigin(url: string): boolean {
       "https://yesexperiences.pt",
       "https://www.yesexperiences.pt",
       "https://yesexperiencesportugal.com",
+      "https://www.yesexperiencesportugal.com",
       "https://dreamscape-builder-co.lovable.app",
       ...envAllow,
     ]);
