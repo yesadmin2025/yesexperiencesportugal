@@ -125,11 +125,6 @@ Deno.serve(async (req) => {
 
   await logEvent({ ...baseLog, status_code: 200 });
 
-  const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    auth: { persistSession: false },
-  });
 
   const meta = (session.metadata ?? {}) as Record<string, string>;
   const bookingType = (meta.booking_type ?? "builder") as "signature" | "builder" | "moment";
