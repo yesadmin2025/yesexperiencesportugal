@@ -56,7 +56,13 @@ Deno.serve(async (req) => {
   }
 
   if (!event || !stripeEnv) {
-    console.error("Webhook signature verification failed:", lastError);
+    const diag = candidates.map((c, i) => {
+      const s = c.secret ?? "";
+      const name = ["STRIPE_WEBHOOK_SECRET_LIVE", "STRIPE_WEBHOOK_SECRET", "STRIPE_WEBHOOK_SECRET_SANDBOX"][i];
+      return `${name}: ${s ? `present len=${s.length} prefix=${s.slice(0, 8)}` : "missing"}`;
+    }).join(" | ");
+    const sigPrefix = sig.slice(0, 40);
+    console.error("Webhook signature verification failed:", lastError, "| diag:", diag, "| sig:", sigPrefix, "| bodyLen:", rawBody.length);
     return new Response(`Invalid signature: ${lastError}`, { status: 400, headers: corsHeaders });
   }
 
