@@ -123,14 +123,9 @@ export const Route = createRootRoute({
         name: "google-site-verification",
         content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
       },
-      {
-        title: "YES experiences Portugal — Private Tours & Bespoke Journeys",
-      },
-      {
-        name: "description",
-        content:
-          "Private Portugal experiences from Lisbon, Sintra and Arrábida. Signature days, bespoke journeys and an Experience Studio. Licensed, 5-star rated.",
-      },
+      // Sitewide defaults only — page-specific title/description/og:* live
+      // on leaf routes. Root keeps site_name, type, locale, twitter card/site,
+      // keywords, geo, robots, verification. See head-meta rules.
       {
         name: "keywords",
         content:
@@ -143,49 +138,12 @@ export const Route = createRootRoute({
       { name: "geo.position", content: "38.4451;-9.1018" },
       { name: "ICBM", content: "38.4451, -9.1018" },
       { property: "og:site_name", content: "YES experiences Portugal" },
-      {
-        property: "og:title",
-        content: "YES experiences Portugal — Private Tours & Bespoke Journeys",
-      },
-      {
-        property: "og:description",
-        content:
-          "Private Portugal experiences from Lisbon, Sintra and Arrábida. Signature days, bespoke journeys and an Experience Studio. Licensed, 5-star rated.",
-      },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_GB" },
       { property: "og:locale:alternate", content: "pt_PT" },
       { property: "og:locale:alternate", content: "es_ES" },
-      {
-        property: "og:image",
-        content:
-          "https://yesexperiencesportugal.com/brand/png/yes-experiences-portugal-horizontal-full@3x.png",
-      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
-      {
-        name: "twitter:title",
-        content:
-          "YES experiences Portugal — Private Tours & Bespoke Journeys",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Private Portugal experiences — Signature days, an Experience Studio that reserves in minutes, and bespoke multi-day journeys.",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://yesexperiencesportugal.com/brand/png/yes-experiences-portugal-horizontal-full@3x.png",
-      },
-      { title: "Yes Experiences Portugal" },
-      { property: "og:title", content: "Yes Experiences Portugal" },
-      { name: "twitter:title", content: "Yes Experiences Portugal" },
-      { name: "description", content: "Portugal, around you. Choose or design your own private day in real time and book instantly. A local Travel Designer crafts journeys and special occasions." },
-      { property: "og:description", content: "Portugal, around you. Choose or design your own private day in real time and book instantly. A local Travel Designer crafts journeys and special occasions." },
-      { name: "twitter:description", content: "Portugal, around you. Choose or design your own private day in real time and book instantly. A local Travel Designer crafts journeys and special occasions." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/b5biDmYjwqW69iIYyrlmbEq37UX2/social-images/social-1782918699069-FE316397-46C3-4E68-88E7-1128079AE4C4.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/b5biDmYjwqW69iIYyrlmbEq37UX2/social-images/social-1782918699069-FE316397-46C3-4E68-88E7-1128079AE4C4.webp" },
     ],
 
     links: [
