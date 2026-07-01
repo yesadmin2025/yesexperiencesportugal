@@ -2,6 +2,16 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { promises as fs } from "fs";
 import path from "path";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  const { data: isAdmin, error } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  if (error || !isAdmin) throw new Error("Forbidden");
+}
 
 export type RouteFileCheckResult = {
   filePath: string;
@@ -23,6 +33,7 @@ export type RouteFileCheckResult = {
  * absolute path must remain inside process.cwd().
  */
 export const checkRouteFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data) =>
     z
       .object({
@@ -36,7 +47,8 @@ export const checkRouteFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }): Promise<RouteFileCheckResult> => {
+  .handler(async ({ data, context }): Promise<RouteFileCheckResult> => {
+    await assertAdmin(context);
     if (process.env.NODE_ENV === "production") {
       throw new Error("Route file check is disabled in production builds.");
     }
