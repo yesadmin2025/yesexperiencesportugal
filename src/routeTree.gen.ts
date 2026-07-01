@@ -56,6 +56,7 @@ import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
 import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as AdminWebhookEventsRouteImport } from './routes/admin.webhook-events'
 import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
@@ -327,6 +328,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
   path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminWebhookEventsRoute = AdminWebhookEventsRouteImport.update({
+  id: '/admin/webhook-events',
+  path: '/admin/webhook-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminViatorValidationRoute = AdminViatorValidationRouteImport.update({
   id: '/admin/viator-validation',
   path: '/admin/viator-validation',
@@ -550,6 +556,7 @@ export interface FileRoutesByFullPath {
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
+  '/admin/webhook-events': typeof AdminWebhookEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
@@ -631,6 +638,7 @@ export interface FileRoutesByTo {
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
+  '/admin/webhook-events': typeof AdminWebhookEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
@@ -713,6 +721,7 @@ export interface FileRoutesById {
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
+  '/admin/webhook-events': typeof AdminWebhookEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
   '/api/verify-hero': typeof ApiVerifyHeroRoute
@@ -796,6 +805,7 @@ export interface FileRouteTypes {
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
+    | '/admin/webhook-events'
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
@@ -877,6 +887,7 @@ export interface FileRouteTypes {
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
+    | '/admin/webhook-events'
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
@@ -958,6 +969,7 @@ export interface FileRouteTypes {
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
+    | '/admin/webhook-events'
     | '/api/health'
     | '/api/img'
     | '/api/verify-hero'
@@ -1040,6 +1052,7 @@ export interface RootRouteChildren {
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
   AdminViatorValidationRoute: typeof AdminViatorValidationRoute
+  AdminWebhookEventsRoute: typeof AdminWebhookEventsRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiImgRoute: typeof ApiImgRoute
   ApiVerifyHeroRoute: typeof ApiVerifyHeroRoute
@@ -1394,6 +1407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/webhook-events': {
+      id: '/admin/webhook-events'
+      path: '/admin/webhook-events'
+      fullPath: '/admin/webhook-events'
+      preLoaderRoute: typeof AdminWebhookEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/viator-validation': {
       id: '/admin/viator-validation'
       path: '/admin/viator-validation'
@@ -1713,6 +1733,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
   AdminViatorValidationRoute: AdminViatorValidationRoute,
+  AdminWebhookEventsRoute: AdminWebhookEventsRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiImgRoute: ApiImgRoute,
   ApiVerifyHeroRoute: ApiVerifyHeroRoute,
@@ -1739,13 +1760,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
