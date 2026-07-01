@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-01T12:02:45.806Z",
-  "filesScanned": 498,
+  "generatedAt": "2026-07-01T12:14:22.058Z",
+  "filesScanned": 500,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 293,
-    "approved": 71,
-    "allowlisted": 53,
-    "mismatch": 169
+    "total": 301,
+    "approved": 74,
+    "allowlisted": 57,
+    "mismatch": 170
   },
   "findings": [
     {
@@ -1876,6 +1876,78 @@
       "raw": "#ffffff",
       "normalized": "#ffffff",
       "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, \"Times New Roman\", serif' } as const",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 30,
+      "col": 15,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const TEAL = '#295B61'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 31,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "const GOLD = '#C9A96A'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 32,
+      "col": 19,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "const CHARCOAL = '#2E2E2E'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 33,
+      "col": 15,
+      "raw": "#F4EEE2",
+      "normalized": "#f4eee2",
+      "snippet": "const SAND = '#F4EEE2'",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 195,
+      "col": 35,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "// Styles — Body background stays #ffffff per Lovable email rules.",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 196,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, \"Times New Roman\", serif' } as const",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 280,
+      "col": 11,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "color: '#ffffff',",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/checkout-receipt.tsx",
+      "line": 291,
+      "col": 21,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "backgroundColor: '#ffffff',",
       "status": "allowlisted"
     },
     {
