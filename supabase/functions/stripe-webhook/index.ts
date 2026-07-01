@@ -36,6 +36,7 @@ Deno.serve(async (req) => {
   // Try live first, then sandbox; whichever verifies wins and sets the env.
   const candidates: Array<{ env: StripeEnv; secret: string | undefined }> = [
     { env: "live", secret: Deno.env.get("STRIPE_WEBHOOK_SECRET_LIVE") },
+    { env: "live", secret: Deno.env.get("STRIPE_WEBHOOK_SECRET") },
     { env: "sandbox", secret: Deno.env.get("STRIPE_WEBHOOK_SECRET_SANDBOX") },
   ];
 
