@@ -1381,6 +1381,60 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_webhook_events: {
+        Row: {
+          amount_total: number | null
+          booking_type: string | null
+          currency: string | null
+          customer_email: string | null
+          error_message: string | null
+          event_id: string | null
+          event_type: string | null
+          id: string
+          metadata: Json | null
+          payment_status: string | null
+          received_at: string
+          session_id: string | null
+          status_code: number | null
+          stripe_env: string | null
+          verified: boolean
+        }
+        Insert: {
+          amount_total?: number | null
+          booking_type?: string | null
+          currency?: string | null
+          customer_email?: string | null
+          error_message?: string | null
+          event_id?: string | null
+          event_type?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_status?: string | null
+          received_at?: string
+          session_id?: string | null
+          status_code?: number | null
+          stripe_env?: string | null
+          verified?: boolean
+        }
+        Update: {
+          amount_total?: number | null
+          booking_type?: string | null
+          currency?: string | null
+          customer_email?: string | null
+          error_message?: string | null
+          event_id?: string | null
+          event_type?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_status?: string | null
+          received_at?: string
+          session_id?: string | null
+          status_code?: number | null
+          stripe_env?: string | null
+          verified?: boolean
+        }
+        Relationships: []
+      }
       stripe_webhook_health_checks: {
         Row: {
           alerted: boolean
