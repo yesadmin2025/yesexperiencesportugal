@@ -135,15 +135,15 @@ export function StudioLivePreview() {
         />
       </div>
 
-      {/* Chips row — Mood · Who · Rhythm */}
+      {/* Chips row — Local fit · Route flow · Guest rhythm */}
       <div
         className="relative z-10 flex flex-wrap items-center gap-1.5 md:gap-2 border-b border-[color:var(--gold)]/12 bg-[color:var(--charcoal-deep)]/70 px-4 md:px-5 py-3"
         role="group"
-        aria-label="Studio inputs preview"
+        aria-label="Studio signals preview"
       >
-        <Chip icon={<Wine size={11} aria-hidden="true" />} label="Mood" value="Wine & food" />
-        <Chip icon={<Users size={11} aria-hidden="true" />} label="Who" value="Couple" />
-        <Chip icon={<Clock3 size={11} aria-hidden="true" />} label="Rhythm" value="Relaxed" />
+        <Chip icon={<Wine size={11} aria-hidden="true" />} label="Local fit" value="Wine & food" />
+        <Chip icon={<Users size={11} aria-hidden="true" />} label="Route flow" value="Couple" />
+        <Chip icon={<Clock3 size={11} aria-hidden="true" />} label="Guest rhythm" value="Relaxed" />
       </div>
 
       {/* ── Map stage ─────────────────────────────────────────────── */}
@@ -323,10 +323,10 @@ export function StudioLivePreview() {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
-            A local touch
+            Private cellar available
           </span>
           <span className="mt-0.5 block truncate text-[12px] md:text-[12.5px] text-[color:var(--ivory)]/90">
-            many couples add a private cellar tasting.
+            Add a family-run cellar tasting to your day.
           </span>
         </span>
         <span
@@ -375,7 +375,7 @@ export function StudioLivePreview() {
         <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <p className="inline-flex items-center gap-1.5 text-[10.5px] text-[color:var(--charcoal-soft)]">
             <MapPin size={11} aria-hidden="true" className="text-[color:var(--teal)]" />
-            Instant confirmation · cancel 48h
+            Instantly booked · cancel 48h
           </p>
           <Link
             to="/experiences"
