@@ -20,7 +20,7 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 
-const PLATFORMS: Platform[] = ["google", "tripadvisor", "viator", "getyourguide"];
+const PLATFORMS: Platform[] = ["tripadvisor", "viator", "google", "getyourguide", "trustpilot"];
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -87,7 +87,7 @@ export function GuestQuotes() {
 
       <ul
         className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-5 h-6 md:h-7 list-none p-0"
-        aria-label="Featured on Google, Tripadvisor, Viator and GetYourGuide"
+        aria-label="Featured on Tripadvisor, Viator, Google, GetYourGuide and Trustpilot"
       >
         {PLATFORMS.map((p) => (
           <li key={p} className="h-full flex items-center">
