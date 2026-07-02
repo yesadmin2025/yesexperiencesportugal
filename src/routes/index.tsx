@@ -539,6 +539,12 @@ function HomePage() {
            See <CinematicHero/>; HERO_COPY locks live inside it. */}
         <CinematicHero />
 
+        {/* Quiet SEO intro line — sits between hero and reviews. */}
+        <p className="container-x text-center pt-8 md:pt-10 text-[13px] md:text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-3xl mx-auto">
+          Private Portugal experiences, curated, designed live or fully crafted by a local Travel
+          Designer.
+        </p>
+
         {/* 2 — TRUST STRIP
           A single, clean social proof surface: review count + platform marks.
           No invented quotes, no repeated review blocks. */}
