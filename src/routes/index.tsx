@@ -694,7 +694,7 @@ function HomePage() {
               className={[
                 scrollDebug.staticMobileCarousels
                   ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                  : "flex sm:grid sm:grid-cols-2 lg:grid-cols-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain sm:overscroll-auto [contain:layout_paint] sm:[contain:none] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+                  : "flex sm:grid sm:grid-cols-2 lg:grid-cols-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain sm:overscroll-auto [contain:layout_paint] sm:[contain:none] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory sm:snap-none scroll-pl-5 sm:scroll-pl-0",
                 "he-stagger gap-5 md:gap-7 list-none p-0",
               ].join(" ")}
               aria-label="Signature experiences"
