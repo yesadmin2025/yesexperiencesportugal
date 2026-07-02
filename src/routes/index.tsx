@@ -46,6 +46,15 @@ const FEATURED_TOUR_IDS = [
   "troia-comporta",
 ] as const;
 
+// Concise SEO-friendly titles used on mobile signature cards so long
+// Viator names don't clip on the left edge. Desktop keeps the full title.
+const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
+  "arrabida-wine-allinclusive": "Arrábida Wine Day from Lisbon",
+  "sintra-cascais": "Sintra & Cascais Private Day",
+  "arrabida-boat": "Arrábida Boat & Wine Day",
+  "troia-comporta": "Tróia & Comporta Coastal Day",
+};
+
 /* ──────────────────────────────────────────────────────────────────
  * HERO — cinematic 5-scene storytelling sequence (mobile-first).
  *
