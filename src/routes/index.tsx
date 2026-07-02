@@ -706,7 +706,7 @@ function HomePage() {
                     className={
                       scrollDebug.staticMobileCarousels
                         ? "reveal-stagger w-full"
-                        : "reveal-stagger shrink-0 w-[84vw] sm:w-auto sm:shrink"
+                        : "reveal-stagger shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink"
                     }
                   >
                     {/* Card is a structured composition (NOT a single link) so
