@@ -1014,6 +1014,29 @@ function HomePage() {
               </Link>
             </div>
 
+            {/* Extended high-intent internal links — Comporta, Évora,
+              Alentejo, Travel Designer, Proposals, Corporate. Quiet
+              editorial chip row, no invented copy. */}
+            <ul className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-2 not-prose list-none p-0">
+              {[
+                { to: "/experiences", label: "Comporta private tour from Lisbon" },
+                { to: "/experiences", label: "Évora private tour from Lisbon" },
+                { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
+                { to: "/multi-day", label: "Portugal Travel Designer" },
+                { to: "/proposals", label: "Proposal in Portugal" },
+                { to: "/corporate", label: "Corporate experiences Portugal" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    to={item.to}
+                    className="inline-block px-3.5 py-2 text-[12px] text-[color:var(--charcoal)] bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] hover:text-[color:var(--teal)] transition-colors rounded-full"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
             {/* Studio emphasis — the unique differentiator */}
             <div className="mt-14 md:mt-16 p-7 md:p-10 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-center relative overflow-hidden">
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)] mb-4">
