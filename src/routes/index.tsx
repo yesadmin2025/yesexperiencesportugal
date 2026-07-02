@@ -46,6 +46,15 @@ const FEATURED_TOUR_IDS = [
   "troia-comporta",
 ] as const;
 
+// Concise SEO-friendly titles used on mobile signature cards so long
+// Viator names don't clip on the left edge. Desktop keeps the full title.
+const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
+  "arrabida-wine-allinclusive": "Arrábida Wine Day from Lisbon",
+  "sintra-cascais": "Sintra & Cascais Private Day",
+  "arrabida-boat": "Arrábida Boat & Wine Day",
+  "troia-comporta": "Tróia & Comporta Coastal Day",
+};
+
 /* ──────────────────────────────────────────────────────────────────
  * HERO — cinematic 5-scene storytelling sequence (mobile-first).
  *
@@ -206,30 +215,30 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "YES experiences Portugal — Private Luxury Travel" },
+      { title: "Private Portugal Tours & Experiences | YES Experiences Portugal" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
         content:
-          "Private Portugal experiences — Signature days, Experience Studio and bespoke journeys in Lisbon, Sintra and Arrábida. 5-star rated.",
+          "Portugal, around you. Choose or design your own private day, in real time, instantly booked. A local Travel Designer crafts full journeys and special occasions.",
       },
       {
         property: "og:title",
-        content: "Portugal is the stage. You write the story. — YES experiences",
+        content: "Private Portugal Tours & Experiences | YES Experiences Portugal",
       },
       {
         property: "og:description",
         content:
-          "Private Portugal experiences — Signature days, Experience Studio with instant reservation, and bespoke journeys.",
+          "Portugal, around you. Choose or design your own private day, in real time, instantly booked. A local Travel Designer crafts full journeys and special occasions.",
       },
       {
         property: "twitter:title",
-        content: "Portugal is the stage. You write the story. — YES experiences",
+        content: "Private Portugal Tours & Experiences | YES Experiences Portugal",
       },
       {
         property: "twitter:description",
         content:
-          "Private Portugal experiences — Signature days, Experience Studio with instant reservation, and bespoke journeys.",
+          "Portugal, around you. Choose or design your own private day, in real time, instantly booked. A local Travel Designer crafts full journeys and special occasions.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
@@ -530,6 +539,12 @@ function HomePage() {
            See <CinematicHero/>; HERO_COPY locks live inside it. */}
         <CinematicHero />
 
+        {/* Quiet SEO intro line — sits between hero and reviews. */}
+        <p className="container-x text-center pt-8 md:pt-10 text-[13px] md:text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-3xl mx-auto">
+          Private Portugal experiences, curated, designed live or fully crafted by a local Travel
+          Designer.
+        </p>
+
         {/* 2 — TRUST STRIP
           A single, clean social proof surface: review count + platform marks.
           No invented quotes, no repeated review blocks. */}
@@ -685,7 +700,7 @@ function HomePage() {
               className={[
                 scrollDebug.staticMobileCarousels
                   ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                  : "flex sm:grid sm:grid-cols-2 lg:grid-cols-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain sm:overscroll-auto [contain:layout_paint] sm:[contain:none] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+                  : "flex sm:grid sm:grid-cols-2 lg:grid-cols-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain sm:overscroll-auto [contain:layout_paint] sm:[contain:none] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory sm:snap-none scroll-pl-5 sm:scroll-pl-0",
                 "he-stagger gap-5 md:gap-7 list-none p-0",
               ].join(" ")}
               aria-label="Signature experiences"
@@ -697,7 +712,7 @@ function HomePage() {
                     className={
                       scrollDebug.staticMobileCarousels
                         ? "reveal-stagger w-full"
-                        : "reveal-stagger shrink-0 w-[84vw] sm:w-auto sm:shrink"
+                        : "reveal-stagger shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink"
                     }
                   >
                     {/* Card is a structured composition (NOT a single link) so
@@ -769,7 +784,8 @@ function HomePage() {
                           Alentejo") tidy on narrow widths without pushing the meta row off-card. */}
                         <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
                           <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance line-clamp-2 [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
-                            {t.title}
+                            <span className="sm:hidden">{MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}</span>
+                            <span className="hidden sm:inline">{t.title}</span>
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
                             <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
@@ -997,6 +1013,29 @@ function HomePage() {
                 See all day trips from Lisbon →
               </Link>
             </div>
+
+            {/* Extended high-intent internal links — Comporta, Évora,
+              Alentejo, Travel Designer, Proposals, Corporate. Quiet
+              editorial chip row, no invented copy. */}
+            <ul className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-2 not-prose list-none p-0">
+              {[
+                { to: "/experiences", label: "Comporta private tour from Lisbon" },
+                { to: "/experiences", label: "Évora private tour from Lisbon" },
+                { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
+                { to: "/multi-day", label: "Portugal Travel Designer" },
+                { to: "/proposals", label: "Proposal in Portugal" },
+                { to: "/corporate", label: "Corporate experiences Portugal" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    to={item.to}
+                    className="inline-block px-3.5 py-2 text-[12px] text-[color:var(--charcoal)] bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] hover:text-[color:var(--teal)] transition-colors rounded-full"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
             {/* Studio emphasis — the unique differentiator */}
             <div className="mt-14 md:mt-16 p-7 md:p-10 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-center relative overflow-hidden">

@@ -1,15 +1,12 @@
 /**
  * FourWaysIn — homepage "where to begin" section.
  *
- * Sprint A v5 — replaces ThreePathsSection. Four cards, equal
- * hierarchy. Three instant-booking paths (Signature / Tailored /
- * Studio) and one human-led path (Travel Designer). Each card uses
- * a DISTINCT booking verb — never "Reserve instantly" repeated, never
- * a "when available" qualifier.
+ * Five paths, equal hierarchy. Signature Experiences, Studio, Moments,
+ * Corporate & Groups, Travel Designer. 2×2 bento on mobile, 5-col
+ * editorial row on desktop.
  *
- * Layout: 2×2 bento on mobile, 4-column editorial row on desktop.
- * Reuses the existing reveal-stagger / he-card-lift primitives so it
- * blends with the rest of the homepage without bespoke styling.
+ * Component name kept for import stability; the visible header is
+ * "Five ways to shape your Portugal."
  */
 
 import { Link } from "@tanstack/react-router";
@@ -29,14 +26,14 @@ const PATHS: Path[] = [
   {
     num: "01",
     Icon: BookOpen,
-    label: "Signature & Tailored",
+    label: "Signature Experiences",
     title: (
       <>
         Ready private days,{" "}
         <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
       </>
     ),
-    body: "Flagship journeys across Lisbon, Sintra, Arrábida and beyond — reserve as they are, or tailor inside the Signature you choose.",
+    body: "Flagship private days across Lisbon, Sintra, Arrábida and beyond — reserve as they are, or tailor inside the Signature you choose.",
     cta: "Reserve or tailor",
     href: "/experiences",
   },
@@ -46,10 +43,11 @@ const PATHS: Path[] = [
     label: "Studio",
     title: (
       <>
-        Design your day <span className="italic font-normal text-[color:var(--teal)]">in real time, with us.</span>
+        Design your private day{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">in real time.</span>
       </>
     ),
-    body: "A living canvas — choose stops, see the route, watch the price. Hold your date when it feels right.",
+    body: "Choose the mood, route and rhythm. See the price live, then reserve instantly when it feels right.",
     cta: "Build your private day",
     href: "/studio-v3",
   },
@@ -60,10 +58,10 @@ const PATHS: Path[] = [
     title: (
       <>
         Proposals & celebrations,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">staged quietly.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
       </>
     ),
-    body: "Engagements, anniversaries, birthdays and private celebrations — staged quietly, with local hands behind every detail.",
+    body: "Engagements, anniversaries, birthdays and private celebrations — quietly handled, with local hands behind every detail.",
     cta: "Tell us the occasion",
     href: "/proposals",
   },
@@ -73,10 +71,11 @@ const PATHS: Path[] = [
     label: "Corporate & Groups",
     title: (
       <>
-        Team days, incentives <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
+        Team days, incentives{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
       </>
     ),
-    body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and logistics handled end to end.",
+    body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and timing handled end to end.",
     cta: "Plan a group day",
     href: "/corporate",
   },
@@ -90,7 +89,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
       </>
     ),
-    body: "Any length, any shape — weddings, honeymoons, family journeys, multi-day Portugal. Composed by a designer.",
+    body: "Any length, any shape — honeymoons, family journeys, celebrations and multi-day Portugal. Composed by a local Travel Designer.",
     cta: "Begin with a designer",
     href: "/multi-day",
   },
@@ -110,7 +109,8 @@ export function FourWaysIn() {
             id="four-ways-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Four ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
+            Five ways to{" "}
+            <span className="italic font-normal text-[color:var(--teal)]">shape your Portugal.</span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>

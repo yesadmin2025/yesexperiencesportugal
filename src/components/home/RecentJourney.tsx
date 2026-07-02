@@ -415,7 +415,7 @@ export function RecentJourney() {
             keep one headline + one supporting line and let the object
             below do the talking. */}
         <div className="reveal text-center max-w-2xl mx-auto mb-6 md:mb-8">
-          <span className="he-eyebrow-bar mb-4">Bespoke Travel Designer</span>
+          <span className="he-eyebrow-bar mb-4">Travel Designer</span>
           <h2
             id="bespoke-designer-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
