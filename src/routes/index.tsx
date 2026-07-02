@@ -206,30 +206,30 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "YES experiences Portugal — Private Luxury Travel" },
+      { title: "Private Portugal Tours & Experiences | YES Experiences Portugal" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
         content:
-          "Private Portugal experiences — Signature days, Experience Studio and bespoke journeys in Lisbon, Sintra and Arrábida. 5-star rated.",
+          "Portugal, around you. Choose or design your own private day, in real time, instantly booked. A local Travel Designer crafts full journeys and special occasions.",
       },
       {
         property: "og:title",
-        content: "Portugal is the stage. You write the story. — YES experiences",
+        content: "Private Portugal Tours & Experiences | YES Experiences Portugal",
       },
       {
         property: "og:description",
         content:
-          "Private Portugal experiences — Signature days, Experience Studio with instant reservation, and bespoke journeys.",
+          "Portugal, around you. Choose or design your own private day, in real time, instantly booked. A local Travel Designer crafts full journeys and special occasions.",
       },
       {
         property: "twitter:title",
-        content: "Portugal is the stage. You write the story. — YES experiences",
+        content: "Private Portugal Tours & Experiences | YES Experiences Portugal",
       },
       {
         property: "twitter:description",
         content:
-          "Private Portugal experiences — Signature days, Experience Studio with instant reservation, and bespoke journeys.",
+          "Portugal, around you. Choose or design your own private day, in real time, instantly booked. A local Travel Designer crafts full journeys and special occasions.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
