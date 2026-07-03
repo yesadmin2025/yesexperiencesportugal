@@ -4,7 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 
