@@ -143,6 +143,31 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
           notes: data.notes ?? null,
         },
       });
+
+      // Team notification — one send per recipient so bounces are isolated.
+      const { TEAM_NOTIFICATION_RECIPIENTS } = await import("@/lib/email/team-recipients");
+      const tourTitle = draft.archetype
+        ? `Bespoke — ${draft.archetype}${draft.region ? ` (${draft.region})` : ""}`
+        : `Bespoke journey${draft.region ? ` — ${draft.region}` : ""}`;
+      await Promise.all(
+        TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
+          sendTransactionalInternal({
+            templateName: "internal-booking",
+            recipientEmail: recipient,
+            idempotencyKey: `internal-booking-${data.draftToken}-${recipient}`,
+            templateData: {
+              customerName: data.contactName,
+              customerEmail: data.contactEmail,
+              tourTitle,
+              bookingType: "bespoke",
+              dateExact: data.preferredDate ?? null,
+              guests: data.guests,
+              bookingRef: data.draftToken,
+              pickup: data.contactPhone ?? null,
+            },
+          }),
+        ),
+      );
     } catch (e) {
       console.error("[bookings] failed to enqueue confirmation email", e);
     }

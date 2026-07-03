@@ -57,5 +57,41 @@ export const createStudioV3Lead = createServerFn({ method: "POST" })
       throw new Error("Could not save your request. Please try again.");
     }
 
+    // Fire-and-forget team notification — never block the lead on email.
+    try {
+      const [{ sendTransactionalInternal }, { TEAM_NOTIFICATION_RECIPIENTS }] = await Promise.all([
+        import("@/lib/email/send-internal.server"),
+        import("@/lib/email/team-recipients"),
+      ]);
+      const [firstName, ...rest] = (data.contactName ?? "").trim().split(/\s+/);
+      const lastName = rest.join(" ");
+      const messageParts = [
+        data.intent === "book" ? "Intent: BOOK this journey" : "Intent: refine / talk to concierge",
+        data.journeyTitle ? `Journey: ${data.journeyTitle}` : null,
+        data.skeletonTourKey ? `Base tour: ${data.skeletonTourKey}` : null,
+        data.contactNote ? `\nNote from guest:\n${data.contactNote}` : null,
+      ].filter(Boolean);
+      const templateData = {
+        firstName: firstName || data.contactName,
+        lastName,
+        email: data.contactEmail,
+        message: messageParts.join("\n"),
+        source: "studio-v3",
+        submittedAt: new Date().toISOString(),
+      };
+      await Promise.all(
+        TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
+          sendTransactionalInternal({
+            templateName: "internal-lead",
+            recipientEmail: recipient,
+            idempotencyKey: `studio-v3-lead-${row.id}-${recipient}`,
+            templateData,
+          }),
+        ),
+      );
+    } catch (e) {
+      console.error("[studio-v3 lead] notification dispatch failed (non-fatal)", e);
+    }
+
     return { id: row.id as string };
   });
