@@ -2,9 +2,10 @@
 // Studio leads so the operator can see incoming activity at a glance while
 // automatic notification emails are not yet delivering.
 
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { createFileRoute, Link, useRouter, useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshCw, Mail, Sparkles, CalendarCheck2, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
