@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { sendTransactionalInternal } from "@/lib/email/send-internal.server";
+import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 /**
  * Internal endpoint invoked by the Supabase Stripe webhook (Deno) after a
