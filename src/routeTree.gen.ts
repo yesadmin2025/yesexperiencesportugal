@@ -43,6 +43,7 @@ import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
@@ -262,6 +263,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToursTourIdRoute = ToursTourIdRouteImport.update({
@@ -576,6 +582,7 @@ export interface FileRoutesByFullPath {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -659,6 +666,7 @@ export interface FileRoutesByTo {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/admin': typeof AdminIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -743,6 +751,7 @@ export interface FileRoutesById {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -828,6 +837,7 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/admin/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -911,6 +921,7 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/admin'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -994,6 +1005,7 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/admin/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1077,6 +1089,7 @@ export interface RootRouteChildren {
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -1327,6 +1340,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tours/$tourId': {
@@ -1766,6 +1786,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
+  AdminIndexRoute: AdminIndexRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
@@ -1781,13 +1802,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
