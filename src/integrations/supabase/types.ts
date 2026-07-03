@@ -679,6 +679,42 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          locale: string | null
+          message: string
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          locale?: string | null
+          message: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          locale?: string | null
+          message?: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       dns_watch_log: {
         Row: {
           a_records: string[]
