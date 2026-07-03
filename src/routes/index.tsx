@@ -215,7 +215,7 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Private Portugal Tours & Experiences | YES Experiences Portugal" },
+      { title: "Private Portugal Tours & Experiences | YES Experiences" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
@@ -224,7 +224,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Private Portugal Tours & Experiences | YES Experiences Portugal",
+        content: "Private Portugal Tours & Experiences | YES Experiences",
       },
       {
         property: "og:description",
@@ -233,7 +233,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "twitter:title",
-        content: "Private Portugal Tours & Experiences | YES Experiences Portugal",
+        content: "Private Portugal Tours & Experiences | YES Experiences",
       },
       {
         property: "twitter:description",
