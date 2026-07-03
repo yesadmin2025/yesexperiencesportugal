@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { sendTransactionalInternal } from "@/lib/email/send-internal.server";
+import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 /**
  * Internal endpoint invoked by the Supabase Stripe webhook (Deno) after a
@@ -60,6 +61,28 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           idempotencyKey: `checkout-receipt-${sessionId}`,
           templateData,
         });
+
+        // Notify the YES team on every completed booking. Non-fatal — the
+        // client receipt is the priority; internal alerts must never block it.
+        try {
+          await Promise.all(
+            TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
+              sendTransactionalInternal({
+                templateName: "internal-booking",
+                recipientEmail: recipient,
+                idempotencyKey: `internal-booking-${sessionId}-${recipient}`,
+                templateData: {
+                  ...templateData,
+                  customerEmail: recipientEmail,
+                },
+              }),
+            ),
+          );
+        } catch (e) {
+          console.error("[checkout-email] team notification failed", {
+            error: e instanceof Error ? e.message : e,
+          });
+        }
 
         return Response.json(result, { status: result.ok ? 200 : 202 });
       },

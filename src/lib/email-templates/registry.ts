@@ -2,6 +2,9 @@ import type { ComponentType } from 'react'
 import { template as bookingConfirmation } from './booking-confirmation'
 import { template as checkoutReceipt } from './checkout-receipt'
 import { template as stripeWebhookAlert } from './stripe-webhook-alert'
+import { template as contactReceived } from './contact-received'
+import { template as internalLead } from './internal-lead'
+import { template as internalBooking } from './internal-booking'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -20,4 +23,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'booking-confirmation': bookingConfirmation,
   'checkout-receipt': checkoutReceipt,
   'stripe-webhook-alert': stripeWebhookAlert,
+  'contact-received': contactReceived,
+  'internal-lead': internalLead,
+  'internal-booking': internalBooking,
 }
