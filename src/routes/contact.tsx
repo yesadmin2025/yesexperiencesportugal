@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Mail, Phone, MapPin, ExternalLink } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,67 @@ const contactSchema = z.object({
 });
 
 type Status = "idle" | "submitting" | "success" | "error";
-...
+
+export const Route = createFileRoute("/contact")({
+  head: () => ({
+    meta: [
+      { title: "Contact — YES experiences Portugal" },
+      {
+        name: "description",
+        content: "Speak directly with our YES Portugal experience designers.",
+      },
+      { property: "og:title", content: "Contact — YES experiences Portugal" },
+      {
+        property: "og:description",
+        content: "Speak directly with our YES Portugal experience designers.",
+      },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
+    ],
+    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/contact" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ]),
+      ),
+    ],
+  }),
+
+  component: Page,
+});
+
+function Page() {
+  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  return (
+    <SiteLayout>
+      <section className="pt-32 pb-12 bg-[color:var(--sand)]">
+        <div className="container-x text-center">
+          <Eyebrow flank>Talk to a Designer</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+            Tell us a little about who you are and what you'd love to experience. We'll respond
+            within one business day.
+          </p>
+        </div>
+      </section>
+
+      <section className="py-20">
+        <div className="container-x grid lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2">
+            {sent ? (
+              <div className="border-l-4 border-[color:var(--gold)] bg-[color:var(--sand)] p-10">
+                <h3 className="serif text-3xl text-[color:var(--teal)]">Thank you.</h3>
+                <p className="mt-3 text-[color:var(--charcoal-soft)]">
+                  Your message has reached our experience designers. We'll be in touch shortly.
+                </p>
+              </div>
+            ) : (
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
@@ -45,8 +105,7 @@ type Status = "idle" | "submitting" | "success" | "error";
                       email: parsed.data.email,
                       message: parsed.data.message,
                       source: "contact-page",
-                      locale:
-                        typeof navigator !== "undefined" ? navigator.language : null,
+                      locale: typeof navigator !== "undefined" ? navigator.language : null,
                       user_agent:
                         typeof navigator !== "undefined"
                           ? navigator.userAgent.slice(0, 500)
