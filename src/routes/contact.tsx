@@ -99,23 +99,28 @@ function Page() {
                   }
                   setStatus("submitting");
                   try {
-                    const { error } = await supabase.from("contact_messages").insert({
-                      first_name: parsed.data.first,
-                      last_name: parsed.data.last,
-                      email: parsed.data.email,
-                      message: parsed.data.message,
-                      source: "contact-page",
-                      locale: typeof navigator !== "undefined" ? navigator.language : null,
-                      user_agent:
-                        typeof navigator !== "undefined"
-                          ? navigator.userAgent.slice(0, 500)
-                          : null,
+                    const resp = await fetch("/api/public/contact", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        first: parsed.data.first,
+                        last: parsed.data.last,
+                        email: parsed.data.email,
+                        message: parsed.data.message,
+                        source: "contact-page",
+                        locale:
+                          typeof navigator !== "undefined" ? navigator.language : null,
+                        userAgent:
+                          typeof navigator !== "undefined"
+                            ? navigator.userAgent.slice(0, 500)
+                            : null,
+                      }),
                     });
-                    if (error) throw error;
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     setStatus("success");
                     setSent(true);
                   } catch (err) {
-                    console.error("[contact] insert failed", err);
+                    console.error("[contact] submit failed", err);
                     setStatus("error");
                     setErrorMsg(
                       "Sorry, something went wrong sending your message. Please email info@yesexperiencesportugal.com.",
