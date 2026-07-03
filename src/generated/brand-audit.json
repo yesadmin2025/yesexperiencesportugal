@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-03T17:24:05.411Z",
-  "filesScanned": 503,
+  "generatedAt": "2026-07-03T17:33:25.187Z",
+  "filesScanned": 508,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 307,
-    "approved": 75,
-    "allowlisted": 57,
-    "mismatch": 175
+    "total": 327,
+    "approved": 82,
+    "allowlisted": 60,
+    "mismatch": 185
   },
   "findings": [
     {
@@ -1951,6 +1951,69 @@
       "status": "allowlisted"
     },
     {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 20,
+      "col": 15,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const TEAL = '#295B61'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 21,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "const GOLD = '#C9A96A'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 22,
+      "col": 19,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "const CHARCOAL = '#2E2E2E'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 23,
+      "col": 16,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "const IVORY = '#FAF8F3'",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 25,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, \"Times New Roman\", serif' } as const",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 47,
+      "col": 28,
+      "raw": "#eee",
+      "normalized": "#eeeeee",
+      "snippet": "const hr = { borderColor: '#eee', margin: '28px 0' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/contact-received.tsx",
+      "line": 66,
+      "col": 45,
+      "raw": "#7a7a7a",
+      "normalized": "#7a7a7a",
+      "snippet": "<Text style={{ ...body, color: '#7a7a7a', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '18px 0 6px' }}>",
+      "status": "mismatch"
+    },
+    {
       "file": "src/lib/email-templates/email-change.tsx",
       "line": 67,
       "col": 34,
@@ -2002,6 +2065,123 @@
       "raw": "#999999",
       "normalized": "#999999",
       "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-booking.tsx",
+      "line": 27,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, Helvetica, sans-serif' } as const",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/internal-booking.tsx",
+      "line": 29,
+      "col": 22,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const h1 = { color: '#295B61', fontSize: 20, margin: '0 0 6px' }",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/internal-booking.tsx",
+      "line": 30,
+      "col": 23,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "const sub = { color: '#C9A96A', fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase' as const, margin: '0 0 20px' }",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/internal-booking.tsx",
+      "line": 32,
+      "col": 25,
+      "raw": "#888",
+      "normalized": "#888888",
+      "snippet": "const label = { color: '#888', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase' as const, margin: '0 0 3px' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-booking.tsx",
+      "line": 33,
+      "col": 25,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "const value = { color: '#111', fontSize: 14, margin: 0, lineHeight: 1.55 }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-booking.tsx",
+      "line": 63,
+      "col": 42,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "<Text style={{ ...value, color: '#666', fontSize: 12, marginTop: 22 }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 25,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, Helvetica, sans-serif' } as const",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 27,
+      "col": 22,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const h1 = { color: '#295B61', fontSize: 20, margin: '0 0 6px' }",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 28,
+      "col": 23,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "const sub = { color: '#666', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase' as const, margin: '0 0 20px' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 30,
+      "col": 25,
+      "raw": "#888",
+      "normalized": "#888888",
+      "snippet": "const label = { color: '#888', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase' as const, margin: '0 0 3px' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 31,
+      "col": 25,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "const value = { color: '#111', fontSize: 14, margin: 0, lineHeight: 1.55, whiteSpace: 'pre-wrap' as const }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 69,
+      "col": 46,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "<Text style={{ ...value, color: '#666', fontSize: 12 }}>{p.userAgent}</Text>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/internal-lead.tsx",
+      "line": 73,
+      "col": 42,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "<Text style={{ ...value, color: '#666', fontSize: 12, marginTop: 20 }}>",
       "status": "mismatch"
     },
     {
