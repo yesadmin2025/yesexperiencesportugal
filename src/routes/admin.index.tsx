@@ -2,9 +2,10 @@
 // Studio leads so the operator can see incoming activity at a glance while
 // automatic notification emails are not yet delivering.
 
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { createFileRoute, Link, useRouter, useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshCw, Mail, Sparkles, CalendarCheck2, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -112,6 +113,8 @@ function formatDate(iso: string | null): string {
 }
 
 function AdminOverviewPage() {
+  const navigate = useNavigate();
+  const redirectedRef = useRef(false);
   const [session, setSession] = useState<{ id: string; email?: string | null } | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -208,49 +211,48 @@ function AdminOverviewPage() {
     };
   }, [isAdmin, fetchAll]);
 
-  if (!authChecked) {
-    return (
-      <SiteLayout>
-        <section className="pt-28 pb-20 container-x max-w-5xl">
-          <p className="text-sm text-[color:var(--charcoal-soft)]">A carregar…</p>
-        </section>
-      </SiteLayout>
-    );
-  }
+  // Auto-redirect to /auth when unauthenticated OR when the account has no admin role.
+  useEffect(() => {
+    if (!authChecked || redirectedRef.current) return;
+    if (!session) {
+      redirectedRef.current = true;
+      toast.error("Precisas de iniciar sessão com uma conta admin.");
+      navigate({ to: "/auth" });
+      return;
+    }
+    if (isAdmin === false) {
+      redirectedRef.current = true;
+      toast.error(
+        `A conta ${session.email ?? "atual"} não tem o papel de admin. Contacta o administrador.`,
+      );
+      supabase.auth.signOut().finally(() => navigate({ to: "/auth" }));
+    }
+  }, [authChecked, session, isAdmin, navigate]);
 
-  if (!session) {
+  if (!authChecked || !session || isAdmin !== true) {
     return (
       <SiteLayout>
         <section className="pt-28 pb-20 container-x max-w-2xl">
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
-          <h1 className="mt-1 text-3xl">Painel interno</h1>
+          <h1 className="mt-1 text-3xl">
+            {!authChecked ? "A verificar sessão…" : !session ? "A redirecionar…" : "Sem autorização"}
+          </h1>
           <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
-            Faz login para ver as últimas reservas e pedidos.
+            {!session
+              ? "Redireciona-te para a página de login."
+              : "Esta conta não tem o papel de admin. A voltar para a página de login…"}
           </p>
           <Link
             to="/auth"
             className="mt-6 inline-flex items-center gap-2 bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-5 py-2.5 text-sm hover:bg-black"
           >
-            Iniciar sessão
+            Ir para o login
           </Link>
         </section>
       </SiteLayout>
     );
   }
 
-  if (!isAdmin) {
-    return (
-      <SiteLayout>
-        <section className="pt-28 pb-20 container-x max-w-2xl">
-          <h1 className="text-3xl">Sem autorização</h1>
-          <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
-            A tua conta ({session.email ?? session.id}) não tem o papel de{" "}
-            <code className="mx-1 px-1 bg-[color:var(--sand)]">admin</code>.
-          </p>
-        </section>
-      </SiteLayout>
-    );
-  }
 
   return (
     <SiteLayout>
