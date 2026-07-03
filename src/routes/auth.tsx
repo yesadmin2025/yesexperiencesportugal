@@ -19,19 +19,21 @@ export const Route = createFileRoute("/auth")({
 });
 
 async function routeByRole(userId: string, navigate: ReturnType<typeof useNavigate>) {
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
+  // Use the security-definer RPC so this never trips on RLS edge cases.
+  const { data, error } = await supabase.rpc("has_role", {
+    _user_id: userId,
+    _role: "admin",
+  });
+
+  // eslint-disable-next-line no-console
+  console.log("[auth] has_role result", { userId, data, error });
 
   if (error) {
-    toast.error("Não foi possível verificar as permissões.");
+    toast.error(`Não foi possível verificar as permissões: ${error.message}`);
     return;
   }
 
-  if (data) {
+  if (data === true) {
     toast.success("Bem-vindo. A abrir o painel admin…");
     navigate({ to: "/admin" });
   } else {
