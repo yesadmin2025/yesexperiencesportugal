@@ -113,6 +113,8 @@ function formatDate(iso: string | null): string {
 }
 
 function AdminOverviewPage() {
+  const navigate = useNavigate();
+  const redirectedRef = useRef(false);
   const [session, setSession] = useState<{ id: string; email?: string | null } | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
