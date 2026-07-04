@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   probeLegacyDomains,
+  probeLegacyHost,
   type LegacyHostReport,
 } from "@/lib/legacy-domains-monitor.functions";
 import {
