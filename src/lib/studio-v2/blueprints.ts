@@ -104,6 +104,19 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     weight: 70,
   },
 
+  // ─── Southwest Vicentine Coast ─────────────────────────────────────────
+  {
+    id: "bp-southwest-vicentine-coast",
+    region: "alentejo",
+    sourceTourKeys: ["southwest-vicentine-coast"],
+    matchIntents: ["coastal_cinematic", "relaxed_scenic", "romantic_intimate"],
+    matchStyles: ["coast", "heritage"],
+    pricePerGuestFrom: 260,
+    durationHours: [9, 10],
+    pickupNote: "Hotel pickup in Lisbon · long day to the Vicentine Coast",
+    weight: 78,
+  },
+
   // ─── Lisbon coast (Sintra / Cascais) ───────────────────────────────────
   {
     id: "bp-sintra-cascais",
