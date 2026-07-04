@@ -19,6 +19,8 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/jsonld";
+import { PlatformBadge } from "@/components/PlatformBadge";
+
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -123,24 +125,22 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <p className="mt-2 font-[family-name:var(--font-sans)] text-[13px] md:text-[14px] leading-[1.55] text-[color:var(--charcoal)]">
+      <p className="mt-2 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] leading-[1.5] text-[color:var(--charcoal)]">
         {count ? (
           <>
-            <span className="tabular-nums font-semibold">{count.toLocaleString("en-US")}</span>{" "}
-            <span>five-star reviews</span>
-            {avg && (
-              <span className="text-[color:var(--charcoal)]/65"> · {avg.toFixed(1)}★</span>
-            )}
-            <span className="text-[color:var(--charcoal)]/75"> across major platforms.</span>
+            <span className="font-semibold text-[color:var(--charcoal)]">
+              {count.toLocaleString("en-US")} five-star reviews
+            </span>{" "}
+            <span className="text-[color:var(--charcoal)]/70">— real guests, real stories.</span>
           </>
         ) : (
           <>
-            <span className="tabular-nums font-semibold">700+</span>{" "}
-            <span>five-star reviews</span>
-            <span className="text-[color:var(--charcoal)]/75"> across major platforms.</span>
+            <span className="font-semibold text-[color:var(--charcoal)]">700+ five-star reviews</span>{" "}
+            <span className="text-[color:var(--charcoal)]/70">— real guests, real stories.</span>
           </>
         )}
       </p>
+
 
       {/* Platform badge row removed — each review card now carries its
           own source label ("via Tripadvisor" etc.), so the standalone
@@ -294,33 +294,28 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
 }
 
 /**
- * Source badge — small pill with the platform name. Tripadvisor gets its
- * signature green bubbles glyph; other sources render as a subtle label.
- * Feels more like proof than a caption.
+ * Source badge — small platform mark. Tripadvisor renders as a tiny
+ * monochrome icon; other sources show as a minimal text pill. Keeps the
+ * review card footer clean and premium.
  */
 function SourceBadge({ source }: { source: string }) {
   const label = SOURCE_LABEL[source] ?? source;
   if (source === "tripadvisor") {
     return (
       <span
-        className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] pl-1.5 pr-2.5 py-1"
+        className="shrink-0 inline-flex items-center justify-center h-6 w-6 rounded-full border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]"
         aria-label="Review from Tripadvisor"
       >
-        <span className="inline-flex items-center gap-[1px]" aria-hidden="true">
-          <span className="h-2 w-2 rounded-full bg-[#00AA6C]" />
-          <span className="h-2 w-2 rounded-full bg-[#00AA6C]" />
-        </span>
-        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)]">
-          Tripadvisor
-        </span>
+        <PlatformBadge platform="tripadvisor" className="h-3.5 w-auto" />
       </span>
     );
   }
   return (
-    <span className="shrink-0 inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)]">
+    <span className="shrink-0 inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[color:var(--charcoal)]/70">
       {label}
     </span>
   );
 }
 
 export default GuestQuotes;
+
