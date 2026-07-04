@@ -171,7 +171,7 @@ export const probeLegacyHost = createServerFn({ method: "POST" })
     void (async () => {
       try {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const otherHosts = (LEGACY_HOSTS as readonly string[]).filter((h) => h !== data.host);
+        const otherHosts = Array.from(LEGACY_HOSTS as ReadonlySet<string>).filter((h) => h !== data.host);
         const latestOthers: LegacyHostReport[] = [];
         for (const h of otherHosts) {
           const { data: row } = await supabaseAdmin
