@@ -24,6 +24,7 @@ import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 import { FourWaysIn } from "@/components/home/FourWaysIn";
+import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
