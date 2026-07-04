@@ -601,13 +601,10 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 5a — BESPOKE TRAVEL FILE (multi-day proof, promoted)
-          Promoted to sit right after the Studio so the visitor grasps
-          that a YES journey can be delivered as a curated travel file —
-          not just a booking. Appears before Signature Experiences. */}
-        <RecentJourney />
-
         {/* 5 — SIGNATURE EXPERIENCES PREVIEW
+          Moved BEFORE the Travel Designer proof so the highest-intent
+          shoppable inventory sits closest to the Studio — conversion
+          before storytelling.
           Up to 4 real Signature tours. Each card uses the tour's real
           hero image (sourced from the matching Viator page), real title
           and real blurb from `signatureTours`. No vague taglines, no
@@ -785,7 +782,11 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 5b — Bespoke Travel File moved to right after the Studio. */}
+        {/* 5b — BESPOKE TRAVEL FILE (multi-day / Travel Designer proof)
+          Sits AFTER Signatures so shoppable inventory converts first
+          and the bespoke narrative deepens desire for higher-value
+          Travel Designer journeys. */}
+        <RecentJourney />
 
         {/* 5c — REAL GUEST REVIEWS
           Three real verified reviews from featured Signature tours'
