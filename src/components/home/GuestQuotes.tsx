@@ -18,19 +18,12 @@ import {
   type GlobalStats,
   type PublicReview,
 } from "@/lib/reviews.functions";
-import { SITE_URL } from "@/lib/jsonld";
 import { PlatformBadge } from "@/components/PlatformBadge";
+import {
+  buildGuestQuotesJsonLd,
+  SOURCE_LABEL,
+} from "@/lib/guest-quotes-jsonld";
 
-
-
-
-const SOURCE_LABEL: Record<string, string> = {
-  viator: "Viator",
-  tripadvisor: "Tripadvisor",
-  getyourguide: "GetYourGuide",
-  google: "Google",
-  first_party: "Verified guest",
-};
 
 export function GuestQuotes() {
   const statsFn = useServerFn(getGlobalReviewStats);
