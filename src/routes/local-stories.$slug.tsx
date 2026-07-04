@@ -87,14 +87,45 @@ function articleJsonLd(a: LocalStoryArticle) {
 type LoaderData = {
   reviews: NormalizedLocalStoryReview[];
   signatureTitle: string | null;
+  dbPost: {
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    heroImage: string | null;
+    heroImageAlt: string | null;
+    authorName: string | null;
+    publishedAt: string | null;
+  } | null;
 };
 
 export const Route = createFileRoute("/local-stories/$slug")({
   loader: async ({ params }): Promise<LoaderData> => {
     const article = getLocalStoryArticle(params.slug);
-    if (!article) return { reviews: [], signatureTitle: null };
+    if (!article) {
+      // No static article — try to hydrate DB post metadata so head()
+      // can emit BlogPosting JSON-LD and OG tags for database posts.
+      try {
+        const post = await fetchPost(params.slug);
+        if (!post) return { reviews: [], signatureTitle: null, dbPost: null };
+        return {
+          reviews: [],
+          signatureTitle: null,
+          dbPost: {
+            slug: post.slug,
+            title: post.title,
+            excerpt: post.excerpt,
+            heroImage: post.hero_image_url,
+            heroImageAlt: post.hero_image_alt,
+            authorName: post.author_name,
+            publishedAt: post.published_at,
+          },
+        };
+      } catch {
+        return { reviews: [], signatureTitle: null, dbPost: null };
+      }
+    }
     const tour = findTour(article.signatureSlug);
-    if (!tour) return { reviews: [], signatureTitle: null };
+    if (!tour) return { reviews: [], signatureTitle: null, dbPost: null };
     try {
       const rows = await getTourReviews({
         data: { tourId: article.signatureSlug, limit: 3 },
@@ -114,9 +145,9 @@ export const Route = createFileRoute("/local-stories/$slug")({
       // Single normalization step — visible UI and JSON-LD consume the
       // same shape so fields cannot drift.
       const reviews = normalizeLocalStoryReviews(filtered);
-      return { reviews, signatureTitle: tour.title };
+      return { reviews, signatureTitle: tour.title, dbPost: null };
     } catch {
-      return { reviews: [], signatureTitle: tour.title };
+      return { reviews: [], signatureTitle: tour.title, dbPost: null };
     }
   },
 
