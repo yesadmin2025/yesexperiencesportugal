@@ -62,7 +62,7 @@ const PAGES = [
 const PILLARS = [
   {
     label: "Regional journeys",
-    body: "Lisbon, Alentejo, Douro, Algarve or the islands — paced for the way you travel.",
+    body: "Lisbon, Sintra, Arrábida, Alentejo, Douro, Algarve and the Vicentine coast — paced for the way you travel, mainland Portugal only.",
   },
   {
     label: "Stays & logistics",
