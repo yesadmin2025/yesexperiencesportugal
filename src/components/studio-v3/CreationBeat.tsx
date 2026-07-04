@@ -321,6 +321,18 @@ export function MapBeat({
         </div>
 
 
+        {activeCount > 0 && labels.length > 0 && legMinutes && legMinutes.length > 0 ? (
+          <div className="mt-4">
+            <RouteLegend
+              originLabel={originLabel ?? null}
+              stopLabels={labels.slice(0, activeCount)}
+              legMinutes={legMinutes}
+              legDistancesKm={legDistancesKm}
+              legModes={legModes}
+            />
+          </div>
+        ) : null}
+
         {/* Real route labels caption — quiet ivory row. */}
         {activeCount > 0 && labels.length > 0 ? (
           <p
