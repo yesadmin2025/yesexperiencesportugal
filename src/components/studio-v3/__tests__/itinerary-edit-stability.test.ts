@@ -16,23 +16,7 @@
 import { describe, it, expect } from "vitest";
 import { pickPrimaryTour } from "@/components/studio-v3/curation";
 
-type Feeling =
-  | "coastal"
-  | "wine-food"
-  | "hidden"
-  | "romance"
-  | "culture"
-  | "adventure"
-  | "slow-luxury";
-type Interest =
-  | "wine"
-  | "gastronomy"
-  | "heritage"
-  | "coast"
-  | "local-life"
-  | "nature"
-  | "art"
-  | "family";
+import type { Interest, Feeling } from "@/components/studio-v3/types";
 
 const NON_WINE_INTERESTS: Interest[] = [
   "gastronomy",
@@ -40,8 +24,8 @@ const NON_WINE_INTERESTS: Interest[] = [
   "coast",
   "local-life",
   "nature",
-  "art",
-  "family",
+  "photography",
+  "wellness",
 ];
 
 const NON_WINE_FEELINGS: Feeling[] = [
