@@ -26,6 +26,7 @@ import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
+import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 
 
 /* ════════════════════════════════════════════════════════════════
