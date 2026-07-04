@@ -708,7 +708,7 @@ const ROMANTIC_ONLY_RE =
  *  unless `seed` is provided — then re-picks among top-band tours (Δ ≤ 1.5
  *  from the leader) using the seed so "Reshape" yields a different but
  *  equally-good Signature when multiple fit. */
-function pickPrimaryTour(
+export function pickPrimaryTour(
   feeling: Feeling,
   companions: Companions,
   interests: ReadonlyArray<Interest>,
