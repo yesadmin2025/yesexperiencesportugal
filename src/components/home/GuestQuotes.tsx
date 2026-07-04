@@ -82,26 +82,30 @@ export function GuestQuotes() {
         bestRating: 5,
         worstRating: 1,
       },
-      ...quotes.map((q) => ({
-        "@type": "Review",
-        "@id": `${SITE_URL}/#review-${q.id}`,
-        itemReviewed: { "@id": orgId },
-        author: {
-          "@type": "Person",
-          name: q.reviewer_name ?? "Guest",
-        },
-        reviewRating: {
-          "@type": "Rating",
-          ratingValue: Math.round(q.rating),
-          bestRating: 5,
-          worstRating: 1,
-        },
-        reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
-        publisher: {
-          "@type": "Organization",
-          name: SOURCE_LABEL[q.source] ?? q.source,
-        },
-      })),
+      ...quotes.map((q) => {
+        const publisherUrl = q.source_url ?? undefined;
+        return {
+          "@type": "Review",
+          "@id": `${SITE_URL}/#review-${q.id}`,
+          itemReviewed: { "@id": orgId },
+          author: {
+            "@type": "Person",
+            name: q.reviewer_name ?? "Guest",
+          },
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: Math.round(q.rating),
+            bestRating: 5,
+            worstRating: 1,
+          },
+          reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
+          publisher: {
+            "@type": "Organization",
+            name: SOURCE_LABEL[q.source] ?? q.source,
+            ...(publisherUrl ? { url: publisherUrl } : {}),
+          },
+        };
+      }),
     ];
 
     return { "@context": "https://schema.org", "@graph": graph };
