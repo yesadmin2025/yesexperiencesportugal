@@ -92,11 +92,11 @@ async function readCache(pairs: Array<[string, string]>): Promise<Map<string, Le
   return map;
 }
 
-async function fetchOSRM(from: Pt, to: Pt): Promise<Leg | null> {
+async function fetchOSRMOnce(from: Pt, to: Pt, timeoutMs: number): Promise<Leg | null> {
   const url = `${OSRM_BASE}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 4500);
+    const t = setTimeout(() => ctrl.abort(), timeoutMs);
     const res = await fetch(url, { signal: ctrl.signal });
     clearTimeout(t);
     if (!res.ok) return null;
@@ -112,7 +112,6 @@ async function fetchOSRM(from: Pt, to: Pt): Promise<Leg | null> {
     const r = json.routes[0];
     const distance_km = +(r.distance / 1000).toFixed(2);
     const drive_minutes = Math.max(1, Math.round(r.duration / 60));
-    // Convert [lng, lat] → [lat, lng] for the polyline encoder.
     const latlng = r.geometry.coordinates.map(([lng, lat]) => [lat, lng] as [number, number]);
     return {
       from_key: from.key,
@@ -125,6 +124,25 @@ async function fetchOSRM(from: Pt, to: Pt): Promise<Leg | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Fetch OSRM with graceful retry — up to 3 attempts, exponential backoff
+ * (300ms → 900ms) with slight jitter, extended timeout on each try.
+ * The public OSRM demo can be flaky for a second or two; we don't want a
+ * single hiccup to bury the whole leg.
+ */
+async function fetchOSRM(from: Pt, to: Pt): Promise<Leg | null> {
+  const attempts = [3500, 5000, 6500];
+  for (let i = 0; i < attempts.length; i++) {
+    const leg = await fetchOSRMOnce(from, to, attempts[i]);
+    if (leg) return leg;
+    if (i < attempts.length - 1) {
+      const wait = 300 * Math.pow(3, i) + Math.floor(Math.random() * 120);
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+  return null;
 }
 
 function haversineLeg(from: Pt, to: Pt): Leg {
