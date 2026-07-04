@@ -445,7 +445,7 @@ export function RecentJourney() {
         </div>
 
         <p className="reveal mt-5 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
-          From one of our bespoke journeys — names removed
+          A real example
         </p>
 
         {/* Three pillars — tight caption strip beneath the book. Same
