@@ -1,14 +1,22 @@
 // Studio V3 — Cinematic Journey Composer
 // Shared types for the phased journey state.
 
-export type Feeling =
-  | "coastal"
-  | "wine-food"
-  | "hidden"
-  | "romance"
-  | "culture"
-  | "adventure"
-  | "slow-luxury";
+/**
+ * Canonical id tuples for Studio V3 taxonomy. Exported `as const` so tests
+ * and iteration sites get a type-safe list AND the union type is derived
+ * from a single source — preventing the TS2322 mismatches that appeared
+ * when tests hand-rolled string arrays that drifted from the union.
+ */
+export const FEELING_IDS = [
+  "coastal",
+  "wine-food",
+  "hidden",
+  "romance",
+  "culture",
+  "adventure",
+  "slow-luxury",
+] as const;
+export type Feeling = (typeof FEELING_IDS)[number];
 
 export type Companions =
   | "solo"
@@ -51,15 +59,18 @@ export type Pickup =
 
 export type GuestBucket = "1" | "2" | "3-4" | "5-6" | "7-10" | "11+";
 
-export type Interest =
-  | "wine"
-  | "gastronomy"
-  | "nature"
-  | "coast"
-  | "heritage"
-  | "photography"
-  | "wellness"
-  | "local-life";
+export const INTEREST_IDS = [
+  "wine",
+  "gastronomy",
+  "nature",
+  "coast",
+  "heritage",
+  "photography",
+  "wellness",
+  "local-life",
+] as const;
+export type Interest = (typeof INTEREST_IDS)[number];
+
 
 export type Consideration =
   | "none"
