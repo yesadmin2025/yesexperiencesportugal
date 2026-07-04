@@ -1381,6 +1381,33 @@ export type Database = {
         }
         Relationships: []
       }
+      legacy_domain_unlink_checklist: {
+        Row: {
+          created_at: string
+          item_id: string
+          note: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          item_id: string
+          note?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          item_id?: string
+          note?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       review_submission_tokens: {
         Row: {
           booking_id: string | null
