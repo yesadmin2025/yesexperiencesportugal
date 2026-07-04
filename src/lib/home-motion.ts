@@ -71,6 +71,48 @@ export function startHomeMotion(): () => void {
     if (!el.hasAttribute("data-motion")) el.setAttribute("data-motion", "fade-up");
   });
 
+  // Auto-tag section-level headings, eyebrows and lead paragraphs inside
+  // `.home-energy` so every homepage section gains a subtle scroll-in
+  // reveal without touching individual components. Skip anything already
+  // wearing `data-motion` (from `.reveal-stagger` above, from explicit
+  // component markup, or from a live/interactive surface). We tag by
+  // proximity — the closest section/article/header — and space children
+  // in staggered 90ms increments (capped) so the eye tracks a rhythm.
+  const homeScope = document.querySelector<HTMLElement>(".home-energy");
+  if (homeScope) {
+    const revealSelector = [
+      "h2",
+      "h3",
+      "[data-eyebrow]",
+      ".he-eyebrow",
+      ".he-eyebrow-bar",
+      ".lead",
+      ".section-lead",
+    ].join(",");
+
+    const seenContainers = new WeakMap<HTMLElement, number>();
+    const nodes = homeScope.querySelectorAll<HTMLElement>(revealSelector);
+    nodes.forEach((el) => {
+      if (el.hasAttribute("data-motion")) return;
+      // Skip anything inside the hero / SR probes / interactive live regions.
+      if (el.closest('[data-section="hero"], [aria-live], .sr-only')) return;
+
+      const container =
+        (el.closest("section, article, header") as HTMLElement | null) ?? homeScope;
+      const idx = seenContainers.get(container) ?? 0;
+      seenContainers.set(container, idx + 1);
+
+      el.setAttribute("data-motion", "fade-up-sm");
+      // Cap the stagger so late elements don't feel laggy — max 360ms.
+      const delay = Math.min(idx * 90, 360);
+      if (delay > 0 && !el.hasAttribute("data-motion-delay")) {
+        el.setAttribute("data-motion-delay", String(delay));
+      }
+    });
+  }
+
+
+
   const all = () => Array.from(document.querySelectorAll<HTMLElement>("[data-motion]"));
 
   // Reduced motion: never hide anything, mark everything triggered, exit.
