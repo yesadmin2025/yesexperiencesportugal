@@ -142,8 +142,8 @@ export function BrandedCheckoutDrawer({
           <SheetTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2 font-normal">
             {summary.tourTitle}
           </SheetTitle>
-          <SheetDescription className="text-[12px] text-[color:var(--charcoal-soft)] mt-1.5 leading-relaxed">
-            Confirmed instantly on yesexperiencesportugal.com — never leaves the page.
+          <SheetDescription className="sr-only">
+            Secure checkout for {summary.tourTitle}.
           </SheetDescription>
         </div>
 
