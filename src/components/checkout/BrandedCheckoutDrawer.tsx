@@ -228,7 +228,7 @@ function ExperienceSummaryCard({
 
       {summary.beats && summary.beats.length > 0 ? (
         <ul className="mt-4 grid grid-cols-1 gap-1.5">
-          {summary.beats.slice(0, 4).map((b) => (
+          {summary.beats.map((b) => (
             <li
               key={b}
               className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]"
