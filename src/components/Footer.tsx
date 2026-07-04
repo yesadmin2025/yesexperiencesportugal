@@ -61,7 +61,8 @@ export function Footer() {
           >
             Private Portugal, shown the way a local shows a friend. Intimate, real, and
             genuinely different — designed with you and confirmed in minutes. 700+ five-star
-            reviews · Licensed tour operator (RNAAT) · Lisbon & Sesimbra.
+            reviews · Licensed tour operator (RNAAT) · Based in Sesimbra, designing private
+            journeys across Portugal.
           </p>
         </div>
 

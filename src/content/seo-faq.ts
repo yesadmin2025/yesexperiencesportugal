@@ -72,26 +72,30 @@ export const TRAVEL_DESIGNER_FAQ: FaqItem[] = [
   },
   {
     q: "Is this different from booking a private tour?",
-    a: "Yes. A private tour is one day. A Travel Designer journey is a multi-day itinerary — connected regions, overnight logic, transfers, private experiences and daily support, delivered as one travel file.",
+    a: "Yes. A private tour is usually one day or one fixed experience. Travel Designer is for a complete journey, where routes, stays, transfers, private experiences and timing are designed together.",
   },
   {
     q: "Can you design a multi-day Portugal itinerary?",
-    a: "Yes. From a long weekend to a multi-week route across Lisbon, Sintra, Arrábida, Comporta, Alentejo, Central Portugal, Porto, Douro, the Algarve and the Atlantic coast — chosen for pace, season and what genuinely works.",
+    a: "Yes. Travel Designer can create anything from a short regional escape to a multi-week journey across Portugal, depending on your time, pace and interests.",
   },
   {
     q: "Can you plan honeymoons or special occasions in Portugal?",
-    a: "Yes. Honeymoons, anniversary trips, family journeys and private celebrations are the kind of trips we design most — with the extra care that a meaningful occasion deserves.",
+    a: "Yes. Honeymoons, anniversaries, proposals, family celebrations and meaningful private occasions can be designed into the journey with discretion and care.",
   },
   {
     q: "Can you include hotels, transfers and private experiences?",
-    a: "Yes. Stays, private transfers, guided experiences, restaurant reservations and local timing are all curated inside one travel file, with trusted partners on the ground.",
+    a: "Yes. The travel file can include stay logic, transfers, private experiences, timing notes, trusted partners and confirmed elements where relevant.",
   },
   {
     q: "Do I receive a written proposal before booking?",
-    a: "Yes. Every journey is delivered as a private Travel File — day-by-day route, stays, experiences and practical detail — so the trip is clear before you commit.",
+    a: "Yes. Travel Designer journeys are delivered as a curated travel file so you can understand the rhythm, route and key details before travelling.",
   },
   {
     q: "Can the journey be adjusted after the first proposal?",
-    a: "Yes. The first proposal is a starting point. Your Travel Designer refines it with you before travelling, and adjusts on the ground when weather, timing or energy shifts.",
+    a: "Yes. The journey can be refined with you before travelling and supported locally while you are in Portugal.",
+  },
+  {
+    q: "How far in advance should I request a Travel Designer journey?",
+    a: "For multi-day journeys, we recommend starting as early as possible, especially for spring, summer and September. Shorter timelines may still be possible depending on dates, route and availability.",
   },
 ];
