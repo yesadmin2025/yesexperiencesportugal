@@ -125,6 +125,41 @@ export function Footer() {
         {/* Payment-provider names intentionally hidden — guests see only
             "Instant confirmation" and "Secure checkout" copy throughout. */}
 
+        {/* Popular searches — high-intent US/Canada queries. Moved out of
+            the homepage in the declutter pass so SEO surface survives. */}
+        <div className="mt-10 pt-8 border-t border-[color:var(--gold-warm)]/15">
+          <h4
+            className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
+            style={{ fontWeight: 600 }}
+          >
+            Popular searches
+          </h4>
+          <ul
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-3 font-[family-name:var(--font-sans)] text-[13px]"
+            style={{ fontWeight: 400 }}
+          >
+            {[
+              { to: "/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
+              { to: "/private-wine-tour-lisbon", label: "Private wine tour Lisbon" },
+              { to: "/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
+              { to: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
+              { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
+              { to: "/multi-day", label: "Portugal Travel Designer" },
+              { to: "/proposals", label: "Proposal in Portugal" },
+              { to: "/corporate", label: "Corporate experiences Portugal" },
+            ].map((l) => (
+              <li key={l.to}>
+                <Link
+                  to={l.to}
+                  className="text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Signature Experiences — full tour index. Every page links to every
             tour, so crawlers discover the whole catalog from a single hop. */}
         <div className="mt-10 pt-8 border-t border-[color:var(--gold-warm)]/15">
@@ -151,6 +186,7 @@ export function Footer() {
             ))}
           </ul>
         </div>
+
 
         {/* Bottom bar — copyright + discreet legal links. Single quiet line. */}
         <div className="mt-10 md:mt-10 pt-5 border-t border-[color:var(--gold-warm)]/25">

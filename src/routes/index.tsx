@@ -21,12 +21,10 @@ import { Star, MessageCircle } from "lucide-react";
 import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
-import { FourWaysIn } from "@/components/home/FourWaysIn";
-import { WhyYesPillars } from "@/components/home/WhyYesPillars";
 import { RecentJourney } from "@/components/home/RecentJourney";
-import { InlineEmailCapture, ExitIntentEmailCapture } from "@/components/home/EmailCapture";
-import { RecognisedByGuides } from "@/components/RecognisedByGuides";
-// PathfinderQuiz removed from homepage (component file kept).
+import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
+// FourWaysIn / WhyYesPillars / RecognisedByGuides / InlineEmailCapture removed
+// from the homepage in the declutter pass (components kept for other routes).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
@@ -486,51 +484,11 @@ function HomePage() {
   // is intentionally not replaced. Anchor link clicks still work via
   // Effect 1 + the global smooth-anchor-scroll handler.
 
-  // Effect 3 — homepage-only parallax driver. Writes `--parallax-y` to
-  // every `.he-parallax` / `.he-parallax-counter` element via rAF on
-  // scroll. Disabled for prefers-reduced-motion. Caps travel so it
-  // stays "everyday", never woozy.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.innerWidth < 768) return;
-    if (getScrollDebugFlags().disableMobileStudioMotion && window.innerWidth < 768) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // Homepage parallax driver removed in the declutter pass — the Studio
+  // preview no longer counter-parallaxes on scroll. Motion budget on the
+  // homepage is now: entrance fade + hover lift only.
 
-    const els = Array.from(
-      document.querySelectorAll<HTMLElement>(".he-parallax, .he-parallax-counter"),
-    );
-    if (!els.length) return;
 
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const vh = window.innerHeight || 1;
-      for (const el of els) {
-        const rect = el.getBoundingClientRect();
-        // Skip when fully off-screen.
-        if (rect.bottom < -200 || rect.top > vh + 200) continue;
-        // Normalised position: -1 (above viewport) → 0 (centred) → 1 (below).
-        const center = rect.top + rect.height / 2;
-        const t = (center - vh / 2) / vh; // ~ -1..1 across viewport
-        // Cap travel on tablet/desktop only. Mobile parallax is disabled.
-        const cap = 28;
-        const y = Math.max(-cap, Math.min(cap, t * cap * -1));
-        el.style.setProperty("--parallax-y", `${y.toFixed(2)}px`);
-      }
-    };
-    const schedule = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(update);
-    };
-    schedule();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      if (raf) window.cancelAnimationFrame(raf);
-    };
-  }, []);
 
   return (
     <SiteLayout>
@@ -539,18 +497,12 @@ function HomePage() {
            See <CinematicHero/>; HERO_COPY locks live inside it. */}
         <CinematicHero />
 
-        {/* Quiet SEO intro line — sits between hero and reviews. */}
-        <p className="container-x text-center pt-8 md:pt-10 text-[13px] md:text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-3xl mx-auto">
-          Private Portugal experiences, curated, designed live or fully crafted by a local Travel
-          Designer.
-        </p>
-
         {/* 2 — TRUST STRIP
           A single, clean social proof surface: review count + platform marks.
           No invented quotes, no repeated review blocks. */}
         <section
           id="reviews"
-          className="he-trust-rule section-enter bg-[color:var(--ivory)] border-b border-[color:var(--border)] py-12 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          className="section-enter bg-[color:var(--ivory)] border-b border-[color:var(--border)] py-16 md:py-24 scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="trust-bar-title"
         >
           <h2 id="trust-bar-title" className="sr-only">
@@ -561,9 +513,7 @@ function HomePage() {
           </div>
         </section>
 
-        <FourWaysIn />
 
-        <WhyYesPillars />
 
 
         {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
@@ -601,10 +551,10 @@ function HomePage() {
 
                 <h2
                   id="studio-title"
-                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                  className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
                 >
                   Design your day.{" "}
-                  <span className="italic font-normal text-[color:var(--teal)]">
+                  <span className="font-serif italic font-normal text-[color:var(--teal)]">
                     Reserve in minutes.
                   </span>
                 </h2>
@@ -615,17 +565,20 @@ function HomePage() {
                   real timings and a live price — then reserve when the route is ready — final price shown before payment.
                 </p>
 
-                {/* Three Studio inputs — small index, signposts the
-                  live chips at the top of the preview device. */}
+                {/* Three differentiators — tied to the product, not a floating manifesto. */}
                 <ol
                   className="mt-7 grid grid-cols-3 gap-1.5 max-w-md"
-                  aria-label="Three Studio inputs"
+                  aria-label="Why the Studio"
                 >
-                  {["Mood", "Who", "Rhythm"].map((label, i) => (
-                    <li key={label} className="flex flex-col gap-1.5">
+                  {[
+                    { n: "01", label: "Real route" },
+                    { n: "02", label: "Instant confirm" },
+                    { n: "03", label: "Local on WhatsApp" },
+                  ].map((d) => (
+                    <li key={d.n} className="flex flex-col gap-1.5">
                       <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
                       <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] tabular-nums">
-                        0{i + 1} · {label}
+                        {d.n} · {d.label}
                       </span>
                     </li>
                   ))}
@@ -636,24 +589,9 @@ function HomePage() {
                     Start designing
                   </CtaButton>
                 </div>
-
-                {/* Conversion microcopy — single quiet line, no duplication. */}
-                <p className="mt-4 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
-                  <MessageCircle
-                    size={13}
-                    aria-hidden="true"
-                    className="mt-[3px] shrink-0 text-[color:var(--teal)]"
-                  />
-                  <span>
-                    <span className="font-medium text-[color:var(--charcoal)]">
-                      About 90 seconds.
-                    </span>{" "}
-                    Instant reservation · cancel free up to 48h · a local on WhatsApp.
-                  </span>
-                </p>
               </div>
 
-              <div className="he-parallax-counter lg:col-span-7 lg:order-2 order-2">
+              <div className="lg:col-span-7 lg:order-2 order-2">
                 <StudioLivePreview />
               </div>
             </div>
@@ -681,10 +619,10 @@ function HomePage() {
               <span className="he-eyebrow-bar mb-5">Signature</span>
               <h2
                 id="signatures-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 Signature days,{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
+                <span className="font-serif italic font-normal text-[color:var(--teal)]">already loved.</span>
               </h2>
             </div>
 
@@ -712,7 +650,7 @@ function HomePage() {
                     className={
                       scrollDebug.staticMobileCarousels
                         ? "reveal-stagger w-full"
-                        : "reveal-stagger shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink"
+                        : "reveal-stagger shrink-0 snap-start w-[80vw] sm:w-auto sm:shrink"
                     }
                   >
                     {/* Card is a structured composition (NOT a single link) so
@@ -727,13 +665,7 @@ function HomePage() {
                         className="he-image-cinema he-image-rise relative block aspect-[4/5] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                         aria-label={`Open ${t.title}`}
                       >
-                        {/* Skeleton shimmer — sits behind <img>, naturally hidden once the image paints.
-                          Fixed aspect-[4/5] on the parent guarantees zero layout shift while the image
-                          (and the pills layered above it) settle in. */}
-                        <div
-                          aria-hidden="true"
-                          className="absolute inset-0 bg-[linear-gradient(110deg,var(--sand)_8%,rgba(255,255,255,0.55)_18%,var(--sand)_33%)] bg-[length:200%_100%] motion-safe:animate-[shimmer_1.6s_ease-in-out_infinite]"
-                        />
+
                         <img
                           src={t.img}
                           alt={t.title}
@@ -841,16 +773,8 @@ function HomePage() {
               })}
             </ul>
 
-            {/* Mobile-only swipe hint */}
-            <p
-              className={
-                scrollDebug.staticMobileCarousels
-                  ? "hidden"
-                  : "sm:hidden mt-4 text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]"
-              }
-            >
-              Swipe to explore
-            </p>
+
+
 
             <div className="mt-12 md:mt-14 text-center">
               <CtaButton to="/experiences" variant="ghost" size="sm">
@@ -877,10 +801,10 @@ function HomePage() {
 
               <h2
                 id="groups-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 Moments that{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
+                <span className="font-serif italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
               </h2>
             </div>
 
@@ -929,139 +853,12 @@ function HomePage() {
           <FAQ />
         </section>
 
-        {/* 7b — Popular searches (internal links)
-          Editorial strip surfacing the highest-intent US/Canada queries
-          our SEO landing pages target, plus a strong emphasis on the
-          Studio — the one feature nobody else in Portugal offers. Pure
-          internal links, no invented copy. */}
-        <section
-          aria-labelledby="popular-searches-title"
-          className="section-y bg-[color:var(--ivory)] border-t border-[color:var(--gold-soft)]/30 scroll-mt-24 md:scroll-mt-28"
-        >
-          <div className="container-x max-w-5xl">
-            <div className="text-center mb-12">
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
-                Most searched from the US & Canada
-              </span>
-              <h2
-                id="popular-searches-title"
-                className="font-display font-medium text-[1.6rem] md:text-[2.1rem] leading-[1.2] text-[color:var(--charcoal)] max-w-2xl mx-auto"
-              >
-                Start where everyone else starts —{" "}
-                <span className="font-serif italic text-[color:var(--teal)]">
-                  then design your own.
-                </span>
-              </h2>
-            </div>
-
-            <ul className="grid sm:grid-cols-3 gap-4 md:gap-5 not-prose">
-              <li>
-                <Link
-                  to="/sintra-day-tour-from-lisbon"
-                  className="block h-full p-5 md:p-6 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
-                >
-                  <span className="block font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--gold-warm)] mb-2">
-                    Day trip
-                  </span>
-                  <span className="block font-display font-semibold text-[16px] md:text-[17px] text-[color:var(--charcoal)] mb-1.5 leading-[1.3]">
-                    Sintra day tour from Lisbon
-                  </span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
-                    Palaces, Cabo da Roca and Cascais — private, door to door.
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/private-wine-tour-lisbon"
-                  className="block h-full p-5 md:p-6 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
-                >
-                  <span className="block font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--gold-warm)] mb-2">
-                    Wine day
-                  </span>
-                  <span className="block font-display font-semibold text-[16px] md:text-[17px] text-[color:var(--charcoal)] mb-1.5 leading-[1.3]">
-                    Private wine tour from Lisbon
-                  </span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
-                    Family wineries in Arrábida & Azeitão, one long Portuguese lunch.
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/arrabida-day-trip-from-lisbon"
-                  className="block h-full p-5 md:p-6 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
-                >
-                  <span className="block font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--gold-warm)] mb-2">
-                    Coast day
-                  </span>
-                  <span className="block font-display font-semibold text-[16px] md:text-[17px] text-[color:var(--charcoal)] mb-1.5 leading-[1.3]">
-                    Arrábida day trip from Lisbon
-                  </span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
-                    Setúbal market, mountain wineries, turquoise coves.
-                  </span>
-                </Link>
-              </li>
-            </ul>
-
-            <div className="mt-5 text-center">
-              <Link
-                to="/day-trips-from-lisbon"
-                className="inline-block font-sans text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--gold-warm)] transition-colors"
-              >
-                See all day trips from Lisbon →
-              </Link>
-            </div>
-
-            {/* Extended high-intent internal links — Comporta, Évora,
-              Alentejo, Travel Designer, Proposals, Corporate. Quiet
-              editorial chip row, no invented copy. */}
-            <ul className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-2 not-prose list-none p-0">
-              {[
-                { to: "/experiences", label: "Comporta private tour from Lisbon" },
-                { to: "/experiences", label: "Évora private tour from Lisbon" },
-                { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
-                { to: "/multi-day", label: "Portugal Travel Designer" },
-                { to: "/proposals", label: "Proposal in Portugal" },
-                { to: "/corporate", label: "Corporate experiences Portugal" },
-              ].map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={item.to}
-                    className="inline-block px-3.5 py-2 text-[12px] text-[color:var(--charcoal)] bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] hover:text-[color:var(--teal)] transition-colors rounded-full"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            {/* Studio emphasis — the unique differentiator */}
-            <div className="mt-14 md:mt-16 p-7 md:p-10 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-center relative overflow-hidden">
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)] mb-4">
-                Only on YES
-              </span>
-              <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.8rem] leading-[1.25] mb-4 max-w-2xl mx-auto">
-                The one private-day builder in Portugal that designs your route, timing and price{" "}
-                <span className="font-serif italic text-[color:var(--gold)]">live, with you</span>.
-              </h2>
-              <p className="text-[14px] md:text-[15px] text-[color:var(--ivory)]/80 leading-[1.7] max-w-xl mx-auto mb-7">
-                No forms, no quotes by email. Pick the region, drop in the stops you want, and watch the day take shape — driving times, dwell windows and the price update as you go. Reserve instantly when it feels right.
-              </p>
-              <CtaButton to="/studio-v3" variant="primary">
-                Open the YES Studio
-              </CtaButton>
-            </div>
-          </div>
-        </section>
+        {/* Popular searches + "Only on YES" block removed in the declutter
+          pass. High-intent internal links moved into the Footer so SEO
+          surface area survives. RecognisedByGuides removed from the
+          homepage; still rendered on About. */}
 
 
-
-        {/* 8 — Recognised by travel guides — editorial trust strip.
-          Real third-party mentions only. Moved after the content sections
-          so the hero-to-CTA flow stays clean and conversion-focused. */}
-        <RecognisedByGuides placement="homepage" />
 
         {/* 9 — FINAL CTA — Talk to a local
           Distinct from the hero CTAs (Explore Signatures / Build) — this
@@ -1084,14 +881,13 @@ function HomePage() {
           />
 
           <div className="container-x relative">
-            {/* Discreet free lead-magnet capture — "A Local's Map: Best
-              Day Trips from Lisbon". Sits inside the Final CTA section
-              so the approved 8-block homepage structure stays intact. */}
-            <div className="mb-12 md:mb-16">
-              <InlineEmailCapture />
+            {/* Chapter divider above the card — gold dot + flanking rules */}
+            <div className="reveal max-w-md mx-auto mb-10 md:mb-14" aria-hidden="true">
+              <div className="chapter-divider">
+                <span className="dot" />
+              </div>
             </div>
 
-            {/* Chapter divider above the card — gold dot + flanking rules */}
             <div className="reveal max-w-md mx-auto mb-10 md:mb-14" aria-hidden="true">
               <div className="chapter-divider">
                 <span className="dot" />
@@ -1140,10 +936,10 @@ function HomePage() {
 
                   <h2
                     id="final-cta-title"
-                    className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                    className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
                   >
                     Portugal is waiting.{" "}
-                    <span className="italic font-normal text-[color:var(--teal)]">
+                    <span className="font-serif italic font-normal text-[color:var(--teal)]">
                       Begin your story.
                     </span>
                   </h2>
@@ -1151,7 +947,7 @@ function HomePage() {
                     Every journey begins with a conversation. Tell us what matters to you and we’ll
                     shape the rest.
                   </p>
-                  <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
+                  <div className="mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
                     <CtaButton to="/studio-v3" variant="primary">
                       Open the Studio
                     </CtaButton>
