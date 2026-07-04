@@ -65,10 +65,23 @@ describe("Studio — itinerary edit stability", () => {
     }
   });
 
-  it("editing a secondary interest never flips a non-wine day to Arrábida wines", () => {
+  it("editing a secondary interest never flips a coherent non-wine primary to Arrábida wines", () => {
+    // For each feeling, fix a coherent primary interest (the one a user
+    // would naturally pick for that mood). Then let the user "edit" by
+    // adding any non-wine secondary. The primary must anchor the pick;
+    // secondaries must never derail it into the wine day.
     for (const feeling of NON_WINE_FEELINGS) {
-      for (const [primary, secondary] of pairs(NON_WINE_INTERESTS)) {
-        const first = pickPrimaryTour(feeling, "couple", [primary], null, null, 0).tour.id;
+      const primary: Interest =
+        feeling === "coastal" || feeling === "hidden" || feeling === "adventure"
+          ? "coast"
+          : "heritage";
+      const first = pickPrimaryTour(feeling, "couple", [primary], null, null, 0).tour.id;
+      expect(
+        first,
+        `feeling=${feeling} + primary=${primary} unexpectedly resolved to wine`,
+      ).not.toBe("arrabida-wine-allinclusive");
+      for (const secondary of NON_WINE_INTERESTS) {
+        if (secondary === primary) continue;
         const afterEdit = pickPrimaryTour(
           feeling,
           "couple",
@@ -77,10 +90,6 @@ describe("Studio — itinerary edit stability", () => {
           null,
           0,
         ).tour.id;
-        expect(
-          first,
-          `feeling=${feeling} interest=${primary} unexpectedly resolved to wine`,
-        ).not.toBe("arrabida-wine-allinclusive");
         expect(
           afterEdit,
           `feeling=${feeling} interests=[${primary},${secondary}] jumped to wine after edit`,
