@@ -142,8 +142,8 @@ export function BrandedCheckoutDrawer({
           <SheetTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2 font-normal">
             {summary.tourTitle}
           </SheetTitle>
-          <SheetDescription className="text-[12px] text-[color:var(--charcoal-soft)] mt-1.5 leading-relaxed">
-            Confirmed instantly on yesexperiencesportugal.com — never leaves the page.
+          <SheetDescription className="sr-only">
+            Secure checkout for {summary.tourTitle}.
           </SheetDescription>
         </div>
 
@@ -228,7 +228,7 @@ function ExperienceSummaryCard({
 
       {summary.beats && summary.beats.length > 0 ? (
         <ul className="mt-4 grid grid-cols-1 gap-1.5">
-          {summary.beats.slice(0, 4).map((b) => (
+          {summary.beats.map((b) => (
             <li
               key={b}
               className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]"
