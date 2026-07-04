@@ -497,7 +497,7 @@ function TailorPage() {
           Signature — never a new itinerary, never stops from other
           tours, never a mix of regions. */}
       <section
-        className="py-10 md:py-12 bg-[color:var(--ivory)] border-y border-[color:var(--border)]"
+        className="py-10 md:py-12 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
         aria-labelledby="tailor-scope-title"
       >
         <div className="container-x max-w-6xl">
@@ -580,7 +580,7 @@ function TailorPage() {
       </section>
 
       {/* ── 2 · ADJUSTABLE OPTIONS + 4 · LIVE SUMMARY ─────── */}
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 reveal">
         <div className="container-x max-w-6xl">
           <div className="grid lg:grid-cols-[1fr_22rem] gap-8 lg:gap-12 items-start">
             {/* ─── Adjustments column ──────────────────── */}
