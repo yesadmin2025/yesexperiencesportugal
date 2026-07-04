@@ -136,9 +136,10 @@ export function FAQ() {
           <span className="he-eyebrow-bar flank">Before you book</span>
           <h2
             id="faq-title"
-            className="serif text-[1.8rem] sm:text-[2.1rem] md:text-[2.6rem] mt-4 leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+            className="font-display mt-4 text-[1.8rem] sm:text-[2.1rem] md:text-[2.6rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
           >
-            A few things, before you decide.
+            A few things,{" "}
+            <span className="font-serif italic font-normal text-[color:var(--teal)]">before you decide.</span>
           </h2>
           <div className="gold-divider mt-6 mx-auto w-20" />
         </div>
