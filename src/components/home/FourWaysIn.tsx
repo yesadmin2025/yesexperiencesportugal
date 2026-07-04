@@ -147,6 +147,15 @@ export function FourWaysIn() {
                   aria-hidden="true"
                   className="pointer-events-none absolute left-0 bottom-0 h-px w-full origin-left scale-x-0 bg-[color:var(--gold)]/70 transition-transform duration-[600ms] ease-out group-hover:scale-x-100"
                 />
+                {/* Diagonal gold sheen sweep on hover — same signature as hero CTA */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 -translate-x-[110%] group-hover:translate-x-[110%] transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] mix-blend-overlay"
+                  style={{
+                    background:
+                      "linear-gradient(115deg, transparent 30%, rgba(201,169,106,0.28) 50%, transparent 70%)",
+                  }}
+                />
 
                 <div className="relative flex items-start justify-between gap-4 pr-1">
                   {/* Icon puck with double gold ring on hover */}
