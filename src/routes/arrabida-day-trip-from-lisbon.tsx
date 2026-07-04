@@ -24,7 +24,13 @@ const productLd = {
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
   image: `${SITE_URL}/video/hero-sunset-road-poster.jpg`,
-  isVariantOf: { "@id": `${PARENT_URL}#product` },
+  isVariantOf: {
+    "@type": "ProductGroup",
+    "@id": `${PARENT_URL}#product-group`,
+    productGroupID: PARENT_TOUR_ID,
+    name: TITLE,
+    url: PARENT_URL,
+  },
   brand: { "@id": `${SITE_URL}/#organization` },
   provider: { "@id": `${SITE_URL}/#organization` },
   category: "Private day tour",
@@ -32,7 +38,7 @@ const productLd = {
   duration: "PT8H",
   inLanguage: "en",
   audience: {
-    "@type": "Audience",
+    "@type": "PeopleAudience",
     geographicArea: [
       { "@type": "Country", name: "United States" },
       { "@type": "Country", name: "Canada" },
