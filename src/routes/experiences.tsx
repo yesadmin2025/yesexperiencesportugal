@@ -74,7 +74,7 @@ function ExperiencesPage() {
         </div>
       </section>
 
-      <section className="section-y">
+      <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">Our Signature Collection</h2>
           <div className="flex justify-end mb-6">

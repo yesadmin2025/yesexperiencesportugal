@@ -133,7 +133,7 @@ function Page() {
     <SiteLayout>
       <article>
         {/* Hero */}
-        <header className="pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Day Trips</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -147,7 +147,7 @@ function Page() {
         </header>
 
         {/* Body */}
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
               {sections.map((s) => (

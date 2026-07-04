@@ -92,7 +92,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <section className="pt-32 pb-12 bg-[color:var(--sand)]">
+      <section className="reveal pt-32 pb-12 bg-[color:var(--sand)]">
         <div className="container-x text-center">
           <Eyebrow flank>Talk to a Designer</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -105,7 +105,7 @@ function Page() {
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="reveal py-20">
         <div className="container-x grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             {sent ? (

@@ -38,7 +38,7 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-32 pb-14 bg-[color:var(--sand)] text-center">
+      <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <Eyebrow flank>About YES</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -57,7 +57,7 @@ function Page() {
       </section>
 
       {/* Created from real travel */}
-      <section className="py-20">
+      <section className="reveal py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow>Created from real travel</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -85,7 +85,7 @@ function Page() {
       </section>
 
       {/* Founder-built */}
-      <section className="py-20 bg-[color:var(--sand)]">
+      <section className="reveal py-20 bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-[1.15fr_1fr] gap-14 items-start">
           <div>
             <Eyebrow>Founder-built</Eyebrow>
@@ -158,7 +158,7 @@ function Page() {
       </section>
 
       {/* Founder-led */}
-      <section className="py-20">
+      <section className="reveal py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow>Founder-led</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -192,7 +192,7 @@ function Page() {
       </section>
 
       {/* What we create */}
-      <section className="py-20 bg-[color:var(--sand)]">
+      <section className="reveal py-20 bg-[color:var(--sand)]">
         <div className="container-x">
           <Eyebrow flank>What we create</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -244,7 +244,7 @@ function Page() {
       </section>
 
       {/* Credentials & trust */}
-      <section className="py-16">
+      <section className="reveal py-16">
         <div className="container-x">
           <Eyebrow flank>Credentials &amp; trust</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -288,7 +288,7 @@ function Page() {
       </section>
 
       {/* How we work + policies */}
-      <section className="py-20 bg-[color:var(--sand)]">
+      <section className="reveal py-20 bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-2 gap-14">
           <div>
             <Eyebrow>How we work</Eyebrow>
@@ -354,7 +354,7 @@ function Page() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 text-center">
+      <section className="reveal py-20 text-center">
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow flank>Talk to YES</Eyebrow>
           <SectionTitle as="h2" size="default">

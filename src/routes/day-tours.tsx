@@ -48,7 +48,7 @@ function DayToursPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <section className="pt-32 pb-12 bg-[color:var(--sand)] text-center">
+      <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <Eyebrow flank>Half &amp; Full Day</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -61,7 +61,7 @@ function DayToursPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20">
+      <section className="reveal py-16 md:py-20">
         <div className="container-x">
           <h2 className="sr-only">Available Day Tours</h2>
           <div className="flex justify-end mb-6">
