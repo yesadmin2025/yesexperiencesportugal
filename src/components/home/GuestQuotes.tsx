@@ -9,8 +9,8 @@
  * 3. Trust line: "Based on verified guest reviews across major booking
  *    platforms." — visible, non-decorative.
  */
-import { useEffect, useMemo, useState } from "react";
-import { Star } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { PlatformBadge, type Platform } from "@/components/PlatformBadge";
 import {
@@ -156,20 +156,75 @@ export function GuestQuotes() {
         ))}
       </ul>
 
-      {/* Reservation slot — reserves the review-card min-height BEFORE
-          data arrives so the section never causes a layout shift. Even
-          when `quotes` is empty the row keeps its space. */}
-      <div className="mt-8 md:mt-10 -mx-5 sm:mx-0 min-h-[15rem] sm:min-h-[16rem]">
-        {quotes.length > 0 && (
+      <ReviewCarousel quotes={quotes} />
+    </div>
+  );
+}
+
+/**
+ * Premium editorial carousel — horizontal snap on every breakpoint (mobile:
+ * one card, tablet: ~2, desktop: ~3), edge fade masks, dot navigation, and
+ * arrow controls on ≥md. Uses native scroll-snap for buttery inertia.
+ * Reserves min-height BEFORE data arrives so there is no CLS.
+ */
+function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
+  const trackRef = useRef<HTMLUListElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || quotes.length === 0) return;
+    const onScroll = () => {
+      const card = el.querySelector<HTMLLIElement>("li");
+      if (!card) return;
+      const gap = parseFloat(getComputedStyle(el).columnGap || "16");
+      const step = card.offsetWidth + gap;
+      const idx = Math.round(el.scrollLeft / step);
+      setActiveIndex(Math.max(0, Math.min(quotes.length - 1, idx)));
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [quotes.length]);
+
+  const scrollBy = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLLIElement>("li");
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(el).columnGap || "16");
+    el.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: "smooth" });
+  };
+
+  return (
+    <div className="relative mt-8 md:mt-10 -mx-5 sm:mx-0 min-h-[15rem] sm:min-h-[16rem]">
+      {quotes.length === 0 ? null : (
+        <>
+          {/* Edge fade masks — premium editorial cue that content continues */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-12 z-10 bg-gradient-to-r from-[color:var(--ivory)] to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-12 z-10 bg-gradient-to-l from-[color:var(--ivory)] to-transparent"
+          />
+
           <ul
-            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 items-stretch gap-4 md:gap-5 px-5 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory sm:snap-none scroll-pl-5 sm:scroll-pl-0 text-left list-none p-0"
+            ref={trackRef}
+            className="flex items-stretch gap-4 md:gap-5 px-5 sm:px-6 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-pl-5 sm:scroll-pl-6 text-left list-none p-0"
             aria-label="Recent guest reviews"
           >
             {quotes.map((q) => (
               <li
                 key={q.id}
-                className="reveal-stagger he-card-lift shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink flex flex-col min-h-[14rem] sm:min-h-[15rem] rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-5"
+                className="reveal-stagger he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-5 md:p-6 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_8px_24px_-16px_rgba(46,46,46,0.12)]"
               >
+                <Quote
+                  aria-hidden="true"
+                  size={22}
+                  className="absolute top-4 right-4 text-[color:var(--gold)]/35"
+                  strokeWidth={1.5}
+                />
                 <div
                   className="inline-flex items-center gap-0.5 text-[color:var(--gold)] h-4"
                   aria-hidden="true"
@@ -183,21 +238,66 @@ export function GuestQuotes() {
                     />
                   ))}
                 </div>
-                <p className="mt-2 text-[13px] md:text-[13.5px] leading-relaxed text-[color:var(--charcoal)]/85 line-clamp-5">
-                  “{q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body}”
+                <p className="mt-3 font-[family-name:var(--font-serif)] text-[14.5px] md:text-[15px] leading-[1.65] text-[color:var(--charcoal)]/90 line-clamp-6">
+                  “{q.body.length > 220 ? `${q.body.slice(0, 217)}…` : q.body}”
                 </p>
-                <p className="mt-auto pt-3 text-[11.5px] text-[color:var(--charcoal)]/60">
-                  {q.reviewer_name ?? "Guest"}
-                  {q.reviewer_country ? ` · ${q.reviewer_country}` : ""}
-                  <span className="ml-1 text-[color:var(--charcoal)]/50">
-                    · via {SOURCE_LABEL[q.source] ?? q.source}
+                <div className="mt-auto pt-4 flex items-baseline justify-between gap-3">
+                  <p className="text-[12px] font-medium tracking-wide text-[color:var(--charcoal)]">
+                    {q.reviewer_name ?? "Guest"}
+                    {q.reviewer_country && (
+                      <span className="text-[color:var(--charcoal)]/55 font-normal">
+                        {" "}· {q.reviewer_country}
+                      </span>
+                    )}
+                  </p>
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/50">
+                    {SOURCE_LABEL[q.source] ?? q.source}
                   </span>
-                </p>
+                </div>
               </li>
             ))}
           </ul>
-        )}
-      </div>
+
+          {/* Desktop arrow controls */}
+          <button
+            type="button"
+            onClick={() => scrollBy(-1)}
+            aria-label="Previous review"
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 h-9 w-9 items-center justify-center rounded-full bg-white border border-[color:var(--charcoal)]/12 text-[color:var(--charcoal)] shadow-sm hover:border-[color:var(--gold)] transition-colors"
+          >
+            <ChevronLeft size={16} strokeWidth={1.75} />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollBy(1)}
+            aria-label="Next review"
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 h-9 w-9 items-center justify-center rounded-full bg-white border border-[color:var(--charcoal)]/12 text-[color:var(--charcoal)] shadow-sm hover:border-[color:var(--gold)] transition-colors"
+          >
+            <ChevronRight size={16} strokeWidth={1.75} />
+          </button>
+
+          {/* Dots */}
+          {quotes.length > 1 && (
+            <div
+              className="mt-5 flex items-center justify-center gap-1.5"
+              role="tablist"
+              aria-label="Review pagination"
+            >
+              {quotes.map((_, i) => (
+                <span
+                  key={i}
+                  aria-hidden="true"
+                  className={`h-1 rounded-full transition-all duration-300 ${
+                    i === activeIndex
+                      ? "w-5 bg-[color:var(--gold)]"
+                      : "w-1.5 bg-[color:var(--charcoal)]/20"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
