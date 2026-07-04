@@ -29,6 +29,16 @@ interface CommonProps {
   icon?: React.ReactNode | null;
   /** Render an icon BEFORE the label (used by "Talk to a Local" style CTAs). */
   iconLeading?: React.ReactNode;
+  /** Loading state — swaps arrow for spinner, sets aria-busy, freezes interactions. */
+  loading?: boolean;
+  /** Optional label shown while loading (defaults to children). */
+  loadingLabel?: React.ReactNode;
+  /**
+   * Error state — plays a one-shot nudge animation and paints a warm-red ring
+   * for ~1.4s so the failure is felt without recolouring the entire button.
+   * Toggle to a fresh truthy value (e.g. Date.now()) to replay.
+   */
+  error?: boolean | number | null;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   children: React.ReactNode;
