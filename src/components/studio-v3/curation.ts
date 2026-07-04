@@ -731,8 +731,9 @@ function pickPrimaryTour(
     .filter((t): t is SignatureTour => Boolean(t));
 
   if (candidates.length === 0) {
+    const fallbackId = FEELING_FALLBACK[feeling];
     const fallback =
-      signatureTours.find((t) => t.id === "arrabida-wine-allinclusive") ?? signatureTours[0];
+      signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
     return { tour: fallback, alternates: [] };
   }
 
@@ -754,12 +755,21 @@ function pickPrimaryTour(
     pickup === "sintra" ||
     pickup === "sesimbra-setubal-arrabida";
 
-  const wantsWine =
-    feeling === "wine-food" ||
-    interests.includes("wine") ||
-    interests.includes("gastronomy") ||
+  // Wine emphasis is gated so casual "gastronomy" interest on a non-wine feeling
+  // (e.g. coastal, culture, romance) doesn't force a wine tour. Boost strength
+  // scales with how deliberately the user asked for wine.
+  const explicitWineFeeling = feeling === "wine-food";
+  const wineIsTopInterest =
+    interests[0] === "wine" || interests[0] === "gastronomy";
+  const wineIntent =
     destinationIntent === "alentejo-evora-wine" ||
     destinationIntent === "arrabida-setubal-azeitao";
+  const wineBoost = explicitWineFeeling || wineIntent
+    ? 3
+    : wineIsTopInterest
+      ? 1.5
+      : 0;
+  const wantsWine = wineBoost > 0;
 
   // AI-predictive coherence: hard-deprioritise tours whose ideal-for
   // copy reads as exclusively-family when the traveller is not family,
@@ -771,7 +781,10 @@ function pickPrimaryTour(
   const scored = candidates
     .map((tour, order) => {
       let score = 0;
-      score += pickupAffinity(tour, pickup) * 1.2;
+      // Pickup affinity is a tie-breaker, not an override — reduced from 1.2
+      // to 0.8 so Lisbon-adjacent tours (Arrábida) can't out-score the
+      // feeling-led candidate on their own.
+      score += pickupAffinity(tour, pickup) * 0.8;
       score += interestAffinity(tour, interests);
       score += destinationIntentBoost(tour, destinationIntent);
       if (
@@ -780,7 +793,7 @@ function pickPrimaryTour(
           `${tour.title} ${tour.theme} ${tour.blurb}`,
         )
       ) {
-        score += 3;
+        score += wineBoost;
       }
       // Companions soft hints — proposal/celebration lean wine/heritage tours.
       if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
