@@ -115,7 +115,7 @@ export function GuestQuotes() {
           "@type": "Review",
           "@id": `${SITE_URL}/#review-${q.id}`,
           url: reviewUrl,
-          itemReviewed: { "@id": orgId },
+          itemReviewed: itemReviewed,
           author,
           reviewRating: {
             "@type": "Rating",
