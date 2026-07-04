@@ -66,19 +66,22 @@ describe("Signatures section — /day-tours contract", () => {
   });
 
   it("card title never sits absolutely-positioned over the hero image", () => {
-    // The image link block ends BEFORE the region/title block. Assert the
-    // ordering: <Link ... image ...>...</Link> comes strictly before the
-    // title Link that renders {t.title}.
-    const imgIdx = DAY_TOURS_SRC.indexOf("<img");
-    const titleIdx = DAY_TOURS_SRC.indexOf("{t.title}", imgIdx);
-    expect(imgIdx).toBeGreaterThan(-1);
-    expect(titleIdx).toBeGreaterThan(imgIdx);
+    // Locate the visible title Link (`serif text-2xl ...`), not the alt text.
+    const titleLinkIdx = DAY_TOURS_SRC.indexOf('serif text-2xl');
+    expect(titleLinkIdx, "visible title Link block missing").toBeGreaterThan(-1);
+    const visibleTitleIdx = DAY_TOURS_SRC.indexOf("{t.title}", titleLinkIdx);
+    expect(visibleTitleIdx).toBeGreaterThan(titleLinkIdx);
 
-    // The stretch of source between the image tag and the title MUST close
-    // the anchor before rendering the title (guards against a title being
-    // reintroduced inside the aspect-locked hero link).
-    const between = DAY_TOURS_SRC.slice(imgIdx, titleIdx);
-    expect(between).toContain("</Link>");
+    // The image Link must have closed BEFORE the visible title renders.
+    const imgIdx = DAY_TOURS_SRC.indexOf("<img");
+    expect(imgIdx).toBeGreaterThan(-1);
+    const closeAfterImg = DAY_TOURS_SRC.indexOf("</Link>", imgIdx);
+    expect(closeAfterImg).toBeGreaterThan(imgIdx);
+    expect(closeAfterImg).toBeLessThan(visibleTitleIdx);
+
+    // No absolute-positioned overlay wrapping the visible title.
+    const around = DAY_TOURS_SRC.slice(Math.max(0, visibleTitleIdx - 200), visibleTitleIdx);
+    expect(around).not.toMatch(/className="[^"]*absolute[^"]*"/);
   });
 
   it("hero on the Signature detail page does not overlay title on the image", () => {
