@@ -5,6 +5,7 @@ import { template as stripeWebhookAlert } from './stripe-webhook-alert'
 import { template as contactReceived } from './contact-received'
 import { template as internalLead } from './internal-lead'
 import { template as internalBooking } from './internal-booking'
+import { template as welcome } from './welcome'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -26,4 +27,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'contact-received': contactReceived,
   'internal-lead': internalLead,
   'internal-booking': internalBooking,
+  'welcome': welcome,
 }
