@@ -6,7 +6,16 @@
 
 import { describe, it, expect } from "vitest";
 import { pickPrimaryTour } from "../curation";
-import type { Feeling } from "../curation";
+
+type Feeling =
+  | "coastal"
+  | "wine-food"
+  | "hidden"
+  | "romance"
+  | "culture"
+  | "adventure"
+  | "slow-luxury";
+
 
 type Interest =
   | "wine"
