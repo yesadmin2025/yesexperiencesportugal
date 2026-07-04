@@ -69,6 +69,7 @@ import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
+import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
@@ -403,6 +404,11 @@ const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
   path: '/admin/seo-monitor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSeoJsonldRoute = AdminSeoJsonldRouteImport.update({
+  id: '/admin/seo-jsonld',
+  path: '/admin/seo-jsonld',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminReviewsRoute = AdminReviewsRouteImport.update({
   id: '/admin/reviews',
   path: '/admin/reviews',
@@ -612,6 +618,7 @@ export interface FileRoutesByFullPath {
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -703,6 +710,7 @@ export interface FileRoutesByTo {
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -795,6 +803,7 @@ export interface FileRoutesById {
   '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -888,6 +897,7 @@ export interface FileRouteTypes {
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
+    | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -979,6 +989,7 @@ export interface FileRouteTypes {
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
+    | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -1070,6 +1081,7 @@ export interface FileRouteTypes {
     | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
+    | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -1162,6 +1174,7 @@ export interface RootRouteChildren {
   AdminPricingRoute: typeof AdminPricingRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
+  AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
@@ -1617,6 +1630,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSeoMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/seo-jsonld': {
+      id: '/admin/seo-jsonld'
+      path: '/admin/seo-jsonld'
+      fullPath: '/admin/seo-jsonld'
+      preLoaderRoute: typeof AdminSeoJsonldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/reviews': {
       id: '/admin/reviews'
       path: '/admin/reviews'
@@ -1915,6 +1935,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminPricingRoute: AdminPricingRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminReviewsRoute: AdminReviewsRoute,
+  AdminSeoJsonldRoute: AdminSeoJsonldRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
