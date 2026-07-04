@@ -24,7 +24,7 @@ import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 import { FourWaysIn } from "@/components/home/FourWaysIn";
-import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
+
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
@@ -785,10 +785,10 @@ function HomePage() {
           Travel Designer journeys. */}
         <RecentJourney />
 
-        {/* 5c — REAL GUEST REVIEWS
-          Three real verified reviews from featured Signature tours'
-          Viator meta. Real names, real platforms, real words. */}
-        <RealReviewsStrip />
+        {/* 5c — Removed: the mid-page "Real reviews" strip duplicated the
+          hero-adjacent GuestQuotes carousel. Social proof lives in ONE
+          place near the top of the page (see <GuestQuotes />) so the
+          middle of the homepage stays focused on inventory + bespoke. */}
 
         {/* 6 — PROPOSALS / CELEBRATIONS / CORPORATE / MULTI-DAY
           One combined editorial band — Proposals, Celebrations,
