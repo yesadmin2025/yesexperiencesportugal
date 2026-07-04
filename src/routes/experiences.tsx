@@ -209,7 +209,7 @@ function ExperiencesPage() {
 
 function CtaStrip() {
   return (
-    <section data-audit="experiences-cta" className="section-y-sm pt-0">
+    <section data-audit="experiences-cta" className="reveal section-y-sm pt-0">
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>

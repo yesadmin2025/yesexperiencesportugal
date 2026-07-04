@@ -93,7 +93,7 @@ function PressPage() {
           listings consistent across Google, Tripadvisor, Visit Portugal and travel publications.
         </p>
 
-        <section className="mt-12">
+        <section className="reveal mt-12">
           <h2 className="font-display text-xl font-semibold">Name, address &amp; phone (NAP)</h2>
           <dl className="mt-4">
             <Row label="Brand name" value={NAP.name} />
@@ -110,7 +110,7 @@ function PressPage() {
           </dl>
         </section>
 
-        <section className="mt-14">
+        <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Copy-ready citation block</h2>
           <p className="mt-2 text-sm text-[color:var(--charcoal)]/70">
             Use this exact block when submitting to directories or press lists.
@@ -120,7 +120,7 @@ function PressPage() {
           </pre>
         </section>
 
-        <section className="mt-14">
+        <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Founder bio</h2>
           <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">Short (≤ 60 words)</p>
           <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">{FOUNDER_BIO_SHORT}</p>
@@ -128,7 +128,7 @@ function PressPage() {
           <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">{FOUNDER_BIO_LONG}</p>
         </section>
 
-        <section className="mt-14">
+        <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Brand assets</h2>
           <ul className="mt-4 space-y-2 text-[15px]">
             <li>
@@ -152,7 +152,7 @@ function PressPage() {
           </p>
         </section>
 
-        <section className="mt-14">
+        <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Press contact</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
             {NAP.founderRole}
