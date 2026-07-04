@@ -214,17 +214,70 @@ export const Route = createFileRoute("/local-stories/$slug")({
     }
 
     const url = `${BASE}/local-stories/${params.slug}`;
+    const post = loaderData?.dbPost ?? null;
+    const title = post?.title ?? `Local Story — YES experiences Portugal`;
+    const description =
+      post?.excerpt ?? `A local story from Portugal · ${params.slug}`;
+    const heroImage = post?.heroImage ?? null;
+
+    const scripts = post
+      ? [
+          jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.title,
+            name: post.title,
+            description: post.excerpt ?? undefined,
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
+            url,
+            image: heroImage ?? undefined,
+            datePublished: post.publishedAt ?? undefined,
+            dateModified: post.publishedAt ?? undefined,
+            inLanguage: "en",
+            author: post.authorName
+              ? { "@type": "Person", name: post.authorName }
+              : {
+                  "@type": "Person",
+                  "@id": FOUNDER_ID,
+                  name: "Nidia Almeida",
+                  url: `${BASE}/about`,
+                },
+            publisher: {
+              "@type": "Organization",
+              "@id": `${BASE}/#organization`,
+              name: "YES Experiences Portugal",
+              url: BASE,
+              logo: {
+                "@type": "ImageObject",
+                url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
+              },
+            },
+          }),
+          jsonLdScript(
+            breadcrumbLd([
+              { name: "Home", path: "/" },
+              { name: "Local Stories", path: "/local-stories" },
+              { name: post.title, path: `/local-stories/${post.slug}` },
+            ]),
+          ),
+        ]
+      : [];
+
     return {
       meta: [
-        { title: `Local Story — YES experiences Portugal` },
-        {
-          name: "description",
-          content: `A local story from Portugal · ${params.slug}`,
-        },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        ...(heroImage ? [{ property: "og:image", content: heroImage }] : []),
+        ...(post?.publishedAt
+          ? [{ property: "article:published_time", content: post.publishedAt }]
+          : []),
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts,
     };
   },
 
