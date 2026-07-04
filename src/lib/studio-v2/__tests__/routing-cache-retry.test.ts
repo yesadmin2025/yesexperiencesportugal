@@ -24,33 +24,37 @@ vi.mock("@/integrations/supabase/client.server", () => {
       fromKeys: [],
       toKeys: [],
     };
-    const builder = {
-      select: () => builder,
-      in: (col: string, values: string[]) => {
-        if (col === "from_key") state.fromKeys = values;
-        else if (col === "to_key") state.toKeys = values;
-        // The final `in()` awaits the query — return a thenable that
-        // resolves to the matching rows.
-        const data: Array<Record<string, unknown>> = [];
-        for (const r of cacheRows.values()) {
-          if (
-            state.fromKeys.includes(r.from_key as string) &&
-            state.toKeys.includes(r.to_key as string)
-          ) {
-            data.push(r);
-          }
+    const resolveData = () => {
+      const data: Array<Record<string, unknown>> = [];
+      for (const r of cacheRows.values()) {
+        if (
+          state.fromKeys.includes(r.from_key as string) &&
+          state.toKeys.includes(r.to_key as string)
+        ) {
+          data.push(r);
         }
-        return Promise.resolve({ data, error: null }) as unknown as typeof builder;
-      },
-      upsert: (rows: Array<Record<string, unknown>>) => {
-        for (const row of rows) {
-          cacheRows.set(`${row.from_key}::${row.to_key}`, row);
-        }
-        return {
-          then: (resolve: (v: { data: null; error: null }) => void) =>
-            resolve({ data: null, error: null }),
-        };
-      },
+      }
+      return { data, error: null };
+    };
+    const builder: Record<string, unknown> = {};
+    builder.select = () => builder;
+    builder.in = (col: string, values: string[]) => {
+      if (col === "from_key") state.fromKeys = values;
+      else if (col === "to_key") state.toKeys = values;
+      return builder;
+    };
+    // Make the builder awaitable — resolves with current cache snapshot.
+    builder.then = (
+      onFulfilled: (v: { data: Array<Record<string, unknown>>; error: null }) => unknown,
+    ) => Promise.resolve(resolveData()).then(onFulfilled);
+    builder.upsert = (rows: Array<Record<string, unknown>>) => {
+      for (const row of rows) {
+        cacheRows.set(`${row.from_key}::${row.to_key}`, row);
+      }
+      return {
+        then: (resolve: (v: { data: null; error: null }) => void) =>
+          resolve({ data: null, error: null }),
+      };
     };
     return builder;
   };
