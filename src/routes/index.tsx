@@ -778,7 +778,7 @@ function HomePage() {
 
 
             <div className="mt-12 md:mt-14 text-center">
-              <CtaButton to="/experiences" variant="ghost" size="sm">
+              <CtaButton to="/experiences" variant="hairline">
                 See every Signature
               </CtaButton>
             </div>
