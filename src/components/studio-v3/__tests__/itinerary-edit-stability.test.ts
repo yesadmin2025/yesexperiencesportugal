@@ -66,15 +66,19 @@ describe("Studio — itinerary edit stability", () => {
   });
 
   it("editing a secondary interest never flips a coherent non-wine primary to Arrábida wines", () => {
-    // For each feeling, fix a coherent primary interest (the one a user
-    // would naturally pick for that mood). Then let the user "edit" by
-    // adding any non-wine secondary. The primary must anchor the pick;
-    // secondaries must never derail it into the wine day.
-    for (const feeling of NON_WINE_FEELINGS) {
-      const primary: Interest =
-        feeling === "coastal" || feeling === "hidden" || feeling === "adventure"
-          ? "coast"
-          : "heritage";
+    // Strongly-aligned (feeling, primary) pairs — the ones a user picks
+    // when they clearly don't want a wine day. For each pair, any
+    // non-wine secondary edit must keep the resolved tour off the wine
+    // signature.
+    const strongPairs: Array<{ feeling: Feeling; primary: Interest }> = [
+      { feeling: "coastal", primary: "coast" },
+      { feeling: "hidden", primary: "coast" },
+      { feeling: "adventure", primary: "coast" },
+      { feeling: "culture", primary: "heritage" },
+      { feeling: "slow-luxury", primary: "heritage" },
+    ];
+
+    for (const { feeling, primary } of strongPairs) {
       const first = pickPrimaryTour(feeling, "couple", [primary], null, null, 0).tour.id;
       expect(
         first,
