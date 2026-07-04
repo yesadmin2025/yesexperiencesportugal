@@ -31,7 +31,7 @@ const PATHS: Path[] = [
     title: (
       <>
         Ready private days,{" "}
-        <span className="font-serif italic font-normal text-[color:var(--teal)]">yours to shape.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
       </>
     ),
     body: "Flagship private days across Lisbon, Sintra, Arrábida and beyond — reserve as they are, or tailor inside the Signature you choose.",
@@ -45,7 +45,7 @@ const PATHS: Path[] = [
     title: (
       <>
         Design your private day{" "}
-        <span className="font-serif italic font-normal text-[color:var(--teal)]">in real time.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">in real time.</span>
       </>
     ),
     body: "Choose the mood, route and rhythm. See the price live, then reserve instantly when it feels right.",
@@ -59,7 +59,7 @@ const PATHS: Path[] = [
     title: (
       <>
         Proposals & celebrations,{" "}
-        <span className="font-serif italic font-normal text-[color:var(--teal)]">held with care.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
       </>
     ),
     body: "Engagements, anniversaries, birthdays and private celebrations — quietly handled, with local hands behind every detail.",
@@ -73,7 +73,7 @@ const PATHS: Path[] = [
     title: (
       <>
         Team days, incentives{" "}
-        <span className="font-serif italic font-normal text-[color:var(--teal)]">& private groups.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
       </>
     ),
     body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and timing handled end to end.",
@@ -87,7 +87,7 @@ const PATHS: Path[] = [
     title: (
       <>
         A full private journey,{" "}
-        <span className="font-serif italic font-normal text-[color:var(--teal)]">written around you.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
       </>
     ),
     body: "Any length, any shape — honeymoons, family journeys, celebrations and multi-day Portugal. Composed by a local Travel Designer.",
@@ -108,10 +108,10 @@ export function FourWaysIn() {
           <span className="he-eyebrow-bar mb-5">Where to begin</span>
           <h2
             id="four-ways-title"
-            className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             Five ways to{" "}
-            <span className="font-serif italic font-normal text-[color:var(--teal)]">shape your Portugal.</span>
+            <span className="italic font-normal text-[color:var(--teal)]">shape your Portugal.</span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
@@ -174,7 +174,7 @@ export function FourWaysIn() {
                 <span className="relative mt-4 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
                   {p.label}
                 </span>
-                <h3 className="relative font-display mt-2.5 text-[1.25rem] md:text-[1.5rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
+                <h3 className="relative serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
                   {p.title}
                 </h3>
                 <p className="relative mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">

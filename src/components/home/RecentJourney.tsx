@@ -426,10 +426,10 @@ export function RecentJourney() {
           <span className="he-eyebrow-bar mb-4">Travel Designer</span>
           <h2
             id="bespoke-designer-title"
-            className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             A Portugal{" "}
-            <span className="font-serif italic font-normal text-[color:var(--teal)]">written around you.</span>
+            <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
           </h2>
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Multi-day Portugal, composed by a local — delivered as a book, not a booking.

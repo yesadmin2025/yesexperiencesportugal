@@ -57,10 +57,10 @@ export function RealReviewsStrip() {
           <span className="he-eyebrow-bar mb-5">Real guest reviews</span>
           <h2
             id="real-reviews-title"
-            className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
           >
             In the words of{" "}
-            <span className="font-serif italic font-normal text-[color:var(--teal)]">
+            <span className="italic font-normal text-[color:var(--teal)]">
               recent guests.
             </span>
           </h2>
