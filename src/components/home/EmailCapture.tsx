@@ -196,8 +196,14 @@ function LeadForm({
       ) : null}
 
       <div className="mt-4 flex justify-center sm:justify-start">
-        <CtaButton type="submit" variant="primary" disabled={f.status === "submitting"}>
-          {f.status === "submitting" ? "Sending…" : "Send me the map"}
+        <CtaButton
+          type="submit"
+          variant="primary"
+          loading={f.status === "submitting"}
+          loadingLabel="Sending…"
+          error={f.status === "error"}
+        >
+          Send me the map
         </CtaButton>
       </div>
 
