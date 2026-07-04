@@ -381,7 +381,7 @@ function TailorPage() {
           tourTitle: tour.title,
           guests: details.guests,
           stopLabels: stopLabels.slice(0, 8),
-          includedItems: metaForSummary?.included && metaForSummary.included.length > 0 ? metaForSummary.included : tour.included,
+          includedItems: resolveClientIncludedItems(metaForSummary, tour),
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
