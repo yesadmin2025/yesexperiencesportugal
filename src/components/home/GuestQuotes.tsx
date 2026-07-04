@@ -101,7 +101,7 @@ export function GuestQuotes() {
           {quotes.map((q) => (
             <li
               key={q.id}
-              className="rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-5"
+              className="reveal-stagger he-card-lift rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-5"
             >
               <div className="inline-flex items-center gap-0.5 text-[color:var(--gold)]" aria-hidden="true">
                 {Array.from({ length: 5 }).map((_, i) => (
