@@ -318,10 +318,10 @@ function ConciergeSheet({
           </p>
 
           <div className="mt-6 flex flex-col gap-3">
-            <CtaButton href={builderWaHref(waMessage)} variant="primary">
+            <CtaButton href={builderWaHref(waMessage)} variant="hairline">
               Chat with our concierge
             </CtaButton>
-            <CtaButton type="button" onClick={onBookInstantly} variant="ghost">
+            <CtaButton type="button" onClick={onBookInstantly} variant="hairline" className="opacity-70 hover:opacity-100">
               Or build & book instantly
             </CtaButton>
           </div>
