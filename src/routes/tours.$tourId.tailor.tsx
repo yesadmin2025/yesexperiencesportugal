@@ -690,12 +690,7 @@ function TailorPage() {
                         <li key={s.id}>
                           <button
                             type="button"
-                            onClick={() => {
-                              const next = new Set(skippedCore);
-                              if (isSkipped) next.delete(s.id);
-                              else next.add(s.id);
-                              setSkippedCore(next);
-                            }}
+                            onClick={() => tryToggleSkippedCore(s.id)}
                             aria-pressed={!isSkipped}
                             className={[
                               "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
