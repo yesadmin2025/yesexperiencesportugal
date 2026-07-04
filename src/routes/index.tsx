@@ -773,16 +773,8 @@ function HomePage() {
               })}
             </ul>
 
-            {/* Mobile-only swipe hint */}
-            <p
-              className={
-                scrollDebug.staticMobileCarousels
-                  ? "hidden"
-                  : "sm:hidden mt-4 text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]"
-              }
-            >
-              Swipe to explore
-            </p>
+
+
 
             <div className="mt-12 md:mt-14 text-center">
               <CtaButton to="/experiences" variant="ghost" size="sm">
