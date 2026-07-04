@@ -325,10 +325,32 @@ export function startHomeMotion(): () => void {
   // an element into the entry zone after first paint.
   window.addEventListener("load", schedule, { passive: true });
 
+  // One-shot perf summary — logs a compact single-line diagnostic ~4s
+  // after boot when the device is low-power OR `?motionDebug=1` is set.
+  // Silent on fast devices in production, so this is safe to ship.
+  const summaryDelay = 4000;
+  const summaryId = window.setTimeout(() => {
+    if (!(lowPower || debugFlag)) return;
+    const t = telemetry;
+    // Guard console access — jsdom-in-tests provides it but keep defensive.
+    if (typeof console === "undefined" || typeof console.info !== "function") return;
+    const avg = t.sweepCount ? (t.sweepMsTotal! / t.sweepCount).toFixed(2) : "0";
+    // eslint-disable-next-line no-console
+    console.info(
+      `[home-motion] ${t.triggered}/${t.total} revealed · sweeps=${t.sweepCount} ` +
+        `avg=${avg}ms max=${(t.sweepMsMax ?? 0).toFixed(2)}ms · ` +
+        `longtasks=${t.longtaskCount ?? 0} (${(t.longtaskMsTotal ?? 0).toFixed(0)}ms) · ` +
+        `first=${t.firstTriggerMs?.toFixed(0) ?? "—"}ms last=${t.lastTriggerMs?.toFixed(0) ?? "—"}ms · ` +
+        `lowPower=${lowPower}`,
+    );
+  }, summaryDelay);
+
   return () => {
     window.cancelAnimationFrame(bootRaf);
     window.cancelAnimationFrame(rafId);
     window.clearTimeout(pollId);
+    window.clearTimeout(summaryId);
+    longtaskObserver?.disconnect();
     window.removeEventListener("scroll", schedule);
     window.removeEventListener("resize", schedule);
     window.removeEventListener("orientationchange", schedule);
