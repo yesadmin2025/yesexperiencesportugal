@@ -20,6 +20,8 @@ import {
 } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/jsonld";
 import { PlatformBadge } from "@/components/PlatformBadge";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+
 
 
 const SOURCE_LABEL: Record<string, string> = {
@@ -125,21 +127,20 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <p className="mt-2 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] leading-[1.5] text-[color:var(--charcoal)]">
+      <SectionTitle as="h2" size="default" className="mt-3 text-balance">
         {count ? (
           <>
-            <span className="font-semibold text-[color:var(--charcoal)]">
-              {count.toLocaleString("en-US")} five-star reviews
-            </span>{" "}
-            <span className="text-[color:var(--charcoal)]/70">— real guests, real stories.</span>
+            {count.toLocaleString("en-US")} five-star reviews{" "}
+            <SectionTitle.Em>— real guests, real stories.</SectionTitle.Em>
           </>
         ) : (
           <>
-            <span className="font-semibold text-[color:var(--charcoal)]">700+ five-star reviews</span>{" "}
-            <span className="text-[color:var(--charcoal)]/70">— real guests, real stories.</span>
+            700+ five-star reviews{" "}
+            <SectionTitle.Em>— real guests, real stories.</SectionTitle.Em>
           </>
         )}
-      </p>
+      </SectionTitle>
+
 
 
       {/* Platform badge row removed — each review card now carries its

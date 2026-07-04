@@ -503,15 +503,12 @@ function HomePage() {
         <section
           id="reviews"
           className="section-enter bg-[color:var(--ivory)] border-b border-[color:var(--border)] py-16 md:py-24 scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="trust-bar-title"
         >
-          <h2 id="trust-bar-title" className="sr-only">
-            700+ five-star reviews across major platforms
-          </h2>
           <div className="container-x">
             <GuestQuotes />
           </div>
         </section>
+
 
         {/* 2b — FIVE WAYS TO SHAPE YOUR PORTUGAL
           Concise editorial explainer so visitors instantly understand
