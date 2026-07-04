@@ -214,7 +214,7 @@ export function CtaButton(props: CtaButtonProps) {
   const sharedClassName = cn(
     isHairline
       ? cn(hairlineBaseClasses, loading && "cursor-progress")
-      : cn(baseClasses, sizeClasses[size], variantClasses[variant]),
+      : cn(baseClasses, trailing ? baseLayoutWithTrailing : baseLayoutNoTrailing, sizeClasses[size], variantClasses[variant]),
     errorPlaying && "he-cta-error",
     className,
   );
