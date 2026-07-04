@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { auditJsonLd, type PageAudit, type ProductAudit } from "@/lib/jsonld-audit.functions";
+import { useState } from "react";
+import {
+  auditJsonLd,
+  type PageAudit,
+  type ProductAudit,
+  type JsonLdBlock,
+} from "@/lib/jsonld-audit.functions";
 
 export const Route = createFileRoute("/admin/seo-jsonld")({
   head: () => ({
