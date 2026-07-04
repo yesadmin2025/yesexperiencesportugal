@@ -87,6 +87,7 @@ export type StopTheme =
   | "fatima-nazare-obidos"
   | "roman-heritage-alentejo"
   | "sintra-cascais"
+  | "southwest-vicentine-coast"
   | "tiles-workshop"
   | "tomar-coimbra"
   | "troia-comporta"
