@@ -43,6 +43,28 @@ export const Route = createFileRoute("/local-stories")({
           { name: "Local Stories", path: "/local-stories" },
         ]),
       ),
+      jsonLdScript({
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "@id": "https://yesexperiencesportugal.com/local-stories#blog",
+        url: "https://yesexperiencesportugal.com/local-stories",
+        name: "Local Stories — YES experiences Portugal",
+        description:
+          "Notes from the road, written by the locals who design our private Portugal experiences.",
+        inLanguage: "en",
+        isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
+        publisher: { "@id": "https://yesexperiencesportugal.com/#organization" },
+        blogPost: LOCAL_STORIES_ARTICLES.filter(
+          (a) => a.slug !== "best-day-trips-from-lisbon",
+        ).map((a) => ({
+          "@type": "BlogPosting",
+          headline: a.h1,
+          name: a.title,
+          description: a.metaDescription,
+          url: `https://yesexperiencesportugal.com/local-stories/${a.slug}`,
+          datePublished: a.datePublished,
+        })),
+      }),
     ],
   }),
 
