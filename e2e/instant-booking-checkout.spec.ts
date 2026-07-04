@@ -112,8 +112,8 @@ test.describe("instant booking checkout", () => {
     expect(json.sessionId).toMatch(/^cs_/);
     expect(json.flow).toBe("studio");
     expect(json.productName).toMatch(/^YES Studio — /);
-    expect(json.lineItemDescription).toContain("Built moment by moment");
-    expect(json.submitMessage).toContain("Your Studio day is reserved");
+    expect(json.lineItemDescription).toContain("Hotel pickup included");
+    expect(json.submitMessage).toContain("Instant confirmation");
   });
 
   test("Signature — Reserve as designed returns a Stripe checkout URL with Signature copy", async () => {
@@ -128,8 +128,8 @@ test.describe("instant booking checkout", () => {
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
     expect(json.flow).toBe("signature");
     expect(json.productName).toMatch(/^YES Signature — /);
-    expect(json.lineItemDescription).toContain("Reserved as designed");
-    expect(json.submitMessage).toContain("Your Signature day is reserved");
+    expect(json.lineItemDescription).toContain("Hotel pickup included");
+    expect(json.submitMessage).toContain("Instant confirmation");
   });
 
   test("Tailor — Reserve with adjusted stops returns a Stripe checkout URL with Tailor copy", async () => {
@@ -144,8 +144,7 @@ test.describe("instant booking checkout", () => {
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
     expect(json.flow).toBe("tailor");
     expect(json.productName).toMatch(/^YES Tailored — /);
-    expect(json.lineItemDescription).toContain("Tailored stops applied");
-    expect(json.submitMessage).toContain("Your tailored day is reserved");
+    expect(json.lineItemDescription).toContain("Tailored adjustments");
     expect(json.submitMessage).toContain("within 2 hours");
   });
 
