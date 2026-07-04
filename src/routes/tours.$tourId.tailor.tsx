@@ -165,6 +165,10 @@ function TailorPage() {
     return new Set(bp.choice.options.slice(0, bp.choice.pickCount).map((o) => o.id));
   });
   const [optionalSelected, setOptionalSelected] = useState<Set<string>>(new Set());
+  // Skippable core stops — market, viewpoints, generic lunches — can be
+  // traded for time elsewhere. True anchors (workshops, wineries) have
+  // `skippable: false` in the blueprint and never appear here.
+  const [skippedCore, setSkippedCore] = useState<Set<string>>(new Set());
 
   const blueprintFeasibility = useMemo(() => {
     if (!blueprint) return null;
@@ -175,14 +179,14 @@ function TailorPage() {
       dwellMinutesOverride: s.dwellMinutesOverride,
     });
     const stops: FeasibilityStop[] = [
-      ...blueprint.core.map(toFs),
+      ...blueprint.core.filter((s) => !skippedCore.has(s.id)).map(toFs),
       ...(blueprint.choice
         ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map(toFs)
         : []),
       ...blueprint.optional.filter((o) => optionalSelected.has(o.id)).map(toFs),
     ];
     return evaluateDay({ stops });
-  }, [blueprint, choiceSelected, optionalSelected]);
+  }, [blueprint, choiceSelected, optionalSelected, skippedCore]);
 
   // Optional stops surfaced by Viator (passBy=true). These can be
   // promoted into the day. Capped at MAX_EDITS combined add/remove.
