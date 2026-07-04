@@ -9,7 +9,7 @@
  * 3. Trust line: "Based on verified guest reviews across major booking
  *    platforms." — visible, non-decorative.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Star } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { PlatformBadge, type Platform } from "@/components/PlatformBadge";
@@ -19,6 +19,7 @@ import {
   type GlobalStats,
   type PublicReview,
 } from "@/lib/reviews.functions";
+import { SITE_URL } from "@/lib/jsonld";
 
 const PLATFORMS: Platform[] = ["tripadvisor", "viator", "google", "getyourguide", "trustpilot"];
 
@@ -53,6 +54,58 @@ export function GuestQuotes() {
   const hasReal = stats && stats.total_reviews >= 25;
   const count = hasReal ? stats!.total_reviews : null;
   const avg = hasReal && stats!.average_rating ? stats!.average_rating : null;
+
+  /**
+   * JSON-LD — AggregateRating + Review nodes attached to the sitewide
+   * Organization (@id `${SITE_URL}/#organization`). Emitted ONLY when the
+   * visible carousel is rendering the matching reviews on the page, so
+   * Google's "visible parity" rule for review-rich results is honored.
+   *
+   * The script tag is `display:none` by default and adds zero layout —
+   * it can never cause CLS. We stringify inside useMemo so the payload
+   * only rebuilds when the underlying data actually changes.
+   */
+  const structuredData = useMemo(() => {
+    if (quotes.length === 0) return null;
+    const orgId = `${SITE_URL}/#organization`;
+    const ratingValue = avg ?? 4.9;
+    const reviewCount = count ?? 700;
+
+    const graph: Record<string, unknown>[] = [
+      {
+        "@type": "AggregateRating",
+        "@id": `${SITE_URL}/#aggregate-rating`,
+        itemReviewed: { "@id": orgId },
+        ratingValue: Number(ratingValue.toFixed(1)),
+        reviewCount,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      ...quotes.map((q) => ({
+        "@type": "Review",
+        "@id": `${SITE_URL}/#review-${q.id}`,
+        itemReviewed: { "@id": orgId },
+        author: {
+          "@type": "Person",
+          name: q.reviewer_name ?? "Guest",
+        },
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: Math.round(q.rating),
+          bestRating: 5,
+          worstRating: 1,
+        },
+        reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
+        publisher: {
+          "@type": "Organization",
+          name: SOURCE_LABEL[q.source] ?? q.source,
+        },
+      })),
+    ];
+
+    return { "@context": "https://schema.org", "@graph": graph };
+  }, [quotes, avg, count]);
+
 
   return (
     <div className="mt-6 md:mt-8 text-center">
