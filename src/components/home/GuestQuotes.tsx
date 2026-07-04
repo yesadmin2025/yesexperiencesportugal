@@ -69,7 +69,18 @@ export function GuestQuotes() {
   const structuredData = useMemo(() => {
     const orgId = `${SITE_URL}/#organization`;
     const pageUrl = `${SITE_URL}/#reviews`;
+    // Inline `itemReviewed` (Organization @type + name + url) so the
+    // Rich Results Test doesn't warn "itemReviewed missing name" —
+    // some validators don't follow @id merges into the sitewide
+    // Organization node emitted from __root.tsx.
+    const itemReviewed = {
+      "@type": "Organization",
+      "@id": orgId,
+      name: "YES Experiences Portugal",
+      url: `${SITE_URL}/`,
+    } as const;
     // AggregateRating is always emitted so Google can attach the
+
     // 700+ five-star signal even when the curated carousel is empty
     // (e.g. before featured rows finish importing). Values fall back
     // to the verified aggregate published on Tripadvisor/Viator.
