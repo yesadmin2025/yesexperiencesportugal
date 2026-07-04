@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LEGACY_HOSTS } from "@/lib/legacy-domain-redirect";
+import {
+  listLegacyUnlinkChecklist,
+  upsertLegacyUnlinkChecklistItem,
+} from "@/lib/legacy-domain-unlink.functions";
 
 export const Route = createFileRoute("/admin/legacy-domain-unlink")({
   head: () => ({
@@ -181,28 +187,13 @@ const ITEMS: ChecklistItem[] = [
   },
 ];
 
-const STORAGE_KEY = "yes.admin.legacy-domain-unlink.v1";
-
-type State = Record<string, { status: Status; note?: string; updatedAt?: string }>;
-
-function loadState(): State {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as State) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveState(s: State) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-  } catch {
-    /* ignore */
-  }
-}
+type ItemRow = {
+  item_id: string;
+  status: Status;
+  note: string | null;
+  updated_at: string;
+  updated_by: string | null;
+};
 
 const STATUS_LABEL: Record<Status, string> = {
   todo: "Por fazer",
@@ -218,33 +209,53 @@ const STATUS_TONE: Record<Status, string> = {
   blocked: "bg-rose-100 text-rose-800",
 };
 
+const QUERY_KEY = ["admin", "legacy-domain-unlink", "checklist"] as const;
+
 function LegacyDomainUnlinkPage() {
-  const [state, setState] = useState<State>({});
+  const listFn = useServerFn(listLegacyUnlinkChecklist);
+  const upsertFn = useServerFn(upsertLegacyUnlinkChecklistItem);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setState(loadState());
-  }, []);
+  const query = useQuery({
+    queryKey: QUERY_KEY,
+    queryFn: () => listFn(),
+    retry: false,
+    staleTime: 30_000,
+  });
 
-  const update = (id: string, patch: Partial<State[string]>) => {
-    setState((prev) => {
-      const next: State = {
-        ...prev,
-        [id]: {
-          status: prev[id]?.status ?? "todo",
-          note: prev[id]?.note,
-          ...patch,
-          updatedAt: new Date().toISOString(),
+  const byId = useMemo(() => {
+    const map = new Map<string, ItemRow>();
+    const items = (query.data?.items ?? []) as ItemRow[];
+    for (const row of items) map.set(row.item_id, row);
+    return map;
+  }, [query.data]);
+
+  const mutation = useMutation({
+    mutationFn: (input: {
+      itemId: string;
+      status?: Status;
+      note?: string | null;
+    }) => upsertFn({ data: input }),
+    onSuccess: ({ item }) => {
+      queryClient.setQueryData<{ items: ItemRow[] } | undefined>(
+        QUERY_KEY,
+        (prev) => {
+          const rows = prev?.items ? [...prev.items] : [];
+          const idx = rows.findIndex((r) => r.item_id === item.item_id);
+          if (idx >= 0) rows[idx] = item as ItemRow;
+          else rows.push(item as ItemRow);
+          return { items: rows };
         },
-      };
-      saveState(next);
-      return next;
-    });
-  };
+      );
+    },
+  });
 
-  const groups = Array.from(new Set(ITEMS.map((i) => i.group)));
   const total = ITEMS.length;
-  const done = ITEMS.filter((i) => state[i.id]?.status === "done").length;
-  const pct = Math.round((done / total) * 100);
+  const done = ITEMS.filter((i) => byId.get(i.id)?.status === "done").length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+
+  const isForbidden =
+    query.isError && /Forbidden|Unauthorized/i.test(String(query.error));
 
   return (
     <div className="min-h-screen bg-[color:var(--ivory)] px-4 py-10 md:px-8">
@@ -257,146 +268,79 @@ function LegacyDomainUnlinkPage() {
             Desvincular domínio antigo
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-            Checklist operacional para remover a presença do{" "}
-            <code className="rounded bg-white px-1.5 py-0.5 text-xs">
-              yesexperiences.pt
-            </code>{" "}
-            e do Google Business Profile antigo, e consolidar a autoridade em{" "}
-            <code className="rounded bg-white px-1.5 py-0.5 text-xs">
-              yesexperiencesportugal.com
-            </code>
-            . O estado de cada item é guardado localmente neste browser.
+            Checklist operacional partilhado — o estado de cada item é
+            sincronizado no backend entre todos os administradores.
           </p>
 
-          <div className="mt-6 rounded-xl border border-stone-200 bg-white p-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-[color:var(--charcoal)]">
-                Progresso
-              </span>
-              <span className="text-[color:var(--charcoal-soft)]">
-                {done} / {total} concluídos ({pct}%)
-              </span>
+          {query.isLoading && (
+            <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
+              A carregar estado do checklist…
+            </p>
+          )}
+          {isForbidden && (
+            <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
+              Precisas de estar autenticado com role <strong>admin</strong> para
+              ver e editar este checklist.{" "}
+              <a className="underline" href="/auth">
+                Iniciar sessão
+              </a>
+              .
             </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-stone-100">
-              <div
-                className="h-full bg-[color:var(--teal)] transition-all"
-                style={{ width: `${pct}%` }}
-              />
+          )}
+          {query.isError && !isForbidden && (
+            <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
+              Erro a carregar: {String(query.error)}
             </div>
-          </div>
+          )}
+
+          {!isForbidden && (
+            <div className="mt-6 rounded-xl border border-stone-200 bg-white p-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-medium text-[color:var(--charcoal)]">
+                  Progresso
+                </span>
+                <span className="text-[color:var(--charcoal-soft)]">
+                  {done} / {total} concluídos ({pct}%)
+                </span>
+              </div>
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-stone-100">
+                <div
+                  className="h-full bg-[color:var(--teal)] transition-all"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              {mutation.isPending && (
+                <p className="mt-2 text-[10px] uppercase tracking-wider text-stone-400">
+                  A sincronizar…
+                </p>
+              )}
+            </div>
+          )}
         </header>
 
-        {groups.map((group) => {
-          const items = ITEMS.filter((i) => i.group === group);
-          return (
-            <section key={group} className="mb-10">
-              <h2 className="mb-4 font-display text-lg font-semibold text-[color:var(--charcoal)]">
-                {group}
-              </h2>
-              <ol className="space-y-3">
-                {items.map((item, idx) => {
-                  const s = state[item.id];
-                  const status: Status = s?.status ?? "todo";
-                  return (
-                    <li
-                      key={item.id}
-                      className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="mt-0.5 grid h-6 w-6 shrink-0 place-content-center rounded-full bg-stone-100 text-xs font-medium text-[color:var(--charcoal-soft)]">
-                          {idx + 1}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="font-medium text-[color:var(--charcoal)]">
-                              {item.title}
-                            </h3>
-                            <span
-                              className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${STATUS_TONE[status]}`}
-                            >
-                              {STATUS_LABEL[status]}
-                            </span>
-                          </div>
-                          <p className="mt-1.5 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-                            {item.detail}
-                          </p>
-                          {item.hint && (
-                            <p className="mt-1.5 rounded-md bg-amber-50 px-2.5 py-1.5 text-xs text-amber-900">
-                              {item.hint}
-                            </p>
-                          )}
-
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {item.links.map((l) => (
-                              <a
-                                key={l.href}
-                                href={l.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1 text-xs font-medium text-[color:var(--charcoal)] transition hover:border-[color:var(--teal)] hover:text-[color:var(--teal)]"
-                              >
-                                {l.label} <span aria-hidden>↗</span>
-                              </a>
-                            ))}
-                          </div>
-
-                          <div className="mt-3 flex flex-wrap items-center gap-2">
-                            {(
-                              ["todo", "in_progress", "done", "blocked"] as Status[]
-                            ).map((st) => (
-                              <button
-                                key={st}
-                                type="button"
-                                onClick={() => update(item.id, { status: st })}
-                                className={`rounded-md px-2.5 py-1 text-xs font-medium transition ${
-                                  status === st
-                                    ? "bg-[color:var(--charcoal)] text-white"
-                                    : "border border-stone-200 bg-white text-[color:var(--charcoal-soft)] hover:border-stone-400"
-                                }`}
-                              >
-                                {STATUS_LABEL[st]}
-                              </button>
-                            ))}
-                          </div>
-
-                          <textarea
-                            value={s?.note ?? ""}
-                            onChange={(e) =>
-                              update(item.id, { note: e.target.value })
-                            }
-                            placeholder="Notas internas (ex.: nº de ticket do suporte Google, data submetida…)"
-                            className="mt-3 w-full rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-[color:var(--charcoal)] placeholder:text-stone-400 focus:border-[color:var(--teal)] focus:outline-none"
-                            rows={2}
-                          />
-
-                          {s?.updatedAt && (
-                            <p className="mt-2 text-[10px] uppercase tracking-wider text-stone-400">
-                              Atualizado {new Date(s.updatedAt).toLocaleString("pt-PT")}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </section>
-          );
-        })}
+        {!isForbidden && !query.isLoading && (
+          <ChecklistGroups
+            byId={byId}
+            disabled={query.isError}
+            onStatusChange={(itemId, status) =>
+              mutation.mutate({ itemId, status })
+            }
+            onNoteChange={(itemId, note) =>
+              mutation.mutate({ itemId, note })
+            }
+          />
+        )}
 
         <footer className="mt-10 rounded-xl border border-stone-200 bg-white p-4 text-xs text-[color:var(--charcoal-soft)]">
           <p className="mb-1 font-medium text-[color:var(--charcoal)]">
             Nota importante
           </p>
           <p>
-            Nenhuma destas ações é reversível por código — o Google Business
-            Profile, TripAdvisor e Search Console Removals são UI-only. Este
-            painel serve para dar visibilidade e não perder nenhum passo.
-            Depois de concluir, correr o{" "}
-            <a
-              className="underline"
-              href="/admin/legacy-domains-monitor"
-            >
+            Nenhuma destas ações é reversível por código — GBP, TripAdvisor e
+            Search Console Removals são UI-only. Este painel serve para dar
+            visibilidade e não perder nenhum passo. Depois de concluir, correr
+            o{" "}
+            <a className="underline" href="/admin/legacy-domains-monitor">
               Legacy Domains Monitor
             </a>{" "}
             para confirmar que o 410 Gone continua a servir.
@@ -404,5 +348,169 @@ function LegacyDomainUnlinkPage() {
         </footer>
       </div>
     </div>
+  );
+}
+
+function ChecklistGroups({
+  byId,
+  disabled,
+  onStatusChange,
+  onNoteChange,
+}: {
+  byId: Map<string, ItemRow>;
+  disabled: boolean;
+  onStatusChange: (id: string, status: Status) => void;
+  onNoteChange: (id: string, note: string) => void;
+}) {
+  const groups = Array.from(new Set(ITEMS.map((i) => i.group)));
+  return (
+    <>
+      {groups.map((group) => {
+        const items = ITEMS.filter((i) => i.group === group);
+        return (
+          <section key={group} className="mb-10">
+            <h2 className="mb-4 font-display text-lg font-semibold text-[color:var(--charcoal)]">
+              {group}
+            </h2>
+            <ol className="space-y-3">
+              {items.map((item, idx) => (
+                <ChecklistRow
+                  key={item.id}
+                  item={item}
+                  idx={idx}
+                  row={byId.get(item.id)}
+                  disabled={disabled}
+                  onStatusChange={onStatusChange}
+                  onNoteChange={onNoteChange}
+                />
+              ))}
+            </ol>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+function ChecklistRow({
+  item,
+  idx,
+  row,
+  disabled,
+  onStatusChange,
+  onNoteChange,
+}: {
+  item: ChecklistItem;
+  idx: number;
+  row?: ItemRow;
+  disabled: boolean;
+  onStatusChange: (id: string, status: Status) => void;
+  onNoteChange: (id: string, note: string) => void;
+}) {
+  const status: Status = row?.status ?? "todo";
+  const [note, setNote] = useState(row?.note ?? "");
+  const remoteNote = row?.note ?? "";
+  const lastRemoteRef = useRef(remoteNote);
+  const debounceRef = useRef<number | null>(null);
+
+  // Sync in updates from server when they differ and user is not mid-edit.
+  useEffect(() => {
+    if (remoteNote !== lastRemoteRef.current) {
+      lastRemoteRef.current = remoteNote;
+      setNote(remoteNote);
+    }
+  }, [remoteNote]);
+
+  const scheduleSave = (value: string) => {
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    debounceRef.current = window.setTimeout(() => {
+      onNoteChange(item.id, value);
+    }, 600);
+  };
+
+  return (
+    <li className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5 grid h-6 w-6 shrink-0 place-content-center rounded-full bg-stone-100 text-xs font-medium text-[color:var(--charcoal-soft)]">
+          {idx + 1}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-medium text-[color:var(--charcoal)]">
+              {item.title}
+            </h3>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${STATUS_TONE[status]}`}
+            >
+              {STATUS_LABEL[status]}
+            </span>
+          </div>
+          <p className="mt-1.5 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+            {item.detail}
+          </p>
+          {item.hint && (
+            <p className="mt-1.5 rounded-md bg-amber-50 px-2.5 py-1.5 text-xs text-amber-900">
+              {item.hint}
+            </p>
+          )}
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {item.links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1 text-xs font-medium text-[color:var(--charcoal)] transition hover:border-[color:var(--teal)] hover:text-[color:var(--teal)]"
+              >
+                {l.label} <span aria-hidden>↗</span>
+              </a>
+            ))}
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {(["todo", "in_progress", "done", "blocked"] as Status[]).map(
+              (st) => (
+                <button
+                  key={st}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => onStatusChange(item.id, st)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition disabled:opacity-50 ${
+                    status === st
+                      ? "bg-[color:var(--charcoal)] text-white"
+                      : "border border-stone-200 bg-white text-[color:var(--charcoal-soft)] hover:border-stone-400"
+                  }`}
+                >
+                  {STATUS_LABEL[st]}
+                </button>
+              ),
+            )}
+          </div>
+
+          <textarea
+            value={note}
+            disabled={disabled}
+            onChange={(e) => {
+              setNote(e.target.value);
+              scheduleSave(e.target.value);
+            }}
+            onBlur={() => {
+              if (debounceRef.current) window.clearTimeout(debounceRef.current);
+              if ((row?.note ?? "") !== note) onNoteChange(item.id, note);
+            }}
+            placeholder="Notas partilhadas (ex.: nº de ticket do suporte Google, data submetida…)"
+            className="mt-3 w-full rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-[color:var(--charcoal)] placeholder:text-stone-400 focus:border-[color:var(--teal)] focus:outline-none"
+            rows={2}
+          />
+
+          {row?.updated_at && (
+            <p className="mt-2 text-[10px] uppercase tracking-wider text-stone-400">
+              Atualizado {new Date(row.updated_at).toLocaleString("pt-PT")}
+            </p>
+          )}
+        </div>
+      </div>
+    </li>
   );
 }
