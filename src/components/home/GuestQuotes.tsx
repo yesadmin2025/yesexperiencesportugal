@@ -207,7 +207,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             {quotes.map((q) => (
               <li
                 key={q.id}
-                className="reveal-stagger he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-5 md:p-6 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_8px_24px_-16px_rgba(46,46,46,0.12)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-5 md:p-6 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_8px_24px_-16px_rgba(46,46,46,0.12)]"
               >
                 <Quote
                   aria-hidden="true"
