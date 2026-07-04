@@ -799,12 +799,7 @@ function TailorPage() {
                             <li key={o.id}>
                               <button
                                 type="button"
-                                onClick={() => {
-                                  const next = new Set(optionalSelected);
-                                  if (on) next.delete(o.id);
-                                  else next.add(o.id);
-                                  setOptionalSelected(next);
-                                }}
+                                onClick={() => tryToggleOptional(o.id)}
                                 aria-pressed={on}
                                 className={[
                                   "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
