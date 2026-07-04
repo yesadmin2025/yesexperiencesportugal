@@ -9,8 +9,8 @@
  * 3. Trust line: "Based on verified guest reviews across major booking
  *    platforms." — visible, non-decorative.
  */
-import { useEffect, useMemo, useState } from "react";
-import { Star } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { PlatformBadge, type Platform } from "@/components/PlatformBadge";
 import {
