@@ -51,84 +51,32 @@ export function GuestQuotes() {
 
   /**
    * JSON-LD — AggregateRating + Review nodes attached to the sitewide
-   * Organization (@id `${SITE_URL}/#organization`). Emitted ONLY when the
-   * visible carousel is rendering the matching reviews on the page, so
-   * Google's "visible parity" rule for review-rich results is honored.
+   * Organization. Built by the pure `buildGuestQuotesJsonLd` module so
+   * the exact shape shipped to browsers is guarded by
+   * `src/__tests__/guest-quotes-jsonld.test.ts` — schema regressions
+   * (missing author, missing itemReviewed.name, invalid rating range,
+   * malformed datePublished, non-absolute review URL) fail the build.
    *
-   * The script tag is `display:none` by default and adds zero layout —
-   * it can never cause CLS. We stringify inside useMemo so the payload
-   * only rebuilds when the underlying data actually changes.
+   * `<script>` renders no visible box, so it can never cause CLS.
    */
-  const structuredData = useMemo(() => {
-    const orgId = `${SITE_URL}/#organization`;
-    const pageUrl = `${SITE_URL}/#reviews`;
-    // Inline `itemReviewed` (Organization @type + name + url) so the
-    // Rich Results Test doesn't warn "itemReviewed missing name" —
-    // some validators don't follow @id merges into the sitewide
-    // Organization node emitted from __root.tsx.
-    const itemReviewed = {
-      "@type": "Organization",
-      "@id": orgId,
-      name: "YES Experiences Portugal",
-      url: `${SITE_URL}/`,
-    } as const;
-    // AggregateRating is always emitted so Google can attach the
+  const structuredData = useMemo(
+    () =>
+      buildGuestQuotesJsonLd(
+        quotes.map((q) => ({
+          id: q.id,
+          source: q.source,
+          rating: q.rating,
+          body: q.body,
+          reviewer_name: q.reviewer_name,
+          reviewer_country: q.reviewer_country,
+          source_url: q.source_url,
+          published_at: q.published_at ?? null,
+        })),
+        { count, avg },
+      ),
+    [quotes, avg, count],
+  );
 
-    // 700+ five-star signal even when the curated carousel is empty
-    // (e.g. before featured rows finish importing). Values fall back
-    // to the verified aggregate published on Tripadvisor/Viator.
-    const ratingValue = avg ?? 4.9;
-    const reviewCount = count ?? 700;
-
-    const graph: Record<string, unknown>[] = [
-      {
-        "@type": "AggregateRating",
-        "@id": `${SITE_URL}/#aggregate-rating`,
-        itemReviewed: itemReviewed,
-        ratingValue: Number(ratingValue.toFixed(1)),
-        reviewCount,
-        bestRating: 5,
-        worstRating: 1,
-        url: pageUrl,
-      },
-      ...quotes.map((q) => {
-        const publisherUrl = q.source_url ?? undefined;
-        const reviewUrl = q.source_url ?? pageUrl;
-        const author: Record<string, unknown> = {
-          "@type": "Person",
-          name: q.reviewer_name ?? "Verified guest",
-        };
-        if (q.reviewer_country) {
-          author.nationality = {
-            "@type": "Country",
-            name: q.reviewer_country,
-          };
-        }
-        return {
-          "@type": "Review",
-          "@id": `${SITE_URL}/#review-${q.id}`,
-          url: reviewUrl,
-          itemReviewed: itemReviewed,
-          author,
-          reviewRating: {
-            "@type": "Rating",
-            ratingValue: Math.round(q.rating),
-            bestRating: 5,
-            worstRating: 1,
-          },
-          reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
-          ...(q.published_at ? { datePublished: q.published_at } : {}),
-          publisher: {
-            "@type": "Organization",
-            name: SOURCE_LABEL[q.source] ?? q.source,
-            ...(publisherUrl ? { url: publisherUrl } : {}),
-          },
-        };
-      }),
-    ];
-
-    return { "@context": "https://schema.org", "@graph": graph };
-  }, [quotes, avg, count]);
 
 
 
