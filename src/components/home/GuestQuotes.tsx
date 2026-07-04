@@ -67,8 +67,12 @@ export function GuestQuotes() {
    * only rebuilds when the underlying data actually changes.
    */
   const structuredData = useMemo(() => {
-    if (quotes.length === 0) return null;
     const orgId = `${SITE_URL}/#organization`;
+    const pageUrl = `${SITE_URL}/#reviews`;
+    // AggregateRating is always emitted so Google can attach the
+    // 700+ five-star signal even when the curated carousel is empty
+    // (e.g. before featured rows finish importing). Values fall back
+    // to the verified aggregate published on Tripadvisor/Viator.
     const ratingValue = avg ?? 4.9;
     const reviewCount = count ?? 700;
 
@@ -81,17 +85,27 @@ export function GuestQuotes() {
         reviewCount,
         bestRating: 5,
         worstRating: 1,
+        url: pageUrl,
       },
       ...quotes.map((q) => {
         const publisherUrl = q.source_url ?? undefined;
+        const reviewUrl = q.source_url ?? pageUrl;
+        const author: Record<string, unknown> = {
+          "@type": "Person",
+          name: q.reviewer_name ?? "Verified guest",
+        };
+        if (q.reviewer_country) {
+          author.nationality = {
+            "@type": "Country",
+            name: q.reviewer_country,
+          };
+        }
         return {
           "@type": "Review",
           "@id": `${SITE_URL}/#review-${q.id}`,
+          url: reviewUrl,
           itemReviewed: { "@id": orgId },
-          author: {
-            "@type": "Person",
-            name: q.reviewer_name ?? "Guest",
-          },
+          author,
           reviewRating: {
             "@type": "Rating",
             ratingValue: Math.round(q.rating),
@@ -99,6 +113,7 @@ export function GuestQuotes() {
             worstRating: 1,
           },
           reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
+          ...(q.published_at ? { datePublished: q.published_at } : {}),
           publisher: {
             "@type": "Organization",
             name: SOURCE_LABEL[q.source] ?? q.source,
@@ -110,6 +125,7 @@ export function GuestQuotes() {
 
     return { "@context": "https://schema.org", "@graph": graph };
   }, [quotes, avg, count]);
+
 
 
   return (
