@@ -924,7 +924,12 @@
     transition: box-shadow 320ms ease-out;
   }
 
-  /* Opt-in utility — apply alongside .cta-primary / .cta-secondary-dark
+  /* Shimmer sweep for BookingCtaSkeleton — lightweight, brand-ivory wash. */
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+
+
      on the hero buttons only. We animate ONLY the ::before halo so the
      button's own transform (which carries the parallax tilt) is never
      overwritten — no fight with the pointer-tracking translate3d().
