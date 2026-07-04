@@ -12,8 +12,7 @@ const PAGE_PATH = "/evora-alentejo-wine-tour";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const PARENT_TOUR_ID = "evora-alentejo";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE =
-  "Évora & Alentejo Wine Tour | Private Full-Day Experience from Lisbon";
+const TITLE = "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon";
 const DESCRIPTION =
   "Explore Évora and Alentejo on a private full-day experience from Lisbon, combining UNESCO heritage, cork traditions, local wines and a flexible route designed by YES Experiences Portugal.";
 

@@ -11,7 +11,7 @@ const PAGE_PATH = "/arrabida-day-trip-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const PARENT_TOUR_ID = "arrabida-wine-allinclusive";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Arrábida Day Trip from Lisbon — Private Wine, Beaches & Sesimbra";
+const TITLE = "Arrábida Day Trip from Lisbon — Private Wine & Beaches";
 const DESCRIPTION =
   "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão, a long Portuguese lunch and an optional close at Sesimbra Castle. Door-to-door driving.";
 

@@ -40,7 +40,7 @@ const articleJsonLd = {
 export const Route = createFileRoute("/day-trips-from-lisbon")({
   head: () => ({
     meta: [
-      { title: "Best Day Trips from Lisbon (by a Local) — Wine, Coast & Arrábida" },
+      { title: "Best Day Trips from Lisbon — Wine, Coast & Arrábida" },
       {
         name: "description",
         content:

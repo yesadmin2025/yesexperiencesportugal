@@ -56,9 +56,14 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
         links: [{ rel: "canonical", href: parentUrl }],
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
+    const shortTitle = t.title.split("—")[0].trim();
+    const pageTitle =
+      `Tailor "${shortTitle}" — YES Portugal`.length <= 60
+        ? `Tailor "${shortTitle}" — YES Portugal`
+        : `Tailor "${shortTitle.slice(0, 33)}…" — YES Portugal`;
     return {
       meta: [
-        { title: `Tailor "${t.title.split("—")[0].trim()}" — YES experiences Portugal` },
+        { title: pageTitle },
         {
           name: "description",
           content: `Adjust selected details inside the ${t.title} Signature — pace, timing, group needs and small additions, without redesigning the day.`,
