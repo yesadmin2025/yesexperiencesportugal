@@ -196,6 +196,7 @@ export function startHomeMotion(): () => void {
 
   const pending = new Set<HTMLElement>(all());
   const triggered = new Set<HTMLElement>();
+  const bootMark = performance.now();
   const telemetry: HomeMotionTelemetry = {
     total: pending.size,
     triggered: 0,
@@ -203,6 +204,12 @@ export function startHomeMotion(): () => void {
     reducedMotion: false,
     ready: false,
     active: true,
+    lowPower,
+    sweepCount: 0,
+    sweepMsTotal: 0,
+    sweepMsMax: 0,
+    longtaskMsTotal: 0,
+    longtaskCount: 0,
   };
   window.__yesHomeMotion = telemetry;
 
@@ -213,12 +220,16 @@ export function startHomeMotion(): () => void {
     el.classList.add("motion-in");
     // Keep legacy class in sync so any CSS still keyed to it stays consistent.
     el.classList.add("is-visible");
+    const now = performance.now() - bootMark;
+    if (telemetry.firstTriggerMs === undefined) telemetry.firstTriggerMs = now;
+    telemetry.lastTriggerMs = now;
     telemetry.triggered = triggered.size;
     telemetry.pending = pending.size;
   };
 
   const sweep = () => {
     if (pending.size === 0) return;
+    const t0 = performance.now();
     const vh = window.innerHeight || document.documentElement.clientHeight || 0;
     const trigLine = vh * ENTER_RATIO;
     // Snapshot first — we mutate the set inside the loop.
@@ -240,7 +251,30 @@ export function startHomeMotion(): () => void {
         trigger(el);
       }
     }
+    const dt = performance.now() - t0;
+    telemetry.sweepCount = (telemetry.sweepCount ?? 0) + 1;
+    telemetry.sweepMsTotal = (telemetry.sweepMsTotal ?? 0) + dt;
+    if (dt > (telemetry.sweepMsMax ?? 0)) telemetry.sweepMsMax = dt;
   };
+
+  // Longtask observer — sums main-thread blocking >50ms during the
+  // reveal lifecycle. Only wired if the browser exposes the API
+  // (Chromium-based; Safari/Firefox no-op silently).
+  let longtaskObserver: PerformanceObserver | null = null;
+  try {
+    const PO = window.PerformanceObserver as typeof PerformanceObserver | undefined;
+    if (PO && PO.supportedEntryTypes?.includes("longtask")) {
+      longtaskObserver = new PO((list) => {
+        for (const entry of list.getEntries()) {
+          telemetry.longtaskMsTotal = (telemetry.longtaskMsTotal ?? 0) + entry.duration;
+          telemetry.longtaskCount = (telemetry.longtaskCount ?? 0) + 1;
+        }
+      });
+      longtaskObserver.observe({ type: "longtask", buffered: true });
+    }
+  } catch {
+    // PerformanceObserver may throw in restrictive contexts (e.g. jsdom); ignore.
+  }
 
   let rafId = 0;
   let scheduled = false;
