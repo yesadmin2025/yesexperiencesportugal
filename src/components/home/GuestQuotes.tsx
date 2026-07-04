@@ -292,4 +292,34 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
   );
 }
 
+/**
+ * Source badge — small pill with the platform name. Tripadvisor gets its
+ * signature green bubbles glyph; other sources render as a subtle label.
+ * Feels more like proof than a caption.
+ */
+function SourceBadge({ source }: { source: string }) {
+  const label = SOURCE_LABEL[source] ?? source;
+  if (source === "tripadvisor") {
+    return (
+      <span
+        className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] pl-1.5 pr-2.5 py-1"
+        aria-label="Review from Tripadvisor"
+      >
+        <span className="inline-flex items-center gap-[1px]" aria-hidden="true">
+          <span className="h-2 w-2 rounded-full bg-[#00AA6C]" />
+          <span className="h-2 w-2 rounded-full bg-[#00AA6C]" />
+        </span>
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)]">
+          Tripadvisor
+        </span>
+      </span>
+    );
+  }
+  return (
+    <span className="shrink-0 inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)]">
+      {label}
+    </span>
+  );
+}
+
 export default GuestQuotes;
