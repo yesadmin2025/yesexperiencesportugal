@@ -80,6 +80,28 @@ export function startHomeMotion(): () => void {
   // in staggered 90ms increments (capped) so the eye tracks a rhythm.
   const homeScope = document.querySelector<HTMLElement>(".home-energy");
   if (homeScope) {
+    // Slow-device signal: reduce stagger cadence so nothing feels laggy on
+    // older phones or Save-Data connections. Combines core count, device
+    // memory (when exposed), and the Save-Data hint.
+    type NavigatorWithHints = Navigator & {
+      deviceMemory?: number;
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const nav = navigator as NavigatorWithHints;
+    const lowPower =
+      (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4) ||
+      (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+      nav.connection?.saveData === true ||
+      nav.connection?.effectiveType === "2g" ||
+      nav.connection?.effectiveType === "slow-2g";
+
+    // Cadence — tuned so a full row of ~4 cards resolves inside ~360ms on
+    // fast devices and inside ~200ms on slow devices.
+    const HEADING_STEP = lowPower ? 55 : 80;
+    const HEADING_CAP = lowPower ? 200 : 300;
+    const CARD_STEP = lowPower ? 70 : 100;
+    const CARD_CAP = lowPower ? 260 : 400;
+
     const revealSelector = [
       "h2",
       "h3",
@@ -94,7 +116,6 @@ export function startHomeMotion(): () => void {
     const nodes = homeScope.querySelectorAll<HTMLElement>(revealSelector);
     nodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
-      // Skip anything inside the hero / SR probes / interactive live regions.
       if (el.closest('[data-section="hero"], [aria-live], .sr-only')) return;
 
       const container =
@@ -103,16 +124,12 @@ export function startHomeMotion(): () => void {
       seenContainers.set(container, idx + 1);
 
       el.setAttribute("data-motion", "fade-up-sm");
-      // Cap the stagger so late elements don't feel laggy — max 360ms.
-      const delay = Math.min(idx * 90, 360);
+      const delay = Math.min(idx * HEADING_STEP, HEADING_CAP);
       if (delay > 0 && !el.hasAttribute("data-motion-delay")) {
         el.setAttribute("data-motion-delay", String(delay));
       }
     });
 
-    // Card siblings — stagger reveals so a row of cards flows in rather
-    // than snapping together. We group by parent (the grid/flex row) and
-    // give each card an incremental delay capped at 480ms.
     const cardParents = new WeakMap<HTMLElement, number>();
     const cards = homeScope.querySelectorAll<HTMLElement>(
       ".he-card-lift, .reveal-stagger[class*='rounded'], .fw-card",
@@ -122,9 +139,9 @@ export function startHomeMotion(): () => void {
       if (!parent) return;
       const idx = cardParents.get(parent) ?? 0;
       cardParents.set(parent, idx + 1);
-      if (idx === 0) return; // first card carries no extra delay
+      if (idx === 0) return;
       if (el.hasAttribute("data-motion-delay")) return;
-      const delay = Math.min(idx * 110, 480);
+      const delay = Math.min(idx * CARD_STEP, CARD_CAP);
       el.setAttribute("data-motion-delay", String(delay));
     });
   }
