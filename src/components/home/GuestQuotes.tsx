@@ -145,16 +145,9 @@ export function GuestQuotes() {
         )}
       </p>
 
-      <ul
-        className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-4 list-none p-0"
-        aria-label="Featured on Tripadvisor, Viator, Google, GetYourGuide and Trustpilot"
-      >
-        {PLATFORMS.map((p) => (
-          <li key={p} className="h-5 flex items-center opacity-85">
-            <PlatformBadge platform={p} />
-          </li>
-        ))}
-      </ul>
+      {/* Platform badge row removed — each review card now carries its
+          own source label ("via Tripadvisor" etc.), so the standalone
+          badge strip was redundant. */}
 
       <ReviewCarousel quotes={quotes} />
     </div>
