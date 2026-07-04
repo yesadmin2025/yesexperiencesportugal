@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CtaButton } from "@/components/ui/CtaButton";
+
 
 // Pages from the same real, anonymised private travel file used on
 // the /multi-day Travel Designer page — kept in sync so the homepage
@@ -478,40 +480,24 @@ export function RecentJourney() {
             full charcoal; secondary softens to 70% opacity. */}
         <div className="reveal mt-10 md:mt-12 max-w-2xl mx-auto text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
-            <Link
+            <CtaButton
               to="/multi-day"
+              variant="hairline"
               aria-label="Start the conversation with a Travel Designer"
-              className="group inline-flex items-center gap-3 text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] py-2"
+              className="opacity-100"
             >
-              <span className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.25em] font-semibold">
-                Start the conversation
-              </span>
-              <span aria-hidden="true" className="flex items-center">
-                <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8" />
-                <ArrowRight
-                  size={12}
-                  className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5"
-                />
-              </span>
-            </Link>
-            <Link
+              Start the conversation
+            </CtaButton>
+            <CtaButton
               to="/contact"
+              variant="hairline"
               aria-label="Talk to a designer"
-              className="group inline-flex items-center gap-3 text-[color:var(--charcoal)] opacity-70 transition-opacity duration-300 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] py-2"
             >
-              <span className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.25em] font-semibold">
-                Talk to a designer
-              </span>
-              <span aria-hidden="true" className="flex items-center">
-                <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8" />
-                <ArrowRight
-                  size={12}
-                  className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5"
-                />
-              </span>
-            </Link>
+              Talk to a designer
+            </CtaButton>
           </div>
         </div>
+
       </div>
     </section>
   );
