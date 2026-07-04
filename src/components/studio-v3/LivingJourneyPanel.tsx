@@ -876,19 +876,13 @@ function JourneyDraftDrawer({
                   </ol>
                 </div>
               ) : null}
-              <div className="-mx-5 mt-1">
-                <QualityScore state={fullState} />
-              </div>
+              {/* Reveal simplified — QualityScore + AffinityBars removed for
+                  clarity. They lived here as debug/telemetry decoration and
+                  competed with the timeline + map for attention. */}
               <SmartRecommendation
                 tourId={tourId}
                 stopCount={stopCount}
                 durationLabel={durationLabel}
-              />
-              <AffinityBars
-                feeling={feeling}
-                interests={interests}
-                rhythm={rhythm}
-                companions={companions}
               />
             </>
           ) : null}
