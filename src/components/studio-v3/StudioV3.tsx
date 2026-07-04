@@ -11,6 +11,7 @@ import {
 import { ArrowLeft, ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
