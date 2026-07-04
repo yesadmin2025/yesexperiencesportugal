@@ -713,6 +713,11 @@ export function StudioV3() {
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
             stopLabels,
+            includedItems: (() => {
+              const m = getViatorMeta(tour.id);
+              if (m?.included && m.included.length > 0) return m.included;
+              return tour.included ?? [];
+            })(),
             pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
             dateExact: details.tourDate || currentState.dateExact || null,
             journeyTitle: currentState.journeyTitle ?? null,
