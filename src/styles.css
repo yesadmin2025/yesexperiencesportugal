@@ -929,8 +929,7 @@
     100% { transform: translateX(100%); }
   }
 
-
-     on the hero buttons only. We animate ONLY the ::before halo so the
+  /* Opt-in utility — apply alongside .cta-primary / .cta-secondary-dark
      button's own transform (which carries the parallax tilt) is never
      overwritten — no fight with the pointer-tracking translate3d().
 
