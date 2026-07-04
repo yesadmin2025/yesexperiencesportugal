@@ -497,7 +497,7 @@ function TailorPage() {
           Signature — never a new itinerary, never stops from other
           tours, never a mix of regions. */}
       <section
-        className="py-10 md:py-12 bg-[color:var(--ivory)] border-y border-[color:var(--border)]"
+        className="py-10 md:py-12 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
         aria-labelledby="tailor-scope-title"
       >
         <div className="container-x max-w-6xl">

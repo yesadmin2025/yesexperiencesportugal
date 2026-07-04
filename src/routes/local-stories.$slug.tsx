@@ -361,7 +361,7 @@ function StaticArticleView({
             {article.faq && article.faq.length > 0 && (
               <section
                 aria-label="Frequently asked questions"
-                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40"
+                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 reveal"
               >
                 <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
                   Frequently asked
@@ -427,7 +427,7 @@ function StaticArticleView({
             {reviews.length > 0 && (
               <section
                 aria-label="Guest notes from this experience"
-                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40"
+                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 reveal"
               >
                 <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
                   Guest notes
