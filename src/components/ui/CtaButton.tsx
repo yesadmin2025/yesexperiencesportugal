@@ -60,24 +60,25 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "he-glow he-sheen group inline-flex items-center justify-center gap-2.5 font-sans uppercase font-semibold rounded-[2px] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
+  "group relative inline-flex items-center justify-between gap-6 font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.99] disabled:pointer-events-none disabled:opacity-40";
 
 const hairlineBaseClasses =
   "group inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2 text-[color:var(--charcoal)] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)] he-cta-shift",
-  ghost: "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)]/[0.06]",
-  ghostDark: "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
+    "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)]",
+  ghost:
+    "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)]",
+  ghostDark:
+    "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
   hairline: "opacity-80 hover:opacity-100 focus-visible:opacity-100",
 };
 
 const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
   primary: {
-    border: "1px solid color-mix(in oklab, var(--gold-deep) 55%, transparent)",
     boxShadow:
-      "inset 0 0 0 1px color-mix(in oklab, var(--gold) 22%, transparent), 0 8px 22px -10px color-mix(in oklab, var(--charcoal-deep) 35%, transparent)",
+      "0 10px 26px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent)",
   },
   ghost: {
     border: "1px solid color-mix(in oklab, var(--teal) 55%, transparent)",
@@ -90,23 +91,47 @@ const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
   hairline: undefined,
 };
 
-function arrowClasses(variant: Variant) {
-  return cn(
-    "transition-[transform,color] duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5",
-    variant === "primary"
-      ? "text-[color:var(--gold-soft)] group-hover:text-[color:var(--gold)]"
-      : variant === "ghostDark"
-        ? "text-[color:var(--gold-soft)] group-hover:text-[color:var(--gold)]"
-        : "text-[color:var(--gold)] group-hover:text-[color:var(--gold-deep)]",
+/**
+ * Kinetic Luxury trailing block: gold arrow that translates on hover
+ * with a diffuse gold ramp glow behind it. Used for all filled/ghost
+ * conversion CTAs so the arrow micro-interaction stays canonical.
+ */
+function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
+  const color = tone === "goldSoft" ? "var(--gold-soft)" : "var(--gold)";
+  return (
+    <span aria-hidden="true" className="relative flex items-center">
+      <span
+        className="pointer-events-none absolute right-[-14px] h-8 w-14 rounded-full opacity-0 blur-[6px] transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:hidden"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, color-mix(in oklab, var(--gold) 22%, transparent) 55%, color-mix(in oklab, var(--gold) 42%, transparent) 100%)",
+        }}
+      />
+      <ArrowRight
+        size={18}
+        strokeWidth={1.5}
+        className="relative transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-2 group-focus-visible:translate-x-2"
+        style={{ color }}
+      />
+    </span>
   );
 }
 
+/** Bottom gold underline sweep — decorative, primary/ghostDark only. */
+function GoldSweep() {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute bottom-0 left-0 h-[1px] w-0 bg-[color:var(--gold)] opacity-50 transition-[width] duration-700 ease-in-out group-hover:w-full group-focus-visible:w-full motion-reduce:hidden"
+    />
+  );
+}
 
 export function CtaButton(props: CtaButtonProps) {
   const { variant = "primary", size = "md", icon, iconLeading, className, children } = props;
 
   const isHairline = variant === "hairline";
-  const arrowSize = variant === "primary" ? 14 : 12;
+  const isKinetic = variant === "primary" || variant === "ghostDark";
 
   const trailing =
     icon === null
@@ -122,14 +147,15 @@ export function CtaButton(props: CtaButtonProps) {
             </span>
           ))
         : (icon ?? (
-            <ArrowRight size={arrowSize} aria-hidden="true" className={arrowClasses(variant)} />
+            <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />
           ));
 
   const content = (
     <>
       {iconLeading}
-      <span className="cta-label">{children}</span>
+      <span className="cta-label relative">{children}</span>
       {trailing}
+      {isKinetic ? <GoldSweep /> : null}
     </>
   );
 
@@ -138,6 +164,7 @@ export function CtaButton(props: CtaButtonProps) {
     : cn(baseClasses, sizeClasses[size], variantClasses[variant], className);
   const sharedStyle =
     isHairline || className?.includes("hero-cta-button") ? undefined : variantStyle[variant];
+
 
 
   if ("href" in props && props.href !== undefined) {
