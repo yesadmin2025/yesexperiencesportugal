@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Clock, Loader2, Lock } from "lucide-react";
+import { Clock, Lock } from "lucide-react";
+import { CtaButton } from "@/components/ui/CtaButton";
+import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import {
   Dialog,
   DialogContent,
