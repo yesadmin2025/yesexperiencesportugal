@@ -8,7 +8,7 @@ import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json"
 
 const TITLE = "About YES Experiences Portugal | Founder-Built Private Travel Platform";
 const DESCRIPTION =
-  "YES Experiences Portugal is a licensed private travel platform, founder-built from real guest behaviour, live-designed experiences and local expertise across Portugal.";
+  "YES Experiences Portugal is a licensed private travel platform, founder-built from guest behaviour, live-designed experiences and local expertise across Portugal.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
