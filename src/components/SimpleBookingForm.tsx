@@ -16,6 +16,7 @@ import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
