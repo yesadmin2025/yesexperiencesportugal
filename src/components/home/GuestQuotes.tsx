@@ -20,7 +20,7 @@ import {
 } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/jsonld";
 import { PlatformBadge } from "@/components/PlatformBadge";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+
 
 
 
