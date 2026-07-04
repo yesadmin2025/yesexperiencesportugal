@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T04:10:40.416Z",
+  "generatedAt": "2026-07-04T04:23:32.312Z",
   "filesScanned": 520,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1097,11 +1097,11 @@
     },
     {
       "file": "src/components/home/FourWaysIn.tsx",
-      "line": 123,
-      "col": 114,
+      "line": 132,
+      "col": 122,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
-      "snippet": "className=\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_r",
+      "snippet": "className=\"fw-card reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-6 shadow-[0_1",
       "status": "mismatch"
     },
     {

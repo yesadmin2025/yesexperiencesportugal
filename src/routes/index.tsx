@@ -554,10 +554,10 @@ function HomePage() {
 
                 <h2
                   id="studio-title"
-                  className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                  className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
                 >
                   Design your day.{" "}
-                  <span className="font-serif italic font-normal text-[color:var(--teal)]">
+                  <span className="italic font-normal text-[color:var(--teal)]">
                     Reserve in minutes.
                   </span>
                 </h2>
@@ -622,10 +622,10 @@ function HomePage() {
               <span className="he-eyebrow-bar mb-5">Signature</span>
               <h2
                 id="signatures-title"
-                className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
               >
                 Signature days,{" "}
-                <span className="font-serif italic font-normal text-[color:var(--teal)]">already loved.</span>
+                <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
               </h2>
             </div>
 
@@ -809,10 +809,10 @@ function HomePage() {
 
               <h2
                 id="groups-title"
-                className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
               >
                 Moments that{" "}
-                <span className="font-serif italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
+                <span className="italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
               </h2>
             </div>
 
@@ -944,10 +944,10 @@ function HomePage() {
 
                   <h2
                     id="final-cta-title"
-                    className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                    className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
                   >
                     Portugal is waiting.{" "}
-                    <span className="font-serif italic font-normal text-[color:var(--teal)]">
+                    <span className="italic font-normal text-[color:var(--teal)]">
                       Begin your story.
                     </span>
                   </h2>
