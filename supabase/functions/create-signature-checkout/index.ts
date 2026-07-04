@@ -163,24 +163,31 @@ Deno.serve(async (req) => {
     const realTitle = bokunActivity?.title?.trim() || body.tourTitle;
     const productName = `${copy.label} — ${realTitle}${isTailored ? " (tailored)" : ""}`.slice(0, 180);
 
-    // Build a truthful description: prefer Bokun inclusions over invented copy.
+    // Build a truthful description. Priority:
+    //   1. Bókun inclusions (operator source of truth)
+    //   2. Real VIATOR_META.included forwarded by the client
+    //   3. Nothing — never invent marketing prose in the fallback.
     const guestsLine = `${body.guests} guest${body.guests > 1 ? "s" : ""}`;
     const durationLine = bokunActivity?.durationText ? `Duration ${bokunActivity.durationText}` : null;
-    const includesLine =
-      bokunActivity && bokunActivity.inclusions.length > 0
-        ? `Includes: ${bokunActivity.inclusions.slice(0, 4).join(", ")}`
+    const bokunInclusions =
+      bokunActivity && bokunActivity.inclusions.length > 0 ? bokunActivity.inclusions : null;
+    const clientIncluded =
+      Array.isArray(body.includedItems) && body.includedItems.length > 0
+        ? body.includedItems.filter((s) => typeof s === "string" && s.trim().length > 0)
         : null;
+    const inclusionSource = bokunInclusions ?? clientIncluded ?? null;
+    const includesLine = inclusionSource
+      ? `Includes: ${inclusionSource.slice(0, 4).join(", ")}`
+      : null;
     const tailoredNote = isTailored
       ? "Tailored adjustments confirmed by our team within 2 hours after payment."
       : null;
-    const fallbackEyebrow = !bokunActivity ? copy.eyebrow : null;
 
     const description = [
       guestsLine + " · Hotel pickup included",
       durationLine,
       includesLine,
       tailoredNote,
-      fallbackEyebrow,
     ]
       .filter(Boolean)
       .join(" · ")
