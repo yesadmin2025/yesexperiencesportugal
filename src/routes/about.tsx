@@ -8,7 +8,7 @@ import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json"
 
 const TITLE = "About YES Experiences Portugal | Founder-Built Private Travel Platform";
 const DESCRIPTION =
-  "YES Experiences Portugal is a licensed private travel platform, founder-built from real guest behaviour, live-designed experiences and local expertise across Portugal.";
+  "YES Experiences Portugal is a licensed private travel platform, founder-built from guest behaviour, live-designed experiences and local expertise across Portugal.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -69,11 +69,14 @@ function Page() {
               travel-tech trend.
             </p>
             <p>
-              It began on the road, guiding real guests through Portugal and seeing
+              It began on the road, guiding guests through Portugal and seeing
               the same need appear again and again: travellers wanted more than
               another fixed tour. They wanted freedom, but not confusion. They
-              wanted to shape the day themselves, but still feel guided by someone
-              local. They wanted to understand the route, the rhythm and the price
+              wanted to shape the day themselves, while still feeling guided by
+              someone local.
+            </p>
+            <p>
+              They wanted to understand the route, the rhythm and the price
               before committing.
             </p>
             <p>That is where the Experience Studio came from.</p>
@@ -103,28 +106,43 @@ function Page() {
               <p>
                 The idea was too specific to hand over as a standard agency brief.
               </p>
+            </div>
+
+            <figure className="mt-10 lg:hidden">
+              <img
+                src={founderAsset.url}
+                alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
+                loading="lazy"
+                className="w-full aspect-[4/3] object-cover"
+              />
+              <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
+                Nídia Almeida, founder of YES Experiences Portugal, hosting a
+                private wine experience in Portugal.
+              </figcaption>
+            </figure>
+
+            <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
                 To make it real, the founder learned to translate travel experience
-                into product structure, booking logic and digital flow: how a
-                guest chooses, how a private day is priced, how a route changes,
-                how availability works, how a booking flow should feel, and how
-                all of that could become a live experience-building system.
+                into product structure, booking logic and digital flow — how a
+                guest chooses, how a route changes, how a private day is priced, and
+                how all of that could become a live experience-building system.
               </p>
               <p>
                 The website, Studio flow and booking model were conceived,
-                structured, written and built in-house — shaped from real
-                conversations in the car, real itinerary changes, real guest
-                hesitation and real operational constraints.
+                structured, written and built in-house, shaped from real
+                conversations, itinerary changes, guest hesitation and operational
+                constraints.
               </p>
               <p>
                 That is why YES is not just a catalogue of tours. It is a
                 founder-built private travel platform, created from the road and
-                still refined through every real booking.
+                still refined through every booking.
               </p>
             </div>
           </div>
 
-          <figure className="lg:sticky lg:top-28">
+          <figure className="hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
               alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
@@ -157,15 +175,17 @@ function Page() {
               begins with local knowledge, real routes and carefully chosen
               details. The experiences are then delivered with a trusted circle of
               local guides, drivers, wineries, boats, restaurants, hosts and
-              partners across Lisbon, Sintra, Cascais, Arrábida, Sesimbra,
-              Setúbal, Comporta, Tróia, Évora and the wider Alentejo, Central
-              Portugal, Porto, the Douro, the Algarve and the Atlantic coast.
+              partners across the country.
+            </p>
+            <p>
+              From Lisbon, Sintra and Arrábida to the Alentejo, Douro, Algarve and
+              Atlantic coast, the principle stays the same: private Portugal,
+              designed with intention and delivered by people who know the places
+              they are showing.
             </p>
             <p>
               This is not anonymous reselling. It is not another operator's coach
-              tour with a different logo. It is private Portugal, designed with
-              intention and delivered by people who actually know the places they
-              are showing.
+              tour with a different logo.
             </p>
           </div>
         </div>
@@ -178,29 +198,43 @@ function Page() {
           <SectionTitle as="h2" size="default">
             Private days, live-designed experiences <SectionTitle.Em>and full journeys</SectionTitle.Em>.
           </SectionTitle>
-          <div className="mt-10 grid md:grid-cols-2 gap-10 text-[color:var(--charcoal-soft)] leading-relaxed">
-            <p>
-              <strong className="text-[color:var(--charcoal)]">Signature Experiences</strong>{" "}
-              are ready private days, already shaped from real routes, trusted
-              partners and guest feedback.
-            </p>
-            <p>
-              <strong className="text-[color:var(--charcoal)]">The Experience Studio</strong>{" "}
-              lets travellers design a private day in real time, choose the
-              rhythm and route, see the price live and book securely when it
-              feels right.
-            </p>
-            <p>
-              <strong className="text-[color:var(--charcoal)]">Travel Designer</strong>{" "}
-              is for full Portugal journeys, multi-day itineraries, honeymoons,
-              family trips, celebrations and complex private travel that
-              deserves a complete proposal.
-            </p>
-            <p>
-              <strong className="text-[color:var(--charcoal)]">Moments and Corporate &amp; Groups</strong>{" "}
-              bring the same approach to proposals, birthdays, anniversaries,
-              incentives, client hospitality and private group days.
-            </p>
+          <div className="mt-10 grid md:grid-cols-2 gap-5">
+            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+                Signature Experiences
+              </h3>
+              <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
+                Ready private days shaped from real routes, trusted partners and
+                guest feedback.
+              </p>
+            </div>
+            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+                Experience Studio
+              </h3>
+              <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
+                Design a private day in real time, choose the rhythm and route,
+                see the price live and book securely.
+              </p>
+            </div>
+            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+                Travel Designer
+              </h3>
+              <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
+                Full Portugal journeys, multi-day itineraries, honeymoons, family
+                trips, celebrations and complex private travel.
+              </p>
+            </div>
+            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+                Moments &amp; Corporate
+              </h3>
+              <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
+                Proposals, birthdays, anniversaries, incentives, client hospitality
+                and private group days.
+              </p>
+            </div>
           </div>
           <p className="mt-10 text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
             Different formats. Same principle: Portugal should be designed around
@@ -282,7 +316,7 @@ function Page() {
                 Setúbal and other locations depending on the experience.
               </li>
               <li>
-                <strong className="text-[color:var(--charcoal)]">Real replies, fast.</strong>{" "}
+                <strong className="text-[color:var(--charcoal)]">Local replies, fast.</strong>{" "}
                 WhatsApp and email replies usually within the hour when the
                 team is available.
               </li>
@@ -344,10 +378,10 @@ function Page() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <CtaButton to="/experiences" variant="primary">
-              Explore Signature Experiences
+              Start Your Private Experience
             </CtaButton>
-            <CtaButton to="/contact" variant="ghost">
-              Send a request
+            <CtaButton to="/studio-v3" variant="ghost">
+              Open the Studio
             </CtaButton>
           </div>
         </div>
