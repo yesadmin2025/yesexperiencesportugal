@@ -211,11 +211,20 @@ export function MapBeat({
               : null
       : null;
 
-  // Resolve real coords for each label (catalog lookup). Falls back to
-  // schematic mode automatically if any label can't be geo-resolved.
+  // Resolve real coords for each label (catalog lookup). Unresolved labels
+  // inherit the last known coord (previous stop → origin) so geographic mode
+  // + real OSRM driving minutes engage as soon as any label matches — we
+  // never invent new coordinates, we cluster the label to its region anchor.
+  const originCoord =
+    originCoordProp ??
+    (regionKey && REGION_ORIGIN[regionKey]
+      ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
+      : null);
+  let lastKnown: { lat: number; lng: number } | null = originCoord;
   const stopsDetailed = labels.map((l) => {
     const geo = lookupStopGeo(l);
     if (geo) {
+      lastKnown = { lat: geo.lat, lng: geo.lng };
       return {
         label: l,
         lat: geo.lat,
@@ -224,18 +233,16 @@ export function MapBeat({
         kind: geo.kind,
       };
     }
+    if (lastKnown) {
+      return { label: l, lat: lastKnown.lat, lng: lastKnown.lng };
+    }
     return { label: l };
   });
-  const originCoord =
-    originCoordProp ??
-    (regionKey && REGION_ORIGIN[regionKey]
-      ? { lat: REGION_ORIGIN[regionKey].lat, lng: REGION_ORIGIN[regionKey].lng }
-      : null);
 
-  // Real OSRM-backed minutes per leg (origin → s0 → s1 …). Falls back
-  // silently to haversine inside StudioV3SignatureMap while loading or
-  // when offline. Only fires when we have origin + all visible coords.
-  const legStops: RouteLegStop[] | null =
+  // Real OSRM-backed minutes per leg (origin → s0 → s1 …). Dedupe consecutive
+  // identical coords so an inherited fallback never yields a spurious 0-min
+  // leg. Falls back silently to haversine inside StudioV3SignatureMap.
+  const rawLegStops: RouteLegStop[] | null =
     originCoord && stopsDetailed.every((d) => typeof d.lat === "number" && typeof d.lng === "number")
       ? [
           { key: "origin", lat: originCoord.lat, lng: originCoord.lng },
@@ -246,6 +253,9 @@ export function MapBeat({
           })),
         ]
       : null;
+  const legStops: RouteLegStop[] | null = rawLegStops
+    ? rawLegStops.filter((s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng)
+    : null;
   const { legMinutes } = useRouteLegMinutes(legStops, !!legStops && legStops.length >= 2);
 
   // Map regionKey → silhouette region so the Portugal anchor appears
