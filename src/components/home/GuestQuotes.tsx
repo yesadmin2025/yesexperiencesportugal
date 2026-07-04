@@ -207,13 +207,13 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             {quotes.map((q) => (
               <li
                 key={q.id}
-                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-5 md:p-6 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_8px_24px_-16px_rgba(46,46,46,0.12)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[15rem] sm:min-h-[16rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-6 md:p-7 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_10px_28px_-18px_rgba(46,46,46,0.14)]"
               >
                 <Quote
                   aria-hidden="true"
-                  size={22}
-                  className="absolute top-4 right-4 text-[color:var(--gold)]/35"
-                  strokeWidth={1.5}
+                  size={26}
+                  className="absolute top-4 right-4 text-[color:var(--gold)]/30"
+                  strokeWidth={1.25}
                 />
                 <div
                   className="inline-flex items-center gap-0.5 text-[color:var(--gold)] h-4"
@@ -222,27 +222,27 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
-                      size={11}
+                      size={12}
                       fill={i < Math.round(q.rating) ? "currentColor" : "none"}
                       strokeWidth={i < Math.round(q.rating) ? 0 : 1.5}
                     />
                   ))}
                 </div>
-                <p className="mt-3 font-[family-name:var(--font-serif)] text-[14.5px] md:text-[15px] leading-[1.65] text-[color:var(--charcoal)]/90 line-clamp-6">
+                <p className="mt-4 font-[family-name:var(--font-serif)] italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]/90 line-clamp-6">
                   “{q.body.length > 220 ? `${q.body.slice(0, 217)}…` : q.body}”
                 </p>
-                <div className="mt-auto pt-4 flex items-baseline justify-between gap-3">
-                  <p className="text-[12px] font-medium tracking-wide text-[color:var(--charcoal)]">
-                    {q.reviewer_name ?? "Guest"}
+                <div className="mt-auto pt-5 flex items-center justify-between gap-3 border-t border-[color:var(--charcoal)]/8">
+                  <div className="min-w-0">
+                    <p className="text-[12.5px] font-medium tracking-[0.01em] text-[color:var(--charcoal)] truncate">
+                      {q.reviewer_name ?? "Guest"}
+                    </p>
                     {q.reviewer_country && (
-                      <span className="text-[color:var(--charcoal)]/55 font-normal">
-                        {" "}· {q.reviewer_country}
-                      </span>
+                      <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal)]/55 truncate">
+                        {q.reviewer_country}
+                      </p>
                     )}
-                  </p>
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/50">
-                    {SOURCE_LABEL[q.source] ?? q.source}
-                  </span>
+                  </div>
+                  <SourceBadge source={q.source} />
                 </div>
               </li>
             ))}
