@@ -12,7 +12,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { PlatformBadge, type Platform } from "@/components/PlatformBadge";
 import {
   getGlobalReviewStats,
   getCuratedHomepageReviews,
@@ -20,8 +19,6 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/jsonld";
-
-const PLATFORMS: Platform[] = ["tripadvisor", "viator", "google", "getyourguide", "trustpilot"];
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -145,16 +142,9 @@ export function GuestQuotes() {
         )}
       </p>
 
-      <ul
-        className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-4 list-none p-0"
-        aria-label="Featured on Tripadvisor, Viator, Google, GetYourGuide and Trustpilot"
-      >
-        {PLATFORMS.map((p) => (
-          <li key={p} className="h-5 flex items-center opacity-85">
-            <PlatformBadge platform={p} />
-          </li>
-        ))}
-      </ul>
+      {/* Platform badge row removed — each review card now carries its
+          own source label ("via Tripadvisor" etc.), so the standalone
+          badge strip was redundant. */}
 
       <ReviewCarousel quotes={quotes} />
     </div>
@@ -217,7 +207,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             {quotes.map((q) => (
               <li
                 key={q.id}
-                className="reveal-stagger he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-5 md:p-6 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_8px_24px_-16px_rgba(46,46,46,0.12)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-5 md:p-6 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_8px_24px_-16px_rgba(46,46,46,0.12)]"
               >
                 <Quote
                   aria-hidden="true"
