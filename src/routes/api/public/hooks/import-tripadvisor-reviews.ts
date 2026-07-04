@@ -237,10 +237,34 @@ export const Route = createFileRoute("/api/public/hooks/import-tripadvisor-revie
           );
         }
 
+        // Rotate featured flag: keep only the 8 newest 5★ published reviews
+        // as featured so the homepage carousel stays fresh and consistent.
+        const FEATURED_CAP = 8;
+        const { data: topRows } = await admin
+          .from("tour_reviews")
+          .select("id")
+          .eq("is_published", true)
+          .gte("rating", 5)
+          .order("published_at", { ascending: false })
+          .limit(FEATURED_CAP);
+        const keepIds = (topRows ?? []).map((r) => r.id);
+        if (keepIds.length > 0) {
+          await admin
+            .from("tour_reviews")
+            .update({ is_featured: false })
+            .eq("is_featured", true)
+            .not("id", "in", `(${keepIds.join(",")})`);
+          await admin
+            .from("tour_reviews")
+            .update({ is_featured: true })
+            .in("id", keepIds);
+        }
+
         return Response.json({
           ok: true,
           parsed: parsed.length,
           inserted: inserted?.length ?? 0,
+          featured: keepIds.length,
         });
       },
     },
