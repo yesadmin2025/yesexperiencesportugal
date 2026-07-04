@@ -43,12 +43,27 @@ const FIXTURE_QUOTES: GuestQuoteReview[] = [
     source: "first_party",
     rating: 5,
     body: "Simply flawless. Booked directly and every detail lived up to the promise.",
-    reviewer_name: null, // exercises the "Verified guest" fallback
+    reviewer_name: null, // exercises the "Verified guest" author fallback
     reviewer_country: null,
     source_url: null, // exercises the pageUrl fallback for review.url
-    published_at: null, // exercises the "no datePublished" branch
+    published_at: "2026-05-14T00:00:00+00:00",
   },
 ];
+
+/** Fixture with intentionally-missing optional fields, used to prove the
+ * validator surfaces "recommended field missing" warnings without turning
+ * them into errors. */
+const SPARSE_QUOTE: GuestQuoteReview = {
+  id: "sparse-1",
+  source: "first_party",
+  rating: 5,
+  body: "Booked and confirmed within minutes.",
+  reviewer_name: null,
+  reviewer_country: null,
+  source_url: null,
+  published_at: null,
+};
+
 
 function expectClean(payload: unknown, minReviews: number) {
   const report = validateRichResults(payload);
