@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { auditJsonLd, type PageAudit, type ProductAudit } from "@/lib/jsonld-audit.functions";
+import { useState } from "react";
+import {
+  auditJsonLd,
+  type PageAudit,
+  type ProductAudit,
+  type JsonLdBlock,
+} from "@/lib/jsonld-audit.functions";
 
 export const Route = createFileRoute("/admin/seo-jsonld")({
   head: () => ({
@@ -58,7 +64,67 @@ function ProductBlock({ p }: { p: ProductAudit }) {
   );
 }
 
+function RawBlock({ block }: { block: JsonLdBlock }) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(block.raw);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1200);
+    } catch {
+      /* ignore */
+    }
+  };
+  return (
+    <div className="border border-[color:var(--sand)] bg-white">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between gap-3 px-3 py-2 text-left"
+      >
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            Block #{block.index + 1}
+          </span>
+          <span className="text-xs text-[color:var(--charcoal)] truncate">
+            {block.parseError ? "parse error" : block.types.join(", ") || "—"}
+          </span>
+        </div>
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--teal)]">
+          {open ? "Hide" : "View JSON"}
+        </span>
+      </button>
+      {open ? (
+        <div className="border-t border-[color:var(--sand)]">
+          {block.parseError ? (
+            <div className="text-xs text-rose-700 bg-rose-50 px-3 py-2">{block.parseError}</div>
+          ) : null}
+          <div className="flex justify-end px-2 pt-2">
+            <button
+              type="button"
+              onClick={copy}
+              className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--teal)]"
+            >
+              {copied ? "Copied" : "Copy"}
+            </button>
+          </div>
+          <pre className="text-[11px] leading-snug text-[color:var(--charcoal)] px-3 pb-3 pt-1 overflow-auto max-h-[420px]">
+            {block.raw}
+          </pre>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function PageCard({ page }: { page: PageAudit }) {
+  const [showRaw, setShowRaw] = useState(false);
+  const failing = page.products.flatMap((p) =>
+    p.checks
+      .filter((c) => !c.ok)
+      .map((c) => ({ productName: p.productName, rule: c.rule, detail: c.detail })),
+  );
   return (
     <section className="border border-[color:var(--sand)] bg-[color:var(--ivory)] p-4">
       <header className="flex items-center justify-between gap-3 mb-3">
@@ -85,16 +151,54 @@ function PageCard({ page }: { page: PageAudit }) {
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-2">
           {page.error}
         </div>
-      ) : page.products.length === 0 ? (
-        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2">
-          No Product JSON-LD detected on this page.
-        </div>
       ) : (
-        <div className="grid gap-3">
-          {page.products.map((p, i) => (
-            <ProductBlock key={i} p={p} />
-          ))}
-        </div>
+        <>
+          {failing.length > 0 ? (
+            <div className="mb-3 border border-rose-200 bg-rose-50 px-3 py-2">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-rose-700 mb-1">
+                {failing.length} failing rule{failing.length === 1 ? "" : "s"}
+              </div>
+              <ul className="space-y-1">
+                {failing.map((f, i) => (
+                  <li key={i} className="text-xs text-rose-800">
+                    <span className="text-[color:var(--charcoal-soft)]">{f.productName} · </span>
+                    <code>{f.rule}</code>
+                    {f.detail ? <span className="text-rose-700"> — {f.detail}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {page.products.length === 0 ? (
+            <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 mb-3">
+              No Product JSON-LD detected on this page.
+            </div>
+          ) : (
+            <div className="grid gap-3 mb-3">
+              {page.products.map((p, i) => (
+                <ProductBlock key={i} p={p} />
+              ))}
+            </div>
+          )}
+          {page.blocks.length > 0 ? (
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowRaw((s) => !s)}
+                className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--teal)]"
+              >
+                {showRaw ? "Hide" : "Show"} extracted JSON-LD ({page.blocks.length})
+              </button>
+              {showRaw ? (
+                <div className="grid gap-2 mt-2">
+                  {page.blocks.map((b) => (
+                    <RawBlock key={b.index} block={b} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </>
       )}
     </section>
   );

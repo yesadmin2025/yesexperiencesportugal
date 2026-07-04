@@ -37,12 +37,20 @@ export type ProductAudit = {
   checks: JsonLdCheck[];
 };
 
+export type JsonLdBlock = {
+  index: number;
+  raw: string;
+  parseError?: string;
+  types: string[];
+};
+
 export type PageAudit = {
   path: string;
   url: string;
   status?: number;
   fetchedAt: string;
   jsonLdBlocks: number;
+  blocks: JsonLdBlock[];
   products: ProductAudit[];
   pass: boolean;
   error?: string;
@@ -132,17 +140,39 @@ function validateProduct(product: Record<string, unknown>): ProductAudit {
 }
 
 /** Extract every JSON-LD payload from an HTML string. Tolerates whitespace and CDATA. */
-function extractJsonLd(html: string): unknown[] {
-  const out: unknown[] = [];
+function extractJsonLd(html: string): JsonLdBlock[] {
+  const out: JsonLdBlock[] = [];
   const re = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
   let m: RegExpExecArray | null;
+  let i = 0;
   while ((m = re.exec(html)) !== null) {
     const raw = m[1].trim().replace(/^<!\[CDATA\[|\]\]>$/g, "");
     if (!raw) continue;
     try {
-      out.push(JSON.parse(raw));
-    } catch {
-      out.push({ __parseError: true, raw: raw.slice(0, 120) });
+      const parsed = JSON.parse(raw);
+      const types: string[] = [];
+      const walk = (v: unknown) => {
+        if (!v || typeof v !== "object") return;
+        if (Array.isArray(v)) return v.forEach(walk);
+        const obj = v as Record<string, unknown>;
+        const t = obj["@type"];
+        if (typeof t === "string") types.push(t);
+        else if (Array.isArray(t)) t.forEach((x) => typeof x === "string" && types.push(x));
+        for (const val of Object.values(obj)) walk(val);
+      };
+      walk(parsed);
+      out.push({
+        index: i++,
+        raw: JSON.stringify(parsed, null, 2),
+        types: Array.from(new Set(types)),
+      });
+    } catch (e) {
+      out.push({
+        index: i++,
+        raw,
+        parseError: e instanceof Error ? e.message : String(e),
+        types: [],
+      });
     }
   }
   return out;
@@ -161,15 +191,19 @@ async function auditPath(path: string, origin: string): Promise<PageAudit> {
     const blocks = extractJsonLd(html);
     const products: ProductAudit[] = [];
     for (const block of blocks) {
-      // Parse errors surface as a synthetic failing product
-      if (block && typeof block === "object" && (block as { __parseError?: boolean }).__parseError) {
+      if (block.parseError) {
         products.push({
           productName: "(unparseable JSON-LD)",
-          checks: [{ rule: "JSON.parse succeeds", ok: false }],
+          checks: [{ rule: "JSON.parse succeeds", ok: false, detail: block.parseError }],
         });
         continue;
       }
-      for (const p of collectProducts(block)) products.push(validateProduct(p));
+      try {
+        const parsed = JSON.parse(block.raw);
+        for (const p of collectProducts(parsed)) products.push(validateProduct(p));
+      } catch {
+        /* already reported */
+      }
     }
     const pass =
       res.status === 200 &&
@@ -181,6 +215,7 @@ async function auditPath(path: string, origin: string): Promise<PageAudit> {
       status: res.status,
       fetchedAt,
       jsonLdBlocks: blocks.length,
+      blocks,
       products,
       pass,
     };
@@ -190,6 +225,7 @@ async function auditPath(path: string, origin: string): Promise<PageAudit> {
       url,
       fetchedAt,
       jsonLdBlocks: 0,
+      blocks: [],
       products: [],
       pass: false,
       error: e instanceof Error ? e.message : String(e),
