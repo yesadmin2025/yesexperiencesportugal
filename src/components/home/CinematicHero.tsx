@@ -355,6 +355,24 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           50%      { opacity: 1.05; }
         }
         /* ─── Hero CTAs — premium tactile luxury ─────────────────── */
+        @keyframes heroPrimaryBreath {
+          0%, 100% {
+            box-shadow:
+              0 10px 24px -16px rgba(30, 20, 8, 0.45),
+              0 2px 6px -3px rgba(0, 0, 0, 0.18),
+              0 0 0 0 rgba(201, 169, 106, 0.0);
+          }
+          50% {
+            box-shadow:
+              0 12px 28px -14px rgba(30, 20, 8, 0.50),
+              0 2px 6px -3px rgba(0, 0, 0, 0.18),
+              0 0 22px 2px rgba(201, 169, 106, 0.28);
+          }
+        }
+        @keyframes heroGhostShimmer {
+          0%, 100% { opacity: 0.55; }
+          50%      { opacity: 1; }
+        }
         .hero-cta {
           position: relative;
           overflow: hidden;
@@ -365,63 +383,88 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
             border-color 500ms cubic-bezier(0.22,0.61,0.36,1),
             box-shadow 500ms cubic-bezier(0.22,0.61,0.36,1),
             transform 280ms cubic-bezier(0.22,0.61,0.36,1),
-            color 400ms cubic-bezier(0.22,0.61,0.36,1);
+            color 400ms cubic-bezier(0.22,0.61,0.36,1),
+            letter-spacing 500ms cubic-bezier(0.22,0.61,0.36,1);
           will-change: transform, box-shadow;
           cursor: pointer;
         }
-        .hero-cta__sheen {
+        .hero-cta::after {
+          /* inner hairline for tactile depth */
+          content: "";
           position: absolute;
           inset: 0;
           pointer-events: none;
+          border-radius: inherit;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+                      inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+          z-index: 2;
+        }
+        .hero-cta__sheen {
+          position: absolute;
+          inset: -1px;
+          pointer-events: none;
           background: linear-gradient(
             115deg,
-            transparent 30%,
-            rgba(255, 250, 235, 0.28) 50%,
-            transparent 70%
+            transparent 28%,
+            rgba(255, 250, 235, 0.42) 50%,
+            transparent 72%
           );
-          transform: translateX(-110%);
-          transition: transform 1100ms cubic-bezier(0.22,0.61,0.36,1);
+          transform: translateX(-115%);
+          transition: transform 1400ms cubic-bezier(0.22,0.61,0.36,1);
           z-index: 1;
           mix-blend-mode: overlay;
         }
         .hero-cta:hover .hero-cta__sheen,
         .hero-cta:focus-visible .hero-cta__sheen {
-          transform: translateX(110%);
+          transform: translateX(115%);
         }
         .hero-cta__arrow {
-          transition: transform 320ms cubic-bezier(0.22,0.61,0.36,1);
+          transition: transform 380ms cubic-bezier(0.22,0.61,0.36,1);
         }
         .hero-cta:hover .hero-cta__arrow,
         .hero-cta:focus-visible .hero-cta__arrow {
-          transform: translateX(4px);
+          transform: translateX(6px);
+        }
+        .hero-cta:hover,
+        .hero-cta:focus-visible {
+          letter-spacing: 0.26em;
         }
 
-        /* PRIMARY — filled gold, charcoal text */
+        /* PRIMARY — filled gold, charcoal text, breathing gold halo */
         .hero-cta--primary {
           color: var(--charcoal);
           border: 1px solid var(--gold);
-          background: var(--gold);
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.12), rgba(0,0,0,0.04)),
+            var(--gold);
           box-shadow:
             0 10px 24px -16px rgba(30, 20, 8, 0.45),
             0 2px 6px -3px rgba(0, 0, 0, 0.18);
+          animation: heroPrimaryBreath 4.2s ease-in-out infinite;
         }
         .hero-cta--primary:hover,
         .hero-cta--primary:focus-visible {
-          background: #B8985A;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.14), rgba(0,0,0,0.05)),
+            #B8985A;
           border-color: #B8985A;
           color: var(--charcoal);
           box-shadow:
-            0 16px 32px -16px rgba(30, 20, 8, 0.55),
-            0 4px 10px -4px rgba(0, 0, 0, 0.25);
-          transform: translateY(-1px);
+            0 18px 36px -14px rgba(30, 20, 8, 0.58),
+            0 4px 12px -4px rgba(0, 0, 0, 0.28),
+            0 0 28px 2px rgba(201, 169, 106, 0.42);
+          transform: translateY(-2px);
+          animation: none;
         }
         .hero-cta--primary:active { transform: translateY(0); }
 
         /* GHOST — ivory outline, ivory text; hover fills ivory with teal text */
         .hero-cta--ghost {
           color: var(--ivory);
-          border: 1px solid var(--ivory);
-          background: transparent;
+          border: 1px solid rgba(250, 248, 243, 0.72);
+          background: rgba(250, 248, 243, 0.04);
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
           text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }
         .hero-cta--ghost:hover,
@@ -430,12 +473,16 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           background: var(--ivory);
           border-color: var(--ivory);
           text-shadow: none;
-          transform: translateY(-1px);
+          transform: translateY(-2px);
+          box-shadow:
+            0 16px 32px -16px rgba(0, 0, 0, 0.45),
+            0 0 22px 1px rgba(250, 248, 243, 0.22);
         }
         .hero-cta--ghost:active { transform: translateY(0); }
         @media (prefers-reduced-motion: reduce) {
-          .hero-cta, .hero-cta__sheen, .hero-cta__arrow { transition: none !important; }
-          .hero-cta:hover, .hero-cta:active { transform: none !important; }
+          .hero-cta, .hero-cta__sheen, .hero-cta__arrow { transition: none !important; animation: none !important; }
+          .hero-cta--primary { animation: none !important; }
+          .hero-cta:hover, .hero-cta:active { transform: none !important; letter-spacing: 0.24em !important; }
         }
 
       `}</style>
