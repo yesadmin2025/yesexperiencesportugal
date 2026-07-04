@@ -3556,6 +3556,13 @@ html.motion-ready [data-motion].motion-in {
       0 22px 48px -22px rgba(46, 46, 46, 0.30),
       0 2px 8px -3px rgba(46, 46, 46, 0.08);
   }
+  /* Keyboard focus indicator — visible gold ring when the card itself is
+     the interactive element (Link renders as .he-card-lift). Uses outline
+     so it composes with the transform/box-shadow above without clipping. */
+  .home-energy .he-card-lift:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
 
   /* ── Premium micro-interactions layered onto every .he-card-lift ──
      Additive only — no layout, spacing, or DOM changes:
