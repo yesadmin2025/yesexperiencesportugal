@@ -146,8 +146,8 @@ function Page() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Private Wine Days</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Wine Tours from Lisbon —{" "}
-              <SectionTitle.Em>Arrábida, Setúbal & Alentejo</SectionTitle.Em>
+              The Best Wine Tours from Lisbon —{" "}
+              <SectionTitle.Em>Arrábida, Comporta & Alentejo</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Three real wine regions within reach of your hotel. Family producers, long
