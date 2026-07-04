@@ -219,9 +219,9 @@ const azeitaoCheese: TailorBlueprint = {
   tourId: "azeitao-cheese",
   core: [
     { id: "livramento", label: "Mercado do Livramento", blurb: "Setúbal's fresh market — pick up cheese pairings before the workshop.", category: "market", dwellMinutesOverride: 30 },
-    { id: "quinta-velha", label: "Cheese-making at Quinta Velha", blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.", category: "workshop", dwellMinutesOverride: 75 },
+    { id: "quinta-velha", label: "Cheese-making at Quinta Velha", blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.", category: "workshop", dwellMinutesOverride: 75, skippable: false },
     { id: "lunch-azeitao", label: "Lunch in Azeitão", blurb: "Traditional lunch in the wine village.", category: "lunch" },
-    { id: "catralvos", label: "Quinta de Catralvos winery", blurb: "Five-wine tasting at the family cellar door.", category: "winery" },
+    { id: "catralvos", label: "Quinta de Catralvos winery", blurb: "Five-wine tasting at the family cellar door.", category: "winery", skippable: false },
   ],
   optional: [
     { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "Medieval castle above the village. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
