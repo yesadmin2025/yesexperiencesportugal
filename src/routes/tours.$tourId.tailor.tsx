@@ -321,6 +321,9 @@ function TailorPage() {
             lunch,
             accessibility: [...accessibility],
             notes,
+            skippedCoreStops: blueprint
+              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
+              : [],
           },
         },
       });
