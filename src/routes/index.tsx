@@ -591,10 +591,10 @@ function HomePage() {
 
                 <h2
                   id="studio-title"
-                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                  className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
                 >
                   Design your day.{" "}
-                  <span className="italic font-normal text-[color:var(--teal)]">
+                  <span className="font-serif italic font-normal text-[color:var(--teal)]">
                     Reserve in minutes.
                   </span>
                 </h2>
@@ -605,17 +605,20 @@ function HomePage() {
                   real timings and a live price — then reserve when the route is ready — final price shown before payment.
                 </p>
 
-                {/* Three Studio inputs — small index, signposts the
-                  live chips at the top of the preview device. */}
+                {/* Three differentiators — tied to the product, not a floating manifesto. */}
                 <ol
                   className="mt-7 grid grid-cols-3 gap-1.5 max-w-md"
-                  aria-label="Three Studio inputs"
+                  aria-label="Why the Studio"
                 >
-                  {["Mood", "Who", "Rhythm"].map((label, i) => (
-                    <li key={label} className="flex flex-col gap-1.5">
+                  {[
+                    { n: "01", label: "Real route" },
+                    { n: "02", label: "Instant confirm" },
+                    { n: "03", label: "Local on WhatsApp" },
+                  ].map((d) => (
+                    <li key={d.n} className="flex flex-col gap-1.5">
                       <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
                       <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] tabular-nums">
-                        0{i + 1} · {label}
+                        {d.n} · {d.label}
                       </span>
                     </li>
                   ))}
@@ -626,24 +629,9 @@ function HomePage() {
                     Start designing
                   </CtaButton>
                 </div>
-
-                {/* Conversion microcopy — single quiet line, no duplication. */}
-                <p className="mt-4 inline-flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)] max-w-md">
-                  <MessageCircle
-                    size={13}
-                    aria-hidden="true"
-                    className="mt-[3px] shrink-0 text-[color:var(--teal)]"
-                  />
-                  <span>
-                    <span className="font-medium text-[color:var(--charcoal)]">
-                      About 90 seconds.
-                    </span>{" "}
-                    Instant reservation · cancel free up to 48h · a local on WhatsApp.
-                  </span>
-                </p>
               </div>
 
-              <div className="he-parallax-counter lg:col-span-7 lg:order-2 order-2">
+              <div className="lg:col-span-7 lg:order-2 order-2">
                 <StudioLivePreview />
               </div>
             </div>
