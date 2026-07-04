@@ -139,14 +139,18 @@ export function Footer() {
             style={{ fontWeight: 400 }}
           >
             {[
+              { to: "/portugal-tours", label: "Portugal tours" },
+              { to: "/luxury-tours-portugal", label: "Luxury Portugal tours" },
+              { to: "/private-tours-portugal", label: "Private tours Portugal" },
+              { to: "/portugal-wine-tours", label: "Portugal wine tours" },
               { to: "/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
               { to: "/private-wine-tour-lisbon", label: "Private wine tour Lisbon" },
               { to: "/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
               { to: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
               { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
+              { to: "/itineraries/10-day-private-portugal-tour", label: "10-day private Portugal tour" },
               { to: "/multi-day", label: "Portugal Travel Designer" },
               { to: "/proposals", label: "Proposal in Portugal" },
-              { to: "/corporate", label: "Corporate experiences Portugal" },
             ].map((l) => (
               <li key={l.to}>
                 <Link

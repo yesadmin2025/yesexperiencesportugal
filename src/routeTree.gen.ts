@@ -21,10 +21,14 @@ import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
+import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as PressRouteImport } from './routes/press'
+import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-tours'
+import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
+import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
@@ -153,6 +157,11 @@ const PrivateWineTourLisbonRoute = PrivateWineTourLisbonRouteImport.update({
   path: '/private-wine-tour-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivateToursPortugalRoute = PrivateToursPortugalRouteImport.update({
+  id: '/private-tours-portugal',
+  path: '/private-tours-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -168,9 +177,24 @@ const PressRoute = PressRouteImport.update({
   path: '/press',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortugalWineToursRoute = PortugalWineToursRouteImport.update({
+  id: '/portugal-wine-tours',
+  path: '/portugal-wine-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalToursRoute = PortugalToursRouteImport.update({
+  id: '/portugal-tours',
+  path: '/portugal-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MultiDayRoute = MultiDayRouteImport.update({
   id: '/multi-day',
   path: '/multi-day',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
+  id: '/luxury-tours-portugal',
+  path: '/luxury-tours-portugal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LocalStoriesRoute = LocalStoriesRouteImport.update({
@@ -538,10 +562,14 @@ export interface FileRoutesByFullPath {
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
+  '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/multi-day': typeof MultiDayRoute
+  '/portugal-tours': typeof PortugalToursRoute
+  '/portugal-wine-tours': typeof PortugalWineToursRoute
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
@@ -623,10 +651,14 @@ export interface FileRoutesByTo {
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
+  '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/multi-day': typeof MultiDayRoute
+  '/portugal-tours': typeof PortugalToursRoute
+  '/portugal-wine-tours': typeof PortugalWineToursRoute
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
@@ -709,10 +741,14 @@ export interface FileRoutesById {
   '/experiences': typeof ExperiencesRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
+  '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/multi-day': typeof MultiDayRoute
+  '/portugal-tours': typeof PortugalToursRoute
+  '/portugal-wine-tours': typeof PortugalWineToursRoute
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
@@ -796,10 +832,14 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
+    | '/luxury-tours-portugal'
     | '/multi-day'
+    | '/portugal-tours'
+    | '/portugal-wine-tours'
     | '/press'
     | '/preview-check'
     | '/privacy'
+    | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
     | '/proposals'
     | '/reviews'
@@ -881,10 +921,14 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
+    | '/luxury-tours-portugal'
     | '/multi-day'
+    | '/portugal-tours'
+    | '/portugal-wine-tours'
     | '/press'
     | '/preview-check'
     | '/privacy'
+    | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
     | '/proposals'
     | '/reviews'
@@ -966,10 +1010,14 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/hero-verify'
     | '/local-stories'
+    | '/luxury-tours-portugal'
     | '/multi-day'
+    | '/portugal-tours'
+    | '/portugal-wine-tours'
     | '/press'
     | '/preview-check'
     | '/privacy'
+    | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
     | '/proposals'
     | '/reviews'
@@ -1052,10 +1100,14 @@ export interface RootRouteChildren {
   ExperiencesRoute: typeof ExperiencesRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
+  LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   MultiDayRoute: typeof MultiDayRoute
+  PortugalToursRoute: typeof PortugalToursRoute
+  PortugalWineToursRoute: typeof PortugalWineToursRoute
   PressRoute: typeof PressRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   PrivacyRoute: typeof PrivacyRoute
+  PrivateToursPortugalRoute: typeof PrivateToursPortugalRoute
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
   ProposalsRoute: typeof ProposalsRoute
   ReviewsRoute: typeof ReviewsRoute
@@ -1202,6 +1254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateWineTourLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/private-tours-portugal': {
+      id: '/private-tours-portugal'
+      path: '/private-tours-portugal'
+      fullPath: '/private-tours-portugal'
+      preLoaderRoute: typeof PrivateToursPortugalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -1223,11 +1282,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portugal-wine-tours': {
+      id: '/portugal-wine-tours'
+      path: '/portugal-wine-tours'
+      fullPath: '/portugal-wine-tours'
+      preLoaderRoute: typeof PortugalWineToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-tours': {
+      id: '/portugal-tours'
+      path: '/portugal-tours'
+      fullPath: '/portugal-tours'
+      preLoaderRoute: typeof PortugalToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/multi-day': {
       id: '/multi-day'
       path: '/multi-day'
       fullPath: '/multi-day'
       preLoaderRoute: typeof MultiDayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/luxury-tours-portugal': {
+      id: '/luxury-tours-portugal'
+      path: '/luxury-tours-portugal'
+      fullPath: '/luxury-tours-portugal'
+      preLoaderRoute: typeof LuxuryToursPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/local-stories': {
@@ -1757,10 +1837,14 @@ const rootRouteChildren: RootRouteChildren = {
   ExperiencesRoute: ExperiencesRoute,
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
+  LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   MultiDayRoute: MultiDayRoute,
+  PortugalToursRoute: PortugalToursRoute,
+  PortugalWineToursRoute: PortugalWineToursRoute,
   PressRoute: PressRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   PrivacyRoute: PrivacyRoute,
+  PrivateToursPortugalRoute: PrivateToursPortugalRoute,
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
   ProposalsRoute: ProposalsRoute,
   ReviewsRoute: ReviewsRoute,
@@ -1825,13 +1909,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
