@@ -782,7 +782,11 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 5b — Bespoke Travel File moved to right after the Studio. */}
+        {/* 5b — BESPOKE TRAVEL FILE (multi-day / Travel Designer proof)
+          Sits AFTER Signatures so shoppable inventory converts first
+          and the bespoke narrative deepens desire for higher-value
+          Travel Designer journeys. */}
+        <RecentJourney />
 
         {/* 5c — REAL GUEST REVIEWS
           Three real verified reviews from featured Signature tours'
