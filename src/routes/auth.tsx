@@ -49,6 +49,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Already signed in? Verify role and redirect.
@@ -177,35 +178,62 @@ function AuthPage() {
 
             <button
               type="button"
-              disabled={busy}
+              disabled={busy || googleBusy}
+              aria-busy={googleBusy}
               onClick={async () => {
-                setBusy(true);
+                setGoogleBusy(true);
                 setErrorMsg(null);
                 try {
                   const result = await lovable.auth.signInWithOAuth("google", {
                     redirect_uri: window.location.origin + "/auth",
                   });
-                  if (result.error) throw new Error(result.error.message ?? "Falha no Google sign-in.");
+                  if (result.error) {
+                    const raw = result.error.message ?? "";
+                    const m = raw.toLowerCase();
+                    let friendly = raw || "Não foi possível iniciar sessão com Google.";
+                    if (m.includes("popup") && m.includes("closed"))
+                      friendly = "Janela do Google fechada antes de concluir. Tenta novamente.";
+                    else if (m.includes("popup") && m.includes("block"))
+                      friendly = "O browser bloqueou a janela do Google. Permite popups para este site.";
+                    else if (m.includes("unsupported provider"))
+                      friendly = "Google sign-in ainda não está ativo. Contacta o admin.";
+                    else if (m.includes("network") || m.includes("fetch"))
+                      friendly = "Sem ligação. Verifica a internet e tenta de novo.";
+                    throw new Error(friendly);
+                  }
                   if (result.redirected) return;
-                  const { data } = await supabase.auth.getUser();
+                  const { data, error } = await supabase.auth.getUser();
+                  if (error) throw new Error("Sessão inválida após Google. Tenta novamente.");
                   if (data.user) await routeByRole(data.user.id, navigate);
                 } catch (err) {
                   const msg = err instanceof Error ? err.message : "Falha no Google sign-in.";
                   setErrorMsg(msg);
                   toast.error(msg);
                 } finally {
-                  setBusy(false);
+                  setGoogleBusy(false);
                 }
               }}
-              className="w-full inline-flex items-center justify-center gap-3 border border-[color:var(--charcoal)]/15 bg-white hover:bg-[color:var(--sand)] disabled:opacity-60 text-[color:var(--charcoal)] px-5 py-3 text-sm tracking-wide transition-all"
+              className="w-full inline-flex items-center justify-center gap-3 border border-[color:var(--charcoal)]/15 bg-white hover:bg-[color:var(--sand)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--charcoal)] px-5 py-3 text-sm tracking-wide transition-all"
             >
-              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
-                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.71H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-                <path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/>
-                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
-              </svg>
-              Continuar com Google
+              {googleBusy ? (
+                <>
+                  <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" opacity="0.25"/>
+                    <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round"/>
+                  </svg>
+                  A ligar ao Google…
+                </>
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.71H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+                    <path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
+                  </svg>
+                  Continuar com Google
+                </>
+              )}
             </button>
           </form>
 
