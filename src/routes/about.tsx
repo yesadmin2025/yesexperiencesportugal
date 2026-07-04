@@ -328,8 +328,8 @@ function Page() {
           </SectionTitle>
           <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
             Email{" "}
-            <a href="mailto:hello@yesexperiencesportugal.com" className="underline">
-              hello@yesexperiencesportugal.com
+            <a href="mailto:info@yesexperiencesportugal.com" className="underline">
+              info@yesexperiencesportugal.com
             </a>
             <br />
             WhatsApp{" "}
@@ -344,10 +344,10 @@ function Page() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <CtaButton to="/experiences" variant="primary">
-              Start your private experience
+              Explore Signature Experiences
             </CtaButton>
-            <CtaButton to="/studio-v3" variant="ghost">
-              Open the Studio
+            <CtaButton to="/contact" variant="ghost">
+              Send a request
             </CtaButton>
           </div>
         </div>
