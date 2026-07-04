@@ -53,6 +53,8 @@ export const Route = createFileRoute("/sitemap.xml")({
 
           { path: "/terms", lastmod: today, changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", lastmod: today, changefreq: "yearly", priority: "0.4" },
+          { path: "/cookies", lastmod: today, changefreq: "yearly", priority: "0.4" },
+
         ];
 
         const tourEntries: SitemapEntry[] = signatureTours.map((t) => ({
