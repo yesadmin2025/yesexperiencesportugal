@@ -21,12 +21,10 @@ import { Star, MessageCircle } from "lucide-react";
 import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
-import { FourWaysIn } from "@/components/home/FourWaysIn";
-import { WhyYesPillars } from "@/components/home/WhyYesPillars";
 import { RecentJourney } from "@/components/home/RecentJourney";
-import { InlineEmailCapture, ExitIntentEmailCapture } from "@/components/home/EmailCapture";
-import { RecognisedByGuides } from "@/components/RecognisedByGuides";
-// PathfinderQuiz removed from homepage (component file kept).
+import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
+// FourWaysIn / WhyYesPillars / RecognisedByGuides / InlineEmailCapture removed
+// from the homepage in the declutter pass (components kept for other routes).
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
