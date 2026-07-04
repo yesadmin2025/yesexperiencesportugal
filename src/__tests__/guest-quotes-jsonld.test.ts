@@ -101,6 +101,17 @@ describe("GuestQuotes JSON-LD → Google Rich Results guard", () => {
     expectClean(payload, FIXTURE_QUOTES.length);
   });
 
+  it("sparse quotes still emit zero errors — only 'recommended' warnings", () => {
+    const payload = buildGuestQuotesJsonLd([SPARSE_QUOTE], { count: 712, avg: 4.9 });
+    const { validateRichResults: v } = require("@/lib/rich-results-validator") as typeof import("@/lib/rich-results-validator");
+    const report = v(payload);
+    expect(report.errors, `expected zero errors, got:\n${report.errors.join("\n")}`).toEqual([]);
+    // datePublished missing → warning (not an error), which is exactly what
+    // Google's Rich Results Test reports for optional fields.
+    expect(report.warnings.some((w) => w.includes("datePublished missing"))).toBe(true);
+  });
+
+
   it("each Review carries url, author, itemReviewed.name and rating consistently", () => {
     const payload = buildGuestQuotesJsonLd(FIXTURE_QUOTES, { count: 712, avg: 4.9 });
     const reviews = (payload["@graph"] as Record<string, unknown>[]).filter(
