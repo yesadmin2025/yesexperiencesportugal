@@ -2462,12 +2462,14 @@ function StoryboardHandoff({
   onBack,
   onSecure,
   onRefine,
+  pending,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
   onBack: () => void;
   onSecure: () => void;
   onRefine: () => void;
+  pending?: boolean;
 }) {
   const pickupCity = pickupCityLabel(state.pickup);
 
