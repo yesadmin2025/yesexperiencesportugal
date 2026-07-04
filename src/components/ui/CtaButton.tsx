@@ -105,13 +105,25 @@ function arrowClasses(variant: Variant) {
 export function CtaButton(props: CtaButtonProps) {
   const { variant = "primary", size = "md", icon, iconLeading, className, children } = props;
 
+  const isHairline = variant === "hairline";
   const arrowSize = variant === "primary" ? 14 : 12;
+
   const trailing =
     icon === null
       ? null
-      : (icon ?? (
-          <ArrowRight size={arrowSize} aria-hidden="true" className={arrowClasses(variant)} />
-        ));
+      : isHairline
+        ? (icon ?? (
+            <span aria-hidden="true" className="flex items-center">
+              <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8 group-focus-visible:w-8" />
+              <ArrowRight
+                size={12}
+                className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+              />
+            </span>
+          ))
+        : (icon ?? (
+            <ArrowRight size={arrowSize} aria-hidden="true" className={arrowClasses(variant)} />
+          ));
 
   const content = (
     <>
@@ -121,8 +133,12 @@ export function CtaButton(props: CtaButtonProps) {
     </>
   );
 
-  const sharedClassName = cn(baseClasses, sizeClasses[size], variantClasses[variant], className);
-  const sharedStyle = className?.includes("hero-cta-button") ? undefined : variantStyle[variant];
+  const sharedClassName = isHairline
+    ? cn(hairlineBaseClasses, className)
+    : cn(baseClasses, sizeClasses[size], variantClasses[variant], className);
+  const sharedStyle =
+    isHairline || className?.includes("hero-cta-button") ? undefined : variantStyle[variant];
+
 
   if ("href" in props && props.href !== undefined) {
     const {
