@@ -50,6 +50,7 @@ import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
+import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as ITokenRouteImport } from './routes/i.$token'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
@@ -300,6 +301,12 @@ const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => LocalStoriesRoute,
 } as any)
+const Itineraries10DayPrivatePortugalTourRoute =
+  Itineraries10DayPrivatePortugalTourRouteImport.update({
+    id: '/itineraries/10-day-private-portugal-tour',
+    path: '/itineraries/10-day-private-portugal-tour',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ITokenRoute = ITokenRouteImport.update({
   id: '/i/$token',
   path: '/i/$token',
@@ -576,6 +583,7 @@ export interface FileRoutesByFullPath {
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/i/$token': typeof ITokenRoute
+  '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -660,6 +668,7 @@ export interface FileRoutesByTo {
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/i/$token': typeof ITokenRoute
+  '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -745,6 +754,7 @@ export interface FileRoutesById {
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/i/$token': typeof ITokenRoute
+  '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -831,6 +841,7 @@ export interface FileRouteTypes {
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
     | '/i/$token'
+    | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
@@ -915,6 +926,7 @@ export interface FileRouteTypes {
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
     | '/i/$token'
+    | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
@@ -999,6 +1011,7 @@ export interface FileRouteTypes {
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
     | '/i/$token'
+    | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1084,6 +1097,7 @@ export interface RootRouteChildren {
   E2ePostmessageProbeRoute: typeof E2ePostmessageProbeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ITokenRoute: typeof ITokenRoute
+  Itineraries10DayPrivatePortugalTourRoute: typeof Itineraries10DayPrivatePortugalTourRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
@@ -1390,6 +1404,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/local-stories/$slug'
       preLoaderRoute: typeof LocalStoriesSlugRouteImport
       parentRoute: typeof LocalStoriesRoute
+    }
+    '/itineraries/10-day-private-portugal-tour': {
+      id: '/itineraries/10-day-private-portugal-tour'
+      path: '/itineraries/10-day-private-portugal-tour'
+      fullPath: '/itineraries/10-day-private-portugal-tour'
+      preLoaderRoute: typeof Itineraries10DayPrivatePortugalTourRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/i/$token': {
       id: '/i/$token'
@@ -1781,6 +1802,8 @@ const rootRouteChildren: RootRouteChildren = {
   E2ePostmessageProbeRoute: E2ePostmessageProbeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ITokenRoute: ITokenRoute,
+  Itineraries10DayPrivatePortugalTourRoute:
+    Itineraries10DayPrivatePortugalTourRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
   ReviewTokenRoute: ReviewTokenRoute,
