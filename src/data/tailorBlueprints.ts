@@ -37,6 +37,12 @@ export interface BlueprintStop {
    *  anchor price (Core + Choice). Optional stops may carry a real
    *  upcharge from the Bókun product. */
   upchargePerPaxEUR?: number;
+  /** For Core stops: can the guest ask to skip this one? Defaults to
+   *  `true`. Set to `false` only for true operator-locked anchors that
+   *  define the product (a wine tour's winery block, a tile tour's
+   *  workshop, hotel pickup, the boat itself). Markets, viewpoints and
+   *  generic lunches SHOULD be skippable — the guide adjusts the day. */
+  skippable?: boolean;
 }
 
 export interface TailorBlueprint {
