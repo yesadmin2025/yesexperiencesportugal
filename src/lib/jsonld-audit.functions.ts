@@ -37,12 +37,20 @@ export type ProductAudit = {
   checks: JsonLdCheck[];
 };
 
+export type JsonLdBlock = {
+  index: number;
+  raw: string;
+  parsed: unknown;
+  parseError?: string;
+};
+
 export type PageAudit = {
   path: string;
   url: string;
   status?: number;
   fetchedAt: string;
   jsonLdBlocks: number;
+  blocks: JsonLdBlock[];
   products: ProductAudit[];
   pass: boolean;
   error?: string;
