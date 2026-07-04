@@ -512,7 +512,10 @@ function HomePage() {
           </div>
         </section>
 
-
+        {/* 2b — FIVE WAYS TO SHAPE YOUR PORTUGAL
+          Concise editorial explainer so visitors instantly understand
+          the paths: Signature, Studio, Moments, Corporate, Travel Designer. */}
+        <FourWaysIn />
 
 
         {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
