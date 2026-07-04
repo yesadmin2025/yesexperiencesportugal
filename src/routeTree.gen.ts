@@ -95,6 +95,7 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
+import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
 
@@ -537,6 +538,12 @@ const ApiPublicHooksStripeWebhookHealthRoute =
     path: '/api/public/hooks/stripe-webhook-health',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksImportTripadvisorReviewsRoute =
+  ApiPublicHooksImportTripadvisorReviewsRouteImport.update({
+    id: '/api/public/hooks/import-tripadvisor-reviews',
+    path: '/api/public/hooks/import-tripadvisor-reviews',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
   id: '/api/public/hooks/dns-watch',
   path: '/api/public/hooks/dns-watch',
@@ -632,6 +639,7 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
+  '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -722,6 +730,7 @@ export interface FileRoutesByTo {
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
+  '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -813,6 +822,7 @@ export interface FileRoutesById {
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
+  '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -905,6 +915,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
+    | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -995,6 +1006,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
+    | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -1085,6 +1097,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
+    | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -1173,6 +1186,7 @@ export interface RootRouteChildren {
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
+  ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
   ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1785,6 +1799,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksStripeWebhookHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/import-tripadvisor-reviews': {
+      id: '/api/public/hooks/import-tripadvisor-reviews'
+      path: '/api/public/hooks/import-tripadvisor-reviews'
+      fullPath: '/api/public/hooks/import-tripadvisor-reviews'
+      preLoaderRoute: typeof ApiPublicHooksImportTripadvisorReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/dns-watch': {
       id: '/api/public/hooks/dns-watch'
       path: '/api/public/hooks/dns-watch'
@@ -1919,6 +1940,8 @@ const rootRouteChildren: RootRouteChildren = {
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
+  ApiPublicHooksImportTripadvisorReviewsRoute:
+    ApiPublicHooksImportTripadvisorReviewsRoute,
   ApiPublicHooksStripeWebhookHealthRoute:
     ApiPublicHooksStripeWebhookHealthRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
