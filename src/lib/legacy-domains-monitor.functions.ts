@@ -160,7 +160,7 @@ export const probeLegacyHost = createServerFn({ method: "POST" })
     if (!input?.host || typeof input.host !== "string") {
       throw new Error("host is required");
     }
-    if (!(LEGACY_HOSTS as readonly string[]).includes(input.host)) {
+    if (!(LEGACY_HOSTS as ReadonlySet<string>).has(input.host)) {
       throw new Error(`host ${input.host} is not a legacy host`);
     }
     return { host: input.host };
