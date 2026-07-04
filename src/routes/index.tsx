@@ -588,7 +588,7 @@ function HomePage() {
                 </ol>
 
                 <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/studio-v3" variant="primary">
+                  <CtaButton to="/studio-v3" variant="hairline">
                     Start designing
                   </CtaButton>
                 </div>
@@ -751,8 +751,7 @@ function HomePage() {
                           <CtaButton
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
-                            variant="primary"
-                            size="sm"
+                            variant="hairline"
                             aria-label={`Reserve ${t.title}`}
                           >
                             Reserve this day
@@ -761,6 +760,7 @@ function HomePage() {
                             to="/tours/$tourId/tailor"
                             params={{ tourId: t.id }}
                             variant="hairline"
+                            className="opacity-70 hover:opacity-100"
                             aria-label={`Tailor ${t.title}`}
                           >
                             Tailor this Signature
@@ -778,7 +778,7 @@ function HomePage() {
 
 
             <div className="mt-12 md:mt-14 text-center">
-              <CtaButton to="/experiences" variant="ghost" size="sm">
+              <CtaButton to="/experiences" variant="hairline">
                 See every Signature
               </CtaButton>
             </div>
@@ -954,7 +954,7 @@ function HomePage() {
                     shape the rest.
                   </p>
                   <div className="mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
-                    <CtaButton to="/studio-v3" variant="primary">
+                    <CtaButton to="/studio-v3" variant="hairline">
                       Open the Studio
                     </CtaButton>
                     <CtaButton to="/contact" variant="hairline">

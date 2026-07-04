@@ -69,11 +69,11 @@ export function EntryScreen({ onStart }: Props) {
           </p>
 
           <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-            <CtaButton type="button" onClick={onStart} variant="primary">
+            <CtaButton type="button" onClick={onStart} variant="hairline">
               Start building
             </CtaButton>
 
-            <CtaButton to="/experiences" variant="ghost">
+            <CtaButton to="/experiences" variant="hairline" className="opacity-70 hover:opacity-100">
               Start from a signature
             </CtaButton>
           </div>
