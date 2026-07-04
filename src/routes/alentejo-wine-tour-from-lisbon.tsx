@@ -12,7 +12,7 @@ const PAGE_PATH = "/alentejo-wine-tour-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const PARENT_TOUR_ID = "evora-alentejo";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Alentejo Wine Tour from Lisbon | Private Évora & Cork Experience";
+const TITLE = "Alentejo Wine Tour from Lisbon | Private Évora & Cork";
 const DESCRIPTION =
   "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork tradition stop, with a long Alentejo lunch. Door-to-door driving.";
 

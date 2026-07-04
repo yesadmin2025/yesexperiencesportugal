@@ -19,7 +19,7 @@ const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 // Lead review aggregate from our strongest-reviewed wine signature.
 const PARENT_TOUR_ID = "arrabida-wine-allinclusive";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Wine Tours from Lisbon — Private Days in Arrábida, Setúbal & Alentejo";
+const TITLE = "Wine Tours from Lisbon — Private Arrábida, Setúbal & Alentejo";
 const DESCRIPTION =
   "Private wine tours from Lisbon, designed by a licensed local team. Family wineries in Arrábida and Azeitão, full-day Alentejo from Évora, long Portuguese lunches, door-to-door from your hotel.";
 
