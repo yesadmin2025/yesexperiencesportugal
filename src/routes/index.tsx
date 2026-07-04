@@ -650,7 +650,7 @@ function HomePage() {
                     className={
                       scrollDebug.staticMobileCarousels
                         ? "reveal-stagger w-full"
-                        : "reveal-stagger shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink"
+                        : "reveal-stagger shrink-0 snap-start w-[80vw] sm:w-auto sm:shrink"
                     }
                   >
                     {/* Card is a structured composition (NOT a single link) so
@@ -665,13 +665,7 @@ function HomePage() {
                         className="he-image-cinema he-image-rise relative block aspect-[4/5] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                         aria-label={`Open ${t.title}`}
                       >
-                        {/* Skeleton shimmer — sits behind <img>, naturally hidden once the image paints.
-                          Fixed aspect-[4/5] on the parent guarantees zero layout shift while the image
-                          (and the pills layered above it) settle in. */}
-                        <div
-                          aria-hidden="true"
-                          className="absolute inset-0 bg-[linear-gradient(110deg,var(--sand)_8%,rgba(255,255,255,0.55)_18%,var(--sand)_33%)] bg-[length:200%_100%] motion-safe:animate-[shimmer_1.6s_ease-in-out_infinite]"
-                        />
+
                         <img
                           src={t.img}
                           alt={t.title}
