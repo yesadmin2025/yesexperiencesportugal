@@ -789,6 +789,11 @@ function HomePage() {
 
         {/* 5b — Bespoke Travel File moved to right after the Studio. */}
 
+        {/* 5c — REAL GUEST REVIEWS
+          Three real verified reviews from featured Signature tours'
+          Viator meta. Real names, real platforms, real words. */}
+        <RealReviewsStrip />
+
         {/* 6 — PROPOSALS / CELEBRATIONS / CORPORATE / MULTI-DAY
           One combined editorial band — Proposals, Celebrations,
           Corporate & Groups, and Multi-Day routes — so every "bigger
