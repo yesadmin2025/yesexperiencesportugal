@@ -25,7 +25,13 @@ export function withAggregateAndReviews<T extends Reviewable>(
 
   const merged: Reviewable = { ...productLd };
 
-  if (meta.reviewCount > 0) {
+  const topReviews = (meta.topReviews ?? []).filter((r) => r.text?.trim());
+
+  // Google Rich Results requires that AggregateRating on a Product is
+  // matched by review content visible on the same page. When we have no
+  // rendered reviews (topReviews empty), we skip aggregateRating rather
+  // than declaring a rating the crawler can't verify on-page.
+  if (meta.reviewCount > 0 && topReviews.length > 0) {
     merged.aggregateRating = {
       "@type": "AggregateRating",
       ratingValue: meta.rating,
@@ -35,7 +41,6 @@ export function withAggregateAndReviews<T extends Reviewable>(
     };
   }
 
-  const topReviews = (meta.topReviews ?? []).filter((r) => r.text?.trim());
   if (topReviews.length > 0) {
     merged.review = topReviews.slice(0, 5).map((r) => ({
       "@type": "Review",
