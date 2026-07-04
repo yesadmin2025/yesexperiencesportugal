@@ -1006,6 +1006,64 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     // Per-pax EUR by group size: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Min 2 pax.
     priceTiersEUR: { 2: 399, 3: 345, 4: 345, 5: 320, 6: 320, 7: 299, 8: 299 },
   },
+  "southwest-vicentine-coast": {
+    viatorUrl:
+      "https://www.viator.com/tours/Lisbon/Exclusive-Southwest-Coast-Experience-Undiscovered-Hidden-Secret/d538-349639P16",
+    priceFromUSD: 397.79,
+    viatorReviewCount: 0,
+    reviewCount: 20,
+    rating: 5,
+    recommendedPct: null,
+    overview:
+      "Discover Portugal's wild Southwest Coast, a hidden Atlantic paradise most travelers never imagine exists.\n\nBetween Alentejo and Algarve, far from the crowded beaches and tourist routes, there is another Portugal: raw, open, peaceful and breathtakingly beautiful. A coastline of whitewashed villages, dramatic cliffs, secret coves, river beaches and untouched landscapes.\n\nThis experience takes you beyond the ordinary. From Porto Covo and the Ilha do Pessegueiro coastline to Vila Nova de Milfontes, Odeceixe and Aljezur, each stop reveals a different side of this extraordinary region: fishing-village charm, ancient coastal history, protected natural scenery and some of the most unforgettable ocean views in the country.\n\nThe highlight is Odeceixe, where the river meets the sea and the landscape naturally separates Alentejo from Algarve. It is one of those rare places that feels almost unreal when seen for the first time — wild, spacious, cinematic and still wonderfully unknown.",
+    included: [
+      "Air-conditioned vehicle",
+      "Private transportation with a local guide",
+      "Private pickup and drop-off",
+      "All entrances and transportation fees",
+      "Bottled water",
+      "Private and personalized itinerary",
+    ],
+    stops: [
+      {
+        name: "Lisbon",
+        desc: "Pick up and drop off.",
+        passBy: true,
+      },
+      {
+        name: "Ilha do Pessegueiro",
+        desc: "The route continues along the coast towards the Ilha do Pessegueiro area, one of the most iconic coastal views near Porto Covo. The island and the surrounding fortifications reveal how this coastline was not only beautiful, but also historically important.",
+      },
+      {
+        name: "Porto Covo",
+        desc: "Porto Covo is a small whitewashed coastal village where Portugal still feels closely connected to the Atlantic. This stop introduces the wild character of the Southwest Coast, with dramatic cliffs, small coves and a relaxed fishing-village atmosphere.",
+      },
+      {
+        name: "Vila Nova de Milfontes",
+        desc: "Vila Nova de Milfontes is one of the most charming towns on Portugal's Southwest Coast. Located where the Mira River meets the Atlantic Ocean, it offers a completely different atmosphere from the open-ocean beaches: calmer waters, whitewashed streets, river views and a slower coastal rhythm.",
+      },
+      {
+        name: "Parque Natural do Sudoeste Alentejano e Costa Vicentina",
+        desc: "The journey between Vila Nova de Milfontes and Odeceixe is part of the experience itself. This route crosses one of Portugal's most protected coastal regions, where development remains limited and the landscape still feels wild, open and untouched.",
+      },
+      {
+        name: "Odeceixe",
+        desc: "Odeceixe is the main highlight of the day and one of the most unique coastal landscapes in Portugal. Here, the Rio Seixe meets the Atlantic Ocean, creating two completely different environments side by side: a calm river beach and a wild ocean beach. This is also a natural border between Alentejo and Algarve.",
+      },
+      {
+        name: "Aljezur",
+        desc: "Aljezur adds historical depth to a day shaped mainly by coast and nature. This historic town has strong Moorish roots and is overlooked by the ruins of its hilltop castle.",
+      },
+    ],
+    topReviews: [],
+    gallery: [
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/78/ad/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e0/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/dd/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e2/caption.jpg",
+    ],
+  },
 };
 
 export function getViatorMeta(tourId: string): ViatorMeta | undefined {

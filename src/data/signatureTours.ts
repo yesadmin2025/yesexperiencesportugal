@@ -87,6 +87,7 @@ export type StopTheme =
   | "fatima-nazare-obidos"
   | "roman-heritage-alentejo"
   | "sintra-cascais"
+  | "southwest-vicentine-coast"
   | "tiles-workshop"
   | "tomar-coimbra"
   | "troia-comporta"
@@ -1273,6 +1274,102 @@ export const signatureTours: SignatureTour[] = [
       tier: "signature",
     },
   },
+  {
+    id: "southwest-vicentine-coast",
+    title: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
+    region: "Southwest Alentejo · Costa Vicentina",
+    duration: "Long Day",
+    durationHours: "9–10h",
+    priceFrom: 260,
+    theme: "Coastal",
+    blurb:
+      "Whitewashed fishing villages, protected cliffs and the wild river-meets-ocean beach at Odeceixe — a hidden Atlantic Portugal few travelers reach.",
+    intro:
+      "Between Alentejo and Algarve lies another Portugal — raw, open, breathtakingly quiet. We follow the Vicentine Coast south from Lisbon, through Porto Covo, Vila Nova de Milfontes and the natural park, to Odeceixe, where the Rio Seixe meets the Atlantic. A slow, cinematic day of secret coves, whitewashed villages and untouched coastal scenery.",
+    fitsBest: "Couples · slow travelers · coastal romantics",
+    pace: ["Six coastal stops", "Long lunch in Milfontes", "Odeceixe as the finale"],
+    stops: [
+      {
+        label: "Ilha do Pessegueiro",
+        story:
+          "One of the most iconic coastal views near Porto Covo — the island and its old fortifications guard a coastline that has been strategically important for centuries.",
+        imageTheme: "southwest-vicentine-coast",
+      },
+      {
+        label: "Porto Covo",
+        story:
+          "A small whitewashed fishing village where Portugal still meets the Atlantic on its own terms — dramatic cliffs, quiet coves, a simple rhythm.",
+        imageTheme: "southwest-vicentine-coast",
+      },
+      {
+        label: "Vila Nova de Milfontes",
+        story:
+          "Where the Mira River meets the ocean — calmer waters, whitewashed streets and the ideal pause for a long, unhurried lunch by the water.",
+        imageTheme: "southwest-vicentine-coast",
+      },
+      {
+        label: "Parque Natural do Sudoeste Alentejano e Costa Vicentina",
+        story:
+          "The drive itself is part of the experience — one of Portugal's most protected coastal parks, with cliffs, dunes and habitats that have escaped development.",
+        imageTheme: "southwest-vicentine-coast",
+      },
+      {
+        label: "Odeceixe",
+        story:
+          "The day's highlight — a rare landscape where the Rio Seixe meets the Atlantic, splitting the coast into a calm river beach and a wild ocean beach. Also the natural border between Alentejo and Algarve.",
+        imageTheme: "southwest-vicentine-coast",
+      },
+      {
+        label: "Aljezur",
+        story:
+          "A historic town with Moorish roots, watched over by the ruins of its hilltop castle — the day's final layer of context before the drive back to Lisbon.",
+        imageTheme: "southwest-vicentine-coast",
+      },
+    ],
+    highlights: [
+      "The wild river-meets-ocean beach at Odeceixe",
+      "Whitewashed fishing villages of Porto Covo and Milfontes",
+      "Protected cliffs and coves of the Costa Vicentina natural park",
+      "The Alentejo–Algarve natural border, seen in a single frame",
+      "Moorish hilltop ruins at Aljezur",
+    ],
+    included: [
+      "Air-conditioned vehicle",
+      "Private transportation with a local guide",
+      "Private pickup and drop-off",
+      "All entrances and transportation fees",
+      "Bottled water",
+      "Private and personalized itinerary",
+    ],
+    idealFor: [
+      "Couples chasing a quieter, more cinematic Portugal",
+      "Slow travelers who already know Sintra and Arrábida",
+      "Coastal romantics drawn to raw, undeveloped landscapes",
+    ],
+    notes: [
+      "It's a long day (9–10h) — the Vicentine Coast is a real distance from Lisbon. The drive is the price of the silence at the other end.",
+      "Meals are not included — your guide books a table in Milfontes or Odeceixe based on the day.",
+    ],
+    img: "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
+    focal: "50% 50%",
+    gallery: [
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/78/ad/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e0/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/dd/caption.jpg",
+      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e2/caption.jpg",
+    ],
+    bookingUrl:
+      "https://www.viator.com/tours/Lisbon/Exclusive-Southwest-Coast-Experience-Undiscovered-Hidden-Secret/d538-349639P16",
+    seed: {
+      region: "alentejo",
+      duration: "fullday",
+      styles: ["coast", "heritage"],
+      highlights: ["coastal_scenery", "hidden_villages", "viewpoint"],
+      pace: "slow",
+      tier: "signature",
+    },
+  },
 ];
 
 /** Encode a tour seed into URL search params for /builder?seed=… */
@@ -1292,6 +1389,8 @@ export const STOP_THEME_IMG: Record<StopTheme, string> = {
   "fatima-nazare-obidos": imgFatimaNazareObidosHero,
   "roman-heritage-alentejo": imgRomanHero,
   "sintra-cascais": imgSintraCascaisHero,
+  "southwest-vicentine-coast":
+    "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
   "tiles-workshop": imgTilesWorkshop,
   "tomar-coimbra": imgTomarCoimbraHero,
   "troia-comporta": imgTroiaComportaHero,

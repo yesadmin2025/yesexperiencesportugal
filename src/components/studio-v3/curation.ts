@@ -240,13 +240,13 @@ export function composeJourneyTitle(input: {
 }
 
 const FEELING_TO_TOURS: Record<Feeling, string[]> = {
-  coastal: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
+  coastal: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "southwest-vicentine-coast"],
   "wine-food": ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo"],
-  hidden: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
+  hidden: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
   romance: ["sintra-cascais", "arrabida-wine-allinclusive", "troia-comporta"],
   
   culture: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos"],
-  adventure: ["arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
+  adventure: ["southwest-vicentine-coast", "arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
   "slow-luxury": ["arrabida-wine-allinclusive", "sintra-cascais", "evora-alentejo"],
 };
 
@@ -254,7 +254,13 @@ const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
   wine: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
   gastronomy: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
   heritage: ["tomar-coimbra", "fatima-nazare-obidos", "sintra-cascais", "tiles-workshop"],
-  coast: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "sintra-cascais"],
+  coast: [
+    "wild-beaches-picnic",
+    "arrabida-boat",
+    "troia-comporta",
+    "sintra-cascais",
+    "southwest-vicentine-coast",
+  ],
 };
 
 const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
