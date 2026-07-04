@@ -57,11 +57,18 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         ];
 
+        // Bump SEO focus tours (Southwest Coast, Comporta, Roman/Wine Alentejo) so
+        // they surface ahead of the rest of the Signature catalog for crawlers.
+        const SEO_FOCUS_TOUR_IDS = new Set([
+          "southwest-vicentine-coast",
+          "troia-comporta",
+          "roman-heritage-alentejo",
+        ]);
         const tourEntries: SitemapEntry[] = signatureTours.map((t) => ({
           path: `/tours/${t.id}`,
           lastmod: today,
           changefreq: "monthly",
-          priority: "0.7",
+          priority: SEO_FOCUS_TOUR_IDS.has(t.id) ? "0.9" : "0.7",
         }));
         const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter(
           (a) => a.slug !== "best-day-trips-from-lisbon",
