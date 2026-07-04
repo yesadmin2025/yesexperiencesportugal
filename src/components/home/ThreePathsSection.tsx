@@ -38,7 +38,7 @@ const PATHS: Path[] = [
         Already loved. <span className="italic font-normal text-[color:var(--teal)]">Yours to shape.</span>
       </>
     ),
-    body: <>Flagship days across Lisbon, Sintra and Arrábida.</>,
+    body: <>Flagship private days across Portugal — Arrábida, Comporta, the wild Vicentine coast and hidden Alentejo.</>,
     cta: "Browse",
     href: "/experiences",
     anchor: `From €${SIGNATURE_FROM}`,

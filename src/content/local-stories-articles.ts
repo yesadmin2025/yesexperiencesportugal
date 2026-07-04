@@ -145,24 +145,154 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "troia-comporta-guide",
-    title: "Tróia & Comporta: Beaches, Ruins and Slow Alentejo Days",
+    title: "Tróia & Comporta from Lisbon — A Local's Slow Alentejo Day",
     metaDescription:
-      "Tróia, Comporta and the slow Alentejo coast — Roman ruins, rice fields, and some of Portugal's best beaches. A local's guide to a quieter day south of Lisbon.",
+      "Tróia, Comporta and the slow Alentejo coast — Roman ruins, sandy-soil wineries, palafitic piers and untouched beaches. A local's guide to a private day south of Lisbon.",
     h1: "Tróia & Comporta — Beaches, Ruins and Slow Alentejo Days",
     eyebrow: "Tróia · Comporta · Alentejo",
     standfirst:
-      "A ferry, a long beach, and a different rhythm. How we spend a day in Tróia and Comporta.",
+      "A ferry, a Roman fish-salting complex, a wooden pier on stilts, and one of Europe's most unusual wine terroirs — all in a single private day from Lisbon.",
     sections: [
-      { heading: "Crossing to Tróia", body: "[Body copy to be supplied.]" },
-      { heading: "Roman ruins few travellers see", body: "[Body copy to be supplied.]" },
-      { heading: "Comporta — the slow side", body: "[Body copy to be supplied.]" },
-      { heading: "Where to eat, where to swim", body: "[Body copy to be supplied.]" },
+      {
+        heading: "Crossing to Tróia — Lisbon behind, another Portugal ahead",
+        body: "The day begins with a short ferry over the Sado estuary. It sounds banal on paper. In practice, it's the moment the trip changes register: bottlenose dolphins live in this estuary year-round, the Serra da Arrábida drops behind you, and by the time you step off on the Tróia side you're in a landscape most travellers never see. This is not Algarve, and it is not Lisbon. It is the Alentejo coast — quieter, sandier, older.",
+      },
+      {
+        heading: "Roman ruins almost nobody visits",
+        body: "The Roman Ruins of Tróia are one of the largest fish-salting complexes in the whole Roman Empire — active from the 1st to the 5th century, sending garum (fermented fish sauce) across the Mediterranean. Standing among the salting tanks and thermal baths, with the Atlantic on one side and the estuary on the other, you understand quickly why this coast was chosen two thousand years ago and why it still feels strategic. We stop here with a licensed local guide who works with the site's archaeologists — not a script.",
+      },
+      {
+        heading: "Carrasqueira Palafítica — a working pier on stilts",
+        body: "A twenty-minute drive south, the Cais Palafítico da Carrasqueira is a wooden fishing pier built directly into the estuary mud — hand-driven stakes, no concrete, still used every day. It's one of the most photographed places in Alentejo and one of the least understood: the pier isn't a folk display, it's a live fishing infrastructure that has stayed unchanged because it works. We time the stop with the tide.",
+      },
+      {
+        heading: "Comporta and the sandy-soil wines",
+        body: "Comporta itself is the reason people fly here. Sand-floor tascas, whitewashed rice-workers' villages, dune systems that stretch uninterrupted for kilometres. What almost no one talks about is the wine: Herdade da Comporta grows vines directly on the Atlantic sand, with the ocean two hundred metres away — a terroir that exists in maybe a dozen places on Earth. The tastings there are quiet, technical, and free of the theatre you get in more famous regions.",
+      },
+      {
+        heading: "Wild beaches, and the drive back",
+        body: "If conditions allow we finish the day at Praia do Carvalhal or one of the smaller unnamed beaches south of Comporta — endless sand, no bars, no rentals, just Atlantic. The drive back to Lisbon is under 90 minutes; most guests are quiet for the first half of it. That's the sign the day landed.",
+      },
     ],
     ctaLead:
-      "We shape this day privately — ferry, ruins, beach lunch, and time to do nothing in particular.",
+      "We shape this day privately — ferry, ruins, palafitic pier, sandy-soil winery and a beach lunch, timed with the tide. One car, one licensed local host, home to Lisbon by evening.",
     ctaLabel: "See the Tróia & Comporta Signature",
     signatureSlug: "troia-comporta",
+    relatedSignatures: [
+      { slug: "southwest-vicentine-coast", label: "Southwest Vicentine Coast" },
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+    ],
     datePublished: "2026-06-06",
+  },
+  {
+    slug: "southwest-vicentine-coast-guide",
+    title: "Portugal's Southwest Coast: A Local's Guide to the Vicentine Coast",
+    metaDescription:
+      "The wild Vicentine coast from Lisbon — Porto Covo, Milfontes, Odeceixe, Aljezur. A licensed local's guide to Portugal's hidden Atlantic between Alentejo and Algarve.",
+    h1: "The Southwest Vicentine Coast — Portugal's Hidden Atlantic",
+    eyebrow: "Vicentine Coast · Alentejo · Costa",
+    standfirst:
+      "Between Alentejo and Algarve there is a coastline most travellers never see — protected, empty, cinematic. Here is how we spend a day inside it.",
+    sections: [
+      {
+        heading: "Why this coast still feels secret",
+        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects roughly 120 kilometres of Atlantic coastline south of Sines. Development is capped by law: no high-rises, no beachfront resorts, no marinas. The result is a landscape that looks the way the Algarve looked in the 1970s — whitewashed villages, cliffs, coves reached on foot, and a light most travellers associate with Greece rather than Portugal.",
+      },
+      {
+        heading: "Porto Covo and Ilha do Pessegueiro",
+        body: "Porto Covo is a tiny fishing village where the cliffs meet the ocean in dramatic drops. Just south, Ilha do Pessegueiro sits offshore with the ruins of a 17th-century fortress — this coastline was strategic long before it was scenic. It's the softest opening to the Vicentine coast; we start here so the scale of the drive south makes sense.",
+      },
+      {
+        heading: "Vila Nova de Milfontes — where the river meets the sea",
+        body: "Milfontes is the day's natural lunch stop. The Mira estuary widens into a calm river beach on one side and opens straight to the Atlantic on the other. We book a table with a small handful of family-run restaurants that grill fish the same way their grandparents did. Nothing on the menu is designed to impress a magazine.",
+      },
+      {
+        heading: "Odeceixe — the day's quiet climax",
+        body: "The Praia de Odeceixe is the natural border between Alentejo and Algarve — a rare place where a river (the Seixe) meets the ocean and splits the beach in two. Standing at the viewpoint above, you see both provinces in a single frame: calm river beach on one side, wild ocean on the other, cliffs on both ends. It's the reason we designed this day at all.",
+      },
+      {
+        heading: "Aljezur, and the road back",
+        body: "Aljezur is a Moorish hilltop town with the ruins of a 10th-century castle — the last layer of context before turning north. It's a small stop by design; by this point in the day you've absorbed a lot, and the drive back to Lisbon (about 2h30) is part of the experience, not something to minimise.",
+      },
+    ],
+    ctaLead:
+      "This is a long day (9–10h door to door) and worth every kilometre. Private car, licensed local host, lunch in Milfontes, Odeceixe as the finale — home to Lisbon by evening.",
+    ctaLabel: "See the Southwest Vicentine Coast Signature",
+    signatureSlug: "southwest-vicentine-coast",
+    relatedSignatures: [
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+    ],
+    datePublished: "2026-06-15",
+    faq: [
+      {
+        q: "Is the Vicentine coast worth the drive from Lisbon?",
+        a: "Yes, if you go private and treat the drive as part of the day. The Costa Vicentina is one of Europe's last undeveloped Atlantic coastlines — protected by law, virtually no resorts, and radically quieter than the Algarve an hour further south.",
+      },
+      {
+        q: "How long is the day from Lisbon?",
+        a: "9–10 hours door to door. About 2h15 to Porto Covo, then a slow linear route south to Odeceixe with a long lunch in Milfontes, and 2h30 back. Private car, licensed local host, hotel pickup and drop-off.",
+      },
+      {
+        q: "What's the best month to visit the Vicentine coast?",
+        a: "May–June and September–October are ideal — long light, warm sea, empty beaches. July–August is beautiful but busier in Milfontes and Odeceixe. Winter is dramatic and empty; the light is unmatched.",
+      },
+    ],
+  },
+  {
+    slug: "roman-heritage-alentejo-talha-wines",
+    title: "Roman Wines of Alentejo — A Local's Guide to Talha Wine Country",
+    metaDescription:
+      "The hidden Alentejo: São Cucufate Roman ruins, Vila Alva, and family-run talha wineries making wine in clay amphorae the Roman way. A local's guide from Lisbon.",
+    h1: "The Roman Wines of Alentejo — Talha Country, a Local's Guide",
+    eyebrow: "Alentejo · Wine · Heritage",
+    standfirst:
+      "Two thousand years of continuous winemaking in clay amphorae — a tradition kept alive by a handful of families in the villages south of Vidigueira. This is the day we designed around it.",
+    sections: [
+      {
+        heading: "What talha wine actually is",
+        body: "Talha wine is fermented and aged in large clay amphorae, buried in the ground or standing in cool cellars — the same method the Romans used across the Empire and the same method preserved almost exclusively today in a small triangle of Alentejo villages: Vila de Frades, Vila Alva, Vidigueira. Not stainless steel, not oak barrels, not modern concrete. Clay. When you taste one for the first time, it doesn't taste like any Alentejo wine you've had — it's fresher, more mineral, with a texture that comes from centuries of skin contact and slow settling.",
+      },
+      {
+        heading: "São Cucufate — a Roman villa most travellers never see",
+        body: "The Villa Romana de São Cucufate, near Vila de Frades, is one of the best-preserved Roman rural estates in the Iberian Peninsula — 1st to 4th century, later converted into a medieval monastery. The site tells the whole story of why wine ended up here at all: Roman legionaries settled this land specifically for grain, olives and wine. We visit with a licensed local host who works with the archaeological team and can walk you through the layers without a script.",
+      },
+      {
+        heading: "The Talha Wine Interpretation Centre",
+        body: "In Vila de Frades, a small interpretation centre explains the technique end-to-end: how the amphorae are made, how the pez (natural resin lining) is applied, how the wine ferments, and why San Martinho — 11 November — is the traditional first tasting day. It's a 30-minute stop, but it's the moment the winery visit that follows makes proper sense.",
+      },
+      {
+        heading: "Adega Mestre Daniel — lunch in a family talha cellar",
+        body: "This is the heart of the day. Mestre Daniel is one of the last families still fermenting exclusively in traditional talhas, and the visit is not a tourist tasting — it's lunch, in the cellar, with the family, at the family's pace. Traditional Alentejo dishes: migas, black pork, homemade bread, olive oil pressed within kilometres of the table. Wines drawn straight from the amphorae. Nobody rushes anyone. When we say slow, we mean the meal takes three hours, and that's the point.",
+      },
+      {
+        heading: "A quiet river beach to finish",
+        body: "If the season is right we finish at Albergaria dos Fusos, a small hidden river beach tucked into the countryside — a Portuguese habit foreign travellers rarely discover. Feet in the water, olive trees, no one else there. Then the drive back to Lisbon, which takes roughly 1h45.",
+      },
+    ],
+    ctaLead:
+      "This is one of the most unique wine days in Portugal — Roman ruins, ancient method, real family cellar, real long lunch. Private car, licensed local host, hotel pickup from Lisbon.",
+    ctaLabel: "See the Roman Heritage & Talha Wines Signature",
+    signatureSlug: "roman-heritage-alentejo",
+    relatedSignatures: [
+      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+    ],
+    datePublished: "2026-06-18",
+    faq: [
+      {
+        q: "What is talha wine?",
+        a: "Talha wine is wine fermented and aged in large clay amphorae, buried or standing — the method Romans used across the Empire. Today it survives almost exclusively in a handful of Alentejo villages (Vila de Frades, Vila Alva, Vidigueira), protected as a living cultural heritage.",
+      },
+      {
+        q: "Is this day different from a standard Évora wine tour?",
+        a: "Yes — completely. Évora tours visit large modern wineries and the city. This day goes deeper south into the villages, focuses on Roman heritage and a single family talha producer, and centres on a long cellar lunch rather than multiple quick tastings.",
+      },
+      {
+        q: "How long is the day and what's the pace?",
+        a: "About 10 hours door to door from Lisbon. Slow by design — one Roman site, one interpretation centre, one deep winery visit with a 2.5–3 hour lunch, and a river-beach or village stop to finish.",
+      },
+    ],
   },
   {
     slug: "is-a-wine-tour-from-lisbon-worth-it",

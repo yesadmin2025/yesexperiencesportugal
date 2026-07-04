@@ -34,7 +34,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
       </>
     ),
-    body: "Curated private days across Lisbon, Sintra, Arrábida and beyond — book as-is, or reshape within the day you love.",
+    body: "Curated private days across Portugal — Arrábida wine country, Comporta, the wild Vicentine coast, hidden Alentejo and the classics — book as-is, or reshape within the day you love.",
     cta: "Explore Signatures",
     href: "/experiences",
   },
