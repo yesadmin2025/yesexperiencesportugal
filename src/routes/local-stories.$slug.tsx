@@ -343,7 +343,7 @@ function StaticArticleView({
           </div>
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
               {article.sections.map((s, i) => (
@@ -508,7 +508,7 @@ function DbPostView({ slug }: { slug: string }) {
   if (isLoading) {
     return (
       <SiteLayout>
-        <section className="pt-40 pb-32 bg-[color:var(--ivory)] text-center">
+        <section className="pt-40 pb-32 bg-[color:var(--ivory)] text-center reveal">
           <p className="font-serif italic text-[color:var(--charcoal-soft)]">Loading…</p>
         </section>
       </SiteLayout>
@@ -556,7 +556,7 @@ function DbPostView({ slug }: { slug: string }) {
           )}
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
           <div className="container-x max-w-2xl">
             {post.excerpt && (
               <p className="font-serif italic text-[1.25rem] md:text-[1.4rem] leading-[1.55] text-[color:var(--charcoal)] mb-10 pb-10 border-b border-[color:var(--gold-soft)]/40">
@@ -610,7 +610,7 @@ function DbPostView({ slug }: { slug: string }) {
 function NotFoundView() {
   return (
     <SiteLayout>
-      <section className="py-32 text-center bg-[color:var(--ivory)]">
+      <section className="py-32 text-center bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-xl">
           <h1 className="font-display text-[1.8rem] text-[color:var(--charcoal)] mb-4">
             Story not found
@@ -631,7 +631,7 @@ function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
     <SiteLayout>
-      <section className="py-32 text-center bg-[color:var(--ivory)]">
+      <section className="py-32 text-center bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-xl">
           <h1 className="font-display text-[1.6rem] text-[color:var(--charcoal)] mb-4">
             Something went off route

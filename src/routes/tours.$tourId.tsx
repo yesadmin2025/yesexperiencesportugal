@@ -321,7 +321,7 @@ function TrustStrip({ meta }: { meta?: ViatorMeta }) {
     },
   ];
   return (
-    <section className="border-y border-[color:var(--border)] bg-[color:var(--ivory)]">
+    <section className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] reveal">
       <div className="container-x max-w-6xl py-4">
         <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
           {items.map((it) => (
@@ -341,7 +341,7 @@ function TrustStrip({ meta }: { meta?: ViatorMeta }) {
  * ════════════════════════════════════════════════════════════ */
 function IntroBlock({ tour }: { tour: SignatureTour }) {
   return (
-    <section className="py-14 md:py-20">
+    <section className="py-14 md:py-20 reveal">
       <div className="container-x max-w-3xl text-center">
         <Eyebrow flank>The day, in short</Eyebrow>
         <p className="serif mt-5 text-[1.5rem] sm:text-2xl md:text-[1.85rem] leading-snug text-[color:var(--charcoal)]">
@@ -359,7 +359,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
   const items = tour.highlights ?? [];
   if (items.length === 0) return null;
   return (
-    <section className="pb-14 md:pb-16">
+    <section className="pb-14 md:pb-16 reveal">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
@@ -404,7 +404,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
   if (chapters.length === 0) return null;
 
   return (
-    <section className="py-14 md:py-20 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)]">
+    <section className="py-14 md:py-20 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl">
         <div className="flex items-end justify-between mb-10 flex-wrap gap-3">
           <div>
@@ -500,7 +500,7 @@ function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
 
   return (
-    <section className="py-14 md:py-20">
+    <section className="py-14 md:py-20 reveal">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>The route</Eyebrow>
@@ -628,7 +628,7 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
   const hasIdeal = ideal.length > 0;
   if (!hasInc && !hasIdeal && notes.length === 0) return null;
   return (
-    <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)]">
+    <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
         {hasInc && (
           <Block icon={<Check size={14} />} title="What's included">
@@ -705,7 +705,7 @@ function GalleryStrip({
 
 
   return (
-    <section className="py-14 md:py-20">
+    <section className="py-14 md:py-20 reveal">
       <div className="container-x max-w-6xl">
         <div className="flex items-end justify-between mb-8 flex-wrap gap-3">
           <div>
@@ -802,7 +802,7 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
       : "Trusted by travelers worldwide";
 
   return (
-    <section className="py-14 md:py-20 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)]">
+    <section className="py-14 md:py-20 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)] reveal">
       <div className="container-x max-w-6xl">
         <div className="text-center mb-10">
           <Eyebrow flank tone="onDark">
@@ -858,7 +858,7 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
  * ════════════════════════════════════════════════════════════ */
 function FinalCta({ tour }: { tour: SignatureTour }) {
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden">
+    <section className="relative py-20 md:py-28 overflow-hidden reveal">
       <div className="absolute inset-0">
         <img
           src={tour.img}
@@ -942,7 +942,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
   const { resolveImg } = useImportedTourImages();
   if (others.length === 0) return null;
   return (
-    <section className="py-16 bg-[color:var(--ivory)] border-t border-[color:var(--border)]">
+    <section className="py-16 bg-[color:var(--ivory)] border-t border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl">
         <Eyebrow>More like this</Eyebrow>
         <SectionTitle size="compact">
