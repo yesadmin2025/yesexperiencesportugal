@@ -45,6 +45,15 @@ export type HomeMotionTelemetry = {
   reducedMotion: boolean;
   ready: boolean;
   active: boolean;
+  /** Lightweight perf counters — populated only when the controller is active. */
+  lowPower?: boolean;
+  sweepCount?: number;
+  sweepMsTotal?: number;
+  sweepMsMax?: number;
+  firstTriggerMs?: number;
+  lastTriggerMs?: number;
+  longtaskMsTotal?: number;
+  longtaskCount?: number;
 };
 
 declare global {
