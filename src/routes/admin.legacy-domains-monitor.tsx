@@ -41,7 +41,15 @@ function toneFor(report: LegacyHostReport): "ok" | "warn" | "bad" {
   return "warn";
 }
 
-function HostCard({ r }: { r: LegacyHostReport }) {
+function HostCard({
+  r,
+  onProbe,
+  probing,
+}: {
+  r: LegacyHostReport;
+  onProbe: () => void;
+  probing: boolean;
+}) {
   const tone = toneFor(r);
   return (
     <article className="rounded-lg border border-[color:var(--sand)] bg-white p-5">
@@ -53,9 +61,18 @@ function HostCard({ r }: { r: LegacyHostReport }) {
             <p className="mt-0.5 text-xs text-[color:var(--charcoal-soft)]">{r.verdict}</p>
           </div>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-          {new Date(r.checkedAt).toLocaleTimeString("pt-PT")}
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            {new Date(r.checkedAt).toLocaleTimeString("pt-PT")}
+          </span>
+          <button
+            onClick={onProbe}
+            disabled={probing}
+            className="rounded-full border border-[color:var(--teal)] px-3 py-1 text-[11px] font-medium text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white disabled:opacity-60"
+          >
+            {probing ? "a sondar…" : "Sondar agora"}
+          </button>
+        </div>
       </header>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
