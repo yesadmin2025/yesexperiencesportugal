@@ -6,7 +6,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 
-const TITLE = "About YES Experiences Portugal | Founder-Built Private Travel Platform";
+const TITLE = "About YES Experiences Portugal | Founder-Built Travel";
 const DESCRIPTION =
   "YES Experiences Portugal is a licensed private travel platform, founder-built from guest behaviour, live-designed experiences and local expertise across Portugal.";
 
