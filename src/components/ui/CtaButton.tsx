@@ -55,8 +55,8 @@ type ButtonCtaProps = CommonProps &
 export type CtaButtonProps = LinkCtaProps | AnchorCtaProps | ButtonCtaProps;
 
 const sizeClasses: Record<Size, string> = {
-  md: "px-7 py-3.5 min-h-[48px] text-[11px] sm:text-[11.5px] tracking-[0.25em]",
-  sm: "px-5 py-3 min-h-[44px] text-[11px] tracking-[0.22em]",
+  md: "px-6 py-3.5 min-h-[52px] text-[11px] sm:text-[11.5px] tracking-[0.22em]",
+  sm: "px-5 py-3 min-h-[46px] text-[11px] tracking-[0.22em]",
 };
 
 const baseClasses =
