@@ -3549,6 +3549,7 @@ html.motion-ready [data-motion].motion-in {
       border-color 280ms ease;
   }
   .home-energy .he-card-lift:hover,
+  .home-energy .he-card-lift:focus-visible,
   .home-energy .he-card-lift:focus-within {
     transform: translateY(-4px) scale(1.006);
     box-shadow:
@@ -3599,10 +3600,12 @@ html.motion-ready [data-motion].motion-in {
     z-index: 1;
   }
   .home-energy .he-card-lift:hover::before,
+  .home-energy .he-card-lift:focus-visible,
   .home-energy .he-card-lift:focus-within::before {
     opacity: 1;
   }
   .home-energy .he-card-lift:hover::after,
+  .home-energy .he-card-lift:focus-visible,
   .home-energy .he-card-lift:focus-within::after {
     transform: translateX(115%);
     box-shadow: inset 0 0 0 1px rgba(201, 169, 106, 0.28);
@@ -3629,11 +3632,13 @@ html.motion-ready [data-motion].motion-in {
       transition: none !important;
     }
     .home-energy .he-card-lift:hover,
-    .home-energy .he-card-lift:focus-within {
+    .home-energy .he-card-lift:focus-visible,
+  .home-energy .he-card-lift:focus-within {
       transform: none !important;
     }
     .home-energy .he-card-lift:hover::after,
-    .home-energy .he-card-lift:focus-within::after {
+    .home-energy .he-card-lift:focus-visible,
+  .home-energy .he-card-lift:focus-within::after {
       transform: translateX(-115%) !important;
     }
   }
@@ -3880,6 +3885,7 @@ html.motion-ready [data-motion].motion-in {
                 opacity 320ms ease;
   }
   .home-energy .he-card-lift:hover .he-num::after,
+  .home-energy .he-card-lift:focus-visible,
   .home-energy .he-card-lift:focus-within .he-num::after {
     transform: scaleX(1);
     opacity: 0.9;
