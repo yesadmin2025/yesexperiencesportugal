@@ -1,19 +1,19 @@
 /**
- * PaymentMethodsRow — discreet payment-acceptance strip for the footer.
+ * PaymentMethodsRow — accepted payment methods strip for the footer.
  *
- * Pure visual trust strip. No partner names exposed beyond the actual
- * payment brands a guest will see at checkout (cards + wallets).
- * Inline SVG marks so there are no external requests.
- *
- * Sprint A v5: positioned above the bottom legal bar in `<Footer />`.
+ * Shows the real methods a guest can use at checkout:
+ * cards (Visa, Mastercard, Amex), PayPal, MB Way, Apple Pay, Google Pay.
+ * Inline SVG marks so there are no external requests and the row is
+ * layout-stable across breakpoints.
  */
 
 import type { ReactNode } from "react";
 
 type Mark = { id: string; label: string; svg: ReactNode };
 
-// Brand-safe simplified marks — typographic + neutral palette so they
-// sit elegantly on the charcoal footer without screaming OTA.
+// Neutral typographic marks — legible on the charcoal footer without
+// mimicking official brand lockups. Height is uniform (h-4) so the row
+// never reflows across breakpoints.
 const MARKS: Mark[] = [
   {
     id: "visa",
@@ -40,9 +40,9 @@ const MARKS: Mark[] = [
     id: "mastercard",
     label: "Mastercard",
     svg: (
-      <svg viewBox="0 0 32 20" aria-hidden="true" className="h-5 w-auto">
-        <circle cx="12" cy="10" r="7" fill="currentColor" opacity="0.85" />
-        <circle cx="20" cy="10" r="7" fill="currentColor" opacity="0.45" />
+      <svg viewBox="0 0 32 16" aria-hidden="true" className="h-4 w-auto">
+        <circle cx="13" cy="8" r="6" fill="currentColor" opacity="0.85" />
+        <circle cx="19" cy="8" r="6" fill="currentColor" opacity="0.45" />
       </svg>
     ),
   },
@@ -50,9 +50,9 @@ const MARKS: Mark[] = [
     id: "amex",
     label: "American Express",
     svg: (
-      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
+      <svg viewBox="0 0 48 16" aria-hidden="true" className="h-4 w-auto">
         <text
-          x="28"
+          x="24"
           y="12"
           textAnchor="middle"
           fontFamily="Inter, system-ui, sans-serif"
@@ -67,8 +67,71 @@ const MARKS: Mark[] = [
     ),
   },
   {
+    id: "paypal",
+    label: "PayPal",
+    svg: (
+      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
+        <text
+          x="28"
+          y="12"
+          textAnchor="middle"
+          fontFamily="Inter, system-ui, sans-serif"
+          fontWeight={700}
+          fontStyle="italic"
+          fontSize="10"
+          fill="currentColor"
+          letterSpacing="0.01em"
+        >
+          PayPal
+        </text>
+      </svg>
+    ),
+  },
+  {
+    id: "mbway",
+    label: "MB Way",
+    svg: (
+      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
+        <text
+          x="28"
+          y="12"
+          textAnchor="middle"
+          fontFamily="Inter, system-ui, sans-serif"
+          fontWeight={700}
+          fontSize="9"
+          fill="currentColor"
+          letterSpacing="0.08em"
+        >
+          MB WAY
+        </text>
+      </svg>
+    ),
+  },
+  {
     id: "apple-pay",
     label: "Apple Pay",
+    svg: (
+      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
+        <g fill="currentColor">
+          <path d="M11.5 5.4c-.4.5-1.1.9-1.7.8-.1-.7.2-1.4.6-1.8.4-.5 1.1-.8 1.7-.9.1.7-.2 1.4-.6 1.9zm.6.9c-.9-.1-1.7.5-2.1.5-.5 0-1.1-.5-1.9-.5-1 0-1.9.6-2.4 1.5-1 1.7-.3 4.3.7 5.7.5.7 1 1.5 1.8 1.4.7 0 1-.5 1.9-.5s1.1.5 1.9.5c.8 0 1.3-.7 1.8-1.4.6-.8.8-1.5.8-1.6 0 0-1.6-.6-1.6-2.4 0-1.5 1.2-2.2 1.3-2.3-.7-1-1.8-1.1-2.2-1.1z" />
+          <text
+            x="34"
+            y="12"
+            fontFamily="Inter, system-ui, sans-serif"
+            fontWeight={600}
+            fontSize="9"
+            fill="currentColor"
+            letterSpacing="0.02em"
+          >
+            Pay
+          </text>
+        </g>
+      </svg>
+    ),
+  },
+  {
+    id: "google-pay",
+    label: "Google Pay",
     svg: (
       <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
         <text
@@ -79,49 +142,9 @@ const MARKS: Mark[] = [
           fontWeight={600}
           fontSize="9"
           fill="currentColor"
-          letterSpacing="0.04em"
-        >
-          🍎 Pay
-        </text>
-      </svg>
-    ),
-  },
-  {
-    id: "google-pay",
-    label: "Google Pay",
-    svg: (
-      <svg viewBox="0 0 64 16" aria-hidden="true" className="h-4 w-auto">
-        <text
-          x="32"
-          y="12"
-          textAnchor="middle"
-          fontFamily="Inter, system-ui, sans-serif"
-          fontWeight={600}
-          fontSize="9"
-          fill="currentColor"
-          letterSpacing="0.04em"
+          letterSpacing="0.02em"
         >
           G Pay
-        </text>
-      </svg>
-    ),
-  },
-  {
-    id: "link",
-    label: "Link",
-    svg: (
-      <svg viewBox="0 0 44 16" aria-hidden="true" className="h-4 w-auto">
-        <text
-          x="22"
-          y="12"
-          textAnchor="middle"
-          fontFamily="Inter, system-ui, sans-serif"
-          fontWeight={600}
-          fontSize="9"
-          fill="currentColor"
-          letterSpacing="0.06em"
-        >
-          Link
         </text>
       </svg>
     ),
@@ -136,16 +159,16 @@ export function PaymentMethodsRow() {
           className="font-[family-name:var(--font-sans)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/65"
           style={{ fontWeight: 500 }}
         >
-          Secure payment
+          Accepted payment methods
         </p>
         <ul
-          className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[color:var(--ivory)]/85"
-          aria-label="Accepted payment methods"
+          className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[color:var(--ivory)]/90"
+          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, MB Way, Apple Pay, Google Pay"
         >
           {MARKS.map((m) => (
             <li
               key={m.id}
-              className="inline-flex items-center justify-center h-7 px-2 rounded-[3px] ring-1 ring-[color:var(--ivory)]/15"
+              className="inline-flex items-center justify-center h-7 min-w-[3rem] px-2.5 rounded-[3px] bg-[color:var(--ivory)]/[0.04] ring-1 ring-[color:var(--ivory)]/15"
               title={m.label}
             >
               <span className="sr-only">{m.label}</span>
