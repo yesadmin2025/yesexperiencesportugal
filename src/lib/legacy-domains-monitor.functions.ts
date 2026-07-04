@@ -91,7 +91,7 @@ async function probeHttp(scheme: "http" | "https", host: string): Promise<HttpPr
 export const probeLegacyDomains = createServerFn({ method: "GET" }).handler(
   async (): Promise<LegacyHostReport[]> => {
     const hosts = Array.from(LEGACY_HOSTS);
-    return await Promise.all(
+    const reports = await Promise.all(
       hosts.map(async (host) => {
         const checkedAt = new Date().toISOString();
         const [aRes, aaaaRes, cnameRes, nsRes] = await Promise.allSettled([
@@ -136,8 +136,127 @@ export const probeLegacyDomains = createServerFn({ method: "GET" }).handler(
           http: probes,
           compliant410,
           verdict,
-        };
+        } satisfies LegacyHostReport;
       }),
     );
+
+    // Persist probe + evaluate "all ready" transition. Fire-and-forget: never
+    // block the UI response on logging/alerting.
+    void persistAndAlert(reports).catch((e) =>
+      console.error("[legacy-monitor] persist/alert failed", e),
+    );
+
+    return reports;
   },
 );
+
+async function persistAndAlert(reports: LegacyHostReport[]): Promise<void> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const LOVABLE_A = "185.158.133.1";
+
+  // 1) Append one row per host to dns_watch_log.
+  const rows = reports.map((r) => {
+    const aRecs = r.dns.a.map((x) => x.data);
+    const pointsToLovable = aRecs.includes(LOVABLE_A);
+    const bestStatus =
+      r.http.find((p) => typeof p.status === "number")?.status ?? null;
+    return {
+      host: r.host,
+      checked_at: r.checkedAt,
+      a_records: aRecs,
+      points_to_lovable: pointsToLovable,
+      http_status: bestStatus,
+      http_ok: r.http.some((p) => p.ok === true),
+      ready: r.compliant410,
+      notes: r.verdict,
+      raw: JSON.parse(JSON.stringify(r)),
+    };
+  });
+  await supabaseAdmin.from("dns_watch_log").insert(rows);
+
+  // 2) Compute all-ready and detect transition.
+  const allReady = reports.length > 0 && reports.every((r) => r.compliant410);
+  const { data: state } = await supabaseAdmin
+    .from("dns_watch_state")
+    .select("all_ready, ready_since, last_notified_at")
+    .eq("key", "legacy-domains")
+    .maybeSingle();
+
+  const wasReady = !!state?.all_ready;
+  const lastNotifiedAt = state?.last_notified_at
+    ? new Date(state.last_notified_at).getTime()
+    : 0;
+  const hoursSinceNotified = (Date.now() - lastNotifiedAt) / 36e5;
+
+  const shouldAlert = allReady && (!wasReady || hoursSinceNotified > 24 * 7);
+
+  await supabaseAdmin.from("dns_watch_state").upsert(
+    {
+      key: "legacy-domains",
+      all_ready: allReady,
+      ready_since: allReady ? (state?.ready_since ?? new Date().toISOString()) : null,
+      last_notified_at: shouldAlert ? new Date().toISOString() : (state?.last_notified_at ?? null),
+      last_summary: JSON.parse(
+        JSON.stringify(
+          reports.map((r) => ({
+            host: r.host,
+            compliant410: r.compliant410,
+            verdict: r.verdict,
+          })),
+        ),
+      ),
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "key" },
+  );
+
+  if (shouldAlert) {
+    const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+    await sendTransactionalInternal({
+      templateName: "legacy-domain-ready",
+      recipientEmail: "info@yesexperiencesportugal.com",
+      idempotencyKey: `legacy-ready-${new Date().toISOString().slice(0, 10)}`,
+      templateData: {
+        detectedAt: new Date().toISOString(),
+        hosts: reports.map((r) => ({
+          host: r.host,
+          status: r.http.find((p) => typeof p.status === "number")?.status ?? null,
+          verdict: r.verdict,
+          aRecords: r.dns.a.map((x) => x.data),
+        })),
+      },
+    });
+  }
+}
+
+// ── History for the admin dashboard chart ────────────────────────────────
+
+export type HistoryPoint = {
+  checkedAt: string;
+  host: string;
+  httpStatus: number | null;
+  pointsToLovable: boolean;
+  ready: boolean;
+};
+
+export const getLegacyDomainsHistory = createServerFn({ method: "GET" }).handler(
+  async (): Promise<HistoryPoint[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+    const { data, error } = await supabaseAdmin
+      .from("dns_watch_log")
+      .select("host, checked_at, http_status, points_to_lovable, ready")
+      .gte("checked_at", since)
+      .order("checked_at", { ascending: true })
+      .limit(2000);
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((r) => ({
+      checkedAt: r.checked_at as string,
+      host: r.host as string,
+      httpStatus: (r.http_status as number | null) ?? null,
+      pointsToLovable: !!r.points_to_lovable,
+      ready: !!r.ready,
+    }));
+  },
+);
+
