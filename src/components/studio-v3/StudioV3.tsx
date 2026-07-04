@@ -2264,13 +2264,26 @@ function RevealRouteMap({
   const byLabel = new Map(
     resolved.routePoints.map((p) => [p.label.toLowerCase(), p] as const),
   );
+  const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
+  const originCoord = REGION_ORIGIN[rk]
+    ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
+    : null;
+
+  // Resolve coords per stop with a graceful chain so geographic mode engages
+  // whenever we have an origin, instead of collapsing to the schematic S-curve
+  // when a single label misses the catalog. Unresolved stops inherit the last
+  // known coord — we never invent new locations, we cluster the label to its
+  // regional anchor.
+  let lastKnown: { lat: number; lng: number } | null = originCoord;
   const stopsDetailed = editedStops.map((s) => {
     const rp = byLabel.get(s.label.toLowerCase());
     if (rp && rp.lat != null && rp.lng != null) {
+      lastKnown = { lat: rp.lat, lng: rp.lng };
       return { label: s.label, lat: rp.lat, lng: rp.lng };
     }
     const geo = lookupStopGeo(s.label);
     if (geo) {
+      lastKnown = { lat: geo.lat, lng: geo.lng };
       return {
         label: s.label,
         lat: geo.lat,
@@ -2279,19 +2292,18 @@ function RevealRouteMap({
         kind: geo.kind,
       };
     }
+    if (lastKnown) {
+      return { label: s.label, lat: lastKnown.lat, lng: lastKnown.lng };
+    }
     return { label: s.label };
   });
-  const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
-  const originCoord = REGION_ORIGIN[rk]
-    ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
-    : null;
 
-  // Build OSRM input only when every leg has real coordinates; otherwise
-  // skip the network call and let the map fall back to haversine.
+  // OSRM: dedupe consecutive identical coords so an inherited fallback stop
+  // does not produce a spurious 0-min leg between two identical points.
   const allGeo = originCoord && stopsDetailed.every(
     (s) => typeof (s as { lat?: number }).lat === "number" && typeof (s as { lng?: number }).lng === "number",
   );
-  const routeStops: RouteLegStop[] | null = allGeo
+  const rawStops: RouteLegStop[] | null = allGeo
     ? [
         { key: "origin", lat: originCoord!.lat, lng: originCoord!.lng },
         ...stopsDetailed.map((s, i) => ({
@@ -2301,7 +2313,10 @@ function RevealRouteMap({
         })),
       ]
     : null;
-  const { legMinutes } = useRouteLegMinutes(routeStops, !!allGeo);
+  const routeStops: RouteLegStop[] | null = rawStops
+    ? rawStops.filter((s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng)
+    : null;
+  const { legMinutes } = useRouteLegMinutes(routeStops, !!routeStops && routeStops.length >= 2);
 
   return (
     <StudioV3SignatureMap
