@@ -235,39 +235,37 @@ function TourHero({
               style={{ objectPosition: tour.focal ?? "50% 50%" }}
               className="w-full h-full object-cover motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
             />
+          </div>
 
-            <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/85 via-[color:var(--charcoal-deep)]/15 to-transparent" />
+          {/* Editorial header — title, blurb and meta sit BELOW the hero
+              so the cinematic image reads as a single quiet frame. */}
+          <div className="mt-6 sm:mt-8">
+            <Eyebrow>Signature Experience</Eyebrow>
+            <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
+              {tour.title}
+            </h1>
+            <p className="serif italic font-light mt-4 text-[15px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">
+              {tour.blurb}
+            </p>
 
-            {/* Bottom hero copy — premium editorial layout */}
-            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 md:p-12 text-[color:var(--ivory)]">
-              <Eyebrow tone="onDark">Signature Experience</Eyebrow>
-              <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] tracking-[-0.015em] max-w-3xl">
-                {tour.title}
-              </h1>
-              <p className="serif italic font-light mt-4 text-[15px] sm:text-lg md:text-xl text-[color:var(--ivory)]/90 max-w-xl leading-snug">
-                {tour.blurb}
-              </p>
-
-              {/* Clean meta row — region · duration. Price is confirmed at booking. */}
-              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/85">
-                <span className="flex items-center gap-2">
-                  <MapPin size={12} className="text-[color:var(--gold-soft)]" /> {tour.region}
-                </span>
-                <span aria-hidden className="h-3 w-px bg-[color:var(--ivory)]/30" />
-                <span className="flex items-center gap-2">
-                  <Clock size={12} className="text-[color:var(--gold-soft)]" /> {tour.durationHours}
-                </span>
-                {meta && meta.reviewCount > 0 && (
-                  <>
-                    <span aria-hidden className="h-3 w-px bg-[color:var(--ivory)]/30" />
-                    <span className="flex items-center gap-1.5 normal-case tracking-normal text-[12px]">
-                      <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold-soft)]" />
-                      <span className="font-semibold">{meta.rating.toFixed(1)}</span>
-                      <span className="text-[color:var(--ivory)]/70">· {meta.reviewCount} reviews</span>
-                    </span>
-                  </>
-                )}
-              </div>
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+              <span className="flex items-center gap-2">
+                <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
+              </span>
+              <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
+              <span className="flex items-center gap-2">
+                <Clock size={12} className="text-[color:var(--gold)]" /> {tour.durationHours}
+              </span>
+              {meta && meta.reviewCount > 0 && (
+                <>
+                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
+                  <span className="flex items-center gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
+                    <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
+                    <span className="font-semibold">{meta.rating.toFixed(1)}</span>
+                    <span className="text-[color:var(--charcoal-soft)]">· {meta.reviewCount} reviews</span>
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
