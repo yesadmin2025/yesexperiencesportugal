@@ -12,6 +12,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
+import { SiteLayout } from "@/components/SiteLayout";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import { CtaButton } from "@/components/ui/CtaButton";
 import {
   getGlobalReviewStats,
   getTourReviewStats,
@@ -178,110 +182,113 @@ function ReviewsPage() {
   }, [globalFn, statsFn, reviewsFn]);
 
   return (
-    <main className="max-w-5xl mx-auto px-5 md:px-8 py-14">
-      <header className="text-center">
-        <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/55">
-          Real guest reviews
-        </div>
-        <h1 className="serif mt-2 text-[2.2rem] md:text-[3rem] leading-tight font-medium text-[color:var(--charcoal)]">
-          What guests <span className="italic font-normal text-[color:var(--teal)]">actually</span> say.
-        </h1>
-        {global.total_reviews >= 25 && (
-          <p className="mt-4 text-[1.05rem] text-[color:var(--charcoal)]/80">
-            <span className="tabular-nums">
-              {global.total_reviews.toLocaleString("en-US")}
-            </span>{" "}
-            reviews
-            {global.average_rating && (
-              <>
-                {" "}
-                · <span className="tabular-nums">{global.average_rating.toFixed(1)}</span>★
-              </>
-            )}{" "}
-            across platforms.
-          </p>
-        )}
-        <p className="mt-3 text-[12.5px] text-[color:var(--charcoal)]/60">
-          Based on verified guest reviews across major booking platforms.
-        </p>
-      </header>
+    <SiteLayout>
+      <article>
+        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+          <div className="container-x max-w-3xl text-center">
+            <Eyebrow flank>Real guest reviews</Eyebrow>
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              What guests <SectionTitle.Em>actually</SectionTitle.Em> say.
+            </SectionTitle>
+            {global.total_reviews >= 25 && (
+              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
+                <span className="tabular-nums">
+                  {global.total_reviews.toLocaleString("en-US")}
+                </span>{" "}
+                reviews
+                {global.average_rating && (
+                  <>
+                    {" "}
+                    · <span className="tabular-nums">{global.average_rating.toFixed(1)}</span>★
+                  </>
+                )}{" "}
+                across platforms.
+              </p>
+            )}
+            <p className="mt-4 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
+              Based on verified guest reviews across major booking platforms.
+            </p>
+          </div>
+        </header>
 
-      <section className="mt-14 space-y-14">
-        {TOUR_IDS.filter((id) => bundles[id]).map((id) => {
-          const b = bundles[id];
-          if (!b) return null;
-          return (
-            <article key={id}>
-              <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-[color:var(--charcoal)]/10 pb-3">
-                <Link
-                  to="/tours/$tourId"
-                  params={{ tourId: id }}
-                  className="serif text-[1.4rem] md:text-[1.7rem] font-medium text-[color:var(--charcoal)] hover:underline underline-offset-4"
-                >
-                  {findTour(id)?.title ?? id}
-                </Link>
-                <div className="text-sm text-[color:var(--charcoal)]/70">
-                  {b.stats.average_rating && (
-                    <>
-                      <span className="tabular-nums">
-                        {b.stats.average_rating.toFixed(1)}
-                      </span>
-                      ★ ·{" "}
-                    </>
-                  )}
-                  <span className="tabular-nums">{b.stats.total_reviews}</span> reviews
-                </div>
-              </header>
-
-              {b.reviews.length > 0 ? (
-                <ul className="mt-5 grid gap-4 md:grid-cols-2 list-none p-0">
-                  {b.reviews.map((r) => (
-                    <li
-                      key={r.id}
-                      className="rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-5"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <Stars rating={r.rating} />
-                        <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55">
-                          {r.is_first_party
-                            ? "Verified guest"
-                            : `via ${SOURCE_LABEL[r.source]}`}
-                        </span>
+        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
+          <div className="container-x max-w-5xl">
+            <div className="space-y-16 md:space-y-20">
+              {TOUR_IDS.filter((id) => bundles[id]).map((id) => {
+                const b = bundles[id];
+                if (!b) return null;
+                return (
+                  <article key={id}>
+                    <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-[color:var(--gold-soft)]/40 pb-4">
+                      <Link
+                        to="/tours/$tourId"
+                        params={{ tourId: id }}
+                        className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+                      >
+                        {findTour(id)?.title ?? id}
+                      </Link>
+                      <div className="font-sans text-[13px] text-[color:var(--charcoal-soft)]">
+                        {b.stats.average_rating && (
+                          <>
+                            <span className="tabular-nums">
+                              {b.stats.average_rating.toFixed(1)}
+                            </span>
+                            ★ ·{" "}
+                          </>
+                        )}
+                        <span className="tabular-nums">{b.stats.total_reviews}</span> reviews
                       </div>
-                      {r.title && (
-                        <p className="mt-3 font-medium text-[color:var(--charcoal)]">
-                          {r.title}
-                        </p>
-                      )}
-                      <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--charcoal)]/85">
-                        {r.body}
-                      </p>
-                      <p className="mt-3 text-[12px] text-[color:var(--charcoal)]/60">
-                        {r.reviewer_name ?? "Guest"}
-                        {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-4 text-sm text-[color:var(--charcoal)]/60">
-                  Aggregate data above is verified from the platform listing. Curated
-                  quotes will appear here as guests submit them.
-                </p>
-              )}
-            </article>
-          );
-        })}
-      </section>
+                    </header>
 
-      <footer className="mt-16 text-center">
-        <Link
-          to="/experiences"
-          className="inline-block text-sm underline underline-offset-4"
-        >
-          Browse all Signature experiences →
-        </Link>
-      </footer>
-    </main>
+                    {b.reviews.length > 0 ? (
+                      <ul className="mt-6 grid gap-5 md:grid-cols-2 list-none p-0">
+                        {b.reviews.map((r) => (
+                          <li
+                            key={r.id}
+                            className="rounded-[2px] border border-[color:var(--gold-soft)]/40 bg-[color:var(--ivory)] p-6"
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <Stars rating={r.rating} />
+                              <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                                {r.is_first_party
+                                  ? "Verified guest"
+                                  : `via ${SOURCE_LABEL[r.source]}`}
+                              </span>
+                            </div>
+                            {r.title && (
+                              <p className="mt-3 font-display font-semibold text-[15px] text-[color:var(--charcoal)]">
+                                {r.title}
+                              </p>
+                            )}
+                            <p className="mt-2 text-[14px] text-[color:var(--charcoal)] leading-[1.75]">
+                              {r.body}
+                            </p>
+                            <p className="mt-3 font-sans text-[12px] text-[color:var(--charcoal-soft)]">
+                              {r.reviewer_name ?? "Guest"}
+                              {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-5 font-sans text-[13px] text-[color:var(--charcoal-soft)]">
+                        Aggregate data above is verified from the platform listing. Curated
+                        quotes will appear here as guests submit them.
+                      </p>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+
+            <aside className="mt-20 pt-12 border-t border-[color:var(--gold-soft)]/40 text-center">
+              <CtaButton to="/experiences" variant="primary">
+                Browse all Signature experiences
+              </CtaButton>
+            </aside>
+          </div>
+        </section>
+      </article>
+    </SiteLayout>
   );
 }
