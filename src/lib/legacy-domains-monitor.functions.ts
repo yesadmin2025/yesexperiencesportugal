@@ -88,57 +88,57 @@ async function probeHttp(scheme: "http" | "https", host: string): Promise<HttpPr
   }
 }
 
+async function probeOneHost(host: string): Promise<LegacyHostReport> {
+  const checkedAt = new Date().toISOString();
+  const [aRes, aaaaRes, cnameRes, nsRes] = await Promise.allSettled([
+    dohQuery(host, "A"),
+    dohQuery(host, "AAAA"),
+    dohQuery(host, "CNAME"),
+    dohQuery(host, "NS"),
+  ]);
+  const unwrap = (r: PromiseSettledResult<DnsRecord[]>) =>
+    r.status === "fulfilled" ? r.value : [];
+  const dnsError = [aRes, aaaaRes, cnameRes, nsRes]
+    .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+    .map((r) => String(r.reason))
+    .join("; ");
+
+  const [https, http] = await Promise.all([probeHttp("https", host), probeHttp("http", host)]);
+  const probes = [https, http];
+  const compliant410 = probes.some((p) => p.status === 410 && !p.location);
+  const anySuccess = probes.some((p) => typeof p.status === "number");
+
+  let verdict: string;
+  if (!anySuccess) verdict = "Sem resposta HTTP (DNS pode não apontar para nós)";
+  else if (compliant410) verdict = "✓ 410 Gone conforme — sem Location";
+  else if (probes.some((p) => p.status === 410 && p.location))
+    verdict = "⚠ 410 mas com Location — não conforme";
+  else if (probes.some((p) => p.status && p.status >= 300 && p.status < 400))
+    verdict = "⚠ Redirect ativo (esperado 410)";
+  else if (probes.some((p) => p.status === 200))
+    verdict = "⚠ HTTP 200 — domínio ainda serve conteúdo legacy";
+  else verdict = "⚠ Resposta inesperada — verificar manualmente";
+
+  return {
+    host,
+    checkedAt,
+    dns: {
+      a: unwrap(aRes),
+      aaaa: unwrap(aaaaRes),
+      cname: unwrap(cnameRes),
+      ns: unwrap(nsRes),
+      error: dnsError || undefined,
+    },
+    http: probes,
+    compliant410,
+    verdict,
+  } satisfies LegacyHostReport;
+}
+
 export const probeLegacyDomains = createServerFn({ method: "GET" }).handler(
   async (): Promise<LegacyHostReport[]> => {
     const hosts = Array.from(LEGACY_HOSTS);
-    const reports = await Promise.all(
-      hosts.map(async (host) => {
-        const checkedAt = new Date().toISOString();
-        const [aRes, aaaaRes, cnameRes, nsRes] = await Promise.allSettled([
-          dohQuery(host, "A"),
-          dohQuery(host, "AAAA"),
-          dohQuery(host, "CNAME"),
-          dohQuery(host, "NS"),
-        ]);
-        const unwrap = (r: PromiseSettledResult<DnsRecord[]>) =>
-          r.status === "fulfilled" ? r.value : [];
-        const dnsError = [aRes, aaaaRes, cnameRes, nsRes]
-          .filter((r): r is PromiseRejectedResult => r.status === "rejected")
-          .map((r) => String(r.reason))
-          .join("; ");
-
-        const [https, http] = await Promise.all([probeHttp("https", host), probeHttp("http", host)]);
-        const probes = [https, http];
-        const compliant410 = probes.some((p) => p.status === 410 && !p.location);
-        const anySuccess = probes.some((p) => typeof p.status === "number");
-
-        let verdict: string;
-        if (!anySuccess) verdict = "Sem resposta HTTP (DNS pode não apontar para nós)";
-        else if (compliant410) verdict = "✓ 410 Gone conforme — sem Location";
-        else if (probes.some((p) => p.status === 410 && p.location))
-          verdict = "⚠ 410 mas com Location — não conforme";
-        else if (probes.some((p) => p.status && p.status >= 300 && p.status < 400))
-          verdict = "⚠ Redirect ativo (esperado 410)";
-        else if (probes.some((p) => p.status === 200))
-          verdict = "⚠ HTTP 200 — domínio ainda serve conteúdo legacy";
-        else verdict = "⚠ Resposta inesperada — verificar manualmente";
-
-        return {
-          host,
-          checkedAt,
-          dns: {
-            a: unwrap(aRes),
-            aaaa: unwrap(aaaaRes),
-            cname: unwrap(cnameRes),
-            ns: unwrap(nsRes),
-            error: dnsError || undefined,
-          },
-          http: probes,
-          compliant410,
-          verdict,
-        } satisfies LegacyHostReport;
-      }),
-    );
+    const reports = await Promise.all(hosts.map((h) => probeOneHost(h)));
 
     // Persist probe + evaluate "all ready" transition. Fire-and-forget: never
     // block the UI response on logging/alerting.
@@ -149,6 +149,48 @@ export const probeLegacyDomains = createServerFn({ method: "GET" }).handler(
     return reports;
   },
 );
+
+/**
+ * Force an immediate probe of a single legacy host. Used by the admin panel
+ * "Sondar agora" button. Persists the result and re-evaluates the ready state
+ * against the most recent snapshot of the other hosts.
+ */
+export const probeLegacyHost = createServerFn({ method: "POST" })
+  .inputValidator((input: { host: string }) => {
+    if (!input?.host || typeof input.host !== "string") {
+      throw new Error("host is required");
+    }
+    if (!(LEGACY_HOSTS as ReadonlySet<string>).has(input.host)) {
+      throw new Error(`host ${input.host} is not a legacy host`);
+    }
+    return { host: input.host };
+  })
+  .handler(async ({ data }): Promise<LegacyHostReport> => {
+    const report = await probeOneHost(data.host);
+
+    void (async () => {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const otherHosts = Array.from(LEGACY_HOSTS as ReadonlySet<string>).filter((h) => h !== data.host);
+        const latestOthers: LegacyHostReport[] = [];
+        for (const h of otherHosts) {
+          const { data: row } = await supabaseAdmin
+            .from("dns_watch_log")
+            .select("raw")
+            .eq("host", h)
+            .order("checked_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (row?.raw) latestOthers.push(row.raw as unknown as LegacyHostReport);
+        }
+        await persistAndAlert([report, ...latestOthers]);
+      } catch (e) {
+        console.error("[legacy-monitor] single-host persist failed", e);
+      }
+    })();
+
+    return report;
+  });
 
 async function persistAndAlert(reports: LegacyHostReport[]): Promise<void> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

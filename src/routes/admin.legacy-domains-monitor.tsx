@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   probeLegacyDomains,
+  probeLegacyHost,
   type LegacyHostReport,
 } from "@/lib/legacy-domains-monitor.functions";
 import {
@@ -40,7 +41,15 @@ function toneFor(report: LegacyHostReport): "ok" | "warn" | "bad" {
   return "warn";
 }
 
-function HostCard({ r }: { r: LegacyHostReport }) {
+function HostCard({
+  r,
+  onProbe,
+  probing,
+}: {
+  r: LegacyHostReport;
+  onProbe: () => void;
+  probing: boolean;
+}) {
   const tone = toneFor(r);
   return (
     <article className="rounded-lg border border-[color:var(--sand)] bg-white p-5">
@@ -52,9 +61,18 @@ function HostCard({ r }: { r: LegacyHostReport }) {
             <p className="mt-0.5 text-xs text-[color:var(--charcoal-soft)]">{r.verdict}</p>
           </div>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-          {new Date(r.checkedAt).toLocaleTimeString("pt-PT")}
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            {new Date(r.checkedAt).toLocaleTimeString("pt-PT")}
+          </span>
+          <button
+            onClick={onProbe}
+            disabled={probing}
+            className="rounded-full border border-[color:var(--teal)] px-3 py-1 text-[11px] font-medium text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white disabled:opacity-60"
+          >
+            {probing ? "a sondar…" : "Sondar agora"}
+          </button>
+        </div>
       </header>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -177,12 +195,32 @@ function DnsRow({ label, rows }: { label: string; rows: { data: string; TTL?: nu
 
 function LegacyDomainsMonitorPage() {
   const probe = useServerFn(probeLegacyDomains);
+  const probeOne = useServerFn(probeLegacyHost);
+  const queryClient = useQueryClient();
   const { data, isFetching, refetch, error, dataUpdatedAt } = useQuery({
     queryKey: ["legacy-domains-monitor"],
     queryFn: () => probe(),
     refetchInterval: 60_000,
     staleTime: 30_000,
   });
+
+  const singleProbe = useMutation({
+    mutationFn: (host: string) => probeOne({ data: { host } }),
+    onSuccess: (updated) => {
+      // Patch this host inline for instant UI feedback.
+      queryClient.setQueryData<LegacyHostReport[] | undefined>(
+        ["legacy-domains-monitor"],
+        (prev) => (prev ? prev.map((r) => (r.host === updated.host ? updated : r)) : prev),
+      );
+      // Refresh the historical chart so the new datapoint appears immediately.
+      queryClient.invalidateQueries({ queryKey: ["legacy-domains-history"] });
+    },
+  });
+
+  const refreshAll = async () => {
+    await refetch();
+    queryClient.invalidateQueries({ queryKey: ["legacy-domains-history"] });
+  };
 
   return (
     <div className="min-h-screen bg-[color:var(--ivory)] px-5 py-10 md:px-10 md:py-16">
@@ -206,7 +244,7 @@ function LegacyDomainsMonitorPage() {
             </span>
           </p>
           <button
-            onClick={() => refetch()}
+            onClick={refreshAll}
             disabled={isFetching}
             className="rounded-full bg-[color:var(--teal)] px-4 py-2 text-xs font-medium text-white hover:bg-[color:var(--teal-2)] disabled:opacity-60"
           >
@@ -220,12 +258,29 @@ function LegacyDomainsMonitorPage() {
           </p>
         ) : null}
 
+        {singleProbe.error ? (
+          <p className="mt-4 rounded border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+            Sonda por host falhou:{" "}
+            {singleProbe.error instanceof Error
+              ? singleProbe.error.message
+              : String(singleProbe.error)}
+          </p>
+        ) : null}
+
         <section className="mt-6 space-y-4">
           {!data && isFetching ? (
             <p className="text-sm text-[color:var(--charcoal-soft)]">A sondar domínios…</p>
           ) : null}
-          {data?.map((r: LegacyHostReport) => <HostCard key={r.host} r={r} />)}
+          {data?.map((r: LegacyHostReport) => (
+            <HostCard
+              key={r.host}
+              r={r}
+              onProbe={() => singleProbe.mutate(r.host)}
+              probing={singleProbe.isPending && singleProbe.variables === r.host}
+            />
+          ))}
         </section>
+
 
         <LegacyDomainsHistoryChart />
 
