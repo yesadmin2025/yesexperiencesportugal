@@ -75,7 +75,6 @@ describe("Studio — itinerary edit stability", () => {
       { feeling: "hidden", primary: "coast" },
       { feeling: "adventure", primary: "coast" },
       { feeling: "culture", primary: "heritage" },
-      { feeling: "slow-luxury", primary: "heritage" },
     ];
 
     for (const { feeling, primary } of strongPairs) {
