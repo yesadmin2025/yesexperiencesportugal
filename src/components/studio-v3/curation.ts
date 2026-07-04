@@ -243,11 +243,26 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   coastal: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "southwest-vicentine-coast"],
   "wine-food": ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo"],
   hidden: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
-  romance: ["sintra-cascais", "arrabida-wine-allinclusive", "troia-comporta"],
-  
-  culture: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos"],
+  romance: ["sintra-cascais", "troia-comporta", "arrabida-wine-allinclusive"],
+  culture: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos", "sintra-cascais"],
   adventure: ["southwest-vicentine-coast", "arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
-  "slow-luxury": ["arrabida-wine-allinclusive", "sintra-cascais", "evora-alentejo"],
+  // Slow-luxury: lead with quieter heritage/coast; wine still available but not first.
+  "slow-luxury": ["sintra-cascais", "evora-alentejo", "troia-comporta", "arrabida-wine-allinclusive"],
+};
+
+/**
+ * Feeling-aware fallback used when the candidate pool is empty after
+ * scoring. Never blanket-fallback to arrabida-wine — that biased every
+ * unusual profile toward the same wine day.
+ */
+const FEELING_FALLBACK: Record<Feeling, string> = {
+  coastal: "wild-beaches-picnic",
+  "wine-food": "arrabida-wine-allinclusive",
+  hidden: "southwest-vicentine-coast",
+  romance: "sintra-cascais",
+  culture: "tomar-coimbra",
+  adventure: "southwest-vicentine-coast",
+  "slow-luxury": "sintra-cascais",
 };
 
 const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
