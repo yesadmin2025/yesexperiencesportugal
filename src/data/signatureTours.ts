@@ -1389,6 +1389,8 @@ export const STOP_THEME_IMG: Record<StopTheme, string> = {
   "fatima-nazare-obidos": imgFatimaNazareObidosHero,
   "roman-heritage-alentejo": imgRomanHero,
   "sintra-cascais": imgSintraCascaisHero,
+  "southwest-vicentine-coast":
+    "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
   "tiles-workshop": imgTilesWorkshop,
   "tomar-coimbra": imgTomarCoimbraHero,
   "troia-comporta": imgTroiaComportaHero,
