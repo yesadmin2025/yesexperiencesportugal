@@ -36,7 +36,7 @@ export function GuestQuotes() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([statsFn({}), quotesFn({ data: { limit: 6 } })])
+    Promise.all([statsFn({}), quotesFn({ data: { limit: 8 } })])
       .then(([s, q]) => {
         if (cancelled) return;
         setStats(s);
