@@ -125,24 +125,22 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <p className="mt-2 font-[family-name:var(--font-sans)] text-[13px] md:text-[14px] leading-[1.55] text-[color:var(--charcoal)]">
+      <p className="mt-2 font-[family-name:var(--font-sans)] text-[14px] md:text-[15px] leading-[1.5] text-[color:var(--charcoal)]">
         {count ? (
           <>
-            <span className="tabular-nums font-semibold">{count.toLocaleString("en-US")}</span>{" "}
-            <span>five-star reviews</span>
-            {avg && (
-              <span className="text-[color:var(--charcoal)]/65"> · {avg.toFixed(1)}★</span>
-            )}
-            <span className="text-[color:var(--charcoal)]/75"> across major platforms.</span>
+            <span className="font-semibold text-[color:var(--charcoal)]">
+              {count.toLocaleString("en-US")} five-star reviews
+            </span>{" "}
+            <span className="text-[color:var(--charcoal)]/70">— real guests, real stories.</span>
           </>
         ) : (
           <>
-            <span className="tabular-nums font-semibold">700+</span>{" "}
-            <span>five-star reviews</span>
-            <span className="text-[color:var(--charcoal)]/75"> across major platforms.</span>
+            <span className="font-semibold text-[color:var(--charcoal)]">700+ five-star reviews</span>{" "}
+            <span className="text-[color:var(--charcoal)]/70">— real guests, real stories.</span>
           </>
         )}
       </p>
+
 
       {/* Platform badge row removed — each review card now carries its
           own source label ("via Tripadvisor" etc.), so the standalone
