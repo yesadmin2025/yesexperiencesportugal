@@ -1,5 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
+
 
 
 interface FooterLink {
