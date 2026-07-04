@@ -46,17 +46,31 @@ export const Route = createFileRoute("/tours/$tourId")({
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
 
+    // Keep <title> under 60 chars for SERP truncation. Prefer the full brand
+    // suffix; fall back to a short one, then the raw tour title if needed.
+    const SUFFIX_FULL = " — YES experiences Portugal";
+    const SUFFIX_SHORT = " | YES Portugal";
+    const pageTitle =
+      t.title.length + SUFFIX_FULL.length <= 60
+        ? `${t.title}${SUFFIX_FULL}`
+        : t.title.length + SUFFIX_SHORT.length <= 60
+          ? `${t.title}${SUFFIX_SHORT}`
+          : t.title.length <= 60
+            ? t.title
+            : `${t.title.slice(0, 57)}…`;
+
     return {
       meta: [
-        { title: `${t.title} — YES experiences Portugal` },
+        { title: pageTitle },
         { name: "description", content: t.blurb },
-        { property: "og:title", content: `${t.title} — YES experiences Portugal` },
+        { property: "og:title", content: pageTitle },
         { property: "og:description", content: t.blurb },
         { property: "og:image", content: img },
         { property: "twitter:image", content: img },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
       ],
+
       links: [{ rel: "canonical", href: url }],
       scripts: [
         jsonLdScript(
