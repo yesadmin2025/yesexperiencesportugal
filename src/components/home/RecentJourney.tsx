@@ -450,36 +450,65 @@ export function RecentJourney() {
           A real example
         </p>
 
-        {/* Three pillars — tight caption strip beneath the book. Same
-            words, lower visual weight, much less vertical space. */}
-        <ul className="reveal mt-7 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto list-none p-0 border-t border-[color:var(--border)] pt-5 md:pt-6 text-center sm:text-left">
-          {PILLARS.map((p) => (
-            <li key={p.label}>
-              <div className="font-[family-name:var(--font-display)] text-[10px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
-                {p.label}
-              </div>
-              <p className="mt-1.5 font-[family-name:var(--font-sans)] text-[13px] md:text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">
-                {p.body}
-              </p>
-            </li>
-          ))}
-        </ul>
+        {/* Three pillars — editorial centred rhythm. Georgia italic
+            headings echo the H2's emphasis voice; hairline gold rule
+            separates the block from the book above. */}
+        <div className="reveal mt-9 md:mt-10 max-w-2xl mx-auto text-center border-t border-[color:var(--border)] pt-7 md:pt-8">
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 list-none p-0">
+            {PILLARS.map((p) => (
+              <li key={p.label} className="he-card-lift px-2">
+                <h3 className="font-[family-name:var(--font-serif)] italic font-medium text-[color:var(--charcoal)] text-[18px] md:text-[19px] leading-[1.25]">
+                  {p.label}
+                </h3>
+                <span
+                  aria-hidden="true"
+                  className="mt-2 mx-auto block h-[1px] w-6 bg-[color:var(--gold)]/60"
+                />
+                <p className="mt-3 font-[family-name:var(--font-sans)] text-[13.5px] md:text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                  {p.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* CTA */}
-        <div className="reveal mt-7 md:mt-9 max-w-2xl mx-auto text-center">
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        {/* Signature CTA ramp — matches homepage canonical voice:
+            Inter 11px 0.25em uppercase with a gold hairline that
+            expands on hover into a small chevron. Primary sits at
+            full charcoal; secondary softens to 70% opacity. */}
+        <div className="reveal mt-10 md:mt-12 max-w-2xl mx-auto text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
             <Link
               to="/multi-day"
-              className="inline-flex items-center justify-center gap-2 rounded-[2px] bg-[color:var(--teal)] px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+              aria-label="Start the conversation with a Travel Designer"
+              className="group inline-flex items-center gap-3 text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] py-2"
             >
-              Start the conversation
-              <ArrowRight size={14} aria-hidden="true" />
+              <span className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.25em] font-semibold">
+                Start the conversation
+              </span>
+              <span aria-hidden="true" className="flex items-center">
+                <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8" />
+                <ArrowRight
+                  size={12}
+                  className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5"
+                />
+              </span>
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/25 px-6 py-3 font-[family-name:var(--font-display)] text-[13px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--charcoal)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+              aria-label="Talk to a designer"
+              className="group inline-flex items-center gap-3 text-[color:var(--charcoal)] opacity-70 transition-opacity duration-300 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] rounded-[2px] py-2"
             >
-              Talk to a designer
+              <span className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.25em] font-semibold">
+                Talk to a designer
+              </span>
+              <span aria-hidden="true" className="flex items-center">
+                <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8" />
+                <ArrowRight
+                  size={12}
+                  className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5"
+                />
+              </span>
             </Link>
           </div>
         </div>
