@@ -39,6 +39,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
   const displayIsReal = perPax?.real === true;
   const partyTotalEur = perPax?.partyTotalEur ?? displayPerPaxEur * Math.max(1, guests);
+  // Whether we have real per-pax tier data for this tour (code or DB override).
+  const hasTierData = Boolean(
+    (tierOverrides?.[tour.id] && Object.keys(tierOverrides[tour.id] as object).length > 0) ||
+      getViatorMeta(tour.id)?.priceTiersEUR,
+  );
 
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
