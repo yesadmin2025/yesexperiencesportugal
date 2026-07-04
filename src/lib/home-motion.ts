@@ -109,7 +109,26 @@ export function startHomeMotion(): () => void {
         el.setAttribute("data-motion-delay", String(delay));
       }
     });
+
+    // Card siblings — stagger reveals so a row of cards flows in rather
+    // than snapping together. We group by parent (the grid/flex row) and
+    // give each card an incremental delay capped at 480ms.
+    const cardParents = new WeakMap<HTMLElement, number>();
+    const cards = homeScope.querySelectorAll<HTMLElement>(
+      ".he-card-lift, .reveal-stagger[class*='rounded'], .fw-card",
+    );
+    cards.forEach((el) => {
+      const parent = el.parentElement as HTMLElement | null;
+      if (!parent) return;
+      const idx = cardParents.get(parent) ?? 0;
+      cardParents.set(parent, idx + 1);
+      if (idx === 0) return; // first card carries no extra delay
+      if (el.hasAttribute("data-motion-delay")) return;
+      const delay = Math.min(idx * 110, 480);
+      el.setAttribute("data-motion-delay", String(delay));
+    });
   }
+
 
 
 
