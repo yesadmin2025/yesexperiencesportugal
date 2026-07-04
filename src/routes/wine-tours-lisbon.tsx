@@ -19,9 +19,9 @@ const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 // Lead review aggregate from our strongest-reviewed wine signature.
 const PARENT_TOUR_ID = "arrabida-wine-allinclusive";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Wine Tours Lisbon — Private Arrábida, Setúbal & Alentejo";
+const TITLE = "Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo";
 const DESCRIPTION =
-  "Private wine tours from Lisbon, designed by a licensed local team. Family wineries in Arrábida and Azeitão, full-day Alentejo from Évora, long Portuguese lunches, door-to-door from your hotel.";
+  "The best private wine tours from Lisbon — family wineries in Arrábida and Azeitão, Comporta's sandy-soil cellars, and hidden Alentejo with Roman heritage and amphora wines. Licensed local team, door-to-door.";
 
 const productLd = {
   "@context": "https://schema.org",
@@ -146,8 +146,8 @@ function Page() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Private Wine Days</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Wine Tours from Lisbon —{" "}
-              <SectionTitle.Em>Arrábida, Setúbal & Alentejo</SectionTitle.Em>
+              The Best Wine Tours from Lisbon —{" "}
+              <SectionTitle.Em>Arrábida, Comporta & Alentejo</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Three real wine regions within reach of your hotel. Family producers, long

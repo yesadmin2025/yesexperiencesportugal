@@ -200,50 +200,36 @@ export function Footer() {
             calm, verifiable trust anchor (not marketing copy). */}
         <div className="mt-10 pt-8 border-t border-[color:var(--gold-warm)]/15">
           <ul
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 list-none p-0"
+            className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 list-none p-0"
             aria-label="Credentials and secure checkout"
           >
-            <li className="flex items-start gap-3">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
-                <BadgeCheck size={16} strokeWidth={1.5} aria-hidden="true" />
+            <li className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
+                <BadgeCheck size={14} strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <div className="min-w-0">
-                <p className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
-                  Licensed operator
-                </p>
-                <p className="mt-1 font-[family-name:var(--font-sans)] text-[12.5px] leading-[1.55] text-[color:var(--ivory)]/85">
-                  RNAAT <span className="tabular-nums">nº 31/2023</span> — registered tour operator under Portuguese law.
-                </p>
-              </div>
+              <span className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
+                RNAAT <span className="tabular-nums">nº 31/2023</span>
+              </span>
             </li>
-            <li className="flex items-start gap-3">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
-                <ShieldCheck size={16} strokeWidth={1.5} aria-hidden="true" />
+            <li className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
+                <ShieldCheck size={14} strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <div className="min-w-0">
-                <p className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
-                  Turismo de Portugal
-                </p>
-                <p className="mt-1 font-[family-name:var(--font-sans)] text-[12.5px] leading-[1.55] text-[color:var(--ivory)]/85">
-                  Registered with the national tourism authority — Registo Nacional de Agentes de Animação Turística.
-                </p>
-              </div>
+              <span className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
+                Turismo de Portugal
+              </span>
             </li>
-            <li className="flex items-start gap-3">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
-                <Lock size={16} strokeWidth={1.5} aria-hidden="true" />
+            <li className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
+                <Lock size={14} strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <div className="min-w-0">
-                <p className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
-                  Secure checkout
-                </p>
-                <p className="mt-1 font-[family-name:var(--font-sans)] text-[12.5px] leading-[1.55] text-[color:var(--ivory)]/85">
-                  Payments processed over TLS by Stripe — card details never touch our servers.
-                </p>
-              </div>
+              <span className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
+                Secure checkout · Stripe
+              </span>
             </li>
           </ul>
         </div>
+
 
         {/* Accepted payment methods — visual reassurance strip. */}
         <PaymentMethodsRow />
@@ -255,7 +241,7 @@ export function Footer() {
             style={{ fontWeight: 400 }}
           >
             <p className="leading-[1.6]">
-              © {new Date().getFullYear()} YES experiences Portugal. All rights reserved.
+              © 2026 YES experiences Portugal. All rights reserved.
               <span className="hidden md:inline"> · RNAAT nº 31/2023 · Sesimbra, Portugal.</span>
             </p>
             <nav
