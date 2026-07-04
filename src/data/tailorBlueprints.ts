@@ -37,6 +37,12 @@ export interface BlueprintStop {
    *  anchor price (Core + Choice). Optional stops may carry a real
    *  upcharge from the Bókun product. */
   upchargePerPaxEUR?: number;
+  /** For Core stops: can the guest ask to skip this one? Defaults to
+   *  `true`. Set to `false` only for true operator-locked anchors that
+   *  define the product (a wine tour's winery block, a tile tour's
+   *  workshop, hotel pickup, the boat itself). Markets, viewpoints and
+   *  generic lunches SHOULD be skippable — the guide adjusts the day. */
+  skippable?: boolean;
 }
 
 export interface TailorBlueprint {
@@ -179,7 +185,7 @@ const tilesWorkshop: TailorBlueprint = {
   tourId: "tiles-workshop",
   core: [
     { id: "livramento", label: "Mercado do Livramento", blurb: "Setúbal's historic fresh market — a quick walk before the workshop.", category: "market", dwellMinutesOverride: 30 },
-    { id: "azulejos-workshop", label: "Private tile-painting workshop", blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.", category: "workshop", dwellMinutesOverride: 90 },
+    { id: "azulejos-workshop", label: "Private tile-painting workshop", blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.", category: "workshop", dwellMinutesOverride: 90, skippable: false },
     { id: "lunch-azeitao", label: "Lunch in Azeitão", blurb: "Traditional Portuguese lunch in the wine village.", category: "lunch" },
   ],
   choice: {
@@ -213,9 +219,9 @@ const azeitaoCheese: TailorBlueprint = {
   tourId: "azeitao-cheese",
   core: [
     { id: "livramento", label: "Mercado do Livramento", blurb: "Setúbal's fresh market — pick up cheese pairings before the workshop.", category: "market", dwellMinutesOverride: 30 },
-    { id: "quinta-velha", label: "Cheese-making at Quinta Velha", blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.", category: "workshop", dwellMinutesOverride: 75 },
+    { id: "quinta-velha", label: "Cheese-making at Quinta Velha", blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.", category: "workshop", dwellMinutesOverride: 75, skippable: false },
     { id: "lunch-azeitao", label: "Lunch in Azeitão", blurb: "Traditional lunch in the wine village.", category: "lunch" },
-    { id: "catralvos", label: "Quinta de Catralvos winery", blurb: "Five-wine tasting at the family cellar door.", category: "winery" },
+    { id: "catralvos", label: "Quinta de Catralvos winery", blurb: "Five-wine tasting at the family cellar door.", category: "winery", skippable: false },
   ],
   optional: [
     { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "Medieval castle above the village. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },

@@ -165,6 +165,10 @@ function TailorPage() {
     return new Set(bp.choice.options.slice(0, bp.choice.pickCount).map((o) => o.id));
   });
   const [optionalSelected, setOptionalSelected] = useState<Set<string>>(new Set());
+  // Skippable core stops — market, viewpoints, generic lunches — can be
+  // traded for time elsewhere. True anchors (workshops, wineries) have
+  // `skippable: false` in the blueprint and never appear here.
+  const [skippedCore, setSkippedCore] = useState<Set<string>>(new Set());
 
   const blueprintFeasibility = useMemo(() => {
     if (!blueprint) return null;
@@ -175,14 +179,14 @@ function TailorPage() {
       dwellMinutesOverride: s.dwellMinutesOverride,
     });
     const stops: FeasibilityStop[] = [
-      ...blueprint.core.map(toFs),
+      ...blueprint.core.filter((s) => !skippedCore.has(s.id)).map(toFs),
       ...(blueprint.choice
         ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map(toFs)
         : []),
       ...blueprint.optional.filter((o) => optionalSelected.has(o.id)).map(toFs),
     ];
     return evaluateDay({ stops });
-  }, [blueprint, choiceSelected, optionalSelected]);
+  }, [blueprint, choiceSelected, optionalSelected, skippedCore]);
 
   // Optional stops surfaced by Viator (passBy=true). These can be
   // promoted into the day. Capped at MAX_EDITS combined add/remove.
@@ -300,6 +304,7 @@ function TailorPage() {
           tourTitle: tour.title,
           guests: details.guests,
           stopLabels: stopLabels.slice(0, 8),
+          includedItems: metaForSummary?.included && metaForSummary.included.length > 0 ? metaForSummary.included : tour.included,
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
@@ -317,6 +322,9 @@ function TailorPage() {
             lunch,
             accessibility: [...accessibility],
             notes,
+            skippedCoreStops: blueprint
+              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
+              : [],
           },
         },
       });
@@ -566,29 +574,90 @@ function TailorPage() {
                     {blueprint.copy?.footnote}
                   </p>
 
-                  {/* Core (always included) */}
-                  <p className="mb-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
-                    Always included
+                  {/* Core (default-included; markets, viewpoints & lunches
+                      can be skipped so the guide re-shapes the day). */}
+                  <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
+                    Included by default
+                  </p>
+                  <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
+                    Skip any stop you'd rather trade for time elsewhere — your guide will suggest an alternative or extend the next stop.
                   </p>
                   <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
-                    {blueprint.core.map((s) => (
-                      <li
-                        key={s.id}
-                        className="flex items-stretch gap-3 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 min-h-[56px]"
-                      >
-                        <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
-                          <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                            {s.label}
-                          </span>
-                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
-                            Core
-                          </span>
-                        </span>
-                        <span className="w-9 flex items-center justify-center bg-[color:var(--teal)] text-[color:var(--ivory)]">
-                          <Check size={14} />
-                        </span>
-                      </li>
-                    ))}
+                    {blueprint.core.map((s) => {
+                      const canSkip = s.skippable !== false;
+                      const isSkipped = skippedCore.has(s.id);
+                      if (!canSkip) {
+                        return (
+                          <li
+                            key={s.id}
+                            className="flex items-stretch gap-3 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 min-h-[56px]"
+                          >
+                            <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                              <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                                {s.label}
+                              </span>
+                              <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                                Signature anchor
+                              </span>
+                            </span>
+                            <span
+                              className="w-9 flex items-center justify-center bg-[color:var(--teal)] text-[color:var(--ivory)]"
+                              aria-label="This stop defines the experience and can't be skipped"
+                              title="This stop defines the experience and can't be skipped"
+                            >
+                              <Lock size={12} />
+                            </span>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={s.id}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const next = new Set(skippedCore);
+                              if (isSkipped) next.delete(s.id);
+                              else next.add(s.id);
+                              setSkippedCore(next);
+                            }}
+                            aria-pressed={!isSkipped}
+                            className={[
+                              "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
+                              isSkipped
+                                ? "border-[color:var(--border)] bg-transparent"
+                                : "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5",
+                            ].join(" ")}
+                          >
+                            <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                              <span
+                                className={[
+                                  "text-[13px] leading-snug",
+                                  isSkipped
+                                    ? "text-[color:var(--charcoal-soft)] line-through"
+                                    : "text-[color:var(--charcoal)]",
+                                ].join(" ")}
+                              >
+                                {s.label}
+                              </span>
+                              <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                                {isSkipped ? "Skipped · time freed" : "Tap to skip"}
+                              </span>
+                            </span>
+                            <span
+                              className={[
+                                "w-9 flex items-center justify-center text-[color:var(--ivory)]",
+                                isSkipped
+                                  ? "bg-[color:var(--border)]"
+                                  : "bg-[color:var(--teal)]",
+                              ].join(" ")}
+                              aria-hidden
+                            >
+                              {isSkipped ? "+" : <Check size={14} />}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
 
                   {/* Choice pool */}

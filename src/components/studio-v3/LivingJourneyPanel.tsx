@@ -45,9 +45,7 @@ import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { TimelineView } from "./TimelineView";
-import { AffinityBars } from "./AffinityBars";
 import { SmartRecommendation } from "./SmartRecommendation";
-import { QualityScore } from "./QualityScore";
 import { signatureTours } from "@/data/signatureTours";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { regionalVoiceFor } from "./regionalVoice";
@@ -876,19 +874,13 @@ function JourneyDraftDrawer({
                   </ol>
                 </div>
               ) : null}
-              <div className="-mx-5 mt-1">
-                <QualityScore state={fullState} />
-              </div>
+              {/* Reveal simplified — QualityScore + AffinityBars removed for
+                  clarity. They lived here as debug/telemetry decoration and
+                  competed with the timeline + map for attention. */}
               <SmartRecommendation
                 tourId={tourId}
                 stopCount={stopCount}
                 durationLabel={durationLabel}
-              />
-              <AffinityBars
-                feeling={feeling}
-                interests={interests}
-                rhythm={rhythm}
-                companions={companions}
               />
             </>
           ) : null}
