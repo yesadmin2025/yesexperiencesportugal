@@ -60,7 +60,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "group relative inline-flex items-center justify-between gap-6 font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.99] disabled:pointer-events-none disabled:opacity-40";
+  "group relative inline-flex items-center justify-between gap-6 font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--charcoal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.99] disabled:pointer-events-none disabled:opacity-40";
 
 const hairlineBaseClasses =
   "group inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2 text-[color:var(--charcoal)] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
