@@ -73,6 +73,26 @@ export function startHomeMotion(): () => void {
   const root = document.documentElement;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Slow-device signal — hoisted so both the stagger tuning below AND
+  // the perf logger at the end can read the same value.
+  type NavigatorWithHints = Navigator & {
+    deviceMemory?: number;
+    connection?: { saveData?: boolean; effectiveType?: string };
+  };
+  const nav = navigator as NavigatorWithHints;
+  const lowPower =
+    (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4) ||
+    (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+    nav.connection?.saveData === true ||
+    nav.connection?.effectiveType === "2g" ||
+    nav.connection?.effectiveType === "slow-2g";
+
+  // Debug flag — `?motionDebug=1` in the URL forces the perf summary log
+  // even on fast devices, useful for on-device profiling in the field.
+  const debugFlag =
+    typeof window.location !== "undefined" &&
+    /[?&]motionDebug=1\b/.test(window.location.search);
+
   // Auto-tag legacy reveal classes so the new controller is the single
   // source of truth on the homepage.
   const legacy = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
