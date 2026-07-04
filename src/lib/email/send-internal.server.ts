@@ -107,6 +107,77 @@ export async function sendTransactionalInternal(
       ? template.subject(templateData as Record<string, unknown>)
       : template.subject
 
+  // ─── TEMPORARY RESEND FALLBACK ───────────────────────────────────────────
+  // While notify.yesexperiencesportugal.com DNS is not verified, send directly
+  // through the Resend connector gateway using their onboarding sender domain.
+  // Disable by unsetting EMAIL_USE_RESEND_FALLBACK once notify. is verified.
+  const useResendFallback =
+    process.env.EMAIL_USE_RESEND_FALLBACK === '1' &&
+    !!process.env.RESEND_API_KEY &&
+    !!process.env.LOVABLE_API_KEY
+  if (useResendFallback) {
+    await supabase.from('email_send_log').insert({
+      message_id: messageId,
+      template_name: templateName,
+      recipient_email: effectiveRecipient,
+      status: 'pending',
+    })
+    try {
+      const resp = await fetch('https://connector-gateway.lovable.dev/resend/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
+          'X-Connection-Api-Key': process.env.RESEND_API_KEY!,
+        },
+        body: JSON.stringify({
+          from: 'YES Experiences <onboarding@resend.dev>',
+          to: [effectiveRecipient],
+          reply_to: 'yesexperiences@gmail.com',
+          subject,
+          html,
+          text: plainText,
+          headers: { 'X-Entity-Ref-ID': idemKey },
+        }),
+      })
+      if (!resp.ok) {
+        const errBody = await resp.text()
+        console.error('[email/internal] resend fallback failed', {
+          status: resp.status,
+          recipient: redact(effectiveRecipient),
+          body: errBody.slice(0, 500),
+        })
+        await supabase.from('email_send_log').insert({
+          message_id: messageId,
+          template_name: templateName,
+          recipient_email: effectiveRecipient,
+          status: 'failed',
+          error_message: `resend ${resp.status}: ${errBody.slice(0, 300)}`,
+        })
+        return { ok: false, reason: 'resend_failed' }
+      }
+      await supabase.from('email_send_log').insert({
+        message_id: messageId,
+        template_name: templateName,
+        recipient_email: effectiveRecipient,
+        status: 'sent',
+      })
+      return { ok: true }
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e)
+      console.error('[email/internal] resend fallback exception', { error: msg })
+      await supabase.from('email_send_log').insert({
+        message_id: messageId,
+        template_name: templateName,
+        recipient_email: effectiveRecipient,
+        status: 'failed',
+        error_message: `resend exception: ${msg.slice(0, 300)}`,
+      })
+      return { ok: false, reason: 'resend_exception' }
+    }
+  }
+  // ─── /RESEND FALLBACK ────────────────────────────────────────────────────
+
   await supabase.from('email_send_log').insert({
     message_id: messageId,
     template_name: templateName,
