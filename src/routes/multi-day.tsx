@@ -5,8 +5,6 @@ import { SiteLayout } from "@/components/SiteLayout";
 import {
   MessageCircle,
   Compass,
-  MapPin,
-  Calendar,
   FileText,
   Heart,
   Users,
@@ -46,7 +44,7 @@ export const Route = createFileRoute("/multi-day")({
       {
         property: "og:description",
         content:
-          "Multi-day private journeys across Portugal, designed by a local Travel Designer and delivered as a complete travel file.",
+          "Private Portugal journeys designed by a local Travel Designer, delivered as a complete travel file.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
       {
@@ -69,28 +67,52 @@ export const Route = createFileRoute("/multi-day")({
   component: MultiDayPage,
 });
 
-const WHO_ITS_FOR: string[] = [
-  "Multi-day Portugal journeys",
-  "Honeymoons and anniversary trips",
-  "Family journeys",
-  "Private celebrations",
-  "First-time Portugal trips",
-  "Regional routes across Portugal",
-  "Guests who want a complete proposal before committing",
-  "Travellers who want local guidance without losing personal freedom",
+type Card = { title: string; body: string };
+
+const WHO_ITS_FOR: Card[] = [
+  {
+    title: "Multi-day journeys",
+    body: "For guests who want Portugal shaped across several days, not stitched together last minute.",
+  },
+  {
+    title: "Honeymoons & anniversaries",
+    body: "Private journeys with rhythm, privacy and meaningful settings.",
+  },
+  {
+    title: "Family trips",
+    body: "Balanced pacing, realistic timing and experiences that work for different ages.",
+  },
+  {
+    title: "First-time Portugal",
+    body: "A clear route for guests who want local guidance without losing personal freedom.",
+  },
+  {
+    title: "Special occasions",
+    body: "Celebrations, proposals and important moments designed with care.",
+  },
+  {
+    title: "Complex itineraries",
+    body: "Multi-region travel, transfers, stays and private experiences connected properly.",
+  },
 ];
 
-const WHAT_WE_SHAPE: string[] = [
-  "The route",
-  "The number of nights",
-  "The pace of each day",
-  "Private experiences",
-  "Wine, food, culture and coast moments",
-  "Transfers and driving logic",
-  "Trusted local partners",
-  "Hotel and stay suggestions where relevant",
-  "Restaurant and timing guidance",
-  "Support before and during the journey",
+const WHAT_WE_DESIGN: Card[] = [
+  {
+    title: "Route & rhythm",
+    body: "The regions, order, number of nights and pace of each day.",
+  },
+  {
+    title: "Experiences",
+    body: "Private guides, wine, food, culture, coast, villages and local moments.",
+  },
+  {
+    title: "Logistics",
+    body: "Driving times, transfers, stays, restaurant timing and overnight logic.",
+  },
+  {
+    title: "Support",
+    body: "Local contacts, adjustments and practical details before and during the journey.",
+  },
 ];
 
 const PROCESS = [
@@ -98,19 +120,19 @@ const PROCESS = [
     n: "01",
     title: "Tell us the shape",
     body:
-      "Dates, group, pace, interests, occasion, budget range and what Portugal should feel like for you.",
+      "Dates, group, pace, interests, occasion and what Portugal should feel like for you.",
   },
   {
     n: "02",
     title: "We design the route",
     body:
-      "Your Travel Designer builds the journey around realistic driving times, region flow, private experiences, meals, stays and local timing.",
+      "Your Travel Designer builds the journey around region flow, realistic driving times, private experiences, stays and local timing.",
   },
   {
     n: "03",
     title: "You receive the travel file",
     body:
-      "A curated proposal with the day-by-day rhythm, routes, experiences, selected details and confirmed elements where relevant.",
+      "A curated proposal with day-by-day rhythm, routes, experiences, selected details and confirmed elements where relevant.",
   },
   {
     n: "04",
@@ -120,16 +142,23 @@ const PROCESS = [
   },
 ];
 
-const FILE_CONTENTS: string[] = [
-  "Day-by-day route",
-  "Regional rhythm",
-  "Private experiences",
-  "Driving times and transfers",
-  "Stays and overnight logic",
-  "Local contacts",
-  "Restaurant and timing notes where relevant",
-  "Confirmed reservations where applicable",
-  "Practical details guests usually forget until too late",
+const FILE_GROUPS: Card[] = [
+  {
+    title: "Route",
+    body: "Day-by-day rhythm, regions, driving times and transfers.",
+  },
+  {
+    title: "Experiences",
+    body: "Private experiences, local partners, meals and timing notes.",
+  },
+  {
+    title: "Stays",
+    body: "Overnight logic, stay suggestions and confirmed reservations where applicable.",
+  },
+  {
+    title: "Support",
+    body: "Local contacts, practical details and adjustments during the journey.",
+  },
 ];
 
 const SAMPLE_PAGES = [
@@ -140,6 +169,20 @@ const SAMPLE_PAGES = [
   { src: samplePage05.url, alt: "Private multi-day Portugal itinerary with local route planning" },
   { src: samplePage06.url, alt: "Travel Designer Portugal — day-by-day itinerary card" },
 ];
+
+function GroupCard({ title, body }: Card) {
+  return (
+    <div className="reveal-stagger bg-white border border-[color:var(--border)] p-5 md:p-6">
+      <h3 className="serif text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
+        {title}
+      </h3>
+      <span className="gold-rule mt-3 max-w-[36px]" aria-hidden="true" />
+      <p className="mt-3 text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
+        {body}
+      </p>
+    </div>
+  );
+}
 
 function MultiDayPage() {
   return (
@@ -154,9 +197,9 @@ function MultiDayPage() {
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            For multi-day travel, honeymoons, family journeys, celebrations and complex itineraries
-            — designed by a local Travel Designer from real routes, trusted partners, timings,
-            stays and details that actually work on the ground.
+            For multi-day travel, honeymoons, family journeys, celebrations and complex
+            itineraries — designed by a local Travel Designer from real routes, trusted partners,
+            timings, stays and details that actually work on the ground.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
@@ -166,19 +209,17 @@ function MultiDayPage() {
               See Sample Travel File
             </CtaButton>
           </div>
-          <p className="mt-5 font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-            Designed locally · Delivered as a travel file · Supported on the ground
+          <p className="mt-5 font-[family-name:var(--font-display)] text-[11px] md:text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/85">
+            Designed locally · Delivered as a travel file · Supported in Portugal
           </p>
         </div>
       </section>
 
       {/* ── Who it is for ────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
-        <div className="container-x max-w-4xl">
+      <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal">
+        <div className="container-x max-w-5xl">
           <div className="text-center max-w-2xl mx-auto">
-            <Eyebrow icon={<Users strokeWidth={1.8} />}>
-              For journeys that need more than a booking
-            </Eyebrow>
+            <Eyebrow icon={<Users strokeWidth={1.8} />}>More than a booking</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               When the trip matters,{" "}
               <SectionTitle.Em>the structure matters too.</SectionTitle.Em>
@@ -190,23 +231,17 @@ function MultiDayPage() {
             </p>
           </div>
 
-          <ul className="mt-10 grid sm:grid-cols-2 gap-x-8 gap-y-3">
-            {WHO_ITS_FOR.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-[15px] text-[color:var(--charcoal)] leading-relaxed"
-              >
-                <span className="mt-2 h-[6px] w-[6px] shrink-0 rounded-full bg-[color:var(--gold)]" />
-                {item}
-              </li>
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {WHO_ITS_FOR.map((c) => (
+              <GroupCard key={c.title} {...c} />
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
       {/* ── What we design ────────────────────────────────── */}
-      <section className="py-16 md:py-20 reveal">
-        <div className="container-x max-w-4xl">
+      <section className="py-14 md:py-20 reveal">
+        <div className="container-x max-w-5xl">
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Sparkles strokeWidth={1.8} />}>What we design</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
@@ -221,26 +256,20 @@ function MultiDayPage() {
             </p>
           </div>
 
-          <ul className="mt-10 grid sm:grid-cols-2 gap-x-8 gap-y-3">
-            {WHAT_WE_SHAPE.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-[15px] text-[color:var(--charcoal)] leading-relaxed"
-              >
-                <span className="mt-2 h-[6px] w-[6px] shrink-0 rounded-full bg-[color:var(--gold)]" />
-                {item}
-              </li>
+          <div className="mt-10 grid sm:grid-cols-2 gap-4 md:gap-6">
+            {WHAT_WE_DESIGN.map((c) => (
+              <GroupCard key={c.title} {...c} />
             ))}
-          </ul>
+          </div>
 
           <blockquote className="mt-12 max-w-2xl mx-auto text-center font-serif italic text-[1.15rem] md:text-[1.3rem] text-[color:var(--teal)] leading-snug">
-            “Not every beautiful place belongs in the same trip.”
+            &ldquo;Not every beautiful place belongs in the same trip.&rdquo;
           </blockquote>
         </div>
       </section>
 
       {/* ── How it works ─────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
+      <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-5xl">
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Compass strokeWidth={1.8} />}>How it works</Eyebrow>
@@ -249,7 +278,7 @@ function MultiDayPage() {
             </SectionTitle>
             <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           </div>
-          <ol className="mt-10 md:mt-14 grid md:grid-cols-2 gap-6 md:gap-8">
+          <ol className="mt-10 md:mt-14 grid md:grid-cols-2 gap-5 md:gap-8">
             {PROCESS.map((s) => (
               <li
                 key={s.n}
@@ -270,10 +299,10 @@ function MultiDayPage() {
         </div>
       </section>
 
-      {/* ── The travel file (moved up) ────────────────────── */}
+      {/* ── The travel file ──────────────────────────────── */}
       <section
         id="sample-file"
-        className="py-16 md:py-24 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
+        className="scroll-mt-24 py-14 md:py-24 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
       >
         <div className="container-x max-w-6xl">
           <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
@@ -283,10 +312,13 @@ function MultiDayPage() {
               <SectionTitle.Em>private travel file.</SectionTitle.Em>
             </SectionTitle>
             <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
-            <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              A journey you can understand before you live it. Every Travel Designer journey is
-              delivered as a curated dossier, not a generic itinerary — the moving parts brought
-              together in one place so the trip feels clear before it begins.
+            <p className="mt-4 font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
+              A journey you can understand before you live it.
+            </p>
+            <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+              Every Travel Designer journey is delivered as a curated dossier, not a generic
+              itinerary — the moving parts brought together in one place so the trip feels clear
+              before it begins.
             </p>
           </div>
 
@@ -306,24 +338,28 @@ function MultiDayPage() {
               </p>
             </div>
 
-            {/* What's inside */}
+            {/* What's inside — grouped cards */}
             <div className="md:col-span-5">
               <h3 className="serif text-[1.25rem] md:text-[1.45rem] text-[color:var(--charcoal)] leading-tight">
                 What&rsquo;s inside your file
               </h3>
               <span className="gold-rule mt-4 max-w-[48px]" aria-hidden="true" />
-              <ul className="mt-5 space-y-2.5">
-                {FILE_CONTENTS.map((c) => (
-                  <li
-                    key={c}
-                    className="flex items-start gap-3 text-[15px] text-[color:var(--charcoal)] leading-relaxed"
+              <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-1 gap-3 md:gap-4">
+                {FILE_GROUPS.map((c) => (
+                  <div
+                    key={c.title}
+                    className="bg-white border border-[color:var(--border)] p-4 md:p-5"
                   >
-                    <span className="mt-2 h-[6px] w-[6px] shrink-0 rounded-full bg-[color:var(--gold)]" />
-                    {c}
-                  </li>
+                    <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                      {c.title}
+                    </div>
+                    <p className="mt-2 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
+                      {c.body}
+                    </p>
+                  </div>
                 ))}
-              </ul>
-              <div className="mt-7">
+              </div>
+              <div className="mt-6">
                 <CtaButton
                   href={samplePdf.url}
                   target="_blank"
@@ -336,12 +372,32 @@ function MultiDayPage() {
             </div>
           </div>
 
-          {/* Additional sample pages */}
+          {/* Sample pages — swipeable on mobile, grid on desktop */}
           <div className="mt-10 md:mt-14">
             <p className="text-center font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
               Sample pages
             </p>
-            <div className="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-5">
+            <div
+              className="mt-5 md:hidden -mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              role="list"
+              aria-label="Travel file sample pages"
+            >
+              {SAMPLE_PAGES.slice(1).map((p) => (
+                <div
+                  key={p.src}
+                  role="listitem"
+                  className="snap-center shrink-0 w-[78%] overflow-hidden border border-[color:var(--border)] shadow-[0_16px_36px_-18px_rgba(46,46,46,0.32)] bg-white"
+                >
+                  <img
+                    src={p.src}
+                    alt={p.alt}
+                    loading="lazy"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 hidden md:grid grid-cols-5 gap-5">
               {SAMPLE_PAGES.slice(1).map((p) => (
                 <div
                   key={p.src}
@@ -361,7 +417,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Where it can go ──────────────────────────────── */}
-      <section className="py-16 md:py-24 reveal">
+      <section className="py-14 md:py-24 reveal">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
           <div className="overflow-hidden">
             <img
@@ -376,23 +432,34 @@ function MultiDayPage() {
             <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
               Across Portugal,{" "}
-              <SectionTitle.Em>shaped around your pace.</SectionTitle.Em>
+              <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              A Travel Designer journey can connect Lisbon, Sintra, Cascais, Arrábida, Sesimbra,
-              Setúbal, Comporta, Tróia, Évora, Alentejo, Central Portugal, Porto, Douro, the
-              Algarve and the Atlantic coast — when they make sense for your time, season and
-              rhythm.
+              A Travel Designer journey can stay focused on one region or connect several parts
+              of Portugal into a complete route. It may be a few days, a long weekend, a full
+              week, or a multi-week journey through the country.
+            </p>
+            <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+              The point is not to collect destinations. It is to create the right rhythm: where
+              to begin, where to sleep, what to experience, when to slow down, what is worth the
+              drive and what should be left for another trip.
             </p>
             <blockquote className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
-              Chosen because it belongs in your story, not because it is on a list.
+              Regions are chosen because they belong in your journey, not because they appear on
+              a list.
             </blockquote>
+            <p className="mt-6 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
+              Examples may include Lisbon, the coast, wine country, historic towns, the Alentejo,
+              the Douro, Central Portugal, the Algarve or Atlantic routes — but each journey is
+              designed from scratch and may go wherever your time, interests and logistics make
+              sense.
+            </p>
           </div>
         </div>
       </section>
 
       {/* ── Local support ────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
+      <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow icon={<LifeBuoy strokeWidth={1.8} />}>Local support</Eyebrow>
           <SectionTitle size="compact" spacing="loose">
@@ -405,11 +472,11 @@ function MultiDayPage() {
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             A private journey should not leave you alone with a PDF and good luck. During the
             journey, YES coordinates with local guides, drivers, partners and hosts so the moving
-            parts feel effortless. When weather, timing or energy shifts, the route is adjusted
-            with local judgement — not call-centre scripts.
+            parts feel effortless. When weather, timing or energy shifts, the route can be
+            adjusted with local judgement, not call-centre scripts.
           </p>
           <p className="mt-6 font-[family-name:var(--font-display)] text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-            Daily local contact · In-country adjustments · Transport coordination · Trusted
+            Daily local contact · in-country adjustments · transport coordination · trusted
             partners on the ground
           </p>
         </div>
@@ -445,7 +512,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Closing CTA ──────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
+      <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
           <Eyebrow icon={<Heart strokeWidth={1.8} />}>Begin</Eyebrow>
           <SectionTitle size="compact" spacing="loose">
@@ -462,7 +529,7 @@ function MultiDayPage() {
             </CtaButton>
             <a
               href={whatsappHref(
-                "Hi! I'm interested in a private multi-day Travel Designer journey with YES Experiences.",
+                "Hi! I'm interested in a private Travel Designer journey with YES Experiences.",
               )}
               target="_blank"
               rel="noopener noreferrer"
@@ -472,7 +539,7 @@ function MultiDayPage() {
             </a>
           </div>
           <p className="mt-6 font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-            Licensed Portuguese tour operator · Local support · Private journeys only
+            Licensed Portuguese tour operator · local support · private journeys only
           </p>
         </div>
       </section>
