@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +29,16 @@ interface CommonProps {
   icon?: React.ReactNode | null;
   /** Render an icon BEFORE the label (used by "Talk to a Local" style CTAs). */
   iconLeading?: React.ReactNode;
+  /** Loading state — swaps arrow for spinner, sets aria-busy, freezes interactions. */
+  loading?: boolean;
+  /** Optional label shown while loading (defaults to children). */
+  loadingLabel?: React.ReactNode;
+  /**
+   * Error state — plays a one-shot nudge animation and paints a warm-red ring
+   * for ~1.4s so the failure is felt without recolouring the entire button.
+   * Toggle to a fresh truthy value (e.g. Date.now()) to replay.
+   */
+  error?: boolean | number | null;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   children: React.ReactNode;
@@ -60,7 +70,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "group relative inline-flex items-center justify-between gap-6 font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--charcoal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.99] disabled:pointer-events-none disabled:opacity-40";
+  "group relative inline-flex items-center justify-between gap-6 font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--charcoal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.99] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 
 const hairlineBaseClasses =
   "group inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2 text-[color:var(--charcoal)] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
@@ -127,45 +137,91 @@ function GoldSweep() {
   );
 }
 
+/** Spinner shown in loading state — inherits currentColor. */
+function CtaSpinner() {
+  return (
+    <Loader2
+      size={18}
+      strokeWidth={1.6}
+      aria-hidden="true"
+      className="animate-spin motion-reduce:animate-none"
+    />
+  );
+}
+
 export function CtaButton(props: CtaButtonProps) {
-  const { variant = "primary", size = "md", icon, iconLeading, className, children } = props;
+  const {
+    variant = "primary",
+    size = "md",
+    icon,
+    iconLeading,
+    loading = false,
+    loadingLabel,
+    error = false,
+    className,
+    children,
+  } = props;
 
   const isHairline = variant === "hairline";
   const isKinetic = variant === "primary" || variant === "ghostDark";
 
+  // Replay the error animation whenever `error` changes to a fresh truthy value.
+  const [errorPlaying, setErrorPlaying] = React.useState(false);
+  const errorKey = typeof error === "number" ? error : error ? 1 : 0;
+  React.useEffect(() => {
+    if (!errorKey) return;
+    setErrorPlaying(true);
+    const t = window.setTimeout(() => setErrorPlaying(false), 1400);
+    return () => window.clearTimeout(t);
+  }, [errorKey]);
+
   const trailing =
-    icon === null
-      ? null
-      : isHairline
-        ? (icon ?? (
-            <span aria-hidden="true" className="flex items-center">
-              <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8 group-focus-visible:w-8" />
-              <ArrowRight
-                size={12}
-                className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
-              />
-            </span>
-          ))
-        : (icon ?? (
-            <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />
-          ));
+    loading && !isHairline ? (
+      <CtaSpinner />
+    ) : icon === null ? null : isHairline ? (
+      (icon ?? (
+        <span aria-hidden="true" className="flex items-center">
+          <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8 group-focus-visible:w-8" />
+          <ArrowRight
+            size={12}
+            className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+          />
+        </span>
+      ))
+    ) : (
+      (icon ?? <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />)
+    );
+
+  const labelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
 
   const content = (
     <>
-      {iconLeading}
-      <span className="cta-label relative">{children}</span>
+      {loading && isHairline ? (
+        <span className="mr-1 inline-flex items-center">
+          <CtaSpinner />
+        </span>
+      ) : (
+        iconLeading
+      )}
+      <span className="cta-label relative">{labelNode}</span>
       {trailing}
       {isKinetic ? <GoldSweep /> : null}
     </>
   );
 
-  const sharedClassName = isHairline
-    ? cn(hairlineBaseClasses, className)
-    : cn(baseClasses, sizeClasses[size], variantClasses[variant], className);
+  const sharedClassName = cn(
+    isHairline
+      ? cn(hairlineBaseClasses, loading && "cursor-progress")
+      : cn(baseClasses, sizeClasses[size], variantClasses[variant]),
+    errorPlaying && "he-cta-error",
+    className,
+  );
   const sharedStyle =
     isHairline || className?.includes("hero-cta-button") ? undefined : variantStyle[variant];
 
-
+  const stateAttrs: Record<string, unknown> = {};
+  if (loading) stateAttrs["aria-busy"] = true;
+  if (errorPlaying) stateAttrs["data-cta-error"] = "";
 
   if ("href" in props && props.href !== undefined) {
     const {
@@ -174,12 +230,25 @@ export function CtaButton(props: CtaButtonProps) {
       size: _s,
       icon: _i,
       iconLeading: _il,
+      loading: _l,
+      loadingLabel: _ll,
+      error: _e,
       className: _c,
       children: _ch,
+      onClick,
       ...rest
     } = props;
+    const inert = loading;
     return (
-      <a href={href} className={sharedClassName} style={sharedStyle} {...rest}>
+      <a
+        href={inert ? undefined : href}
+        className={sharedClassName}
+        style={sharedStyle}
+        onClick={inert ? (e) => e.preventDefault() : onClick}
+        aria-disabled={inert || undefined}
+        {...stateAttrs}
+        {...rest}
+      >
         {content}
       </a>
     );
@@ -192,12 +261,25 @@ export function CtaButton(props: CtaButtonProps) {
       size: _s,
       icon: _i,
       iconLeading: _il,
+      loading: _l,
+      loadingLabel: _ll,
+      error: _e,
       className: _c,
       children: _ch,
+      onClick,
       ...rest
     } = props;
+    const inert = loading;
     return (
-      <Link to={to} className={sharedClassName} style={sharedStyle} {...(rest as object)}>
+      <Link
+        to={to}
+        className={sharedClassName}
+        style={sharedStyle}
+        onClick={inert ? (e) => e.preventDefault() : onClick}
+        aria-disabled={inert || undefined}
+        {...stateAttrs}
+        {...(rest as object)}
+      >
         {content}
       </Link>
     );
@@ -208,12 +290,22 @@ export function CtaButton(props: CtaButtonProps) {
     size: _s,
     icon: _i,
     iconLeading: _il,
+    loading: _l,
+    loadingLabel: _ll,
+    error: _e,
     className: _c,
     children: _ch,
+    disabled: disabledProp,
     ...rest
   } = props;
   return (
-    <button className={sharedClassName} style={sharedStyle} {...rest}>
+    <button
+      className={sharedClassName}
+      style={sharedStyle}
+      disabled={disabledProp || loading}
+      {...stateAttrs}
+      {...rest}
+    >
       {content}
     </button>
   );
