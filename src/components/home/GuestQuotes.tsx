@@ -109,6 +109,17 @@ export function GuestQuotes() {
 
   return (
     <div className="mt-6 md:mt-8 text-center">
+      {/* Structured data — AggregateRating + Review nodes, attached to
+          the sitewide Organization. `<script>` renders no visible box so
+          it cannot cause layout shift. Emitted only once real reviews
+          are rendered on the page (visible-parity requirement). */}
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      )}
       <div className="inline-flex items-center gap-1 text-[color:var(--gold)]" aria-hidden="true">
         {Array.from({ length: 5 }).map((_, i) => (
           <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
