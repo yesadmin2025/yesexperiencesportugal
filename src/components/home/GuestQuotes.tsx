@@ -211,9 +211,10 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
               >
                 <Quote
                   aria-hidden="true"
-                  size={26}
-                  className="absolute top-4 right-4 text-[color:var(--gold)]/30"
-                  strokeWidth={1.25}
+                  size={44}
+                  className="absolute -top-3 right-4 text-[color:var(--gold)]/18 rotate-180"
+                  strokeWidth={1}
+                  fill="currentColor"
                 />
                 <div
                   className="inline-flex items-center gap-0.5 text-[color:var(--gold)] h-4"
