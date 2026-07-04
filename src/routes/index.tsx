@@ -959,9 +959,10 @@ function HomePage() {
                     <CtaButton to="/studio-v3" variant="primary">
                       Open the Studio
                     </CtaButton>
-                    <CtaButton to="/contact" variant="ghost">
+                    <CtaButton to="/contact" variant="hairline">
                       Write to a Local
                     </CtaButton>
+
                   </div>
                   <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
                     A local usually replies within the hour.
