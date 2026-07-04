@@ -1280,7 +1280,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Southwest Alentejo · Costa Vicentina",
     duration: "Long Day",
     durationHours: "9–10h",
-    priceFrom: 260,
+    priceFrom: 239,
     theme: "Coastal",
     blurb:
       "Whitewashed fishing villages, protected cliffs and the wild river-meets-ocean beach at Odeceixe — a hidden Atlantic Portugal few travelers reach.",

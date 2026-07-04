@@ -111,7 +111,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["southwest-vicentine-coast"],
     matchIntents: ["coastal_cinematic", "relaxed_scenic", "romantic_intimate"],
     matchStyles: ["coast", "heritage"],
-    pricePerGuestFrom: 260,
+    pricePerGuestFrom: 239,
     durationHours: [9, 10],
     pickupNote: "Hotel pickup in Lisbon · long day to the Vicentine Coast",
     weight: 78,
