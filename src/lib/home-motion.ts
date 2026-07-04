@@ -45,6 +45,15 @@ export type HomeMotionTelemetry = {
   reducedMotion: boolean;
   ready: boolean;
   active: boolean;
+  /** Lightweight perf counters — populated only when the controller is active. */
+  lowPower?: boolean;
+  sweepCount?: number;
+  sweepMsTotal?: number;
+  sweepMsMax?: number;
+  firstTriggerMs?: number;
+  lastTriggerMs?: number;
+  longtaskMsTotal?: number;
+  longtaskCount?: number;
 };
 
 declare global {
@@ -64,6 +73,26 @@ export function startHomeMotion(): () => void {
   const root = document.documentElement;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Slow-device signal — hoisted so both the stagger tuning below AND
+  // the perf logger at the end can read the same value.
+  type NavigatorWithHints = Navigator & {
+    deviceMemory?: number;
+    connection?: { saveData?: boolean; effectiveType?: string };
+  };
+  const nav = navigator as NavigatorWithHints;
+  const lowPower =
+    (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4) ||
+    (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+    nav.connection?.saveData === true ||
+    nav.connection?.effectiveType === "2g" ||
+    nav.connection?.effectiveType === "slow-2g";
+
+  // Debug flag — `?motionDebug=1` in the URL forces the perf summary log
+  // even on fast devices, useful for on-device profiling in the field.
+  const debugFlag =
+    typeof window.location !== "undefined" &&
+    /[?&]motionDebug=1\b/.test(window.location.search);
+
   // Auto-tag legacy reveal classes so the new controller is the single
   // source of truth on the homepage.
   const legacy = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
@@ -80,23 +109,9 @@ export function startHomeMotion(): () => void {
   // in staggered 90ms increments (capped) so the eye tracks a rhythm.
   const homeScope = document.querySelector<HTMLElement>(".home-energy");
   if (homeScope) {
-    // Slow-device signal: reduce stagger cadence so nothing feels laggy on
-    // older phones or Save-Data connections. Combines core count, device
-    // memory (when exposed), and the Save-Data hint.
-    type NavigatorWithHints = Navigator & {
-      deviceMemory?: number;
-      connection?: { saveData?: boolean; effectiveType?: string };
-    };
-    const nav = navigator as NavigatorWithHints;
-    const lowPower =
-      (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4) ||
-      (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-      nav.connection?.saveData === true ||
-      nav.connection?.effectiveType === "2g" ||
-      nav.connection?.effectiveType === "slow-2g";
-
     // Cadence — tuned so a full row of ~4 cards resolves inside ~360ms on
-    // fast devices and inside ~200ms on slow devices.
+    // fast devices and inside ~200ms on slow devices. Uses the hoisted
+    // `lowPower` signal (see top of function).
     const HEADING_STEP = lowPower ? 55 : 80;
     const HEADING_CAP = lowPower ? 200 : 300;
     const CARD_STEP = lowPower ? 70 : 100;
@@ -181,6 +196,7 @@ export function startHomeMotion(): () => void {
 
   const pending = new Set<HTMLElement>(all());
   const triggered = new Set<HTMLElement>();
+  const bootMark = performance.now();
   const telemetry: HomeMotionTelemetry = {
     total: pending.size,
     triggered: 0,
@@ -188,6 +204,12 @@ export function startHomeMotion(): () => void {
     reducedMotion: false,
     ready: false,
     active: true,
+    lowPower,
+    sweepCount: 0,
+    sweepMsTotal: 0,
+    sweepMsMax: 0,
+    longtaskMsTotal: 0,
+    longtaskCount: 0,
   };
   window.__yesHomeMotion = telemetry;
 
@@ -198,12 +220,16 @@ export function startHomeMotion(): () => void {
     el.classList.add("motion-in");
     // Keep legacy class in sync so any CSS still keyed to it stays consistent.
     el.classList.add("is-visible");
+    const now = performance.now() - bootMark;
+    if (telemetry.firstTriggerMs === undefined) telemetry.firstTriggerMs = now;
+    telemetry.lastTriggerMs = now;
     telemetry.triggered = triggered.size;
     telemetry.pending = pending.size;
   };
 
   const sweep = () => {
     if (pending.size === 0) return;
+    const t0 = performance.now();
     const vh = window.innerHeight || document.documentElement.clientHeight || 0;
     const trigLine = vh * ENTER_RATIO;
     // Snapshot first — we mutate the set inside the loop.
@@ -225,7 +251,30 @@ export function startHomeMotion(): () => void {
         trigger(el);
       }
     }
+    const dt = performance.now() - t0;
+    telemetry.sweepCount = (telemetry.sweepCount ?? 0) + 1;
+    telemetry.sweepMsTotal = (telemetry.sweepMsTotal ?? 0) + dt;
+    if (dt > (telemetry.sweepMsMax ?? 0)) telemetry.sweepMsMax = dt;
   };
+
+  // Longtask observer — sums main-thread blocking >50ms during the
+  // reveal lifecycle. Only wired if the browser exposes the API
+  // (Chromium-based; Safari/Firefox no-op silently).
+  let longtaskObserver: PerformanceObserver | null = null;
+  try {
+    const PO = window.PerformanceObserver as typeof PerformanceObserver | undefined;
+    if (PO && PO.supportedEntryTypes?.includes("longtask")) {
+      longtaskObserver = new PO((list) => {
+        for (const entry of list.getEntries()) {
+          telemetry.longtaskMsTotal = (telemetry.longtaskMsTotal ?? 0) + entry.duration;
+          telemetry.longtaskCount = (telemetry.longtaskCount ?? 0) + 1;
+        }
+      });
+      longtaskObserver.observe({ type: "longtask", buffered: true });
+    }
+  } catch {
+    // PerformanceObserver may throw in restrictive contexts (e.g. jsdom); ignore.
+  }
 
   let rafId = 0;
   let scheduled = false;
@@ -276,10 +325,32 @@ export function startHomeMotion(): () => void {
   // an element into the entry zone after first paint.
   window.addEventListener("load", schedule, { passive: true });
 
+  // One-shot perf summary — logs a compact single-line diagnostic ~4s
+  // after boot when the device is low-power OR `?motionDebug=1` is set.
+  // Silent on fast devices in production, so this is safe to ship.
+  const summaryDelay = 4000;
+  const summaryId = window.setTimeout(() => {
+    if (!(lowPower || debugFlag)) return;
+    const t = telemetry;
+    // Guard console access — jsdom-in-tests provides it but keep defensive.
+    if (typeof console === "undefined" || typeof console.info !== "function") return;
+    const avg = t.sweepCount ? (t.sweepMsTotal! / t.sweepCount).toFixed(2) : "0";
+    // eslint-disable-next-line no-console
+    console.info(
+      `[home-motion] ${t.triggered}/${t.total} revealed · sweeps=${t.sweepCount} ` +
+        `avg=${avg}ms max=${(t.sweepMsMax ?? 0).toFixed(2)}ms · ` +
+        `longtasks=${t.longtaskCount ?? 0} (${(t.longtaskMsTotal ?? 0).toFixed(0)}ms) · ` +
+        `first=${t.firstTriggerMs?.toFixed(0) ?? "—"}ms last=${t.lastTriggerMs?.toFixed(0) ?? "—"}ms · ` +
+        `lowPower=${lowPower}`,
+    );
+  }, summaryDelay);
+
   return () => {
     window.cancelAnimationFrame(bootRaf);
     window.cancelAnimationFrame(rafId);
     window.clearTimeout(pollId);
+    window.clearTimeout(summaryId);
+    longtaskObserver?.disconnect();
     window.removeEventListener("scroll", schedule);
     window.removeEventListener("resize", schedule);
     window.removeEventListener("orientationchange", schedule);
