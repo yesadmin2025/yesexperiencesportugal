@@ -74,7 +74,7 @@ function ExperiencesPage() {
         </div>
       </section>
 
-      <section className="section-y">
+      <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">Our Signature Collection</h2>
           <div className="flex justify-end mb-6">
@@ -209,7 +209,7 @@ function ExperiencesPage() {
 
 function CtaStrip() {
   return (
-    <section data-audit="experiences-cta" className="section-y-sm pt-0">
+    <section data-audit="experiences-cta" className="reveal section-y-sm pt-0">
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>

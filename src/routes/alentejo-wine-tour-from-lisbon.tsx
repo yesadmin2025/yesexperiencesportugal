@@ -100,7 +100,7 @@ function AlentejoWineLanding() {
   return (
     <SiteLayout>
       <article>
-        <header className="pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Alentejo wine country</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -119,7 +119,7 @@ function AlentejoWineLanding() {
           </div>
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl prose-yes">
             <div className="mb-14">
               <Eyebrow className="mb-4">Why Alentejo</Eyebrow>
@@ -167,7 +167,7 @@ function AlentejoWineLanding() {
           intro="The Évora & Alentejo wine experience YES Experiences Portugal operates has been compared, ranked and reviewed across independent travel guides covering full-day tours from Lisbon. Some third-party articles link to marketplace listings where YES Experiences Portugal appears as the experience provider."
         />
 
-        <section className="py-16 md:py-20 bg-[color:var(--ivory)]">
+        <section className="reveal py-16 md:py-20 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             <Eyebrow className="mb-4">Other ways in</Eyebrow>
             <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-6">

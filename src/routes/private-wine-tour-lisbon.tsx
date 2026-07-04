@@ -102,7 +102,7 @@ function Page() {
   return (
     <SiteLayout>
       <article>
-        <header className="pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Private Wine Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -121,7 +121,7 @@ function Page() {
           </div>
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl prose-yes">
             <div className="mb-14">
               <Eyebrow className="mb-4">Why Arrábida</Eyebrow>

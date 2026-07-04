@@ -168,7 +168,7 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-32 pb-14 bg-[color:var(--sand)] text-center">
+      <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <Eyebrow flank>10-day itinerary</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -192,7 +192,7 @@ function Page() {
       </section>
 
       {/* Day-by-day */}
-      <section className="py-16 bg-[color:var(--ivory)]">
+      <section className="reveal py-16 bg-[color:var(--ivory)]">
         <div className="container-x max-w-3xl">
           <Eyebrow>How ten days usually shape up</Eyebrow>
           <SectionTitle as="h2" spacing="loose">
@@ -234,7 +234,7 @@ function Page() {
       </section>
 
       {/* Why us / positioning */}
-      <section className="py-16 bg-[color:var(--sand)]">
+      <section className="reveal py-16 bg-[color:var(--sand)]">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Luxury, without theatre</Eyebrow>
           <SectionTitle as="h2" spacing="loose">

@@ -142,7 +142,7 @@ function Page() {
   return (
     <SiteLayout>
       <article>
-        <header className="pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Private Wine Days</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -164,7 +164,7 @@ function Page() {
           </div>
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl prose-yes">
             <div className="mb-14">
               <Eyebrow className="mb-4">The honest intro</Eyebrow>
@@ -196,7 +196,7 @@ function Page() {
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-[color:var(--sand)]/40">
+        <section className="reveal py-20 md:py-28 bg-[color:var(--sand)]/40">
           <div className="container-x">
             <div className="max-w-2xl mx-auto text-center mb-12">
               <Eyebrow flank className="mb-4">Real Signature wine days</Eyebrow>
@@ -242,7 +242,7 @@ function Page() {
           headline="What guests say about our wine days"
         />
 
-        <section className="py-20 md:py-24 bg-[color:var(--ivory)]">
+        <section className="reveal py-20 md:py-24 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl text-center">
             <Eyebrow flank className="mb-4">Ready when you are</Eyebrow>
             <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-6">

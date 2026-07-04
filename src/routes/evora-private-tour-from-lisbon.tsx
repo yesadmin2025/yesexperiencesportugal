@@ -100,7 +100,7 @@ function EvoraPrivateLanding() {
   return (
     <SiteLayout>
       <article>
-        <header className="pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Évora private day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -119,7 +119,7 @@ function EvoraPrivateLanding() {
           </div>
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl prose-yes">
             <div className="mb-14">
               <Eyebrow className="mb-4">Where Évora is</Eyebrow>
@@ -167,7 +167,7 @@ function EvoraPrivateLanding() {
           intro="Independent travel guides have ranked, compared and reviewed the Évora private experience YES Experiences Portugal operates from Lisbon. Some third-party articles link to marketplace listings where YES Experiences Portugal appears as the experience provider."
         />
 
-        <section className="py-16 md:py-20 bg-[color:var(--ivory)]">
+        <section className="reveal py-16 md:py-20 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             <Eyebrow className="mb-4">Pair it with</Eyebrow>
             <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-6">
