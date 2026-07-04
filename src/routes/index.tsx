@@ -954,7 +954,7 @@ function HomePage() {
                     shape the rest.
                   </p>
                   <div className="mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
-                    <CtaButton to="/studio-v3" variant="hairline">
+                    <CtaButton to="/studio-v3" variant="primary">
                       Open the Studio
                     </CtaButton>
                     <CtaButton to="/contact" variant="hairline">
