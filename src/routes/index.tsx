@@ -751,7 +751,8 @@ function HomePage() {
                           <CtaButton
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
-                            variant="hairline"
+                            variant="primary"
+                            size="sm"
                             aria-label={`Reserve ${t.title}`}
                           >
                             Reserve this day
@@ -760,7 +761,6 @@ function HomePage() {
                             to="/tours/$tourId/tailor"
                             params={{ tourId: t.id }}
                             variant="hairline"
-                            className="opacity-70 hover:opacity-100"
                             aria-label={`Tailor ${t.title}`}
                           >
                             Tailor this Signature
