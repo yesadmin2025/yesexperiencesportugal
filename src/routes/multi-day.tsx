@@ -162,7 +162,7 @@ function MultiDayPage() {
             <CtaButton to="/contact" variant="primary">
               Begin with a Designer
             </CtaButton>
-            <CtaButton to="#sample-file" variant="ghost">
+            <CtaButton href="#sample-file" variant="ghost">
               See Sample Travel File
             </CtaButton>
           </div>
