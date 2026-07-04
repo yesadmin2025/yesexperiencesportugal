@@ -249,7 +249,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                       </p>
                     )}
                   </div>
-                  <SourceBadge source={q.source} />
+                  <SourceBadge source={q.source} sourceUrl={q.source_url} />
                 </div>
               </li>
             ))}
