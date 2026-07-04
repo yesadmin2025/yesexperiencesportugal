@@ -91,7 +91,7 @@ export function GuestQuotes() {
       {
         "@type": "AggregateRating",
         "@id": `${SITE_URL}/#aggregate-rating`,
-        itemReviewed: { "@id": orgId },
+        itemReviewed: itemReviewed,
         ratingValue: Number(ratingValue.toFixed(1)),
         reviewCount,
         bestRating: 5,
