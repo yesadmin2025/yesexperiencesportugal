@@ -360,6 +360,7 @@ function BookFlip() {
           onClick={() => go("next")}
           disabled={index === total - 1}
           aria-label="Next page"
+          aria-controls="travel-file-book"
           className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
         >
           <ChevronRight size={16} aria-hidden="true" />
