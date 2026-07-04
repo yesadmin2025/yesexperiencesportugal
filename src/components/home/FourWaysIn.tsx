@@ -34,8 +34,8 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
       </>
     ),
-    body: "Flagship private days across Lisbon, Sintra, Arrábida and beyond — reserve as they are, or tailor inside the Signature you choose.",
-    cta: "Reserve or tailor",
+    body: "Curated private days across Lisbon, Sintra, Arrábida and beyond — book as-is, or reshape within the day you love.",
+    cta: "Explore Signatures",
     href: "/experiences",
   },
   {
@@ -48,8 +48,8 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">in real time.</span>
       </>
     ),
-    body: "Choose the mood, route and rhythm. See the price live, then reserve instantly when it feels right.",
-    cta: "Build your private day",
+    body: "Shape mood, route and rhythm as you go. Watch the price move with you — reserve the moment it feels right.",
+    cta: "Open the Studio",
     href: "/studio-v3",
   },
   {
@@ -62,8 +62,8 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
       </>
     ),
-    body: "Engagements, anniversaries, birthdays and private celebrations — quietly handled, with local hands behind every detail.",
-    cta: "Tell us the occasion",
+    body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
+    cta: "Share the occasion",
     href: "/proposals",
   },
   {
@@ -76,7 +76,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
       </>
     ),
-    body: "Corporate days, client hospitality and private groups of any size — transport, suppliers and timing handled end to end.",
+    body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
     cta: "Plan a group day",
     href: "/corporate",
   },
@@ -90,7 +90,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
       </>
     ),
-    body: "Any length, any shape — honeymoons, family journeys, celebrations and multi-day Portugal. Composed by a local Travel Designer.",
+    body: "Honeymoons, family journeys, multi-day Portugal — days, stays and local hands, composed as a travel file, not a booking.",
     cta: "Begin with a designer",
     href: "/multi-day",
   },
