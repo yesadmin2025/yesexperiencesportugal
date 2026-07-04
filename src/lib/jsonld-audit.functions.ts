@@ -40,8 +40,8 @@ export type ProductAudit = {
 export type JsonLdBlock = {
   index: number;
   raw: string;
-  parsed: unknown;
   parseError?: string;
+  types: string[];
 };
 
 export type PageAudit = {
