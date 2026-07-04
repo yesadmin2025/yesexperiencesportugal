@@ -62,6 +62,7 @@ import {
   selectReplacementCandidates,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
+import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
