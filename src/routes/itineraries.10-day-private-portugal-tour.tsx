@@ -181,10 +181,10 @@ function Page() {
             travel designer once we know how you want it to feel.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <CtaButton as={Link} to="/multi-day">
+            <CtaButton to="/multi-day">
               Work with a travel designer
             </CtaButton>
-            <CtaButton as={Link} to="/experiences" variant="ghost">
+            <CtaButton to="/experiences" variant="ghost">
               Browse Signature experiences
             </CtaButton>
           </div>
@@ -247,7 +247,7 @@ function Page() {
             eats at. No re-sold packages, no invented partners.
           </p>
           <div className="mt-8">
-            <CtaButton as={Link} to="/multi-day">
+            <CtaButton to="/multi-day">
               Start composing your ten days
             </CtaButton>
           </div>
