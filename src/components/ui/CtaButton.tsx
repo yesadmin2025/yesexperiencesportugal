@@ -137,45 +137,91 @@ function GoldSweep() {
   );
 }
 
+/** Spinner shown in loading state — inherits currentColor. */
+function CtaSpinner() {
+  return (
+    <Loader2
+      size={18}
+      strokeWidth={1.6}
+      aria-hidden="true"
+      className="animate-spin motion-reduce:animate-none"
+    />
+  );
+}
+
 export function CtaButton(props: CtaButtonProps) {
-  const { variant = "primary", size = "md", icon, iconLeading, className, children } = props;
+  const {
+    variant = "primary",
+    size = "md",
+    icon,
+    iconLeading,
+    loading = false,
+    loadingLabel,
+    error = false,
+    className,
+    children,
+  } = props;
 
   const isHairline = variant === "hairline";
   const isKinetic = variant === "primary" || variant === "ghostDark";
 
+  // Replay the error animation whenever `error` changes to a fresh truthy value.
+  const [errorPlaying, setErrorPlaying] = React.useState(false);
+  const errorKey = typeof error === "number" ? error : error ? 1 : 0;
+  React.useEffect(() => {
+    if (!errorKey) return;
+    setErrorPlaying(true);
+    const t = window.setTimeout(() => setErrorPlaying(false), 1400);
+    return () => window.clearTimeout(t);
+  }, [errorKey]);
+
   const trailing =
-    icon === null
-      ? null
-      : isHairline
-        ? (icon ?? (
-            <span aria-hidden="true" className="flex items-center">
-              <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8 group-focus-visible:w-8" />
-              <ArrowRight
-                size={12}
-                className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
-              />
-            </span>
-          ))
-        : (icon ?? (
-            <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />
-          ));
+    loading && !isHairline ? (
+      <CtaSpinner />
+    ) : icon === null ? null : isHairline ? (
+      (icon ?? (
+        <span aria-hidden="true" className="flex items-center">
+          <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8 group-focus-visible:w-8" />
+          <ArrowRight
+            size={12}
+            className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+          />
+        </span>
+      ))
+    ) : (
+      (icon ?? <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />)
+    );
+
+  const labelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
 
   const content = (
     <>
-      {iconLeading}
-      <span className="cta-label relative">{children}</span>
+      {loading && isHairline ? (
+        <span className="mr-1 inline-flex items-center">
+          <CtaSpinner />
+        </span>
+      ) : (
+        iconLeading
+      )}
+      <span className="cta-label relative">{labelNode}</span>
       {trailing}
       {isKinetic ? <GoldSweep /> : null}
     </>
   );
 
-  const sharedClassName = isHairline
-    ? cn(hairlineBaseClasses, className)
-    : cn(baseClasses, sizeClasses[size], variantClasses[variant], className);
+  const sharedClassName = cn(
+    isHairline
+      ? cn(hairlineBaseClasses, loading && "cursor-progress")
+      : cn(baseClasses, sizeClasses[size], variantClasses[variant]),
+    errorPlaying && "he-cta-error",
+    className,
+  );
   const sharedStyle =
     isHairline || className?.includes("hero-cta-button") ? undefined : variantStyle[variant];
 
-
+  const stateAttrs: Record<string, unknown> = {};
+  if (loading) stateAttrs["aria-busy"] = true;
+  if (errorPlaying) stateAttrs["data-cta-error"] = "";
 
   if ("href" in props && props.href !== undefined) {
     const {
@@ -184,12 +230,25 @@ export function CtaButton(props: CtaButtonProps) {
       size: _s,
       icon: _i,
       iconLeading: _il,
+      loading: _l,
+      loadingLabel: _ll,
+      error: _e,
       className: _c,
       children: _ch,
+      onClick,
       ...rest
     } = props;
+    const inert = loading;
     return (
-      <a href={href} className={sharedClassName} style={sharedStyle} {...rest}>
+      <a
+        href={inert ? undefined : href}
+        className={sharedClassName}
+        style={sharedStyle}
+        onClick={inert ? (e) => e.preventDefault() : onClick}
+        aria-disabled={inert || undefined}
+        {...stateAttrs}
+        {...rest}
+      >
         {content}
       </a>
     );
@@ -202,12 +261,25 @@ export function CtaButton(props: CtaButtonProps) {
       size: _s,
       icon: _i,
       iconLeading: _il,
+      loading: _l,
+      loadingLabel: _ll,
+      error: _e,
       className: _c,
       children: _ch,
+      onClick,
       ...rest
     } = props;
+    const inert = loading;
     return (
-      <Link to={to} className={sharedClassName} style={sharedStyle} {...(rest as object)}>
+      <Link
+        to={to}
+        className={sharedClassName}
+        style={sharedStyle}
+        onClick={inert ? (e) => e.preventDefault() : onClick}
+        aria-disabled={inert || undefined}
+        {...stateAttrs}
+        {...(rest as object)}
+      >
         {content}
       </Link>
     );
@@ -218,12 +290,22 @@ export function CtaButton(props: CtaButtonProps) {
     size: _s,
     icon: _i,
     iconLeading: _il,
+    loading: _l,
+    loadingLabel: _ll,
+    error: _e,
     className: _c,
     children: _ch,
+    disabled: disabledProp,
     ...rest
   } = props;
   return (
-    <button className={sharedClassName} style={sharedStyle} {...rest}>
+    <button
+      className={sharedClassName}
+      style={sharedStyle}
+      disabled={disabledProp || loading}
+      {...stateAttrs}
+      {...rest}
+    >
       {content}
     </button>
   );
