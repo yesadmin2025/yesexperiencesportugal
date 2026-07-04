@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock, Loader2, Lock } from "lucide-react";
+import { CtaButton } from "@/components/ui/CtaButton";
+import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import {
   Dialog,
   DialogContent,
@@ -390,22 +392,20 @@ export function FinalDetailsDialog({
         </div>
 
         <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
-          >
-            {submitting ? (
-              <>
-                <Loader2 size={15} className="animate-spin" /> Opening secure checkout…
-              </>
-            ) : (
-              <>
-                <Lock size={14} /> Continue to secure checkout
-              </>
-            )}
-          </button>
+          {submitting ? (
+            <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
+          ) : (
+            <CtaButton
+              type="button"
+              onClick={handleSubmit}
+              variant="primary"
+              size="md"
+              className="w-full"
+              iconLeading={<Lock size={14} aria-hidden />}
+            >
+              Continue to secure checkout
+            </CtaButton>
+          )}
           <p className="text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
             Secure checkout · Final price shown before payment
           </p>
