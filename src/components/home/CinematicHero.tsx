@@ -221,7 +221,7 @@ export function CinematicHero() {
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
-              Reserve a Signature
+              Reserve an Experience
               <svg
                 className="hero-cta__arrow"
                 width="10"

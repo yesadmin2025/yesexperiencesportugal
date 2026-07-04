@@ -23,8 +23,7 @@ import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
-// FourWaysIn / WhyYesPillars / RecognisedByGuides / InlineEmailCapture removed
-// from the homepage in the declutter pass (components kept for other routes).
+import { FourWaysIn } from "@/components/home/FourWaysIn";
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
