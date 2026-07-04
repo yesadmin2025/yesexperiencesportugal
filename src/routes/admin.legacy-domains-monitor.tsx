@@ -10,6 +10,7 @@ import {
   submitLegacyGscActions,
   type LegacyActionsReport,
 } from "@/lib/gscLegacyActions.functions";
+import { LegacyDomainsHistoryChart } from "@/components/admin/LegacyDomainsHistoryChart";
 
 export const Route = createFileRoute("/admin/legacy-domains-monitor")({
   head: () => ({
@@ -226,7 +227,10 @@ function LegacyDomainsMonitorPage() {
           {data?.map((r: LegacyHostReport) => <HostCard key={r.host} r={r} />)}
         </section>
 
+        <LegacyDomainsHistoryChart />
+
         <GscActionsPanel />
+
 
 
 
