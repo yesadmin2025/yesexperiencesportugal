@@ -65,7 +65,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       pricePerPaxEur: perPaxForSummary,
       totalEur: Math.round(perPaxForSummary * details.guests),
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
-      beats: (tour.highlights ?? []).slice(0, 4),
+      beats: (meta?.included && meta.included.length > 0 ? meta.included : (tour.highlights ?? [])).slice(0, 4),
       flowLabel: "Signature",
     });
     setDetailsOpen(false);
