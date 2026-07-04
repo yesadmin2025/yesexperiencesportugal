@@ -67,27 +67,31 @@ export const STUDIO_FAQ: FaqItem[] = [
 
 export const TRAVEL_DESIGNER_FAQ: FaqItem[] = [
   {
-    q: "What does the Travel Designer service include?",
-    a: "A private, multi-day Portugal journey composed by a designer around your dates, pace and interests — private guiding and transfers, curated overnight stops, restaurant reservations and on-the-ground support every day.",
+    q: "What is a Travel Designer in Portugal?",
+    a: "A Travel Designer creates a full private Portugal journey around your pace, interests, route, stays, experiences and logistics. It is different from booking a single tour because the entire trip is designed as one connected journey.",
   },
   {
-    q: "How is this different from a Signature day tour from Lisbon?",
-    a: "A Signature is one private day around Lisbon, Sintra or Arrábida. The Travel Designer composes a full journey of several days — combining regions, accommodation and rhythm into one continuous experience.",
+    q: "Is this different from booking a private tour?",
+    a: "Yes. A private tour is one day. A Travel Designer journey is a multi-day itinerary — connected regions, overnight logic, transfers, private experiences and daily support, delivered as one travel file.",
   },
   {
-    q: "How long can the journey be?",
-    a: "Anywhere from a long weekend to a multi-week itinerary across Lisbon, Sintra, the Alentejo, Comporta, the Douro and beyond. We design realistic driving times and the right pacing between each day.",
+    q: "Can you design a multi-day Portugal itinerary?",
+    a: "Yes. From a long weekend to a multi-week route across Lisbon, Sintra, Arrábida, Comporta, Alentejo, Central Portugal, Porto, Douro, the Algarve and the Atlantic coast — chosen for pace, season and what genuinely works.",
   },
   {
-    q: "Do you handle hotels and restaurants too?",
-    a: "Yes. We curate and reserve accommodations, restaurants and private experiences as part of the journey, and you receive a full Travel File before you arrive.",
+    q: "Can you plan honeymoons or special occasions in Portugal?",
+    a: "Yes. Honeymoons, anniversary trips, family journeys and private celebrations are the kind of trips we design most — with the extra care that a meaningful occasion deserves.",
   },
   {
-    q: "How do I start a Travel Designer request?",
-    a: "Send a short brief through the contact form or WhatsApp with your dates, group and what you're hoping to feel. A designer replies personally — usually within one working day — with a first direction before any commitment.",
+    q: "Can you include hotels, transfers and private experiences?",
+    a: "Yes. Stays, private transfers, guided experiences, restaurant reservations and local timing are all curated inside one travel file, with trusted partners on the ground.",
   },
   {
-    q: "Is there a minimum budget?",
-    a: "The Travel Designer service is built for private, multi-day journeys with a premium standard of guiding, transfers and accommodation. We'll always be transparent about budget on the first reply so you can decide if it's the right fit.",
+    q: "Do I receive a written proposal before booking?",
+    a: "Yes. Every journey is delivered as a private Travel File — day-by-day route, stays, experiences and practical detail — so the trip is clear before you commit.",
+  },
+  {
+    q: "Can the journey be adjusted after the first proposal?",
+    a: "Yes. The first proposal is a starting point. Your Travel Designer refines it with you before travelling, and adjusts on the ground when weather, timing or energy shifts.",
   },
 ];
