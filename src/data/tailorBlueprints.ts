@@ -185,7 +185,7 @@ const tilesWorkshop: TailorBlueprint = {
   tourId: "tiles-workshop",
   core: [
     { id: "livramento", label: "Mercado do Livramento", blurb: "Setúbal's historic fresh market — a quick walk before the workshop.", category: "market", dwellMinutesOverride: 30 },
-    { id: "azulejos-workshop", label: "Private tile-painting workshop", blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.", category: "workshop", dwellMinutesOverride: 90 },
+    { id: "azulejos-workshop", label: "Private tile-painting workshop", blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.", category: "workshop", dwellMinutesOverride: 90, skippable: false },
     { id: "lunch-azeitao", label: "Lunch in Azeitão", blurb: "Traditional Portuguese lunch in the wine village.", category: "lunch" },
   ],
   choice: {
