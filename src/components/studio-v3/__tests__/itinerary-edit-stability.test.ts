@@ -16,26 +16,24 @@
 import { describe, it, expect } from "vitest";
 import { pickPrimaryTour } from "@/components/studio-v3/curation";
 
-import type { Interest, Feeling } from "@/components/studio-v3/types";
+import {
+  FEELING_IDS,
+  INTEREST_IDS,
+  type Interest,
+  type Feeling,
+} from "@/components/studio-v3/types";
 
-const NON_WINE_INTERESTS: Interest[] = [
-  "gastronomy",
-  "heritage",
-  "coast",
-  "local-life",
-  "nature",
-  "photography",
-  "wellness",
-];
+// Derived from the canonical id tuples so any change to the Interest /
+// Feeling unions is picked up here automatically — no hand-rolled string
+// arrays that can drift and re-introduce TS2322 mismatches.
+const NON_WINE_INTERESTS: readonly Interest[] = INTEREST_IDS.filter(
+  (i): i is Exclude<Interest, "wine"> => i !== "wine",
+);
 
-const NON_WINE_FEELINGS: Feeling[] = [
-  "coastal",
-  "hidden",
-  "romance",
-  "culture",
-  "adventure",
-  "slow-luxury",
-];
+const NON_WINE_FEELINGS: readonly Feeling[] = FEELING_IDS.filter(
+  (f): f is Exclude<Feeling, "wine-food"> => f !== "wine-food",
+);
+
 
 function pairs<T>(xs: T[]): Array<[T, T]> {
   const out: Array<[T, T]> = [];
