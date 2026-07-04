@@ -258,22 +258,30 @@ export function Footer() {
               © {new Date().getFullYear()} YES experiences Portugal. All rights reserved.
               <span className="hidden md:inline"> · RNAAT nº 31/2023 · Sesimbra, Portugal.</span>
             </p>
-            <nav aria-label="Legal" className="flex items-center gap-5">
-              <Link
-                to="/terms"
-                className="text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
-              >
-                Terms
-              </Link>
-              <span aria-hidden="true" className="text-[color:var(--ivory)]/55">
-                ·
-              </span>
-              <Link
-                to="/privacy"
-                className="text-[color:var(--ivory)]/70 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
-              >
-                Privacy
-              </Link>
+            <nav
+              aria-label="Legal and contact"
+              className="flex flex-wrap items-center gap-x-4 gap-y-2"
+            >
+              {[
+                { to: "/terms", label: "Terms & Conditions" },
+                { to: "/privacy", label: "Privacy Policy" },
+                { to: "/cookies", label: "Cookie Policy" },
+                { to: "/contact", label: "Contact" },
+              ].map((l, i, arr) => (
+                <span key={l.to} className="inline-flex items-center gap-4">
+                  <Link
+                    to={l.to}
+                    className="text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                  >
+                    {l.label}
+                  </Link>
+                  {i < arr.length - 1 && (
+                    <span aria-hidden="true" className="text-[color:var(--ivory)]/55">
+                      ·
+                    </span>
+                  )}
+                </span>
+              ))}
             </nav>
           </div>
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--ivory)]/55 font-[family-name:var(--font-sans)]">

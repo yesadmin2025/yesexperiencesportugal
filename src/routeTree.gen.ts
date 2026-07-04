@@ -37,6 +37,7 @@ import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alente
 import { Route as DayTripsFromLisbonRouteImport } from './routes/day-trips-from-lisbon'
 import { Route as DayToursRouteImport } from './routes/day-tours'
 import { Route as CorporateRouteImport } from './routes/corporate'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
@@ -236,6 +237,11 @@ const DayToursRoute = DayToursRouteImport.update({
 const CorporateRoute = CorporateRouteImport.update({
   id: '/corporate',
   path: '/corporate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -554,6 +560,7 @@ export interface FileRoutesByFullPath {
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
@@ -643,6 +650,7 @@ export interface FileRoutesByTo {
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
@@ -733,6 +741,7 @@ export interface FileRoutesById {
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
   '/day-tours': typeof DayToursRoute
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
@@ -824,6 +833,7 @@ export interface FileRouteTypes {
     | '/brand-qa'
     | '/builder'
     | '/contact'
+    | '/cookies'
     | '/corporate'
     | '/day-tours'
     | '/day-trips-from-lisbon'
@@ -913,6 +923,7 @@ export interface FileRouteTypes {
     | '/brand-qa'
     | '/builder'
     | '/contact'
+    | '/cookies'
     | '/corporate'
     | '/day-tours'
     | '/day-trips-from-lisbon'
@@ -1002,6 +1013,7 @@ export interface FileRouteTypes {
     | '/brand-qa'
     | '/builder'
     | '/contact'
+    | '/cookies'
     | '/corporate'
     | '/day-tours'
     | '/day-trips-from-lisbon'
@@ -1092,6 +1104,7 @@ export interface RootRouteChildren {
   BrandQaRoute: typeof BrandQaRoute
   BuilderRoute: typeof BuilderRoute
   ContactRoute: typeof ContactRoute
+  CookiesRoute: typeof CookiesRoute
   CorporateRoute: typeof CorporateRoute
   DayToursRoute: typeof DayToursRoute
   DayTripsFromLisbonRoute: typeof DayTripsFromLisbonRoute
@@ -1364,6 +1377,13 @@ declare module '@tanstack/react-router' {
       path: '/corporate'
       fullPath: '/corporate'
       preLoaderRoute: typeof CorporateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -1829,6 +1849,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrandQaRoute: BrandQaRoute,
   BuilderRoute: BuilderRoute,
   ContactRoute: ContactRoute,
+  CookiesRoute: CookiesRoute,
   CorporateRoute: CorporateRoute,
   DayToursRoute: DayToursRoute,
   DayTripsFromLisbonRoute: DayTripsFromLisbonRoute,
@@ -1909,3 +1930,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

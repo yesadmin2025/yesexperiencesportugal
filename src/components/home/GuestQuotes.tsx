@@ -92,18 +92,24 @@ export function GuestQuotes() {
         ))}
       </ul>
 
-      {quotes.length > 0 && (
-        <div className="mt-8 md:mt-10 -mx-5 sm:mx-0">
+      {/* Reservation slot — reserves the review-card min-height BEFORE
+          data arrives so the section never causes a layout shift. Even
+          when `quotes` is empty the row keeps its space. */}
+      <div className="mt-8 md:mt-10 -mx-5 sm:mx-0 min-h-[15rem] sm:min-h-[16rem]">
+        {quotes.length > 0 && (
           <ul
-            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-5 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory sm:snap-none scroll-pl-5 sm:scroll-pl-0 text-left list-none p-0"
+            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 items-stretch gap-4 md:gap-5 px-5 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory sm:snap-none scroll-pl-5 sm:scroll-pl-0 text-left list-none p-0"
             aria-label="Recent guest reviews"
           >
             {quotes.map((q) => (
               <li
                 key={q.id}
-                className="reveal-stagger he-card-lift shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-5"
+                className="reveal-stagger he-card-lift shrink-0 snap-start w-[82vw] sm:w-auto sm:shrink flex flex-col min-h-[14rem] sm:min-h-[15rem] rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-5"
               >
-                <div className="inline-flex items-center gap-0.5 text-[color:var(--gold)]" aria-hidden="true">
+                <div
+                  className="inline-flex items-center gap-0.5 text-[color:var(--gold)] h-4"
+                  aria-hidden="true"
+                >
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
@@ -113,10 +119,10 @@ export function GuestQuotes() {
                     />
                   ))}
                 </div>
-                <p className="mt-2 text-[13px] md:text-[13.5px] leading-relaxed text-[color:var(--charcoal)]/85">
+                <p className="mt-2 text-[13px] md:text-[13.5px] leading-relaxed text-[color:var(--charcoal)]/85 line-clamp-5">
                   “{q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body}”
                 </p>
-                <p className="mt-3 text-[11.5px] text-[color:var(--charcoal)]/60">
+                <p className="mt-auto pt-3 text-[11.5px] text-[color:var(--charcoal)]/60">
                   {q.reviewer_name ?? "Guest"}
                   {q.reviewer_country ? ` · ${q.reviewer_country}` : ""}
                   <span className="ml-1 text-[color:var(--charcoal)]/50">
@@ -126,8 +132,8 @@ export function GuestQuotes() {
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
