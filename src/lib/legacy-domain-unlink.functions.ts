@@ -4,27 +4,16 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const STATUS = ["todo", "in_progress", "done", "blocked"] as const;
 
-async function assertAdmin(context: {
-  supabase: {
-    rpc: (
-      fn: string,
-      args: Record<string, unknown>,
-    ) => Promise<{ data: unknown; error: { message: string } | null }>;
-  };
-  userId: string;
-}) {
-  const { data, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
-  if (error) throw new Error(error.message);
-  if (!data) throw new Error("Forbidden");
-}
-
 export const listLegacyUnlinkChecklist = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    const { data: isAdmin, error: roleErr } = await context.supabase.rpc(
+      "has_role",
+      { _user_id: context.userId, _role: "admin" },
+    );
+    if (roleErr) throw new Error(roleErr.message);
+    if (!isAdmin) throw new Error("Forbidden");
+
     const { data, error } = await context.supabase
       .from("legacy_domain_unlink_checklist")
       .select("item_id, status, note, updated_at, updated_by");
@@ -44,8 +33,19 @@ export const upsertLegacyUnlinkChecklistItem = createServerFn({ method: "POST" }
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
-    const payload: Record<string, unknown> = {
+    const { data: isAdmin, error: roleErr } = await context.supabase.rpc(
+      "has_role",
+      { _user_id: context.userId, _role: "admin" },
+    );
+    if (roleErr) throw new Error(roleErr.message);
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const payload: {
+      item_id: string;
+      updated_by: string;
+      status?: (typeof STATUS)[number];
+      note?: string | null;
+    } = {
       item_id: data.itemId,
       updated_by: context.userId,
     };
