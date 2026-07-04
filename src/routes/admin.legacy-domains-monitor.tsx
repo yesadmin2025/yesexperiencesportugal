@@ -195,12 +195,32 @@ function DnsRow({ label, rows }: { label: string; rows: { data: string; TTL?: nu
 
 function LegacyDomainsMonitorPage() {
   const probe = useServerFn(probeLegacyDomains);
+  const probeOne = useServerFn(probeLegacyHost);
+  const queryClient = useQueryClient();
   const { data, isFetching, refetch, error, dataUpdatedAt } = useQuery({
     queryKey: ["legacy-domains-monitor"],
     queryFn: () => probe(),
     refetchInterval: 60_000,
     staleTime: 30_000,
   });
+
+  const singleProbe = useMutation({
+    mutationFn: (host: string) => probeOne({ data: { host } }),
+    onSuccess: (updated) => {
+      // Patch this host inline for instant UI feedback.
+      queryClient.setQueryData<LegacyHostReport[] | undefined>(
+        ["legacy-domains-monitor"],
+        (prev) => (prev ? prev.map((r) => (r.host === updated.host ? updated : r)) : prev),
+      );
+      // Refresh the historical chart so the new datapoint appears immediately.
+      queryClient.invalidateQueries({ queryKey: ["legacy-domains-history"] });
+    },
+  });
+
+  const refreshAll = async () => {
+    await refetch();
+    queryClient.invalidateQueries({ queryKey: ["legacy-domains-history"] });
+  };
 
   return (
     <div className="min-h-screen bg-[color:var(--ivory)] px-5 py-10 md:px-10 md:py-16">
@@ -224,7 +244,7 @@ function LegacyDomainsMonitorPage() {
             </span>
           </p>
           <button
-            onClick={() => refetch()}
+            onClick={refreshAll}
             disabled={isFetching}
             className="rounded-full bg-[color:var(--teal)] px-4 py-2 text-xs font-medium text-white hover:bg-[color:var(--teal-2)] disabled:opacity-60"
           >
@@ -238,12 +258,29 @@ function LegacyDomainsMonitorPage() {
           </p>
         ) : null}
 
+        {singleProbe.error ? (
+          <p className="mt-4 rounded border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+            Sonda por host falhou:{" "}
+            {singleProbe.error instanceof Error
+              ? singleProbe.error.message
+              : String(singleProbe.error)}
+          </p>
+        ) : null}
+
         <section className="mt-6 space-y-4">
           {!data && isFetching ? (
             <p className="text-sm text-[color:var(--charcoal-soft)]">A sondar domínios…</p>
           ) : null}
-          {data?.map((r: LegacyHostReport) => <HostCard key={r.host} r={r} />)}
+          {data?.map((r: LegacyHostReport) => (
+            <HostCard
+              key={r.host}
+              r={r}
+              onProbe={() => singleProbe.mutate(r.host)}
+              probing={singleProbe.isPending && singleProbe.variables === r.host}
+            />
+          ))}
         </section>
+
 
         <LegacyDomainsHistoryChart />
 
