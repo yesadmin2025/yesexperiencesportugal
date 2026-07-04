@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
  * pass `iconLeading` to render an icon BEFORE the label.
  */
 
-type Variant = "primary" | "ghost" | "ghostDark";
+type Variant = "primary" | "ghost" | "ghostDark" | "hairline";
 type Size = "md" | "sm";
 
 interface CommonProps {
@@ -55,21 +55,25 @@ type ButtonCtaProps = CommonProps &
 export type CtaButtonProps = LinkCtaProps | AnchorCtaProps | ButtonCtaProps;
 
 const sizeClasses: Record<Size, string> = {
-  md: "px-7 py-3.5 min-h-[48px] text-[12.5px] sm:text-[13px] tracking-[0.18em]",
-  sm: "px-5 py-3 min-h-[44px] text-[12px] tracking-[0.16em]",
+  md: "px-7 py-3.5 min-h-[48px] text-[11px] sm:text-[11.5px] tracking-[0.25em]",
+  sm: "px-5 py-3 min-h-[44px] text-[11px] tracking-[0.22em]",
 };
 
 const baseClasses =
-  "he-glow he-sheen group inline-flex items-center justify-center gap-2.5 font-sans uppercase font-bold rounded-[2px] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
+  "he-glow he-sheen group inline-flex items-center justify-center gap-2.5 font-sans uppercase font-semibold rounded-[2px] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
+
+const hairlineBaseClasses =
+  "group inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2 text-[color:var(--charcoal)] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
 
 const variantClasses: Record<Variant, string> = {
   primary:
     "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)] he-cta-shift",
   ghost: "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)]/[0.06]",
   ghostDark: "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
+  hairline: "opacity-80 hover:opacity-100 focus-visible:opacity-100",
 };
 
-const variantStyle: Record<Variant, React.CSSProperties> = {
+const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
   primary: {
     border: "1px solid color-mix(in oklab, var(--gold-deep) 55%, transparent)",
     boxShadow:
@@ -83,6 +87,7 @@ const variantStyle: Record<Variant, React.CSSProperties> = {
     boxShadow:
       "inset 0 0 0 1px color-mix(in oklab, var(--ivory) 10%, transparent), 0 8px 22px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent)",
   },
+  hairline: undefined,
 };
 
 function arrowClasses(variant: Variant) {
@@ -95,6 +100,7 @@ function arrowClasses(variant: Variant) {
         : "text-[color:var(--gold)] group-hover:text-[color:var(--gold-deep)]",
   );
 }
+
 
 export function CtaButton(props: CtaButtonProps) {
   const { variant = "primary", size = "md", icon, iconLeading, className, children } = props;
