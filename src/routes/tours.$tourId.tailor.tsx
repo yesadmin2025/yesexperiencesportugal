@@ -26,6 +26,7 @@ import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
+import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 
 
 /* ════════════════════════════════════════════════════════════════
@@ -380,7 +381,7 @@ function TailorPage() {
           tourTitle: tour.title,
           guests: details.guests,
           stopLabels: stopLabels.slice(0, 8),
-          includedItems: metaForSummary?.included && metaForSummary.included.length > 0 ? metaForSummary.included : tour.included,
+          includedItems: resolveClientIncludedItems(metaForSummary, tour),
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
