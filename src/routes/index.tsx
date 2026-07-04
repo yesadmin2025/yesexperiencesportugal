@@ -757,17 +757,15 @@ function HomePage() {
                           >
                             Reserve this day
                           </CtaButton>
-                          <Link
+                          <CtaButton
                             to="/tours/$tourId/tailor"
                             params={{ tourId: t.id }}
-                            className="self-start inline-flex items-center gap-1.5 min-h-[44px] py-2.5 px-1 -mx-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 rounded-[2px]"
+                            variant="hairline"
                             aria-label={`Tailor ${t.title}`}
                           >
                             Tailor this Signature
-                            <span aria-hidden="true" className="text-[color:var(--gold)]">
-                              →
-                            </span>
-                          </Link>
+                          </CtaButton>
+
                         </div>
                       </div>
                     </article>
