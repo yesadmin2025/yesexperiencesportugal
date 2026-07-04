@@ -20,7 +20,7 @@ import {
 } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/jsonld";
 import { PlatformBadge } from "@/components/PlatformBadge";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+
 
 
 
@@ -121,25 +121,26 @@ export function GuestQuotes() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       )}
-      <div className="inline-flex items-center gap-1 text-[color:var(--gold)]" aria-hidden="true">
+      <div className="inline-flex items-center gap-1 mb-5 text-[color:var(--gold)]" aria-hidden="true">
         {Array.from({ length: 5 }).map((_, i) => (
           <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
         ))}
       </div>
 
-      <SectionTitle as="h2" size="default" className="mt-3 text-balance">
+      <h2 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
         {count ? (
           <>
             {count.toLocaleString("en-US")} five-star reviews{" "}
-            <SectionTitle.Em>— real guests, real stories.</SectionTitle.Em>
+            <span className="italic font-normal text-[color:var(--teal)]">— real guests, real stories.</span>
           </>
         ) : (
           <>
             700+ five-star reviews{" "}
-            <SectionTitle.Em>— real guests, real stories.</SectionTitle.Em>
+            <span className="italic font-normal text-[color:var(--teal)]">— real guests, real stories.</span>
           </>
         )}
-      </SectionTitle>
+      </h2>
+
 
 
 
