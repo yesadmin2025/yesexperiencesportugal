@@ -749,12 +749,7 @@ function TailorPage() {
                               <button
                                 type="button"
                                 disabled={atLimit}
-                                onClick={() => {
-                                  const next = new Set(choiceSelected);
-                                  if (on) next.delete(o.id);
-                                  else next.add(o.id);
-                                  setChoiceSelected(next);
-                                }}
+                                onClick={() => tryToggleChoice(o.id)}
                                 aria-pressed={on}
                                 className={[
                                   "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
