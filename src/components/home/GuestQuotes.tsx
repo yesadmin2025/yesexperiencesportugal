@@ -12,7 +12,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { PlatformBadge, type Platform } from "@/components/PlatformBadge";
 import {
   getGlobalReviewStats,
   getCuratedHomepageReviews,
@@ -20,8 +19,6 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/jsonld";
-
-const PLATFORMS: Platform[] = ["tripadvisor", "viator", "google", "getyourguide", "trustpilot"];
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
