@@ -204,11 +204,15 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-      {/* Price for chosen party — tier-resolved, real */}
+      {/* Price for chosen party — tier-resolved when we have real data. */}
       <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-            {displayIsReal ? `For ${guests} guest${guests > 1 ? "s" : ""}` : "From"}
+            {displayIsReal
+              ? `For ${guests} guest${guests > 1 ? "s" : ""}`
+              : hasTierData
+                ? "From · 8+ guests"
+                : "From"}
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
@@ -230,7 +234,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             </span>
           </div>
         ) : null}
+        {!displayIsReal && hasTierData ? (
+          <p className="pt-1 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+            Smaller parties are priced per tier — pick your guests to see the exact per-person rate.
+          </p>
+        ) : null}
       </div>
+
 
 
       <button
