@@ -188,6 +188,82 @@ function TailorPage() {
     return evaluateDay({ stops });
   }, [blueprint, choiceSelected, optionalSelected, skippedCore]);
 
+  /**
+   * Guarded plan mutation — pre-evaluates the projected day against the
+   * shared feasibility rules (dwell + drive caps, boat/wine/monument
+   * limits). Additions that would push the plan into `feasible: false`
+   * are refused with a toast and the state is left unchanged. Removals
+   * (un-checking a stop, skipping a core stop) always go through — they
+   * can only relax the day.
+   */
+  const projectFeasibility = (
+    nextSkippedCore: Set<string>,
+    nextChoice: Set<string>,
+    nextOptional: Set<string>,
+  ) => {
+    if (!blueprint) return null;
+    const toFs = (s: BlueprintStop): FeasibilityStop => ({
+      id: s.id,
+      label: s.label,
+      category: s.category,
+      dwellMinutesOverride: s.dwellMinutesOverride,
+    });
+    const stops: FeasibilityStop[] = [
+      ...blueprint.core.filter((s) => !nextSkippedCore.has(s.id)).map(toFs),
+      ...(blueprint.choice
+        ? blueprint.choice.options.filter((o) => nextChoice.has(o.id)).map(toFs)
+        : []),
+      ...blueprint.optional.filter((o) => nextOptional.has(o.id)).map(toFs),
+    ];
+    return evaluateDay({ stops });
+  };
+
+  const tryToggleSkippedCore = (id: string) => {
+    const next = new Set(skippedCore);
+    const isSkipping = !next.has(id);
+    if (isSkipping) next.add(id);
+    else {
+      // Un-skipping = adding a stop back → guard against overload.
+      next.delete(id);
+      const proj = projectFeasibility(next, choiceSelected, optionalSelected);
+      if (proj && !proj.feasible) {
+        toast.error(proj.warnings[0] ?? "That would push the day past its limit.");
+        return;
+      }
+    }
+    setSkippedCore(next);
+  };
+
+  const tryToggleChoice = (id: string) => {
+    const on = choiceSelected.has(id);
+    const next = new Set(choiceSelected);
+    if (on) next.delete(id);
+    else {
+      next.add(id);
+      const proj = projectFeasibility(skippedCore, next, optionalSelected);
+      if (proj && !proj.feasible) {
+        toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
+        return;
+      }
+    }
+    setChoiceSelected(next);
+  };
+
+  const tryToggleOptional = (id: string) => {
+    const on = optionalSelected.has(id);
+    const next = new Set(optionalSelected);
+    if (on) next.delete(id);
+    else {
+      next.add(id);
+      const proj = projectFeasibility(skippedCore, choiceSelected, next);
+      if (proj && !proj.feasible) {
+        toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
+        return;
+      }
+    }
+    setOptionalSelected(next);
+  };
+
   // Optional stops surfaced by Viator (passBy=true). These can be
   // promoted into the day. Capped at MAX_EDITS combined add/remove.
   const MAX_EDITS = 3;
@@ -614,12 +690,7 @@ function TailorPage() {
                         <li key={s.id}>
                           <button
                             type="button"
-                            onClick={() => {
-                              const next = new Set(skippedCore);
-                              if (isSkipped) next.delete(s.id);
-                              else next.add(s.id);
-                              setSkippedCore(next);
-                            }}
+                            onClick={() => tryToggleSkippedCore(s.id)}
                             aria-pressed={!isSkipped}
                             className={[
                               "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
@@ -678,12 +749,7 @@ function TailorPage() {
                               <button
                                 type="button"
                                 disabled={atLimit}
-                                onClick={() => {
-                                  const next = new Set(choiceSelected);
-                                  if (on) next.delete(o.id);
-                                  else next.add(o.id);
-                                  setChoiceSelected(next);
-                                }}
+                                onClick={() => tryToggleChoice(o.id)}
                                 aria-pressed={on}
                                 className={[
                                   "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
@@ -733,12 +799,7 @@ function TailorPage() {
                             <li key={o.id}>
                               <button
                                 type="button"
-                                onClick={() => {
-                                  const next = new Set(optionalSelected);
-                                  if (on) next.delete(o.id);
-                                  else next.add(o.id);
-                                  setOptionalSelected(next);
-                                }}
+                                onClick={() => tryToggleOptional(o.id)}
                                 aria-pressed={on}
                                 className={[
                                   "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",

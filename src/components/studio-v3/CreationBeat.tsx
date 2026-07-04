@@ -15,6 +15,7 @@ import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import type { SilhouetteRegion } from "./PortugalSilhouette";
+import { RouteLegend } from "./RouteLegend";
 
 
 interface AtmosphereBeatProps {
@@ -256,7 +257,10 @@ export function MapBeat({
   const legStops: RouteLegStop[] | null = rawLegStops
     ? rawLegStops.filter((s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng)
     : null;
-  const { legMinutes } = useRouteLegMinutes(legStops, !!legStops && legStops.length >= 2);
+  const { legMinutes, legDistancesKm, legModes } = useRouteLegMinutes(
+    legStops,
+    !!legStops && legStops.length >= 2,
+  );
 
   // Map regionKey → silhouette region so the Portugal anchor appears
   // even on the Pickup beat (mode="origin", no stops yet).
@@ -316,6 +320,18 @@ export function MapBeat({
           />
         </div>
 
+
+        {activeCount > 0 && labels.length > 0 && legMinutes && legMinutes.length > 0 ? (
+          <div className="mt-4">
+            <RouteLegend
+              originLabel={originLabel ?? null}
+              stopLabels={labels.slice(0, activeCount)}
+              legMinutes={legMinutes}
+              legDistancesKm={legDistancesKm}
+              legModes={legModes}
+            />
+          </div>
+        ) : null}
 
         {/* Real route labels caption — quiet ivory row. */}
         {activeCount > 0 && labels.length > 0 ? (

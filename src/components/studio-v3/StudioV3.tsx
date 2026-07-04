@@ -84,6 +84,7 @@ import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
+import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 
 
 // Lazy — Leaflet ships only when the reveal mounts.
@@ -2316,19 +2317,34 @@ function RevealRouteMap({
   const routeStops: RouteLegStop[] | null = rawStops
     ? rawStops.filter((s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng)
     : null;
-  const { legMinutes } = useRouteLegMinutes(routeStops, !!routeStops && routeStops.length >= 2);
+  const { legMinutes, legDistancesKm, legModes } = useRouteLegMinutes(
+    routeStops,
+    !!routeStops && routeStops.length >= 2,
+  );
+
+  const originLabelResolved =
+    pickupCityLabel(statePickup) || (skeletonTour?.region ?? null);
 
   return (
-    <StudioV3SignatureMap
-      stops={editedStops.map((s) => s.label)}
-      stopsDetailed={stopsDetailed}
-      originCoord={originCoord}
-      activeCount={revealedStops}
-      originLabel={pickupCityLabel(statePickup) || (skeletonTour?.region ?? null)}
-      aspectRatio="16 / 11"
-      legMinutes={legMinutes}
-      ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
-    />
+    <div className="space-y-4">
+      <StudioV3SignatureMap
+        stops={editedStops.map((s) => s.label)}
+        stopsDetailed={stopsDetailed}
+        originCoord={originCoord}
+        activeCount={revealedStops}
+        originLabel={originLabelResolved}
+        aspectRatio="16 / 11"
+        legMinutes={legMinutes}
+        ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
+      />
+      <RouteLegend
+        originLabel={originLabelResolved}
+        stopLabels={editedStops.slice(0, revealedStops).map((s) => s.label)}
+        legMinutes={legMinutes}
+        legDistancesKm={legDistancesKm}
+        legModes={legModes}
+      />
+    </div>
   );
 }
 
