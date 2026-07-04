@@ -69,7 +69,18 @@ export function GuestQuotes() {
   const structuredData = useMemo(() => {
     const orgId = `${SITE_URL}/#organization`;
     const pageUrl = `${SITE_URL}/#reviews`;
+    // Inline `itemReviewed` (Organization @type + name + url) so the
+    // Rich Results Test doesn't warn "itemReviewed missing name" —
+    // some validators don't follow @id merges into the sitewide
+    // Organization node emitted from __root.tsx.
+    const itemReviewed = {
+      "@type": "Organization",
+      "@id": orgId,
+      name: "YES Experiences Portugal",
+      url: `${SITE_URL}/`,
+    } as const;
     // AggregateRating is always emitted so Google can attach the
+
     // 700+ five-star signal even when the curated carousel is empty
     // (e.g. before featured rows finish importing). Values fall back
     // to the verified aggregate published on Tripadvisor/Viator.
@@ -80,7 +91,7 @@ export function GuestQuotes() {
       {
         "@type": "AggregateRating",
         "@id": `${SITE_URL}/#aggregate-rating`,
-        itemReviewed: { "@id": orgId },
+        itemReviewed: itemReviewed,
         ratingValue: Number(ratingValue.toFixed(1)),
         reviewCount,
         bestRating: 5,
@@ -104,7 +115,7 @@ export function GuestQuotes() {
           "@type": "Review",
           "@id": `${SITE_URL}/#review-${q.id}`,
           url: reviewUrl,
-          itemReviewed: { "@id": orgId },
+          itemReviewed: itemReviewed,
           author,
           reviewRating: {
             "@type": "Rating",
@@ -147,7 +158,7 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <h2 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
+      <h2 className="serif mt-3 text-[1.5rem] sm:text-[2rem] md:text-[3.4rem] leading-[1.15] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
         {count ? (
           <>
             {count.toLocaleString("en-US")} five-star reviews{" "}
