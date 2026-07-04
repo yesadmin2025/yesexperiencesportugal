@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-04T22:23:42.524Z",
-  "filesScanned": 543,
+  "generatedAt": "2026-07-04T23:18:29.706Z",
+  "filesScanned": 546,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 339,
-    "approved": 86,
-    "allowlisted": 61,
-    "mismatch": 192
+    "total": 359,
+    "approved": 87,
+    "allowlisted": 62,
+    "mismatch": 210
   },
   "findings": [
     {
@@ -823,6 +823,132 @@
       "raw": "#1a1a1a",
       "normalized": "#1a1a1a",
       "snippet": "<div style=\"font-weight:700;color:#1a1a1a;\">${escapeHtml(m.label)}</div>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 11,
+      "col": 32,
+      "raw": "#94a3b8",
+      "normalized": "#94a3b8",
+      "snippet": "if (status === null) return \"#94a3b8\"; // slate — no response",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 12,
+      "col": 31,
+      "raw": "#10b981",
+      "normalized": "#10b981",
+      "snippet": "if (status === 410) return \"#10b981\"; // emerald — desired",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 13,
+      "col": 46,
+      "raw": "#f59e0b",
+      "normalized": "#f59e0b",
+      "snippet": "if (status >= 200 && status < 300) return \"#f59e0b\"; // amber — still serving",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 14,
+      "col": 46,
+      "raw": "#ef4444",
+      "normalized": "#ef4444",
+      "snippet": "if (status >= 300 && status < 400) return \"#ef4444\"; // rose — hijacked redirect",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 15,
+      "col": 11,
+      "raw": "#a855f7",
+      "normalized": "#a855f7",
+      "snippet": "return \"#a855f7\"; // purple — other",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 20,
+      "col": 39,
+      "raw": "#10b981",
+      "normalized": "#10b981",
+      "snippet": "{ label: \"410 Gone (ok)\", color: \"#10b981\" },",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 21,
+      "col": 38,
+      "raw": "#f59e0b",
+      "normalized": "#f59e0b",
+      "snippet": "{ label: \"2xx (legacy)\", color: \"#f59e0b\" },",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 22,
+      "col": 40,
+      "raw": "#ef4444",
+      "normalized": "#ef4444",
+      "snippet": "{ label: \"3xx (redirect)\", color: \"#ef4444\" },",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 23,
+      "col": 38,
+      "raw": "#94a3b8",
+      "normalized": "#94a3b8",
+      "snippet": "{ label: \"sem resposta\", color: \"#94a3b8\" },",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 24,
+      "col": 31,
+      "raw": "#a855f7",
+      "normalized": "#a855f7",
+      "snippet": "{ label: \"outro\", color: \"#a855f7\" },",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 73,
+      "col": 66,
+      "raw": "#f5f5f4",
+      "normalized": "#f5f5f4",
+      "snippet": "<rect x={0} y={httpY} width={width} height={httpH} fill=\"#f5f5f4\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 74,
+      "col": 64,
+      "raw": "#f5f5f4",
+      "normalized": "#f5f5f4",
+      "snippet": "<rect x={0} y={dnsY} width={width} height={dnsH} fill=\"#f5f5f4\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 81,
+      "col": 48,
+      "raw": "#10b981",
+      "normalized": "#10b981",
+      "snippet": "const dnsFill = p.pointsToLovable ? \"#10b981\" : \"#94a3b8\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
+      "line": 81,
+      "col": 60,
+      "raw": "#94a3b8",
+      "normalized": "#94a3b8",
+      "snippet": "const dnsFill = p.pointsToLovable ? \"#10b981\" : \"#94a3b8\";",
       "status": "mismatch"
     },
     {
@@ -2236,6 +2362,60 @@
       "raw": "#999999",
       "normalized": "#999999",
       "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/legacy-domain-ready.tsx",
+      "line": 30,
+      "col": 22,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const h1 = { color: '#295B61', fontSize: 20, margin: '0 0 12px' } as const",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/legacy-domain-ready.tsx",
+      "line": 32,
+      "col": 11,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "color: '#666',",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/legacy-domain-ready.tsx",
+      "line": 37,
+      "col": 25,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "const value = { color: '#111', fontSize: 14, margin: '2px 0 12px' }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/legacy-domain-ready.tsx",
+      "line": 43,
+      "col": 38,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "<Body style={{ backgroundColor: '#ffffff', margin: 0 }}>",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/legacy-domain-ready.tsx",
+      "line": 46,
+      "col": 32,
+      "raw": "#333",
+      "normalized": "#333333",
+      "snippet": "<Text style={{ color: '#333', fontSize: 14 }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/legacy-domain-ready.tsx",
+      "line": 69,
+      "col": 32,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "<Text style={{ color: '#666', fontSize: 12, marginTop: 16 }}>",
       "status": "mismatch"
     },
     {
