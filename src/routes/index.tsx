@@ -990,10 +990,10 @@ function HomePage() {
 
                   <h2
                     id="final-cta-title"
-                    className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                    className="font-display mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
                   >
                     Portugal is waiting.{" "}
-                    <span className="italic font-normal text-[color:var(--teal)]">
+                    <span className="font-serif italic font-normal text-[color:var(--teal)]">
                       Begin your story.
                     </span>
                   </h2>
@@ -1001,7 +1001,7 @@ function HomePage() {
                     Every journey begins with a conversation. Tell us what matters to you and we’ll
                     shape the rest.
                   </p>
-                  <div className="reveal-stagger mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
+                  <div className="mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
                     <CtaButton to="/studio-v3" variant="primary">
                       Open the Studio
                     </CtaButton>
