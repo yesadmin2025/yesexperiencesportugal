@@ -75,20 +75,17 @@ const FLOW_COPY: Record<Flow, { label: string; eyebrow: string; submit: string }
   studio: {
     label: "YES Studio",
     eyebrow: "Built moment by moment",
-    submit:
-      "Your Studio day is reserved the moment payment clears. We'll confirm the rhythm of the day by email within minutes.",
+    submit: "Instant confirmation by email.",
   },
   signature: {
     label: "YES Signature",
     eyebrow: "Reserved as designed",
-    submit:
-      "Your Signature day is reserved the moment payment clears. You will receive your confirmation by email within minutes.",
+    submit: "Instant confirmation by email.",
   },
   tailor: {
     label: "YES Tailored",
     eyebrow: "Tailored stops applied",
-    submit:
-      "Your tailored day is reserved the moment payment clears. Our team will confirm the adjusted stops within 2 hours.",
+    submit: "We'll confirm the adjusted stops by email within 2 hours.",
   },
 };
 
