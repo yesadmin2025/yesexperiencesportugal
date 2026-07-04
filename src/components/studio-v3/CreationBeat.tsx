@@ -15,6 +15,7 @@ import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import type { SilhouetteRegion } from "./PortugalSilhouette";
+import { RouteLegend } from "./RouteLegend";
 
 
 interface AtmosphereBeatProps {
