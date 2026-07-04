@@ -109,23 +109,9 @@ export function startHomeMotion(): () => void {
   // in staggered 90ms increments (capped) so the eye tracks a rhythm.
   const homeScope = document.querySelector<HTMLElement>(".home-energy");
   if (homeScope) {
-    // Slow-device signal: reduce stagger cadence so nothing feels laggy on
-    // older phones or Save-Data connections. Combines core count, device
-    // memory (when exposed), and the Save-Data hint.
-    type NavigatorWithHints = Navigator & {
-      deviceMemory?: number;
-      connection?: { saveData?: boolean; effectiveType?: string };
-    };
-    const nav = navigator as NavigatorWithHints;
-    const lowPower =
-      (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4) ||
-      (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-      nav.connection?.saveData === true ||
-      nav.connection?.effectiveType === "2g" ||
-      nav.connection?.effectiveType === "slow-2g";
-
     // Cadence — tuned so a full row of ~4 cards resolves inside ~360ms on
-    // fast devices and inside ~200ms on slow devices.
+    // fast devices and inside ~200ms on slow devices. Uses the hoisted
+    // `lowPower` signal (see top of function).
     const HEADING_STEP = lowPower ? 55 : 80;
     const HEADING_CAP = lowPower ? 200 : 300;
     const CARD_STEP = lowPower ? 70 : 100;
