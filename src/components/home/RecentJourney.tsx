@@ -2,12 +2,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-// Pages from a real, anonymized private travel file we delivered.
-import pageCover from "@/assets/travel-file/cover.jpg";
-import pageRoute from "@/assets/travel-file/route.jpg";
-import pageReservations from "@/assets/travel-file/reservations.jpg";
-import pageDay from "@/assets/travel-file/day.jpg";
-import pageAccommodations from "@/assets/travel-file/accommodations.jpg";
+// Pages from the same real, anonymised private travel file used on
+// the /multi-day Travel Designer page — kept in sync so the homepage
+// proof and the deep page show the exact same document.
+const samplePage01 = { url: "/travel-file-sample/page-01.jpg" };
+import samplePage02 from "@/assets/travel-file-sample/page-02.jpg.asset.json";
+import samplePage03 from "@/assets/travel-file-sample/page-03.jpg.asset.json";
+import samplePage04 from "@/assets/travel-file-sample/page-04.jpg.asset.json";
+import samplePage05 from "@/assets/travel-file-sample/page-05.jpg.asset.json";
+import samplePage06 from "@/assets/travel-file-sample/page-06.jpg.asset.json";
 
 /**
  * Bespoke Travel Designer — proof block.
@@ -23,29 +26,34 @@ import pageAccommodations from "@/assets/travel-file/accommodations.jpg";
 
 const PAGES = [
   {
-    src: pageCover,
+    src: samplePage01.url,
     label: "Cover",
-    alt: "Cover of a private travel file — Portugal, Beyond the Postcards",
+    alt: "Travel Designer Portugal sample itinerary file — cover page",
   },
   {
-    src: pageRoute,
-    label: "Route",
-    alt: "The route — a hand-designed multi-region itinerary across Portugal",
+    src: samplePage02.url,
+    label: "Welcome",
+    alt: "Private multi-day Portugal itinerary — welcome page",
   },
   {
-    src: pageReservations,
+    src: samplePage03.url,
     label: "Reservations",
-    alt: "Confirmed reservations — every overnight reserved before departure",
+    alt: "Private Portugal journey — confirmed reservations page",
   },
   {
-    src: pageDay,
+    src: samplePage04.url,
+    label: "Route",
+    alt: "Portugal Travel Designer journey across regions — route map",
+  },
+  {
+    src: samplePage05.url,
+    label: "Planning",
+    alt: "Private multi-day Portugal itinerary with local route planning",
+  },
+  {
+    src: samplePage06.url,
     label: "A day",
-    alt: "A day in the file — morning, lunch, afternoon, sunset, evening",
-  },
-  {
-    src: pageAccommodations,
-    label: "Stays",
-    alt: "Where you stay — properties chosen to deepen each region",
+    alt: "Travel Designer Portugal — day-by-day itinerary card",
   },
 ] as const;
 
