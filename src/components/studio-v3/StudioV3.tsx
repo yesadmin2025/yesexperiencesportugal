@@ -3637,15 +3637,20 @@ function StoryboardHandoff({
           </span>
         </p>
 
-        <button
-          type="button"
-          onClick={onSecure}
-          className="inline-flex items-center gap-2 px-7 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-          aria-label="Say YES to this Signature"
-        >
-          Say YES to this Signature <ArrowRight size={14} aria-hidden />
-        </button>
+        {pending ? (
+          <BookingCtaSkeleton className="w-full max-w-[380px]" />
+        ) : (
+          <CtaButton
+            type="button"
+            onClick={onSecure}
+            variant="primary"
+            size="md"
+            className="w-full max-w-[380px]"
+            aria-label="Say YES to this Signature"
+          >
+            Say YES to this Signature
+          </CtaButton>
+        )}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
 
