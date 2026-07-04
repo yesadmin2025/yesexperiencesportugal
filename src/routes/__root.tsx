@@ -111,6 +111,7 @@ function NotFoundComponent() {
 
 export const Route = createRootRoute({
   beforeLoad: ({ location }) => {
+    if (location.pathname.startsWith("/lovable/")) return;
     if (location.pathname === "/index") {
       throw redirect({ to: "/", replace: true });
     }
