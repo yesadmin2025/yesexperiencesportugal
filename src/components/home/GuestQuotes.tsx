@@ -147,7 +147,7 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <h2 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
+      <h2 className="serif mt-3 text-[1.5rem] sm:text-[2rem] md:text-[3.4rem] leading-[1.15] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
         {count ? (
           <>
             {count.toLocaleString("en-US")} five-star reviews{" "}
