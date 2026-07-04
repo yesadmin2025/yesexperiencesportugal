@@ -44,6 +44,41 @@ export const Route = createFileRoute("/contact")({
           { name: "Contact", path: "/contact" },
         ]),
       ),
+      jsonLdScript({
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "@id": "https://yesexperiencesportugal.com/contact#contactpage",
+        url: "https://yesexperiencesportugal.com/contact",
+        name: "Contact — YES experiences Portugal",
+        description:
+          "Speak directly with our YES Portugal experience designers.",
+        inLanguage: "en",
+        isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
+        about: { "@id": "https://yesexperiencesportugal.com/#organization" },
+        mainEntity: {
+          "@type": "Organization",
+          "@id": "https://yesexperiencesportugal.com/#organization",
+          name: "YES Experiences Portugal",
+          url: "https://yesexperiencesportugal.com",
+          email: "yesexperiences@gmail.com",
+          telephone: "+351 911 889 992",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Sesimbra",
+            addressCountry: "PT",
+          },
+          contactPoint: [
+            {
+              "@type": "ContactPoint",
+              contactType: "customer service",
+              telephone: "+351 911 889 992",
+              email: "yesexperiences@gmail.com",
+              areaServed: "PT",
+              availableLanguage: ["en", "pt"],
+            },
+          ],
+        },
+      }),
     ],
   }),
 

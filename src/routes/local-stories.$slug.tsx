@@ -87,14 +87,45 @@ function articleJsonLd(a: LocalStoryArticle) {
 type LoaderData = {
   reviews: NormalizedLocalStoryReview[];
   signatureTitle: string | null;
+  dbPost: {
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    heroImage: string | null;
+    heroImageAlt: string | null;
+    authorName: string | null;
+    publishedAt: string | null;
+  } | null;
 };
 
 export const Route = createFileRoute("/local-stories/$slug")({
   loader: async ({ params }): Promise<LoaderData> => {
     const article = getLocalStoryArticle(params.slug);
-    if (!article) return { reviews: [], signatureTitle: null };
+    if (!article) {
+      // No static article — try to hydrate DB post metadata so head()
+      // can emit BlogPosting JSON-LD and OG tags for database posts.
+      try {
+        const post = await fetchPost(params.slug);
+        if (!post) return { reviews: [], signatureTitle: null, dbPost: null };
+        return {
+          reviews: [],
+          signatureTitle: null,
+          dbPost: {
+            slug: post.slug,
+            title: post.title,
+            excerpt: post.excerpt,
+            heroImage: post.hero_image_url,
+            heroImageAlt: post.hero_image_alt,
+            authorName: post.author_name,
+            publishedAt: post.published_at,
+          },
+        };
+      } catch {
+        return { reviews: [], signatureTitle: null, dbPost: null };
+      }
+    }
     const tour = findTour(article.signatureSlug);
-    if (!tour) return { reviews: [], signatureTitle: null };
+    if (!tour) return { reviews: [], signatureTitle: null, dbPost: null };
     try {
       const rows = await getTourReviews({
         data: { tourId: article.signatureSlug, limit: 3 },
@@ -114,9 +145,9 @@ export const Route = createFileRoute("/local-stories/$slug")({
       // Single normalization step — visible UI and JSON-LD consume the
       // same shape so fields cannot drift.
       const reviews = normalizeLocalStoryReviews(filtered);
-      return { reviews, signatureTitle: tour.title };
+      return { reviews, signatureTitle: tour.title, dbPost: null };
     } catch {
-      return { reviews: [], signatureTitle: tour.title };
+      return { reviews: [], signatureTitle: tour.title, dbPost: null };
     }
   },
 
@@ -183,17 +214,70 @@ export const Route = createFileRoute("/local-stories/$slug")({
     }
 
     const url = `${BASE}/local-stories/${params.slug}`;
+    const post = loaderData?.dbPost ?? null;
+    const title = post?.title ?? `Local Story — YES experiences Portugal`;
+    const description =
+      post?.excerpt ?? `A local story from Portugal · ${params.slug}`;
+    const heroImage = post?.heroImage ?? null;
+
+    const scripts = post
+      ? [
+          jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.title,
+            name: post.title,
+            description: post.excerpt ?? undefined,
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
+            url,
+            image: heroImage ?? undefined,
+            datePublished: post.publishedAt ?? undefined,
+            dateModified: post.publishedAt ?? undefined,
+            inLanguage: "en",
+            author: post.authorName
+              ? { "@type": "Person", name: post.authorName }
+              : {
+                  "@type": "Person",
+                  "@id": FOUNDER_ID,
+                  name: "Nidia Almeida",
+                  url: `${BASE}/about`,
+                },
+            publisher: {
+              "@type": "Organization",
+              "@id": `${BASE}/#organization`,
+              name: "YES Experiences Portugal",
+              url: BASE,
+              logo: {
+                "@type": "ImageObject",
+                url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
+              },
+            },
+          }),
+          jsonLdScript(
+            breadcrumbLd([
+              { name: "Home", path: "/" },
+              { name: "Local Stories", path: "/local-stories" },
+              { name: post.title, path: `/local-stories/${post.slug}` },
+            ]),
+          ),
+        ]
+      : [];
+
     return {
       meta: [
-        { title: `Local Story — YES experiences Portugal` },
-        {
-          name: "description",
-          content: `A local story from Portugal · ${params.slug}`,
-        },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        ...(heroImage ? [{ property: "og:image", content: heroImage }] : []),
+        ...(post?.publishedAt
+          ? [{ property: "article:published_time", content: post.publishedAt }]
+          : []),
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts,
     };
   },
 
