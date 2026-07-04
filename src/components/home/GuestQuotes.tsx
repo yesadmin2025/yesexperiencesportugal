@@ -82,26 +82,30 @@ export function GuestQuotes() {
         bestRating: 5,
         worstRating: 1,
       },
-      ...quotes.map((q) => ({
-        "@type": "Review",
-        "@id": `${SITE_URL}/#review-${q.id}`,
-        itemReviewed: { "@id": orgId },
-        author: {
-          "@type": "Person",
-          name: q.reviewer_name ?? "Guest",
-        },
-        reviewRating: {
-          "@type": "Rating",
-          ratingValue: Math.round(q.rating),
-          bestRating: 5,
-          worstRating: 1,
-        },
-        reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
-        publisher: {
-          "@type": "Organization",
-          name: SOURCE_LABEL[q.source] ?? q.source,
-        },
-      })),
+      ...quotes.map((q) => {
+        const publisherUrl = q.source_url ?? undefined;
+        return {
+          "@type": "Review",
+          "@id": `${SITE_URL}/#review-${q.id}`,
+          itemReviewed: { "@id": orgId },
+          author: {
+            "@type": "Person",
+            name: q.reviewer_name ?? "Guest",
+          },
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: Math.round(q.rating),
+            bestRating: 5,
+            worstRating: 1,
+          },
+          reviewBody: q.body.length > 200 ? `${q.body.slice(0, 197)}…` : q.body,
+          publisher: {
+            "@type": "Organization",
+            name: SOURCE_LABEL[q.source] ?? q.source,
+            ...(publisherUrl ? { url: publisherUrl } : {}),
+          },
+        };
+      }),
     ];
 
     return { "@context": "https://schema.org", "@graph": graph };
@@ -245,7 +249,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                       </p>
                     )}
                   </div>
-                  <SourceBadge source={q.source} />
+                  <SourceBadge source={q.source} sourceUrl={q.source_url} />
                 </div>
               </li>
             ))}
@@ -297,26 +301,63 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
 
 /**
  * Source badge — small platform mark. Tripadvisor renders as a tiny
- * monochrome icon; other sources show as a minimal text pill. Keeps the
- * review card footer clean and premium.
+ * monochrome icon linked to the original review; other sources show as a
+ * minimal text pill (linked when a source URL is available). Keeps the
+ * review card footer clean, premium, and SEO-friendly.
  */
-function SourceBadge({ source }: { source: string }) {
+function SourceBadge({
+  source,
+  sourceUrl,
+}: {
+  source: string;
+  sourceUrl?: string | null;
+}) {
   const label = SOURCE_LABEL[source] ?? source;
+
   if (source === "tripadvisor") {
-    return (
+    const badge = (
       <span
-        className="shrink-0 inline-flex items-center justify-center h-6 w-6 rounded-full border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]"
+        className="shrink-0 inline-flex items-center justify-center h-7 w-7 rounded-full border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]"
         aria-label="Review from Tripadvisor"
       >
-        <PlatformBadge platform="tripadvisor" className="h-3.5 w-auto" />
+        <PlatformBadge platform="tripadvisor" className="h-4 w-auto" />
       </span>
     );
+    if (sourceUrl) {
+      return (
+        <a
+          href={sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 inline-flex"
+          aria-label={`Read this review on ${label}`}
+        >
+          {badge}
+        </a>
+      );
+    }
+    return badge;
   }
-  return (
+
+  const pill = (
     <span className="shrink-0 inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[color:var(--charcoal)]/70">
       {label}
     </span>
   );
+  if (sourceUrl) {
+    return (
+      <a
+        href={sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="shrink-0 inline-flex"
+        aria-label={`Read this review on ${label}`}
+      >
+        {pill}
+      </a>
+    );
+  }
+  return pill;
 }
 
 export default GuestQuotes;
