@@ -333,9 +333,6 @@ function MultiDayPage() {
                   className="w-full h-auto object-contain"
                 />
               </div>
-              <p className="mt-4 font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
-                From a real Travel Designer file — guest details removed
-              </p>
             </div>
 
             {/* What's inside — grouped cards */}
