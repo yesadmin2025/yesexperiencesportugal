@@ -2126,6 +2126,7 @@ export function StudioV3() {
               onBack={() => back("map")}
               onSecure={() => requestStripeCheckout(state)}
               onRefine={() => openLeadSheet("refine")}
+              pending={checkoutPending}
             />
           </PhaseShell>
         </>
