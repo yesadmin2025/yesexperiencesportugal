@@ -899,6 +899,31 @@
     0%, 100% { opacity: 0; transform: none; }
   }
 
+  /* ─── CtaButton polished states ───────────────────────────────
+     Error nudge: one-shot ±3px horizontal tremor so a failed submit
+     is felt physically without recolouring the whole button. Paired
+     with .he-cta-error, which paints a warm-red hairline ring for
+     ~1.4s and then releases. Both respect prefers-reduced-motion.
+     ──────────────────────────────────────────────────────────── */
+  @keyframes ctaNudge {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-3px); }
+    40%      { transform: translateX(3px); }
+    60%      { transform: translateX(-2px); }
+    80%      { transform: translateX(2px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-cta-error] { animation: none !important; }
+  }
+
+  .he-cta-error {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, #b3261e 65%, transparent),
+      0 0 0 3px color-mix(in oklab, #b3261e 20%, transparent),
+      0 10px 26px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent) !important;
+    transition: box-shadow 320ms ease-out;
+  }
+
   /* Opt-in utility — apply alongside .cta-primary / .cta-secondary-dark
      on the hero buttons only. We animate ONLY the ::before halo so the
      button's own transform (which carries the parallax tilt) is never
