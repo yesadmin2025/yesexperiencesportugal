@@ -79,7 +79,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const stopLabels = (tour.stops ?? []).slice(0, 6).map((s) => s.label);
-      const includedItems = meta?.included && meta.included.length > 0 ? meta.included : tour.included;
+      const includedItems = resolveClientIncludedItems(meta, tour);
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
         body: {
           tourId: tour.id,
