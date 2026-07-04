@@ -18,6 +18,10 @@ interface Body {
   tourTitle: string;
   guests: number;
   stopLabels?: string[];
+  /** Real included items from VIATOR_META[tourId].included — used as the
+   *  truthful fallback when Bókun returns no inclusions. Client-owned so
+   *  the edge fn stays decoupled from src/ data files. */
+  includedItems?: string[];
   pickupLabel?: string;
   dateExact?: string | null;
   journeyTitle?: string | null;
