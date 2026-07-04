@@ -286,6 +286,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
     if (params.slug === "best-day-trips-from-lisbon") {
       throw redirect({ to: "/day-trips-from-lisbon" });
     }
+    return undefined as never;
   },
 
   errorComponent: ErrorView,
