@@ -62,6 +62,20 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           templateData,
         });
 
+        // First-time welcome to the customer, deduped by email via idempotency key.
+        try {
+          await sendTransactionalInternal({
+            templateName: "welcome",
+            recipientEmail,
+            idempotencyKey: `welcome-${recipientEmail.toLowerCase()}`,
+            templateData: { contactName: templateData.customerName ?? null },
+          });
+        } catch (e) {
+          console.error("[checkout-email] welcome send failed", {
+            error: e instanceof Error ? e.message : e,
+          });
+        }
+
         // Notify the YES team on every completed booking. Non-fatal — the
         // client receipt is the priority; internal alerts must never block it.
         try {

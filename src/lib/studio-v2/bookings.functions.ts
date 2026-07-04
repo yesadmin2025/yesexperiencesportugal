@@ -120,6 +120,16 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
     // Fire-and-forget confirmation email; never block the booking on email.
     try {
       const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+
+      // First-time welcome for this email address. Idempotency key = welcome-<email>
+      // ensures returning customers get it only once across all bookings/contacts.
+      await sendTransactionalInternal({
+        templateName: "welcome",
+        recipientEmail: data.contactEmail,
+        idempotencyKey: `welcome-${data.contactEmail.toLowerCase()}`,
+        templateData: { contactName: data.contactName },
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const stops = ((draft.stops as any[]) ?? []).map((s) => ({
         label: String(s?.label ?? ""),
