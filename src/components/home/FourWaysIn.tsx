@@ -44,11 +44,11 @@ const PATHS: Path[] = [
     label: "Studio",
     title: (
       <>
-        Design your private day{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">in real time.</span>
+        Your day,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">designed by you.</span>
       </>
     ),
-    body: "Shape mood, route and rhythm as you go. Watch the price move with you — reserve the moment it feels right.",
+    body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
     cta: "Open the Studio",
     href: "/studio-v3",
   },

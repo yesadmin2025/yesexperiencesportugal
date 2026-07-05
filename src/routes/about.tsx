@@ -264,7 +264,7 @@ function Page() {
               <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Founded</dt>
               <dd className="mt-2 font-display text-lg">2022</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-                Based in Sesimbra, Setúbal, operating across Portugal.
+                Based in Sesimbra, designing private journeys across Portugal.
               </p>
             </div>
             <div>
@@ -371,7 +371,7 @@ function Page() {
               +351 911 889 992
             </a>
             <br />
-            Based in Sesimbra, Setúbal — Portugal.
+            Based in Sesimbra, designing private journeys across Portugal.
           </p>
           <p className="mt-5 serif italic text-xl text-[color:var(--teal)]">
             Portugal, designed around you.
