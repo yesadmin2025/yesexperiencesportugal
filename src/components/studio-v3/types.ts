@@ -121,9 +121,11 @@ export type DestinationIntent =
   | "lisbon-sintra-cascais"
   | "arrabida-setubal-azeitao"
   | "alentejo-evora-wine"
+  | "alentejo-roman-talha"
+  | "vicentine-coast"
+  | "comporta-troia"
   | "spiritual-coast"
   | "central-portugal"
-  | "comporta-troia"
   | "anywhere-special";
 
 /* ---------- Phase 4: Adaptive Decision Layer ---------- */
@@ -379,6 +381,16 @@ export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
     id: "alentejo-evora-wine",
     label: "Alentejo, Évora & wine country",
     whisper: "Long lunches, open plains.",
+  },
+  {
+    id: "alentejo-roman-talha",
+    label: "Roman heritage & talha wine (Alentejo)",
+    whisper: "2,000-year-old wine tradition in a family cellar — Vila de Frades.",
+  },
+  {
+    id: "vicentine-coast",
+    label: "Southwest Vicentine coast (Alentejo & Algarve)",
+    whisper: "Wild cliffs, hidden coves, Atlantic light — one of Portugal's most untouched shores.",
   },
   {
     id: "spiritual-coast",
