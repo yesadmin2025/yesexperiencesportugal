@@ -121,9 +121,11 @@ export type DestinationIntent =
   | "lisbon-sintra-cascais"
   | "arrabida-setubal-azeitao"
   | "alentejo-evora-wine"
+  | "alentejo-roman-talha"
+  | "vicentine-coast"
+  | "comporta-troia"
   | "spiritual-coast"
   | "central-portugal"
-  | "comporta-troia"
   | "anywhere-special";
 
 /* ---------- Phase 4: Adaptive Decision Layer ---------- */
