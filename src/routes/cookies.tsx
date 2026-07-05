@@ -16,7 +16,8 @@ export const Route = createFileRoute("/cookies")({
         content:
           "How YES experiences Portugal uses cookies to run the site, remember preferences and measure performance.",
       },
-      { property: "og:type", content: "article" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/cookies" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/cookies" }],
