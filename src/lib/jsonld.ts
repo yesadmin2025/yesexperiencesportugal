@@ -550,18 +550,23 @@ export function studioServiceLd(args: { path: string; name: string; description:
     "@id": `${url}#service`,
     name: args.name,
     description: args.description,
-    serviceType: "Private custom day tour design",
+    serviceType: "Private personalized day tour design (real-time)",
+    category: "Interactive private tour design",
     provider: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@id": `${SITE_URL}/#organization` },
     areaServed: [
+      { "@type": "Country", name: "Portugal" },
       { "@type": "AdministrativeArea", name: "Lisbon" },
       { "@type": "AdministrativeArea", name: "Sintra" },
       { "@type": "AdministrativeArea", name: "Arrábida" },
       { "@type": "AdministrativeArea", name: "Sesimbra" },
+      { "@type": "AdministrativeArea", name: "Alentejo" },
+      { "@type": "AdministrativeArea", name: "Costa Vicentina" },
     ],
     url,
     audience: {
       "@type": "Audience",
-      audienceType: "Luxury and experiential travellers",
+      audienceType: "Luxury and experiential travellers seeking private, personalized, local Portugal days with hidden gems",
     },
     potentialAction: {
       "@type": "ReserveAction",
@@ -574,6 +579,46 @@ export function studioServiceLd(args: { path: string; name: string; description:
         ],
       },
       result: { "@type": "Reservation", name: "Private custom day reservation" },
+    },
+  };
+}
+
+/**
+ * Travel Designer Service — /multi-day.
+ *
+ * A local human designer composes full private multi-day Portugal journeys.
+ * Emitted as Service so Google can distinguish it from the Studio (day) and
+ * from a single bookable Product.
+ */
+export function travelDesignerServiceLd(args: { path: string }) {
+  const url = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: "YES Travel Designer — full Portugal journeys, designed for you",
+    description:
+      "A local Travel Designer composes full private journeys across Portugal — private, personalized, built around your time, rhythm and interests, with local hidden gems. From a few days to a full journey across Portugal, delivered as a curated travel file.",
+    serviceType: "Bespoke multi-day Portugal travel design",
+    category: "Private personalized multi-day travel design",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@id": `${SITE_URL}/#organization` },
+    areaServed: { "@type": "Country", name: "Portugal" },
+    url,
+    audience: {
+      "@type": "Audience",
+      audienceType: "Couples, honeymooners, families and small private groups seeking a personalized multi-day Portugal journey",
+    },
+    potentialAction: {
+      "@type": "PlanAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: url,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
     },
   };
 }
