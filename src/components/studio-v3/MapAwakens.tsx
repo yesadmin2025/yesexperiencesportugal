@@ -28,7 +28,13 @@ function resolveSilhouetteRegion(
   intent: DestinationIntent | null | undefined,
   tourRegion: string | null | undefined,
 ): SilhouetteRegion {
-  if (intent === "alentejo-evora-wine" || intent === "comporta-troia") return "alentejo";
+  if (
+    intent === "alentejo-evora-wine" ||
+    intent === "alentejo-roman-talha" ||
+    intent === "vicentine-coast" ||
+    intent === "comporta-troia"
+  )
+    return "alentejo";
   if (intent === "central-portugal" || intent === "spiritual-coast") return "centro";
   if (intent === "lisbon-sintra-cascais") return "lisbon-coast";
   if (intent === "arrabida-setubal-azeitao") return "arrabida";
