@@ -61,8 +61,8 @@ const PAGES = [
 
 const PILLARS = [
   {
-    label: "Regional journeys",
-    body: "Lisbon, Sintra, Arrábida, Alentejo, Douro, Algarve and the Vicentine coast — paced for the way you travel, mainland Portugal only.",
+    label: "Portugal-wide journeys",
+    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
   },
   {
     label: "Stays & logistics",
