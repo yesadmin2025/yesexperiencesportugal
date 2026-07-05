@@ -78,6 +78,7 @@ import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.le
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
+import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
@@ -452,6 +453,11 @@ const AdminGscRoute = AdminGscRouteImport.update({
   path: '/admin/gsc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminGbpLegacyRemovalRoute = AdminGbpLegacyRemovalRouteImport.update({
+  id: '/admin/gbp-legacy-removal',
+  path: '/admin/gbp-legacy-removal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
   id: '/admin/error-logs',
   path: '/admin/error-logs',
@@ -624,6 +630,7 @@ export interface FileRoutesByFullPath {
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
+  '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -718,6 +725,7 @@ export interface FileRoutesByTo {
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
+  '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -813,6 +821,7 @@ export interface FileRoutesById {
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
+  '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -909,6 +918,7 @@ export interface FileRouteTypes {
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
+    | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -1003,6 +1013,7 @@ export interface FileRouteTypes {
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
+    | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -1097,6 +1108,7 @@ export interface FileRouteTypes {
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
     | '/admin/error-logs'
+    | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -1192,6 +1204,7 @@ export interface RootRouteChildren {
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
+  AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
@@ -1719,6 +1732,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGscRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/gbp-legacy-removal': {
+      id: '/admin/gbp-legacy-removal'
+      path: '/admin/gbp-legacy-removal'
+      fullPath: '/admin/gbp-legacy-removal'
+      preLoaderRoute: typeof AdminGbpLegacyRemovalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/error-logs': {
       id: '/admin/error-logs'
       path: '/admin/error-logs'
@@ -1969,6 +1989,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
+  AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
@@ -2016,13 +2037,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
