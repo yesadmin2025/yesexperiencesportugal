@@ -79,7 +79,7 @@ export function organizationLd() {
             name: "Arrábida Private Wine Tour from Lisbon",
             description:
               "Best-seller. Private day in the Arrábida Natural Park with family wineries in Azeitão, cliff-top viewpoints and a slow lunch. YES's most-recognised experience across Tripadvisor, Viator and GetYourGuide.",
-            url: `${SITE_URL}/tours/arrabida-wine-tour`,
+            url: `${SITE_URL}/arrabida-wine-tour`,
             touristType: "Wine lovers, couples, small private groups",
           },
         },

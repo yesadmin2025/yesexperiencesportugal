@@ -62,7 +62,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         // Vicentine Coast, Vinho de Talha (Roman Alentejo) and Tróia/Comporta =
         // the three most unique private day tours in the catalog.
         const SEO_FOCUS_TOUR_IDS = new Set([
-          "arrabida-wine-tour",
+          "arrabida-wine-allinclusive",
           "southwest-vicentine-coast",
           "troia-comporta",
           "roman-heritage-alentejo",
