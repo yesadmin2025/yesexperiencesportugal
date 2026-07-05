@@ -383,6 +383,16 @@ export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
     whisper: "Long lunches, open plains.",
   },
   {
+    id: "alentejo-roman-talha",
+    label: "Roman heritage & talha wine (Alentejo)",
+    whisper: "2,000-year-old wine tradition in a family cellar — Vila de Frades.",
+  },
+  {
+    id: "vicentine-coast",
+    label: "Southwest Vicentine coast (Alentejo & Algarve)",
+    whisper: "Wild cliffs, hidden coves, Atlantic light — one of Portugal's most untouched shores.",
+  },
+  {
     id: "spiritual-coast",
     label: "Fátima, Nazaré, Óbidos & the spiritual coast",
     whisper: "Sanctuaries, cliffs and walled towns.",
