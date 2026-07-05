@@ -68,8 +68,7 @@ function ExperiencesPage() {
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Choose one of our private experiences and enjoy it as designed, or tailor a few details
-            to match your rhythm.
+            Choose one of our private experiences and enjoy it as designed, or tailor a few details.
           </p>
         </div>
       </section>
