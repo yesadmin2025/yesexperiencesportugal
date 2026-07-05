@@ -639,6 +639,14 @@ const DESTINATION_INTENT_BOOSTS: Record<DestinationIntent, Record<string, number
   },
   "alentejo-evora-wine": {
     "evora-alentejo": 6,
+    "roman-heritage-alentejo": 4,
+  },
+  "alentejo-roman-talha": {
+    "roman-heritage-alentejo": 8,
+    "evora-alentejo": 2,
+  },
+  "vicentine-coast": {
+    "southwest-vicentine-coast": 8,
   },
   "spiritual-coast": {
     "fatima-nazare-obidos": 6,
@@ -651,6 +659,8 @@ const DESTINATION_INTENT_BOOSTS: Record<DestinationIntent, Record<string, number
   },
   "anywhere-special": {
     "evora-alentejo": 1.5,
+    "roman-heritage-alentejo": 2,
+    "southwest-vicentine-coast": 2,
     "tomar-coimbra": 1.5,
     "fatima-nazare-obidos": 1.5,
     "troia-comporta": 1.5,
