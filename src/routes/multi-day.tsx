@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { breadcrumbLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { TRAVEL_DESIGNER_FAQ } from "@/content/seo-faq";
 import { SiteLayout } from "@/components/SiteLayout";
 import {
@@ -61,6 +61,7 @@ export const Route = createFileRoute("/multi-day")({
           { name: "Travel Designer", path: "/multi-day" },
         ]),
       ),
+      jsonLdScript(travelDesignerServiceLd({ path: "/multi-day" })),
       jsonLdScript(faqPageLd(TRAVEL_DESIGNER_FAQ)),
     ],
   }),
