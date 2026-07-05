@@ -114,9 +114,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can a Travel Designer plan a multi-day Portugal itinerary?",
     a: (
       <>
-        Yes. A local Travel Designer composes full multi-day journeys — honeymoons, family
-        journeys, celebrations, coast-to-Alentejo routes and beyond — delivered as a curated travel
-        file, written around you.
+        Yes. A local Travel Designer composes full Portugal journeys, from a few days to a full trip
+        across the country, shaped around your time, rhythm and interests — delivered as a curated
+        travel file.
       </>
     ),
   },
