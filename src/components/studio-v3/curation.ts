@@ -241,13 +241,36 @@ export function composeJourneyTitle(input: {
 
 const FEELING_TO_TOURS: Record<Feeling, string[]> = {
   coastal: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "southwest-vicentine-coast"],
-  "wine-food": ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo"],
-  hidden: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
+  "wine-food": [
+    "arrabida-wine-allinclusive",
+    "roman-heritage-alentejo",
+    "azeitao-cheese",
+    "evora-alentejo",
+  ],
+  hidden: [
+    "southwest-vicentine-coast",
+    "roman-heritage-alentejo",
+    "wild-beaches-picnic",
+    "arrabida-boat",
+    "troia-comporta",
+  ],
   romance: ["sintra-cascais", "troia-comporta", "arrabida-wine-allinclusive"],
-  culture: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos", "sintra-cascais"],
+  culture: [
+    "tomar-coimbra",
+    "roman-heritage-alentejo",
+    "tiles-workshop",
+    "fatima-nazare-obidos",
+    "sintra-cascais",
+  ],
   adventure: ["southwest-vicentine-coast", "arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
   // Slow-luxury: lead with quieter heritage/coast; wine still available but not first.
-  "slow-luxury": ["sintra-cascais", "evora-alentejo", "troia-comporta", "arrabida-wine-allinclusive"],
+  "slow-luxury": [
+    "sintra-cascais",
+    "roman-heritage-alentejo",
+    "evora-alentejo",
+    "troia-comporta",
+    "arrabida-wine-allinclusive",
+  ],
 };
 
 /**
@@ -266,15 +289,39 @@ const FEELING_FALLBACK: Record<Feeling, string> = {
 };
 
 const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
-  wine: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
-  gastronomy: ["arrabida-wine-allinclusive", "azeitao-cheese", "evora-alentejo", "troia-comporta"],
-  heritage: ["tomar-coimbra", "fatima-nazare-obidos", "sintra-cascais", "tiles-workshop"],
+  wine: [
+    "arrabida-wine-allinclusive",
+    "roman-heritage-alentejo",
+    "azeitao-cheese",
+    "evora-alentejo",
+    "troia-comporta",
+  ],
+  gastronomy: [
+    "arrabida-wine-allinclusive",
+    "roman-heritage-alentejo",
+    "azeitao-cheese",
+    "evora-alentejo",
+    "troia-comporta",
+  ],
+  heritage: [
+    "tomar-coimbra",
+    "roman-heritage-alentejo",
+    "fatima-nazare-obidos",
+    "sintra-cascais",
+    "tiles-workshop",
+  ],
   coast: [
     "wild-beaches-picnic",
     "arrabida-boat",
     "troia-comporta",
     "sintra-cascais",
     "southwest-vicentine-coast",
+  ],
+  nature: [
+    "southwest-vicentine-coast",
+    "wild-beaches-picnic",
+    "arrabida-boat",
+    "troia-comporta",
   ],
 };
 
