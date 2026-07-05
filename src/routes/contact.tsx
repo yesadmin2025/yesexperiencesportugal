@@ -192,7 +192,7 @@ function Page() {
             <Info
               icon={<MapPin size={16} />}
               label="Based in"
-              value="Lisbon · Sintra · Arrábida, Portugal"
+              value="Sesimbra, designing private journeys across Portugal"
             />
 
             <div className="gold-divider" />
