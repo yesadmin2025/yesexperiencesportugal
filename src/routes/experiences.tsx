@@ -68,8 +68,8 @@ function ExperiencesPage() {
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Complete private experiences, designed to be enjoyed as they are. Reserve instantly — or
-            adjust a few details within the experience to match your rhythm.
+            Choose one of our private experiences and enjoy it as designed, or tailor a few details
+            to match your rhythm.
           </p>
         </div>
       </section>
