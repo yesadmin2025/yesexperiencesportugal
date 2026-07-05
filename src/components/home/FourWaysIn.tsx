@@ -86,11 +86,11 @@ const PATHS: Path[] = [
     label: "Travel Designer",
     title: (
       <>
-        A full private journey,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
+        Full Portugal journeys,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">designed for you.</span>
       </>
     ),
-    body: "Honeymoons, family journeys, multi-day Portugal — days, stays and local hands, composed as a travel file, not a booking.",
+    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
     cta: "Begin with a designer",
     href: "/multi-day",
   },
