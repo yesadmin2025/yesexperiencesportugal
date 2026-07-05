@@ -57,9 +57,12 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         ];
 
-        // Bump SEO focus tours (Southwest Coast, Comporta, Roman/Wine Alentejo) so
-        // they surface ahead of the rest of the Signature catalog for crawlers.
+        // Bump SEO focus tours so they surface ahead of the rest of the Signature
+        // catalog for crawlers. Arrábida = best-seller / brand-recognition anchor.
+        // Vicentine Coast, Vinho de Talha (Roman Alentejo) and Tróia/Comporta =
+        // the three most unique private day tours in the catalog.
         const SEO_FOCUS_TOUR_IDS = new Set([
+          "arrabida-wine-allinclusive",
           "southwest-vicentine-coast",
           "troia-comporta",
           "roman-heritage-alentejo",
@@ -68,7 +71,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           path: `/tours/${t.id}`,
           lastmod: today,
           changefreq: "monthly",
-          priority: SEO_FOCUS_TOUR_IDS.has(t.id) ? "0.9" : "0.7",
+          priority: SEO_FOCUS_TOUR_IDS.has(t.id) ? "0.95" : "0.7",
         }));
         const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter(
           (a) => a.slug !== "best-day-trips-from-lisbon",

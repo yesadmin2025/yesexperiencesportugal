@@ -130,7 +130,7 @@ export const Route = createRootRoute({
       {
         name: "keywords",
         content:
-          "private tours Portugal, Portugal private experiences, Lisbon private tour, Sintra private tour, Arrábida wine tour, Sesimbra private tour, bespoke Portugal travel, multi-day Portugal journey, luxury Portugal experiences, Portugal travel designer, YES experiences Portugal, private wine tour Setúbal, Cabo da Roca private tour, Évora private tour, beach picnic Arrábida",
+          "real-time private tour builder Portugal, design your own private tour Portugal, interactive tour builder Portugal, Portugal travel designer, private tours Portugal, Arrábida private wine tour from Lisbon, Southwest Vicentine Coast private tour, Costa Vicentina day tour from Lisbon, vinho de talha wine tour Alentejo, Tróia Comporta private day from Lisbon, Portugal private experiences, Lisbon private tour, Sintra private tour, Sesimbra private tour, bespoke Portugal travel, multi-day Portugal journey, luxury Portugal experiences, YES experiences Portugal, private wine tour Setúbal, Évora private tour",
       },
       { name: "author", content: "YES experiences Portugal" },
       { name: "robots", content: "index,follow,max-image-preview:large" },
