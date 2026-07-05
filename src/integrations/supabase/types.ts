@@ -1096,6 +1096,54 @@ export type Database = {
           },
         ]
       }
+      gbp_removal_evidence: {
+        Row: {
+          caption: string
+          created_at: string
+          created_by: string | null
+          file_path: string
+          id: string
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          created_by?: string | null
+          file_path: string
+          id?: string
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          created_by?: string | null
+          file_path?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      gbp_removal_state: {
+        Row: {
+          checklist: Json
+          id: number
+          notes: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          checklist?: Json
+          id?: number
+          notes?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          checklist?: Json
+          id?: number
+          notes?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       hero_ab_assignments: {
         Row: {
           anonymous_id: string
