@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-04T23:34:15.839Z",
-  "filesScanned": 546,
+  "generatedAt": "2026-07-05T04:48:09.796Z",
+  "filesScanned": 549,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 359,
+    "total": 367,
     "approved": 87,
-    "allowlisted": 62,
-    "mismatch": 210
+    "allowlisted": 63,
+    "mismatch": 217
   },
   "findings": [
     {
@@ -2723,6 +2723,78 @@
       "normalized": "#ffffff",
       "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, \"Times New Roman\", serif' } as const",
       "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 59,
+      "col": 19,
+      "raw": "#f5f5f5",
+      "normalized": "#f5f5f5",
+      "snippet": "background: #f5f5f5;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 60,
+      "col": 14,
+      "raw": "#333",
+      "normalized": "#333333",
+      "snippet": "color: #333;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 71,
+      "col": 19,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "background: #ffffff;",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 72,
+      "col": 25,
+      "raw": "#ddd",
+      "normalized": "#dddddd",
+      "snippet": "border: 1px solid #ddd;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 81,
+      "col": 14,
+      "raw": "#444",
+      "normalized": "#444444",
+      "snippet": "color: #444;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 85,
+      "col": 51,
+      "raw": "#555",
+      "normalized": "#555555",
+      "snippet": "p { font-size: 15px; margin: 0 0 12px; color: #555; }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 86,
+      "col": 19,
+      "raw": "#777",
+      "normalized": "#777777",
+      "snippet": "p.pt { color: #777; font-size: 13.5px; }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/legacy-domain-redirect.ts",
+      "line": 92,
+      "col": 14,
+      "raw": "#999",
+      "normalized": "#999999",
+      "snippet": "color: #999;",
+      "status": "mismatch"
     },
     {
       "file": "src/lib/studio-v2/mood-tint.ts",
