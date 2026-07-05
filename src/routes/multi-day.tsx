@@ -192,14 +192,14 @@ function MultiDayPage() {
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Travel Designer Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            A private Portugal journey,{" "}
-            <SectionTitle.Em>written around you.</SectionTitle.Em>
+            Full Portugal journeys,{" "}
+            <SectionTitle.Em>designed for you.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            For multi-day travel, honeymoons, family journeys, celebrations and complex
-            itineraries — designed by a local Travel Designer from real routes, trusted partners,
-            timings, stays and details that actually work on the ground.
+            From a few days to a full journey across Portugal, shaped around your time, rhythm and
+            interests — designed by a local Travel Designer from real routes, timings, stays and
+            details that actually work on the ground.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
