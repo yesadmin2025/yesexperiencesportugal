@@ -10,6 +10,15 @@ export const Route = createFileRoute("/terms")({
         content:
           "Terms and conditions for booking private experiences with YES experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
       },
+      { property: "og:title", content: "Terms & Conditions — YES experiences Portugal" },
+      {
+        property: "og:description",
+        content:
+          "Booking terms for private experiences with YES experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/terms" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/terms" }],
   }),
