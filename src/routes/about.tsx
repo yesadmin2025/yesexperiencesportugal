@@ -371,7 +371,7 @@ function Page() {
               +351 911 889 992
             </a>
             <br />
-            Based in Sesimbra, Setúbal — Portugal.
+            Based in Sesimbra, designing private journeys across Portugal.
           </p>
           <p className="mt-5 serif italic text-xl text-[color:var(--teal)]">
             Portugal, designed around you.
