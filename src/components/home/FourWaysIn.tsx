@@ -30,11 +30,11 @@ const PATHS: Path[] = [
     label: "Signature Experiences",
     title: (
       <>
-        Ready private days,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
+        Private days,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">already designed by YES.</span>
       </>
     ),
-    body: "Curated private days across Portugal — Arrábida wine country, Comporta, the wild Vicentine coast, hidden Alentejo and the classics — book as-is, or reshape within the day you love.",
+    body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
     cta: "Explore Signatures",
     href: "/experiences",
   },
