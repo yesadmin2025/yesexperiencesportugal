@@ -18,13 +18,13 @@ export const Route = createFileRoute("/experiences")({
       {
         name: "description",
         content:
-          "Complete private experiences across Portugal — designed to be enjoyed as they are. Reserve instantly, with real-time confirmation.",
+          "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
       },
       { property: "og:title", content: "Signature Experiences — YES experiences Portugal" },
       {
         property: "og:description",
         content:
-          "Complete, curated private experiences. Reserve instantly — or adjust a few details within the experience to match your rhythm.",
+          "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
     ],
