@@ -10,6 +10,15 @@ export const Route = createFileRoute("/privacy")({
         content:
           "How YES experiences Portugal collects, uses and protects your personal data, in line with the EU General Data Protection Regulation (GDPR).",
       },
+      { property: "og:title", content: "Privacy Policy — YES experiences Portugal" },
+      {
+        property: "og:description",
+        content:
+          "How YES experiences Portugal collects, uses and protects your personal data, in line with the EU GDPR.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/privacy" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/privacy" }],
   }),
