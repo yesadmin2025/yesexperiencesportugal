@@ -38,13 +38,13 @@ export const Route = createFileRoute("/multi-day")({
       {
         name: "description",
         content:
-          "Private Portugal journeys designed by a local Travel Designer. Multi-day itineraries, honeymoons, family trips and special occasions, delivered as a travel file.",
+          "Full Portugal journeys, designed for you. From a few days to a full journey across Portugal, shaped around your time, rhythm and interests — delivered as a travel file.",
       },
       { property: "og:title", content: "Travel Designer Portugal | Private Journeys by YES" },
       {
         property: "og:description",
         content:
-          "Private Portugal journeys designed by a local Travel Designer, delivered as a complete travel file.",
+          "Full Portugal journeys, designed for you. From a few days to a full journey across Portugal, shaped around your time, rhythm and interests — delivered as a travel file.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
       {
