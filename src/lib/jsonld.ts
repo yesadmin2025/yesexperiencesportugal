@@ -200,6 +200,10 @@ export function organizationLd() {
       { "@type": "AdministrativeArea", name: "Sintra" },
       { "@type": "AdministrativeArea", name: "Arrábida" },
       { "@type": "AdministrativeArea", name: "Sesimbra" },
+      { "@type": "AdministrativeArea", name: "Alentejo" },
+      { "@type": "AdministrativeArea", name: "Costa Vicentina" },
+      { "@type": "AdministrativeArea", name: "Comporta" },
+      { "@type": "AdministrativeArea", name: "Tróia" },
     ],
     telephone: "+351911889992",
     contactPoint: {
@@ -378,7 +382,6 @@ export function tourProductLd(args: {
             url,
             priceCurrency: currency,
             price: args.priceFrom,
-            priceRange: `From ${currency === "EUR" ? "€" : ""}${args.priceFrom}`,
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
           },
@@ -395,25 +398,18 @@ export function tourProductLd(args: {
           },
         }
       : {}),
-    potentialAction: [
-      {
-        "@type": "ReserveAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: url,
-          actionPlatform: [
-            "https://schema.org/DesktopWebPlatform",
-            "https://schema.org/MobileWebPlatform",
-          ],
-        },
-        result: { "@type": "Reservation", name: `${args.title} reservation` },
+    potentialAction: {
+      "@type": "ReserveAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: url,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
       },
-      {
-        "@type": "ReviewAction",
-        target: tailorUrl,
-        name: "Tailor this Signature",
-      },
-    ],
+      result: { "@type": "Reservation", name: `${args.title} reservation` },
+    },
   };
 }
 
