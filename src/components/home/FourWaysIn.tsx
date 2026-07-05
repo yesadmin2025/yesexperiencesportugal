@@ -30,11 +30,11 @@ const PATHS: Path[] = [
     label: "Signature Experiences",
     title: (
       <>
-        Ready private days,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">yours to shape.</span>
+        Private days,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">already designed by YES.</span>
       </>
     ),
-    body: "Curated private days across Portugal — Arrábida wine country, Comporta, the wild Vicentine coast, hidden Alentejo and the classics — book as-is, or reshape within the day you love.",
+    body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
     cta: "Explore Signatures",
     href: "/experiences",
   },
@@ -86,11 +86,11 @@ const PATHS: Path[] = [
     label: "Travel Designer",
     title: (
       <>
-        A full private journey,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
+        Full Portugal journeys,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">designed for you.</span>
       </>
     ),
-    body: "Honeymoons, family journeys, multi-day Portugal — days, stays and local hands, composed as a travel file, not a booking.",
+    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
     cta: "Begin with a designer",
     href: "/multi-day",
   },

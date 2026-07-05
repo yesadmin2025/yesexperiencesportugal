@@ -27,9 +27,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What is the difference between Signature, Studio and Travel Designer?",
     a: (
       <>
-        Signature is a ready-to-book private day. Studio designs a private day in real time around
-        your mood, group and rhythm. Travel Designer is a full multi-day Portugal journey,
-        composed by a local and delivered as a travel file.
+        Signature is a private day, already designed by YES. Studio designs a private day in real time
+        around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed
+        around you and delivered as a travel file.
       </>
     ),
   },
@@ -114,9 +114,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can a Travel Designer plan a multi-day Portugal itinerary?",
     a: (
       <>
-        Yes. A local Travel Designer composes full multi-day journeys — honeymoons, family
-        journeys, celebrations, coast-to-Alentejo routes and beyond — delivered as a curated travel
-        file, written around you.
+        Yes. A local Travel Designer composes full Portugal journeys, from a few days to a full trip
+        across the country, shaped around your time, rhythm and interests — delivered as a curated
+        travel file.
       </>
     ),
   },
