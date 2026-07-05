@@ -339,7 +339,7 @@ export function tourProductLd(args: {
   stops?: StopForLd[];
 }) {
   const url = `${SITE_URL}/tours/${args.id}`;
-  const tailorUrl = `${url}/tailor`;
+  
   const image = args.img.startsWith("http") ? args.img : `${SITE_URL}${args.img}`;
   const currency = args.currency ?? "EUR";
   const iso = durationToIso8601(args.durationHours ?? null);
@@ -461,7 +461,7 @@ export function tourTailorProductLd(args: {
             url,
             priceCurrency: currency,
             price: args.priceFrom,
-            priceRange: `From ${currency === "EUR" ? "€" : ""}${args.priceFrom}`,
+            
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
           },
