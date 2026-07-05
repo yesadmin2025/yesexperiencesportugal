@@ -205,10 +205,12 @@ const groupsAndCelebrations = [
  * ────────────────────────────────────────────────────────────── */
 export const Route = createFileRoute("/")({
   headers: () => ({
-    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-    Pragma: "no-cache",
-    Expires: "0",
-    "Surrogate-Control": "no-store",
+    // Allow crawlers + CDN to cache a stable HTML snapshot of the homepage.
+    // Previously `no-store` combined with hero A/B variants made Googlebot
+    // see a different payload every fetch, triggering a Soft 404 verdict
+    // in Search Console. A short public TTL + longer SWR keeps A/B fresh
+    // for humans while giving Google a consistent page to index.
+    "Cache-Control": "public, max-age=300, s-maxage=1800, stale-while-revalidate=86400",
     "X-Hero-Copy-Version": HERO_COPY_VERSION,
   }),
   head: () => ({
