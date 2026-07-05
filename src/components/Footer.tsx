@@ -23,6 +23,7 @@ const SIGNATURE_TOURS: { slug: string; label: string }[] = [
   { slug: "tomar-coimbra", label: "Tomar & Coimbra" },
   { slug: "fatima-nazare-obidos", label: "Fátima, Nazaré & Óbidos" },
   { slug: "roman-heritage-alentejo", label: "Roman Heritage Alentejo" },
+  { slug: "southwest-vicentine-coast", label: "Southwest Vicentine Coast" },
 ];
 
 export function Footer() {
