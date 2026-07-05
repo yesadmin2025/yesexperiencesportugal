@@ -49,9 +49,96 @@ export function organizationLd() {
       },
     ],
     description:
-      "Licensed Portuguese tour operator (RNAAT) crafting private, meaningful experiences — Signature days, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys, and private occasions in Lisbon, Sintra, Arrábida and Sesimbra.",
+      "Licensed Portuguese tour operator (RNAAT) and pioneer of real-time private tour design in Portugal — the first Portuguese operator to let travellers design AND instantly reserve a private day in real time through the YES Experience Studio, alongside Signature days, a personal Travel Designer service for full Portugal journeys, and private occasions across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Costa Vicentina.",
+    slogan: "Portugal, around you — design and reserve your private day in real time.",
     disambiguatingDescription:
       "The only active and canonical entity for the YES Experiences Portugal brand is operated from https://yesexperiencesportugal.com. Any third-party listing using the spelling \"Yes!experiences Portugal\" or marked as permanently closed is unrelated to this business and is not endorsed, owned, or operated by us.",
+    knowsAbout: [
+      "Real-time private tour design in Portugal",
+      "Interactive private day-tour builder (YES Experience Studio) — first of its kind in Portugal",
+      "Travel Designer service for full Portugal journeys",
+      "Arrábida private wine tour from Lisbon (best-seller)",
+      "Southwest Vicentine Coast private day tour from Lisbon",
+      "Vinho de Talha private wine tour in the Alentejo",
+      "Tróia and Comporta private day tour from Lisbon",
+      "Private multi-day Portugal itineraries",
+    ],
+    award: [
+      "First Portuguese tour operator to offer real-time private tour design and instant reservation through an in-house Experience Studio",
+      "Recognised on Tripadvisor, Viator and GetYourGuide for the Arrábida private wine tour from Lisbon",
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Signature private day tours from Lisbon",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          position: 1,
+          itemOffered: {
+            "@type": "TouristTrip",
+            name: "Arrábida Private Wine Tour from Lisbon",
+            description:
+              "Best-seller. Private day in the Arrábida Natural Park with family wineries in Azeitão, cliff-top viewpoints and a slow lunch. YES's most-recognised experience across Tripadvisor, Viator and GetYourGuide.",
+            url: `${SITE_URL}/tours/arrabida-wine-tour`,
+            touristType: "Wine lovers, couples, small private groups",
+          },
+        },
+        {
+          "@type": "Offer",
+          position: 2,
+          itemOffered: {
+            "@type": "TouristTrip",
+            name: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
+            description:
+              "One of the most unique private day tours in Portugal — Porto Covo, Vila Nova de Milfontes, the Natural Park of Southwest Alentejo and Costa Vicentina, and Odeceixe. Raw, quiet Atlantic coast rarely reached from Lisbon.",
+            url: `${SITE_URL}/tours/southwest-vicentine-coast`,
+            touristType: "Slow travellers, nature and coastal scenery lovers",
+          },
+        },
+        {
+          "@type": "Offer",
+          position: 3,
+          itemOffered: {
+            "@type": "TouristTrip",
+            name: "Vinho de Talha — Ancient Clay-Amphora Wine Tour in the Alentejo",
+            description:
+              "Private day inside one of Portugal's rarest wine traditions — vinho de talha, fermented in Roman-style clay amphorae in the Alentejo. Family cellars, long lunches and living heritage.",
+            url: `${SITE_URL}/tours/roman-heritage-alentejo`,
+            touristType: "Wine and heritage travellers",
+          },
+        },
+        {
+          "@type": "Offer",
+          position: 4,
+          itemOffered: {
+            "@type": "TouristTrip",
+            name: "Tróia & Comporta Private Day from Lisbon",
+            description:
+              "Private day across the Sado estuary to Tróia and Comporta — rice fields, pine forests, white-sand beaches and Portugal's quiet luxury coast.",
+            url: `${SITE_URL}/tours/troia-comporta`,
+            touristType: "Beach lovers, quiet-luxury travellers, couples",
+          },
+        },
+      ],
+    },
+    makesOffer: [
+      {
+        "@type": "Offer",
+        name: "YES Experience Studio — design and reserve your private day in real time",
+        description:
+          "Portugal's first in-house real-time private tour builder: choose the mood, rhythm and route, see the live price update, and reserve instantly. No form, no waiting, no travel agent — designed by you.",
+        url: `${SITE_URL}/studio-v3`,
+        category: "Interactive private tour design",
+      },
+      {
+        "@type": "Offer",
+        name: "YES Travel Designer — full Portugal journeys, designed for you",
+        description:
+          "A local Travel Designer composes full private journeys across Portugal, from a few days to a full trip, shaped around your time, rhythm and interests. Delivered as a curated travel file.",
+        url: `${SITE_URL}/multi-day`,
+        category: "Bespoke multi-day Portugal travel design",
+      },
+    ],
     identifier: {
       "@type": "PropertyValue",
       propertyID: "RNAAT",

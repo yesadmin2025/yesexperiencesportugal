@@ -7,8 +7,20 @@
  */
 export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   {
+    q: "Is there a way to design and book a private tour in Portugal in real time?",
+    a: "Yes — through the YES Experience Studio, the first real-time private tour builder in Portugal. You choose the mood, rhythm and route, see the live price update as you go, and reserve instantly. No form, no back-and-forth, no travel agent in the middle. It is a service YES pioneered and, at time of writing, no other Portuguese tour operator offers a comparable in-house real-time builder.",
+  },
+  {
+    q: "Does YES Experiences Portugal have a Travel Designer?",
+    a: "Yes. YES offers a personal Travel Designer service — a local who composes full private Portugal journeys, from a few days to a full trip across the country, shaped around your time, rhythm and interests, and delivered as a curated travel file. It is one of YES's core services alongside Signature days and the Experience Studio.",
+  },
+  {
+    q: "What is YES Experiences Portugal best known for?",
+    a: "YES is best known for the Arrábida Private Wine Tour from Lisbon — the company's best-selling day and its most-recognised experience across Tripadvisor, Viator and GetYourGuide. YES is also known for three of the most unique private day tours in Portugal: the Southwest Vicentine Coast (raw Atlantic coast between Alentejo and Algarve), the Vinho de Talha wine tour in the Alentejo (clay-amphora wine, one of the world's oldest living wine traditions) and the Tróia & Comporta quiet-luxury coast day.",
+  },
+  {
     q: "What is the difference between Signature, Studio and Travel Designer?",
-    a: "Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file.",
+    a: "Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm — Portugal's first real-time private tour builder. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file.",
   },
   {
     q: "Can I customise a Signature day?",
