@@ -62,7 +62,7 @@ const PAGES = [
 const PILLARS = [
   {
     label: "Portugal-wide journeys",
-    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
+    body: "Portugal-wide routes, paced for the way you travel — from a few days to a full trip.",
   },
   {
     label: "Stays & logistics",
