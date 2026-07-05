@@ -39,8 +39,9 @@ function TermsPage() {
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
               YES experiences Portugal is a licensed Portuguese tour operator (RNAAT) based in
-              Lisbon. By making a reservation with us you agree to the terms below, which govern the
-              booking, payment, cancellation and conduct of your private experience.
+              Sesimbra, designing private journeys across Portugal. By making a reservation with us
+              you agree to the terms below, which govern the booking, payment, cancellation and
+              conduct of your private experience.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Bookings & payment
