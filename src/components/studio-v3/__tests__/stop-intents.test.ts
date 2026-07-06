@@ -14,7 +14,14 @@ import {
 } from "@/data/stopIntents";
 
 describe("stop-level intent tags", () => {
-  it("every Signature stop has ≥1 tagged intent", () => {
+  // REGRESSION GUARD
+  // -----------------------------------------------------------------
+  // A new Signature stop added to `signatureTours.ts` without a
+  // matching entry in `TOUR_STOP_INTENTS` (src/data/stopIntents.ts)
+  // silently degrades matching — the tour's intent profile loses a
+  // signal and the "Why this journey" evidence goes cold. This test
+  // fails CI so intent coverage cannot regress.
+  it("REGRESSION: every Signature stop must have ≥1 intent tag", () => {
     const missing: string[] = [];
     for (const tour of signatureTours) {
       const stopMap = TOUR_STOP_INTENTS[tour.id] ?? {};
@@ -26,6 +33,42 @@ describe("stop-level intent tags", () => {
       }
     }
     expect(missing, `Untagged stops:\n${missing.join("\n")}`).toEqual([]);
+  });
+
+  // REGRESSION GUARD
+  // -----------------------------------------------------------------
+  // Catches the reverse drift: a stop label was renamed / removed in
+  // `signatureTours.ts` but its tag entry lingers in TOUR_STOP_INTENTS.
+  // The orphan key would score nothing yet mask that the real stop is
+  // now untagged.
+  it("REGRESSION: TOUR_STOP_INTENTS has no orphan keys", () => {
+    const orphans: string[] = [];
+    for (const [tourId, stopMap] of Object.entries(TOUR_STOP_INTENTS)) {
+      const tour = signatureTours.find((t) => t.id === tourId);
+      if (!tour) {
+        orphans.push(`unknown tour: ${tourId}`);
+        continue;
+      }
+      const realLabels = new Set(tour.stops.map((s) => s.label));
+      for (const label of Object.keys(stopMap)) {
+        if (!realLabels.has(label)) orphans.push(`${tourId} :: ${label}`);
+      }
+    }
+    expect(orphans, `Orphan tag entries:\n${orphans.join("\n")}`).toEqual([]);
+  });
+
+  // REGRESSION GUARD
+  // -----------------------------------------------------------------
+  // If a tour ends up with zero dominant intents (e.g. its entry was
+  // deleted from TOUR_STOP_INTENTS), the FitReport can never justify
+  // picking it — matching collapses silently. Fail loudly instead.
+  it("REGRESSION: every tour resolves to ≥1 dominant intent", () => {
+    const empty: string[] = [];
+    for (const tour of signatureTours) {
+      const profile = tourIntentProfile(tour);
+      if (profile.dominant.length === 0) empty.push(tour.id);
+    }
+    expect(empty, `Tours with no dominant intents:\n${empty.join("\n")}`).toEqual([]);
   });
 
   it("every tour's dominant intents include something coherent with its theme", () => {
