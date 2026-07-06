@@ -1,72 +1,56 @@
 ## Goal
 
-Bring every public route in line with the homepage's editorial feel: Typography v3, homepage section rhythm (eyebrow → H2 with italic emphasis → serif lead → body → gold-rule → CTA), canonical CTAs/links, and standard site motion. Homepage-only tricks (`.home-energy` parallax, gold sheen sweep, H2 medium-500 exception) stay confined to `/`.
+Add two focused Studio V3 E2E specs that harden the add-on pricing contract from two angles the current suite doesn't cover yet:
 
-## Scope
+1. **Disabled add-ons must never move the totals** — even when the user tries to click them.
+2. **Totals must update in the same frame as the click** — no scroll, no navigation, no debounce.
 
-**In scope — normalise to homepage system:**
-- `about`, `contact`, `experiences`, `multi-day`, `day-tours`, `proposals`, `corporate`, `reviews`, `press`
-- Signature landing pages: `arrabida-wine-tour`, `arrabida-day-trip-from-lisbon`, `alentejo-wine-tour-from-lisbon`, `evora-alentejo-wine-tour`, `evora-private-tour-from-lisbon`, `sintra-day-tour-from-lisbon`, `wine-tours-lisbon`, `private-wine-tour-lisbon`
-- Editorial/SEO hubs: `day-trips-from-lisbon`, `itineraries/10-day-private-portugal-tour`, `portugal-tours`, `luxury-tours-portugal`, `private-tours-portugal`, `portugal-wine-tours`, `local-stories`
-- Tour detail templates: `tours.$tourId`, `tours.$tourId.tailor`
-- Shared chrome: `SiteLayout`, `Navbar`, `Footer` (verify tokens only — no restructure)
+Both specs reuse the existing `walkToReveal` + DOM readers in `e2e/studio-v3-walk-to-reveal.ts`, so the walker logic stays in lockstep with the sibling specs.
 
-**Preserved as-is:**
-- `/` (homepage) — reference source, untouched
-- Studio v3, Builder, Checkout, Auth, Admin, QA — product chrome stays
-- Legal (`terms`, `privacy`), `unsubscribe`, token routes
+## Files to add
 
-## What "consistent" means (the rules being enforced)
+### `e2e/studio-v3-add-ons-disabled-never-affect-total.spec.ts`
 
-**Typography v3**
-- H1 / H2: `font-display` Montserrat, weight 700 (H2 stays 700 outside `/`)
-- H3+: Montserrat, weight 600
-- Italic emphasis: `<SectionTitle.Em>` (Georgia italic, teal) inside headlines only — no free-standing italic paragraphs, no `.bridge-whisper`, no `.he-pull`, no `.kw`
-- Body: Inter, 16–17px, line-height 1.85
-- Serif italic lead paragraph directly under H1 only (matches homepage hero pattern)
-- Eyebrow: 11px uppercase, tracking 0.32em, `--gold-warm` — always via `<Eyebrow>`
+Contract: an add-on with `data-state="disabled"` (either gated by day capacity or hidden behind the cap-of-3) must be inert.
 
-**Section rhythm**
-- Every content section: `<Eyebrow>` → `<SectionTitle as="h2">` (with italic Em where copy earns it) → optional serif italic lead → Inter body → optional gold-rule divider → single `<CtaButton>` or teal-uppercase inline link
-- Section padding: `py-20 md:py-28` on ivory; `py-16 md:py-20` on sand
-- Max text column: `max-w-2xl` centred (editorial), `max-w-3xl` for hero headers
-- Gold rule divider: `border-t border-[color:var(--gold-soft)]/40` before CTA bands
+Steps:
+1. Navigate `/studio-v3?e2e=1`, wait for `__APP_READY__`, `walkToReveal(page)`.
+2. Skip cleanly if the reveal / add-ons fieldset / party-total isn't mounted (same guard style as `studio-v3-final-investment-live.spec.ts`).
+3. Snapshot baseline `addOnsTotal` (should be `0` / hidden) and baseline `partyTotal`.
+4. Collect all add-on chips inside `[data-testid="studio-v3-add-ons"]`. Force-click every chip whose `data-state="disabled"` (capacity-gated by the day). After each attempted click:
+   - Assert `aria-pressed` stays `"false"`.
+   - Assert `parseAddOnsTotalEur(page)` is still `null` / baseline.
+   - Assert `parsePartyTotalEur(page)` equals the baseline.
+5. Cap-of-3 branch: use `readInteractableAddons(page)` and, if ≥4 exist, select the first 3, then attempt to click a 4th. Verify:
+   - The 4th chip flips to `aria-disabled="true"` (per `add-on-microinteractions.test.tsx` contract).
+   - Force-click it; `aria-pressed` stays `"false"`, `addOnsTotal` and `partyTotal` unchanged from the 3-selected state.
+   - Deselect one → previously-gated chip re-enables (mirrors the unit test but at rendered-HTML level).
 
-**CTAs & links**
-- Primary/ghost buttons: `<CtaButton variant="primary|ghost">` — no bespoke `<button>` or raw Tailwind pill styles
-- Inline forward links: `font-sans text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--teal-2)]` + gold arrow `→`
-- Back links: same pattern, `←` prefix, `--charcoal-soft`
-- One primary action per section; secondary as ghost
+### `e2e/studio-v3-add-ons-same-frame.spec.ts`
 
-**Motion (standard site, NOT homepage)**
-- Entry: fade + translateY 12–16px, ≤220ms, respects `prefers-reduced-motion`
-- Hover: image zoom 1.02–1.04, card/CTA lift -2px
-- Accordion: existing radix animations
-- Forbidden outside `/`: parallax, gold sheen sweep, sequenced staggered reveals >250ms, bounce/spring, glass, blob, shimmer
-- Use a shared `useRevealOnScroll` hook (IntersectionObserver, one-shot) applied to top-level section wrappers
+Contract: `studio-v3-add-ons-total` and `studio-v3-party-total` must reflect the new value **in the same frame as the click**, with no scroll and no phase transition.
 
-## Implementation approach
+Steps:
+1. Same setup + `walkToReveal` + skip guards.
+2. Record `window.scrollY` and the current `[data-testid="studio-v3-root"]` `data-phase` before each click; assert both are unchanged after.
+3. For each of the first 2–3 interactable add-ons, run this atomic sequence inside a single `page.evaluate` to eliminate the Playwright-round-trip window:
+   - Read `addOnsTotal.textContent` and `partyTotal.textContent` (pre-click).
+   - Dispatch a synthetic `click` on the chip (`btn.click()` in the same evaluate).
+   - Immediately (synchronously, no `await`, no `requestAnimationFrame`) re-read both text contents.
+   - Return `{ beforeAddOns, afterAddOns, beforeParty, afterParty, phaseBefore, phaseAfter, scrollBefore, scrollAfter, pressed }`.
+4. Assert:
+   - `afterAddOns !== beforeAddOns` and the numeric delta equals `+€<addon>` for that chip.
+   - `afterParty !== beforeParty` and delta equals `addon.eur × partyCount` (derived from the party-total line, same regex as `studio-v3-final-investment-live.spec.ts`).
+   - `pressed === "true"`.
+   - `phaseAfter === phaseBefore` and `scrollAfter === scrollBefore`.
+5. Toggle the same chip off in a second evaluate; assert both totals return to `beforeAddOns` / `beforeParty` in the same synchronous read.
 
-1. **Audit + inventory** — grep each route for: bespoke buttons, `font-light` on light bg, raw `text-white/black`, `.bridge-whisper`, `.he-pull`, `.kw`, non-primitive H2s, ad-hoc italic paragraphs, hardcoded font sizes outside the v3 scale.
-2. **Add shared reveal hook** — `src/hooks/useRevealOnScroll.ts` + `.reveal-on-scroll` utility in `styles.css` (fade + translateY, one-shot, reduced-motion safe). Homepage keeps its own `.home-energy` utilities untouched.
-3. **Route-by-route rewrites** — for each in-scope file, normalise: swap raw H1/H2 for `<SectionTitle>`, swap eyebrows for `<Eyebrow>`, swap buttons for `<CtaButton>`, swap inline "Learn more" for the teal-arrow pattern, remove banned italic paragraphs/spans, apply standard section paddings, wire reveal-on-scroll on section wrappers. Copy stays — only the shell changes.
-4. **Tour detail template** (`tours.$tourId.tsx`) — highest leverage since it powers every Signature URL; align hero, itinerary section, inclusions, CTA band once.
-5. **Verify** — typecheck (`bunx tsgo --noEmit`), spot-check 4 routes on mobile viewport via Playwright screenshots (About, Experiences, one Signature landing, one Tour detail), grep for remaining banned classes.
+## What this locks down that current specs don't
 
-## Out of scope for this pass
+- `studio-v3-add-ons-total.spec.ts` and `-final-investment-live.spec.ts` only iterate through **interactable** add-ons — they never verify that `disabled` chips are truly inert against forced clicks, and they never verify the cap-gate is enforced at the rendered-HTML level (only the unit test does).
+- No existing E2E verifies the "same-frame" property. Every current spec uses `await expect(...)` polling, which would still pass if the totals updated one `rAF` later. The new spec asserts the read is synchronous inside a single `page.evaluate`, and additionally asserts no scroll / no phase change happened.
 
-- Copy rewrites (structure only; the words stay)
-- Adding new sections, hero images, or product logic
-- Homepage — reference only
-- Admin/Studio/Builder/Checkout chrome
-- Brand tokens in `styles.css` — only additive utilities (`reveal-on-scroll`), no palette changes
+## Non-goals
 
-## Risk & mitigation
-
-- **Regression risk** on Signature landings (they're indexed) — SEO head blocks and JSON-LD stay byte-identical, only visual shell changes.
-- **Test coverage** — existing itinerary/signature/reveal-order tests already gate Studio v3; nothing in that path changes.
-- **Scale** — ~25 files. I'll batch parallel edits per group (editorial hubs, signature landings, commercial pages, tour templates) and run typecheck between groups.
-
-## Deliverable
-
-A single sweep with one changelog: files touched, primitives added, banned patterns removed. No copy changes, no new features, no homepage touched.
+- No changes to `SignaturePriceCard.tsx` or the walker helper — the current implementation already satisfies both contracts; these tests are pure regression guards.
+- No new CI workflow — both specs run under the existing Playwright config alongside the sibling `studio-v3-add-ons-*.spec.ts` files.
