@@ -337,7 +337,6 @@ export function DraftMapPreview({
           })}
         </ul>
 
-
         {/* Caption overlay — same anchor as homepage */}
         <div
           className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3"

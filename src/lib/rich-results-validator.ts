@@ -109,11 +109,7 @@ function validateReview(node: AnyNode, idx: number, out: RichResultsReport) {
   // datePublished — optional but must parse when present
   if (node.datePublished !== undefined) {
     const raw = node.datePublished;
-    if (
-      typeof raw !== "string" ||
-      raw.length < 10 ||
-      Number.isNaN(new Date(raw).getTime())
-    ) {
+    if (typeof raw !== "string" || raw.length < 10 || Number.isNaN(new Date(raw).getTime())) {
       out.errors.push(`${tag}: datePublished '${String(raw)}' is not a valid ISO-8601 date`);
     }
   } else {

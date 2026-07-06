@@ -56,10 +56,12 @@ async function safeClick(page: Page, sel: string): Promise<boolean> {
   // Fall back to a raw DOM click when a full-bleed cinematic layer
   // intercepts pointer events (map / storyboard). The .click() event on
   // the button still runs the React handler.
-  return el.evaluate((n) => (n as HTMLElement).click()).then(
-    () => true,
-    () => false,
-  );
+  return el
+    .evaluate((n) => (n as HTMLElement).click())
+    .then(
+      () => true,
+      () => false,
+    );
 }
 
 /**
@@ -196,10 +198,7 @@ async function readInteractableAddons(page: Page): Promise<Addon[]> {
 
 async function totalText(page: Page): Promise<string> {
   return (
-    (await page
-      .locator('[data-testid="studio-v3-add-ons-total"]')
-      .first()
-      .textContent()) ?? ""
+    (await page.locator('[data-testid="studio-v3-add-ons-total"]').first().textContent()) ?? ""
   );
 }
 

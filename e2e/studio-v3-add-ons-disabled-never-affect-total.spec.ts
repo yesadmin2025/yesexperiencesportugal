@@ -76,9 +76,7 @@ test.describe("studio-v3 — disabled add-ons never move add-ons-total or party-
     }
     const first3 = addons.slice(0, 3);
     for (const a of first3) {
-      const btn = page.locator(
-        `[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`,
-      );
+      const btn = page.locator(`[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`);
       await btn.scrollIntoViewIfNeeded();
       await btn.click();
       await expect(btn).toHaveAttribute("aria-pressed", "true", { timeout: 2_000 });

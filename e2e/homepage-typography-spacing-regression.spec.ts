@@ -85,7 +85,9 @@ test.describe("Homepage typography — locked H2 ramp", () => {
       await page.locator(`#${h.id}`).scrollIntoViewIfNeeded();
       const m = await readComputed(page, `#${h.id}`);
       expect(m, `#${h.id} must exist`).not.toBeNull();
-      expect(m!.fontFamily, "H2 uses Georgia italic emphasis stack").toMatch(/Georgia|Cormorant|serif/i);
+      expect(m!.fontFamily, "H2 uses Georgia italic emphasis stack").toMatch(
+        /Georgia|Cormorant|serif/i,
+      );
       // Homepage exception: H2s stay at font-medium (500).
       expect(Number(m!.fontWeight)).toBe(500);
       expect(m!.fontSize).toBeCloseTo(h.ramp[tier], 1);
@@ -130,7 +132,10 @@ test.describe("Homepage spacing — section-header vertical rhythm", () => {
   // Each section: eyebrow → H2 → supporting paragraph. Bands are generous
   // enough to absorb ±1–2px sub-pixel jitter across breakpoints but tight
   // enough that any accidental `mt-*` change trips the test.
-  const RHYTHM_BANDS: Record<keyof Ramp, { eyebrowToH2: [number, number]; h2ToLead: [number, number] }> = {
+  const RHYTHM_BANDS: Record<
+    keyof Ramp,
+    { eyebrowToH2: [number, number]; h2ToLead: [number, number] }
+  > = {
     mobile: { eyebrowToH2: [6, 40], h2ToLead: [8, 44] },
     tablet: { eyebrowToH2: [8, 48], h2ToLead: [10, 52] },
     desktop: { eyebrowToH2: [10, 56], h2ToLead: [12, 60] },
@@ -164,7 +169,9 @@ test.describe("Homepage spacing — section-header vertical rhythm", () => {
         // Fallback: nearest P descendant of parent that comes after h2.
         if (!lead && h2.parentElement) {
           const ps = Array.from(h2.parentElement.querySelectorAll<HTMLElement>("p"));
-          lead = ps.find((p) => p.getBoundingClientRect().top > h2.getBoundingClientRect().bottom) ?? null;
+          lead =
+            ps.find((p) => p.getBoundingClientRect().top > h2.getBoundingClientRect().bottom) ??
+            null;
         }
         return {
           eyebrowBottom: eyebrow?.getBoundingClientRect().bottom ?? null,

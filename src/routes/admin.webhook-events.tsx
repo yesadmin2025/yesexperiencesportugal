@@ -241,13 +241,19 @@ function AdminWebhookEventsPage() {
             <tbody>
               {rows == null ? (
                 <tr>
-                  <td colSpan={8} className="px-3 py-6 text-center text-[color:var(--charcoal-soft)]">
+                  <td
+                    colSpan={8}
+                    className="px-3 py-6 text-center text-[color:var(--charcoal-soft)]"
+                  >
                     Loading…
                   </td>
                 </tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-3 py-6 text-center text-[color:var(--charcoal-soft)]">
+                  <td
+                    colSpan={8}
+                    className="px-3 py-6 text-center text-[color:var(--charcoal-soft)]"
+                  >
                     No events yet.
                   </td>
                 </tr>

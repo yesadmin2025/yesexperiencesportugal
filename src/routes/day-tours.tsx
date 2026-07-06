@@ -68,7 +68,6 @@ function DayToursPage() {
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
             {dayTours.map((t) => (
               <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                 <Link

@@ -35,10 +35,7 @@ describe("Checkout inclusions — client resolution contract", () => {
 
   it("falls back to tour.included when meta is missing or empty", () => {
     const tour = { included: ["Private driver", "Bottled water"] };
-    expect(resolveClientIncludedItems(null, tour)).toEqual([
-      "Private driver",
-      "Bottled water",
-    ]);
+    expect(resolveClientIncludedItems(null, tour)).toEqual(["Private driver", "Bottled water"]);
     expect(resolveClientIncludedItems({ included: [] }, tour)).toEqual([
       "Private driver",
       "Bottled water",

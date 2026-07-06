@@ -81,9 +81,8 @@ function Page() {
             {state.kind === "valid" && (
               <>
                 <p className="text-[color:var(--charcoal)]">
-                  Confirm you want to stop receiving emails from YES Experiences Portugal.
-                  You'll still receive essential transactional messages tied to any active
-                  booking.
+                  Confirm you want to stop receiving emails from YES Experiences Portugal. You'll
+                  still receive essential transactional messages tied to any active booking.
                 </p>
                 <button
                   onClick={confirm}
@@ -100,9 +99,7 @@ function Page() {
 
             {state.kind === "done" && (
               <>
-                <p className="serif text-2xl text-[color:var(--teal)]">
-                  You've been unsubscribed.
-                </p>
+                <p className="serif text-2xl text-[color:var(--teal)]">You've been unsubscribed.</p>
                 <p className="mt-3 text-[color:var(--charcoal-soft)]">
                   Change your mind? Just email{" "}
                   <a href="mailto:info@yesexperiencesportugal.com" className="underline">
@@ -121,8 +118,8 @@ function Page() {
 
             {state.kind === "invalid" && (
               <p className="text-[color:var(--charcoal)]">
-                This unsubscribe link is invalid or has expired. If you continue receiving
-                emails, please contact{" "}
+                This unsubscribe link is invalid or has expired. If you continue receiving emails,
+                please contact{" "}
                 <a href="mailto:info@yesexperiencesportugal.com" className="underline">
                   info@yesexperiencesportugal.com
                 </a>
@@ -130,9 +127,7 @@ function Page() {
               </p>
             )}
 
-            {state.kind === "error" && (
-              <p className="text-red-700">{state.message}</p>
-            )}
+            {state.kind === "error" && <p className="text-red-700">{state.message}</p>}
           </div>
         </div>
       </section>

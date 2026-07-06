@@ -144,7 +144,6 @@ function Pill({ label, done }: { label: string; done: boolean }) {
 
 function SeoMonitorPage() {
   const [checks, setChecks] = useState<Record<string, CheckState>>(() =>
-
     Object.fromEntries(CHECKS.map((c) => [c.url, { url: c.url, checking: true }])),
   );
   const [runAt, setRunAt] = useState<string>("");
@@ -173,7 +172,8 @@ function SeoMonitorPage() {
       <div className="mx-auto max-w-3xl">
         <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
         <h1 className="mt-2 text-3xl font-bold text-[color:var(--charcoal)] md:text-4xl">
-          SEO <span className="font-serif italic font-normal text-[color:var(--teal)]">monitor</span>
+          SEO{" "}
+          <span className="font-serif italic font-normal text-[color:var(--teal)]">monitor</span>
         </h1>
         <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
           Estado dos ficheiros de indexação e atalhos para o Google Search Console.
@@ -197,11 +197,7 @@ function SeoMonitorPage() {
           {CHECKS.map((c) => {
             const s = checks[c.url];
             const ok = s?.ok;
-            const dot = s?.checking
-              ? "bg-amber-400"
-              : ok
-                ? "bg-emerald-500"
-                : "bg-rose-500";
+            const dot = s?.checking ? "bg-amber-400" : ok ? "bg-emerald-500" : "bg-rose-500";
             return (
               <div
                 key={c.url}
@@ -300,7 +296,9 @@ function SeoMonitorPage() {
           <ol className="mt-3 list-decimal space-y-2 pl-5">
             <li>Confirmar que sitemap.xml e robots.txt retornam HTTP 200 acima.</li>
             <li>Resolver erros críticos do painel "Erros críticos de SEO".</li>
-            <li>Em <strong>Inspeção de URL</strong>, pedir indexação das páginas com problemas.</li>
+            <li>
+              Em <strong>Inspeção de URL</strong>, pedir indexação das páginas com problemas.
+            </li>
             <li>Repetir verificação após 24–72h.</li>
           </ol>
         </section>
@@ -338,7 +336,6 @@ function IndexationPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   return (
     <section className="mt-10">
       <div className="flex items-center justify-between">
@@ -355,7 +352,12 @@ function IndexationPanel() {
       </div>
       <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
         Inspeção live da API do Search Console para as páginas-chave.
-        {lastAt ? <> · Atualizado <span className="font-medium">{lastAt}</span></> : null}
+        {lastAt ? (
+          <>
+            {" "}
+            · Atualizado <span className="font-medium">{lastAt}</span>
+          </>
+        ) : null}
       </p>
 
       {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
@@ -427,15 +429,11 @@ function CriticalSeoPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const totalCritical = rows.reduce(
     (s, r) => s + r.issues.filter((i) => i.level === "critical").length,
     0,
   );
-  const totalWarn = rows.reduce(
-    (s, r) => s + r.issues.filter((i) => i.level === "warn").length,
-    0,
-  );
+  const totalWarn = rows.reduce((s, r) => s + r.issues.filter((i) => i.level === "warn").length, 0);
 
   return (
     <section className="mt-10">
@@ -453,7 +451,12 @@ function CriticalSeoPanel() {
       </div>
       <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
         Audita title, description, canonical, H1, JSON-LD, og:* e robots em tempo real.
-        {lastAt ? <> · Atualizado <span className="font-medium">{lastAt}</span></> : null}
+        {lastAt ? (
+          <>
+            {" "}
+            · Atualizado <span className="font-medium">{lastAt}</span>
+          </>
+        ) : null}
       </p>
 
       <p className="mt-2 text-xs">
@@ -466,7 +469,11 @@ function CriticalSeoPanel() {
           const critical = r.issues.filter((i) => i.level === "critical");
           const warn = r.issues.filter((i) => i.level === "warn");
           const dot =
-            critical.length > 0 ? "bg-rose-500" : warn.length > 0 ? "bg-amber-500" : "bg-emerald-500";
+            critical.length > 0
+              ? "bg-rose-500"
+              : warn.length > 0
+                ? "bg-amber-500"
+                : "bg-emerald-500";
           return (
             <details
               key={r.url}
@@ -485,16 +492,14 @@ function CriticalSeoPanel() {
               </summary>
               <div className="mt-3 space-y-2 text-xs text-[color:var(--charcoal-soft)]">
                 <p>
-                  <strong>HTTP:</strong> {r.status ?? "—"} ·{" "}
-                  <strong>H1:</strong> {r.h1Count ?? 0} ·{" "}
+                  <strong>HTTP:</strong> {r.status ?? "—"} · <strong>H1:</strong> {r.h1Count ?? 0} ·{" "}
                   <strong>JSON-LD:</strong> {r.jsonLdBlocks ?? 0}
                 </p>
                 <p>
                   <strong>Title</strong> ({r.titleLength ?? 0}): {r.title ?? "—"}
                 </p>
                 <p>
-                  <strong>Description</strong> ({r.descriptionLength ?? 0}):{" "}
-                  {r.description ?? "—"}
+                  <strong>Description</strong> ({r.descriptionLength ?? 0}): {r.description ?? "—"}
                 </p>
                 <p className="break-all">
                   <strong>Canonical:</strong> {r.canonical ?? "—"}
@@ -504,9 +509,7 @@ function CriticalSeoPanel() {
                     {r.issues.map((i, idx) => (
                       <li
                         key={idx}
-                        className={
-                          i.level === "critical" ? "text-rose-600" : "text-amber-600"
-                        }
+                        className={i.level === "critical" ? "text-rose-600" : "text-amber-600"}
                       >
                         • {i.message}
                       </li>

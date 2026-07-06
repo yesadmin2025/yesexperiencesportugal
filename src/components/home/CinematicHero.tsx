@@ -318,8 +318,11 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
     // Defer mounting the <video> until the browser is idle so it never
     // competes with the LCP poster paint or critical hero CSS.
     const schedule =
-      (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number })
-        .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 600));
+      (
+        window as unknown as {
+          requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+        }
+      ).requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 600));
     const id = schedule(() => setShowVideo(true), { timeout: 1500 });
     return () => {
       const cancel =
@@ -489,11 +492,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
 
       {/* Poster — always present, reserves layout, paints instantly as LCP */}
       <picture aria-hidden="true">
-        <source
-          type="image/webp"
-          media="(max-width: 767px)"
-          srcSet={HERO_CLIP.posterWebpMobile}
-        />
+        <source type="image/webp" media="(max-width: 767px)" srcSet={HERO_CLIP.posterWebpMobile} />
         <source type="image/webp" srcSet={HERO_CLIP.posterWebp} />
         <img
           src={HERO_CLIP.posterJpg}

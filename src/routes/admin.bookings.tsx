@@ -117,12 +117,14 @@ function StatusPill({ status }: { status: string | null }) {
     s === "confirmed"
       ? "bg-emerald-50 text-emerald-800 border-emerald-200"
       : s === "needs_review"
-      ? "bg-amber-50 text-amber-900 border-amber-200"
-      : s === "failed"
-      ? "bg-red-50 text-red-800 border-red-200"
-      : "bg-[color:var(--sand)] text-[color:var(--charcoal)] border-[color:var(--border)]";
+        ? "bg-amber-50 text-amber-900 border-amber-200"
+        : s === "failed"
+          ? "bg-red-50 text-red-800 border-red-200"
+          : "bg-[color:var(--sand)] text-[color:var(--charcoal)] border-[color:var(--border)]";
   return (
-    <span className={`inline-flex items-center gap-1 border px-2 py-0.5 text-[11px] uppercase tracking-wider ${tone}`}>
+    <span
+      className={`inline-flex items-center gap-1 border px-2 py-0.5 text-[11px] uppercase tracking-wider ${tone}`}
+    >
       {s === "confirmed" ? <CheckCircle2 size={11} /> : <AlertTriangle size={11} />}
       {status ?? "—"}
     </span>
@@ -255,7 +257,9 @@ function AdminBookingsPage() {
       <section className="pt-28 pb-20 container-x max-w-7xl">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              Admin
+            </p>
             <h1 className="mt-1 text-3xl">Bookings review</h1>
             <p className="mt-2 text-sm text-[color:var(--charcoal-soft)] max-w-2xl">
               Paid Stripe bookings whose automatic Bokun push needs human attention. Open the Bokun
@@ -316,14 +320,20 @@ function AdminBookingsPage() {
             <tbody>
               {!rows && (
                 <tr>
-                  <td colSpan={9} className="px-3 py-6 text-center text-[color:var(--charcoal-soft)]">
+                  <td
+                    colSpan={9}
+                    className="px-3 py-6 text-center text-[color:var(--charcoal-soft)]"
+                  >
                     Loading…
                   </td>
                 </tr>
               )}
               {rows && rows.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-3 py-10 text-center text-[color:var(--charcoal-soft)]">
+                  <td
+                    colSpan={9}
+                    className="px-3 py-10 text-center text-[color:var(--charcoal-soft)]"
+                  >
                     <CheckCircle2 className="mx-auto mb-2 text-emerald-600" size={20} />
                     No bookings match this filter. Everything is clean.
                   </td>
@@ -336,9 +346,13 @@ function AdminBookingsPage() {
                   </td>
                   <td className="px-3 py-3">
                     <div className="font-medium">{r.customer_name ?? "—"}</div>
-                    <div className="text-xs text-[color:var(--charcoal-soft)]">{r.customer_email ?? "—"}</div>
+                    <div className="text-xs text-[color:var(--charcoal-soft)]">
+                      {r.customer_email ?? "—"}
+                    </div>
                     {r.customer_phone && (
-                      <div className="text-xs text-[color:var(--charcoal-soft)]">{r.customer_phone}</div>
+                      <div className="text-xs text-[color:var(--charcoal-soft)]">
+                        {r.customer_phone}
+                      </div>
                     )}
                   </td>
                   <td className="px-3 py-3 text-xs">{r.source_tour_id ?? "—"}</td>
@@ -775,6 +789,4 @@ function TestWebhookButton({ onDone }: { onDone: () => void }) {
       )}
     </>
   );
-
 }
-

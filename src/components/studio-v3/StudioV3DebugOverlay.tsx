@@ -97,8 +97,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
   // ---- Intent coverage (dev-only): resolve current primary tour +
   //      FitReport so we can visualize why it beat its neighbours. ----
   const intentPanel = useMemo(() => {
-    const tour =
-      (state.tourId && signatureTours.find((t) => t.id === state.tourId)) || null;
+    const tour = (state.tourId && signatureTours.find((t) => t.id === state.tourId)) || null;
     let fitBundle: ReturnType<typeof pickPrimaryTourWithFit> | null = null;
     if (state.feeling && state.companions) {
       try {
@@ -365,10 +364,7 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
                       ? "var(--ivory)"
                       : "#FF8A8A";
                 return (
-                  <div
-                    key={interest}
-                    style={{ fontSize: 10, lineHeight: 1.35, marginBottom: 2 }}
-                  >
+                  <div key={interest} style={{ fontSize: 10, lineHeight: 1.35, marginBottom: 2 }}>
                     <span style={{ fontWeight: 600 }}>{interest}</span>
                     <span style={{ color, marginLeft: 6 }}>
                       {strength}
@@ -388,13 +384,15 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
           )}
           {intentPanel.fitBundle && intentPanel.fitBundle.topReports.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontSize: 9, opacity: 0.55, marginBottom: 2 }}>
-                Top candidates
-              </div>
+              <div style={{ fontSize: 9, opacity: 0.55, marginBottom: 2 }}>Top candidates</div>
               {intentPanel.fitBundle.topReports.map(({ tour: t, fit }) => {
                 const dom = tourIntentProfile(t).dominant.slice(0, 3).join(",");
-                const sat = fit.coverage.interests.filter((i) => i.satisfied).map((i) => i.interest);
-                const miss = fit.coverage.interests.filter((i) => !i.satisfied).map((i) => i.interest);
+                const sat = fit.coverage.interests
+                  .filter((i) => i.satisfied)
+                  .map((i) => i.interest);
+                const miss = fit.coverage.interests
+                  .filter((i) => !i.satisfied)
+                  .map((i) => i.interest);
                 const chosen = t.id === intentPanel.resolvedTour!.id;
                 return (
                   <div

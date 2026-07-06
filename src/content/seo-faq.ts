@@ -30,7 +30,7 @@ export const SIGNATURE_FAQ: FaqItem[] = [
   },
   {
     q: "Can I customise this Signature?",
-    a: "Yes. Use \"Tailor this Signature\" to adjust pace, timing, small additions and group needs without redesigning the core day. The route, story and local guide stay locked.",
+    a: 'Yes. Use "Tailor this Signature" to adjust pace, timing, small additions and group needs without redesigning the core day. The route, story and local guide stay locked.',
   },
   {
     q: "What's your cancellation policy?",

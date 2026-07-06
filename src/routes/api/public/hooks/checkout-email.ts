@@ -35,10 +35,7 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
         const recipientEmail = String(body.recipientEmail || "").trim();
         const sessionId = String(body.sessionId || "").trim();
         if (!recipientEmail || !sessionId) {
-          return Response.json(
-            { ok: false, error: "missing_fields" },
-            { status: 400 },
-          );
+          return Response.json({ ok: false, error: "missing_fields" }, { status: 400 });
         }
 
         const templateData = {

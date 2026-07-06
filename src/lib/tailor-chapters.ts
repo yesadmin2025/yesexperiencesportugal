@@ -19,10 +19,7 @@
  * the caller falls back to its previous data source.
  */
 
-import type {
-  BlueprintStop,
-  TailorBlueprint,
-} from "@/data/tailorBlueprints";
+import type { BlueprintStop, TailorBlueprint } from "@/data/tailorBlueprints";
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
 
 export interface EditorialChapter {
@@ -107,9 +104,7 @@ function storyFor(stop: BlueprintStop): string {
  * Project a blueprint into 4–6 editorial chapters for the tour detail
  * page. Returns `null` when no blueprint exists for that tourId.
  */
-export function toEditorialChapters(
-  tourId: string,
-): EditorialChapter[] | null {
+export function toEditorialChapters(tourId: string): EditorialChapter[] | null {
   const bp = getTailorBlueprint(tourId);
   if (!bp) return null;
 
@@ -161,9 +156,7 @@ export function toEditorialChapters(
  * anchors on the matching region. Returns an empty array when no
  * blueprint exists.
  */
-export function getSignatureOptionalAddOns(
-  tourId: string,
-): BlueprintStop[] {
+export function getSignatureOptionalAddOns(tourId: string): BlueprintStop[] {
   const bp = getTailorBlueprint(tourId);
   if (!bp) return [];
   return bp.optional;

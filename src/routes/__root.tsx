@@ -19,7 +19,6 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 
-
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
  * a `app:ready` CustomEvent after the React tree mounts. Useful for:

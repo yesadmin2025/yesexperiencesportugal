@@ -4,7 +4,13 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
-import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  SITE_URL,
+  hreflangUsCaLinks,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
@@ -83,10 +89,7 @@ export const Route = createFileRoute("/evora-alentejo-wine-tour")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [
-      { rel: "canonical", href: PAGE_URL },
-      ...hreflangUsCaLinks(PAGE_PATH),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...hreflangUsCaLinks(PAGE_PATH)],
     scripts: [
       jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
@@ -110,12 +113,11 @@ function EvoraAlentejoLanding() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Évora & Alentejo</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Évora & Alentejo Wine Tour —{" "}
-              <SectionTitle.Em>one private full day</SectionTitle.Em>
+              Évora & Alentejo Wine Tour — <SectionTitle.Em>one private full day</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              UNESCO heritage, cork traditions, local wines and a route designed
-              around you — from Lisbon, for one day, at your pace.
+              UNESCO heritage, cork traditions, local wines and a route designed around you — from
+              Lisbon, for one day, at your pace.
             </p>
             <div className="mt-8">
               <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
@@ -133,10 +135,10 @@ function EvoraAlentejoLanding() {
                 Évora and Alentejo, in one day from Lisbon.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                Évora is the UNESCO-listed capital of Alentejo — Roman Temple,
-                Chapel of Bones, narrow lanes. Around it stretches cork-oak
-                country and some of Portugal's most honest family wineries.
-                Done privately, the two fit comfortably into a single full day.
+                Évora is the UNESCO-listed capital of Alentejo — Roman Temple, Chapel of Bones,
+                narrow lanes. Around it stretches cork-oak country and some of Portugal's most
+                honest family wineries. Done privately, the two fit comfortably into a single full
+                day.
               </p>
             </div>
 
@@ -146,10 +148,9 @@ function EvoraAlentejoLanding() {
                 Cork, wine, heritage, lunch.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                A cork tradition stop, two family wineries, a walk through
-                Évora's old town with the Roman Temple and Chapel of Bones, and
-                a long Alentejo lunch. The route flexes — fewer stops, deeper
-                ones, or the opposite, depending on what you want.
+                A cork tradition stop, two family wineries, a walk through Évora's old town with the
+                Roman Temple and Chapel of Bones, and a long Alentejo lunch. The route flexes —
+                fewer stops, deeper ones, or the opposite, depending on what you want.
               </p>
             </div>
 
@@ -159,10 +160,9 @@ function EvoraAlentejoLanding() {
                 Reviewed across independent travel guides.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                The Évora &amp; Alentejo wine experience YES Experiences
-                Portugal operates has been compared, ranked and reviewed by
-                independent travel guides covering full-day tours from Lisbon —
-                see a selection below.
+                The Évora &amp; Alentejo wine experience YES Experiences Portugal operates has been
+                compared, ranked and reviewed by independent travel guides covering full-day tours
+                from Lisbon — see a selection below.
               </p>
             </div>
           </div>
@@ -183,21 +183,42 @@ function EvoraAlentejoLanding() {
             </h2>
             <ul className="grid sm:grid-cols-3 gap-5">
               <li>
-                <Link to="/evora-private-tour-from-lisbon" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Private Évora Tour</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Framed around heritage and old town.</span>
+                <Link
+                  to="/evora-private-tour-from-lisbon"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Private Évora Tour
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Framed around heritage and old town.
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link to="/alentejo-wine-tour-from-lisbon" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Alentejo Wine Tour</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Same day, framed around wine and cork.</span>
+                <Link
+                  to="/alentejo-wine-tour-from-lisbon"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Alentejo Wine Tour
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Same day, framed around wine and cork.
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link to="/local-stories" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Local Stories</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Why Alentejo is Portugal's most underrated wine region.</span>
+                <Link
+                  to="/local-stories"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Local Stories
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Why Alentejo is Portugal's most underrated wine region.
+                  </span>
                 </Link>
               </li>
             </ul>
@@ -207,7 +228,11 @@ function EvoraAlentejoLanding() {
                 Book this day
               </span>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
+                <CtaButton
+                  to="/tours/$tourId"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="primary"
+                >
                   Reserve with YES
                 </CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">

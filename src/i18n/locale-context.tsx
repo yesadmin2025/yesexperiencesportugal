@@ -23,13 +23,7 @@ const LocaleContext = createContext<LocaleContextValue>({
   dict: getDictionary(DEFAULT_LOCALE),
 });
 
-export function LocaleProvider({
-  locale,
-  children,
-}: {
-  locale: Locale;
-  children: ReactNode;
-}) {
+export function LocaleProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
   const value = useMemo<LocaleContextValue>(
     () => ({ locale, dict: getDictionary(locale) }),
     [locale],
@@ -48,8 +42,7 @@ export function useLocale(): Locale {
 export function useT() {
   const { dict } = useContext(LocaleContext);
   return useMemo(
-    () => (key: string, vars?: Record<string, string | number>) =>
-      translate(dict, key, vars),
+    () => (key: string, vars?: Record<string, string | number>) => translate(dict, key, vars),
     [dict],
   );
 }

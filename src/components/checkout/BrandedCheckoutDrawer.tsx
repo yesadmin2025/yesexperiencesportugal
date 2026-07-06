@@ -112,8 +112,8 @@ export function BrandedCheckoutDrawer({
     summary.totalEur != null
       ? summary.totalEur
       : summary.pricePerPaxEur != null
-      ? Math.round(summary.pricePerPaxEur * summary.guests)
-      : null;
+        ? Math.round(summary.pricePerPaxEur * summary.guests)
+        : null;
 
   useEffect(() => {
     if (open) prewarmStripeScript();
@@ -136,9 +136,7 @@ export function BrandedCheckoutDrawer({
           >
             <X size={18} />
           </button>
-          <Eyebrow>
-            {summary.flowLabel ?? "Signature"} · Secure checkout
-          </Eyebrow>
+          <Eyebrow>{summary.flowLabel ?? "Signature"} · Secure checkout</Eyebrow>
           <SheetTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2 font-normal">
             {summary.tourTitle}
           </SheetTitle>
@@ -207,9 +205,7 @@ function ExperienceSummaryCard({
             {summary.tourTitle}
           </h3>
           <ul className="mt-2.5 space-y-1 text-[12.5px] text-[color:var(--charcoal-soft)]">
-            {summary.region ? (
-              <Meta icon={<MapPin size={11} />}>{summary.region}</Meta>
-            ) : null}
+            {summary.region ? <Meta icon={<MapPin size={11} />}>{summary.region}</Meta> : null}
             {summary.durationHours ? (
               <Meta icon={<Clock size={11} />}>{summary.durationHours}h</Meta>
             ) : null}

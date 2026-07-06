@@ -82,7 +82,10 @@ export const getPaymentsEnvStatus = createServerFn({ method: "GET" })
           headers: { Authorization: `Bearer ${liveKey}` },
         });
         if (!res.ok) {
-          ping.error = `Stripe API ${res.status}: ${await res.text().catch(() => "")}`.slice(0, 300);
+          ping.error = `Stripe API ${res.status}: ${await res.text().catch(() => "")}`.slice(
+            0,
+            300,
+          );
         } else {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const acc = (await res.json()) as any;
@@ -232,8 +235,7 @@ export const testStripeWebhookSignature = createServerFn({ method: "POST" })
       result.steps.invalidSignatureRejected.body = (e as Error).message.slice(0, 300);
     }
 
-    result.ok =
-      result.steps.validSignatureAccepted.ok && result.steps.invalidSignatureRejected.ok;
+    result.ok = result.steps.validSignatureAccepted.ok && result.steps.invalidSignatureRejected.ok;
     result.reason = result.ok
       ? "Webhook secret verified end-to-end: live signature accepted, forged signature rejected."
       : !result.steps.validSignatureAccepted.ok

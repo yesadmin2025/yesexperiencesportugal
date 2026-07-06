@@ -40,9 +40,7 @@ export function RouteLegend({
 
   const totalMin = legMinutes.reduce((a, b) => a + b, 0);
   const totalKm =
-    legDistancesKm && legDistancesKm.length > 0
-      ? legDistancesKm.reduce((a, b) => a + b, 0)
-      : null;
+    legDistancesKm && legDistancesKm.length > 0 ? legDistancesKm.reduce((a, b) => a + b, 0) : null;
   const drivingCount = (legModes ?? []).filter((m) => m === "driving").length;
   const walkingCount = (legModes ?? []).filter((m) => m === "walking").length;
 
@@ -71,9 +69,9 @@ export function RouteLegend({
 
       <ol className="space-y-1.5 list-none p-0 m-0">
         {legMinutes.map((min, i) => {
-          const mode: RouteLegMode =
-            legModes && legModes[i] ? legModes[i] : "driving";
-          const km = legDistancesKm && typeof legDistancesKm[i] === "number" ? legDistancesKm[i] : null;
+          const mode: RouteLegMode = legModes && legModes[i] ? legModes[i] : "driving";
+          const km =
+            legDistancesKm && typeof legDistancesKm[i] === "number" ? legDistancesKm[i] : null;
           const from = points[i] ?? `Stop ${i}`;
           const to = points[i + 1] ?? `Stop ${i + 1}`;
           return (

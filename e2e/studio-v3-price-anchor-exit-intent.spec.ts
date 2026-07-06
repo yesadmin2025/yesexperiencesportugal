@@ -147,7 +147,7 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
     // in the builder funnel (`isPhaseRelevant` in curation.ts) — they
     // belong to the human confirmation step after Reveal, not the cinematic
     // builder. The product decision is documented at curation.ts:1828-1834.
-    // eslint-disable-next-line no-console
+
     console.log("[anchor-spec] phases seen:", Array.from(seenPhases).join(" → "));
     const requiredPhases = [
       "feeling",
@@ -169,7 +169,6 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
         `phase "${skipped}" is intentionally skipped in builder (see curation.isPhaseRelevant)`,
       ).toBe(false);
     }
-
 
     const reveal = page.locator('[data-testid="studio-v3-reveal"]').first();
     await expect(reveal).toBeVisible({ timeout: 10_000 });
@@ -203,12 +202,10 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
         .count();
       expect(pickerOpen, "guest picker should open after anchor tap").toBeGreaterThan(0);
     } else {
-      // eslint-disable-next-line no-console
       console.log(
         "[anchor-spec] anchor hint hidden — current guests already at cheapest tier (legal product state)",
       );
     }
-
 
     // ─── 3. Exit-intent: arm wait then trigger via visibilitychange ──────
     // Modal arms after 8s on the reveal — wait, then flip visibility.

@@ -79,14 +79,14 @@ export const TOUR_STOP_INTENTS: Record<string, Record<string, StopIntent[]>> = {
     "Praia das Bicas": ["coast", "adventure", "hidden"],
     "Praia do Meco": ["coast", "nature"],
     "Castelo de Sesimbra": ["heritage", "view", "coast"],
-    "Sesimbra": ["coast", "local-life", "gastronomy"],
+    Sesimbra: ["coast", "local-life", "gastronomy"],
   },
   "arrabida-boat": {
     "Mercado do Livramento": ["gastronomy", "local-life", "wine"],
     "Parque Natural da Arrabida": ["nature", "coast", "view", "adventure"],
     "Lapa de Santa Margarida": ["hidden", "spiritual", "nature"],
     "Castelo de Sesimbra": ["heritage", "view", "coast"],
-    "Sesimbra": ["coast", "local-life", "gastronomy"],
+    Sesimbra: ["coast", "local-life", "gastronomy"],
     "Cabo Espichel": ["coast", "nature", "spiritual", "view"],
   },
   "tiles-workshop": {
@@ -96,24 +96,24 @@ export const TOUR_STOP_INTENTS: Record<string, Record<string, StopIntent[]>> = {
     "Jose Maria de Fonseca": ["wine", "heritage"],
     "Bacalhoa Vinhos de Portugal": ["wine", "culture"],
     "Castelo de Sesimbra": ["heritage", "view", "coast"],
-    "Sesimbra": ["coast", "local-life", "gastronomy"],
+    Sesimbra: ["coast", "local-life", "gastronomy"],
     "Santuario Nacional de Cristo Rei": ["view", "spiritual"],
   },
   "azeitao-cheese": {
     "Mercado do Livramento": ["gastronomy", "local-life", "wine"],
     "Quinta Velha": ["craft", "gastronomy", "local-life"],
-    "Azeitao": ["gastronomy", "wine", "local-life", "slow-luxury"],
+    Azeitao: ["gastronomy", "wine", "local-life", "slow-luxury"],
     "Farm Catralvos": ["wine", "local-life"],
     "Castelo de Sesimbra": ["heritage", "view", "coast"],
   },
   "sintra-cascais": {
-    "Sintra": ["heritage", "culture", "nature"],
+    Sintra: ["heritage", "culture", "nature"],
     "Sintra National Palace": ["heritage", "culture"],
     "Park and National Palace of Pena": ["heritage", "culture", "view", "romance"],
     "Azenhas do Mar": ["coast", "view", "romance"],
     "Quinta da Regaleira": ["heritage", "culture", "hidden"],
     "Adega Regional de Colares": ["wine", "heritage", "hidden"],
-    "Cascais": ["coast", "local-life", "romance"],
+    Cascais: ["coast", "local-life", "romance"],
     "Cabo Da Roca": ["coast", "nature", "view", "romance"],
   },
   "troia-comporta": {
@@ -121,34 +121,34 @@ export const TOUR_STOP_INTENTS: Record<string, Record<string, StopIntent[]>> = {
     "Roman Ruins of Troia": ["heritage", "culture", "coast"],
     "Marina de Troia": ["coast", "slow-luxury"],
     "Cais Palafitico do Porto da Carrasqueira": ["hidden", "local-life", "view"],
-    "Comporta": ["local-life", "slow-luxury", "romance"],
+    Comporta: ["local-life", "slow-luxury", "romance"],
     "Herdade Da Comporta": ["wine", "gastronomy"],
     "Comporta Beach": ["coast", "nature", "romance"],
     "Praia do Carvalhal": ["coast", "nature"],
   },
   "evora-alentejo": {
-    "Evora": ["heritage", "culture", "local-life"],
+    Evora: ["heritage", "culture", "local-life"],
     "Templo Romano de Evora (Templo de Diana)": ["heritage", "culture"],
     "Chapel of Bones": ["heritage", "culture", "spiritual", "hidden"],
     "Joao Portugal Ramos Wines": ["wine", "heritage"],
     "Enoturismo Cartuxa": ["wine", "heritage", "spiritual"],
     "Pera-grave - Qta S. Jose De Peramanca": ["wine", "heritage"],
-    "Ervideira": ["wine", "heritage"],
+    Ervideira: ["wine", "heritage"],
     "Herdade do Esporao": ["wine", "gastronomy", "slow-luxury"],
     "Corticarte - Arte em Cortica": ["craft", "local-life", "nature"],
   },
   "tomar-coimbra": {
-    "Tomar": ["heritage", "culture", "local-life"],
+    Tomar: ["heritage", "culture", "local-life"],
     "Convento de Cristo": ["heritage", "culture", "spiritual"],
-    "Coimbra": ["heritage", "culture", "local-life"],
+    Coimbra: ["heritage", "culture", "local-life"],
     "Universita Di Coimbra": ["heritage", "culture"],
     "Biblioteca Joanina": ["heritage", "culture", "hidden"],
   },
   "fatima-nazare-obidos": {
-    "Fatima": ["spiritual", "heritage", "culture"],
-    "Nazare": ["coast", "local-life", "gastronomy", "view"],
+    Fatima: ["spiritual", "heritage", "culture"],
+    Nazare: ["coast", "local-life", "gastronomy", "view"],
     "Praia da Nazare": ["coast", "nature"],
-    "Obidos": ["heritage", "culture", "local-life", "romance"],
+    Obidos: ["heritage", "culture", "local-life", "romance"],
     "Castelo de Obidos": ["heritage", "culture", "view"],
   },
   "roman-heritage-alentejo": {
@@ -163,8 +163,8 @@ export const TOUR_STOP_INTENTS: Record<string, Record<string, StopIntent[]>> = {
     "Porto Covo": ["coast", "local-life", "hidden"],
     "Vila Nova de Milfontes": ["coast", "local-life", "gastronomy"],
     "Parque Natural do Sudoeste Alentejano e Costa Vicentina": ["nature", "coast", "hidden"],
-    "Odeceixe": ["coast", "nature", "hidden", "romance"],
-    "Aljezur": ["heritage", "culture", "view"],
+    Odeceixe: ["coast", "nature", "hidden", "romance"],
+    Aljezur: ["heritage", "culture", "view"],
   },
 };
 
@@ -354,9 +354,7 @@ let __schemaAssertion: { ok: boolean; message: string } | null = null;
  *  (`scoreTourFit`, `pickPrimaryTour`) invoke this before consuming
  *  TOUR_STOP_INTENTS — a bad schema blocks matching instead of silently
  *  degrading it. */
-export function assertStopIntentSchema(
-  tours: ReadonlyArray<SignatureTour> = signatureTours,
-): void {
+export function assertStopIntentSchema(tours: ReadonlyArray<SignatureTour> = signatureTours): void {
   if (__schemaAssertion?.ok) return;
   if (__schemaAssertion && !__schemaAssertion.ok) {
     throw new Error(__schemaAssertion.message);
@@ -371,7 +369,7 @@ export function assertStopIntentSchema(
     "until every Signature stop has a valid intent set.\n" +
     report.errors.join("\n");
   __schemaAssertion = { ok: false, message };
-  // eslint-disable-next-line no-console
+
   console.error(message);
   throw new Error(message);
 }
@@ -387,10 +385,8 @@ export function __resetStopIntentSchemaAssertion(): void {
 {
   const eager = validateStopIntentSchema();
   if (!eager.ok) {
-    // eslint-disable-next-line no-console
     console.error(
-      "[stopIntents] Schema validation failed on module load:\n" +
-        eager.errors.join("\n"),
+      "[stopIntents] Schema validation failed on module load:\n" + eager.errors.join("\n"),
     );
   }
 }

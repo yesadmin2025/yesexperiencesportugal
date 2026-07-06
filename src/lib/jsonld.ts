@@ -50,11 +50,12 @@ export function organizationLd() {
     ],
     description:
       "Licensed Portuguese tour operator (RNAAT) and pioneer of real-time private tour design in Portugal — private, personalized, local journeys built around you, with hidden gems across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Costa Vicentina. The first Portuguese operator to let travellers design AND instantly reserve a private day in real time through the YES Experience Studio, alongside Signature days and a personal Travel Designer service for full Portugal journeys.",
-    slogan: "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
+    slogan:
+      "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
     keywords:
       "private tours Portugal, personalized Portugal tours, local Portugal tours, hidden gems Portugal, Portugal around you, real-time tour builder, interactive private tour design, Arrábida wine tour, Costa Vicentina private tour, Vinho de Talha Alentejo, Tróia Comporta private day, Travel Designer Portugal",
     disambiguatingDescription:
-      "The only active and canonical entity for the YES Experiences Portugal brand is operated from https://yesexperiencesportugal.com. Any third-party listing using the spelling \"Yes!experiences Portugal\" or marked as permanently closed is unrelated to this business and is not endorsed, owned, or operated by us.",
+      'The only active and canonical entity for the YES Experiences Portugal brand is operated from https://yesexperiencesportugal.com. Any third-party listing using the spelling "Yes!experiences Portugal" or marked as permanently closed is unrelated to this business and is not endorsed, owned, or operated by us.',
     knowsAbout: [
       "Private personalized tours in Portugal",
       "Local Portugal tours with hidden gems",
@@ -181,15 +182,7 @@ export function organizationLd() {
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         opens: "08:00",
         closes: "20:00",
       },
@@ -272,7 +265,6 @@ export function personFounderLd() {
   } as const;
 }
 
-
 export interface Crumb {
   name: string;
   path: string; // absolute path beginning with "/"
@@ -339,7 +331,7 @@ export function tourProductLd(args: {
   stops?: StopForLd[];
 }) {
   const url = `${SITE_URL}/tours/${args.id}`;
-  
+
   const image = args.img.startsWith("http") ? args.img : `${SITE_URL}${args.img}`;
   const currency = args.currency ?? "EUR";
   const iso = durationToIso8601(args.durationHours ?? null);
@@ -461,7 +453,7 @@ export function tourTailorProductLd(args: {
             url,
             priceCurrency: currency,
             price: args.priceFrom,
-            
+
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
           },
@@ -566,7 +558,8 @@ export function studioServiceLd(args: { path: string; name: string; description:
     url,
     audience: {
       "@type": "Audience",
-      audienceType: "Luxury and experiential travellers seeking private, personalized, local Portugal days with hidden gems",
+      audienceType:
+        "Luxury and experiential travellers seeking private, personalized, local Portugal days with hidden gems",
     },
     potentialAction: {
       "@type": "ReserveAction",
@@ -607,7 +600,8 @@ export function travelDesignerServiceLd(args: { path: string }) {
     url,
     audience: {
       "@type": "Audience",
-      audienceType: "Couples, honeymooners, families and small private groups seeking a personalized multi-day Portugal journey",
+      audienceType:
+        "Couples, honeymooners, families and small private groups seeking a personalized multi-day Portugal journey",
     },
     potentialAction: {
       "@type": "PlanAction",
@@ -698,9 +692,7 @@ export function normalizeLocalStoryReviews(
     const country = r.reviewer_country?.trim() ? r.reviewer_country.trim() : null;
 
     const publishedAt =
-      r.published_at && !Number.isNaN(new Date(r.published_at).getTime())
-        ? r.published_at
-        : null;
+      r.published_at && !Number.isNaN(new Date(r.published_at).getTime()) ? r.published_at : null;
 
     out.push({
       id: r.id,
@@ -765,8 +757,6 @@ export function localStoryReviewsLd(args: {
   return nodes;
 }
 
-
-
 /**
  * hreflang link entries for English-language landing pages that target
  * the US and Canada markets. Page content is identical for both
@@ -811,4 +801,3 @@ export function organizationUsCaAudienceLd() {
     },
   } as const;
 }
-

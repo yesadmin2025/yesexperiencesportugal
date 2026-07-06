@@ -8,185 +8,188 @@
  * enqueue into pgmq `transactional_emails`. The shared queue dispatcher
  * (process-email-queue) handles the actual send, retries, and rate limits.
  */
-import * as React from 'react'
-import { render } from 'react-email'
-import { supabaseAdmin } from '@/integrations/supabase/client.server'
-import { TEMPLATES } from '@/lib/email-templates/registry'
+import * as React from "react";
+import { render } from "react-email";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { TEMPLATES } from "@/lib/email-templates/registry";
 
-const SITE_NAME = 'yesexperiencesportugal'
-const SENDER_DOMAIN = 'notify.yesexperiencesportugal.com'
-const FROM_DOMAIN = 'notify.yesexperiencesportugal.com'
+const SITE_NAME = "yesexperiencesportugal";
+const SENDER_DOMAIN = "notify.yesexperiencesportugal.com";
+const FROM_DOMAIN = "notify.yesexperiencesportugal.com";
 
 function redact(email: string): string {
-  const [l, d] = email.split('@')
-  if (!l || !d) return '***'
-  return `${l[0]}***@${d}`
+  const [l, d] = email.split("@");
+  if (!l || !d) return "***";
+  return `${l[0]}***@${d}`;
 }
 
 function generateToken(): string {
-  const bytes = new Uint8Array(32)
-  crypto.getRandomValues(bytes)
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 export interface SendInternalArgs {
-  templateName: string
-  recipientEmail: string
-  templateData?: Record<string, unknown>
-  idempotencyKey?: string
+  templateName: string;
+  recipientEmail: string;
+  templateData?: Record<string, unknown>;
+  idempotencyKey?: string;
 }
 
 export async function sendTransactionalInternal(
   args: SendInternalArgs,
 ): Promise<{ ok: boolean; reason?: string }> {
-  const { templateName, recipientEmail, templateData = {}, idempotencyKey } = args
-  const supabase = supabaseAdmin
-  const messageId = crypto.randomUUID()
-  const idemKey = idempotencyKey || messageId
+  const { templateName, recipientEmail, templateData = {}, idempotencyKey } = args;
+  const supabase = supabaseAdmin;
+  const messageId = crypto.randomUUID();
+  const idemKey = idempotencyKey || messageId;
 
-  const template = TEMPLATES[templateName]
+  const template = TEMPLATES[templateName];
   if (!template) {
-    console.error('[email/internal] template not found', { templateName })
-    return { ok: false, reason: 'template_not_found' }
+    console.error("[email/internal] template not found", { templateName });
+    return { ok: false, reason: "template_not_found" };
   }
 
-  const effectiveRecipient = template.to || recipientEmail
-  if (!effectiveRecipient) return { ok: false, reason: 'no_recipient' }
-  const normalizedEmail = effectiveRecipient.toLowerCase()
+  const effectiveRecipient = template.to || recipientEmail;
+  if (!effectiveRecipient) return { ok: false, reason: "no_recipient" };
+  const normalizedEmail = effectiveRecipient.toLowerCase();
 
   // Suppression check (fail-closed).
   const { data: suppressed, error: supErr } = await supabase
-    .from('suppressed_emails')
-    .select('id')
-    .eq('email', normalizedEmail)
-    .maybeSingle()
+    .from("suppressed_emails")
+    .select("id")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
   if (supErr) {
-    console.error('[email/internal] suppression check failed', { error: supErr })
-    return { ok: false, reason: 'suppression_check_failed' }
+    console.error("[email/internal] suppression check failed", { error: supErr });
+    return { ok: false, reason: "suppression_check_failed" };
   }
   if (suppressed) {
-    await supabase.from('email_send_log').insert({
+    await supabase.from("email_send_log").insert({
       message_id: messageId,
       template_name: templateName,
       recipient_email: effectiveRecipient,
-      status: 'suppressed',
-    })
-    return { ok: false, reason: 'email_suppressed' }
+      status: "suppressed",
+    });
+    return { ok: false, reason: "email_suppressed" };
   }
 
   // Unsubscribe token (one per address).
-  let unsubscribeToken: string | undefined
+  let unsubscribeToken: string | undefined;
   const { data: existing } = await supabase
-    .from('email_unsubscribe_tokens')
-    .select('token, used_at')
-    .eq('email', normalizedEmail)
-    .maybeSingle()
+    .from("email_unsubscribe_tokens")
+    .select("token, used_at")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
   if (existing && !existing.used_at) {
-    unsubscribeToken = existing.token
+    unsubscribeToken = existing.token;
   } else if (!existing) {
-    const t = generateToken()
+    const t = generateToken();
     await supabase
-      .from('email_unsubscribe_tokens')
-      .upsert({ token: t, email: normalizedEmail }, { onConflict: 'email', ignoreDuplicates: true })
+      .from("email_unsubscribe_tokens")
+      .upsert(
+        { token: t, email: normalizedEmail },
+        { onConflict: "email", ignoreDuplicates: true },
+      );
     const { data: stored } = await supabase
-      .from('email_unsubscribe_tokens')
-      .select('token')
-      .eq('email', normalizedEmail)
-      .maybeSingle()
-    unsubscribeToken = stored?.token
+      .from("email_unsubscribe_tokens")
+      .select("token")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+    unsubscribeToken = stored?.token;
   } else {
-    return { ok: false, reason: 'email_suppressed' }
+    return { ok: false, reason: "email_suppressed" };
   }
 
   // Render template.
-  const element = React.createElement(template.component, templateData as Record<string, unknown>)
-  const html = await render(element)
-  const plainText = await render(element, { plainText: true })
+  const element = React.createElement(template.component, templateData as Record<string, unknown>);
+  const html = await render(element);
+  const plainText = await render(element, { plainText: true });
   const subject =
-    typeof template.subject === 'function'
+    typeof template.subject === "function"
       ? template.subject(templateData as Record<string, unknown>)
-      : template.subject
+      : template.subject;
 
   // ─── TEMPORARY RESEND FALLBACK ───────────────────────────────────────────
   // While notify.yesexperiencesportugal.com DNS is not verified, send directly
   // through the Resend connector gateway using their onboarding sender domain.
   // Disable by unsetting EMAIL_USE_RESEND_FALLBACK once notify. is verified.
   const useResendFallback =
-    process.env.EMAIL_USE_RESEND_FALLBACK === '1' &&
+    process.env.EMAIL_USE_RESEND_FALLBACK === "1" &&
     !!process.env.RESEND_API_KEY &&
-    !!process.env.LOVABLE_API_KEY
+    !!process.env.LOVABLE_API_KEY;
   if (useResendFallback) {
-    await supabase.from('email_send_log').insert({
+    await supabase.from("email_send_log").insert({
       message_id: messageId,
       template_name: templateName,
       recipient_email: effectiveRecipient,
-      status: 'pending',
-    })
+      status: "pending",
+    });
     try {
-      const resp = await fetch('https://connector-gateway.lovable.dev/resend/emails', {
-        method: 'POST',
+      const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
-          'X-Connection-Api-Key': process.env.RESEND_API_KEY!,
+          "X-Connection-Api-Key": process.env.RESEND_API_KEY!,
         },
         body: JSON.stringify({
-          from: 'YES Experiences <onboarding@resend.dev>',
+          from: "YES Experiences <onboarding@resend.dev>",
           to: [effectiveRecipient],
-          reply_to: 'yesexperiences@gmail.com',
+          reply_to: "yesexperiences@gmail.com",
           subject,
           html,
           text: plainText,
-          headers: { 'X-Entity-Ref-ID': idemKey },
+          headers: { "X-Entity-Ref-ID": idemKey },
         }),
-      })
+      });
       if (!resp.ok) {
-        const errBody = await resp.text()
-        console.error('[email/internal] resend fallback failed', {
+        const errBody = await resp.text();
+        console.error("[email/internal] resend fallback failed", {
           status: resp.status,
           recipient: redact(effectiveRecipient),
           body: errBody.slice(0, 500),
-        })
-        await supabase.from('email_send_log').insert({
+        });
+        await supabase.from("email_send_log").insert({
           message_id: messageId,
           template_name: templateName,
           recipient_email: effectiveRecipient,
-          status: 'failed',
+          status: "failed",
           error_message: `resend ${resp.status}: ${errBody.slice(0, 300)}`,
-        })
-        return { ok: false, reason: 'resend_failed' }
+        });
+        return { ok: false, reason: "resend_failed" };
       }
-      await supabase.from('email_send_log').insert({
+      await supabase.from("email_send_log").insert({
         message_id: messageId,
         template_name: templateName,
         recipient_email: effectiveRecipient,
-        status: 'sent',
-      })
-      return { ok: true }
+        status: "sent",
+      });
+      return { ok: true };
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e)
-      console.error('[email/internal] resend fallback exception', { error: msg })
-      await supabase.from('email_send_log').insert({
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("[email/internal] resend fallback exception", { error: msg });
+      await supabase.from("email_send_log").insert({
         message_id: messageId,
         template_name: templateName,
         recipient_email: effectiveRecipient,
-        status: 'failed',
+        status: "failed",
         error_message: `resend exception: ${msg.slice(0, 300)}`,
-      })
-      return { ok: false, reason: 'resend_exception' }
+      });
+      return { ok: false, reason: "resend_exception" };
     }
   }
   // ─── /RESEND FALLBACK ────────────────────────────────────────────────────
 
-  await supabase.from('email_send_log').insert({
+  await supabase.from("email_send_log").insert({
     message_id: messageId,
     template_name: templateName,
     recipient_email: effectiveRecipient,
-    status: 'pending',
-  })
+    status: "pending",
+  });
 
-  const { error: enqErr } = await supabase.rpc('enqueue_email', {
-    queue_name: 'transactional_emails',
+  const { error: enqErr } = await supabase.rpc("enqueue_email", {
+    queue_name: "transactional_emails",
     payload: {
       message_id: messageId,
       to: effectiveRecipient,
@@ -195,24 +198,27 @@ export async function sendTransactionalInternal(
       subject,
       html,
       text: plainText,
-      purpose: 'transactional',
+      purpose: "transactional",
       label: templateName,
       idempotency_key: idemKey,
       unsubscribe_token: unsubscribeToken,
       queued_at: new Date().toISOString(),
     },
-  })
+  });
   if (enqErr) {
-    console.error('[email/internal] enqueue failed', { error: enqErr, recipient: redact(effectiveRecipient) })
-    await supabase.from('email_send_log').insert({
+    console.error("[email/internal] enqueue failed", {
+      error: enqErr,
+      recipient: redact(effectiveRecipient),
+    });
+    await supabase.from("email_send_log").insert({
       message_id: messageId,
       template_name: templateName,
       recipient_email: effectiveRecipient,
-      status: 'failed',
-      error_message: 'Failed to enqueue email',
-    })
-    return { ok: false, reason: 'enqueue_failed' }
+      status: "failed",
+      error_message: "Failed to enqueue email",
+    });
+    return { ok: false, reason: "enqueue_failed" };
   }
 
-  return { ok: true }
+  return { ok: true };
 }

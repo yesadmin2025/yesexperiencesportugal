@@ -93,10 +93,7 @@ function ReviewSubmissionPage() {
       <form onSubmit={onSubmit} className="mt-8 space-y-5">
         <div>
           <label className="block text-sm font-medium">Your rating</label>
-          <div
-            className="mt-2 inline-flex items-center gap-1"
-            onMouseLeave={() => setHover(0)}
-          >
+          <div className="mt-2 inline-flex items-center gap-1" onMouseLeave={() => setHover(0)}>
             {[1, 2, 3, 4, 5].map((n) => (
               <button
                 key={n}
@@ -174,7 +171,9 @@ function ReviewSubmissionPage() {
         </div>
 
         {error && (
-          <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</p>
+          <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">
+            {error}
+          </p>
         )}
 
         <button

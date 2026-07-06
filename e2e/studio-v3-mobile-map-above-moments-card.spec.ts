@@ -13,10 +13,7 @@ const CARD = '[data-testid="studio-v3-moments-card"]';
 
 test.describe("Studio V3 mobile — moments card sits below the composing map", () => {
   test.beforeEach(async ({ page }, testInfo) => {
-    test.skip(
-      testInfo.project.name !== "mobile-chromium",
-      "mobile-only invariant",
-    );
+    test.skip(testInfo.project.name !== "mobile-chromium", "mobile-only invariant");
     await page.goto("/studio-v3");
     // Walk far enough to reach storyboard/map phase; walkToReveal will
     // stop at storyboard if it can't hold-journey to reveal.

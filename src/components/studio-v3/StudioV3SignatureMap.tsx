@@ -19,11 +19,7 @@
 // `resolveStudioV3Route → routePoints` (the curated real stops).
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  haversineDriveMinutes,
-  inferKind,
-  stopDurationMinutes,
-} from "@/lib/studio/timing";
+import { haversineDriveMinutes, inferKind, stopDurationMinutes } from "@/lib/studio/timing";
 import type { StopKind } from "@/data/regionStops";
 import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette";
 import { MountBadge } from "./useStudioDebug";
@@ -240,7 +236,7 @@ export function StudioV3SignatureMap({
   }, [geo, originCoord, shown.length]);
 
   // Resolve waypoints + origin in viewBox coords.
-  const origin = geo ? geo.origin : originOnly ?? SCHEMATIC_ORIGIN;
+  const origin = geo ? geo.origin : (originOnly ?? SCHEMATIC_ORIGIN);
   const waypoints = useMemo(() => {
     if (geo) return geo.points;
     return schematicWaypoints(shown);
@@ -302,8 +298,6 @@ export function StudioV3SignatureMap({
       window.clearTimeout(t);
     };
   }, [visible, waypoints.length]);
-
-  if (cleaned.length === 0) return null;
 
   const a11y =
     ariaLabel ??
@@ -367,8 +361,7 @@ export function StudioV3SignatureMap({
       const dLng = toRad(to.lng - prev.lng);
       const lat1 = toRad(prev.lat);
       const lat2 = toRad(to.lat);
-      const h =
-        Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
       const segKm = 2 * R * Math.asin(Math.sqrt(h)) * 1.12;
       km += segKm;
       const realMin = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
@@ -382,6 +375,7 @@ export function StudioV3SignatureMap({
     return { minLabel, kmLabel: `${kmRounded} km`, min, km: kmRounded };
   }, [geo, originCoord, revealedCount, detailed, legMinutes]);
 
+  if (cleaned.length === 0) return null;
 
   const handlePinKey = (e: React.KeyboardEvent, i: number) => {
     const last = waypoints.length - 1;
@@ -409,100 +403,99 @@ export function StudioV3SignatureMap({
         name="StudioV3SignatureMap"
         detail={`mode=${geo ? "geographic" : "schematic"} · stops=${stops.length}${silhouetteRegion ? ` · silhouette=${silhouetteRegion}` : ""}`}
       />
-    <div
-      role="img"
-      aria-label={a11y}
-      className={`relative overflow-hidden ${className ?? ""}`}
-      data-map-mode={geo ? "geographic" : "schematic"}
-      style={{
-        aspectRatio,
-        background: "var(--charcoal-deep, #14181a)",
-        borderRadius: "6px",
-        border: "1px solid color-mix(in oklab, var(--gold) 28%, transparent)",
-        boxShadow:
-          "0 28px 70px -34px rgba(0,0,0,0.75), 0 0 60px -22px color-mix(in oklab, var(--gold) 18%, transparent) inset",
-      }}
-    >
-      {/* Portugal anchor — faint silhouette behind the wash so travellers
+      <div
+        role="img"
+        aria-label={a11y}
+        className={`relative overflow-hidden ${className ?? ""}`}
+        data-map-mode={geo ? "geographic" : "schematic"}
+        style={{
+          aspectRatio,
+          background: "var(--charcoal-deep, #14181a)",
+          borderRadius: "6px",
+          border: "1px solid color-mix(in oklab, var(--gold) 28%, transparent)",
+          boxShadow:
+            "0 28px 70px -34px rgba(0,0,0,0.75), 0 0 60px -22px color-mix(in oklab, var(--gold) 18%, transparent) inset",
+        }}
+      >
+        {/* Portugal anchor — faint silhouette behind the wash so travellers
           always know WHERE in the country the journey lives. Pointer-none,
           decorative only. */}
-      {silhouetteRegion ? (
-        <div className="pointer-events-none absolute inset-0 opacity-[0.55] mix-blend-screen">
-          <PortugalSilhouette fill={1} region={silhouetteRegion} />
-        </div>
-      ) : null}
+        {silhouetteRegion ? (
+          <div className="pointer-events-none absolute inset-0 opacity-[0.55] mix-blend-screen">
+            <PortugalSilhouette fill={1} region={silhouetteRegion} />
+          </div>
+        ) : null}
 
-      {/* Radial wash — gold top-left, teal bottom-right. */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(120% 90% at 28% 18%, rgba(201,169,106,0.10) 0%, transparent 55%), radial-gradient(110% 80% at 72% 82%, rgba(41,91,97,0.50) 0%, transparent 60%)",
-        }}
-      />
+        {/* Radial wash — gold top-left, teal bottom-right. */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(120% 90% at 28% 18%, rgba(201,169,106,0.10) 0%, transparent 55%), radial-gradient(110% 80% at 72% 82%, rgba(41,91,97,0.50) 0%, transparent 60%)",
+          }}
+        />
 
-
-      {/* Hairline gold grid. */}
-      <svg
-        aria-hidden
-        className="absolute inset-0 h-full w-full opacity-[0.16]"
-        preserveAspectRatio="none"
-        viewBox={`0 0 ${VB_W} ${VB_H}`}
-      >
-        <defs>
-          <pattern id="sv3sm-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--gold)" strokeWidth="0.4" />
-          </pattern>
-        </defs>
-        <rect width={VB_W} height={VB_H} fill="url(#sv3sm-grid)" />
-      </svg>
-
-      {/* Coastal silhouette — only meaningful in schematic mode. */}
-      {!geo ? (
+        {/* Hairline gold grid. */}
         <svg
           aria-hidden
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full opacity-[0.16]"
+          preserveAspectRatio="none"
           viewBox={`0 0 ${VB_W} ${VB_H}`}
-          preserveAspectRatio="xMidYMid slice"
         >
-          <path
-            d="M 0 70 C 30 78, 60 96, 90 120 S 130 168, 160 190 S 188 220, 200 232 L 200 260 L 0 260 Z"
-            fill="rgba(41,91,97,0.22)"
-            stroke="rgba(201,169,106,0.18)"
-            strokeWidth="0.6"
-          />
-          <path
-            d="M 0 60 C 28 70, 56 88, 86 112 S 126 158, 156 178 S 188 208, 200 220"
-            fill="none"
-            stroke="rgba(201,169,106,0.20)"
-            strokeWidth="0.5"
-            strokeDasharray="2 3"
-          />
+          <defs>
+            <pattern id="sv3sm-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--gold)" strokeWidth="0.4" />
+            </pattern>
+          </defs>
+          <rect width={VB_W} height={VB_H} fill="url(#sv3sm-grid)" />
         </svg>
-      ) : null}
 
-      {/* Corner ticks (editorial signature). */}
-      <span
-        aria-hidden
-        className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
-        style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
-      />
-      {[
-        "top-2 left-2 border-l border-t",
-        "top-2 right-2 border-r border-t",
-        "bottom-2 left-2 border-l border-b",
-        "bottom-2 right-2 border-r border-b",
-      ].map((cls) => (
+        {/* Coastal silhouette — only meaningful in schematic mode. */}
+        {!geo ? (
+          <svg
+            aria-hidden
+            className="absolute inset-0 h-full w-full"
+            viewBox={`0 0 ${VB_W} ${VB_H}`}
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <path
+              d="M 0 70 C 30 78, 60 96, 90 120 S 130 168, 160 190 S 188 220, 200 232 L 200 260 L 0 260 Z"
+              fill="rgba(41,91,97,0.22)"
+              stroke="rgba(201,169,106,0.18)"
+              strokeWidth="0.6"
+            />
+            <path
+              d="M 0 60 C 28 70, 56 88, 86 112 S 126 158, 156 178 S 188 208, 200 220"
+              fill="none"
+              stroke="rgba(201,169,106,0.20)"
+              strokeWidth="0.5"
+              strokeDasharray="2 3"
+            />
+          </svg>
+        ) : null}
+
+        {/* Corner ticks (editorial signature). */}
         <span
-          key={cls}
           aria-hidden
-          className={`absolute ${cls} h-2.5 w-2.5`}
-          style={{ borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)" }}
+          className="absolute left-1/2 top-3 h-px w-8 -translate-x-1/2"
+          style={{ background: "color-mix(in oklab, var(--gold) 80%, transparent)" }}
         />
-      ))}
+        {[
+          "top-2 left-2 border-l border-t",
+          "top-2 right-2 border-r border-t",
+          "bottom-2 left-2 border-l border-b",
+          "bottom-2 right-2 border-r border-b",
+        ].map((cls) => (
+          <span
+            key={cls}
+            aria-hidden
+            className={`absolute ${cls} h-2.5 w-2.5`}
+            style={{ borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)" }}
+          />
+        ))}
 
-      {/* Journey legend — total drive time + km. Honest, quiet, always
+        {/* Journey legend — total drive time + km. Honest, quiet, always
           visible once a route exists so travellers know the distance
           before the reveal. Hidden during Pickup-only beat.
 
@@ -510,493 +503,490 @@ export function StudioV3SignatureMap({
           truth for the visible chip text — both the attribute and the
           rendered children are derived from `legendText`, so E2E can
           assert `attr === visibleText` at any viewport / segment count. */}
-      {journeyTotals ? (() => {
-        const legendText = `${journeyTotals.minLabel} · ${journeyTotals.kmLabel}`;
-        const accessibleLabel = `Approximate total journey: ${journeyTotals.minLabel.replace("~", "").trim()} driving, ${journeyTotals.kmLabel}.`;
-        return (
-          <div
-            className="absolute left-1/2 top-2.5 z-10 -translate-x-1/2 pointer-events-none"
-            data-testid="studio-v3-map-legend"
-            data-journey-min={journeyTotals.min}
-            data-journey-km={journeyTotals.km}
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            aria-label={accessibleLabel}
-            style={{ animation: "studioV3RiseIn 520ms ease-out 180ms both" }}
-          >
-            <span
-              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
-              data-leg-legend="journey"
-              data-legend-value={legendText}
-              data-leg-legend-value={legendText}
-              role="group"
-              aria-label={accessibleLabel}
+        {journeyTotals
+          ? (() => {
+              const legendText = `${journeyTotals.minLabel} · ${journeyTotals.kmLabel}`;
+              const accessibleLabel = `Approximate total journey: ${journeyTotals.minLabel.replace("~", "").trim()} driving, ${journeyTotals.kmLabel}.`;
+              return (
+                <div
+                  className="absolute left-1/2 top-2.5 z-10 -translate-x-1/2 pointer-events-none"
+                  data-testid="studio-v3-map-legend"
+                  data-journey-min={journeyTotals.min}
+                  data-journey-km={journeyTotals.km}
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  aria-label={accessibleLabel}
+                  style={{ animation: "studioV3RiseIn 520ms ease-out 180ms both" }}
+                >
+                  <span
+                    className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+                    data-leg-legend="journey"
+                    data-legend-value={legendText}
+                    data-leg-legend-value={legendText}
+                    role="group"
+                    aria-label={accessibleLabel}
+                    style={{
+                      background: "color-mix(in oklab, #050d0f 78%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
+                      color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                      boxShadow: "0 6px 20px -10px rgba(0,0,0,0.55)",
+                    }}
+                  >
+                    <span aria-hidden="true" style={{ color: "var(--gold)" }}>
+                      {journeyTotals.minLabel}
+                    </span>
+                    <span aria-hidden="true" style={{ opacity: 0.5 }}>
+                      ·
+                    </span>
+                    <span aria-hidden="true">{journeyTotals.kmLabel}</span>
+                  </span>
+                  <span className="sr-only">{accessibleLabel}</span>
+                </div>
+              );
+            })()
+          : null}
+
+        {/* Route + pins. */}
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden
+        >
+          <defs>
+            <linearGradient id="sv3sm-route" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--teal-2, var(--teal))" stopOpacity="0.95" />
+              <stop offset="60%" stopColor="var(--gold)" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="var(--gold)" stopOpacity="0.7" />
+            </linearGradient>
+            <filter id="sv3sm-soft" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="0.7" />
+            </filter>
+          </defs>
+
+          {/* Origin halo + dot. */}
+          <g>
+            <circle
+              cx={origin.x}
+              cy={origin.y}
+              r="7"
+              fill="none"
+              stroke="var(--gold)"
+              strokeOpacity="0.5"
+              strokeWidth="0.55"
               style={{
-                background: "color-mix(in oklab, #050d0f 78%, transparent)",
-                border: "1px solid color-mix(in oklab, var(--gold) 38%, transparent)",
-                color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
-                boxShadow: "0 6px 20px -10px rgba(0,0,0,0.55)",
-              }}
-            >
-              <span aria-hidden="true" style={{ color: "var(--gold)" }}>{journeyTotals.minLabel}</span>
-              <span aria-hidden="true" style={{ opacity: 0.5 }}>·</span>
-              <span aria-hidden="true">{journeyTotals.kmLabel}</span>
-            </span>
-            <span className="sr-only">{accessibleLabel}</span>
-          </div>
-        );
-      })() : null}
-
-
-
-
-      {/* Route + pins. */}
-      <svg
-        className="absolute inset-0 h-full w-full"
-        viewBox={`0 0 ${VB_W} ${VB_H}`}
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden
-      >
-        <defs>
-          <linearGradient id="sv3sm-route" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--teal-2, var(--teal))" stopOpacity="0.95" />
-            <stop offset="60%" stopColor="var(--gold)" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="var(--gold)" stopOpacity="0.7" />
-          </linearGradient>
-          <filter id="sv3sm-soft" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="0.7" />
-          </filter>
-        </defs>
-
-        {/* Origin halo + dot. */}
-        <g>
-          <circle
-            cx={origin.x}
-            cy={origin.y}
-            r="7"
-            fill="none"
-            stroke="var(--gold)"
-            strokeOpacity="0.5"
-            strokeWidth="0.55"
-            style={{
-              animation: "sv3smPulse 2200ms ease-out 200ms infinite",
-              transformOrigin: `${origin.x}px ${origin.y}px`,
-              transformBox: "fill-box",
-            }}
-          />
-          <circle cx={origin.x} cy={origin.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
-          <circle cx={origin.x} cy={origin.y} r="2.6" fill="var(--teal-2, var(--teal))" />
-          {originLabel && originOnly ? (
-            <text
-              x={origin.x}
-              y={origin.y - 11}
-              textAnchor="middle"
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 700,
-                fontSize: "7px",
-                letterSpacing: "0.18em",
-                fill: "var(--gold)",
-                textTransform: "uppercase",
-              }}
-            >
-              {cleanLabel(originLabel)}
-            </text>
-          ) : null}
-        </g>
-
-
-        {/* Per-segment progressive draw — each leg animates ONLY when it
-            becomes the newest revealed segment. Earlier legs stay solid. */}
-        {segments.map((seg, i) => {
-          const drawn = i < revealedCount;
-          return (
-            <g key={`seg-${i}`}>
-              <path
-                d={seg.d}
-                fill="none"
-                stroke="url(#sv3sm-route)"
-                strokeOpacity="0.45"
-                strokeWidth="3.6"
-                strokeLinecap="round"
-                filter="url(#sv3sm-soft)"
-                strokeDasharray={seg.len}
-                strokeDashoffset={drawn ? 0 : seg.len}
-                style={{
-                  transition:
-                    "stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)",
-                }}
-              />
-              <path
-                d={seg.d}
-                fill="none"
-                stroke="url(#sv3sm-route)"
-                strokeOpacity="1"
-                strokeWidth="1.9"
-                strokeLinecap="round"
-                strokeDasharray={seg.len}
-                strokeDashoffset={drawn ? 0 : seg.len}
-                style={{
-                  transition:
-                    "stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)",
-                }}
-              />
-            </g>
-          );
-        })}
-
-        {waypoints.map((p, i) => {
-          const isLast = i === waypoints.length - 1;
-          const arrived = i < revealedCount;
-          return (
-            <g
-              key={i}
-              style={{
-                opacity: arrived ? 1 : 0,
-                transform: arrived ? "scale(1)" : "scale(0.35)",
-                transition: `opacity 420ms ease, transform 620ms cubic-bezier(0.22, 1.4, 0.36, 1)`,
+                animation: "sv3smPulse 2200ms ease-out 200ms infinite",
+                transformOrigin: `${origin.x}px ${origin.y}px`,
                 transformBox: "fill-box",
-                transformOrigin: `${p.x}px ${p.y}px`,
               }}
-            >
-              {isLast && arrived ? (
-                <circle
-                  cx={p.x}
-                  cy={p.y}
-                  r="6"
-                  fill="none"
-                  stroke="var(--gold)"
-                  strokeOpacity="0.9"
-                  strokeWidth="0.9"
-                  style={{
-                    animation: "sv3smArrive 1400ms ease-out 120ms both",
-                    transformOrigin: `${p.x}px ${p.y}px`,
-                    transformBox: "fill-box",
-                  }}
-                />
-              ) : null}
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r="8"
-                fill="none"
-                stroke="var(--gold)"
-                strokeWidth="1.1"
-                strokeOpacity="0.55"
-              />
-              {selectedPin === i && arrived ? (
-                <circle
-                  cx={p.x}
-                  cy={p.y}
-                  r="10.5"
-                  fill="none"
-                  stroke="var(--gold)"
-                  strokeWidth="1.3"
-                  strokeOpacity="1"
-                />
-              ) : null}
-              {isLast ? (
-                <circle
-                  cx={p.x}
-                  cy={p.y}
-                  r="6"
-                  fill="var(--gold)"
-                  opacity="0.18"
-                  style={{
-                    animation: "sv3smPulse 2200ms ease-out 700ms infinite",
-                    transformOrigin: `${p.x}px ${p.y}px`,
-                    transformBox: "fill-box",
-                  }}
-                />
-              ) : null}
-              <circle cx={p.x} cy={p.y} r="5.2" fill="var(--charcoal-deep, #14181a)" />
-              <circle cx={p.x} cy={p.y} r="4.4" fill="var(--gold)" />
+            />
+            <circle cx={origin.x} cy={origin.y} r="3.6" fill="var(--charcoal-deep, #14181a)" />
+            <circle cx={origin.x} cy={origin.y} r="2.6" fill="var(--teal-2, var(--teal))" />
+            {originLabel && originOnly ? (
               <text
-                x={p.x}
-                y={p.y + 1.6}
+                x={origin.x}
+                y={origin.y - 11}
                 textAnchor="middle"
                 style={{
                   fontFamily: "var(--font-display)",
                   fontWeight: 700,
-                  fontSize: "5px",
-                  fill: "var(--charcoal-deep, #14181a)",
+                  fontSize: "7px",
+                  letterSpacing: "0.18em",
+                  fill: "var(--gold)",
+                  textTransform: "uppercase",
                 }}
               >
-                {i + 1}
+                {cleanLabel(originLabel)}
               </text>
-            </g>
-          );
-        })}
-      </svg>
+            ) : null}
+          </g>
 
-      {/* Accessible interactive overlay — invisible 44×44 buttons sit on
+          {/* Per-segment progressive draw — each leg animates ONLY when it
+            becomes the newest revealed segment. Earlier legs stay solid. */}
+          {segments.map((seg, i) => {
+            const drawn = i < revealedCount;
+            return (
+              <g key={`seg-${i}`}>
+                <path
+                  d={seg.d}
+                  fill="none"
+                  stroke="url(#sv3sm-route)"
+                  strokeOpacity="0.45"
+                  strokeWidth="3.6"
+                  strokeLinecap="round"
+                  filter="url(#sv3sm-soft)"
+                  strokeDasharray={seg.len}
+                  strokeDashoffset={drawn ? 0 : seg.len}
+                  style={{
+                    transition: "stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+                  }}
+                />
+                <path
+                  d={seg.d}
+                  fill="none"
+                  stroke="url(#sv3sm-route)"
+                  strokeOpacity="1"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                  strokeDasharray={seg.len}
+                  strokeDashoffset={drawn ? 0 : seg.len}
+                  style={{
+                    transition: "stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+                  }}
+                />
+              </g>
+            );
+          })}
+
+          {waypoints.map((p, i) => {
+            const isLast = i === waypoints.length - 1;
+            const arrived = i < revealedCount;
+            return (
+              <g
+                key={i}
+                style={{
+                  opacity: arrived ? 1 : 0,
+                  transform: arrived ? "scale(1)" : "scale(0.35)",
+                  transition: `opacity 420ms ease, transform 620ms cubic-bezier(0.22, 1.4, 0.36, 1)`,
+                  transformBox: "fill-box",
+                  transformOrigin: `${p.x}px ${p.y}px`,
+                }}
+              >
+                {isLast && arrived ? (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r="6"
+                    fill="none"
+                    stroke="var(--gold)"
+                    strokeOpacity="0.9"
+                    strokeWidth="0.9"
+                    style={{
+                      animation: "sv3smArrive 1400ms ease-out 120ms both",
+                      transformOrigin: `${p.x}px ${p.y}px`,
+                      transformBox: "fill-box",
+                    }}
+                  />
+                ) : null}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="8"
+                  fill="none"
+                  stroke="var(--gold)"
+                  strokeWidth="1.1"
+                  strokeOpacity="0.55"
+                />
+                {selectedPin === i && arrived ? (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r="10.5"
+                    fill="none"
+                    stroke="var(--gold)"
+                    strokeWidth="1.3"
+                    strokeOpacity="1"
+                  />
+                ) : null}
+                {isLast ? (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r="6"
+                    fill="var(--gold)"
+                    opacity="0.18"
+                    style={{
+                      animation: "sv3smPulse 2200ms ease-out 700ms infinite",
+                      transformOrigin: `${p.x}px ${p.y}px`,
+                      transformBox: "fill-box",
+                    }}
+                  />
+                ) : null}
+                <circle cx={p.x} cy={p.y} r="5.2" fill="var(--charcoal-deep, #14181a)" />
+                <circle cx={p.x} cy={p.y} r="4.4" fill="var(--gold)" />
+                <text
+                  x={p.x}
+                  y={p.y + 1.6}
+                  textAnchor="middle"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 700,
+                    fontSize: "5px",
+                    fill: "var(--charcoal-deep, #14181a)",
+                  }}
+                >
+                  {i + 1}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* Accessible interactive overlay — invisible 44×44 buttons sit on
           each arrived pin. Keyboard arrows move selection; Escape clears.
           Pressed state mirrors `selectedPin` and is announced via
           aria-pressed. The map itself stays decorative SVG. */}
-      <div
-        role="toolbar"
-        aria-label={
-          originLabel
-            ? `Route stops from ${originLabel}. Use arrow keys to step through.`
-            : "Route stops. Use arrow keys to step through."
-        }
-        className="pointer-events-none absolute inset-0"
-      >
+        <div
+          role="toolbar"
+          aria-label={
+            originLabel
+              ? `Route stops from ${originLabel}. Use arrow keys to step through.`
+              : "Route stops. Use arrow keys to step through."
+          }
+          className="pointer-events-none absolute inset-0"
+        >
+          {waypoints.map((p, i) => {
+            if (i >= revealedCount) return null;
+            const xPct = (p.x / VB_W) * 100;
+            const yPct = (p.y / VB_H) * 100;
+            const meta = pinMeta[i];
+            const isSel = selectedPin === i;
+            const parts: string[] = [`Stop ${i + 1}: ${shown[i]}`];
+            if (meta?.driveInMin && meta.driveInMin >= 4) {
+              parts.push(`about ${formatChipMin(meta.driveInMin)} drive from previous`);
+            }
+            if (meta?.dwell) parts.push(`${formatChipMin(meta.dwell)} on site`);
+            return (
+              <button
+                key={`pin-btn-${i}`}
+                type="button"
+                aria-label={parts.join(", ")}
+                aria-pressed={isSel}
+                onClick={() => setSelectedPin(isSel ? null : i)}
+                onKeyDown={(e) => handlePinKey(e, i)}
+                className="pointer-events-auto absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal-deep,#14181a)] active:scale-95 transition-transform"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${yPct}%`,
+                  transform: "translate(-50%, -50%)",
+                  width: 44,
+                  height: 44,
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* SR-only ordered route summary — gives screen readers and
+          keyboard users a structured, decluttered alternative to the
+          visual map. Always reflects current revealed state. */}
+        <ol
+          className="sr-only"
+          aria-label={originLabel ? `Route summary from ${originLabel}` : "Route summary"}
+        >
+          {pinMeta.slice(0, revealedCount).map((m, i) => {
+            const parts: string[] = [];
+            if (m.driveInMin && m.driveInMin >= 4) {
+              parts.push(`~${formatChipMin(m.driveInMin)} drive`);
+            }
+            parts.push(m.label);
+            if (m.dwell) parts.push(`${formatChipMin(m.dwell)} on site`);
+            return (
+              <li key={`sr-${i}`} aria-current={selectedPin === i ? "true" : undefined}>
+                {`Stop ${i + 1}: ${parts.join(" — ")}`}
+              </li>
+            );
+          })}
+        </ol>
+
+        {/* Drive-minute chips at each segment midpoint — geographic mode only,
+          and only for segments that have already been drawn. */}
+        {geo
+          ? segments.map((seg, i) => {
+              const drawn = i < revealedCount;
+              if (!drawn) return null;
+              const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+              let min: number;
+              if (real != null && real > 0) {
+                min = real;
+              } else {
+                const a =
+                  i === 0
+                    ? originCoord!
+                    : {
+                        lat: detailed[i - 1]!.lat as number,
+                        lng: detailed[i - 1]!.lng as number,
+                      };
+                const b = {
+                  lat: detailed[i]!.lat as number,
+                  lng: detailed[i]!.lng as number,
+                };
+                min = haversineDriveMinutes(a, b);
+              }
+              if (min < 4) return null; // suppress tiny chips
+              const xPct = (seg.mid.x / VB_W) * 100;
+              const yPct = (seg.mid.y / VB_H) * 100;
+              const isSel = selectedPin === i;
+              return (
+                <span
+                  key={`drive-${i}`}
+                  aria-hidden
+                  data-selected={isSel || undefined}
+                  className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
+                  style={{
+                    left: `${xPct}%`,
+                    top: `${yPct}%`,
+                    transform: "translate(-50%, -120%)",
+                    background: isSel
+                      ? "color-mix(in oklab, var(--gold) 92%, white)"
+                      : "color-mix(in oklab, #050d0f 80%, transparent)",
+                    color: isSel
+                      ? "var(--charcoal)"
+                      : "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                    border: `1px solid color-mix(in oklab, var(--gold) ${isSel ? 90 : 40}%, transparent)`,
+                    whiteSpace: "nowrap",
+                    opacity: isSel ? 1 : 0.95,
+                    animation: "studioV3RiseIn 480ms ease-out both",
+                    boxShadow: isSel ? "0 4px 14px -4px rgba(0,0,0,0.55)" : undefined,
+                  }}
+                >
+                  ≈ {formatChipMin(min)} drive
+                </span>
+              );
+            })
+          : null}
+
+        {/* Dwell-minute chips next to each arrived pin. Hidden on very small
+          widths if the in-map label is shown — kept above the bottom strip. */}
         {waypoints.map((p, i) => {
           if (i >= revealedCount) return null;
+          const d = detailed[i];
+          const dwell =
+            d && typeof d.dwellMin === "number" && d.dwellMin > 0
+              ? d.dwellMin
+              : stopDurationMinutes({
+                  label: shown[i],
+                  kind: (d?.kind ?? inferKind(shown[i])) || undefined,
+                });
+          if (!dwell) return null;
           const xPct = (p.x / VB_W) * 100;
           const yPct = (p.y / VB_H) * 100;
-          const meta = pinMeta[i];
           const isSel = selectedPin === i;
-          const parts: string[] = [`Stop ${i + 1}: ${shown[i]}`];
-          if (meta?.driveInMin && meta.driveInMin >= 4) {
-            parts.push(`about ${formatChipMin(meta.driveInMin)} drive from previous`);
-          }
-          if (meta?.dwell) parts.push(`${formatChipMin(meta.dwell)} on site`);
           return (
-            <button
-              key={`pin-btn-${i}`}
-              type="button"
-              aria-label={parts.join(", ")}
-              aria-pressed={isSel}
-              onClick={() => setSelectedPin(isSel ? null : i)}
-              onKeyDown={(e) => handlePinKey(e, i)}
-              className="pointer-events-auto absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal-deep,#14181a)] active:scale-95 transition-transform"
+            <span
+              key={`dwell-${i}`}
+              aria-hidden
+              data-selected={isSel || undefined}
+              className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
               style={{
                 left: `${xPct}%`,
                 top: `${yPct}%`,
-                transform: "translate(-50%, -50%)",
-                width: 44,
-                height: 44,
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
+                transform: "translate(-50%, 140%)",
+                background: isSel ? "var(--gold)" : "color-mix(in oklab, var(--gold) 88%, white)",
+                color: "var(--charcoal)",
+                whiteSpace: "nowrap",
+                boxShadow: isSel
+                  ? "0 6px 16px -4px rgba(0,0,0,0.65), 0 0 0 1.5px var(--gold)"
+                  : "0 4px 12px -6px rgba(0,0,0,0.55)",
+                opacity: isSel ? 1 : 0.96,
+                animation: "studioV3RiseIn 520ms ease-out both",
               }}
-            />
+            >
+              {formatChipMin(dwell)}
+            </span>
           );
         })}
-      </div>
 
-      {/* SR-only ordered route summary — gives screen readers and
-          keyboard users a structured, decluttered alternative to the
-          visual map. Always reflects current revealed state. */}
-      <ol
-        className="sr-only"
-        aria-label={
-          originLabel
-            ? `Route summary from ${originLabel}`
-            : "Route summary"
-        }
-      >
-        {pinMeta.slice(0, revealedCount).map((m, i) => {
-          const parts: string[] = [];
-          if (m.driveInMin && m.driveInMin >= 4) {
-            parts.push(`~${formatChipMin(m.driveInMin)} drive`);
-          }
-          parts.push(m.label);
-          if (m.dwell) parts.push(`${formatChipMin(m.dwell)} on site`);
-          return (
-            <li key={`sr-${i}`} aria-current={selectedPin === i ? "true" : undefined}>
-              {`Stop ${i + 1}: ${parts.join(" — ")}`}
-            </li>
-          );
-        })}
-      </ol>
+        {/* Newest pin's full name floats on the map (sm+ only). */}
+        {waypoints.length > 0 && revealedCount > 0
+          ? (() => {
+              const i = Math.min(revealedCount, waypoints.length) - 1;
+              const p = waypoints[i];
+              const xPct = (p.x / VB_W) * 100;
+              const yPct = (p.y / VB_H) * 100;
+              const flipLeft = xPct > 55;
+              return (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute hidden sm:block"
+                  style={{
+                    left: `${xPct}%`,
+                    top: `${yPct}%`,
+                    maxWidth: "46%",
+                    transform: flipLeft
+                      ? "translate(calc(-100% - 12px), -50%)"
+                      : "translate(12px, -50%)",
+                    textAlign: flipLeft ? "right" : "left",
+                    animation: "studioV3RiseIn 520ms ease-out both",
+                  }}
+                >
+                  <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]">
+                    {shown[i]}
+                  </span>
+                </div>
+              );
+            })()
+          : null}
 
-
-      {/* Drive-minute chips at each segment midpoint — geographic mode only,
-          and only for segments that have already been drawn. */}
-      {geo
-        ? segments.map((seg, i) => {
-            const drawn = i < revealedCount;
-            if (!drawn) return null;
-            const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
-            let min: number;
-            if (real != null && real > 0) {
-              min = real;
-            } else {
-              const a = i === 0 ? originCoord! : {
-                lat: detailed[i - 1]!.lat as number,
-                lng: detailed[i - 1]!.lng as number,
-              };
-              const b = {
-                lat: detailed[i]!.lat as number,
-                lng: detailed[i]!.lng as number,
-              };
-              min = haversineDriveMinutes(a, b);
-            }
-            if (min < 4) return null; // suppress tiny chips
-            const xPct = (seg.mid.x / VB_W) * 100;
-            const yPct = (seg.mid.y / VB_H) * 100;
-            const isSel = selectedPin === i;
-            return (
-              <span
-                key={`drive-${i}`}
-                aria-hidden
-                data-selected={isSel || undefined}
-                className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
-                style={{
-                  left: `${xPct}%`,
-                  top: `${yPct}%`,
-                  transform: "translate(-50%, -120%)",
-                  background: isSel
-                    ? "color-mix(in oklab, var(--gold) 92%, white)"
-                    : "color-mix(in oklab, #050d0f 80%, transparent)",
-                  color: isSel
-                    ? "var(--charcoal)"
-                    : "color-mix(in oklab, var(--ivory) 92%, transparent)",
-                  border: `1px solid color-mix(in oklab, var(--gold) ${isSel ? 90 : 40}%, transparent)`,
-                  whiteSpace: "nowrap",
-                  opacity: isSel ? 1 : 0.95,
-                  animation: "studioV3RiseIn 480ms ease-out both",
-                  boxShadow: isSel ? "0 4px 14px -4px rgba(0,0,0,0.55)" : undefined,
-                }}
-              >
-                ≈ {formatChipMin(min)} drive
-              </span>
-            );
-          })
-        : null}
-
-      {/* Dwell-minute chips next to each arrived pin. Hidden on very small
-          widths if the in-map label is shown — kept above the bottom strip. */}
-      {waypoints.map((p, i) => {
-        if (i >= revealedCount) return null;
-        const d = detailed[i];
-        const dwell =
-          d && typeof d.dwellMin === "number" && d.dwellMin > 0
-            ? d.dwellMin
-            : stopDurationMinutes({
-                label: shown[i],
-                kind: (d?.kind ?? inferKind(shown[i])) || undefined,
-              });
-        if (!dwell) return null;
-        const xPct = (p.x / VB_W) * 100;
-        const yPct = (p.y / VB_H) * 100;
-        const isSel = selectedPin === i;
-        return (
-          <span
-            key={`dwell-${i}`}
-            aria-hidden
-            data-selected={isSel || undefined}
-            className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
-            style={{
-              left: `${xPct}%`,
-              top: `${yPct}%`,
-              transform: "translate(-50%, 140%)",
-              background: isSel
-                ? "var(--gold)"
-                : "color-mix(in oklab, var(--gold) 88%, white)",
-              color: "var(--charcoal)",
-              whiteSpace: "nowrap",
-              boxShadow: isSel
-                ? "0 6px 16px -4px rgba(0,0,0,0.65), 0 0 0 1.5px var(--gold)"
-                : "0 4px 12px -6px rgba(0,0,0,0.55)",
-              opacity: isSel ? 1 : 0.96,
-              animation: "studioV3RiseIn 520ms ease-out both",
-            }}
-          >
-            {formatChipMin(dwell)}
-          </span>
-        );
-      })}
-
-      {/* Newest pin's full name floats on the map (sm+ only). */}
-      {waypoints.length > 0 && revealedCount > 0
-        ? (() => {
-            const i = Math.min(revealedCount, waypoints.length) - 1;
-            const p = waypoints[i];
-            const xPct = (p.x / VB_W) * 100;
-            const yPct = (p.y / VB_H) * 100;
-            const flipLeft = xPct > 55;
-            return (
-              <div
-                aria-hidden
-                className="pointer-events-none absolute hidden sm:block"
-                style={{
-                  left: `${xPct}%`,
-                  top: `${yPct}%`,
-                  maxWidth: "46%",
-                  transform: flipLeft
-                    ? "translate(calc(-100% - 12px), -50%)"
-                    : "translate(12px, -50%)",
-                  textAlign: flipLeft ? "right" : "left",
-                  animation: "studioV3RiseIn 520ms ease-out both",
-                }}
-              >
-                <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]">
-                  {shown[i]}
-                </span>
-              </div>
-            );
-          })()
-        : null}
-
-      {/* Bottom strip — From X · pace/stops. (sm+ only to avoid clutter on phones.) */}
-      <div
-        className="absolute left-0 right-0 bottom-0 hidden sm:flex items-end justify-between gap-3 px-3.5 py-2"
-        style={{
-          background:
-            "linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)",
-        }}
-      >
-        {originLabel ? (
-          <span
-            className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.26em] font-semibold truncate"
-            style={{ color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))" }}
-          >
+        {/* Bottom strip — From X · pace/stops. (sm+ only to avoid clutter on phones.) */}
+        <div
+          className="absolute left-0 right-0 bottom-0 hidden sm:flex items-end justify-between gap-3 px-3.5 py-2"
+          style={{
+            background:
+              "linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)",
+          }}
+        >
+          {originLabel ? (
             <span
-              aria-hidden
-              className="inline-block h-1 w-1 rounded-full"
-              style={{ background: "var(--gold)" }}
-            />
-            From {originLabel}
-          </span>
-        ) : (
-          <span />
-        )}
-        {paceLabel ? (
-          <span
-            className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--ivory) 82%, transparent)" }}
-          >
-            Pace · {paceLabel}
-          </span>
-        ) : shown.length > 0 ? (
-          <span
-            className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--ivory) 75%, transparent)" }}
-          >
-            {shown.length} stop{shown.length === 1 ? "" : "s"}
-          </span>
-        ) : null}
-      </div>
+              className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.26em] font-semibold truncate"
+              style={{ color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))" }}
+            >
+              <span
+                aria-hidden
+                className="inline-block h-1 w-1 rounded-full"
+                style={{ background: "var(--gold)" }}
+              />
+              From {originLabel}
+            </span>
+          ) : (
+            <span />
+          )}
+          {paceLabel ? (
+            <span
+              className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--ivory) 82%, transparent)" }}
+            >
+              Pace · {paceLabel}
+            </span>
+          ) : shown.length > 0 ? (
+            <span
+              className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--ivory) 75%, transparent)" }}
+            >
+              {shown.length} stop{shown.length === 1 ? "" : "s"}
+            </span>
+          ) : null}
+        </div>
 
-      <MapDebugOverlay
-        mode={geo ? "geographic" : "schematic"}
-        originCoord={originCoord ?? null}
-        originLabel={originLabel ?? null}
-        shown={shown}
-        detailed={detailed}
-        waypoints={waypoints}
-        segments={segments.map((s, i) => {
-          if (!geo || !originCoord) {
-            return { index: i, driveMin: null, from: null, to: null };
-          }
-          const a = i === 0
-            ? originCoord
-            : { lat: detailed[i - 1]!.lat as number, lng: detailed[i - 1]!.lng as number };
-          const b = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
-          const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
-          const driveMin = real != null && real > 0 ? real : haversineDriveMinutes(a, b);
-          return { index: i, driveMin, from: a, to: b };
-        })}
-        revealedCount={revealedCount}
-        visible={visible}
-      />
+        <MapDebugOverlay
+          mode={geo ? "geographic" : "schematic"}
+          originCoord={originCoord ?? null}
+          originLabel={originLabel ?? null}
+          shown={shown}
+          detailed={detailed}
+          waypoints={waypoints}
+          segments={segments.map((s, i) => {
+            if (!geo || !originCoord) {
+              return { index: i, driveMin: null, from: null, to: null };
+            }
+            const a =
+              i === 0
+                ? originCoord
+                : { lat: detailed[i - 1]!.lat as number, lng: detailed[i - 1]!.lng as number };
+            const b = { lat: detailed[i]!.lat as number, lng: detailed[i]!.lng as number };
+            const real = legMinutes && typeof legMinutes[i] === "number" ? legMinutes[i] : null;
+            const driveMin = real != null && real > 0 ? real : haversineDriveMinutes(a, b);
+            return { index: i, driveMin, from: a, to: b };
+          })}
+          revealedCount={revealedCount}
+          visible={visible}
+        />
 
-      <style>{`
+        <style>{`
         @keyframes sv3smPulse {
           0% { opacity: 0; transform: scale(0.6); }
           40% { opacity: 0.7; }
@@ -1011,7 +1001,7 @@ export function StudioV3SignatureMap({
           [style*="sv3smPulse"], [style*="sv3smArrive"] { animation: none !important; opacity: 0 !important; }
         }
       `}</style>
-    </div>
+      </div>
     </>
   );
 }
@@ -1109,7 +1099,10 @@ function MapDebugOverlay({
         boxShadow: "0 6px 22px rgba(0,0,0,0.45)",
       }}
     >
-      <div className="flex items-center justify-between gap-2" style={{ marginBottom: collapsed ? 0 : 6 }}>
+      <div
+        className="flex items-center justify-between gap-2"
+        style={{ marginBottom: collapsed ? 0 : 6 }}
+      >
         <strong
           style={{
             color: "var(--gold)",
@@ -1171,7 +1164,15 @@ function MapDebugOverlay({
                     }}
                   >
                     <td style={{ padding: "1px 4px 1px 0", color: "var(--gold)" }}>{i + 1}</td>
-                    <td style={{ padding: "1px 4px", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <td
+                      style={{
+                        padding: "1px 4px",
+                        maxWidth: 120,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {label}
                     </td>
                     <td style={{ padding: "1px 4px", whiteSpace: "nowrap" }}>
@@ -1199,11 +1200,18 @@ function MapDebugOverlay({
                     key={`seg-${s.index}`}
                     style={{ color: drawn ? "var(--ivory)" : "rgba(250,248,243,0.4)" }}
                   >
-                    <td style={{ padding: "1px 4px 1px 0", color: "var(--gold)", whiteSpace: "nowrap" }}>
+                    <td
+                      style={{
+                        padding: "1px 4px 1px 0",
+                        color: "var(--gold)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {s.index === 0 ? "O" : s.index}→{s.index + 1}
                     </td>
                     <td style={{ padding: "1px 4px", whiteSpace: "nowrap" }}>
-                      {fmtCoord(s.from?.lat)},{fmtCoord(s.from?.lng)} → {fmtCoord(s.to?.lat)},{fmtCoord(s.to?.lng)}
+                      {fmtCoord(s.from?.lat)},{fmtCoord(s.from?.lng)} → {fmtCoord(s.to?.lat)},
+                      {fmtCoord(s.to?.lng)}
                     </td>
                     <td style={{ padding: "1px 0 1px 4px", whiteSpace: "nowrap" }}>
                       {s.driveMin != null ? `${s.driveMin}m` : "—"}
@@ -1220,8 +1228,8 @@ function MapDebugOverlay({
           <div style={{ color: "rgba(250,248,243,0.85)" }}>
             {waypoints.map((p, i) => (
               <span key={`vp-${i}`} style={{ marginRight: 8, whiteSpace: "nowrap" }}>
-                <span style={{ color: "var(--gold)" }}>{i + 1}</span>
-                :{p.x.toFixed(1)},{p.y.toFixed(1)}
+                <span style={{ color: "var(--gold)" }}>{i + 1}</span>:{p.x.toFixed(1)},
+                {p.y.toFixed(1)}
               </span>
             ))}
           </div>

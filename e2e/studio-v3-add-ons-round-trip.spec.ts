@@ -51,9 +51,7 @@ test.describe("studio-v3 — add-ons total round-trips across reveal sections", 
     const toSelect = addons.slice(0, Math.min(2, addons.length));
 
     for (const a of toSelect) {
-      const btn = page.locator(
-        `[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`,
-      );
+      const btn = page.locator(`[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`);
       await btn.scrollIntoViewIfNeeded();
       await btn.click();
       await expect(btn).toHaveAttribute("aria-pressed", "true", { timeout: 2_000 });
@@ -67,9 +65,7 @@ test.describe("studio-v3 — add-ons total round-trips across reveal sections", 
 
     const selectedIdsBefore = await page
       .locator('[data-testid="studio-v3-add-ons"] button[aria-pressed="true"][data-addon-id]')
-      .evaluateAll((els) =>
-        els.map((n) => (n as HTMLElement).getAttribute("data-addon-id") ?? ""),
-      );
+      .evaluateAll((els) => els.map((n) => (n as HTMLElement).getAttribute("data-addon-id") ?? ""));
 
     // Scroll to a different reveal section — the itinerary spine sits
     // well below the price card. If it's absent (rare tour shape),
@@ -98,17 +94,13 @@ test.describe("studio-v3 — add-ons total round-trips across reveal sections", 
     // The same chips must still be pressed…
     const selectedIdsAfter = await page
       .locator('[data-testid="studio-v3-add-ons"] button[aria-pressed="true"][data-addon-id]')
-      .evaluateAll((els) =>
-        els.map((n) => (n as HTMLElement).getAttribute("data-addon-id") ?? ""),
-      );
+      .evaluateAll((els) => els.map((n) => (n as HTMLElement).getAttribute("data-addon-id") ?? ""));
     expect(new Set(selectedIdsAfter)).toEqual(new Set(selectedIdsBefore));
 
     // …and the rendered total must be byte-identical.
     const totalAfter = await addOnsTotalText(page);
     const eurAfter = await parseAddOnsTotalEur(page);
     expect(eurAfter).toBe(eurBefore);
-    expect(totalAfter.replace(/\s+/g, " ").trim()).toBe(
-      totalBefore.replace(/\s+/g, " ").trim(),
-    );
+    expect(totalAfter.replace(/\s+/g, " ").trim()).toBe(totalBefore.replace(/\s+/g, " ").trim());
   });
 });

@@ -139,22 +139,19 @@ export const submitLegacyGscActions = createServerFn({ method: "POST" })
     await assertAdmin(context);
 
     const legacyHosts = Array.from(LEGACY_HOSTS);
-    const legacyUrls = legacyHosts.flatMap((h) =>
-      LEGACY_PATHS.map((p) => `https://${h}${p}`),
-    );
+    const legacyUrls = legacyHosts.flatMap((h) => LEGACY_PATHS.map((p) => `https://${h}${p}`));
 
     const legacyInspections: LegacyActionResult[] = [];
     for (const u of legacyUrls) {
       const host = new URL(u).host;
       const siteUrl = `sc-domain:${host.replace(/^www\./, "")}`;
       // sequential to stay under GSC quota
-      // eslint-disable-next-line no-await-in-loop
+
       legacyInspections.push(await inspect(u, siteUrl));
     }
 
     const canonicalInspections: LegacyActionResult[] = [];
     for (const u of CANONICAL_URLS) {
-      // eslint-disable-next-line no-await-in-loop
       canonicalInspections.push(await inspect(u, "https://yesexperiencesportugal.com/"));
     }
 

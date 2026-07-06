@@ -70,13 +70,28 @@ Deno.serve(async (req) => {
   };
 
   if (!event || !stripeEnv) {
-    const diag = candidates.map((c, i) => {
-      const s = c.secret ?? "";
-      const name = ["STRIPE_WEBHOOK_SECRET_LIVE", "STRIPE_WEBHOOK_SECRET", "STRIPE_WEBHOOK_SECRET_SANDBOX"][i];
-      return `${name}: ${s ? `present len=${s.length} prefix=${s.slice(0, 8)}` : "missing"}`;
-    }).join(" | ");
+    const diag = candidates
+      .map((c, i) => {
+        const s = c.secret ?? "";
+        const name = [
+          "STRIPE_WEBHOOK_SECRET_LIVE",
+          "STRIPE_WEBHOOK_SECRET",
+          "STRIPE_WEBHOOK_SECRET_SANDBOX",
+        ][i];
+        return `${name}: ${s ? `present len=${s.length} prefix=${s.slice(0, 8)}` : "missing"}`;
+      })
+      .join(" | ");
     const sigPrefix = sig.slice(0, 40);
-    console.error("Webhook signature verification failed:", lastError, "| diag:", diag, "| sig:", sigPrefix, "| bodyLen:", rawBody.length);
+    console.error(
+      "Webhook signature verification failed:",
+      lastError,
+      "| diag:",
+      diag,
+      "| sig:",
+      sigPrefix,
+      "| bodyLen:",
+      rawBody.length,
+    );
     await logEvent({
       verified: false,
       status_code: 400,
@@ -116,7 +131,11 @@ Deno.serve(async (req) => {
 
   const session = event.data.object as Stripe.Checkout.Session;
   if (session.payment_status !== "paid") {
-    await logEvent({ ...baseLog, status_code: 200, error_message: `unpaid: ${session.payment_status}` });
+    await logEvent({
+      ...baseLog,
+      status_code: 200,
+      error_message: `unpaid: ${session.payment_status}`,
+    });
     return new Response(JSON.stringify({ received: true, status: session.payment_status }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -124,7 +143,6 @@ Deno.serve(async (req) => {
   }
 
   await logEvent({ ...baseLog, status_code: 200 });
-
 
   const meta = (session.metadata ?? {}) as Record<string, string>;
   const bookingType = (meta.booking_type ?? "builder") as "signature" | "builder" | "moment";
@@ -226,7 +244,7 @@ Deno.serve(async (req) => {
       // If the customer picked a specific slot in FinalDetailsDialog, lock to it.
       const lockedId = Number(meta.bokun_availability_id ?? 0);
       const lockedSlot =
-        lockedId > 0 ? usable.find((s) => Number(s.id) === lockedId) ?? null : null;
+        lockedId > 0 ? (usable.find((s) => Number(s.id) === lockedId) ?? null) : null;
 
       let chosen: AvailabilitySlot | null = lockedSlot;
       let ambiguousReason: string | null = null;
@@ -287,7 +305,6 @@ Deno.serve(async (req) => {
             error: isTailored ? "Tailored itinerary — verify stop changes in Bokun" : undefined,
           };
         }
-
       }
     }
   } catch (e) {
@@ -314,8 +331,7 @@ Deno.serve(async (req) => {
       const stripe = createStripeClient(stripeEnv);
       let receiptUrl: string | null = null;
       try {
-        const piId =
-          typeof session.payment_intent === "string" ? session.payment_intent : null;
+        const piId = typeof session.payment_intent === "string" ? session.payment_intent : null;
         if (piId) {
           const pi = await stripe.paymentIntents.retrieve(piId, {
             expand: ["latest_charge"],
@@ -337,8 +353,7 @@ Deno.serve(async (req) => {
             }).format(amountTotal / 100)
           : null;
 
-      const siteUrl =
-        Deno.env.get("SITE_URL") ?? "https://yesexperiencesportugal.com";
+      const siteUrl = Deno.env.get("SITE_URL") ?? "https://yesexperiencesportugal.com";
       const internalSecret = Deno.env.get("EMAIL_INTERNAL_SECRET");
 
       if (internalSecret) {

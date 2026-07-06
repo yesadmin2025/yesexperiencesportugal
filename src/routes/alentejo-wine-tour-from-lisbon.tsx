@@ -4,7 +4,13 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
-import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  SITE_URL,
+  hreflangUsCaLinks,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
@@ -83,10 +89,7 @@ export const Route = createFileRoute("/alentejo-wine-tour-from-lisbon")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [
-      { rel: "canonical", href: PAGE_URL },
-      ...hreflangUsCaLinks(PAGE_PATH),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...hreflangUsCaLinks(PAGE_PATH)],
     scripts: [
       jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
@@ -110,12 +113,11 @@ function AlentejoWineLanding() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Alentejo wine country</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Alentejo Wine Tour from Lisbon —{" "}
-              <SectionTitle.Em>wine, cork & Évora</SectionTitle.Em>
+              Alentejo Wine Tour from Lisbon — <SectionTitle.Em>wine, cork & Évora</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              Two family wineries, a cork tradition stop and Évora's UNESCO old
-              town — at the unhurried pace of Alentejo.
+              Two family wineries, a cork tradition stop and Évora's UNESCO old town — at the
+              unhurried pace of Alentejo.
             </p>
             <div className="mt-8">
               <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
@@ -133,10 +135,9 @@ function AlentejoWineLanding() {
                 Portugal's most underrated wine region — and the slowest.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                Alentejo is plains, cork oaks and family-run wineries that still
-                make wine the way their grandparents did. It is also where most
-                of the world's cork is born. From Lisbon it is a long day, not a
-                short one — which is exactly why it stays quiet.
+                Alentejo is plains, cork oaks and family-run wineries that still make wine the way
+                their grandparents did. It is also where most of the world's cork is born. From
+                Lisbon it is a long day, not a short one — which is exactly why it stays quiet.
               </p>
             </div>
 
@@ -146,10 +147,9 @@ function AlentejoWineLanding() {
                 Cork, two wineries, Évora old town, long lunch.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                We open with a cork tradition stop, taste at two family wineries
-                — one with restaurant, one with cellars — and walk Évora's
-                cobbled centre past the Roman Temple and the Chapel of Bones.
-                Lunch is unhurried, somewhere local, somewhere honest.
+                We open with a cork tradition stop, taste at two family wineries — one with
+                restaurant, one with cellars — and walk Évora's cobbled centre past the Roman Temple
+                and the Chapel of Bones. Lunch is unhurried, somewhere local, somewhere honest.
               </p>
             </div>
 
@@ -159,9 +159,9 @@ function AlentejoWineLanding() {
                 Your driver-guide, your pace.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                Hotel pickup in Lisbon, a comfortable car, and the freedom to
-                linger an extra glass at a cellar you like or skip a stop you
-                don't. The route is built around you — not a coach schedule.
+                Hotel pickup in Lisbon, a comfortable car, and the freedom to linger an extra glass
+                at a cellar you like or skip a stop you don't. The route is built around you — not a
+                coach schedule.
               </p>
             </div>
           </div>
@@ -181,21 +181,43 @@ function AlentejoWineLanding() {
             </h2>
             <ul className="grid sm:grid-cols-3 gap-5">
               <li>
-                <Link to="/tours/$tourId" params={{ tourId: "roman-heritage-alentejo" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Hidden Roman Alentejo</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Talha (clay-pot) wine with a family who still makes it.</span>
+                <Link
+                  to="/tours/$tourId"
+                  params={{ tourId: "roman-heritage-alentejo" }}
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Hidden Roman Alentejo
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Talha (clay-pot) wine with a family who still makes it.
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link to="/studio-v3" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Design your Alentejo day</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Mix wineries, cork and Évora live in the Studio.</span>
+                <Link
+                  to="/studio-v3"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Design your Alentejo day
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Mix wineries, cork and Évora live in the Studio.
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link to="/multi-day" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Travel Designer</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Add Alentejo to a multi-day Portugal journey.</span>
+                <Link
+                  to="/multi-day"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Travel Designer
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Add Alentejo to a multi-day Portugal journey.
+                  </span>
                 </Link>
               </li>
             </ul>
@@ -205,10 +227,18 @@ function AlentejoWineLanding() {
                 Book this day
               </span>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
+                <CtaButton
+                  to="/tours/$tourId"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="primary"
+                >
                   Reserve with YES
                 </CtaButton>
-                <CtaButton to="/tours/$tourId/tailor" params={{ tourId: PARENT_TOUR_ID }} variant="ghost">
+                <CtaButton
+                  to="/tours/$tourId/tailor"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="ghost"
+                >
                   Tailor this Signature
                 </CtaButton>
               </div>

@@ -117,12 +117,7 @@ function stableExternalId(source: string, sourceUrl: string, r: RawReview): stri
 export const scrapeTourReviews = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
-    (d: {
-      tour_id: string;
-      source: ReviewSource;
-      source_url: string;
-      max?: number;
-    }) => d,
+    (d: { tour_id: string; source: ReviewSource; source_url: string; max?: number }) => d,
   )
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
@@ -191,12 +186,14 @@ export const scrapeTourReviews = createServerFn({ method: "POST" })
         language: (r.language || "en").slice(0, 8),
         external_id: externalId,
         scraped_at: new Date().toISOString(),
-        published_at: r.published_at && /\d{4}/.test(r.published_at)
-          ? new Date(r.published_at).toISOString()
-          : new Date().toISOString(),
+        published_at:
+          r.published_at && /\d{4}/.test(r.published_at)
+            ? new Date(r.published_at).toISOString()
+            : new Date().toISOString(),
       };
 
       // Upsert on (source, external_id) unique index
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: row, error } = await (context.supabase as any)
         .from("tour_reviews")
         .upsert(payload, { onConflict: "source,external_id" })

@@ -19,11 +19,7 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { PlatformBadge } from "@/components/PlatformBadge";
-import {
-  buildGuestQuotesJsonLd,
-  SOURCE_LABEL,
-} from "@/lib/guest-quotes-jsonld";
-
+import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 
 export function GuestQuotes() {
   const statsFn = useServerFn(getGlobalReviewStats);
@@ -77,9 +73,6 @@ export function GuestQuotes() {
     [quotes, avg, count],
   );
 
-
-
-
   return (
     <div className="mt-6 md:mt-8 text-center">
       {/* Structured data — AggregateRating + Review nodes, attached to
@@ -89,11 +82,13 @@ export function GuestQuotes() {
       {structuredData && (
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       )}
-      <div className="inline-flex items-center gap-1 mb-5 text-[color:var(--gold)]" aria-hidden="true">
+      <div
+        className="inline-flex items-center gap-1 mb-5 text-[color:var(--gold)]"
+        aria-hidden="true"
+      >
         {Array.from({ length: 5 }).map((_, i) => (
           <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
         ))}
@@ -103,18 +98,19 @@ export function GuestQuotes() {
         {count ? (
           <>
             {count.toLocaleString("en-US")} five-star reviews{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">— real guests, real stories.</span>
+            <span className="italic font-normal text-[color:var(--teal)]">
+              — real guests, real stories.
+            </span>
           </>
         ) : (
           <>
             700+ five-star reviews{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">— real guests, real stories.</span>
+            <span className="italic font-normal text-[color:var(--teal)]">
+              — real guests, real stories.
+            </span>
           </>
         )}
       </h2>
-
-
-
 
       {/* Platform badge row removed — each review card now carries its
           own source label ("via Tripadvisor" etc.), so the standalone
@@ -273,13 +269,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
  * minimal text pill (linked when a source URL is available). Keeps the
  * review card footer clean, premium, and SEO-friendly.
  */
-function SourceBadge({
-  source,
-  sourceUrl,
-}: {
-  source: string;
-  sourceUrl?: string | null;
-}) {
+function SourceBadge({ source, sourceUrl }: { source: string; sourceUrl?: string | null }) {
   const label = SOURCE_LABEL[source] ?? source;
 
   if (source === "tripadvisor") {
@@ -329,4 +319,3 @@ function SourceBadge({
 }
 
 export default GuestQuotes;
-

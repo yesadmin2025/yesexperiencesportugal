@@ -188,8 +188,6 @@ export function FinalDetailsDialog({
     });
   };
 
-
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg p-0 gap-0 bg-[color:var(--ivory)] border border-[color:var(--border)] max-h-[92vh] overflow-hidden flex flex-col">
@@ -287,8 +285,8 @@ export function FinalDetailsDialog({
                   slotsLoading
                     ? "Checking live availability…"
                     : slots.length > 0
-                    ? `${slots.length} time${slots.length > 1 ? "s" : ""} available`
-                    : undefined
+                      ? `${slots.length} time${slots.length > 1 ? "s" : ""} available`
+                      : undefined
                 }
               >
                 {slotsLoading ? (
@@ -361,15 +359,27 @@ export function FinalDetailsDialog({
           <Section title="Anything we should know" optional>
             <Row>
               <Field label="Dietary restrictions">
-                <input value={dietary} onChange={(e) => setDietary(e.target.value)} className={inputClass} />
+                <input
+                  value={dietary}
+                  onChange={(e) => setDietary(e.target.value)}
+                  className={inputClass}
+                />
               </Field>
               <Field label="Mobility notes">
-                <input value={mobility} onChange={(e) => setMobility(e.target.value)} className={inputClass} />
+                <input
+                  value={mobility}
+                  onChange={(e) => setMobility(e.target.value)}
+                  className={inputClass}
+                />
               </Field>
             </Row>
             <Row>
               <Field label="Children / child seats">
-                <input value={children} onChange={(e) => setChildren(e.target.value)} className={inputClass} />
+                <input
+                  value={children}
+                  onChange={(e) => setChildren(e.target.value)}
+                  className={inputClass}
+                />
               </Field>
               <Field label="Special occasion">
                 <input

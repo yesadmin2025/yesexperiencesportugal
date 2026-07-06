@@ -90,8 +90,7 @@ export function startHomeMotion(): () => void {
   // Debug flag — `?motionDebug=1` in the URL forces the perf summary log
   // even on fast devices, useful for on-device profiling in the field.
   const debugFlag =
-    typeof window.location !== "undefined" &&
-    /[?&]motionDebug=1\b/.test(window.location.search);
+    typeof window.location !== "undefined" && /[?&]motionDebug=1\b/.test(window.location.search);
 
   // Auto-tag legacy reveal classes so the new controller is the single
   // source of truth on the homepage.
@@ -133,8 +132,7 @@ export function startHomeMotion(): () => void {
       if (el.hasAttribute("data-motion")) return;
       if (el.closest('[data-section="hero"], [aria-live], .sr-only')) return;
 
-      const container =
-        (el.closest("section, article, header") as HTMLElement | null) ?? homeScope;
+      const container = (el.closest("section, article, header") as HTMLElement | null) ?? homeScope;
       const idx = seenContainers.get(container) ?? 0;
       seenContainers.set(container, idx + 1);
 
@@ -160,9 +158,6 @@ export function startHomeMotion(): () => void {
       el.setAttribute("data-motion-delay", String(delay));
     });
   }
-
-
-
 
   const all = () => Array.from(document.querySelectorAll<HTMLElement>("[data-motion]"));
 
@@ -335,7 +330,7 @@ export function startHomeMotion(): () => void {
     // Guard console access — jsdom-in-tests provides it but keep defensive.
     if (typeof console === "undefined" || typeof console.info !== "function") return;
     const avg = t.sweepCount ? (t.sweepMsTotal! / t.sweepCount).toFixed(2) : "0";
-    // eslint-disable-next-line no-console
+
     console.info(
       `[home-motion] ${t.triggered}/${t.total} revealed · sweeps=${t.sweepCount} ` +
         `avg=${avg}ms max=${(t.sweepMsMax ?? 0).toFixed(2)}ms · ` +

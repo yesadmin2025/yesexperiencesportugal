@@ -8,7 +8,17 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, Save, Check, ExternalLink, Search, AlertTriangle, Lock, Download, Upload } from "lucide-react";
+import {
+  RefreshCw,
+  Save,
+  Check,
+  ExternalLink,
+  Search,
+  AlertTriangle,
+  Lock,
+  Download,
+  Upload,
+} from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
@@ -263,9 +273,6 @@ function AdminBokunMappingPage() {
             </div>
           </header>
 
-
-
-
           {bokunError && (
             <div className="mt-6 border border-red-400/40 bg-red-50 px-4 py-3 text-sm text-red-800">
               {bokunError}
@@ -334,7 +341,6 @@ function AdminBokunMappingPage() {
               </div>
             );
           })()}
-
 
           <div className="mt-8 space-y-4">
             {tours.map((tour) => (
@@ -446,10 +452,7 @@ function TourMappingRow({
     if (!existing) return;
     if (!confirm(`Clear Bokun mapping for "${tour.title}"?`)) return;
     setBusy(true);
-    const { error } = await supabase
-      .from("tour_bokun_mapping")
-      .delete()
-      .eq("tour_id", tour.id);
+    const { error } = await supabase.from("tour_bokun_mapping").delete().eq("tour_id", tour.id);
     setBusy(false);
     if (error) {
       toast.error("Clear failed: " + error.message);
@@ -506,9 +509,7 @@ function TourMappingRow({
       </div>
 
       {!bokunItems.length ? (
-        <p className="mt-3 text-xs text-[color:var(--charcoal-soft)]">
-          Loading Bokun catalog…
-        </p>
+        <p className="mt-3 text-xs text-[color:var(--charcoal-soft)]">Loading Bokun catalog…</p>
       ) : (
         <div className="mt-3 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-start">
           <div>
@@ -553,7 +554,10 @@ function TourMappingRow({
                 <span className="text-[color:var(--charcoal)]">{selectedItem.title}</span>
                 {selectedItem.durationText && <> · {selectedItem.durationText}</>}
                 {selectedItem.nextDefaultPrice != null && (
-                  <> · from {selectedItem.currency ?? "EUR"} {selectedItem.nextDefaultPrice}</>
+                  <>
+                    {" "}
+                    · from {selectedItem.currency ?? "EUR"} {selectedItem.nextDefaultPrice}
+                  </>
                 )}
               </p>
             )}
@@ -585,11 +589,15 @@ function csvEscape(v: string | null | undefined): string {
   return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-function exportMappingsCsv(
-  tours: SignatureTour[],
-  mappings: Record<string, Mapping>,
-) {
-  const header = ["tour_id", "tour_title", "bokun_product_id", "bokun_product_code", "bokun_title", "notes"];
+function exportMappingsCsv(tours: SignatureTour[], mappings: Record<string, Mapping>) {
+  const header = [
+    "tour_id",
+    "tour_title",
+    "bokun_product_id",
+    "bokun_product_code",
+    "bokun_title",
+    "notes",
+  ];
   const rows = tours.map((t) => {
     const m = mappings[t.id];
     return [
@@ -599,7 +607,9 @@ function exportMappingsCsv(
       m?.bokun_product_code ?? "",
       m?.bokun_title ?? "",
       m?.notes ?? "",
-    ].map(csvEscape).join(",");
+    ]
+      .map(csvEscape)
+      .join(",");
   });
   const csv = [header.join(","), ...rows].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -620,19 +630,31 @@ function parseCsv(text: string): string[][] {
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
     if (inQuotes) {
-      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
-      else if (c === '"') inQuotes = false;
+      if (c === '"' && text[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else if (c === '"') inQuotes = false;
       else field += c;
     } else {
       if (c === '"') inQuotes = true;
-      else if (c === ",") { cur.push(field); field = ""; }
-      else if (c === "\n" || c === "\r") {
-        if (field.length || cur.length) { cur.push(field); rows.push(cur); cur = []; field = ""; }
+      else if (c === ",") {
+        cur.push(field);
+        field = "";
+      } else if (c === "\n" || c === "\r") {
+        if (field.length || cur.length) {
+          cur.push(field);
+          rows.push(cur);
+          cur = [];
+          field = "";
+        }
         if (c === "\r" && text[i + 1] === "\n") i++;
       } else field += c;
     }
   }
-  if (field.length || cur.length) { cur.push(field); rows.push(cur); }
+  if (field.length || cur.length) {
+    cur.push(field);
+    rows.push(cur);
+  }
   return rows.filter((r) => r.some((c) => c.trim().length));
 }
 
@@ -644,7 +666,10 @@ async function importMappingsCsv(
   try {
     const text = await file.text();
     const rows = parseCsv(text);
-    if (!rows.length) { toast.error("Empty CSV"); return; }
+    if (!rows.length) {
+      toast.error("Empty CSV");
+      return;
+    }
     const headerRow = rows[0].map((h) => h.trim().toLowerCase());
     const idx = (name: string) => headerRow.indexOf(name);
     const iTourId = idx("tour_id");
@@ -672,7 +697,10 @@ async function importMappingsCsv(
       const tourId = (row[iTourId] ?? "").trim();
       if (!tourId) continue;
       const productId = (row[iProductId] ?? "").trim();
-      if (!productId) { toDelete.push(tourId); continue; }
+      if (!productId) {
+        toDelete.push(tourId);
+        continue;
+      }
       const match = bokunItems.find((it) => String(it.id) === productId);
       upserts.push({
         tour_id: tourId,
@@ -689,7 +717,10 @@ async function importMappingsCsv(
       const { error } = await supabase
         .from("tour_bokun_mapping")
         .upsert(upserts, { onConflict: "tour_id" });
-      if (error) { toast.error("Import failed: " + error.message); return; }
+      if (error) {
+        toast.error("Import failed: " + error.message);
+        return;
+      }
       ok = upserts.length;
     }
     if (toDelete.length) {
@@ -711,9 +742,10 @@ async function importMappingsCsv(
       return next;
     });
 
-    toast.success(`Imported ${ok} mapping${ok === 1 ? "" : "s"}${toDelete.length ? ` · cleared ${toDelete.length}` : ""}`);
+    toast.success(
+      `Imported ${ok} mapping${ok === 1 ? "" : "s"}${toDelete.length ? ` · cleared ${toDelete.length}` : ""}`,
+    );
   } catch (e) {
     toast.error("Import error: " + (e instanceof Error ? e.message : String(e)));
   }
 }
-

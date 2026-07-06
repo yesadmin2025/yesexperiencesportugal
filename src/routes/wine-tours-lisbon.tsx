@@ -92,10 +92,7 @@ export const Route = createFileRoute("/wine-tours-lisbon")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [
-      { rel: "canonical", href: PAGE_URL },
-      ...hreflangUsCaLinks(PAGE_PATH),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...hreflangUsCaLinks(PAGE_PATH)],
     scripts: [
       jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
@@ -156,8 +153,8 @@ function Page() {
               <SectionTitle.Em>Arrábida, Comporta & Alentejo</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              Three real wine regions within reach of your hotel. Family producers, long
-              Portuguese lunches, your own driver and guide.
+              Three real wine regions within reach of your hotel. Family producers, long Portuguese
+              lunches, your own driver and guide.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <CtaButton to="/experiences" variant="primary">
@@ -205,7 +202,9 @@ function Page() {
         <section className="reveal py-20 md:py-28 bg-[color:var(--sand)]/40">
           <div className="container-x">
             <div className="max-w-2xl mx-auto text-center mb-12">
-              <Eyebrow flank className="mb-4">Real Signature wine days</Eyebrow>
+              <Eyebrow flank className="mb-4">
+                Real Signature wine days
+              </Eyebrow>
               <h2 className="font-display font-semibold text-[1.5rem] md:text-[1.85rem] leading-[1.2] text-[color:var(--charcoal)]">
                 Pick a day — or open the Studio and{" "}
                 <span className="font-serif italic text-[color:var(--teal)]">design your own</span>.
@@ -232,11 +231,7 @@ function Page() {
               />
             </div>
             <div className="mt-12 text-center">
-              <CtaButton
-                to="/tours/$tourId"
-                params={{ tourId: PARENT_TOUR_ID }}
-                variant="primary"
-              >
+              <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
                 See the Arrábida Wine Signature
               </CtaButton>
             </div>
@@ -250,7 +245,9 @@ function Page() {
 
         <section className="reveal py-20 md:py-24 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl text-center">
-            <Eyebrow flank className="mb-4">Ready when you are</Eyebrow>
+            <Eyebrow flank className="mb-4">
+              Ready when you are
+            </Eyebrow>
             <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-6">
               Reserve a Signature, or design your{" "}
               <span className="font-serif italic text-[color:var(--teal)]">own wine day</span>.

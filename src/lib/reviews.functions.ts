@@ -13,25 +13,16 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
 function publicClient() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    {
-      auth: {
-        storage: undefined,
-        persistSession: false,
-        autoRefreshToken: false,
-      },
+  return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
+    auth: {
+      storage: undefined,
+      persistSession: false,
+      autoRefreshToken: false,
     },
-  );
+  });
 }
 
-export type ReviewSource =
-  | "viator"
-  | "tripadvisor"
-  | "getyourguide"
-  | "google"
-  | "first_party";
+export type ReviewSource = "viator" | "tripadvisor" | "getyourguide" | "google" | "first_party";
 
 export type PublicReview = {
   id: string;
@@ -54,7 +45,12 @@ export type TourStats = {
   average_rating: number | null;
   first_party_count: number;
   first_party_avg: number | null;
-  per_source: { source: ReviewSource; rating: number; review_count: number; source_url: string | null }[];
+  per_source: {
+    source: ReviewSource;
+    rating: number;
+    review_count: number;
+    source_url: string | null;
+  }[];
 };
 
 export type GlobalStats = {
@@ -70,10 +66,7 @@ export type GlobalStats = {
 export const getGlobalReviewStats = createServerFn({ method: "GET" }).handler(
   async (): Promise<GlobalStats> => {
     const sb = publicClient();
-    const { data, error } = await sb
-      .from("global_review_aggregate")
-      .select("*")
-      .maybeSingle();
+    const { data, error } = await sb.from("global_review_aggregate").select("*").maybeSingle();
     if (error) {
       return {
         total_reviews: 0,
@@ -91,8 +84,7 @@ export const getGlobalReviewStats = createServerFn({ method: "GET" }).handler(
       external_weighted_avg:
         data?.external_weighted_avg != null ? Number(data.external_weighted_avg) : null,
       first_party_count: Number(data?.first_party_count ?? 0),
-      first_party_avg:
-        data?.first_party_avg != null ? Number(data.first_party_avg) : null,
+      first_party_avg: data?.first_party_avg != null ? Number(data.first_party_avg) : null,
     };
   },
 );
@@ -107,11 +99,7 @@ export const getTourReviewStats = createServerFn({ method: "GET" })
         .from("tour_external_ratings")
         .select("source, rating, review_count, source_url")
         .eq("tour_id", data.tourId),
-      sb
-        .from("tour_review_stats")
-        .select("*")
-        .eq("tour_id", data.tourId)
-        .maybeSingle(),
+      sb.from("tour_review_stats").select("*").eq("tour_id", data.tourId).maybeSingle(),
     ]);
 
     const per_source = (ext.data ?? []).map((r) => ({
@@ -133,10 +121,7 @@ export const getTourReviewStats = createServerFn({ method: "GET" })
     const combined =
       total > 0
         ? Number(
-            (
-              ((externalWeighted ?? 0) * externalCount + (fpAvg ?? 0) * fpCount) /
-              total
-            ).toFixed(2),
+            (((externalWeighted ?? 0) * externalCount + (fpAvg ?? 0) * fpCount) / total).toFixed(2),
           )
         : null;
 
@@ -191,18 +176,16 @@ export const getCuratedHomepageReviews = createServerFn({ method: "GET" })
 /** First-party-only stats for safe schema emission. */
 export const getFirstPartyTourStats = createServerFn({ method: "GET" })
   .inputValidator((d: { tourId: string }) => d)
-  .handler(
-    async ({ data }): Promise<{ count: number; average: number | null }> => {
-      const sb = publicClient();
-      const { data: row, error } = await sb
-        .from("tour_review_stats")
-        .select("first_party_count, first_party_avg")
-        .eq("tour_id", data.tourId)
-        .maybeSingle();
-      if (error || !row) return { count: 0, average: null };
-      return {
-        count: Number(row.first_party_count ?? 0),
-        average: row.first_party_avg != null ? Number(row.first_party_avg) : null,
-      };
-    },
-  );
+  .handler(async ({ data }): Promise<{ count: number; average: number | null }> => {
+    const sb = publicClient();
+    const { data: row, error } = await sb
+      .from("tour_review_stats")
+      .select("first_party_count, first_party_avg")
+      .eq("tour_id", data.tourId)
+      .maybeSingle();
+    if (error || !row) return { count: 0, average: null };
+    return {
+      count: Number(row.first_party_count ?? 0),
+      average: row.first_party_avg != null ? Number(row.first_party_avg) : null,
+    };
+  });

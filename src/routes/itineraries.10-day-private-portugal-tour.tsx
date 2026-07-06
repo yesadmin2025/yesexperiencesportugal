@@ -175,15 +175,12 @@ function Page() {
             A private ten-day <SectionTitle.Em>Portugal</SectionTitle.Em>, composed with you.
           </SectionTitle>
           <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into
-            a single, unhurried private journey. Ten days is the shape most of
-            our guests settle into; the exact days are composed with your
-            travel designer once we know how you want it to feel.
+            Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single, unhurried
+            private journey. Ten days is the shape most of our guests settle into; the exact days
+            are composed with your travel designer once we know how you want it to feel.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <CtaButton to="/multi-day">
-              Work with a travel designer
-            </CtaButton>
+            <CtaButton to="/multi-day">Work with a travel designer</CtaButton>
             <CtaButton to="/experiences" variant="ghost">
               Browse Signature experiences
             </CtaButton>
@@ -199,26 +196,21 @@ function Page() {
             The <SectionTitle.Em>shape</SectionTitle.Em> of the trip.
           </SectionTitle>
           <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
-            Every day here is drawn from experiences we already run. Nothing is
-            a stock package. Your designer swaps, stretches or removes days so
-            the itinerary matches your pace, appetites and travelling company.
+            Every day here is drawn from experiences we already run. Nothing is a stock package.
+            Your designer swaps, stretches or removes days so the itinerary matches your pace,
+            appetites and travelling company.
           </p>
 
           <ol className="mt-10 space-y-8">
             {DAYS.map((d) => (
-              <li
-                key={d.span}
-                className="border-t border-[color:var(--border)] pt-6"
-              >
+              <li key={d.span} className="border-t border-[color:var(--border)] pt-6">
                 <div className="text-[11px] tracking-[0.22em] uppercase text-[color:var(--gold)]">
                   {d.span} · {d.eyebrow}
                 </div>
                 <h3 className="serif text-[22px] md:text-[24px] mt-2 leading-snug text-[color:var(--charcoal)]">
                   {d.title}
                 </h3>
-                <p className="mt-3 text-[color:var(--charcoal-soft)] leading-relaxed">
-                  {d.body}
-                </p>
+                <p className="mt-3 text-[color:var(--charcoal-soft)] leading-relaxed">{d.body}</p>
                 {d.anchor && (
                   <Link
                     to={d.anchor.to}
@@ -241,15 +233,12 @@ function Page() {
             Private, licensed, <SectionTitle.Em>founder-built</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
-            YES Experiences Portugal is a licensed Portuguese private tour
-            operator. Every day above is an experience we run ourselves —
-            with our own driver-guides, our own partners, and tables our team
-            eats at. No re-sold packages, no invented partners.
+            YES Experiences Portugal is a licensed Portuguese private tour operator. Every day above
+            is an experience we run ourselves — with our own driver-guides, our own partners, and
+            tables our team eats at. No re-sold packages, no invented partners.
           </p>
           <div className="mt-8">
-            <CtaButton to="/multi-day">
-              Start composing your ten days
-            </CtaButton>
+            <CtaButton to="/multi-day">Start composing your ten days</CtaButton>
           </div>
         </div>
       </section>

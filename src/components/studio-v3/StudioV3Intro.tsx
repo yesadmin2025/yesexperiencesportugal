@@ -117,11 +117,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               aria-label="Studio preview updates now active"
               className="mx-auto mt-6 grid max-w-[18rem] grid-cols-1 gap-2 text-left sm:max-w-none sm:grid-cols-3"
             >
-              {[
-                "Live route map",
-                "Drive-time checks",
-                "Region-aware moments",
-              ].map((label) => (
+              {["Live route map", "Drive-time checks", "Region-aware moments"].map((label) => (
                 <span
                   key={label}
                   className="inline-flex min-h-[34px] items-center justify-center border px-3 text-center text-[9.5px] font-semibold uppercase leading-tight"

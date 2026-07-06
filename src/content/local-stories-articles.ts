@@ -75,9 +75,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "If Sintra calls you, we have a private Signature shaped around it — palaces, forest, and Cascais light.",
     ctaLabel: "See the Sintra & Cascais Signature",
     signatureSlug: "sintra-cascais",
-    relatedSignatures: [
-      { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine Signature" },
-    ],
+    relatedSignatures: [{ slug: "arrabida-wine-allinclusive", label: "Arrábida Wine Signature" }],
     datePublished: "2026-06-02",
   },
   {
@@ -403,9 +401,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "If Arrábida is calling, the all-inclusive wine Signature is our most-loved version of this day. Want the Alentejo one? The Évora Signature does that, in the same private, slow rhythm.",
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
-    relatedSignatures: [
-      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
-    ],
+    relatedSignatures: [{ slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" }],
     datePublished: "2026-06-12",
   },
   {
@@ -418,18 +414,25 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "The cellars we actually take guests to — small, family-run, and within an easy private drive of Lisbon.",
     sections: [
-      { heading: "Arrábida: the coast that quietly makes great wine", body: "[Body copy to be supplied.]" },
-      { heading: "Setúbal Moscatel — sweet, salty, and very Portuguese", body: "[Body copy to be supplied.]" },
-      { heading: "Alentejo talha wines — buried clay, ancient method", body: "[Body copy to be supplied.]" },
+      {
+        heading: "Arrábida: the coast that quietly makes great wine",
+        body: "[Body copy to be supplied.]",
+      },
+      {
+        heading: "Setúbal Moscatel — sweet, salty, and very Portuguese",
+        body: "[Body copy to be supplied.]",
+      },
+      {
+        heading: "Alentejo talha wines — buried clay, ancient method",
+        body: "[Body copy to be supplied.]",
+      },
       { heading: "How we choose which wineries to visit", body: "[Body copy to be supplied.]" },
     ],
     ctaLead:
       "Most of these wineries are part of our private Signature wine days — door-to-door from your Lisbon hotel, with a quiet long lunch in between.",
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
-    relatedSignatures: [
-      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
-    ],
+    relatedSignatures: [{ slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" }],
     datePublished: "2026-06-30",
     faq: [
       {
@@ -452,8 +455,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
 ];
 
-export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> =
-  Object.fromEntries(LOCAL_STORIES_ARTICLES.map((a) => [a.slug, a]));
+export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
+  LOCAL_STORIES_ARTICLES.map((a) => [a.slug, a]),
+);
 
 export function getLocalStoryArticle(slug: string): LocalStoryArticle | undefined {
   return LOCAL_STORIES_ARTICLES_BY_SLUG[slug];

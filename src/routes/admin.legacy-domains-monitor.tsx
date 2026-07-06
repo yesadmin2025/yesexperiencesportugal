@@ -7,10 +7,7 @@ import {
   probeLegacyHost,
   type LegacyHostReport,
 } from "@/lib/legacy-domains-monitor.functions";
-import {
-  submitLegacyGscActions,
-  type LegacyActionsReport,
-} from "@/lib/gscLegacyActions.functions";
+import { submitLegacyGscActions, type LegacyActionsReport } from "@/lib/gscLegacyActions.functions";
 import { LegacyDomainsHistoryChart } from "@/components/admin/LegacyDomainsHistoryChart";
 
 export const Route = createFileRoute("/admin/legacy-domains-monitor")({
@@ -85,16 +82,12 @@ function HostCard({
             <DnsRow label="AAAA" rows={r.dns.aaaa} />
             <DnsRow label="CNAME" rows={r.dns.cname} />
             <DnsRow label="NS" rows={r.dns.ns} />
-            {r.dns.error ? (
-              <div className="text-rose-600">DNS erro: {r.dns.error}</div>
-            ) : null}
+            {r.dns.error ? <div className="text-rose-600">DNS erro: {r.dns.error}</div> : null}
           </dl>
         </section>
 
         <section>
-          <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
-            HTTP
-          </h3>
+          <h3 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">HTTP</h3>
           <ul className="mt-2 space-y-2 text-xs">
             {r.http.map((p) => {
               const is410 = p.status === 410;
@@ -231,8 +224,8 @@ function LegacyDomainsMonitorPage() {
           <span className="font-serif italic font-normal text-[color:var(--teal)]">monitor</span>
         </h1>
         <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
-          Estado em tempo real de cada domínio legacy: resolução DNS (DoH Cloudflare), resposta
-          HTTP em <code>http://</code> e <code>https://</code>, e conformidade com{" "}
+          Estado em tempo real de cada domínio legacy: resolução DNS (DoH Cloudflare), resposta HTTP
+          em <code>http://</code> e <code>https://</code>, e conformidade com{" "}
           <strong>410 Gone</strong>. Atualiza a cada 60s.
         </p>
 
@@ -281,13 +274,9 @@ function LegacyDomainsMonitorPage() {
           ))}
         </section>
 
-
         <LegacyDomainsHistoryChart />
 
         <GscActionsPanel />
-
-
-
 
         <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5 text-sm text-[color:var(--charcoal-soft)]">
           <h3 className="text-base font-semibold text-[color:var(--charcoal)]">Como ler</h3>
@@ -301,12 +290,12 @@ function LegacyDomainsMonitorPage() {
               servidor antigo) — atualizar DNS para apontar para o site atual.
             </li>
             <li>
-              <strong>Vermelho:</strong> sem resposta HTTP — DNS provavelmente não resolve ou o
-              host está offline.
+              <strong>Vermelho:</strong> sem resposta HTTP — DNS provavelmente não resolve ou o host
+              está offline.
             </li>
             <li>
-              O servidor 410 está pronto em <code>src/lib/legacy-domain-redirect.ts</code>; só
-              entra em vigor quando o DNS do domínio legacy aponta para os servidores deste site.
+              O servidor 410 está pronto em <code>src/lib/legacy-domain-redirect.ts</code>; só entra
+              em vigor quando o DNS do domínio legacy aponta para os servidores deste site.
             </li>
           </ul>
         </section>

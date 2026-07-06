@@ -2,11 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
-import {
-  getDnsWatchStatus,
-  runDnsWatchNow,
-  type DnsWatchStatus,
-} from "@/lib/dns-watch.functions";
+import { getDnsWatchStatus, runDnsWatchNow, type DnsWatchStatus } from "@/lib/dns-watch.functions";
 
 export const Route = createFileRoute("/admin/dns-watch")({
   head: () => ({
@@ -32,13 +28,21 @@ const VERDICT_LABEL: Record<string, { label: string; cls: string }> = {
   "dns-wrong": { label: "DNS errado", cls: "bg-rose-100 text-rose-800 border-rose-300" },
   "http-down": { label: "HTTPS em baixo", cls: "bg-rose-100 text-rose-800 border-rose-300" },
   "http-error": { label: "HTTPS erro", cls: "bg-rose-100 text-rose-800 border-rose-300" },
-  "wrong-content": { label: "Conteúdo errado", cls: "bg-amber-100 text-amber-800 border-amber-300" },
+  "wrong-content": {
+    label: "Conteúdo errado",
+    cls: "bg-amber-100 text-amber-800 border-amber-300",
+  },
 };
 
 function VerdictBadge({ verdict }: { verdict: string }) {
-  const v = VERDICT_LABEL[verdict] ?? { label: verdict, cls: "bg-slate-100 text-slate-800 border-slate-300" };
+  const v = VERDICT_LABEL[verdict] ?? {
+    label: verdict,
+    cls: "bg-slate-100 text-slate-800 border-slate-300",
+  };
   return (
-    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] ${v.cls}`}>
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] ${v.cls}`}
+    >
       {v.label}
     </span>
   );
@@ -48,7 +52,9 @@ function CheckRow({ ok, label, detail }: { ok: boolean; label: string; detail: s
   return (
     <div className="flex items-start justify-between gap-3 border-t border-[color:var(--sand)] py-1.5 text-xs">
       <div className="flex items-center gap-2">
-        <span className={`inline-block h-1.5 w-1.5 rounded-full ${ok ? "bg-emerald-500" : "bg-rose-400"}`} />
+        <span
+          className={`inline-block h-1.5 w-1.5 rounded-full ${ok ? "bg-emerald-500" : "bg-rose-400"}`}
+        />
         <span className="font-medium text-[color:var(--charcoal)]">{label}</span>
       </div>
       <span className="text-right font-mono text-[11px] text-[color:var(--charcoal-soft)] break-all">
@@ -104,9 +110,7 @@ function DnsWatchPage() {
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
             Admin · Monitor
           </p>
-          <h1 className="mt-2 text-3xl font-semibold text-[color:var(--charcoal)]">
-            DNS Watch
-          </h1>
+          <h1 className="mt-2 text-3xl font-semibold text-[color:var(--charcoal)]">DNS Watch</h1>
           <p className="mt-2 max-w-2xl text-sm text-[color:var(--charcoal-soft)]">
             Verificação automática (a cada 15 min) dos registos DNS e da resposta HTTPS dos domínios
             ligados ao Lovable. Recebes uma notificação no browser assim que todos ficarem prontos.
@@ -129,9 +133,7 @@ function DnsWatchPage() {
           <>
             <section
               className={`mb-6 rounded-lg border p-6 ${
-                data.allReady
-                  ? "border-emerald-300 bg-emerald-50"
-                  : "border-amber-200 bg-amber-50"
+                data.allReady ? "border-emerald-300 bg-emerald-50" : "border-amber-200 bg-amber-50"
               }`}
             >
               <div className="flex items-center justify-between gap-4">
@@ -163,10 +165,15 @@ function DnsWatchPage() {
 
               <ul className="mt-4 grid gap-1.5 sm:grid-cols-2">
                 {data.hosts.map((h) => (
-                  <li key={`sum-${h.host}`} className="flex items-center justify-between gap-2 rounded-md border border-white/60 bg-white/60 px-3 py-1.5 text-xs">
+                  <li
+                    key={`sum-${h.host}`}
+                    className="flex items-center justify-between gap-2 rounded-md border border-white/60 bg-white/60 px-3 py-1.5 text-xs"
+                  >
                     <span className="flex items-center gap-2">
                       <StatusDot ready={h.ready} />
-                      <span className="font-mono text-[11px] text-[color:var(--charcoal)]">{h.host}</span>
+                      <span className="font-mono text-[11px] text-[color:var(--charcoal)]">
+                        {h.host}
+                      </span>
                     </span>
                     <VerdictBadge verdict={h.verdict} />
                   </li>
@@ -200,13 +207,22 @@ function DnsWatchPage() {
                   {(h.httpLocation || h.httpServer || h.httpContentType) && (
                     <dl className="mt-3 grid gap-1 border-t border-[color:var(--sand)] pt-2 text-[11px] text-[color:var(--charcoal-soft)] sm:grid-cols-3">
                       {h.httpServer && (
-                        <div><dt className="opacity-70">Server</dt><dd className="font-mono">{h.httpServer}</dd></div>
+                        <div>
+                          <dt className="opacity-70">Server</dt>
+                          <dd className="font-mono">{h.httpServer}</dd>
+                        </div>
                       )}
                       {h.httpContentType && (
-                        <div><dt className="opacity-70">Content-Type</dt><dd className="font-mono">{h.httpContentType}</dd></div>
+                        <div>
+                          <dt className="opacity-70">Content-Type</dt>
+                          <dd className="font-mono">{h.httpContentType}</dd>
+                        </div>
                       )}
                       {h.httpLocation && (
-                        <div><dt className="opacity-70">Location</dt><dd className="font-mono break-all">{h.httpLocation}</dd></div>
+                        <div>
+                          <dt className="opacity-70">Location</dt>
+                          <dd className="font-mono break-all">{h.httpLocation}</dd>
+                        </div>
                       )}
                     </dl>
                   )}
@@ -215,7 +231,6 @@ function DnsWatchPage() {
                 </article>
               ))}
             </section>
-
 
             <section className="mt-10">
               <h2 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
@@ -246,7 +261,10 @@ function DnsWatchPage() {
                     ))}
                     {data.history.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-3 py-4 text-center text-[color:var(--charcoal-soft)]">
+                        <td
+                          colSpan={5}
+                          className="px-3 py-4 text-center text-[color:var(--charcoal-soft)]"
+                        >
                           Ainda sem registos — o cron corre a cada 15 minutos.
                         </td>
                       </tr>

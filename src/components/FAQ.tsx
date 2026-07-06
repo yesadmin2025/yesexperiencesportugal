@@ -27,9 +27,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What is the difference between Signature, Studio and Travel Designer?",
     a: (
       <>
-        Signature is a private day, already designed by YES. Studio designs a private day in real time
-        around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed
-        around you and delivered as a travel file.
+        Signature is a private day, already designed by YES. Studio designs a private day in real
+        time around your mood, group and rhythm. Travel Designer is a full Portugal journey,
+        designed around you and delivered as a travel file.
       </>
     ),
   },
@@ -47,8 +47,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     a: (
       <>
         Always. A local from our team takes your request personally — never a call centre, never a
-        chatbot. For Travel Designer journeys, the conversation begins before anything is
-        confirmed.
+        chatbot. For Travel Designer journeys, the conversation begins before anything is confirmed.
       </>
     ),
   },
@@ -75,8 +74,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Do you offer private tours from Lisbon?",
     a: (
       <>
-        Yes. Every YES experience is fully private — your group only, your own local host, and a
-        car dedicated to your day. We depart from Lisbon (hotel or address pickup) across Sintra,
+        Yes. Every YES experience is fully private — your group only, your own local host, and a car
+        dedicated to your day. We depart from Lisbon (hotel or address pickup) across Sintra,
         Arrábida, Comporta, Évora, Alentejo and beyond.
       </>
     ),

@@ -43,7 +43,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // Whether we have real per-pax tier data for this tour (code or DB override).
   const hasTierData = Boolean(
     (tierOverrides?.[tour.id] && Object.keys(tierOverrides[tour.id] as object).length > 0) ||
-      getViatorMeta(tour.id)?.priceTiersEUR,
+    getViatorMeta(tour.id)?.priceTiersEUR,
   );
 
   // Embedded checkout state
@@ -117,7 +117,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       setPending(false);
     }
   };
-
 
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
@@ -244,8 +243,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         ) : null}
       </div>
 
-
-
       <button
         type="button"
         onClick={() => setDetailsOpen(true)}
@@ -330,7 +327,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     </div>
   );
 }
-
 
 function Field({
   label,

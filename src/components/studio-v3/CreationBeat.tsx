@@ -17,7 +17,6 @@ import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-min
 import type { SilhouetteRegion } from "./PortugalSilhouette";
 import { RouteLegend } from "./RouteLegend";
 
-
 interface AtmosphereBeatProps {
   /** Existing Studio V3 atmospheric image (must already be imported upstream). */
   imageSrc?: string;
@@ -163,7 +162,6 @@ interface MapBeatProps {
   line: string;
 }
 
-
 /** Pin count by rhythm — slow = fewer, full/immersive = richer. */
 function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
   switch (rhythm) {
@@ -244,7 +242,8 @@ export function MapBeat({
   // identical coords so an inherited fallback never yields a spurious 0-min
   // leg. Falls back silently to haversine inside StudioV3SignatureMap.
   const rawLegStops: RouteLegStop[] | null =
-    originCoord && stopsDetailed.every((d) => typeof d.lat === "number" && typeof d.lng === "number")
+    originCoord &&
+    stopsDetailed.every((d) => typeof d.lat === "number" && typeof d.lng === "number")
       ? [
           { key: "origin", lat: originCoord.lat, lng: originCoord.lng },
           ...stopsDetailed.slice(0, activeCount).map((d, i) => ({
@@ -255,7 +254,9 @@ export function MapBeat({
         ]
       : null;
   const legStops: RouteLegStop[] | null = rawLegStops
-    ? rawLegStops.filter((s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng)
+    ? rawLegStops.filter(
+        (s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng,
+      )
     : null;
   const { legMinutes, legDistancesKm, legModes } = useRouteLegMinutes(
     legStops,
@@ -275,15 +276,15 @@ export function MapBeat({
             ? "centro"
             : null;
 
-
-
   return (
     <div
       className="relative w-full h-full flex items-center justify-center px-5"
       data-testid="studio-v3-map-beat"
       data-map-beat-mode={mode}
       data-beat-rendered="true"
-      data-origin-coord={originCoord ? `${originCoord.lat.toFixed(4)},${originCoord.lng.toFixed(4)}` : "none"}
+      data-origin-coord={
+        originCoord ? `${originCoord.lat.toFixed(4)},${originCoord.lng.toFixed(4)}` : "none"
+      }
       data-active-stops={activeCount}
     >
       <div className="relative z-10 w-full max-w-[480px]">
@@ -319,7 +320,6 @@ export function MapBeat({
             }
           />
         </div>
-
 
         {activeCount > 0 && labels.length > 0 && legMinutes && legMinutes.length > 0 ? (
           <div className="mt-4">

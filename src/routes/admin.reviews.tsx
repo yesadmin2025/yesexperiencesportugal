@@ -29,14 +29,9 @@ import { scrapeTourReviews, listScrapeRuns } from "@/lib/reviewsScrape.functions
 export const Route = createFileRoute("/admin/reviews")({
   component: AdminReviewsPage,
   head: () => ({
-    meta: [
-      { title: "Reviews · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Reviews · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
-  errorComponent: ({ error }) => (
-    <div className="p-8 text-red-700">Error: {error.message}</div>
-  ),
+  errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {error.message}</div>,
   notFoundComponent: () => <div className="p-8">Not found</div>,
 });
 
@@ -88,8 +83,8 @@ function AdminReviewsPage() {
     <div className="max-w-6xl mx-auto px-5 md:px-8 py-10">
       <h1 className="text-3xl font-medium text-[color:var(--charcoal)]">Reviews</h1>
       <p className="mt-2 text-[color:var(--charcoal)]/70 text-sm">
-        Real data only. Scraped platform reviews go to the approval queue —
-        nothing appears on /reviews or in JSON-LD until you approve it.
+        Real data only. Scraped platform reviews go to the approval queue — nothing appears on
+        /reviews or in JSON-LD until you approve it.
       </p>
 
       <ApprovalQueueSection />
@@ -161,9 +156,10 @@ function ScrapeSection() {
     <section className="mt-12">
       <h2 className="text-xl font-medium">Scrape platform reviews</h2>
       <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
-        Paste the public Viator / Tripadvisor / GetYourGuide listing URL. Real review
-        cards are extracted by Firecrawl, deduped per source, and stored verbatim.
-        Every scraped review lands in the <strong>approval queue</strong> at the top — nothing is published until you approve it.
+        Paste the public Viator / Tripadvisor / GetYourGuide listing URL. Real review cards are
+        extracted by Firecrawl, deduped per source, and stored verbatim. Every scraped review lands
+        in the <strong>approval queue</strong> at the top — nothing is published until you approve
+        it.
       </p>
 
       <form onSubmit={onScrape} className="mt-4 grid gap-2 md:grid-cols-6 items-end">
@@ -210,9 +206,7 @@ function ScrapeSection() {
         </button>
       </form>
 
-      {msg && (
-        <p className="mt-3 text-sm text-[color:var(--charcoal)]/80">{msg}</p>
-      )}
+      {msg && <p className="mt-3 text-sm text-[color:var(--charcoal)]/80">{msg}</p>}
 
       {runs.length > 0 && (
         <div className="mt-5">
@@ -244,9 +238,7 @@ function ScrapeSection() {
                   {new Date(r.created_at).toLocaleString()}
                 </span>
                 {r.error && (
-                  <span className="text-[11px] text-red-700/80 basis-full">
-                    {r.error}
-                  </span>
+                  <span className="text-[11px] text-red-700/80 basis-full">{r.error}</span>
                 )}
               </li>
             ))}
@@ -495,7 +487,14 @@ function ReviewsSection() {
           source_url: form.source_url || null,
         },
       });
-      setForm({ ...form, title: "", body: "", reviewer_name: "", reviewer_country: "", source_url: "" });
+      setForm({
+        ...form,
+        title: "",
+        body: "",
+        reviewer_name: "",
+        reviewer_country: "",
+        source_url: "",
+      });
       await refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed");
@@ -508,8 +507,8 @@ function ReviewsSection() {
     <section className="mt-12">
       <h2 className="text-xl font-medium">Display reviews</h2>
       <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
-        Add real review quotes (third-party reviews must link to the original).
-        First-party reviews arrive here automatically via the public form.
+        Add real review quotes (third-party reviews must link to the original). First-party reviews
+        arrive here automatically via the public form.
       </p>
 
       <form onSubmit={onAdd} className="mt-4 grid gap-2 md:grid-cols-4">
@@ -643,12 +642,7 @@ function ReviewsSection() {
                 {r.source_url && (
                   <>
                     {" · "}
-                    <a
-                      href={r.source_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline"
-                    >
+                    <a href={r.source_url} target="_blank" rel="noreferrer" className="underline">
                       source
                     </a>
                   </>
@@ -680,7 +674,9 @@ function TokenSection() {
     try {
       const row = await createFn({ data: form });
       const origin =
-        typeof window !== "undefined" ? window.location.origin : "https://yesexperiencesportugal.com";
+        typeof window !== "undefined"
+          ? window.location.origin
+          : "https://yesexperiencesportugal.com";
       setLast(`${origin}/review/${(row as { token: string }).token}`);
       setForm({ ...form, guest_email: "", guest_name: "" });
     } catch (err) {
@@ -694,8 +690,8 @@ function TokenSection() {
     <section className="mt-12 mb-20">
       <h2 className="text-xl font-medium">First-party review invites</h2>
       <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
-        Generate a one-time link to send a past guest. Their review is auto-marked verified
-        and is the only kind we expose to schema.
+        Generate a one-time link to send a past guest. Their review is auto-marked verified and is
+        the only kind we expose to schema.
       </p>
       <form onSubmit={onCreate} className="mt-3 grid gap-2 md:grid-cols-4">
         <select
@@ -801,7 +797,8 @@ function ApprovalQueueSection() {
 
   async function bulk(decision: "approve" | "reject") {
     if (selected.size === 0) return;
-    if (!confirm(`${decision === "approve" ? "Approve" : "Reject"} ${selected.size} review(s)?`)) return;
+    if (!confirm(`${decision === "approve" ? "Approve" : "Reject"} ${selected.size} review(s)?`))
+      return;
     setBusy(true);
     try {
       await bulkFn({ data: { ids: Array.from(selected), decision } });
@@ -828,8 +825,8 @@ function ApprovalQueueSection() {
             )}
           </h2>
           <p className="text-sm text-[color:var(--charcoal)]/65 mt-1">
-            Scraped reviews from Viator / Tripadvisor / GetYourGuide. Only approved
-            reviews appear on the public /reviews page and in aggregate counts.
+            Scraped reviews from Viator / Tripadvisor / GetYourGuide. Only approved reviews appear
+            on the public /reviews page and in aggregate counts.
           </p>
         </div>
         <div className="flex gap-1 text-sm">
@@ -897,9 +894,7 @@ function ApprovalQueueSection() {
         {loading && <p className="text-sm">Loading…</p>}
         {!loading && rows.length === 0 && (
           <p className="text-sm text-[color:var(--charcoal)]/60">
-            {tab === "pending"
-              ? "Nothing waiting — the queue is clear."
-              : `No ${tab} reviews.`}
+            {tab === "pending" ? "Nothing waiting — the queue is clear." : `No ${tab} reviews.`}
           </p>
         )}
         <ul className="space-y-3 list-none p-0">
@@ -921,9 +916,7 @@ function ApprovalQueueSection() {
                     <span className="uppercase text-[11px] tracking-wide text-[color:var(--charcoal)]/60">
                       {r.source}
                     </span>
-                    <span className="text-[color:var(--gold)] font-medium">
-                      {r.rating}★
-                    </span>
+                    <span className="text-[color:var(--gold)] font-medium">{r.rating}★</span>
                     {r.language && r.language !== "en" && (
                       <span className="text-[10px] uppercase tracking-wide text-[color:var(--charcoal)]/50">
                         {r.language}
@@ -941,9 +934,7 @@ function ApprovalQueueSection() {
                     )}
                   </div>
                   {r.title && (
-                    <p className="mt-1 font-medium text-[color:var(--charcoal)]">
-                      {r.title}
-                    </p>
+                    <p className="mt-1 font-medium text-[color:var(--charcoal)]">{r.title}</p>
                   )}
                   <p className="mt-1 text-[color:var(--charcoal)]/85">{r.body}</p>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal)]/55">

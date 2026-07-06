@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
 
-
 // Pages from the same real, anonymised private travel file used on
 // the /multi-day Travel Designer page — kept in sync so the homepage
 // proof and the deep page show the exact same document.
@@ -488,16 +487,11 @@ export function RecentJourney() {
             >
               Start the conversation
             </CtaButton>
-            <CtaButton
-              to="/contact"
-              variant="hairline"
-              aria-label="Talk to a designer"
-            >
+            <CtaButton to="/contact" variant="hairline" aria-label="Talk to a designer">
               Talk to a designer
             </CtaButton>
           </div>
         </div>
-
       </div>
     </section>
   );

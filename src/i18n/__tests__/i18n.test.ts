@@ -8,12 +8,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import {
-  DEFAULT_LOCALE,
-  buildLocaleUrl,
-  parseLocaleFromPath,
-  localePrefix,
-} from "@/i18n/config";
+import { DEFAULT_LOCALE, buildLocaleUrl, parseLocaleFromPath, localePrefix } from "@/i18n/config";
 import { buildI18nHead } from "@/i18n/seo";
 import { getDictionary, translate } from "@/i18n/dictionaries";
 
@@ -39,12 +34,8 @@ describe("i18n / config", () => {
   });
 
   it("builds locale-aware absolute URLs", () => {
-    expect(buildLocaleUrl("/about", "en")).toBe(
-      "https://yesexperiencesportugal.com/about",
-    );
-    expect(buildLocaleUrl("/about", "es")).toBe(
-      "https://yesexperiencesportugal.com/es/about",
-    );
+    expect(buildLocaleUrl("/about", "en")).toBe("https://yesexperiencesportugal.com/about");
+    expect(buildLocaleUrl("/about", "es")).toBe("https://yesexperiencesportugal.com/es/about");
     expect(buildLocaleUrl("/", "pt")).toBe("https://yesexperiencesportugal.com/pt");
   });
 });

@@ -30,10 +30,7 @@ import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
-import {
-  recordStudioV3RevealPremium,
-  recordStudioV3RevealAddOns,
-} from "@/lib/studio-v3-telemetry";
+import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
@@ -149,14 +146,10 @@ export function SignaturePriceCard({
     if (!tour) return;
     const bucket = regionBucket(tour.region);
     const anchorSub =
-      bucket === "lisbon-arrabida"
-        ? LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null
-        : null;
+      bucket === "lisbon-arrabida" ? (LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null) : null;
     const mismatch =
       bucket === "lisbon-arrabida" && anchorSub
-        ? availableAddOns.some(
-            (a) => a.lisbonSubRegion && a.lisbonSubRegion !== anchorSub,
-          )
+        ? availableAddOns.some((a) => a.lisbonSubRegion && a.lisbonSubRegion !== anchorSub)
         : false;
     recordStudioV3RevealAddOns({
       surface: "price-card",
@@ -208,8 +201,7 @@ export function SignaturePriceCard({
     () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
     [selectedAddOns],
   );
-  const freeMinutes =
-    remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
+  const freeMinutes = remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
 
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND
   // we know the guest count, `realPerPax.real === true` and we display the
@@ -469,7 +461,8 @@ export function SignaturePriceCard({
                 style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
               >
                 <span style={{ color: "var(--gold)" }}>—</span>
-                Drops to <span style={{ color: "var(--charcoal)" }}>€{cheapestRealTier.eur}</span> / pp with {cheapestRealTier.tier === 8 ? "8+" : cheapestRealTier.tier} guests
+                Drops to <span style={{ color: "var(--charcoal)" }}>€{cheapestRealTier.eur}</span> /
+                pp with {cheapestRealTier.tier === 8 ? "8+" : cheapestRealTier.tier} guests
               </button>
             ) : null}
           </>
@@ -735,45 +728,61 @@ export function SignaturePriceCard({
             >
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
-            {remainingMinutes != null && remainingMinutes > 0 ? (() => {
-              const totalBudget = remainingMinutes; // free minutes on the base day
-              const usedPct = Math.min(100, Math.round((addOnsMinutes / totalBudget) * 100));
-              const over = freeMinutes != null && freeMinutes < 0;
-              const overBy = over ? Math.abs(freeMinutes ?? 0) : 0;
-              const barColor = over
-                ? "color-mix(in oklab, #b8541a 75%, transparent)"
-                : "color-mix(in oklab, var(--gold) 80%, transparent)";
-              return (
-                <div
-                  data-testid="studio-v3-time-budget"
-                  data-addons-minutes={addOnsMinutes}
-                  data-free-minutes={freeMinutes ?? ""}
-                  className="mb-3 rounded-[4px] px-3 py-2"
-                  style={{
-                    background: "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
-                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                  }}
-                >
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
-                    <span>
-                      <span style={{ color: "var(--gold)" }}>—</span> Day rhythm
-                    </span>
-                    <span className="tabular-nums" style={{ color: over ? "#b8541a" : "var(--charcoal)" }}>
-                      {addOnsMinutes > 0 ? `+${addOnsMinutes} min` : `${totalBudget} min free`}
-                      {over ? ` · over by ${overBy} min` : addOnsMinutes > 0 && freeMinutes != null ? ` · ${freeMinutes} min still free` : ""}
-                    </span>
-                  </div>
-                  <div className="mt-1.5 relative h-1.5 w-full overflow-hidden rounded-full" style={{ background: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+            {remainingMinutes != null && remainingMinutes > 0
+              ? (() => {
+                  const totalBudget = remainingMinutes; // free minutes on the base day
+                  const usedPct = Math.min(100, Math.round((addOnsMinutes / totalBudget) * 100));
+                  const over = freeMinutes != null && freeMinutes < 0;
+                  const overBy = over ? Math.abs(freeMinutes ?? 0) : 0;
+                  const barColor = over
+                    ? "color-mix(in oklab, #b8541a 75%, transparent)"
+                    : "color-mix(in oklab, var(--gold) 80%, transparent)";
+                  return (
                     <div
-                      className="absolute inset-y-0 left-0 transition-[width] duration-[280ms] ease-out"
-                      style={{ width: `${usedPct}%`, background: barColor }}
-                    />
-                  </div>
-                </div>
-              );
-            })() : null}
+                      data-testid="studio-v3-time-budget"
+                      data-addons-minutes={addOnsMinutes}
+                      data-free-minutes={freeMinutes ?? ""}
+                      className="mb-3 rounded-[4px] px-3 py-2"
+                      style={{
+                        background: "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
+                        border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                      }}
+                    >
+                      <div
+                        className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+                      >
+                        <span>
+                          <span style={{ color: "var(--gold)" }}>—</span> Day rhythm
+                        </span>
+                        <span
+                          className="tabular-nums"
+                          style={{ color: over ? "#b8541a" : "var(--charcoal)" }}
+                        >
+                          {addOnsMinutes > 0 ? `+${addOnsMinutes} min` : `${totalBudget} min free`}
+                          {over
+                            ? ` · over by ${overBy} min`
+                            : addOnsMinutes > 0 && freeMinutes != null
+                              ? ` · ${freeMinutes} min still free`
+                              : ""}
+                        </span>
+                      </div>
+                      <div
+                        className="mt-1.5 relative h-1.5 w-full overflow-hidden rounded-full"
+                        style={{
+                          background: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                        }}
+                      >
+                        <div
+                          className="absolute inset-y-0 left-0 transition-[width] duration-[280ms] ease-out"
+                          style={{ width: `${usedPct}%`, background: barColor }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()
+              : null}
             <ul className="flex flex-col gap-2">
-
               {availableAddOns.map((a) => {
                 const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
 
@@ -845,7 +854,9 @@ export function SignaturePriceCard({
                         {!fits ? (
                           <span
                             className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
-                            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                            style={{
+                              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                            }}
                             data-testid="addon-budget-locked"
                           >
                             Won't fit this day ({a.durationMinutes}m)
@@ -865,13 +876,14 @@ export function SignaturePriceCard({
                         {a.durationMinutes > 0 ? (
                           <span
                             className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold"
-                            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                            style={{
+                              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                            }}
                           >
                             +{a.durationMinutes} min
                           </span>
                         ) : null}
                       </span>
-
                     </button>
                   </li>
                 );
@@ -1005,65 +1017,65 @@ export function SignaturePriceCard({
           </section>
         ) : null}
 
-
         {/* Blueprint truth — Optionals from the Tailor blueprint, surfaced
             here read-only so the builder traveller sees what's *truthfully*
             optional on this Signature. No invented prices, no toggles —
             the day is already complete; these are "if the rhythm allows"
             additions a host confirms after booking. Single source of truth:
             src/data/tailorBlueprints.ts via getSignatureOptionalAddOns(). */}
-        {hasPrice && tour ? (() => {
-          const optionals = getSignatureOptionalAddOns(tour.id);
-          if (!optionals || optionals.length === 0) return null;
-          return (
-            <section
-              data-testid="studio-v3-blueprint-optionals"
-              className="mt-3 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
-              style={{
-                background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
-                border: "1px dashed color-mix(in oklab, var(--gold) 32%, transparent)",
-              }}
-              aria-label="Optional stops on this Signature"
-            >
-              <p
-                className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-              >
-                <span style={{ color: "var(--gold)" }}>—</span>
-                Optional, if the day allows
-              </p>
-              <ul className="mt-2 flex flex-col gap-1.5">
-                {optionals.slice(0, 3).map((o) => (
-                  <li
-                    key={`bp-opt-${o.id}`}
-                    className="flex items-start gap-2 text-[12px] leading-snug"
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+        {hasPrice && tour
+          ? (() => {
+              const optionals = getSignatureOptionalAddOns(tour.id);
+              if (!optionals || optionals.length === 0) return null;
+              return (
+                <section
+                  data-testid="studio-v3-blueprint-optionals"
+                  className="mt-3 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
+                  style={{
+                    background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+                    border: "1px dashed color-mix(in oklab, var(--gold) 32%, transparent)",
+                  }}
+                  aria-label="Optional stops on this Signature"
+                >
+                  <p
+                    className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
                   >
-                    <span
-                      aria-hidden
-                      className="mt-[6px] inline-block h-[5px] w-[5px] shrink-0 rounded-full"
-                      style={{ background: "var(--gold)" }}
-                    />
-                    <span>
-                      <span className="font-medium">{o.label}</span>
-                      {o.blurb ? (
+                    <span style={{ color: "var(--gold)" }}>—</span>
+                    Optional, if the day allows
+                  </p>
+                  <ul className="mt-2 flex flex-col gap-1.5">
+                    {optionals.slice(0, 3).map((o) => (
+                      <li
+                        key={`bp-opt-${o.id}`}
+                        className="flex items-start gap-2 text-[12px] leading-snug"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                      >
                         <span
-                          className="block text-[11px] mt-0.5"
-                          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-                        >
-                          {o.blurb}
+                          aria-hidden
+                          className="mt-[6px] inline-block h-[5px] w-[5px] shrink-0 rounded-full"
+                          style={{ background: "var(--gold)" }}
+                        />
+                        <span>
+                          <span className="font-medium">{o.label}</span>
+                          {o.blurb ? (
+                            <span
+                              className="block text-[11px] mt-0.5"
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                              }}
+                            >
+                              {o.blurb}
+                            </span>
+                          ) : null}
                         </span>
-                      ) : null}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })() : null}
-
-
-
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })()
+          : null}
 
         {/* S4 — Inclusions footnote: what's actually in the day. Real data
             from the resolved Signature's `included[]`; never invented. */}
@@ -1114,26 +1126,36 @@ export function SignaturePriceCard({
         {hasPrice ? (
           <>
             <MountBadge name="TrustStrip" detail="rendered (hasPrice=true)" />
-          <div
-            data-testid="studio-v3-trust-strip"
-            className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span className="inline-flex items-center gap-1.5">
-              <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-              Real itinerary
-            </span>
-            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}>·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-              Local designer review
-            </span>
-            <span aria-hidden style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}>·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-              Free cancellation 48h
-            </span>
-          </div>
+            <div
+              data-testid="studio-v3-trust-strip"
+              className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
+                Real itinerary
+              </span>
+              <span
+                aria-hidden
+                style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}
+              >
+                ·
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
+                Local designer review
+              </span>
+              <span
+                aria-hidden
+                style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}
+              >
+                ·
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
+                Free cancellation 48h
+              </span>
+            </div>
           </>
         ) : null}
 
@@ -1147,12 +1169,21 @@ export function SignaturePriceCard({
               style={{
                 background: "var(--charcoal)",
                 color: "var(--ivory)",
-                boxShadow: "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                boxShadow:
+                  "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Yes — reserve{partyTotalEur != null ? ` · €${partyTotalEur}` : totalEur != null ? ` · €${totalEur} /pp` : ""}
-
-              <ArrowRight size={14} aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5" />
+              Yes — reserve
+              {partyTotalEur != null
+                ? ` · €${partyTotalEur}`
+                : totalEur != null
+                  ? ` · €${totalEur} /pp`
+                  : ""}
+              <ArrowRight
+                size={14}
+                aria-hidden
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
             </button>
           ) : (
             <a
@@ -1208,7 +1239,13 @@ export function SignaturePriceCard({
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >
-            Yes — reserve{partyTotalEur != null ? ` · €${partyTotalEur}` : totalEur != null ? ` · €${totalEur} /pp` : ""} <ArrowRight size={14} aria-hidden />
+            Yes — reserve
+            {partyTotalEur != null
+              ? ` · €${partyTotalEur}`
+              : totalEur != null
+                ? ` · €${totalEur} /pp`
+                : ""}{" "}
+            <ArrowRight size={14} aria-hidden />
           </button>
           <p
             className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
@@ -1223,9 +1260,7 @@ export function SignaturePriceCard({
           WhatsApp when the traveller is about to leave the reveal. Real save:
           the composed journey title goes into the message body, the YES team
           replies with the confirmed investment. No fabricated urgency. */}
-      {hasPrice ? (
-        <ExitIntentSave journeyTitle={journeyTitle ?? null} />
-      ) : null}
+      {hasPrice ? <ExitIntentSave journeyTitle={journeyTitle ?? null} /> : null}
     </section>
   );
 }
@@ -1278,7 +1313,12 @@ function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
   };
 
   if (!open || dismissed) {
-    return <MountBadge name="ExitIntent" detail={dismissed ? "dismissed" : "armed (waiting for trigger)"} />;
+    return (
+      <MountBadge
+        name="ExitIntent"
+        detail={dismissed ? "dismissed" : "armed (waiting for trigger)"}
+      />
+    );
   }
 
   const message = journeyTitle
@@ -1326,8 +1366,8 @@ function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
           className="mt-2 text-[12.5px] leading-snug"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
-          A YES curator will hold the composition you just built and reply with
-          the exact investment for your dates — no payment, no pressure.
+          A YES curator will hold the composition you just built and reply with the exact investment
+          for your dates — no payment, no pressure.
         </p>
         <div className="mt-4 flex flex-col items-center gap-2">
           <a

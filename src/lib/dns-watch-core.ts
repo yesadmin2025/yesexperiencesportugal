@@ -109,7 +109,14 @@ async function probeHttps(host: string): Promise<HttpProbe> {
       bodySample,
     };
   } catch {
-    return { status: null, ok: false, location: null, server: null, contentType: null, bodySample: "" };
+    return {
+      status: null,
+      ok: false,
+      location: null,
+      server: null,
+      contentType: null,
+      bodySample: "",
+    };
   }
 }
 
@@ -129,7 +136,9 @@ export async function probeHost(host: string): Promise<DnsWatchProbe> {
     ]);
     aRecords = aAns.filter((a) => a.type === TYPE_A).map((a) => a.data);
     txtRecords = txtAns.filter((a) => a.type === TYPE_TXT).map((a) => unquoteTxt(a.data));
-    cnameRecords = cnameAns.filter((a) => a.type === TYPE_CNAME).map((a) => a.data.replace(/\.$/, ""));
+    cnameRecords = cnameAns
+      .filter((a) => a.type === TYPE_CNAME)
+      .map((a) => a.data.replace(/\.$/, ""));
   } catch (e) {
     dnsErr = e instanceof Error ? e.message : String(e);
   }
@@ -200,7 +209,10 @@ export async function probeHost(host: string): Promise<DnsWatchProbe> {
     {
       label: "HTTPS",
       ok: http.ok,
-      detail: http.status !== null ? `${http.status}${http.server ? ` · ${http.server}` : ""}` : "sem resposta",
+      detail:
+        http.status !== null
+          ? `${http.status}${http.server ? ` · ${http.server}` : ""}`
+          : "sem resposta",
     },
     {
       label: "Conteúdo YES",

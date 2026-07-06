@@ -13,7 +13,8 @@
 import { test, expect } from "@playwright/test";
 
 const VIDEO_SELECTOR = 'section[aria-label="YES Experiences Portugal"] video';
-const POSTER_IMG_SELECTOR = 'section[aria-label="YES Experiences Portugal"] picture img[fetchPriority="high"]';
+const POSTER_IMG_SELECTOR =
+  'section[aria-label="YES Experiences Portugal"] picture img[fetchPriority="high"]';
 
 const VIEWPORTS = [
   {

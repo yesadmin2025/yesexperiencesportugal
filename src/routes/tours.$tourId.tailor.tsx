@@ -1,12 +1,18 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info, Loader2 } from "lucide-react";
-import { SiteLayout } from "@/components/SiteLayout";
 import {
-  findTour,
-  type SignatureTour,
-  type TourStop,
-} from "@/data/signatureTours";
+  ArrowLeft,
+  Check,
+  Clock,
+  MapPin,
+  Sparkles,
+  MessageCircle,
+  Lock,
+  Info,
+  Loader2,
+} from "lucide-react";
+import { SiteLayout } from "@/components/SiteLayout";
+import { findTour, type SignatureTour, type TourStop } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
@@ -27,7 +33,6 @@ import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
-
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -110,7 +115,9 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">Signature not found</h1>
+          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">
+            Signature not found
+          </h1>
           <p className="mt-4 text-[color:var(--charcoal-soft)]">
             That Signature Experience doesn't exist anymore.
           </p>
@@ -128,7 +135,9 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-3xl" data-mixed-emphasis="exempt">Something went sideways</h1>
+          <h1 className="serif text-3xl" data-mixed-emphasis="exempt">
+            Something went sideways
+          </h1>
           <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
         </div>
       </section>
@@ -329,10 +338,6 @@ function TailorPage() {
     return Math.max(floor, Math.round(p));
   }, [basePerPax, added, skipped, addons, lunch]);
 
-
-
-
-
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
     const next = new Set(current);
@@ -425,7 +430,6 @@ function TailorPage() {
       setCheckoutPending(false);
     }
   };
-
 
   return (
     <SiteLayout>
@@ -662,7 +666,8 @@ function TailorPage() {
                     Included by default
                   </p>
                   <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
-                    Skip any stop you'd rather trade for time elsewhere — your guide will suggest an alternative or extend the next stop.
+                    Skip any stop you'd rather trade for time elsewhere — your guide will suggest an
+                    alternative or extend the next stop.
                   </p>
                   <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                     {blueprint.core.map((s) => {
@@ -723,9 +728,7 @@ function TailorPage() {
                             <span
                               className={[
                                 "w-9 flex items-center justify-center text-[color:var(--ivory)]",
-                                isSkipped
-                                  ? "bg-[color:var(--border)]"
-                                  : "bg-[color:var(--teal)]",
+                                isSkipped ? "bg-[color:var(--border)]" : "bg-[color:var(--teal)]",
                               ].join(" ")}
                               aria-hidden
                             >
@@ -1295,7 +1298,6 @@ function TailorPage() {
         }}
       />
     </SiteLayout>
-
   );
 }
 

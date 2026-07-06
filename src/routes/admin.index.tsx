@@ -72,10 +72,7 @@ function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
-    meta: [
-      { title: "Admin overview — YES" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Admin overview — YES" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminOverviewPage,
   errorComponent: ErrorView,
@@ -141,7 +138,7 @@ function AdminOverviewPage() {
         _user_id: s.user.id,
         _role: "admin",
       });
-      // eslint-disable-next-line no-console
+
       console.log("[admin] has_role", { data, error });
       if (!cancelled) {
         setIsAdmin(!error && data === true);
@@ -202,9 +199,17 @@ function AdminOverviewPage() {
     if (!isAdmin) return;
     const channel = supabase
       .channel("admin-overview")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "bookings" }, () => fetchAll())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, () => fetchAll())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "studio_v3_leads" }, () => fetchAll())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "bookings" }, () =>
+        fetchAll(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "contact_messages" },
+        () => fetchAll(),
+      )
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "studio_v3_leads" }, () =>
+        fetchAll(),
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
@@ -235,7 +240,11 @@ function AdminOverviewPage() {
         <section className="pt-28 pb-20 container-x max-w-2xl">
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
           <h1 className="mt-1 text-3xl">
-            {!authChecked ? "A verificar sessão…" : !session ? "A redirecionar…" : "Sem autorização"}
+            {!authChecked
+              ? "A verificar sessão…"
+              : !session
+                ? "A redirecionar…"
+                : "Sem autorização"}
           </h1>
           <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
             {!session
@@ -253,17 +262,18 @@ function AdminOverviewPage() {
     );
   }
 
-
   return (
     <SiteLayout>
       <section className="pt-28 pb-20 container-x max-w-7xl">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              Admin
+            </p>
             <h1 className="mt-1 text-3xl">Painel de atividade</h1>
             <p className="mt-2 text-sm text-[color:var(--charcoal-soft)] max-w-2xl">
-              Reservas, mensagens de contacto e pedidos do Studio em tempo real. Atualiza automaticamente a cada 30 s
-              e a cada nova entrada.
+              Reservas, mensagens de contacto e pedidos do Studio em tempo real. Atualiza
+              automaticamente a cada 30 s e a cada nova entrada.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -338,7 +348,9 @@ function AdminOverviewPage() {
                       <Td>
                         <div>{b.customer_email ?? "—"}</div>
                         {b.customer_phone && (
-                          <div className="text-[11px] text-[color:var(--charcoal-soft)]">{b.customer_phone}</div>
+                          <div className="text-[11px] text-[color:var(--charcoal-soft)]">
+                            {b.customer_phone}
+                          </div>
                         )}
                       </Td>
                       <Td>{b.source_tour_id ?? "—"}</Td>
@@ -391,7 +403,9 @@ function AdminOverviewPage() {
                     </div>
                   </div>
                   {m.message && (
-                    <p className="mt-1 text-sm text-[color:var(--charcoal)] whitespace-pre-wrap">{m.message}</p>
+                    <p className="mt-1 text-sm text-[color:var(--charcoal)] whitespace-pre-wrap">
+                      {m.message}
+                    </p>
                   )}
                 </li>
               ))}
@@ -431,11 +445,15 @@ function AdminOverviewPage() {
                       </a>
                     )}
                     {l.contact_phone && (
-                      <span className="ml-2 text-xs text-[color:var(--charcoal-soft)]">{l.contact_phone}</span>
+                      <span className="ml-2 text-xs text-[color:var(--charcoal-soft)]">
+                        {l.contact_phone}
+                      </span>
                     )}
                   </div>
                   {l.contact_note && (
-                    <p className="mt-1 text-sm text-[color:var(--charcoal)] whitespace-pre-wrap">{l.contact_note}</p>
+                    <p className="mt-1 text-sm text-[color:var(--charcoal)] whitespace-pre-wrap">
+                      {l.contact_note}
+                    </p>
                   )}
                 </li>
               ))}
@@ -449,7 +467,15 @@ function AdminOverviewPage() {
   );
 }
 
-function SummaryTile({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
+function SummaryTile({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}) {
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-4">
       <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
@@ -499,12 +525,14 @@ function StatusBadge({ value }: { value: string | null }) {
     s === "paid" || s === "confirmed"
       ? "bg-emerald-50 text-emerald-800 border-emerald-200"
       : s === "pending"
-      ? "bg-amber-50 text-amber-900 border-amber-200"
-      : s === "failed" || s === "canceled"
-      ? "bg-red-50 text-red-800 border-red-200"
-      : "bg-[color:var(--sand)] text-[color:var(--charcoal)] border-[color:var(--border)]";
+        ? "bg-amber-50 text-amber-900 border-amber-200"
+        : s === "failed" || s === "canceled"
+          ? "bg-red-50 text-red-800 border-red-200"
+          : "bg-[color:var(--sand)] text-[color:var(--charcoal)] border-[color:var(--border)]";
   return (
-    <span className={`inline-flex items-center border px-2 py-0.5 text-[11px] uppercase tracking-wider ${tone}`}>
+    <span
+      className={`inline-flex items-center border px-2 py-0.5 text-[11px] uppercase tracking-wider ${tone}`}
+    >
       {value ?? "—"}
     </span>
   );

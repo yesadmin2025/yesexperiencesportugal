@@ -73,14 +73,8 @@ function auditHtml(url: string, status: number, html: string): SeoAuditResult {
   );
   const canonical = pick(html, /<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']*)["']/i);
   const robotsMeta = pick(html, /<meta[^>]+name=["']robots["'][^>]+content=["']([^"']*)["']/i);
-  const ogTitle = pick(
-    html,
-    /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']*)["']/i,
-  );
-  const ogImage = pick(
-    html,
-    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']*)["']/i,
-  );
+  const ogTitle = pick(html, /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']*)["']/i);
+  const ogImage = pick(html, /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']*)["']/i);
   const h1Count = (html.match(/<h1[\s>]/gi) || []).length;
   const jsonLdBlocks = (html.match(/<script[^>]+type=["']application\/ld\+json["']/gi) || [])
     .length;

@@ -134,9 +134,7 @@ export function evaluateDay(plan: DayPlan): FeasibilityResult {
   // ── Boat rule ───────────────────────────────────────────────
   const boats = plan.stops.filter((s) => s.category === "boat");
   if (boats.length > 0) {
-    const longOthers = plan.stops.filter(
-      (s) => s.category !== "boat" && isLongStop(s.category),
-    );
+    const longOthers = plan.stops.filter((s) => s.category !== "boat" && isLongStop(s.category));
     if (longOthers.length > 1) {
       feasible = false;
       warnings.push(

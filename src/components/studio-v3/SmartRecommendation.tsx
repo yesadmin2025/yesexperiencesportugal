@@ -59,9 +59,8 @@ export function SmartRecommendation({
   useEffect(() => {
     if (!tour) return;
     const bucket = regionBucket(tour.region);
-    const anchorSub = bucket === "lisbon-arrabida"
-      ? LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null
-      : null;
+    const anchorSub =
+      bucket === "lisbon-arrabida" ? (LISBON_SUBREGION_BY_TOUR_ID[tour.id] ?? null) : null;
     const mismatch =
       bucket === "lisbon-arrabida" && anchorSub
         ? pool.some((a) => a.lisbonSubRegion && a.lisbonSubRegion !== anchorSub)
@@ -81,7 +80,6 @@ export function SmartRecommendation({
       mismatch,
     });
   }, [tour, pool, stopCount, durationLabel]);
-
 
   if (!addon) return null;
 

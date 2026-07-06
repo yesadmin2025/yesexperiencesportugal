@@ -29,15 +29,18 @@ describe("priceTiersEUR data integrity", () => {
     expect(tiers[8]!).toBeGreaterThan(0);
   });
 
-  it.each(withTiers)("%s: tier values are positive and monotonically non-increasing", (_id, meta) => {
-    const values = orderedTierValues(meta.priceTiersEUR!);
-    expect(values.length).toBeGreaterThan(0);
-    for (let i = 0; i < values.length; i++) {
-      expect(values[i]).toBeGreaterThan(0);
-      expect(Number.isFinite(values[i])).toBe(true);
-      if (i > 0) expect(values[i]).toBeLessThanOrEqual(values[i - 1]!);
-    }
-  });
+  it.each(withTiers)(
+    "%s: tier values are positive and monotonically non-increasing",
+    (_id, meta) => {
+      const values = orderedTierValues(meta.priceTiersEUR!);
+      expect(values.length).toBeGreaterThan(0);
+      for (let i = 0; i < values.length; i++) {
+        expect(values[i]).toBeGreaterThan(0);
+        expect(Number.isFinite(values[i])).toBe(true);
+        if (i > 0) expect(values[i]).toBeLessThanOrEqual(values[i - 1]!);
+      }
+    },
+  );
 });
 
 describe("Signature ↔ Viator meta ↔ Studio v2 blueprint — southwest-vicentine-coast", () => {

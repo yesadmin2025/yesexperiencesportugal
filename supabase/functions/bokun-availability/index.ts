@@ -93,9 +93,7 @@ Deno.serve(async (req) => {
       }))
       .filter((s) => s.startTime)
       // de-dupe by startTime
-      .filter(
-        (s, idx, arr) => arr.findIndex((x) => x.startTime === s.startTime) === idx,
-      )
+      .filter((s, idx, arr) => arr.findIndex((x) => x.startTime === s.startTime) === idx)
       .sort((a, b) => a.startTime.localeCompare(b.startTime));
 
     return json({ slots, mapped: true });

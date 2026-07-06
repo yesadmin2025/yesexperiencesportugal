@@ -40,9 +40,7 @@ export const Route = createFileRoute("/reviews")({
   component: ReviewsPage,
   loader: async ({ context }) => {
     // Pull stats server-side so AggregateRating ships in initial HTML.
-    const { getGlobalReviewStats: getGlobalSrv } = await import(
-      "@/lib/reviews.functions"
-    );
+    const { getGlobalReviewStats: getGlobalSrv } = await import("@/lib/reviews.functions");
     const stats = await getGlobalSrv();
     return { stats };
   },
@@ -51,8 +49,7 @@ export const Route = createFileRoute("/reviews")({
     const fpAvg = loaderData?.stats.first_party_avg ?? null;
     const meta = [
       {
-        title:
-          "Real guest reviews · YES Experiences Portugal",
+        title: "Real guest reviews · YES Experiences Portugal",
       },
       {
         name: "description",
@@ -61,7 +58,11 @@ export const Route = createFileRoute("/reviews")({
       },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Real guest reviews · YES Experiences Portugal" },
-      { property: "og:description", content: "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions." },
+      {
+        property: "og:description",
+        content:
+          "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions.",
+      },
       { property: "og:url", content: `${SITE_URL}/reviews` },
       { property: "og:type", content: "website" },
     ];
@@ -157,7 +158,9 @@ function ReviewsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    globalFn({}).then((g) => !cancelled && setGlobal(g)).catch(() => undefined);
+    globalFn({})
+      .then((g) => !cancelled && setGlobal(g))
+      .catch(() => undefined);
     (async () => {
       const out: Record<string, Bundle> = {};
       for (const id of TOUR_IDS) {
@@ -192,9 +195,7 @@ function ReviewsPage() {
             </SectionTitle>
             {global.total_reviews >= 25 && (
               <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-                <span className="tabular-nums">
-                  {global.total_reviews.toLocaleString("en-US")}
-                </span>{" "}
+                <span className="tabular-nums">{global.total_reviews.toLocaleString("en-US")}</span>{" "}
                 reviews
                 {global.average_rating && (
                   <>
@@ -272,8 +273,8 @@ function ReviewsPage() {
                       </ul>
                     ) : (
                       <p className="mt-5 font-sans text-[13px] text-[color:var(--charcoal-soft)]">
-                        Aggregate data above is verified from the platform listing. Curated
-                        quotes will appear here as guests submit them.
+                        Aggregate data above is verified from the platform listing. Curated quotes
+                        will appear here as guests submit them.
                       </p>
                     )}
                   </article>

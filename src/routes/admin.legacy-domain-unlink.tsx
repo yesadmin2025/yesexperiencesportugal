@@ -76,9 +76,7 @@ const ITEMS: ChecklistItem[] = [
     title: "Remover o perfil antigo (Settings → Remove business profile)",
     detail:
       "Depois da transferência confirmada, remove o perfil antigo. Isto elimina-o do Maps/Search ao fim de alguns dias, mas pode aparecer em cache até algumas semanas.",
-    links: [
-      { label: "Abrir Google Business", href: "https://business.google.com/" },
-    ],
+    links: [{ label: "Abrir Google Business", href: "https://business.google.com/" }],
   },
   {
     id: "gbp-new-verify",
@@ -135,9 +133,7 @@ const ITEMS: ChecklistItem[] = [
       group: "Search Console",
       title: `Confirmar 410 na inspeção de URL (${host})`,
       detail: `Em URL Inspection cola https://${host}/, clica Test live URL e confirma que o Google recebe 410. Repete para as páginas mais indexadas do domínio antigo se aparecerem em Pages → Indexed.`,
-      links: [
-        { label: `Abrir propriedade GSC (${host})`, href: gscProperty(host) },
-      ],
+      links: [{ label: `Abrir propriedade GSC (${host})`, href: gscProperty(host) }],
     },
   ]),
   {
@@ -231,22 +227,16 @@ function LegacyDomainUnlinkPage() {
   }, [query.data]);
 
   const mutation = useMutation({
-    mutationFn: (input: {
-      itemId: string;
-      status?: Status;
-      note?: string | null;
-    }) => upsertFn({ data: input }),
+    mutationFn: (input: { itemId: string; status?: Status; note?: string | null }) =>
+      upsertFn({ data: input }),
     onSuccess: ({ item }) => {
-      queryClient.setQueryData<{ items: ItemRow[] } | undefined>(
-        QUERY_KEY,
-        (prev) => {
-          const rows = prev?.items ? [...prev.items] : [];
-          const idx = rows.findIndex((r) => r.item_id === item.item_id);
-          if (idx >= 0) rows[idx] = item as ItemRow;
-          else rows.push(item as ItemRow);
-          return { items: rows };
-        },
-      );
+      queryClient.setQueryData<{ items: ItemRow[] } | undefined>(QUERY_KEY, (prev) => {
+        const rows = prev?.items ? [...prev.items] : [];
+        const idx = rows.findIndex((r) => r.item_id === item.item_id);
+        if (idx >= 0) rows[idx] = item as ItemRow;
+        else rows.push(item as ItemRow);
+        return { items: rows };
+      });
     },
   });
 
@@ -254,8 +244,7 @@ function LegacyDomainUnlinkPage() {
   const done = ITEMS.filter((i) => byId.get(i.id)?.status === "done").length;
   const pct = total ? Math.round((done / total) * 100) : 0;
 
-  const isForbidden =
-    query.isError && /Forbidden|Unauthorized/i.test(String(query.error));
+  const isForbidden = query.isError && /Forbidden|Unauthorized/i.test(String(query.error));
 
   return (
     <div className="min-h-screen bg-[color:var(--ivory)] px-4 py-10 md:px-8">
@@ -268,8 +257,8 @@ function LegacyDomainUnlinkPage() {
             Desvincular domínio antigo
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-            Checklist operacional partilhado — o estado de cada item é
-            sincronizado no backend entre todos os administradores.
+            Checklist operacional partilhado — o estado de cada item é sincronizado no backend entre
+            todos os administradores.
           </p>
 
           {query.isLoading && (
@@ -279,8 +268,8 @@ function LegacyDomainUnlinkPage() {
           )}
           {isForbidden && (
             <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
-              Precisas de estar autenticado com role <strong>admin</strong> para
-              ver e editar este checklist.{" "}
+              Precisas de estar autenticado com role <strong>admin</strong> para ver e editar este
+              checklist.{" "}
               <a className="underline" href="/auth">
                 Iniciar sessão
               </a>
@@ -296,9 +285,7 @@ function LegacyDomainUnlinkPage() {
           {!isForbidden && (
             <div className="mt-6 rounded-xl border border-stone-200 bg-white p-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-[color:var(--charcoal)]">
-                  Progresso
-                </span>
+                <span className="font-medium text-[color:var(--charcoal)]">Progresso</span>
                 <span className="text-[color:var(--charcoal-soft)]">
                   {done} / {total} concluídos ({pct}%)
                 </span>
@@ -322,24 +309,17 @@ function LegacyDomainUnlinkPage() {
           <ChecklistGroups
             byId={byId}
             disabled={query.isError}
-            onStatusChange={(itemId, status) =>
-              mutation.mutate({ itemId, status })
-            }
-            onNoteChange={(itemId, note) =>
-              mutation.mutate({ itemId, note })
-            }
+            onStatusChange={(itemId, status) => mutation.mutate({ itemId, status })}
+            onNoteChange={(itemId, note) => mutation.mutate({ itemId, note })}
           />
         )}
 
         <footer className="mt-10 rounded-xl border border-stone-200 bg-white p-4 text-xs text-[color:var(--charcoal-soft)]">
-          <p className="mb-1 font-medium text-[color:var(--charcoal)]">
-            Nota importante
-          </p>
+          <p className="mb-1 font-medium text-[color:var(--charcoal)]">Nota importante</p>
           <p>
-            Nenhuma destas ações é reversível por código — GBP, TripAdvisor e
-            Search Console Removals são UI-only. Este painel serve para dar
-            visibilidade e não perder nenhum passo. Depois de concluir, correr
-            o{" "}
+            Nenhuma destas ações é reversível por código — GBP, TripAdvisor e Search Console
+            Removals são UI-only. Este painel serve para dar visibilidade e não perder nenhum passo.
+            Depois de concluir, correr o{" "}
             <a className="underline" href="/admin/legacy-domains-monitor">
               Legacy Domains Monitor
             </a>{" "}
@@ -436,9 +416,7 @@ function ChecklistRow({
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-medium text-[color:var(--charcoal)]">
-              {item.title}
-            </h3>
+            <h3 className="font-medium text-[color:var(--charcoal)]">{item.title}</h3>
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${STATUS_TONE[status]}`}
             >
@@ -469,23 +447,21 @@ function ChecklistRow({
           </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            {(["todo", "in_progress", "done", "blocked"] as Status[]).map(
-              (st) => (
-                <button
-                  key={st}
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => onStatusChange(item.id, st)}
-                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition disabled:opacity-50 ${
-                    status === st
-                      ? "bg-[color:var(--charcoal)] text-white"
-                      : "border border-stone-200 bg-white text-[color:var(--charcoal-soft)] hover:border-stone-400"
-                  }`}
-                >
-                  {STATUS_LABEL[st]}
-                </button>
-              ),
-            )}
+            {(["todo", "in_progress", "done", "blocked"] as Status[]).map((st) => (
+              <button
+                key={st}
+                type="button"
+                disabled={disabled}
+                onClick={() => onStatusChange(item.id, st)}
+                className={`rounded-md px-2.5 py-1 text-xs font-medium transition disabled:opacity-50 ${
+                  status === st
+                    ? "bg-[color:var(--charcoal)] text-white"
+                    : "border border-stone-200 bg-white text-[color:var(--charcoal-soft)] hover:border-stone-400"
+                }`}
+              >
+                {STATUS_LABEL[st]}
+              </button>
+            ))}
           </div>
 
           <textarea

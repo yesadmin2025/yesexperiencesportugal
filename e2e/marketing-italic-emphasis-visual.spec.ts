@@ -58,9 +58,7 @@ async function prep(page: Page) {
       }
       film.style.visibility = "hidden";
     }
-    await new Promise<void>((r) =>
-      requestAnimationFrame(() => requestAnimationFrame(() => r())),
-    );
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
   });
 }
 

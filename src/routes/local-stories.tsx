@@ -54,16 +54,16 @@ export const Route = createFileRoute("/local-stories")({
         inLanguage: "en",
         isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
         publisher: { "@id": "https://yesexperiencesportugal.com/#organization" },
-        blogPost: LOCAL_STORIES_ARTICLES.filter(
-          (a) => a.slug !== "best-day-trips-from-lisbon",
-        ).map((a) => ({
-          "@type": "BlogPosting",
-          headline: a.h1,
-          name: a.title,
-          description: a.metaDescription,
-          url: `https://yesexperiencesportugal.com/local-stories/${a.slug}`,
-          datePublished: a.datePublished,
-        })),
+        blogPost: LOCAL_STORIES_ARTICLES.filter((a) => a.slug !== "best-day-trips-from-lisbon").map(
+          (a) => ({
+            "@type": "BlogPosting",
+            headline: a.h1,
+            name: a.title,
+            description: a.metaDescription,
+            url: `https://yesexperiencesportugal.com/local-stories/${a.slug}`,
+            datePublished: a.datePublished,
+          }),
+        ),
       }),
     ],
   }),
@@ -90,8 +90,7 @@ function Page() {
   });
 
   const staticArticles = LOCAL_STORIES_ARTICLES;
-  const hasContent =
-    staticArticles.length > 0 || (!isLoading && posts && posts.length > 0);
+  const hasContent = staticArticles.length > 0 || (!isLoading && posts && posts.length > 0);
 
   return (
     <SiteLayout>
@@ -140,50 +139,52 @@ function Page() {
                   </article>
                 );
               })}
-              {posts?.filter((p) => !LOCAL_STORIES_ARTICLES.some((a) => a.slug === p.slug)).map((p) => (
-                <article key={p.slug} className="group reveal-stagger">
-                  <Link
-                    to="/local-stories/$slug"
-                    params={{ slug: p.slug }}
-                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
-                  >
-                    {p.hero_image_url ? (
-                      <div className="relative overflow-hidden aspect-[4/5] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
-                        <img
-                          src={p.hero_image_url}
-                          alt={p.hero_image_alt ?? p.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/55 via-transparent to-transparent" />
-                        <span className="absolute left-5 bottom-5 block h-px w-8 bg-[color:var(--gold)] opacity-90" />
+              {posts
+                ?.filter((p) => !LOCAL_STORIES_ARTICLES.some((a) => a.slug === p.slug))
+                .map((p) => (
+                  <article key={p.slug} className="group reveal-stagger">
+                    <Link
+                      to="/local-stories/$slug"
+                      params={{ slug: p.slug }}
+                      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+                    >
+                      {p.hero_image_url ? (
+                        <div className="relative overflow-hidden aspect-[4/5] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
+                          <img
+                            src={p.hero_image_url}
+                            alt={p.hero_image_alt ?? p.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/55 via-transparent to-transparent" />
+                          <span className="absolute left-5 bottom-5 block h-px w-8 bg-[color:var(--gold)] opacity-90" />
+                        </div>
+                      ) : (
+                        <div className="aspect-[4/5] mb-6 bg-[color:var(--sand)]" />
+                      )}
+                      <div>
+                        {p.region && (
+                          <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+                            {p.region}
+                          </span>
+                        )}
+                        <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
+                          {p.title}
+                        </h2>
+                        {p.excerpt && (
+                          <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
+                            {p.excerpt}
+                          </p>
+                        )}
+                        {p.author_name && (
+                          <p className="mt-4 text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                            By {p.author_name}
+                          </p>
+                        )}
                       </div>
-                    ) : (
-                      <div className="aspect-[4/5] mb-6 bg-[color:var(--sand)]" />
-                    )}
-                    <div>
-                      {p.region && (
-                        <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
-                          {p.region}
-                        </span>
-                      )}
-                      <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
-                        {p.title}
-                      </h2>
-                      {p.excerpt && (
-                        <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
-                          {p.excerpt}
-                        </p>
-                      )}
-                      {p.author_name && (
-                        <p className="mt-4 text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                          By {p.author_name}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                </article>
-              ))}
+                    </Link>
+                  </article>
+                ))}
             </div>
           ) : (
             <EmptyState loading={isLoading} />

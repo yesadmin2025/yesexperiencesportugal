@@ -9,7 +9,8 @@ export const HERO_COPY_SPEC = {
   subheadline: "Every story is different. So is yours.",
   primaryCta: "Create Your Story",
   secondaryCta: "Explore Signature Experiences",
-  microcopy: "Designed in real time, with you. Reserve when it feels right — final price shown before payment.",
+  microcopy:
+    "Designed in real time, with you. Reserve when it feels right — final price shown before payment.",
 } as const;
 
 export type HeroSpecKey = keyof typeof HERO_COPY_SPEC;

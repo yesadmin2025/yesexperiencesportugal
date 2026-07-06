@@ -57,4 +57,3 @@ export const revealJourney = createServerFn({ method: "POST" })
       skipAi: !rl.ok,
     });
   });
-

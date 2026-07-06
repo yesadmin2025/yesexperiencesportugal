@@ -92,9 +92,9 @@ function CorporatePage() {
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Corporate days, incentives, client hospitality, executive experiences and private groups
-            — with transport partners, buses, guides and suppliers coordinated end to end. For teams,
-            incentives and private groups, we combine local experiences, timing, transport and
-            logistics into a day that feels <span className="kw">effortless</span>.
+            — with transport partners, buses, guides and suppliers coordinated end to end. For
+            teams, incentives and private groups, we combine local experiences, timing, transport
+            and logistics into a day that feels <span className="kw">effortless</span>.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">

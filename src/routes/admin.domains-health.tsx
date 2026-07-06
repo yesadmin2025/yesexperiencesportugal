@@ -2,7 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { probeDomainHealth, type DomainHealth, type PathProbe } from "@/lib/domain-health.functions";
+import {
+  probeDomainHealth,
+  type DomainHealth,
+  type PathProbe,
+} from "@/lib/domain-health.functions";
 
 const AUTO_REFRESH_OPTIONS = [
   { label: "Off", ms: 0 },
@@ -147,7 +151,9 @@ function HostCard({ r }: { r: DomainHealth }) {
           <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             {r.role === "legacy" ? "410 compliance" : "Indexable"}
           </div>
-          <div className="mt-1 text-2xl font-light text-[color:var(--charcoal)]">{r.healthPct}%</div>
+          <div className="mt-1 text-2xl font-light text-[color:var(--charcoal)]">
+            {r.healthPct}%
+          </div>
         </div>
         <div className="rounded border border-[color:var(--sand)] bg-[color:var(--ivory)] p-3">
           <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
@@ -218,8 +224,8 @@ function DomainsHealthPage() {
           Domain Health
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--charcoal-soft)]">
-          Estado de cada domínio (active / verifying / offline) e saúde de noindex e 410 por caminho.
-          Canónicos devem servir 200 indexável; legacy devem servir 410 Gone sem Location.
+          Estado de cada domínio (active / verifying / offline) e saúde de noindex e 410 por
+          caminho. Canónicos devem servir 200 indexável; legacy devem servir 410 Gone sem Location.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
@@ -286,9 +292,7 @@ function DomainsHealthPage() {
         </div>
       )}
 
-      {isLoading && (
-        <p className="text-sm text-[color:var(--charcoal-soft)]">A sondar domínios…</p>
-      )}
+      {isLoading && <p className="text-sm text-[color:var(--charcoal-soft)]">A sondar domínios…</p>}
 
       {data && (
         <div className="space-y-10">

@@ -1,5 +1,13 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
-import { Check, ArrowRight, MessageCircle, Mail, Receipt, Loader2, AlertCircle } from "lucide-react";
+import {
+  Check,
+  ArrowRight,
+  MessageCircle,
+  Mail,
+  Receipt,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -212,15 +220,7 @@ function BookingConfirmedPage() {
   );
 }
 
-function NextStep({
-  icon,
-  title,
-  body,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-}) {
+function NextStep({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
     <li className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-5">
       <span className="inline-flex items-center justify-center w-8 h-8 border border-[color:var(--gold)]/60 text-[color:var(--gold)] mb-3">

@@ -75,10 +75,10 @@ Deno.serve(async (req) => {
   // Require admin caller — protects credentialed Bókun calls from anonymous abuse.
   const authz = await requireAdmin(req);
   if (!authz.ok) {
-    return new Response(
-      JSON.stringify({ error: authz.error ?? "Unauthorized" }),
-      { status: authz.status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ error: authz.error ?? "Unauthorized" }), {
+      status: authz.status,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   try {
@@ -87,11 +87,10 @@ Deno.serve(async (req) => {
     let pageNum = 1;
     const maxPages = 20;
     while (pageNum <= maxPages) {
-      const data = await bokunFetch(
-        `/activity.json/search?lang=EN&currency=EUR`,
-        "POST",
-        { pageSize: 50, page: pageNum },
-      );
+      const data = await bokunFetch(`/activity.json/search?lang=EN&currency=EUR`, "POST", {
+        pageSize: 50,
+        page: pageNum,
+      });
       const items = (data?.items ?? []) as Array<Record<string, unknown>>;
       if (!items.length) break;
       all.push(...items);
@@ -109,15 +108,14 @@ Deno.serve(async (req) => {
       nextDefaultPrice: it.nextDefaultPrice ?? null,
     }));
 
-    return new Response(
-      JSON.stringify({ count: items.length, items }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ count: items.length, items }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (e) {
     console.error("bokun-list-products error:", e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : String(e) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

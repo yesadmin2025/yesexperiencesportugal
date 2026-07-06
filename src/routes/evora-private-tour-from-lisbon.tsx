@@ -4,7 +4,13 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
-import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  SITE_URL,
+  hreflangUsCaLinks,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 
@@ -83,10 +89,7 @@ export const Route = createFileRoute("/evora-private-tour-from-lisbon")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [
-      { rel: "canonical", href: PAGE_URL },
-      ...hreflangUsCaLinks(PAGE_PATH),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...hreflangUsCaLinks(PAGE_PATH)],
     scripts: [
       jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
@@ -114,8 +117,8 @@ function EvoraPrivateLanding() {
               <SectionTitle.Em>heritage, wine & cork</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              Évora's UNESCO centre, two family wineries and a cork tradition
-              stop — a private day across Alentejo at the pace of a long lunch.
+              Évora's UNESCO centre, two family wineries and a cork tradition stop — a private day
+              across Alentejo at the pace of a long lunch.
             </p>
             <div className="mt-8">
               <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
@@ -133,10 +136,9 @@ function EvoraPrivateLanding() {
                 Ninety minutes south, two thousand years deep.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                Évora is a small UNESCO World Heritage city in the heart of
-                Alentejo — Roman Temple, cathedral, narrow lanes and the famous
-                Chapel of Bones, all walkable in an afternoon. From Lisbon it is
-                an easy private drive across cork-oak country.
+                Évora is a small UNESCO World Heritage city in the heart of Alentejo — Roman Temple,
+                cathedral, narrow lanes and the famous Chapel of Bones, all walkable in an
+                afternoon. From Lisbon it is an easy private drive across cork-oak country.
               </p>
             </div>
 
@@ -146,10 +148,9 @@ function EvoraPrivateLanding() {
                 Roman temple, two wineries, a cork stop, long lunch.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                We walk the old town with a local guide, visit two family
-                wineries — one of them with a restaurant — and add a cork
-                tradition stop so you see where Portuguese cork actually comes
-                from. Lunch is Alentejo-slow, plates shared, wine local.
+                We walk the old town with a local guide, visit two family wineries — one of them
+                with a restaurant — and add a cork tradition stop so you see where Portuguese cork
+                actually comes from. Lunch is Alentejo-slow, plates shared, wine local.
               </p>
             </div>
 
@@ -159,9 +160,9 @@ function EvoraPrivateLanding() {
                 No coach, no rush, no fixed script.
               </h2>
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                Hotel pickup, your own driver-guide, your own car. Stay longer
-                in the cathedral cloister, skip a winery, add an extra glass —
-                the day moves with you, not with thirty strangers.
+                Hotel pickup, your own driver-guide, your own car. Stay longer in the cathedral
+                cloister, skip a winery, add an extra glass — the day moves with you, not with
+                thirty strangers.
               </p>
             </div>
           </div>
@@ -181,21 +182,42 @@ function EvoraPrivateLanding() {
             </h2>
             <ul className="grid sm:grid-cols-3 gap-5">
               <li>
-                <Link to="/alentejo-wine-tour-from-lisbon" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Alentejo Wine Tour</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Same day, framed around wine and cork.</span>
+                <Link
+                  to="/alentejo-wine-tour-from-lisbon"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Alentejo Wine Tour
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Same day, framed around wine and cork.
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link to="/studio-v3" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Design your day</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Mix Évora, wine and cork live in the Studio.</span>
+                <Link
+                  to="/studio-v3"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Design your day
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Mix Évora, wine and cork live in the Studio.
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link to="/multi-day" className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Travel Designer</span>
-                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Add Évora to a multi-day Portugal journey.</span>
+                <Link
+                  to="/multi-day"
+                  className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                >
+                  <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                    Travel Designer
+                  </span>
+                  <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                    Add Évora to a multi-day Portugal journey.
+                  </span>
                 </Link>
               </li>
             </ul>
@@ -205,10 +227,18 @@ function EvoraPrivateLanding() {
                 Book this day
               </span>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
+                <CtaButton
+                  to="/tours/$tourId"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="primary"
+                >
                   Reserve with YES
                 </CtaButton>
-                <CtaButton to="/tours/$tourId/tailor" params={{ tourId: PARENT_TOUR_ID }} variant="ghost">
+                <CtaButton
+                  to="/tours/$tourId/tailor"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="ghost"
+                >
                   Tailor this Signature
                 </CtaButton>
               </div>

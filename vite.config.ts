@@ -15,4 +15,3 @@ const serverEnv = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), 
 Object.assign(process.env, serverEnv);
 
 export default defineConfig({});
-

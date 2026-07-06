@@ -1167,7 +1167,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     subregion: "Porto Covo",
     name: "Porto Covo",
     type: "village",
-    coords: { lat: 37.8544, lng: -8.7900 },
+    coords: { lat: 37.8544, lng: -8.79 },
     suitsInterests: ["coast", "local-life", "photography"],
     suitsRhythm: ["slow", "balanced"],
     suitsCompanions: ["solo", "couple", "family", "friends"],

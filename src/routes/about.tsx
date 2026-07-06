@@ -45,13 +45,13 @@ function Page() {
             We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            YES Experiences Portugal is a licensed Portuguese private tour operator,
-            founder-led since 2022 and built around one idea: Portugal should feel
-            personal, local and genuinely yours.
+            YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
+            since 2022 and built around one idea: Portugal should feel personal, local and genuinely
+            yours.
           </p>
           <p className="mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
-            Private days, live-designed experiences and full journeys, created from
-            real routes, real guests and real local knowledge.
+            Private days, live-designed experiences and full journeys, created from real routes,
+            real guests and real local knowledge.
           </p>
         </div>
       </section>
@@ -65,20 +65,15 @@ function Page() {
           </SectionTitle>
           <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
-              YES did not begin as an agency concept, a marketplace idea or a
-              travel-tech trend.
+              YES did not begin as an agency concept, a marketplace idea or a travel-tech trend.
             </p>
             <p>
-              It began on the road, guiding guests through Portugal and seeing
-              the same need appear again and again: travellers wanted more than
-              another fixed tour. They wanted freedom, but not confusion. They
-              wanted to shape the day themselves, while still feeling guided by
-              someone local.
+              It began on the road, guiding guests through Portugal and seeing the same need appear
+              again and again: travellers wanted more than another fixed tour. They wanted freedom,
+              but not confusion. They wanted to shape the day themselves, while still feeling guided
+              by someone local.
             </p>
-            <p>
-              They wanted to understand the route, the rhythm and the price
-              before committing.
-            </p>
+            <p>They wanted to understand the route, the rhythm and the price before committing.</p>
             <p>That is where the Experience Studio came from.</p>
           </div>
         </div>
@@ -94,18 +89,16 @@ function Page() {
             </SectionTitle>
             <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
-                The Experience Studio was not added because "custom travel"
-                sounded good on a website.
+                The Experience Studio was not added because "custom travel" sounded good on a
+                website.
               </p>
               <p>
-                It was built because, after years designing and guiding private
-                guests across Portugal, the same need became impossible to ignore:
-                people wanted to choose, compare, shape and book a private day
-                without endless forms, waiting or back-and-forth emails.
+                It was built because, after years designing and guiding private guests across
+                Portugal, the same need became impossible to ignore: people wanted to choose,
+                compare, shape and book a private day without endless forms, waiting or
+                back-and-forth emails.
               </p>
-              <p>
-                The idea was too specific to hand over as a standard agency brief.
-              </p>
+              <p>The idea was too specific to hand over as a standard agency brief.</p>
             </div>
 
             <figure className="mt-10 lg:hidden">
@@ -116,28 +109,26 @@ function Page() {
                 className="w-full aspect-[4/3] object-cover"
               />
               <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
-                Nídia Almeida, founder of YES Experiences Portugal, hosting a
-                private wine experience in Portugal.
+                Nídia Almeida, founder of YES Experiences Portugal, hosting a private wine
+                experience in Portugal.
               </figcaption>
             </figure>
 
             <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
-                To make it real, the founder learned to translate travel experience
-                into product structure, booking logic and digital flow — how a
-                guest chooses, how a route changes, how a private day is priced, and
-                how all of that could become a live experience-building system.
+                To make it real, the founder learned to translate travel experience into product
+                structure, booking logic and digital flow — how a guest chooses, how a route
+                changes, how a private day is priced, and how all of that could become a live
+                experience-building system.
               </p>
               <p>
-                The website, Studio flow and booking model were conceived,
-                structured, written and built in-house, shaped from real
-                conversations, itinerary changes, guest hesitation and operational
-                constraints.
+                The website, Studio flow and booking model were conceived, structured, written and
+                built in-house, shaped from real conversations, itinerary changes, guest hesitation
+                and operational constraints.
               </p>
               <p>
-                That is why YES is not just a catalogue of tours. It is a
-                founder-built private travel platform, created from the road and
-                still refined through every booking.
+                That is why YES is not just a catalogue of tours. It is a founder-built private
+                travel platform, created from the road and still refined through every booking.
               </p>
             </div>
           </div>
@@ -150,8 +141,8 @@ function Page() {
               className="w-full aspect-[4/3] object-cover"
             />
             <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
-              Nídia Almeida, founder of YES Experiences Portugal, hosting a
-              private wine experience in Portugal.
+              Nídia Almeida, founder of YES Experiences Portugal, hosting a private wine experience
+              in Portugal.
             </figcaption>
           </figure>
         </div>
@@ -166,26 +157,23 @@ function Page() {
           </SectionTitle>
           <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
-              YES was created by Nídia Almeida, a Portuguese host and experience
-              designer, after years of designing and leading private experiences
-              across Portugal.
+              YES was created by Nídia Almeida, a Portuguese host and experience designer, after
+              years of designing and leading private experiences across Portugal.
             </p>
             <p>
-              Every Signature day, Studio composition and Travel Designer journey
-              begins with local knowledge, real routes and carefully chosen
-              details. The experiences are then delivered with a trusted circle of
-              local guides, drivers, wineries, boats, restaurants, hosts and
-              partners across the country.
+              Every Signature day, Studio composition and Travel Designer journey begins with local
+              knowledge, real routes and carefully chosen details. The experiences are then
+              delivered with a trusted circle of local guides, drivers, wineries, boats,
+              restaurants, hosts and partners across the country.
             </p>
             <p>
-              From Lisbon, Sintra and Arrábida to the Alentejo, Douro, Algarve and
-              Atlantic coast, the principle stays the same: private Portugal,
-              designed with intention and delivered by people who know the places
-              they are showing.
+              From Lisbon, Sintra and Arrábida to the Alentejo, Douro, Algarve and Atlantic coast,
+              the principle stays the same: private Portugal, designed with intention and delivered
+              by people who know the places they are showing.
             </p>
             <p>
-              This is not anonymous reselling. It is not another operator's coach
-              tour with a different logo.
+              This is not anonymous reselling. It is not another operator's coach tour with a
+              different logo.
             </p>
           </div>
         </div>
@@ -196,7 +184,8 @@ function Page() {
         <div className="container-x">
           <Eyebrow flank>What we create</Eyebrow>
           <SectionTitle as="h2" size="default">
-            Private days, live-designed experiences <SectionTitle.Em>and full journeys</SectionTitle.Em>.
+            Private days, live-designed experiences{" "}
+            <SectionTitle.Em>and full journeys</SectionTitle.Em>.
           </SectionTitle>
           <div className="mt-10 grid md:grid-cols-2 gap-5">
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
@@ -204,8 +193,7 @@ function Page() {
                 Signature Experiences
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
-                Ready private days shaped from real routes, trusted partners and
-                guest feedback.
+                Ready private days shaped from real routes, trusted partners and guest feedback.
               </p>
             </div>
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
@@ -213,8 +201,8 @@ function Page() {
                 Experience Studio
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
-                Design a private day in real time, choose the rhythm and route,
-                see the price live and book securely.
+                Design a private day in real time, choose the rhythm and route, see the price live
+                and book securely.
               </p>
             </div>
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
@@ -222,8 +210,8 @@ function Page() {
                 Travel Designer
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
-                Full Portugal journeys, multi-day itineraries, honeymoons, family
-                trips, celebrations and complex private travel.
+                Full Portugal journeys, multi-day itineraries, honeymoons, family trips,
+                celebrations and complex private travel.
               </p>
             </div>
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
@@ -231,14 +219,14 @@ function Page() {
                 Moments &amp; Corporate
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
-                Proposals, birthdays, anniversaries, incentives, client hospitality
-                and private group days.
+                Proposals, birthdays, anniversaries, incentives, client hospitality and private
+                group days.
               </p>
             </div>
           </div>
           <p className="mt-10 text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
-            Different formats. Same principle: Portugal should be designed around
-            the people living it.
+            Different formats. Same principle: Portugal should be designed around the people living
+            it.
           </p>
         </div>
       </section>
@@ -253,34 +241,41 @@ function Page() {
 
           <dl className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Licence</dt>
+              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                Licence
+              </dt>
               <dd className="mt-2 font-display text-lg">RNAAT 31/2023</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-                Registered Portuguese tourism operator (Registo Nacional dos
-                Agentes de Animação Turística).
+                Registered Portuguese tourism operator (Registo Nacional dos Agentes de Animação
+                Turística).
               </p>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Founded</dt>
+              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                Founded
+              </dt>
               <dd className="mt-2 font-display text-lg">2022</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Based in Sesimbra, designing private journeys across Portugal.
               </p>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Reviews</dt>
+              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                Reviews
+              </dt>
               <dd className="mt-2 font-display text-lg">700+ five-star</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-                Verified guest reviews across Tripadvisor, Viator, Google,
-                GetYourGuide and other major travel platforms.
+                Verified guest reviews across Tripadvisor, Viator, Google, GetYourGuide and other
+                major travel platforms.
               </p>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">Insurance</dt>
+              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                Insurance
+              </dt>
               <dd className="mt-2 font-display text-lg">Civil liability</dd>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-                Vehicles, guests and operations covered under Portuguese
-                tourism law.
+                Vehicles, guests and operations covered under Portuguese tourism law.
               </p>
             </div>
           </dl>
@@ -297,28 +292,26 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Private only.</strong>{" "}
-                No shared coaches, no strangers in the car.
+                <strong className="text-[color:var(--charcoal)]">Private only.</strong> No shared
+                coaches, no strangers in the car.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Designed around you.</strong>{" "}
-                Choose a Signature, shape a Studio day in real time, or let a
-                Travel Designer compose the full journey.
+                Choose a Signature, shape a Studio day in real time, or let a Travel Designer
+                compose the full journey.
               </li>
               <li>
-                <strong className="text-[color:var(--charcoal)]">Instant reservation.</strong>{" "}
-                Most Signature days and Studio compositions confirm in minutes
-                through secure checkout.
+                <strong className="text-[color:var(--charcoal)]">Instant reservation.</strong> Most
+                Signature days and Studio compositions confirm in minutes through secure checkout.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Hotel pickup included.</strong>{" "}
-                Available from Lisbon, Cascais, Estoril, Sintra, Sesimbra,
-                Setúbal and other locations depending on the experience.
+                Available from Lisbon, Cascais, Estoril, Sintra, Sesimbra, Setúbal and other
+                locations depending on the experience.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Local replies, fast.</strong>{" "}
-                WhatsApp and email replies usually within the hour when the
-                team is available.
+                WhatsApp and email replies usually within the hour when the team is available.
               </li>
             </ul>
           </div>
@@ -330,22 +323,26 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Free cancellation</strong>{" "}
-                up to 24h before the experience, full refund.
+                <strong className="text-[color:var(--charcoal)]">Free cancellation</strong> up to
+                24h before the experience, full refund.
               </li>
               <li>
-                <strong className="text-[color:var(--charcoal)]">Weather</strong> —
-                outdoor stops can be swapped on the day at no cost when safety
-                or comfort requires it.
+                <strong className="text-[color:var(--charcoal)]">Weather</strong> — outdoor stops
+                can be swapped on the day at no cost when safety or comfort requires it.
               </li>
               <li>
-                <strong className="text-[color:var(--charcoal)]">Privacy</strong> —
-                we never sell or share guest data. See our{" "}
-                <a href="/privacy" className="underline">privacy policy</a>.
+                <strong className="text-[color:var(--charcoal)]">Privacy</strong> — we never sell or
+                share guest data. See our{" "}
+                <a href="/privacy" className="underline">
+                  privacy policy
+                </a>
+                .
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Terms</strong> —{" "}
-                <a href="/terms" className="underline">full terms &amp; conditions</a>{" "}
+                <a href="/terms" className="underline">
+                  full terms &amp; conditions
+                </a>{" "}
                 are available before booking.
               </li>
             </ul>

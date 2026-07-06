@@ -16,10 +16,7 @@ const CARD = '[data-testid="studio-v3-moments-card"]';
 
 test.describe("Studio V3 tablet — moments card sits below the composing map", () => {
   test.beforeEach(async ({ page }, testInfo) => {
-    test.skip(
-      testInfo.project.name !== "tablet-chromium",
-      "tablet-only invariant",
-    );
+    test.skip(testInfo.project.name !== "tablet-chromium", "tablet-only invariant");
     await page.goto("/studio-v3");
     await walkToReveal(page);
   });
@@ -46,8 +43,7 @@ test.describe("Studio V3 tablet — moments card sits below the composing map", 
     // the vertical-stack invariant when the two boxes share horizontal
     // space (i.e. the card would visually occlude the composing route).
     const horizontallyOverlaps =
-      mapBox.x < cardBox.x + cardBox.width &&
-      cardBox.x < mapBox.x + mapBox.width;
+      mapBox.x < cardBox.x + cardBox.width && cardBox.x < mapBox.x + mapBox.width;
 
     // Artifact regardless of the branch — useful for reviewing tablet
     // layout choices.

@@ -24,8 +24,10 @@ Deno.serve(async (req) => {
     });
 
     // deno-lint-ignore no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pi = session.payment_intent as any;
     // deno-lint-ignore no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const charge = pi && typeof pi === "object" ? (pi.latest_charge as any) : null;
     const receiptUrl = charge && typeof charge === "object" ? (charge.receipt_url ?? null) : null;
 

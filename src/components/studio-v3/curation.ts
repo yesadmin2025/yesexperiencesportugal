@@ -50,7 +50,6 @@ import type {
   StudioV3State,
 } from "./types";
 
-
 /* ---------- Adaptive intelligence: guest inference ---------- */
 
 /**
@@ -269,7 +268,12 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
     "fatima-nazare-obidos",
     "sintra-cascais",
   ],
-  adventure: ["southwest-vicentine-coast", "arrabida-boat", "wild-beaches-picnic", "troia-comporta"],
+  adventure: [
+    "southwest-vicentine-coast",
+    "arrabida-boat",
+    "wild-beaches-picnic",
+    "troia-comporta",
+  ],
   // Slow-luxury: lead with quieter heritage/coast; wine still available but not first.
   "slow-luxury": [
     "sintra-cascais",
@@ -324,12 +328,7 @@ const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
     "sintra-cascais",
     "southwest-vicentine-coast",
   ],
-  nature: [
-    "southwest-vicentine-coast",
-    "wild-beaches-picnic",
-    "arrabida-boat",
-    "troia-comporta",
-  ],
+  nature: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
 };
 
 const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
@@ -461,7 +460,7 @@ const FEELING_KEYWORDS: Record<Feeling, string[]> = {
     "view",
     "stroll",
   ],
-  
+
   culture: [
     "palace",
     "convent",
@@ -675,7 +674,11 @@ const DESTINATION_INTENT_BOOSTS: Record<DestinationIntent, Record<string, number
 };
 
 function allowsProfileDiscovery(destinationIntent: DestinationIntent | null | undefined): boolean {
-  return !destinationIntent || destinationIntent === "no-preference" || destinationIntent === "anywhere-special";
+  return (
+    !destinationIntent ||
+    destinationIntent === "no-preference" ||
+    destinationIntent === "anywhere-special"
+  );
 }
 
 /**
@@ -719,7 +722,8 @@ function profileDiscoveryTargets(
 
   if (
     destinationIntent === "anywhere-special" ||
-    ((feeling === "romance" || feeling === "slow-luxury") && (hasCoast || hasGastronomy || hasLocalLife)) ||
+    ((feeling === "romance" || feeling === "slow-luxury") &&
+      (hasCoast || hasGastronomy || hasLocalLife)) ||
     (feeling === "coastal" && (hasGastronomy || hasLocalLife))
   ) {
     targets.push("troia-comporta");
@@ -747,7 +751,8 @@ function profileDiscoveryBoost(
     let boost = destinationIntent === "anywhere-special" ? 2.5 : 0;
     if (hasWine && (hasHeritage || hasLocalLife)) boost += 5;
     else if (feeling === "culture" && hasWine) boost += 4;
-    else if (feeling === "hidden" && hasWine && (hasHeritage || hasLocalLife || hasGastronomy)) boost += 3.5;
+    else if (feeling === "hidden" && hasWine && (hasHeritage || hasLocalLife || hasGastronomy))
+      boost += 3.5;
     else if (feeling === "slow-luxury" && hasWine && hasHeritage) boost += 3.5;
     return boost;
   }
@@ -755,14 +760,18 @@ function profileDiscoveryBoost(
   if (tour.id === "southwest-vicentine-coast") {
     let boost = destinationIntent === "anywhere-special" ? 3 : 0;
     if (hasCoast && hasNature) boost += 6;
-    else if ((feeling === "hidden" || feeling === "adventure") && (hasCoast || hasNature)) boost += 4.5;
+    else if ((feeling === "hidden" || feeling === "adventure") && (hasCoast || hasNature))
+      boost += 4.5;
     else if (feeling === "coastal" && hasNature) boost += 4;
     return boost;
   }
 
   if (tour.id === "troia-comporta") {
     let boost = destinationIntent === "anywhere-special" ? 2.5 : 0;
-    if ((feeling === "romance" || feeling === "slow-luxury") && (hasCoast || hasGastronomy || hasLocalLife)) {
+    if (
+      (feeling === "romance" || feeling === "slow-luxury") &&
+      (hasCoast || hasGastronomy || hasLocalLife)
+    ) {
       boost += 4.5;
     } else if (feeling === "coastal" && (hasGastronomy || hasLocalLife)) {
       boost += 3.5;
@@ -975,7 +984,6 @@ function computeInterestCoverage(
   });
 }
 
-
 /** Pickup reachability — half-day pickups shouldn't be pointed at
  *  Alentejo/Vicentine tours. Uses the existing `pickupAffinity` signal:
  *  a score of 0 means the pickup is not in the tour's operational
@@ -1019,7 +1027,14 @@ export function scoreTourFit(
   },
 ): FitReport {
   assertStopIntentSchema();
-  const { feeling, companions, interests, pickup, rhythm = null, destinationIntent = null } = intent;
+  const {
+    feeling,
+    companions,
+    interests,
+    pickup,
+    rhythm = null,
+    destinationIntent = null,
+  } = intent;
   const boosts: string[] = [];
   const penalties: string[] = [];
 
@@ -1080,13 +1095,8 @@ export function scoreTourFit(
     destinationIntent === "alentejo-evora-wine" ||
     destinationIntent === "alentejo-roman-talha" ||
     destinationIntent === "arrabida-setubal-azeitao";
-  const wineBoost = explicitWineFeeling || wineIntent
-    ? 3
-    : wineIsTopInterest
-      ? 2.5
-      : wineIsAnyInterest
-        ? 1.5
-        : 0;
+  const wineBoost =
+    explicitWineFeeling || wineIntent ? 3 : wineIsTopInterest ? 2.5 : wineIsAnyInterest ? 1.5 : 0;
   const wantsWine = wineBoost > 0;
   const nonWineDestinationIntent =
     destinationIntent === "vicentine-coast" ||
@@ -1095,7 +1105,9 @@ export function scoreTourFit(
     destinationIntent === "central-portugal";
   const tourWineText = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro}`;
   const tourHasWineContent =
-    /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(tourWineText);
+    /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(
+      tourWineText,
+    );
   let wineScore = 0;
   if (wantsWine && tourHasWineContent) {
     wineScore += wineBoost;
@@ -1187,7 +1199,6 @@ export function scoreTourFit(
   };
 }
 
-
 /** Pick ONE Signature skeleton that best fits the answers AND keeps the
  *  route geographically contained near the chosen pickup.
  *
@@ -1270,7 +1281,13 @@ export function pickPrimaryTourWithFit(
       rhythm,
       destinationIntent,
     });
-    return { tour: fallback, alternates: [], fit, topReports: [{ tour: fallback, fit }], filtered: [] };
+    return {
+      tour: fallback,
+      alternates: [],
+      fit,
+      topReports: [{ tour: fallback, fit }],
+      filtered: [],
+    };
   }
 
   // Score every candidate with the FitReport model.
@@ -1288,8 +1305,7 @@ export function pickPrimaryTourWithFit(
   let eligible = reported.filter((r) => {
     const failsCompanions = !r.fit.hardConstraints.companionsAllowed;
     const zeroCoverage =
-      r.fit.coverage.interests.length > 0 &&
-      r.fit.coverage.interests.every((c) => !c.satisfied);
+      r.fit.coverage.interests.length > 0 && r.fit.coverage.interests.every((c) => !c.satisfied);
     if (failsCompanions && zeroCoverage) {
       filtered.push({ tour: r.tour, reason: "companions-coded-mismatch-and-no-interest-coverage" });
       return false;
@@ -1324,8 +1340,6 @@ export function pickPrimaryTourWithFit(
 
   return { tour: chosen.tour, alternates, fit: chosen.fit, topReports, filtered };
 }
-
-
 
 /**
  * curateJourney — route-contained. Returns moments drawn ONLY from the
@@ -2325,7 +2339,7 @@ export function filterCompanions(
   // simply drops corporate. Other feelings keep the full set.
   const HIDE: Partial<Record<Feeling, ReadonlyArray<Companions>>> = {
     romance: ["corporate", "family", "friends", "solo"],
-    
+
     adventure: ["proposal", "corporate"],
     "slow-luxury": ["corporate"],
   };
@@ -2362,8 +2376,6 @@ export function filterFeelings(
   const hidden = new Set<Feeling>(HIDE[companions] ?? []);
   return options.filter((o) => !hidden.has(o.id));
 }
-
-
 
 /**
  * filterDestinationIntents — drop redundant low-commitment options.

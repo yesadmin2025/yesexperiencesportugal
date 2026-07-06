@@ -89,8 +89,9 @@ function PressPage() {
           Resources for journalists, <em className="font-serif italic">editors and directories</em>
         </SectionTitle>
         <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
-          A single source of truth for citing YES Experiences Portugal. Please use the exact spelling, phone, and address below to keep
-          listings consistent across Google, Tripadvisor, Visit Portugal and travel publications.
+          A single source of truth for citing YES Experiences Portugal. Please use the exact
+          spelling, phone, and address below to keep listings consistent across Google, Tripadvisor,
+          Visit Portugal and travel publications.
         </p>
 
         <section className="reveal mt-12">
@@ -116,39 +117,63 @@ function PressPage() {
             Use this exact block when submitting to directories or press lists.
           </p>
           <pre className="mt-4 overflow-x-auto whitespace-pre-wrap rounded-md border border-[color:var(--charcoal)]/15 bg-[color:var(--sand)]/40 p-5 font-mono text-[13px] leading-relaxed text-[color:var(--charcoal)]">
-{CITATION_BLOCK}
+            {CITATION_BLOCK}
           </pre>
         </section>
 
         <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Founder bio</h2>
-          <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">Short (≤ 60 words)</p>
-          <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">{FOUNDER_BIO_SHORT}</p>
-          <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">Long</p>
-          <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">{FOUNDER_BIO_LONG}</p>
+          <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">
+            Short (≤ 60 words)
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
+            {FOUNDER_BIO_SHORT}
+          </p>
+          <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/60">
+            Long
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
+            {FOUNDER_BIO_LONG}
+          </p>
         </section>
 
         <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Brand assets</h2>
           <ul className="mt-4 space-y-2 text-[15px]">
             <li>
-              <a className="text-[color:var(--teal)] underline underline-offset-4" href="/brand/logo-script.svg" download>
+              <a
+                className="text-[color:var(--teal)] underline underline-offset-4"
+                href="/brand/logo-script.svg"
+                download
+              >
                 Logo — script (SVG)
               </a>
             </li>
             <li>
-              <a className="text-[color:var(--teal)] underline underline-offset-4" href="/brand/logo-script.png" download>
+              <a
+                className="text-[color:var(--teal)] underline underline-offset-4"
+                href="/brand/logo-script.png"
+                download
+              >
                 Logo — script (PNG, transparent)
               </a>
             </li>
             <li>
-              <a className="text-[color:var(--teal)] underline underline-offset-4" href="/favicon.svg" download>
+              <a
+                className="text-[color:var(--teal)] underline underline-offset-4"
+                href="/favicon.svg"
+                download
+              >
                 Favicon (SVG)
               </a>
             </li>
           </ul>
           <p className="mt-4 text-xs text-[color:var(--charcoal)]/60">
-            If an asset 404s, request the latest pack at <a className="underline" href={`mailto:${NAP.email}`}>{NAP.email}</a>.
+            If an asset 404s, request the latest pack at{" "}
+            <a className="underline" href={`mailto:${NAP.email}`}>
+              {NAP.email}
+            </a>
+            .
           </p>
         </section>
 
@@ -157,11 +182,17 @@ function PressPage() {
           <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
             {NAP.founderRole}
             <br />
-            <a className="text-[color:var(--teal)] underline underline-offset-4" href={`mailto:${NAP.email}`}>
+            <a
+              className="text-[color:var(--teal)] underline underline-offset-4"
+              href={`mailto:${NAP.email}`}
+            >
               {NAP.email}
             </a>
             <br />
-            <a className="text-[color:var(--teal)] underline underline-offset-4" href={`tel:${NAP.phone.replace(/\s/g, "")}`}>
+            <a
+              className="text-[color:var(--teal)] underline underline-offset-4"
+              href={`tel:${NAP.phone.replace(/\s/g, "")}`}
+            >
               {NAP.phone}
             </a>
           </p>
