@@ -960,9 +960,51 @@ export function SignaturePriceCard({
                   …and {itineraryStops.length - 5} more
                 </li>
               ) : null}
+              {selectedAddOns.map((a, i) => (
+                <li
+                  key={`spine-addon-${a.id}`}
+                  data-testid="studio-v3-itinerary-addon-row"
+                  data-addon-id={a.id}
+                  className="flex items-start gap-2 text-[12px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 82%, transparent)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[1px] inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold tabular-nums"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 45%, transparent)",
+                      color: "var(--charcoal)",
+                      border: "1px solid color-mix(in oklab, var(--gold) 70%, transparent)",
+                    }}
+                  >
+                    +
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="font-semibold">{a.label}</span>
+                    {a.durationMinutes > 0 ? (
+                      <span
+                        className="ml-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        +{a.durationMinutes}m
+                      </span>
+                    ) : null}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => toggleAddOn(a.id)}
+                    aria-label={`Remove ${a.label}`}
+                    className="grid h-6 w-6 place-items-center rounded-full text-[12px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
             </ol>
           </section>
         ) : null}
+
 
         {/* Blueprint truth — Optionals from the Tailor blueprint, surfaced
             here read-only so the builder traveller sees what's *truthfully*
