@@ -3703,6 +3703,9 @@ function StoryboardHandoff({
           guests={state.guests}
           included={skeletonTour?.included ?? []}
           showAddOns={true}
+          selectedAddOnIds={selectedAddOnIds}
+          onAddOnsChange={onAddOnsChange}
+
           remainingMinutes={
             revealLegsLoading
               ? null
