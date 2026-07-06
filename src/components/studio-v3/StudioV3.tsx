@@ -2155,7 +2155,9 @@ export function StudioV3() {
               onSecure={() => requestStripeCheckout(state)}
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
+              tourPriceTiers={tourPriceTiers}
             />
+
           </PhaseShell>
         </>
       ) : null}
