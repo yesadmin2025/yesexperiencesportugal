@@ -124,6 +124,10 @@ export const Route = createRootRoute({
         name: "google-site-verification",
         content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
       },
+      {
+        name: "google-site-verification",
+        content: "Svpb5FhGi6Fku6J-X230o8nKyBH23ilH-5-0fKOMVQ4",
+      },
       // Sitewide defaults only — page-specific title/description/og:* live
       // on leaf routes. Root keeps site_name, type, locale, twitter card/site,
       // keywords, geo, robots, verification. See head-meta rules.
