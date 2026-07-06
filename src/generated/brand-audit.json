@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-06T16:31:56.031Z",
-  "filesScanned": 549,
+  "generatedAt": "2026-07-06T17:16:23.245Z",
+  "filesScanned": 550,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1745,8 +1745,8 @@
     },
     {
       "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
-      "line": 44,
-      "col": 70,
+      "line": 68,
+      "col": 72,
       "raw": "#111",
       "normalized": "#111111",
       "snippet": "<div data-theme={theme} style={{ background: theme === \"dark\" ? \"#111\" : \"#fff\" }}>",
@@ -1754,8 +1754,8 @@
     },
     {
       "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
-      "line": 44,
-      "col": 79,
+      "line": 68,
+      "col": 81,
       "raw": "#fff",
       "normalized": "#ffffff",
       "snippet": "<div data-theme={theme} style={{ background: theme === \"dark\" ? \"#111\" : \"#fff\" }}>",
