@@ -2264,37 +2264,25 @@ export function StudioV3() {
 /* ---------- Sub-components ---------- */
 
 /**
- * RevealRouteMap — extracted so we can call the OSRM `useRouteLegMinutes`
- * hook at the top of a component (hooks can't run inside an IIFE).
- * Wraps `StudioV3SignatureMap` with geo-detailed stops, the resolved
- * origin coordinate, and real driving minutes per leg.
+ * resolveRevealRouteStops — pure helper that turns edited stops + resolved
+ * route points + skeleton tour into geo-detailed stops, origin coord, and
+ * the deduped `routeStops` array we hand to OSRM. Extracted so both
+ * RevealRouteMap AND StoryboardHandoff (for the honest add-on day budget)
+ * can share the same coord resolution and the same OSRM cache key.
  */
-function RevealRouteMap({
-  editedStops,
-  resolved,
-  skeletonTour,
-  statePickup,
-  revealedStops,
-}: {
-  editedStops: ReadonlyArray<{ label: string }>;
+function resolveRevealRouteStops(
+  editedStops: ReadonlyArray<{ label: string }>,
   resolved: {
     routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>;
-  };
-  skeletonTour: { region?: string | null } | null;
-  statePickup: StudioV3State["pickup"];
-  revealedStops: number;
-}) {
+  },
+  skeletonTour: { region?: string | null } | null,
+) {
   const byLabel = new Map(resolved.routePoints.map((p) => [p.label.toLowerCase(), p] as const));
   const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
   const originCoord = REGION_ORIGIN[rk]
     ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
     : null;
 
-  // Resolve coords per stop with a graceful chain so geographic mode engages
-  // whenever we have an origin, instead of collapsing to the schematic S-curve
-  // when a single label misses the catalog. Unresolved stops inherit the last
-  // known coord — we never invent new locations, we cluster the label to its
-  // regional anchor.
   let lastKnown: { lat: number; lng: number } | null = originCoord;
   const stopsDetailed = editedStops.map((s) => {
     const rp = byLabel.get(s.label.toLowerCase());
@@ -2316,11 +2304,9 @@ function RevealRouteMap({
     if (lastKnown) {
       return { label: s.label, lat: lastKnown.lat, lng: lastKnown.lng };
     }
-    return { label: s.label };
+    return { label: s.label } as { label: string; lat?: number; lng?: number };
   });
 
-  // OSRM: dedupe consecutive identical coords so an inherited fallback stop
-  // does not produce a spurious 0-min leg between two identical points.
   const allGeo =
     originCoord &&
     stopsDetailed.every(
@@ -2343,6 +2329,36 @@ function RevealRouteMap({
         (s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng,
       )
     : null;
+
+  return { stopsDetailed, originCoord, routeStops };
+}
+
+/**
+ * RevealRouteMap — extracted so we can call the OSRM `useRouteLegMinutes`
+ * hook at the top of a component (hooks can't run inside an IIFE).
+ * Wraps `StudioV3SignatureMap` with geo-detailed stops, the resolved
+ * origin coordinate, and real driving minutes per leg.
+ */
+function RevealRouteMap({
+  editedStops,
+  resolved,
+  skeletonTour,
+  statePickup,
+  revealedStops,
+}: {
+  editedStops: ReadonlyArray<{ label: string }>;
+  resolved: {
+    routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>;
+  };
+  skeletonTour: { region?: string | null } | null;
+  statePickup: StudioV3State["pickup"];
+  revealedStops: number;
+}) {
+  const { stopsDetailed, originCoord, routeStops } = resolveRevealRouteStops(
+    editedStops,
+    resolved,
+    skeletonTour,
+  );
   const { legMinutes, legDistancesKm, legModes } = useRouteLegMinutes(
     routeStops,
     !!routeStops && routeStops.length >= 2,
@@ -2372,6 +2388,7 @@ function RevealRouteMap({
     </div>
   );
 }
+
 
 function PhaseHeader({
   eyebrow,
