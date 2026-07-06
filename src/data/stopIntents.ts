@@ -17,7 +17,7 @@
 //   - Do NOT invent stops — only tags for stops that already exist in
 //     `signatureTours.ts` may be listed here. Extra keys are ignored.
 
-import type { SignatureTour } from "@/data/signatureTours";
+import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 
 /** Canonical stop-level intents. Broader than the guest-facing `Interest`
  *  union because a single stop can carry cultural/spiritual/craft nuance
