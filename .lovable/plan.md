@@ -1,56 +1,99 @@
-## Goal
+## Why
 
-Add two focused Studio V3 E2E specs that harden the add-on pricing contract from two angles the current suite doesn't cover yet:
+Two problems today:
 
-1. **Disabled add-ons must never move the totals** — even when the user tries to click them.
-2. **Totals must update in the same frame as the click** — no scroll, no navigation, no debounce.
+1. **Reveal is dispersed.** After the map awakens, the screen scrolls through 8+ standalone islands: story chapters, refine-moments editor, Signature DNA, shaping direction, quality score, price card, add-ons, itinerary spine, blueprint optionals, inclusions footnote, sticky CTA. Add-ons live *inside* the price card, but the route (moments editor) lives *far above* it and the map is gone. Selecting an add-on updates the €/pp but the user can't see it hit the route, the time budget, or the CTA — everything feels detached.
+2. **Mobile MapAwakens overlaps.** `MapAwakens.tsx` renders the map at `h-[58dvh]` from the top and the moment card as `absolute bottom-0 z-20` — on 393px viewports the card physically covers the lower third of the map while it's still composing, so the user never sees the route unfold.
 
-Both specs reuse the existing `walkToReveal` + DOM readers in `e2e/studio-v3-walk-to-reveal.ts`, so the walker logic stays in lockstep with the sibling specs.
+## What changes
 
-## Files to add
+### A. Mobile MapAwakens — map first, card underneath
 
-### `e2e/studio-v3-add-ons-disabled-never-affect-total.spec.ts`
+- Move the moment card out of the `absolute bottom-0` overlay on mobile: keep it `absolute` at `sm:` and up, switch to normal flow (`static`) at mobile so it sits under the map.
+- Give the map section `h-[68dvh]` on mobile (was 58) since the card no longer overlaps.
+- Keep the progress dots on the card. No copy or beat-timing changes.
+- Desktop layout unchanged.
 
-Contract: an add-on with `data-state="disabled"` (either gated by day capacity or hidden behind the cap-of-3) must be inert.
+### B. Reveal — one "Your Signature" cohesive card
 
-Steps:
-1. Navigate `/studio-v3?e2e=1`, wait for `__APP_READY__`, `walkToReveal(page)`.
-2. Skip cleanly if the reveal / add-ons fieldset / party-total isn't mounted (same guard style as `studio-v3-final-investment-live.spec.ts`).
-3. Snapshot baseline `addOnsTotal` (should be `0` / hidden) and baseline `partyTotal`.
-4. Collect all add-on chips inside `[data-testid="studio-v3-add-ons"]`. Force-click every chip whose `data-state="disabled"` (capacity-gated by the day). After each attempted click:
-   - Assert `aria-pressed` stays `"false"`.
-   - Assert `parseAddOnsTotalEur(page)` is still `null` / baseline.
-   - Assert `parsePartyTotalEur(page)` equals the baseline.
-5. Cap-of-3 branch: use `readInteractableAddons(page)` and, if ≥4 exist, select the first 3, then attempt to click a 4th. Verify:
-   - The 4th chip flips to `aria-disabled="true"` (per `add-on-microinteractions.test.tsx` contract).
-   - Force-click it; `aria-pressed` stays `"false"`, `addOnsTotal` and `partyTotal` unchanged from the 3-selected state.
-   - Deselect one → previously-gated chip re-enables (mirrors the unit test but at rendered-HTML level).
+Collapse the scattered sections into a single vertically-stacked card in this order, all sharing one background surface and one CTA at the bottom. The map returns as the header of this card so add-on changes visibly affect it.
 
-### `e2e/studio-v3-add-ons-same-frame.spec.ts`
+```
+┌── Your Signature (single card) ────────────┐
+│  [1] Static route map (mini, ~180px)       │  ← always visible header
+│      pins = editedStops + add-on stops     │
+│                                            │
+│  [2] Title + rhythm/day chip               │
+│  [3] Route strip (numbered stops, inline   │
+│      swap/remove/add — was "Refine the     │
+│      moments", compacted)                  │
+│                                            │
+│  [4] Make the day yours (add-ons)          │
+│      · each chip shows +€X /pp AND +Xmin   │
+│      · time budget bar: "Day 6h30 · 45min  │
+│        free" turns amber when over         │
+│      · selected add-ons inject a pin on    │
+│        the map above + a row in [3]        │
+│                                            │
+│  [5] Investment block                      │
+│      · €/pp (base + add-ons)               │
+│      · × guests → party total              │
+│      · group-size picker (unchanged)       │
+│                                            │
+│  [6] Primary CTA: Reserve €{partyTotal}    │
+│      Secondary: Refine with a curator      │
+│                                            │
+│  [7] Collapsed accordions (default closed):│
+│      · What's included                     │
+│      · Optional, if the day allows         │
+│      · Why this works                      │
+└────────────────────────────────────────────┘
+```
 
-Contract: `studio-v3-add-ons-total` and `studio-v3-party-total` must reflect the new value **in the same frame as the click**, with no scroll and no phase transition.
+Removed / demoted from the reveal:
 
-Steps:
-1. Same setup + `walkToReveal` + skip guards.
-2. Record `window.scrollY` and the current `[data-testid="studio-v3-root"]` `data-phase` before each click; assert both are unchanged after.
-3. For each of the first 2–3 interactable add-ons, run this atomic sequence inside a single `page.evaluate` to eliminate the Playwright-round-trip window:
-   - Read `addOnsTotal.textContent` and `partyTotal.textContent` (pre-click).
-   - Dispatch a synthetic `click` on the chip (`btn.click()` in the same evaluate).
-   - Immediately (synchronously, no `await`, no `requestAnimationFrame`) re-read both text contents.
-   - Return `{ beforeAddOns, afterAddOns, beforeParty, afterParty, phaseBefore, phaseAfter, scrollBefore, scrollAfter, pressed }`.
-4. Assert:
-   - `afterAddOns !== beforeAddOns` and the numeric delta equals `+€<addon>` for that chip.
-   - `afterParty !== beforeParty` and delta equals `addon.eur × partyCount` (derived from the party-total line, same regex as `studio-v3-final-investment-live.spec.ts`).
-   - `pressed === "true"`.
-   - `phaseAfter === phaseBefore` and `scrollAfter === scrollBefore`.
-5. Toggle the same chip off in a second evaluate; assert both totals return to `beforeAddOns` / `beforeParty` in the same synchronous read.
+- Standalone Signature DNA chips section → merge as one line of small chips under the title.
+- Standalone "Shaping direction" italic block → move as a single italic caption under the title.
+- Standalone Quality Score section → move into a small badge next to the title (or drop from reveal; keep in debug only). Confirm with user if it must stay visible.
+- "Story of the day" chapters → move into a collapsed "The story" accordion in [7]; the map + route already tell it.
 
-## What this locks down that current specs don't
+### C. Add-ons ↔ route / map / CTA / time
 
-- `studio-v3-add-ons-total.spec.ts` and `-final-investment-live.spec.ts` only iterate through **interactable** add-ons — they never verify that `disabled` chips are truly inert against forced clicks, and they never verify the cap-gate is enforced at the rendered-HTML level (only the unit test does).
-- No existing E2E verifies the "same-frame" property. Every current spec uses `await expect(...)` polling, which would still pass if the totals updated one `rAF` later. The new spec asserts the read is synchronous inside a single `page.evaluate`, and additionally asserts no scroll / no phase change happened.
+Right now `signatureAddOn.durationMinutes` exists but is only used to gate `fitsBudget`. Wire it through so every add-on choice visibly changes the reveal:
 
-## Non-goals
+1. **Time budget** (new, in add-ons block):
+  - Compute `baseDayMin = summarizeDay(...).dwellMin + driveMin` (already available via `summarizeDay`).
+  - `addOnsMin = Σ selected add-ons' durationMinutes`.
+  - Render a slim horizontal bar: filled = base, gold overlay = add-ons, remaining = free.
+  - Copy: "Your day · 6h 30m · 45 min still free" / "Tight — 15 min over the rhythm you chose" (amber).
+  - Disable add-ons whose duration would push over the day budget (already partially done via `fitsBudget` — reuse, but recompute against *current* selection, not just base).
+2. **Route map reflects add-ons**:
+  - For each selected add-on with a `coords`/`sourceTourId` anchor stop, append a lightweight pin at the end of the route array feeding the mini-map (gold ring, dashed connector) so the user sees the day physically grow.
+  - If the add-on has no geo anchor, show it as an extra numbered row in [3] with a "no map pin" muted note (no invented coords — memory rule).
+3. **Route strip reflects add-ons**:
+  - Add a read-only row under editedStops for each selected add-on, labelled with its title + `+{durationMinutes} min`, removable via the same ✕ affordance that toggles it off.
+4. **CTA reflects add-ons**:
+  - Primary CTA button label becomes `Reserve · €{partyTotalWithAddOns}` and updates on every toggle (already computed as `partyTotalEur`).
+  - Mobile sticky CTA (already exists via IntersectionObserver) mirrors the same live total.
+5. **Price reflects add-ons** — already working; keep, but move the per-pax and party lines directly above the CTA so cause→effect is one visual jump.
 
-- No changes to `SignaturePriceCard.tsx` or the walker helper — the current implementation already satisfies both contracts; these tests are pure regression guards.
-- No new CI workflow — both specs run under the existing Playwright config alongside the sibling `studio-v3-add-ons-*.spec.ts` files.
+### D. Cleanup
+
+- Delete the duplicated eyebrows/dividers between the collapsed sections (they were the visual "dispersion" the user complained about).
+- Keep all existing `data-testid`s (`studio-v3-add-ons`, `studio-v3-add-ons-total`, `studio-v3-party-total`, `studio-v3-stops-editor`, `studio-v3-price-card`, `studio-v3-itinerary-spine`) so the E2E suite (`studio-v3-add-ons-*.spec.ts`, `-round-trip`, `-same-frame`, `-final-investment-live`) keeps passing. Add `data-testid="studio-v3-time-budget"` for the new bar.
+
+## Technical notes
+
+- Touch only:
+  - `src/components/studio-v3/MapAwakens.tsx` (mobile layout of the moment card + map height).
+  - `src/components/studio-v3/StudioV3.tsx` inside `StoryboardHandoff` (2496–~3800): re-order sections, delete standalone eyebrow blocks, move Story/Included/Optional/Why-this-works into accordions, embed a mini `EditorialMap` as the card header, add time-budget bar, wire selected add-on labels into the route strip.
+  - `src/components/studio-v3/SignaturePriceCard.tsx`: tighten to just [4]+[5]+[6] internals (drop its own eyebrow chrome, since it now lives inside the unified card); expose `selectedAddOns` and `addOnsMin` via a callback so the parent can render pins/rows/time bar. Alternatively, lift add-on state up into `StoryboardHandoff` and pass `selectedIds` down — cleaner, and lets the map/route consume it without prop-drilling callbacks. Preferred.
+- No new data files. `signatureAddOns.ts` already has `durationMinutes`. `summarizeDay` already returns dwell/drive/remaining minutes. No invented stops/coords — respects `studio-v3-no-invented-stops` memory.
+- No backend changes. Purely frontend/presentation, matching the "UI change → keep in frontend" rule.
+- Preserves the Studio philosophy memory: interface disappears further (fewer standalone panels), Portugal felt through the always-visible map, restraint > features.
+
+## Open question
+
+Quality Score in the reveal — keep as a small badge next to the title, or drop from the reveal (still visible in debug)? Default: drop, since the user said "too dispersed" and the score doesn't drive a decision at this step.
+
+After clicking cta button to say yes to signature create there should be a summary of the day and stops where guests fills de details like name email etc . Should save abd send email with their own created signature even when don't check out 
