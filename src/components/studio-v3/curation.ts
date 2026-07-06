@@ -16,6 +16,7 @@
 //      preferring stops with resolvable map coordinates.
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
+import { interestCoverageFromProfile, tourIntentProfile } from "@/data/stopIntents";
 import { lookupStop } from "@/data/stopGeo";
 import { isStopClosedOn } from "@/data/stopOperational";
 import { recordStudioV3CurationDecision } from "@/lib/studio-v3-telemetry";
@@ -934,19 +935,39 @@ function computeFeelingMatch(
   return { match: "weak", hits };
 }
 
-/** Per-interest coverage: measured against the tour's own content, NOT
- *  a hardcoded FEELING_TO_TOURS pool. This is the fix for wine+nature
- *  and every symmetric case — missing what the guest asked for hurts. */
+/** Per-interest coverage — driven by stop-level intent tags (the truth
+ *  model in `stopIntents.ts`) with a keyword fallback when a guest
+ *  interest has no stop-intent mapping. `evidence` lists the actual stop
+ *  labels that carry the intent, so "Why this journey" can quote them
+ *  verbatim instead of paraphrasing keyword hits. */
 function computeInterestCoverage(
   tour: SignatureTour,
   interests: ReadonlyArray<Interest>,
-): Array<{ interest: string; satisfied: boolean }> {
+): Array<{
+  interest: string;
+  satisfied: boolean;
+  strength?: "strong" | "partial" | "none";
+  evidence?: string[];
+}> {
   if (!interests.length) return [];
+  const profile = tourIntentProfile(tour);
   const hay = tourContent(tour);
   return interests.map((i) => {
-    const kws = INTEREST_TOUR_KEYWORDS[i] ?? [];
-    const satisfied = kws.some((kw) => hay.includes(kw));
-    return { interest: i, satisfied };
+    const cov = interestCoverageFromProfile(profile, i);
+    // Fallback: some interests may not (yet) have a stop-intent mapping.
+    // Keep keyword sensing as a safety net so scoring never regresses to
+    // fully unsatisfied when tags are absent.
+    if (cov.count === 0) {
+      const kws = INTEREST_TOUR_KEYWORDS[i] ?? [];
+      const kwHit = kws.some((kw) => hay.includes(kw));
+      return { interest: i, satisfied: kwHit, strength: "none" as const, evidence: [] };
+    }
+    return {
+      interest: i,
+      satisfied: true,
+      strength: cov.strength,
+      evidence: cov.evidence,
+    };
   });
 }
 
