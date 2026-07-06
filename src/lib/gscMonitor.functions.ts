@@ -131,7 +131,6 @@ export const inspectGscUrls = createServerFn({ method: "POST" })
     // Sequential to be polite to the GSC quota (≈600 inspections/day, 2k/min).
     const results: UrlInspectionResult[] = [];
     for (const u of data.urls) {
-      // eslint-disable-next-line no-await-in-loop
       results.push(await inspectOne(u));
     }
     return { results };

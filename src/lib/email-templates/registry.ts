@@ -8,7 +8,6 @@ import { template as internalBooking } from "./internal-booking";
 import { template as welcome } from "./welcome";
 import { template as legacyDomainReady } from "./legacy-domain-ready";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface TemplateEntry {
   component: ComponentType<any>;
   subject: string | ((data: Record<string, any>) => string);

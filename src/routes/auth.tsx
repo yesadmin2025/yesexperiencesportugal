@@ -26,7 +26,6 @@ async function routeByRole(userId: string, navigate: ReturnType<typeof useNaviga
     _role: "admin",
   });
 
-  // eslint-disable-next-line no-console
   console.log("[auth] has_role result", { userId, data, error });
 
   if (error) {

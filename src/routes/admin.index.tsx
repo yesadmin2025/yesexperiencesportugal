@@ -138,7 +138,7 @@ function AdminOverviewPage() {
         _user_id: s.user.id,
         _role: "admin",
       });
-      // eslint-disable-next-line no-console
+
       console.log("[admin] has_role", { data, error });
       if (!cancelled) {
         setIsAdmin(!error && data === true);

@@ -330,7 +330,7 @@ export function startHomeMotion(): () => void {
     // Guard console access — jsdom-in-tests provides it but keep defensive.
     if (typeof console === "undefined" || typeof console.info !== "function") return;
     const avg = t.sweepCount ? (t.sweepMsTotal! / t.sweepCount).toFixed(2) : "0";
-    // eslint-disable-next-line no-console
+
     console.info(
       `[home-motion] ${t.triggered}/${t.total} revealed · sweeps=${t.sweepCount} ` +
         `avg=${avg}ms max=${(t.sweepMsMax ?? 0).toFixed(2)}ms · ` +

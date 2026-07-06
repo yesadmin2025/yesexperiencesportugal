@@ -377,8 +377,6 @@ export function StudioV3SignatureMap({
 
   if (cleaned.length === 0) return null;
 
-
-
   const handlePinKey = (e: React.KeyboardEvent, i: number) => {
     const last = waypoints.length - 1;
     if (last < 0) return;

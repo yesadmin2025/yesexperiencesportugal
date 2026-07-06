@@ -369,7 +369,7 @@ export function assertStopIntentSchema(tours: ReadonlyArray<SignatureTour> = sig
     "until every Signature stop has a valid intent set.\n" +
     report.errors.join("\n");
   __schemaAssertion = { ok: false, message };
-  // eslint-disable-next-line no-console
+
   console.error(message);
   throw new Error(message);
 }
@@ -385,7 +385,6 @@ export function __resetStopIntentSchemaAssertion(): void {
 {
   const eager = validateStopIntentSchema();
   if (!eager.ok) {
-    // eslint-disable-next-line no-console
     console.error(
       "[stopIntents] Schema validation failed on module load:\n" + eager.errors.join("\n"),
     );

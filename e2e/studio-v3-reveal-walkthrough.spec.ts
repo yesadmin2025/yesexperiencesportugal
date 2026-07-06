@@ -207,9 +207,9 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
     }
 
     // Diagnostic: dump the walker's path + a screenshot for the trace.
-    // eslint-disable-next-line no-console
+
     console.log("[walker] phases seen:", Array.from(seenPhases).join(" → "));
-    // eslint-disable-next-line no-console
+
     console.log("[walker] final phase:", finalPhase);
     await page.screenshot({ path: `test-results/walker-final-${finalPhase ?? "unknown"}.png` });
     const visibleButtons = await page.locator("button:visible").evaluateAll((els) =>
@@ -220,7 +220,7 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
         disabled: (b as HTMLButtonElement).disabled,
       })),
     );
-    // eslint-disable-next-line no-console
+
     console.log("[walker] visible buttons at final:", JSON.stringify(visibleButtons, null, 2));
 
     // Allow either: walker reached storyboard, or the reveal surface itself
