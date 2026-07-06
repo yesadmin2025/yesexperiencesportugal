@@ -700,7 +700,8 @@ export function StudioV3() {
         dateExact: details.tourDate || currentState.dateExact || null,
         startTime: details.startTime ?? null,
         pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-        pricePerPaxEur: tour.priceFrom ?? 180,
+        pricePerPaxEur:
+          resolvePerPaxEur(tour, details.guests)?.eurPerPax ?? tour.priceFrom ?? 180,
         heroSrc: tour.img ?? null,
         beats: stopLabels.slice(0, 4),
         flowLabel: "Studio",
