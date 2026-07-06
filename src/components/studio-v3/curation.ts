@@ -1024,7 +1024,15 @@ export function scoreTourFit(
   for (const c of interestCoverage) {
     if (c.satisfied) {
       interestScore += 8;
-      boosts.push(`interest-${c.interest}-satisfied`);
+      // Reward truly-anchored fits: a tour with ≥2 stops tagged for the
+      // guest's interest beats one that only satisfies via a single stop
+      // or a keyword-fallback hit.
+      if (c.strength === "strong") {
+        interestScore += 2;
+        boosts.push(`interest-${c.interest}-strong`);
+      } else {
+        boosts.push(`interest-${c.interest}-satisfied`);
+      }
     } else {
       interestScore -= 6;
       penalties.push(`interest-${c.interest}-missing`);
