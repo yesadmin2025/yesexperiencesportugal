@@ -202,7 +202,7 @@ export function tourIntentProfile(tour: SignatureTour): TourIntentProfile {
 
   const dominant = (Object.entries(tags) as Array<[StopIntent, number]>)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
+    .slice(0, 5)
     .map(([intent]) => intent);
 
   const profile: TourIntentProfile = {
