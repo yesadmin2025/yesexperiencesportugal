@@ -669,6 +669,32 @@ export function StudioV3() {
   const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
 
+  // Lifted add-on selection so the checkout drawer summary AND the Stripe
+  // session both see exactly what the traveller picked on the reveal.
+  // `SignaturePriceCard` calls `onAddOnsChange` on every toggle; we mirror
+  // the summary here and forward it to `handleStripeCheckout`.
+  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
+  const [selectedAddOnItems, setSelectedAddOnItems] = useState<
+    SelectedAddOnSummary["items"]
+  >([]);
+  const [selectedAddOnsTotalEur, setSelectedAddOnsTotalEur] = useState(0);
+  const handleAddOnsChange = useCallback((summary: SelectedAddOnSummary) => {
+    setSelectedAddOnIds((prev) => {
+      const same =
+        prev.length === summary.ids.length && prev.every((id, i) => id === summary.ids[i]);
+      return same ? prev : summary.ids;
+    });
+    setSelectedAddOnItems(summary.items);
+    setSelectedAddOnsTotalEur(summary.totalEur);
+  }, []);
+  // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
+  useEffect(() => {
+    setSelectedAddOnIds([]);
+    setSelectedAddOnItems([]);
+    setSelectedAddOnsTotalEur(0);
+  }, [state.tourId]);
+
+
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
   const requestStripeCheckout = useCallback(
