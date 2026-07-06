@@ -6,7 +6,8 @@
 // declared in `src/data/signatureTours.ts` for that tour id.
 
 import { describe, it, expect, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render as rtlRender, screen, within } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignaturePriceCard } from "../SignaturePriceCard";
 import { signatureTours } from "@/data/signatureTours";
 import { ADD_ON_CATALOG, addOnEurFromBase, regionBucket } from "@/data/signatureAddOns";
@@ -14,7 +15,24 @@ import { ADD_ON_CATALOG, addOnEurFromBase, regionBucket } from "@/data/signature
 vi.mock("@/lib/studio-v3-telemetry", () => ({
   recordStudioV3RevealPremium: vi.fn(),
   recordStudioV3BuilderStep: vi.fn(),
+  recordStudioV3RevealAddOns: vi.fn(),
+  recordStudioV3CurationDecision: vi.fn(),
+  recordStudioV3Phase4Timing: vi.fn(),
+  recordStudioV3RevealValidation: vi.fn(),
+  emitStudioV3Event: vi.fn(),
 }));
+
+// SignaturePriceCard uses useTourPriceTiers (TanStack Query) — every render
+// needs a fresh QueryClientProvider.
+function makeWrapper() {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return function Wrapper({ children }: { children: React.ReactNode }) {
+    return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  };
+}
+const render = (ui: React.ReactElement) => rtlRender(ui, { wrapper: makeWrapper() });
 
 describe("Studio V3 price card — source-of-truth pricing", () => {
   it.each(signatureTours.filter((t) => t.priceFrom && t.priceFrom > 0))(
