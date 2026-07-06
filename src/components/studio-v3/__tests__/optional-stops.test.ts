@@ -23,8 +23,8 @@ import { resolveStudioV3Route, selectOptionalRefinements } from "@/components/st
 import { REGION_STOP_POOL, STUDIO_V3_OPTIONAL_STOPS_ENABLED } from "@/data/regionStopPool";
 
 describe("Studio V3 — Phase 5D flag default", () => {
-  it("STUDIO_V3_OPTIONAL_STOPS_ENABLED stays false in committed code", () => {
-    expect(STUDIO_V3_OPTIONAL_STOPS_ENABLED).toBe(false);
+  it("STUDIO_V3_OPTIONAL_STOPS_ENABLED is enabled — personalization is live", () => {
+    expect(STUDIO_V3_OPTIONAL_STOPS_ENABLED).toBe(true);
   });
 });
 
@@ -122,10 +122,14 @@ describe("Studio V3 — selectOptionalRefinements eligibility", () => {
 });
 
 describe("Studio V3 — P17 isolation", () => {
+  // P17 stops now live under `roman-heritage-alentejo` (Vidigueira / talha
+  // cluster). They must never leak into the P6 Évora-city route.
   const P17_NAMES = new Set(
-    REGION_STOP_POOL.filter((s) => s.signatureTourId === "roman-heritage-talha-wines").map(
-      (s) => s.name,
-    ),
+    REGION_STOP_POOL.filter(
+      (s) =>
+        s.signatureTourId === "roman-heritage-alentejo" &&
+        s.routeCluster === "vidigueira-roman-talha",
+    ).map((s) => s.name),
   );
 
   it("there is at least one P17 stop seeded (sanity)", () => {
@@ -249,13 +253,8 @@ describe("Studio V3 — dedupe vs existing route points", () => {
   });
 });
 
-describe("Studio V3 — flag-off live behaviour is unchanged", () => {
-  it("resolveStudioV3Route refinements are produced solely by the pre-Phase-5D path when flag is false", () => {
-    // With STUDIO_V3_OPTIONAL_STOPS_ENABLED === false (committed default),
-    // every output of `resolveStudioV3Route` must have refinements that do
-    // NOT include any optional pool stop name. We assert this across a
-    // representative slice of inputs.
-    const ALL_POOL_NAMES = new Set(REGION_STOP_POOL.map((s) => s.name));
+describe("Studio V3 — flag-on live behaviour", () => {
+  it("resolveStudioV3Route may surface pool refinements when flag is enabled, capped at 4 total", () => {
     const inputs = [
       {
         feeling: "wine-food" as const,
@@ -279,7 +278,7 @@ describe("Studio V3 — flag-off live behaviour is unchanged", () => {
         pickup: "lisbon" as const,
       },
     ];
-    expect(STUDIO_V3_OPTIONAL_STOPS_ENABLED).toBe(false);
+    expect(STUDIO_V3_OPTIONAL_STOPS_ENABLED).toBe(true);
     for (const i of inputs) {
       const route = resolveStudioV3Route({
         feeling: i.feeling,
@@ -288,12 +287,8 @@ describe("Studio V3 — flag-off live behaviour is unchanged", () => {
         interests: i.interests,
         pickup: i.pickup,
       });
-      // total refinements capped at 2 (unchanged contract)
-      expect(route.refinements.length).toBeLessThanOrEqual(2);
-      // no pool stop name leaked when flag is false
-      for (const r of route.refinements) {
-        expect(ALL_POOL_NAMES.has(r)).toBe(false);
-      }
+      // total refinements capped at 4 (base + optional)
+      expect(route.refinements.length).toBeLessThanOrEqual(4);
     }
   });
 });
