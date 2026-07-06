@@ -215,30 +215,30 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Private Portugal Tours & Real-Time Tour Builder | YES Experiences" },
+      { title: "Private Portugal Tours & Real-Time Builder | YES" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
         content:
-          "Portugal's first real-time private tour builder. Design and instantly reserve your private day in the YES Studio, book a Signature day (best-seller: Arrábida Wine Tour), or work with a local Travel Designer on a full Portugal journey.",
+          "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer.",
       },
       {
         property: "og:title",
-        content: "Private Portugal Tours & Real-Time Tour Builder | YES Experiences",
+        content: "Private Portugal Tours & Real-Time Builder | YES",
       },
       {
         property: "og:description",
         content:
-          "Portugal's first real-time private tour builder. Design and instantly reserve your private day in the YES Studio, book a Signature day (best-seller: Arrábida Wine Tour), or work with a local Travel Designer on a full Portugal journey.",
+          "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer.",
       },
       {
         property: "twitter:title",
-        content: "Private Portugal Tours & Real-Time Tour Builder | YES Experiences",
+        content: "Private Portugal Tours & Real-Time Builder | YES",
       },
       {
         property: "twitter:description",
         content:
-          "Portugal's first real-time private tour builder. Design and instantly reserve your private day in the YES Studio, book a Signature day (best-seller: Arrábida Wine Tour), or work with a local Travel Designer on a full Portugal journey.",
+          "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
