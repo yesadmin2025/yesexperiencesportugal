@@ -902,15 +902,28 @@ function tourHoursEstimate(tour: SignatureTour): number | null {
   return null;
 }
 
+/** Cached lowercase content haystack per tour — feeling/interest match runs
+ *  once per (tour, feeling, interest) call, and the route-containment
+ *  regression test exercises hundreds of combinations. Keeping the string
+ *  allocation out of the hot path prevents timeouts. */
+const TOUR_CONTENT_CACHE = new WeakMap<SignatureTour, string>();
+function tourContent(tour: SignatureTour): string {
+  const cached = TOUR_CONTENT_CACHE.get(tour);
+  if (cached) return cached;
+  const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
+    .map((s) => `${s.label} ${s.story}`)
+    .join(" ")}`.toLowerCase();
+  TOUR_CONTENT_CACHE.set(tour, hay);
+  return hay;
+}
+
 /** Feeling → tour semantic match, scored against the tour's own content.
  *  strong = 3+ keyword hits, partial = 1–2, weak = 0. */
 function computeFeelingMatch(
   tour: SignatureTour,
   feeling: Feeling,
 ): { match: "strong" | "partial" | "weak"; hits: number } {
-  const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
-    .map((s) => `${s.label} ${s.story}`)
-    .join(" ")}`.toLowerCase();
+  const hay = tourContent(tour);
   const kws = FEELING_KEYWORDS[feeling] ?? [];
   let hits = 0;
   for (const kw of kws) {
@@ -929,15 +942,14 @@ function computeInterestCoverage(
   interests: ReadonlyArray<Interest>,
 ): Array<{ interest: string; satisfied: boolean }> {
   if (!interests.length) return [];
-  const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
-    .map((s) => `${s.label} ${s.story}`)
-    .join(" ")}`.toLowerCase();
+  const hay = tourContent(tour);
   return interests.map((i) => {
     const kws = INTEREST_TOUR_KEYWORDS[i] ?? [];
     const satisfied = kws.some((kw) => hay.includes(kw));
     return { interest: i, satisfied };
   });
 }
+
 
 /** Pickup reachability — half-day pickups shouldn't be pointed at
  *  Alentejo/Vicentine tours. Uses the existing `pickupAffinity` signal:
