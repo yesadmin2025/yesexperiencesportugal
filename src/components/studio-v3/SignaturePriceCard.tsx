@@ -853,14 +853,25 @@ export function SignaturePriceCard({
                         ) : null}
                       </span>
                       <span
-                        className="shrink-0 text-[12px] font-semibold tabular-nums"
+                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums"
                         style={{ color: "var(--charcoal)" }}
                       >
-                        +€{eur}
-                        <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
-                          / pp
+                        <span>
+                          +€{eur}
+                          <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
+                            / pp
+                          </span>
                         </span>
+                        {a.durationMinutes > 0 ? (
+                          <span
+                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold"
+                            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                          >
+                            +{a.durationMinutes} min
+                          </span>
+                        ) : null}
                       </span>
+
                     </button>
                   </li>
                 );
