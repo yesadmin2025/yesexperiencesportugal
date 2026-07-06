@@ -1150,7 +1150,8 @@ export function SignaturePriceCard({
                 boxShadow: "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Yes — make this day mine
+              Yes — reserve{partyTotalEur != null ? ` · €${partyTotalEur}` : totalEur != null ? ` · €${totalEur} /pp` : ""}
+
               <ArrowRight size={14} aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
           ) : (
