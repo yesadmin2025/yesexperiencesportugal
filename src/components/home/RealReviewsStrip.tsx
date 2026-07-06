@@ -60,9 +60,7 @@ export function RealReviewsStrip() {
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
           >
             In the words of{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              recent guests.
-            </span>
+            <span className="italic font-normal text-[color:var(--teal)]">recent guests.</span>
           </h2>
         </div>
 
@@ -72,7 +70,10 @@ export function RealReviewsStrip() {
               key={i}
               className="reveal-stagger he-card-lift rounded-[6px] border border-[color:var(--border)] bg-white p-5 md:p-6 flex flex-col"
             >
-              <div className="inline-flex items-center gap-0.5 text-[color:var(--gold)]" aria-label={`${q.rating} out of 5`}>
+              <div
+                className="inline-flex items-center gap-0.5 text-[color:var(--gold)]"
+                aria-label={`${q.rating} out of 5`}
+              >
                 {Array.from({ length: 5 }).map((_, s) => (
                   <Star key={s} size={13} fill="currentColor" strokeWidth={0} />
                 ))}

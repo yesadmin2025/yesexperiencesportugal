@@ -22,10 +22,10 @@
  */
 
 export type AuthorityMentionType =
-  | "brand-direct"        // article explicitly names YES Experiences / Yes!experiences
-  | "product-mention"     // article ranks/reviews a tour that YES operates on a platform
-  | "best-list"           // included in a "best of" ranked list
-  | "platform-linked";    // article links primarily to Viator/GYG listing
+  | "brand-direct" // article explicitly names YES Experiences / Yes!experiences
+  | "product-mention" // article ranks/reviews a tour that YES operates on a platform
+  | "best-list" // included in a "best of" ranked list
+  | "platform-linked"; // article links primarily to Viator/GYG listing
 
 export type AuthorityPlacement =
   | "homepage"
@@ -38,22 +38,22 @@ export type AuthorityQuality = "high" | "medium" | "low";
 
 export interface ExternalAuthorityMention {
   id: string;
-  sourceName: string;        // display name, e.g. "Wine With Our Family"
-  sourceDomain: string;      // e.g. "winewithourfamily.com"
+  sourceName: string; // display name, e.g. "Wine With Our Family"
+  sourceDomain: string; // e.g. "winewithourfamily.com"
   articleTitle: string;
   articleUrl: string;
-  topic: string;             // short topic label, e.g. "Alentejo wine region"
+  topic: string; // short topic label, e.g. "Alentejo wine region"
   mentionType: AuthorityMentionType;
   linkedPlatform: "viator" | "getyourguide" | "tripadvisor" | "yes-direct" | null;
-  providerNameDetected: boolean;     // true ONLY when the page names "YES Experiences" / "Yes!experiences"
-  relatedTourSlug?: string;          // signature tour id when applicable
+  providerNameDetected: boolean; // true ONLY when the page names "YES Experiences" / "Yes!experiences"
+  relatedTourSlug?: string; // signature tour id when applicable
   relatedRegion: "lisbon" | "arrabida-setubal" | "alentejo" | "douro" | "sintra";
-  ratingValueIfAvailable?: number;   // article's own displayed rating (NOT used for schema)
+  ratingValueIfAvailable?: number; // article's own displayed rating (NOT used for schema)
   reviewCountIfAvailable?: number;
-  quote: string;                     // short, verbatim excerpt from the article
+  quote: string; // short, verbatim excerpt from the article
   quality: AuthorityQuality;
   placement: AuthorityPlacement[];
-  lastCheckedAt: string;             // ISO date the entry was last verified manually
+  lastCheckedAt: string; // ISO date the entry was last verified manually
 }
 
 /**
@@ -85,8 +85,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     id: "world-tourism-arrabida-setubal",
     sourceName: "World Tourism",
     sourceDomain: "world-tourism.org",
-    articleTitle:
-      "Private Arrábida & Setúbal Wine Tour: All-Inclusive from Lisbon — Review",
+    articleTitle: "Private Arrábida & Setúbal Wine Tour: All-Inclusive from Lisbon — Review",
     articleUrl:
       "https://www.world-tourism.org/private-arrabida-setubal-wine-tour-all-inclusive-from-lisbon/",
     topic: "Arrábida & Setúbal full-day private wine tour",
@@ -115,8 +114,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     providerNameDetected: false,
     relatedTourSlug: "arrabida-wine-allinclusive",
     relatedRegion: "arrabida-setubal",
-    quote:
-      "Private Full-Day Arrábida Wine Tour and Food Tasting — Best Full-Day Tour.",
+    quote: "Private Full-Day Arrábida Wine Tour and Food Tasting — Best Full-Day Tour.",
     quality: "high",
     placement: ["homepage", "wine-landing", "arrabida-tour"],
     lastCheckedAt: "2026-06-29",
@@ -134,8 +132,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     providerNameDetected: false,
     relatedTourSlug: "arrabida-wine-allinclusive",
     relatedRegion: "arrabida-setubal",
-    quote:
-      "This experience made our list of the 25 Best Lunch Experiences In Lisbon.",
+    quote: "This experience made our list of the 25 Best Lunch Experiences In Lisbon.",
     quality: "medium",
     placement: ["wine-landing", "arrabida-tour"],
     lastCheckedAt: "2026-06-29",
@@ -144,8 +141,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     id: "happytovisit-3-best-wine-tours",
     sourceName: "Happy to Visit",
     sourceDomain: "happytovisit.com",
-    articleTitle:
-      "Lisbon Metropolitan Area's 3 Best Wine Tours — Which to Choose",
+    articleTitle: "Lisbon Metropolitan Area's 3 Best Wine Tours — Which to Choose",
     articleUrl:
       "https://happytovisit.com/lisbon-metropolitan-areas-3-best-wine-tours-which-to-choose/",
     topic: "Lisbon wine tours comparison",
@@ -164,8 +160,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     id: "travelersuniverse-3-top-wine-tours",
     sourceName: "Travelers Universe",
     sourceDomain: "travelersuniverse.com",
-    articleTitle:
-      "We Rank Lisbon Metropolitan Area's 3 Top Wine Tours",
+    articleTitle: "We Rank Lisbon Metropolitan Area's 3 Top Wine Tours",
     articleUrl:
       "https://www.travelersuniverse.com/we-rank-lisbon-metropolitan-areas-3-top-wine-tours/",
     topic: "Lisbon wine tours ranked",
@@ -184,8 +179,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     id: "mumsdotravel-2-best-wine-tours",
     sourceName: "Mums Do Travel",
     sourceDomain: "mumsdotravel.com",
-    articleTitle:
-      "Lisbon Metropolitan Area's 2 Best Wine Tours — Which to Choose",
+    articleTitle: "Lisbon Metropolitan Area's 2 Best Wine Tours — Which to Choose",
     articleUrl:
       "https://mumsdotravel.com/lisbon-metropolitan-areas-2-best-wine-tours-which-to-choose/",
     topic: "Lisbon wine tours short list",
@@ -205,8 +199,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     sourceName: "Happy to Visit",
     sourceDomain: "happytovisit.com",
     articleTitle: "Lisbon: Private Full Day Évora & Alentejo Wine Tour — Review",
-    articleUrl:
-      "https://happytovisit.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
+    articleUrl: "https://happytovisit.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
     topic: "Évora & Alentejo private full-day wine tour",
     mentionType: "product-mention",
     linkedPlatform: "viator",
@@ -223,8 +216,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     id: "travelersuniverse-evora-alentejo-wine",
     sourceName: "Travelers Universe",
     sourceDomain: "travelersuniverse.com",
-    articleTitle:
-      "Exploring Portugal's Alentejo: A Private Full-Day Évora & Wine Tour Review",
+    articleTitle: "Exploring Portugal's Alentejo: A Private Full-Day Évora & Wine Tour Review",
     articleUrl:
       "https://www.travelersuniverse.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
     topic: "Évora & Alentejo private full-day wine tour",
@@ -245,16 +237,14 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     sourceDomain: "travel-buddies.com",
     articleTitle:
       "Lisbon: Private Full Day Évora & Alentejo Wine Tour — Featured in 13 Best Full-Day Tours in Évora",
-    articleUrl:
-      "https://travel-buddies.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
+    articleUrl: "https://travel-buddies.com/lisbon-private-full-day-evora-alentejo-wine-tour/",
     topic: "Best full-day tours in Évora ranking",
     mentionType: "best-list",
     linkedPlatform: "viator",
     providerNameDetected: false,
     relatedTourSlug: "evora-alentejo",
     relatedRegion: "alentejo",
-    quote:
-      "This experience made our list of the 13 Best Full-Day Tours In Evora.",
+    quote: "This experience made our list of the 13 Best Full-Day Tours In Evora.",
     quality: "medium",
     placement: ["alentejo"],
     lastCheckedAt: "2026-06-29",
@@ -264,8 +254,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     sourceName: "World Tourism",
     sourceDomain: "world-tourism.org",
     articleTitle: "The 9 Top Full-Day Tours in Évora — Which Is Best?",
-    articleUrl:
-      "https://www.world-tourism.org/the-9-top-full-day-tours-in-evora-which-is-best/",
+    articleUrl: "https://www.world-tourism.org/the-9-top-full-day-tours-in-evora-which-is-best/",
     topic: "Best full-day tours in Évora ranking",
     mentionType: "best-list",
     linkedPlatform: "viator",

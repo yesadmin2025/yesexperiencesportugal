@@ -37,10 +37,7 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-export function LanguageSwitcher({
-  variant = "header",
-  className,
-}: LanguageSwitcherProps) {
+export function LanguageSwitcher({ variant = "header", className }: LanguageSwitcherProps) {
   const active = useLocale();
   const location = useRouterState({ select: (s) => s.location });
 
@@ -59,8 +56,7 @@ export function LanguageSwitcher({
     >
       {LOCALES.map((loc, i) => {
         const prefix = localePrefix(loc);
-        const target =
-          `${prefix}${localeNeutralPath === "/" ? "" : localeNeutralPath}` || "/";
+        const target = `${prefix}${localeNeutralPath === "/" ? "" : localeNeutralPath}` || "/";
         const isActive = loc === active;
         return (
           <span key={loc} className="inline-flex items-center gap-2">

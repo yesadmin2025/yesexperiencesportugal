@@ -77,8 +77,7 @@ export type TailorEvaluation =
     };
 
 const NEEDS_STUDIO = "If you want something outside this Signature, design your day in the Studio.";
-const NEEDS_DESIGNER =
-  "If you'd like us to shape this differently, our Travel Designer can help.";
+const NEEDS_DESIGNER = "If you'd like us to shape this differently, our Travel Designer can help.";
 
 /**
  * Evaluate a single tailor adjustment against a resolved Signature.

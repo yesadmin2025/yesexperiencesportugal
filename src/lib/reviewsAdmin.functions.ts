@@ -13,12 +13,7 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
   if (error || !isAdmin) throw new Error("Forbidden");
 }
 
-export type ReviewSource =
-  | "viator"
-  | "tripadvisor"
-  | "getyourguide"
-  | "google"
-  | "first_party";
+export type ReviewSource = "viator" | "tripadvisor" | "getyourguide" | "google" | "first_party";
 
 // -------------------- External ratings (per-platform counts) --------------------
 
@@ -151,10 +146,7 @@ export const deleteReview = createServerFn({ method: "POST" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
-    const { error } = await context.supabase
-      .from("tour_reviews")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("tour_reviews").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -164,13 +156,16 @@ export const deleteReview = createServerFn({ method: "POST" })
 export const createReviewToken = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
-    (d: { tour_id: string; guest_email: string; guest_name?: string | null; booking_id?: string | null }) => d,
+    (d: {
+      tour_id: string;
+      guest_email: string;
+      guest_name?: string | null;
+      booking_id?: string | null;
+    }) => d,
   )
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
-    const token =
-      crypto.randomUUID().replace(/-/g, "") +
-      Math.random().toString(36).slice(2, 10);
+    const token = crypto.randomUUID().replace(/-/g, "") + Math.random().toString(36).slice(2, 10);
     const { data: row, error } = await context.supabase
       .from("review_submission_tokens")
       .insert({
@@ -190,9 +185,7 @@ export const createReviewToken = createServerFn({ method: "POST" })
 
 export const listPendingReviews = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (d: { tourId?: string; status?: "pending" | "approved" | "rejected" }) => d,
-  )
+  .inputValidator((d: { tourId?: string; status?: "pending" | "approved" | "rejected" }) => d)
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
     const status = data.status ?? "pending";
@@ -211,9 +204,7 @@ export const listPendingReviews = createServerFn({ method: "GET" })
 
 export const moderateReview = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (d: { id: string; decision: "approve" | "reject"; notes?: string | null }) => d,
-  )
+  .inputValidator((d: { id: string; decision: "approve" | "reject"; notes?: string | null }) => d)
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
     const approve = data.decision === "approve";

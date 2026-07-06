@@ -25,10 +25,7 @@ async function handleDnsWatch() {
   const url = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) {
-    return Response.json(
-      { ok: false, error: "Supabase env not configured" },
-      { status: 500 },
-    );
+    return Response.json({ ok: false, error: "Supabase env not configured" }, { status: 500 });
   }
   const admin = createClient(url, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -64,31 +61,24 @@ async function handleDnsWatch() {
   const wasReady = prev?.all_ready === true;
   const justBecameReady = allReady && !wasReady;
 
-  await admin
-    .from("dns_watch_state")
-    .upsert({
-      key: "default",
-      all_ready: allReady,
-      ready_since: allReady ? (prev?.ready_since ?? new Date().toISOString()) : null,
-      last_notified_at: justBecameReady
-        ? new Date().toISOString()
-        : (prev?.last_notified_at ?? null),
-      last_summary: {
-        hosts: probes.map((p) => ({
-          host: p.host,
-          ready: p.ready,
-          notes: p.notes,
-        })),
-        checkedAt: new Date().toISOString(),
-      },
-      updated_at: new Date().toISOString(),
-    });
+  await admin.from("dns_watch_state").upsert({
+    key: "default",
+    all_ready: allReady,
+    ready_since: allReady ? (prev?.ready_since ?? new Date().toISOString()) : null,
+    last_notified_at: justBecameReady ? new Date().toISOString() : (prev?.last_notified_at ?? null),
+    last_summary: {
+      hosts: probes.map((p) => ({
+        host: p.host,
+        ready: p.ready,
+        notes: p.notes,
+      })),
+      checkedAt: new Date().toISOString(),
+    },
+    updated_at: new Date().toISOString(),
+  });
 
   if (justBecameReady) {
-    console.log(
-      "[dns-watch] 🎉 ALL HOSTS READY:",
-      probes.map((p) => p.host).join(", "),
-    );
+    console.log("[dns-watch] 🎉 ALL HOSTS READY:", probes.map((p) => p.host).join(", "));
   }
 
   return Response.json({

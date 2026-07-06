@@ -26,7 +26,8 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-  const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
+  const SUPABASE_ANON_KEY =
+    Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
   const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
   // Verify caller is an admin.
@@ -64,7 +65,8 @@ Deno.serve(async (req) => {
   const dateExact =
     (body.date_exact as string) ??
     new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const customerEmail = (body.customer_email as string) ?? userData.user.email ?? "test@yesexperiencesportugal.com";
+  const customerEmail =
+    (body.customer_email as string) ?? userData.user.email ?? "test@yesexperiencesportugal.com";
   const customerName = (body.customer_name as string) ?? "Test Customer";
   const skipBokun = body.skip_bokun === true;
   const checkOnly = body.check_only === true;
@@ -78,10 +80,10 @@ Deno.serve(async (req) => {
         .eq("tour_id", tourId)
         .maybeSingle();
       if (!mapping?.bokun_product_id) {
-        return new Response(
-          JSON.stringify({ ok: true, preview: true, mapped: false, slots: [] }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
+        return new Response(JSON.stringify({ ok: true, preview: true, mapped: false, slots: [] }), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
       const slots = (await getActivityAvailabilities(
         mapping.bokun_product_id,
@@ -126,7 +128,6 @@ Deno.serve(async (req) => {
     }
   }
 
-
   const fakeSessionId = `cs_test_sim_${crypto.randomUUID().replace(/-/g, "")}`;
   const meta = {
     booking_type: bookingType,
@@ -167,9 +168,10 @@ Deno.serve(async (req) => {
   }
   const bookingId = ins.id as string;
 
-  let bokunResult: { status: string; booking_id?: string; confirmation?: string; error?: string } = {
-    status: "skipped",
-  };
+  let bokunResult: { status: string; booking_id?: string; confirmation?: string; error?: string } =
+    {
+      status: "skipped",
+    };
 
   if (!skipBokun && bookingType === "signature") {
     try {
@@ -211,7 +213,8 @@ Deno.serve(async (req) => {
         }
         if (chosen) {
           const slot = chosen;
-          const requestedCatId = body.pricing_category_id != null ? Number(body.pricing_category_id) : null;
+          const requestedCatId =
+            body.pricing_category_id != null ? Number(body.pricing_category_id) : null;
           const cat =
             (requestedCatId != null
               ? slot.pricingCategories?.find((c) => c.id === requestedCatId)

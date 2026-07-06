@@ -47,8 +47,7 @@ export function inferKind(label: string): StopKind | null {
   if (/beach|cove|portinho|galapinhos|comporta/.test(l)) return "beach";
   if (/viewpoint|miradouro|cape|cabo|cliff/.test(l)) return "viewpoint";
   if (/workshop|atelier|azulejo|tile|cheese|hands-on/.test(l)) return "workshop";
-  if (/convent|monastery|chapel|castle|palace|roman|ruin|heritage/.test(l))
-    return "heritage";
+  if (/convent|monastery|chapel|castle|palace|roman|ruin|heritage/.test(l)) return "heritage";
   if (/village|town|aldeia|óbidos|obidos|sintra/.test(l)) return "village";
   return null;
 }
@@ -100,8 +99,7 @@ export function haversineDriveMinutes(
   const dLng = toRad(b.lng - a.lng);
   const lat1 = toRad(a.lat);
   const lat2 = toRad(b.lat);
-  const h =
-    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
   const km = 2 * R * Math.asin(Math.sqrt(h));
   // Add 12% overhead vs. straight-line for real-world road sinuosity.
   return Math.max(1, Math.round(((km * 1.12) / 55) * 60));
@@ -133,7 +131,12 @@ export interface DaySummary {
 /** Map free-text region strings to a known RegionKey for budget lookup. */
 export function regionKeyFor(region: string | null | undefined): RegionKey {
   const r = (region ?? "").toLowerCase();
-  if (r.includes("arrábida") || r.includes("arrabida") || r.includes("setúbal") || r.includes("setubal"))
+  if (
+    r.includes("arrábida") ||
+    r.includes("arrabida") ||
+    r.includes("setúbal") ||
+    r.includes("setubal")
+  )
     return "arrabida";
   if (r.includes("alentejo") || r.includes("évora") || r.includes("evora")) return "alentejo";
   if (
@@ -171,10 +174,7 @@ export function summarizeDay(opts: {
             const a = opts.stops[i - 1];
             const b = opts.stops[i];
             if (a.lat == null || a.lng == null || b.lat == null || b.lng == null) continue;
-            d += haversineDriveMinutes(
-              { lat: a.lat, lng: a.lng },
-              { lat: b.lat, lng: b.lng },
-            );
+            d += haversineDriveMinutes({ lat: a.lat, lng: a.lng }, { lat: b.lat, lng: b.lng });
           }
           return d;
         })();

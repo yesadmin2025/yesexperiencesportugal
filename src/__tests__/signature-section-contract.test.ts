@@ -17,10 +17,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { signatureTours } from "@/data/signatureTours";
 
-const DAY_TOURS_SRC = readFileSync(
-  resolve(process.cwd(), "src/routes/day-tours.tsx"),
-  "utf8",
-);
+const DAY_TOURS_SRC = readFileSync(resolve(process.cwd(), "src/routes/day-tours.tsx"), "utf8");
 const TOUR_DETAIL_SRC = readFileSync(
   resolve(process.cwd(), "src/routes/tours.$tourId.tsx"),
   "utf8",
@@ -58,16 +55,15 @@ describe("Signatures section — /day-tours contract", () => {
     }
     // No non-card fields should leak into the listing.
     for (const key of EXTRA_FIELDS_TO_AVOID) {
-      expect(
-        DAY_TOURS_SRC.includes(`t.${key}`),
-        `unexpected extra field {t.${key}} on card`,
-      ).toBe(false);
+      expect(DAY_TOURS_SRC.includes(`t.${key}`), `unexpected extra field {t.${key}} on card`).toBe(
+        false,
+      );
     }
   });
 
   it("card title never sits absolutely-positioned over the hero image", () => {
     // Locate the visible title Link (`serif text-2xl ...`), not the alt text.
-    const titleLinkIdx = DAY_TOURS_SRC.indexOf('serif text-2xl');
+    const titleLinkIdx = DAY_TOURS_SRC.indexOf("serif text-2xl");
     expect(titleLinkIdx, "visible title Link block missing").toBeGreaterThan(-1);
     const visibleTitleIdx = DAY_TOURS_SRC.indexOf("{t.title}", titleLinkIdx);
     expect(visibleTitleIdx).toBeGreaterThan(titleLinkIdx);
@@ -87,22 +83,15 @@ describe("Signatures section — /day-tours contract", () => {
   it("hero on the Signature detail page does not overlay title on the image", () => {
     // Regression: earlier the hero had `absolute inset-0 ... {t.title}`.
     // Assert no absolute-positioned title overlay remains.
-    expect(TOUR_DETAIL_SRC).not.toMatch(
-      /className="[^"]*absolute[^"]*"[^>]*>[^<]*\{t\.title\}/,
-    );
-    expect(TOUR_DETAIL_SRC).not.toMatch(
-      /absolute\s+inset-0[\s\S]{0,400}\{t\.title\}/,
-    );
+    expect(TOUR_DETAIL_SRC).not.toMatch(/className="[^"]*absolute[^"]*"[^>]*>[^<]*\{t\.title\}/);
+    expect(TOUR_DETAIL_SRC).not.toMatch(/absolute\s+inset-0[\s\S]{0,400}\{t\.title\}/);
   });
 
   it("every SignatureTour exposes all card fields with non-empty values", () => {
     for (const t of signatureTours) {
       for (const key of ALLOWED_CARD_FIELDS) {
         const v = (t as unknown as Record<string, unknown>)[key];
-        expect(
-          v,
-          `tour=${t.id} missing configurable card field "${key}"`,
-        ).toBeTruthy();
+        expect(v, `tour=${t.id} missing configurable card field "${key}"`).toBeTruthy();
       }
     }
   });

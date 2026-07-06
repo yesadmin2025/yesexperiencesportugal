@@ -120,26 +120,22 @@ const PROCESS = [
   {
     n: "01",
     title: "Tell us the shape",
-    body:
-      "Dates, group, pace, interests, occasion and what Portugal should feel like for you.",
+    body: "Dates, group, pace, interests, occasion and what Portugal should feel like for you.",
   },
   {
     n: "02",
     title: "We design the route",
-    body:
-      "Your Travel Designer builds the journey around region flow, realistic driving times, private experiences, stays and local timing.",
+    body: "Your Travel Designer builds the journey around region flow, realistic driving times, private experiences, stays and local timing.",
   },
   {
     n: "03",
     title: "You receive the travel file",
-    body:
-      "A curated proposal with day-by-day rhythm, routes, experiences, selected details and confirmed elements where relevant.",
+    body: "A curated proposal with day-by-day rhythm, routes, experiences, selected details and confirmed elements where relevant.",
   },
   {
     n: "04",
     title: "We refine and support",
-    body:
-      "The journey is adjusted with you before travelling, then supported locally while you are in Portugal.",
+    body: "The journey is adjusted with you before travelling, then supported locally while you are in Portugal.",
   },
 ];
 
@@ -193,8 +189,7 @@ function MultiDayPage() {
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Travel Designer Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Full Portugal journeys,{" "}
-            <SectionTitle.Em>designed for you.</SectionTitle.Em>
+            Full Portugal journeys, <SectionTitle.Em>designed for you.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -222,8 +217,7 @@ function MultiDayPage() {
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Users strokeWidth={1.8} />}>More than a booking</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
-              When the trip matters,{" "}
-              <SectionTitle.Em>the structure matters too.</SectionTitle.Em>
+              When the trip matters, <SectionTitle.Em>the structure matters too.</SectionTitle.Em>
             </SectionTitle>
             <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -246,8 +240,7 @@ function MultiDayPage() {
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Sparkles strokeWidth={1.8} />}>What we design</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
-              A journey with rhythm,{" "}
-              <SectionTitle.Em>not a list of places.</SectionTitle.Em>
+              A journey with rhythm, <SectionTitle.Em>not a list of places.</SectionTitle.Em>
             </SectionTitle>
             <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -291,9 +284,7 @@ function MultiDayPage() {
                 <h3 className="mt-3 serif text-[1.25rem] md:text-[1.4rem] text-[color:var(--charcoal)] leading-tight">
                   {s.title}
                 </h3>
-                <p className="mt-3 text-[color:var(--charcoal-soft)] leading-relaxed">
-                  {s.body}
-                </p>
+                <p className="mt-3 text-[color:var(--charcoal-soft)] leading-relaxed">{s.body}</p>
               </li>
             ))}
           </ol>
@@ -309,8 +300,7 @@ function MultiDayPage() {
           <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
             <Eyebrow icon={<FileText strokeWidth={1.8} />}>The travel file</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
-              Delivered as a{" "}
-              <SectionTitle.Em>private travel file.</SectionTitle.Em>
+              Delivered as a <SectionTitle.Em>private travel file.</SectionTitle.Em>
             </SectionTitle>
             <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-4 font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
@@ -429,22 +419,21 @@ function MultiDayPage() {
             <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>Where it can go</Eyebrow>
             <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
-              Across Portugal,{" "}
-              <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
+              Across Portugal, <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              A Travel Designer journey can stay focused on one region or connect several parts
-              of Portugal into a complete route. It may be a few days, a long weekend, a full
-              week, or a multi-week journey through the country.
+              A Travel Designer journey can stay focused on one region or connect several parts of
+              Portugal into a complete route. It may be a few days, a long weekend, a full week, or
+              a multi-week journey through the country.
             </p>
             <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
-              The point is not to collect destinations. It is to create the right rhythm: where
-              to begin, where to sleep, what to experience, when to slow down, what is worth the
-              drive and what should be left for another trip.
+              The point is not to collect destinations. It is to create the right rhythm: where to
+              begin, where to sleep, what to experience, when to slow down, what is worth the drive
+              and what should be left for another trip.
             </p>
             <blockquote className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
-              Regions are chosen because they belong in your journey, not because they appear on
-              a list.
+              Regions are chosen because they belong in your journey, not because they appear on a
+              list.
             </blockquote>
             <p className="mt-6 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
               Examples may include Lisbon, the coast, wine country, historic towns, the Alentejo,
@@ -470,12 +459,12 @@ function MultiDayPage() {
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             A private journey should not leave you alone with a PDF and good luck. During the
             journey, YES coordinates with local guides, drivers, partners and hosts so the moving
-            parts feel effortless. When weather, timing or energy shifts, the route can be
-            adjusted with local judgement, not call-centre scripts.
+            parts feel effortless. When weather, timing or energy shifts, the route can be adjusted
+            with local judgement, not call-centre scripts.
           </p>
           <p className="mt-6 font-[family-name:var(--font-display)] text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-            Daily local contact · in-country adjustments · transport coordination · trusted
-            partners on the ground
+            Daily local contact · in-country adjustments · transport coordination · trusted partners
+            on the ground
           </p>
         </div>
       </section>
@@ -518,8 +507,8 @@ function MultiDayPage() {
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            Tell us what you have in mind. We will shape the journey with you, day by day, route
-            by route, until Portugal feels like yours.
+            Tell us what you have in mind. We will shape the journey with you, day by day, route by
+            route, until Portugal feels like yours.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">

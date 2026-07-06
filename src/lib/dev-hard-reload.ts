@@ -90,9 +90,7 @@ export function installDevHardReload() {
 
   // 3) Build-id drift detection (cheap, runs once per mount).
   try {
-    const meta = document.querySelector<HTMLMetaElement>(
-      'meta[name="x-build-id"]',
-    );
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="x-build-id"]');
     const current = meta?.content;
     if (current) {
       const previous = sessionStorage.getItem(BUILD_KEY);

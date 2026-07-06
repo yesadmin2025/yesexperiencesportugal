@@ -73,7 +73,11 @@ export function EntryScreen({ onStart }: Props) {
               Start building
             </CtaButton>
 
-            <CtaButton to="/experiences" variant="hairline" className="opacity-70 hover:opacity-100">
+            <CtaButton
+              to="/experiences"
+              variant="hairline"
+              className="opacity-70 hover:opacity-100"
+            >
               Start from a signature
             </CtaButton>
           </div>

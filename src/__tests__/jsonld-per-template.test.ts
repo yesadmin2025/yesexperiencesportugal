@@ -35,15 +35,13 @@ describe("JSON-LD per-template contract", () => {
   describe("/ (homepage)", () => {
     it("emits FAQPage", () => expect(emits(HOME, "faqPageLd")).toBe(true));
     it("emits ItemList", () => expect(emits(HOME, "itemListLd")).toBe(true));
-    it("emits Service (never omitted)", () =>
-      expect(emits(HOME, "studioServiceLd")).toBe(true));
+    it("emits Service (never omitted)", () => expect(emits(HOME, "studioServiceLd")).toBe(true));
   });
 
   describe("/studio-v3", () => {
     it("emits BreadcrumbList", () => expect(emits(STUDIO, "breadcrumbLd")).toBe(true));
     it("emits FAQPage", () => expect(emits(STUDIO, "faqPageLd")).toBe(true));
-    it("emits Service (never omitted)", () =>
-      expect(emits(STUDIO, "studioServiceLd")).toBe(true));
+    it("emits Service (never omitted)", () => expect(emits(STUDIO, "studioServiceLd")).toBe(true));
   });
 
   describe("/multi-day", () => {

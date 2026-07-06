@@ -14,8 +14,17 @@ export const Route = createFileRoute("/admin/payments-env")({
   component: PaymentsEnvPage,
 });
 
-function Row({ label, value, good }: { label: string; value: React.ReactNode; good?: boolean | null }) {
-  const color = good === true ? "text-emerald-600" : good === false ? "text-red-600" : "text-charcoal";
+function Row({
+  label,
+  value,
+  good,
+}: {
+  label: string;
+  value: React.ReactNode;
+  good?: boolean | null;
+}) {
+  const color =
+    good === true ? "text-emerald-600" : good === false ? "text-red-600" : "text-charcoal";
   return (
     <div className="flex items-start justify-between gap-4 py-2 border-b border-black/5">
       <span className="text-sm text-charcoal/70">{label}</span>
@@ -48,8 +57,8 @@ function PaymentsEnvPage() {
         <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60">Admin</p>
         <h1 className="text-2xl font-semibold text-charcoal mt-1">Payments environment</h1>
         <p className="text-sm text-charcoal/70 mt-2">
-          Confirms that the published site is wired to <strong>live</strong> Stripe before accepting real
-          payments. Runs a server-side ping to <code>api.stripe.com</code>.
+          Confirms that the published site is wired to <strong>live</strong> Stripe before accepting
+          real payments. Runs a server-side ping to <code>api.stripe.com</code>.
         </p>
       </header>
 
@@ -59,7 +68,9 @@ function PaymentsEnvPage() {
         }`}
       >
         <p className="text-xs uppercase tracking-[0.2em] text-charcoal/60">Verdict</p>
-        <p className={`text-xl font-semibold mt-1 ${allGreen ? "text-emerald-700" : "text-amber-800"}`}>
+        <p
+          className={`text-xl font-semibold mt-1 ${allGreen ? "text-emerald-700" : "text-amber-800"}`}
+        >
           {allGreen ? "✅ Ready for live payments" : "⚠ Not ready for live payments"}
         </p>
         {data && <p className="text-sm text-charcoal/80 mt-2">{data.verdict.reason}</p>}
@@ -70,8 +81,8 @@ function PaymentsEnvPage() {
         <Row label="VITE_PAYMENTS_CLIENT_TOKEN prefix" value={clientPrefix} good={clientIsLive} />
         <Row label="getStripeEnvironment()" value={clientEnv} good={clientEnv === "live"} />
         <p className="text-xs text-charcoal/60 mt-3">
-          This reflects the publishable key compiled into the JS you are viewing right now. Open this page
-          on the <strong>published</strong> domain to validate the live build.
+          This reflects the publishable key compiled into the JS you are viewing right now. Open
+          this page on the <strong>published</strong> domain to validate the live build.
         </p>
       </section>
 
@@ -107,11 +118,18 @@ function PaymentsEnvPage() {
 
           <section className="rounded-xl border border-black/10 bg-white p-5">
             <h2 className="text-base font-semibold text-charcoal">Stripe live account ping</h2>
-            <Row label="API reachable" value={data.stripePing.ok ? "yes" : "no"} good={data.stripePing.ok} />
+            <Row
+              label="API reachable"
+              value={data.stripePing.ok ? "yes" : "no"}
+              good={data.stripePing.ok}
+            />
             <Row label="Account ID" value={data.stripePing.accountId ?? "—"} />
             <Row label="Business name" value={data.stripePing.businessProfileName ?? "—"} />
             <Row label="Country" value={data.stripePing.country ?? "—"} />
-            <Row label="Default currency" value={data.stripePing.defaultCurrency?.toUpperCase() ?? "—"} />
+            <Row
+              label="Default currency"
+              value={data.stripePing.defaultCurrency?.toUpperCase() ?? "—"}
+            />
             <Row
               label="Charges enabled"
               value={String(data.stripePing.chargesEnabled ?? "—")}
@@ -176,7 +194,11 @@ function WebhookSignatureTest() {
 
       {r && (
         <div className="mt-4 space-y-1">
-          <Row label="Secret present" value={String(r.steps.secretPresent)} good={r.steps.secretPresent} />
+          <Row
+            label="Secret present"
+            value={String(r.steps.secretPresent)}
+            good={r.steps.secretPresent}
+          />
           <Row
             label="Secret looks like whsec_…"
             value={String(r.steps.secretPrefixOk)}
@@ -192,11 +214,7 @@ function WebhookSignatureTest() {
             value={r.steps.invalidSignatureRejected.ok ? "pass" : "fail"}
             good={r.steps.invalidSignatureRejected.ok}
           />
-          <p
-            className={`text-sm mt-3 ${
-              r.ok ? "text-emerald-700" : "text-red-700"
-            }`}
-          >
+          <p className={`text-sm mt-3 ${r.ok ? "text-emerald-700" : "text-red-700"}`}>
             {r.ok ? "✅ " : "⚠ "} {r.reason}
           </p>
           <p className="text-[10px] text-charcoal/40 break-all mt-1">Endpoint: {r.endpoint}</p>

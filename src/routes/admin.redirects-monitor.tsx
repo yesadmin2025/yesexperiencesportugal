@@ -129,11 +129,7 @@ async function probeUrl(url: string): Promise<ProbeResult> {
 }
 
 function StatusDot({ ok, checking }: { ok?: boolean; checking?: boolean }) {
-  const cls = checking
-    ? "bg-amber-400"
-    : ok
-      ? "bg-emerald-500"
-      : "bg-rose-500";
+  const cls = checking ? "bg-amber-400" : ok ? "bg-emerald-500" : "bg-rose-500";
   return <span className={`inline-block h-2 w-2 rounded-full ${cls}`} />;
 }
 
@@ -155,9 +151,7 @@ function RedirectsMonitorPage() {
     const init = (urls: string[]) =>
       Object.fromEntries(urls.map((u) => [u, { checking: true } as ProbeResult]));
     setRedirectResults(init(REDIRECT_CHECKS.map((c) => c.url)));
-    setRouteResults(
-      init([...LIVE_ROUTES, ...RETIRED_ROUTES].map((r) => `${CANONICAL}${r.path}`)),
-    );
+    setRouteResults(init([...LIVE_ROUTES, ...RETIRED_ROUTES].map((r) => `${CANONICAL}${r.path}`)));
 
     await Promise.all([
       ...REDIRECT_CHECKS.map(async (c) => {
@@ -181,18 +175,18 @@ function RedirectsMonitorPage() {
       // only accepts URLs under the verified property — so we map legacy URLs
       // to the canonical host.
       const inspectUrls = [
-        ...REDIRECT_CHECKS.map((c) => {
+        ...(REDIRECT_CHECKS.map((c) => {
           try {
             const u = new URL(c.url);
             return `${CANONICAL}${u.pathname}${u.search}`;
           } catch {
             return null;
           }
-        }).filter(Boolean) as string[],
+        }).filter(Boolean) as string[]),
         ...RETIRED_ROUTES.map((r) => `${CANONICAL}${r.path}`),
-        ...LIVE_ROUTES.filter(
-          (r) => !r.path.endsWith(".xml") && !r.path.endsWith(".txt"),
-        ).map((r) => `${CANONICAL}${r.path}`),
+        ...LIVE_ROUTES.filter((r) => !r.path.endsWith(".xml") && !r.path.endsWith(".txt")).map(
+          (r) => `${CANONICAL}${r.path}`,
+        ),
       ];
       // De-duplicate
       const unique = Array.from(new Set(inspectUrls));
@@ -213,7 +207,6 @@ function RedirectsMonitorPage() {
   useEffect(() => {
     runAll();
   }, []);
-
 
   function judgeRedirect(c: RedirectCheck, r: ProbeResult | undefined): boolean | undefined {
     if (!r || r.checking) return undefined;
@@ -268,8 +261,8 @@ function RedirectsMonitorPage() {
             1 · Redirects do domínio antigo
           </h2>
           <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
-            yesexperiences.pt deve devolver 410 Gone (sem redirect) para que a Google trate o domínio antigo
-            como conteúdo extinto e o desassocie do perfil GBP antigo.
+            yesexperiences.pt deve devolver 410 Gone (sem redirect) para que a Google trate o
+            domínio antigo como conteúdo extinto e o desassocie do perfil GBP antigo.
           </p>
           <div className="mt-4 space-y-3">
             {REDIRECT_CHECKS.map((c) => {
@@ -306,7 +299,9 @@ function RedirectsMonitorPage() {
                         <>
                           <div>HTTP {r?.status}</div>
                           {r?.finalUrl ? (
-                            <div className="max-w-[180px] truncate">→ {new URL(r.finalUrl).host}</div>
+                            <div className="max-w-[180px] truncate">
+                              → {new URL(r.finalUrl).host}
+                            </div>
                           ) : null}
                         </>
                       )}
@@ -340,7 +335,9 @@ function RedirectsMonitorPage() {
                     <div className="flex items-center gap-3">
                       <StatusDot ok={ok} checking={r?.checking} />
                       <div>
-                        <p className="text-sm font-medium text-[color:var(--charcoal)]">{rc.label}</p>
+                        <p className="text-sm font-medium text-[color:var(--charcoal)]">
+                          {rc.label}
+                        </p>
                         <p className="text-xs text-[color:var(--charcoal-soft)]">{rc.path}</p>
                       </div>
                     </div>
@@ -408,10 +405,7 @@ function RedirectsMonitorPage() {
           </p>
           <ul className="mt-4 space-y-2 text-sm">
             {EXTERNAL_LINKS_TO_DISSOCIATE.map((l) => (
-              <li
-                key={l.url}
-                className="rounded-lg border border-[color:var(--sand)] bg-white p-4"
-              >
+              <li key={l.url} className="rounded-lg border border-[color:var(--sand)] bg-white p-4">
                 <p className="font-medium text-[color:var(--charcoal)]">{l.label}</p>
                 <a
                   href={l.url}
@@ -437,7 +431,11 @@ function RedirectsMonitorPage() {
               disabled={gscLoading}
               className="rounded-full bg-[color:var(--gold)] px-4 py-2 text-xs font-medium text-[color:var(--charcoal)] disabled:opacity-60"
             >
-              {gscLoading ? "a consultar…" : gscInspect.length ? "Voltar a puxar" : "Puxar dados GSC"}
+              {gscLoading
+                ? "a consultar…"
+                : gscInspect.length
+                  ? "Voltar a puxar"
+                  : "Puxar dados GSC"}
             </button>
           </div>
           <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
@@ -581,8 +579,8 @@ function RedirectsMonitorPage() {
               tenta. Submete os relevantes em Remoções.
             </li>
             <li>
-              Remoções → Conteúdo desatualizado — cola URLs do GBP antigo e rotas retiradas
-              listadas acima.
+              Remoções → Conteúdo desatualizado — cola URLs do GBP antigo e rotas retiradas listadas
+              acima.
             </li>
             <li>
               Inspeção de URL — para cada rota canónica importante, "Pedir indexação" se o estado

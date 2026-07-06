@@ -42,9 +42,7 @@ async function advanceToComposer(page: Page) {
   ];
   for (const id of sequence) {
     const tile = page
-      .locator(
-        `[data-testid="studio-v3-choice"][data-id="${id}"], button[data-id="${id}"]`,
-      )
+      .locator(`[data-testid="studio-v3-choice"][data-id="${id}"], button[data-id="${id}"]`)
       .first();
     if (await tile.isVisible().catch(() => false)) {
       await tile.click();
@@ -116,7 +114,7 @@ test.describe("Studio V3 ComposerMap — phone declutter", () => {
     await expect(map).toBeVisible();
     // On tablet+ the .hidden.sm:flex row promotes to flex — assert at least
     // one chip-row is rendered.
-    const chipsAny = map.locator('div.sm\\:flex, span.sm\\:inline').first();
+    const chipsAny = map.locator("div.sm\\:flex, span.sm\\:inline").first();
     await expect(chipsAny).toBeVisible();
   });
 });

@@ -139,9 +139,7 @@ export const submitLegacyGscActions = createServerFn({ method: "POST" })
     await assertAdmin(context);
 
     const legacyHosts = Array.from(LEGACY_HOSTS);
-    const legacyUrls = legacyHosts.flatMap((h) =>
-      LEGACY_PATHS.map((p) => `https://${h}${p}`),
-    );
+    const legacyUrls = legacyHosts.flatMap((h) => LEGACY_PATHS.map((p) => `https://${h}${p}`));
 
     const legacyInspections: LegacyActionResult[] = [];
     for (const u of legacyUrls) {

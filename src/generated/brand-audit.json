@@ -11,12 +11,7 @@
     "charcoal": "#2E2E2E",
     "charcoal-soft": "#6B6B6B"
   },
-  "allowlist": [
-    "#000000",
-    "#ffffff",
-    "#1f1f1f",
-    "#cccccc"
-  ],
+  "allowlist": ["#000000", "#ffffff", "#1f1f1f", "#cccccc"],
   "counts": {
     "total": 372,
     "approved": 87,

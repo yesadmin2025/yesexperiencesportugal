@@ -285,7 +285,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
- /* ════════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════
  * HOMEPAGE — 9 sections (structural pass: dedup + reorder)
  * 1. Hero
  * 2. Social proof — trust strip
@@ -498,8 +498,6 @@ function HomePage() {
   // preview no longer counter-parallaxes on scroll. Motion budget on the
   // homepage is now: entrance fade + hover lift only.
 
-
-
   return (
     <SiteLayout>
       <div className="home-energy">
@@ -519,12 +517,10 @@ function HomePage() {
           </div>
         </section>
 
-
         {/* 2b — FIVE WAYS TO SHAPE YOUR PORTUGAL
           Concise editorial explainer so visitors instantly understand
           the paths: Signature, Studio, Moments, Corporate, Travel Designer. */}
         <FourWaysIn />
-
 
         {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
@@ -572,14 +568,12 @@ function HomePage() {
                 <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                   Choose mood, group and rhythm. The Studio draws a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  real timings and a live price — then reserve when the route is ready — final price shown before payment.
+                  real timings and a live price — then reserve when the route is ready — final price
+                  shown before payment.
                 </p>
 
                 {/* Three differentiators — tied to the product, not a floating manifesto. */}
-                <ol
-                  className="mt-7 grid grid-cols-3 gap-1.5 max-w-md"
-                  aria-label="Why the Studio"
-                >
+                <ol className="mt-7 grid grid-cols-3 gap-1.5 max-w-md" aria-label="Why the Studio">
                   {[
                     { n: "01", label: "Real route" },
                     { n: "02", label: "Instant confirm" },
@@ -672,7 +666,6 @@ function HomePage() {
                         className="he-image-cinema he-image-rise relative block aspect-[4/5] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                         aria-label={`Open ${t.title}`}
                       >
-
                         <img
                           src={t.img}
                           alt={t.title}
@@ -723,7 +716,9 @@ function HomePage() {
                           Alentejo") tidy on narrow widths without pushing the meta row off-card. */}
                         <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
                           <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance line-clamp-2 [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
-                            <span className="sm:hidden">{MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}</span>
+                            <span className="sm:hidden">
+                              {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
+                            </span>
                             <span className="hidden sm:inline">{t.title}</span>
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
@@ -769,7 +764,6 @@ function HomePage() {
                           >
                             Tailor this Signature
                           </CtaButton>
-
                         </div>
                       </div>
                     </article>
@@ -777,9 +771,6 @@ function HomePage() {
                 );
               })}
             </ul>
-
-
-
 
             <div className="mt-12 md:mt-14 text-center">
               <CtaButton to="/experiences" variant="hairline">
@@ -818,7 +809,9 @@ function HomePage() {
                 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
               >
                 Moments that{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  deserve a setting.
+                </span>
               </h2>
             </div>
 
@@ -871,8 +864,6 @@ function HomePage() {
           pass. High-intent internal links moved into the Footer so SEO
           surface area survives. RecognisedByGuides removed from the
           homepage; still rendered on About. */}
-
-
 
         {/* 9 — FINAL CTA — Talk to a local
           Distinct from the hero CTAs (Explore Signatures / Build) — this
@@ -968,7 +959,6 @@ function HomePage() {
                     <CtaButton to="/contact" variant="hairline">
                       Write to a Local
                     </CtaButton>
-
                   </div>
                   <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
                     A local usually replies within the hour.
@@ -978,7 +968,6 @@ function HomePage() {
             </div>
           </div>
         </section>
-
       </div>
       <ExitIntentEmailCapture />
     </SiteLayout>

@@ -321,7 +321,12 @@ function ConciergeSheet({
             <CtaButton href={builderWaHref(waMessage)} variant="hairline">
               Chat with our concierge
             </CtaButton>
-            <CtaButton type="button" onClick={onBookInstantly} variant="hairline" className="opacity-70 hover:opacity-100">
+            <CtaButton
+              type="button"
+              onClick={onBookInstantly}
+              variant="hairline"
+              className="opacity-70 hover:opacity-100"
+            >
               Or build & book instantly
             </CtaButton>
           </div>

@@ -19,7 +19,15 @@ const EXPECTED_IP = "185.158.133.1";
 const CANONICAL_HOSTS = ["yesexperiencesportugal.com", "www.yesexperiencesportugal.com"] as const;
 
 /** Paths sampled on every host. Legacy paths must 410; canonical must 200 + indexable. */
-const CANONICAL_PATHS = ["/", "/signature", "/studio", "/travel-designer", "/reviews", "/sitemap.xml", "/robots.txt"];
+const CANONICAL_PATHS = [
+  "/",
+  "/signature",
+  "/studio",
+  "/travel-designer",
+  "/reviews",
+  "/sitemap.xml",
+  "/robots.txt",
+];
 const LEGACY_PATHS = ["/", "/tours", "/contact", "/sitemap.xml"];
 
 export type PathProbe = {

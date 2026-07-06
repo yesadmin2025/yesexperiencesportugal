@@ -64,7 +64,6 @@ const SPARSE_QUOTE: GuestQuoteReview = {
   published_at: null,
 };
 
-
 function expectClean(payload: unknown, minReviews: number) {
   const report = validateRichResults(payload);
   expect(
@@ -110,7 +109,6 @@ describe("GuestQuotes JSON-LD → Google Rich Results guard", () => {
     // Google's Rich Results Test reports for optional fields.
     expect(report.warnings.some((w) => w.includes("datePublished missing"))).toBe(true);
   });
-
 
   it("each Review carries url, author, itemReviewed.name and rating consistently", () => {
     const payload = buildGuestQuotesJsonLd(FIXTURE_QUOTES, { count: 712, avg: 4.9 });

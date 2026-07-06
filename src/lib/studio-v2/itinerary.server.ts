@@ -220,7 +220,11 @@ export function composeItinerary(
     const hay = `${s.label} ${s.tag ?? ""} ${(s.mood_tags ?? []).join(" ")}`.toLowerCase();
     if (/\bboat|sail|catamar|barco|kayak\b/.test(hay)) return "boat";
     if (/\bwinery|adega|quinta|wine\s+tasting|vineyard\b/.test(hay)) return "winery";
-    if (/\bpalace|monaster|convent|castelo\s+(?!de\s+sesimbra)|pena|regaleira|jerónimos|jeronim\b/.test(hay))
+    if (
+      /\bpalace|monaster|convent|castelo\s+(?!de\s+sesimbra)|pena|regaleira|jerónimos|jeronim\b/.test(
+        hay,
+      )
+    )
       return "monument";
     return "other";
   };

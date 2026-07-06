@@ -160,14 +160,7 @@ describe("pickPrimaryTourWithFit — end-to-end intent matching", () => {
   it("Reshape (seed > 0) picks a genuinely different tour in the top band", () => {
     const seen = new Set<string>();
     for (let seed = 1; seed <= 8; seed++) {
-      const { tour } = pickPrimaryTourWithFit(
-        "coastal",
-        "couple",
-        ["coast"],
-        "lisbon",
-        null,
-        seed,
-      );
+      const { tour } = pickPrimaryTourWithFit("coastal", "couple", ["coast"], "lisbon", null, seed);
       seen.add(tour.id);
     }
     expect(seen.size).toBeGreaterThan(1);

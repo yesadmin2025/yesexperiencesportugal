@@ -3,8 +3,6 @@ import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 
-
-
 interface FooterLink {
   to: string;
   label: string;
@@ -63,10 +61,10 @@ export function Footer() {
             className="mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md"
             style={{ fontWeight: 400, letterSpacing: "0.005em" }}
           >
-            Private Portugal, shown the way a local shows a friend. Intimate, real, and
-            genuinely different — designed with you and confirmed in minutes. 700+ five-star
-            reviews · Licensed tour operator (RNAAT) · Based in Sesimbra, designing private
-            journeys across Portugal.
+            Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
+            different — designed with you and confirmed in minutes. 700+ five-star reviews ·
+            Licensed tour operator (RNAAT) · Based in Sesimbra, designing private journeys across
+            Portugal.
           </p>
         </div>
 
@@ -117,7 +115,6 @@ export function Footer() {
                 external: true,
               },
               {
-
                 to: "https://wa.me/351911889992",
                 label: "WhatsApp Support",
                 external: true,
@@ -152,7 +149,10 @@ export function Footer() {
               { to: "/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
               { to: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
               { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
-              { to: "/itineraries/10-day-private-portugal-tour", label: "10-day private Portugal tour" },
+              {
+                to: "/itineraries/10-day-private-portugal-tour",
+                label: "10-day private Portugal tour",
+              },
               { to: "/multi-day", label: "Portugal Travel Designer" },
               { to: "/proposals", label: "Proposal in Portugal" },
             ].map((l) => (
@@ -195,7 +195,6 @@ export function Footer() {
           </ul>
         </div>
 
-
         {/* Trust strip — official credentials + secure checkout signals.
             Sits above the payment brands so the footer closes with a
             calm, verifiable trust anchor (not marketing copy). */}
@@ -208,7 +207,10 @@ export function Footer() {
               <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
                 <BadgeCheck size={14} strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <span className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
+              <span
+                className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]"
+                style={{ fontWeight: 600 }}
+              >
                 RNAAT <span className="tabular-nums">nº 31/2023</span>
               </span>
             </li>
@@ -216,7 +218,10 @@ export function Footer() {
               <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
                 <ShieldCheck size={14} strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <span className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
+              <span
+                className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]"
+                style={{ fontWeight: 600 }}
+              >
                 Turismo de Portugal
               </span>
             </li>
@@ -224,13 +229,15 @@ export function Footer() {
               <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
                 <Lock size={14} strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <span className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]" style={{ fontWeight: 600 }}>
+              <span
+                className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]"
+                style={{ fontWeight: 600 }}
+              >
                 Secure checkout · Stripe
               </span>
             </li>
           </ul>
         </div>
-
 
         {/* Accepted payment methods — visual reassurance strip. */}
         <PaymentMethodsRow />
@@ -279,7 +286,6 @@ export function Footer() {
     </footer>
   );
 }
-
 
 function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
   return (

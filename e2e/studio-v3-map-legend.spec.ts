@@ -163,10 +163,9 @@ test.describe("Studio V3 — map journey legend (data-leg-legend-value contract)
       expect(reading!.visible, "legend visible on reveal").toBe(true);
 
       // 1. Attribute must equal rendered chip text (single source of truth).
-      expect(
-        reading!.attr,
-        "data-leg-legend-value must equal the visible chip text",
-      ).toBe(reading!.text);
+      expect(reading!.attr, "data-leg-legend-value must equal the visible chip text").toBe(
+        reading!.text,
+      );
 
       // 2. Attribute must match the editorial legend shape: `~X min · Y km`
       //    or `~Xh Ym · Y km`.
@@ -222,9 +221,7 @@ test.describe("Studio V3 — map journey legend (data-leg-legend-value contract)
       await page.waitForTimeout(400);
       const after = await readLegend(page);
       expect(after, "legend still present after resize").not.toBeNull();
-      expect(after!.attr, "attribute still matches text after viewport change").toBe(
-        after!.text,
-      );
+      expect(after!.attr, "attribute still matches text after viewport change").toBe(after!.text);
       expect(after!.attr ?? "", "shape preserved after resize").toMatch(LEGEND_TEXT_RE);
     });
   }

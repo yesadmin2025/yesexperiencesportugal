@@ -80,7 +80,8 @@ const wineHeritage: TailorBlueprint = {
     {
       id: "livramento",
       label: "Mercado do Livramento",
-      blurb: "A 145-year-old fresh market — fish off the boat, regional cheese, oysters and Moscatel.",
+      blurb:
+        "A 145-year-old fresh market — fish off the boat, regional cheese, oysters and Moscatel.",
       category: "market",
       dwellMinutesOverride: 45,
     },
@@ -101,7 +102,8 @@ const wineHeritage: TailorBlueprint = {
     {
       id: "lunch-azeitao",
       label: "Long lunch in Azeitão",
-      blurb: "Regional plates and paired wines in the wine village — unhurried, the way locals eat.",
+      blurb:
+        "Regional plates and paired wines in the wine village — unhurried, the way locals eat.",
       category: "lunch",
     },
   ],
@@ -110,22 +112,60 @@ const wineHeritage: TailorBlueprint = {
     label: "Choose 2 wineries from this pool",
     note: "Your guide confirms the final pair the day before based on each winery's availability.",
     options: [
-      { id: "jmf", label: "José Maria da Fonseca", blurb: "Family winery since 1834 — seven generations of Moscatel.", category: "winery" },
-      { id: "bacalhoa", label: "Quinta da Bacalhôa", blurb: "Wine and contemporary art on the same estate.", category: "winery" },
-      { id: "catralvos", label: "Quinta de Catralvos", blurb: "Small family estate — five wines tasted at the cellar door.", category: "winery" },
-      { id: "piloto", label: "Quinta do Piloto", blurb: "Tradition meets modern winemaking — vineyard walk plus tasting.", category: "winery" },
-      { id: "palmela", label: "Adega de Palmela", blurb: "Cooperative cellar — broad cross-section of the Setúbal DOP.", category: "winery" },
+      {
+        id: "jmf",
+        label: "José Maria da Fonseca",
+        blurb: "Family winery since 1834 — seven generations of Moscatel.",
+        category: "winery",
+      },
+      {
+        id: "bacalhoa",
+        label: "Quinta da Bacalhôa",
+        blurb: "Wine and contemporary art on the same estate.",
+        category: "winery",
+      },
+      {
+        id: "catralvos",
+        label: "Quinta de Catralvos",
+        blurb: "Small family estate — five wines tasted at the cellar door.",
+        category: "winery",
+      },
+      {
+        id: "piloto",
+        label: "Quinta do Piloto",
+        blurb: "Tradition meets modern winemaking — vineyard walk plus tasting.",
+        category: "winery",
+      },
+      {
+        id: "palmela",
+        label: "Adega de Palmela",
+        blurb: "Cooperative cellar — broad cross-section of the Setúbal DOP.",
+        category: "winery",
+      },
     ],
   },
   optional: [
-    { id: "cristo-rei", label: "Cristo Rei viewpoint", blurb: "Panorama over Lisbon from across the Tagus. Adds ~30 min.", category: "viewpoint", dwellMinutesOverride: 30 },
-    { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "Medieval castle above the fishing village. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
+    {
+      id: "cristo-rei",
+      label: "Cristo Rei viewpoint",
+      blurb: "Panorama over Lisbon from across the Tagus. Adds ~30 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "sesimbra-castle",
+      label: "Castelo de Sesimbra",
+      blurb: "Medieval castle above the fishing village. Adds ~45 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
     choiceHeading: "Choose your wineries",
     optionalHeading: "Optional viewpoints — subject to time",
-    footnote: "Two wineries is the standard pace; a third can replace a viewpoint when the day allows.",
+    footnote:
+      "Two wineries is the standard pace; a third can replace a viewpoint when the day allows.",
   },
 };
 
@@ -137,19 +177,56 @@ const wineHeritage: TailorBlueprint = {
 const wildBeachesPicnic: TailorBlueprint = {
   tourId: "wild-beaches-picnic",
   core: [
-    { id: "livramento", label: "Mercado do Livramento", blurb: "Pick the picnic together — bread, cheese, fruit, cured meats, wine.", category: "market", dwellMinutesOverride: 45 },
-    { id: "arrabida-drive", label: "Arrábida coastal drive", blurb: "Headline viewpoints above the natural park.", category: "viewpoint", dwellMinutesOverride: 45 },
-    { id: "hidden-cove", label: "Hidden cove + private picnic", blurb: "Galapinhos, Portinho or a quieter alternative — your guide reads the day.", category: "picnic", dwellMinutesOverride: 120 },
-    { id: "sesimbra-village", label: "Sesimbra fishing village", blurb: "A walk along the harbour and the old town.", category: "village", dwellMinutesOverride: 45 },
+    {
+      id: "livramento",
+      label: "Mercado do Livramento",
+      blurb: "Pick the picnic together — bread, cheese, fruit, cured meats, wine.",
+      category: "market",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "arrabida-drive",
+      label: "Arrábida coastal drive",
+      blurb: "Headline viewpoints above the natural park.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "hidden-cove",
+      label: "Hidden cove + private picnic",
+      blurb: "Galapinhos, Portinho or a quieter alternative — your guide reads the day.",
+      category: "picnic",
+      dwellMinutesOverride: 120,
+    },
+    {
+      id: "sesimbra-village",
+      label: "Sesimbra fishing village",
+      blurb: "A walk along the harbour and the old town.",
+      category: "village",
+      dwellMinutesOverride: 45,
+    },
   ],
   optional: [
-    { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "The last medieval castle still standing by the sea. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
-    { id: "cabo-espichel", label: "Cabo Espichel", blurb: "Atlantic clifftop sanctuary and dinosaur footprints. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
+    {
+      id: "sesimbra-castle",
+      label: "Castelo de Sesimbra",
+      blurb: "The last medieval castle still standing by the sea. Adds ~45 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "cabo-espichel",
+      label: "Cabo Espichel",
+      blurb: "Atlantic clifftop sanctuary and dinosaur footprints. Adds ~45 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
     optionalHeading: "Optional extensions — subject to time",
-    footnote: "The exact cove depends on swell, wind and how busy the park is — your guide picks the right one the morning of.",
+    footnote:
+      "The exact cove depends on swell, wind and how busy the park is — your guide picks the right one the morning of.",
   },
 };
 
@@ -160,19 +237,58 @@ const wildBeachesPicnic: TailorBlueprint = {
 const arrabidaBoat: TailorBlueprint = {
   tourId: "arrabida-boat",
   core: [
-    { id: "livramento", label: "Mercado do Livramento", blurb: "Quick fresh-market stop before heading to the coast.", category: "market", dwellMinutesOverride: 30 },
-    { id: "arrabida-drive", label: "Arrábida coastal viewpoints", blurb: "Drive across the park down to the bay before boarding.", category: "viewpoint", dwellMinutesOverride: 30 },
-    { id: "boat-arrabida", label: "Private boat in Arrábida bay", blurb: "Into the protected coves, including Lapa de Santa Margarida sea cave. Swim stop weather-permitting.", category: "boat", dwellMinutesOverride: 150 },
-    { id: "sesimbra-village", label: "Sesimbra fishing village", blurb: "Late-afternoon walk through the harbour town.", category: "village", dwellMinutesOverride: 45 },
+    {
+      id: "livramento",
+      label: "Mercado do Livramento",
+      blurb: "Quick fresh-market stop before heading to the coast.",
+      category: "market",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "arrabida-drive",
+      label: "Arrábida coastal viewpoints",
+      blurb: "Drive across the park down to the bay before boarding.",
+      category: "viewpoint",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "boat-arrabida",
+      label: "Private boat in Arrábida bay",
+      blurb:
+        "Into the protected coves, including Lapa de Santa Margarida sea cave. Swim stop weather-permitting.",
+      category: "boat",
+      dwellMinutesOverride: 150,
+    },
+    {
+      id: "sesimbra-village",
+      label: "Sesimbra fishing village",
+      blurb: "Late-afternoon walk through the harbour town.",
+      category: "village",
+      dwellMinutesOverride: 45,
+    },
   ],
   optional: [
-    { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "Medieval castle above the village. Adds ~45 min and only fits with a short boat slot.", category: "viewpoint", dwellMinutesOverride: 45 },
-    { id: "cabo-espichel", label: "Cabo Espichel", blurb: "Clifftop sanctuary on the way back. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
+    {
+      id: "sesimbra-castle",
+      label: "Castelo de Sesimbra",
+      blurb:
+        "Medieval castle above the village. Adds ~45 min and only fits with a short boat slot.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "cabo-espichel",
+      label: "Cabo Espichel",
+      blurb: "Clifftop sanctuary on the way back. Adds ~45 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
     optionalHeading: "Optional close — subject to boat timing",
-    footnote: "Boat is ~2h30 with boarding. Optional viewpoints only fit when the sea cuts the ride short.",
+    footnote:
+      "Boat is ~2h30 with boarding. Optional viewpoints only fit when the sea cuts the ride short.",
   },
 };
 
@@ -184,24 +300,75 @@ const arrabidaBoat: TailorBlueprint = {
 const tilesWorkshop: TailorBlueprint = {
   tourId: "tiles-workshop",
   core: [
-    { id: "livramento", label: "Mercado do Livramento", blurb: "Setúbal's historic fresh market — a quick walk before the workshop.", category: "market", dwellMinutesOverride: 30 },
-    { id: "azulejos-workshop", label: "Private tile-painting workshop", blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.", category: "workshop", dwellMinutesOverride: 90, skippable: false },
-    { id: "lunch-azeitao", label: "Lunch in Azeitão", blurb: "Traditional Portuguese lunch in the wine village.", category: "lunch" },
+    {
+      id: "livramento",
+      label: "Mercado do Livramento",
+      blurb: "Setúbal's historic fresh market — a quick walk before the workshop.",
+      category: "market",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "azulejos-workshop",
+      label: "Private tile-painting workshop",
+      blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.",
+      category: "workshop",
+      dwellMinutesOverride: 90,
+      skippable: false,
+    },
+    {
+      id: "lunch-azeitao",
+      label: "Lunch in Azeitão",
+      blurb: "Traditional Portuguese lunch in the wine village.",
+      category: "lunch",
+    },
   ],
   choice: {
     pickCount: 1,
     label: "Choose 1 winery to visit after lunch",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
-      { id: "jmf", label: "José Maria da Fonseca", blurb: "Family winery since 1834.", category: "winery" },
-      { id: "bacalhoa", label: "Quinta da Bacalhôa", blurb: "Wine and contemporary art on the same estate.", category: "winery" },
-      { id: "catralvos", label: "Quinta de Catralvos", blurb: "Small family estate, cellar-door tasting.", category: "winery" },
+      {
+        id: "jmf",
+        label: "José Maria da Fonseca",
+        blurb: "Family winery since 1834.",
+        category: "winery",
+      },
+      {
+        id: "bacalhoa",
+        label: "Quinta da Bacalhôa",
+        blurb: "Wine and contemporary art on the same estate.",
+        category: "winery",
+      },
+      {
+        id: "catralvos",
+        label: "Quinta de Catralvos",
+        blurb: "Small family estate, cellar-door tasting.",
+        category: "winery",
+      },
     ],
   },
   optional: [
-    { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "Medieval castle above the fishing village. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
-    { id: "sesimbra-village", label: "Sesimbra harbour", blurb: "Short walk through the fishing town. Adds ~30 min.", category: "village", dwellMinutesOverride: 30 },
-    { id: "cristo-rei", label: "Cristo Rei viewpoint", blurb: "Lisbon panorama on the way back. Adds ~30 min.", category: "viewpoint", dwellMinutesOverride: 30 },
+    {
+      id: "sesimbra-castle",
+      label: "Castelo de Sesimbra",
+      blurb: "Medieval castle above the fishing village. Adds ~45 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "sesimbra-village",
+      label: "Sesimbra harbour",
+      blurb: "Short walk through the fishing town. Adds ~30 min.",
+      category: "village",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "cristo-rei",
+      label: "Cristo Rei viewpoint",
+      blurb: "Lisbon panorama on the way back. Adds ~30 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 30,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
@@ -218,14 +385,50 @@ const tilesWorkshop: TailorBlueprint = {
 const azeitaoCheese: TailorBlueprint = {
   tourId: "azeitao-cheese",
   core: [
-    { id: "livramento", label: "Mercado do Livramento", blurb: "Setúbal's fresh market — pick up cheese pairings before the workshop.", category: "market", dwellMinutesOverride: 30 },
-    { id: "quinta-velha", label: "Cheese-making at Quinta Velha", blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.", category: "workshop", dwellMinutesOverride: 75, skippable: false },
-    { id: "lunch-azeitao", label: "Lunch in Azeitão", blurb: "Traditional lunch in the wine village.", category: "lunch" },
-    { id: "catralvos", label: "Quinta de Catralvos winery", blurb: "Five-wine tasting at the family cellar door.", category: "winery", skippable: false },
+    {
+      id: "livramento",
+      label: "Mercado do Livramento",
+      blurb: "Setúbal's fresh market — pick up cheese pairings before the workshop.",
+      category: "market",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "quinta-velha",
+      label: "Cheese-making at Quinta Velha",
+      blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.",
+      category: "workshop",
+      dwellMinutesOverride: 75,
+      skippable: false,
+    },
+    {
+      id: "lunch-azeitao",
+      label: "Lunch in Azeitão",
+      blurb: "Traditional lunch in the wine village.",
+      category: "lunch",
+    },
+    {
+      id: "catralvos",
+      label: "Quinta de Catralvos winery",
+      blurb: "Five-wine tasting at the family cellar door.",
+      category: "winery",
+      skippable: false,
+    },
   ],
   optional: [
-    { id: "sesimbra-castle", label: "Castelo de Sesimbra", blurb: "Medieval castle above the village. Adds ~45 min.", category: "viewpoint", dwellMinutesOverride: 45 },
-    { id: "cristo-rei", label: "Cristo Rei viewpoint", blurb: "Lisbon panorama on the way back. Adds ~30 min.", category: "viewpoint", dwellMinutesOverride: 30 },
+    {
+      id: "sesimbra-castle",
+      label: "Castelo de Sesimbra",
+      blurb: "Medieval castle above the village. Adds ~45 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "cristo-rei",
+      label: "Cristo Rei viewpoint",
+      blurb: "Lisbon panorama on the way back. Adds ~30 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 30,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
@@ -241,23 +444,67 @@ const azeitaoCheese: TailorBlueprint = {
 const sintraCascais: TailorBlueprint = {
   tourId: "sintra-cascais",
   core: [
-    { id: "sintra-vila", label: "Sintra historic town", blurb: "UNESCO World Heritage centre — walk the cobbled streets before the palace visit.", category: "village", dwellMinutesOverride: 45 },
-    { id: "lunch-azenhas", label: "Lunch at Azenhas do Mar", blurb: "Clifftop lunch above the Atlantic — fresh fish, ocean view.", category: "lunch" },
-    { id: "cabo-da-roca", label: "Cabo da Roca", blurb: "The westernmost point of mainland Europe — Atlantic cliffs.", category: "viewpoint", dwellMinutesOverride: 30 },
-    { id: "cascais", label: "Cascais", blurb: "Royal seaside town — short walk through the old centre and marina.", category: "village", dwellMinutesOverride: 45 },
+    {
+      id: "sintra-vila",
+      label: "Sintra historic town",
+      blurb: "UNESCO World Heritage centre — walk the cobbled streets before the palace visit.",
+      category: "village",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "lunch-azenhas",
+      label: "Lunch at Azenhas do Mar",
+      blurb: "Clifftop lunch above the Atlantic — fresh fish, ocean view.",
+      category: "lunch",
+    },
+    {
+      id: "cabo-da-roca",
+      label: "Cabo da Roca",
+      blurb: "The westernmost point of mainland Europe — Atlantic cliffs.",
+      category: "viewpoint",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "cascais",
+      label: "Cascais",
+      blurb: "Royal seaside town — short walk through the old centre and marina.",
+      category: "village",
+      dwellMinutesOverride: 45,
+    },
   ],
   choice: {
     pickCount: 1,
     label: "Choose 1 Sintra palace to visit inside",
     note: "Queues in Sintra are heavy — one full visit lets the rest of the day breathe. Tickets confirmed by your guide.",
     options: [
-      { id: "pena", label: "Park & Palace of Pena", blurb: "Vibrant 19th-century romantic palace on the Sintra ridge.", category: "monument" },
-      { id: "regaleira", label: "Quinta da Regaleira", blurb: "Mystical gardens, initiation well and chapel.", category: "monument" },
-      { id: "sintra-palace", label: "Sintra National Palace", blurb: "Moorish-Gothic palace at the heart of the historic centre.", category: "monument" },
+      {
+        id: "pena",
+        label: "Park & Palace of Pena",
+        blurb: "Vibrant 19th-century romantic palace on the Sintra ridge.",
+        category: "monument",
+      },
+      {
+        id: "regaleira",
+        label: "Quinta da Regaleira",
+        blurb: "Mystical gardens, initiation well and chapel.",
+        category: "monument",
+      },
+      {
+        id: "sintra-palace",
+        label: "Sintra National Palace",
+        blurb: "Moorish-Gothic palace at the heart of the historic centre.",
+        category: "monument",
+      },
     ],
   },
   optional: [
-    { id: "colares-winery", label: "Adega Regional de Colares", blurb: "Historic Colares winery — vines planted in sand. Adds ~60 min.", category: "winery", dwellMinutesOverride: 60 },
+    {
+      id: "colares-winery",
+      label: "Adega Regional de Colares",
+      blurb: "Historic Colares winery — vines planted in sand. Adds ~60 min.",
+      category: "winery",
+      dwellMinutesOverride: 60,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
@@ -275,14 +522,49 @@ const sintraCascais: TailorBlueprint = {
 const troiaComporta: TailorBlueprint = {
   tourId: "troia-comporta",
   core: [
-    { id: "sado-ferry", label: "Sado ferry crossing", blurb: "Short ferry over the Sado estuary — dolphins are sometimes seen.", category: "drive-by", dwellMinutesOverride: 30 },
-    { id: "troia-ruins", label: "Roman Ruins of Tróia", blurb: "2,000-year-old fish-salting site on the peninsula.", category: "monument", dwellMinutesOverride: 45 },
-    { id: "herdade-comporta", label: "Herdade da Comporta winery", blurb: "Sandy-soil wines shaped by Atlantic wind — tasting at the cellar.", category: "winery" },
-    { id: "comporta-lunch", label: "Lunch in Comporta", blurb: "Relaxed lunch in the dunes village.", category: "lunch" },
-    { id: "comporta-beach", label: "Comporta or Carvalhal beach", blurb: "Long white-sand Atlantic beach — short walk if conditions allow.", category: "beach", dwellMinutesOverride: 45 },
+    {
+      id: "sado-ferry",
+      label: "Sado ferry crossing",
+      blurb: "Short ferry over the Sado estuary — dolphins are sometimes seen.",
+      category: "drive-by",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "troia-ruins",
+      label: "Roman Ruins of Tróia",
+      blurb: "2,000-year-old fish-salting site on the peninsula.",
+      category: "monument",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "herdade-comporta",
+      label: "Herdade da Comporta winery",
+      blurb: "Sandy-soil wines shaped by Atlantic wind — tasting at the cellar.",
+      category: "winery",
+    },
+    {
+      id: "comporta-lunch",
+      label: "Lunch in Comporta",
+      blurb: "Relaxed lunch in the dunes village.",
+      category: "lunch",
+    },
+    {
+      id: "comporta-beach",
+      label: "Comporta or Carvalhal beach",
+      blurb: "Long white-sand Atlantic beach — short walk if conditions allow.",
+      category: "beach",
+      dwellMinutesOverride: 45,
+    },
   ],
   optional: [
-    { id: "carrasqueira", label: "Cais Palafítico da Carrasqueira", blurb: "Wooden stilt fishing pier on the Sado — one of Portugal's most photogenic spots. Adds ~30 min.", category: "viewpoint", dwellMinutesOverride: 30 },
+    {
+      id: "carrasqueira",
+      label: "Cais Palafítico da Carrasqueira",
+      blurb:
+        "Wooden stilt fishing pier on the Sado — one of Portugal's most photogenic spots. Adds ~30 min.",
+      category: "viewpoint",
+      dwellMinutesOverride: 30,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
@@ -299,25 +581,80 @@ const troiaComporta: TailorBlueprint = {
 const evoraAlentejo: TailorBlueprint = {
   tourId: "evora-alentejo",
   core: [
-    { id: "evora-old-town", label: "Évora historic centre", blurb: "UNESCO city — walled centre with Roman, Moorish and medieval layers.", category: "village", dwellMinutesOverride: 60 },
-    { id: "templo-romano", label: "Roman Temple of Évora", blurb: "1st-century Roman temple (Templo de Diana) in the old town.", category: "monument", dwellMinutesOverride: 20 },
-    { id: "chapel-of-bones", label: "Chapel of Bones", blurb: "The 16th-century chapel lined with the bones of monks — a few minutes inside the Igreja de São Francisco.", category: "monument", dwellMinutesOverride: 25 },
-    { id: "evora-lunch", label: "Long Alentejo lunch", blurb: "Traditional Alentejo lunch — black pork, açorda, regional wines.", category: "lunch" },
+    {
+      id: "evora-old-town",
+      label: "Évora historic centre",
+      blurb: "UNESCO city — walled centre with Roman, Moorish and medieval layers.",
+      category: "village",
+      dwellMinutesOverride: 60,
+    },
+    {
+      id: "templo-romano",
+      label: "Roman Temple of Évora",
+      blurb: "1st-century Roman temple (Templo de Diana) in the old town.",
+      category: "monument",
+      dwellMinutesOverride: 20,
+    },
+    {
+      id: "chapel-of-bones",
+      label: "Chapel of Bones",
+      blurb:
+        "The 16th-century chapel lined with the bones of monks — a few minutes inside the Igreja de São Francisco.",
+      category: "monument",
+      dwellMinutesOverride: 25,
+    },
+    {
+      id: "evora-lunch",
+      label: "Long Alentejo lunch",
+      blurb: "Traditional Alentejo lunch — black pork, açorda, regional wines.",
+      category: "lunch",
+    },
   ],
   choice: {
     pickCount: 1,
     label: "Choose 1 Alentejo winery to visit",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
-      { id: "ramos", label: "João Portugal Ramos", blurb: "Modern flagship of the Alentejo — broad estate, polished visit.", category: "winery" },
-      { id: "cartuxa", label: "Cartuxa", blurb: "Adega Cartuxa, named after the 16th-century monastery — home of Pêra-Manca.", category: "winery" },
-      { id: "peramanca", label: "Quinta São José de Peramanca", blurb: "16th-century estate, family-run small-production wines.", category: "winery" },
-      { id: "ervideira", label: "Ervideira", blurb: "Pioneer of underwater-aged wine — tasting at the estate.", category: "winery" },
-      { id: "esporao", label: "Herdade do Esporão", blurb: "Iconic Alentejo estate — wine, olive oil, contemporary tasting room.", category: "winery" },
+      {
+        id: "ramos",
+        label: "João Portugal Ramos",
+        blurb: "Modern flagship of the Alentejo — broad estate, polished visit.",
+        category: "winery",
+      },
+      {
+        id: "cartuxa",
+        label: "Cartuxa",
+        blurb: "Adega Cartuxa, named after the 16th-century monastery — home of Pêra-Manca.",
+        category: "winery",
+      },
+      {
+        id: "peramanca",
+        label: "Quinta São José de Peramanca",
+        blurb: "16th-century estate, family-run small-production wines.",
+        category: "winery",
+      },
+      {
+        id: "ervideira",
+        label: "Ervideira",
+        blurb: "Pioneer of underwater-aged wine — tasting at the estate.",
+        category: "winery",
+      },
+      {
+        id: "esporao",
+        label: "Herdade do Esporão",
+        blurb: "Iconic Alentejo estate — wine, olive oil, contemporary tasting room.",
+        category: "winery",
+      },
     ],
   },
   optional: [
-    { id: "corticarte", label: "Corticarte cork factory", blurb: "See cork harvested, sorted and finished — a 30-min industrial visit. Adds ~45 min.", category: "workshop", dwellMinutesOverride: 45 },
+    {
+      id: "corticarte",
+      label: "Corticarte cork factory",
+      blurb: "See cork harvested, sorted and finished — a 30-min industrial visit. Adds ~45 min.",
+      category: "workshop",
+      dwellMinutesOverride: 45,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
@@ -334,16 +671,46 @@ const evoraAlentejo: TailorBlueprint = {
 const tomarCoimbra: TailorBlueprint = {
   tourId: "tomar-coimbra",
   core: [
-    { id: "convento-cristo", label: "Convento de Cristo, Tomar", blurb: "UNESCO Templar convent — the rotunda church and Manueline chapter house.", category: "monument", dwellMinutesOverride: 75 },
-    { id: "tomar-town", label: "Tomar old town", blurb: "Short walk through the medieval centre below the convent.", category: "village", dwellMinutesOverride: 30 },
-    { id: "tomar-lunch", label: "Lunch en route", blurb: "Traditional lunch between Tomar and Coimbra.", category: "lunch" },
-    { id: "coimbra-uni", label: "University of Coimbra", blurb: "One of Europe's oldest universities — courtyard, Royal Palace, bell tower view.", category: "monument", dwellMinutesOverride: 60 },
-    { id: "biblioteca-joanina", label: "Biblioteca Joanina", blurb: "18th-century baroque library inside the university — timed entry.", category: "monument", dwellMinutesOverride: 30 },
+    {
+      id: "convento-cristo",
+      label: "Convento de Cristo, Tomar",
+      blurb: "UNESCO Templar convent — the rotunda church and Manueline chapter house.",
+      category: "monument",
+      dwellMinutesOverride: 75,
+    },
+    {
+      id: "tomar-town",
+      label: "Tomar old town",
+      blurb: "Short walk through the medieval centre below the convent.",
+      category: "village",
+      dwellMinutesOverride: 30,
+    },
+    {
+      id: "tomar-lunch",
+      label: "Lunch en route",
+      blurb: "Traditional lunch between Tomar and Coimbra.",
+      category: "lunch",
+    },
+    {
+      id: "coimbra-uni",
+      label: "University of Coimbra",
+      blurb: "One of Europe's oldest universities — courtyard, Royal Palace, bell tower view.",
+      category: "monument",
+      dwellMinutesOverride: 60,
+    },
+    {
+      id: "biblioteca-joanina",
+      label: "Biblioteca Joanina",
+      blurb: "18th-century baroque library inside the university — timed entry.",
+      category: "monument",
+      dwellMinutesOverride: 30,
+    },
   ],
   optional: [],
   copy: {
     coreHeading: "Always included at the anchor price",
-    footnote: "It's a long drive day — the itinerary is tight by design. No optional add-ons fit without losing one of the two anchors.",
+    footnote:
+      "It's a long drive day — the itinerary is tight by design. No optional add-ons fit without losing one of the two anchors.",
   },
 };
 
@@ -354,15 +721,41 @@ const tomarCoimbra: TailorBlueprint = {
 const fatimaNazareObidos: TailorBlueprint = {
   tourId: "fatima-nazare-obidos",
   core: [
-    { id: "fatima", label: "Sanctuary of Fátima", blurb: "One of the world's most-visited pilgrimage sites — Basilica and the Apparitions chapel.", category: "monument", dwellMinutesOverride: 60 },
-    { id: "nazare-beach", label: "Nazaré cliffs and beach", blurb: "Atlantic fishing town famous for giant winter waves — viewpoint and seafront.", category: "viewpoint", dwellMinutesOverride: 45 },
-    { id: "nazare-lunch", label: "Lunch in Nazaré", blurb: "Traditional Portuguese lunch by the sea.", category: "lunch" },
-    { id: "obidos", label: "Óbidos walled town", blurb: "Medieval white-and-blue village inside its castle walls — finish with a Ginjinha in a chocolate cup.", category: "village", dwellMinutesOverride: 60 },
+    {
+      id: "fatima",
+      label: "Sanctuary of Fátima",
+      blurb:
+        "One of the world's most-visited pilgrimage sites — Basilica and the Apparitions chapel.",
+      category: "monument",
+      dwellMinutesOverride: 60,
+    },
+    {
+      id: "nazare-beach",
+      label: "Nazaré cliffs and beach",
+      blurb: "Atlantic fishing town famous for giant winter waves — viewpoint and seafront.",
+      category: "viewpoint",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "nazare-lunch",
+      label: "Lunch in Nazaré",
+      blurb: "Traditional Portuguese lunch by the sea.",
+      category: "lunch",
+    },
+    {
+      id: "obidos",
+      label: "Óbidos walled town",
+      blurb:
+        "Medieval white-and-blue village inside its castle walls — finish with a Ginjinha in a chocolate cup.",
+      category: "village",
+      dwellMinutesOverride: 60,
+    },
   ],
   optional: [],
   copy: {
     coreHeading: "Always included at the anchor price",
-    footnote: "Three towns is the natural day. Adding a fourth eats into the time that makes each of them feel real.",
+    footnote:
+      "Three towns is the natural day. Adding a fourth eats into the time that makes each of them feel real.",
   },
 };
 
@@ -375,14 +768,48 @@ const fatimaNazareObidos: TailorBlueprint = {
 const romanHeritageAlentejo: TailorBlueprint = {
   tourId: "roman-heritage-alentejo",
   core: [
-    { id: "sao-cucufate", label: "Villa Romana de São Cucufate", blurb: "One of Alentejo's most important Roman archaeological sites.", category: "monument", dwellMinutesOverride: 60 },
-    { id: "vinho-talha", label: "Centro Interpretativo do Vinho de Talha", blurb: "Centre dedicated to Portugal's 2,000-year-old clay-pot winemaking method.", category: "workshop", dwellMinutesOverride: 45 },
-    { id: "vila-alva", label: "Vila Alva drive", blurb: "Drive through a quiet wine village surrounded by old vines and olive groves.", category: "drive-by", dwellMinutesOverride: 20 },
-    { id: "mestre-daniel", label: "Adega Mestre Daniel — XXVI Talhas", blurb: "Family winery still making wine in Roman clay vessels — private tasting.", category: "winery" },
-    { id: "talha-lunch", label: "Long Alentejo lunch", blurb: "Slow lunch with talha wines.", category: "lunch" },
+    {
+      id: "sao-cucufate",
+      label: "Villa Romana de São Cucufate",
+      blurb: "One of Alentejo's most important Roman archaeological sites.",
+      category: "monument",
+      dwellMinutesOverride: 60,
+    },
+    {
+      id: "vinho-talha",
+      label: "Centro Interpretativo do Vinho de Talha",
+      blurb: "Centre dedicated to Portugal's 2,000-year-old clay-pot winemaking method.",
+      category: "workshop",
+      dwellMinutesOverride: 45,
+    },
+    {
+      id: "vila-alva",
+      label: "Vila Alva drive",
+      blurb: "Drive through a quiet wine village surrounded by old vines and olive groves.",
+      category: "drive-by",
+      dwellMinutesOverride: 20,
+    },
+    {
+      id: "mestre-daniel",
+      label: "Adega Mestre Daniel — XXVI Talhas",
+      blurb: "Family winery still making wine in Roman clay vessels — private tasting.",
+      category: "winery",
+    },
+    {
+      id: "talha-lunch",
+      label: "Long Alentejo lunch",
+      blurb: "Slow lunch with talha wines.",
+      category: "lunch",
+    },
   ],
   optional: [
-    { id: "albergaria-fusos", label: "Albergaria dos Fusos river beach", blurb: "Hidden river beach for a warm-month swim or quiet stop. Adds ~45 min.", category: "beach", dwellMinutesOverride: 45 },
+    {
+      id: "albergaria-fusos",
+      label: "Albergaria dos Fusos river beach",
+      blurb: "Hidden river beach for a warm-month swim or quiet stop. Adds ~45 min.",
+      category: "beach",
+      dwellMinutesOverride: 45,
+    },
   ],
   copy: {
     coreHeading: "Always included at the anchor price",

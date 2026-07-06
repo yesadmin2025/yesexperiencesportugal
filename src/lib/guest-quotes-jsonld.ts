@@ -10,12 +10,7 @@
  */
 import { SITE_URL } from "@/lib/jsonld";
 
-export type ReviewSource =
-  | "viator"
-  | "tripadvisor"
-  | "getyourguide"
-  | "google"
-  | "first_party";
+export type ReviewSource = "viator" | "tripadvisor" | "getyourguide" | "google" | "first_party";
 
 export type GuestQuoteReview = {
   id: string;

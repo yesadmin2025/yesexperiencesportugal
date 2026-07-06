@@ -15,31 +15,23 @@ describe("legacy-domain-gone", () => {
   });
 
   it("does NOT set a Location header (no redirect back to canonical)", () => {
-    const res = buildLegacyGoneResponse(
-      req("https://yesexperiences.pt/tours/sintra"),
-    );
+    const res = buildLegacyGoneResponse(req("https://yesexperiences.pt/tours/sintra"));
     expect(res!.headers.get("location")).toBeNull();
   });
 
   it("handles www.yesexperiences.pt", () => {
-    const res = buildLegacyGoneResponse(
-      req("https://www.yesexperiences.pt/about"),
-    );
+    const res = buildLegacyGoneResponse(req("https://www.yesexperiences.pt/about"));
     expect(res!.status).toBe(410);
   });
 
   it("is case-insensitive on Host header", () => {
-    const res = buildLegacyGoneResponse(
-      req("http://example.test/path", "YesExperiences.PT"),
-    );
+    const res = buildLegacyGoneResponse(req("http://example.test/path", "YesExperiences.PT"));
     expect(res).not.toBeNull();
     expect(res!.status).toBe(410);
   });
 
   it("uses Host header over URL host when both present", () => {
-    const res = buildLegacyGoneResponse(
-      req("http://localhost:8080/x?y=1", "yesexperiences.pt"),
-    );
+    const res = buildLegacyGoneResponse(req("http://localhost:8080/x?y=1", "yesexperiences.pt"));
     expect(res).not.toBeNull();
     expect(res!.status).toBe(410);
   });
@@ -50,16 +42,12 @@ describe("legacy-domain-gone", () => {
   });
 
   it("returns null for the canonical domain", () => {
-    const res = buildLegacyGoneResponse(
-      req("https://yesexperiencesportugal.com/"),
-    );
+    const res = buildLegacyGoneResponse(req("https://yesexperiencesportugal.com/"));
     expect(res).toBeNull();
   });
 
   it("returns null for unrelated hosts", () => {
     expect(buildLegacyGoneResponse(req("https://example.com/"))).toBeNull();
-    expect(
-      buildLegacyGoneResponse(req("http://localhost:8080/builder")),
-    ).toBeNull();
+    expect(buildLegacyGoneResponse(req("http://localhost:8080/builder"))).toBeNull();
   });
 });

@@ -34,7 +34,6 @@ const NON_WINE_FEELINGS: readonly Feeling[] = FEELING_IDS.filter(
   (f): f is Exclude<Feeling, "wine-food"> => f !== "wine-food",
 );
 
-
 function pairs<T>(xs: T[]): Array<[T, T]> {
   const out: Array<[T, T]> = [];
   for (let i = 0; i < xs.length; i++) {
@@ -54,8 +53,9 @@ describe("Studio — itinerary edit stability", () => {
           : "heritage";
       // Fire the same pick 20 times — result must be deterministic and
       // never wine.
-      const runs = Array.from({ length: 20 }, () =>
-        pickPrimaryTour(feeling, "couple", [primary], null, null, 0).tour.id,
+      const runs = Array.from(
+        { length: 20 },
+        () => pickPrimaryTour(feeling, "couple", [primary], null, null, 0).tour.id,
       );
       const unique = new Set(runs);
       expect(unique.size, `feeling=${feeling} not deterministic`).toBe(1);
@@ -83,14 +83,8 @@ describe("Studio — itinerary edit stability", () => {
       ).not.toBe("arrabida-wine-allinclusive");
       for (const secondary of NON_WINE_INTERESTS) {
         if (secondary === primary) continue;
-        const afterEdit = pickPrimaryTour(
-          feeling,
-          "couple",
-          [primary, secondary],
-          null,
-          null,
-          0,
-        ).tour.id;
+        const afterEdit = pickPrimaryTour(feeling, "couple", [primary, secondary], null, null, 0)
+          .tour.id;
         expect(
           afterEdit,
           `feeling=${feeling} interests=[${primary},${secondary}] jumped to wine after edit`,

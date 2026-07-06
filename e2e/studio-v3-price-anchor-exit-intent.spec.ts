@@ -170,7 +170,6 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
       ).toBe(false);
     }
 
-
     const reveal = page.locator('[data-testid="studio-v3-reveal"]').first();
     await expect(reveal).toBeVisible({ timeout: 10_000 });
 
@@ -208,7 +207,6 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
         "[anchor-spec] anchor hint hidden — current guests already at cheapest tier (legal product state)",
       );
     }
-
 
     // ─── 3. Exit-intent: arm wait then trigger via visibilitychange ──────
     // Modal arms after 8s on the reveal — wait, then flip visibility.

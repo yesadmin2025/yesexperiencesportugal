@@ -78,19 +78,16 @@ const hairlineBaseClasses =
   "group inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2 text-[color:var(--charcoal)] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)]",
+  primary: "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)]",
   ghost:
     "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)]",
-  ghostDark:
-    "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
+  ghostDark: "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
   hairline: "opacity-80 hover:opacity-100 focus-visible:opacity-100",
 };
 
 const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
   primary: {
-    boxShadow:
-      "0 10px 26px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent)",
+    boxShadow: "0 10px 26px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent)",
   },
   ghost: {
     border: "1px solid color-mix(in oklab, var(--teal) 55%, transparent)",
@@ -214,7 +211,12 @@ export function CtaButton(props: CtaButtonProps) {
   const sharedClassName = cn(
     isHairline
       ? cn(hairlineBaseClasses, loading && "cursor-progress")
-      : cn(baseClasses, trailing ? baseLayoutWithTrailing : baseLayoutNoTrailing, sizeClasses[size], variantClasses[variant]),
+      : cn(
+          baseClasses,
+          trailing ? baseLayoutWithTrailing : baseLayoutNoTrailing,
+          sizeClasses[size],
+          variantClasses[variant],
+        ),
     errorPlaying && "he-cta-error",
     className,
   );

@@ -54,7 +54,12 @@ import { regionalVoiceFor } from "./regionalVoice";
  *  panel decoupled from StudioV3.tsx while preserving the same logic. */
 function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
   const r = (region ?? "").toLowerCase();
-  if (r.includes("alentejo") || r.includes("comporta") || r.includes("évora") || r.includes("evora"))
+  if (
+    r.includes("alentejo") ||
+    r.includes("comporta") ||
+    r.includes("évora") ||
+    r.includes("evora")
+  )
     return "alentejo";
   if (
     r.includes("centro") ||
@@ -73,7 +78,6 @@ function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
     return "lisbon-coast";
   return "arrabida";
 }
-
 
 interface LivingJourneyPanelProps {
   state: StudioV3State;
@@ -147,10 +151,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     const prev = i > 0 ? routePoints[i - 1] : null;
     const driveMinBefore =
       prev && prev.lat != null && prev.lng != null && p.lat != null && p.lng != null
-        ? haversineDriveMinutes(
-            { lat: prev.lat, lng: prev.lng },
-            { lat: p.lat, lng: p.lng },
-          )
+        ? haversineDriveMinutes({ lat: prev.lat, lng: prev.lng }, { lat: p.lat, lng: p.lng })
         : null;
     return {
       label: p.label,
@@ -405,7 +406,6 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
                 return o ? { lat: o.lat, lng: o.lng } : null;
               })()}
               timelineMoments={timelineMoments}
-
               durationLabel={scopeDuration}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}

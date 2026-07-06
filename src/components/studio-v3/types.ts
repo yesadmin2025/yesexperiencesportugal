@@ -71,7 +71,6 @@ export const INTEREST_IDS = [
 ] as const;
 export type Interest = (typeof INTEREST_IDS)[number];
 
-
 export type Consideration =
   | "none"
   | "vegetarian"
@@ -210,8 +209,6 @@ export interface FitReport {
    *  "pickup-adjacent"). Consumed by the debug overlay. */
   boosts: string[];
 }
-
-
 
 export interface StudioV3State {
   phase: StudioV3Phase;
@@ -404,7 +401,6 @@ export const LANGUAGES: ChoiceOption<Language>[] = [
   { id: "pt", label: "Portuguese", whisper: "Hosted in Portuguese." },
   { id: "es", label: "Spanish", whisper: "Hosted in Spanish." },
 ];
-
 
 export const INVESTMENT_TIERS: ChoiceOption<InvestmentTier>[] = [
   {

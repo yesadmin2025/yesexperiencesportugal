@@ -94,10 +94,7 @@ function CookiesPage() {
                 hello@yesexperiencesportugal.com
               </a>{" "}
               — or see our{" "}
-              <Link
-                to="/privacy"
-                className="text-[color:var(--teal)] underline underline-offset-4"
-              >
+              <Link to="/privacy" className="text-[color:var(--teal)] underline underline-offset-4">
                 Privacy Policy
               </Link>
               .

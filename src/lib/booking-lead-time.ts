@@ -37,10 +37,7 @@ export function earliestBookableDate(now: Date = new Date()): Date {
  * Returns true when `date` is on or after `earliestBookableDate(now)`.
  * Accepts a Date, an ISO string, or any value Date can parse.
  */
-export function isDateBookable(
-  date: Date | string | number,
-  now: Date = new Date(),
-): boolean {
+export function isDateBookable(date: Date | string | number, now: Date = new Date()): boolean {
   const candidate = startOfDay(new Date(date));
   if (Number.isNaN(candidate.getTime())) return false;
   return candidate.getTime() >= earliestBookableDate(now).getTime();

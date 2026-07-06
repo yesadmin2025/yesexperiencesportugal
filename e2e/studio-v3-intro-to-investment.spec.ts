@@ -25,9 +25,7 @@ async function getPhase(page: Page): Promise<string | null> {
 }
 
 async function waitForPhase(page: Page, expected: RegExp, timeout = 8000) {
-  await expect
-    .poll(async () => (await getPhase(page)) ?? "", { timeout })
-    .toMatch(expected);
+  await expect.poll(async () => (await getPhase(page)) ?? "", { timeout }).toMatch(expected);
 }
 
 async function clickUntilGone(page: Page, selector: string, timeout = 12_000) {
@@ -107,9 +105,9 @@ for (const [name, viewport] of Object.entries(VIEWPORTS) as Array<
       // Premium UX signals: the journey-draft surface is present
       // (engagement anchor) and the brand wordmark stays visible
       // (premium identity not lost mid-funnel).
-      await expect(
-        page.getByText(/your journey|composing your day/i).first()
-      ).toBeVisible({ timeout: 6000 });
+      await expect(page.getByText(/your journey|composing your day/i).first()).toBeVisible({
+        timeout: 6000,
+      });
 
       // No JS exceptions during the walk — a thrown error mid-funnel kills
       // conversion regardless of how the UI looks.

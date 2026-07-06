@@ -29,7 +29,9 @@ type CapturedEvent = { kind: string; detail: unknown; ts: number };
 
 async function installTelemetryCapture(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    const w = window as unknown as { __studioV3Events?: Array<{ kind: string; detail: unknown; ts: number }> };
+    const w = window as unknown as {
+      __studioV3Events?: Array<{ kind: string; detail: unknown; ts: number }>;
+    };
     w.__studioV3Events = [];
     const kinds = [
       "curation.decision",
@@ -67,7 +69,6 @@ async function dismissReactionOverlay(page: Page): Promise<boolean> {
   }
   return false;
 }
-
 
 async function walkOnce(page: Page): Promise<{ clicked: boolean; via: string }> {
   // Prefer enabled Continue ONLY when at least one selection on this phase
@@ -165,7 +166,7 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
         const nextMoment = page.locator('button[aria-label="Next moment"]').first();
         const holdInteractive = () =>
           hold.evaluate((el) => {
-            const wrap = el.closest('[aria-hidden]');
+            const wrap = el.closest("[aria-hidden]");
             const aria = wrap?.getAttribute("aria-hidden");
             const cs = wrap ? window.getComputedStyle(wrap as Element) : null;
             return aria !== "true" && cs?.pointerEvents !== "none" && cs?.opacity !== "0";
@@ -239,9 +240,10 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
 
     // ─── 2. Real price visible (€ + at least 2 digits) ────────────────────
     const priceMatches = page.locator("text=/€\\s?\\d{2,}/");
-    expect(await priceMatches.count(), "reveal must display a real per-guest price").toBeGreaterThan(
-      0,
-    );
+    expect(
+      await priceMatches.count(),
+      "reveal must display a real per-guest price",
+    ).toBeGreaterThan(0);
 
     // ─── 3. window CustomEvent reveal.validation fired with ok=true ───────
     type Payload = { ok: boolean; missing: string[]; tourId: string | null };
@@ -279,4 +281,3 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
     ).toBeTruthy();
   });
 });
-

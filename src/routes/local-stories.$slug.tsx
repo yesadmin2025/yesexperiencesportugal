@@ -18,10 +18,7 @@ import {
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
-import {
-  getLocalStoryArticle,
-  type LocalStoryArticle,
-} from "@/content/local-stories-articles";
+import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 
 type JournalPostFull = {
   slug: string;
@@ -151,7 +148,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
     }
   },
 
-
   head: ({ params, loaderData }) => {
     const article = getLocalStoryArticle(params.slug);
 
@@ -205,9 +201,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
               { name: article.h1, path: `/local-stories/${article.slug}` },
             ]),
           ),
-          ...(article.faq && article.faq.length > 0
-            ? [jsonLdScript(faqPageLd(article.faq))]
-            : []),
+          ...(article.faq && article.faq.length > 0 ? [jsonLdScript(faqPageLd(article.faq))] : []),
           ...reviewScripts,
         ],
       };
@@ -216,8 +210,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const url = `${BASE}/local-stories/${params.slug}`;
     const post = loaderData?.dbPost ?? null;
     const title = post?.title ?? `Local Story — YES experiences Portugal`;
-    const description =
-      post?.excerpt ?? `A local story from Portugal · ${params.slug}`;
+    const description = post?.excerpt ?? `A local story from Portugal · ${params.slug}`;
     const heroImage = post?.heroImage ?? null;
 
     const scripts = post
@@ -301,12 +294,7 @@ function Page() {
 
   // Static SEO articles render directly (no DB needed).
   if (article) {
-    return (
-      <StaticArticleView
-        article={article}
-        reviews={loaderData?.reviews ?? []}
-      />
-    );
+    return <StaticArticleView article={article} reviews={loaderData?.reviews ?? []} />;
   }
 
   return <DbPostView slug={slug} />;
@@ -448,10 +436,7 @@ function StaticArticleView({
                       );
                     }
                     return (
-                      <li
-                        key={r.id}
-                        className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5"
-                      >
+                      <li key={r.id} className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5">
                         {r.ratingValue !== null && (
                           <div
                             className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
@@ -477,11 +462,8 @@ function StaticArticleView({
                     );
                   })}
                 </ul>
-
-
               </section>
             )}
-
 
             <nav className="mt-16 text-center">
               <Link

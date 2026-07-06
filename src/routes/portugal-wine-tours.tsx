@@ -35,30 +35,52 @@ export const Route = createFileRoute("/portugal-wine-tours")({
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
       jsonLdScript(jsonLd),
-      jsonLdScript(breadcrumbLd([{ name: "Home", path: "/" }, { name: "Portugal Wine Tours", path: PAGE_PATH }])),
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Portugal Wine Tours", path: PAGE_PATH },
+        ]),
+      ),
     ],
   }),
   component: Page,
 });
 
-const REGIONS: { eyebrow: string; title: string; body: string; cta: { to: string; tourId?: string; label: string } }[] = [
+const REGIONS: {
+  eyebrow: string;
+  title: string;
+  body: string;
+  cta: { to: string; tourId?: string; label: string };
+}[] = [
   {
     eyebrow: "Arrábida & Setúbal",
     title: "The wine coast an hour from Lisbon.",
     body: "Moscatel de Setúbal, Castelão reds, and cellars perched between cork forest and Atlantic cliffs. Our home region — a private day here is what we do best.",
-    cta: { to: "/tours/$tourId", tourId: "arrabida-wine-allinclusive", label: "See the Arrábida Wine Signature" },
+    cta: {
+      to: "/tours/$tourId",
+      tourId: "arrabida-wine-allinclusive",
+      label: "See the Arrábida Wine Signature",
+    },
   },
   {
     eyebrow: "Azeitão",
     title: "A quieter cellar day — cheese, wine, and no queue.",
     body: "Azeitão's small artisan cheesemakers, a working family cellar, and a lunch table under grapevines. Slower, closer, and often the guest favourite.",
-    cta: { to: "/tours/$tourId", tourId: "azeitao-cheese", label: "See the Azeitão Cheese & Wine Signature" },
+    cta: {
+      to: "/tours/$tourId",
+      tourId: "azeitao-cheese",
+      label: "See the Azeitão Cheese & Wine Signature",
+    },
   },
   {
     eyebrow: "Alentejo",
     title: "Reserva reds under old olive trees.",
     body: "Two hours south, the Alentejo pours the country's most concentrated reds. Estates that don't take walk-ins, long lunches, and an afternoon in Évora on the way back.",
-    cta: { to: "/tours/$tourId", tourId: "evora-alentejo", label: "See the Évora & Alentejo Signature" },
+    cta: {
+      to: "/tours/$tourId",
+      tourId: "evora-alentejo",
+      label: "See the Évora & Alentejo Signature",
+    },
   },
   {
     eyebrow: "Private wine day from Lisbon",
@@ -76,15 +98,18 @@ function Page() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Portugal · Wine Tours</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Portugal wine tours,{" "}
-              <SectionTitle.Em>poured properly.</SectionTitle.Em>
+              Portugal wine tours, <SectionTitle.Em>poured properly.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Small cellars, real winemakers, and a private day paced around lunch.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <CtaButton to="/experiences" variant="primary">Explore Wine Experiences</CtaButton>
-              <CtaButton to="/studio-v3" variant="ghost">Design your own</CtaButton>
+              <CtaButton to="/experiences" variant="primary">
+                Explore Wine Experiences
+              </CtaButton>
+              <CtaButton to="/studio-v3" variant="ghost">
+                Design your own
+              </CtaButton>
             </div>
           </div>
         </header>
@@ -102,15 +127,26 @@ function Page() {
               {REGIONS.map((p, i) => (
                 <div key={i} className="mt-16 md:mt-20">
                   <Eyebrow className="mb-4">{p.eyebrow}</Eyebrow>
-                  <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">{p.title}</h2>
-                  <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">{p.body}</p>
+                  <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
+                    {p.title}
+                  </h2>
+                  <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+                    {p.body}
+                  </p>
                   <div className="mt-7">
                     {p.cta.tourId ? (
-                      <Link to="/tours/$tourId" params={{ tourId: p.cta.tourId }} className="inline-flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--teal-2)] transition-colors">
+                      <Link
+                        to="/tours/$tourId"
+                        params={{ tourId: p.cta.tourId }}
+                        className="inline-flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--teal-2)] transition-colors"
+                      >
                         {p.cta.label} <span aria-hidden="true">→</span>
                       </Link>
                     ) : (
-                      <Link to={p.cta.to} className="inline-flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--teal-2)] transition-colors">
+                      <Link
+                        to={p.cta.to}
+                        className="inline-flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--teal-2)] transition-colors"
+                      >
                         {p.cta.label} <span aria-hidden="true">→</span>
                       </Link>
                     )}
@@ -120,12 +156,30 @@ function Page() {
             </div>
 
             <aside className="mt-16 pt-12 border-t border-[color:var(--gold-soft)]/40 text-center">
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">Also popular</span>
+              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+                Also popular
+              </span>
               <ul className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                <li><Link to="/portugal-tours" className="hover:text-[color:var(--teal)]">Portugal tours →</Link></li>
-                <li><Link to="/luxury-tours-portugal" className="hover:text-[color:var(--teal)]">Luxury Portugal tours →</Link></li>
-                <li><Link to="/private-tours-portugal" className="hover:text-[color:var(--teal)]">Private Portugal tours →</Link></li>
-                <li><Link to="/wine-tours-lisbon" className="hover:text-[color:var(--teal)]">Wine tours from Lisbon →</Link></li>
+                <li>
+                  <Link to="/portugal-tours" className="hover:text-[color:var(--teal)]">
+                    Portugal tours →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/luxury-tours-portugal" className="hover:text-[color:var(--teal)]">
+                    Luxury Portugal tours →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/private-tours-portugal" className="hover:text-[color:var(--teal)]">
+                    Private Portugal tours →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/wine-tours-lisbon" className="hover:text-[color:var(--teal)]">
+                    Wine tours from Lisbon →
+                  </Link>
+                </li>
               </ul>
             </aside>
           </div>

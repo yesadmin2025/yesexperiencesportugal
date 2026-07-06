@@ -30,7 +30,8 @@ const PILLARS: Pillar[] = [
     eyebrow: "Local from the start",
     title: (
       <>
-        Real locals, <span className="italic font-normal text-[color:var(--teal)]">not call centres.</span>
+        Real locals,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">not call centres.</span>
       </>
     ),
     body: "Routes, timings and the hidden details that change a day are shaped by people who live here — not a script written abroad.",
@@ -40,7 +41,8 @@ const PILLARS: Pillar[] = [
     eyebrow: "Any occasion",
     title: (
       <>
-        Private days, proposals, <span className="italic font-normal text-[color:var(--teal)]">corporate moments.</span>
+        Private days, proposals,{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">corporate moments.</span>
       </>
     ),
     body: "Engagements, anniversaries, family gatherings, off-sites and full multi-day journeys — staged with the same quiet care.",
@@ -50,7 +52,10 @@ const PILLARS: Pillar[] = [
     eyebrow: "Four ways to shape it",
     title: (
       <>
-        Reserve, tailor, design — <span className="italic font-normal text-[color:var(--teal)]">or hand it to a designer.</span>
+        Reserve, tailor, design —{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">
+          or hand it to a designer.
+        </span>
       </>
     ),
     body: "Book a Signature in minutes, tailor it inside, design from scratch in the Studio, or let a Travel Designer compose the whole journey.",

@@ -369,9 +369,7 @@ export function selectSignatureAddOns(opts: {
   const hours = parseDurationLowerHours(opts.durationLabel);
   const pool = ADD_ON_CATALOG[bucket] ?? [];
   const anchorSub: LisbonSubRegion | undefined =
-    bucket === "lisbon-arrabida"
-      ? LISBON_SUBREGION_BY_TOUR_ID[opts.resolvedTour.id]
-      : undefined;
+    bucket === "lisbon-arrabida" ? LISBON_SUBREGION_BY_TOUR_ID[opts.resolvedTour.id] : undefined;
   const inclusionTags = deriveInclusionTags({
     id: opts.resolvedTour.id,
     included: opts.resolvedTour.included ?? null,

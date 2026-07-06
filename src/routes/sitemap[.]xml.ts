@@ -36,25 +36,74 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/proposals", lastmod: today, changefreq: "monthly", priority: "0.7" },
           { path: "/corporate", lastmod: today, changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", lastmod: today, changefreq: "weekly", priority: "0.7" },
-          { path: "/day-trips-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.8" },
+          {
+            path: "/day-trips-from-lisbon",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.8",
+          },
           { path: "/wine-tours-lisbon", lastmod: today, changefreq: "monthly", priority: "0.9" },
-          { path: "/private-wine-tour-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          {
+            path: "/private-wine-tour-lisbon",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
           { path: "/arrabida-wine-tour", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/sintra-day-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/arrabida-day-trip-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/alentejo-wine-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/evora-private-tour-from-lisbon", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/evora-alentejo-wine-tour", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/itineraries/10-day-private-portugal-tour", lastmod: today, changefreq: "monthly", priority: "0.8" },
+          {
+            path: "/sintra-day-tour-from-lisbon",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
+          {
+            path: "/arrabida-day-trip-from-lisbon",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
+          {
+            path: "/alentejo-wine-tour-from-lisbon",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
+          {
+            path: "/evora-private-tour-from-lisbon",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
+          {
+            path: "/evora-alentejo-wine-tour",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
+          {
+            path: "/itineraries/10-day-private-portugal-tour",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.8",
+          },
           { path: "/portugal-tours", lastmod: today, changefreq: "monthly", priority: "0.9" },
-          { path: "/luxury-tours-portugal", lastmod: today, changefreq: "monthly", priority: "0.85" },
-          { path: "/private-tours-portugal", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          {
+            path: "/luxury-tours-portugal",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
+          {
+            path: "/private-tours-portugal",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.85",
+          },
           { path: "/portugal-wine-tours", lastmod: today, changefreq: "monthly", priority: "0.85" },
 
           { path: "/terms", lastmod: today, changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", lastmod: today, changefreq: "yearly", priority: "0.4" },
           { path: "/cookies", lastmod: today, changefreq: "yearly", priority: "0.4" },
-
         ];
 
         // Bump SEO focus tours so they surface ahead of the rest of the Signature
@@ -101,9 +150,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           /* tolerate db failures — static entries still ship */
         }
 
-        const staticSlugSet = new Set(LOCAL_STORIES_ARTICLES.map((a) => `/local-stories/${a.slug}`));
+        const staticSlugSet = new Set(
+          LOCAL_STORIES_ARTICLES.map((a) => `/local-stories/${a.slug}`),
+        );
         const dedupedDbPosts = postEntries.filter((e) => !staticSlugSet.has(e.path));
-        const entries = [...staticEntries, ...tourEntries, ...staticArticleEntries, ...dedupedDbPosts];
+        const entries = [
+          ...staticEntries,
+          ...tourEntries,
+          ...staticArticleEntries,
+          ...dedupedDbPosts,
+        ];
         const urls = entries.map((e) =>
           [
             `  <url>`,

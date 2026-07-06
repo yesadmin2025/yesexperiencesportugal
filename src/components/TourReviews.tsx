@@ -26,7 +26,10 @@ const SOURCE_LABEL: Record<string, string> = {
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <span className="inline-flex items-center gap-0.5 text-[color:var(--gold)]" aria-label={`${rating} out of 5`}>
+    <span
+      className="inline-flex items-center gap-0.5 text-[color:var(--gold)]"
+      aria-label={`${rating} out of 5`}
+    >
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
@@ -48,10 +51,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      statsFn({ data: { tourId } }),
-      reviewsFn({ data: { tourId, limit: 8 } }),
-    ])
+    Promise.all([statsFn({ data: { tourId } }), reviewsFn({ data: { tourId, limit: 8 } })])
       .then(([s, r]) => {
         if (cancelled) return;
         setStats(s);
@@ -106,7 +106,6 @@ export function TourReviews({ tourId }: { tourId: string }) {
           </ul>
         )}
       </div>
-
 
       {reviews.length > 0 && (
         <ul className="mt-10 grid gap-5 md:grid-cols-2 list-none p-0">

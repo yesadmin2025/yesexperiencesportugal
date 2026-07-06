@@ -1,8 +1,5 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import {
-  getMentionsForPlacement,
-  type AuthorityPlacement,
-} from "@/data/externalAuthorityMentions";
+import { getMentionsForPlacement, type AuthorityPlacement } from "@/data/externalAuthorityMentions";
 
 /**
  * Recognised by travel guides — editorial trust strip.
@@ -71,9 +68,7 @@ export function RecognisedByGuides({
           className="font-display font-medium text-[1.55rem] md:text-[2rem] leading-[1.2] tracking-[-0.01em] text-[color:var(--charcoal)] mb-5"
         >
           {heading.split("travel guides")[0]}
-          <span className="font-serif italic text-[color:var(--teal)]">
-            travel guides
-          </span>
+          <span className="font-serif italic text-[color:var(--teal)]">travel guides</span>
           {heading.split("travel guides")[1] ?? ""}
         </h2>
         <p className="text-[14.5px] md:text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75]">

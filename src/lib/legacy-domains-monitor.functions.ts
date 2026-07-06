@@ -171,7 +171,9 @@ export const probeLegacyHost = createServerFn({ method: "POST" })
     void (async () => {
       try {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const otherHosts = Array.from(LEGACY_HOSTS as ReadonlySet<string>).filter((h) => h !== data.host);
+        const otherHosts = Array.from(LEGACY_HOSTS as ReadonlySet<string>).filter(
+          (h) => h !== data.host,
+        );
         const latestOthers: LegacyHostReport[] = [];
         for (const h of otherHosts) {
           const { data: row } = await supabaseAdmin
@@ -200,8 +202,7 @@ async function persistAndAlert(reports: LegacyHostReport[]): Promise<void> {
   const rows = reports.map((r) => {
     const aRecs = r.dns.a.map((x) => x.data);
     const pointsToLovable = aRecs.includes(LOVABLE_A);
-    const bestStatus =
-      r.http.find((p) => typeof p.status === "number")?.status ?? null;
+    const bestStatus = r.http.find((p) => typeof p.status === "number")?.status ?? null;
     return {
       host: r.host,
       checked_at: r.checkedAt,
@@ -225,9 +226,7 @@ async function persistAndAlert(reports: LegacyHostReport[]): Promise<void> {
     .maybeSingle();
 
   const wasReady = !!state?.all_ready;
-  const lastNotifiedAt = state?.last_notified_at
-    ? new Date(state.last_notified_at).getTime()
-    : 0;
+  const lastNotifiedAt = state?.last_notified_at ? new Date(state.last_notified_at).getTime() : 0;
   const hoursSinceNotified = (Date.now() - lastNotifiedAt) / 36e5;
 
   const shouldAlert = allReady && (!wasReady || hoursSinceNotified > 24 * 7);
@@ -301,4 +300,3 @@ export const getLegacyDomainsHistory = createServerFn({ method: "GET" }).handler
     }));
   },
 );
-

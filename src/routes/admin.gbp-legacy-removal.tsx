@@ -320,10 +320,7 @@ function GbpLegacyRemovalPage() {
     await loadEvidence();
   };
 
-  const completed = useMemo(
-    () => STEPS.filter((s) => checklist[s.id]).length,
-    [checklist],
-  );
+  const completed = useMemo(() => STEPS.filter((s) => checklist[s.id]).length, [checklist]);
   const progress = Math.round((completed / STEPS.length) * 100);
 
   if (!authChecked || !session || isAdmin !== true) {
@@ -332,7 +329,11 @@ function GbpLegacyRemovalPage() {
         <section className="pt-28 pb-20 container-x max-w-2xl">
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
           <h1 className="mt-1 text-3xl">
-            {!authChecked ? "A verificar sessão…" : !session ? "A redirecionar…" : "Sem autorização"}
+            {!authChecked
+              ? "A verificar sessão…"
+              : !session
+                ? "A redirecionar…"
+                : "Sem autorização"}
           </h1>
           <Link
             to="/auth"
@@ -354,17 +355,18 @@ function GbpLegacyRemovalPage() {
           </p>
           <h1 className="mt-1 text-3xl">Remoção do GBP antigo</h1>
           <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] max-w-2xl">
-            Acompanhamento do processo para remover o perfil "Yes!experiences Portugal"
-            (R. Central do Meco 13) das pesquisas do Google. O perfil já está marcado como
-            "Encerrado permanentemente" — a remoção total é sempre feita pelo Google e demora
-            2–8 semanas.
+            Acompanhamento do processo para remover o perfil "Yes!experiences Portugal" (R. Central
+            do Meco 13) das pesquisas do Google. O perfil já está marcado como "Encerrado
+            permanentemente" — a remoção total é sempre feita pelo Google e demora 2–8 semanas.
           </p>
         </header>
 
         {/* Estado dos dois perfis */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border border-rose-200 bg-rose-50/60 p-4">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-rose-700">Perfil antigo</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-rose-700">
+              Perfil antigo
+            </div>
             <div className="mt-1 text-sm font-medium text-[color:var(--charcoal)]">
               Yes!experiences Portugal
             </div>
@@ -407,7 +409,11 @@ function GbpLegacyRemovalPage() {
             Progresso: {completed}/{STEPS.length} passos concluídos
           </div>
           <div className="text-xs text-[color:var(--charcoal-soft)]">
-            {savingState ? "A guardar…" : savedAt ? `Guardado ${savedAt.toLocaleTimeString("pt-PT")}` : ""}
+            {savingState
+              ? "A guardar…"
+              : savedAt
+                ? `Guardado ${savedAt.toLocaleTimeString("pt-PT")}`
+                : ""}
           </div>
         </div>
         <div className="mt-2 h-1.5 w-full bg-[color:var(--sand)]">
@@ -501,7 +507,8 @@ function GbpLegacyRemovalPage() {
         <div className="mt-10">
           <h2 className="text-xl">Notas do processo</h2>
           <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
-            Regista datas, IDs de casos do Google Support, respostas recebidas. Guarda automaticamente.
+            Regista datas, IDs de casos do Google Support, respostas recebidas. Guarda
+            automaticamente.
           </p>
           <textarea
             value={notes}
@@ -563,10 +570,7 @@ function GbpLegacyRemovalPage() {
           ) : (
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {evidence.map((row) => (
-                <figure
-                  key={row.id}
-                  className="border border-[color:var(--border)] bg-white p-2"
-                >
+                <figure key={row.id} className="border border-[color:var(--border)] bg-white p-2">
                   {row.signedUrl ? (
                     <a href={row.signedUrl} target="_blank" rel="noopener noreferrer">
                       <img

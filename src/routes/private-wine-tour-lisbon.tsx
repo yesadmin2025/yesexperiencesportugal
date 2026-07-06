@@ -3,7 +3,13 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, SITE_URL, hreflangUsCaLinks, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  SITE_URL,
+  hreflangUsCaLinks,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
@@ -85,10 +91,7 @@ export const Route = createFileRoute("/private-wine-tour-lisbon")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [
-      { rel: "canonical", href: PAGE_URL },
-      ...hreflangUsCaLinks(PAGE_PATH),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...hreflangUsCaLinks(PAGE_PATH)],
     scripts: [
       jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
@@ -112,8 +115,7 @@ function Page() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Private Wine Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Private Wine Tour from Lisbon —{" "}
-              <SectionTitle.Em>Arrábida & Azeitão</SectionTitle.Em>
+              Private Wine Tour from Lisbon — <SectionTitle.Em>Arrábida & Azeitão</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Two or three family wineries, a long Portuguese lunch and a panoramic close — handled
@@ -174,21 +176,45 @@ function Page() {
               </h2>
               <ul className="grid sm:grid-cols-3 gap-5 not-prose">
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "azeitao-cheese" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Azeitão Cheese</span>
-                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">A morning with a 7th-generation cheesemaker.</span>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "azeitao-cheese" }}
+                    className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                  >
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                      Azeitão Cheese
+                    </span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                      A morning with a 7th-generation cheesemaker.
+                    </span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "arrabida-boat" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Arrábida by Boat</span>
-                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Swim the protected coves only reachable by sea.</span>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "arrabida-boat" }}
+                    className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                  >
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                      Arrábida by Boat
+                    </span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                      Swim the protected coves only reachable by sea.
+                    </span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "wild-beaches-picnic" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Wild Beaches & Picnic</span>
-                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Hidden Atlantic coves with a long table picnic.</span>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "wild-beaches-picnic" }}
+                    className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                  >
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                      Wild Beaches & Picnic
+                    </span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                      Hidden Atlantic coves with a long table picnic.
+                    </span>
                   </Link>
                 </li>
               </ul>
@@ -202,13 +228,13 @@ function Page() {
                   <span className="font-serif italic text-[color:var(--gold)]">live</span>.
                 </h3>
                 <p className="text-[14px] text-[color:var(--ivory)]/80 leading-[1.7] mb-5 max-w-md mx-auto">
-                  Pick the wineries, the lunch, the close — route, timing and price update as you go.
+                  Pick the wineries, the lunch, the close — route, timing and price update as you
+                  go.
                 </p>
                 <CtaButton to="/studio-v3" variant="primary">
                   Open the Studio
                 </CtaButton>
               </div>
-
             </div>
 
             <aside className="mt-12 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
@@ -216,26 +242,45 @@ function Page() {
                 Book this day
               </span>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
+                <CtaButton
+                  to="/tours/$tourId"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="primary"
+                >
                   Reserve the Arrábida Wine Signature
                 </CtaButton>
-                <CtaButton to="/tours/$tourId/tailor" params={{ tourId: PARENT_TOUR_ID }} variant="ghost">
+                <CtaButton
+                  to="/tours/$tourId/tailor"
+                  params={{ tourId: PARENT_TOUR_ID }}
+                  variant="ghost"
+                >
                   Tailor this Signature
                 </CtaButton>
               </div>
               <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "azeitao-cheese" }} className="hover:text-[color:var(--teal)] transition-colors">
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "azeitao-cheese" }}
+                    className="hover:text-[color:var(--teal)] transition-colors"
+                  >
                     Azeitão Cheese →
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "arrabida-boat" }} className="hover:text-[color:var(--teal)] transition-colors">
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "arrabida-boat" }}
+                    className="hover:text-[color:var(--teal)] transition-colors"
+                  >
                     Arrábida Boat →
                   </Link>
                 </li>
                 <li>
-                  <Link to="/day-trips-from-lisbon" className="hover:text-[color:var(--teal)] transition-colors">
+                  <Link
+                    to="/day-trips-from-lisbon"
+                    className="hover:text-[color:var(--teal)] transition-colors"
+                  >
                     All Day Trips →
                   </Link>
                 </li>

@@ -31,7 +31,9 @@ const PATHS: Path[] = [
     title: (
       <>
         Private days,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">already designed by YES.</span>
+        <span className="italic font-normal text-[color:var(--teal)]">
+          already designed by YES.
+        </span>
       </>
     ),
     body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
@@ -111,7 +113,9 @@ export function FourWaysIn() {
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             Five ways to{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">shape your Portugal.</span>
+            <span className="italic font-normal text-[color:var(--teal)]">
+              shape your Portugal.
+            </span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>

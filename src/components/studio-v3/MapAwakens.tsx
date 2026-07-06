@@ -299,7 +299,10 @@ export function MapAwakens({
   const activeDwellMin = dwellByIndex[active];
 
   return (
-    <div className="relative w-full min-h-[100dvh] flex flex-col sm:block" style={{ background: "var(--ivory)" }}>
+    <div
+      className="relative w-full min-h-[100dvh] flex flex-col sm:block"
+      style={{ background: "var(--ivory)" }}
+    >
       {/* Back */}
       <button
         type="button"
@@ -334,7 +337,6 @@ export function MapAwakens({
         aria-busy={!mounted || anticipating}
         className="relative w-full h-[52dvh] sm:absolute sm:inset-x-0 sm:top-0 sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
       >
-
         {/* Anticipation layer — Portugal silhouette + gold pulse holds the
             stage while the real map silently boots underneath. Fades out
             as the map fades in: the two never visually overlap. */}
@@ -441,8 +443,6 @@ export function MapAwakens({
         data-testid="studio-v3-moments-card"
         className="relative sm:absolute inset-x-0 sm:bottom-0 z-20 px-4 pb-6 pt-4"
       >
-
-
         <div className="mx-auto max-w-[560px]">
           {/* Progress dots */}
           <div className="flex items-center justify-center gap-1.5 mb-3" aria-hidden>

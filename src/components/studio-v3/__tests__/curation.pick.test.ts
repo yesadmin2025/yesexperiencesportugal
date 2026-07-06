@@ -16,7 +16,6 @@ type Feeling =
   | "adventure"
   | "slow-luxury";
 
-
 type Interest =
   | "wine"
   | "gastronomy"
@@ -34,16 +33,41 @@ const cases: Array<{
   expectOneOf?: string[];
 }> = [
   // Coastal / adventure / hidden should never land on the wine day.
-  { feeling: "coastal", interests: ["coast"], expectNotArrabidaWine: true, expectOneOf: ["wild-beaches-picnic", "arrabida-boat", "troia-comporta", "southwest-vicentine-coast"] },
+  {
+    feeling: "coastal",
+    interests: ["coast"],
+    expectNotArrabidaWine: true,
+    expectOneOf: [
+      "wild-beaches-picnic",
+      "arrabida-boat",
+      "troia-comporta",
+      "southwest-vicentine-coast",
+    ],
+  },
   { feeling: "coastal", interests: ["coast", "nature"], expectNotArrabidaWine: true },
   { feeling: "coastal", interests: ["coast", "gastronomy"], expectNotArrabidaWine: true }, // gastronomy secondary should NOT flip to wine
   { feeling: "adventure", interests: ["nature", "coast"], expectNotArrabidaWine: true },
   { feeling: "adventure", interests: ["coast"], expectNotArrabidaWine: true },
-  { feeling: "hidden", interests: ["nature"], expectNotArrabidaWine: true, expectOneOf: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"] },
+  {
+    feeling: "hidden",
+    interests: ["nature"],
+    expectNotArrabidaWine: true,
+    expectOneOf: [
+      "southwest-vicentine-coast",
+      "wild-beaches-picnic",
+      "arrabida-boat",
+      "troia-comporta",
+    ],
+  },
   { feeling: "hidden", interests: ["local-life"], expectNotArrabidaWine: true },
 
   // Culture should lead with heritage tours, never wine.
-  { feeling: "culture", interests: ["heritage"], expectNotArrabidaWine: true, expectOneOf: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos", "sintra-cascais"] },
+  {
+    feeling: "culture",
+    interests: ["heritage"],
+    expectNotArrabidaWine: true,
+    expectOneOf: ["tomar-coimbra", "tiles-workshop", "fatima-nazare-obidos", "sintra-cascais"],
+  },
   { feeling: "culture", interests: ["heritage", "art"], expectNotArrabidaWine: true },
   { feeling: "culture", interests: ["heritage", "local-life"], expectNotArrabidaWine: true },
 
@@ -99,7 +123,6 @@ const cases: Array<{
   },
 ];
 
-
 describe("pickPrimaryTour — no unwanted Arrábida-wine bias", () => {
   it.each(cases)(
     "feeling=$feeling interests=$interests",
@@ -113,9 +136,10 @@ describe("pickPrimaryTour — no unwanted Arrábida-wine bias", () => {
         0,
       );
       if (expectNotArrabidaWine) {
-        expect(tour.id, `feeling=${feeling} interests=${interests.join(",")} unexpectedly picked arrabida-wine-allinclusive`).not.toBe(
-          "arrabida-wine-allinclusive",
-        );
+        expect(
+          tour.id,
+          `feeling=${feeling} interests=${interests.join(",")} unexpectedly picked arrabida-wine-allinclusive`,
+        ).not.toBe("arrabida-wine-allinclusive");
       }
       if (expectOneOf) {
         expect(expectOneOf).toContain(tour.id);

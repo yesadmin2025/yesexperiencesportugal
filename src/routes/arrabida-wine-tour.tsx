@@ -91,10 +91,7 @@ export const Route = createFileRoute("/arrabida-wine-tour")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_CA" },
     ],
-    links: [
-      { rel: "canonical", href: PAGE_URL },
-      ...hreflangUsCaLinks(PAGE_PATH),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...hreflangUsCaLinks(PAGE_PATH)],
     scripts: [
       jsonLdScript(withAggregateAndReviews(productLd, PARENT_TOUR_ID)),
       jsonLdScript(organizationUsCaAudienceLd()),
@@ -118,19 +115,14 @@ function Page() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Arrábida · Private Wine Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Arrábida Wine Tour —{" "}
-              <SectionTitle.Em>Azeitão & Setúbal, from Lisbon</SectionTitle.Em>
+              Arrábida Wine Tour — <SectionTitle.Em>Azeitão & Setúbal, from Lisbon</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              Three family wineries, the Setúbal market, a long Portuguese lunch — all on the cork-oak
-              side of the Atlantic, with your own driver and guide.
+              Three family wineries, the Setúbal market, a long Portuguese lunch — all on the
+              cork-oak side of the Atlantic, with your own driver and guide.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <CtaButton
-                to="/tours/$tourId"
-                params={{ tourId: PARENT_TOUR_ID }}
-                variant="primary"
-              >
+              <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
                 Explore the Signature
               </CtaButton>
               <CtaButton to="/studio-v3" variant="ghost">
@@ -151,8 +143,8 @@ function Page() {
                 Cross the 25 de Abril Bridge and forty minutes later the road climbs into the
                 Arrábida hills. Cork oaks on one side, the Atlantic glinting on the other. At the
                 centre is the village of Azeitão — home of Moscatel de Setúbal and small family
-                wineries that have been pouring for seven generations. The Setúbal fish market,
-                145 years old, is fifteen minutes further down the coast.
+                wineries that have been pouring for seven generations. The Setúbal fish market, 145
+                years old, is fifteen minutes further down the coast.
               </p>
             </div>
 
@@ -191,21 +183,45 @@ function Page() {
               </h2>
               <ul className="grid sm:grid-cols-3 gap-5 not-prose">
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "azeitao-cheese" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Azeitão Cheese</span>
-                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">A morning with a 7th-generation cheesemaker.</span>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "azeitao-cheese" }}
+                    className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                  >
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                      Azeitão Cheese
+                    </span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                      A morning with a 7th-generation cheesemaker.
+                    </span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "arrabida-boat" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Arrábida by Boat</span>
-                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Swim the protected coves only reachable by sea.</span>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "arrabida-boat" }}
+                    className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                  >
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                      Arrábida by Boat
+                    </span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                      Swim the protected coves only reachable by sea.
+                    </span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tours/$tourId" params={{ tourId: "wild-beaches-picnic" }} className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors">
-                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">Wild Beaches & Picnic</span>
-                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">Hidden Atlantic coves with a long table picnic.</span>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: "wild-beaches-picnic" }}
+                    className="block p-5 bg-[color:var(--sand)]/60 hover:bg-[color:var(--sand)] transition-colors"
+                  >
+                    <span className="block font-display font-semibold text-[15px] text-[color:var(--charcoal)] mb-1">
+                      Wild Beaches & Picnic
+                    </span>
+                    <span className="block text-[13px] text-[color:var(--charcoal-soft)] leading-[1.55]">
+                      Hidden Atlantic coves with a long table picnic.
+                    </span>
                   </Link>
                 </li>
               </ul>

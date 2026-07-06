@@ -102,11 +102,7 @@ function PrivacyLine() {
 
 function SuccessState({ compact = false }: { compact?: boolean }) {
   return (
-    <div
-      className={`text-center ${compact ? "py-2" : "py-4"}`}
-      role="status"
-      aria-live="polite"
-    >
+    <div className={`text-center ${compact ? "py-2" : "py-4"}`} role="status" aria-live="polite">
       <p className="serif text-[color:var(--charcoal)] text-[18px] md:text-[20px] leading-snug">
         Your map is on its way.
       </p>
@@ -126,13 +122,7 @@ function SuccessState({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function LeadForm({
-  source,
-  compact = false,
-}: {
-  source: string;
-  compact?: boolean;
-}) {
+function LeadForm({ source, compact = false }: { source: string; compact?: boolean }) {
   const f = useLeadForm(source);
 
   if (f.status === "success") return <SuccessState compact={compact} />;
@@ -184,8 +174,8 @@ function LeadForm({
           className="mt-0.5"
         />
         <span className="text-[12px] leading-[1.55] text-[color:var(--charcoal-soft)]">
-          I agree to receive the guide and occasional emails from YES Experiences. I can
-          unsubscribe at any time.
+          I agree to receive the guide and occasional emails from YES Experiences. I can unsubscribe
+          at any time.
         </span>
       </label>
 
@@ -219,15 +209,12 @@ export function InlineEmailCapture() {
     <div
       className="reveal mx-auto max-w-2xl rounded-[6px] bg-[color:color-mix(in_oklab,var(--ivory)_92%,var(--sand))] px-5 py-6 sm:px-8 sm:py-8"
       style={{
-        border:
-          "1px solid color-mix(in oklab, var(--gold-deep, var(--gold)) 35%, transparent)",
+        border: "1px solid color-mix(in oklab, var(--gold-deep, var(--gold)) 35%, transparent)",
       }}
     >
       <div className="flex items-center justify-center gap-2 text-[color:var(--teal)]">
         <Mail aria-hidden="true" className="h-4 w-4" />
-        <span className="text-[10.5px] tracking-[0.22em] uppercase font-medium">
-          Free guide
-        </span>
+        <span className="text-[10.5px] tracking-[0.22em] uppercase font-medium">Free guide</span>
       </div>
       <h3 className="serif mt-2 text-center text-[20px] sm:text-[22px] leading-snug text-[color:var(--charcoal)]">
         A Local&apos;s Map:{" "}
@@ -314,8 +301,7 @@ export function ExitIntentEmailCapture() {
       <div
         className="relative w-full max-w-md rounded-[6px] bg-[color:var(--ivory)] px-8 py-9 shadow-2xl"
         style={{
-          border:
-            "1px solid color-mix(in oklab, var(--gold-deep, var(--gold)) 45%, transparent)",
+          border: "1px solid color-mix(in oklab, var(--gold-deep, var(--gold)) 45%, transparent)",
         }}
       >
         <button

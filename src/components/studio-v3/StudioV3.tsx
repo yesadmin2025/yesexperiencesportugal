@@ -86,7 +86,6 @@ import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 
-
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
   import("@/components/builder/BuilderMap").then((m) => ({
@@ -176,7 +175,6 @@ import {
   videoForInterest,
 } from "@/content/studio-scene-clips";
 
-
 import {
   COMPANIONS,
   CONSIDERATIONS,
@@ -211,7 +209,6 @@ import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
-
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
@@ -250,7 +247,6 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "storyboard",
 ];
 
-
 function stepOf(phase: StudioV3Phase): number {
   return PHASE_ORDER.indexOf(phase) + 1;
 }
@@ -273,7 +269,11 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
     "Next, a direction begins to emerge",
     "Next, the region takes shape",
   ],
-  destination: ["Next, we shape the beginning", "Next, where it starts", "Next, the starting point"],
+  destination: [
+    "Next, we shape the beginning",
+    "Next, where it starts",
+    "Next, the starting point",
+  ],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
   date: ["Next, we choose the route", "Next, the map awakens", "Next, the journey forms"],
   pickup: ["Next, the party size", "Next, your group", "Next, how many guests"],
@@ -540,8 +540,6 @@ type Reaction = {
   regionKey?: RegionKey;
   /** Explicit origin lat/lng — overrides regionKey-derived origin. */
   originCoord?: { lat: number; lng: number } | null;
-
-
 };
 
 /** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
@@ -671,15 +669,18 @@ export function StudioV3() {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
-  const requestStripeCheckout = useCallback((currentState: StudioV3State) => {
-    const tour = currentState.tourId ? findTour(currentState.tourId) : null;
-    if (!tour) {
-      openLeadSheet("book");
-      return;
-    }
-    setDetailsState(currentState);
-    setDetailsOpen(true);
-  }, [openLeadSheet]);
+  const requestStripeCheckout = useCallback(
+    (currentState: StudioV3State) => {
+      const tour = currentState.tourId ? findTour(currentState.tourId) : null;
+      if (!tour) {
+        openLeadSheet("book");
+        return;
+      }
+      setDetailsState(currentState);
+      setDetailsOpen(true);
+    },
+    [openLeadSheet],
+  );
   const handleStripeCheckout = useCallback(
     async (currentState: StudioV3State, details: GuestDetails) => {
       if (checkoutPending) return;
@@ -892,7 +893,6 @@ export function StudioV3() {
       setExiting(false);
     }, 380);
   }, []);
-
 
   const back = useCallback(
     (_hint?: StudioV3Phase) => {
@@ -1261,9 +1261,13 @@ export function StudioV3() {
           originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
           rhythmBucket: id,
-          regionKey: tourRegionToRegionKey(
-            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ) ?? pickupRegionKey(state.pickup) ?? undefined,
+          regionKey:
+            tourRegionToRegionKey(
+              (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ??
+                null,
+            ) ??
+            pickupRegionKey(state.pickup) ??
+            undefined,
           holdMs: 6200,
         });
 
@@ -1326,9 +1330,13 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
-          regionKey: tourRegionToRegionKey(
-            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ) ?? pickupRegionKey(state.pickup) ?? undefined,
+          regionKey:
+            tourRegionToRegionKey(
+              (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ??
+                null,
+            ) ??
+            pickupRegionKey(state.pickup) ??
+            undefined,
           holdMs: 6000,
         });
 
@@ -1426,9 +1434,13 @@ export function StudioV3() {
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
           routeLabels: labels,
-          regionKey: tourRegionToRegionKey(
-            (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ?? null,
-          ) ?? pickupRegionKey(state.pickup) ?? undefined,
+          regionKey:
+            tourRegionToRegionKey(
+              (resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null)?.region ??
+                null,
+            ) ??
+            pickupRegionKey(state.pickup) ??
+            undefined,
           nextPhase: next,
           holdMs: 6200,
         });
@@ -1749,7 +1761,11 @@ export function StudioV3() {
             title="How would you like"
             titleAccent="Portugal to feel?"
           />
-          <ChoiceGrid options={filterFeelings(FEELINGS, state.companions)} value={state.feeling} onSelect={onFeeling} />
+          <ChoiceGrid
+            options={filterFeelings(FEELINGS, state.companions)}
+            value={state.feeling}
+            onSelect={onFeeling}
+          />
           {state.feeling ? (
             <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (
@@ -1946,25 +1962,28 @@ export function StudioV3() {
                 className="mt-3 inline-flex items-center gap-2 self-start px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
                 style={{
                   fontFamily: "var(--font-display)",
-                  color: n > 0
-                    ? "var(--charcoal)"
-                    : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  color:
+                    n > 0
+                      ? "var(--charcoal)"
+                      : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                   borderWidth: 1,
                   borderStyle: "solid",
-                  borderColor: n > 0
-                    ? "var(--gold)"
-                    : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
-                  background: n > 0
-                    ? "color-mix(in oklab, var(--gold) 8%, var(--ivory))"
-                    : "transparent",
+                  borderColor:
+                    n > 0 ? "var(--gold)" : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
+                  background:
+                    n > 0 ? "color-mix(in oklab, var(--gold) 8%, var(--ivory))" : "transparent",
                   transition:
                     "color 220ms ease-out, border-color 220ms ease-out, background-color 220ms ease-out",
                 }}
               >
-                <span aria-hidden style={{ color: "var(--gold)" }}>—</span>
+                <span aria-hidden style={{ color: "var(--gold)" }}>
+                  —
+                </span>
                 {label}
                 {atCap ? (
-                  <span aria-hidden style={{ color: "var(--gold)" }}>✓</span>
+                  <span aria-hidden style={{ color: "var(--gold)" }}>
+                    ✓
+                  </span>
                 ) : null}
               </div>
             );
@@ -1979,16 +1998,13 @@ export function StudioV3() {
           {state.interests.length > 0 ? (
             <NextTeaser>{contextualTeaser("interests", state)}</NextTeaser>
           ) : (
-            <FooterHint>
-              Four moments make a day that breathes. Pick what calls you.
-            </FooterHint>
+            <FooterHint>Four moments make a day that breathes. Pick what calls you.</FooterHint>
           )}
           <ContinueCta
             disabled={state.interests.length < 1}
             onClick={continueFromInterests}
             label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
           />
-
         </PhaseShell>
       ) : null}
 
@@ -2147,7 +2163,8 @@ export function StudioV3() {
         initial={{
           tourDate: detailsState?.dateExact ?? state.dateExact ?? null,
           guests:
-            typeof (detailsState ?? state).guests === "number" && ((detailsState ?? state).guests as number) > 0
+            typeof (detailsState ?? state).guests === "number" &&
+            ((detailsState ?? state).guests as number) > 0
               ? Math.min(12, Math.max(1, Math.round((detailsState ?? state).guests as number)))
               : 2,
           pickupAddress: pickupCityLabel((detailsState ?? state).pickup) ?? null,
@@ -2183,15 +2200,12 @@ export function StudioV3() {
         }}
       />
 
-
-
       <LeadCaptureSheet
         open={leadSheet.open}
         intent={leadSheet.intent}
         state={state}
         onClose={closeLeadSheet}
       />
-
 
       {reaction ? (
         <ReactionOverlay reaction={reaction} state={state} onDismiss={() => setReaction(null)} />
@@ -2257,14 +2271,14 @@ function RevealRouteMap({
   revealedStops,
 }: {
   editedStops: ReadonlyArray<{ label: string }>;
-  resolved: { routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }> };
+  resolved: {
+    routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>;
+  };
   skeletonTour: { region?: string | null } | null;
   statePickup: StudioV3State["pickup"];
   revealedStops: number;
 }) {
-  const byLabel = new Map(
-    resolved.routePoints.map((p) => [p.label.toLowerCase(), p] as const),
-  );
+  const byLabel = new Map(resolved.routePoints.map((p) => [p.label.toLowerCase(), p] as const));
   const rk = tourRegionToRegionKey(skeletonTour?.region ?? null);
   const originCoord = REGION_ORIGIN[rk]
     ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
@@ -2301,9 +2315,13 @@ function RevealRouteMap({
 
   // OSRM: dedupe consecutive identical coords so an inherited fallback stop
   // does not produce a spurious 0-min leg between two identical points.
-  const allGeo = originCoord && stopsDetailed.every(
-    (s) => typeof (s as { lat?: number }).lat === "number" && typeof (s as { lng?: number }).lng === "number",
-  );
+  const allGeo =
+    originCoord &&
+    stopsDetailed.every(
+      (s) =>
+        typeof (s as { lat?: number }).lat === "number" &&
+        typeof (s as { lng?: number }).lng === "number",
+    );
   const rawStops: RouteLegStop[] | null = allGeo
     ? [
         { key: "origin", lat: originCoord!.lat, lng: originCoord!.lng },
@@ -2315,15 +2333,16 @@ function RevealRouteMap({
       ]
     : null;
   const routeStops: RouteLegStop[] | null = rawStops
-    ? rawStops.filter((s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng)
+    ? rawStops.filter(
+        (s, i, arr) => i === 0 || s.lat !== arr[i - 1].lat || s.lng !== arr[i - 1].lng,
+      )
     : null;
   const { legMinutes, legDistancesKm, legModes } = useRouteLegMinutes(
     routeStops,
     !!routeStops && routeStops.length >= 2,
   );
 
-  const originLabelResolved =
-    pickupCityLabel(statePickup) || (skeletonTour?.region ?? null);
+  const originLabelResolved = pickupCityLabel(statePickup) || (skeletonTour?.region ?? null);
 
   return (
     <div className="space-y-4">
@@ -3130,505 +3149,517 @@ function StoryboardHandoff({
           boxShadow: "0 24px 60px -36px rgba(0,0,0,0.25)",
         }}
       >
-      {/* ---------- 2. Live route map ---------- */}
-      {editedStops.length > 0 ? (
-        <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
-          <RevealRouteMap
-            editedStops={editedStops}
-            resolved={resolved}
-            skeletonTour={skeletonTour ?? null}
-            statePickup={state.pickup}
-            revealedStops={revealedStops}
-          />
-
-
-          {/* Numbered legend — full names live here so the map stays clean
-              and labels never overlap at 393px mobile. */}
-          <ol
-            className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-1"
-            aria-label="Route stops in order"
-          >
-            {editedStops.map((s, i) => {
-              const visible = i < revealedStops;
-              return (
-                <li
-                  key={`${s.label}-${i}`}
-                  className="inline-flex items-center gap-1.5 motion-reduce:!opacity-100 motion-reduce:!translate-y-0"
-                  style={{
-                    opacity: visible ? 1 : 0,
-                    transform: visible ? "translateY(0)" : "translateY(4px)",
-                    transition: "opacity 360ms ease-out, transform 360ms ease-out",
-                  }}
-                >
-                  <span
-                    aria-hidden
-                    className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
-                    style={{
-                      background: "color-mix(in oklab, var(--gold) 28%, transparent)",
-                      color: "var(--charcoal)",
-                    }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span
-                    className="text-[11.5px] leading-[1.3] font-semibold"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                    }}
-                  >
-                    {cleanLabel(s.label)}
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      ) : null}
-
-      {/* ---------- 2b. Daypart timeline ---------- */}
-      {dayparts.length > 0 ? (
-        <section
-          data-testid="studio-v3-daypart-timeline"
-          className="mt-8 max-w-[440px] mx-auto px-2"
-          aria-label="How the day unfolds across the day"
-        >
-          <div className="relative">
-            <span
-              aria-hidden
-              className="absolute left-2 right-2 top-[3px] h-px"
-              style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
+        {/* ---------- 2. Live route map ---------- */}
+        {editedStops.length > 0 ? (
+          <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
+            <RevealRouteMap
+              editedStops={editedStops}
+              resolved={resolved}
+              skeletonTour={skeletonTour ?? null}
+              statePickup={state.pickup}
+              revealedStops={revealedStops}
             />
-            <ol className="relative flex items-start justify-between gap-2">
-              {dayparts.map((label) => (
-                <li key={label} className="flex flex-col items-center text-center">
-                  <span
-                    aria-hidden
-                    className="block h-[7px] w-[7px] rounded-full"
-                    style={{ background: "var(--gold)" }}
-                  />
-                  <span
-                    className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+
+            {/* Numbered legend — full names live here so the map stays clean
+              and labels never overlap at 393px mobile. */}
+            <ol
+              className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-1"
+              aria-label="Route stops in order"
+            >
+              {editedStops.map((s, i) => {
+                const visible = i < revealedStops;
+                return (
+                  <li
+                    key={`${s.label}-${i}`}
+                    className="inline-flex items-center gap-1.5 motion-reduce:!opacity-100 motion-reduce:!translate-y-0"
+                    style={{
+                      opacity: visible ? 1 : 0,
+                      transform: visible ? "translateY(0)" : "translateY(4px)",
+                      transition: "opacity 360ms ease-out, transform 360ms ease-out",
+                    }}
                   >
-                    {label}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-      ) : null}
-
-      {/* ---------- 3. Story of the day ---------- */}
-
-      <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
-        <p
-          className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-        >
-          <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
-        </p>
-        <div className="mt-5 space-y-5">
-          {storyChapters.map((c) => (
-            <div key={c.eyebrow}>
-              <p
-                className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-                style={{ color: "var(--gold)" }}
-              >
-                {c.eyebrow}
-              </p>
-              <p
-                className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-              >
-                {c.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
-      {editedStops.length > 0 ? (
-        <div
-          data-testid="studio-v3-stops-editor"
-          className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
-        >
-          <p
-            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
-          </p>
-          <p
-            className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-          >
-            Reorder, swap or remove a moment. The route stays inside the same region.
-          </p>
-          <ol className="space-y-3 sm:space-y-3">
-            {editedStops.map((s, i) => {
-              const isFirst = i === 0;
-              const isLast = i === editedStops.length - 1;
-              const swapOpen = swapOpenIdx === i;
-              return (
-                <li
-                  key={`${s.label}-${i}`}
-                  data-testid="studio-v3-stop-row"
-                  className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
-                  style={{
-                    background: "color-mix(in oklab, var(--sand) 45%, transparent)",
-                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                  }}
-                >
-                  <div className="flex items-start gap-3">
                     <span
                       aria-hidden
-                      className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                      className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
                       style={{
-                        background: "color-mix(in oklab, var(--gold) 25%, transparent)",
+                        background: "color-mix(in oklab, var(--gold) 28%, transparent)",
                         color: "var(--charcoal)",
                       }}
                     >
                       {i + 1}
                     </span>
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className="text-[13.5px] font-semibold leading-[1.3]"
+                    <span
+                      className="text-[11.5px] leading-[1.3] font-semibold"
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                      }}
+                    >
+                      {cleanLabel(s.label)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ) : null}
+
+        {/* ---------- 2b. Daypart timeline ---------- */}
+        {dayparts.length > 0 ? (
+          <section
+            data-testid="studio-v3-daypart-timeline"
+            className="mt-8 max-w-[440px] mx-auto px-2"
+            aria-label="How the day unfolds across the day"
+          >
+            <div className="relative">
+              <span
+                aria-hidden
+                className="absolute left-2 right-2 top-[3px] h-px"
+                style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
+              />
+              <ol className="relative flex items-start justify-between gap-2">
+                {dayparts.map((label) => (
+                  <li key={label} className="flex flex-col items-center text-center">
+                    <span
+                      aria-hidden
+                      className="block h-[7px] w-[7px] rounded-full"
+                      style={{ background: "var(--gold)" }}
+                    />
+                    <span
+                      className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                      style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                    >
+                      {label}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+        ) : null}
+
+        {/* ---------- 3. Story of the day ---------- */}
+
+        <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
+          <p
+            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
+          </p>
+          <div className="mt-5 space-y-5">
+            {storyChapters.map((c) => (
+              <div key={c.eyebrow}>
+                <p
+                  className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+                  style={{ color: "var(--gold)" }}
+                >
+                  {c.eyebrow}
+                </p>
+                <p
+                  className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                >
+                  {c.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
+        {editedStops.length > 0 ? (
+          <div
+            data-testid="studio-v3-stops-editor"
+            className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
+          >
+            <p
+              className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
+            </p>
+            <p
+              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+            >
+              Reorder, swap or remove a moment. The route stays inside the same region.
+            </p>
+            <ol className="space-y-3 sm:space-y-3">
+              {editedStops.map((s, i) => {
+                const isFirst = i === 0;
+                const isLast = i === editedStops.length - 1;
+                const swapOpen = swapOpenIdx === i;
+                return (
+                  <li
+                    key={`${s.label}-${i}`}
+                    data-testid="studio-v3-stop-row"
+                    className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
+                    style={{
+                      background: "color-mix(in oklab, var(--sand) 45%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span
+                        aria-hidden
+                        className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
                         style={{
-                          fontFamily: "var(--font-display)",
+                          background: "color-mix(in oklab, var(--gold) 25%, transparent)",
                           color: "var(--charcoal)",
                         }}
                       >
-                        {s.label}
-                      </p>
-                      {s.story ? (
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0 flex-1">
                         <p
-                          className="mt-0.5 text-[12px] leading-[1.45]"
+                          className="text-[13.5px] font-semibold leading-[1.3]"
                           style={{
-                            color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+                            fontFamily: "var(--font-display)",
+                            color: "var(--charcoal)",
                           }}
                         >
-                          {s.story}
+                          {s.label}
                         </p>
-                      ) : null}
-                    </div>
-                    <div className="flex shrink-0 items-center gap-1">
-                      <button
-                        type="button"
-                        aria-label={`Move ${s.label} earlier`}
-                        disabled={isFirst}
-                        onClick={() =>
-                          setEdited((prev) => {
-                            const n = [...prev];
-                            [n[i - 1], n[i]] = [n[i], n[i - 1]];
-                            return n;
-                          })
-                        }
-                        className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                        style={{ color: "var(--charcoal)" }}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Move ${s.label} later`}
-                        disabled={isLast}
-                        onClick={() =>
-                          setEdited((prev) => {
-                            const n = [...prev];
-                            [n[i], n[i + 1]] = [n[i + 1], n[i]];
-                            return n;
-                          })
-                        }
-                        className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                        style={{ color: "var(--charcoal)" }}
-                      >
-                        ↓
-                      </button>
-                      {swapPool.length > 0 ? (
+                        {s.story ? (
+                          <p
+                            className="mt-0.5 text-[12px] leading-[1.45]"
+                            style={{
+                              color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+                            }}
+                          >
+                            {s.story}
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="flex shrink-0 items-center gap-1">
                         <button
                           type="button"
-                          aria-label={`Swap ${s.label}`}
-                          aria-expanded={swapOpen}
-                          onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
-                          className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          aria-label={`Move ${s.label} earlier`}
+                          disabled={isFirst}
+                          onClick={() =>
+                            setEdited((prev) => {
+                              const n = [...prev];
+                              [n[i - 1], n[i]] = [n[i], n[i - 1]];
+                              return n;
+                            })
+                          }
+                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
-                          ⇄
+                          ↑
                         </button>
-                      ) : null}
-                      <button
-                        type="button"
-                        aria-label={`Remove ${s.label}`}
-                        disabled={editedStops.length <= 1}
-                        onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
-                        className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                        style={{ color: "var(--charcoal)" }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-
-                  {swapOpen ? (
-                    <ul
-                      data-testid="studio-v3-swap-pool"
-                      className="mt-2.5 space-y-1 border-t pt-2"
-                      style={{
-                        borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                      }}
-                    >
-                      {swapPool.map((cand) => (
-                        <li key={cand.label}>
+                        <button
+                          type="button"
+                          aria-label={`Move ${s.label} later`}
+                          disabled={isLast}
+                          onClick={() =>
+                            setEdited((prev) => {
+                              const n = [...prev];
+                              [n[i], n[i + 1]] = [n[i + 1], n[i]];
+                              return n;
+                            })
+                          }
+                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          ↓
+                        </button>
+                        {swapPool.length > 0 ? (
                           <button
                             type="button"
-                            onClick={() => {
-                              setEdited((prev) =>
-                                prev.map((p, j) =>
-                                  j === i ? { label: cand.label, story: cand.story } : p,
-                                ),
-                              );
-                              setSwapOpenIdx(null);
-                            }}
-                            className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                            aria-label={`Swap ${s.label}`}
+                            aria-expanded={swapOpen}
+                            onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
+                            className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                             style={{ color: "var(--charcoal)" }}
                           >
-                            <span className="font-semibold">{cand.label}</span>
-                            {cand.story ? (
-                              <span
-                                className="block text-[11.5px]"
-                                style={{
-                                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                                }}
-                              >
-                                {cand.story}
-                              </span>
-                            ) : null}
+                            ⇄
                           </button>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ol>
+                        ) : null}
+                        <button
+                          type="button"
+                          aria-label={`Remove ${s.label}`}
+                          disabled={editedStops.length <= 1}
+                          onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
+                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
 
-          {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
-          {canAddMoment ? (
-            <div data-testid="studio-v3-add-moment" className="mt-4">
-              <button
-                type="button"
-                onClick={() => setAddOpen((v) => !v)}
-                aria-expanded={addOpen}
-                className="w-full rounded-[8px] px-3 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                style={{
-                  border: "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
-                  color: "var(--charcoal)",
-                  background: "transparent",
-                }}
-              >
-                {addOpen ? "Close" : "+ Add one more moment"}
-              </button>
-              {addOpen ? (
-                <p
-                  className="mt-2 text-center text-[11.5px] leading-[1.5]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-                >
-                  Choose a moment that still fits the day's rhythm.
-                </p>
-              ) : null}
-              {addOpen ? (
-                <ul
-                  data-testid="studio-v3-add-pool"
-                  className="mt-2 space-y-1 rounded-[8px] p-2"
+                    {swapOpen ? (
+                      <ul
+                        data-testid="studio-v3-swap-pool"
+                        className="mt-2.5 space-y-1 border-t pt-2"
+                        style={{
+                          borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                        }}
+                      >
+                        {swapPool.map((cand) => (
+                          <li key={cand.label}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEdited((prev) =>
+                                  prev.map((p, j) =>
+                                    j === i ? { label: cand.label, story: cand.story } : p,
+                                  ),
+                                );
+                                setSwapOpenIdx(null);
+                              }}
+                              className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                              style={{ color: "var(--charcoal)" }}
+                            >
+                              <span className="font-semibold">{cand.label}</span>
+                              {cand.story ? (
+                                <span
+                                  className="block text-[11.5px]"
+                                  style={{
+                                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                                  }}
+                                >
+                                  {cand.story}
+                                </span>
+                              ) : null}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ol>
+
+            {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
+            {canAddMoment ? (
+              <div data-testid="studio-v3-add-moment" className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setAddOpen((v) => !v)}
+                  aria-expanded={addOpen}
+                  className="w-full rounded-[8px] px-3 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                   style={{
-                    background: "color-mix(in oklab, var(--sand) 35%, transparent)",
-                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    border: "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
+                    color: "var(--charcoal)",
+                    background: "transparent",
                   }}
                 >
-                  {swapPool.slice(0, 6).map((cand) => (
-                    <li key={cand.label}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEdited((prev) => [...prev, { label: cand.label, story: cand.story }]);
-                          setAddOpen(false);
-                        }}
-                        className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                        style={{ color: "var(--charcoal)" }}
-                      >
-                        <span className="font-semibold">+ {cand.label}</span>
-                        {cand.story ? (
-                          <span
-                            className="block text-[11.5px]"
-                            style={{
-                              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                            }}
-                          >
-                            {cand.story}
-                          </span>
-                        ) : null}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ) : isRouteComplete && swapPool.length > 0 ? (
+                  {addOpen ? "Close" : "+ Add one more moment"}
+                </button>
+                {addOpen ? (
+                  <p
+                    className="mt-2 text-center text-[11.5px] leading-[1.5]"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+                  >
+                    Choose a moment that still fits the day's rhythm.
+                  </p>
+                ) : null}
+                {addOpen ? (
+                  <ul
+                    data-testid="studio-v3-add-pool"
+                    className="mt-2 space-y-1 rounded-[8px] p-2"
+                    style={{
+                      background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    }}
+                  >
+                    {swapPool.slice(0, 6).map((cand) => (
+                      <li key={cand.label}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEdited((prev) => [
+                              ...prev,
+                              { label: cand.label, story: cand.story },
+                            ]);
+                            setAddOpen(false);
+                          }}
+                          className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          <span className="font-semibold">+ {cand.label}</span>
+                          {cand.story ? (
+                            <span
+                              className="block text-[11.5px]"
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                              }}
+                            >
+                              {cand.story}
+                            </span>
+                          ) : null}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ) : isRouteComplete && swapPool.length > 0 ? (
+              <p
+                className="mt-3 text-center text-[12px] leading-[1.5]"
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                }}
+              >
+                This Signature is already complete for the rhythm you chose. Try swapping a moment
+                instead.
+              </p>
+            ) : null}
+
+            {state.editedRoutePoints ? (
+              <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">
+                <span
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                  }}
+                >
+                  <span style={{ color: "var(--gold)" }}>—</span> Edited by you
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onStateChange((s) => ({ ...s, editedRoutePoints: null }))}
+                  className="px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{ color: "var(--charcoal)" }}
+                >
+                  Reset to suggested
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {/* ---------- 5. Signature DNA ---------- */}
+        {dnaChips.length > 0 ? (
+          <section
+            data-testid="studio-v3-signature-dna"
+            className="mt-10 max-w-[520px] mx-auto text-center"
+          >
             <p
-              className="mt-3 text-center text-[12px] leading-[1.5]"
+              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
+            </p>
+            <ul className="mt-4 flex flex-wrap justify-center gap-1.5">
+              {dnaChips.map((chip) => (
+                <li
+                  key={chip}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 text-[11.5px] leading-[1.3] rounded-full font-semibold"
+                  style={{
+                    background: "transparent",
+                    border: "1px solid color-mix(in oklab, var(--teal) 40%, transparent)",
+                    color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
+                  }}
+                >
+                  <span
+                    aria-hidden
+                    className="block h-1 w-1 rounded-full"
+                    style={{ background: "var(--gold)" }}
+                  />
+                  {chip}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        {/* ---------- 6. Shaping direction (investment) ---------- */}
+        {shapingLine ? (
+          <div
+            data-testid="studio-v3-shaping-direction"
+            className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_220ms_both] motion-reduce:opacity-100"
+          >
+            <span
+              aria-hidden
+              className="mx-auto mb-5 block h-px w-10"
+              style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+            />
+            <p
+              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
+            </p>
+            <p
+              className="mt-3 text-[15px] sm:text-[16px] leading-[1.55] italic text-balance max-w-[440px] mx-auto"
               style={{
-                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
               }}
             >
-              This Signature is already complete for the rhythm you chose. Try swapping a moment
-              instead.
+              {shapingLine}
             </p>
-          ) : null}
+          </div>
+        ) : null}
 
-          {state.editedRoutePoints ? (
-            <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">
-              <span
-                style={{
-                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                }}
-              >
-                <span style={{ color: "var(--gold)" }}>—</span> Edited by you
-              </span>
-              <button
-                type="button"
-                onClick={() => onStateChange((s) => ({ ...s, editedRoutePoints: null }))}
-                className="px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                style={{ color: "var(--charcoal)" }}
-              >
-                Reset to suggested
-              </button>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
+        {/* Quality Score intentionally omitted from the reveal (kept for debug overlay only) */}
 
-      {/* ---------- 5. Signature DNA ---------- */}
-      {dnaChips.length > 0 ? (
-        <section
-          data-testid="studio-v3-signature-dna"
-          className="mt-10 max-w-[520px] mx-auto text-center"
-        >
-          <p
-            className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
-          </p>
-          <ul className="mt-4 flex flex-wrap justify-center gap-1.5">
-            {dnaChips.map((chip) => (
-              <li
-                key={chip}
-                className="inline-flex items-center gap-2 px-3 py-1.5 text-[11.5px] leading-[1.3] rounded-full font-semibold"
-                style={{
-                  background: "transparent",
-                  border: "1px solid color-mix(in oklab, var(--teal) 40%, transparent)",
-                  color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
-                }}
-              >
-                <span
-                  aria-hidden
-                  className="block h-1 w-1 rounded-full"
-                  style={{ background: "var(--gold)" }}
-                />
-                {chip}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+        {/* ---------- 7b. Premium price card ---------- */}
 
-      {/* ---------- 6. Shaping direction (investment) ---------- */}
-      {shapingLine ? (
-        <div
-          data-testid="studio-v3-shaping-direction"
-          className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_220ms_both] motion-reduce:opacity-100"
-        >
-          <span
-            aria-hidden
-            className="mx-auto mb-5 block h-px w-10"
-            style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-          />
-          <p
-            className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
-          </p>
-          <p
-            className="mt-3 text-[15px] sm:text-[16px] leading-[1.55] italic text-balance max-w-[440px] mx-auto"
-            style={{
-              fontFamily: "var(--font-serif)",
-              color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
-            }}
-          >
-            {shapingLine}
-          </p>
-        </div>
-      ) : null}
-
-      {/* Quality Score intentionally omitted from the reveal (kept for debug overlay only) */}
-
-      {/* ---------- 7b. Premium price card ---------- */}
-
-      {/* ---------- 7b. Premium price card ---------- */}
-      <SignaturePriceCard
-        tour={skeletonTour ?? null}
-        stopCount={editedStops.length}
-        dateExact={safeDate.dateExact}
-        onSecure={onSecure}
-        onRefine={onRefine}
-        journeyTitle={state.journeyTitle}
-        guests={state.guests}
-        included={skeletonTour?.included ?? []}
-        showAddOns={true}
-        remainingMinutes={
-          summarizeDay({
-            stops: editedStops.map((p) => {
-              const ep = p as { label: string; story: string; lat?: number | null; lng?: number | null };
-              return {
-                label: ep.label,
-                lat: ep.lat ?? null,
-                lng: ep.lng ?? null,
-                kind: inferKind(ep.label),
-              };
-            }),
-            region: skeletonTour?.region ?? null,
-          }).remainingMin
-        }
-        itineraryStops={editedStops.map((p) => (p as { label: string }).label)}
-        dwellHours={(() => {
-          const sum = summarizeDay({
-            stops: editedStops.map((p) => {
-              const ep = p as { label: string; story: string; lat?: number | null; lng?: number | null };
-              return {
-                label: ep.label,
-                lat: ep.lat ?? null,
-                lng: ep.lng ?? null,
-                kind: inferKind(ep.label),
-              };
-            }),
-            region: skeletonTour?.region ?? null,
-          });
-          const totalMin = sum.totalMin ?? 0;
-          return totalMin > 0 ? Math.round((totalMin / 60) * 10) / 10 : null;
-        })()}
-        onGuestsChange={(n) =>
-          onStateChange((s) => ({
-            ...s,
-            guests: Math.min(12, Math.max(1, Math.round(n))),
-            guestsInferred: false,
-          }))
-        }
-      />
+        {/* ---------- 7b. Premium price card ---------- */}
+        <SignaturePriceCard
+          tour={skeletonTour ?? null}
+          stopCount={editedStops.length}
+          dateExact={safeDate.dateExact}
+          onSecure={onSecure}
+          onRefine={onRefine}
+          journeyTitle={state.journeyTitle}
+          guests={state.guests}
+          included={skeletonTour?.included ?? []}
+          showAddOns={true}
+          remainingMinutes={
+            summarizeDay({
+              stops: editedStops.map((p) => {
+                const ep = p as {
+                  label: string;
+                  story: string;
+                  lat?: number | null;
+                  lng?: number | null;
+                };
+                return {
+                  label: ep.label,
+                  lat: ep.lat ?? null,
+                  lng: ep.lng ?? null,
+                  kind: inferKind(ep.label),
+                };
+              }),
+              region: skeletonTour?.region ?? null,
+            }).remainingMin
+          }
+          itineraryStops={editedStops.map((p) => (p as { label: string }).label)}
+          dwellHours={(() => {
+            const sum = summarizeDay({
+              stops: editedStops.map((p) => {
+                const ep = p as {
+                  label: string;
+                  story: string;
+                  lat?: number | null;
+                  lng?: number | null;
+                };
+                return {
+                  label: ep.label,
+                  lat: ep.lat ?? null,
+                  lng: ep.lng ?? null,
+                  kind: inferKind(ep.label),
+                };
+              }),
+              region: skeletonTour?.region ?? null,
+            });
+            const totalMin = sum.totalMin ?? 0;
+            return totalMin > 0 ? Math.round((totalMin / 60) * 10) / 10 : null;
+          })()}
+          onGuestsChange={(n) =>
+            onStateChange((s) => ({
+              ...s,
+              guests: Math.min(12, Math.max(1, Math.round(n))),
+              guestsInferred: false,
+            }))
+          }
+        />
       </section>
       {/* ---------- /Unified "Your Signature" card ---------- */}
 

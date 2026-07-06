@@ -9,7 +9,14 @@
 //   • output is wired with aria-live="polite" for screen readers
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, fireEvent, render as rtlRender, screen, within } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render as rtlRender,
+  screen,
+  within,
+} from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignaturePriceCard } from "../SignaturePriceCard";
 import type { SignatureTour } from "@/data/signatureTours";

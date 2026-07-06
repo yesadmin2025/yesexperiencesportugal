@@ -1,20 +1,20 @@
-import type { ComponentType } from 'react'
-import { template as bookingConfirmation } from './booking-confirmation'
-import { template as checkoutReceipt } from './checkout-receipt'
-import { template as stripeWebhookAlert } from './stripe-webhook-alert'
-import { template as contactReceived } from './contact-received'
-import { template as internalLead } from './internal-lead'
-import { template as internalBooking } from './internal-booking'
-import { template as welcome } from './welcome'
-import { template as legacyDomainReady } from './legacy-domain-ready'
+import type { ComponentType } from "react";
+import { template as bookingConfirmation } from "./booking-confirmation";
+import { template as checkoutReceipt } from "./checkout-receipt";
+import { template as stripeWebhookAlert } from "./stripe-webhook-alert";
+import { template as contactReceived } from "./contact-received";
+import { template as internalLead } from "./internal-lead";
+import { template as internalBooking } from "./internal-booking";
+import { template as welcome } from "./welcome";
+import { template as legacyDomainReady } from "./legacy-domain-ready";
 
 export interface TemplateEntry {
-  component: ComponentType<any>
-  subject: string | ((data: Record<string, any>) => string)
-  displayName?: string
-  previewData?: Record<string, any>
+  component: ComponentType<any>;
+  subject: string | ((data: Record<string, any>) => string);
+  displayName?: string;
+  previewData?: Record<string, any>;
   /** Fixed recipient — overrides caller-provided recipientEmail when set. */
-  to?: string
+  to?: string;
 }
 
 /**
@@ -22,12 +22,12 @@ export interface TemplateEntry {
  * Import and register new templates here after creating them in this directory.
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  'booking-confirmation': bookingConfirmation,
-  'checkout-receipt': checkoutReceipt,
-  'stripe-webhook-alert': stripeWebhookAlert,
-  'contact-received': contactReceived,
-  'internal-lead': internalLead,
-  'internal-booking': internalBooking,
-  'welcome': welcome,
-  'legacy-domain-ready': legacyDomainReady,
-}
+  "booking-confirmation": bookingConfirmation,
+  "checkout-receipt": checkoutReceipt,
+  "stripe-webhook-alert": stripeWebhookAlert,
+  "contact-received": contactReceived,
+  "internal-lead": internalLead,
+  "internal-booking": internalBooking,
+  welcome: welcome,
+  "legacy-domain-ready": legacyDomainReady,
+};

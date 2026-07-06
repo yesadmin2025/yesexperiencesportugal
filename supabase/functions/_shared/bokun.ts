@@ -117,7 +117,12 @@ export async function getActivity(productId: string | number): Promise<BokunActi
           if (typeof item === "string") return item;
           if (item && typeof item === "object") {
             const o = item as Record<string, unknown>;
-            return pickString(o.title) || pickString(o.name) || pickString(o.item) || pickString(o.description);
+            return (
+              pickString(o.title) ||
+              pickString(o.name) ||
+              pickString(o.item) ||
+              pickString(o.description)
+            );
           }
           return "";
         })
@@ -126,12 +131,17 @@ export async function getActivity(productId: string | number): Promise<BokunActi
 
     // Bokun field names vary by tenant. Probe the common ones.
     const title =
-      pickString(data.title) || pickString(data.name) || pickString(data.externalId) || `Activity ${productId}`;
+      pickString(data.title) ||
+      pickString(data.name) ||
+      pickString(data.externalId) ||
+      `Activity ${productId}`;
     const summary = pickString(data.summary) || pickString(data.shortDescription);
     const durationText =
       pickString(data.durationText) ||
       pickString(data.duration) ||
-      (typeof data.durationMinutes === "number" ? `${Math.round((data.durationMinutes as number) / 60)} h` : "");
+      (typeof data.durationMinutes === "number"
+        ? `${Math.round((data.durationMinutes as number) / 60)} h`
+        : "");
     const inclusions = pickArray(data.includedItems ?? data.included ?? data.inclusions);
     const exclusions = pickArray(data.excludedItems ?? data.excluded ?? data.exclusions);
 

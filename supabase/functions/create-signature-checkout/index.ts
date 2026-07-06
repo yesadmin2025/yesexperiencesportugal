@@ -50,7 +50,8 @@ type Flow = "studio" | "signature" | "tailor";
 const VALID_FLOWS: Flow[] = ["studio", "signature", "tailor"];
 
 function resolveFlow(body: Body): Flow {
-  if (body.flow === "studio" || body.flow === "signature" || body.flow === "tailor") return body.flow;
+  if (body.flow === "studio" || body.flow === "signature" || body.flow === "tailor")
+    return body.flow;
   return body.tailored ? "tailor" : "signature";
 }
 
@@ -161,14 +162,19 @@ Deno.serve(async (req) => {
 
     const isTailored = flow === "tailor";
     const realTitle = bokunActivity?.title?.trim() || body.tourTitle;
-    const productName = `${copy.label} — ${realTitle}${isTailored ? " (tailored)" : ""}`.slice(0, 180);
+    const productName = `${copy.label} — ${realTitle}${isTailored ? " (tailored)" : ""}`.slice(
+      0,
+      180,
+    );
 
     // Build a truthful description. Priority:
     //   1. Bókun inclusions (operator source of truth)
     //   2. Real VIATOR_META.included forwarded by the client
     //   3. Nothing — never invent marketing prose in the fallback.
     const guestsLine = `${body.guests} guest${body.guests > 1 ? "s" : ""}`;
-    const durationLine = bokunActivity?.durationText ? `Duration ${bokunActivity.durationText}` : null;
+    const durationLine = bokunActivity?.durationText
+      ? `Duration ${bokunActivity.durationText}`
+      : null;
     const bokunInclusions =
       bokunActivity && bokunActivity.inclusions.length > 0 ? bokunActivity.inclusions : null;
     const clientIncluded =
@@ -267,8 +273,8 @@ Deno.serve(async (req) => {
 
     const rawPublishable =
       body.environment === "live"
-        ? Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? ""
-        : Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "";
+        ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
+        : (Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "");
     // Defensive: NEVER echo a secret key back to the client. If the env var
     // was misconfigured with an sk_… value, drop it and log a warning.
     const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";

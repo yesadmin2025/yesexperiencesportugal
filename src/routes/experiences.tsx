@@ -80,7 +80,6 @@ function ExperiencesPage() {
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
             {signatureTours.map((t) => {
               // Real bullets sourced from the matching Viator product page
               // (bookable stops, pass-bys excluded). Falls back to the
@@ -151,8 +150,6 @@ function ExperiencesPage() {
                       field. Card now exposes only data verifiable against
                       the live product page. */}
 
-
-
                   {/* Subdued meta strip — region · duration · from €X.
                       Price kept (conversion) but reduced to body weight
                       so it stops dominating the card read. */}
@@ -213,7 +210,8 @@ function CtaStrip() {
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h2 className="serif text-3xl md:text-4xl">
-              Want to start from scratch? <span className="italic font-normal text-[color:var(--ivory)]">Open the Studio.</span>
+              Want to start from scratch?{" "}
+              <span className="italic font-normal text-[color:var(--ivory)]">Open the Studio.</span>
             </h2>
             <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
               Start your way — with a place, a region or a feeling. We'll guide you as you build,

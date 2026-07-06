@@ -68,8 +68,7 @@ export function useRouteLegMinutes(
     staleTime: 1000 * 60 * 60, // 1h — legs barely change
     gcTime: 1000 * 60 * 60 * 4,
     retry: 3,
-    retryDelay: (attempt) =>
-      Math.min(4000, 400 * 2 ** attempt) + Math.round(Math.random() * 120),
+    retryDelay: (attempt) => Math.min(4000, 400 * 2 ** attempt) + Math.round(Math.random() * 120),
     // Keep the previous route visible during a refetch triggered by an edit,
     // so the map/legend don't collapse to loading state mid-interaction.
     placeholderData: keepPreviousData,

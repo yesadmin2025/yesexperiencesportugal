@@ -22,9 +22,7 @@ import {
  */
 
 test.describe("studio-v3 — final investment (party total) updates on every add-on toggle", () => {
-  test("party total = base×guests + addOns×guests on click AND on toggle-off", async ({
-    page,
-  }) => {
+  test("party total = base×guests + addOns×guests on click AND on toggle-off", async ({ page }) => {
     test.setTimeout(150_000);
 
     await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
@@ -58,7 +56,10 @@ test.describe("studio-v3 — final investment (party total) updates on every add
     // Derive party count from the party-total line ("× N guests …").
     const partyText = (await partyTotal.textContent()) ?? "";
     const partyMatch = partyText.match(/×\s*(\d+)\s*guests?/i);
-    expect(partyMatch, `expected "× N guests" in party total line, got: ${partyText}`).not.toBeNull();
+    expect(
+      partyMatch,
+      `expected "× N guests" in party total line, got: ${partyText}`,
+    ).not.toBeNull();
     const partyCount = Number(partyMatch![1]);
     expect(partyCount).toBeGreaterThanOrEqual(1);
 
@@ -76,9 +77,7 @@ test.describe("studio-v3 — final investment (party total) updates on every add
     // Each click must move the party total by addon.eur × partyCount immediately.
     let runningPerPax = 0;
     for (const a of toSelect) {
-      const btn = page.locator(
-        `[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`,
-      );
+      const btn = page.locator(`[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`);
       await btn.scrollIntoViewIfNeeded();
       await btn.click();
       await expect(btn).toHaveAttribute("aria-pressed", "true", { timeout: 2_000 });

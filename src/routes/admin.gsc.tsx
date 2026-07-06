@@ -97,8 +97,8 @@ function GscPage() {
             Google Search Console
           </h1>
           <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-            URL Inspection ao vivo, gestão de sitemaps e deep-links para "Request Indexing"
-            (que continua a ser UI-only na GSC).
+            URL Inspection ao vivo, gestão de sitemaps e deep-links para "Request Indexing" (que
+            continua a ser UI-only na GSC).
           </p>
         </header>
 
@@ -108,7 +108,9 @@ function GscPage() {
             Propriedade
           </h2>
           {sitesQ.isLoading && (
-            <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">a carregar propriedades…</p>
+            <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">
+              a carregar propriedades…
+            </p>
           )}
           {sitesQ.error && (
             <p className="mt-2 text-xs text-rose-600">
@@ -160,9 +162,7 @@ function GscPage() {
           )}
 
           {inspection && !inspection.ok && (
-            <p className="mt-3 rounded bg-rose-50 p-3 text-xs text-rose-700">
-              {inspection.error}
-            </p>
+            <p className="mt-3 rounded bg-rose-50 p-3 text-xs text-rose-700">{inspection.error}</p>
           )}
 
           {inspection?.ok && (
@@ -209,8 +209,8 @@ function GscPage() {
               </div>
 
               <p className="text-[11px] text-[color:var(--charcoal-soft)]">
-                Nota: "Request Indexing" não está disponível via API. O botão acima abre o
-                URL Inspection do GSC — basta clicar em "Solicitar indexação".
+                Nota: "Request Indexing" não está disponível via API. O botão acima abre o URL
+                Inspection do GSC — basta clicar em "Solicitar indexação".
               </p>
             </div>
           )}
@@ -270,9 +270,7 @@ function GscPage() {
                   <p className="truncate font-medium text-[color:var(--charcoal)]">{s.path}</p>
                   <p className="mt-0.5 text-[color:var(--charcoal-soft)]">
                     Submetido{" "}
-                    {s.lastSubmitted
-                      ? new Date(s.lastSubmitted).toLocaleDateString("pt-PT")
-                      : "—"}{" "}
+                    {s.lastSubmitted ? new Date(s.lastSubmitted).toLocaleDateString("pt-PT") : "—"}{" "}
                     · Descarregado{" "}
                     {s.lastDownloaded
                       ? new Date(s.lastDownloaded).toLocaleDateString("pt-PT")

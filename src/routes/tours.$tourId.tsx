@@ -10,7 +10,12 @@ import {
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
 import { toEditorialChapters } from "@/lib/tailor-chapters";
-import { bookableIncluded, bookableStops, validateTour, logTourValidation } from "@/lib/viatorValidation";
+import {
+  bookableIncluded,
+  bookableStops,
+  validateTour,
+  logTourValidation,
+} from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
@@ -107,7 +112,9 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">Experience not found</h1>
+          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">
+            Experience not found
+          </h1>
           <p className="mt-4 text-[color:var(--charcoal-soft)]">
             That Signature Experience doesn't exist anymore.
           </p>
@@ -125,7 +132,9 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-3xl" data-mixed-emphasis="exempt">Something went sideways</h1>
+          <h1 className="serif text-3xl" data-mixed-emphasis="exempt">
+            Something went sideways
+          </h1>
           <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
           <Link
             to="/experiences"
@@ -194,9 +203,7 @@ function TourDetailPage() {
           get the same trust strip when no real article exists for them. */}
       {(tour.id === "arrabida-wine-allinclusive" ||
         tour.id === "arrabida-boat" ||
-        tour.id === "azeitao-cheese") && (
-        <RecognisedByGuides placement="arrabida-tour" compact />
-      )}
+        tour.id === "azeitao-cheese") && <RecognisedByGuides placement="arrabida-tour" compact />}
 
       {/* ── 12 · FINAL CTA ─────────────────────────────────────── */}
       <FinalCta tour={tour} />
@@ -274,9 +281,16 @@ function TourHero({
                 <>
                   <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
                   <span className="flex items-center gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
-                    <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
+                    <Star
+                      size={11}
+                      fill="currentColor"
+                      strokeWidth={0}
+                      className="text-[color:var(--gold)]"
+                    />
                     <span className="font-semibold">{meta.rating.toFixed(1)}</span>
-                    <span className="text-[color:var(--charcoal-soft)]">· {meta.reviewCount} reviews</span>
+                    <span className="text-[color:var(--charcoal-soft)]">
+                      · {meta.reviewCount} reviews
+                    </span>
                   </span>
                 </>
               )}
@@ -440,7 +454,10 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
                     </span>
                   )}
                 </div>
-                <h3 className="serif text-[17px] md:text-[19px] leading-snug mt-2 text-[color:var(--charcoal)] font-normal" data-mixed-emphasis="exempt">
+                <h3
+                  className="serif text-[17px] md:text-[19px] leading-snug mt-2 text-[color:var(--charcoal)] font-normal"
+                  data-mixed-emphasis="exempt"
+                >
                   {s.label}
                 </h3>
                 {s.story && (
@@ -475,7 +492,10 @@ function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
                 c.representativeStop &&
                 s.label.toLowerCase().includes(c.representativeStop.toLowerCase()),
             ) ?? (tour.stops ?? [])[0];
-          return { label: c.label, raw: { ...(match ?? { label: c.label }), label: c.label } as TourStop };
+          return {
+            label: c.label,
+            raw: { ...(match ?? { label: c.label }), label: c.label } as TourStop,
+          };
         })
       : (tour.stops ?? []).map((s) => ({ label: s.label, raw: s }));
 
@@ -608,8 +628,8 @@ function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
           </div>
 
           <p className="px-6 pb-6 pt-2 text-[13px] text-[color:var(--ivory)]/80 max-w-3xl leading-relaxed">
-            Your day is shaped from these stops — your guide sets the order and pace around you.
-            Not every stop, every time.
+            Your day is shaped from these stops — your guide sets the order and pace around you. Not
+            every stop, every time.
           </p>
         </div>
       </div>
@@ -633,7 +653,6 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
         {hasInc && (
           <Block icon={<Check size={14} />} title="What's included">
             <ul className="space-y-3 text-[14.5px] leading-relaxed">
-
               {inc.items.map((h) => (
                 <li key={h} className="flex gap-2.5">
                   <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
@@ -702,7 +721,6 @@ function GalleryStrip({
   for (const p of getTourGallery(tour, meta)) push(p.src, p.alt);
 
   if (photos.length < 3) return null;
-
 
   return (
     <section className="py-14 md:py-20 reveal">
@@ -792,7 +810,6 @@ const FALLBACK_REVIEWS = [
   },
 ];
 
-
 function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
   const hasReal = meta && meta.topReviews && meta.topReviews.length > 0;
   const reviews = hasReal ? meta!.topReviews : FALLBACK_REVIEWS;
@@ -844,7 +861,6 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
                 {r.author}
                 {r.date && <span className="text-[color:var(--gold)] not-italic"> · {r.date}</span>}
               </figcaption>
-
             </figure>
           ))}
         </div>

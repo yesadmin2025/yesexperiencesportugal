@@ -7,10 +7,10 @@ const STATUS = ["todo", "in_progress", "done", "blocked"] as const;
 export const listLegacyUnlinkChecklist = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin, error: roleErr } = await context.supabase.rpc(
-      "has_role",
-      { _user_id: context.userId, _role: "admin" },
-    );
+    const { data: isAdmin, error: roleErr } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
     if (roleErr) throw new Error(roleErr.message);
     if (!isAdmin) throw new Error("Forbidden");
 
@@ -33,10 +33,10 @@ export const upsertLegacyUnlinkChecklistItem = createServerFn({ method: "POST" }
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { data: isAdmin, error: roleErr } = await context.supabase.rpc(
-      "has_role",
-      { _user_id: context.userId, _role: "admin" },
-    );
+    const { data: isAdmin, error: roleErr } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
     if (roleErr) throw new Error(roleErr.message);
     if (!isAdmin) throw new Error("Forbidden");
 

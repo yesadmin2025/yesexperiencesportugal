@@ -10,9 +10,9 @@
  * Emails go through the internal transactional pipeline (pgmq queue,
  * suppression check, retries) — same as the Stripe checkout receipt.
  */
-import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
-import { TEAM_NOTIFICATION_RECIPIENTS } from '@/lib/email/team-recipients'
+import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
+import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 const contactSchema = z.object({
   first: z.string().trim().min(1).max(80),
@@ -22,58 +22,58 @@ const contactSchema = z.object({
   source: z.string().trim().max(80).optional(),
   locale: z.string().trim().max(20).nullable().optional(),
   userAgent: z.string().trim().max(500).nullable().optional(),
-})
+});
 
-export const Route = createFileRoute('/api/public/contact')({
+export const Route = createFileRoute("/api/public/contact")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        let raw: unknown
+        let raw: unknown;
         try {
-          raw = await request.json()
+          raw = await request.json();
         } catch {
-          return Response.json({ ok: false, error: 'bad_json' }, { status: 400 })
+          return Response.json({ ok: false, error: "bad_json" }, { status: 400 });
         }
 
-        const parsed = contactSchema.safeParse(raw)
+        const parsed = contactSchema.safeParse(raw);
         if (!parsed.success) {
           return Response.json(
             {
               ok: false,
-              error: 'validation_failed',
+              error: "validation_failed",
               issues: parsed.error.issues.map((i) => i.message),
             },
             { status: 400 },
-          )
+          );
         }
-        const data = parsed.data
+        const data = parsed.data;
 
         // Load server-only Supabase admin client (route file is client-reachable).
-        const { supabaseAdmin } = await import('@/integrations/supabase/client.server')
-        const { sendTransactionalInternal } = await import('@/lib/email/send-internal.server')
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
 
         // Persist first — this is the source of truth even if emails fail.
-        const submittedAt = new Date().toISOString()
+        const submittedAt = new Date().toISOString();
         const { error: insertError, data: inserted } = await supabaseAdmin
-          .from('contact_messages')
+          .from("contact_messages")
           .insert({
             first_name: data.first,
             last_name: data.last,
             email: data.email,
             message: data.message,
-            source: data.source ?? 'contact-page',
+            source: data.source ?? "contact-page",
             locale: data.locale ?? null,
             user_agent: data.userAgent ?? null,
           })
-          .select('id')
-          .maybeSingle()
+          .select("id")
+          .maybeSingle();
 
         if (insertError) {
-          console.error('[contact] insert failed', { error: insertError })
-          return Response.json({ ok: false, error: 'persist_failed' }, { status: 500 })
+          console.error("[contact] insert failed", { error: insertError });
+          return Response.json({ ok: false, error: "persist_failed" }, { status: 500 });
         }
 
-        const leadId = inserted?.id ?? crypto.randomUUID()
+        const leadId = inserted?.id ?? crypto.randomUUID();
 
         // Fire-and-forget emails: never block or fail the user submission on delivery.
         const templateData = {
@@ -81,40 +81,40 @@ export const Route = createFileRoute('/api/public/contact')({
           lastName: data.last,
           email: data.email,
           message: data.message,
-          source: data.source ?? 'contact-page',
+          source: data.source ?? "contact-page",
           locale: data.locale ?? null,
           userAgent: data.userAgent ?? null,
           submittedAt,
-        }
+        };
 
         try {
           // Client confirmation
           await sendTransactionalInternal({
-            templateName: 'contact-received',
+            templateName: "contact-received",
             recipientEmail: data.email,
             idempotencyKey: `contact-received-${leadId}`,
             templateData,
-          })
+          });
 
           // Team notifications — one send per recipient so bounces are isolated.
           await Promise.all(
             TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
               sendTransactionalInternal({
-                templateName: 'internal-lead',
+                templateName: "internal-lead",
                 recipientEmail: recipient,
                 idempotencyKey: `internal-lead-${leadId}-${recipient}`,
                 templateData,
               }),
             ),
-          )
+          );
         } catch (e) {
-          console.error('[contact] email dispatch failed (non-fatal)', {
+          console.error("[contact] email dispatch failed (non-fatal)", {
             error: e instanceof Error ? e.message : e,
-          })
+          });
         }
 
-        return Response.json({ ok: true })
+        return Response.json({ ok: true });
       },
     },
   },
-})
+});

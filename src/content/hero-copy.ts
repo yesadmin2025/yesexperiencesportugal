@@ -15,7 +15,8 @@ export const HERO_COPY = {
   subheadline: "Every story is different. So is yours.",
   primaryCta: "Create Your Story",
   secondaryCta: "Explore Signature Experiences",
-  microcopy: "Designed in real time, with you. Reserve when it feels right — final price shown before payment.",
+  microcopy:
+    "Designed in real time, with you. Reserve when it feels right — final price shown before payment.",
   brandLine: "Whatever you have in mind, we say YES.",
 } as const;
 

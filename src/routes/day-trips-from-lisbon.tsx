@@ -74,7 +74,13 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
   component: Page,
 });
 
-const sections: { id: string; eyebrow: string; title: string; body: string; cta?: { to: string; label: string; tourId: string } }[] = [
+const sections: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  cta?: { to: string; label: string; tourId: string };
+}[] = [
   {
     id: "intro",
     eyebrow: "Why leave",
@@ -137,8 +143,7 @@ function Page() {
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Lisbon · Day Trips</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
-              Best Day Trips from Lisbon —{" "}
-              <SectionTitle.Em>by a Local</SectionTitle.Em>
+              Best Day Trips from Lisbon — <SectionTitle.Em>by a Local</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Where we actually take friends when they visit — and which trips are worth the drive.
@@ -180,8 +185,8 @@ function Page() {
                 Travel this guide
               </span>
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-8 max-w-xl mx-auto leading-[1.75]">
-                These days already live inside our Signature collection — private, paced, and shaped to you. Or build
-                your own route from scratch in the Experience Studio.
+                These days already live inside our Signature collection — private, paced, and shaped
+                to you. Or build your own route from scratch in the Experience Studio.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <CtaButton to="/experiences" variant="primary">

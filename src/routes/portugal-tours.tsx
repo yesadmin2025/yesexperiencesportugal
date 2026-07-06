@@ -64,31 +64,50 @@ const REGIONS: {
     eyebrow: "Lisbon & Sintra",
     title: "The classic first day — palaces, forest, and the coast road.",
     body: "Pena Palace above the treeline, Quinta da Regaleira's grottoes, then Cabo da Roca and Cascais in the late light. A full private day, paced so you skip the buses and eat where locals eat.",
-    cta: { to: "/tours/$tourId", label: "See the Sintra & Cascais Signature", params: { tourId: "sintra-cascais" } },
+    cta: {
+      to: "/tours/$tourId",
+      label: "See the Sintra & Cascais Signature",
+      params: { tourId: "sintra-cascais" },
+    },
   },
   {
     eyebrow: "Arrábida & Setúbal",
     title: "South of the bridge — wine country and Atlantic beaches.",
     body: "Cork forests drop into blue coves, Setúbal grills the day's fish on the promenade, and small cellars pour Moscatel de Setúbal. Our home region — a slower Portugal, an hour from Lisbon.",
-    cta: { to: "/tours/$tourId", label: "See the Arrábida Wine Signature", params: { tourId: "arrabida-wine-allinclusive" } },
+    cta: {
+      to: "/tours/$tourId",
+      label: "See the Arrábida Wine Signature",
+      params: { tourId: "arrabida-wine-allinclusive" },
+    },
   },
   {
     eyebrow: "Alentejo & Évora",
     title: "Roman walls, cork oaks, and long lunches.",
     body: "Évora's medieval centre, whitewashed villages, and estates that pour reserva wines under old olive trees. The Alentejo rewards a slower rhythm — two nights minimum for the ones who fall in love with it.",
-    cta: { to: "/tours/$tourId", label: "See the Évora & Alentejo Signature", params: { tourId: "evora-alentejo" } },
+    cta: {
+      to: "/tours/$tourId",
+      label: "See the Évora & Alentejo Signature",
+      params: { tourId: "evora-alentejo" },
+    },
   },
   {
     eyebrow: "Tróia & Comporta",
     title: "The quiet luxury coast.",
     body: "Rice paddies, pine forest, and a peninsula of empty white-sand beaches. Comporta is the Portugal that hides in plain sight — arrived at by ferry, lived at walking pace.",
-    cta: { to: "/tours/$tourId", label: "See the Tróia & Comporta Signature", params: { tourId: "troia-comporta" } },
+    cta: {
+      to: "/tours/$tourId",
+      label: "See the Tróia & Comporta Signature",
+      params: { tourId: "troia-comporta" },
+    },
   },
   {
     eyebrow: "10 days · Multi-day",
     title: "A private route from Lisbon through Sintra to the Alentejo.",
     body: "For guests who want the whole picture: coast, wine country, historic cities, and time to breathe. Fully private, designed around the pace you keep on holiday.",
-    cta: { to: "/itineraries/10-day-private-portugal-tour", label: "See the 10-day private Portugal tour" },
+    cta: {
+      to: "/itineraries/10-day-private-portugal-tour",
+      label: "See the 10-day private Portugal tour",
+    },
   },
 ];
 
@@ -104,7 +123,8 @@ function Page() {
               <SectionTitle.Em>shown the way a local shows a friend.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              Private, paced, and designed by the operator on the ground — not a reseller in another country.
+              Private, paced, and designed by the operator on the ground — not a reseller in another
+              country.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <CtaButton to="/experiences" variant="primary">
@@ -121,11 +141,11 @@ function Page() {
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
               <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                Portugal is small enough to see in a week, and layered enough to spend a month
-                on. We're a licensed tour operator (RNAAT) based in Sesimbra, designing{" "}
-                <strong className="font-medium">private Portugal tours</strong> for travelers
-                who want a real day, not a bus route. Every trip below is a real Signature —
-                run by us, priced with everything included, and confirmed in minutes.
+                Portugal is small enough to see in a week, and layered enough to spend a month on.
+                We're a licensed tour operator (RNAAT) based in Sesimbra, designing{" "}
+                <strong className="font-medium">private Portugal tours</strong> for travelers who
+                want a real day, not a bus route. Every trip below is a real Signature — run by us,
+                priced with everything included, and confirmed in minutes.
               </p>
 
               {REGIONS.map((r, i) => (
@@ -164,11 +184,31 @@ function Page() {
                 Also popular
               </span>
               <ul className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                <li><Link to="/luxury-tours-portugal" className="hover:text-[color:var(--teal)]">Luxury Portugal tours →</Link></li>
-                <li><Link to="/private-tours-portugal" className="hover:text-[color:var(--teal)]">Private Portugal tours →</Link></li>
-                <li><Link to="/portugal-wine-tours" className="hover:text-[color:var(--teal)]">Portugal wine tours →</Link></li>
-                <li><Link to="/day-trips-from-lisbon" className="hover:text-[color:var(--teal)]">Day trips from Lisbon →</Link></li>
-                <li><Link to="/multi-day" className="hover:text-[color:var(--teal)]">Multi-day journeys →</Link></li>
+                <li>
+                  <Link to="/luxury-tours-portugal" className="hover:text-[color:var(--teal)]">
+                    Luxury Portugal tours →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/private-tours-portugal" className="hover:text-[color:var(--teal)]">
+                    Private Portugal tours →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/portugal-wine-tours" className="hover:text-[color:var(--teal)]">
+                    Portugal wine tours →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/day-trips-from-lisbon" className="hover:text-[color:var(--teal)]">
+                    Day trips from Lisbon →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/multi-day" className="hover:text-[color:var(--teal)]">
+                    Multi-day journeys →
+                  </Link>
+                </li>
               </ul>
             </aside>
           </div>

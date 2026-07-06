@@ -71,13 +71,9 @@ function parseReviews(markdown: string): ParsedReview[] {
 
     // Reviewer name: the last `[Name](.../Profile/...)` before the title.
     const profileMatches = [
-      ...block.matchAll(
-        /\[([^\]]+)\]\(https:\/\/www\.tripadvisor\.com\/Profile\/[^)]+\)/g,
-      ),
+      ...block.matchAll(/\[([^\]]+)\]\(https:\/\/www\.tripadvisor\.com\/Profile\/[^)]+\)/g),
     ];
-    const reviewerLink = profileMatches.find(
-      (m) => m[1] !== "Yes!experiences Portugal",
-    );
+    const reviewerLink = profileMatches.find((m) => m[1] !== "Yes!experiences Portugal");
     if (!reviewerLink) continue;
     const reviewer_name = reviewerLink[1].trim();
 
@@ -86,8 +82,13 @@ function parseReviews(markdown: string): ParsedReview[] {
     // We only extract when a comma-separated location precedes "N contributions".
     let reviewer_country: string | null = null;
     const nameIdx = block.indexOf(reviewerLink[0]);
-    const after = block.slice(nameIdx + reviewerLink[0].length, nameIdx + reviewerLink[0].length + 400);
-    const countryMatch = after.match(/\n\s*([A-Z][A-Za-z .'-]+(?:,\s*[A-Za-z .'-]+)?)\d+\s+contributions/);
+    const after = block.slice(
+      nameIdx + reviewerLink[0].length,
+      nameIdx + reviewerLink[0].length + 400,
+    );
+    const countryMatch = after.match(
+      /\n\s*([A-Z][A-Za-z .'-]+(?:,\s*[A-Za-z .'-]+)?)\d+\s+contributions/,
+    );
     if (countryMatch) reviewer_country = countryMatch[1].trim();
 
     // Body: everything after the title line up to a "Read more" marker,
@@ -194,10 +195,10 @@ export const Route = createFileRoute("/api/public/hooks/import-tripadvisor-revie
           .eq("source", "tripadvisor")
           .in("external_id", externalIds);
         if (existingErr) {
-          return new Response(
-            JSON.stringify({ error: `dedupe_failed: ${existingErr.message}` }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: `dedupe_failed: ${existingErr.message}` }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
         const seen = new Set((existing ?? []).map((r) => r.external_id));
         const fresh = parsed.filter((p) => !seen.has(p.external_id));
@@ -231,10 +232,10 @@ export const Route = createFileRoute("/api/public/hooks/import-tripadvisor-revie
           .insert(rows)
           .select("id");
         if (insertErr) {
-          return new Response(
-            JSON.stringify({ error: `insert_failed: ${insertErr.message}` }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: `insert_failed: ${insertErr.message}` }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         // Rotate featured flag: keep only the 8 newest 5★ published reviews
@@ -254,10 +255,7 @@ export const Route = createFileRoute("/api/public/hooks/import-tripadvisor-revie
             .update({ is_featured: false })
             .eq("is_featured", true)
             .not("id", "in", `(${keepIds.join(",")})`);
-          await admin
-            .from("tour_reviews")
-            .update({ is_featured: true })
-            .in("id", keepIds);
+          await admin.from("tour_reviews").update({ is_featured: true }).in("id", keepIds);
         }
 
         return Response.json({

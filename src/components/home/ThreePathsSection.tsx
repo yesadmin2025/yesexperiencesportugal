@@ -35,10 +35,16 @@ const PATHS: Path[] = [
     label: "Signature",
     title: (
       <>
-        Already loved. <span className="italic font-normal text-[color:var(--teal)]">Yours to shape.</span>
+        Already loved.{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">Yours to shape.</span>
       </>
     ),
-    body: <>Flagship private days across Portugal — Arrábida, Comporta, the wild Vicentine coast and hidden Alentejo.</>,
+    body: (
+      <>
+        Flagship private days across Portugal — Arrábida, Comporta, the wild Vicentine coast and
+        hidden Alentejo.
+      </>
+    ),
     cta: "Browse",
     href: "/experiences",
     anchor: `From €${SIGNATURE_FROM}`,
@@ -50,7 +56,8 @@ const PATHS: Path[] = [
     label: "Studio",
     title: (
       <>
-        Build it live. <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
+        Build it live.{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">Reserve in minutes.</span>
       </>
     ),
     body: <>Shape your day on a living canvas — route, price, confirm.</>,
@@ -65,7 +72,8 @@ const PATHS: Path[] = [
     label: "Designer",
     title: (
       <>
-        A Portugal <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
+        A Portugal{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
       </>
     ),
     body: <>A designer composes your multi-day Portugal, end to end.</>,
@@ -80,7 +88,8 @@ const PATHS: Path[] = [
     label: "Moments",
     title: (
       <>
-        Moments that <span className="italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
+        Moments that{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">deserve a setting.</span>
       </>
     ),
     body: <>Proposals, celebrations and corporate days — staged with care.</>,

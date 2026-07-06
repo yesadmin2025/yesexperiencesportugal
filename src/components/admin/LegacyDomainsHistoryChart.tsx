@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getLegacyDomainsHistory,
-  type HistoryPoint,
-} from "@/lib/legacy-domains-monitor.functions";
+import { getLegacyDomainsHistory, type HistoryPoint } from "@/lib/legacy-domains-monitor.functions";
 
 /** Color for a given HTTP status band. */
 function statusColor(status: number | null): string {
@@ -83,8 +80,8 @@ function HostRow({ host, points, range }: RowProps) {
             <g key={i}>
               <rect x={x} y={httpY} width={w} height={httpH} fill={httpFill} opacity={0.9}>
                 <title>
-                  {new Date(p.checkedAt).toLocaleString("pt-PT")} · HTTP{" "}
-                  {p.httpStatus ?? "—"} · DNS→Lovable {p.pointsToLovable ? "sim" : "não"}
+                  {new Date(p.checkedAt).toLocaleString("pt-PT")} · HTTP {p.httpStatus ?? "—"} ·
+                  DNS→Lovable {p.pointsToLovable ? "sim" : "não"}
                 </title>
               </rect>
               <rect x={x} y={dnsY} width={w} height={dnsH} fill={dnsFill} opacity={0.9} />
@@ -142,8 +139,8 @@ export function LegacyDomainsHistoryChart() {
             DNS &amp; HTTP ao longo do tempo
           </h2>
           <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
-            Cada sonda de 60s é registada. A faixa superior mostra o estado HTTP
-            (200/302/410), a inferior indica se o DNS aponta para Lovable.
+            Cada sonda de 60s é registada. A faixa superior mostra o estado HTTP (200/302/410), a
+            inferior indica se o DNS aponta para Lovable.
           </p>
         </div>
         <button
@@ -166,13 +163,11 @@ export function LegacyDomainsHistoryChart() {
       ) : null}
 
       {isLoading ? (
-        <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
-          A carregar histórico…
-        </p>
+        <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">A carregar histórico…</p>
       ) : grouped.length === 0 ? (
         <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
-          Ainda não existem sondas registadas. Os dados começam a aparecer após a
-          primeira execução automática de <code>probeLegacyDomains</code>.
+          Ainda não existem sondas registadas. Os dados começam a aparecer após a primeira execução
+          automática de <code>probeLegacyDomains</code>.
         </p>
       ) : (
         <div>

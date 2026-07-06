@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  walkToReveal,
-  readInteractableAddons,
-} from "./studio-v3-walk-to-reveal";
+import { walkToReveal, readInteractableAddons } from "./studio-v3-walk-to-reveal";
 
 /**
  * Studio V3 — totals update in the same synchronous frame as the click.
@@ -72,7 +69,10 @@ test.describe("studio-v3 — add-ons totals update in the same frame as the clic
     const partyText =
       (await page.locator('[data-testid="studio-v3-party-total"]').first().textContent()) ?? "";
     const partyMatch = partyText.match(/×\s*(\d+)\s*guests?/i);
-    expect(partyMatch, `expected "× N guests" in party total line, got: ${partyText}`).not.toBeNull();
+    expect(
+      partyMatch,
+      `expected "× N guests" in party total line, got: ${partyText}`,
+    ).not.toBeNull();
     const partyCount = Number(partyMatch![1]);
 
     const addons = await readInteractableAddons(page);
@@ -80,9 +80,7 @@ test.describe("studio-v3 — add-ons totals update in the same frame as the clic
     const toClick = addons.slice(0, Math.min(2, addons.length));
 
     for (const a of toClick) {
-      const btn = page.locator(
-        `[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`,
-      );
+      const btn = page.locator(`[data-testid="studio-v3-add-ons"] button[data-addon-id="${a.id}"]`);
       await btn.scrollIntoViewIfNeeded();
 
       // ---- Same-frame ON: click and read totals synchronously in one turn.
@@ -93,9 +91,7 @@ test.describe("studio-v3 — add-ons totals update in the same frame as the clic
         const total = document.querySelector<HTMLElement>(
           '[data-testid="studio-v3-add-ons-total"]',
         );
-        const party = document.querySelector<HTMLElement>(
-          '[data-testid="studio-v3-party-total"]',
-        );
+        const party = document.querySelector<HTMLElement>('[data-testid="studio-v3-party-total"]');
         const root = document.querySelector<HTMLElement>('[data-testid="studio-v3-root"]');
         if (!btn || !total || !party) throw new Error("missing test hooks");
         const beforeAddOns = total.textContent ?? "";
@@ -139,9 +135,7 @@ test.describe("studio-v3 — add-ons totals update in the same frame as the clic
         const total = document.querySelector<HTMLElement>(
           '[data-testid="studio-v3-add-ons-total"]',
         );
-        const party = document.querySelector<HTMLElement>(
-          '[data-testid="studio-v3-party-total"]',
-        );
+        const party = document.querySelector<HTMLElement>('[data-testid="studio-v3-party-total"]');
         const root = document.querySelector<HTMLElement>('[data-testid="studio-v3-root"]');
         if (!btn || !total || !party) throw new Error("missing test hooks");
         const beforeAddOns = total.textContent ?? "";

@@ -40,10 +40,12 @@ async function safeClick(page: Page, sel: string): Promise<boolean> {
     () => false,
   );
   if (clicked) return true;
-  return el.evaluate((n) => (n as HTMLElement).click()).then(
-    () => true,
-    () => false,
-  );
+  return el
+    .evaluate((n) => (n as HTMLElement).click())
+    .then(
+      () => true,
+      () => false,
+    );
 }
 
 // Steering picks — see the sibling spec for the rationale (Arrábida is
@@ -171,10 +173,7 @@ export async function readInteractableAddons(page: Page): Promise<Addon[]> {
 
 export async function addOnsTotalText(page: Page): Promise<string> {
   return (
-    (await page
-      .locator('[data-testid="studio-v3-add-ons-total"]')
-      .first()
-      .textContent()) ?? ""
+    (await page.locator('[data-testid="studio-v3-add-ons-total"]').first().textContent()) ?? ""
   );
 }
 

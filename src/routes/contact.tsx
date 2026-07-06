@@ -50,8 +50,7 @@ export const Route = createFileRoute("/contact")({
         "@id": "https://yesexperiencesportugal.com/contact#contactpage",
         url: "https://yesexperiencesportugal.com/contact",
         name: "Contact — YES experiences Portugal",
-        description:
-          "Speak directly with our YES Portugal experience designers.",
+        description: "Speak directly with our YES Portugal experience designers.",
         inLanguage: "en",
         isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
         about: { "@id": "https://yesexperiencesportugal.com/#organization" },
@@ -143,8 +142,7 @@ function Page() {
                         email: parsed.data.email,
                         message: parsed.data.message,
                         source: "contact-page",
-                        locale:
-                          typeof navigator !== "undefined" ? navigator.language : null,
+                        locale: typeof navigator !== "undefined" ? navigator.language : null,
                         userAgent:
                           typeof navigator !== "undefined"
                             ? navigator.userAgent.slice(0, 500)

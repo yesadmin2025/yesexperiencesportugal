@@ -138,7 +138,7 @@ export function MountBadge({ name, detail, tone = "ok" }: MountBadgeProps) {
 export interface ExpectedMount {
   name: string;
   phases: ReadonlyArray<string>; // phases in which the badge is expected
-  hint: string;                  // human-friendly explanation
+  hint: string; // human-friendly explanation
 }
 
 export const EXPECTED_MOUNTS: ReadonlyArray<ExpectedMount> = [
