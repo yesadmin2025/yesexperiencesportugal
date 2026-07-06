@@ -861,6 +861,284 @@ const FAMILY_ONLY_RE =
 const ROMANTIC_ONLY_RE =
   /\b(honeymoon|just the two of you|for two|romantic dinner|proposal|engagement)\b/i;
 
+/* ============================================================
+ * Phase 8 — Intent-to-Journey fidelity (FitReport)
+ * ------------------------------------------------------------
+ * Structured, deterministic per-tour scoring that measures *actual*
+ * coverage of the guest's inputs against the tour's own content
+ * (title, theme, blurb, intro, stops). No AI in the ranking loop.
+ *
+ * The previous model added independent per-axis boosts, which meant a
+ * tour scoring +2 on one axis could beat one that hit +1 on three axes.
+ * The FitReport counts satisfied interests explicitly, penalises
+ * missing interests asymmetrically (−6 vs +8), and surfaces a
+ * transparent explanation for the UI + debug overlay.
+ *
+ * Facts are deterministic; AI voice may rewrite the guest sentence
+ * downstream. Never invents stops, tours, or content.
+ * ============================================================ */
+
+/** Rhythm-to-hours-budget — used to flag `rhythmFeasible` when a
+ *  slow guest is pointed at an immersive multi-hour tour, or vice versa.
+ *  Advisory only in Phase 8 — never drops the last candidate. */
+const RHYTHM_HOURS_BUDGET: Record<Rhythm, { min: number; max: number }> = {
+  slow: { min: 2, max: 6 },
+  balanced: { min: 4, max: 8 },
+  full: { min: 6, max: 10 },
+  immersive: { min: 7, max: 12 },
+};
+
+/** Parse "7–9h" / "3-4h" / "Half Day" / "Full Day" / "5h" into a
+ *  midpoint hours estimate. Returns null when unparseable. */
+function tourHoursEstimate(tour: SignatureTour): number | null {
+  const src = `${tour.durationHours} ${tour.duration}`.toLowerCase();
+  const range = src.match(/(\d+)\s*[–-]\s*(\d+)\s*h/);
+  if (range) return (Number(range[1]) + Number(range[2])) / 2;
+  const single = src.match(/(\d+)\s*h/);
+  if (single) return Number(single[1]);
+  if (/full\s*day/.test(src)) return 8;
+  if (/half\s*day/.test(src)) return 4;
+  if (/multi\s*day|\d+\s*day/.test(src)) return 12;
+  return null;
+}
+
+/** Feeling → tour semantic match, scored against the tour's own content.
+ *  strong = 3+ keyword hits, partial = 1–2, weak = 0. */
+function computeFeelingMatch(
+  tour: SignatureTour,
+  feeling: Feeling,
+): { match: "strong" | "partial" | "weak"; hits: number } {
+  const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
+    .map((s) => `${s.label} ${s.story}`)
+    .join(" ")}`.toLowerCase();
+  const kws = FEELING_KEYWORDS[feeling] ?? [];
+  let hits = 0;
+  for (const kw of kws) {
+    if (hay.includes(kw)) hits++;
+  }
+  if (hits >= 3) return { match: "strong", hits };
+  if (hits >= 1) return { match: "partial", hits };
+  return { match: "weak", hits };
+}
+
+/** Per-interest coverage: measured against the tour's own content, NOT
+ *  a hardcoded FEELING_TO_TOURS pool. This is the fix for wine+nature
+ *  and every symmetric case — missing what the guest asked for hurts. */
+function computeInterestCoverage(
+  tour: SignatureTour,
+  interests: ReadonlyArray<Interest>,
+): Array<{ interest: string; satisfied: boolean }> {
+  if (!interests.length) return [];
+  const hay = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro} ${tour.stops
+    .map((s) => `${s.label} ${s.story}`)
+    .join(" ")}`.toLowerCase();
+  return interests.map((i) => {
+    const kws = INTEREST_TOUR_KEYWORDS[i] ?? [];
+    const satisfied = kws.some((kw) => hay.includes(kw));
+    return { interest: i, satisfied };
+  });
+}
+
+/** Pickup reachability — half-day pickups shouldn't be pointed at
+ *  Alentejo/Vicentine tours. Uses the existing `pickupAffinity` signal:
+ *  a score of 0 means the pickup is not in the tour's operational
+ *  region; combined with a short-rhythm guest this is a red flag. */
+function isPickupReachable(
+  tour: SignatureTour,
+  pickup: Pickup | null,
+  rhythm: Rhythm | null,
+): boolean {
+  if (!pickup) return true;
+  const affinity = pickupAffinity(tour, pickup);
+  if (affinity > 0) return true;
+  // No positive affinity + a compressed rhythm → likely too far.
+  if (rhythm === "slow" || rhythm === "balanced") return false;
+  return true;
+}
+
+/**
+ * scoreTourFit — the core Phase 8 model. Returns a structured explanation
+ * of how well a candidate satisfies the guest's inputs.
+ *
+ * Weights (tuned to preserve existing regression tests):
+ *   +8   per satisfied interest      (guest asked for it, tour has it)
+ *   −6   per missing user interest   (guest asked for it, tour lacks it)
+ *   +12  strong feeling match        (3+ keyword hits in tour content)
+ *   +6   partial feeling match
+ *   +wineBoost when wine content confirmed
+ *   +existing pickup / destination / discovery / tiles boosts
+ *   −4   wine-coherence penalty (wine asked, tour has zero wine)
+ *   −6   family-coded-for-couple / romantic-only-for-corporate
+ */
+export function scoreTourFit(
+  tour: SignatureTour,
+  intent: {
+    feeling: Feeling;
+    companions: Companions;
+    interests: ReadonlyArray<Interest>;
+    pickup: Pickup | null;
+    rhythm?: Rhythm | null;
+    destinationIntent?: DestinationIntent | null;
+  },
+): FitReport {
+  const { feeling, companions, interests, pickup, rhythm = null, destinationIntent = null } = intent;
+  const boosts: string[] = [];
+  const penalties: string[] = [];
+
+  // ---- Interest coverage (asymmetric: missing what user asked hurts) ----
+  const interestCoverage = computeInterestCoverage(tour, interests);
+  let interestScore = 0;
+  for (const c of interestCoverage) {
+    if (c.satisfied) {
+      interestScore += 8;
+      boosts.push(`interest-${c.interest}-satisfied`);
+    } else {
+      interestScore -= 6;
+      penalties.push(`interest-${c.interest}-missing`);
+    }
+  }
+
+  // ---- Feeling semantic match ----
+  const feelingMatch = computeFeelingMatch(tour, feeling);
+  const feelingScore =
+    feelingMatch.match === "strong" ? 12 : feelingMatch.match === "partial" ? 6 : 0;
+  if (feelingScore > 0) boosts.push(`feeling-${feeling}-${feelingMatch.match}`);
+  else penalties.push(`feeling-${feeling}-weak`);
+
+  // ---- Companions coherence (kept as hard-ish guard) ----
+  const cType = companionsType(companions);
+  const blockFamilyCoded = cType === "couple" || cType === "solo" || cType === "corporate";
+  const blockRomanticCoded = cType === "corporate" || cType === "family";
+  const idealFor = tour.idealFor.join(" ");
+  let companionsScore = 0;
+  let companionsStatus: "pass" | "warn" | "fail" = "pass";
+  if (blockFamilyCoded && FAMILY_ONLY_RE.test(idealFor)) {
+    companionsScore -= 6;
+    penalties.push("family-coded-for-non-family");
+    companionsStatus = "fail";
+  }
+  if (blockRomanticCoded && ROMANTIC_ONLY_RE.test(idealFor)) {
+    companionsScore -= 6;
+    penalties.push("romantic-coded-for-non-couple");
+    companionsStatus = "fail";
+  }
+  if (companions === "family" && /family|child/i.test(idealFor)) {
+    companionsScore += 0.5;
+    boosts.push("family-friendly-copy");
+  }
+
+  // ---- Wine coherence (subsumes the guard shipped last turn) ----
+  const explicitWineFeeling = feeling === "wine-food";
+  const wineIsTopInterest = interests[0] === "wine" || interests[0] === "gastronomy";
+  const wineIsAnyInterest = interests.includes("wine") || interests.includes("gastronomy");
+  const wineIntent =
+    destinationIntent === "alentejo-evora-wine" ||
+    destinationIntent === "alentejo-roman-talha" ||
+    destinationIntent === "arrabida-setubal-azeitao";
+  const wineBoost = explicitWineFeeling || wineIntent
+    ? 3
+    : wineIsTopInterest
+      ? 2.5
+      : wineIsAnyInterest
+        ? 1.5
+        : 0;
+  const wantsWine = wineBoost > 0;
+  const nonWineDestinationIntent =
+    destinationIntent === "vicentine-coast" ||
+    destinationIntent === "lisbon-sintra-cascais" ||
+    destinationIntent === "spiritual-coast" ||
+    destinationIntent === "central-portugal";
+  const tourWineText = `${tour.title} ${tour.theme} ${tour.blurb} ${tour.intro}`;
+  const tourHasWineContent =
+    /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(tourWineText);
+  let wineScore = 0;
+  if (wantsWine && tourHasWineContent) {
+    wineScore += wineBoost;
+    boosts.push("wine-content-confirmed");
+  }
+  if (wineIsAnyInterest && !nonWineDestinationIntent && !tourHasWineContent) {
+    wineScore -= 4;
+    penalties.push("wine-asked-but-tour-has-no-wine");
+  }
+
+  // ---- Existing pickup / intent / discovery boosts (kept, weighted) ----
+  const pickupBoost = pickupAffinity(tour, pickup) * 0.8;
+  if (pickupBoost > 0) boosts.push("pickup-adjacent");
+  const intentBoost = destinationIntentBoost(tour, destinationIntent);
+  if (intentBoost > 0) boosts.push("destination-intent-aligned");
+  const discoveryBoost = profileDiscoveryBoost(tour, feeling, interests, destinationIntent);
+  if (discoveryBoost > 0) boosts.push("profile-discovery");
+
+  // ---- Tiles / culture-craft nudge (kept) ----
+  const wantsTilesCraft =
+    feeling === "culture" &&
+    interests.includes("local-life") &&
+    (interests.includes("heritage") || interests.length === 1);
+  const isLisbonArea =
+    !pickup ||
+    pickup === "lisbon" ||
+    pickup === "lisbon-airport" ||
+    pickup === "lisbon-cruise" ||
+    pickup === "cascais-estoril" ||
+    pickup === "sintra" ||
+    pickup === "sesimbra-setubal-arrabida";
+  let tilesBoost = 0;
+  if (wantsTilesCraft && isLisbonArea && tour.id === "tiles-workshop") {
+    tilesBoost = 3;
+    boosts.push("tiles-culture-local-life");
+  }
+
+  // ---- Rhythm feasibility (advisory) ----
+  const hours = tourHoursEstimate(tour);
+  const budget = rhythm ? RHYTHM_HOURS_BUDGET[rhythm] : null;
+  const rhythmFeasible =
+    !budget || hours === null || (hours >= budget.min - 1 && hours <= budget.max + 1);
+  let rhythmScore = 0;
+  if (budget && hours !== null) {
+    if (rhythmFeasible) {
+      rhythmScore += 2;
+      boosts.push("rhythm-feasible");
+    } else {
+      rhythmScore -= 3;
+      penalties.push("rhythm-mismatch");
+    }
+  }
+
+  // ---- Reachability (advisory) ----
+  const pickupReachable = isPickupReachable(tour, pickup, rhythm);
+  if (!pickupReachable) penalties.push("pickup-not-reachable");
+
+  const totalScore =
+    interestScore +
+    feelingScore +
+    companionsScore +
+    wineScore +
+    pickupBoost +
+    intentBoost +
+    discoveryBoost +
+    tilesBoost +
+    rhythmScore;
+
+  return {
+    tourId: tour.id,
+    totalScore,
+    hardConstraints: {
+      pickupReachable,
+      companionsAllowed: companionsStatus !== "fail",
+      rhythmFeasible,
+    },
+    coverage: {
+      interests: interestCoverage,
+      feeling: feelingMatch,
+      destinationIntentAligned: intentBoost > 0,
+      companions: companionsStatus,
+    },
+    penalties,
+    boosts,
+  };
+}
+
+
 /** Pick ONE Signature skeleton that best fits the answers AND keeps the
  *  route geographically contained near the chosen pickup. Deterministic
  *  unless `seed` is provided — then re-picks among top-band tours (Δ ≤ 1.5
