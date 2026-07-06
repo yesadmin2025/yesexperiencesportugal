@@ -2203,7 +2203,10 @@ export function StudioV3() {
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
+              selectedAddOnIds={selectedAddOnIds}
+              onAddOnsChange={handleAddOnsChange}
             />
+
           </PhaseShell>
         </>
       ) : null}
