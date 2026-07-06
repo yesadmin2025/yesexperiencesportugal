@@ -582,7 +582,11 @@ export function MapAwakens({
             </div>
           ) : null}
 
-          {/* Hold this journey CTA + Reshape this day — appear when sequence completes. */}
+          {/* Preview this journey CTA + Reshape this day — appear when sequence completes.
+              Renamed from "Hold this journey" (Nov 2026) — the previous copy
+              read as checkout intent. This is the moment the guest previews
+              the full itinerary and pricing before reserving. `data-phase-cta`
+              kept as "hold-journey" so downstream analytics/E2E stay stable. */}
           <div
             className={`mt-5 text-center transition-opacity duration-[520ms] ${
               isLast ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -593,11 +597,13 @@ export function MapAwakens({
               type="button"
               onClick={() => onContinue(journey.tour.id)}
               data-phase-cta="hold-journey"
+              aria-label="Preview this journey — see full itinerary and price"
               className="inline-flex items-center gap-2 px-6 py-3.5 text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
             >
-              Hold this journey <ArrowRight size={14} aria-hidden />
+              Preview this journey <ArrowRight size={14} aria-hidden />
             </button>
+
             {onReshape ? (
               <div className="mt-3">
                 <button

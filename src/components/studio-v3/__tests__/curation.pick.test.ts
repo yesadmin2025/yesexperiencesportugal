@@ -60,7 +60,45 @@ const cases: Array<{
   { feeling: "wine-food", interests: ["gastronomy"] },
   { feeling: "slow-luxury", interests: ["wine"] }, // wine as TOP interest -> wine boost allowed
   { feeling: "romance", interests: ["wine"] },
+
+  // Regression: wine + nature must land on a wine-anchored tour, never on
+  // Southwest Vicentine Coast (which has zero wine content). Reproduces the
+  // exact bug the user reported — wine + nature was sending them to the coast.
+  {
+    feeling: "hidden",
+    interests: ["wine", "nature"],
+    expectOneOf: [
+      "arrabida-wine-allinclusive",
+      "roman-heritage-alentejo",
+      "evora-alentejo",
+      "azeitao-cheese",
+      "troia-comporta",
+    ],
+  },
+  {
+    feeling: "adventure",
+    interests: ["wine", "nature"],
+    expectOneOf: [
+      "arrabida-wine-allinclusive",
+      "roman-heritage-alentejo",
+      "evora-alentejo",
+      "azeitao-cheese",
+      "troia-comporta",
+    ],
+  },
+  {
+    feeling: "coastal",
+    interests: ["wine", "nature"],
+    expectOneOf: [
+      "arrabida-wine-allinclusive",
+      "roman-heritage-alentejo",
+      "evora-alentejo",
+      "azeitao-cheese",
+      "troia-comporta",
+    ],
+  },
 ];
+
 
 describe("pickPrimaryTour — no unwanted Arrábida-wine bias", () => {
   it.each(cases)(
