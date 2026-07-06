@@ -94,6 +94,40 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // ---- Intent coverage (dev-only): resolve current primary tour +
+  //      FitReport so we can visualize why it beat its neighbours. ----
+  const intentPanel = useMemo(() => {
+    const tour =
+      (state.tourId && signatureTours.find((t) => t.id === state.tourId)) || null;
+    let fitBundle: ReturnType<typeof pickPrimaryTourWithFit> | null = null;
+    if (state.feeling && state.companions) {
+      try {
+        fitBundle = pickPrimaryTourWithFit(
+          state.feeling,
+          state.companions,
+          (state.interests ?? []) as never,
+          state.pickup ?? null,
+          state.destinationIntent ?? null,
+          0,
+          state.rhythm ?? null,
+        );
+      } catch {
+        fitBundle = null;
+      }
+    }
+    const resolvedTour = tour ?? fitBundle?.tour ?? null;
+    const profile = resolvedTour ? tourIntentProfile(resolvedTour) : null;
+    return { resolvedTour, profile, fitBundle };
+  }, [
+    state.tourId,
+    state.feeling,
+    state.companions,
+    state.interests,
+    state.pickup,
+    state.destinationIntent,
+    state.rhythm,
+  ]);
+
   if (!enabled) return null;
 
   const vw = typeof window !== "undefined" ? window.innerWidth : 0;
