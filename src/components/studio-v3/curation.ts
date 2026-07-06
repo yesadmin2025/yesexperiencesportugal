@@ -667,6 +667,105 @@ const DESTINATION_INTENT_BOOSTS: Record<DestinationIntent, Record<string, number
   },
 };
 
+function allowsProfileDiscovery(destinationIntent: DestinationIntent | null | undefined): boolean {
+  return !destinationIntent || destinationIntent === "no-preference" || destinationIntent === "anywhere-special";
+}
+
+/**
+ * When the traveller does not pick a fixed region, the Studio should still be
+ * able to reach the strongest YES-only routes. This is not invention: it only
+ * adds existing Signature tours to the candidate pool when the answers clearly
+ * point there.
+ */
+function profileDiscoveryTargets(
+  feeling: Feeling,
+  interests: ReadonlyArray<Interest>,
+  destinationIntent: DestinationIntent | null | undefined,
+): string[] {
+  if (!allowsProfileDiscovery(destinationIntent)) return [];
+
+  const targets: string[] = [];
+  const hasWine = interests.includes("wine");
+  const hasHeritage = interests.includes("heritage");
+  const hasLocalLife = interests.includes("local-life");
+  const hasGastronomy = interests.includes("gastronomy");
+  const hasCoast = interests.includes("coast");
+  const hasNature = interests.includes("nature");
+
+  if (
+    destinationIntent === "anywhere-special" ||
+    (hasWine && (hasHeritage || hasLocalLife)) ||
+    (feeling === "culture" && hasWine) ||
+    (feeling === "hidden" && hasWine && (hasHeritage || hasLocalLife || hasGastronomy))
+  ) {
+    targets.push("roman-heritage-alentejo");
+  }
+
+  if (
+    destinationIntent === "anywhere-special" ||
+    (hasCoast && hasNature) ||
+    ((feeling === "hidden" || feeling === "adventure") && (hasCoast || hasNature)) ||
+    (feeling === "coastal" && hasNature)
+  ) {
+    targets.push("southwest-vicentine-coast");
+  }
+
+  if (
+    destinationIntent === "anywhere-special" ||
+    ((feeling === "romance" || feeling === "slow-luxury") && (hasCoast || hasGastronomy || hasLocalLife)) ||
+    (feeling === "coastal" && (hasGastronomy || hasLocalLife))
+  ) {
+    targets.push("troia-comporta");
+  }
+
+  return targets;
+}
+
+function profileDiscoveryBoost(
+  tour: SignatureTour,
+  feeling: Feeling,
+  interests: ReadonlyArray<Interest>,
+  destinationIntent: DestinationIntent | null | undefined,
+): number {
+  if (!allowsProfileDiscovery(destinationIntent)) return 0;
+
+  const hasWine = interests.includes("wine");
+  const hasHeritage = interests.includes("heritage");
+  const hasLocalLife = interests.includes("local-life");
+  const hasGastronomy = interests.includes("gastronomy");
+  const hasCoast = interests.includes("coast");
+  const hasNature = interests.includes("nature");
+
+  if (tour.id === "roman-heritage-alentejo") {
+    let boost = destinationIntent === "anywhere-special" ? 2.5 : 0;
+    if (hasWine && (hasHeritage || hasLocalLife)) boost += 5;
+    else if (feeling === "culture" && hasWine) boost += 4;
+    else if (feeling === "hidden" && hasWine && (hasHeritage || hasLocalLife || hasGastronomy)) boost += 3.5;
+    else if (feeling === "slow-luxury" && hasWine && hasHeritage) boost += 3.5;
+    return boost;
+  }
+
+  if (tour.id === "southwest-vicentine-coast") {
+    let boost = destinationIntent === "anywhere-special" ? 3 : 0;
+    if (hasCoast && hasNature) boost += 6;
+    else if ((feeling === "hidden" || feeling === "adventure") && (hasCoast || hasNature)) boost += 4.5;
+    else if (feeling === "coastal" && hasNature) boost += 4;
+    return boost;
+  }
+
+  if (tour.id === "troia-comporta") {
+    let boost = destinationIntent === "anywhere-special" ? 2.5 : 0;
+    if ((feeling === "romance" || feeling === "slow-luxury") && (hasCoast || hasGastronomy || hasLocalLife)) {
+      boost += 4.5;
+    } else if (feeling === "coastal" && (hasGastronomy || hasLocalLife)) {
+      boost += 3.5;
+    }
+    return boost;
+  }
+
+  return 0;
+}
+
 function destinationIntentBoost(
   tour: SignatureTour,
   destinationIntent: DestinationIntent | null | undefined,
@@ -782,7 +881,10 @@ export function pickPrimaryTour(
       ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
       : [];
   const interestTargets = interests.flatMap((i) => INTEREST_TARGET_TOURS[i] ?? []);
-  const mergedIds = Array.from(new Set([...candidateIds, ...intentTargets, ...interestTargets]));
+  const discoveryTargets = profileDiscoveryTargets(feeling, interests, destinationIntent);
+  const mergedIds = Array.from(
+    new Set([...candidateIds, ...intentTargets, ...interestTargets, ...discoveryTargets]),
+  );
   const candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
@@ -820,6 +922,7 @@ export function pickPrimaryTour(
     interests[0] === "wine" || interests[0] === "gastronomy";
   const wineIntent =
     destinationIntent === "alentejo-evora-wine" ||
+    destinationIntent === "alentejo-roman-talha" ||
     destinationIntent === "arrabida-setubal-azeitao";
   const wineBoost = explicitWineFeeling || wineIntent
     ? 3
@@ -844,6 +947,7 @@ export function pickPrimaryTour(
       score += pickupAffinity(tour, pickup) * 0.8;
       score += interestAffinity(tour, interests);
       score += destinationIntentBoost(tour, destinationIntent);
+      score += profileDiscoveryBoost(tour, feeling, interests, destinationIntent);
       if (
         wantsWine &&
         /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(
@@ -1127,6 +1231,7 @@ export function curateJourney(
     feeling === "wine-food" ||
     interests.includes("wine") ||
     options?.destinationIntent === "alentejo-evora-wine" ||
+    options?.destinationIntent === "alentejo-roman-talha" ||
     options?.destinationIntent === "arrabida-setubal-azeitao";
   let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {

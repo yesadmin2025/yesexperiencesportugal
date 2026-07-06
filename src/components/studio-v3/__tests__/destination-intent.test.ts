@@ -114,12 +114,64 @@ describe("destinationIntent — soft additive scoring", () => {
     ]).toContain(r.skeletonTourKey);
   });
 
+  it("Lisbon pickup + talha intent selects the Roman Alentejo talha tour", () => {
+    const r = resolve({
+      feeling: "wine-food",
+      interests: ["wine", "heritage"],
+      destinationIntent: "alentejo-roman-talha",
+      pickup: "lisbon",
+    });
+    expect(r.skeletonTourKey).toBe("roman-heritage-alentejo");
+  });
+
+  it("Lisbon pickup + Vicentine intent selects the southwest Vicentine coast", () => {
+    const r = resolve({
+      feeling: "hidden",
+      interests: ["coast", "nature"],
+      destinationIntent: "vicentine-coast",
+      pickup: "lisbon",
+    });
+    expect(r.skeletonTourKey).toBe("southwest-vicentine-coast");
+  });
+
+  it("without a fixed destination, wine + heritage can discover talha instead of defaulting Arrábida", () => {
+    const r = resolve({
+      feeling: "hidden",
+      interests: ["wine", "heritage"],
+      destinationIntent: "no-preference",
+      pickup: "lisbon",
+    });
+    expect(r.skeletonTourKey).toBe("roman-heritage-alentejo");
+  });
+
+  it("without a fixed destination, coast + nature can discover the Vicentine coast instead of Sintra", () => {
+    const r = resolve({
+      feeling: "adventure",
+      interests: ["coast", "nature"],
+      destinationIntent: "no-preference",
+      pickup: "lisbon",
+    });
+    expect(r.skeletonTourKey).toBe("southwest-vicentine-coast");
+  });
+
+  it("without a fixed destination, slow coastal romance can discover Tróia and Comporta", () => {
+    const r = resolve({
+      feeling: "slow-luxury",
+      interests: ["coast", "gastronomy"],
+      destinationIntent: "no-preference",
+      pickup: "lisbon",
+    });
+    expect(r.skeletonTourKey).toBe("troia-comporta");
+  });
+
   it("route containment holds across all destination intents", () => {
     const intents: DestinationIntent[] = [
       "no-preference",
       "lisbon-sintra-cascais",
       "arrabida-setubal-azeitao",
       "alentejo-evora-wine",
+      "alentejo-roman-talha",
+      "vicentine-coast",
       "spiritual-coast",
       "central-portugal",
       "comporta-troia",
