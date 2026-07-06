@@ -1220,6 +1220,18 @@ export function SignaturePriceCard({
             </p>
           ) : null}
 
+          {hasPrice && !dateExact ? (
+            <p
+              className="text-[10.5px] italic"
+              style={{
+                fontFamily: "var(--font-serif)",
+                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              }}
+            >
+              You'll pick your date in the next step.
+            </p>
+          ) : null}
+
           <button
             type="button"
             onClick={onRefine}
