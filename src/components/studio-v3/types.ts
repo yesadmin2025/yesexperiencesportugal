@@ -185,6 +185,13 @@ export interface FitReport {
     interests: Array<{
       interest: string;
       satisfied: boolean;
+      /** Stop-intent coverage strength for this interest. "strong" = ≥2
+       *  stops tagged with a matching intent, "partial" = 1, "none" = 0.
+       *  Undefined when the guest interest has no stop-intent mapping. */
+      strength?: "strong" | "partial" | "none";
+      /** Stop labels that carry the intent. Feeds the "Why this journey"
+       *  chip row + rationale copy. Never invented. */
+      evidence?: string[];
     }>;
     /** Semantic match of the guest's feeling against tour content. */
     feeling: {
