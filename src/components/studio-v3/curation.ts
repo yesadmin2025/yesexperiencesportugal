@@ -16,7 +16,11 @@
 //      preferring stops with resolvable map coordinates.
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { interestCoverageFromProfile, tourIntentProfile } from "@/data/stopIntents";
+import {
+  assertStopIntentSchema,
+  interestCoverageFromProfile,
+  tourIntentProfile,
+} from "@/data/stopIntents";
 import { lookupStop } from "@/data/stopGeo";
 import { isStopClosedOn } from "@/data/stopOperational";
 import { recordStudioV3CurationDecision } from "@/lib/studio-v3-telemetry";
@@ -1014,6 +1018,7 @@ export function scoreTourFit(
     destinationIntent?: DestinationIntent | null;
   },
 ): FitReport {
+  assertStopIntentSchema();
   const { feeling, companions, interests, pickup, rhythm = null, destinationIntent = null } = intent;
   const boosts: string[] = [];
   const penalties: string[] = [];
@@ -1236,6 +1241,7 @@ export function pickPrimaryTourWithFit(
   topReports: Array<{ tour: SignatureTour; fit: FitReport }>;
   filtered: Array<{ tour: SignatureTour; reason: string }>;
 } {
+  assertStopIntentSchema();
   // Build the candidate pool from every axis the guest touched. FEELING_TO_TOURS
   // alone can miss cross-feeling matches (e.g. wine + adventure), so we fold in
   // destination-intent, interest, and profile-discovery targets before scoring.

@@ -17,7 +17,7 @@
 //   - Do NOT invent stops — only tags for stops that already exist in
 //     `signatureTours.ts` may be listed here. Extra keys are ignored.
 
-import type { SignatureTour } from "@/data/signatureTours";
+import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 
 /** Canonical stop-level intents. Broader than the guest-facing `Interest`
  *  union because a single stop can carry cultural/spiritual/craft nuance
@@ -237,4 +237,160 @@ export function interestCoverageFromProfile(
   }
   const strength = count >= 2 ? "strong" : count >= 1 ? "partial" : "none";
   return { strength, count, evidence };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Runtime schema validator                                          */
+/* ------------------------------------------------------------------ */
+
+/** Canonical set of allowed StopIntent keys — mirrors the `StopIntent`
+ *  union above as a runtime array so we can validate the
+ *  TOUR_STOP_INTENTS table at load time and in tests. */
+export const STOP_INTENT_KEYS = [
+  "wine",
+  "gastronomy",
+  "heritage",
+  "culture",
+  "nature",
+  "coast",
+  "romance",
+  "hidden",
+  "adventure",
+  "local-life",
+  "craft",
+  "family",
+  "slow-luxury",
+  "spiritual",
+  "view",
+] as const satisfies ReadonlyArray<StopIntent>;
+
+const STOP_INTENT_SET: ReadonlySet<string> = new Set(STOP_INTENT_KEYS);
+
+export interface StopIntentSchemaReport {
+  ok: boolean;
+  /** Human-readable error lines, ready to print. Empty when ok. */
+  errors: string[];
+  /** Structured error counts, useful for tests / telemetry. */
+  counts: {
+    unknownIntent: number;
+    unknownTour: number;
+    orphanStop: number;
+    untaggedStop: number;
+    emptyIntents: number;
+  };
+}
+
+/**
+ * validateStopIntentSchema — pure. Runs the four invariants of the
+ * stop-intent truth model against a live `signatureTours` catalog:
+ *
+ *   1. Every intent value in TOUR_STOP_INTENTS is a known StopIntent.
+ *   2. Every tour key in TOUR_STOP_INTENTS resolves to a real tour.
+ *   3. Every stop key resolves to a real stop on that tour (no orphans).
+ *   4. Every real Signature stop has ≥1 intent (no untagged stops).
+ */
+export function validateStopIntentSchema(
+  tours: ReadonlyArray<SignatureTour> = signatureTours,
+): StopIntentSchemaReport {
+  const errors: string[] = [];
+  const counts = {
+    unknownIntent: 0,
+    unknownTour: 0,
+    orphanStop: 0,
+    untaggedStop: 0,
+    emptyIntents: 0,
+  };
+
+  const tourById = new Map(tours.map((t) => [t.id, t] as const));
+
+  for (const [tourId, stopMap] of Object.entries(TOUR_STOP_INTENTS)) {
+    const tour = tourById.get(tourId);
+    if (!tour) {
+      counts.unknownTour++;
+      errors.push(`  · unknown tour id "${tourId}" in TOUR_STOP_INTENTS`);
+      continue;
+    }
+    const realLabels = new Set(tour.stops.map((s) => s.label));
+    for (const [label, intents] of Object.entries(stopMap)) {
+      if (!realLabels.has(label)) {
+        counts.orphanStop++;
+        errors.push(`  · orphan stop key: ${tourId} :: "${label}" not in signatureTours.ts`);
+      }
+      if (!Array.isArray(intents) || intents.length === 0) {
+        counts.emptyIntents++;
+        errors.push(`  · empty intent list: ${tourId} :: "${label}"`);
+        continue;
+      }
+      for (const intent of intents) {
+        if (!STOP_INTENT_SET.has(intent)) {
+          counts.unknownIntent++;
+          errors.push(
+            `  · unknown intent "${intent}" on ${tourId} :: "${label}" ` +
+              `(expected one of: ${STOP_INTENT_KEYS.join(", ")})`,
+          );
+        }
+      }
+    }
+  }
+
+  for (const tour of tours) {
+    const stopMap = TOUR_STOP_INTENTS[tour.id] ?? {};
+    for (const stop of tour.stops) {
+      const intents = stopMap[stop.label];
+      if (!intents || intents.length === 0) {
+        counts.untaggedStop++;
+        errors.push(`  · untagged Signature stop: ${tour.id} :: "${stop.label}"`);
+      }
+    }
+  }
+
+  return { ok: errors.length === 0, errors, counts };
+}
+
+let __schemaAssertion: { ok: boolean; message: string } | null = null;
+
+/** Assert the schema is valid; throws a formatted Error if not. Result
+ *  is memoised so repeated curation calls stay cheap. Curation callers
+ *  (`scoreTourFit`, `pickPrimaryTour`) invoke this before consuming
+ *  TOUR_STOP_INTENTS — a bad schema blocks matching instead of silently
+ *  degrading it. */
+export function assertStopIntentSchema(
+  tours: ReadonlyArray<SignatureTour> = signatureTours,
+): void {
+  if (__schemaAssertion?.ok) return;
+  if (__schemaAssertion && !__schemaAssertion.ok) {
+    throw new Error(__schemaAssertion.message);
+  }
+  const report = validateStopIntentSchema(tours);
+  if (report.ok) {
+    __schemaAssertion = { ok: true, message: "" };
+    return;
+  }
+  const message =
+    "[stopIntents] Schema validation failed — Studio curation is blocked " +
+    "until every Signature stop has a valid intent set.\n" +
+    report.errors.join("\n");
+  __schemaAssertion = { ok: false, message };
+  // eslint-disable-next-line no-console
+  console.error(message);
+  throw new Error(message);
+}
+
+/** Test-only: forget the memoised assertion. Never call from app code. */
+export function __resetStopIntentSchemaAssertion(): void {
+  __schemaAssertion = null;
+}
+
+// Eager module-load validation: surfaces broken edits in dev-server
+// output and browser DevTools without waiting for a guest to trigger
+// curation. Only logs — the hard throw happens in `assertStopIntentSchema`.
+{
+  const eager = validateStopIntentSchema();
+  if (!eager.ok) {
+    // eslint-disable-next-line no-console
+    console.error(
+      "[stopIntents] Schema validation failed on module load:\n" +
+        eager.errors.join("\n"),
+    );
+  }
 }
