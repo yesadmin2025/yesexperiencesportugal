@@ -29,7 +29,7 @@ import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
 import { HOMEPAGE_FAQ } from "@/content/faq-data";
-import { faqPageLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
+import { faqPageLd, itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 
@@ -270,6 +270,14 @@ export const Route = createFileRoute("/")({
             description: t.blurb,
             image: t.img,
           })),
+        }),
+      ),
+      jsonLdScript(
+        studioServiceLd({
+          path: "/",
+          name: "YES Experiences Portugal — private, personalized local Portugal days & journeys",
+          description:
+            "Private, personalized Portugal experiences with local hidden gems — Signature day tours, a real-time Studio to design your own day, and a human Travel Designer for full multi-day journeys across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Vicentine Coast.",
         }),
       ),
     ],
