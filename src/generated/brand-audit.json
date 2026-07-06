@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-06T20:36:30.179Z",
+  "generatedAt": "2026-07-06T20:39:46.102Z",
   "filesScanned": 554,
   "approvedPalette": {
     "teal": "#295B61",
@@ -2897,7 +2897,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 174,
+      "line": 173,
       "col": 56,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -2906,7 +2906,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 252,
+      "line": 251,
       "col": 29,
       "raw": "#4285F4",
       "normalized": "#4285f4",
@@ -2915,7 +2915,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 256,
+      "line": 255,
       "col": 29,
       "raw": "#34A853",
       "normalized": "#34a853",
@@ -2924,7 +2924,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 260,
+      "line": 259,
       "col": 29,
       "raw": "#FBBC05",
       "normalized": "#fbbc05",
@@ -2933,7 +2933,7 @@
     },
     {
       "file": "src/routes/auth.tsx",
-      "line": 264,
+      "line": 263,
       "col": 29,
       "raw": "#EA4335",
       "normalized": "#ea4335",
