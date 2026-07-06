@@ -272,6 +272,14 @@ export const Route = createFileRoute("/")({
           })),
         }),
       ),
+      jsonLdScript(
+        studioServiceLd({
+          path: "/",
+          name: "YES Experiences Portugal — private, personalized local Portugal days & journeys",
+          description:
+            "Private, personalized Portugal experiences with local hidden gems — Signature day tours, a real-time Studio to design your own day, and a human Travel Designer for full multi-day journeys across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Vicentine Coast.",
+        }),
+      ),
     ],
   }),
   component: HomePage,
