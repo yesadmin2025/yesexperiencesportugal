@@ -64,6 +64,7 @@ import {
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -634,6 +635,7 @@ function prefersReducedMotion(): boolean {
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
+  const { data: tourPriceTiers } = useTourPriceTiers();
   const [exiting, setExiting] = useState(false);
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
@@ -700,7 +702,10 @@ export function StudioV3() {
         dateExact: details.tourDate || currentState.dateExact || null,
         startTime: details.startTime ?? null,
         pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-        pricePerPaxEur: tour.priceFrom ?? 180,
+        pricePerPaxEur:
+          resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
+          tour.priceFrom ??
+          180,
         heroSrc: tour.img ?? null,
         beats: stopLabels.slice(0, 4),
         flowLabel: "Studio",
