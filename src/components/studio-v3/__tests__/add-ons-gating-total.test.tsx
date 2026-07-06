@@ -10,6 +10,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignaturePriceCard } from "../SignaturePriceCard";
 import type { SignatureTour } from "@/data/signatureTours";
 import { ADD_ON_CATALOG, addOnEurFromBase, regionBucket } from "@/data/signatureAddOns";
@@ -25,6 +26,11 @@ vi.mock("@/data/signatureToursViator", () => ({
 vi.mock("@/lib/studio-v3-telemetry", () => ({
   recordStudioV3RevealPremium: vi.fn(),
   recordStudioV3BuilderStep: vi.fn(),
+  recordStudioV3RevealAddOns: vi.fn(),
+  recordStudioV3CurationDecision: vi.fn(),
+  recordStudioV3Phase4Timing: vi.fn(),
+  recordStudioV3RevealValidation: vi.fn(),
+  emitStudioV3Event: vi.fn(),
 }));
 
 function makeTour(over: Partial<SignatureTour> = {}): SignatureTour {
@@ -39,11 +45,30 @@ function makeTour(over: Partial<SignatureTour> = {}): SignatureTour {
   } as SignatureTour;
 }
 
+/**
+ * SignaturePriceCard reads live per-pp tier pricing via `useTourPriceTiers`,
+ * which is a TanStack Query hook. Every render helper in this file must wrap
+ * the tree in a QueryClientProvider — otherwise the hook throws
+ * "No QueryClient set". We build a fresh client per render so cache state
+ * never leaks between tests. `retry: false` keeps failed fetches from
+ * masking assertion errors with retry noise.
+ */
+function withQuery(ui: React.ReactNode) {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return <QueryClientProvider client={client}>{ui}</QueryClientProvider>;
+}
+
+const renderCard = (ui: React.ReactNode) => render(withQuery(ui));
+
 function renderInTheme(theme: "light" | "dark", ui: React.ReactNode) {
   return render(
-    <div data-theme={theme} style={{ background: theme === "dark" ? "#111" : "#fff" }}>
-      {ui}
-    </div>,
+    withQuery(
+      <div data-theme={theme} style={{ background: theme === "dark" ? "#111" : "#fff" }}>
+        {ui}
+      </div>,
+    ),
   );
 }
 
@@ -88,7 +113,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("does not offer the resolved tour's own experience as an add-on", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({
@@ -112,7 +137,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
 
   describe("itinerary gating", () => {
     it("surfaces at most 3 lisbon-arrábida add-ons when duration + stops are generous", () => {
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       const fieldset = screen.getByTestId("studio-v3-add-ons");
       const buttons = within(fieldset).getAllByRole("button");
       expect(buttons.length).toBeLessThanOrEqual(3);
@@ -125,7 +150,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
 
     it("hides add-ons whose minHours exceeds the tour duration", () => {
       // 3h half-day tour → hours=3, so add-ons with minHours 6+ drop out.
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({ durationHours: "3h", duration: "Half Day" }),
@@ -144,7 +169,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("hides 'sintra-detour' when stopCount is below its minStops (4)", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({ region: "Setúbal · Arrábida", durationHours: "8h" }),
@@ -160,7 +185,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("hides the entire add-on section when the base price is missing", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({ tour: makeTour({ id: "missing-price-id" as string }) })}
         />,
@@ -169,7 +194,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("hides the entire add-on section when no sibling signatures exist (douro bucket)", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({
@@ -187,7 +212,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
       // lisbon-arrabida currently has 5 catalog entries; cap = 3.
       const pool = ADD_ON_CATALOG[regionBucket("Setúbal · Arrábida")];
       expect(pool.length).toBeGreaterThanOrEqual(3);
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       expect(within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")).toHaveLength(
         3,
       );
@@ -196,7 +221,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
 
   describe("running total (base + Σ selected, per pp)", () => {
     it("shows no total badge when nothing is selected", () => {
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       const total = screen.queryByTestId("studio-v3-add-ons-total");
       expect(total?.textContent?.toLowerCase() ?? "").not.toMatch(/total/);
     });
@@ -242,7 +267,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     );
 
     it("running total stays consistent under repeated toggling of the same add-on", () => {
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       const first = within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")[0];
       const m = first.textContent?.match(/\+€(\d+)/);
       const eur = m ? Number(m[1]) : 0;
