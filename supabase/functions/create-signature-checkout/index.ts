@@ -301,6 +301,13 @@ Deno.serve(async (req) => {
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
+        add_ons: JSON.stringify(
+          validatedAddOns.map((a) => ({ id: a.id, label: a.label, priceEur: a.priceEur })),
+        ).slice(0, 480),
+        add_ons_total_eur: String(
+          validatedAddOns.reduce((s, a) => s + a.priceEur, 0),
+        ),
+
         ui_mode: uiMode,
         ...(body.guestDetails?.bokunAvailabilityId
           ? { bokun_availability_id: String(body.guestDetails.bokunAvailabilityId) }
