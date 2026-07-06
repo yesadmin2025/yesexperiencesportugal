@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType } from "react";
 import { template as bookingConfirmation } from "./booking-confirmation";
 import { template as checkoutReceipt } from "./checkout-receipt";
