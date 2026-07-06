@@ -2157,7 +2157,6 @@ export function StudioV3() {
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
             />
-
           </PhaseShell>
         </>
       ) : null}
@@ -2537,7 +2536,6 @@ function StoryboardHandoff({
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
 }) {
   const pickupCity = pickupCityLabel(state.pickup);
-
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
 
