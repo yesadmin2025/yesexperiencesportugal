@@ -1,58 +1,56 @@
-## Goal
+# Studio V3 — 4 new E2E specs
 
-Add one Playwright E2E spec that locks in the unified reveal card + add-on live-update contract introduced in the last pass.
+All four specs live in `e2e/`, reuse `walkToReveal` + parsers from `e2e/studio-v3-walk-to-reveal.ts`, `test.skip(...)` when the funnel doesn't reach the reveal, and follow the existing spec conventions (Playwright, mobile-chromium project by default).
 
-## New file
+## 1. `e2e/studio-v3-unified-signature-card-visual.spec.ts`
+Visual regression of the unified `[data-testid="studio-v3-signature-card"]`.
 
-`e2e/studio-v3-unified-signature-card.spec.ts`
+- Walk to reveal, `expect(card).toBeVisible()`.
+- `await card.evaluate(el => el.scrollIntoView({block: 'start'}))`, disable animations via `page.emulateMedia({ reducedMotion: 'reduce' })` before navigation.
+- `await expect(card).toHaveScreenshot('signature-card-collapsed.png')`.
+- Expand Swap pool (`button[aria-label^="Swap "]`) if present, wait for `[data-testid="studio-v3-swap-pool"]` visible, snapshot `signature-card-swap-expanded.png`, then click to collapse and snapshot `signature-card-after-collapse.png` (asserts no lingering layout shift).
+- Same cycle for `[data-testid="studio-v3-add-moment"] button[aria-expanded]` → `signature-card-add-pool-expanded.png`.
+- Snapshots go under `e2e/__baselines__/` via Playwright's default `toHaveScreenshot`. First run generates baselines; CI diff budget already configured in `playwright.config.ts` (0.2% pixel ratio).
 
-## Spec structure
+## 2. `e2e/studio-v3-add-ons-disabled-vs-enabled.spec.ts`
+Companion to the existing `studio-v3-add-ons-disabled-never-affect-total.spec.ts` — this new one asserts the *contrast*: disabled do nothing, enabled always do.
 
-Uses the existing `walkToReveal(page)` helper + `readInteractableAddons`, `parseAddOnsTotalEur`, `parsePartyTotalEur` from `e2e/studio-v3-walk-to-reveal.ts` (no new helpers). `test.skip(...)` when the funnel doesn't reach the reveal, matching the other add-ons specs.
+- Baseline `parseAddOnsTotalEur` + `parsePartyTotalEur`.
+- Force-click every `button[data-addon-id][data-state="disabled"]` and every `button[data-addon-id][aria-disabled="true"]`. After each click, assert both totals equal baseline and `aria-pressed="false"`.
+- Then iterate `readInteractableAddons(page)` (up to first 3 to respect cap): each click MUST strictly increase both totals by that chip's `+€N` (per-guest × guest count for party-total); each un-click MUST restore exactly the previous value.
+- Ends with a full toggle-off returning to baseline.
 
-### Test 1 — "unified Signature card renders correctly"
+## 3. `e2e/studio-v3-cta-labels-live.spec.ts`
+Every add-on toggle updates the visible label of both the inline CTA (`[data-testid="studio-v3-cta-primary"]`) and the mobile sticky CTA (`[data-testid="studio-v3-cta-sticky"]`).
 
-- Wait for `[data-testid="studio-v3-reveal"]`.
-- Assert exactly one `[data-testid="studio-v3-signature-card"]` is visible.
-- Assert the previously-scattered pieces now live INSIDE that single card, using `card.locator(...)`:
-  - `[data-testid="studio-v3-reveal-map"]`
-  - `[data-testid="studio-v3-story-of-day"]`
-  - `[data-testid="studio-v3-stops-editor"]` (when route resolves — guarded with `count() > 0` so it's not flaky on regions without editable stops)
-  - `[data-testid="studio-v3-add-ons"]`
-  - `[data-testid="studio-v3-add-ons-total"]`
-  - `[data-testid="studio-v3-party-total"]`
-- Assert `QualityScore` is NOT inside the reveal (`page.locator('[data-testid="studio-v3-quality-score"]').count()` is 0 within the reveal container — kept only in debug overlay).
-- Screenshot the card element only (`card.screenshot(...)`) for visual evidence under `/tmp/browser/unified-card/`.
+- Regex `/€\s?(\d+)/` on `textContent` of each CTA.
+- Baseline both labels; assert equal to `parsePartyTotalEur` (or `€NN /pp` fallback when party-total is null).
+- Toggle first two interactable add-ons: after each click read CTA text within the same frame using `page.evaluate` (mirrors `studio-v3-add-ons-same-frame.spec.ts` pattern) and assert the numeric in each CTA equals the new `party-total`.
+- Scroll to reveal sticky CTA (scroll `SignaturePriceCard` past viewport) and re-assert its label after another toggle.
+- Toggle back off, assert labels return to baseline text.
 
-### Test 2 — "add-on toggles still update totals immediately inside the unified card"
+## 4. `e2e/studio-v3-mobile-map-above-moments-card.spec.ts`
+Mobile-only (project `mobile-chromium` via `test.use({ viewport: { width: 393, height: 852 } })` + skip on non-mobile projects).
 
-- Read `beforeAddOns` + `beforeParty`.
-- Pick first 2 interactable add-ons; for each click:
-  - Read totals in the SAME frame via a `page.evaluate` that clicks then reads `data-testid="studio-v3-add-ons-total"` and `studio-v3-party-total` textContent — same pattern as `studio-v3-add-ons-same-frame.spec.ts`.
-  - Assert `afterAddOns > beforeAddOns` and `afterParty > beforeParty` after each click, and the delta matches `eur * guests` for party (guests read from `[data-testid="studio-v3-guest-count"]` if present, else assert only monotonic increase).
-- Toggle both off; assert totals return to the original baseline.
+Verifies that while the route is unfolding — i.e. `[data-testid="studio-v3-map-anticipation"]` is mounted and the reveal has NOT appeared yet — the moments/story card is BELOW (later in the vertical stack, higher `top`) than the map on mobile, so the user can watch the map compose.
 
-### Test 3 — "totals stay live after expanding/collapsing reveal sections"
+- Walk the funnel up to the storyboard/map phase but do NOT hold-journey to the reveal.
+- Wait for `[data-testid="studio-v3-map-anticipation"]` visible.
+- Locate the moments card container — the closest ancestor of `[data-testid="studio-v3-moment-timings"]` that isn't the map wrapper (query the panel by data attribute; if none exists, add `data-testid="studio-v3-moments-card"` on that wrapper in `MapAwakens.tsx` in the build step).
+- `boundingBox()` for both: assert `moments.y >= map.y + map.height * 0.6` (moments start clearly below the map's mid-line) AND `moments.y > map.y` (no overlap where the card would occlude the composing route).
+- Also assert z-index sanity: `getComputedStyle(moments).zIndex` is not greater than the map's when they visually overlap in landscape edge cases → skip if boxes don't overlap horizontally.
+- Screenshot `mobile-map-composing.png` to `/tmp/browser/mobile-stack/` for artifact review.
 
-Interactive collapsibles in the current reveal:
-- Moment "Swap" toggle (`button[aria-label^="Swap "]`) — expands `[data-testid="studio-v3-swap-pool"]`.
-- "+ Add one more moment" toggle (`[data-testid="studio-v3-add-moment"] button[aria-expanded]`) — expands `[data-testid="studio-v3-add-pool"]`.
+## Technical notes
 
-Flow:
-1. Baseline `beforeAddOns` / `beforeParty`.
-2. Select 1 add-on → assert totals moved.
-3. Expand Swap (if present) → collapse it. Assert totals unchanged after each toggle.
-4. Expand Add-moment (if present) → collapse it. Assert totals unchanged.
-5. Toggle add-on off. Assert totals returned to baseline.
-6. Screenshot final state.
+- All specs assume `walkToReveal` already covers the intro→reveal walk; no funnel changes.
+- Spec #4 may require a one-line addition of `data-testid="studio-v3-moments-card"` on the moments panel wrapper in `src/components/studio-v3/MapAwakens.tsx` (only if no existing stable selector exists after re-reading the file); this is a test-only attribute, no visual/behavioral change.
+- No changes to `SignaturePriceCard`, `StudioV3.tsx`, `playwright.config.ts`, or CI workflows.
+- Run locally: `bunx playwright test e2e/studio-v3-unified-signature-card-visual.spec.ts e2e/studio-v3-add-ons-disabled-vs-enabled.spec.ts e2e/studio-v3-cta-labels-live.spec.ts e2e/studio-v3-mobile-map-above-moments-card.spec.ts --reporter=line`.
+- Visual baselines will be generated on first successful run via `--update-snapshots`.
 
 ## Non-goals
 
-- No changes to `walkToReveal` or the shared helper file.
-- No changes to `SignaturePriceCard` / `StudioV3.tsx`. Purely a new spec.
-- No CI config changes.
-
-## Verification
-
-Run just the new spec headlessly:
-`bunx playwright test e2e/studio-v3-unified-signature-card.spec.ts --reporter=line`
+- No changes to add-on pricing logic, CTA copy, or reveal layout.
+- No new CI workflow file — these run under the existing Playwright job.
+- No refactor of `walkToReveal` or shared helpers beyond what's already exported.
