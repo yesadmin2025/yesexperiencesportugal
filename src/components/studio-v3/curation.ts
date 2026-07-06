@@ -1241,6 +1241,7 @@ export function pickPrimaryTourWithFit(
   topReports: Array<{ tour: SignatureTour; fit: FitReport }>;
   filtered: Array<{ tour: SignatureTour; reason: string }>;
 } {
+  assertStopIntentSchema();
   // Build the candidate pool from every axis the guest touched. FEELING_TO_TOURS
   // alone can miss cross-feeling matches (e.g. wine + adventure), so we fold in
   // destination-intent, interest, and profile-discovery targets before scoring.
