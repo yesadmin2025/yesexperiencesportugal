@@ -1,37 +1,61 @@
-# Tablet E2E: moments card stays below the map during route composition
+## Studio V3 — Intent fidelity, preview clarity & map/pricing polish
 
-Add one new spec that mirrors the existing mobile invariant at tablet width, so we catch regressions where a two-column or side-by-side layout kicks in at the tablet breakpoint and lifts the "Your Signature" / moments card next to (or above) the map while the route is still unfolding.
+Fixes six real problems you hit while testing. Grouped by symptom, each with a concrete change.
 
-## File
+### 1. Intent matching is wrong (wine + nature → Southwest Coast, which has no wine)
 
-`e2e/studio-v3-tablet-map-above-moments-card.spec.ts`
+**Why it happens** — In `src/components/studio-v3/curation.ts` (`pickPrimaryTour`), wine is only strongly boosted when `feeling === "wine-food"` OR wine is the *top* interest. Picking "wine" + "nature" without a wine feeling leaves the nature pool (which includes Southwest Vicentine Coast) dominant, and there is no *penalty* for choosing a tour that has zero wine content when the guest asked for wine.
 
-## Behavior
+**Fix**
+- Add a **hard coherence guard**: if `interests` includes `wine` OR `gastronomy`, deprioritise tours whose title/theme/blurb/stops contain no wine keywords (–4 score) unless the user explicitly picked a non-wine destination intent (e.g. `southwest-coast`).
+- Symmetrically, if `interests` includes `nature` or `coastal`, keep the wine tour eligible but require wine-anchored tours to also carry at least one nature/coastal stop before winning.
+- Raise `wineBoost` from 1.5 → 2.5 when wine is any listed interest (not just top), and keep the boost only when the tour actually contains wine content (guard already in place).
+- Add a unit test in `src/components/studio-v3/__tests__/` covering the exact case: `feeling=discover`, `interests=[wine, nature]` → expected tour must contain wine content (e.g. Arrábida Wine, Alentejo Evora Wine, Roman Talha), never Southwest Coast.
 
-- **Project gate**: run only under the `tablet-chromium` Playwright project (viewport 834×1112 from `playwright.config.ts`). `test.skip(testInfo.project.name !== "tablet-chromium", "tablet-only invariant")` in `beforeEach`, exactly matching the mobile spec's gating style.
-- **Funnel**: `await page.goto("/studio-v3")` then `await walkToReveal(page)` from `./studio-v3-walk-to-reveal`. Same helper as the mobile spec — it stops at the storyboard/map phase if it can't hold-journey to the reveal, which is the exact state we want to assert against.
-- **Selectors** (identical to mobile spec, reusing the testids already in place):
-  - `[data-testid="studio-v3-map-anticipation"]` — the composing map.
-  - `[data-testid="studio-v3-moments-card"]` — the moments/story card wrapper added to `MapAwakens.tsx` for the mobile spec.
-- **Skips** (predictive, so tablet variance doesn't cause false failures):
-  - Skip if the map isn't visible within 10s (`test.skip(true, "map anticipation state not reached in this run")`).
-  - Skip if the moments card isn't mounted within 5s (`test.skip(true, "moments card not mounted this run")`).
-  - Skip if `boundingBox()` returns null for either element.
-  - Skip if the two boxes don't horizontally overlap — at tablet width the layout may legitimately place them side-by-side in landscape edge cases (mirrors the z-index caveat in the mobile plan). The vertical-stack invariant only applies when they occupy the same horizontal band.
-- **Assertions** (only when horizontally overlapping, matching mobile):
-  - `cardBox.y >= mapBox.y + mapBox.height * 0.6` — card starts at or below the map's mid-line.
-  - `cardBox.y > mapBox.y` — card top is strictly below the map's top edge (no occlusion of the composing route).
-- **Artifact**: `await page.screenshot({ path: "/tmp/browser/tablet-stack/tablet-map-composing.png" })` for review, parallel to the mobile spec's `mobile-stack/mobile-map-composing.png`.
+### 2. "Hold this journey" reads like checkout
 
-## Predictive intent-matching
+Rename the CTA in `MapAwakens.tsx` (line 599) — replace "Hold this journey" with **"Preview this journey"** and lighten the visual weight (ghost button, not primary gold). Reserve the primary gold/filled state for the actual `Yes — reserve · €…` CTA inside `SignaturePriceCard`. Same rename for any aria-label and any tracking event key (keep old event as alias for 1 release).
 
-Because tablet is where responsive layouts most often flip between stacked and side-by-side, the spec is conservatively skip-gated: it only fails when the map and card are visually stacked (horizontal overlap) AND the card intrudes into the top 60% of the map. This matches the user's real intent — "keep the composing route visible" — without punishing legitimate side-by-side tablet layouts.
+### 3. Mobile — "Moments" card sitting under the map before preview
 
-## Non-goals
+- On mobile (`< md`), the Signature card in `MapAwakens.tsx` currently renders below the map during the reveal walkthrough. That's the intended stack, but the eyebrow/label on the card should read **"Preview"** (not "Your Signature") until the guest hits "Preview this journey". After preview it flips to **"Your Signature"** and reveals inclusions + price.
+- Add a subtle "↓ Preview below" affordance under the map while the sequence completes, so the traveller understands the card is a *preview*, not the checkout.
+- Reuse the existing mobile stacking invariant covered by `e2e/studio-v3-mobile-map-above-moments-card.spec.ts`; extend it to assert the "Preview" label pre-CTA and "Your Signature" post-CTA.
 
-- No changes to `MapAwakens.tsx`, `SignaturePriceCard`, `walkToReveal`, `playwright.config.ts`, or CI workflows.
-- No new baselines/snapshots — layout-box assertions only.
+### 4. Map lacks distances, place names and regions
 
-## Run
+`MapAwakens.tsx` currently draws the route but doesn't render leg distances or stop labels clearly.
+- Show **stop name pills** on each marker (place, town), always visible on mobile (not hover-only).
+- Render **leg distance in km + drive-time minutes** on each polyline segment (reuse `use-route-leg-minutes.ts` + `stopCoords.ts` haversine).
+- Add a **region badge** at the top of the map ("Arrábida · Setúbal", "Alentejo · Évora", etc.) sourced from the resolved tour's region.
+- Reuse `RouteLegend.tsx` for the legend below the map; make sure it lists every stop with an index, name, and micro-caption.
 
-`bunx playwright test e2e/studio-v3-tablet-map-above-moments-card.spec.ts --project=tablet-chromium --reporter=line`
+### 5. Intent → resolved journey mismatch (broader than #1)
+
+- Surface a **"Why this journey" chip row** at the top of the preview card: 2–3 chips echoing the guest's actual inputs ("Wine · Nature · Couple · Half-day from Lisbon"). Sourced from `deriveIntentProfile` — no invention.
+- If the resolver falls back (candidate pool was empty), log a debug marker in `StudioV3DebugOverlay` and show an inline "Not quite right? Reshape" nudge instead of silently serving a mismatch.
+- Add regression tests for the top 6 interest+feeling pairs (wine+nature, culture+heritage, romance+coastal, adventure+wine, hidden+gastronomy, slow-luxury+wine) asserting the resolved tour is thematically coherent.
+
+### 6. Checkout / price reveal is messy (prices & inclusions)
+
+In `SignaturePriceCard.tsx`:
+- **Two clear states**: Preview (collapsed) shows only tour title, region, duration, from-price per person, and 3 headline inclusions. Reserve (expanded, after "Preview this journey") shows full inclusions list, per-pax breakdown, add-ons, and the reserve CTA.
+- **Price line locked format**: `€X /pp · party of N · €Y total` — never mix formats mid-card. Currently the ghost + primary CTAs show different formats.
+- **Inclusions grouped** into 3 buckets with icons: *Included* (transport, guide, tastings), *Optional add-ons* (with clear €), *Not included* (tips, personal spend). Kill the current single flat list.
+- **Sticky reserve bar** on mobile with the party total, so the guest never loses the price when scrolling inclusions.
+- Extend `e2e/studio-v3-add-ons-total.spec.ts` + `studio-v3-cta-labels-live.spec.ts` to assert the two-state reveal and the locked price format.
+
+### Files touched (expected)
+- `src/components/studio-v3/curation.ts` — coherence guards + tests
+- `src/components/studio-v3/MapAwakens.tsx` — CTA rename, region badge, leg labels, mobile preview affordance
+- `src/components/studio-v3/SignaturePriceCard.tsx` — two-state reveal, inclusions grouping, sticky mobile bar, locked price format
+- `src/components/studio-v3/RouteLegend.tsx` — always-visible stop pills + distances
+- `src/components/studio-v3/__tests__/` — new intent-coherence tests
+- `e2e/studio-v3-*.spec.ts` — extend mobile stack, CTA labels, add-ons totals specs
+
+### Out of scope (flag but don't touch this pass)
+- Bokun/Stripe checkout wiring — TEST MODE stays, we only clean the reveal card.
+- Any new tours, stops or prices — no invention (guardrail).
+- Desktop/tablet layout beyond the mobile-first fixes above.
+
+Approve and I'll implement in this order: (1) intent coherence + tests, (2) CTA rename + mobile preview state, (3) map labels/legend, (4) SignaturePriceCard two-state reveal.
