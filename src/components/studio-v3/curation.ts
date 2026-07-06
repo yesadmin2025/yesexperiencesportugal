@@ -1571,7 +1571,9 @@ export function resolveStudioV3Route(input: {
       considerations: input.considerations ?? [],
       existingRoutePointLabels: routePoints.map((p) => p.label),
     });
-    finalRefinements = [...baseRefinements, ...optional].slice(0, 2);
+    // Allow up to 4 total refinements so the traveller sees the personalized
+    // additions on top of the 1–2 base reasons.
+    finalRefinements = [...baseRefinements, ...optional].slice(0, 4);
   }
 
   return {
@@ -2208,6 +2210,18 @@ export const SKELETON_TO_CLUSTER: Record<
     routeCluster: "arrabida-azeitao-sesimbra",
     signatureTourId: "azeitao-cheese",
   },
+  // Vidigueira / Vila de Frades — Roman heritage + talha-wine cluster.
+  "roman-heritage-alentejo": {
+    region: "alentejo-evora",
+    routeCluster: "vidigueira-roman-talha",
+    signatureTourId: "roman-heritage-alentejo",
+  },
+  // Southwest Vicentine Coast — Porto Covo → Milfontes → Odeceixe corridor.
+  "southwest-vicentine-coast": {
+    region: "other",
+    routeCluster: "vicentine-coast",
+    signatureTourId: "southwest-vicentine-coast",
+  },
 };
 
 /**
@@ -2291,7 +2305,7 @@ function scoreOptionalStop(
 
 function normalizeLabel(s: string): string {
   return s
-    .split(/[—–-]/)[0]
+    .split(/[—–·-]/)[0]
     .split(",")[0]
     .trim()
     .toLowerCase()
