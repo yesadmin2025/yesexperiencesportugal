@@ -299,7 +299,7 @@ export function MapAwakens({
   const activeDwellMin = dwellByIndex[active];
 
   return (
-    <div className="relative w-full min-h-[100dvh]" style={{ background: "var(--ivory)" }}>
+    <div className="relative w-full min-h-[100dvh] flex flex-col sm:block" style={{ background: "var(--ivory)" }}>
       {/* Back */}
       <button
         type="button"
