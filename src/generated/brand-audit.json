@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-06T17:25:52.572Z",
-  "filesScanned": 550,
+  "generatedAt": "2026-07-06T20:28:58.563Z",
+  "filesScanned": 554,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 367,
+    "total": 372,
     "approved": 87,
     "allowlisted": 63,
-    "mismatch": 217
+    "mismatch": 222
   },
   "findings": [
     {
@@ -1645,8 +1645,26 @@
       "status": "mismatch"
     },
     {
+      "file": "src/components/studio-v3/SignaturePriceCard.tsx",
+      "line": 744,
+      "col": 40,
+      "raw": "#b8541a",
+      "normalized": "#b8541a",
+      "snippet": "? \"color-mix(in oklab, #b8541a 75%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/SignaturePriceCard.tsx",
+      "line": 761,
+      "col": 76,
+      "raw": "#b8541a",
+      "normalized": "#b8541a",
+      "snippet": "<span className=\"tabular-nums\" style={{ color: over ? \"#b8541a\" : \"var(--charcoal)\" }}>",
+      "status": "mismatch"
+    },
+    {
       "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
-      "line": 200,
+      "line": 241,
       "col": 70,
       "raw": "#FF8A8A",
       "normalized": "#ff8a8a",
@@ -1655,7 +1673,7 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
-      "line": 233,
+      "line": 274,
       "col": 24,
       "raw": "#7FE3A1",
       "normalized": "#7fe3a1",
@@ -1664,11 +1682,38 @@
     },
     {
       "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
-      "line": 237,
+      "line": 278,
       "col": 24,
       "raw": "#FF8A8A",
       "normalized": "#ff8a8a",
       "snippet": "color = \"#FF8A8A\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 363,
+      "col": 24,
+      "raw": "#F4E1B5",
+      "normalized": "#f4e1b5",
+      "snippet": "? \"#F4E1B5\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 366,
+      "col": 26,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": ": \"#FF8A8A\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 427,
+      "col": 42,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": "<span style={{ color: \"#FF8A8A\" }}>✕</span> {t.id} · {reason}",
       "status": "mismatch"
     },
     {
