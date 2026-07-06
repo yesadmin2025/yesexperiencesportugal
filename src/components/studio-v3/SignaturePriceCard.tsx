@@ -1208,7 +1208,7 @@ export function SignaturePriceCard({
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >
-            Yes — make this day mine <ArrowRight size={14} aria-hidden />
+            Yes — reserve{partyTotalEur != null ? ` · €${partyTotalEur}` : totalEur != null ? ` · €${totalEur} /pp` : ""} <ArrowRight size={14} aria-hidden />
           </button>
           <p
             className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
