@@ -1073,12 +1073,16 @@ export function scoreTourFit(
     penalties.push("wine-asked-but-tour-has-no-wine");
   }
 
-  // ---- Existing pickup / intent / discovery boosts (kept, weighted) ----
+  // ---- Existing pickup / intent / discovery boosts (kept, re-weighted for
+  // the new score scale — interest coverage now dominates, so the
+  // destination-intent signal is boosted 2.5x so a guest who explicitly
+  // chose a region isn't outvoted by a Lisbon-adjacent alternative that
+  // happens to satisfy the same interests). ----
   const pickupBoost = pickupAffinity(tour, pickup) * 0.8;
   if (pickupBoost > 0) boosts.push("pickup-adjacent");
-  const intentBoost = destinationIntentBoost(tour, destinationIntent);
+  const intentBoost = destinationIntentBoost(tour, destinationIntent) * 2.5;
   if (intentBoost > 0) boosts.push("destination-intent-aligned");
-  const discoveryBoost = profileDiscoveryBoost(tour, feeling, interests, destinationIntent);
+  const discoveryBoost = profileDiscoveryBoost(tour, feeling, interests, destinationIntent) * 2;
   if (discoveryBoost > 0) boosts.push("profile-discovery");
 
   // ---- Tiles / culture-craft nudge (kept) ----
