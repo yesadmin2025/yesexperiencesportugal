@@ -753,7 +753,7 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, openLeadSheet],
+    [checkoutPending, openLeadSheet, tourPriceTiers],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
