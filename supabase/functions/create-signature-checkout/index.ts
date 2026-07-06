@@ -211,6 +211,46 @@ Deno.serve(async (req) => {
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
     const submitMessage = copy.submit;
 
+    // Validate + cap reveal add-ons. Price is flat per booking (matches the
+    // reveal price card). Client-declared euros are trusted as an anchor but
+    // clamped to [0..1000] per item and 6 items max so a tampered client
+    // can't stuff arbitrary charges into the Stripe session.
+    const rawAddOns = Array.isArray(body.addOns) ? body.addOns : [];
+    const validatedAddOns = rawAddOns
+      .filter(
+        (a) =>
+          a &&
+          typeof a === "object" &&
+          typeof a.id === "string" &&
+          a.id.length > 0 &&
+          a.id.length <= 64 &&
+          typeof a.label === "string" &&
+          a.label.length > 0 &&
+          Number.isFinite(a.priceEur) &&
+          a.priceEur >= 0 &&
+          a.priceEur <= 1000,
+      )
+      .slice(0, 6)
+      .map((a) => ({
+        id: a.id,
+        label: a.label.slice(0, 120),
+        priceEur: Math.round(a.priceEur),
+        durationMinutes: Number.isFinite(a.durationMinutes)
+          ? Math.max(0, Math.min(480, Math.round(a.durationMinutes as number)))
+          : 0,
+      }));
+
+    const addOnLineItems = validatedAddOns
+      .filter((a) => a.priceEur > 0)
+      .map((a) => ({
+        price_data: {
+          currency: "eur",
+          product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
+          unit_amount: a.priceEur * 100,
+        },
+        quantity: 1,
+      }));
+
     const sessionParams: Record<string, unknown> = {
       line_items: [
         {
@@ -225,7 +265,9 @@ Deno.serve(async (req) => {
           },
           quantity: body.guests,
         },
+        ...addOnLineItems,
       ],
+
       mode: "payment",
       locale: "auto",
       submit_type: "book",
