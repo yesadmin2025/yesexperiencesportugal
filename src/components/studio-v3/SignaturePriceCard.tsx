@@ -1232,7 +1232,6 @@ export function SignaturePriceCard({
             </p>
           ) : null}
 
-
           <button
             type="button"
             onClick={onRefine}

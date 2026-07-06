@@ -3136,8 +3136,6 @@ function StoryboardHandoff({
           );
         })()}
 
-
-
         <span
           aria-hidden
           className="mt-6 inline-block h-px w-10"
