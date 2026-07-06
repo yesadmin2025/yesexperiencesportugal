@@ -36,6 +36,11 @@ vi.mock("@/data/signatureToursViator", () => ({
 vi.mock("@/lib/studio-v3-telemetry", () => ({
   recordStudioV3RevealPremium: vi.fn(),
   recordStudioV3BuilderStep: vi.fn(),
+  recordStudioV3RevealAddOns: vi.fn(),
+  recordStudioV3CurationDecision: vi.fn(),
+  recordStudioV3Phase4Timing: vi.fn(),
+  recordStudioV3RevealValidation: vi.fn(),
+  emitStudioV3Event: vi.fn(),
 }));
 
 function makeTour(): SignatureTour {
