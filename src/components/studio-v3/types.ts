@@ -145,6 +145,67 @@ export interface IntentProfile {
   privacyLevel: IntentLevel;
 }
 
+/* ---------- Fit report (Phase 8: intent-to-journey fidelity) ----------
+ *
+ * A structured, deterministic explanation of how well a Signature tour
+ * satisfies the guest's inputs. Produced by `scoreTourFit` in curation.ts
+ * for every candidate and consumed by:
+ *   - `pickPrimaryTour` (sorts by `totalScore`, filters on `hardConstraints`)
+ *   - the "Why this journey" UI chips + one-sentence rationale
+ *   - the debug overlay (?debug=1) — shows top-3 reports + filtered tours
+ *
+ * Never mutated after creation. All numbers are deterministic given the
+ * same tour + intent inputs — no AI, no randomness. AI voice may rewrite
+ * the guest-facing sentence downstream, but the *facts* live here.
+ */
+export interface FitReport {
+  tourId: string;
+  /** Weighted total, roughly 0–100. Higher = better fit. Negative when
+   *  penalties dominate — such tours are still eligible unless a hard
+   *  constraint failed (then they are filtered out entirely). */
+  totalScore: number;
+  hardConstraints: {
+    /** True when the pickup + rhythm combination can realistically reach
+     *  the tour's region (half-day capped at ~2h drive; full/immersive
+     *  looser). Currently advisory only — reported but not filtered. */
+    pickupReachable: boolean;
+    /** True when the tour's `idealFor` copy is not exclusively coded for
+     *  a different companion type (family-only vs couple, romantic-only
+     *  vs corporate). */
+    companionsAllowed: boolean;
+    /** True when the tour's duration/pace is compatible with the guest's
+     *  chosen rhythm. Advisory — never drops the last candidate. */
+    rhythmFeasible: boolean;
+  };
+  coverage: {
+    /** One entry per interest the guest asked for. `satisfied=true` means
+     *  the tour's own content (title/theme/blurb/intro/stops) contains
+     *  matching keywords. Guests never see this raw — it feeds the
+     *  "Why this journey" copy and the debug overlay. */
+    interests: Array<{
+      interest: string;
+      satisfied: boolean;
+    }>;
+    /** Semantic match of the guest's feeling against tour content. */
+    feeling: {
+      match: "strong" | "partial" | "weak";
+      hits: number;
+    };
+    /** Whether the destinationIntent boost table hits this tour. */
+    destinationIntentAligned: boolean;
+    /** Companions coherence — pass/warn/fail. */
+    companions: "pass" | "warn" | "fail";
+  };
+  /** Human-readable penalty tags (e.g. "wine-asked-but-tour-has-no-wine",
+   *  "family-coded-for-couple"). Consumed by the debug overlay. */
+  penalties: string[];
+  /** Human-readable boost tags (e.g. "wine-explicit", "tiles-culture-local-life",
+   *  "pickup-adjacent"). Consumed by the debug overlay. */
+  boosts: string[];
+}
+
+
+
 export interface StudioV3State {
   phase: StudioV3Phase;
   feeling: Feeling | null;
