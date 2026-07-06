@@ -10,6 +10,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignaturePriceCard } from "../SignaturePriceCard";
 import type { SignatureTour } from "@/data/signatureTours";
 import { ADD_ON_CATALOG, addOnEurFromBase, regionBucket } from "@/data/signatureAddOns";
@@ -39,11 +40,30 @@ function makeTour(over: Partial<SignatureTour> = {}): SignatureTour {
   } as SignatureTour;
 }
 
+/**
+ * SignaturePriceCard reads live per-pp tier pricing via `useTourPriceTiers`,
+ * which is a TanStack Query hook. Every render helper in this file must wrap
+ * the tree in a QueryClientProvider — otherwise the hook throws
+ * "No QueryClient set". We build a fresh client per render so cache state
+ * never leaks between tests. `retry: false` keeps failed fetches from
+ * masking assertion errors with retry noise.
+ */
+function withQuery(ui: React.ReactNode) {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return <QueryClientProvider client={client}>{ui}</QueryClientProvider>;
+}
+
+const renderCard = (ui: React.ReactNode) => render(withQuery(ui));
+
 function renderInTheme(theme: "light" | "dark", ui: React.ReactNode) {
   return render(
-    <div data-theme={theme} style={{ background: theme === "dark" ? "#111" : "#fff" }}>
-      {ui}
-    </div>,
+    withQuery(
+      <div data-theme={theme} style={{ background: theme === "dark" ? "#111" : "#fff" }}>
+        {ui}
+      </div>,
+    ),
   );
 }
 
