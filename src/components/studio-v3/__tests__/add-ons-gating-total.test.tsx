@@ -108,7 +108,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("does not offer the resolved tour's own experience as an add-on", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({
@@ -145,7 +145,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
 
     it("hides add-ons whose minHours exceeds the tour duration", () => {
       // 3h half-day tour → hours=3, so add-ons with minHours 6+ drop out.
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({ durationHours: "3h", duration: "Half Day" }),
@@ -164,7 +164,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("hides 'sintra-detour' when stopCount is below its minStops (4)", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({ region: "Setúbal · Arrábida", durationHours: "8h" }),
@@ -180,7 +180,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("hides the entire add-on section when the base price is missing", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({ tour: makeTour({ id: "missing-price-id" as string }) })}
         />,
@@ -189,7 +189,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     });
 
     it("hides the entire add-on section when no sibling signatures exist (douro bucket)", () => {
-      render(
+      renderCard(
         <SignaturePriceCard
           {...defaultProps({
             tour: makeTour({
