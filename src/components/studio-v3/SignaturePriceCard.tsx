@@ -735,7 +735,45 @@ export function SignaturePriceCard({
             >
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
+            {remainingMinutes != null && remainingMinutes > 0 ? (() => {
+              const totalBudget = remainingMinutes; // free minutes on the base day
+              const usedPct = Math.min(100, Math.round((addOnsMinutes / totalBudget) * 100));
+              const over = freeMinutes != null && freeMinutes < 0;
+              const overBy = over ? Math.abs(freeMinutes ?? 0) : 0;
+              const barColor = over
+                ? "color-mix(in oklab, #b8541a 75%, transparent)"
+                : "color-mix(in oklab, var(--gold) 80%, transparent)";
+              return (
+                <div
+                  data-testid="studio-v3-time-budget"
+                  data-addons-minutes={addOnsMinutes}
+                  data-free-minutes={freeMinutes ?? ""}
+                  className="mb-3 rounded-[4px] px-3 py-2"
+                  style={{
+                    background: "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
+                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  }}
+                >
+                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+                    <span>
+                      <span style={{ color: "var(--gold)" }}>—</span> Day rhythm
+                    </span>
+                    <span className="tabular-nums" style={{ color: over ? "#b8541a" : "var(--charcoal)" }}>
+                      {addOnsMinutes > 0 ? `+${addOnsMinutes} min` : `${totalBudget} min free`}
+                      {over ? ` · over by ${overBy} min` : addOnsMinutes > 0 && freeMinutes != null ? ` · ${freeMinutes} min still free` : ""}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 relative h-1.5 w-full overflow-hidden rounded-full" style={{ background: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+                    <div
+                      className="absolute inset-y-0 left-0 transition-[width] duration-[280ms] ease-out"
+                      style={{ width: `${usedPct}%`, background: barColor }}
+                    />
+                  </div>
+                </div>
+              );
+            })() : null}
             <ul className="flex flex-col gap-2">
+
               {availableAddOns.map((a) => {
                 const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
 
