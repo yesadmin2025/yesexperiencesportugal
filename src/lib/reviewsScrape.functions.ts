@@ -193,6 +193,7 @@ export const scrapeTourReviews = createServerFn({ method: "POST" })
       };
 
       // Upsert on (source, external_id) unique index
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: row, error } = await (context.supabase as any)
         .from("tour_reviews")
         .upsert(payload, { onConflict: "source,external_id" })

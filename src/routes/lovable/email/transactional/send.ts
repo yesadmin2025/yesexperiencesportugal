@@ -64,6 +64,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
         let recipientEmail: string;
         let idempotencyKey: string;
         let messageId: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let templateData: Record<string, any> = {};
         try {
           const body = await request.json();

@@ -216,6 +216,7 @@ export const moderateReview = createServerFn({ method: "POST" })
       moderation_notes: data.notes ?? null,
     };
     if (approve) patch.published_at = new Date().toISOString();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: row, error } = await (context.supabase as any)
       .from("tour_reviews")
       .update(patch)
@@ -240,6 +241,7 @@ export const bulkModerateReviews = createServerFn({ method: "POST" })
       moderated_by: context.userId,
     };
     if (approve) patch.published_at = new Date().toISOString();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error, count } = await (context.supabase as any)
       .from("tour_reviews")
       .update(patch, { count: "exact" })

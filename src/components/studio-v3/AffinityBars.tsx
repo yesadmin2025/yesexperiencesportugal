@@ -74,10 +74,6 @@ function scoreAxes(
     case "adventure":
       s.adventure += 3;
       break;
-    case "slow-luxury":
-      s.indulgence += 2;
-      s.atmosphere += 2;
-      break;
   }
 
   for (const i of interests) {

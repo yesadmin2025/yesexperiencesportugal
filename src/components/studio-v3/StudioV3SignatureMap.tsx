@@ -299,8 +299,6 @@ export function StudioV3SignatureMap({
     };
   }, [visible, waypoints.length]);
 
-  if (cleaned.length === 0) return null;
-
   const a11y =
     ariaLabel ??
     (originLabel
@@ -376,6 +374,10 @@ export function StudioV3SignatureMap({
       min < 60 ? `~${min} min` : `~${Math.floor(min / 60)}h${min % 60 ? ` ${min % 60}m` : ""}`;
     return { minLabel, kmLabel: `${kmRounded} km`, min, km: kmRounded };
   }, [geo, originCoord, revealedCount, detailed, legMinutes]);
+
+  if (cleaned.length === 0) return null;
+
+
 
   const handlePinKey = (e: React.KeyboardEvent, i: number) => {
     const last = waypoints.length - 1;

@@ -35,7 +35,7 @@ export async function requireAdmin(req: Request): Promise<AdminCheckResult> {
   const userId = userData.user.id;
 
   // Reject anonymous (is_anonymous) JWTs.
-  // @ts-ignore: is_anonymous is on supabase user metadata
+  // @ts-expect-error is_anonymous is on supabase user metadata
   if (userData.user.is_anonymous) {
     return { ok: false, status: 403, error: "Anonymous users not allowed" };
   }
