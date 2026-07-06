@@ -1,6 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render as rtlRender, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AtmosphereBeat, MapBeat } from "../CreationBeat";
+
+// MapBeat pulls route-leg estimates via a TanStack Query hook — every
+// render needs a QueryClientProvider or the hook throws "No QueryClient set".
+function makeWrapper() {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return function Wrapper({ children }: { children: React.ReactNode }) {
+    return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  };
+}
+const render = (ui: React.ReactElement) => rtlRender(ui, { wrapper: makeWrapper() });
 
 describe("YES voice mark — transition beats", () => {
   it("renders YES — <eyebrow> on AtmosphereBeat", () => {

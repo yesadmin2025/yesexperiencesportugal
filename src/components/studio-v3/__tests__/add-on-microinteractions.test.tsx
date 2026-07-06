@@ -9,9 +9,23 @@
 //   • output is wired with aria-live="polite" for screen readers
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render as rtlRender, screen, within } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignaturePriceCard } from "../SignaturePriceCard";
 import type { SignatureTour } from "@/data/signatureTours";
+
+// SignaturePriceCard uses useTourPriceTiers (TanStack Query). Every render
+// must be wrapped in a fresh QueryClientProvider so the hook doesn't throw
+// "No QueryClient set" and caches don't leak across tests.
+function makeWrapper() {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return function Wrapper({ children }: { children: React.ReactNode }) {
+    return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  };
+}
+const render = (ui: React.ReactElement) => rtlRender(ui, { wrapper: makeWrapper() });
 
 vi.mock("@/data/signatureToursViator", () => ({
   VIATOR_META: {
@@ -22,6 +36,11 @@ vi.mock("@/data/signatureToursViator", () => ({
 vi.mock("@/lib/studio-v3-telemetry", () => ({
   recordStudioV3RevealPremium: vi.fn(),
   recordStudioV3BuilderStep: vi.fn(),
+  recordStudioV3RevealAddOns: vi.fn(),
+  recordStudioV3CurationDecision: vi.fn(),
+  recordStudioV3Phase4Timing: vi.fn(),
+  recordStudioV3RevealValidation: vi.fn(),
+  emitStudioV3Event: vi.fn(),
 }));
 
 function makeTour(): SignatureTour {
