@@ -13,9 +13,16 @@
  *
  * Keyboard: press "D" (with Shift) to toggle at runtime.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { StudioV3State } from "./types";
 import { EXPECTED_MOUNTS, useMountRegistry } from "./useStudioDebug";
+import { signatureTours } from "@/data/signatureTours";
+import {
+  INTEREST_TO_STOP_INTENTS,
+  interestCoverageFromProfile,
+  tourIntentProfile,
+} from "@/data/stopIntents";
+import { pickPrimaryTourWithFit } from "./curation";
 
 const btnStyle: React.CSSProperties = {
   background: "transparent",
@@ -86,6 +93,40 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // ---- Intent coverage (dev-only): resolve current primary tour +
+  //      FitReport so we can visualize why it beat its neighbours. ----
+  const intentPanel = useMemo(() => {
+    const tour =
+      (state.tourId && signatureTours.find((t) => t.id === state.tourId)) || null;
+    let fitBundle: ReturnType<typeof pickPrimaryTourWithFit> | null = null;
+    if (state.feeling && state.companions) {
+      try {
+        fitBundle = pickPrimaryTourWithFit(
+          state.feeling,
+          state.companions,
+          (state.interests ?? []) as never,
+          state.pickup ?? null,
+          state.destinationIntent ?? null,
+          0,
+          state.rhythm ?? null,
+        );
+      } catch {
+        fitBundle = null;
+      }
+    }
+    const resolvedTour = tour ?? fitBundle?.tour ?? null;
+    const profile = resolvedTour ? tourIntentProfile(resolvedTour) : null;
+    return { resolvedTour, profile, fitBundle };
+  }, [
+    state.tourId,
+    state.feeling,
+    state.companions,
+    state.interests,
+    state.pickup,
+    state.destinationIntent,
+    state.rhythm,
+  ]);
 
   if (!enabled) return null;
 
@@ -260,6 +301,134 @@ export function StudioV3DebugOverlay({ state, composerHidden, reactionActive }: 
               </div>
             );
           })}
+        </div>
+      )}
+      {!collapsed && intentPanel.resolvedTour && intentPanel.profile && (
+        <div style={{ marginTop: 8, borderTop: "1px solid rgba(201,169,106,0.25)", paddingTop: 6 }}>
+          <div
+            style={{
+              color: "var(--gold)",
+              letterSpacing: 0.8,
+              textTransform: "uppercase",
+              fontSize: 9,
+              marginBottom: 4,
+            }}
+          >
+            Intent coverage
+          </div>
+          <div style={{ fontSize: 10, marginBottom: 4 }}>
+            <span style={{ fontWeight: 600 }}>{intentPanel.resolvedTour.id}</span>
+            <span style={{ opacity: 0.6 }}> · {intentPanel.profile.region}</span>
+            {intentPanel.fitBundle && (
+              <span style={{ opacity: 0.8 }}>
+                {" · score "}
+                <span style={{ color: "var(--gold)", fontWeight: 700 }}>
+                  {intentPanel.fitBundle.fit.totalScore.toFixed(1)}
+                </span>
+              </span>
+            )}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 6 }}>
+            {intentPanel.profile.dominant.map((tag) => (
+              <span
+                key={tag}
+                style={{
+                  fontSize: 9,
+                  padding: "1px 5px",
+                  borderRadius: 3,
+                  border: "1px solid rgba(201,169,106,0.55)",
+                  color: "var(--gold)",
+                }}
+              >
+                {tag} · {intentPanel.profile!.tags[tag] ?? 0}
+              </span>
+            ))}
+          </div>
+          {(state.interests ?? []).length > 0 && (
+            <div style={{ marginBottom: 6 }}>
+              <div style={{ fontSize: 9, opacity: 0.55, marginBottom: 2 }}>
+                Guest interests → evidence
+              </div>
+              {(state.interests ?? []).map((interest) => {
+                const known = interest in INTEREST_TO_STOP_INTENTS;
+                const cov = known
+                  ? interestCoverageFromProfile(intentPanel.profile!, interest as never)
+                  : null;
+                const fitLine = intentPanel.fitBundle?.fit.coverage.interests.find(
+                  (i) => i.interest === interest,
+                );
+                const strength = cov?.strength ?? "none";
+                const color =
+                  strength === "strong"
+                    ? "#F4E1B5"
+                    : strength === "partial"
+                      ? "var(--ivory)"
+                      : "#FF8A8A";
+                return (
+                  <div
+                    key={interest}
+                    style={{ fontSize: 10, lineHeight: 1.35, marginBottom: 2 }}
+                  >
+                    <span style={{ fontWeight: 600 }}>{interest}</span>
+                    <span style={{ color, marginLeft: 6 }}>
+                      {strength}
+                      {fitLine ? (fitLine.satisfied ? " ✓" : " ✕") : ""}
+                    </span>
+                    <div style={{ opacity: 0.6, fontSize: 9 }}>
+                      {cov && cov.evidence.length > 0
+                        ? cov.evidence.join(" · ")
+                        : known
+                          ? "— no stops carry this intent"
+                          : "— no stop-intent mapping"}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {intentPanel.fitBundle && intentPanel.fitBundle.topReports.length > 0 && (
+            <div style={{ marginBottom: 4 }}>
+              <div style={{ fontSize: 9, opacity: 0.55, marginBottom: 2 }}>
+                Top candidates
+              </div>
+              {intentPanel.fitBundle.topReports.map(({ tour: t, fit }) => {
+                const dom = tourIntentProfile(t).dominant.slice(0, 3).join(",");
+                const sat = fit.coverage.interests.filter((i) => i.satisfied).map((i) => i.interest);
+                const miss = fit.coverage.interests.filter((i) => !i.satisfied).map((i) => i.interest);
+                const chosen = t.id === intentPanel.resolvedTour!.id;
+                return (
+                  <div
+                    key={t.id}
+                    style={{
+                      fontSize: 10,
+                      lineHeight: 1.35,
+                      marginBottom: 2,
+                      borderLeft: chosen ? "2px solid var(--gold)" : "2px solid transparent",
+                      paddingLeft: 4,
+                    }}
+                  >
+                    <span style={{ fontWeight: chosen ? 700 : 500 }}>{t.id}</span>
+                    <span style={{ opacity: 0.7 }}> · {fit.totalScore.toFixed(1)}</span>
+                    <div style={{ opacity: 0.55, fontSize: 9 }}>
+                      {dom || "—"}
+                      {sat.length > 0 ? ` · ✓ ${sat.join(",")}` : ""}
+                      {miss.length > 0 ? ` · ✕ ${miss.join(",")}` : ""}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {intentPanel.fitBundle && intentPanel.fitBundle.filtered.length > 0 && (
+            <div>
+              <div style={{ fontSize: 9, opacity: 0.55, marginBottom: 2 }}>Filtered out</div>
+              {intentPanel.fitBundle.filtered.map(({ tour: t, reason }) => (
+                <div key={t.id} style={{ fontSize: 9, opacity: 0.7 }}>
+                  <span style={{ color: "#FF8A8A" }}>✕</span> {t.id} · {reason}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
       {!collapsed && (
