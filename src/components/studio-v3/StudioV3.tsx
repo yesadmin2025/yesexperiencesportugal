@@ -3120,6 +3120,16 @@ function StoryboardHandoff({
         </div>
       </header>
 
+      {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ---------- */}
+      <section
+        data-testid="studio-v3-signature-card"
+        className="mt-8 mx-auto w-full max-w-[560px] rounded-[14px] px-4 py-6 sm:px-6 sm:py-8"
+        style={{
+          background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+          border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+          boxShadow: "0 24px 60px -36px rgba(0,0,0,0.25)",
+        }}
+      >
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
         <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
