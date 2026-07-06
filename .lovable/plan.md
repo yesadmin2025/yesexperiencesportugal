@@ -1,144 +1,94 @@
-## Studio V3 — Intent-to-Journey fidelity (predictive matching, done right)
 
-**Goal:** whatever the guest picks (feeling + interests + companions + occasion + pickup + rhythm + destination intent + investment), the suggested Signature must be the one that provably best satisfies those inputs — and the guest can see *why*. Wine + nature was one symptom; the underlying scoring model is fragile across every axis. This plan makes it robust and explainable, without inventing tours or content.
+# Studio matching: stop-level intent tags → tour intent profile → region-aware scoring
 
-### Problems with the current model
+## The problem
 
-`pickPrimaryTour` (curation.ts) adds independent boosts per axis (pickup, interest, destination, discovery, wine, tiles, family/romantic guards). Two structural weaknesses:
+Today the "why this journey" model reads intents by regex-scanning the tour's title, theme, blurb and stop names. It misses truthful cross-signals — the Évora day is genuinely a wine day, the Arrábida tile factory carries wine + heritage + craft, the Sintra pastry stop is gastronomy — because those intents aren't spelled in the text. Matching then feels arbitrary ("I said wine + nature and got Vicentine coast").
 
-1. **Additive-only, no coverage measurement.** A tour scoring +2 on one axis can beat a tour scoring +1 on three axes, even though the second is a better *overall* match.
-2. **Feeling→pool is hardcoded.** `FEELING_TO_TOURS["coastal"] = [wild-beaches, arrabida-boat, troia-comporta, southwest-vicentine]` is judged by human hand, not by measuring the tour's actual content. Once new tours are added or renamed, the map drifts.
-3. **No hard logistics constraint.** Pickup/rhythm/duration are soft tiebreakers — a half-day Lisbon guest can still be sent to Vicentine Coast (4h drive each way).
-4. **No transparency.** Neither the guest nor the debug overlay can see the reasoning.
+## The fix (one shape, three layers)
 
-### The model: deterministic scoring + AI-written explanation
+Move intent knowledge into the data, where it's inspectable and testable. Every stop declares what it actually delivers; each tour's intent profile is the sum of its stops; scoring compares the guest's chosen intents against that profile, within the region they picked.
 
-**Rule: facts stay deterministic; AI writes only voice.** This matches the project guardrail (`AI = tone/storytelling only, never invents facts`). The AI is *not* in the tour-selection loop — it only reads the deterministic coverage report and turns it into human copy.
+### Layer 1 — Stop-level intent tags (source of truth)
 
-### 1. New scoring model — `scoreTourFit(tour, intent)`
+Add an `intents` field to `TourStop` in `src/data/signatureTours.ts`:
 
-Replace the current additive boosts with a **structured fit report** per candidate:
+```ts
+type StopIntent =
+  | "wine" | "gastronomy" | "heritage" | "culture" | "nature"
+  | "coast" | "romance" | "hidden" | "adventure" | "local-life"
+  | "craft" | "family" | "slow-luxury" | "spiritual" | "view";
 
+type TourStop = {
+  label: string;
+  story: string;
+  imageTheme: string;
+  image?: string;
+  focal?: string;
+  /** Real intents this stop delivers. Multi-tag is expected and correct. */
+  intents: StopIntent[];
+  /** Optional weight 1–3 (default 2). Signature moment = 3, light touch = 1. */
+  intentWeight?: 1 | 2 | 3;
+};
 ```
-FitReport {
-  tourId
-  totalScore              // weighted sum, 0–100
-  hardConstraints: {
-    pickupReachable       // pass/fail — pickup within tour's operational radius + rhythm allows the drive
-    companionsAllowed     // pass/fail — no family-only for couples, no romantic-only for corporate/family
-    rhythmFeasible        // pass/fail — slow guest → short tours only; immersive → full tours only
-  }
-  coverage: {
-    interests: [{ interest, satisfied: bool, evidence: stopId | 'theme' | 'blurb' }]
-    feeling: { match: 'strong' | 'partial' | 'weak', reason }
-    occasion: { match, reason }              // proposal/honeymoon → sunset/private stops
-    destinationIntent: { match, reason }
-  }
-  penalties: [ 'wine-asked-but-tour-has-no-wine', 'family-coded-for-couple', ... ]
-  boosts:    [ 'wine-explicit', 'tiles-culture-local-life', ... ]
+
+Tag every stop across all ~14 Signature tours (~86 stops). Examples of the cross-signals we're finally capturing:
+
+- Évora wine day → Roman temple stop `["heritage","culture"]`, Cartuxa cellar `["wine","heritage"]`, cork farm lunch `["gastronomy","local-life","nature"]`.
+- Arrábida wine day → tile factory `["craft","heritage","culture"]`, Livramento market `["gastronomy","local-life","wine"]`, Cristo Rei `["view","spiritual"]`, Arrábida drive `["nature","coast","view"]`, Fonseca `["wine","heritage"]`.
+- Sintra romantic day → Pena `["heritage","culture","view"]`, Cabo da Roca `["nature","coast","view"]`, Queijadas `["gastronomy","local-life"]`.
+
+Tags come from what the stop actually is, not from marketing copy.
+
+### Layer 2 — Tour intent profile (derived, cached)
+
+New helper `tourIntentProfile(tour)` in `curation.ts` returns:
+
+```ts
+{
+  tags: Record<StopIntent, number>,   // summed intentWeight per intent
+  dominant: StopIntent[],             // top 3 by weight
+  region: string,                     // tour.region normalised
 }
 ```
 
-**Scoring rules:**
+Memoised by tour id. This replaces `tourContent()`+regex for the interest-coverage axis. Regex helpers remain for feeling/companions tone only (keep them out of the interest math).
 
-- Any failed hard constraint → tour is filtered out entirely (not just penalized).
-- `coverage.interests` is measured against the tour's actual `stops[]` + `theme` + `blurb`, not a hardcoded list. Each satisfied interest = +8. Missing user-asked interest = −6 (asymmetric — missing what they asked for hurts more than a bonus they didn't ask for).
-- `coverage.feeling` uses semantic keyword match against tour content (same technique as current `INTEREST_KEYWORDS`, extended per-feeling). Strong = +12, partial = +6, weak = 0.
-- `occasion` and `destinationIntent` are additive weights on top.
-- Deterministic tie-break at end: `alternates` are top-3 in the same fit band (Δ ≤ 8).
+### Layer 3 — Region-aware scoring in `scoreTourFit`
 
-**Why this fixes wine+nature and every symmetric case:** a guest asking wine + nature will show `coverage.interests = [wine: satisfied✓, nature: satisfied✓]` only for tours that genuinely cover both (Arrábida Wine has vineyard + park; Southwest Coast has nature but wine=unsatisfied → −6). No hardcoded pool needed.
+Rewire the interest coverage axis of the existing `FitReport`:
 
-### 2. Hard constraints — never send guests where they can't go
+1. Candidate pool is already filtered by `destinationIntent` when the guest picked a region. Keep that.
+2. For each user interest `i`, look up `profile.tags[i]`:
+   - weight ≥ 3 → strong (+8), `satisfied: true`, evidence = the top stop label(s) carrying that tag
+   - weight 1–2 → partial (+4), satisfied
+   - 0 → missing (−6), satisfied: false
+3. Bonus intents the user didn't ask for are **not** scored (asymmetric rule stays).
+4. `evidence` on each coverage row is now real stop labels ("Cartuxa cellar", "Livramento market") instead of substring hits, so the "Why this journey" chips + rationale can quote them verbatim.
+5. Region tie-break: within the same fit band, tours whose `region` exactly matches a `destinationIntent` region alias win over neighbouring regions — no more Alentejo winning a Lisbon-anchored wine request.
 
-Add a real logistics gate before scoring:
+Hard constraints (pickup reachability, companions, rhythm) are untouched.
 
-- **Pickup reachability**: use `stopCoords` haversine → max realistic drive from pickup. Half-day rhythm caps tours to 2h drive radius; full-day caps to 3h. Multi-day is exempt.
-- **Rhythm feasibility**: `slow` guest must not be routed to `immersive`-tagged tours; `immersive` guest gets `full`/`immersive` only.
-- **Companions coherence**: current family-only/romantic-only guards become hard filters (drop, not penalize) when the mismatch is severe.
+### Layer 4 — Guardrails and tests
 
-Every filtered tour is logged to the debug overlay with the reason, so we can explain "we didn't offer Vicentine because your half-day from Lisbon can't fit the drive".
+- New unit test `stop-intents.test.ts`: every stop in `signatureTours` has ≥1 intent; every tour's `dominant` includes at least one intent that matches its `theme` (Wine-themed tour must have wine as dominant).
+- Extend `curation-fit.test.ts` with the exact cases the user raised:
+  - `wine + nature` → must return a tour whose profile has both `wine ≥ 2` AND (`nature ≥ 2` OR `coast ≥ 2`). Vicentine-only stays filtered out.
+  - `wine + heritage` in Alentejo region → Évora wine day wins over Arrábida.
+  - `craft + heritage` → Arrábida (tile factory carries craft) surfaces even without "wine" asked.
+- Debug overlay (`?debug=1`) already prints `FitReport`; extend it to also print the tour's `dominant` tags so we can eyeball matches at a glance.
 
-### 3. Transparency — "Why this journey" surfaces the reasoning
+## Files touched
 
-Two audiences:
+- `src/data/signatureTours.ts` — add `intents` (+ optional `intentWeight`) to every stop; extend `TourStop` type.
+- `src/components/studio-v3/types.ts` — export `StopIntent` union; extend `FitReport.coverage.interests[].evidence` type doc.
+- `src/components/studio-v3/curation.ts` — add `tourIntentProfile()`, rewire interest coverage in `scoreTourFit`, add region tie-break; remove interest-side keyword pools (keep feeling/companions pools).
+- `src/components/studio-v3/__tests__/stop-intents.test.ts` — new.
+- `src/components/studio-v3/__tests__/curation-fit.test.ts` — add wine+nature, wine+heritage-in-Alentejo, craft+heritage cases.
+- `src/components/studio-v3/StudioV3DebugOverlay.tsx` — surface `dominant` tags.
 
-**Guest-facing:** a 3-chip row at the top of the preview card:
+No UI copy or visual change in this pass. "Why this journey" chips + rationale already read from `FitReport.coverage.interests[].evidence`, so they'll automatically upgrade from "matched: wine" to "Cartuxa cellar · Livramento market" once the tags land.
 
-```
-Wine · Nature · Slow morning from Lisbon
-```
+## Rollout
 
-Under it, one sentence written by the AI voice layer:
-
-> "We chose Arrábida because it pairs a family vineyard morning with the coastal park you asked for, all within 40 minutes of your Lisbon pickup."
-
-The AI only rewrites; the *facts* come from the FitReport (interests satisfied, drive time, tour ID → real content). Uses existing `regionalVoice` tone. No invention.
-
-**Debug-facing (`StudioV3DebugOverlay`):** full FitReport for top 3 candidates + list of filtered tours with reasons. Ships behind `?debug=1`. This is how we spot future mismatches before users hit them.
-
-### 4. AI-predictive: where an LLM helps, where it doesn't
-
-Explicit answer to "should AI-predictive behavior work?":
-
-
-| Layer                                            | Deterministic    | LLM                            |
-| ------------------------------------------------ | ---------------- | ------------------------------ |
-| Candidate pool                                   | ✅ from tour data | ❌                              |
-| Hard constraints (pickup, rhythm)                | ✅                | ❌                              |
-| Fit scoring                                      | ✅                | ❌                              |
-| Tie-break within top band                        | ✅ seeded         | ❌                              |
-| "Why this journey" copy                          | ❌                | ✅ (voice only, from FitReport) |
-| Optional: nudge messages when profile is unusual | ❌                | ✅ (voice only)                 |
-
-
-**Why not LLM re-ranking?** Non-deterministic (same input → different tour), harder to test, adds latency + cost, and risks contradicting the guardrail. Reserve LLM for what it's actually good at: turning structured facts into warm sentences.
-
-### 5. Reshape improvement
-
-When the guest hits "Reshape this day", currently a seeded random pick within Δ 1.5 of leader. Improve:
-
-- Reshape picks the next-best candidate that satisfies a *different* dimension (e.g. current pick maxed on wine → reshape offers one that maxed on nature). Shows genuine alternates, not near-duplicates.
-- Cap at 3 reshapes before we ask "Want to change what you're feeling?" and route back to the earlier phase.
-
-### 6. Regression coverage
-
-New test suite `curation-fit.test.ts` covering:
-
-- wine+nature (already added) — must land on wine-anchored tour with nature content
-- culture+heritage+family — must land on kid-friendly heritage (Sintra, tiles), never adult-only wine
-- romance+coast+proposal — must include sunset/viewpoint stops
-- corporate+wine+half-day+lisbon — must land on Arrábida (reachable) not Alentejo (too far)
-- solo+hidden+immersive — must land on Southwest Coast or Alentejo Roman, not Sintra tourist loop
-- slow+couple+wine — must land on Azeitão/Arrábida, not a demanding full-day
-- Every combination asserts at least one satisfied interest AND no failed hard constraint
-
-Snapshot the FitReport for each case so future refactors show exactly which axis regressed.
-
-### 7. Files touched
-
-- `src/components/studio-v3/curation.ts` — new `scoreTourFit`, `filterByHardConstraints`, replace body of `pickPrimaryTour`
-- `src/components/studio-v3/types.ts` — `FitReport` type
-- `src/components/studio-v3/regionalVoice.ts` — helper that turns FitReport → guest sentence (may call AI gateway later; start with rule-based template)
-- `src/components/studio-v3/MapAwakens.tsx` + `SignaturePriceCard.tsx` — render "Why this journey" chip row + one-sentence rationale
-- `src/components/studio-v3/StudioV3DebugOverlay.tsx` — surface top-3 FitReports + filtered tours
-- `src/components/studio-v3/__tests__/curation-fit.test.ts` — new suite
-- Keep the wine-coherence guard I shipped last turn — the new model subsumes it, but the test cases remain valid regressions.
-
-### 8. Rollout
-
-Ship in 3 focused turns to keep each change reviewable:
-
-1. **Turn A** — new `scoreTourFit` + hard constraints + FitReport, wire `pickPrimaryTour` to it, extend test suite. No UI change yet.
-2. **Turn B** — surface "Why this journey" chips + one-sentence rationale in `MapAwakens` and price card (rule-based copy from FitReport).
-3. **Turn C** — debug overlay + AI voice layer swap (optional — only if the rule-based copy reads flat).
-
-### Out of scope
-
-- Adding new tours, stops, prices, or images — hard guardrail.
-- Changing the phase flow (feeling → interests → …). This is a scoring change, not a UX rewrite.
-- LLM in the ranking path (see rationale above).
-
-Approve and I start with Turn A: the new scoring model + tests. UI polish (map labels, two-state price card from the earlier plan) still stands as separate turns after this.
-
-Also, besides the skeleton of a signature tour, stops from other signature tours can be used if in the same region, driving times and stop timings and clients tastes allows it. It should be personable but controlled on the back end 
+One turn. The data edits, scoring rewire and tests ship together — partial tagging would leave scoring inconsistent between tagged and untagged tours.
