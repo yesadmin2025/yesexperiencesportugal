@@ -23,14 +23,20 @@ export interface CheckoutSummary {
   startTime?: string | null;
   pickupLabel?: string | null;
   pricePerPaxEur?: number | null;
-  /** Total in EUR cents (per Stripe). Optional — we'll compute from pricePerPaxEur*guests if missing. */
+  /** Total in EUR (per Stripe). Optional — we'll compute from pricePerPaxEur*guests + addOnsTotalEur if missing. */
   totalEur?: number | null;
   /** Optional hero image (locally uploaded YES photo when available). */
   heroSrc?: string | null;
   /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
   flowLabel?: "Signature" | "Tailored" | "Studio";
+  /** Selected reveal add-ons, kept in sync with SignaturePriceCard so the drawer
+   *  and the Stripe session never drift from what the traveller picked. */
+  addOns?: Array<{ id: string; label: string; priceEur: number; durationMinutes: number }>;
+  /** Sum of add-on EUR (flat per booking). */
+  addOnsTotalEur?: number;
 }
+
 
 interface Props {
   open: boolean;
