@@ -16,7 +16,11 @@
 //      preferring stops with resolvable map coordinates.
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { interestCoverageFromProfile, tourIntentProfile } from "@/data/stopIntents";
+import {
+  assertStopIntentSchema,
+  interestCoverageFromProfile,
+  tourIntentProfile,
+} from "@/data/stopIntents";
 import { lookupStop } from "@/data/stopGeo";
 import { isStopClosedOn } from "@/data/stopOperational";
 import { recordStudioV3CurationDecision } from "@/lib/studio-v3-telemetry";
