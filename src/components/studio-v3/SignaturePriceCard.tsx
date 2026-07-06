@@ -120,12 +120,15 @@ export function SignaturePriceCard({
   guests,
   included,
   showAddOns = true,
+  selectedAddOnIds: controlledAddOnIds,
+  onAddOnsChange,
   onGuestsChange,
   previewTiers = null,
   remainingMinutes = null,
   itineraryStops = [],
   dwellHours = null,
 }: SignaturePriceCardProps) {
+
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
     if (tour?.priceFrom && tour.priceFrom > 0) return tour.priceFrom;
