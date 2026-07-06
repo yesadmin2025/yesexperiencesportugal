@@ -3575,8 +3575,9 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
-      {/* ---------- 7. Quality Score (Studio Bible §11) ---------- */}
-      <QualityScore state={state} />
+      {/* Quality Score intentionally omitted from the reveal (kept for debug overlay only) */}
+
+      {/* ---------- 7b. Premium price card ---------- */}
 
       {/* ---------- 7b. Premium price card ---------- */}
       <SignaturePriceCard
