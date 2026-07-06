@@ -327,12 +327,14 @@ export function MapAwakens({
         {srStatus}
       </div>
 
-      {/* Map stage — top portion of the viewport. */}
+      {/* Map stage — normal flow on mobile (so the moment card sits underneath
+          and the map fully unfolds), absolute upper portion on ≥sm. */}
       <section
         aria-label="Suggested route map"
         aria-busy={!mounted || anticipating}
-        className="absolute inset-x-0 top-0 h-[58dvh] sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
+        className="relative w-full h-[52dvh] sm:absolute sm:inset-x-0 sm:top-0 sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
       >
+
         {/* Anticipation layer — Portugal silhouette + gold pulse holds the
             stage while the real map silently boots underneath. Fades out
             as the map fades in: the two never visually overlap. */}
