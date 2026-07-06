@@ -30,7 +30,7 @@ import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
 import { CurtainRise } from "./CurtainRise";
-import { SignaturePriceCard } from "./SignaturePriceCard";
+import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceCard";
 // QualityScore removed from reveal — now surfaced only in debug overlay.
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
@@ -669,6 +669,32 @@ export function StudioV3() {
   const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
 
+  // Lifted add-on selection so the checkout drawer summary AND the Stripe
+  // session both see exactly what the traveller picked on the reveal.
+  // `SignaturePriceCard` calls `onAddOnsChange` on every toggle; we mirror
+  // the summary here and forward it to `handleStripeCheckout`.
+  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
+  const [selectedAddOnItems, setSelectedAddOnItems] = useState<
+    SelectedAddOnSummary["items"]
+  >([]);
+  const [selectedAddOnsTotalEur, setSelectedAddOnsTotalEur] = useState(0);
+  const handleAddOnsChange = useCallback((summary: SelectedAddOnSummary) => {
+    setSelectedAddOnIds((prev) => {
+      const same =
+        prev.length === summary.ids.length && prev.every((id, i) => id === summary.ids[i]);
+      return same ? prev : summary.ids;
+    });
+    setSelectedAddOnItems(summary.items);
+    setSelectedAddOnsTotalEur(summary.totalEur);
+  }, []);
+  // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
+  useEffect(() => {
+    setSelectedAddOnIds([]);
+    setSelectedAddOnItems([]);
+    setSelectedAddOnsTotalEur(0);
+  }, [state.tourId]);
+
+
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
   const requestStripeCheckout = useCallback(
@@ -694,6 +720,19 @@ export function StudioV3() {
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
       const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
+      const perPaxBase =
+        resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
+        tour.priceFrom ??
+        180;
+      // Add-ons live per booking (flat), base fare is per pax × guests. Mirror
+      // the same math the price card shows so the drawer total never drifts.
+      const addOnsForCheckout = selectedAddOnItems.map((i) => ({
+        id: i.id,
+        label: i.label,
+        priceEur: Math.round(i.priceEur),
+        durationMinutes: i.durationMinutes,
+      }));
+      const totalEur = Math.round(perPaxBase * details.guests + selectedAddOnsTotalEur);
       setCheckoutSummary({
         tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
         region: tour.region,
@@ -702,13 +741,13 @@ export function StudioV3() {
         dateExact: details.tourDate || currentState.dateExact || null,
         startTime: details.startTime ?? null,
         pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-        pricePerPaxEur:
-          resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
-          tour.priceFrom ??
-          180,
+        pricePerPaxEur: perPaxBase,
+        totalEur,
         heroSrc: tour.img ?? null,
         beats: stopLabels.slice(0, 4),
         flowLabel: "Studio",
+        addOns: addOnsForCheckout,
+        addOnsTotalEur: Math.round(selectedAddOnsTotalEur),
       });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
@@ -735,6 +774,7 @@ export function StudioV3() {
             flow: "studio",
             uiMode: "embedded",
             guestDetails: { ...details, hotelPickupIncluded: true },
+            addOns: addOnsForCheckout,
           },
         });
         if (error) throw error;
@@ -753,8 +793,15 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, openLeadSheet, tourPriceTiers],
+    [
+      checkoutPending,
+      openLeadSheet,
+      tourPriceTiers,
+      selectedAddOnItems,
+      selectedAddOnsTotalEur,
+    ],
   );
+
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
   // Reads ?saved=<token> once on mount, fetches the persisted state, then
@@ -2156,7 +2203,10 @@ export function StudioV3() {
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
+              selectedAddOnIds={selectedAddOnIds}
+              onAddOnsChange={handleAddOnsChange}
             />
+
           </PhaseShell>
         </>
       ) : null}
@@ -2542,6 +2592,8 @@ function StoryboardHandoff({
   onRefine,
   pending,
   tourPriceTiers,
+  selectedAddOnIds,
+  onAddOnsChange,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -2550,7 +2602,10 @@ function StoryboardHandoff({
   onRefine: () => void;
   pending?: boolean;
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
+  selectedAddOnIds?: ReadonlyArray<string>;
+  onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
 }) {
+
   const pickupCity = pickupCityLabel(state.pickup);
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
@@ -3648,6 +3703,9 @@ function StoryboardHandoff({
           guests={state.guests}
           included={skeletonTour?.included ?? []}
           showAddOns={true}
+          selectedAddOnIds={selectedAddOnIds}
+          onAddOnsChange={onAddOnsChange}
+
           remainingMinutes={
             revealLegsLoading
               ? null

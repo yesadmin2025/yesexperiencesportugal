@@ -23,14 +23,20 @@ export interface CheckoutSummary {
   startTime?: string | null;
   pickupLabel?: string | null;
   pricePerPaxEur?: number | null;
-  /** Total in EUR cents (per Stripe). Optional — we'll compute from pricePerPaxEur*guests if missing. */
+  /** Total in EUR (per Stripe). Optional — we'll compute from pricePerPaxEur*guests + addOnsTotalEur if missing. */
   totalEur?: number | null;
   /** Optional hero image (locally uploaded YES photo when available). */
   heroSrc?: string | null;
   /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
   flowLabel?: "Signature" | "Tailored" | "Studio";
+  /** Selected reveal add-ons, kept in sync with SignaturePriceCard so the drawer
+   *  and the Stripe session never drift from what the traveller picked. */
+  addOns?: Array<{ id: string; label: string; priceEur: number; durationMinutes: number }>;
+  /** Sum of add-on EUR (flat per booking). */
+  addOnsTotalEur?: number;
 }
+
 
 interface Props {
   open: boolean;
@@ -108,12 +114,14 @@ export function BrandedCheckoutDrawer({
     if (open) completeFiredRef.current = false;
   }, [open]);
 
+  const addOnsTotal = summary.addOnsTotalEur ?? 0;
   const total =
     summary.totalEur != null
       ? summary.totalEur
       : summary.pricePerPaxEur != null
-        ? Math.round(summary.pricePerPaxEur * summary.guests)
+        ? Math.round(summary.pricePerPaxEur * summary.guests + addOnsTotal)
         : null;
+
 
   useEffect(() => {
     if (open) prewarmStripeScript();
@@ -235,6 +243,28 @@ function ExperienceSummaryCard({
           ))}
         </ul>
       ) : null}
+
+      {summary.addOns && summary.addOns.length > 0 ? (
+        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
+          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+            Add-ons
+          </p>
+          <ul className="mt-2 space-y-1">
+            {summary.addOns.map((a) => (
+              <li
+                key={a.id}
+                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
+              >
+                <span className="truncate">• {a.label}</span>
+                <span className="tabular-nums text-[color:var(--charcoal-soft)]">
+                  €{Math.round(a.priceEur).toLocaleString("en-GB")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
 
       {total != null ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">

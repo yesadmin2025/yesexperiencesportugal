@@ -40,6 +40,21 @@ function usdToEurAnchor(usd: number): number {
   return Math.max(5, Math.round(raw / 5) * 5);
 }
 
+export interface SelectedAddOnSummaryItem {
+  id: string;
+  label: string;
+  priceEur: number;
+  durationMinutes: number;
+  pricePctOfBase: number;
+}
+
+export interface SelectedAddOnSummary {
+  ids: string[];
+  totalEur: number;
+  totalMinutes: number;
+  items: SelectedAddOnSummaryItem[];
+}
+
 export interface SignaturePriceCardProps {
   tour: SignatureTour | null;
   stopCount: number;
@@ -53,6 +68,15 @@ export interface SignaturePriceCardProps {
   included?: ReadonlyArray<string>;
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
   showAddOns?: boolean;
+  /**
+   * Controlled add-on selection. When provided, the parent owns the ids and
+   * receives `onAddOnsChange` callbacks with the fresh summary (labels, euro
+   * total, minutes) so the checkout drawer and Stripe session stay in sync
+   * with what the traveller actually picked. When omitted the card falls
+   * back to its own local state (legacy/test callers).
+   */
+  selectedAddOnIds?: ReadonlyArray<string>;
+  onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
   /**
    * Called when the traveller selects a tier in the hidden picker. Lets the
    * parent persist the chosen guest size into Studio V3 state so the saved
@@ -85,6 +109,7 @@ export interface SignaturePriceCardProps {
   dwellHours?: number | null;
 }
 
+
 export function SignaturePriceCard({
   tour,
   stopCount,
@@ -95,12 +120,15 @@ export function SignaturePriceCard({
   guests,
   included,
   showAddOns = true,
+  selectedAddOnIds: controlledAddOnIds,
+  onAddOnsChange,
   onGuestsChange,
   previewTiers = null,
   remainingMinutes = null,
   itineraryStops = [],
   dwellHours = null,
 }: SignaturePriceCardProps) {
+
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
     if (tour?.priceFrom && tour.priceFrom > 0) return tour.priceFrom;
@@ -166,19 +194,94 @@ export function SignaturePriceCard({
       mismatch,
     });
   }, [tour, availableAddOns, stopCount, durationLabel]);
-  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
+  const [uncontrolledAddOnIds, setUncontrolledAddOnIds] = useState<string[]>([]);
+  const isControlled = controlledAddOnIds !== undefined;
+  const selectedAddOnIds = useMemo<string[]>(
+    () => (isControlled ? Array.from(controlledAddOnIds ?? []) : uncontrolledAddOnIds),
+    [isControlled, controlledAddOnIds, uncontrolledAddOnIds],
+  );
   const [pendingAddOnId, setPendingAddOnId] = useState<string | null>(null);
   const MAX_ADDONS = 3;
   const atCap = selectedAddOnIds.length >= MAX_ADDONS;
+  const selectedAddOns = useMemo(
+    () => availableAddOns.filter((a) => selectedAddOnIds.includes(a.id)),
+    [availableAddOns, selectedAddOnIds],
+  );
+  const addOnsTotalEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    return selectedAddOns.reduce(
+      (sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase),
+      0,
+    );
+  }, [selectedAddOns, hasPrice, priceEur]);
+  const addOnsMinutes = useMemo(
+    () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
+    [selectedAddOns],
+  );
+  const freeMinutes = remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
+
+  // Notify the parent whenever the effective add-on selection or its resolved
+  // euro/minute totals change. Kept as an effect so both controlled and
+  // uncontrolled callers get the same summary shape without racing renders.
+  const onAddOnsChangeRef = useRef(onAddOnsChange);
+  useEffect(() => {
+    onAddOnsChangeRef.current = onAddOnsChange;
+  }, [onAddOnsChange]);
+  useEffect(() => {
+    const cb = onAddOnsChangeRef.current;
+    if (!cb) return;
+    const base = priceEur ?? 0;
+    cb({
+      ids: selectedAddOnIds,
+      totalEur: addOnsTotalEur,
+      totalMinutes: addOnsMinutes,
+      items: selectedAddOns.map((a) => ({
+        id: a.id,
+        label: a.label,
+        priceEur: addOnEurFromBase(base, a.pricePctOfBase),
+        durationMinutes: a.durationMinutes || 0,
+        pricePctOfBase: a.pricePctOfBase,
+      })),
+    });
+  }, [selectedAddOnIds, addOnsTotalEur, addOnsMinutes, selectedAddOns, priceEur]);
+
+  const commitAddOnIds = (next: string[]) => {
+    if (isControlled) {
+      // Parent owns state; emit the summary optimistically via the callback.
+      const cb = onAddOnsChangeRef.current;
+      if (cb) {
+        const base = priceEur ?? 0;
+        const nextSelected = availableAddOns.filter((a) => next.includes(a.id));
+        cb({
+          ids: next,
+          totalEur: nextSelected.reduce(
+            (sum, a) => sum + addOnEurFromBase(base, a.pricePctOfBase),
+            0,
+          ),
+          totalMinutes: nextSelected.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
+          items: nextSelected.map((a) => ({
+            id: a.id,
+            label: a.label,
+            priceEur: addOnEurFromBase(base, a.pricePctOfBase),
+            durationMinutes: a.durationMinutes || 0,
+            pricePctOfBase: a.pricePctOfBase,
+          })),
+        });
+      }
+    } else {
+      setUncontrolledAddOnIds(next);
+    }
+  };
+
   const toggleAddOn = (id: string) => {
     const isSelected = selectedAddOnIds.includes(id);
     if (!isSelected && atCap) return; // gated
     // Budget gate: never let the user push the day past the regional rhythm.
     if (!isSelected && fitsBudgetById[id] === false) return;
-    // Toggle synchronously so totals + a11y stay deterministic.
-    setSelectedAddOnIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    const next = isSelected
+      ? selectedAddOnIds.filter((x) => x !== id)
+      : [...selectedAddOnIds, id];
+    commitAddOnIds(next);
     // Transient visual flourish — pending shimmer for ≤180ms, reduced-motion safe.
     const reduced =
       typeof window !== "undefined" &&
@@ -187,21 +290,7 @@ export function SignaturePriceCard({
     setPendingAddOnId(id);
     window.setTimeout(() => setPendingAddOnId(null), 180);
   };
-  const addOnsTotalEur = useMemo(() => {
-    if (!hasPrice || !priceEur) return 0;
-    return availableAddOns
-      .filter((a) => selectedAddOnIds.includes(a.id))
-      .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
-  }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
-  const selectedAddOns = useMemo(
-    () => availableAddOns.filter((a) => selectedAddOnIds.includes(a.id)),
-    [availableAddOns, selectedAddOnIds],
-  );
-  const addOnsMinutes = useMemo(
-    () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
-    [selectedAddOns],
-  );
-  const freeMinutes = remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
+
 
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND
   // we know the guest count, `realPerPax.real === true` and we display the
