@@ -434,8 +434,11 @@ export function MapAwakens({
         </div>
       </section>
 
-      {/* Editorial moment card — anchored to lower portion. */}
-      <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-6 pt-4">
+      {/* Editorial moment card — normal flow on mobile (below the map so it
+          never overlaps while the route composes); anchored to the lower
+          portion on ≥sm as before. */}
+      <div className="relative sm:absolute inset-x-0 sm:bottom-0 z-20 px-4 pb-6 pt-4">
+
         <div className="mx-auto max-w-[560px]">
           {/* Progress dots */}
           <div className="flex items-center justify-center gap-1.5 mb-3" aria-hidden>
