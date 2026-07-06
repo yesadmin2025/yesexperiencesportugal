@@ -114,12 +114,14 @@ export function BrandedCheckoutDrawer({
     if (open) completeFiredRef.current = false;
   }, [open]);
 
+  const addOnsTotal = summary.addOnsTotalEur ?? 0;
   const total =
     summary.totalEur != null
       ? summary.totalEur
       : summary.pricePerPaxEur != null
-        ? Math.round(summary.pricePerPaxEur * summary.guests)
+        ? Math.round(summary.pricePerPaxEur * summary.guests + addOnsTotal)
         : null;
+
 
   useEffect(() => {
     if (open) prewarmStripeScript();
