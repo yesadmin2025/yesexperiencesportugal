@@ -1018,6 +1018,7 @@ export function scoreTourFit(
     destinationIntent?: DestinationIntent | null;
   },
 ): FitReport {
+  assertStopIntentSchema();
   const { feeling, companions, interests, pickup, rhythm = null, destinationIntent = null } = intent;
   const boosts: string[] = [];
   const penalties: string[] = [];
