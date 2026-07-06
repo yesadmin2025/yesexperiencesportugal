@@ -32,6 +32,7 @@ import type {
   Consideration,
   DestinationIntent,
   Feeling,
+  FitReport,
   IntentLevel,
   IntentProfile,
   IntentType,
@@ -43,6 +44,7 @@ import type {
   StudioV3Phase,
   StudioV3State,
 } from "./types";
+
 
 /* ---------- Adaptive intelligence: guest inference ---------- */
 
