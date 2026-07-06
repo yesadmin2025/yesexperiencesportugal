@@ -13,9 +13,16 @@
  *
  * Keyboard: press "D" (with Shift) to toggle at runtime.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { StudioV3State } from "./types";
 import { EXPECTED_MOUNTS, useMountRegistry } from "./useStudioDebug";
+import { signatureTours } from "@/data/signatureTours";
+import {
+  INTEREST_TO_STOP_INTENTS,
+  interestCoverageFromProfile,
+  tourIntentProfile,
+} from "@/data/stopIntents";
+import { pickPrimaryTourWithFit } from "./curation";
 
 const btnStyle: React.CSSProperties = {
   background: "transparent",
