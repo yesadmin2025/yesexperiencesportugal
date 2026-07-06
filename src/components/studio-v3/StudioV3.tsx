@@ -3629,6 +3629,8 @@ function StoryboardHandoff({
           }))
         }
       />
+      </section>
+      {/* ---------- /Unified "Your Signature" card ---------- */}
 
       {/* ---------- 7b. Before you secure it ---------- */}
       <div className="mt-8 text-center">
