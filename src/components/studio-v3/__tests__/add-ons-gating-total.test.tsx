@@ -132,7 +132,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
 
   describe("itinerary gating", () => {
     it("surfaces at most 3 lisbon-arrábida add-ons when duration + stops are generous", () => {
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       const fieldset = screen.getByTestId("studio-v3-add-ons");
       const buttons = within(fieldset).getAllByRole("button");
       expect(buttons.length).toBeLessThanOrEqual(3);
@@ -207,7 +207,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
       // lisbon-arrabida currently has 5 catalog entries; cap = 3.
       const pool = ADD_ON_CATALOG[regionBucket("Setúbal · Arrábida")];
       expect(pool.length).toBeGreaterThanOrEqual(3);
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       expect(within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")).toHaveLength(
         3,
       );
@@ -216,7 +216,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
 
   describe("running total (base + Σ selected, per pp)", () => {
     it("shows no total badge when nothing is selected", () => {
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       const total = screen.queryByTestId("studio-v3-add-ons-total");
       expect(total?.textContent?.toLowerCase() ?? "").not.toMatch(/total/);
     });
@@ -262,7 +262,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
     );
 
     it("running total stays consistent under repeated toggling of the same add-on", () => {
-      render(<SignaturePriceCard {...defaultProps()} />);
+      renderCard(<SignaturePriceCard {...defaultProps()} />);
       const first = within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")[0];
       const m = first.textContent?.match(/\+€(\d+)/);
       const eur = m ? Number(m[1]) : 0;
