@@ -1,61 +1,144 @@
-## Studio V3 — Intent fidelity, preview clarity & map/pricing polish
+## Studio V3 — Intent-to-Journey fidelity (predictive matching, done right)
 
-Fixes six real problems you hit while testing. Grouped by symptom, each with a concrete change.
+**Goal:** whatever the guest picks (feeling + interests + companions + occasion + pickup + rhythm + destination intent + investment), the suggested Signature must be the one that provably best satisfies those inputs — and the guest can see *why*. Wine + nature was one symptom; the underlying scoring model is fragile across every axis. This plan makes it robust and explainable, without inventing tours or content.
 
-### 1. Intent matching is wrong (wine + nature → Southwest Coast, which has no wine)
+### Problems with the current model
 
-**Why it happens** — In `src/components/studio-v3/curation.ts` (`pickPrimaryTour`), wine is only strongly boosted when `feeling === "wine-food"` OR wine is the *top* interest. Picking "wine" + "nature" without a wine feeling leaves the nature pool (which includes Southwest Vicentine Coast) dominant, and there is no *penalty* for choosing a tour that has zero wine content when the guest asked for wine.
+`pickPrimaryTour` (curation.ts) adds independent boosts per axis (pickup, interest, destination, discovery, wine, tiles, family/romantic guards). Two structural weaknesses:
 
-**Fix**
-- Add a **hard coherence guard**: if `interests` includes `wine` OR `gastronomy`, deprioritise tours whose title/theme/blurb/stops contain no wine keywords (–4 score) unless the user explicitly picked a non-wine destination intent (e.g. `southwest-coast`).
-- Symmetrically, if `interests` includes `nature` or `coastal`, keep the wine tour eligible but require wine-anchored tours to also carry at least one nature/coastal stop before winning.
-- Raise `wineBoost` from 1.5 → 2.5 when wine is any listed interest (not just top), and keep the boost only when the tour actually contains wine content (guard already in place).
-- Add a unit test in `src/components/studio-v3/__tests__/` covering the exact case: `feeling=discover`, `interests=[wine, nature]` → expected tour must contain wine content (e.g. Arrábida Wine, Alentejo Evora Wine, Roman Talha), never Southwest Coast.
+1. **Additive-only, no coverage measurement.** A tour scoring +2 on one axis can beat a tour scoring +1 on three axes, even though the second is a better *overall* match.
+2. **Feeling→pool is hardcoded.** `FEELING_TO_TOURS["coastal"] = [wild-beaches, arrabida-boat, troia-comporta, southwest-vicentine]` is judged by human hand, not by measuring the tour's actual content. Once new tours are added or renamed, the map drifts.
+3. **No hard logistics constraint.** Pickup/rhythm/duration are soft tiebreakers — a half-day Lisbon guest can still be sent to Vicentine Coast (4h drive each way).
+4. **No transparency.** Neither the guest nor the debug overlay can see the reasoning.
 
-### 2. "Hold this journey" reads like checkout
+### The model: deterministic scoring + AI-written explanation
 
-Rename the CTA in `MapAwakens.tsx` (line 599) — replace "Hold this journey" with **"Preview this journey"** and lighten the visual weight (ghost button, not primary gold). Reserve the primary gold/filled state for the actual `Yes — reserve · €…` CTA inside `SignaturePriceCard`. Same rename for any aria-label and any tracking event key (keep old event as alias for 1 release).
+**Rule: facts stay deterministic; AI writes only voice.** This matches the project guardrail (`AI = tone/storytelling only, never invents facts`). The AI is *not* in the tour-selection loop — it only reads the deterministic coverage report and turns it into human copy.
 
-### 3. Mobile — "Moments" card sitting under the map before preview
+### 1. New scoring model — `scoreTourFit(tour, intent)`
 
-- On mobile (`< md`), the Signature card in `MapAwakens.tsx` currently renders below the map during the reveal walkthrough. That's the intended stack, but the eyebrow/label on the card should read **"Preview"** (not "Your Signature") until the guest hits "Preview this journey". After preview it flips to **"Your Signature"** and reveals inclusions + price.
-- Add a subtle "↓ Preview below" affordance under the map while the sequence completes, so the traveller understands the card is a *preview*, not the checkout.
-- Reuse the existing mobile stacking invariant covered by `e2e/studio-v3-mobile-map-above-moments-card.spec.ts`; extend it to assert the "Preview" label pre-CTA and "Your Signature" post-CTA.
+Replace the current additive boosts with a **structured fit report** per candidate:
 
-### 4. Map lacks distances, place names and regions
+```
+FitReport {
+  tourId
+  totalScore              // weighted sum, 0–100
+  hardConstraints: {
+    pickupReachable       // pass/fail — pickup within tour's operational radius + rhythm allows the drive
+    companionsAllowed     // pass/fail — no family-only for couples, no romantic-only for corporate/family
+    rhythmFeasible        // pass/fail — slow guest → short tours only; immersive → full tours only
+  }
+  coverage: {
+    interests: [{ interest, satisfied: bool, evidence: stopId | 'theme' | 'blurb' }]
+    feeling: { match: 'strong' | 'partial' | 'weak', reason }
+    occasion: { match, reason }              // proposal/honeymoon → sunset/private stops
+    destinationIntent: { match, reason }
+  }
+  penalties: [ 'wine-asked-but-tour-has-no-wine', 'family-coded-for-couple', ... ]
+  boosts:    [ 'wine-explicit', 'tiles-culture-local-life', ... ]
+}
+```
 
-`MapAwakens.tsx` currently draws the route but doesn't render leg distances or stop labels clearly.
-- Show **stop name pills** on each marker (place, town), always visible on mobile (not hover-only).
-- Render **leg distance in km + drive-time minutes** on each polyline segment (reuse `use-route-leg-minutes.ts` + `stopCoords.ts` haversine).
-- Add a **region badge** at the top of the map ("Arrábida · Setúbal", "Alentejo · Évora", etc.) sourced from the resolved tour's region.
-- Reuse `RouteLegend.tsx` for the legend below the map; make sure it lists every stop with an index, name, and micro-caption.
+**Scoring rules:**
 
-### 5. Intent → resolved journey mismatch (broader than #1)
+- Any failed hard constraint → tour is filtered out entirely (not just penalized).
+- `coverage.interests` is measured against the tour's actual `stops[]` + `theme` + `blurb`, not a hardcoded list. Each satisfied interest = +8. Missing user-asked interest = −6 (asymmetric — missing what they asked for hurts more than a bonus they didn't ask for).
+- `coverage.feeling` uses semantic keyword match against tour content (same technique as current `INTEREST_KEYWORDS`, extended per-feeling). Strong = +12, partial = +6, weak = 0.
+- `occasion` and `destinationIntent` are additive weights on top.
+- Deterministic tie-break at end: `alternates` are top-3 in the same fit band (Δ ≤ 8).
 
-- Surface a **"Why this journey" chip row** at the top of the preview card: 2–3 chips echoing the guest's actual inputs ("Wine · Nature · Couple · Half-day from Lisbon"). Sourced from `deriveIntentProfile` — no invention.
-- If the resolver falls back (candidate pool was empty), log a debug marker in `StudioV3DebugOverlay` and show an inline "Not quite right? Reshape" nudge instead of silently serving a mismatch.
-- Add regression tests for the top 6 interest+feeling pairs (wine+nature, culture+heritage, romance+coastal, adventure+wine, hidden+gastronomy, slow-luxury+wine) asserting the resolved tour is thematically coherent.
+**Why this fixes wine+nature and every symmetric case:** a guest asking wine + nature will show `coverage.interests = [wine: satisfied✓, nature: satisfied✓]` only for tours that genuinely cover both (Arrábida Wine has vineyard + park; Southwest Coast has nature but wine=unsatisfied → −6). No hardcoded pool needed.
 
-### 6. Checkout / price reveal is messy (prices & inclusions)
+### 2. Hard constraints — never send guests where they can't go
 
-In `SignaturePriceCard.tsx`:
-- **Two clear states**: Preview (collapsed) shows only tour title, region, duration, from-price per person, and 3 headline inclusions. Reserve (expanded, after "Preview this journey") shows full inclusions list, per-pax breakdown, add-ons, and the reserve CTA.
-- **Price line locked format**: `€X /pp · party of N · €Y total` — never mix formats mid-card. Currently the ghost + primary CTAs show different formats.
-- **Inclusions grouped** into 3 buckets with icons: *Included* (transport, guide, tastings), *Optional add-ons* (with clear €), *Not included* (tips, personal spend). Kill the current single flat list.
-- **Sticky reserve bar** on mobile with the party total, so the guest never loses the price when scrolling inclusions.
-- Extend `e2e/studio-v3-add-ons-total.spec.ts` + `studio-v3-cta-labels-live.spec.ts` to assert the two-state reveal and the locked price format.
+Add a real logistics gate before scoring:
 
-### Files touched (expected)
-- `src/components/studio-v3/curation.ts` — coherence guards + tests
-- `src/components/studio-v3/MapAwakens.tsx` — CTA rename, region badge, leg labels, mobile preview affordance
-- `src/components/studio-v3/SignaturePriceCard.tsx` — two-state reveal, inclusions grouping, sticky mobile bar, locked price format
-- `src/components/studio-v3/RouteLegend.tsx` — always-visible stop pills + distances
-- `src/components/studio-v3/__tests__/` — new intent-coherence tests
-- `e2e/studio-v3-*.spec.ts` — extend mobile stack, CTA labels, add-ons totals specs
+- **Pickup reachability**: use `stopCoords` haversine → max realistic drive from pickup. Half-day rhythm caps tours to 2h drive radius; full-day caps to 3h. Multi-day is exempt.
+- **Rhythm feasibility**: `slow` guest must not be routed to `immersive`-tagged tours; `immersive` guest gets `full`/`immersive` only.
+- **Companions coherence**: current family-only/romantic-only guards become hard filters (drop, not penalize) when the mismatch is severe.
 
-### Out of scope (flag but don't touch this pass)
-- Bokun/Stripe checkout wiring — TEST MODE stays, we only clean the reveal card.
-- Any new tours, stops or prices — no invention (guardrail).
-- Desktop/tablet layout beyond the mobile-first fixes above.
+Every filtered tour is logged to the debug overlay with the reason, so we can explain "we didn't offer Vicentine because your half-day from Lisbon can't fit the drive".
 
-Approve and I'll implement in this order: (1) intent coherence + tests, (2) CTA rename + mobile preview state, (3) map labels/legend, (4) SignaturePriceCard two-state reveal.
+### 3. Transparency — "Why this journey" surfaces the reasoning
+
+Two audiences:
+
+**Guest-facing:** a 3-chip row at the top of the preview card:
+
+```
+Wine · Nature · Slow morning from Lisbon
+```
+
+Under it, one sentence written by the AI voice layer:
+
+> "We chose Arrábida because it pairs a family vineyard morning with the coastal park you asked for, all within 40 minutes of your Lisbon pickup."
+
+The AI only rewrites; the *facts* come from the FitReport (interests satisfied, drive time, tour ID → real content). Uses existing `regionalVoice` tone. No invention.
+
+**Debug-facing (`StudioV3DebugOverlay`):** full FitReport for top 3 candidates + list of filtered tours with reasons. Ships behind `?debug=1`. This is how we spot future mismatches before users hit them.
+
+### 4. AI-predictive: where an LLM helps, where it doesn't
+
+Explicit answer to "should AI-predictive behavior work?":
+
+
+| Layer                                            | Deterministic    | LLM                            |
+| ------------------------------------------------ | ---------------- | ------------------------------ |
+| Candidate pool                                   | ✅ from tour data | ❌                              |
+| Hard constraints (pickup, rhythm)                | ✅                | ❌                              |
+| Fit scoring                                      | ✅                | ❌                              |
+| Tie-break within top band                        | ✅ seeded         | ❌                              |
+| "Why this journey" copy                          | ❌                | ✅ (voice only, from FitReport) |
+| Optional: nudge messages when profile is unusual | ❌                | ✅ (voice only)                 |
+
+
+**Why not LLM re-ranking?** Non-deterministic (same input → different tour), harder to test, adds latency + cost, and risks contradicting the guardrail. Reserve LLM for what it's actually good at: turning structured facts into warm sentences.
+
+### 5. Reshape improvement
+
+When the guest hits "Reshape this day", currently a seeded random pick within Δ 1.5 of leader. Improve:
+
+- Reshape picks the next-best candidate that satisfies a *different* dimension (e.g. current pick maxed on wine → reshape offers one that maxed on nature). Shows genuine alternates, not near-duplicates.
+- Cap at 3 reshapes before we ask "Want to change what you're feeling?" and route back to the earlier phase.
+
+### 6. Regression coverage
+
+New test suite `curation-fit.test.ts` covering:
+
+- wine+nature (already added) — must land on wine-anchored tour with nature content
+- culture+heritage+family — must land on kid-friendly heritage (Sintra, tiles), never adult-only wine
+- romance+coast+proposal — must include sunset/viewpoint stops
+- corporate+wine+half-day+lisbon — must land on Arrábida (reachable) not Alentejo (too far)
+- solo+hidden+immersive — must land on Southwest Coast or Alentejo Roman, not Sintra tourist loop
+- slow+couple+wine — must land on Azeitão/Arrábida, not a demanding full-day
+- Every combination asserts at least one satisfied interest AND no failed hard constraint
+
+Snapshot the FitReport for each case so future refactors show exactly which axis regressed.
+
+### 7. Files touched
+
+- `src/components/studio-v3/curation.ts` — new `scoreTourFit`, `filterByHardConstraints`, replace body of `pickPrimaryTour`
+- `src/components/studio-v3/types.ts` — `FitReport` type
+- `src/components/studio-v3/regionalVoice.ts` — helper that turns FitReport → guest sentence (may call AI gateway later; start with rule-based template)
+- `src/components/studio-v3/MapAwakens.tsx` + `SignaturePriceCard.tsx` — render "Why this journey" chip row + one-sentence rationale
+- `src/components/studio-v3/StudioV3DebugOverlay.tsx` — surface top-3 FitReports + filtered tours
+- `src/components/studio-v3/__tests__/curation-fit.test.ts` — new suite
+- Keep the wine-coherence guard I shipped last turn — the new model subsumes it, but the test cases remain valid regressions.
+
+### 8. Rollout
+
+Ship in 3 focused turns to keep each change reviewable:
+
+1. **Turn A** — new `scoreTourFit` + hard constraints + FitReport, wire `pickPrimaryTour` to it, extend test suite. No UI change yet.
+2. **Turn B** — surface "Why this journey" chips + one-sentence rationale in `MapAwakens` and price card (rule-based copy from FitReport).
+3. **Turn C** — debug overlay + AI voice layer swap (optional — only if the rule-based copy reads flat).
+
+### Out of scope
+
+- Adding new tours, stops, prices, or images — hard guardrail.
+- Changing the phase flow (feeling → interests → …). This is a scoring change, not a UX rewrite.
+- LLM in the ranking path (see rationale above).
+
+Approve and I start with Turn A: the new scoring model + tests. UI polish (map labels, two-state price card from the earlier plan) still stands as separate turns after this.
+
+Also, besides the skeleton of a signature tour, stops from other signature tours can be used if in the same region, driving times and stop timings and clients tastes allows it. It should be personable but controlled on the back end 
