@@ -788,7 +788,6 @@ export function SignaturePriceCard({
                         Counts stops + driving between them.
                       </p>
                     </div>
-
                   );
                 })()
               : null}

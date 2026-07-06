@@ -2389,7 +2389,6 @@ function RevealRouteMap({
   );
 }
 
-
 function PhaseHeader({
   eyebrow,
   title,
@@ -2608,7 +2607,6 @@ function StoryboardHandoff({
     revealRouteStops,
     !!revealRouteStops && revealRouteStops.length >= 2,
   );
-
 
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
@@ -3696,7 +3694,6 @@ function StoryboardHandoff({
             const totalMin = sum.totalMin ?? 0;
             return totalMin > 0 ? Math.round((totalMin / 60) * 10) / 10 : null;
           })()}
-
           onGuestsChange={(n) =>
             onStateChange((s) => ({
               ...s,
