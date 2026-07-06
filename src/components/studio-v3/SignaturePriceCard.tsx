@@ -778,7 +778,17 @@ export function SignaturePriceCard({
                           style={{ width: `${usedPct}%`, background: barColor }}
                         />
                       </div>
+                      <p
+                        className="mt-1.5 text-[10.5px] leading-[1.4]"
+                        style={{
+                          fontFamily: "var(--font-sans)",
+                          color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                        }}
+                      >
+                        Counts stops + driving between them.
+                      </p>
                     </div>
+
                   );
                 })()
               : null}
