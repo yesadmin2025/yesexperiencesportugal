@@ -31,7 +31,7 @@ import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
 import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard } from "./SignaturePriceCard";
-import { QualityScore } from "./QualityScore";
+// QualityScore removed from reveal — now surfaced only in debug overlay.
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 import { trackStep } from "@/lib/studio-v3-funnel";
@@ -3120,6 +3120,16 @@ function StoryboardHandoff({
         </div>
       </header>
 
+      {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ---------- */}
+      <section
+        data-testid="studio-v3-signature-card"
+        className="mt-8 mx-auto w-full max-w-[560px] rounded-[14px] px-4 py-6 sm:px-6 sm:py-8"
+        style={{
+          background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+          border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+          boxShadow: "0 24px 60px -36px rgba(0,0,0,0.25)",
+        }}
+      >
       {/* ---------- 2. Live route map ---------- */}
       {editedStops.length > 0 ? (
         <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
@@ -3565,8 +3575,9 @@ function StoryboardHandoff({
         </div>
       ) : null}
 
-      {/* ---------- 7. Quality Score (Studio Bible §11) ---------- */}
-      <QualityScore state={state} />
+      {/* Quality Score intentionally omitted from the reveal (kept for debug overlay only) */}
+
+      {/* ---------- 7b. Premium price card ---------- */}
 
       {/* ---------- 7b. Premium price card ---------- */}
       <SignaturePriceCard
@@ -3618,6 +3629,8 @@ function StoryboardHandoff({
           }))
         }
       />
+      </section>
+      {/* ---------- /Unified "Your Signature" card ---------- */}
 
       {/* ---------- 7b. Before you secure it ---------- */}
       <div className="mt-8 text-center">
