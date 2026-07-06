@@ -200,6 +200,17 @@ export function SignaturePriceCard({
       .filter((a) => selectedAddOnIds.includes(a.id))
       .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
+  const selectedAddOns = useMemo(
+    () => availableAddOns.filter((a) => selectedAddOnIds.includes(a.id)),
+    [availableAddOns, selectedAddOnIds],
+  );
+  const addOnsMinutes = useMemo(
+    () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
+    [selectedAddOns],
+  );
+  const freeMinutes =
+    remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
+
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND
   // we know the guest count, `realPerPax.real === true` and we display the
   // exact per-person rate; otherwise we keep the "from" anchor.
@@ -724,7 +735,45 @@ export function SignaturePriceCard({
             >
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
+            {remainingMinutes != null && remainingMinutes > 0 ? (() => {
+              const totalBudget = remainingMinutes; // free minutes on the base day
+              const usedPct = Math.min(100, Math.round((addOnsMinutes / totalBudget) * 100));
+              const over = freeMinutes != null && freeMinutes < 0;
+              const overBy = over ? Math.abs(freeMinutes ?? 0) : 0;
+              const barColor = over
+                ? "color-mix(in oklab, #b8541a 75%, transparent)"
+                : "color-mix(in oklab, var(--gold) 80%, transparent)";
+              return (
+                <div
+                  data-testid="studio-v3-time-budget"
+                  data-addons-minutes={addOnsMinutes}
+                  data-free-minutes={freeMinutes ?? ""}
+                  className="mb-3 rounded-[4px] px-3 py-2"
+                  style={{
+                    background: "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
+                    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  }}
+                >
+                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}>
+                    <span>
+                      <span style={{ color: "var(--gold)" }}>—</span> Day rhythm
+                    </span>
+                    <span className="tabular-nums" style={{ color: over ? "#b8541a" : "var(--charcoal)" }}>
+                      {addOnsMinutes > 0 ? `+${addOnsMinutes} min` : `${totalBudget} min free`}
+                      {over ? ` · over by ${overBy} min` : addOnsMinutes > 0 && freeMinutes != null ? ` · ${freeMinutes} min still free` : ""}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 relative h-1.5 w-full overflow-hidden rounded-full" style={{ background: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
+                    <div
+                      className="absolute inset-y-0 left-0 transition-[width] duration-[280ms] ease-out"
+                      style={{ width: `${usedPct}%`, background: barColor }}
+                    />
+                  </div>
+                </div>
+              );
+            })() : null}
             <ul className="flex flex-col gap-2">
+
               {availableAddOns.map((a) => {
                 const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
 
@@ -804,14 +853,25 @@ export function SignaturePriceCard({
                         ) : null}
                       </span>
                       <span
-                        className="shrink-0 text-[12px] font-semibold tabular-nums"
+                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums"
                         style={{ color: "var(--charcoal)" }}
                       >
-                        +€{eur}
-                        <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
-                          / pp
+                        <span>
+                          +€{eur}
+                          <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
+                            / pp
+                          </span>
                         </span>
+                        {a.durationMinutes > 0 ? (
+                          <span
+                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold"
+                            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                          >
+                            +{a.durationMinutes} min
+                          </span>
+                        ) : null}
                       </span>
+
                     </button>
                   </li>
                 );
@@ -900,9 +960,51 @@ export function SignaturePriceCard({
                   …and {itineraryStops.length - 5} more
                 </li>
               ) : null}
+              {selectedAddOns.map((a, i) => (
+                <li
+                  key={`spine-addon-${a.id}`}
+                  data-testid="studio-v3-itinerary-addon-row"
+                  data-addon-id={a.id}
+                  className="flex items-start gap-2 text-[12px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 82%, transparent)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[1px] inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold tabular-nums"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 45%, transparent)",
+                      color: "var(--charcoal)",
+                      border: "1px solid color-mix(in oklab, var(--gold) 70%, transparent)",
+                    }}
+                  >
+                    +
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="font-semibold">{a.label}</span>
+                    {a.durationMinutes > 0 ? (
+                      <span
+                        className="ml-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        +{a.durationMinutes}m
+                      </span>
+                    ) : null}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => toggleAddOn(a.id)}
+                    aria-label={`Remove ${a.label}`}
+                    className="grid h-6 w-6 place-items-center rounded-full text-[12px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
             </ol>
           </section>
         ) : null}
+
 
         {/* Blueprint truth — Optionals from the Tailor blueprint, surfaced
             here read-only so the builder traveller sees what's *truthfully*
@@ -1048,7 +1150,8 @@ export function SignaturePriceCard({
                 boxShadow: "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Yes — make this day mine
+              Yes — reserve{partyTotalEur != null ? ` · €${partyTotalEur}` : totalEur != null ? ` · €${totalEur} /pp` : ""}
+
               <ArrowRight size={14} aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
           ) : (
@@ -1105,7 +1208,7 @@ export function SignaturePriceCard({
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >
-            Yes — make this day mine <ArrowRight size={14} aria-hidden />
+            Yes — reserve{partyTotalEur != null ? ` · €${partyTotalEur}` : totalEur != null ? ` · €${totalEur} /pp` : ""} <ArrowRight size={14} aria-hidden />
           </button>
           <p
             className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
