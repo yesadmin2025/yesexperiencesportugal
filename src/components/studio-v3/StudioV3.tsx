@@ -2592,6 +2592,8 @@ function StoryboardHandoff({
   onRefine,
   pending,
   tourPriceTiers,
+  selectedAddOnIds,
+  onAddOnsChange,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -2600,7 +2602,10 @@ function StoryboardHandoff({
   onRefine: () => void;
   pending?: boolean;
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
+  selectedAddOnIds?: ReadonlyArray<string>;
+  onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
 }) {
+
   const pickupCity = pickupCityLabel(state.pickup);
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
