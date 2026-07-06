@@ -720,6 +720,19 @@ export function StudioV3() {
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
       const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
+      const perPaxBase =
+        resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
+        tour.priceFrom ??
+        180;
+      // Add-ons live per booking (flat), base fare is per pax × guests. Mirror
+      // the same math the price card shows so the drawer total never drifts.
+      const addOnsForCheckout = selectedAddOnItems.map((i) => ({
+        id: i.id,
+        label: i.label,
+        priceEur: Math.round(i.priceEur),
+        durationMinutes: i.durationMinutes,
+      }));
+      const totalEur = Math.round(perPaxBase * details.guests + selectedAddOnsTotalEur);
       setCheckoutSummary({
         tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
         region: tour.region,
@@ -728,13 +741,13 @@ export function StudioV3() {
         dateExact: details.tourDate || currentState.dateExact || null,
         startTime: details.startTime ?? null,
         pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-        pricePerPaxEur:
-          resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
-          tour.priceFrom ??
-          180,
+        pricePerPaxEur: perPaxBase,
+        totalEur,
         heroSrc: tour.img ?? null,
         beats: stopLabels.slice(0, 4),
         flowLabel: "Studio",
+        addOns: addOnsForCheckout,
+        addOnsTotalEur: Math.round(selectedAddOnsTotalEur),
       });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
@@ -761,6 +774,7 @@ export function StudioV3() {
             flow: "studio",
             uiMode: "embedded",
             guestDetails: { ...details, hotelPickupIncluded: true },
+            addOns: addOnsForCheckout,
           },
         });
         if (error) throw error;
@@ -779,8 +793,15 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, openLeadSheet, tourPriceTiers],
+    [
+      checkoutPending,
+      openLeadSheet,
+      tourPriceTiers,
+      selectedAddOnItems,
+      selectedAddOnsTotalEur,
+    ],
   );
+
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
   // Reads ?saved=<token> once on mount, fetches the persisted state, then
