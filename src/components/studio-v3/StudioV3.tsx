@@ -31,7 +31,7 @@ import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
 import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard } from "./SignaturePriceCard";
-import { QualityScore } from "./QualityScore";
+// QualityScore removed from reveal — now surfaced only in debug overlay.
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 import { trackStep } from "@/lib/studio-v3-funnel";
