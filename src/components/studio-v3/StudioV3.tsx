@@ -3651,26 +3651,30 @@ function StoryboardHandoff({
           included={skeletonTour?.included ?? []}
           showAddOns={true}
           remainingMinutes={
-            summarizeDay({
-              stops: editedStops.map((p) => {
-                const ep = p as {
-                  label: string;
-                  story: string;
-                  lat?: number | null;
-                  lng?: number | null;
-                };
-                return {
-                  label: ep.label,
-                  lat: ep.lat ?? null,
-                  lng: ep.lng ?? null,
-                  kind: inferKind(ep.label),
-                };
-              }),
-              region: skeletonTour?.region ?? null,
-            }).remainingMin
+            revealLegsLoading
+              ? null
+              : summarizeDay({
+                  stops: editedStops.map((p) => {
+                    const ep = p as {
+                      label: string;
+                      story: string;
+                      lat?: number | null;
+                      lng?: number | null;
+                    };
+                    return {
+                      label: ep.label,
+                      lat: ep.lat ?? null,
+                      lng: ep.lng ?? null,
+                      kind: inferKind(ep.label),
+                    };
+                  }),
+                  drivesMin: revealLegMinutes ?? undefined,
+                  region: skeletonTour?.region ?? null,
+                }).remainingMin
           }
           itineraryStops={editedStops.map((p) => (p as { label: string }).label)}
           dwellHours={(() => {
+            if (revealLegsLoading) return null;
             const sum = summarizeDay({
               stops: editedStops.map((p) => {
                 const ep = p as {
@@ -3686,11 +3690,13 @@ function StoryboardHandoff({
                   kind: inferKind(ep.label),
                 };
               }),
+              drivesMin: revealLegMinutes ?? undefined,
               region: skeletonTour?.region ?? null,
             });
             const totalMin = sum.totalMin ?? 0;
             return totalMin > 0 ? Math.round((totalMin / 60) * 10) / 10 : null;
           })()}
+
           onGuestsChange={(n) =>
             onStateChange((s) => ({
               ...s,
