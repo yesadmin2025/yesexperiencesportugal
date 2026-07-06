@@ -200,6 +200,17 @@ export function SignaturePriceCard({
       .filter((a) => selectedAddOnIds.includes(a.id))
       .reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [availableAddOns, selectedAddOnIds, hasPrice, priceEur]);
+  const selectedAddOns = useMemo(
+    () => availableAddOns.filter((a) => selectedAddOnIds.includes(a.id)),
+    [availableAddOns, selectedAddOnIds],
+  );
+  const addOnsMinutes = useMemo(
+    () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
+    [selectedAddOns],
+  );
+  const freeMinutes =
+    remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
+
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND
   // we know the guest count, `realPerPax.real === true` and we display the
   // exact per-person rate; otherwise we keep the "from" anchor.
