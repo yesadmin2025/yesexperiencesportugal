@@ -3082,7 +3082,7 @@ function StoryboardHandoff({
             otherwise the "from" anchor. Guests fall back to 2 for the
             indicative line, never invented. */}
         {(() => {
-          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2, tourPriceTiers);
+          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2);
           if (!px) return null;
           const guestsForLine =
             typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
