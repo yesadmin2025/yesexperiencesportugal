@@ -244,6 +244,28 @@ function ExperienceSummaryCard({
         </ul>
       ) : null}
 
+      {summary.addOns && summary.addOns.length > 0 ? (
+        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
+          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+            Add-ons
+          </p>
+          <ul className="mt-2 space-y-1">
+            {summary.addOns.map((a) => (
+              <li
+                key={a.id}
+                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
+              >
+                <span className="truncate">• {a.label}</span>
+                <span className="tabular-nums text-[color:var(--charcoal-soft)]">
+                  €{Math.round(a.priceEur).toLocaleString("en-GB")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+
       {total != null ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
