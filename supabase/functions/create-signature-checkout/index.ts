@@ -43,7 +43,15 @@ interface Body {
     startTime?: string | null;
     [key: string]: unknown;
   };
+  /** Optional reveal add-ons chosen by the traveller. Priced flat per booking. */
+  addOns?: Array<{
+    id: string;
+    label: string;
+    priceEur: number;
+    durationMinutes?: number;
+  }>;
 }
+
 
 type Flow = "studio" | "signature" | "tailor";
 
