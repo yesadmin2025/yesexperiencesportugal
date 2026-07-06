@@ -941,11 +941,12 @@ export function pickPrimaryTour(
   // non-wine destination intent overrides (the user chose the coast on
   // purpose).
   const nonWineDestinationIntent =
-    destinationIntent === "southwest-coast" ||
-    destinationIntent === "sintra-cascais" ||
-    destinationIntent === "tomar-templar" ||
-    destinationIntent === "fatima-nazare-obidos";
+    destinationIntent === "vicentine-coast" ||
+    destinationIntent === "lisbon-sintra-cascais" ||
+    destinationIntent === "spiritual-coast" ||
+    destinationIntent === "central-portugal";
   const enforceWineCoherence = wineIsAnyInterest && !nonWineDestinationIntent;
+
 
 
   // AI-predictive coherence: hard-deprioritise tours whose ideal-for
