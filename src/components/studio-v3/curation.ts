@@ -920,6 +920,8 @@ export function pickPrimaryTour(
   const explicitWineFeeling = feeling === "wine-food";
   const wineIsTopInterest =
     interests[0] === "wine" || interests[0] === "gastronomy";
+  const wineIsAnyInterest =
+    interests.includes("wine") || interests.includes("gastronomy");
   const wineIntent =
     destinationIntent === "alentejo-evora-wine" ||
     destinationIntent === "alentejo-roman-talha" ||
@@ -927,9 +929,24 @@ export function pickPrimaryTour(
   const wineBoost = explicitWineFeeling || wineIntent
     ? 3
     : wineIsTopInterest
-      ? 1.5
-      : 0;
+      ? 2.5
+      : wineIsAnyInterest
+        ? 1.5
+        : 0;
   const wantsWine = wineBoost > 0;
+
+  // Coherence guard — when the traveller explicitly picked wine as an
+  // interest, tours with zero wine content (e.g. Southwest Vicentine Coast)
+  // must NOT win over wine-anchored options. Exception: an explicit
+  // non-wine destination intent overrides (the user chose the coast on
+  // purpose).
+  const nonWineDestinationIntent =
+    destinationIntent === "southwest-coast" ||
+    destinationIntent === "sintra-cascais" ||
+    destinationIntent === "tomar-templar" ||
+    destinationIntent === "fatima-nazare-obidos";
+  const enforceWineCoherence = wineIsAnyInterest && !nonWineDestinationIntent;
+
 
   // AI-predictive coherence: hard-deprioritise tours whose ideal-for
   // copy reads as exclusively-family when the traveller is not family,
