@@ -40,6 +40,21 @@ function usdToEurAnchor(usd: number): number {
   return Math.max(5, Math.round(raw / 5) * 5);
 }
 
+export interface SelectedAddOnSummaryItem {
+  id: string;
+  label: string;
+  priceEur: number;
+  durationMinutes: number;
+  pricePctOfBase: number;
+}
+
+export interface SelectedAddOnSummary {
+  ids: string[];
+  totalEur: number;
+  totalMinutes: number;
+  items: SelectedAddOnSummaryItem[];
+}
+
 export interface SignaturePriceCardProps {
   tour: SignatureTour | null;
   stopCount: number;
@@ -53,6 +68,15 @@ export interface SignaturePriceCardProps {
   included?: ReadonlyArray<string>;
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
   showAddOns?: boolean;
+  /**
+   * Controlled add-on selection. When provided, the parent owns the ids and
+   * receives `onAddOnsChange` callbacks with the fresh summary (labels, euro
+   * total, minutes) so the checkout drawer and Stripe session stay in sync
+   * with what the traveller actually picked. When omitted the card falls
+   * back to its own local state (legacy/test callers).
+   */
+  selectedAddOnIds?: ReadonlyArray<string>;
+  onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
   /**
    * Called when the traveller selects a tier in the hidden picker. Lets the
    * parent persist the chosen guest size into Studio V3 state so the saved
@@ -84,6 +108,7 @@ export interface SignaturePriceCardProps {
   /** Approximate total day length in hours (drive + dwell), used in the spine summary. */
   dwellHours?: number | null;
 }
+
 
 export function SignaturePriceCard({
   tour,
