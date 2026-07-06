@@ -1140,10 +1140,12 @@ export function scoreTourFit(
 
 
 /** Pick ONE Signature skeleton that best fits the answers AND keeps the
- *  route geographically contained near the chosen pickup. Deterministic
- *  unless `seed` is provided — then re-picks among top-band tours (Δ ≤ 1.5
- *  from the leader) using the seed so "Reshape" yields a different but
- *  equally-good Signature when multiple fit. */
+ *  route geographically contained near the chosen pickup.
+ *
+ *  Phase 8: delegates to `pickPrimaryTourWithFit`, which uses the
+ *  deterministic `scoreTourFit` FitReport model. Kept as a thin wrapper
+ *  so all existing call sites (route resolver, tests, storyboard,
+ *  reshape) get the improved matching without a signature change. */
 export function pickPrimaryTour(
   feeling: Feeling,
   companions: Companions,
@@ -1151,11 +1153,49 @@ export function pickPrimaryTour(
   pickup: Pickup | null,
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
+  rhythm: Rhythm | null = null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
+  const { tour, alternates } = pickPrimaryTourWithFit(
+    feeling,
+    companions,
+    interests,
+    pickup,
+    destinationIntent,
+    seed,
+    rhythm,
+  );
+  return { tour, alternates };
+}
+
+/**
+ * pickPrimaryTourWithFit — same as `pickPrimaryTour` but also returns:
+ *   - `fit`: FitReport for the chosen tour (feeds "Why this journey" UI)
+ *   - `topReports`: FitReports for the top 3 candidates (debug overlay)
+ *   - `filtered`: candidates dropped by hard constraints, with reason
+ *
+ * Deterministic given the same inputs. When `seed > 0` (Reshape), picks
+ * from the top band (Δ ≤ 8) so re-rolls yield genuinely different but
+ * comparably-good Signatures.
+ */
+export function pickPrimaryTourWithFit(
+  feeling: Feeling,
+  companions: Companions,
+  interests: ReadonlyArray<Interest>,
+  pickup: Pickup | null,
+  destinationIntent: DestinationIntent | null,
+  seed: number = 0,
+  rhythm: Rhythm | null = null,
+): {
+  tour: SignatureTour;
+  alternates: SignatureTour[];
+  fit: FitReport;
+  topReports: Array<{ tour: SignatureTour; fit: FitReport }>;
+  filtered: Array<{ tour: SignatureTour; reason: string }>;
+} {
+  // Build the candidate pool from every axis the guest touched. FEELING_TO_TOURS
+  // alone can miss cross-feeling matches (e.g. wine + adventure), so we fold in
+  // destination-intent, interest, and profile-discovery targets before scoring.
   const candidateIds = FEELING_TO_TOURS[feeling] ?? [];
-  // When a destination intent is set, fold its target tours into the
-  // candidate pool so the boost can actually pick them up (FEELING_TO_TOURS
-  // alone may not include e.g. evora-alentejo for a "coastal" feeling).
   const intentTargets =
     destinationIntent && destinationIntent !== "no-preference"
       ? Object.keys(DESTINATION_INTENT_BOOSTS[destinationIntent])
@@ -1171,134 +1211,71 @@ export function pickPrimaryTour(
 
   if (candidates.length === 0) {
     const fallbackId = FEELING_FALLBACK[feeling];
-    const fallback =
-      signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
-    return { tour: fallback, alternates: [] };
+    const fallback = signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
+    const fit = scoreTourFit(fallback, {
+      feeling,
+      companions,
+      interests,
+      pickup,
+      rhythm,
+      destinationIntent,
+    });
+    return { tour: fallback, alternates: [], fit, topReports: [{ tour: fallback, fit }], filtered: [] };
   }
 
-  // Phase 7A: tiles / craft / hands-on culture intent boost.
-  // When the traveller signals culture + local craft (heritage interest paired
-  // with local-life), prefer `tiles-workshop` over generic culture skeletons
-  // where geographically reasonable (Lisbon-area pickups). We never force
-  // tiles when the user did not express that intent (no local-life signal).
-  const wantsTilesCraft =
-    feeling === "culture" &&
-    interests.includes("local-life") &&
-    (interests.includes("heritage") || interests.length === 1);
-  const isLisbonArea =
-    !pickup ||
-    pickup === "lisbon" ||
-    pickup === "lisbon-airport" ||
-    pickup === "lisbon-cruise" ||
-    pickup === "cascais-estoril" ||
-    pickup === "sintra" ||
-    pickup === "sesimbra-setubal-arrabida";
+  // Score every candidate with the FitReport model.
+  const reported = candidates.map((tour, order) => ({
+    tour,
+    order,
+    fit: scoreTourFit(tour, { feeling, companions, interests, pickup, rhythm, destinationIntent }),
+  }));
 
-  // Wine emphasis is gated so casual "gastronomy" interest on a non-wine feeling
-  // (e.g. coastal, culture, romance) doesn't force a wine tour. Boost strength
-  // scales with how deliberately the user asked for wine.
-  const explicitWineFeeling = feeling === "wine-food";
-  const wineIsTopInterest =
-    interests[0] === "wine" || interests[0] === "gastronomy";
-  const wineIsAnyInterest =
-    interests.includes("wine") || interests.includes("gastronomy");
-  const wineIntent =
-    destinationIntent === "alentejo-evora-wine" ||
-    destinationIntent === "alentejo-roman-talha" ||
-    destinationIntent === "arrabida-setubal-azeitao";
-  const wineBoost = explicitWineFeeling || wineIntent
-    ? 3
-    : wineIsTopInterest
-      ? 2.5
-      : wineIsAnyInterest
-        ? 1.5
-        : 0;
-  const wantsWine = wineBoost > 0;
+  // Hard filter: drop tours that fail companions-coherence AND have no
+  // interest coverage — those are near-guaranteed mismatches (family-coded
+  // day offered to a couple with zero interest alignment). Conservative:
+  // never drop the last remaining candidate.
+  const filtered: Array<{ tour: SignatureTour; reason: string }> = [];
+  let eligible = reported.filter((r) => {
+    const failsCompanions = !r.fit.hardConstraints.companionsAllowed;
+    const zeroCoverage =
+      r.fit.coverage.interests.length > 0 &&
+      r.fit.coverage.interests.every((c) => !c.satisfied);
+    if (failsCompanions && zeroCoverage) {
+      filtered.push({ tour: r.tour, reason: "companions-coded-mismatch-and-no-interest-coverage" });
+      return false;
+    }
+    return true;
+  });
+  if (eligible.length === 0) eligible = reported;
 
-  // Coherence guard — when the traveller explicitly picked wine as an
-  // interest, tours with zero wine content (e.g. Southwest Vicentine Coast)
-  // must NOT win over wine-anchored options. Exception: an explicit
-  // non-wine destination intent overrides (the user chose the coast on
-  // purpose).
-  const nonWineDestinationIntent =
-    destinationIntent === "vicentine-coast" ||
-    destinationIntent === "lisbon-sintra-cascais" ||
-    destinationIntent === "spiritual-coast" ||
-    destinationIntent === "central-portugal";
-  const enforceWineCoherence = wineIsAnyInterest && !nonWineDestinationIntent;
+  const sorted = eligible.sort((a, b) => {
+    if (b.fit.totalScore !== a.fit.totalScore) return b.fit.totalScore - a.fit.totalScore;
+    return a.order - b.order; // preserve pool ordering as deterministic tiebreak
+  });
 
-
-
-  // AI-predictive coherence: hard-deprioritise tours whose ideal-for
-  // copy reads as exclusively-family when the traveller is not family,
-  // and the mirror case for romantic-only tours offered to corporate.
-  const cType = companionsType(companions);
-  const blockFamilyCoded = cType === "couple" || cType === "solo" || cType === "corporate";
-  const blockRomanticCoded = cType === "corporate" || cType === "family";
-
-  const scored = candidates
-    .map((tour, order) => {
-      let score = 0;
-      // Pickup affinity is a tie-breaker, not an override — reduced from 1.2
-      // to 0.8 so Lisbon-adjacent tours (Arrábida) can't out-score the
-      // feeling-led candidate on their own.
-      score += pickupAffinity(tour, pickup) * 0.8;
-      score += interestAffinity(tour, interests);
-      score += destinationIntentBoost(tour, destinationIntent);
-      score += profileDiscoveryBoost(tour, feeling, interests, destinationIntent);
-      const tourWineText = `${tour.title} ${tour.theme} ${tour.blurb}`;
-      const tourHasWineContent =
-        /wine|winery|tasting|vineyard|cellar|moscatel|quinta|adega|bacalh[oô]a|fonseca/i.test(
-          tourWineText,
-        );
-      if (wantsWine && tourHasWineContent) {
-        score += wineBoost;
-      }
-      // Hard coherence guard — traveller asked for wine, this tour has zero
-      // wine content, and they didn't explicitly pick a non-wine destination.
-      // Deprioritise so Southwest Vicentine Coast can't win a "wine + nature"
-      // profile just because it happens to satisfy the nature axis.
-      if (enforceWineCoherence && !tourHasWineContent) {
-        score -= 4;
-      }
-      // Companions soft hints — proposal/celebration lean wine/heritage tours.
-      if (companions === "family" && /family|child/i.test(tour.idealFor.join(" "))) {
-        score += 0.5;
-      }
-      if (wantsTilesCraft && isLisbonArea && tour.id === "tiles-workshop") {
-        score += 3;
-      }
-      // Coherence guard — never let family-coded copy win for couples,
-      // never let romantic-only copy win for corporate.
-      const idealFor = tour.idealFor.join(" ");
-      if (blockFamilyCoded && FAMILY_ONLY_RE.test(idealFor)) score -= 6;
-      if (blockRomanticCoded && ROMANTIC_ONLY_RE.test(idealFor)) score -= 6;
-      return { tour, score, order };
-
-    })
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return a.order - b.order; // preserve FEELING_TO_TOURS ordering as tiebreak
-    });
-
-  // Seed > 0 → "Reshape" picks among top-band tours (within Δ 1.5 of the
-  // leader) so re-rolls offer a genuinely different but equally-good day.
-  let chosen = scored[0];
-  if (seed > 0 && scored.length > 1) {
-    const top = scored[0].score;
-    const band = scored.filter((s) => top - s.score <= 1.5);
+  // Reshape: pick among top-band candidates (Δ ≤ 8 from the leader) so
+  // re-rolls yield a genuinely different but comparably-good Signature.
+  let chosen = sorted[0];
+  if (seed > 0 && sorted.length > 1) {
+    const top = sorted[0].fit.totalScore;
+    const band = sorted.filter((s) => top - s.fit.totalScore <= 8);
     if (band.length > 1) {
       const rand = mulberry32(seed)();
-      chosen = band[Math.floor(rand * band.length)] ?? scored[0];
+      chosen = band[Math.floor(rand * band.length)] ?? sorted[0];
     }
   }
 
-  const alternates = scored
+  const alternates = sorted
     .filter((s) => s.tour.id !== chosen.tour.id)
     .slice(0, 2)
     .map((s) => s.tour);
-  return { tour: chosen.tour, alternates };
+
+  const topReports = sorted.slice(0, 3).map(({ tour, fit }) => ({ tour, fit }));
+
+  return { tour: chosen.tour, alternates, fit: chosen.fit, topReports, filtered };
 }
+
+
 
 /**
  * curateJourney — route-contained. Returns moments drawn ONLY from the
