@@ -753,7 +753,7 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, openLeadSheet],
+    [checkoutPending, openLeadSheet, tourPriceTiers],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -2155,6 +2155,7 @@ export function StudioV3() {
               onSecure={() => requestStripeCheckout(state)}
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
+              tourPriceTiers={tourPriceTiers}
             />
           </PhaseShell>
         </>
@@ -2524,6 +2525,7 @@ function StoryboardHandoff({
   onSecure,
   onRefine,
   pending,
+  tourPriceTiers,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -2531,6 +2533,7 @@ function StoryboardHandoff({
   onSecure: () => void;
   onRefine: () => void;
   pending?: boolean;
+  tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
 }) {
   const pickupCity = pickupCityLabel(state.pickup);
 
@@ -3082,7 +3085,7 @@ function StoryboardHandoff({
             otherwise the "from" anchor. Guests fall back to 2 for the
             indicative line, never invented. */}
         {(() => {
-          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2);
+          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2, tourPriceTiers);
           if (!px) return null;
           const guestsForLine =
             typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
