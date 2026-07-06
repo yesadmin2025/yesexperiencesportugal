@@ -1,56 +1,37 @@
-# Studio V3 — 4 new E2E specs
+# Tablet E2E: moments card stays below the map during route composition
 
-All four specs live in `e2e/`, reuse `walkToReveal` + parsers from `e2e/studio-v3-walk-to-reveal.ts`, `test.skip(...)` when the funnel doesn't reach the reveal, and follow the existing spec conventions (Playwright, mobile-chromium project by default).
+Add one new spec that mirrors the existing mobile invariant at tablet width, so we catch regressions where a two-column or side-by-side layout kicks in at the tablet breakpoint and lifts the "Your Signature" / moments card next to (or above) the map while the route is still unfolding.
 
-## 1. `e2e/studio-v3-unified-signature-card-visual.spec.ts`
-Visual regression of the unified `[data-testid="studio-v3-signature-card"]`.
+## File
 
-- Walk to reveal, `expect(card).toBeVisible()`.
-- `await card.evaluate(el => el.scrollIntoView({block: 'start'}))`, disable animations via `page.emulateMedia({ reducedMotion: 'reduce' })` before navigation.
-- `await expect(card).toHaveScreenshot('signature-card-collapsed.png')`.
-- Expand Swap pool (`button[aria-label^="Swap "]`) if present, wait for `[data-testid="studio-v3-swap-pool"]` visible, snapshot `signature-card-swap-expanded.png`, then click to collapse and snapshot `signature-card-after-collapse.png` (asserts no lingering layout shift).
-- Same cycle for `[data-testid="studio-v3-add-moment"] button[aria-expanded]` → `signature-card-add-pool-expanded.png`.
-- Snapshots go under `e2e/__baselines__/` via Playwright's default `toHaveScreenshot`. First run generates baselines; CI diff budget already configured in `playwright.config.ts` (0.2% pixel ratio).
+`e2e/studio-v3-tablet-map-above-moments-card.spec.ts`
 
-## 2. `e2e/studio-v3-add-ons-disabled-vs-enabled.spec.ts`
-Companion to the existing `studio-v3-add-ons-disabled-never-affect-total.spec.ts` — this new one asserts the *contrast*: disabled do nothing, enabled always do.
+## Behavior
 
-- Baseline `parseAddOnsTotalEur` + `parsePartyTotalEur`.
-- Force-click every `button[data-addon-id][data-state="disabled"]` and every `button[data-addon-id][aria-disabled="true"]`. After each click, assert both totals equal baseline and `aria-pressed="false"`.
-- Then iterate `readInteractableAddons(page)` (up to first 3 to respect cap): each click MUST strictly increase both totals by that chip's `+€N` (per-guest × guest count for party-total); each un-click MUST restore exactly the previous value.
-- Ends with a full toggle-off returning to baseline.
+- **Project gate**: run only under the `tablet-chromium` Playwright project (viewport 834×1112 from `playwright.config.ts`). `test.skip(testInfo.project.name !== "tablet-chromium", "tablet-only invariant")` in `beforeEach`, exactly matching the mobile spec's gating style.
+- **Funnel**: `await page.goto("/studio-v3")` then `await walkToReveal(page)` from `./studio-v3-walk-to-reveal`. Same helper as the mobile spec — it stops at the storyboard/map phase if it can't hold-journey to the reveal, which is the exact state we want to assert against.
+- **Selectors** (identical to mobile spec, reusing the testids already in place):
+  - `[data-testid="studio-v3-map-anticipation"]` — the composing map.
+  - `[data-testid="studio-v3-moments-card"]` — the moments/story card wrapper added to `MapAwakens.tsx` for the mobile spec.
+- **Skips** (predictive, so tablet variance doesn't cause false failures):
+  - Skip if the map isn't visible within 10s (`test.skip(true, "map anticipation state not reached in this run")`).
+  - Skip if the moments card isn't mounted within 5s (`test.skip(true, "moments card not mounted this run")`).
+  - Skip if `boundingBox()` returns null for either element.
+  - Skip if the two boxes don't horizontally overlap — at tablet width the layout may legitimately place them side-by-side in landscape edge cases (mirrors the z-index caveat in the mobile plan). The vertical-stack invariant only applies when they occupy the same horizontal band.
+- **Assertions** (only when horizontally overlapping, matching mobile):
+  - `cardBox.y >= mapBox.y + mapBox.height * 0.6` — card starts at or below the map's mid-line.
+  - `cardBox.y > mapBox.y` — card top is strictly below the map's top edge (no occlusion of the composing route).
+- **Artifact**: `await page.screenshot({ path: "/tmp/browser/tablet-stack/tablet-map-composing.png" })` for review, parallel to the mobile spec's `mobile-stack/mobile-map-composing.png`.
 
-## 3. `e2e/studio-v3-cta-labels-live.spec.ts`
-Every add-on toggle updates the visible label of both the inline CTA (`[data-testid="studio-v3-cta-primary"]`) and the mobile sticky CTA (`[data-testid="studio-v3-cta-sticky"]`).
+## Predictive intent-matching
 
-- Regex `/€\s?(\d+)/` on `textContent` of each CTA.
-- Baseline both labels; assert equal to `parsePartyTotalEur` (or `€NN /pp` fallback when party-total is null).
-- Toggle first two interactable add-ons: after each click read CTA text within the same frame using `page.evaluate` (mirrors `studio-v3-add-ons-same-frame.spec.ts` pattern) and assert the numeric in each CTA equals the new `party-total`.
-- Scroll to reveal sticky CTA (scroll `SignaturePriceCard` past viewport) and re-assert its label after another toggle.
-- Toggle back off, assert labels return to baseline text.
-
-## 4. `e2e/studio-v3-mobile-map-above-moments-card.spec.ts`
-Mobile-only (project `mobile-chromium` via `test.use({ viewport: { width: 393, height: 852 } })` + skip on non-mobile projects).
-
-Verifies that while the route is unfolding — i.e. `[data-testid="studio-v3-map-anticipation"]` is mounted and the reveal has NOT appeared yet — the moments/story card is BELOW (later in the vertical stack, higher `top`) than the map on mobile, so the user can watch the map compose.
-
-- Walk the funnel up to the storyboard/map phase but do NOT hold-journey to the reveal.
-- Wait for `[data-testid="studio-v3-map-anticipation"]` visible.
-- Locate the moments card container — the closest ancestor of `[data-testid="studio-v3-moment-timings"]` that isn't the map wrapper (query the panel by data attribute; if none exists, add `data-testid="studio-v3-moments-card"` on that wrapper in `MapAwakens.tsx` in the build step).
-- `boundingBox()` for both: assert `moments.y >= map.y + map.height * 0.6` (moments start clearly below the map's mid-line) AND `moments.y > map.y` (no overlap where the card would occlude the composing route).
-- Also assert z-index sanity: `getComputedStyle(moments).zIndex` is not greater than the map's when they visually overlap in landscape edge cases → skip if boxes don't overlap horizontally.
-- Screenshot `mobile-map-composing.png` to `/tmp/browser/mobile-stack/` for artifact review.
-
-## Technical notes
-
-- All specs assume `walkToReveal` already covers the intro→reveal walk; no funnel changes.
-- Spec #4 may require a one-line addition of `data-testid="studio-v3-moments-card"` on the moments panel wrapper in `src/components/studio-v3/MapAwakens.tsx` (only if no existing stable selector exists after re-reading the file); this is a test-only attribute, no visual/behavioral change.
-- No changes to `SignaturePriceCard`, `StudioV3.tsx`, `playwright.config.ts`, or CI workflows.
-- Run locally: `bunx playwright test e2e/studio-v3-unified-signature-card-visual.spec.ts e2e/studio-v3-add-ons-disabled-vs-enabled.spec.ts e2e/studio-v3-cta-labels-live.spec.ts e2e/studio-v3-mobile-map-above-moments-card.spec.ts --reporter=line`.
-- Visual baselines will be generated on first successful run via `--update-snapshots`.
+Because tablet is where responsive layouts most often flip between stacked and side-by-side, the spec is conservatively skip-gated: it only fails when the map and card are visually stacked (horizontal overlap) AND the card intrudes into the top 60% of the map. This matches the user's real intent — "keep the composing route visible" — without punishing legitimate side-by-side tablet layouts.
 
 ## Non-goals
 
-- No changes to add-on pricing logic, CTA copy, or reveal layout.
-- No new CI workflow file — these run under the existing Playwright job.
-- No refactor of `walkToReveal` or shared helpers beyond what's already exported.
+- No changes to `MapAwakens.tsx`, `SignaturePriceCard`, `walkToReveal`, `playwright.config.ts`, or CI workflows.
+- No new baselines/snapshots — layout-box assertions only.
+
+## Run
+
+`bunx playwright test e2e/studio-v3-tablet-map-above-moments-card.spec.ts --project=tablet-chromium --reporter=line`
