@@ -2596,6 +2596,20 @@ function StoryboardHandoff({
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
+  // Real OSRM driving legs — shared with RevealRouteMap via react-query's
+  // dedupe on the same routeStops key, so we pay for one fetch and both the
+  // map AND the add-on day budget below read the same honest minutes.
+  const { routeStops: revealRouteStops } = resolveRevealRouteStops(
+    editedStops,
+    resolved,
+    skeletonTour ?? null,
+  );
+  const { legMinutes: revealLegMinutes, isLoading: revealLegsLoading } = useRouteLegMinutes(
+    revealRouteStops,
+    !!revealRouteStops && revealRouteStops.length >= 2,
+  );
+
+
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
   // fully grounded in real tour data. If anything is missing (no skeleton,
