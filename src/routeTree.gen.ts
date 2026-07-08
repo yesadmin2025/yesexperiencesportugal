@@ -30,6 +30,7 @@ import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-to
 import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
 import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
+import { Route as MomentsRouteImport } from './routes/moments'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
@@ -208,6 +209,11 @@ const PortugalToursRoute = PortugalToursRouteImport.update({
 const MultiDayRoute = MultiDayRouteImport.update({
   id: '/multi-day',
   path: '/multi-day',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MomentsRoute = MomentsRouteImport.update({
+  id: '/moments',
+  path: '/moments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
@@ -613,6 +619,7 @@ export interface FileRoutesByFullPath {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -710,6 +717,7 @@ export interface FileRoutesByTo {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -808,6 +816,7 @@ export interface FileRoutesById {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -907,6 +916,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/moments'
     | '/multi-day'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1004,6 +1014,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/moments'
     | '/multi-day'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1101,6 +1112,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/moments'
     | '/multi-day'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1199,6 +1211,7 @@ export interface RootRouteChildren {
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
+  MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
@@ -1420,6 +1433,13 @@ declare module '@tanstack/react-router' {
       path: '/multi-day'
       fullPath: '/multi-day'
       preLoaderRoute: typeof MultiDayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moments': {
+      id: '/moments'
+      path: '/moments'
+      fullPath: '/moments'
+      preLoaderRoute: typeof MomentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/luxury-tours-portugal': {
@@ -2000,6 +2020,7 @@ const rootRouteChildren: RootRouteChildren = {
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
+  MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
@@ -2079,13 +2100,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
