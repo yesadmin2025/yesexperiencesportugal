@@ -20,7 +20,7 @@ export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "What is the difference between Signature, Studio and Travel Designer?",
-    a: "Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm — Portugal's first real-time private tour builder. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file.",
+    a: "Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file.",
   },
   {
     q: "Can I customise a Signature day?",
