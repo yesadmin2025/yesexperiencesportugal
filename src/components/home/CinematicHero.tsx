@@ -25,6 +25,11 @@ const HERO_CLIP = {
   // Web-optimized H.264 variants (replaces the 19 MB original).
   srcMobile: "/__l5e/assets-v1/ff4f2c39-2fde-42f1-9b4a-7230c692f1e9/hero-sunset-road-720.mp4",
   srcDesktop: "/__l5e/assets-v1/422f19b8-dad0-4ae0-b952-e4fc9a048abe/hero-sunset-road-1080.mp4",
+  // Modern codecs for browsers that negotiate them (Safari → HEVC, Chrome/FF → AV1).
+  // ~30–40 % smaller than the H.264 720p mobile source; browsers that don't decode
+  // them silently fall through to the H.264 <source> below.
+  srcMobileHevc: "/__l5e/assets-v1/07f8da30-1c73-4d49-a615-19beccd6bc17/hero-sunset-road-720.hevc.mp4",
+  srcMobileAv1: "/__l5e/assets-v1/5b4b22ae-6087-461f-b6bb-2befd85ae8de/hero-sunset-road-720.av1.mp4",
   posterWebp: "/video/hero-sunset-road-poster.webp",
   posterWebpMobile: "/video/hero-sunset-road-poster-720.webp",
   posterJpg: "/video/hero-sunset-road-poster.jpg",
@@ -532,6 +537,18 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
             willChange: "transform",
           }}
         >
+          {/* Codec negotiation: AV1 (Chrome/FF/Edge) → HEVC (Safari) → H.264 (universal).
+              Order matters — browsers pick the first playable <source>. */}
+          <source
+            src={HERO_CLIP.srcMobileAv1}
+            media="(max-width: 767px)"
+            type='video/mp4; codecs="av01.0.05M.08"'
+          />
+          <source
+            src={HERO_CLIP.srcMobileHevc}
+            media="(max-width: 767px)"
+            type='video/mp4; codecs="hvc1"'
+          />
           <source src={HERO_CLIP.srcMobile} media="(max-width: 767px)" type="video/mp4" />
           <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
         </video>
