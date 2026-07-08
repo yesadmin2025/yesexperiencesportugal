@@ -34,6 +34,7 @@ import { Route as MomentsRouteImport } from './routes/moments'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
 import { Route as EvoraPrivateTourFromLisbonRouteImport } from './routes/evora-private-tour-from-lisbon'
 import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alentejo-wine-tour'
@@ -229,6 +230,11 @@ const LocalStoriesRoute = LocalStoriesRouteImport.update({
 const HeroVerifyRoute = HeroVerifyRouteImport.update({
   id: '/hero-verify',
   path: '/hero-verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExperiencesRoute = ExperiencesRouteImport.update({
@@ -616,6 +622,7 @@ export interface FileRoutesByFullPath {
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
+  '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
@@ -714,6 +721,7 @@ export interface FileRoutesByTo {
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
+  '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
@@ -813,6 +821,7 @@ export interface FileRoutesById {
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
+  '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
@@ -913,6 +922,7 @@ export interface FileRouteTypes {
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
     | '/experiences'
+    | '/faq'
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
@@ -1011,6 +1021,7 @@ export interface FileRouteTypes {
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
     | '/experiences'
+    | '/faq'
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
@@ -1109,6 +1120,7 @@ export interface FileRouteTypes {
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
     | '/experiences'
+    | '/faq'
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
@@ -1208,6 +1220,7 @@ export interface RootRouteChildren {
   EvoraAlentejoWineTourRoute: typeof EvoraAlentejoWineTourRoute
   EvoraPrivateTourFromLisbonRoute: typeof EvoraPrivateTourFromLisbonRoute
   ExperiencesRoute: typeof ExperiencesRoute
+  FaqRoute: typeof FaqRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
@@ -1461,6 +1474,13 @@ declare module '@tanstack/react-router' {
       path: '/hero-verify'
       fullPath: '/hero-verify'
       preLoaderRoute: typeof HeroVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/experiences': {
@@ -2017,6 +2037,7 @@ const rootRouteChildren: RootRouteChildren = {
   EvoraAlentejoWineTourRoute: EvoraAlentejoWineTourRoute,
   EvoraPrivateTourFromLisbonRoute: EvoraPrivateTourFromLisbonRoute,
   ExperiencesRoute: ExperiencesRoute,
+  FaqRoute: FaqRoute,
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
