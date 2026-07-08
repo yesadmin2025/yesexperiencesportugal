@@ -7,6 +7,23 @@
 
 export type FaqItem = { q: string; a: string };
 
+export const PROPOSAL_FAQ: FaqItem[] = [
+  {
+    q: "Where in Portugal can we plan a proposal?",
+    a: "The most requested settings are Sintra (Pena Palace terraces, Cabo da Roca cliffs at sunset), the Arrábida coast (a quiet cove reached by private boat), and rooftop tables in Lisbon at golden hour. We can shape the moment anywhere in Portugal that fits the story.",
+  },
+  {
+    q: "How discreet is the planning?",
+    a: "Fully discreet. The proposal is planned end to end with our local team — vendors, timing and logistics are confirmed in advance. Nothing is discussed in front of your partner, and any surprise elements are held privately until the moment itself.",
+  },
+  {
+    q: "How far in advance should we plan a proposal in Portugal?",
+    a: "Two to six weeks is comfortable for most private proposals — enough time to align setting, weather, photographer and any surprise element. Shorter windows are possible when a specific date matters; get in touch and we'll tell you honestly what's still feasible.",
+  },
+];
+
+
+
 export const WINE_TOURS_FAQ: FaqItem[] = [
   {
     q: "Which wine regions can I visit on a private day from Lisbon?",
