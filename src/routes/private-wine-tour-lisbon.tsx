@@ -6,10 +6,12 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import {
   jsonLdScript,
   breadcrumbLd,
+  faqPageLd,
   SITE_URL,
   hreflangUsCaLinks,
   organizationUsCaAudienceLd,
 } from "@/lib/jsonld";
+import { WINE_LISBON_FAQ } from "@/content/seo-faq";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { LandingTourCredibility } from "@/components/LandingTourCredibility";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
@@ -102,6 +104,7 @@ export const Route = createFileRoute("/private-wine-tour-lisbon")({
           { name: "Private Wine Tour from Lisbon", path: PAGE_PATH },
         ]),
       ),
+      jsonLdScript(faqPageLd(WINE_LISBON_FAQ)),
     ],
   }),
   component: Page,
@@ -167,6 +170,25 @@ function Page() {
                 you choose how long to linger at each table, which wineries to add, and whether to
                 end the day on a viewpoint or back in the city for dinner.
               </p>
+            </div>
+
+            <div className="pt-12 border-t border-[color:var(--gold-soft)]/40 mb-14">
+              <Eyebrow className="mb-4">Questions travellers ask</Eyebrow>
+              <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-6">
+                Before the drive south.
+              </h2>
+              <dl className="space-y-8">
+                {WINE_LISBON_FAQ.map((f) => (
+                  <div key={f.q}>
+                    <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] mb-3">
+                      {f.q}
+                    </dt>
+                    <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+                      {f.a}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             <div className="mt-4 pt-12 border-t border-[color:var(--gold-soft)]/40">
