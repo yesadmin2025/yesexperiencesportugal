@@ -537,6 +537,18 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
             willChange: "transform",
           }}
         >
+          {/* Codec negotiation: AV1 (Chrome/FF/Edge) → HEVC (Safari) → H.264 (universal).
+              Order matters — browsers pick the first playable <source>. */}
+          <source
+            src={HERO_CLIP.srcMobileAv1}
+            media="(max-width: 767px)"
+            type='video/mp4; codecs="av01.0.05M.08"'
+          />
+          <source
+            src={HERO_CLIP.srcMobileHevc}
+            media="(max-width: 767px)"
+            type='video/mp4; codecs="hvc1"'
+          />
           <source src={HERO_CLIP.srcMobile} media="(max-width: 767px)" type="video/mp4" />
           <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
         </video>
