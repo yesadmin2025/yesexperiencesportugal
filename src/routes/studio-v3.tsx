@@ -17,11 +17,11 @@ const CANONICAL_URL = "https://yesexperiencesportugal.com/studio-v3";
 export const Route = createFileRoute("/studio-v3")({
   head: () => ({
     meta: [
-      { title: "Studio — Design your Portugal day | YES experiences" },
+      { title: "Design Your Private Portugal Day — YES Studio" },
       {
         name: "description",
         content:
-          "Compose a private Portugal journey one quiet decision at a time — feeling, company, rhythm. The map awakens as you choose.",
+          "Compose a private Portugal day one quiet decision at a time — feeling, company, rhythm. Live pricing and instant confirmation, with a local team behind it.",
       },
       { property: "og:title", content: "Design your Portugal day." },
       {
