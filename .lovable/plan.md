@@ -1,115 +1,129 @@
-# Trust strip — audit + placement plan
+# Mobile polish audit — 393×850 (iPhone 14/15)
 
-Investigation of what trust surface already exists, whether a new strip is warranted, and where a subtle add would move the needle. **No code changes yet.**
+Method: real Playwright captures at 393px of `/`, `/experiences`, `/studio-v3`, `/portugal-travel-designer`, `/about`, `/corporate`, `/local-stories`, `/sintra-day-tour-from-lisbon`, `/press`, plus targeted source reads of the header/FAB/eyebrow primitives. Reveal-on-scroll blanks in mid/bottom captures are a test artefact (IntersectionObserver doesn't fire on programmatic scrollTo) — those are **not** reported as issues.
 
----
-
-## 1. Is this needed or redundant?
-
-**Partly needed, mostly redundant — with one real gap.**
-
-What already exists:
-
-| Surface | Component | Trust points carried |
-|---|---|---|
-| Homepage (after hero, before Signatures) | `GuestQuotes` | Aggregate rating + platform badges |
-| Homepage (after content) | `RecognisedByGuides` | Editorial mentions |
-| Homepage (mid) | `TrustmarySection` | Verified review widget |
-| Studio (persistent HUD) | `StudioTrustStrip` | 700+ 5★ · Google/Tripadvisor/GYG |
-| Studio final reveal | full trust band inside `ReviewScreen` | `TRUST_POINTS` grid |
-| Checkout drawer | `BrandedCheckoutDrawer` trust footer | Secure checkout cues |
-| Footer | `Footer.tsx` | RNAAT nº 31/2023 · Sesimbra · legal |
-| `/about` | route content | RNAAT · civil liability insurance |
-| `/press` | new page | RNAAT · fact pills |
-
-**Reviews and platforms are well-covered.** The genuine gap is **operator credibility** (licence + insurance + local support + secure payments) fused into one quiet line the traveller sees at the point of doubt — currently split across `/about`, footer, and checkout, and never adjacent to a booking CTA on Signature tour pages.
-
-Verdict: **do NOT add a homepage trust strip** (would duplicate `GuestQuotes` + `RecognisedByGuides` and risk the "loud/salesy" feeling). **Do add one narrow "operator credentials" microstrip on tour pages and pre-checkout** where the doubt actually surfaces.
+Priority key: **P0** = users see it now, hurts trust/conversion · **P1** = visible on most sessions, easy win · **P2** = polish.
 
 ---
 
-## 2. Best placements (ranked by expected lift, worst avoided)
+## 0. Systemic (affects every page)
 
-### Ship
-
-1. **Individual Signature tour pages — directly under the price/book CTA.** This is where hesitation peaks and where operator legitimacy (licence, insurance, secure payments, human support) is missing today. Highest expected lift.
-2. **Checkout drawer — top of drawer, one line above the summary.** `BrandedCheckoutDrawer` has a trust *footer* but no trust *header*. A one-line credential strip above the first form field reduces cart abandonment. Second-highest lift.
-3. **Studio pre-reveal → convergence.** `StudioTrustStrip` covers review counts already; extend the pattern with a second, sibling `StudioCredentialStrip` shown only at the "Secure this experience" moment (not throughout the flow — the Bible bans persistent OTA chrome). Lower lift, but consistent with the philosophy.
-
-### Skip
-
-- **Homepage after reviews / before Signatures.** Already dense with `GuestQuotes` + `RecognisedByGuides` + `TrustmarySection`. Adding a licence strip here reads as anxious, not premium. Rejected.
-- **Footer.** RNAAT + Sesimbra already present in the bottom bar; a badged strip would fight the discreet legal row. Rejected.
-- **Studio persistent HUD.** `StudioTrustStrip` already occupies this real estate; a second strip breaks the cinematic rule ("interface disappears"). Rejected.
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| S1 | Floating WhatsApp FAB (48×48, bottom-4/right-4) overlaps last line of body copy on `/portugal-travel-designer`, `/sintra-day-tour-from-lisbon`, `/local-stories`, `/tours/$tourId` (visible in captures — text runs behind the teal disc). | **P0** | Add `pb-24 md:pb-0` (or `scroll-pb-24`) on the `<main>` wrapper inside `SiteLayout`, so every route reserves 96 px below the fold for the FAB. One-line change, zero layout risk elsewhere. | `src/components/SiteLayout.tsx` | Safe. |
+| S2 | Missing routes: `/moments` and `/faq` return **404** (audit brief listed both). | **P1** | Confirm intent with product — either (a) create the two routes, or (b) remove any stale nav/footer links. No mobile-polish fix needed until (a/b) decided. | audit only | Safe (no code change in this audit). |
+| S3 | Console: repeated React hydration warnings ("A tree hydrated but some attributes … didn't match") on every page in Playwright run. Not a visible layout bug, but noisy and can mask real issues. | **P2** | Out of scope of a *polish* audit — file a follow-up "hydration mismatch sweep". | (investigation) | N/A. |
 
 ---
 
-## 3. Recommended wording
+## 1. Homepage `/`
 
-Keep it to a single line, four tokens, separated by `·`. No verbs, no icons in the primary line, no colour highlights.
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| H1 | Hero above the fold at 393×588 shows only the road image + `YES` logo + burger — no headline, eyebrow or CTA visible without scrolling. Real users on 5.4–6.1" phones lose the value prop at first paint. | **P1** | Reduce hero min-height on mobile only (e.g. `min-h-[86svh]` → `min-h-[78svh]` at `<sm`) and drop hero top padding by one step so the eyebrow/headline peek above the fold. Do **not** change desktop. | `src/routes/index.tsx` hero section | Safe — copy-scoped, no layout re-flow elsewhere. |
+| H2 | FAB overlaps footer/last card on scroll (see S1). | P0 | See S1. | — | — |
 
-**Primary (tour pages, pre-checkout header):**
-
-> Licensed operator RNAAT 31/2023 · Civil liability insured · Secure checkout · Local support 7 days a week
-
-**Compact variant (Studio convergence, tight width):**
-
-> RNAAT 31/2023 · Insured · Secure checkout · Local support 7 days
-
-**Micro-tooltip on RNAAT hover/focus** (a11y + curious travellers):
-
-> Registered Portuguese tour operator, nº 31/2023 (Registo Nacional dos Agentes de Viagens e Turismo).
-
-Wording rules:
-- No superlatives ("world-class", "trusted by thousands") — the brand rules ban those.
-- Do not repeat the "700+ 5★" claim here — that already lives in `GuestQuotes` / `StudioTrustStrip`. This strip is *credentials*, not *popularity*. Separating the two prevents the "loud" feeling.
-- "Local support 7 days a week" is operationally confirmed.
-- Never use "guaranteed", "risk-free", or "money-back" without legal review.
+Nothing else visible above-the-fold is broken on mobile.
 
 ---
 
-## 4. Design approach — how to keep it subtle
+## 2. Experiences `/experiences`
 
-- **One line, ≤ 24px tall.** Never a card, never a badge row, never icons + logos combined. The Studio micro-strip is the reference pattern.
-- **Typography:** Inter, 11.5–12px, tracking `0.14em`, uppercase, weight 500. Colour: `color-mix(in oklab, var(--charcoal) 62%, transparent)` on ivory surfaces; `var(--ivory)/80` on charcoal.
-- **Separator:** thin `·` (0.5 opacity) between tokens. No pipes, no bullets, no chip pills on light backgrounds (fact-pills belong on `/press`, not next to a CTA).
-- **Optional single gold micro-mark** (a 6×6 gold dot, not a shield/lock icon) before the line — matches the site's "gold = micro-detail only" rule and avoids the OTA "trust badge" aesthetic.
-- **Motion:** fade in with the parent card, no independent animation.
-- **Reduced motion / a11y:** wrap in `role="note"` with a full-sentence `aria-label`, 4.5:1 contrast on both `--ivory` and `--charcoal` backdrops.
-- **Placement rules:** always *below* the CTA on tour pages (so it reassures without pulling attention), always *above* the first form field in checkout (so it lands before doubt).
-- **Never** stack this strip with `GuestQuotes` on the same viewport height — pick one signal per moment.
-
-Reject: shield icons, lock icons, badge grids, coloured chips, star clusters, gradient bars, "As seen on" style logos on this strip (that's `PlatformBadge`'s job elsewhere).
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| E1 | Nothing critical above the fold. Filter chips (`PHOTOS · FAST · CRISP`) are legible, cards render clean. | — | — | — | — |
+| E2 | FAB overlap on last card (see S1). | P0 | See S1. | — | — |
 
 ---
 
-## 5. Implementation complexity
+## 3. Studio `/studio-v3`
 
-**Low — ~1.5h total.**
-
-New primitive: `src/components/ui/CredentialStrip.tsx`
-
-- Props: `variant: "light" | "dark"`, `compact?: boolean`, optional `className`.
-- Tokens driven by `--charcoal` / `--ivory` / `--gold`. No new CSS variables.
-- Content constant lives in one place so wording never drifts.
-
-Wiring:
-
-- **Tour pages:** add one `<CredentialStrip variant="light" />` in the shared Signature booking sidebar / mobile sticky CTA container. Single insertion point if the CTA is a shared component; otherwise 4–6 route edits.
-- **Checkout drawer:** add `<CredentialStrip variant="light" compact />` at the top of `BrandedCheckoutDrawer` above the summary.
-- **Studio convergence (optional, phase 2):** render `<CredentialStrip variant="dark" compact />` beside the existing `StudioTrustStrip` only when `phase === "convergence"`; keep both hidden in other phases. One conditional line in `StudioDrift.tsx`.
-
-No schema change, no i18n bundle change beyond three short strings (already covered by `en`; `pt`/`es` need one entry each). No JSON-LD change — RNAAT and insurance already declared in `organizationLd()`.
-
-**Risk:** low. Additive only. Rollback = delete component + import. No layout reflow risk if inserted inside existing spacing containers.
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| ST1 | Hero uses ~40% top padding of empty space before the `— STUDIO` eyebrow (large blank at top of viewport on 393×850). | **P2** | Reduce the hero's top spacing on mobile (`pt-24` → `pt-14` at `<sm`), keep desktop. | `src/routes/studio-v3.tsx` (hero block) | Safe. |
+| ST2 | `BEGIN →` CTA is a light pill on a dark image with only ~4:1 contrast at the arrow — legible but the arrow color could sit stronger. | P2 | No change; within brand rules. | — | Safe. |
 
 ---
 
-## Suggested build order (when approved)
+## 4. Travel Designer `/portugal-travel-designer`
 
-1. Build `CredentialStrip` primitive with `light` + `dark` + `compact` variants, story-tested at 320px, 393px and 1024px.
-2. Insert on Signature tour pages under the book CTA — measure vs. control for 2 weeks if analytics allows.
-3. Insert in `BrandedCheckoutDrawer` header.
-4. Only after (2) and (3) look right, add the Studio convergence instance.
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| TD1 | Secondary CTA "SEE THE 10-DAY REFERENCE ROUTE" wraps to two lines with the gold arrow floating in the empty corner of line 2 — reads unbalanced. | **P1** | Shorten label to `SEE THE 10-DAY ROUTE` on mobile (or add `whitespace-nowrap text-[10.5px] sm:text-[11px]` so it fits one line). Copy-only change. | `src/routes/portugal-travel-designer.tsx` (hero CTA block) | Safe. |
+| TD2 | Body copy under the CTAs runs behind the WhatsApp FAB ("guides, cars and trusted partners along the…" is clipped). | **P0** | Covered by S1. | — | — |
 
-Confirm before shipping: **is "Local support 7 days a week" operationally accurate?** If support is weekdays only, use "Human support before, during and after".
+---
+
+## 5. About `/about`
+
+Clean. H1 balances (`meaningful Portugal.` wraps naturally), eyebrow contrast fine, no overlap above the fold. Only issue is the systemic FAB at bottom (S1). No page-specific fix.
+
+---
+
+## 6. Corporate `/corporate`
+
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| C1 | Eyebrow `TEAM BUILDING & CORPORATE RETREATS` wraps to two lines and the gold flank rules stay on the first line — the second line ("RETREATS") floats without its rule, breaking the eyebrow symmetry that's canonical elsewhere. | **P1** | Shorten to `TEAM BUILDING · RETREATS` (or `CORPORATE RETREATS`) so the eyebrow stays on one line at 393 px. Pure copy change on the `<Eyebrow>` node. | `src/routes/corporate.tsx` | Safe. |
+| C2 | Region copy still reads "*Lisbon, Sintra, the Arrábida coast and the Alentejo*" — inconsistent with the nationwide messaging just shipped on Press/Footer. | **P1** | Swap that fragment for "*across Portugal — from Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro and beyond*". Line 93 of `corporate.tsx`. Content only, no layout impact. | `src/routes/corporate.tsx` L93 | Safe. |
+
+---
+
+## 7. Moments
+
+Route does not exist (see S2). No polish work possible until route/link resolved.
+
+---
+
+## 8. Local Stories `/local-stories`
+
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| LS1 | Second article card ("Arrábida vs Sintra: Which Day Trip Is Right for You?") title sits directly behind the WhatsApp FAB near the fold. | **P0** | Covered by S1 (page-level `pb-24`). | — | — |
+| LS2 | Article H2s are `text-3xl`-ish on 393 px and eat a lot of vertical space; the two-line title is 6 lines of type before the excerpt. | P2 | Step titles down one Tailwind size on `<sm` (`text-3xl` → `text-2xl sm:text-3xl`). | `src/routes/local-stories.tsx` card component | Safe. |
+
+---
+
+## 9. Individual tour pages (sampled `/sintra-day-tour-from-lisbon`, applies to all 7 landing routes)
+
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| T1 | Secondary CTA "SEE THE SINTRA & CASCAIS SIGNATURE" wraps to two lines with the arrow orphaned — same shape as TD1. | **P1** | Shorten mobile label ("SEE THE SIGNATURE" or "OPEN THE SIGNATURE") or add `text-[10.5px] sm:text-[11px]` so one line fits. Applies to the 7 tour landing routes that share the same hero pattern. | `src/routes/sintra-…`, `arrabida-…`, `alentejo-…`, `evora-…`, `private-wine-…`, `arrabida-wine-…`, `evora-alentejo-…` | Safe — copy-only. |
+| T2 | Body copy in the "Why early" section runs behind the FAB. | **P0** | Covered by S1. | — | — |
+| T3 | H1 is `text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl` on the dynamic `/tours/$tourId` route — 2rem (32px) is reasonable on 393px but the italic emphasis ("without the queues") can push to 4 lines on the longer titles ("Private Alentejo Wine Tour From Lisbon — a slow day"). | P2 | Shorten line-height only (`leading-[1.02]` → `leading-[1.08]`) on `<sm`, no size change. | `src/routes/tours.$tourId.tsx` L265 | Safe. |
+
+---
+
+## 10. FAQ
+
+Route does not exist (see S2).
+
+---
+
+## 11. Press `/press`
+
+| # | Issue | Priority | Smallest fix | Files | Safe? |
+|---|---|---|---|---|---|
+| P1 | Eyebrow `PRESS & BRAND KIT` renders very pale on ivory and its left gold flank rule is clipped at the container edge on 393 px. Contrast reads ~2.5:1 (below WCAG AA). | **P1** | Two-part: (a) confirm the shared `<Eyebrow>` primitive isn't rendering at reduced opacity on this route (no `tone="muted"` prop passed); (b) add `overflow-visible` or lose the left flank on `<sm`. Smallest fix: pass `flank={false}` on mobile via the existing primitive prop (no CSS edit). | `src/routes/press.tsx` (eyebrow node), possibly `src/components/ui/Eyebrow.tsx` | Safe — uses existing primitive knobs. |
+| P2 | Partnership card CTA "BECOME A REFERRAL PARTNER →" wraps to a second line on 393 px and the arrow orphans. | **P2** | Shorten to `BECOME A PARTNER →` in `PARTNERSHIP_LANES[0].cta`. Copy-only. | `src/routes/press.tsx` | Safe. |
+| P3 | The three partnership cards stack full-width with 20px internal padding — plenty of breathing room, no clipping. | — | — | — | — |
+
+---
+
+## 12. Footer
+
+Footer not captured cleanly (test artefact). Source read shows single-column stack at `<md`, sensible spacing, no known overflow. No changes proposed in this audit; re-check after S1 lands and the FAB no longer sits over the final footer row.
+
+---
+
+## Summary — recommended execution order
+
+1. **S1** (one-line SiteLayout padding) — unblocks 6 of the 10 page-specific findings.
+2. **C2** + **C1** (Corporate copy + eyebrow) — 2 min, brand consistency win.
+3. **TD1** + **T1** (CTA label shortening across designer + 7 tour pages) — 5 min, uses same fix pattern.
+4. **P1** (Press eyebrow contrast/flank) — small primitive prop tweak.
+5. **H1** + **ST1** (hero top-padding trims) — cosmetic.
+6. **LS2** + **T3** (heading size/leading trims) — cosmetic.
+7. **S2** (moments/faq routes) — needs product decision, not polish.
+
+Every fix above is copy/spacing/prop-only — no new sections, no redesign, no dependency changes, no schema. All safe to ship independently.

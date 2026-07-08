@@ -103,7 +103,7 @@ function Page() {
                 Write to a designer
               </CtaButton>
               <CtaButton to="/itineraries/10-day-private-portugal-tour" variant="ghost">
-                See the 10-day reference route
+                See the 10-day route
               </CtaButton>
             </div>
           </div>

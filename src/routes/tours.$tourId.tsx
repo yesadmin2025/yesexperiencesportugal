@@ -262,7 +262,7 @@ function TourHero({
               so the cinematic image reads as a single quiet frame. */}
           <div className="mt-6 sm:mt-8">
             <Eyebrow>Signature Experience</Eyebrow>
-            <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
+            <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.08] sm:leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
               {tour.title}
             </h1>
             <p className="serif italic font-light mt-4 text-[15px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">

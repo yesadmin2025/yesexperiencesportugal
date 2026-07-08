@@ -124,7 +124,7 @@ function Page() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
-                Explore the Signature
+                See the Signature
               </CtaButton>
               <CtaButton to="/studio-v3" variant="ghost">
                 Design & Book

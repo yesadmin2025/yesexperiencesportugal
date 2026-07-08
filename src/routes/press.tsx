@@ -135,7 +135,7 @@ const PARTNERSHIP_LANES: Array<{
   {
     title: "Hotels, villas & concierge",
     body: "Offer guests a private, licensed operator with 24h response and instant confirmation. Commercial terms, commission and rate cards on request.",
-    cta: "Become a referral partner",
+    cta: "Become a partner",
     subject: "Partnership — Hotel / Villa / Concierge",
     to: "partnerships",
   },
