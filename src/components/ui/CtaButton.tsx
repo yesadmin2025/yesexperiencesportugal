@@ -131,7 +131,7 @@ function GoldSweep() {
   return (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute bottom-0 left-0 h-[1px] w-0 bg-[color:var(--gold)] opacity-50 transition-[width] duration-700 ease-in-out group-hover:w-full group-focus-visible:w-full motion-reduce:hidden"
+      className="pointer-events-none absolute bottom-0 left-0 h-[1px] w-0 bg-[color:var(--gold)] opacity-50 transition-[width] duration-[var(--dur-slow)] ease-in-out group-hover:w-full group-focus-visible:w-full group-active:w-full motion-reduce:hidden"
     />
   );
 }
