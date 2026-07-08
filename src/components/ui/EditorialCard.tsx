@@ -136,13 +136,29 @@ export function EditorialCard({
     <article
       id={id}
       className={
-        "reveal-stagger he-seq group grid grid-cols-1 md:grid-cols-12 gap-7 md:gap-12 items-center scroll-mt-24 md:scroll-mt-28 " +
+        "reveal-stagger he-seq group relative grid grid-cols-1 md:grid-cols-12 gap-7 md:gap-12 items-center scroll-mt-24 md:scroll-mt-28 " +
         (className ?? "")
       }
     >
-      {image ? <ImageSide image={image} eyebrow={eyebrow} cta={cta} reverse={reverse} /> : null}
+      {/* Stretched-link overlay — makes the whole card tappable when a CTA
+          exists. Sits behind image/CTA/text (z-0) so their own interactions
+          keep firing; hidden from AT (the visible CTA is the labelled link). */}
+      {cta ? (
+        <Link
+          to={cta.to}
+          aria-hidden="true"
+          tabIndex={-1}
+          className="absolute inset-0 z-0 rounded-[2px] focus:outline-none"
+        />
+      ) : null}
 
-      <div className={`flex flex-col pt-1 md:pt-0 ${textColSpan} ${textColOrder}`}>
+      {image ? (
+        <div className="relative z-10 md:contents">
+          <ImageSide image={image} eyebrow={eyebrow} cta={cta} reverse={reverse} />
+        </div>
+      ) : null}
+
+      <div className={`relative z-10 flex flex-col pt-1 md:pt-0 ${textColSpan} ${textColOrder}`}>
         <span
           aria-hidden="true"
           className="gold-rule mb-4 md:mb-5 max-w-[3rem] md:max-w-[3.5rem]"
@@ -178,7 +194,7 @@ export function EditorialCard({
         ) : null}
 
         {cta ? (
-          <CtaButton to={cta.to} variant="primary" className="mt-7 md:mt-6 self-start">
+          <CtaButton to={cta.to} variant="primary" className="relative z-10 mt-7 md:mt-6 self-start">
             {cta.label}
           </CtaButton>
         ) : null}
