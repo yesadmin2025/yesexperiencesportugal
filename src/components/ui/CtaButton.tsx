@@ -180,10 +180,10 @@ export function CtaButton(props: CtaButtonProps) {
     ) : icon === null ? null : isHairline ? (
       (icon ?? (
         <span aria-hidden="true" className="flex items-center">
-          <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-300 group-hover:w-8 group-focus-visible:w-8" />
+          <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-[var(--dur-base)] group-hover:w-8 group-focus-visible:w-8 group-active:w-8" />
           <ArrowRight
             size={12}
-            className="ml-1 text-[color:var(--gold)] transition-transform duration-300 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+            className="ml-1 text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 group-active:translate-x-0.5"
           />
         </span>
       ))
