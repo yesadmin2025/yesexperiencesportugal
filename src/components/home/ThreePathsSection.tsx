@@ -10,6 +10,7 @@
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Compass, Sparkles, type LucideIcon } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // Derived from real Signature data — never hardcoded.
 const SIGNATURE_FROM = Math.min(...signatureTours.map((t) => t.priceFrom));
