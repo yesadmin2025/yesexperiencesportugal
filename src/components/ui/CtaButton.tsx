@@ -70,19 +70,19 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--charcoal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.99] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
+  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
 const hairlineBaseClasses =
-  "group inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2 text-[color:var(--charcoal)] transition-opacity duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] disabled:pointer-events-none disabled:opacity-40";
+  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)]",
+  primary: "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)] active:bg-[color:var(--charcoal)]",
   ghost:
-    "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)]",
-  ghostDark: "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08]",
-  hairline: "opacity-80 hover:opacity-100 focus-visible:opacity-100",
+    "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)] active:bg-[color:var(--teal)] active:text-[color:var(--ivory)]",
+  ghostDark: "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08] active:bg-[color:var(--ivory)]/[0.08]",
+  hairline: "opacity-100",
 };
 
 const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
