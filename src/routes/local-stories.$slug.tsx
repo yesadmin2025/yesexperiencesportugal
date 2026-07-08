@@ -99,27 +99,30 @@ export const Route = createFileRoute("/local-stories/$slug")({
   loader: async ({ params }): Promise<LoaderData> => {
     const article = getLocalStoryArticle(params.slug);
     if (!article) {
-      // No static article — try to hydrate DB post metadata so head()
-      // can emit BlogPosting JSON-LD and OG tags for database posts.
+      // No static article — try DB post. If neither exists, this URL
+      // is not a real story: throw notFound() so the response is a real
+      // 404 with noindex, not a soft-404 200.
+      let post: JournalPostFull | null = null;
       try {
-        const post = await fetchPost(params.slug);
-        if (!post) return { reviews: [], signatureTitle: null, dbPost: null };
-        return {
-          reviews: [],
-          signatureTitle: null,
-          dbPost: {
-            slug: post.slug,
-            title: post.title,
-            excerpt: post.excerpt,
-            heroImage: post.hero_image_url,
-            heroImageAlt: post.hero_image_alt,
-            authorName: post.author_name,
-            publishedAt: post.published_at,
-          },
-        };
+        post = await fetchPost(params.slug);
       } catch {
-        return { reviews: [], signatureTitle: null, dbPost: null };
+        // Treat DB errors as "unknown" — fall through to notFound below.
+        post = null;
       }
+      if (!post) throw notFound();
+      return {
+        reviews: [],
+        signatureTitle: null,
+        dbPost: {
+          slug: post.slug,
+          title: post.title,
+          excerpt: post.excerpt,
+          heroImage: post.hero_image_url,
+          heroImageAlt: post.hero_image_alt,
+          authorName: post.author_name,
+          publishedAt: post.published_at,
+        },
+      };
     }
     const tour = findTour(article.signatureSlug);
     if (!tour) return { reviews: [], signatureTitle: null, dbPost: null };
@@ -207,54 +210,64 @@ export const Route = createFileRoute("/local-stories/$slug")({
       };
     }
 
-    const url = `${BASE}/local-stories/${params.slug}`;
+    // No static article and no matching DB post — the loader threw
+    // notFound() (or errored). Emit a minimal noindex head so this URL
+    // never gets indexed, and never advertise a canonical for it.
     const post = loaderData?.dbPost ?? null;
-    const title = post?.title ?? `Local Story — YES experiences Portugal`;
-    const description = post?.excerpt ?? `A local story from Portugal · ${params.slug}`;
-    const heroImage = post?.heroImage ?? null;
+    if (!post) {
+      return {
+        meta: [
+          { title: "Story not found — YES experiences Portugal" },
+          { name: "robots", content: "noindex, nofollow" },
+        ],
+      };
+    }
 
-    const scripts = post
-      ? [
-          jsonLdScript({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: post.title,
-            name: post.title,
-            description: post.excerpt ?? undefined,
-            mainEntityOfPage: { "@type": "WebPage", "@id": url },
-            url,
-            image: heroImage ?? undefined,
-            datePublished: post.publishedAt ?? undefined,
-            dateModified: post.publishedAt ?? undefined,
-            inLanguage: "en",
-            author: post.authorName
-              ? { "@type": "Person", name: post.authorName }
-              : {
-                  "@type": "Person",
-                  "@id": FOUNDER_ID,
-                  name: "Nidia Almeida",
-                  url: `${BASE}/about`,
-                },
-            publisher: {
-              "@type": "Organization",
-              "@id": `${BASE}/#organization`,
-              name: "YES Experiences Portugal",
-              url: BASE,
-              logo: {
-                "@type": "ImageObject",
-                url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-              },
+    const url = `${BASE}/local-stories/${params.slug}`;
+    const title = post.title;
+    const description = post.excerpt ?? `A local story from Portugal · ${params.slug}`;
+    const heroImage = post.heroImage ?? null;
+
+    const scripts = [
+      jsonLdScript({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        name: post.title,
+        description: post.excerpt ?? undefined,
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        url,
+        image: heroImage ?? undefined,
+        datePublished: post.publishedAt ?? undefined,
+        dateModified: post.publishedAt ?? undefined,
+        inLanguage: "en",
+        author: post.authorName
+          ? { "@type": "Person", name: post.authorName }
+          : {
+              "@type": "Person",
+              "@id": FOUNDER_ID,
+              name: "Nidia Almeida",
+              url: `${BASE}/about`,
             },
-          }),
-          jsonLdScript(
-            breadcrumbLd([
-              { name: "Home", path: "/" },
-              { name: "Local Stories", path: "/local-stories" },
-              { name: post.title, path: `/local-stories/${post.slug}` },
-            ]),
-          ),
-        ]
-      : [];
+        publisher: {
+          "@type": "Organization",
+          "@id": `${BASE}/#organization`,
+          name: "YES Experiences Portugal",
+          url: BASE,
+          logo: {
+            "@type": "ImageObject",
+            url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
+          },
+        },
+      }),
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Local Stories", path: "/local-stories" },
+          { name: post.title, path: `/local-stories/${post.slug}` },
+        ]),
+      ),
+    ];
 
     return {
       meta: [
@@ -265,7 +278,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
         ...(heroImage ? [{ property: "og:image", content: heroImage }] : []),
-        ...(post?.publishedAt
+        ...(post.publishedAt
           ? [{ property: "article:published_time", content: post.publishedAt }]
           : []),
       ],
@@ -278,6 +291,14 @@ export const Route = createFileRoute("/local-stories/$slug")({
     // The day-trips guide now lives at its own SEO-focused route.
     if (params.slug === "best-day-trips-from-lisbon") {
       throw redirect({ to: "/day-trips-from-lisbon" });
+    }
+    // Redirect obvious placeholder slugs ($slug, %24slug, undefined,
+    // template stubs) to the clean index — never let them 404.
+    const raw = params.slug ?? "";
+    const s = raw.trim().toLowerCase();
+    const PLACEHOLDERS = new Set(["", "slug", "undefined", "null", "example"]);
+    if (PLACEHOLDERS.has(s) || s.startsWith("$")) {
+      throw redirect({ to: "/local-stories" });
     }
     return undefined as never;
   },
