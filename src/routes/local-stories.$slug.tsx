@@ -11,10 +11,12 @@ import {
   FOUNDER_ID,
   personFounderLd,
   localStoryReviewsLd,
+  localStoryArticleLd,
   normalizeLocalStoryReviews,
   faqPageLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
+
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
