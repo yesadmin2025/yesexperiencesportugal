@@ -934,10 +934,9 @@ function HomePage() {
                 />
 
                 <div className="relative">
-                  <span className="he-eyebrow-bar mb-5">
-                    <MessageCircle aria-hidden="true" />
+                  <Eyebrow icon={<MessageCircle aria-hidden="true" />} className="mb-5">
                     The stage is set
-                  </span>
+                  </Eyebrow>
 
                   <h2
                     id="final-cta-title"
