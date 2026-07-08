@@ -370,8 +370,8 @@ function BookFlip() {
       </div>
 
       {/* Thumbnail rail — visible pagination, direct jump */}
-      <ul
-        className="mt-6 flex items-center justify-center gap-2.5 md:gap-3 list-none p-0"
+      <div
+        className="mt-6 flex items-center justify-center gap-2.5 md:gap-3"
         role="tablist"
         aria-label="Jump to page"
       >
