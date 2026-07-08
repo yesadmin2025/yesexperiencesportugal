@@ -126,7 +126,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           (a) => a.slug !== "best-day-trips-from-lisbon",
         ).map((a) => ({
           path: `/local-stories/${a.slug}`,
-          lastmod: a.datePublished,
+          // Omit <lastmod> for static articles — the schema has no
+          // dateModified field, so datePublished would freeze the
+          // freshness signal at the original publish date.
           changefreq: "monthly",
           priority: "0.7",
         }));
