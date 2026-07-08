@@ -7,7 +7,7 @@
  * Asset: refined brush-script "YES" in brand teal (var(--teal)), transparent PNG.
  */
 
-import yesMarkAsset from "@/assets/yes-mark-refined.png";
+import yesMarkAsset from "@/assets/yes-mark-refined.webp";
 
 export function YesMark({
   className = "block h-[58px] md:h-[64px] lg:h-[70px] w-auto select-none",
