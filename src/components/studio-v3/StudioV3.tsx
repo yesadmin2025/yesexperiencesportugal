@@ -724,15 +724,16 @@ export function StudioV3() {
         resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
         tour.priceFrom ??
         180;
-      // Add-ons live per booking (flat), base fare is per pax × guests. Mirror
-      // the same math the price card shows so the drawer total never drifts.
+      // Add-ons are per-pax (matches the price card): scale by guest count for
+      // the drawer total, Stripe line items, and metadata so nothing drifts.
       const addOnsForCheckout = selectedAddOnItems.map((i) => ({
         id: i.id,
         label: i.label,
         priceEur: Math.round(i.priceEur),
         durationMinutes: i.durationMinutes,
       }));
-      const totalEur = Math.round(perPaxBase * details.guests + selectedAddOnsTotalEur);
+      const addOnsPartyTotalEur = Math.round(selectedAddOnsTotalEur * details.guests);
+      const totalEur = Math.round(perPaxBase * details.guests + addOnsPartyTotalEur);
       setCheckoutSummary({
         tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
         region: tour.region,
@@ -747,7 +748,7 @@ export function StudioV3() {
         beats: stopLabels.slice(0, 4),
         flowLabel: "Studio",
         addOns: addOnsForCheckout,
-        addOnsTotalEur: Math.round(selectedAddOnsTotalEur),
+        addOnsTotalEur: addOnsPartyTotalEur,
       });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
