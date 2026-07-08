@@ -10,6 +10,7 @@
  * the design process actually works before asking the user to pick.
  */
 import { Check } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const processSteps = [
   "Design your experience in real time.",
