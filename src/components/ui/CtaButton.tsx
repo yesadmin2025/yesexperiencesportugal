@@ -110,7 +110,7 @@ function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
   return (
     <span aria-hidden="true" className="relative flex items-center">
       <span
-        className="pointer-events-none absolute right-[-14px] h-8 w-14 rounded-full opacity-0 blur-[6px] transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:hidden"
+        className="pointer-events-none absolute right-[-14px] h-8 w-14 rounded-full opacity-0 blur-[6px] transition-opacity duration-[var(--dur-base)] group-hover:opacity-100 group-focus-visible:opacity-100 group-active:opacity-100 motion-reduce:hidden"
         style={{
           background:
             "linear-gradient(90deg, transparent 0%, color-mix(in oklab, var(--gold) 22%, transparent) 55%, color-mix(in oklab, var(--gold) 42%, transparent) 100%)",
@@ -119,7 +119,7 @@ function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
       <ArrowRight
         size={18}
         strokeWidth={1.5}
-        className="relative transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-2 group-focus-visible:translate-x-2"
+        className="relative transition-transform duration-[var(--dur-base)] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-2 group-focus-visible:translate-x-2 group-active:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
         style={{ color }}
       />
     </span>
