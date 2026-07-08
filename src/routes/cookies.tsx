@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export const Route = createFileRoute("/cookies")({
   head: () => ({
