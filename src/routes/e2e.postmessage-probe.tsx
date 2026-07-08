@@ -187,5 +187,11 @@ function ProbePage() {
 }
 
 export const Route = createFileRoute("/e2e/postmessage-probe")({
+  head: () => ({
+    meta: [
+      { title: "E2E postMessage probe" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: ProbePage,
 });

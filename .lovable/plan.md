@@ -1,149 +1,232 @@
-# Accidental-text audit — findings and fixes
+# SEO / indexing audit — findings and fixes
 
-Scope covered: Homepage, `/experiences`, `/studio-v3`, `/multi-day`
-(Travel Designer), `/about`, `/corporate`, `/proposals` (Moments),
-`/local-stories` + article template, `/contact`, footer, navbar,
-mobile viewport (393×588), plus SEO-only surfaces (JSON-LD, `llms.txt`,
-sitemap, head metadata).
+Scope: `src/routes/*` (all leaf routes), `src/routes/sitemap[.]xml.ts`, `public/robots.txt`, `__root.tsx` head defaults, per-route `head()` canonical + `og:url` + `robots` metadata, dynamic route not-found behavior, and title uniqueness across SEO landing pages. Verified against localhost.
 
-Method: rendered-HTML scan of each route via curl at localhost,
-plus source grep for common accidental patterns (`Lorem`, `Ipsum`,
-`Placeholder`, `TODO`, `FIXME`, `WIP`, `Draft`, `Test`, `Sample`,
-`Coming soon`, missing spaces after `.`/`,`, superlatives, competitor
-comparisons, duplicated CTA fragments, `null`/`undefined` leaks,
-stray CSS text nodes).
-
-**Result:** the site is mostly clean — no `Lorem`, no `TODO`
-strings in visible copy, no `day.Add`-style missing-space bugs, no
-"Photos Fast Crisp"-style stray labels, no duplicated CTA
-fragments beyond legitimate nav/footer repetition. Four real issues
-found (three SEO-only, one user-visible), plus one code comment
-worth cleaning.
+**Result:** the SEO surface is in strong shape overall. Canonical domain is consistent (`https://yesexperiencesportugal.com`), root `head()` is minimal and doesn't leak canonical/`og:image` overrides to leaves, robots.txt disallows every internal/admin/QA/token/checkout prefix, and the sitemap dynamically resolves signature tours + local-stories articles + DB `journal_posts`. **Two real defects and three optimisations** worth acting on.
 
 ---
 
 ## Findings
 
-### 1. Superlative + competitor claim in JSON-LD FAQ (SEO-only) — VIOLATES BRAND RULE
+### 1. Soft-404 on invalid `/tours/{slug}` and `/tours/{slug}/tailor` URLs — SOFT-404 SEO LEAK
 
-**Where:** `src/content/faq-data.ts:11` and `:23`.
-Rendered only in the homepage FAQPage JSON-LD block (`src/routes/index.tsx:263`) — **not** visible on screen; the on-page FAQ (`src/components/FAQ.tsx`) uses different, compliant copy.
+**Where:**
+- `src/routes/tours.$tourId.tsx:44–51` (the `if (!t)` head fallback branch).
+- `src/routes/tours.$tourId.tailor.tsx:55–62` (same pattern).
 
-**Current wording (line 11 answer):**
-> "…the **first real-time private tour builder in Portugal**. … It is a service YES pioneered and, at time of writing, **no other Portuguese tour operator offers a comparable in-house real-time builder**."
+**Current behavior:** loader throws `notFound()`, so `notFoundComponent` renders (correct). But the `head()` fallback still emits:
+- A full `<link rel="canonical">` pointing at the invalid URL.
+- An `og:url` for the invalid URL.
+- No `robots: noindex`.
 
-**Current wording (line 23 answer):**
-> "Studio designs a private day in real time … — **Portugal's first real-time private tour builder**."
+**Effect:** Google receives a valid-looking canonical for a URL that has no content — a soft-404 that gets indexed with a generic "Signature Experience — YES experiences Portugal" title. Same class of bug that was just fixed on `/local-stories/$slug`.
 
-**Why it's a problem:** the core memory constraint `constraints/yes-canonical-rules` and the memory entry rejecting "ONLY interactive builder in Portuguese tourism" both forbid competitor comparisons and superlative first-in-market claims. This copy is currently being served to Google as structured data.
+**Visible?** No to users (they see the not-found page). Yes to crawlers.
 
-**Visible?** No (JSON-LD only; SEO-visible).
-
-**Exact recommended correction:**
-- Line 11 answer → *"Yes — through the YES Experience Studio. You choose the mood, rhythm and route, see the live price update as you go, and reserve instantly. Designed in real time, with you — no form, no back-and-forth, no travel agent in the middle."*
-- Line 23 answer → *"Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file."*
-
-**Files to edit:** `src/content/faq-data.ts` (lines 10–12 and 22–24).
-
----
-
-### 2. `public/llms.txt` links to two non-existent routes
-
-**Where:** `public/llms.txt` lines 12 and 15.
-
-**Current:**
+**Fix (both files):** in the `if (!t)` branch, return only:
+```ts
+return {
+  meta: [
+    { title: "Signature not found — YES experiences Portugal" },
+    { name: "robots", content: "noindex, nofollow" },
+  ],
+};
 ```
-- [Moments](/moments): Proposals, anniversaries and private celebrations.
-- [FAQ](/faq): Common questions about booking, pricing and logistics.
+No canonical, no `og:url`, no JSON-LD.
+
+**Risk:** low.
+
+---
+
+### 2. `/tours/{slug}/tailor` is publicly indexable — CANONICAL FIGHT
+
+**Where:** `src/routes/tours.$tourId.tailor.tsx:88`.
+
+**Current:** the tailor route sets `canonical` to the parent Signature URL (`/tours/{slug}`), which is the right consolidation signal, but there is no `robots: noindex`. Google may still index the tailor URL (canonical is a suggestion, not a directive) and it isn't in the sitemap — a mismatch that can trigger "Alternate page with proper canonical tag" or "Duplicate, submitted URL not selected as canonical" in Search Console.
+
+**Effect:** wasted crawl budget on customization URLs; noisy Search Console report.
+
+**Visible?** SEO-only.
+
+**Fix:** add to the valid-tour `head()` meta:
+```ts
+{ name: "robots", content: "noindex, follow" },
+```
+Keep the parent canonical and JSON-LD as-is. `follow` lets Google keep discovering links inside the page; `noindex` removes it from SERPs.
+
+**Risk:** low. Tailor is a functional customization surface reached from the parent, not an entry point.
+
+---
+
+### 3. `/e2e/postmessage-probe` has no head metadata — DEFENSE-IN-DEPTH GAP
+
+**Where:** `src/routes/e2e.postmessage-probe.tsx` — no `head()` at all.
+
+**Current:** robots.txt disallows `/e2e`, so compliant crawlers won't fetch it. But since the route inherits the root `robots: index,follow,max-image-preview:large` meta, if any misbehaving crawler or accidental external link surfaces the URL, it advertises itself as indexable.
+
+**Visible?** No.
+
+**Fix:** add a `head()` returning:
+```ts
+{ meta: [
+  { title: "E2E postMessage probe" },
+  { name: "robots", content: "noindex, nofollow" },
+]}
 ```
 
-Both URLs return **HTTP 404** (confirmed against localhost). The real routes are `/proposals` (Moments) and — for FAQ — there is no dedicated route; the FAQ lives as a section on the homepage.
-
-**Visible?** No to human users, **yes** to LLM/AI crawlers (`llms.txt` is their primary map of the site). Serving broken links here means AI answers about "Moments" or "FAQ" will point to 404s.
-
-**Exact recommended correction:**
-```
-- [Moments](/proposals): Proposals, anniversaries and private celebrations.
-- [FAQ](/#faq): Common questions about booking, pricing and logistics.
-```
-(Adjust the FAQ fragment to whatever anchor id the homepage FAQ actually exposes; if there's no anchor, drop the FAQ bullet.)
-
-**Files to edit:** `public/llms.txt` (lines 12, 15).
+**Risk:** very low.
 
 ---
 
-### 3. `public/llms.txt` links through a known 301 redirect
+### 4. Keyword-cannibalization risk across four "Portugal tours" SEO landing pages — REVIEW, DO NOT AUTO-FIX
 
-**Where:** `public/llms.txt:21`.
+**Where:**
+- `/portugal-tours` — "Portugal Tours — Private, Luxury & Small-Group by a Local"
+- `/luxury-tours-portugal` — "Luxury Portugal Tours — Private, All-Inclusive, By a Local"
+- `/private-tours-portugal` — "Private Tours Portugal — Designed by a Local Operator"
+- `/portugal-wine-tours` — "Portugal Wine Tours — Private, By a Local Operator"
 
-**Current:** `- [Best Day Trips from Lisbon](/local-stories/best-day-trips-from-lisbon)`
+All four self-canonical, all four in the sitemap at priority 0.85–0.9, all four target overlapping "portugal tours" head terms. Titles are distinct and content likely differs, but the intent overlap can split ranking signals — Google may pick one and demote the rest.
 
-`/local-stories/best-day-trips-from-lisbon` is redirected in `beforeLoad` to `/day-trips-from-lisbon` (dedicated SEO route). Pointing external crawlers at the redirect wastes a hop and — for LLM crawlers that don't follow redirects — misses the canonical page.
+Same lower-risk pattern on the "wine tour" cluster: `/wine-tours-lisbon`, `/portugal-wine-tours`, `/private-wine-tour-lisbon` (three overlapping wine SEO pages).
 
-**Visible?** No to users; SEO/LLM-visible.
+**Effect:** potential ranking dilution. Not a technical bug.
 
-**Exact recommended correction:**
-`- [Best Day Trips from Lisbon](/day-trips-from-lisbon)`
+**Visible?** SEO-only.
 
-**Files to edit:** `public/llms.txt` (line 21).
+**Recommendation:** DO NOT change anything automatically. Options for you to consider:
+- Keep all four and monitor Search Console for cannibalization (impressions dropping, one page eating another's queries).
+- Merge two of the weakest into their strongest counterpart with a 301 redirect (e.g. `/luxury-tours-portugal` → `/portugal-tours`, keep as an anchor `#luxury` inside the merged page).
+- Differentiate content sharply (each page must answer a genuinely different intent).
 
----
-
-### 4. Visible dead UI element: "Need help? Ask YES (coming soon)"
-
-**Where:** `src/components/studio-v3/StudioV3.tsx:2276–2310`.
-
-A `<button>` rendered on most Studio v3 phases (all phases except early, `interests`, `considerations`, `map`, `storyboard`) is:
-- **Visible** (dimmed to `opacity: 55%` but rendered on-screen).
-- **Disabled** (`disabled` attr, `cursor-not-allowed`).
-- Announces to screen readers as *"Need help? Ask YES (coming soon)"*.
-
-The comment at line 2275 confirms it: `TODO: Later phase — connect Ask YES help link to official contact channel.` A "coming soon" placeholder feature is shipping in production on a conversion-critical flow.
-
-**Visible?** **Yes** — dim, but present at the bottom of the Studio during most of the flow, and announced to assistive tech with the "coming soon" caveat.
-
-**Exact recommended correction (pick one — I'll ask before editing):**
-
-(a) **Enable it** — swap the disabled `<button>` for an `<a href={whatsappHref()} target="_blank" rel="noopener noreferrer">` that opens the same WhatsApp support flow used elsewhere on the site (memory: WhatsApp = allowed as optional support). Keep label "Need help? Ask YES." Drop `(coming soon)` and the `disabled` attribute. Remove the TODO comment.
-
-(b) **Hide it** — remove the entire block (lines 2271–2310) until the feature is wired. Cleanest option per the Studio philosophy memory ("interface progressively disappears").
-
-Recommendation: **(a)** — the whisper affordance is valuable at low-confidence phases, and WhatsApp support is already the site-wide help channel. If you'd rather stay strict to "no help affordance in Studio v3 yet", go with (b).
-
-**Files to edit:** `src/components/studio-v3/StudioV3.tsx` (lines 2271–2310, plus the `whatsappHref` import if going with option a — already imported project-wide).
+**Risk:** medium if left unaddressed long-term; not urgent.
 
 ---
 
-### 5. Minor: leftover `TODO` code comment (dev-visible only)
+### 5. Static article `datePublished` is used as `<lastmod>` — MINOR FRESHNESS SIGNAL
 
-**Where:** `src/components/studio-v3/StudioV3.tsx:2275`.
-Not rendered to the DOM, but relates to finding #4 above and disappears when #4 is fixed. No separate edit needed.
+**Where:** `src/routes/sitemap[.]xml.ts:129` — `lastmod: a.datePublished`.
 
-**Visible?** No (source-only).
+**Current:** static local-stories articles report their original publish date as `lastmod`. Signature tour entries and static page entries report `today`. Inconsistent freshness signalling — Google may deprioritize articles that never appear to update, even if the copy has been revised.
+
+**Effect:** marginal ranking loss for older articles that have been quietly polished.
+
+**Visible?** SEO-only.
+
+**Fix:** either (a) change `lastmod: a.datePublished` to `lastmod: a.dateModified ?? a.datePublished` if the article schema has a modified field, or (b) omit `lastmod` for static articles (crawlers fall back to the last-crawled date, which is honest).
+
+**Risk:** very low.
 
 ---
 
-## What was checked and is clean
+## Sitemap coverage — clean
 
-- No `Lorem`/`Ipsum`/`Placeholder`/`Dummy`/`Sample text`/`Example text` anywhere in JSX text nodes.
-- No `TODO`/`FIXME`/`XXX`/`HACK` inside rendered strings (only inside code comments, which don't ship to the DOM).
-- No `null`/`undefined` leaking into text nodes on any audited route.
-- No missing-space patterns of the form `word.Word`, `day.Add`, etc. — grep on rendered HTML across 8 routes returned zero hits.
-- No stray dev/debug labels rendered — all debug overlays (`HeroCopyDiff`, `HeroColorDebugOverlay`, `CtaScrollDebugOverlay`, `HeroChapterDebugOverlay`, `MotionQaPanel`, `useStudioDebug`) are correctly gated behind `?hero-debug` / `?debug-cta` / `?scroll-debug` / `?debug` URL params and don't render for normal visitors.
-- No duplicated CTA text beyond legitimate nav/footer repetition (navbar × mobile drawer × footer main × footer legal = expected 4× per link).
-- No broken punctuation (double spaces, `,.`, `..`, dangling em-dashes) in rendered text across the 8 routes checked.
-- Input `placeholder=` attributes on forms (checkout, admin, auth) are legitimate UX text, not accidental leftover copy.
-- The seemingly-orphan text nodes `> day.<`, `> · reserve when ready<` etc. in the raw HTML dump are the trailing halves of headlines split by inline `<SectionTitle.Em>` emphasis spans — normal JSX composition, correctly recombined visually.
+Every public, indexable route resolves to a sitemap entry:
+
+- **All static landing pages** in the sitemap (28 entries covering home, product hubs, SEO landing pages, terms/privacy/cookies).
+- **All Signature tours** enumerated dynamically from `signatureTours` at `/tours/{id}`, with a `SEO_FOCUS_TOUR_IDS` boost for the 4 hero tours.
+- **All static local-stories articles** enumerated from `LOCAL_STORIES_ARTICLES`, with `best-day-trips-from-lisbon` correctly excluded (it 301-redirects to `/day-trips-from-lisbon`).
+- **All published DB posts** from `journal_posts` where `status = 'published'`, deduped against static slugs.
+
+Correctly excluded (matches robots.txt Disallow set):
+`/admin/*`, `/auth`, `/booking-confirmed`, `/brand-qa`, `/builder`, `/checkout/$token`, `/e2e`, `/email`, `/hero-verify`, `/lovable`, `/preview-check`, `/qa.*`, `/review/$token`, `/s/$token`, `/i/$token`, `/studio-drift`, `/studio-v2` (redirect), `/typography-audit`, `/unsubscribe`, `/tours/{id}/tailor` (canonical points to parent).
+
+**No sitemap changes required.** After finding #2, the tailor route stays out of the sitemap (correct) and adds a matching `noindex` (so the alignment is explicit).
+
+---
+
+## Canonical + robots — clean, with the two exceptions above
+
+- Every public leaf route sets its own self-referential `canonical` + `og:url`.
+- Root (`__root.tsx`) sets sitewide `robots: index,follow,max-image-preview:large` and does NOT set a canonical or `og:image` — correct (avoids overriding leaves).
+- Every internal route (`/admin/*`, `/qa.*`, `/auth`, `/checkout/$token`, `/i/$token`, `/s/$token`, `/review/$token`, `/booking-confirmed`, `/brand-qa`, `/builder`, `/preview-check`, `/hero-verify`, `/typography-audit`, `/unsubscribe`, `/studio-drift`) already emits `robots: noindex`.
+- `/local-stories/$slug` correctly emits `noindex` for missing articles (fixed in the previous audit).
+- `/studio-v2` is a pure 301 redirect to `/studio-v3` — correct.
+- No canonical points at the preview domain (`*.lovable.app`) or the legacy `yesexperiences.pt`; the only refs to those hostnames are in admin dashboards and health probes.
+- No duplicate `<title>` across the 11 audited SEO landing pages.
+
+**No canonical changes required outside of findings #1–#3.**
 
 ---
 
 ## Summary table
 
-| # | Issue | File | Visible? | Fix effort |
-|---|---|---|---|---|
-| 1 | Superlative/competitor claim in FAQ JSON-LD (×2) | `src/content/faq-data.ts` L10–24 | SEO only | Copy swap |
-| 2 | `llms.txt` links to 404 routes `/moments`, `/faq` | `public/llms.txt` L12, L15 | AI crawlers | Path swap |
-| 3 | `llms.txt` links through a 301 redirect | `public/llms.txt` L21 | AI crawlers | Path swap |
-| 4 | Dead "Ask YES (coming soon)" button in Studio | `src/components/studio-v3/StudioV3.tsx` L2271–2310 | **Yes** | Enable or hide |
+| # | Issue | File(s) | Visible? | Fix effort | Risk |
+|---|---|---|---|---|---|
+| 1 | Invalid tour URLs emit canonical + no noindex | `src/routes/tours.$tourId.tsx` L44–51, `src/routes/tours.$tourId.tailor.tsx` L55–62 | SEO only | ~6 lines each | **Medium** |
+| 2 | `/tours/{slug}/tailor` indexable despite canonical to parent | `src/routes/tours.$tourId.tailor.tsx` L70–85 | SEO only | +1 meta line | Low |
+| 3 | `/e2e/postmessage-probe` inherits root `index,follow` | `src/routes/e2e.postmessage-probe.tsx` | SEO only | +7 lines | Very low |
+| 4 | Keyword cannibalization on "Portugal tours" / "wine tour" clusters | 4 landing pages, 3 wine pages | SEO only | Content review — **NOT auto-fix** | Medium |
+| 5 | Article `<lastmod>` frozen at `datePublished` | `src/routes/sitemap[.]xml.ts` L129 | SEO only | 1 line | Very low |
 
-**Not modifying anything yet — awaiting your go-ahead.** For finding #4, please confirm whether to (a) wire it to WhatsApp support or (b) hide the block entirely.
+---
+
+## Implementation plan (findings #1, #2, #3 only — awaiting your call on #4 and #5)
+
+### Edit 1 — `src/routes/tours.$tourId.tsx` (lines 43–51)
+
+Replace the invalid-tour head fallback with a noindex-only response:
+
+```ts
+const t = loaderData?.tour ?? findTour(params.tourId);
+if (!t) {
+  return {
+    meta: [
+      { title: "Signature not found — YES experiences Portugal" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  };
+}
+```
+
+Drop the `og:url` and `canonical` from this branch. Keep the valid-tour branch untouched.
+
+### Edit 2 — `src/routes/tours.$tourId.tailor.tsx` (lines 55–62)
+
+Same pattern for the invalid-tour fallback:
+
+```ts
+if (!t) {
+  return {
+    meta: [
+      { title: "Tailor a Signature — YES experiences Portugal" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  };
+}
+```
+
+Additionally, in the valid-tour branch (line ~70), add one meta entry:
+
+```ts
+{ name: "robots", content: "noindex, follow" },
+```
+
+Keep the parent canonical (line 88) unchanged.
+
+### Edit 3 — `src/routes/e2e.postmessage-probe.tsx`
+
+Add a `head()` to the `createFileRoute` config:
+
+```ts
+head: () => ({
+  meta: [
+    { title: "E2E postMessage probe" },
+    { name: "robots", content: "noindex, nofollow" },
+  ],
+}),
+```
+
+### Optional edit 4 — Add `lastmod` freshness (finding #5)
+
+If you want it: swap sitemap line 129 to `lastmod: (a as { dateModified?: string }).dateModified ?? a.datePublished`, provided the article type carries an optional `dateModified`. If it doesn't, either add the field to the article schema or omit `lastmod` for articles.
+
+### No edit for finding #4
+
+Content-strategy decision. Recommend reviewing Search Console cannibalization data over the next 4 weeks before merging or differentiating any of the four "Portugal tours" landing pages.
+
+---
+
+**Overall risk:** low. Findings #1–#3 are surgical head-metadata changes with zero UX or content impact. Finding #4 is a content strategy call you should make deliberately.
+
+**Not modifying anything yet — awaiting your go-ahead.** If you want me to proceed with all three (#1, #2, #3) plus the optional freshness fix (#5), say the word.
