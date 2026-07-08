@@ -152,11 +152,7 @@ export function EditorialCard({
         />
       ) : null}
 
-      {image ? (
-        <div className="relative z-10 md:contents">
-          <ImageSide image={image} eyebrow={eyebrow} cta={cta} reverse={reverse} />
-        </div>
-      ) : null}
+      {image ? <ImageSide image={image} eyebrow={eyebrow} cta={cta} reverse={reverse} /> : null}
 
       <div className={`relative z-10 flex flex-col pt-1 md:pt-0 ${textColSpan} ${textColOrder}`}>
         <span
