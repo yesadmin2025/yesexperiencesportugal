@@ -20,6 +20,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ProposalsRouteImport } from './routes/proposals'
+import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
 import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -157,6 +158,11 @@ const ReviewsRoute = ReviewsRouteImport.update({
 const ProposalsRoute = ProposalsRouteImport.update({
   id: '/proposals',
   path: '/proposals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProposalInPortugalRoute = ProposalInPortugalRouteImport.update({
+  id: '/proposal-in-portugal',
+  path: '/proposal-in-portugal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivateWineTourLisbonRoute = PrivateWineTourLisbonRouteImport.update({
@@ -616,6 +622,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
+  '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
@@ -712,6 +719,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
+  '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
@@ -809,6 +817,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
+  '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
@@ -907,6 +916,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
+    | '/proposal-in-portugal'
     | '/proposals'
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
@@ -1003,6 +1013,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
+    | '/proposal-in-portugal'
     | '/proposals'
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
@@ -1099,6 +1110,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
+    | '/proposal-in-portugal'
     | '/proposals'
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
@@ -1196,6 +1208,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivateToursPortugalRoute: typeof PrivateToursPortugalRoute
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
+  ProposalInPortugalRoute: typeof ProposalInPortugalRoute
   ProposalsRoute: typeof ProposalsRoute
   ReviewsRoute: typeof ReviewsRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
@@ -1337,6 +1350,13 @@ declare module '@tanstack/react-router' {
       path: '/proposals'
       fullPath: '/proposals'
       preLoaderRoute: typeof ProposalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proposal-in-portugal': {
+      id: '/proposal-in-portugal'
+      path: '/proposal-in-portugal'
+      fullPath: '/proposal-in-portugal'
+      preLoaderRoute: typeof ProposalInPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/private-wine-tour-lisbon': {
@@ -1989,6 +2009,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivateToursPortugalRoute: PrivateToursPortugalRoute,
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
+  ProposalInPortugalRoute: ProposalInPortugalRoute,
   ProposalsRoute: ProposalsRoute,
   ReviewsRoute: ReviewsRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
@@ -2058,13 +2079,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

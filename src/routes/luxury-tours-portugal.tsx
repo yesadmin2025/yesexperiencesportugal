@@ -81,7 +81,7 @@ const PILLARS: {
     eyebrow: "Occasions",
     title: "Proposals, anniversaries, and quiet celebrations.",
     body: "A cellar to yourselves at sunset, a boat drifting off the Arrábida cliffs, a table set in a vineyard. Designed one-to-one, never a package.",
-    cta: { to: "/proposals", label: "See Proposals & Celebrations" },
+    cta: { to: "/proposal-in-portugal", label: "See Proposals & Celebrations" },
   },
 ];
 
