@@ -254,10 +254,14 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: "/video/hero-sunset-road-poster.webp",
+        href: "/video/hero-sunset-road-poster-720.webp",
+        imageSrcSet:
+          "/video/hero-sunset-road-poster-720.webp 1080w, /video/hero-sunset-road-poster.webp 1920w",
+        imageSizes: "(max-width: 767px) 100vw, 100vw",
         type: "image/webp",
         fetchPriority: "high",
       },
+
     ],
     scripts: [
       jsonLdScript(faqPageLd(HOMEPAGE_FAQ)),
