@@ -88,9 +88,12 @@ type LoaderData = {
     slug: string;
     title: string;
     excerpt: string | null;
+    body: string;
     heroImage: string | null;
     heroImageAlt: string | null;
+    region: string | null;
     authorName: string | null;
+    signatureSlug: string | null;
     publishedAt: string | null;
   } | null;
 };
@@ -117,9 +120,12 @@ export const Route = createFileRoute("/local-stories/$slug")({
           slug: post.slug,
           title: post.title,
           excerpt: post.excerpt,
+          body: post.body,
           heroImage: post.hero_image_url,
           heroImageAlt: post.hero_image_alt,
+          region: post.region,
           authorName: post.author_name,
+          signatureSlug: post.signature_slug,
           publishedAt: post.published_at,
         },
       };
@@ -318,7 +324,10 @@ function Page() {
     return <StaticArticleView article={article} reviews={loaderData?.reviews ?? []} />;
   }
 
-  return <DbPostView slug={slug} />;
+  // Loader guarantees dbPost exists here (else notFound() was thrown).
+  const post = loaderData?.dbPost;
+  if (!post) throw notFound();
+  return <DbPostView post={post} />;
 }
 
 function StaticArticleView({
