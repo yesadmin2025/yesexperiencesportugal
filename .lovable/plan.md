@@ -1,232 +1,208 @@
-# SEO / indexing audit — findings and fixes
 
-Scope: `src/routes/*` (all leaf routes), `src/routes/sitemap[.]xml.ts`, `public/robots.txt`, `__root.tsx` head defaults, per-route `head()` canonical + `og:url` + `robots` metadata, dynamic route not-found behavior, and title uniqueness across SEO landing pages. Verified against localhost.
+# Meta Title & Description Audit
 
-**Result:** the SEO surface is in strong shape overall. Canonical domain is consistent (`https://yesexperiencesportugal.com`), root `head()` is minimal and doesn't leak canonical/`og:image` overrides to leaves, robots.txt disallows every internal/admin/QA/token/checkout prefix, and the sitemap dynamically resolves signature tours + local-stories articles + DB `journal_posts`. **Two real defects and three optimisations** worth acting on.
+Read-only report. No files changed. Public, indexable routes only (admin/auth/checkout/token/QA/preview/e2e omitted — noindex or private).
 
----
+## Format
+Current → Proposed. Priority: **P1** dupe/inconsistent/soft-issue on high-traffic page · **P2** polish · **P3** fine as-is. File to edit is always the route file under `src/routes/`. Landing pages using `const TITLE`/`const DESCRIPTION` — edit those two constants; `head()` picks them up.
 
-## Findings
-
-### 1. Soft-404 on invalid `/tours/{slug}` and `/tours/{slug}/tailor` URLs — SOFT-404 SEO LEAK
-
-**Where:**
-- `src/routes/tours.$tourId.tsx:44–51` (the `if (!t)` head fallback branch).
-- `src/routes/tours.$tourId.tailor.tsx:55–62` (same pattern).
-
-**Current behavior:** loader throws `notFound()`, so `notFoundComponent` renders (correct). But the `head()` fallback still emits:
-- A full `<link rel="canonical">` pointing at the invalid URL.
-- An `og:url` for the invalid URL.
-- No `robots: noindex`.
-
-**Effect:** Google receives a valid-looking canonical for a URL that has no content — a soft-404 that gets indexed with a generic "Signature Experience — YES experiences Portugal" title. Same class of bug that was just fixed on `/local-stories/$slug`.
-
-**Visible?** No to users (they see the not-found page). Yes to crawlers.
-
-**Fix (both files):** in the `if (!t)` branch, return only:
-```ts
-return {
-  meta: [
-    { title: "Signature not found — YES experiences Portugal" },
-    { name: "robots", content: "noindex, nofollow" },
-  ],
-};
-```
-No canonical, no `og:url`, no JSON-LD.
-
-**Risk:** low.
+Length targets: title ≤ 60 chars, description 140–160.
 
 ---
 
-### 2. `/tours/{slug}/tailor` is publicly indexable — CANONICAL FIGHT
+## 1. Home — `/` — P2
+- **Current title:** "Private Portugal Tours & Real-Time Builder | YES" (48)
+- **Current desc:** "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer." (140)
+- **Proposed title:** "Private Portugal Tours, Designed With a Local | YES"
+- **Proposed desc:** "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed."
+- **Why:** "Real-Time Builder" is internal jargon; softens toward brand voice.
+- **File:** `src/routes/index.tsx`
 
-**Where:** `src/routes/tours.$tourId.tailor.tsx:88`.
+## 2. About — `/about` — P3
+- Current title: "About YES Experiences Portugal | Founder-Built Travel" ✓
+- Current desc: "YES Experiences Portugal is a licensed private travel platform, founder-built from guest behaviour, live-designed experiences and local expertise across Portugal." ✓
+- Optional polish desc: "Founder-built, licensed Portuguese travel platform — private days, live-designed experiences and full journeys, shaped from the road, not a template."
+- **File:** `src/routes/about.tsx`
 
-**Current:** the tailor route sets `canonical` to the parent Signature URL (`/tours/{slug}`), which is the right consolidation signal, but there is no `robots: noindex`. Google may still index the tailor URL (canonical is a suggestion, not a directive) and it isn't in the sitemap — a mismatch that can trigger "Alternate page with proper canonical tag" or "Duplicate, submitted URL not selected as canonical" in Search Console.
+## 3. Signature Experiences — `/experiences` — P1
+- **Current title:** "Signature Tours — YES experiences Portugal"
+- **Current og:title:** "Signature Experiences — YES experiences Portugal" ← **mismatch with title**
+- Current desc: "Choose one of our private experiences and enjoy it as designed, or tailor a few details." (thin, generic)
+- **Proposed title:** "Signature Private Experiences in Portugal | YES"
+- **Proposed desc:** "A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details."
+- Align og:title + twitter:title with the new title.
+- **File:** `src/routes/experiences.tsx`
 
-**Effect:** wasted crawl budget on customization URLs; noisy Search Console report.
+## 4. Studio — `/studio-v3` — P2
+- Current title: "Studio — Design your Portugal day | YES experiences"
+- Current desc: "Compose a private Portugal journey one quiet decision at a time — feeling, company, rhythm. The map awakens as you choose."
+- **Proposed title:** "Design Your Private Portugal Day — YES Studio"
+- **Proposed desc:** "Compose a private Portugal day one quiet decision at a time — feeling, company, rhythm. Live pricing and instant confirmation, with a local team behind it."
+- **File:** `src/routes/studio-v3.tsx`
 
-**Visible?** SEO-only.
+## 5. Travel Designer / Multi-day — `/multi-day` — P2
+- Current title: "Travel Designer Portugal | Private Journeys by YES" ✓
+- Current desc: "Full Portugal journeys, designed for you. From a few days to a full journey across Portugal, shaped around your time, rhythm and interests — delivered as a travel file." — "journey" repeats.
+- **Proposed desc:** "Full private Portugal journeys, designed with a human travel designer — shaped around your time, rhythm and interests, delivered as a complete travel file."
+- **File:** `src/routes/multi-day.tsx`
 
-**Fix:** add to the valid-tour `head()` meta:
-```ts
-{ name: "robots", content: "noindex, follow" },
-```
-Keep the parent canonical and JSON-LD as-is. `follow` lets Google keep discovering links inside the page; `noindex` removes it from SERPs.
+## 6. Day Tours — `/day-tours` — P3
+- Current title: "Day Tours — YES experiences Portugal"
+- Current desc: "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more. Reserve instantly, with real-time confirmation." ✓
+- **Optional title:** "Private Day Tours in Portugal — Lisbon, Sintra, Arrábida"
+- **File:** `src/routes/day-tours.tsx`
 
-**Risk:** low. Tailor is a functional customization surface reached from the parent, not an entry point.
+## 7. Corporate — `/corporate` — P3
+- Current title: "Corporate & Private Groups in Portugal — YES experiences" ✓
+- Current desc: ✓
+- **File:** `src/routes/corporate.tsx`
 
----
+## 8. Proposals — `/proposals` — P3
+- Current title: "Proposals & Celebrations in Portugal — YES experiences" ✓
+- Current desc: ✓
+- **File:** `src/routes/proposals.tsx`
 
-### 3. `/e2e/postmessage-probe` has no head metadata — DEFENSE-IN-DEPTH GAP
+## 9. Local Stories index — `/local-stories` — P3
+- Current title/desc ✓, unique, on-tone.
+- **File:** `src/routes/local-stories.tsx`
 
-**Where:** `src/routes/e2e.postmessage-probe.tsx` — no `head()` at all.
+## 10. Local Story article — `/local-stories/$slug` — P3
+- Uses per-article `title` + `metaDescription` from content source. Assumed unique per article.
+- **File:** `src/routes/local-stories.$slug.tsx` + article content source.
 
-**Current:** robots.txt disallows `/e2e`, so compliant crawlers won't fetch it. But since the route inherits the root `robots: index,follow,max-image-preview:large` meta, if any misbehaving crawler or accidental external link surfaces the URL, it advertises itself as indexable.
+## 11. Contact — `/contact` — P2
+- Current title: "Contact — YES experiences Portugal"
+- Current desc: "Speak directly with our YES Portugal experience designers." — thin.
+- **Proposed desc:** "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call."
+- **File:** `src/routes/contact.tsx`
 
-**Visible?** No.
+## 12. Reviews — `/reviews` — P2
+- Current title: "Real guest reviews · YES Experiences Portugal" — uses `·`, rest of site uses `—`. Not premium.
+- **Proposed title:** "Guest Reviews — Private Portugal Tours by YES"
+- Current desc ✓.
+- **File:** `src/routes/reviews.tsx`
 
-**Fix:** add a `head()` returning:
-```ts
-{ meta: [
-  { title: "E2E postMessage probe" },
-  { name: "robots", content: "noindex, nofollow" },
-]}
-```
-
-**Risk:** very low.
-
----
-
-### 4. Keyword-cannibalization risk across four "Portugal tours" SEO landing pages — REVIEW, DO NOT AUTO-FIX
-
-**Where:**
-- `/portugal-tours` — "Portugal Tours — Private, Luxury & Small-Group by a Local"
-- `/luxury-tours-portugal` — "Luxury Portugal Tours — Private, All-Inclusive, By a Local"
-- `/private-tours-portugal` — "Private Tours Portugal — Designed by a Local Operator"
-- `/portugal-wine-tours` — "Portugal Wine Tours — Private, By a Local Operator"
-
-All four self-canonical, all four in the sitemap at priority 0.85–0.9, all four target overlapping "portugal tours" head terms. Titles are distinct and content likely differs, but the intent overlap can split ranking signals — Google may pick one and demote the rest.
-
-Same lower-risk pattern on the "wine tour" cluster: `/wine-tours-lisbon`, `/portugal-wine-tours`, `/private-wine-tour-lisbon` (three overlapping wine SEO pages).
-
-**Effect:** potential ranking dilution. Not a technical bug.
-
-**Visible?** SEO-only.
-
-**Recommendation:** DO NOT change anything automatically. Options for you to consider:
-- Keep all four and monitor Search Console for cannibalization (impressions dropping, one page eating another's queries).
-- Merge two of the weakest into their strongest counterpart with a 301 redirect (e.g. `/luxury-tours-portugal` → `/portugal-tours`, keep as an anchor `#luxury` inside the merged page).
-- Differentiate content sharply (each page must answer a genuinely different intent).
-
-**Risk:** medium if left unaddressed long-term; not urgent.
-
----
-
-### 5. Static article `datePublished` is used as `<lastmod>` — MINOR FRESHNESS SIGNAL
-
-**Where:** `src/routes/sitemap[.]xml.ts:129` — `lastmod: a.datePublished`.
-
-**Current:** static local-stories articles report their original publish date as `lastmod`. Signature tour entries and static page entries report `today`. Inconsistent freshness signalling — Google may deprioritize articles that never appear to update, even if the copy has been revised.
-
-**Effect:** marginal ranking loss for older articles that have been quietly polished.
-
-**Visible?** SEO-only.
-
-**Fix:** either (a) change `lastmod: a.datePublished` to `lastmod: a.dateModified ?? a.datePublished` if the article schema has a modified field, or (b) omit `lastmod` for static articles (crawlers fall back to the last-crawled date, which is honest).
-
-**Risk:** very low.
+## 13. Press — `/press` — P3
+- Current title/desc ✓.
+- **File:** `src/routes/press.tsx`
 
 ---
 
-## Sitemap coverage — clean
+## SEO landing pages (near-duplicates — real risk)
 
-Every public, indexable route resolves to a sitemap entry:
+Four "Portugal tours" pages and three "wine tour from Lisbon" pages share intent. The prior audit flagged this for a 4-week Search Console review before merging. Meta copy alone should differentiate intent clearly.
 
-- **All static landing pages** in the sitemap (28 entries covering home, product hubs, SEO landing pages, terms/privacy/cookies).
-- **All Signature tours** enumerated dynamically from `signatureTours` at `/tours/{id}`, with a `SEO_FOCUS_TOUR_IDS` boost for the 4 hero tours.
-- **All static local-stories articles** enumerated from `LOCAL_STORIES_ARTICLES`, with `best-day-trips-from-lisbon` correctly excluded (it 301-redirects to `/day-trips-from-lisbon`).
-- **All published DB posts** from `journal_posts` where `status = 'published'`, deduped against static slugs.
+### 14. `/portugal-tours` — P1
+- Title: "Portugal Tours — Private, Luxury & Small-Group by a Local" — "small-group" contradicts brand (private only). Also collides with `/private-tours-portugal` and `/luxury-tours-portugal`.
+- **Proposed title:** "Portugal Tours — Private Days & Multi-Day Journeys | YES"
+- Desc: "Private Portugal tours designed by a local operator — Lisbon, Sintra, Arrábida, Alentejo, Douro. Signature day tours and multi-day journeys, instantly confirmed." ✓
+- **File:** `src/routes/portugal-tours.tsx`
 
-Correctly excluded (matches robots.txt Disallow set):
-`/admin/*`, `/auth`, `/booking-confirmed`, `/brand-qa`, `/builder`, `/checkout/$token`, `/e2e`, `/email`, `/hero-verify`, `/lovable`, `/preview-check`, `/qa.*`, `/review/$token`, `/s/$token`, `/i/$token`, `/studio-drift`, `/studio-v2` (redirect), `/typography-audit`, `/unsubscribe`, `/tours/{id}/tailor` (canonical points to parent).
+### 15. `/private-tours-portugal` — P1
+- Title: "Private Tours Portugal — Designed by a Local Operator" ✓
+- Desc: "Private Portugal tours from Lisbon — Sintra, Arrábida, Alentejo, Comporta. One family, one guide, one car. Instantly confirmed, all-inclusive pricing." ✓
+- **Proposed sharper title:** "Private Portugal Tours from Lisbon — One Family, One Guide"
+- **File:** `src/routes/private-tours-portugal.tsx`
 
-**No sitemap changes required.** After finding #2, the tailor route stays out of the sitemap (correct) and adds a matching `noindex` (so the alignment is explicit).
+### 16. `/luxury-tours-portugal` — P1
+- Title: "Luxury Portugal Tours — Private, All-Inclusive, By a Local" ✓
+- Desc: "Luxury private tours of Portugal — Lisbon, Sintra, Arrábida, Alentejo and Comporta. Designed by a local operator, all-inclusive, instantly confirmed."
+- **Proposed sharper desc:** "Understated luxury across Portugal — private car, hand-picked estates, unhurried tables. Designed and hosted by a licensed local team."
+- **File:** `src/routes/luxury-tours-portugal.tsx`
 
----
+### 17. `/portugal-wine-tours` — P1
+- Title: "Portugal Wine Tours — Private, By a Local Operator" — overlaps `/wine-tours-lisbon` and `/private-wine-tour-lisbon`.
+- **Proposed title:** "Portugal Wine Tours — Arrábida, Setúbal & Alentejo | YES"
+- Desc ✓
+- **File:** `src/routes/portugal-wine-tours.tsx`
 
-## Canonical + robots — clean, with the two exceptions above
+### 18. `/wine-tours-lisbon` — P1
+- Title: "Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo" ✓
+- Desc long (~230). Trim.
+- **Proposed desc:** "The best private wine tours from Lisbon — Arrábida, Azeitão, Comporta and Alentejo. Family cellars, real winemakers, door-to-door driving."
+- **File:** `src/routes/wine-tours-lisbon.tsx`
 
-- Every public leaf route sets its own self-referential `canonical` + `og:url`.
-- Root (`__root.tsx`) sets sitewide `robots: index,follow,max-image-preview:large` and does NOT set a canonical or `og:image` — correct (avoids overriding leaves).
-- Every internal route (`/admin/*`, `/qa.*`, `/auth`, `/checkout/$token`, `/i/$token`, `/s/$token`, `/review/$token`, `/booking-confirmed`, `/brand-qa`, `/builder`, `/preview-check`, `/hero-verify`, `/typography-audit`, `/unsubscribe`, `/studio-drift`) already emits `robots: noindex`.
-- `/local-stories/$slug` correctly emits `noindex` for missing articles (fixed in the previous audit).
-- `/studio-v2` is a pure 301 redirect to `/studio-v3` — correct.
-- No canonical points at the preview domain (`*.lovable.app`) or the legacy `yesexperiences.pt`; the only refs to those hostnames are in admin dashboards and health probes.
-- No duplicate `<title>` across the 11 audited SEO landing pages.
+### 19. `/private-wine-tour-lisbon` — P2
+- Title: "Private Wine Tour from Lisbon — Arrábida, Azeitão & Setúbal" ✓
+- Desc ✓ (differentiate from #18 by keeping it Arrábida/Azeitão-only, since #18 is the multi-region roundup).
+- **File:** `src/routes/private-wine-tour-lisbon.tsx`
 
-**No canonical changes required outside of findings #1–#3.**
+### 20. `/arrabida-wine-tour` — P2
+- Title: "Arrábida Wine Tour — Private Lisbon to Azeitão & Setúbal" ✓ but 90% overlaps `/private-wine-tour-lisbon`.
+- **Proposed title (differentiate):** "Arrábida Wine Tour from Lisbon — Three Family Cellars"
+- Desc ✓.
+- **File:** `src/routes/arrabida-wine-tour.tsx`
 
----
+### 21. `/arrabida-day-trip-from-lisbon` — P3
+- Title/desc ✓ — clearly differentiated (day trip framing vs wine framing).
+- **File:** `src/routes/arrabida-day-trip-from-lisbon.tsx`
 
-## Summary table
+### 22. `/day-trips-from-lisbon` — P3
+- Title: "Best Day Trips from Lisbon — Wine, Coast & Arrábida" ✓
+- Desc ✓
+- **File:** `src/routes/day-trips-from-lisbon.tsx`
 
-| # | Issue | File(s) | Visible? | Fix effort | Risk |
-|---|---|---|---|---|---|
-| 1 | Invalid tour URLs emit canonical + no noindex | `src/routes/tours.$tourId.tsx` L44–51, `src/routes/tours.$tourId.tailor.tsx` L55–62 | SEO only | ~6 lines each | **Medium** |
-| 2 | `/tours/{slug}/tailor` indexable despite canonical to parent | `src/routes/tours.$tourId.tailor.tsx` L70–85 | SEO only | +1 meta line | Low |
-| 3 | `/e2e/postmessage-probe` inherits root `index,follow` | `src/routes/e2e.postmessage-probe.tsx` | SEO only | +7 lines | Very low |
-| 4 | Keyword cannibalization on "Portugal tours" / "wine tour" clusters | 4 landing pages, 3 wine pages | SEO only | Content review — **NOT auto-fix** | Medium |
-| 5 | Article `<lastmod>` frozen at `datePublished` | `src/routes/sitemap[.]xml.ts` L129 | SEO only | 1 line | Very low |
+### 23. `/sintra-day-tour-from-lisbon` — P3
+- Title/desc ✓
+- **File:** `src/routes/sintra-day-tour-from-lisbon.tsx`
 
----
+### 24. `/alentejo-wine-tour-from-lisbon` — P2
+- Title: "Alentejo Wine Tour from Lisbon | Private Évora & Cork" ✓
+- Overlaps `/evora-alentejo-wine-tour` and `/evora-private-tour-from-lisbon`. Sharpen the split:
+  - This page = wine-first framing (Alentejo wine).
+  - `/evora-alentejo-wine-tour` = Évora + wine roundup.
+  - `/evora-private-tour-from-lisbon` = Évora-city framing (heritage first).
+- Desc ✓.
+- **File:** `src/routes/alentejo-wine-tour-from-lisbon.tsx`
 
-## Implementation plan (findings #1, #2, #3 only — awaiting your call on #4 and #5)
+### 25. `/evora-alentejo-wine-tour` — P2
+- Title: "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon" ✓
+- Desc slightly generic ("explore… combining…"). **Proposed desc:** "A private full day from Lisbon combining Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door."
+- **File:** `src/routes/evora-alentejo-wine-tour.tsx`
 
-### Edit 1 — `src/routes/tours.$tourId.tsx` (lines 43–51)
+### 26. `/evora-private-tour-from-lisbon` — P2
+- Title: "Private Évora Tour from Lisbon | Wine, Cork & Heritage" — tilt away from wine to differentiate from #24/#25.
+- **Proposed title:** "Private Évora Day Tour from Lisbon — UNESCO & Alentejo"
+- Desc ✓.
+- **File:** `src/routes/evora-private-tour-from-lisbon.tsx`
 
-Replace the invalid-tour head fallback with a noindex-only response:
+### 27. `/itineraries/10-day-private-portugal-tour` — P3
+- Title/desc ✓
+- **File:** `src/routes/itineraries.10-day-private-portugal-tour.tsx`
 
-```ts
-const t = loaderData?.tour ?? findTour(params.tourId);
-if (!t) {
-  return {
-    meta: [
-      { title: "Signature not found — YES experiences Portugal" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  };
-}
-```
-
-Drop the `og:url` and `canonical` from this branch. Keep the valid-tour branch untouched.
-
-### Edit 2 — `src/routes/tours.$tourId.tailor.tsx` (lines 55–62)
-
-Same pattern for the invalid-tour fallback:
-
-```ts
-if (!t) {
-  return {
-    meta: [
-      { title: "Tailor a Signature — YES experiences Portugal" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  };
-}
-```
-
-Additionally, in the valid-tour branch (line ~70), add one meta entry:
-
-```ts
-{ name: "robots", content: "noindex, follow" },
-```
-
-Keep the parent canonical (line 88) unchanged.
-
-### Edit 3 — `src/routes/e2e.postmessage-probe.tsx`
-
-Add a `head()` to the `createFileRoute` config:
-
-```ts
-head: () => ({
-  meta: [
-    { title: "E2E postMessage probe" },
-    { name: "robots", content: "noindex, nofollow" },
-  ],
-}),
-```
-
-### Optional edit 4 — Add `lastmod` freshness (finding #5)
-
-If you want it: swap sitemap line 129 to `lastmod: (a as { dateModified?: string }).dateModified ?? a.datePublished`, provided the article type carries an optional `dateModified`. If it doesn't, either add the field to the article schema or omit `lastmod` for articles.
-
-### No edit for finding #4
-
-Content-strategy decision. Recommend reviewing Search Console cannibalization data over the next 4 weeks before merging or differentiating any of the four "Portugal tours" landing pages.
+### 28. Signature tour detail — `/tours/$tourId` (valid slugs) — P3
+- Route currently has no per-tour `head()` (only invalid-slug branch, now noindex). Signature tours render via detail component which sets its own head elsewhere. Recommend confirming per-tour title/desc uniqueness in a follow-up scan (not audited here).
+- **File:** `src/routes/tours.$tourId.tsx` + tour content source.
 
 ---
 
-**Overall risk:** low. Findings #1–#3 are surgical head-metadata changes with zero UX or content impact. Finding #4 is a content strategy call you should make deliberately.
+## Legal (all P3, uniqueness OK)
 
-**Not modifying anything yet — awaiting your go-ahead.** If you want me to proceed with all three (#1, #2, #3) plus the optional freshness fix (#5), say the word.
+| Page | Title | File |
+|---|---|---|
+| `/privacy` | "Privacy Policy — YES experiences Portugal" | `src/routes/privacy.tsx` |
+| `/terms` | "Terms & Conditions — YES experiences Portugal" | `src/routes/terms.tsx` |
+| `/cookies` | "Cookie Policy — YES experiences Portugal" | `src/routes/cookies.tsx` |
+
+---
+
+## Cross-page findings
+
+1. **Separator inconsistency** — everything uses `—`, except `/reviews` uses `·`. Standardize on `—` (P2).
+2. **Brand casing drift** — mix of "YES experiences Portugal", "YES Experiences Portugal", "YES". Not strictly SEO, but worth a one-pass alignment (P2, out of scope for this audit).
+3. **`og:title` ≠ `<title>`** on `/experiences` and `/studio-v3` (studio's og:title is shorter than title — acceptable, but flag). Verify per-page.
+4. **Twitter tags** missing on most routes (only `/`, `/corporate`, `/proposals` set them). Not required, but adds consistency (P3).
+5. **Keyword-density risk** on the four Portugal-tours + three wine-tour landing pages is a topical/cannibalization issue, not a meta-copy issue. Meta rewrites above intent-split them; the underlying content decision is still owed a Search Console review (per prior audit).
+6. **No placeholder/dev titles found** on any public route. No "Lovable App" strings. No accidental duplicates beyond the intent-overlap flagged above.
+
+---
+
+## Priority summary
+
+- **P1 (5):** `/`, `/experiences`, `/portugal-tours`, `/private-tours-portugal`, `/luxury-tours-portugal`, `/portugal-wine-tours`, `/wine-tours-lisbon`
+- **P2 (9):** `/studio-v3`, `/multi-day`, `/contact`, `/reviews`, `/private-wine-tour-lisbon`, `/arrabida-wine-tour`, `/alentejo-wine-tour-from-lisbon`, `/evora-alentejo-wine-tour`, `/evora-private-tour-from-lisbon`
+- **P3:** all others
+
+**Risk level of proposed changes:** low. Meta-only. No routing, no schema, no content changes. Rankings may shift as intent sharpens on the cannibalization cluster.
+
+**Next step (awaiting approval):** apply P1 + P2 rewrites, standardize `—` separator, align `og:title`/`twitter:title` with `<title>` on the edited pages.
