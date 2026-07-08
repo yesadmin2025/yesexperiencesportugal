@@ -48,38 +48,19 @@ async function fetchPost(slug: string): Promise<JournalPostFull | null> {
 
 const BASE = "https://yesexperiencesportugal.com";
 
-function articleJsonLd(a: LocalStoryArticle) {
-  const url = `${BASE}/local-stories/${a.slug}`;
-  return {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: a.h1,
-    name: a.title,
-    description: a.metaDescription,
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    url,
-    datePublished: a.datePublished,
-    dateModified: a.datePublished,
-    inLanguage: "en",
-    author: {
-      "@type": "Person",
-      "@id": FOUNDER_ID,
-      name: "Nidia Almeida",
-      url: `${BASE}/about`,
-      sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
-    },
-    publisher: {
-      "@type": "Organization",
-      "@id": `${BASE}/#organization`,
-      name: "YES Experiences Portugal",
-      url: BASE,
-      logo: {
-        "@type": "ImageObject",
-        url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-      },
-    },
-  };
+/** Absolute URL for a Signature tour's hero image, when the article
+ *  doesn't ship its own hero. Bundled imports resolve to root-relative
+ *  URLs like `/assets/xxx.jpg`; we prefix with BASE for JSON-LD/OG. */
+function articleImageUrl(a: LocalStoryArticle): string | undefined {
+  if (a.heroImage) {
+    return a.heroImage.startsWith("http") ? a.heroImage : `${BASE}${a.heroImage}`;
+  }
+  const tour = findTour(a.signatureSlug);
+  const img = tour?.img;
+  if (!img) return undefined;
+  return img.startsWith("http") ? img : `${BASE}${img.startsWith("/") ? "" : "/"}${img}`;
 }
+
 
 type LoaderData = {
   reviews: NormalizedLocalStoryReview[];
