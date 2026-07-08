@@ -516,7 +516,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
       {showVideo ? (
         <video
           ref={ref}
-          poster={HERO_CLIP.posterJpg}
+          poster={HERO_CLIP.posterWebpMobile}
           autoPlay
           muted
           loop
