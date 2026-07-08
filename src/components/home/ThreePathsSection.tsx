@@ -108,7 +108,7 @@ export function ThreePathsSection() {
     >
       <div className="container-x">
         <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="he-eyebrow-bar mb-5">Where to begin</span>
+          <Eyebrow className="mb-5">Where to begin</Eyebrow>
           <h2
             id="three-paths-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"

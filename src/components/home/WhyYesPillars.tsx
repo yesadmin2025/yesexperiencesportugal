@@ -73,7 +73,7 @@ export function WhyYesPillars() {
     >
       <div className="container-x">
         <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="he-eyebrow-bar mb-5">Why YES</span>
+          <Eyebrow className="mb-5">Why YES</Eyebrow>
           <h2
             id="why-yes-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.2rem] leading-[1.12] md:leading-[1.04] tracking-[-0.016em] text-[color:var(--charcoal)] font-medium text-balance"
