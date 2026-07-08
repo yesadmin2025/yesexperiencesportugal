@@ -198,7 +198,6 @@ function ExperiencesPage() {
       </section>
 
       <CtaStrip />
-      <ContrastAuditPanel label="Experiences Audit" />
     </SiteLayout>
   );
 }
