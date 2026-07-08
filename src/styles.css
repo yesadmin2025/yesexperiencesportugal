@@ -65,6 +65,16 @@
      Reference everywhere via var(--ease-premium); fallback kept inline. */
   --ease-premium: cubic-bezier(0.22, 0.61, 0.36, 1);
 
+  /* Motion scale — additive tokens layered on top of --ease-premium.
+     Reference from CTA/tap/reveal styles so the whole system moves
+     on one predictable rhythm. Reduced-motion overrides these to 0ms
+     via the existing @media (prefers-reduced-motion: reduce) blocks. */
+  --dur-tap: 140ms;      /* press feedback, tap release */
+  --dur-quick: 200ms;    /* color/opacity hover swap */
+  --dur-base: 320ms;     /* arrow slide, small translateY */
+  --dur-slow: 560ms;     /* section entry, curtain */
+  --ease-snap: cubic-bezier(0.34, 1.2, 0.64, 1); /* muted tap release */
+
   /* Brand — locked palette, used site-wide. */
   --teal: #295b61;
   --teal-2: #2a7c82;
