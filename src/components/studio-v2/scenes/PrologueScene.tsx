@@ -22,8 +22,8 @@ export function PrologueScene({ onContinue }: PrologueSceneProps) {
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
     const t0 = window.setTimeout(() => setEntered(true), 60);
-    const t1 = window.setTimeout(() => setWhisper(true), reduced ? 400 : 1200);
-    const t2 = window.setTimeout(onContinue, reduced ? 1800 : 3200);
+    const t1 = window.setTimeout(() => setWhisper(true), reduced ? 400 : 900);
+    const t2 = window.setTimeout(onContinue, reduced ? 1400 : 2200);
     return () => {
       window.clearTimeout(t0);
       window.clearTimeout(t1);
