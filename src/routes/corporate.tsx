@@ -1,29 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 
+const TITLE = "Team Building Portugal — Private Corporate Days & Retreats";
+const DESCRIPTION =
+  "Team building in Portugal and private corporate retreats — wine days, sailing, cultural off-sites. Transport, guides and venues coordinated end to end by a local team.";
+
 export const Route = createFileRoute("/corporate")({
   head: () => ({
     meta: [
-      { title: "Corporate & Private Groups in Portugal — YES experiences" },
-      {
-        name: "description",
-        content:
-          "Private group days in Portugal — local experiences, timing, transport and logistics handled end to end by a local team.",
-      },
-      { property: "og:title", content: "Corporate & Private Groups in Portugal" },
-      {
-        property: "og:description",
-        content:
-          "Private group days, designed end to end by a local team — never the generic formula.",
-      },
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
       {
         property: "twitter:image",
@@ -36,9 +33,10 @@ export const Route = createFileRoute("/corporate")({
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
-          { name: "Corporate & Private Groups", path: "/corporate" },
+          { name: "Team Building & Corporate Retreats", path: "/corporate" },
         ]),
       ),
+      jsonLdScript(faqPageLd(CORPORATE_FAQ)),
     ],
   }),
   component: CorporatePage,
@@ -85,16 +83,17 @@ function CorporatePage() {
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>For Teams &amp; Private Groups</Eyebrow>
+          <Eyebrow flank>Team Building &amp; Corporate Retreats</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private group days, <SectionTitle.Em>without the generic formula.</SectionTitle.Em>
+            Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Corporate days, incentives, client hospitality, executive experiences and private groups
-            — with transport partners, buses, guides and suppliers coordinated end to end. For
-            teams, incentives and private groups, we combine local experiences, timing, transport
-            and logistics into a day that feels <span className="kw">effortless</span>.
+            Private corporate retreats, team building days, incentives and executive off-sites
+            across Lisbon, Sintra, the Arrábida coast and the Alentejo — transport, guides and
+            venues coordinated end to end so the day feels{" "}
+            <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong>, not
+            arranged.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
@@ -150,6 +149,28 @@ function CorporatePage() {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
+        <div className="container-x max-w-2xl">
+          <Eyebrow className="mb-4">Questions organisers ask</Eyebrow>
+          <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-8">
+            Before the proposal.
+          </h2>
+          <dl className="space-y-8">
+            {CORPORATE_FAQ.map((f) => (
+              <div key={f.q}>
+                <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] mb-3">
+                  {f.q}
+                </dt>
+                <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+                  {f.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 

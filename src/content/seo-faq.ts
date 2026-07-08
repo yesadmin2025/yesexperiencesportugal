@@ -7,6 +7,23 @@
 
 export type FaqItem = { q: string; a: string };
 
+export const CORPORATE_FAQ: FaqItem[] = [
+  {
+    q: "Do you organise team building in Portugal?",
+    a: "Yes. We design private team-building days across Portugal — wine and gastronomy days on the Arrábida coast, sailing and coastal experiences from Sesimbra, cultural days in Sintra and the Alentejo. Transport, guides and venues are coordinated end to end by our local team.",
+  },
+  {
+    q: "Can you plan corporate retreats in Portugal?",
+    a: "Yes. Multi-day corporate retreats are handled as a bespoke journey — regional logistics, meeting-friendly venues, cultural moments and free time built into the flow. We work with trusted partners across Lisbon, Sintra, Arrábida, Comporta and the Alentejo.",
+  },
+  {
+    q: "What group sizes do you handle?",
+    a: "From small executive off-sites of 6 to 12 people up to full-company retreats of 100+. Transport is scoped accordingly — private vehicles for small groups, coaches with hostesses for large ones — and every group has a dedicated local coordinator.",
+  },
+];
+
+
+
 export const PROPOSAL_FAQ: FaqItem[] = [
   {
     q: "Where in Portugal can we plan a proposal?",
