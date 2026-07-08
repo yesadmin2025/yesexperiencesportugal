@@ -235,37 +235,18 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const heroImage = post.heroImage ?? null;
 
     const scripts = [
-      jsonLdScript({
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        headline: post.title,
-        name: post.title,
-        description: post.excerpt ?? undefined,
-        mainEntityOfPage: { "@type": "WebPage", "@id": url },
-        url,
-        image: heroImage ?? undefined,
-        datePublished: post.publishedAt ?? undefined,
-        dateModified: post.publishedAt ?? undefined,
-        inLanguage: "en",
-        author: post.authorName
-          ? { "@type": "Person", name: post.authorName }
-          : {
-              "@type": "Person",
-              "@id": FOUNDER_ID,
-              name: "Nidia Almeida",
-              url: `${BASE}/about`,
-            },
-        publisher: {
-          "@type": "Organization",
-          "@id": `${BASE}/#organization`,
-          name: "YES Experiences Portugal",
-          url: BASE,
-          logo: {
-            "@type": "ImageObject",
-            url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-          },
-        },
-      }),
+      jsonLdScript(
+        localStoryArticleLd({
+          slug: post.slug,
+          headline: post.title,
+          name: post.title,
+          description: post.excerpt ?? undefined,
+          datePublished: post.publishedAt,
+          dateModified: post.publishedAt,
+          imageUrl: heroImage,
+          authorName: post.authorName,
+        }),
+      ),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
@@ -274,6 +255,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         ]),
       ),
     ];
+
 
     return {
       meta: [
