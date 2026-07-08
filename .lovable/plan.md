@@ -1,64 +1,171 @@
-# Cancellation Copy Audit
+# Local Stories routing audit
 
-## 1. All locations where cancellation is mentioned (user-facing)
+## 1. Do invalid Local Stories routes exist / are they reachable?
 
-| # | File | Line | Surface | Current wording |
-|---|------|------|---------|-----------------|
-| A | `src/routes/terms.tsx` | 56–61 | Legal — Terms | "Free cancellation up to **48 hours** before … Cancellations made within 48 hours are non-refundable." |
-| B | `src/routes/about.tsx` | 325–328 | About → "Policies, briefly" | "**Free cancellation** up to **24h** before the experience, full refund." |
-| C | `src/content/seo-faq.ts` | 36–37 | Signature FAQ (JSON-LD + rendered) | "Free cancellation up to **24 hours** … Inside 24 hours the booking is non-refundable." |
-| D | `src/components/studio-v3/SignaturePriceCard.tsx` | 1254 | Studio v3 price card badge | "Free cancellation **48h**" |
-| E | `src/components/studio-v3/SignaturePriceCard.tsx` | 1308 | Studio v3 CTA subline | "Secure checkout · Cancel free for **48h**" |
-| F | `src/components/studio-v3/SignaturePriceCard.tsx` | 1364 | Studio v3 secondary CTA subline | "Secure checkout · Free cancellation **48h**" |
-| G | `src/components/studio-v2/DraftMapPreview.tsx` | 418 | Studio v2 draft chip | "Instant confirmation · cancel **48h**" |
-| H | `src/components/studio-v2/conversion/FinalBookingPanel.tsx` | 347 | Studio v2 final booking reassurance | "Free cancellation up to **48h** · Pay securely …" |
-| I | `src/components/home/StudioLivePreview.tsx` | 376 | Home Studio preview chip | "Instantly booked · cancel **48h**" |
+Yes — reachable, but **not linked or indexed**. The dynamic route
+`/local-stories/$slug` (file `src/routes/local-stories.$slug.tsx`)
+accepts **any** string, including:
 
-FAQ data (`src/content/faq-data.ts`) and i18n dictionaries contain **no** cancellation copy — only the SEO FAQ file does.
+- `/local-stories/$slug` (literal `$` — captured verbatim as
+  `params.slug === "$slug"`)
+- `/local-stories/%24slug` (URL-encoded `$` — decoded to the same
+  `params.slug === "$slug"`)
+- `/local-stories/anything-else` (typos, deleted posts, malicious probes)
+- template placeholders like `/local-stories/example`,
+  `/local-stories/undefined`
 
-## 2. Inconsistencies found
+For all of these:
 
-1. **Two different windows quoted as policy:** Terms and all Studio surfaces say **48h**; About and the Signature FAQ (rendered + JSON-LD) say **24h**. This is the material issue — the SEO FAQ is machine-readable by Google, so the 24h number is being published as a structured claim while Terms legally commits to 48h.
-2. **"Free cancellation" stated as universal** on About, FAQ and Studio surfaces — but Studio/Tailored/custom-built days may realistically carry different supplier terms (Bokun operators, restaurant deposits, private charters). Copy currently makes no distinction between Signature and Studio.
-3. **Micro-chips on Studio v2/v3/home** ("cancel 48h", "Cancel free for 48h") assert a firm number in the pre-checkout surface where terms are actually variable — the exact risk the user flagged.
-4. **No pointer to "shown before checkout"** anywhere except (implicitly) the checkout page itself. There is no general disclaimer the legal team can rely on.
+- The **loader does not throw `notFound()`** — it returns
+  `{ reviews: [], signatureTitle: null, dbPost: null }` when the slug
+  is neither a static article (`getLocalStoryArticle`) nor a
+  `published` DB row (`journal_posts` via `fetchPost`). Lines 106 and
+  121 in `local-stories.$slug.tsx`.
+- The **component then re-fetches** the same missing slug in
+  `DbPostView` via `useQuery`, shows a "Loading…" screen, and only
+  then throws `notFound()` (line 500–502) once the second fetch
+  resolves.
+- Result: HTTP **200 OK** with a brief "Loading…" flash, then the
+  `NotFoundView` UI at the same URL. This is a **soft-404**: Google
+  sees 200 + generic "Local Story — YES experiences Portugal"
+  metadata + a canonical pointing at the invalid URL (`head()`
+  fallback at lines 210–274). The `notFoundComponent` swap does not
+  change the status code, and no `robots: noindex` is emitted for
+  missing slugs.
+- The `beforeLoad` at line 277 only handles the one legacy redirect
+  (`best-day-trips-from-lisbon → /day-trips-from-lisbon`); it does
+  not guard placeholder patterns.
 
-## 3. Recommended final wording per section
+Two dedicated legacy/SEO routes exist alongside this and are fine:
+`/day-trips-from-lisbon` and `/evora-alentejo-wine-tour`. The
+day-trips redirect from the dynamic route is correct.
 
-Two approved patterns (from the brief):
-- **General (G):** *"Cancellation terms are shown before checkout and may vary by experience type."*
-- **Product-specific (P):** *"Signature days usually include free cancellation up to 24h before the experience. Studio and custom-built experiences show final cancellation terms before checkout."*
+## 2. Where invalid URLs could be generated
 
-| # | Surface | Recommended wording | Pattern |
-|---|---------|---------------------|---------|
-| A | Terms — Cancellations section | Rewrite to: *"Cancellation terms are shown before checkout and may vary by experience type. Signature days usually include free cancellation up to 24 hours before the experience start time; cancellations made inside that window are non-refundable. Studio and custom-built experiences display their specific cancellation terms at checkout, as these depend on the partners and reservations involved. We will always do our best to reschedule when possible."* | P + G, expanded legal form |
-| B | About "Policies, briefly" — cancellation bullet | *"**Cancellation** — Signature days usually include free cancellation up to 24h before the experience. Studio and custom-built days show final cancellation terms before checkout."* | P |
-| C | SEO FAQ — Signature ("What's your cancellation policy?") | *"Signature day tours usually include free cancellation up to 24 hours before the experience start time for a full refund. Cancellations made within 24 hours are non-refundable. Studio and custom-built experiences show their specific cancellation terms before checkout."* | P (keeps Signature-specific answer, adds Studio caveat) |
-| D | Studio v3 price card badge | *"Cancellation terms at checkout"* (drop "48h") | G, compact |
-| E | Studio v3 primary CTA subline | *"Secure checkout · Cancellation terms shown before you pay"* | G |
-| F | Studio v3 secondary CTA subline | *"Secure checkout · Cancellation terms shown before you pay"* | G |
-| G | Studio v2 draft chip | *"Instant confirmation · terms at checkout"* | G, compact |
-| H | Studio v2 FinalBookingPanel reassurance | *"Cancellation terms shown before checkout · Pay securely · Book now or shape it with a local — your choice."* | G |
-| I | Home StudioLivePreview chip | *"Instantly booked · terms at checkout"* | G, compact |
+Checked every source of `/local-stories/…` URLs; **no** placeholder
+or invalid slug is generated internally:
 
-Also add a **new Signature FAQ entry** (optional, low risk) mirroring wording C so the Signature-specific promise stays discoverable.
+| Source | File | Behavior |
+|---|---|---|
+| Sitemap — static | `src/routes/sitemap[.]xml.ts:125–132` | Iterates `LOCAL_STORIES_ARTICLES`, excludes `best-day-trips-from-lisbon` (moved to its own SEO route). All real. |
+| Sitemap — DB | `src/routes/sitemap[.]xml.ts:135–151` | `journal_posts` filtered by `status = "published"`. Dedupes against static slugs (lines 153–156). Draft/unpublished never appear. |
+| Sitemap resilience | 149–151 | Tolerates DB failure; only ships static entries. Safe. |
+| Index page — static grid | `src/routes/local-stories.tsx:115–141` | Maps `LOCAL_STORIES_ARTICLES` only. Uses typed `<Link to="/local-stories/$slug" params={{ slug: a.slug }}>`, so no string interpolation. |
+| Index page — DB grid | `src/routes/local-stories.tsx:142–170` | Maps `posts` from the same published-only query. |
+| Footer / Navbar | `src/components/Footer.tsx:95`, `Navbar.tsx:26` | Only link the index `/local-stories`, not `$slug`. |
+| `public/llms.txt` | lines 17–26 | Hand-maintained; all 6 URLs are real published articles. |
+| JSON-LD | `src/lib/jsonld.ts:725` | Only references the index for reviews `@id`. No per-slug URLs. |
+| `beforeLoad` redirect | `local-stories.$slug.tsx:277–283` | Redirects one legacy slug. Does not manufacture URLs. |
 
-## 4. Files / components to edit
+Nothing in the codebase links `/local-stories/$slug` literally,
+`%24slug`, `undefined`, `null`, an empty slug, or any template
+placeholder. The only way to reach an invalid route is by typing it,
+following a stale external link, or a crawler probe.
 
-1. `src/routes/terms.tsx` — replace the Cancellations paragraph (lines 56–61).
-2. `src/routes/about.tsx` — replace the cancellation bullet (lines 325–328).
-3. `src/content/seo-faq.ts` — update `SIGNATURE_FAQ` entry (lines 35–38); no change to STUDIO_FAQ / TRAVEL_DESIGNER_FAQ (they don't mention cancellation and shouldn't start).
-4. `src/components/studio-v3/SignaturePriceCard.tsx` — three copy strings at lines 1254, 1308, 1364.
-5. `src/components/studio-v2/DraftMapPreview.tsx` — chip at line 418.
-6. `src/components/studio-v2/conversion/FinalBookingPanel.tsx` — reassurance line at 347.
-7. `src/components/home/StudioLivePreview.tsx` — chip at line 376.
+## 3. Sitemap / internal-link exposure
 
-No design, layout, component structure or unrelated copy changes. All edits are string-only inside existing nodes, so no styling regressions and no impact on Studio flow, motion, or CTAs.
+- **Sitemap**: clean. Only `LOCAL_STORIES_ARTICLES` (minus the moved
+  day-trips one) and `journal_posts` where `status = 'published'`.
+- **Internal links**: clean. Both grids on `/local-stories` use
+  typed `<Link>` with `params={{ slug: a.slug }}` sourced from the
+  same two allow-lists.
+- **External surfaces** (`llms.txt`, JSON-LD): clean.
+- **`robots.txt`**: currently no rule for `/local-stories/*` — not
+  needed, because indexed URLs come from the sitemap and each valid
+  slug's `head()` sets its own canonical. Invalid slugs today are
+  crawlable but not linked; the risk is if one gets shared or
+  crawled it returns 200 (see section 1).
 
-## 5. Risk level
+## 4. Safest fix
 
-- **Legal/compliance risk of current state:** **Medium-high.** Terms commit to 48h, but About + JSON-LD SEO FAQ publicly promise 24h — a customer could screenshot either surface and hold us to the shorter/longer window. Studio pre-checkout chips also assert a firm cancellation window before the actual supplier terms are known.
-- **Risk of proposed change:** **Low.** Purely copy-level, all strings live in leaf text nodes, no schema/behavior changes. SEO impact minimal — Signature FAQ keeps the same question and 24h answer, only adds the Studio caveat. JSON-LD stays valid.
-- **Recommended follow-up (out of scope for this plan):** confirm with the operator (a) the true Signature window (24h vs 48h — Terms and About currently disagree, needs one canonical number before I write the strings above), and (b) that the checkout page actually renders per-experience cancellation terms before payment. If either is not true, the "shown before checkout" phrasing must be adjusted.
+Turn every invalid slug into a **real 404** (proper `notFound()`
+boundary + `noindex`), keep the friendly `NotFoundView` UI, and add a
+single guard for the `$slug` / `%24slug` placeholder family so it
+redirects to the clean index.
 
-**Blocking question before I implement:** should Signature's canonical free-cancellation window be **24h** or **48h**? Everything above assumes 24h (matches About + current SEO FAQ + the wording you suggested); if it's 48h, I'll swap the number in surfaces A, B and C only.
+Four small, surgical changes inside
+`src/routes/local-stories.$slug.tsx`:
+
+1. **`beforeLoad`** — after the existing day-trips redirect, add a
+   guard that redirects obvious placeholders to `/local-stories`
+   (single decision point, no crawler cost):
+
+   ```ts
+   const bad = new Set(["$slug", "slug", "undefined", "null", "example", ""]);
+   const s = params.slug?.trim().toLowerCase();
+   if (!s || bad.has(s) || s.startsWith("$")) {
+     throw redirect({ to: "/local-stories" });
+   }
+   ```
+
+2. **`loader`** — when neither `getLocalStoryArticle(slug)` nor
+   `fetchPost(slug)` returns a record, `throw notFound()` instead of
+   returning the empty `{ reviews: [], signatureTitle: null, dbPost: null }`
+   shape. This routes through `notFoundComponent` immediately, no
+   double-fetch, no "Loading…" flash.
+
+3. **`head()`** — when `loaderData` is missing (notFound thrown or
+   loader errored), return **only** `{ title: "Story not found",
+   meta: [{ name: "robots", content: "noindex, nofollow" }] }` — no
+   canonical, no og:url pointing at the invalid URL, no BlogPosting
+   JSON-LD.
+
+4. **`Page` / `DbPostView`** — remove the client-side `useQuery`
+   refetch for the missing case. Since the loader now guarantees a
+   DB post exists when `article` is null (else it threw), render
+   directly from `loaderData.dbPost`. Delete the `if (!post) throw
+   notFound()` fallback at line 500–502 (the loader owns it now).
+
+Net effect:
+
+- Valid static article → unchanged.
+- Valid DB post → unchanged (one less client refetch, faster paint).
+- `/local-stories/$slug` / `%24slug` / `undefined` → **302 → /local-stories**.
+- Any other invalid slug → **404** with `NotFoundView` UI and
+  `noindex` in `<head>` (crawlers drop it, no soft-404).
+
+Redirect vs 404 rationale: keep 404 as the default (so legitimate
+typos / deleted posts don't quietly disappear from analytics), and
+only redirect the small class of placeholder-shaped slugs that are
+never a real article.
+
+## 5. Files / routes / components to edit
+
+**Only one file:**
+
+- `src/routes/local-stories.$slug.tsx` — extend `beforeLoad`
+  (line 277), tighten `loader` (lines 99–149), tighten `head()`
+  fallback branch (lines 210–274), simplify `Page` + `DbPostView`
+  (lines 290–302 and 483–502).
+
+**No changes needed** to any of these — verified clean:
+`src/routes/local-stories.tsx`, `src/routes/sitemap[.]xml.ts`,
+`public/llms.txt`, `public/robots.txt`, `src/components/Footer.tsx`,
+`src/components/Navbar.tsx`, `src/lib/jsonld.ts`,
+`src/content/local-stories-articles.ts`.
+
+## 6. Risk level
+
+**Low.**
+
+- Behavior change is scoped to slugs that are already broken today
+  (currently soft-404 with 200 OK → will become either a clean 302
+  or a real 404 with noindex).
+- Static articles and real DB posts render through the same code
+  path with identical head/JSON-LD/UI output.
+- No sitemap, JSON-LD, canonical, or internal-link surface changes.
+- The redirect list is conservative (5 exact placeholder strings +
+  `startsWith("$")`); no real published slug in
+  `LOCAL_STORIES_ARTICLES` or `journal_posts` matches these
+  patterns.
+- Rollback is trivial (revert one file).
+
+Only real caveat: any legitimate external inbound link to a slug
+that was **deleted** from `journal_posts` will now return a hard
+404 instead of the current soft-404. That is the desired SEO
+behavior (Google will de-index cleanly) and the `NotFoundView`
+still offers a "All Local Stories" CTA, but if you'd rather 301
+those to `/local-stories`, say so and I'll swap `notFound()` for
+`redirect({ to: "/local-stories" })` in the loader's final branch.
+
+**Awaiting approval before I edit anything.**

@@ -1,7 +1,7 @@
 import type React from "react";
 import { createFileRoute, Link, notFound, useRouter, redirect } from "@tanstack/react-router";
 
-import { useQuery } from "@tanstack/react-query";
+
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -88,9 +88,12 @@ type LoaderData = {
     slug: string;
     title: string;
     excerpt: string | null;
+    body: string;
     heroImage: string | null;
     heroImageAlt: string | null;
+    region: string | null;
     authorName: string | null;
+    signatureSlug: string | null;
     publishedAt: string | null;
   } | null;
 };
@@ -99,27 +102,33 @@ export const Route = createFileRoute("/local-stories/$slug")({
   loader: async ({ params }): Promise<LoaderData> => {
     const article = getLocalStoryArticle(params.slug);
     if (!article) {
-      // No static article — try to hydrate DB post metadata so head()
-      // can emit BlogPosting JSON-LD and OG tags for database posts.
+      // No static article — try DB post. If neither exists, this URL
+      // is not a real story: throw notFound() so the response is a real
+      // 404 with noindex, not a soft-404 200.
+      let post: JournalPostFull | null = null;
       try {
-        const post = await fetchPost(params.slug);
-        if (!post) return { reviews: [], signatureTitle: null, dbPost: null };
-        return {
-          reviews: [],
-          signatureTitle: null,
-          dbPost: {
-            slug: post.slug,
-            title: post.title,
-            excerpt: post.excerpt,
-            heroImage: post.hero_image_url,
-            heroImageAlt: post.hero_image_alt,
-            authorName: post.author_name,
-            publishedAt: post.published_at,
-          },
-        };
+        post = await fetchPost(params.slug);
       } catch {
-        return { reviews: [], signatureTitle: null, dbPost: null };
+        // Treat DB errors as "unknown" — fall through to notFound below.
+        post = null;
       }
+      if (!post) throw notFound();
+      return {
+        reviews: [],
+        signatureTitle: null,
+        dbPost: {
+          slug: post.slug,
+          title: post.title,
+          excerpt: post.excerpt,
+          body: post.body,
+          heroImage: post.hero_image_url,
+          heroImageAlt: post.hero_image_alt,
+          region: post.region,
+          authorName: post.author_name,
+          signatureSlug: post.signature_slug,
+          publishedAt: post.published_at,
+        },
+      };
     }
     const tour = findTour(article.signatureSlug);
     if (!tour) return { reviews: [], signatureTitle: null, dbPost: null };
@@ -207,54 +216,64 @@ export const Route = createFileRoute("/local-stories/$slug")({
       };
     }
 
-    const url = `${BASE}/local-stories/${params.slug}`;
+    // No static article and no matching DB post — the loader threw
+    // notFound() (or errored). Emit a minimal noindex head so this URL
+    // never gets indexed, and never advertise a canonical for it.
     const post = loaderData?.dbPost ?? null;
-    const title = post?.title ?? `Local Story — YES experiences Portugal`;
-    const description = post?.excerpt ?? `A local story from Portugal · ${params.slug}`;
-    const heroImage = post?.heroImage ?? null;
+    if (!post) {
+      return {
+        meta: [
+          { title: "Story not found — YES experiences Portugal" },
+          { name: "robots", content: "noindex, nofollow" },
+        ],
+      };
+    }
 
-    const scripts = post
-      ? [
-          jsonLdScript({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: post.title,
-            name: post.title,
-            description: post.excerpt ?? undefined,
-            mainEntityOfPage: { "@type": "WebPage", "@id": url },
-            url,
-            image: heroImage ?? undefined,
-            datePublished: post.publishedAt ?? undefined,
-            dateModified: post.publishedAt ?? undefined,
-            inLanguage: "en",
-            author: post.authorName
-              ? { "@type": "Person", name: post.authorName }
-              : {
-                  "@type": "Person",
-                  "@id": FOUNDER_ID,
-                  name: "Nidia Almeida",
-                  url: `${BASE}/about`,
-                },
-            publisher: {
-              "@type": "Organization",
-              "@id": `${BASE}/#organization`,
-              name: "YES Experiences Portugal",
-              url: BASE,
-              logo: {
-                "@type": "ImageObject",
-                url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-              },
+    const url = `${BASE}/local-stories/${params.slug}`;
+    const title = post.title;
+    const description = post.excerpt ?? `A local story from Portugal · ${params.slug}`;
+    const heroImage = post.heroImage ?? null;
+
+    const scripts = [
+      jsonLdScript({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        name: post.title,
+        description: post.excerpt ?? undefined,
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        url,
+        image: heroImage ?? undefined,
+        datePublished: post.publishedAt ?? undefined,
+        dateModified: post.publishedAt ?? undefined,
+        inLanguage: "en",
+        author: post.authorName
+          ? { "@type": "Person", name: post.authorName }
+          : {
+              "@type": "Person",
+              "@id": FOUNDER_ID,
+              name: "Nidia Almeida",
+              url: `${BASE}/about`,
             },
-          }),
-          jsonLdScript(
-            breadcrumbLd([
-              { name: "Home", path: "/" },
-              { name: "Local Stories", path: "/local-stories" },
-              { name: post.title, path: `/local-stories/${post.slug}` },
-            ]),
-          ),
-        ]
-      : [];
+        publisher: {
+          "@type": "Organization",
+          "@id": `${BASE}/#organization`,
+          name: "YES Experiences Portugal",
+          url: BASE,
+          logo: {
+            "@type": "ImageObject",
+            url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
+          },
+        },
+      }),
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Local Stories", path: "/local-stories" },
+          { name: post.title, path: `/local-stories/${post.slug}` },
+        ]),
+      ),
+    ];
 
     return {
       meta: [
@@ -265,7 +284,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
         ...(heroImage ? [{ property: "og:image", content: heroImage }] : []),
-        ...(post?.publishedAt
+        ...(post.publishedAt
           ? [{ property: "article:published_time", content: post.publishedAt }]
           : []),
       ],
@@ -278,6 +297,14 @@ export const Route = createFileRoute("/local-stories/$slug")({
     // The day-trips guide now lives at its own SEO-focused route.
     if (params.slug === "best-day-trips-from-lisbon") {
       throw redirect({ to: "/day-trips-from-lisbon" });
+    }
+    // Redirect obvious placeholder slugs ($slug, %24slug, undefined,
+    // template stubs) to the clean index — never let them 404.
+    const raw = params.slug ?? "";
+    const s = raw.trim().toLowerCase();
+    const PLACEHOLDERS = new Set(["", "slug", "undefined", "null", "example"]);
+    if (PLACEHOLDERS.has(s) || s.startsWith("$")) {
+      throw redirect({ to: "/local-stories" });
     }
     return undefined as never;
   },
@@ -297,7 +324,10 @@ function Page() {
     return <StaticArticleView article={article} reviews={loaderData?.reviews ?? []} />;
   }
 
-  return <DbPostView slug={slug} />;
+  // Loader guarantees dbPost exists here (else notFound() was thrown).
+  const post = loaderData?.dbPost;
+  if (!post) throw notFound();
+  return <DbPostView post={post} />;
 }
 
 function StaticArticleView({
@@ -480,27 +510,7 @@ function StaticArticleView({
   );
 }
 
-function DbPostView({ slug }: { slug: string }) {
-  const { data: post, isLoading } = useQuery({
-    queryKey: ["journal_post", slug],
-    queryFn: () => fetchPost(slug),
-    staleTime: 60_000,
-  });
-
-  if (isLoading) {
-    return (
-      <SiteLayout>
-        <section className="pt-40 pb-32 bg-[color:var(--ivory)] text-center reveal">
-          <p className="font-serif italic text-[color:var(--charcoal-soft)]">Loading…</p>
-        </section>
-      </SiteLayout>
-    );
-  }
-
-  if (!post) {
-    throw notFound();
-  }
-
+function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
   const paragraphs = post.body
     .split(/\n\s*\n/)
     .map((p) => p.trim())
@@ -519,18 +529,18 @@ function DbPostView({ slug }: { slug: string }) {
             <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
               {post.title}
             </h1>
-            {post.author_name && (
+            {post.authorName && (
               <p className="mt-6 text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                By {post.author_name}
+                By {post.authorName}
               </p>
             )}
           </div>
-          {post.hero_image_url && (
+          {post.heroImage && (
             <div className="container-x max-w-4xl mt-10">
               <div className="relative overflow-hidden aspect-[16/9] shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]">
                 <img
-                  src={post.hero_image_url}
-                  alt={post.hero_image_alt ?? post.title}
+                  src={post.heroImage}
+                  alt={post.heroImageAlt ?? post.title}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -556,7 +566,7 @@ function DbPostView({ slug }: { slug: string }) {
               ))}
             </div>
 
-            {post.signature_slug && (
+            {post.signatureSlug && (
               <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
                 <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                   Travel this story
@@ -566,7 +576,7 @@ function DbPostView({ slug }: { slug: string }) {
                 </p>
                 <CtaButton
                   to="/tours/$tourId"
-                  params={{ tourId: post.signature_slug }}
+                  params={{ tourId: post.signatureSlug }}
                   variant="primary"
                 >
                   See the Signature
