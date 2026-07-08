@@ -10,7 +10,7 @@ const desktopLinks = [
   { to: "/studio-v3", label: "Studio", hidden: false },
   { to: "/multi-day", label: "Travel Designer", hidden: false },
   { to: "/corporate", label: "Corporate", hidden: false },
-  { to: "/proposals", label: "Moments", hidden: false },
+  { to: "/proposal-in-portugal", label: "Moments", hidden: false },
 ];
 
 const mobilePrimaryLinks = [
@@ -18,7 +18,7 @@ const mobilePrimaryLinks = [
   { to: "/studio-v3", label: "Studio" },
   { to: "/multi-day", label: "Travel Designer" },
   { to: "/corporate", label: "Corporate" },
-  { to: "/proposals", label: "Moments" },
+  { to: "/proposal-in-portugal", label: "Moments" },
 ];
 
 const mobileSecondaryLinks = [

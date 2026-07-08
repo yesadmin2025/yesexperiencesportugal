@@ -164,7 +164,7 @@ const groupsAndCelebrations = [
     ),
     detail: "Discreet · location of your choosing",
     cta: "Plan a Proposal",
-    to: "/proposals",
+    to: "/proposal-in-portugal",
     img: imgProposalsRomantic,
   },
   {
@@ -179,7 +179,7 @@ const groupsAndCelebrations = [
     ),
     detail: "Private host · any group size",
     cta: "Plan a Celebration",
-    to: "/proposals",
+    to: "/proposal-in-portugal",
     img: imgArrabidaWineLunch,
   },
   {

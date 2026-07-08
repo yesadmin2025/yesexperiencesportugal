@@ -83,7 +83,7 @@ export function Footer() {
           <FooterCol
             title="Occasions"
             links={[
-              { to: "/proposals", label: "Proposals & Celebrations" },
+              { to: "/proposal-in-portugal", label: "Proposals & Celebrations" },
               { to: "/corporate", label: "Corporate" },
               { to: "/contact", label: "Private Groups" },
             ]}
@@ -154,7 +154,7 @@ export function Footer() {
                 label: "10-day private Portugal tour",
               },
               { to: "/multi-day", label: "Portugal Travel Designer" },
-              { to: "/proposals", label: "Proposal in Portugal" },
+              { to: "/proposal-in-portugal", label: "Proposal in Portugal" },
             ].map((l) => (
               <li key={l.to}>
                 <Link

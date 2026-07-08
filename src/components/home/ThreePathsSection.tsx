@@ -95,7 +95,7 @@ const PATHS: Path[] = [
     ),
     body: <>Proposals, celebrations and corporate days — staged with care.</>,
     cta: "Tell us the occasion",
-    href: "/proposals",
+    href: "/proposal-in-portugal",
     anchor: "On request",
   },
 ];
