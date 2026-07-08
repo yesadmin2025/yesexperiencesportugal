@@ -5,17 +5,17 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 export const Route = createFileRoute("/cookies")({
   head: () => ({
     meta: [
-      { title: "Cookie Policy — YES experiences Portugal" },
+      { title: "Cookie Policy — YES Experiences Portugal" },
       {
         name: "description",
         content:
-          "How YES experiences Portugal uses cookies and similar technologies to run the site, remember your preferences and measure performance.",
+          "How YES Experiences Portugal uses cookies and similar technologies to run the site, remember your preferences and measure performance.",
       },
-      { property: "og:title", content: "Cookie Policy — YES experiences Portugal" },
+      { property: "og:title", content: "Cookie Policy — YES Experiences Portugal" },
       {
         property: "og:description",
         content:
-          "How YES experiences Portugal uses cookies to run the site, remember preferences and measure performance.",
+          "How YES Experiences Portugal uses cookies to run the site, remember preferences and measure performance.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/cookies" },

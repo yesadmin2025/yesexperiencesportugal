@@ -24,12 +24,12 @@ type Status = "idle" | "submitting" | "success" | "error";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — YES experiences Portugal" },
+      { title: "Contact — YES Experiences Portugal" },
       {
         name: "description",
         content: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
       },
-      { property: "og:title", content: "Contact — YES experiences Portugal" },
+      { property: "og:title", content: "Contact — YES Experiences Portugal" },
       {
         property: "og:description",
         content: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/contact")({
         "@type": "ContactPage",
         "@id": "https://yesexperiencesportugal.com/contact#contactpage",
         url: "https://yesexperiencesportugal.com/contact",
-        name: "Contact — YES experiences Portugal",
+        name: "Contact — YES Experiences Portugal",
         description: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
         inLanguage: "en",
         isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
