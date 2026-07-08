@@ -20,7 +20,7 @@ const PARENT_TOUR_ID = "evora-alentejo";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
 const TITLE = "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon";
 const DESCRIPTION =
-  "A private full day from Lisbon combining Évora.s UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door.";
+  "A private full day from Lisbon combining Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door.";
 
 const productLd = {
   "@context": "https://schema.org",
