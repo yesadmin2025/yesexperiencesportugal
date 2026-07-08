@@ -152,6 +152,28 @@ function CorporatePage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
+        <div className="container-x max-w-2xl">
+          <Eyebrow className="mb-4">Questions organisers ask</Eyebrow>
+          <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-8">
+            Before the proposal.
+          </h2>
+          <dl className="space-y-8">
+            {CORPORATE_FAQ.map((f) => (
+              <div key={f.q}>
+                <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] mb-3">
+                  {f.q}
+                </dt>
+                <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+                  {f.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
