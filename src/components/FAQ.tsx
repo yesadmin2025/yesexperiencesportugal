@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 /**
  * FAQ — conversion support.
