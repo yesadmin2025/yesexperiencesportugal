@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
