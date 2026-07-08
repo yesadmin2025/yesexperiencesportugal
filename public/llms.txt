@@ -27,5 +27,6 @@
 
 ## Optional
 
+- [Press & Brand Kit](/press)
 - [Terms](/terms)
 - [Privacy](/privacy)
