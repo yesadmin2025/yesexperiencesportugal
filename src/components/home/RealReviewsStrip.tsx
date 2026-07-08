@@ -6,6 +6,7 @@
  */
 import { Star } from "lucide-react";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const FEATURED_IDS = [
   "arrabida-wine-allinclusive",
