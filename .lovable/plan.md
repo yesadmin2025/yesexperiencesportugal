@@ -1,118 +1,115 @@
-# Press & Brand Kit — Audit + Improvement Plan
+# Trust strip — audit + placement plan
 
-Review of `src/routes/press.tsx` against the partnerships / backlinks / media-citations checklist. **No code changes yet.**
-
----
-
-## 1. Checklist coverage — what's there vs. missing
-
-
-| Item                                   | Status              | Notes                                                                                                                                                                 |
-| -------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Official company description           | ⚠️ Partial          | Only in `<meta description>`. Not on-page as a labelled "About the company" block partners can copy.                                                                  |
-| Short copy-ready paragraph             | ⚠️ Only for founder | `FOUNDER_BIO_SHORT` exists. **No short company boilerplate.**                                                                                                         |
-| Long copy-ready paragraph              | ⚠️ Only for founder | `FOUNDER_BIO_LONG` exists. **No long company boilerplate.**                                                                                                           |
-| Founder bio                            | ✅ Present           | Short + long. Good.                                                                                                                                                   |
-| Licence information                    | ✅ Present           | RNAAT 31/2023 in NAP + citation block.                                                                                                                                |
-| Service areas                          | ✅ Present           | Lisbon · Sintra · Arrábida · Sesimbra · Alentejo · Évora.                                                                                                             |
-| Contact details                        | ✅ Present           | Phone, email, hours, languages.                                                                                                                                       |
-| Official website                       | ✅ Present           | In NAP + citation block.                                                                                                                                              |
-| Logo usage note                        | ❌ Missing           | Assets are linked but no do/don't rules, clear space, min size, colour, background guidance. `public/brand/README.md` has this — page doesn't surface it.             |
-| Links to Tripadvisor / social profiles | ❌ Missing           | Footer has Instagram, Facebook, Tripadvisor — press page links none of them. Critical for journalist verification.                                                    |
-| Suggested citation text for partners   | ⚠️ Partial          | NAP citation block exists (directory-style). **No prose-style "when mentioning us, please write…" one-liner** for editorial partners.                                 |
-| Awards / recognition / press mentions  | ❌ Missing           | No "As featured in" or review-count/rating trust line (700+ 5★ per `llms.txt`).                                                                                       |
-| Fact sheet / key numbers               | ❌ Missing           | Year founded is there; no guests-served, tours-run, review count, languages count as scannable stats.                                                                 |
-| High-res press images                  | ❌ Missing           | No downloadable founder headshot or hero imagery pack — journalists will ask.                                                                                         |
-| Brand board PDF                        | ❌ Missing           | `public/brand/yes-brand-board.pdf` exists but isn't linked.                                                                                                           |
-| Full logo kit                          | ⚠️ Weak             | Only links `logo-script.svg/png` + favicon. The 6 lockups in `public/brand/svg/` + `manifest.json` aren't exposed.                                                    |
-| JSON-LD `Organization`                 | ❌ Missing           | Only `Person` (founder) + Breadcrumb. An `Organization` schema with `sameAs` (socials, Tripadvisor) is the single highest-leverage add for citations/knowledge-panel. |
-| `sameAs` social profiles in schema     | ❌ Missing           | Same as above — needed for Google entity graph.                                                                                                                       |
-
+Investigation of what trust surface already exists, whether a new strip is warranted, and where a subtle add would move the needle. **No code changes yet.**
 
 ---
 
-## 2. What to improve
+## 1. Is this needed or redundant?
 
-1. **Add an on-page "About YES Experiences Portugal" section** with short + long boilerplate paragraphs (mirrors the founder-bio pattern). This is the #1 gap — partners currently have no company copy to lift.
-2. **Add "Suggested wording for partners"** — one prose sentence + one 2-line version they can paste into articles/roundups.
-3. **Add "Logo usage" section** — clear space, minimum size, background rules, do/don't. Pull from `public/brand/README.md` and link the brand board PDF + `manifest.json`.
-4. **Expand brand assets** to expose all 6 lockups (centered/horizontal × full/mono-dark/mono-light) as SVG + PNG downloads. Link the brand board PDF.
-5. **Add "Find us online"** — Tripadvisor, Instagram, Facebook, Viator (verify URL) as verification links for journalists. Use footer URLs as source of truth.
-6. **Add `Organization` JSON-LD** with `name`, `url`, `logo`, `sameAs: [instagram, facebook, tripadvisor, viator]`, `address`, `telephone`, `email`, `founder` → link to existing `personFounderLd`. Biggest SEO/citation lever on the page.
-7. **Add a trust/fact strip** — founded 2022 · RNAAT 31/2023 · 700+ 5★ reviews · 3 languages · service across Portugal Scannable, journalist-friendly.
-8. **Add press contact hours + response SLA** ("Responses within 24h on weekdays") — reduces friction for time-boxed journalists.
-9. **Founder headshot download** — even one square 1200×1200 JPG. Placeholder link if asset not yet available, with note to email for high-res.
-10. **Meta upgrades** — add `og:image` pointing to the brand board PNG (absolute HTTPS), add `twitter:card` — currently missing.
+**Partly needed, mostly redundant — with one real gap.**
 
----
+What already exists:
 
-## 3. Suggested copy blocks
+| Surface | Component | Trust points carried |
+|---|---|---|
+| Homepage (after hero, before Signatures) | `GuestQuotes` | Aggregate rating + platform badges |
+| Homepage (after content) | `RecognisedByGuides` | Editorial mentions |
+| Homepage (mid) | `TrustmarySection` | Verified review widget |
+| Studio (persistent HUD) | `StudioTrustStrip` | 700+ 5★ · Google/Tripadvisor/GYG |
+| Studio final reveal | full trust band inside `ReviewScreen` | `TRUST_POINTS` grid |
+| Checkout drawer | `BrandedCheckoutDrawer` trust footer | Secure checkout cues |
+| Footer | `Footer.tsx` | RNAAT nº 31/2023 · Sesimbra · legal |
+| `/about` | route content | RNAAT · civil liability insurance |
+| `/press` | new page | RNAAT · fact pills |
 
-**Company boilerplate — short (≤ 60 words)**
+**Reviews and platforms are well-covered.** The genuine gap is **operator credibility** (licence + insurance + local support + secure payments) fused into one quiet line the traveller sees at the point of doubt — currently split across `/about`, footer, and checkout, and never adjacent to a booking CTA on Signature tour pages.
 
-> YES Experiences Portugal is a licensed Portuguese tour operator founded in 2022 (RNAAT 31/2023) designing private, emotionally intelligent day tours and multi-day journeys across Portugal. Founded by Nídia Almeida, the studio works with a curated network of family wineries, chefs and local hosts to deliver experiences you cannot book off a shelf.
-
-**Company boilerplate — long**
-
-> YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — across  Portugal. Every itinerary is built around the guests rather than a fixed catalogue, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES has earned 700+ five-star reviews across multiple platforms such as Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.
-
-**Suggested one-line partner citation**
-
-> Private tours and multi-day journeys by **YES Experiences Portugal** — a licensed Portuguese travel studio (RNAAT 31/2023) based in Sesimbra: [yesexperiencesportugal.com](https://yesexperiencesportugal.com).
-
-**Logo usage note (short)**
-
-> Please use the official lockups from this page without modification. Maintain clear space equal to the height of the "Y" on all sides. Minimum width: 120px (digital) / 30mm (print). Use the mono-light variant on dark backgrounds and the mono-dark variant on light backgrounds. Do not recolour, stretch, rotate, add effects, or place the logo on low-contrast imagery. Full palette on the brand board.
-
-**Fact strip**
-
-> Founded 2022 · RNAAT 31/2023 · 700+ five-star reviews · 3 languages · across Portugal 
+Verdict: **do NOT add a homepage trust strip** (would duplicate `GuestQuotes` + `RecognisedByGuides` and risk the "loud/salesy" feeling). **Do add one narrow "operator credentials" microstrip on tour pages and pre-checkout** where the doubt actually surfaces.
 
 ---
 
-## 4. Should the footer include "Press & Brand Kit"?
+## 2. Best placements (ranked by expected lift, worst avoided)
 
-**Yes — but subtly.** Place under the existing footer's utility/legal column (near Terms / Privacy), labelled **"Press & brand"**. Rationale:
+### Ship
 
-- Journalists, directory editors and partnership scouts look in the footer first — this is the #1 request from anyone building citations.
-- It signals institutional legitimacy (only real operators publish a press page).
-- It's a passive backlink magnet: linked from every page = crawlers surface it fast.
-- Keep it out of the primary nav to avoid diluting the customer-facing paths (Signature / Studio / Multi-day / Moments).
+1. **Individual Signature tour pages — directly under the price/book CTA.** This is where hesitation peaks and where operator legitimacy (licence, insurance, secure payments, human support) is missing today. Highest expected lift.
+2. **Checkout drawer — top of drawer, one line above the summary.** `BrandedCheckoutDrawer` has a trust *footer* but no trust *header*. A one-line credential strip above the first form field reduces cart abandonment. Second-highest lift.
+3. **Studio pre-reveal → convergence.** `StudioTrustStrip` covers review counts already; extend the pattern with a second, sibling `StudioCredentialStrip` shown only at the "Secure this experience" moment (not throughout the flow — the Bible bans persistent OTA chrome). Lower lift, but consistent with the philosophy.
 
-Also add `/press` to `public/llms.txt` under Pages and to `src/routes/sitemap[.]xml.ts` (priority 0.4) if not already there.
+### Skip
 
----
-
-## 5. Files / components affected
-
-- `src/routes/press.tsx` — main rewrite target (add sections 1–9 above, add `Organization` JSON-LD, add `og:image` + `twitter:card`).
-- `src/lib/jsonld.ts` — add `organizationLd()` helper with `sameAs` array (mirrors `personFounderLd` pattern).
-- `src/components/Footer.tsx` — add "Press & brand" link in the legal/utility column.
-- `public/llms.txt` — add `/press` entry.
-- `src/routes/sitemap[.]xml.ts` — add `/press` (priority 0.4, monthly).
-- `public/brand/` — no code change; may need one square founder headshot JPG added later (owner-supplied).
-
-No new components required; reuse `SiteLayout`, `Eyebrow`, `SectionTitle`, existing `<Row>` helper.
+- **Homepage after reviews / before Signatures.** Already dense with `GuestQuotes` + `RecognisedByGuides` + `TrustmarySection`. Adding a licence strip here reads as anxious, not premium. Rejected.
+- **Footer.** RNAAT + Sesimbra already present in the bottom bar; a badged strip would fight the discreet legal row. Rejected.
+- **Studio persistent HUD.** `StudioTrustStrip` already occupies this real estate; a second strip breaks the cinematic rule ("interface disappears"). Rejected.
 
 ---
 
-## 6. Risk level
+## 3. Recommended wording
 
-**Low.**
+Keep it to a single line, four tokens, separated by `·`. No verbs, no icons in the primary line, no colour highlights.
 
-- All changes are additive on a low-traffic route.
-- No slug rename, no redirect, no schema migration.
-- Footer link addition is a single `<Link>` — no layout risk.
-- `Organization` JSON-LD is well-understood; validate with Rich Results test before ship.
-- Only content risk: the "700+ five-star reviews" figure and Viator URL must be verified with the owner before publishing (present in `llms.txt` and skill notes but worth confirming current).
+**Primary (tour pages, pre-checkout header):**
+
+> Licensed operator RNAAT 31/2023 · Civil liability insured · Secure checkout · Local support 7 days a week
+
+**Compact variant (Studio convergence, tight width):**
+
+> RNAAT 31/2023 · Insured · Secure checkout · Local support
+
+**Micro-tooltip on RNAAT hover/focus** (a11y + curious travellers):
+
+> Registered Portuguese tour operator, nº 31/2023 (Registo Nacional dos Agentes de Viagens e Turismo).
+
+Wording rules:
+- No superlatives ("world-class", "trusted by thousands") — the brand rules ban those.
+- Do not repeat the "700+ 5★" claim here — that already lives in `GuestQuotes` / `StudioTrustStrip`. This strip is *credentials*, not *popularity*. Separating the two prevents the "loud" feeling.
+- "Local support 7 days a week" only if operationally true; otherwise use "Human support before, during and after".
+- Never use "guaranteed", "risk-free", or "money-back" without legal review.
+
+---
+
+## 4. Design approach — how to keep it subtle
+
+- **One line, ≤ 24px tall.** Never a card, never a badge row, never icons + logos combined. The Studio micro-strip is the reference pattern.
+- **Typography:** Inter, 11.5–12px, tracking `0.14em`, uppercase, weight 500. Colour: `color-mix(in oklab, var(--charcoal) 62%, transparent)` on ivory surfaces; `var(--ivory)/80` on charcoal.
+- **Separator:** thin `·` (0.5 opacity) between tokens. No pipes, no bullets, no chip pills on light backgrounds (fact-pills belong on `/press`, not next to a CTA).
+- **Optional single gold micro-mark** (a 6×6 gold dot, not a shield/lock icon) before the line — matches the site's "gold = micro-detail only" rule and avoids the OTA "trust badge" aesthetic.
+- **Motion:** fade in with the parent card, no independent animation.
+- **Reduced motion / a11y:** wrap in `role="note"` with a full-sentence `aria-label`, 4.5:1 contrast on both `--ivory` and `--charcoal` backdrops.
+- **Placement rules:** always *below* the CTA on tour pages (so it reassures without pulling attention), always *above* the first form field in checkout (so it lands before doubt).
+- **Never** stack this strip with `GuestQuotes` on the same viewport height — pick one signal per moment.
+
+Reject: shield icons, lock icons, badge grids, coloured chips, star clusters, gradient bars, "As seen on" style logos on this strip (that's `PlatformBadge`'s job elsewhere).
+
+---
+
+## 5. Implementation complexity
+
+**Low — ~1.5h total.**
+
+New primitive: `src/components/ui/CredentialStrip.tsx`
+
+- Props: `variant: "light" | "dark"`, `compact?: boolean`, optional `className`.
+- Tokens driven by `--charcoal` / `--ivory` / `--gold`. No new CSS variables.
+- Content constant lives in one place so wording never drifts.
+
+Wiring:
+
+- **Tour pages:** add one `<CredentialStrip variant="light" />` in the shared Signature booking sidebar / mobile sticky CTA container. Single insertion point if the CTA is a shared component; otherwise 4–6 route edits.
+- **Checkout drawer:** add `<CredentialStrip variant="light" compact />` at the top of `BrandedCheckoutDrawer` above the summary.
+- **Studio convergence (optional, phase 2):** render `<CredentialStrip variant="dark" compact />` beside the existing `StudioTrustStrip` only when `phase === "convergence"`; keep both hidden in other phases. One conditional line in `StudioDrift.tsx`.
+
+No schema change, no i18n bundle change beyond three short strings (already covered by `en`; `pt`/`es` need one entry each). No JSON-LD change — RNAAT and insurance already declared in `organizationLd()`.
+
+**Risk:** low. Additive only. Rollback = delete component + import. No layout reflow risk if inserted inside existing spacing containers.
 
 ---
 
 ## Suggested build order (when approved)
 
-1. Add `organizationLd()` helper + confirm social URLs with owner.
-2. Rewrite `press.tsx` with new sections + `Organization` JSON-LD + `og:image` + `twitter:card`.
-3. Footer link + `llms.txt` + sitemap.
-4. Validate JSON-LD in Google Rich Results test, then publish.
+1. Build `CredentialStrip` primitive with `light` + `dark` + `compact` variants, story-tested at 320px, 393px and 1024px.
+2. Insert on Signature tour pages under the book CTA — measure vs. control for 2 weeks if analytics allows.
+3. Insert in `BrandedCheckoutDrawer` header.
+4. Only after (2) and (3) look right, add the Studio convergence instance.
 
-Estimated effort: **~1.5–2h**.
+Confirm before shipping: **is "Local support 7 days a week" operationally accurate?** If support is weekdays only, use "Human support before, during and after".
