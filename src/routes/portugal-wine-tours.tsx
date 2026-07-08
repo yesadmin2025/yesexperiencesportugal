@@ -3,7 +3,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, faqPageLd } from "@/lib/jsonld";
+import { WINE_TOURS_FAQ } from "@/content/seo-faq";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/portugal-wine-tours";
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/portugal-wine-tours")({
           { name: "Portugal Wine Tours", path: PAGE_PATH },
         ]),
       ),
+      jsonLdScript(faqPageLd(WINE_TOURS_FAQ)),
     ],
   }),
   component: Page,
@@ -153,6 +155,25 @@ function Page() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-20 md:mt-24 pt-12 border-t border-[color:var(--gold-soft)]/40">
+              <Eyebrow className="mb-4">Questions travellers ask</Eyebrow>
+              <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-8">
+                Before you pour the first glass.
+              </h2>
+              <dl className="space-y-8">
+                {WINE_TOURS_FAQ.map((f) => (
+                  <div key={f.q}>
+                    <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] mb-3">
+                      {f.q}
+                    </dt>
+                    <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+                      {f.a}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             <aside className="mt-16 pt-12 border-t border-[color:var(--gold-soft)]/40 text-center">
