@@ -1,29 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 
+const TITLE = "Team Building Portugal — Private Corporate Days & Retreats";
+const DESCRIPTION =
+  "Team building in Portugal and private corporate retreats — wine days, sailing, cultural off-sites. Transport, guides and venues coordinated end to end by a local team.";
+
 export const Route = createFileRoute("/corporate")({
   head: () => ({
     meta: [
-      { title: "Corporate & Private Groups in Portugal — YES experiences" },
-      {
-        name: "description",
-        content:
-          "Private group days in Portugal — local experiences, timing, transport and logistics handled end to end by a local team.",
-      },
-      { property: "og:title", content: "Corporate & Private Groups in Portugal" },
-      {
-        property: "og:description",
-        content:
-          "Private group days, designed end to end by a local team — never the generic formula.",
-      },
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
       {
         property: "twitter:image",
@@ -36,9 +33,10 @@ export const Route = createFileRoute("/corporate")({
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
-          { name: "Corporate & Private Groups", path: "/corporate" },
+          { name: "Team Building & Corporate Retreats", path: "/corporate" },
         ]),
       ),
+      jsonLdScript(faqPageLd(CORPORATE_FAQ)),
     ],
   }),
   component: CorporatePage,
