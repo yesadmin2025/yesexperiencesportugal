@@ -288,6 +288,65 @@ export function breadcrumbLd(crumbs: Crumb[]) {
 }
 
 /**
+ * BlogPosting node for a Local Stories article. Reused by both the
+ * static-content branch and the DB-post branch so the two cannot drift.
+ *
+ * `imageUrl` must be an absolute URL (or a root-relative "/…" path that the
+ * helper will prefix with SITE_URL).
+ */
+export function localStoryArticleLd(args: {
+  slug: string;
+  headline: string;
+  name?: string;
+  description?: string;
+  datePublished?: string | null;
+  dateModified?: string | null;
+  imageUrl?: string | null;
+  authorName?: string | null;
+}) {
+  const url = `${SITE_URL}/local-stories/${args.slug}`;
+  const abs = (u?: string | null) =>
+    !u ? undefined : u.startsWith("http") ? u : `${SITE_URL}${u.startsWith("/") ? "" : "/"}${u}`;
+  const image = abs(args.imageUrl);
+  const author = args.authorName
+    ? { "@type": "Person" as const, name: args.authorName }
+    : {
+        "@type": "Person" as const,
+        "@id": FOUNDER_ID,
+        name: "Nidia Almeida",
+        url: `${SITE_URL}/about`,
+        sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
+      };
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: args.headline,
+    ...(args.name ? { name: args.name } : {}),
+    ...(args.description ? { description: args.description } : {}),
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    ...(image ? { image: [image] } : {}),
+    ...(args.datePublished ? { datePublished: args.datePublished } : {}),
+    ...(args.dateModified || args.datePublished
+      ? { dateModified: args.dateModified ?? args.datePublished! }
+      : {}),
+    inLanguage: "en",
+    author,
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: "YES Experiences Portugal",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
+      },
+    },
+  };
+}
+
+
+/**
  * Convert a human-readable duration ("8–9h", "6+h", "Full Day") into an
  * ISO 8601 duration suitable for schema.org. Returns `null` when no
  * sensible mapping exists.

@@ -8,13 +8,15 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import {
   jsonLdScript,
   breadcrumbLd,
-  FOUNDER_ID,
+  
   personFounderLd,
   localStoryReviewsLd,
+  localStoryArticleLd,
   normalizeLocalStoryReviews,
   faqPageLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
+
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
@@ -48,38 +50,19 @@ async function fetchPost(slug: string): Promise<JournalPostFull | null> {
 
 const BASE = "https://yesexperiencesportugal.com";
 
-function articleJsonLd(a: LocalStoryArticle) {
-  const url = `${BASE}/local-stories/${a.slug}`;
-  return {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: a.h1,
-    name: a.title,
-    description: a.metaDescription,
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    url,
-    datePublished: a.datePublished,
-    dateModified: a.datePublished,
-    inLanguage: "en",
-    author: {
-      "@type": "Person",
-      "@id": FOUNDER_ID,
-      name: "Nidia Almeida",
-      url: `${BASE}/about`,
-      sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
-    },
-    publisher: {
-      "@type": "Organization",
-      "@id": `${BASE}/#organization`,
-      name: "YES Experiences Portugal",
-      url: BASE,
-      logo: {
-        "@type": "ImageObject",
-        url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-      },
-    },
-  };
+/** Absolute URL for a Signature tour's hero image, when the article
+ *  doesn't ship its own hero. Bundled imports resolve to root-relative
+ *  URLs like `/assets/xxx.jpg`; we prefix with BASE for JSON-LD/OG. */
+function articleImageUrl(a: LocalStoryArticle): string | undefined {
+  if (a.heroImage) {
+    return a.heroImage.startsWith("http") ? a.heroImage : `${BASE}${a.heroImage}`;
+  }
+  const tour = findTour(a.signatureSlug);
+  const img = tour?.img;
+  if (!img) return undefined;
+  return img.startsWith("http") ? img : `${BASE}${img.startsWith("/") ? "" : "/"}${img}`;
 }
+
 
 type LoaderData = {
   reviews: NormalizedLocalStoryReview[];
@@ -189,6 +172,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
               reviews,
             }).map((node) => jsonLdScript(node))
           : [];
+      const imageUrl = articleImageUrl(article);
       return {
         meta: [
           { title: article.title },
@@ -197,11 +181,26 @@ export const Route = createFileRoute("/local-stories/$slug")({
           { property: "og:description", content: article.metaDescription },
           { property: "og:url", content: url },
           { property: "og:type", content: "article" },
+          ...(imageUrl ? [{ property: "og:image", content: imageUrl }] : []),
+          ...(imageUrl ? [{ name: "twitter:image", content: imageUrl }] : []),
           { property: "article:published_time", content: article.datePublished },
+          ...(article.dateModified
+            ? [{ property: "article:modified_time", content: article.dateModified }]
+            : []),
         ],
         links: [{ rel: "canonical", href: url }],
         scripts: [
-          jsonLdScript(articleJsonLd(article)),
+          jsonLdScript(
+            localStoryArticleLd({
+              slug: article.slug,
+              headline: article.h1,
+              name: article.title,
+              description: article.metaDescription,
+              datePublished: article.datePublished,
+              dateModified: article.dateModified,
+              imageUrl,
+            }),
+          ),
           jsonLdScript(personFounderLd()),
           jsonLdScript(
             breadcrumbLd([
@@ -215,6 +214,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         ],
       };
     }
+
 
     // No static article and no matching DB post — the loader threw
     // notFound() (or errored). Emit a minimal noindex head so this URL
@@ -235,37 +235,18 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const heroImage = post.heroImage ?? null;
 
     const scripts = [
-      jsonLdScript({
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        headline: post.title,
-        name: post.title,
-        description: post.excerpt ?? undefined,
-        mainEntityOfPage: { "@type": "WebPage", "@id": url },
-        url,
-        image: heroImage ?? undefined,
-        datePublished: post.publishedAt ?? undefined,
-        dateModified: post.publishedAt ?? undefined,
-        inLanguage: "en",
-        author: post.authorName
-          ? { "@type": "Person", name: post.authorName }
-          : {
-              "@type": "Person",
-              "@id": FOUNDER_ID,
-              name: "Nidia Almeida",
-              url: `${BASE}/about`,
-            },
-        publisher: {
-          "@type": "Organization",
-          "@id": `${BASE}/#organization`,
-          name: "YES Experiences Portugal",
-          url: BASE,
-          logo: {
-            "@type": "ImageObject",
-            url: `${BASE}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-          },
-        },
-      }),
+      jsonLdScript(
+        localStoryArticleLd({
+          slug: post.slug,
+          headline: post.title,
+          name: post.title,
+          description: post.excerpt ?? undefined,
+          datePublished: post.publishedAt,
+          dateModified: post.publishedAt,
+          imageUrl: heroImage,
+          authorName: post.authorName,
+        }),
+      ),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
@@ -274,6 +255,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         ]),
       ),
     ];
+
 
     return {
       meta: [

@@ -26,8 +26,15 @@ export type LocalStoryArticle = {
   relatedSignatures?: { slug: string; label: string }[];
   /** ISO date for JSON-LD datePublished. */
   datePublished: string;
+  /** Optional ISO date for JSON-LD dateModified. Falls back to datePublished. */
+  dateModified?: string;
+  /** Optional absolute or root-relative hero image URL for og:image + JSON-LD.
+   *  When absent, the matching Signature tour hero is used. */
+  heroImage?: string;
+  heroImageAlt?: string;
   /** Optional FAQ block — rendered on page AND emitted as FAQPage JSON-LD. */
   faq?: { q: string; a: string }[];
+
 };
 
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
