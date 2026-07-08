@@ -253,8 +253,11 @@ function BookFlip() {
                 src={incoming.src}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full object-contain rounded-[3px] bg-[color:var(--sand)] shadow-[0_40px_80px_-30px_rgba(46,46,46,0.6),0_18px_36px_-18px_rgba(46,46,46,0.35)]"
               />
+
             ) : (
               <PageSkeleton />
             )
@@ -286,8 +289,10 @@ function BookFlip() {
                 alt={current.alt}
                 className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}
+                loading="lazy"
                 decoding="async"
               />
+
             ) : (
               <PageSkeleton />
             )}
