@@ -510,27 +510,7 @@ function StaticArticleView({
   );
 }
 
-function DbPostView({ slug }: { slug: string }) {
-  const { data: post, isLoading } = useQuery({
-    queryKey: ["journal_post", slug],
-    queryFn: () => fetchPost(slug),
-    staleTime: 60_000,
-  });
-
-  if (isLoading) {
-    return (
-      <SiteLayout>
-        <section className="pt-40 pb-32 bg-[color:var(--ivory)] text-center reveal">
-          <p className="font-serif italic text-[color:var(--charcoal-soft)]">Loading…</p>
-        </section>
-      </SiteLayout>
-    );
-  }
-
-  if (!post) {
-    throw notFound();
-  }
-
+function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
   const paragraphs = post.body
     .split(/\n\s*\n/)
     .map((p) => p.trim())
@@ -549,18 +529,18 @@ function DbPostView({ slug }: { slug: string }) {
             <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
               {post.title}
             </h1>
-            {post.author_name && (
+            {post.authorName && (
               <p className="mt-6 text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                By {post.author_name}
+                By {post.authorName}
               </p>
             )}
           </div>
-          {post.hero_image_url && (
+          {post.heroImage && (
             <div className="container-x max-w-4xl mt-10">
               <div className="relative overflow-hidden aspect-[16/9] shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]">
                 <img
-                  src={post.hero_image_url}
-                  alt={post.hero_image_alt ?? post.title}
+                  src={post.heroImage}
+                  alt={post.heroImageAlt ?? post.title}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -586,7 +566,7 @@ function DbPostView({ slug }: { slug: string }) {
               ))}
             </div>
 
-            {post.signature_slug && (
+            {post.signatureSlug && (
               <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
                 <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                   Travel this story
@@ -596,7 +576,7 @@ function DbPostView({ slug }: { slug: string }) {
                 </p>
                 <CtaButton
                   to="/tours/$tourId"
-                  params={{ tourId: post.signature_slug }}
+                  params={{ tourId: post.signatureSlug }}
                   variant="primary"
                 >
                   See the Signature
