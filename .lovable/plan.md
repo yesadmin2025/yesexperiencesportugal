@@ -1,129 +1,88 @@
-# Mobile polish audit — 393×850 (iPhone 14/15)
+# Final QA Audit
 
-Method: real Playwright captures at 393px of `/`, `/experiences`, `/studio-v3`, `/portugal-travel-designer`, `/about`, `/corporate`, `/local-stories`, `/sintra-day-tour-from-lisbon`, `/press`, plus targeted source reads of the header/FAB/eyebrow primitives. Reveal-on-scroll blanks in mid/bottom captures are a test artefact (IntersectionObserver doesn't fire on programmatic scrollTo) — those are **not** reported as issues.
-
-Priority key: **P0** = users see it now, hurts trust/conversion · **P1** = visible on most sessions, easy win · **P2** = polish.
+Scope: routes under `src/routes/`, `Navbar`, `Footer`, floating actions, checkout drawer, tour pages, Studio flow, head metadata, and copy consistency. Audit is static (source + Playwright screenshots from prior turns) — I have not re-run every checkout end-to-end, but every link target, CTA route, and metadata block was inspected.
 
 ---
 
-## 0. Systemic (affects every page)
+## 1. Bugs found
 
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| S1 | Floating WhatsApp FAB (48×48, bottom-4/right-4) overlaps last line of body copy on `/portugal-travel-designer`, `/sintra-day-tour-from-lisbon`, `/local-stories`, `/tours/$tourId` (visible in captures — text runs behind the teal disc). | **P0** | Add `pb-24 md:pb-0` (or `scroll-pb-24`) on the `<main>` wrapper inside `SiteLayout`, so every route reserves 96 px below the fold for the FAB. One-line change, zero layout risk elsewhere. | `src/components/SiteLayout.tsx` | Safe. |
-| S2 | Missing routes: `/moments` and `/faq` return **404** (audit brief listed both). | **P1** | Confirm intent with product — either (a) create the two routes, or (b) remove any stale nav/footer links. No mobile-polish fix needed until (a/b) decided. | audit only | Safe (no code change in this audit). |
-| S3 | Console: repeated React hydration warnings ("A tree hydrated but some attributes … didn't match") on every page in Playwright run. Not a visible layout bug, but noisy and can mask real issues. | **P2** | Out of scope of a *polish* audit — file a follow-up "hydration mismatch sweep". | (investigation) | N/A. |
+| # | Bug | Where | Severity |
+|---|---|---|---|
+| B1 | Hydration mismatch warning on every route (data-tsd-source column drift between server and client). Cosmetic but pollutes the console and can mask real hydration errors. | React devtools source-mapping plugin, visible on `/` | **P2 (Low)** |
+| B2 | Dev/QA routes are publicly reachable in production: `/hero-verify`, `/preview-check`, `/qa/hero`, `/qa/mobile`, `/brand-qa`, `/typography-audit`, `/e2e/postmessage-probe`, `/studio-drift`, `/studio-v2`, `/admin.builder-images-qa`. Indexable, no `noindex`, some render blank/dev UI. | `src/routes/*` | **P1 (High)** |
+| B3 | Legacy Studio surface still shipped: `/studio-v2` and `/studio-v2/i/$token` exist alongside canonical `/studio-v3`. Nothing links to them, but they're crawlable. | `src/routes/studio-v2*.tsx` | **P1 (High)** |
+| B4 | `admin.error-logs.tsx`, `admin.tour-link-audit.tsx`, `proposals.tsx`, `studio-v2.tsx` have **no `head()`** — inherit root defaults, so they appear as "YES experiences Portugal" with root description. `/proposals` is user-facing. | listed routes | **P2 (Medium)** for `/proposals`, low for admin |
+| B5 | WhatsApp FAB rendered site-wide via `__root.tsx` (`WhatsAppSupportButton`); confirm it is hidden on `/admin/*`, `/checkout/*`, and `/booking-confirmed` to avoid overlap with primary checkout actions. Needs runtime confirmation. | `src/routes/__root.tsx:243` | **P2 (Medium)** |
 
----
+## 2. Broken / risky links
 
-## 1. Homepage `/`
+| # | Link | Issue | Severity |
+|---|---|---|---|
+| L1 | Footer "Occasions → Private Groups" points to `/contact` — same target as "Company → Contact". Not broken but duplicate destination under a distinct label sets a false expectation. | `Footer.tsx` Occasions col | **P2 (Low)** |
+| L2 | Nav "Moments" points to `/proposal-in-portugal` (route exists, no `head()` mismatch — but label ↔ URL drift; SEO title must match the "Moments" positioning). | `Navbar.tsx` desktopLinks | **P2 (Low)** |
+| L3 | Footer `Signature Experiences` lists 12 tour slugs going to `/tours/$tourId`. Slugs must all resolve in the tour data source. Slugs to verify: `arrabida-wine-allinclusive`, `wild-beaches-picnic`, `arrabida-boat`, `tiles-workshop`, `azeitao-cheese`, `sintra-cascais`, `troia-comporta`, `evora-alentejo`, `tomar-coimbra`, `fatima-nazare-obidos`, `roman-heritage-alentejo`, `southwest-vicentine-coast`. Any 404 = broken footer entry on every page. | `Footer.tsx` | **P0 (Critical)** to verify |
+| L4 | Facebook link `facebook.com/yesexperiencesportugal` — confirm the page exists and is public (Instagram and Tripadvisor look valid). | `Footer.tsx` Connect col | **P1 (High)** to verify |
+| L5 | WhatsApp deep links use `https://wa.me/351911889992` (no leading `+`) consistently — OK. Emails use both `info@` and `hello@yesexperiencesportugal.com` (see C1). | multiple | **P2 (Low)** |
+| L6 | No obvious placeholder URLs (`example.com`, `TODO`) in user-facing routes — the one hit (`sofia@example.com`) is in an internal email template preview. | `src/lib/email-templates/internal-lead.tsx:114` | **P3** |
 
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| H1 | Hero above the fold at 393×588 shows only the road image + `YES` logo + burger — no headline, eyebrow or CTA visible without scrolling. Real users on 5.4–6.1" phones lose the value prop at first paint. | **P1** | Reduce hero min-height on mobile only (e.g. `min-h-[86svh]` → `min-h-[78svh]` at `<sm`) and drop hero top padding by one step so the eyebrow/headline peek above the fold. Do **not** change desktop. | `src/routes/index.tsx` hero section | Safe — copy-scoped, no layout re-flow elsewhere. |
-| H2 | FAB overlaps footer/last card on scroll (see S1). | P0 | See S1. | — | — |
+## 3. Copy inconsistencies
 
-Nothing else visible above-the-fold is broken on mobile.
+| # | Inconsistency | Severity |
+|---|---|---|
+| C1 | **Email address drift.** Legal pages use `info@yesexperiencesportugal.com` (`privacy.tsx`, `terms.tsx`, `about.tsx`, `unsubscribe.tsx`) while `/cookies` uses `hello@yesexperiencesportugal.com`. Press page uses a separate `NAP.press`. Pick one canonical support email and one press email. | **P1 (High)** |
+| C2 | **RNAAT formatting drift.** Footer: `RNAAT nº 31/2023`. Press + CredentialStrip + JSON-LD: `RNAAT 31/2023` (no `nº`). Footer brand tagline: `Licensed tour operator (RNAAT)` with no number. Standardize on `RNAAT nº 31/2023`. | **P1 (High)** |
+| C3 | **No user-facing cancellation policy referenced anywhere** (no "free cancellation up to X hours", no policy link in checkout drawer, tour pages, terms, or footer). For a booking site this is both a trust and legal gap. Either add a single canonical policy line + `/terms` anchor, or state "See booking terms" everywhere consistently. | **P0 (Critical)** |
+| C4 | Homepage step label `"Local on WhatsApp"` vs About `"WhatsApp and email replies usually within the hour"` vs footer `"WhatsApp Support"` vs CredentialStrip `"local support 7 days a week"`. All true, but pick one hero phrase and echo it. | **P2 (Low)** |
+| C5 | Sesimbra vs "operates nationwide across Portugal" — resolved in Press but Footer tagline still reads *"Based in Sesimbra, designing private journeys across Portugal"* which is on-brand; keep this exact phrasing everywhere else the base location is mentioned. | **P3** |
+| C6 | Spelling: no misspellings surfaced in routes I read. Not exhaustively spellchecked — recommend running one pass with a shared brand glossary (Arrábida, Évora, Tróia, Óbidos, Azeitão, Fátima, Nazaré, Nídia). | **P2 (Low)** verification task |
 
----
+## 4. Technical SEO issues
 
-## 2. Experiences `/experiences`
+| # | Issue | Severity |
+|---|---|---|
+| S1 | Dev/QA routes (B2) are not `noindex` — they'll appear in the sitemap generator if included. Verify `src/routes/sitemap[.]xml.ts` excludes them AND add `robots: noindex` meta so if crawlers find them another way, they drop. | **P1 (High)** |
+| S2 | `/proposals`, `/studio-v2`, `admin.*` missing `head()` → duplicate titles, no unique meta descriptions. | **P1 (High)** |
+| S3 | Potential duplicate/near-duplicate content across long-tail SEO pages: `/portugal-tours`, `/luxury-tours-portugal`, `/private-tours-portugal`, `/portugal-wine-tours`, `/day-tours`, `/day-trips-from-lisbon`, `/wine-tours-lisbon`, `/private-wine-tour-lisbon`. Need to confirm each has a unique H1, meta title, meta description and clear internal linking target — otherwise Google will pick one and demote the others. | **P1 (High)** verification |
+| S4 | Canonical + `og:url` sanity check on every leaf — the head-meta guidance requires each leaf to self-reference. Needs a spot audit on all tour landing pages and the SEO long-tail pages above. | **P2 (Medium)** |
+| S5 | `og:image` presence per leaf: tour pages should point to the tour hero image; long-tail SEO pages need a real cover. Any missing → social shares fall back to root/generic. | **P2 (Medium)** |
+| S6 | `robots.txt` should disallow the dev/QA + admin surfaces (`/admin`, `/hero-verify`, `/preview-check`, `/qa/`, `/brand-qa`, `/typography-audit`, `/e2e/`, `/studio-drift`, `/studio-v2`). | **P1 (High)** |
 
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| E1 | Nothing critical above the fold. Filter chips (`PHOTOS · FAST · CRISP`) are legible, cards render clean. | — | — | — | — |
-| E2 | FAB overlap on last card (see S1). | P0 | See S1. | — | — |
+## 5. Layout — mobile & desktop
 
----
+Prior mobile polish audit already addressed FAB overlap, CTA wrapping and eyebrow clipping. Remaining items:
 
-## 3. Studio `/studio-v3`
+| # | Issue | Severity |
+|---|---|---|
+| M1 | `/moments` and `/faq` still 404 (from prior audit) — nothing in current nav links to them, but any inbound link, sitemap entry, or press mention will 404. Product decision needed: build the pages or ensure no external references. | **P1 (High)** |
+| M2 | Desktop layout: not re-audited this turn. Should sweep `/experiences`, `/studio-v3`, `/multi-day`, `/corporate`, `/press` at 1440 to confirm 4-col footer, credential strip, and nav feel balanced. | **P2 (Medium)** verification |
 
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| ST1 | Hero uses ~40% top padding of empty space before the `— STUDIO` eyebrow (large blank at top of viewport on 393×850). | **P2** | Reduce the hero's top spacing on mobile (`pt-24` → `pt-14` at `<sm`), keep desktop. | `src/routes/studio-v3.tsx` (hero block) | Safe. |
-| ST2 | `BEGIN →` CTA is a light pill on a dark image with only ~4:1 contrast at the arrow — legible but the arrow color could sit stronger. | P2 | No change; within brand rules. | — | Safe. |
+## 6. Recommended fix order
 
----
+**P0 — Ship-blockers (do first):**
+1. **C3** — add a canonical cancellation policy line (one sentence, echoed on tour pages + checkout drawer + terms).
+2. **L3** — verify all 12 footer tour slugs resolve; remove or fix any 404.
 
-## 4. Travel Designer `/portugal-travel-designer`
+**P1 — High (same PR window):**
+3. **B2 + S1 + S6** — add `robots: noindex` head to all dev/QA routes and disallow them in `robots.txt`; confirm sitemap excludes them.
+4. **B3** — remove or `noindex`+`disallow` `/studio-v2*`.
+5. **C1** — pick one canonical support email; global replace.
+6. **C2** — standardize `RNAAT nº 31/2023` everywhere (Footer tagline, CredentialStrip, Press, JSON-LD).
+7. **B4 / S2** — add `head()` with unique title + description + og to `/proposals` (and `/studio-v2` if kept).
+8. **S3** — spot-check the 8 long-tail SEO pages for unique titles / descriptions / H1.
+9. **M1** — decide fate of `/moments` and `/faq` (build or scrub references).
+10. **L4** — verify Facebook page URL resolves.
 
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| TD1 | Secondary CTA "SEE THE 10-DAY REFERENCE ROUTE" wraps to two lines with the gold arrow floating in the empty corner of line 2 — reads unbalanced. | **P1** | Shorten label to `SEE THE 10-DAY ROUTE` on mobile (or add `whitespace-nowrap text-[10.5px] sm:text-[11px]` so it fits one line). Copy-only change. | `src/routes/portugal-travel-designer.tsx` (hero CTA block) | Safe. |
-| TD2 | Body copy under the CTAs runs behind the WhatsApp FAB ("guides, cars and trusted partners along the…" is clipped). | **P0** | Covered by S1. | — | — |
+**P2 — Medium (next pass):**
+11. **B5** — confirm WhatsApp FAB is suppressed on `/checkout/*`, `/booking-confirmed`, `/admin/*`.
+12. **S4 + S5** — canonical / og:url / og:image spot audit on tour + SEO landing pages.
+13. **L1 / L2** — rewire footer "Private Groups" and confirm "Moments" title matches nav label.
+14. **C4** — align WhatsApp / support micro-copy.
+15. **M2** — desktop sweep 1440.
 
----
-
-## 5. About `/about`
-
-Clean. H1 balances (`meaningful Portugal.` wraps naturally), eyebrow contrast fine, no overlap above the fold. Only issue is the systemic FAB at bottom (S1). No page-specific fix.
-
----
-
-## 6. Corporate `/corporate`
-
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| C1 | Eyebrow `TEAM BUILDING & CORPORATE RETREATS` wraps to two lines and the gold flank rules stay on the first line — the second line ("RETREATS") floats without its rule, breaking the eyebrow symmetry that's canonical elsewhere. | **P1** | Shorten to `TEAM BUILDING · RETREATS` (or `CORPORATE RETREATS`) so the eyebrow stays on one line at 393 px. Pure copy change on the `<Eyebrow>` node. | `src/routes/corporate.tsx` | Safe. |
-| C2 | Region copy still reads "*Lisbon, Sintra, the Arrábida coast and the Alentejo*" — inconsistent with the nationwide messaging just shipped on Press/Footer. | **P1** | Swap that fragment for "*across Portugal — from Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro and beyond*". Line 93 of `corporate.tsx`. Content only, no layout impact. | `src/routes/corporate.tsx` L93 | Safe. |
-
----
-
-## 7. Moments
-
-Route does not exist (see S2). No polish work possible until route/link resolved.
-
----
-
-## 8. Local Stories `/local-stories`
-
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| LS1 | Second article card ("Arrábida vs Sintra: Which Day Trip Is Right for You?") title sits directly behind the WhatsApp FAB near the fold. | **P0** | Covered by S1 (page-level `pb-24`). | — | — |
-| LS2 | Article H2s are `text-3xl`-ish on 393 px and eat a lot of vertical space; the two-line title is 6 lines of type before the excerpt. | P2 | Step titles down one Tailwind size on `<sm` (`text-3xl` → `text-2xl sm:text-3xl`). | `src/routes/local-stories.tsx` card component | Safe. |
-
----
-
-## 9. Individual tour pages (sampled `/sintra-day-tour-from-lisbon`, applies to all 7 landing routes)
-
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| T1 | Secondary CTA "SEE THE SINTRA & CASCAIS SIGNATURE" wraps to two lines with the arrow orphaned — same shape as TD1. | **P1** | Shorten mobile label ("SEE THE SIGNATURE" or "OPEN THE SIGNATURE") or add `text-[10.5px] sm:text-[11px]` so one line fits. Applies to the 7 tour landing routes that share the same hero pattern. | `src/routes/sintra-…`, `arrabida-…`, `alentejo-…`, `evora-…`, `private-wine-…`, `arrabida-wine-…`, `evora-alentejo-…` | Safe — copy-only. |
-| T2 | Body copy in the "Why early" section runs behind the FAB. | **P0** | Covered by S1. | — | — |
-| T3 | H1 is `text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl` on the dynamic `/tours/$tourId` route — 2rem (32px) is reasonable on 393px but the italic emphasis ("without the queues") can push to 4 lines on the longer titles ("Private Alentejo Wine Tour From Lisbon — a slow day"). | P2 | Shorten line-height only (`leading-[1.02]` → `leading-[1.08]`) on `<sm`, no size change. | `src/routes/tours.$tourId.tsx` L265 | Safe. |
+**P3 — Nice-to-have:**
+16. **B1** — investigate `data-tsd-source` hydration warning (source-map plugin, likely non-blocking).
+17. **C5 / C6** — brand glossary + shared spellcheck pass.
 
 ---
 
-## 10. FAQ
-
-Route does not exist (see S2).
-
----
-
-## 11. Press `/press`
-
-| # | Issue | Priority | Smallest fix | Files | Safe? |
-|---|---|---|---|---|---|
-| P1 | Eyebrow `PRESS & BRAND KIT` renders very pale on ivory and its left gold flank rule is clipped at the container edge on 393 px. Contrast reads ~2.5:1 (below WCAG AA). | **P1** | Two-part: (a) confirm the shared `<Eyebrow>` primitive isn't rendering at reduced opacity on this route (no `tone="muted"` prop passed); (b) add `overflow-visible` or lose the left flank on `<sm`. Smallest fix: pass `flank={false}` on mobile via the existing primitive prop (no CSS edit). | `src/routes/press.tsx` (eyebrow node), possibly `src/components/ui/Eyebrow.tsx` | Safe — uses existing primitive knobs. |
-| P2 | Partnership card CTA "BECOME A REFERRAL PARTNER →" wraps to a second line on 393 px and the arrow orphans. | **P2** | Shorten to `BECOME A PARTNER →` in `PARTNERSHIP_LANES[0].cta`. Copy-only. | `src/routes/press.tsx` | Safe. |
-| P3 | The three partnership cards stack full-width with 20px internal padding — plenty of breathing room, no clipping. | — | — | — | — |
-
----
-
-## 12. Footer
-
-Footer not captured cleanly (test artefact). Source read shows single-column stack at `<md`, sensible spacing, no known overflow. No changes proposed in this audit; re-check after S1 lands and the FAB no longer sits over the final footer row.
-
----
-
-## Summary — recommended execution order
-
-1. **S1** (one-line SiteLayout padding) — unblocks 6 of the 10 page-specific findings.
-2. **C2** + **C1** (Corporate copy + eyebrow) — 2 min, brand consistency win.
-3. **TD1** + **T1** (CTA label shortening across designer + 7 tour pages) — 5 min, uses same fix pattern.
-4. **P1** (Press eyebrow contrast/flank) — small primitive prop tweak.
-5. **H1** + **ST1** (hero top-padding trims) — cosmetic.
-6. **LS2** + **T3** (heading size/leading trims) — cosmetic.
-7. **S2** (moments/faq routes) — needs product decision, not polish.
-
-Every fix above is copy/spacing/prop-only — no new sections, no redesign, no dependency changes, no schema. All safe to ship independently.
+Say the word and I'll execute in the P0 → P3 order above (or a subset). I'd suggest starting with the P0 pair + C1/C2/B2 grouped as one focused pass, since those are the ones a visitor or crawler would actually notice.
