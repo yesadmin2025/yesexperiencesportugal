@@ -45,8 +45,8 @@ export type BrandColorToken = keyof typeof BRAND_COLORS;
  * the component (and vice versa) fails the lock.
  */
 export const BRAND_LOGO_VARIANTS = {
-  "teal-on-ivory": "yes-logo-approved.png",
-  "gold-on-charcoal": "yes-logo-approved-gold-silk.png",
+  "teal-on-ivory": "yes-logo-approved.webp",
+  "gold-on-charcoal": "yes-logo-approved-gold-silk.webp",
 } as const;
 
 export type BrandLogoTheme = keyof typeof BRAND_LOGO_VARIANTS;
