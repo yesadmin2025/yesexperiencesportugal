@@ -856,7 +856,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-24 md:pb-0">{children}</main>
       <Footer />
       <FloatingActions />
       {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
