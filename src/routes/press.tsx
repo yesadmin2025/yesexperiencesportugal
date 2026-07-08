@@ -7,14 +7,14 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 
 const TITLE = "Press & Brand Kit — YES Experiences Portugal";
 const DESCRIPTION =
-  "Press resources, company boilerplate, founder bio, logo kit, backlink snippets and citation copy for YES Experiences Portugal — licensed Portuguese tour operator RNAAT 31/2023, operating nationwide.";
+  "Press resources, company boilerplate, founder bio, logo kit, backlink snippets and citation copy for YES Experiences Portugal — licensed Portuguese tour operator RNAAT nº 31/2023, operating nationwide.";
 const URL = "https://yesexperiencesportugal.com/press";
 const OG_IMAGE = "https://yesexperiencesportugal.com/brand/yes-brand-board.png";
 
 // Canonical NAP — keep in lockstep with src/lib/jsonld.ts
 const NAP = {
   name: "YES Experiences Portugal",
-  legal: "Licensed Portuguese tour operator — RNAAT 31/2023",
+  legal: "Licensed Portuguese tour operator — RNAAT nº 31/2023",
   founder: "Nídia Almeida (Founder & Lead Travel Designer)",
   founderRole: "Founder & Lead Travel Designer",
   founded: "2022",
@@ -46,16 +46,16 @@ const CITATION_BLOCK = [
 
 // Prose citation for editorial partners (articles, roundups, newsletters).
 const EDITORIAL_CITATION =
-  "Private tours and multi-day journeys by YES Experiences Portugal — a licensed Portuguese travel studio (RNAAT 31/2023), based in Sesimbra and operating nationwide across Portugal: https://yesexperiencesportugal.com";
+  "Private tours and multi-day journeys by YES Experiences Portugal — a licensed Portuguese travel studio (RNAAT nº 31/2023), based in Sesimbra and operating nationwide across Portugal: https://yesexperiencesportugal.com";
 
 const COMPANY_SHORT =
-  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT 31/2023) designing private, emotionally intelligent day tours and multi-day journeys nationwide across Portugal. Founded in 2022 by Nídia Almeida, the studio works with a curated network of family wineries, chefs and local hosts to deliver experiences you cannot book off a shelf.";
+  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023) designing private, emotionally intelligent day tours and multi-day journeys nationwide across Portugal. Founded in 2022 by Nídia Almeida, the studio works with a curated network of family wineries, chefs and local hosts to deliver experiences you cannot book off a shelf.";
 
 const COMPANY_LONG =
-  "YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — nationwide across Portugal, from Lisbon, Sintra, Arrábida, Sesimbra, the Setúbal Peninsula, Comporta, the Alentejo and the Costa Vicentina to Évora, the Douro Valley, Porto, the Azores and Madeira. Every itinerary is built around the guests rather than a fixed catalogue, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES has earned hundreds of five-star reviews across Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.";
+  "YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT nº 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — nationwide across Portugal, from Lisbon, Sintra, Arrábida, Sesimbra, the Setúbal Peninsula, Comporta, the Alentejo and the Costa Vicentina to Évora, the Douro Valley, Porto, the Azores and Madeira. Every itinerary is built around the guests rather than a fixed catalogue, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES has earned hundreds of five-star reviews across Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.";
 
 const FOUNDER_BIO_SHORT =
-  "Founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT 31/2023) crafting private, meaningful experiences nationwide across Portugal.";
+  "Founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023) crafting private, meaningful experiences nationwide across Portugal.";
 
 const FOUNDER_BIO_LONG =
   "YES Experiences Portugal was founded in 2022 and designed end-to-end by Nídia Almeida — concept, brand, website and every itinerary, with no agency and no team behind the curtain. The aim was to offer travellers something Portugal had long missed: private, emotionally intelligent days shaped by a real host with deep local relationships in wine, gastronomy and culture, not by a marketplace algorithm. The studio designs experiences the length of the country, from the Douro to the Algarve and the islands.";
@@ -72,7 +72,7 @@ const SOCIAL = [
 ];
 
 // Backlink / HTML snippets partners can paste directly.
-const HTML_TEXT_LINK = `<a href="https://yesexperiencesportugal.com" rel="noopener" target="_blank">YES Experiences Portugal</a> — licensed Portuguese travel studio (RNAAT 31/2023) designing private tours nationwide.`;
+const HTML_TEXT_LINK = `<a href="https://yesexperiencesportugal.com" rel="noopener" target="_blank">YES Experiences Portugal</a> — licensed Portuguese travel studio (RNAAT nº 31/2023) designing private tours nationwide.`;
 
 const HTML_LOGO_LINK = `<a href="https://yesexperiencesportugal.com" rel="noopener" target="_blank" aria-label="YES Experiences Portugal">
   <img src="https://yesexperiencesportugal.com/brand/png/yes-experiences-portugal-horizontal-full@2x.png"
@@ -80,13 +80,13 @@ const HTML_LOGO_LINK = `<a href="https://yesexperiencesportugal.com" rel="noopen
        width="240" height="60" loading="lazy" />
 </a>`;
 
-const MARKDOWN_LINK = `[YES Experiences Portugal](https://yesexperiencesportugal.com) — licensed Portuguese travel studio (RNAAT 31/2023), private tours nationwide.`;
+const MARKDOWN_LINK = `[YES Experiences Portugal](https://yesexperiencesportugal.com) — licensed Portuguese travel studio (RNAAT nº 31/2023), private tours nationwide.`;
 
 const BIBTEX = `@misc{yesexperiencesportugal,
   title  = {YES Experiences Portugal — Private Portugal Tours & Journeys},
   author = {{YES Experiences Portugal}},
   year   = {2022},
-  note   = {Licensed tour operator RNAAT 31/2023, Sesimbra, Portugal},
+  note   = {Licensed tour operator RNAAT nº 31/2023, Sesimbra, Portugal},
   url    = {https://yesexperiencesportugal.com}
 }`;
 
@@ -285,7 +285,7 @@ function PressPage() {
         {/* Fact strip — scannable trust cues. */}
         <div className="mt-6 flex flex-wrap gap-2">
           <FactPill>Founded 2022</FactPill>
-          <FactPill>RNAAT 31/2023</FactPill>
+          <FactPill>RNAAT nº 31/2023</FactPill>
           <FactPill>Hundreds of 5★ reviews</FactPill>
           <FactPill>EN · PT · ES</FactPill>
           <FactPill>Nationwide across Portugal</FactPill>

@@ -89,7 +89,7 @@ function CookiesPage() {
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               Questions? Write to us at{" "}
               <a
-                href="mailto:hello@yesexperiencesportugal.com"
+                href="mailto:info@yesexperiencesportugal.com"
                 className="text-[color:var(--teal)] underline underline-offset-4"
               >
                 hello@yesexperiencesportugal.com
