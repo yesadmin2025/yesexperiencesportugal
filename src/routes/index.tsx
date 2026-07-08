@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { EditorialCard } from "@/components/ui/EditorialCard";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
