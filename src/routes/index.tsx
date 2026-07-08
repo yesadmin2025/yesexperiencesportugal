@@ -617,7 +617,7 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
-              <span className="he-eyebrow-bar mb-5">Signature</span>
+              <Eyebrow className="mb-5">Signature</Eyebrow>
               <h2
                 id="signatures-title"
                 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
