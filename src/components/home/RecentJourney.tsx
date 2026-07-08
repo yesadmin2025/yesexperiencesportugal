@@ -226,7 +226,7 @@ function BookFlip() {
 
       {/* Book stage */}
       <div
-        role="group"
+        role="region"
         aria-roledescription="book"
         aria-label="Pages from a real private travel file. Use arrow keys, swipe, or the thumbnails below to turn pages."
         tabIndex={0}

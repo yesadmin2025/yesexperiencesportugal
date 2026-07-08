@@ -248,9 +248,9 @@ export function Footer() {
             className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/80"
             style={{ fontWeight: 400 }}
           >
-            <p className="leading-[1.6]">
+            <p className="leading-[1.6] text-[color:var(--ivory)]/80">
               © 2026 YES experiences Portugal. All rights reserved.
-              <span className="hidden md:inline"> · RNAAT nº 31/2023 · Sesimbra, Portugal.</span>
+              <span className="hidden md:inline text-[color:var(--ivory)]/80"> · RNAAT nº 31/2023 · Sesimbra, Portugal.</span>
             </p>
             <nav
               aria-label="Legal and contact"
@@ -265,7 +265,7 @@ export function Footer() {
                 <span key={l.to} className="inline-flex items-center gap-4">
                   <Link
                     to={l.to}
-                    className="text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                    className="inline-flex items-center min-h-[24px] py-1 text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                   >
                     {l.label}
                   </Link>
