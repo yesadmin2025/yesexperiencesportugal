@@ -1,5 +1,5 @@
-import logoTealAsset from "@/assets/yes-logo-approved.png";
-import logoGoldAsset from "@/assets/yes-logo-approved-gold-silk.png";
+import logoTealAsset from "@/assets/yes-logo-approved.webp";
+import logoGoldAsset from "@/assets/yes-logo-approved-gold-silk.webp";
 import { assertBrandLogoTheme, type BrandLogoTheme } from "@/lib/brand-tokens";
 
 const SOURCES: Record<BrandLogoTheme, string> = {
