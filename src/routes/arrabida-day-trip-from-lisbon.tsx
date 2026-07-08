@@ -123,7 +123,7 @@ function Page() {
             </p>
             <div className="mt-8">
               <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
-                See the Arrábida Wine Signature
+                See the Signature
               </CtaButton>
             </div>
           </div>

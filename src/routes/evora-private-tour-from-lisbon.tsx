@@ -123,7 +123,7 @@ function EvoraPrivateLanding() {
             </p>
             <div className="mt-8">
               <CtaButton to="/tours/$tourId" params={{ tourId: PARENT_TOUR_ID }} variant="primary">
-                Explore this experience directly
+                Open the Signature
               </CtaButton>
             </div>
           </div>
