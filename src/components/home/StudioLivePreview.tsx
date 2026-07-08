@@ -232,9 +232,7 @@ export function StudioLivePreview() {
             <g
               key={s.id}
               className="slv-pin"
-              role="button"
-              tabIndex={0}
-              aria-label={`${s.label} — ${s.caption}`}
+              aria-hidden="true"
               style={{
                 opacity: renderedActive ? 1 : 0,
                 transform: renderedActive ? "translateY(0)" : "translateY(4px)",
