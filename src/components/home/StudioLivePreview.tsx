@@ -377,7 +377,7 @@ export function StudioLivePreview() {
           </p>
           <Link
             to="/experiences"
-            className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors duration-200"
+            className="inline-flex items-center min-h-[24px] py-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
           >
             See sample day
           </Link>

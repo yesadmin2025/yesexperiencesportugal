@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
-import { WhatsAppFab } from "./WhatsAppFab";
+
 
 import { PostHeroAnnouncer } from "./PostHeroAnnouncer";
 import { QaPanel } from "./dev/QaPanel";
@@ -859,7 +859,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <FloatingActions />
-      <WhatsAppFab />
+      {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
+          is the single source of truth for the floating support affordance. Rendering
+          both stacked two 56×56 FABs 4px apart on desktop, failing WCAG 2.2 target-size. */}
 
       {/* Single polite SR announcer — fires once per tab when the user
           first scrolls past the hero, giving screen-reader users parity

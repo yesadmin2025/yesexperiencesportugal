@@ -265,7 +265,7 @@ export function Footer() {
                 <span key={l.to} className="inline-flex items-center gap-4">
                   <Link
                     to={l.to}
-                    className="text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                    className="inline-flex items-center min-h-[24px] py-1 text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                   >
                     {l.label}
                   </Link>
