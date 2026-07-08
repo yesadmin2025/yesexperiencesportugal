@@ -9,16 +9,16 @@
 - [Day Tours](/day-tours): Half- and full-day private tours across Portugal.
 - [Experience Studio](/studio-v3): Design your own private day with live pricing and instant reservation.
 - [Travel Designer (Multi-day)](/multi-day): Bespoke multi-day journeys designed with you.
-- [Moments](/moments): Proposals, anniversaries and private celebrations.
+- [Moments](/proposals): Proposals, anniversaries and private celebrations.
 - [Corporate](/corporate): Private corporate days and incentives.
 - [About](/about): Who we are and how we work.
 - [Contact](/contact): Get in touch.
-- [FAQ](/faq): Common questions about booking, pricing and logistics.
+- [FAQ](/#faq): Common questions about booking, pricing and logistics.
 - [Local Stories](/local-stories): Editorial guides to Portugal's regions and experiences.
 
 ## Local Stories
 
-- [Best Day Trips from Lisbon](/local-stories/best-day-trips-from-lisbon)
+- [Best Day Trips from Lisbon](/day-trips-from-lisbon)
 - [Arrábida vs Sintra](/local-stories/arrabida-vs-sintra)
 - [Setúbal Wine Guide](/local-stories/setubal-wine-guide)
 - [What to Do in Sesimbra](/local-stories/what-to-do-in-sesimbra)
