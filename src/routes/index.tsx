@@ -216,30 +216,30 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Private Portugal Tours & Real-Time Builder | YES" },
+      { title: "Private Portugal Tours, Designed With a Local | YES" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
         content:
-          "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer.",
+          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed.",
       },
       {
         property: "og:title",
-        content: "Private Portugal Tours & Real-Time Builder | YES",
+        content: "Private Portugal Tours, Designed With a Local | YES",
       },
       {
         property: "og:description",
         content:
-          "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer.",
+          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed.",
       },
       {
         property: "twitter:title",
-        content: "Private Portugal Tours & Real-Time Builder | YES",
+        content: "Private Portugal Tours, Designed With a Local | YES",
       },
       {
         property: "twitter:description",
         content:
-          "Design and instantly reserve a private Portugal day in the YES Studio, book a Signature tour, or plan a full journey with a local designer.",
+          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
