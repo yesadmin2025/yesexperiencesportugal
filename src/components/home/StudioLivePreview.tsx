@@ -390,8 +390,6 @@ export function StudioLivePreview() {
 function Chip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <span
-      tabIndex={0}
-      role="button"
       aria-label={`${label}: ${value}`}
       className="slv-focusable inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--charcoal-deep)]/60 px-2.5 py-1 text-[color:var(--ivory)]"
     >
