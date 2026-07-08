@@ -18,7 +18,7 @@ const PAGE_PATH = "/evora-private-tour-from-lisbon";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const PARENT_TOUR_ID = "evora-alentejo";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Private Évora Tour from Lisbon | Wine, Cork & Heritage";
+const TITLE = "Private Évora Day Tour from Lisbon — UNESCO & Alentejo";
 const DESCRIPTION =
   "Private Évora tour from Lisbon — the Roman Temple, Chapel of Bones, two family wineries and a cork tradition stop, with an unhurried Alentejo lunch.";
 

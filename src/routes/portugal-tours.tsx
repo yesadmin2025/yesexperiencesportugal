@@ -9,7 +9,7 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/portugal-tours";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Portugal Tours — Private, Luxury & Small-Group by a Local";
+const TITLE = "Portugal Tours — Private Days Portugal Tours — Private, Luxury & Small-Group by a Local Multi-Day Journeys | YES";
 const DESCRIPTION =
   "Private Portugal tours designed by a local operator — Lisbon, Sintra, Arrábida, Alentejo, Douro. Signature day tours and multi-day journeys, instantly confirmed.";
 

@@ -9,7 +9,7 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/private-tours-portugal";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Private Tours Portugal — Designed by a Local Operator";
+const TITLE = "Private Portugal Tours from Lisbon — One Family, One Guide";
 const DESCRIPTION =
   "Private Portugal tours from Lisbon — Sintra, Arrábida, Alentejo, Comporta. One family, one guide, one car. Instantly confirmed, all-inclusive pricing.";
 

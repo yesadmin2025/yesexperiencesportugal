@@ -9,7 +9,7 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/portugal-wine-tours";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Portugal Wine Tours — Private, By a Local Operator";
+const TITLE = "Portugal Wine Tours — Arrábida, Setúbal & Alentejo | YES";
 const DESCRIPTION =
   "Private Portugal wine tours — Arrábida, Setúbal, Azeitão and Alentejo. Real cellars, real winemakers, all-inclusive private days from Lisbon.";
 
