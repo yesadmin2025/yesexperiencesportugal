@@ -2268,46 +2268,9 @@ export function StudioV3() {
         <ReactionOverlay reaction={reaction} state={state} onDismiss={() => setReaction(null)} />
       ) : null}
 
-      {/* Discreet help affordance. Softened to a near-whisper so it never
-          competes with the main experience. Hidden on phases that already
-          show a Continue CTA (interests, considerations), on the final Map +
-          Storyboard, and whenever a reaction beat is on screen.
-          TODO: Later phase — connect Ask YES help link to official contact channel. */}
-      {!reaction &&
-      !EARLY_PHASES.includes(state.phase) &&
-      state.phase !== "map" &&
-      state.phase !== "interests" &&
-      state.phase !== "considerations" &&
-      state.phase !== "storyboard" ? (
-        <div
-          aria-hidden="false"
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pt-6 pb-2"
-          style={{
-            background:
-              "linear-gradient(to top, var(--ivory) 0%, color-mix(in oklab, var(--ivory) 92%, transparent) 55%, transparent 100%)",
-          }}
-        >
-          <button
-            type="button"
-            disabled
-            aria-label="Need help? Ask YES (coming soon)"
-            className="pointer-events-auto inline-flex items-center gap-1.5 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.26em] font-semibold opacity-55 cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            style={{
-              color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
-              background: "transparent",
-              borderRadius: "999px",
-            }}
-          >
-            <span
-              aria-hidden
-              style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-            >
-              —
-            </span>
-            Need help? Ask YES
-          </button>
-        </div>
-      ) : null}
+      {/* Ask YES help affordance intentionally omitted until wired to a
+          real support channel. Studio philosophy: interface disappears
+          when there is nothing meaningful to show. */}
     </main>
   );
 }

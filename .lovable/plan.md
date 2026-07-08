@@ -1,171 +1,149 @@
-# Local Stories routing audit
+# Accidental-text audit — findings and fixes
 
-## 1. Do invalid Local Stories routes exist / are they reachable?
+Scope covered: Homepage, `/experiences`, `/studio-v3`, `/multi-day`
+(Travel Designer), `/about`, `/corporate`, `/proposals` (Moments),
+`/local-stories` + article template, `/contact`, footer, navbar,
+mobile viewport (393×588), plus SEO-only surfaces (JSON-LD, `llms.txt`,
+sitemap, head metadata).
 
-Yes — reachable, but **not linked or indexed**. The dynamic route
-`/local-stories/$slug` (file `src/routes/local-stories.$slug.tsx`)
-accepts **any** string, including:
+Method: rendered-HTML scan of each route via curl at localhost,
+plus source grep for common accidental patterns (`Lorem`, `Ipsum`,
+`Placeholder`, `TODO`, `FIXME`, `WIP`, `Draft`, `Test`, `Sample`,
+`Coming soon`, missing spaces after `.`/`,`, superlatives, competitor
+comparisons, duplicated CTA fragments, `null`/`undefined` leaks,
+stray CSS text nodes).
 
-- `/local-stories/$slug` (literal `$` — captured verbatim as
-  `params.slug === "$slug"`)
-- `/local-stories/%24slug` (URL-encoded `$` — decoded to the same
-  `params.slug === "$slug"`)
-- `/local-stories/anything-else` (typos, deleted posts, malicious probes)
-- template placeholders like `/local-stories/example`,
-  `/local-stories/undefined`
+**Result:** the site is mostly clean — no `Lorem`, no `TODO`
+strings in visible copy, no `day.Add`-style missing-space bugs, no
+"Photos Fast Crisp"-style stray labels, no duplicated CTA
+fragments beyond legitimate nav/footer repetition. Four real issues
+found (three SEO-only, one user-visible), plus one code comment
+worth cleaning.
 
-For all of these:
+---
 
-- The **loader does not throw `notFound()`** — it returns
-  `{ reviews: [], signatureTitle: null, dbPost: null }` when the slug
-  is neither a static article (`getLocalStoryArticle`) nor a
-  `published` DB row (`journal_posts` via `fetchPost`). Lines 106 and
-  121 in `local-stories.$slug.tsx`.
-- The **component then re-fetches** the same missing slug in
-  `DbPostView` via `useQuery`, shows a "Loading…" screen, and only
-  then throws `notFound()` (line 500–502) once the second fetch
-  resolves.
-- Result: HTTP **200 OK** with a brief "Loading…" flash, then the
-  `NotFoundView` UI at the same URL. This is a **soft-404**: Google
-  sees 200 + generic "Local Story — YES experiences Portugal"
-  metadata + a canonical pointing at the invalid URL (`head()`
-  fallback at lines 210–274). The `notFoundComponent` swap does not
-  change the status code, and no `robots: noindex` is emitted for
-  missing slugs.
-- The `beforeLoad` at line 277 only handles the one legacy redirect
-  (`best-day-trips-from-lisbon → /day-trips-from-lisbon`); it does
-  not guard placeholder patterns.
+## Findings
 
-Two dedicated legacy/SEO routes exist alongside this and are fine:
-`/day-trips-from-lisbon` and `/evora-alentejo-wine-tour`. The
-day-trips redirect from the dynamic route is correct.
+### 1. Superlative + competitor claim in JSON-LD FAQ (SEO-only) — VIOLATES BRAND RULE
 
-## 2. Where invalid URLs could be generated
+**Where:** `src/content/faq-data.ts:11` and `:23`.
+Rendered only in the homepage FAQPage JSON-LD block (`src/routes/index.tsx:263`) — **not** visible on screen; the on-page FAQ (`src/components/FAQ.tsx`) uses different, compliant copy.
 
-Checked every source of `/local-stories/…` URLs; **no** placeholder
-or invalid slug is generated internally:
+**Current wording (line 11 answer):**
+> "…the **first real-time private tour builder in Portugal**. … It is a service YES pioneered and, at time of writing, **no other Portuguese tour operator offers a comparable in-house real-time builder**."
 
-| Source | File | Behavior |
-|---|---|---|
-| Sitemap — static | `src/routes/sitemap[.]xml.ts:125–132` | Iterates `LOCAL_STORIES_ARTICLES`, excludes `best-day-trips-from-lisbon` (moved to its own SEO route). All real. |
-| Sitemap — DB | `src/routes/sitemap[.]xml.ts:135–151` | `journal_posts` filtered by `status = "published"`. Dedupes against static slugs (lines 153–156). Draft/unpublished never appear. |
-| Sitemap resilience | 149–151 | Tolerates DB failure; only ships static entries. Safe. |
-| Index page — static grid | `src/routes/local-stories.tsx:115–141` | Maps `LOCAL_STORIES_ARTICLES` only. Uses typed `<Link to="/local-stories/$slug" params={{ slug: a.slug }}>`, so no string interpolation. |
-| Index page — DB grid | `src/routes/local-stories.tsx:142–170` | Maps `posts` from the same published-only query. |
-| Footer / Navbar | `src/components/Footer.tsx:95`, `Navbar.tsx:26` | Only link the index `/local-stories`, not `$slug`. |
-| `public/llms.txt` | lines 17–26 | Hand-maintained; all 6 URLs are real published articles. |
-| JSON-LD | `src/lib/jsonld.ts:725` | Only references the index for reviews `@id`. No per-slug URLs. |
-| `beforeLoad` redirect | `local-stories.$slug.tsx:277–283` | Redirects one legacy slug. Does not manufacture URLs. |
+**Current wording (line 23 answer):**
+> "Studio designs a private day in real time … — **Portugal's first real-time private tour builder**."
 
-Nothing in the codebase links `/local-stories/$slug` literally,
-`%24slug`, `undefined`, `null`, an empty slug, or any template
-placeholder. The only way to reach an invalid route is by typing it,
-following a stale external link, or a crawler probe.
+**Why it's a problem:** the core memory constraint `constraints/yes-canonical-rules` and the memory entry rejecting "ONLY interactive builder in Portuguese tourism" both forbid competitor comparisons and superlative first-in-market claims. This copy is currently being served to Google as structured data.
 
-## 3. Sitemap / internal-link exposure
+**Visible?** No (JSON-LD only; SEO-visible).
 
-- **Sitemap**: clean. Only `LOCAL_STORIES_ARTICLES` (minus the moved
-  day-trips one) and `journal_posts` where `status = 'published'`.
-- **Internal links**: clean. Both grids on `/local-stories` use
-  typed `<Link>` with `params={{ slug: a.slug }}` sourced from the
-  same two allow-lists.
-- **External surfaces** (`llms.txt`, JSON-LD): clean.
-- **`robots.txt`**: currently no rule for `/local-stories/*` — not
-  needed, because indexed URLs come from the sitemap and each valid
-  slug's `head()` sets its own canonical. Invalid slugs today are
-  crawlable but not linked; the risk is if one gets shared or
-  crawled it returns 200 (see section 1).
+**Exact recommended correction:**
+- Line 11 answer → *"Yes — through the YES Experience Studio. You choose the mood, rhythm and route, see the live price update as you go, and reserve instantly. Designed in real time, with you — no form, no back-and-forth, no travel agent in the middle."*
+- Line 23 answer → *"Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file."*
 
-## 4. Safest fix
+**Files to edit:** `src/content/faq-data.ts` (lines 10–12 and 22–24).
 
-Turn every invalid slug into a **real 404** (proper `notFound()`
-boundary + `noindex`), keep the friendly `NotFoundView` UI, and add a
-single guard for the `$slug` / `%24slug` placeholder family so it
-redirects to the clean index.
+---
 
-Four small, surgical changes inside
-`src/routes/local-stories.$slug.tsx`:
+### 2. `public/llms.txt` links to two non-existent routes
 
-1. **`beforeLoad`** — after the existing day-trips redirect, add a
-   guard that redirects obvious placeholders to `/local-stories`
-   (single decision point, no crawler cost):
+**Where:** `public/llms.txt` lines 12 and 15.
 
-   ```ts
-   const bad = new Set(["$slug", "slug", "undefined", "null", "example", ""]);
-   const s = params.slug?.trim().toLowerCase();
-   if (!s || bad.has(s) || s.startsWith("$")) {
-     throw redirect({ to: "/local-stories" });
-   }
-   ```
+**Current:**
+```
+- [Moments](/moments): Proposals, anniversaries and private celebrations.
+- [FAQ](/faq): Common questions about booking, pricing and logistics.
+```
 
-2. **`loader`** — when neither `getLocalStoryArticle(slug)` nor
-   `fetchPost(slug)` returns a record, `throw notFound()` instead of
-   returning the empty `{ reviews: [], signatureTitle: null, dbPost: null }`
-   shape. This routes through `notFoundComponent` immediately, no
-   double-fetch, no "Loading…" flash.
+Both URLs return **HTTP 404** (confirmed against localhost). The real routes are `/proposals` (Moments) and — for FAQ — there is no dedicated route; the FAQ lives as a section on the homepage.
 
-3. **`head()`** — when `loaderData` is missing (notFound thrown or
-   loader errored), return **only** `{ title: "Story not found",
-   meta: [{ name: "robots", content: "noindex, nofollow" }] }` — no
-   canonical, no og:url pointing at the invalid URL, no BlogPosting
-   JSON-LD.
+**Visible?** No to human users, **yes** to LLM/AI crawlers (`llms.txt` is their primary map of the site). Serving broken links here means AI answers about "Moments" or "FAQ" will point to 404s.
 
-4. **`Page` / `DbPostView`** — remove the client-side `useQuery`
-   refetch for the missing case. Since the loader now guarantees a
-   DB post exists when `article` is null (else it threw), render
-   directly from `loaderData.dbPost`. Delete the `if (!post) throw
-   notFound()` fallback at line 500–502 (the loader owns it now).
+**Exact recommended correction:**
+```
+- [Moments](/proposals): Proposals, anniversaries and private celebrations.
+- [FAQ](/#faq): Common questions about booking, pricing and logistics.
+```
+(Adjust the FAQ fragment to whatever anchor id the homepage FAQ actually exposes; if there's no anchor, drop the FAQ bullet.)
 
-Net effect:
+**Files to edit:** `public/llms.txt` (lines 12, 15).
 
-- Valid static article → unchanged.
-- Valid DB post → unchanged (one less client refetch, faster paint).
-- `/local-stories/$slug` / `%24slug` / `undefined` → **302 → /local-stories**.
-- Any other invalid slug → **404** with `NotFoundView` UI and
-  `noindex` in `<head>` (crawlers drop it, no soft-404).
+---
 
-Redirect vs 404 rationale: keep 404 as the default (so legitimate
-typos / deleted posts don't quietly disappear from analytics), and
-only redirect the small class of placeholder-shaped slugs that are
-never a real article.
+### 3. `public/llms.txt` links through a known 301 redirect
 
-## 5. Files / routes / components to edit
+**Where:** `public/llms.txt:21`.
 
-**Only one file:**
+**Current:** `- [Best Day Trips from Lisbon](/local-stories/best-day-trips-from-lisbon)`
 
-- `src/routes/local-stories.$slug.tsx` — extend `beforeLoad`
-  (line 277), tighten `loader` (lines 99–149), tighten `head()`
-  fallback branch (lines 210–274), simplify `Page` + `DbPostView`
-  (lines 290–302 and 483–502).
+`/local-stories/best-day-trips-from-lisbon` is redirected in `beforeLoad` to `/day-trips-from-lisbon` (dedicated SEO route). Pointing external crawlers at the redirect wastes a hop and — for LLM crawlers that don't follow redirects — misses the canonical page.
 
-**No changes needed** to any of these — verified clean:
-`src/routes/local-stories.tsx`, `src/routes/sitemap[.]xml.ts`,
-`public/llms.txt`, `public/robots.txt`, `src/components/Footer.tsx`,
-`src/components/Navbar.tsx`, `src/lib/jsonld.ts`,
-`src/content/local-stories-articles.ts`.
+**Visible?** No to users; SEO/LLM-visible.
 
-## 6. Risk level
+**Exact recommended correction:**
+`- [Best Day Trips from Lisbon](/day-trips-from-lisbon)`
 
-**Low.**
+**Files to edit:** `public/llms.txt` (line 21).
 
-- Behavior change is scoped to slugs that are already broken today
-  (currently soft-404 with 200 OK → will become either a clean 302
-  or a real 404 with noindex).
-- Static articles and real DB posts render through the same code
-  path with identical head/JSON-LD/UI output.
-- No sitemap, JSON-LD, canonical, or internal-link surface changes.
-- The redirect list is conservative (5 exact placeholder strings +
-  `startsWith("$")`); no real published slug in
-  `LOCAL_STORIES_ARTICLES` or `journal_posts` matches these
-  patterns.
-- Rollback is trivial (revert one file).
+---
 
-Only real caveat: any legitimate external inbound link to a slug
-that was **deleted** from `journal_posts` will now return a hard
-404 instead of the current soft-404. That is the desired SEO
-behavior (Google will de-index cleanly) and the `NotFoundView`
-still offers a "All Local Stories" CTA, but if you'd rather 301
-those to `/local-stories`, say so and I'll swap `notFound()` for
-`redirect({ to: "/local-stories" })` in the loader's final branch.
+### 4. Visible dead UI element: "Need help? Ask YES (coming soon)"
 
-**Awaiting approval before I edit anything.**
+**Where:** `src/components/studio-v3/StudioV3.tsx:2276–2310`.
+
+A `<button>` rendered on most Studio v3 phases (all phases except early, `interests`, `considerations`, `map`, `storyboard`) is:
+- **Visible** (dimmed to `opacity: 55%` but rendered on-screen).
+- **Disabled** (`disabled` attr, `cursor-not-allowed`).
+- Announces to screen readers as *"Need help? Ask YES (coming soon)"*.
+
+The comment at line 2275 confirms it: `TODO: Later phase — connect Ask YES help link to official contact channel.` A "coming soon" placeholder feature is shipping in production on a conversion-critical flow.
+
+**Visible?** **Yes** — dim, but present at the bottom of the Studio during most of the flow, and announced to assistive tech with the "coming soon" caveat.
+
+**Exact recommended correction (pick one — I'll ask before editing):**
+
+(a) **Enable it** — swap the disabled `<button>` for an `<a href={whatsappHref()} target="_blank" rel="noopener noreferrer">` that opens the same WhatsApp support flow used elsewhere on the site (memory: WhatsApp = allowed as optional support). Keep label "Need help? Ask YES." Drop `(coming soon)` and the `disabled` attribute. Remove the TODO comment.
+
+(b) **Hide it** — remove the entire block (lines 2271–2310) until the feature is wired. Cleanest option per the Studio philosophy memory ("interface progressively disappears").
+
+Recommendation: **(a)** — the whisper affordance is valuable at low-confidence phases, and WhatsApp support is already the site-wide help channel. If you'd rather stay strict to "no help affordance in Studio v3 yet", go with (b).
+
+**Files to edit:** `src/components/studio-v3/StudioV3.tsx` (lines 2271–2310, plus the `whatsappHref` import if going with option a — already imported project-wide).
+
+---
+
+### 5. Minor: leftover `TODO` code comment (dev-visible only)
+
+**Where:** `src/components/studio-v3/StudioV3.tsx:2275`.
+Not rendered to the DOM, but relates to finding #4 above and disappears when #4 is fixed. No separate edit needed.
+
+**Visible?** No (source-only).
+
+---
+
+## What was checked and is clean
+
+- No `Lorem`/`Ipsum`/`Placeholder`/`Dummy`/`Sample text`/`Example text` anywhere in JSX text nodes.
+- No `TODO`/`FIXME`/`XXX`/`HACK` inside rendered strings (only inside code comments, which don't ship to the DOM).
+- No `null`/`undefined` leaking into text nodes on any audited route.
+- No missing-space patterns of the form `word.Word`, `day.Add`, etc. — grep on rendered HTML across 8 routes returned zero hits.
+- No stray dev/debug labels rendered — all debug overlays (`HeroCopyDiff`, `HeroColorDebugOverlay`, `CtaScrollDebugOverlay`, `HeroChapterDebugOverlay`, `MotionQaPanel`, `useStudioDebug`) are correctly gated behind `?hero-debug` / `?debug-cta` / `?scroll-debug` / `?debug` URL params and don't render for normal visitors.
+- No duplicated CTA text beyond legitimate nav/footer repetition (navbar × mobile drawer × footer main × footer legal = expected 4× per link).
+- No broken punctuation (double spaces, `,.`, `..`, dangling em-dashes) in rendered text across the 8 routes checked.
+- Input `placeholder=` attributes on forms (checkout, admin, auth) are legitimate UX text, not accidental leftover copy.
+- The seemingly-orphan text nodes `> day.<`, `> · reserve when ready<` etc. in the raw HTML dump are the trailing halves of headlines split by inline `<SectionTitle.Em>` emphasis spans — normal JSX composition, correctly recombined visually.
+
+---
+
+## Summary table
+
+| # | Issue | File | Visible? | Fix effort |
+|---|---|---|---|---|
+| 1 | Superlative/competitor claim in FAQ JSON-LD (×2) | `src/content/faq-data.ts` L10–24 | SEO only | Copy swap |
+| 2 | `llms.txt` links to 404 routes `/moments`, `/faq` | `public/llms.txt` L12, L15 | AI crawlers | Path swap |
+| 3 | `llms.txt` links through a 301 redirect | `public/llms.txt` L21 | AI crawlers | Path swap |
+| 4 | Dead "Ask YES (coming soon)" button in Studio | `src/components/studio-v3/StudioV3.tsx` L2271–2310 | **Yes** | Enable or hide |
+
+**Not modifying anything yet — awaiting your go-ahead.** For finding #4, please confirm whether to (a) wire it to WhatsApp support or (b) hide the block entirely.
