@@ -255,9 +255,16 @@ function ExperienceSummaryCard({
                 key={a.id}
                 className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
               >
-                <span className="truncate">• {a.label}</span>
+                <span className="truncate">
+                  • {a.label}
+                  {summary.guests > 1 ? (
+                    <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                      (€{Math.round(a.priceEur).toLocaleString("en-GB")} × {summary.guests})
+                    </span>
+                  ) : null}
+                </span>
                 <span className="tabular-nums text-[color:var(--charcoal-soft)]">
-                  €{Math.round(a.priceEur).toLocaleString("en-GB")}
+                  €{Math.round(a.priceEur * summary.guests).toLocaleString("en-GB")}
                 </span>
               </li>
             ))}
