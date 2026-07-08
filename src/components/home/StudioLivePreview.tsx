@@ -110,7 +110,7 @@ export function StudioLivePreview() {
       ref={wrapRef}
       data-active={renderedActive ? "true" : "false"}
       className="studio-live relative overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]"
-      role="img"
+      role="group"
       aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, your day so far one hundred and forty-five euros per guest"
     >
       {/* ── Header strip — stepper + live status ─────────────────── */}
