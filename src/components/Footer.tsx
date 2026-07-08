@@ -260,6 +260,7 @@ export function Footer() {
                 { to: "/terms", label: "Terms & Conditions" },
                 { to: "/privacy", label: "Privacy Policy" },
                 { to: "/cookies", label: "Cookie Policy" },
+                { to: "/press", label: "Press & brand" },
                 { to: "/contact", label: "Contact" },
               ].map((l, i, arr) => (
                 <span key={l.to} className="inline-flex items-center gap-4">
