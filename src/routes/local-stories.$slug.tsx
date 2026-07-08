@@ -8,7 +8,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import {
   jsonLdScript,
   breadcrumbLd,
-  FOUNDER_ID,
+  
   personFounderLd,
   localStoryReviewsLd,
   localStoryArticleLd,
