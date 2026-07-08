@@ -32,14 +32,14 @@ interface Props {
 // Wording — single source of truth. Do not duplicate elsewhere.
 // 7-day local coverage is now operationally confirmed.
 const FULL_TOKENS = [
-  "Licensed operator RNAAT 31/2023",
+  "Licensed operator RNAAT nº 31/2023",
   "Civil liability insured",
   "Secure checkout",
   "Local support 7 days a week",
 ];
 
 const COMPACT_TOKENS = [
-  "RNAAT 31/2023",
+  "RNAAT nº 31/2023",
   "Insured",
   "Secure checkout",
   "Local support 7 days",
