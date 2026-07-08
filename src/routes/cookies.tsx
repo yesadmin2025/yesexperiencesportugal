@@ -31,7 +31,7 @@ function CookiesPage() {
     <SiteLayout>
       <section className="bg-[color:var(--ivory)] py-20 md:py-28">
         <div className="container-x max-w-2xl mx-auto">
-          <span className="he-eyebrow-bar mb-5">Legal</span>
+          <Eyebrow className="mb-5">Legal</Eyebrow>
           <h1 className="serif mt-3 text-[2rem] md:text-[2.8rem] leading-[1.1] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
             Cookie <span className="italic font-normal text-[color:var(--teal)]">policy.</span>
           </h1>
