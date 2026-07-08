@@ -248,7 +248,7 @@ Deno.serve(async (req) => {
           product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
           unit_amount: a.priceEur * 100,
         },
-        quantity: 1,
+        quantity: body.guests,
       }));
 
     const sessionParams: Record<string, unknown> = {
