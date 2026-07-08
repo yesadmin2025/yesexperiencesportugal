@@ -415,7 +415,7 @@ export function DraftMapPreview({
             style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
           >
             <MapPin size={11} aria-hidden style={{ color: "var(--teal)" }} />
-            Instant confirmation · cancel 48h
+            Instant confirmation · terms at checkout
           </p>
         </div>
       </div>

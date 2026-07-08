@@ -373,7 +373,7 @@ export function StudioLivePreview() {
         <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <p className="inline-flex items-center gap-1.5 text-[10.5px] text-[color:var(--charcoal-soft)]">
             <MapPin size={11} aria-hidden="true" className="text-[color:var(--teal)]" />
-            Instantly booked · cancel 48h
+            Instantly booked · terms at checkout
           </p>
           <Link
             to="/experiences"
