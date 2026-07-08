@@ -551,10 +551,9 @@ function HomePage() {
                 device. On desktop the rail returns to the left so the
                 reading flow stays natural. */}
               <div className="reveal lg:col-span-5 lg:order-1 order-1">
-                <span className="he-eyebrow-bar mb-5">
-                  <span className="live-dot" aria-hidden="true" />
+                <Eyebrow live className="mb-5">
                   Experience Studio
-                </span>
+                </Eyebrow>
 
                 <h2
                   id="studio-title"
