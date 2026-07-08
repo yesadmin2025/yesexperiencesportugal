@@ -1,143 +1,148 @@
-# Event tracking plan — GA4 / GTM ready
+# Local Stories → contextual CTA plan
 
-Goal: prepare the 18 requested events so we can ship a `dataLayer` push (GTM → GA4) later without another round of component surgery. Also keeps the existing Supabase `builder_events` telemetry intact.
+Goal: turn each article into an SEO + conversion page without a salesy tone. Today every article has a single end-of-page CTA to one Signature. That's a conversion floor left on the table — long-form readers scroll past 4 sections and only get one exit path. Fix the pathing, not the volume.
+
+Guardrails (from `yes-experiences-brand` skill): no banned adjectives, sentence-case body, editorial voice, one *primary* action per moment. The end-of-article CTA stays primary and unchanged. New in-body CTAs are **whispers**, not banners.
 
 ---
 
-## 1. Recommended naming structure
+## 1. Where CTAs appear in the article layout
 
-Use the names you listed verbatim as GA4 `event_name`. They already follow GA4 rules (snake_case, ≤40 chars, `[a-z0-9_]`). Group them by funnel so GTM triggers stay tidy:
+Three placements per article, mapped to reader intent as they scroll:
 
 ```text
-surface_action_object[_state]
+┌───────────────────────────────────────┐
+│ eyebrow · H1 · standfirst · hero      │
+├───────────────────────────────────────┤
+│ Section 1                             │
+│ Section 2                             │
+│                                       │
+│   ── MID-ARTICLE WHISPER  (after §2)  │  ← contextual, single line
+│                                       │
+│ Section 3                             │
+│ Section 4                             │
+├───────────────────────────────────────┤
+│ END-OF-ARTICLE PRIMARY CTA  (kept)    │  ← unchanged: Signature deep-link
+│   + relatedSignatures row (kept)      │
+├───────────────────────────────────────┤
+│ FAQ (if any)                          │
+├───────────────────────────────────────┤
+│ FOOTER-ADJACENT SECONDARY RAIL        │  ← 2 muted links, editorial voice
+│   "Prefer a ready-made route?" · …    │
+└───────────────────────────────────────┘
 ```
 
-| Funnel stage      | Events                                                                                                                                       |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hero              | `hero_open_studio_click`, `hero_choose_experience_click`                                                                                     |
-| Five Ways band    | `five_ways_signature_click`, `five_ways_studio_click`, `five_ways_moments_click`, `five_ways_corporate_click`, `five_ways_travel_designer_click` |
-| Studio funnel     | `studio_start_click`, `studio_step_1_complete`, `studio_step_2_complete`, `studio_continue_draft_click`                                      |
-| Signature funnel  | `signature_reserve_click`, `signature_tailor_click`                                                                                          |
-| Contact / support | `whatsapp_click`, `email_click`                                                                                                              |
-| Commerce          | `checkout_started`, `payment_success`                                                                                                        |
-| Editorial         | `local_story_cta_click`                                                                                                                      |
+- **A. Mid-article whisper** — inserted after `sections[Math.floor(len/2)]`. One sentence, gold hairline above, no button chrome. Feels like the writer aside, not an ad. Only present when the article's `topic` maps to a Studio path.
+- **B. End-of-article primary** — the existing `ctaLead` + `ctaLabel` + Signature link. No change. This remains the article's one loud moment.
+- **C. Footer-adjacent secondary rail** — two ghost links (Studio + "write to a local"). Sits just below related-signatures, above the site footer. Same on every article; differs only by the pre-filled Studio intent it deep-links to.
 
-Recommended standard `params` on every event (kept small so GA4 free tier stays clean):
-
-- `page_path` — `location.pathname`
-- `page_group` — `home | studio | signature | contact | local_story | checkout` (derived from route)
-- `surface` — component id (e.g. `cinematic_hero`, `five_ways`, `signature_card`)
-- `label` — human-readable CTA text (e.g. "Reserve instantly")
-- `tour_id` / `tour_slug` — on Signature + checkout events
-- `step` — on Studio step events (`1`, `2`, …)
-- `value`, `currency` — on `checkout_started` + `payment_success` (GA4 ecommerce mapping)
-- `variant_id` — when hero A/B or Studio pace variant is active
-
-For `payment_success` also emit GA4 `purchase` (recommended event) alongside the branded name, so GA4 auto-links revenue reports.
+Total conversion surfaces per article: **3**, only one loud. Non-editorial mid-article banners (image blocks, coloured cards) are explicitly rejected.
 
 ---
 
-## 2. Where each event fires
+## 2. Reusable component recommendation
 
-| Event                             | File / component                                                                                    | Trigger                                          |
-| --------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `hero_open_studio_click`          | `src/components/home/CinematicHero.tsx` — primary CTA                                               | onClick                                          |
-| `hero_choose_experience_click`    | `src/components/home/CinematicHero.tsx` — secondary CTA                                             | onClick                                          |
-| `five_ways_*_click` (×5)          | `src/components/home/FourWaysIn.tsx` (needs rename or new "FiveWays" — confirm which band you mean) | onClick per card                                 |
-| `studio_start_click`              | `src/components/home/StudioLivePreview.tsx` + any "Start Studio" surface (Navbar CTA)                | onClick                                          |
-| `studio_step_1_complete`          | `src/components/studio-v3/StudioV3.tsx` (beat/step transitions)                                     | on advance from beat 1                           |
-| `studio_step_2_complete`          | same                                                                                                 | on advance from beat 2                           |
-| `studio_continue_draft_click`     | Studio warm-resume surface (already emits `studio_v2_warm_resume` in `builder-analytics.ts`)         | onClick of the "continue" chip                   |
-| `signature_reserve_click`         | `src/components/SimpleBookingForm.tsx` + `src/routes/tours.$tourId.tsx` "Reserve" button            | onClick                                          |
-| `signature_tailor_click`          | `src/components/SimpleTailorForm.tsx` + `src/routes/tours.$tourId.tailor.tsx` entry CTA             | onClick                                          |
-| `whatsapp_click`                  | `src/components/support/WhatsAppSupportButton.tsx`, `WhatsAppFab.tsx`, `FloatingActions.tsx`, Footer | onClick                                          |
-| `email_click`                     | Any `mailto:` — Footer, Contact route, Corporate                                                    | onClick                                          |
-| `checkout_started`                | `supabase/functions/create-signature-checkout/index.ts` **and** `create-builder-checkout` — dispatch client-side just before `window.location = stripeUrl` | in caller components before redirect             |
-| `payment_success`                 | `src/routes/checkout.success.tsx` (or wherever Stripe returns) — verify server confirms first        | on mount, once, dedupe by `session_id`           |
-| `local_story_cta_click`           | `src/routes/local-stories.$slug.tsx` — bottom CTA(s)                                                | onClick                                          |
+One primitive, three placement wrappers. Fits the existing `@/components/ui` primitive pattern (`Eyebrow`, `SectionTitle`, `CtaButton`, `EditorialCard`).
+
+```text
+src/components/local-stories/
+  ArticleCTA.tsx           // <ArticleCTA variant="whisper"|"rail"|"primary" intent={…} />
+  articleCtaResolver.ts    // (article) => { topic, ctas: {whisper, rail} }
+```
+
+- **`<ArticleCTA variant="whisper">`** — gold hairline + italic Georgia sentence with an underlined gold link. No button. `prefers-reduced-motion` safe. Renders inside `.prose-yes` between sections.
+- **`<ArticleCTA variant="rail">`** — two-column row of ghost links, Inter uppercase eyebrow voice + gold arrow. Ships below `relatedSignatures`.
+- **`<ArticleCTA variant="primary">`** — thin wrapper around existing `<CtaButton>` so the current end-of-article block adopts the same event schema. Visually identical to today.
+
+`articleCtaResolver` maps `article.topic` → CTA config. Topic is derived from a new optional `topic` field on `LocalStoryArticle` (`"wine" | "sintra" | "arrabida" | "multi-day" | "corporate" | "moments" | "region-pick"`), with a fallback that infers from `eyebrow`/`slug` so we don't need to backfill all 8 articles on day one.
+
+Deep-links are typed against `signatureTours` so a bad slug breaks the build, not the page.
 
 ---
 
-## 3. Data attributes vs direct calls — use both, with rules
+## 3. Example copy variations (editorial, on-voice)
 
-**Recommendation:** small typed `track()` wrapper called directly, with an optional `data-analytics-event` declarative fallback wired by one delegated listener.
+All lines are sentence case, no banned adjectives, em dash allowed. Mid-article whispers stay under ~14 words.
 
-- **Direct call — default choice.** Every CTA in the map above should call `track('hero_open_studio_click', { surface: 'cinematic_hero', label })` inside its `onClick`. Reasons:
-  - Full TypeScript safety (union of allowed event names — extends the existing `BuilderEvent` union pattern in `src/lib/builder-analytics.ts`).
-  - Access to component-local params (`tourId`, `step`, `variant_id`) that data attributes can't express cleanly.
-  - Works for non-click events (`studio_step_1_complete`, `payment_success`, `checkout_started`).
-- **`data-analytics-event` — escape hatch.** Register a single delegated listener in `src/lib/analytics.ts` that reads `data-analytics-event`, `data-analytics-*` and dispatches. Useful for:
-  - Static links inside MDX / rich text (Local Stories body copy).
-  - Third-party embeds we don't control component-side.
-  - Rapid QA — marketing can add tracking to a new CTA without a code change beyond attributes.
+**Topic: wine (e.g. Setúbal, Palmela, "Best wine regions near Lisbon")**
+- Whisper: *Want this as a private day? — design it in the Studio.*
+- Whisper alt: *Prefer we handle the pairings? — see the Arrábida Signature.*
+- Rail L: *Not sure which region fits you?* → **Write to a local**
+- Rail R: *Rather start from a ready-made route?* → **Explore Signature Experiences**
 
-Dispatch layer (single file, no vendor lock-in):
+**Topic: sintra**
+- Whisper: *Want Sintra without the queues? — start it in the Studio.*
+- Whisper alt: *Or take the paced version we designed —* **Sintra & Cascais Signature**.
+- Rail: same as above, Studio intent pre-filled with `region=sintra`.
 
-```ts
-// src/lib/analytics.ts
-type AnalyticsEvent =
-  | 'hero_open_studio_click'
-  | 'hero_choose_experience_click'
-  | 'five_ways_signature_click'
-  | /* …full union… */
-  | 'local_story_cta_click';
+**Topic: arrabida**
+- Whisper: *Want this as a private day with lunch by the water? — open the Studio.*
+- Whisper alt: *Or book the day we take our own friends on —* **Arrábida Wine Signature**.
 
-export function track(event: AnalyticsEvent, params: Record<string, unknown> = {}) {
-  if (typeof window === 'undefined') return;
-  const payload = { event, page_path: location.pathname, ...params };
-  // 1. GTM / GA4
-  (window as any).dataLayer = (window as any).dataLayer || [];
-  (window as any).dataLayer.push(payload);
-  // 2. Existing Supabase telemetry (fire-and-forget)
-  void trackBuilderEvent(event as any, params).catch(() => {});
-}
-```
+**Topic: multi-day (e.g. "3 days south of Lisbon")**
+- Whisper: *Turning this into a two- or three-day journey? — a local designer can shape it with you.*
+- Rail L: **Talk to a Travel Designer** · Rail R: **See multi-day journeys**
 
-GTM/GA4 loads later from `__root.tsx` via `head.scripts` (async, non-blocking). Until then, `dataLayer.push` is a no-op but the queue survives — no wasted work re-instrumenting later.
+**Topic: corporate / occasion / celebration**
+- Whisper: *Planning this for a team or a milestone? — we build these privately.*
+- Rail L: **Corporate & retreats** · Rail R: **Celebrations & Moments**
+
+**Topic: region-pick (comparison articles: "Arrábida vs Sintra")**
+- Whisper: *Still torn? — tell a local what your day should feel like.*
+- Rail L: **Write to a local** · Rail R: **Design it in the Studio**
+
+Copy lives in `articleCtaResolver.ts` so a non-dev can edit voice without touching JSX.
 
 ---
 
 ## 4. Files & components affected
 
-New:
-- `src/lib/analytics.ts` — typed `track()`, delegated listener, GA4 param normaliser.
-- (later) `<GtmScript />` snippet in `src/routes/__root.tsx` `head.scripts`.
+**New (3 files):**
+- `src/components/local-stories/ArticleCTA.tsx` — the primitive.
+- `src/components/local-stories/articleCtaResolver.ts` — topic → copy + deep-links + tracking metadata.
+- `src/components/local-stories/__tests__/articleCtaResolver.test.ts` — asserts every existing article resolves to a valid Signature slug + a valid topic.
 
-Edited (touch surface only):
-- `src/components/home/CinematicHero.tsx`
-- `src/components/home/FourWaysIn.tsx` (confirm this is the "Five ways" band — currently named "FourWaysIn")
-- `src/components/home/StudioLivePreview.tsx`
-- `src/components/studio-v3/StudioV3.tsx` — step complete transitions
-- `src/components/SimpleBookingForm.tsx`, `SimpleTailorForm.tsx`
-- `src/routes/tours.$tourId.tsx`, `src/routes/tours.$tourId.tailor.tsx`
-- `src/components/support/WhatsAppSupportButton.tsx`, `WhatsAppFab.tsx`, `FloatingActions.tsx`, `Footer.tsx`
-- `src/routes/contact.tsx`, `src/routes/local-stories.$slug.tsx`
-- Checkout entry points (before Stripe redirect) + Stripe return route (`payment_success`).
+**Edited (3 files, small):**
+- `src/routes/local-stories.$slug.tsx` — 3 insertions: `<ArticleCTA variant="whisper">` inside the `sections.map` at the midpoint, and `<ArticleCTA variant="rail">` after the `relatedSignatures` block. Duplicate the same 2 insertions in the DB-post branch (line ~503) so DB-authored articles get the same treatment. The existing end-of-article block is wrapped in `<ArticleCTA variant="primary">` for tracking parity — no visual change.
+- `src/content/local-stories-articles.ts` — add optional `topic?: LocalStoryTopic` field to the type; backfill on the 8 existing entries in the same edit (one line each). Fallback resolver means unshipped/DB articles still work without it.
+- `src/index.css` / `styles.css` — one `.article-cta-whisper` utility (gold hairline top + `font-serif italic text-[color:var(--charcoal-soft)]`). No new tokens.
 
-No changes needed in `builder-analytics.ts` — `track()` re-uses it so existing Studio telemetry keeps flowing.
+**No changes to:** `journal_posts` schema, JSON-LD, hero, section rendering, FAQ block, `relatedSignatures`, sitemap. Tracking hooks slot straight into the `track()` wrapper from the previous plan — `local_story_cta_click` gains `{ variant, topic, target }` params.
+
+**Not touched (deliberate):** the article body itself. Zero prose changes; the whisper is inserted between existing sections and reads as a caption, not an interruption.
 
 ---
 
-## 5. Implementation complexity
+## 5. Risk level
 
-| Chunk                                                             | Complexity |
-| ----------------------------------------------------------------- | ---------- |
-| `src/lib/analytics.ts` (wrapper + delegated listener + types)     | XS         |
-| Hero + Five Ways + Studio start + Local Story CTA wiring          | S          |
-| Signature reserve/tailor wiring across Signature routes           | S          |
-| WhatsApp + email surfaces (4 files)                               | XS         |
-| Studio step-complete events inside StudioV3 beats                 | S–M (need to identify precise beat-advance callbacks) |
-| `checkout_started` / `payment_success` (dedupe by session_id, `purchase` alias) | M |
-| GTM container inject + verify in `dataLayer` via Playwright       | S          |
+**Low.**
 
-**Total:** ~half a day of work, no schema changes, no design changes.
+- Purely additive UI; end-of-article CTA and Signature deep-links are unchanged, so existing conversion path is preserved even if `<ArticleCTA>` renders nothing.
+- Type-safe Signature deep-links (build fails on bad slug).
+- Resolver has a safe fallback → an article with no `topic` field falls back to the current single primary CTA. No article can silently break.
+- Motion respects `prefers-reduced-motion` (whisper has no motion; rail uses the existing `-2px` hover).
+- SEO neutral to positive: two extra internal links per article to Studio/Signature/Contact strengthens topical linking without keyword stuffing or duplicate content.
+- Voice risk mitigated by centralising all copy in one file for review before ship.
 
-### Open confirmations before coding
+The only real risk is copy tone drift over time — mitigated by keeping every line in `articleCtaResolver.ts` behind a code review, not editable per-article.
 
-1. Is the "Five ways" band the current `FourWaysIn` component, or is a new fifth card being added? Names below assume 5 cards exist.
-2. Which GA4 property + GTM container ID should we wire? (Add via `secrets` when ready — never inline.)
-3. Should `payment_success` also fire the GA4 `purchase` event with `items[]` for revenue reporting? (Recommended.)
+---
 
-### Risk
+## 6. Can this be implemented article-by-article?
 
-Low. The wrapper is additive; existing Studio Supabase telemetry keeps working. No user-visible UX change. Main risks are (a) missing a CTA surface — mitigated by grep for `href="/builder"` / `mailto:` / `wa.me` before shipping, and (b) firing `payment_success` twice on Stripe return — mitigated by `sessionStorage.setItem('paid:' + session_id, '1')` guard.
+**Yes — cleanly.** The rollout is:
+
+1. **Turn 1 — infra only (no user-visible change).** Ship `<ArticleCTA>`, resolver, styles. Resolver returns `null` for every article. Zero risk.
+2. **Turn 2 — first 3 articles.** Add `topic` to `arrabida-wine-day`, `best-wine-regions-near-lisbon`, `sintra-day-tour-from-lisbon`. Ship. Watch `local_story_cta_click` for 48h.
+3. **Turn 3+ — remaining articles + multi-day + corporate.** Same pattern, one topic at a time.
+4. **DB articles** — inherit automatically once their `region` column maps to a topic (add a `regionToTopic()` helper). No per-article code change required.
+
+Because activation is per-article (via the presence of `topic`), we can also A/B a whisper variant on a single article without a schema migration — just swap the resolver's output for that slug.
+
+---
+
+## Open confirmations before coding
+
+1. **Contact surface for "write to a local".** Is that `/contact`, a WhatsApp deep-link, or a Studio pre-step? (Skill §9 doesn't define this CTA — need the canonical route.)
+2. **Multi-day topic destination.** Is "Travel Designer" a route (`/travel-designer`?), a `/contact?intent=multi-day` link, or the Studio in multi-day mode?
+3. **Whisper cadence on short articles.** Some articles only have 3 sections. Show the whisper only when `sections.length >= 4`, or always after section 2? Recommendation: gate at `>= 4` so 3-section articles keep a single strong exit.
