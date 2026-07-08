@@ -92,7 +92,7 @@ function CookiesPage() {
                 href="mailto:info@yesexperiencesportugal.com"
                 className="text-[color:var(--teal)] underline underline-offset-4"
               >
-                hello@yesexperiencesportugal.com
+                info@yesexperiencesportugal.com
               </a>{" "}
               — or see our{" "}
               <Link to="/privacy" className="text-[color:var(--teal)] underline underline-offset-4">
