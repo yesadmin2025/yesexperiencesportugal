@@ -4,6 +4,7 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe
 import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CredentialStrip } from "@/components/ui/CredentialStrip";
 
 /**
  * BrandedCheckoutDrawer
@@ -151,6 +152,12 @@ export function BrandedCheckoutDrawer({
           <SheetDescription className="sr-only">
             Secure checkout for {summary.tourTitle}.
           </SheetDescription>
+        </div>
+
+        {/* Credential microstrip — operator legitimacy above the summary,
+             lands before doubt. Reviews/popularity are covered elsewhere. */}
+        <div className="px-5 sm:px-7 py-2.5 border-b border-[color:var(--border)] bg-[color:var(--ivory)]">
+          <CredentialStrip variant="light" compact />
         </div>
 
         <div className="overflow-y-auto flex-1">

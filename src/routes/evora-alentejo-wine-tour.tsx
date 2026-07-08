@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
@@ -240,6 +241,12 @@ function EvoraAlentejoLanding() {
                 </CtaButton>
               </div>
             </aside>
+            {/* Credential microstrip — operator legitimacy under the CTA,
+                 reassures without stealing focus. See CredentialStrip. */}
+            <div className="mt-6">
+              <CredentialStrip variant="light" />
+            </div>
+
           </div>
         </section>
         <LandingTourCredibility parentTourId={PARENT_TOUR_ID} />
