@@ -83,15 +83,15 @@ function CorporatePage() {
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>Team Building &amp; Corporate Retreats</Eyebrow>
+          <Eyebrow flank>Corporate Retreats</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Private corporate retreats, team building days, incentives and executive off-sites
-            across Lisbon, Sintra, the Arrábida coast and the Alentejo — transport, guides and
-            venues coordinated end to end so the day feels{" "}
+            across Portugal — from Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro
+            and beyond, with transport, guides and venues coordinated end to end so the day feels{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong>, not
             arranged.
           </p>
