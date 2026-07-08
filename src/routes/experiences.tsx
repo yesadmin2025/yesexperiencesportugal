@@ -209,7 +209,7 @@ function CtaStrip() {
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h2 className="serif text-3xl md:text-4xl">
+            <h2 className="serif text-3xl md:text-4xl text-[color:var(--ivory)]">
               Want to start from scratch?{" "}
               <span className="italic font-normal text-[color:var(--ivory)]">Open the Studio.</span>
             </h2>
