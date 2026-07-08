@@ -172,6 +172,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
               reviews,
             }).map((node) => jsonLdScript(node))
           : [];
+      const imageUrl = articleImageUrl(article);
       return {
         meta: [
           { title: article.title },
@@ -180,11 +181,26 @@ export const Route = createFileRoute("/local-stories/$slug")({
           { property: "og:description", content: article.metaDescription },
           { property: "og:url", content: url },
           { property: "og:type", content: "article" },
+          ...(imageUrl ? [{ property: "og:image", content: imageUrl }] : []),
+          ...(imageUrl ? [{ name: "twitter:image", content: imageUrl }] : []),
           { property: "article:published_time", content: article.datePublished },
+          ...(article.dateModified
+            ? [{ property: "article:modified_time", content: article.dateModified }]
+            : []),
         ],
         links: [{ rel: "canonical", href: url }],
         scripts: [
-          jsonLdScript(articleJsonLd(article)),
+          jsonLdScript(
+            localStoryArticleLd({
+              slug: article.slug,
+              headline: article.h1,
+              name: article.title,
+              description: article.metaDescription,
+              datePublished: article.datePublished,
+              dateModified: article.dateModified,
+              imageUrl,
+            }),
+          ),
           jsonLdScript(personFounderLd()),
           jsonLdScript(
             breadcrumbLd([
@@ -198,6 +214,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
         ],
       };
     }
+
 
     // No static article and no matching DB post — the loader threw
     // notFound() (or errored). Emit a minimal noindex head so this URL
