@@ -7,6 +7,8 @@
  * generic "shape the story" template prose, no invented claims.
  */
 
+import { Eyebrow } from "@/components/ui/Eyebrow";
+
 type Pillar = {
   num: string;
   eyebrow: string;
