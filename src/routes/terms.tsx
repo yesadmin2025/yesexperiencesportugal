@@ -56,9 +56,12 @@ function TermsPage() {
               Cancellations
             </h2>
             <p>
-              Free cancellation up to 48 hours before the experience start time. Cancellations made
-              within 48 hours are non-refundable. We will always do our best to reschedule when
-              possible.
+              Cancellation terms are shown before checkout and may vary by experience type.
+              Signature days usually include free cancellation up to 24 hours before the experience
+              start time; cancellations made inside that window are non-refundable. Studio and
+              custom-built experiences display their specific cancellation terms at checkout, as
+              these depend on the partners and reservations involved. We will always do our best to
+              reschedule when possible.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Liability

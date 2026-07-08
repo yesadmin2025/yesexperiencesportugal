@@ -323,8 +323,9 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Free cancellation</strong> up to
-                24h before the experience, full refund.
+                <strong className="text-[color:var(--charcoal)]">Cancellation</strong> — Signature
+                days usually include free cancellation up to 24h before the experience. Studio and
+                custom-built days show final cancellation terms before checkout.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Weather</strong> — outdoor stops

@@ -34,7 +34,7 @@ export const SIGNATURE_FAQ: FaqItem[] = [
   },
   {
     q: "What's your cancellation policy?",
-    a: "Free cancellation up to 24 hours before the experience start time for a full refund. Inside 24 hours the booking is non-refundable.",
+    a: "Signature day tours usually include free cancellation up to 24 hours before the experience start time for a full refund. Cancellations made within 24 hours are non-refundable. Studio and custom-built experiences show their specific cancellation terms before checkout.",
   },
 ];
 
