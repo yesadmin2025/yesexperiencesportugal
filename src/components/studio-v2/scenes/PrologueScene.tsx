@@ -49,7 +49,7 @@ export function PrologueScene({ onContinue }: PrologueSceneProps) {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/65"
+        className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"
       />
       <div className="relative z-10 flex h-full w-full items-end justify-center px-6 pb-[max(2rem,env(safe-area-inset-bottom))]">
         <p
