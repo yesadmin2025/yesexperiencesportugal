@@ -14,17 +14,17 @@ import { CtaButton } from "@/components/ui/CtaButton";
 export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
-      { title: "Signature Tours — YES experiences Portugal" },
+      { title: "Signature Private Experiences in Portugal | YES" },
       {
         name: "description",
         content:
-          "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
+          "A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.",
       },
-      { property: "og:title", content: "Signature Experiences — YES experiences Portugal" },
+      { property: "og:title", content: "Signature Private Experiences in Portugal | YES" },
       {
         property: "og:description",
         content:
-          "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
+          "A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
     ],
@@ -68,7 +68,7 @@ function ExperiencesPage() {
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Choose one of our private experiences and enjoy it as designed, or tailor a few details.
+            A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.
           </p>
         </div>
       </section>
