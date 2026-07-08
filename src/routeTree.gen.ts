@@ -26,6 +26,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-tours'
+import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
 import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
@@ -186,6 +187,11 @@ const PressRoute = PressRouteImport.update({
 const PortugalWineToursRoute = PortugalWineToursRouteImport.update({
   id: '/portugal-wine-tours',
   path: '/portugal-wine-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalTravelDesignerRoute = PortugalTravelDesignerRouteImport.update({
+  id: '/portugal-travel-designer',
+  path: '/portugal-travel-designer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortugalToursRoute = PortugalToursRouteImport.update({
@@ -603,6 +609,7 @@ export interface FileRoutesByFullPath {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
+  '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
@@ -698,6 +705,7 @@ export interface FileRoutesByTo {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
+  '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
@@ -794,6 +802,7 @@ export interface FileRoutesById {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
+  '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
@@ -891,6 +900,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/multi-day'
     | '/portugal-tours'
+    | '/portugal-travel-designer'
     | '/portugal-wine-tours'
     | '/press'
     | '/preview-check'
@@ -986,6 +996,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/multi-day'
     | '/portugal-tours'
+    | '/portugal-travel-designer'
     | '/portugal-wine-tours'
     | '/press'
     | '/preview-check'
@@ -1081,6 +1092,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/multi-day'
     | '/portugal-tours'
+    | '/portugal-travel-designer'
     | '/portugal-wine-tours'
     | '/press'
     | '/preview-check'
@@ -1177,6 +1189,7 @@ export interface RootRouteChildren {
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   MultiDayRoute: typeof MultiDayRoute
   PortugalToursRoute: typeof PortugalToursRoute
+  PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
   PortugalWineToursRoute: typeof PortugalWineToursRoute
   PressRoute: typeof PressRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
@@ -1366,6 +1379,13 @@ declare module '@tanstack/react-router' {
       path: '/portugal-wine-tours'
       fullPath: '/portugal-wine-tours'
       preLoaderRoute: typeof PortugalWineToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-travel-designer': {
+      id: '/portugal-travel-designer'
+      path: '/portugal-travel-designer'
+      fullPath: '/portugal-travel-designer'
+      preLoaderRoute: typeof PortugalTravelDesignerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portugal-tours': {
@@ -1962,6 +1982,7 @@ const rootRouteChildren: RootRouteChildren = {
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   MultiDayRoute: MultiDayRoute,
   PortugalToursRoute: PortugalToursRoute,
+  PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
   PortugalWineToursRoute: PortugalWineToursRoute,
   PressRoute: PressRoute,
   PreviewCheckRoute: PreviewCheckRoute,
