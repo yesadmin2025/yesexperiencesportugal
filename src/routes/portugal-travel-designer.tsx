@@ -53,7 +53,7 @@ const ITEMS: {
     eyebrow: "How it starts",
     title: "One short conversation.",
     body: "Tell us the shape you're imagining — how many days, which season, who's travelling, what matters. We come back with a first proposal you can red-pen. The journey is refined with you before travel, and supported locally while you're here.",
-    cta: { to: "/contact?intent=multi-day", label: "Write to a designer" },
+    cta: { to: "/contact", label: "Write to a designer" },
   },
 ];
 
@@ -99,7 +99,7 @@ function Page() {
               Not a single tour — the whole journey, designed around your pace, route and rhythm.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <CtaButton to="/contact" search={{ intent: "multi-day" }} variant="primary">
+              <CtaButton href="/contact?intent=multi-day" variant="primary">
                 Write to a designer
               </CtaButton>
               <CtaButton to="/itineraries/10-day-private-portugal-tour" variant="ghost">
@@ -201,7 +201,7 @@ function Page() {
             </aside>
 
             <div className="mt-16 text-center">
-              <CtaButton to="/contact" search={{ intent: "multi-day" }} variant="primary">
+              <CtaButton href="/contact?intent=multi-day" variant="primary">
                 Start a Travel Designer request
               </CtaButton>
             </div>
