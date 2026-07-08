@@ -289,8 +289,10 @@ function BookFlip() {
                 alt={current.alt}
                 className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}
+                loading="lazy"
                 decoding="async"
               />
+
             ) : (
               <PageSkeleton />
             )}
