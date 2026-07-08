@@ -63,7 +63,7 @@ Keep it to a single line, four tokens, separated by `·`. No verbs, no icons in 
 Wording rules:
 - No superlatives ("world-class", "trusted by thousands") — the brand rules ban those.
 - Do not repeat the "700+ 5★" claim here — that already lives in `GuestQuotes` / `StudioTrustStrip`. This strip is *credentials*, not *popularity*. Separating the two prevents the "loud" feeling.
-- "Local support 7 days a week" only if operationally true; otherwise use "Human support before, during and after".
+- "Local support 7 days a week" is operationally confirmed.
 - Never use "guaranteed", "risk-free", or "money-back" without legal review.
 
 ---
