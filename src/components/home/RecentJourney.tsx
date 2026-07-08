@@ -370,47 +370,46 @@ function BookFlip() {
       </div>
 
       {/* Thumbnail rail — visible pagination, direct jump */}
-      <ul
-        className="mt-6 flex items-center justify-center gap-2.5 md:gap-3 list-none p-0"
+      <div
+        className="mt-6 flex items-center justify-center gap-2.5 md:gap-3"
         role="tablist"
         aria-label="Jump to page"
       >
         {PAGES.map((p, i) => {
           const active = i === index;
           return (
-            <li key={p.label}>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={active}
-                aria-label={`Page ${i + 1} — ${p.label}`}
-                onClick={() => goTo(i)}
-                className={`group relative block h-14 w-[42px] md:h-16 md:w-12 overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
-                  active
-                    ? "border-[color:var(--gold-deep)] shadow-[0_6px_18px_-8px_rgba(184,148,82,0.6)] scale-[1.08]"
-                    : "border-[color:var(--charcoal)]/15 opacity-60 hover:opacity-100 hover:border-[color:var(--charcoal)]/40"
-                }`}
-              >
-                <img
-                  src={p.src}
-                  alt=""
+            <button
+              key={p.label}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              aria-label={`Page ${i + 1} — ${p.label}`}
+              onClick={() => goTo(i)}
+              className={`group relative block h-14 w-[42px] md:h-16 md:w-12 overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
+                active
+                  ? "border-[color:var(--gold-deep)] shadow-[0_6px_18px_-8px_rgba(184,148,82,0.6)] scale-[1.08]"
+                  : "border-[color:var(--charcoal)]/15 opacity-60 hover:opacity-100 hover:border-[color:var(--charcoal)]/40"
+              }`}
+            >
+              <img
+                src={p.src}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover object-top"
+                draggable={false}
+              />
+              {active ? (
+                <span
                   aria-hidden="true"
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover object-top"
-                  draggable={false}
+                  className="absolute inset-x-0 -bottom-[5px] mx-auto h-[2px] w-5 rounded-full bg-[color:var(--gold-deep)]"
                 />
-                {active ? (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-0 -bottom-[5px] mx-auto h-[2px] w-5 rounded-full bg-[color:var(--gold-deep)]"
-                  />
-                ) : null}
-              </button>
-            </li>
+              ) : null}
+            </button>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 }

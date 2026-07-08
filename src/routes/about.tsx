@@ -239,46 +239,46 @@ function Page() {
             Licensed, insured <SectionTitle.Em>and personally accountable</SectionTitle.Em>.
           </SectionTitle>
 
-          <dl className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
                 Licence
-              </dt>
-              <dd className="mt-2 font-display text-lg">RNAAT 31/2023</dd>
+              </div>
+              <p className="mt-2 font-display text-lg">RNAAT 31/2023</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Registered Portuguese tourism operator (Registo Nacional dos Agentes de Animação
                 Turística).
               </p>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
                 Founded
-              </dt>
-              <dd className="mt-2 font-display text-lg">2022</dd>
+              </div>
+              <p className="mt-2 font-display text-lg">2022</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Based in Sesimbra, designing private journeys across Portugal.
               </p>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
                 Reviews
-              </dt>
-              <dd className="mt-2 font-display text-lg">700+ five-star</dd>
+              </div>
+              <p className="mt-2 font-display text-lg">700+ five-star</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Verified guest reviews across Tripadvisor, Viator, Google, GetYourGuide and other
                 major travel platforms.
               </p>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
                 Insurance
-              </dt>
-              <dd className="mt-2 font-display text-lg">Civil liability</dd>
+              </div>
+              <p className="mt-2 font-display text-lg">Civil liability</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Vehicles, guests and operations covered under Portuguese tourism law.
               </p>
             </div>
-          </dl>
+          </div>
         </div>
       </section>
 

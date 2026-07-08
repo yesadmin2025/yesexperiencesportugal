@@ -110,7 +110,7 @@ export function StudioLivePreview() {
       ref={wrapRef}
       data-active={renderedActive ? "true" : "false"}
       className="studio-live relative overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]"
-      role="img"
+      role="group"
       aria-label="Experience Studio live preview: Lisbon to Azeitão to Sesimbra, a relaxed day around wine and the coast, your day so far one hundred and forty-five euros per guest"
     >
       {/* ── Header strip — stepper + live status ─────────────────── */}
@@ -232,9 +232,7 @@ export function StudioLivePreview() {
             <g
               key={s.id}
               className="slv-pin"
-              role="button"
-              tabIndex={0}
-              aria-label={`${s.label} — ${s.caption}`}
+              aria-hidden="true"
               style={{
                 opacity: renderedActive ? 1 : 0,
                 transform: renderedActive ? "translateY(0)" : "translateY(4px)",
@@ -392,8 +390,6 @@ export function StudioLivePreview() {
 function Chip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <span
-      tabIndex={0}
-      role="button"
       aria-label={`${label}: ${value}`}
       className="slv-focusable inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--charcoal-deep)]/60 px-2.5 py-1 text-[color:var(--ivory)]"
     >
