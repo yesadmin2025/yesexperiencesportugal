@@ -30,25 +30,23 @@ interface Props {
 }
 
 // Wording — single source of truth. Do not duplicate elsewhere.
-// "Human support before, during and after" is deliberately chosen over
-// "Local support 7 days a week" until 7-day coverage is operationally
-// verified — see plan §3.
+// 7-day local coverage is now operationally confirmed.
 const FULL_TOKENS = [
   "Licensed operator RNAAT 31/2023",
   "Civil liability insured",
   "Secure checkout",
-  "Human support before, during and after",
+  "Local support 7 days a week",
 ];
 
 const COMPACT_TOKENS = [
   "RNAAT 31/2023",
   "Insured",
   "Secure checkout",
-  "Human support",
+  "Local support 7 days",
 ];
 
 const ARIA_LABEL =
-  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023), covered by civil liability insurance, with secure checkout and human support before, during and after your day.";
+  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023), covered by civil liability insurance, with secure checkout and local support 7 days a week.";
 
 export function CredentialStrip({
   variant = "light",
