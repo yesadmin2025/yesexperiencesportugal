@@ -1,148 +1,154 @@
-# Local Stories → contextual CTA plan
+# SEO landing pages — plan (audit + gap-fill, not greenfield)
 
-Goal: turn each article into an SEO + conversion page without a salesy tone. Today every article has a single end-of-page CTA to one Signature. That's a conversion floor left on the table — long-form readers scroll past 4 sections and only get one exit path. Fix the pathing, not the volume.
-
-Guardrails (from `yes-experiences-brand` skill): no banned adjectives, sentence-case body, editorial voice, one *primary* action per moment. The end-of-article CTA stays primary and unchanged. New in-body CTAs are **whispers**, not banners.
+Honest headline before anything else: **9 of your 11 requested pages already exist as routes.** The high-leverage work isn't creating 11 new pages — it's auditing the 9 that ship today, filling 2 real gaps, and adding the FAQ + JSON-LD + Local Stories internal-linking layer that was requested but is missing on most of them. Semrush routing is available if you want me to validate keyword volumes per market before we commit copy — say the word.
 
 ---
 
-## 1. Where CTAs appear in the article layout
+## 1. What already exists vs what's missing
 
-Three placements per article, mapped to reader intent as they scroll:
+| Requested landing                    | Existing route (if any)                                       | State                                                |
+| ------------------------------------ | ------------------------------------------------------------- | ---------------------------------------------------- |
+| Private Tours Portugal               | `/private-tours-portugal`                                     | ✅ ships (189 lines, CollectionPage JSON-LD, no FAQ)  |
+| Private Tours from Lisbon            | *(closest: `/day-trips-from-lisbon`)*                         | ⚠️ different intent — needs its own route            |
+| Portugal Wine Tours                  | `/portugal-wine-tours`                                        | ✅ ships (190 lines)                                  |
+| Private Wine Tour Lisbon             | `/private-wine-tour-lisbon`                                   | ✅ ships                                              |
+| Arrábida Day Trip from Lisbon        | `/arrabida-day-trip-from-lisbon`                              | ✅ ships (292 lines)                                  |
+| Sintra Private Tour from Lisbon      | `/sintra-day-tour-from-lisbon`                                | ✅ ships (330 lines) — slug says "day", intent is fine |
+| Alentejo Wine Tour from Lisbon       | `/alentejo-wine-tour-from-lisbon`                             | ✅ ships                                              |
+| Portugal Travel Designer             | —                                                             | ❌ **missing — create**                              |
+| 10-Day Private Portugal Tour         | `/itineraries/10-day-private-portugal-tour`                   | ✅ ships                                              |
+| Proposal in Portugal                 | *(closest: `/proposals`)*                                     | ⚠️ generic route, no keyword-targeted slug           |
+| Corporate Experiences Portugal       | *(closest: `/corporate`)*                                     | ⚠️ generic route, no keyword-targeted slug           |
+
+So the real work is:
+
+- **2 new routes** — `/portugal-travel-designer`, `/private-tours-from-lisbon` (this last one only if it clears an intent test; see below).
+- **2 SEO-slug additions** with 301 aliases — `/proposal-in-portugal` → keeps `/proposals` as UX label, `/corporate-experiences-portugal` → keeps `/corporate`.
+- **9 audit passes** — each existing page needs the FAQ block + FAQPage JSON-LD + Local Stories internal-linking rail + Studio/Travel Designer CTA parity (most currently have Signature cards but no FAQ and no editorial cross-link).
+
+Before committing "Private Tours from Lisbon" as a separate page, run `semrush--keyword_compare` on `private tours from lisbon` vs `day trips from lisbon` vs `private tours portugal` — if the first two overlap in SERP, one page wins both and we skip creating a duplicate. Doing this before the build is cheaper than fixing cannibalization later.
+
+---
+
+## 2. Reusable components (everything already exists)
+
+The template in `src/routes/private-tours-portugal.tsx` is the canonical shape. Reuse:
+
+- `SiteLayout` — nav + footer shell.
+- `Eyebrow`, `SectionTitle`, `CtaButton`, `EditorialCard` (from `mem://design/canonical-primitives.md` + `editorial-card.md`) — locked H1/H2 rhythm.
+- `jsonLdScript`, `breadcrumbLd` from `src/lib/jsonld.ts` — already handles CollectionPage + Breadcrumb; extend the file with one `faqPageLd(items)` helper (it already has `faqPageLd` used by Local Stories — reuse).
+- Signature card grid + "See tour" link, same shape as Local Stories.
+- `<Link>` deep-links against typed Signature slugs from `src/data/signatureTours.ts`.
+- `<ArticleCTA variant="rail">` (from the previous Local Stories plan) — same primitive for the "Design in Studio · Talk to a designer" pair.
+
+No new components needed. **Zero net new primitives.**
+
+---
+
+## 3. Suggested URL slugs
+
+Rule: match the exact-match keyword when the SERP rewards it, preserve existing published URLs, avoid slug churn (301 redirects are lossy).
+
+| Page                             | Slug                                             | Notes                                                                                        |
+| -------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| Private Tours Portugal           | `/private-tours-portugal`                         | keep                                                                                         |
+| Private Tours from Lisbon        | `/private-tours-from-lisbon` (conditional)        | only if keyword_compare shows non-overlap with `/day-trips-from-lisbon`                      |
+| Portugal Wine Tours              | `/portugal-wine-tours`                            | keep                                                                                         |
+| Private Wine Tour Lisbon         | `/private-wine-tour-lisbon`                       | keep                                                                                         |
+| Arrábida Day Trip from Lisbon    | `/arrabida-day-trip-from-lisbon`                  | keep                                                                                         |
+| Sintra Private Tour from Lisbon  | `/sintra-private-tour-from-lisbon`                | **rename from `/sintra-day-tour-from-lisbon`**; 301 the old slug; matches user's target term |
+| Alentejo Wine Tour from Lisbon   | `/alentejo-wine-tour-from-lisbon`                 | keep                                                                                         |
+| Portugal Travel Designer         | `/portugal-travel-designer`                       | new                                                                                          |
+| 10-Day Private Portugal Tour     | `/itineraries/10-day-private-portugal-tour`       | keep — the `/itineraries/` prefix is SEO-neutral and scales for future multi-day pages       |
+| Proposal in Portugal             | `/proposal-in-portugal`                           | new; 301 from `/proposals` OR keep `/proposals` as sibling — see risk note below              |
+| Corporate Experiences Portugal   | `/corporate-experiences-portugal`                 | new; 301 from `/corporate` OR keep both — same trade-off                                     |
+
+On `/proposals` and `/corporate`: those slugs already have some link equity and are used internally in the nav. Safer path: **create the keyword-rich slug as the canonical URL, make the old slug 301-redirect to it, update Navbar/Footer/internal links in the same PR.** Handled by the existing redirect infrastructure (`src/routes/admin.redirects-monitor.tsx` implies redirect tooling ships already).
+
+---
+
+## 4. Recommended page template
+
+Based on the existing `/private-tours-portugal` shape, with the 4 additions the requested spec calls for (FAQ, JSON-LD FAQPage, Local Stories rail, Travel Designer CTA where relevant):
 
 ```text
-┌───────────────────────────────────────┐
-│ eyebrow · H1 · standfirst · hero      │
-├───────────────────────────────────────┤
-│ Section 1                             │
-│ Section 2                             │
-│                                       │
-│   ── MID-ARTICLE WHISPER  (after §2)  │  ← contextual, single line
-│                                       │
-│ Section 3                             │
-│ Section 4                             │
-├───────────────────────────────────────┤
-│ END-OF-ARTICLE PRIMARY CTA  (kept)    │  ← unchanged: Signature deep-link
-│   + relatedSignatures row (kept)      │
-├───────────────────────────────────────┤
-│ FAQ (if any)                          │
-├───────────────────────────────────────┤
-│ FOOTER-ADJACENT SECONDARY RAIL        │  ← 2 muted links, editorial voice
-│   "Prefer a ready-made route?" · …    │
-└───────────────────────────────────────┘
+┌───────────────────────────────────────────────────────┐
+│ 1. HERO                                                │
+│    Eyebrow · H1 (exact-match keyword) · standfirst    │
+│    Primary CTA: Studio  ·  Secondary CTA: Signature   │
+├───────────────────────────────────────────────────────┤
+│ 2. INTRO (max 90 words, editorial voice)               │
+│    Answer the search intent in one paragraph          │
+├───────────────────────────────────────────────────────┤
+│ 3. SIGNATURE CARDS (3–4, contextual to keyword)       │
+│    Reuses EditorialCard primitive                     │
+├───────────────────────────────────────────────────────┤
+│ 4. HOW IT WORKS (3-step rail — Studio-friendly)       │
+├───────────────────────────────────────────────────────┤
+│ 5. TRUST BAND (real reviews, existing component)      │
+├───────────────────────────────────────────────────────┤
+│ 6. FAQ (5–7 questions, keyword-adjacent)  ← NEW       │
+├───────────────────────────────────────────────────────┤
+│ 7. LOCAL STORIES RAIL (2–3 relevant articles) ← NEW  │
+├───────────────────────────────────────────────────────┤
+│ 8. FOOTER CTA PAIR (Studio · Travel Designer)         │
+└───────────────────────────────────────────────────────┘
 ```
 
-- **A. Mid-article whisper** — inserted after `sections[Math.floor(len/2)]`. One sentence, gold hairline above, no button chrome. Feels like the writer aside, not an ad. Only present when the article's `topic` maps to a Studio path.
-- **B. End-of-article primary** — the existing `ctaLead` + `ctaLabel` + Signature link. No change. This remains the article's one loud moment.
-- **C. Footer-adjacent secondary rail** — two ghost links (Studio + "write to a local"). Sits just below related-signatures, above the site footer. Same on every article; differs only by the pre-filled Studio intent it deep-links to.
+**Head / structured data (every page):**
 
-Total conversion surfaces per article: **3**, only one loud. Non-editorial mid-article banners (image blocks, coloured cards) are explicitly rejected.
+- `<title>` <60 chars, keyword-first
+- `<meta description>` <160 chars, benefit + trust cue
+- Canonical + og:url self-referencing
+- `og:type: "website"`, per-page og:title/description, no og:image unless we generate a real hero (never placeholders)
+- JSON-LD stack: `CollectionPage` (or `Service` for `/portugal-travel-designer`, `Event` for proposals) + `BreadcrumbList` + `FAQPage` (from the new FAQ block)
+- For itinerary pages: add `TouristTrip` schema
 
----
-
-## 2. Reusable component recommendation
-
-One primitive, three placement wrappers. Fits the existing `@/components/ui` primitive pattern (`Eyebrow`, `SectionTitle`, `CtaButton`, `EditorialCard`).
-
-```text
-src/components/local-stories/
-  ArticleCTA.tsx           // <ArticleCTA variant="whisper"|"rail"|"primary" intent={…} />
-  articleCtaResolver.ts    // (article) => { topic, ctas: {whisper, rail} }
-```
-
-- **`<ArticleCTA variant="whisper">`** — gold hairline + italic Georgia sentence with an underlined gold link. No button. `prefers-reduced-motion` safe. Renders inside `.prose-yes` between sections.
-- **`<ArticleCTA variant="rail">`** — two-column row of ghost links, Inter uppercase eyebrow voice + gold arrow. Ships below `relatedSignatures`.
-- **`<ArticleCTA variant="primary">`** — thin wrapper around existing `<CtaButton>` so the current end-of-article block adopts the same event schema. Visually identical to today.
-
-`articleCtaResolver` maps `article.topic` → CTA config. Topic is derived from a new optional `topic` field on `LocalStoryArticle` (`"wine" | "sintra" | "arrabida" | "multi-day" | "corporate" | "moments" | "region-pick"`), with a fallback that infers from `eyebrow`/`slug` so we don't need to backfill all 8 articles on day one.
-
-Deep-links are typed against `signatureTours` so a bad slug breaks the build, not the page.
+Multi-day + Travel Designer pages get the Travel Designer CTA pair; day-trip pages get the Studio CTA pair. Both patterns exist in the codebase.
 
 ---
 
-## 3. Example copy variations (editorial, on-voice)
+## 5. Estimated effort per page
 
-All lines are sentence case, no banned adjectives, em dash allowed. Mid-article whispers stay under ~14 words.
+Assumes the template is now known and copy is pre-approved.
 
-**Topic: wine (e.g. Setúbal, Palmela, "Best wine regions near Lisbon")**
-- Whisper: *Want this as a private day? — design it in the Studio.*
-- Whisper alt: *Prefer we handle the pairings? — see the Arrábida Signature.*
-- Rail L: *Not sure which region fits you?* → **Write to a local**
-- Rail R: *Rather start from a ready-made route?* → **Explore Signature Experiences**
+| Page                                     | Type                         | Effort         |
+| ---------------------------------------- | ---------------------------- | -------------- |
+| `/portugal-travel-designer` (new)        | New route, new copy          | **M (~3–4h)** — new positioning, needs Signature curation + designer intake copy |
+| `/private-tours-from-lisbon` (new, conditional) | New route, template dup | **S (~1.5h)** — clone of existing template with Lisbon-specific copy |
+| `/proposal-in-portugal` (new + 301)      | New slug, migrate `/proposals` | **S (~1.5h)** — copy already exists on `/proposals`, mainly slug + redirect |
+| `/corporate-experiences-portugal` (new + 301) | New slug, migrate `/corporate` | **S (~1.5h)** — same pattern |
+| Audit pass on 9 existing routes           | FAQ + JSON-LD + Local Stories rail + CTA parity | **~30–45 min each = 5–7h total** |
+| `/sintra-day-tour-from-lisbon` → `/sintra-private-tour-from-lisbon` rename | slug + 301 + internal link sweep | **S (~1h)** |
 
-**Topic: sintra**
-- Whisper: *Want Sintra without the queues? — start it in the Studio.*
-- Whisper alt: *Or take the paced version we designed —* **Sintra & Cascais Signature**.
-- Rail: same as above, Studio intent pre-filled with `region=sintra`.
+**Total: ~15–20 hours of focused work**, spread across ~2 sessions. Cheaper than the 11-new-pages read of the brief.
 
-**Topic: arrabida**
-- Whisper: *Want this as a private day with lunch by the water? — open the Studio.*
-- Whisper alt: *Or book the day we take our own friends on —* **Arrábida Wine Signature**.
-
-**Topic: multi-day (e.g. "3 days south of Lisbon")**
-- Whisper: *Turning this into a two- or three-day journey? — a local designer can shape it with you.*
-- Rail L: **Talk to a Travel Designer** · Rail R: **See multi-day journeys**
-
-**Topic: corporate / occasion / celebration**
-- Whisper: *Planning this for a team or a milestone? — we build these privately.*
-- Rail L: **Corporate & retreats** · Rail R: **Celebrations & Moments**
-
-**Topic: region-pick (comparison articles: "Arrábida vs Sintra")**
-- Whisper: *Still torn? — tell a local what your day should feel like.*
-- Rail L: **Write to a local** · Rail R: **Design it in the Studio**
-
-Copy lives in `articleCtaResolver.ts` so a non-dev can edit voice without touching JSX.
+Effort is dominated by copy, not code. If you feed me the FAQ answers per topic in one dump, I can wire the whole audit pass in a single turn.
 
 ---
 
-## 4. Files & components affected
+## 6. Which 3 pages first
 
-**New (3 files):**
-- `src/components/local-stories/ArticleCTA.tsx` — the primitive.
-- `src/components/local-stories/articleCtaResolver.ts` — topic → copy + deep-links + tracking metadata.
-- `src/components/local-stories/__tests__/articleCtaResolver.test.ts` — asserts every existing article resolves to a valid Signature slug + a valid topic.
+Prioritise by **intent commercial value × current gap size × implementation confidence**:
 
-**Edited (3 files, small):**
-- `src/routes/local-stories.$slug.tsx` — 3 insertions: `<ArticleCTA variant="whisper">` inside the `sections.map` at the midpoint, and `<ArticleCTA variant="rail">` after the `relatedSignatures` block. Duplicate the same 2 insertions in the DB-post branch (line ~503) so DB-authored articles get the same treatment. The existing end-of-article block is wrapped in `<ArticleCTA variant="primary">` for tracking parity — no visual change.
-- `src/content/local-stories-articles.ts` — add optional `topic?: LocalStoryTopic` field to the type; backfill on the 8 existing entries in the same edit (one line each). Fallback resolver means unshipped/DB articles still work without it.
-- `src/index.css` / `styles.css` — one `.article-cta-whisper` utility (gold hairline top + `font-serif italic text-[color:var(--charcoal-soft)]`). No new tokens.
+1. **`/portugal-travel-designer` (new).** No existing route, no cannibalization risk, aligns with the "Travel Designer" positioning called out repeatedly in memory. Highest-leverage new page — it opens a whole content pillar and unlocks the multi-day CTA target the Local Stories plan needs. **Ship first.**
+2. **Audit pass on `/portugal-wine-tours` + `/private-wine-tour-lisbon` (existing).** Wine is your highest-converting vertical (Signature catalog is wine-heavy) and both pages currently lack FAQ + FAQPage schema — the fastest SEO uplift on already-indexed URLs. Adding FAQPage JSON-LD alone often earns rich results within 1–2 crawl cycles. **Ship second.**
+3. **`/sintra-private-tour-from-lisbon` rename + audit (existing).** "Sintra private tour" outranks "Sintra day tour" in commercial intent (private = higher AOV). Slug rename with 301 + FAQ block + Signature deep-link to `sintra-cascais` tour. **Ship third.**
 
-**No changes to:** `journal_posts` schema, JSON-LD, hero, section rendering, FAQ block, `relatedSignatures`, sitemap. Tracking hooks slot straight into the `track()` wrapper from the previous plan — `local_story_cta_click` gains `{ variant, topic, target }` params.
-
-**Not touched (deliberate):** the article body itself. Zero prose changes; the whisper is inserted between existing sections and reads as a caption, not an interruption.
-
----
-
-## 5. Risk level
-
-**Low.**
-
-- Purely additive UI; end-of-article CTA and Signature deep-links are unchanged, so existing conversion path is preserved even if `<ArticleCTA>` renders nothing.
-- Type-safe Signature deep-links (build fails on bad slug).
-- Resolver has a safe fallback → an article with no `topic` field falls back to the current single primary CTA. No article can silently break.
-- Motion respects `prefers-reduced-motion` (whisper has no motion; rail uses the existing `-2px` hover).
-- SEO neutral to positive: two extra internal links per article to Studio/Signature/Contact strengthens topical linking without keyword stuffing or duplicate content.
-- Voice risk mitigated by centralising all copy in one file for review before ship.
-
-The only real risk is copy tone drift over time — mitigated by keeping every line in `articleCtaResolver.ts` behind a code review, not editable per-article.
-
----
-
-## 6. Can this be implemented article-by-article?
-
-**Yes — cleanly.** The rollout is:
-
-1. **Turn 1 — infra only (no user-visible change).** Ship `<ArticleCTA>`, resolver, styles. Resolver returns `null` for every article. Zero risk.
-2. **Turn 2 — first 3 articles.** Add `topic` to `arrabida-wine-day`, `best-wine-regions-near-lisbon`, `sintra-day-tour-from-lisbon`. Ship. Watch `local_story_cta_click` for 48h.
-3. **Turn 3+ — remaining articles + multi-day + corporate.** Same pattern, one topic at a time.
-4. **DB articles** — inherit automatically once their `region` column maps to a topic (add a `regionToTopic()` helper). No per-article code change required.
-
-Because activation is per-article (via the presence of `topic`), we can also A/B a whisper variant on a single article without a schema migration — just swap the resolver's output for that slug.
+Corporate and Proposals landings come next (slug + 301 + audit); the remaining audits close out the pass; `/private-tours-from-lisbon` only if keyword_compare validates the split.
 
 ---
 
 ## Open confirmations before coding
 
-1. **Contact surface for "write to a local".** Is that `/contact`, a WhatsApp deep-link, or a Studio pre-step? (Skill §9 doesn't define this CTA — need the canonical route.)
-2. **Multi-day topic destination.** Is "Travel Designer" a route (`/travel-designer`?), a `/contact?intent=multi-day` link, or the Studio in multi-day mode?
-3. **Whisper cadence on short articles.** Some articles only have 3 sections. Show the whisper only when `sections.length >= 4`, or always after section 2? Recommendation: gate at `>= 4` so 3-section articles keep a single strong exit.
+1. **Semrush validation.** Want me to run `keyword_compare` on the 4 borderline terms — `private tours from lisbon` vs `day trips from lisbon`, `sintra private tour` vs `sintra day tour`, `proposal in portugal` vs `propose in portugal`, `corporate experiences portugal` vs `team retreats portugal` — before we commit slugs? ~2 tool calls, cheap.
+2. **Redirect policy.** For the two rename cases (`/corporate` → `/corporate-experiences-portugal`, `/proposals` → `/proposal-in-portugal`), do you want:
+   - (a) 301 old → new, or
+   - (b) keep both live with canonical pointing at the keyword-rich slug, or
+   - (c) keep the short slugs and just add SEO title/H1 keywords without renaming?
+   Recommendation: **(a)** for cleanest link equity.
+3. **FAQ authorship.** Do you supply the FAQ answers (5–7 per page × ~11 pages = ~65 Q&As), or do you want me to draft on-voice using the skill's tone rules for you to red-pen?
+
+## Risk
+
+**Low on new pages, medium on renames.** New routes are additive. The two slug renames touch published URLs — needs redirect wiring in the same commit + a Navbar/Footer sweep + a sitemap regen. Existing redirect tooling (`admin.redirects-monitor.tsx`) suggests infra is ready. `/sintra-day-tour-from-lisbon` rename is the highest-risk single change because that page ships 330 lines and likely has real inbound traffic — do a Semrush `page_analysis` on it first to confirm current keywords before renaming, so we don't torch ranked terms.
