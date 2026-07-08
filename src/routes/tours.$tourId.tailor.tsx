@@ -81,6 +81,9 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
         { property: "twitter:image", content: img },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
+        // Tailor is a customization surface, not an entry point — keep it out
+        // of the SERPs while still letting crawlers follow internal links.
+        { name: "robots", content: "noindex, follow" },
       ],
       // Canonical points to the parent Signature page to avoid duplicate-content
       // signals; the tailor URL is a customization surface, not a separate product.
