@@ -100,6 +100,12 @@ export const Route = createFileRoute("/sitemap.xml")({
             priority: "0.85",
           },
           { path: "/portugal-wine-tours", lastmod: today, changefreq: "monthly", priority: "0.85" },
+          {
+            path: "/portugal-travel-designer",
+            lastmod: today,
+            changefreq: "monthly",
+            priority: "0.9",
+          },
 
           { path: "/terms", lastmod: today, changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", lastmod: today, changefreq: "yearly", priority: "0.4" },
