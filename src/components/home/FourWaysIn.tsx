@@ -12,6 +12,7 @@
 
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Sparkles, Compass, Users, type LucideIcon } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 type Path = {
   num: string;
