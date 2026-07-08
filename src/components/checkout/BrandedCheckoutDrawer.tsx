@@ -154,6 +154,12 @@ export function BrandedCheckoutDrawer({
           </SheetDescription>
         </div>
 
+        {/* Credential microstrip — operator legitimacy above the summary,
+             lands before doubt. Reviews/popularity are covered elsewhere. */}
+        <div className="px-5 sm:px-7 py-2.5 border-b border-[color:var(--border)] bg-[color:var(--ivory)]">
+          <CredentialStrip variant="light" compact />
+        </div>
+
         <div className="overflow-y-auto flex-1">
           {/* Premium experience summary card */}
           <ExperienceSummaryCard summary={summary} total={total} />
