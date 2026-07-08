@@ -30,9 +30,11 @@ import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-to
 import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
 import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
+import { Route as MomentsRouteImport } from './routes/moments'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
 import { Route as EvoraPrivateTourFromLisbonRouteImport } from './routes/evora-private-tour-from-lisbon'
 import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alentejo-wine-tour'
@@ -210,6 +212,11 @@ const MultiDayRoute = MultiDayRouteImport.update({
   path: '/multi-day',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MomentsRoute = MomentsRouteImport.update({
+  id: '/moments',
+  path: '/moments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
   id: '/luxury-tours-portugal',
   path: '/luxury-tours-portugal',
@@ -223,6 +230,11 @@ const LocalStoriesRoute = LocalStoriesRouteImport.update({
 const HeroVerifyRoute = HeroVerifyRouteImport.update({
   id: '/hero-verify',
   path: '/hero-verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExperiencesRoute = ExperiencesRouteImport.update({
@@ -610,9 +622,11 @@ export interface FileRoutesByFullPath {
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
+  '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -707,9 +721,11 @@ export interface FileRoutesByTo {
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
+  '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -805,9 +821,11 @@ export interface FileRoutesById {
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
   '/experiences': typeof ExperiencesRoute
+  '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -904,9 +922,11 @@ export interface FileRouteTypes {
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
     | '/experiences'
+    | '/faq'
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/moments'
     | '/multi-day'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1001,9 +1021,11 @@ export interface FileRouteTypes {
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
     | '/experiences'
+    | '/faq'
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/moments'
     | '/multi-day'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1098,9 +1120,11 @@ export interface FileRouteTypes {
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
     | '/experiences'
+    | '/faq'
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/moments'
     | '/multi-day'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1196,9 +1220,11 @@ export interface RootRouteChildren {
   EvoraAlentejoWineTourRoute: typeof EvoraAlentejoWineTourRoute
   EvoraPrivateTourFromLisbonRoute: typeof EvoraPrivateTourFromLisbonRoute
   ExperiencesRoute: typeof ExperiencesRoute
+  FaqRoute: typeof FaqRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
+  MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
@@ -1422,6 +1448,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MultiDayRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/moments': {
+      id: '/moments'
+      path: '/moments'
+      fullPath: '/moments'
+      preLoaderRoute: typeof MomentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/luxury-tours-portugal': {
       id: '/luxury-tours-portugal'
       path: '/luxury-tours-portugal'
@@ -1441,6 +1474,13 @@ declare module '@tanstack/react-router' {
       path: '/hero-verify'
       fullPath: '/hero-verify'
       preLoaderRoute: typeof HeroVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/experiences': {
@@ -1997,9 +2037,11 @@ const rootRouteChildren: RootRouteChildren = {
   EvoraAlentejoWineTourRoute: EvoraAlentejoWineTourRoute,
   EvoraPrivateTourFromLisbonRoute: EvoraPrivateTourFromLisbonRoute,
   ExperiencesRoute: ExperiencesRoute,
+  FaqRoute: FaqRoute,
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
+  MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
@@ -2079,13 +2121,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
