@@ -7,6 +7,38 @@
 
 export type FaqItem = { q: string; a: string };
 
+export const WINE_TOURS_FAQ: FaqItem[] = [
+  {
+    q: "Which wine regions can I visit on a private day from Lisbon?",
+    a: "Arrábida and Setúbal (about 40 minutes south) are the closest — home to Moscatel de Setúbal and small family cellars. Azeitão adds artisan cheese and quieter tables. The Alentejo (about 90 minutes south-east) is a longer day for concentrated reds and Vinho de Talha.",
+  },
+  {
+    q: "Is the wine tour fully private?",
+    a: "Yes. Every YES wine day is private — your group only, with a dedicated English-speaking guide and driver. Hotel pickup and drop-off in Lisbon are included; you never share the day with strangers.",
+  },
+  {
+    q: "How long does a Portugal wine tour take?",
+    a: "Most private wine days from Lisbon run between 8 and 10 hours, with two to three cellars and a long Portuguese lunch. Alentejo wine days are 10 to 11 hours because of the drive; multi-day wine journeys are handled by our Travel Designer.",
+  },
+];
+
+export const WINE_LISBON_FAQ: FaqItem[] = [
+  {
+    q: "How far is Arrábida from Lisbon?",
+    a: "About 40 minutes across the 25 de Abril Bridge. The road climbs into cork-oak hills with the Atlantic visible below — a scenic short drive that keeps most of the day on the wine, not on the road.",
+  },
+  {
+    q: "How many wineries do you visit in one day?",
+    a: "Two, sometimes three. We keep the pace unhurried — a serious cellar visit needs time — and always build in a long traditional Portuguese lunch between tastings rather than rushing between them.",
+  },
+  {
+    q: "Is lunch included in the private wine tour?",
+    a: "Yes. A long Portuguese lunch at a trusted regional table is included in the Arrábida Wine Signature price, alongside all tastings, transfers and door-to-door driving from Lisbon.",
+  },
+];
+
+
+
 export const SIGNATURE_FAQ: FaqItem[] = [
   {
     q: "Is this a private day tour from Lisbon?",
