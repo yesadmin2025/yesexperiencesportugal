@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { EditorialCard } from "@/components/ui/EditorialCard";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
@@ -550,10 +551,9 @@ function HomePage() {
                 device. On desktop the rail returns to the left so the
                 reading flow stays natural. */}
               <div className="reveal lg:col-span-5 lg:order-1 order-1">
-                <span className="he-eyebrow-bar mb-5">
-                  <span className="live-dot" aria-hidden="true" />
+                <Eyebrow live className="mb-5">
                   Experience Studio
-                </span>
+                </Eyebrow>
 
                 <h2
                   id="studio-title"
@@ -617,7 +617,7 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
-              <span className="he-eyebrow-bar mb-5">Signature</span>
+              <Eyebrow className="mb-5">Signature</Eyebrow>
               <h2
                 id="signatures-title"
                 className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
@@ -802,7 +802,7 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <span className="he-eyebrow-bar mb-5">Occasions</span>
+              <Eyebrow className="mb-5">Occasions</Eyebrow>
 
               <h2
                 id="groups-title"
@@ -934,10 +934,9 @@ function HomePage() {
                 />
 
                 <div className="relative">
-                  <span className="he-eyebrow-bar mb-5">
-                    <MessageCircle aria-hidden="true" />
+                  <Eyebrow icon={<MessageCircle aria-hidden="true" />} className="mb-5">
                     The stage is set
-                  </span>
+                  </Eyebrow>
 
                   <h2
                     id="final-cta-title"

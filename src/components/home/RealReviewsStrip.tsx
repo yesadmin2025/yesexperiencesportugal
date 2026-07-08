@@ -6,6 +6,7 @@
  */
 import { Star } from "lucide-react";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const FEATURED_IDS = [
   "arrabida-wine-allinclusive",
@@ -54,7 +55,7 @@ export function RealReviewsStrip() {
     >
       <div className="container-x">
         <div className="text-center max-w-2xl mx-auto mb-8 md:mb-12">
-          <span className="he-eyebrow-bar mb-5">Real guest reviews</span>
+          <Eyebrow className="mb-5">Real guest reviews</Eyebrow>
           <h2
             id="real-reviews-title"
             className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
