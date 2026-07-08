@@ -44,10 +44,9 @@ export const Route = createFileRoute("/tours/$tourId")({
     if (!t)
       return {
         meta: [
-          { title: "Signature Experience — YES experiences Portugal" },
-          { property: "og:url", content: url },
+          { title: "Signature not found — YES experiences Portugal" },
+          { name: "robots", content: "noindex, nofollow" },
         ],
-        links: [{ rel: "canonical", href: url }],
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
 
