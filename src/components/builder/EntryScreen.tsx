@@ -64,20 +64,16 @@ export function EntryScreen({ onStart }: Props) {
             Portugal is the stage. <span className="italic">You write it.</span>
           </h1>
 
-          <p className="mt-5 max-w-xl mx-auto serif italic text-[1.15rem] sm:text-[1.35rem] leading-[1.3] text-[color:var(--charcoal)]/85">
+          <p className="mt-5 max-w-xl mx-auto serif italic text-[1.15rem] sm:text-[1.35rem] leading-[1.38] text-[color:var(--charcoal)]/95">
             Shape it in real time. Confirm instantly. Local guidance whenever you want it.
           </p>
 
           <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-            <CtaButton type="button" onClick={onStart} variant="hairline">
+            <CtaButton type="button" onClick={onStart} variant="primary">
               Start building
             </CtaButton>
 
-            <CtaButton
-              to="/experiences"
-              variant="hairline"
-              className="opacity-70 hover:opacity-100"
-            >
+            <CtaButton to="/experiences" variant="hairline">
               Start from a signature
             </CtaButton>
           </div>

@@ -33,12 +33,12 @@ export function CurtainRise({ state, onDone }: CurtainRiseProps) {
       }, 250);
       return () => window.clearTimeout(t);
     }
-    const t1 = window.setTimeout(() => setPhase("hold"), 480);
-    const t2 = window.setTimeout(() => setPhase("exit"), 1500);
+    const t1 = window.setTimeout(() => setPhase("hold"), 380);
+    const t2 = window.setTimeout(() => setPhase("exit"), 1100);
     const t3 = window.setTimeout(() => {
       setPhase("done");
       onDone?.();
-    }, 1900);
+    }, 1500);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);

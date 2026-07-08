@@ -92,7 +92,7 @@ export function ChoiceGrid<T extends string>({
               }}
             >
               <span
-                className="block text-[14px] leading-tight font-semibold"
+                className="block text-[15px] leading-tight font-semibold"
                 style={{
                   fontFamily: "var(--font-display)",
                   color: "var(--charcoal)",
@@ -102,10 +102,10 @@ export function ChoiceGrid<T extends string>({
                 {opt.label}
               </span>
               <span
-                className="mt-1 block text-[12px] leading-snug italic"
+                className="mt-1 block text-[12.5px] leading-snug italic"
                 style={{
                   fontFamily: "var(--font-serif)",
-                  color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 74%, transparent)",
                 }}
               >
                 {opt.whisper}
