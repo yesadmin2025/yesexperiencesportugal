@@ -56,9 +56,8 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
       return {
         meta: [
           { title: "Tailor a Signature — YES experiences Portugal" },
-          { property: "og:url", content: url },
+          { name: "robots", content: "noindex, nofollow" },
         ],
-        links: [{ rel: "canonical", href: parentUrl }],
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
     const shortTitle = t.title.split("—")[0].trim();
