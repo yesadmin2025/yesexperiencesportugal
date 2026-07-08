@@ -12,13 +12,13 @@ import { CtaButton } from "@/components/ui/CtaButton";
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
     meta: [
-      { title: "Day Tours — YES experiences Portugal" },
+      { title: "Day Tours — YES Experiences Portugal" },
       {
         name: "description",
         content:
           "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more. Reserve instantly, with real-time confirmation.",
       },
-      { property: "og:title", content: "Day Tours — YES experiences Portugal" },
+      { property: "og:title", content: "Day Tours — YES Experiences Portugal" },
       {
         property: "og:description",
         content:

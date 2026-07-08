@@ -5,17 +5,17 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions — YES experiences Portugal" },
+      { title: "Terms & Conditions — YES Experiences Portugal" },
       {
         name: "description",
         content:
-          "Terms and conditions for booking private experiences with YES experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
+          "Terms and conditions for booking private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
       },
-      { property: "og:title", content: "Terms & Conditions — YES experiences Portugal" },
+      { property: "og:title", content: "Terms & Conditions — YES Experiences Portugal" },
       {
         property: "og:description",
         content:
-          "Booking terms for private experiences with YES experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
+          "Booking terms for private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/terms" },
@@ -39,7 +39,7 @@ function TermsPage() {
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
-              YES experiences Portugal is a licensed Portuguese tour operator (RNAAT) based in
+              YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT) based in
               Sesimbra, designing private journeys across Portugal. By making a reservation with us
               you agree to the terms below, which govern the booking, payment, cancellation and
               conduct of your private experience.
@@ -67,7 +67,7 @@ function TermsPage() {
               Liability
             </h2>
             <p>
-              YES experiences Portugal carries the insurance required by Portuguese tourism law.
+              YES Experiences Portugal carries the insurance required by Portuguese tourism law.
               Guests participate in activities at their own discretion and must disclose any
               condition that affects their ability to take part.
             </p>

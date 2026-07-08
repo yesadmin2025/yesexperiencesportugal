@@ -22,13 +22,13 @@ type JournalPost = {
 export const Route = createFileRoute("/local-stories")({
   head: () => ({
     meta: [
-      { title: "Local Stories — YES experiences Portugal" },
+      { title: "Local Stories — YES Experiences Portugal" },
       {
         name: "description",
         content:
           "Notes from the road, written by the locals who design our private Portugal experiences.",
       },
-      { property: "og:title", content: "Local Stories — YES experiences Portugal" },
+      { property: "og:title", content: "Local Stories — YES Experiences Portugal" },
       {
         property: "og:description",
         content: "Notes from the road, written by the locals who design our experiences.",
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/local-stories")({
         "@type": "Blog",
         "@id": "https://yesexperiencesportugal.com/local-stories#blog",
         url: "https://yesexperiencesportugal.com/local-stories",
-        name: "Local Stories — YES experiences Portugal",
+        name: "Local Stories — YES Experiences Portugal",
         description:
           "Notes from the road, written by the locals who design our private Portugal experiences.",
         inLanguage: "en",

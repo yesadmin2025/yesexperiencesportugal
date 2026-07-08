@@ -5,17 +5,17 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — YES experiences Portugal" },
+      { title: "Privacy Policy — YES Experiences Portugal" },
       {
         name: "description",
         content:
-          "How YES experiences Portugal collects, uses and protects your personal data, in line with the EU General Data Protection Regulation (GDPR).",
+          "How YES Experiences Portugal collects, uses and protects your personal data, in line with the EU General Data Protection Regulation (GDPR).",
       },
-      { property: "og:title", content: "Privacy Policy — YES experiences Portugal" },
+      { property: "og:title", content: "Privacy Policy — YES Experiences Portugal" },
       {
         property: "og:description",
         content:
-          "How YES experiences Portugal collects, uses and protects your personal data, in line with the EU GDPR.",
+          "How YES Experiences Portugal collects, uses and protects your personal data, in line with the EU GDPR.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/privacy" },
@@ -39,7 +39,7 @@ function PrivacyPage() {
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
-              We keep things simple. YES experiences Portugal only collects the information needed
+              We keep things simple. YES Experiences Portugal only collects the information needed
               to design your private experience, confirm your booking, and stay in touch about your
               trip.
             </p>

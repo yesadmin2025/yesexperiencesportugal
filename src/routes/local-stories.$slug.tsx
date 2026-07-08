@@ -223,7 +223,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
     if (!post) {
       return {
         meta: [
-          { title: "Story not found — YES experiences Portugal" },
+          { title: "Story not found — YES Experiences Portugal" },
           { name: "robots", content: "noindex, nofollow" },
         ],
       };
