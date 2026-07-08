@@ -802,7 +802,7 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <span className="he-eyebrow-bar mb-5">Occasions</span>
+              <Eyebrow className="mb-5">Occasions</Eyebrow>
 
               <h2
                 id="groups-title"
