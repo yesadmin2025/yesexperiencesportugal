@@ -49,7 +49,7 @@ export const Route = createFileRoute("/reviews")({
     const fpAvg = loaderData?.stats.first_party_avg ?? null;
     const meta = [
       {
-        title: "Real guest reviews · YES Experiences Portugal",
+        title: "Guest Reviews — Private Portugal Tours by YES",
       },
       {
         name: "description",
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/reviews")({
           "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions for our private tours from Lisbon.",
       },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Real guest reviews · YES Experiences Portugal" },
+      { property: "og:title", content: "Guest Reviews — Private Portugal Tours by YES" },
       {
         property: "og:description",
         content:

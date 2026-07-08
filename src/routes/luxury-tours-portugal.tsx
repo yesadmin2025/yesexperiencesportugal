@@ -11,7 +11,7 @@ const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
 const TITLE = "Luxury Portugal Tours — Private, All-Inclusive, By a Local";
 const DESCRIPTION =
-  "Luxury private tours of Portugal — Lisbon, Sintra, Arrábida, Alentejo and Comporta. Designed by a local operator, all-inclusive, instantly confirmed.";
+  "Understated luxury across Portugal — private car, hand-picked estates, unhurried tables. Designed and hosted by a licensed local team.";
 
 const jsonLd = {
   "@context": "https://schema.org",
