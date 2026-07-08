@@ -54,7 +54,7 @@ Keep it to a single line, four tokens, separated by `·`. No verbs, no icons in 
 
 **Compact variant (Studio convergence, tight width):**
 
-> RNAAT 31/2023 · Insured · Secure checkout · Local support
+> RNAAT 31/2023 · Insured · Secure checkout · Local support 7 days
 
 **Micro-tooltip on RNAAT hover/focus** (a11y + curious travellers):
 
