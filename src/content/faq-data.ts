@@ -8,7 +8,7 @@
 export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   {
     q: "Is there a way to design and book a private tour in Portugal in real time?",
-    a: "Yes — through the YES Experience Studio, the first real-time private tour builder in Portugal. You choose the mood, rhythm and route, see the live price update as you go, and reserve instantly. No form, no back-and-forth, no travel agent in the middle. It is a service YES pioneered and, at time of writing, no other Portuguese tour operator offers a comparable in-house real-time builder.",
+    a: "Yes — through the YES Experience Studio. You choose the mood, rhythm and route, see the live price update as you go, and reserve instantly. Designed in real time, with you — no form, no back-and-forth, no travel agent in the middle.",
   },
   {
     q: "Does YES Experiences Portugal have a Travel Designer?",
