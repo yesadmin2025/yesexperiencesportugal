@@ -83,16 +83,17 @@ function CorporatePage() {
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>For Teams &amp; Private Groups</Eyebrow>
+          <Eyebrow flank>Team Building &amp; Corporate Retreats</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private group days, <SectionTitle.Em>without the generic formula.</SectionTitle.Em>
+            Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Corporate days, incentives, client hospitality, executive experiences and private groups
-            — with transport partners, buses, guides and suppliers coordinated end to end. For
-            teams, incentives and private groups, we combine local experiences, timing, transport
-            and logistics into a day that feels <span className="kw">effortless</span>.
+            Private corporate retreats, team building days, incentives and executive off-sites
+            across Lisbon, Sintra, the Arrábida coast and the Alentejo — transport, guides and
+            venues coordinated end to end so the day feels{" "}
+            <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong>, not
+            arranged.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
