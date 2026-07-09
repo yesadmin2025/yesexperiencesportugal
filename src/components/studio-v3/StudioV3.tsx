@@ -1673,15 +1673,42 @@ export function StudioV3() {
         className="min-h-[100dvh] flex items-center justify-center px-6"
         style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
       >
-        <div className="text-center" data-testid="studio-v3-hydrating">
-          <Loader2
-            size={18}
-            className="animate-spin mx-auto"
-            aria-hidden
-            style={{ color: "var(--gold)" }}
-          />
+        <div
+          data-testid="studio-v3-hydrating"
+          role="status"
+          aria-live="polite"
+          className="w-full max-w-[420px] text-center"
+        >
+          {/* Editorial skeleton — suggests the Signature card composing itself.
+              Shimmer utility respects prefers-reduced-motion (collapses to
+              static sand blocks). Copy still announces the state to SR. */}
+          <div className="mx-auto flex flex-col items-center gap-3">
+            <div
+              aria-hidden
+              className="editorial-shimmer h-[9px] w-[92px] rounded-[1px]"
+              style={{ opacity: 0.85 }}
+            />
+            <div
+              aria-hidden
+              className="editorial-shimmer h-[22px] w-[78%] rounded-[2px]"
+            />
+            <div
+              aria-hidden
+              className="editorial-shimmer h-[22px] w-[62%] rounded-[2px]"
+            />
+            <div
+              aria-hidden
+              className="mt-1 h-px w-10"
+              style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+            />
+            <div
+              aria-hidden
+              className="editorial-shimmer h-[11px] w-[58%] rounded-[1px] mt-1"
+              style={{ opacity: 0.7 }}
+            />
+          </div>
           <p
-            className="mt-4 text-[11px] uppercase tracking-[0.24em] font-semibold"
+            className="mt-8 text-[11px] uppercase tracking-[0.24em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
           >
             Opening your Signature…
@@ -1690,6 +1717,7 @@ export function StudioV3() {
       </main>
     );
   }
+
 
   if (hydrateError) {
     return (
