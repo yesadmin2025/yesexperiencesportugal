@@ -4,13 +4,12 @@ import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import {
   BASED_IN,
-  BASED_IN_SHORT,
   BUSINESS_NAME,
-  LICENSE_LABEL,
   LICENSE_NUMBER,
   LICENSE_SHORT,
   whatsappUrl,
 } from "@/config/business-nap";
+
 
 const LEGAL_META_LINE = BASED_IN;
 
