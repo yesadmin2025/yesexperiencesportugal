@@ -29,24 +29,25 @@ interface Props {
   className?: string;
 }
 
+import { BUSINESS_LEGAL_NAME, LICENSE_LABEL } from "@/config/business-nap";
+
 // Wording — single source of truth. Do not duplicate elsewhere.
 // 7-day local coverage is now operationally confirmed.
 const FULL_TOKENS = [
-  "Licensed operator RNAAT nº 31/2023",
+  `Licensed operator ${LICENSE_LABEL}`,
   "Civil liability insured",
   "Secure checkout",
   "Local support 7 days a week",
 ];
 
 const COMPACT_TOKENS = [
-  "RNAAT nº 31/2023",
+  LICENSE_LABEL,
   "Insured",
   "Secure checkout",
   "Local support 7 days",
 ];
 
-const ARIA_LABEL =
-  "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023), covered by civil liability insurance, with secure checkout and local support 7 days a week.";
+const ARIA_LABEL = `${BUSINESS_LEGAL_NAME} is a licensed Portuguese tour operator (${LICENSE_LABEL}), covered by civil liability insurance, with secure checkout and local support 7 days a week.`;
 
 export function CredentialStrip({
   variant = "light",

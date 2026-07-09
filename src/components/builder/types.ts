@@ -80,7 +80,8 @@ export function fmtMinutes(min: number): string {
 }
 
 /** Stable WhatsApp number for "Chat with a local" prompts. */
-export const BUILDER_WA_NUMBER = "351911889992";
+import { WHATSAPP_NUMBER, whatsappUrl } from "@/config/business-nap";
+export const BUILDER_WA_NUMBER = WHATSAPP_NUMBER;
 export function builderWaHref(message: string): string {
-  return `https://wa.me/${BUILDER_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  return whatsappUrl(message);
 }

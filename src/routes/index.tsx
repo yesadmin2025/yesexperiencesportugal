@@ -221,7 +221,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed.",
+          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team based in Sesimbra. Instantly confirmed.",
       },
       {
         property: "og:title",
@@ -230,7 +230,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed.",
+          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team based in Sesimbra. Instantly confirmed.",
       },
       {
         property: "twitter:title",
@@ -239,7 +239,7 @@ export const Route = createFileRoute("/")({
       {
         property: "twitter:description",
         content:
-          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team from Lisbon. Instantly confirmed.",
+          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team based in Sesimbra. Instantly confirmed.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },

@@ -10,6 +10,8 @@
  * `<script type="application/ld+json">` per node.
  */
 
+import { PHONE_TEL } from "@/config/business-nap";
+
 export const SITE_URL = "https://yesexperiencesportugal.com";
 
 /**
@@ -199,11 +201,11 @@ export function organizationLd() {
       { "@type": "AdministrativeArea", name: "Comporta" },
       { "@type": "AdministrativeArea", name: "Tróia" },
     ],
-    telephone: "+351911889992",
+    telephone: PHONE_TEL,
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      telephone: "+351911889992",
+      telephone: PHONE_TEL,
       availableLanguage: ["English", "Portuguese", "Spanish", "French"],
       areaServed: "PT",
     },

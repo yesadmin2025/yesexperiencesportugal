@@ -1,96 +1,72 @@
-# Review Source Icon — Clickability Audit & Plan
+## Goal
 
-## Where the source icons live
+Establish a single source of truth for the business NAP + license, purge stale/incorrect claims (RNAVT, "team from Lisbon", "based in Lisbon"), and make every footer/legal/contact surface read from the same config.
 
-- `src/components/home/GuestQuotes.tsx` → `SourceBadge` (lines 272–319). Homepage review carousel. Tripadvisor renders as a 28×28 circular icon; other sources as a tiny text pill. Wrapped in `<a target="_blank">` when `source_url` exists.
-- `src/components/TourReviews.tsx` (lines 110–136). Per-tour review grid. **Currently has NO clickable source at all** — only a static "via Tripadvisor" text label. Bigger gap than the homepage.
+## Audit findings
 
-## Current weaknesses
+- **RNAVT**: zero occurrences anywhere in `src/` or `public/`. Nothing to remove; guardrail test still worth adding.
+- **"team from Lisbon"**: 3 hits, all in `src/routes/index.tsx` meta descriptions (lines 224, 233, 242 — description / og:description / twitter:description).
+- **Footer**: only one component (`src/components/Footer.tsx`). No divergent second variant renders on the public site — the perceived "two variants" is the mobile-only legal line at L282–284 that duplicates the desktop `<span>` at L253. Both currently agree, but they're hand-typed twice and will drift. Consolidating fixes that.
+- **Contact page JSON-LD** (`src/routes/contact.tsx` L62, L74): `email: "yesexperiences@gmail.com"` — inconsistent with on-page display `info@yesexperiencesportugal.com` (L188). Public NAP should be the public inbox.
+- **About page** (`src/routes/about.tsx` L247): reads `RNAAT 31/2023` — missing the "nº" that every other surface uses.
+- **Terms** (`src/routes/terms.tsx` L42): "a licensed Portuguese tour operator (RNAAT)" — license number missing entirely.
+- **Phone / email / WhatsApp** are hard-coded in ~8 files (Footer, WhatsAppFab, WhatsAppSupportButton, Contact, About, Terms, Privacy, Cookies, Unsubscribe, CredentialStrip). All values agree today but nothing enforces that.
+- **Kept as-is** (not public NAP): `yesexperiences@gmail.com` in `src/lib/email/team-recipients.ts` (internal ops inbox), `src/routes/auth.tsx` (admin login placeholder), and the historical letter body in `src/routes/admin.gbp-legacy-removal.tsx`.
 
-1. **No visual affordance of interactivity.** The Tripadvisor badge on the homepage card is a flat 28×28 disc with a static border. No cursor pointer class, no hover state, no focus ring, no external-link cue. It reads as decoration, not a link.
-2. **Tap target below 44px on mobile.** 28×28 with no extra padding fails Apple/WCAG minimum; users near the card edge will mis-tap the swipe area instead.
-3. **Silent when `source_url` is missing.** Same visual whether linked or not — users learn "it doesn't do anything" and stop trying.
-4. **Ambiguous label.** `aria-label="Read this review on Tripadvisor"` is fine for SR users, but sighted users get no tooltip/microcopy — they don't know it's *this* review, not the generic profile.
-5. **Carousel swipe conflict.** The icon sits in the bottom-right of a horizontally-swipeable card with no click-vs-drag guard; a slow tap during a scroll can register as a click and yank the user away.
-6. **TourReviews has no link at all.** The "via Tripadvisor" caption is inert text — a strictly worse experience than the homepage, and inconsistent.
-7. **No focus-visible ring.** Keyboard users can't see the badge take focus.
-8. **Non-Tripadvisor sources are text pills** with the same passive treatment — same issues, quieter.
+## Plan
 
-## Recommendation
+### 1. New single source of truth
+Create `src/config/business-nap.ts` exporting frozen constants:
 
-**Keep icon-only** on the card (protects the editorial calm). Add:
-- desktop tooltip on hover ("View original on Tripadvisor")
-- descriptive aria-label ("View {reviewer}'s review on Tripadvisor") for SR
-- a small external-arrow glyph that fades in on hover/focus only
+```
+BUSINESS_NAME         = "YES experiences Portugal"
+BUSINESS_LEGAL_NAME   = "YES Experiences Portugal"   // JSON-LD / legal prose
+LICENSE_LABEL         = "RNAAT nº 31/2023"
+LICENSE_SHORT         = "RNAAT"
+LICENSE_NUMBER        = "31/2023"
+BASED_IN              = "Sesimbra, Portugal"
+BASED_IN_LONG         = "Based in Sesimbra, designing private journeys across Portugal, with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal."
+CITY / COUNTRY_CODE   = "Sesimbra" / "PT"
+EMAIL                 = "info@yesexperiencesportugal.com"
+PHONE_DISPLAY         = "+351 911 889 992"
+PHONE_TEL             = "+351911889992"
+WHATSAPP_NUMBER       = "351911889992"
+WHATSAPP_URL(msg?)    = wa.me helper
+```
 
-No always-visible microcopy on the card — it would push the layout toward a booking-widget feel.
+Plus one composed legal line used by footer + credential strips:
+`FOOTER_LEGAL_LINE = "© {year} YES experiences Portugal · RNAAT nº 31/2023 · Sesimbra, Portugal · All rights reserved."`
 
-## Micro-interaction system (aligns with existing motion tokens)
+### 2. Refactor consumers to import from config
 
-| State | Change | Timing | Easing |
-|---|---|---|---|
-| Rest | 28×28 disc, `border-charcoal/10`, `bg-ivory` | — | — |
-| Hover (desktop) | border → `--gold`, bg → white, scale `1.03`, tiny `↗` glyph fades in at 0.7 opacity, tooltip after 400ms delay | 180ms | `cubic-bezier(.2,.7,.2,1)` |
-| Focus-visible | 2px gold ring, 2px offset | 120ms | ease-out |
-| Active/tap | scale `0.97`, bg → `--sand` | 90ms in, 160ms out | ease-out |
-| Entrance | one-time fade + 4px rise when card enters viewport (respect existing `he-card-lift`) | 260ms | ease-out |
-| Reduced motion | remove scale + entrance; keep color/tooltip only | — | — |
+| File | Change |
+|---|---|
+| `src/components/Footer.tsx` | Read tagline license line, both mobile + desktop legal spans, and © line from config (collapses the two duplicated legal spans into one shared string). |
+| `src/components/ui/CredentialStrip.tsx` | Import LICENSE_LABEL instead of literal. |
+| `src/components/WhatsAppFab.tsx`, `src/components/support/WhatsAppSupportButton.tsx` | Import WHATSAPP_NUMBER + URL helper. |
+| `src/routes/contact.tsx` | Replace `yesexperiences@gmail.com` (JSON-LD ContactPoint, 2 places) with EMAIL. Use PHONE_DISPLAY + BASED_IN. |
+| `src/routes/about.tsx` | Line 247 → LICENSE_LABEL (`RNAAT nº 31/2023`). Phone/email/tagline → config. |
+| `src/routes/terms.tsx` | "(RNAAT)" → "(RNAAT nº 31/2023)". Email link → EMAIL. |
+| `src/routes/privacy.tsx`, `src/routes/cookies.tsx`, `src/routes/unsubscribe.tsx` | Email → EMAIL. |
+| `src/routes/index.tsx` | 3 meta descriptions: replace "shaped by a licensed local team from Lisbon" with "shaped by a licensed local team based in Sesimbra". |
 
-No pulsing, no loop, no autoplay motion. Matches the site-wide ≤220ms rule.
+Only prose/data changes. No visual/layout/color changes.
 
-## Mobile specifics
+### 3. Guardrail test
+Add `src/__tests__/nap-consistency.test.ts`:
+- Scans `src/` + `public/` (excluding `admin.gbp-legacy-removal.tsx`, `email/team-recipients.ts`, `auth.tsx`, and this test itself) and fails on any occurrence of:
+  - `RNAVT`
+  - `team from Lisbon`, `based in Lisbon`, `Lisbon-based team`
+  - literal phone `911 889 992` or email `yesexperiencesportugal.com` outside `src/config/business-nap.ts` and the auto-gen SEO files (allow in JSON-LD builders that import from config).
+- Enforces that Footer.tsx, Terms, Contact, About import from `@/config/business-nap`.
 
-- **Bump hit area to 44×44** via `p-2 -m-2` around the 28×28 disc so the visual size is unchanged.
-- **Swipe-safe click:** add a pointerdown/pointerup guard — cancel navigation if the pointer moved >8px between down and up (prevents accidental open while swiping the carousel). Small utility hook, reusable.
-- **Tap feedback:** `active:scale-[.97] active:bg-[color:var(--sand)]` — instant, no delay, no ripple.
-- **Only the active (snapped) card's icon gets full opacity;** neighbors stay at 85% so the user's thumb naturally targets the centered card. Uses `activeIndex` state already tracked in `ReviewCarousel`.
-- **No tooltip on mobile** (no hover); rely on aria-label + the external-arrow glyph, which becomes always-visible at ≤sm as the "this is a link" cue.
+### 4. Verification
+- `bunx vitest run src/__tests__/nap-consistency.test.ts`
+- Visual spot-check of `/`, `/about`, `/contact`, `/terms` on mobile viewport (393px) to confirm no layout drift.
 
-## Copy / label decision
+## Out of scope
 
-- **Card face:** icon only (keep editorial calm).
-- **Desktop:** Radix/shadcn `Tooltip` reading "View original on Tripadvisor" (or platform label).
-- **SR/aria:** "View {reviewer_name || 'this'} review on Tripadvisor (opens in new tab)".
-- **Mobile visible cue:** the small `↗` external-link glyph, 8px, gold, next to the badge — always shown on touch devices, hover-only on desktop.
-
-## Accessibility
-
-- `<a>` with `href={source_url}` `target="_blank"` `rel="noopener noreferrer"`.
-- Descriptive `aria-label` including reviewer name where available.
-- Visible focus ring (currently missing).
-- Announce external navigation in the label ("opens in new tab").
-- If `source_url` is null: render as a non-interactive `<span>` with `aria-hidden` on the arrow — no dead links.
-
-## Affected files
-
-- `src/components/home/GuestQuotes.tsx` — refactor `SourceBadge` (only component change).
-- `src/components/TourReviews.tsx` — add a `SourceLink` at the card footer using the same primitive.
-- **New:** `src/components/ui/ReviewSourceLink.tsx` — shared primitive (icon + tooltip + swipe-safe click + a11y). Single source of truth so both surfaces stay consistent.
-- `src/styles.css` — one small `@utility` for the swipe-safe active/hover states if it can't be expressed cleanly with Tailwind arbitrary values (likely not needed).
-
-## Implementation complexity
-
-Low. ~1 new small component, 2 call-site swaps, no data changes, no schema changes, no new deps (Radix Tooltip already present via shadcn).
-
-## Risk
-
-**Low.** Purely presentational + an existing anchor. No routing, no auth, no data. Worst case = a minor visual regression easily reverted. Zero risk to booking flow.
-
-## Safest first step (highest confidence, ships value immediately)
-
-**Step 1 (ship alone, verify, then continue):**
-Create `ReviewSourceLink` and drop it into `GuestQuotes` only. Deliver in that first pass:
-- 44×44 hit area via padding
-- cursor-pointer, hover border→gold, scale 1.03, focus-visible ring
-- swipe-safe click guard
-- descriptive aria-label with "opens in new tab"
-- external-arrow glyph (always on mobile, hover on desktop)
-
-Skip tooltip, active-card opacity dimming, and TourReviews adoption until after visual QA on mobile. Those become Step 2 and Step 3 — each independently revertable.
-
-## What NOT to do
-
-- No always-visible "Verified on Tripadvisor" label under the icon (drifts toward badge-spam).
-- No card-wide click target (breaks swipe, hurts the calm).
-- No pulsing/glow to "teach" the affordance — hover + arrow glyph is enough.
-- No changes to card layout, typography, or spacing.
+- Brand colors, tokens, typography — untouched.
+- Footer structure, columns, credential-strip layout — untouched.
+- Internal-only inboxes (`yesexperiences@gmail.com` for team notifications / admin auth).
+- i18n dictionaries (currently no NAP strings live there).

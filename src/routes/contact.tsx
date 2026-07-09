@@ -7,6 +7,13 @@ import { z } from "zod";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import {
+  BUSINESS_LEGAL_NAME,
+  CITY,
+  COUNTRY_CODE,
+  EMAIL,
+  PHONE_DISPLAY,
+} from "@/config/business-nap";
 
 const contactSchema = z.object({
   first: z.string().trim().min(1, "Please enter your first name").max(80),
@@ -57,22 +64,22 @@ export const Route = createFileRoute("/contact")({
         mainEntity: {
           "@type": "Organization",
           "@id": "https://yesexperiencesportugal.com/#organization",
-          name: "YES Experiences Portugal",
+          name: BUSINESS_LEGAL_NAME,
           url: "https://yesexperiencesportugal.com",
-          email: "yesexperiences@gmail.com",
-          telephone: "+351 911 889 992",
+          email: EMAIL,
+          telephone: PHONE_DISPLAY,
           address: {
             "@type": "PostalAddress",
-            addressLocality: "Sesimbra",
-            addressCountry: "PT",
+            addressLocality: CITY,
+            addressCountry: COUNTRY_CODE,
           },
           contactPoint: [
             {
               "@type": "ContactPoint",
               contactType: "customer service",
-              telephone: "+351 911 889 992",
-              email: "yesexperiences@gmail.com",
-              areaServed: "PT",
+              telephone: PHONE_DISPLAY,
+              email: EMAIL,
+              areaServed: COUNTRY_CODE,
               availableLanguage: ["en", "pt"],
             },
           ],
@@ -156,7 +163,7 @@ function Page() {
                     console.error("[contact] submit failed", err);
                     setStatus("error");
                     setErrorMsg(
-                      "Sorry, something went wrong sending your message. Please email info@yesexperiencesportugal.com.",
+                      `Sorry, something went wrong sending your message. Please email ${EMAIL}.`,
                     );
                   }
                 }}
@@ -185,12 +192,12 @@ function Page() {
             )}
           </div>
           <aside className="space-y-7">
-            <Info icon={<Mail size={16} />} label="Email" value="info@yesexperiencesportugal.com" />
-            <Info icon={<Phone size={16} />} label="Phone" value="+351 911 889 992" />
+            <Info icon={<Mail size={16} />} label="Email" value={EMAIL} />
+            <Info icon={<Phone size={16} />} label="Phone" value={PHONE_DISPLAY} />
             <Info
               icon={<MapPin size={16} />}
               label="Based in"
-              value="Sesimbra, designing private journeys across Portugal"
+              value="Sesimbra, designing private journeys across Portugal, with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal"
             />
 
             <div className="gold-divider" />

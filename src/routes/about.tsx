@@ -5,6 +5,14 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
+import {
+  BASED_IN_SHORT,
+  EMAIL,
+  EMAIL_HREF,
+  LICENSE_LABEL,
+  PHONE_DISPLAY,
+  whatsappUrl,
+} from "@/config/business-nap";
 
 const TITLE = "About YES Experiences Portugal | Founder-Built Travel";
 const DESCRIPTION =
@@ -244,7 +252,7 @@ function Page() {
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
                 Licence
               </div>
-              <p className="mt-2 font-display text-lg">RNAAT 31/2023</p>
+              <p className="mt-2 font-display text-lg">{LICENSE_LABEL}</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Registered Portuguese tourism operator (Registo Nacional dos Agentes de Animação
                 Turística).
@@ -360,16 +368,16 @@ function Page() {
           </SectionTitle>
           <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
             Email{" "}
-            <a href="mailto:info@yesexperiencesportugal.com" className="underline">
-              info@yesexperiencesportugal.com
+            <a href={EMAIL_HREF} className="underline">
+              {EMAIL}
             </a>
             <br />
             WhatsApp{" "}
-            <a href="https://wa.me/351911889992" className="underline">
-              +351 911 889 992
+            <a href={whatsappUrl()} className="underline">
+              {PHONE_DISPLAY}
             </a>
             <br />
-            Based in Sesimbra, designing private journeys across Portugal.
+            {BASED_IN_SHORT}
           </p>
           <p className="mt-5 serif italic text-xl text-[color:var(--teal)]">
             Portugal, designed around you.
