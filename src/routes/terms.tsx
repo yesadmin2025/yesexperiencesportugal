@@ -39,8 +39,9 @@ function TermsPage() {
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
-              YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT) based in
-              Sesimbra, designing private journeys across Portugal. By making a reservation with us
+              YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023)
+              based in Sesimbra, designing private journeys across Portugal, with pickups from
+              Lisbon, Cascais, Sintra, Sesimbra and Setúbal. By making a reservation with us
               you agree to the terms below, which govern the booking, payment, cancellation and
               conduct of your private experience.
             </p>

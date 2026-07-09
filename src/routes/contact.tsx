@@ -163,7 +163,7 @@ function Page() {
                     console.error("[contact] submit failed", err);
                     setStatus("error");
                     setErrorMsg(
-                      "Sorry, something went wrong sending your message. Please email info@yesexperiencesportugal.com.",
+                      `Sorry, something went wrong sending your message. Please email ${EMAIL}.`,
                     );
                   }
                 }}
@@ -192,12 +192,12 @@ function Page() {
             )}
           </div>
           <aside className="space-y-7">
-            <Info icon={<Mail size={16} />} label="Email" value="info@yesexperiencesportugal.com" />
-            <Info icon={<Phone size={16} />} label="Phone" value="+351 911 889 992" />
+            <Info icon={<Mail size={16} />} label="Email" value={EMAIL} />
+            <Info icon={<Phone size={16} />} label="Phone" value={PHONE_DISPLAY} />
             <Info
               icon={<MapPin size={16} />}
               label="Based in"
-              value="Sesimbra, designing private journeys across Portugal"
+              value="Sesimbra, designing private journeys across Portugal, with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal"
             />
 
             <div className="gold-divider" />
