@@ -135,7 +135,15 @@ export type SignatureTour = {
   /** Deprecated — kept for compatibility with older importer code. */
   tripadvisorUrl?: string;
   seed: TourSeed;
+  /**
+   * SEO overrides for /tours/$id head(). When present they replace the
+   * auto-built `<title>` / `description` — used to align the top SEO
+   * focus tours with Phase-2 title conventions.
+   */
+  seoTitle?: string;
+  seoDescription?: string;
 };
+
 
 /** Deprecated. The site no longer links to any external review platform. */
 export function tripadvisorHrefFor(tour: SignatureTour): string {
