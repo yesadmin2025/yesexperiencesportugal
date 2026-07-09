@@ -255,7 +255,7 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
                   alt={s.title}
                   loading="lazy"
                   data-card-image
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:scale-[1.04] group-hover:scale-[1.05]"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:scale-[1.04] group-hover:scale-[1.04]"
                 />
                 {/* Cinematic bottom-anchored wash. Top kept light so the
                     photography breathes; bottom carries the legibility. */}
