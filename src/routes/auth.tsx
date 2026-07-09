@@ -99,12 +99,15 @@ function AuthPage() {
       if (mode === "signin") {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        if (data.user) await routeByRole(data.user.id, navigate);
+        if (data.user) await afterSignIn(data.user.id);
       } else {
+        const emailRedirectTo = next
+          ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
+          : `${window.location.origin}/auth`;
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/auth` },
+          options: { emailRedirectTo },
         });
         if (error) throw error;
         toast.success("Conta criada — confirma o email para continuar.");
