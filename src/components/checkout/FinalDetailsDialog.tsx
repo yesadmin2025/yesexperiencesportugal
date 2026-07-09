@@ -414,8 +414,7 @@ export function FinalDetailsDialog({
             <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
           ) : (
             <CtaButton
-              type="button"
-              onClick={handleSubmit}
+              type="submit"
               variant="primary"
               size="md"
               className="w-full"
@@ -428,6 +427,7 @@ export function FinalDetailsDialog({
             Secure checkout · Final price shown before payment
           </p>
         </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
