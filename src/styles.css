@@ -6389,12 +6389,13 @@ html {
   & > ol,
   & > blockquote,
   & > dl {
-    max-width: 68ch;
-    line-height: 1.6;
+    max-width: 68ch !important;
+    line-height: 1.6 !important;
   }
   & > p {
     text-wrap: pretty;
   }
 }
+
 
 
