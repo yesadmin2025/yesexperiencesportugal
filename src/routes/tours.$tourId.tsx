@@ -23,6 +23,7 @@ import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
@@ -297,8 +298,7 @@ function TourHero({
             </div>
           </div>
 
-          {/* CTA bar — directly under hero, mobile-first thumb-friendly */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <CtaPair className="mt-6" layout="stack-then-row" justify="start">
             <a
               href="#book"
               className="flex-1 inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
@@ -312,7 +312,7 @@ function TourHero({
             >
               Tailor this Signature
             </Link>
-          </div>
+          </CtaPair>
         </div>
       </section>
     </>
@@ -898,7 +898,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           Confirm in real time. The day is yours.
         </p>
 
-        <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+        <CtaPair className="mt-8" justify="center">
           <CtaButton
             href="#book"
             variant="primary"
@@ -909,7 +909,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           <CtaButton to="/tours/$tourId/tailor" params={{ tourId: tour.id }} variant="ghostDark">
             Tailor this Signature
           </CtaButton>
-        </div>
+        </CtaPair>
 
         <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
           Instant confirmation · Free cancellation up to 24h · A local on WhatsApp if you need help
