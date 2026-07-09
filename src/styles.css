@@ -3466,17 +3466,16 @@ html.motion-ready [data-motion].motion-in {
    to `left center` so the logo grows/shrinks against its leading edge,
    keeping it visually anchored to the container's left gutter. */
 .logo-mark--teal-on-ivory {
-  filter: var(--logo-filter-teal-on-ivory);
+  filter: none;
   transform: translateZ(0) scale(var(--logo-scale-teal-on-ivory));
   transform-origin: left center;
 }
 
-/* Gold-on-charcoal (Footer over --charcoal-deep). Same pattern; the
-   scale token defaults to 0.95 to compensate for the gold mark's
-   optical bloom on the dark surface so its stroke mass visually
-   matches the teal mark on white. */
+/* Gold-on-charcoal (Footer over --charcoal-deep). SVG is already at the
+   locked gold hex so no filter recipe is applied; the scale token keeps
+   the optical size aligned with the teal mark on light surfaces. */
 .logo-mark--gold-on-charcoal {
-  filter: var(--logo-filter-gold-on-charcoal);
+  filter: none;
   transform: translateZ(0) scale(var(--logo-scale-gold-on-charcoal));
   transform-origin: left center;
 }
