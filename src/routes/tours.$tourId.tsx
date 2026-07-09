@@ -31,6 +31,7 @@ import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import { TourImage } from "@/components/tours/TourImage";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -260,21 +261,17 @@ function TourHero({
 
       <section className="pb-8">
         <div className="container-x max-w-6xl">
-          {/* Cinematic hero image */}
-          <div className="relative aspect-[4/5] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] overflow-hidden shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]">
-            <img
-              src={heroSrc}
-              alt={heroAlt}
-              width={1600}
-              height={900}
-              fetchPriority="high"
-              loading="eager"
-              decoding="async"
-              sizes="(min-width: 1024px) 1152px, 100vw"
-              style={{ objectPosition: tour.focal ?? "50% 50%" }}
-              className="w-full h-full object-cover motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
-            />
-          </div>
+          {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
+          <TourImage
+            src={heroSrc}
+            alt={heroAlt}
+            ratio="3/2"
+            priority
+            focal={tour.focal ?? "50% 50%"}
+            sizes="(min-width: 1024px) 1152px, 100vw"
+            className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
+            imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
+          />
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
@@ -760,25 +757,25 @@ function GalleryStrip({
             {photos.map((p, i) => (
               <figure
                 key={p.src + i}
-                className={`shrink-0 snap-start relative overflow-hidden ${
+                className={`shrink-0 snap-start relative ${
                   i === 0
-                    ? "w-[80vw] sm:w-[60vw] md:w-[42rem] aspect-[5/6] md:aspect-[16/10]"
-                    : "w-[64vw] sm:w-[40vw] md:w-[22rem] aspect-[4/5]"
+                    ? "w-[80vw] sm:w-[60vw] md:w-[42rem]"
+                    : "w-[64vw] sm:w-[40vw] md:w-[22rem]"
                 }`}
               >
-                <img
+                <TourImage
                   src={p.src}
                   alt={p.alt}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ objectPosition: p.focal ?? "50% 50%" }}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
-                />
-                <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/80 to-transparent">
-                  <figcaption className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
-                    {p.alt}
-                  </figcaption>
-                </div>
+                  ratio="3/2"
+                  focal={p.focal ?? "50% 50%"}
+                  imgClassName="transition-transform duration-700 hover:scale-[1.04]"
+                >
+                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/80 to-transparent">
+                    <figcaption className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
+                      {p.alt}
+                    </figcaption>
+                  </div>
+                </TourImage>
               </figure>
             ))}
           </div>
@@ -991,16 +988,14 @@ function RelatedTours({ currentId }: { currentId: string }) {
               params={{ tourId: t.id }}
               className="group flex flex-col"
             >
-              <div className="relative aspect-[4/5] overflow-hidden mb-3">
-                <img
-                  {...resolveImg(t, "md")}
-                  alt={t.title}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ objectPosition: t.focal ?? "50% 50%" }}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
+              <TourImage
+                {...resolveImg(t, "md")}
+                alt={t.title}
+                ratio="3/2"
+                focal={t.focal ?? "50% 50%"}
+                className="mb-3"
+                imgClassName="transition-transform duration-700 group-hover:scale-105"
+              />
               <h3 className="serif text-lg">{t.title}</h3>
               <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
                 {t.region}
