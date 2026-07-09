@@ -81,11 +81,8 @@ export const Route = createFileRoute("/arrabida-wine-tour")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      {
-        name: "keywords",
-        content:
-          "arrabida wine tour, arrábida wine tour, private arrabida wine tour, azeitao wine tour, setubal wine tour, lisbon wine tour, moscatel de setubal tour",
-      },
+
+
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PAGE_URL },

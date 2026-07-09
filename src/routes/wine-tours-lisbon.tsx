@@ -81,11 +81,8 @@ export const Route = createFileRoute("/wine-tours-lisbon")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      {
-        name: "keywords",
-        content:
-          "wine tours lisbon, lisbon wine tours, private wine tour lisbon, arrabida wine tour, azeitao wine tour, setubal wine tour, alentejo wine tour from lisbon, evora wine tour",
-      },
+
+
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PAGE_URL },
