@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://kqygnqetygcvkaauwbji.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "yes-experiences-portugal-mcp",
+      "version": "0.1.0",
+      "title": "YES Experiences Portugal"
+    },
+    "tools": [
+      {
+        "name": "list_signature_tours",
+        "title": "List Signature tours",
+        "description": "List the published Signature tour catalog (id, title, region, duration, theme, from-price in EUR, and short blurb). Public catalog data — safe to read without side effects.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "region": {
+              "type": "string",
+              "description": "Optional case-insensitive substring to filter by region (e.g. 'Sintra', 'Alentejo', 'Arrábida')."
+            },
+            "theme": {
+              "type": "string",
+              "description": "Optional case-insensitive substring to filter by theme (e.g. 'Wine', 'Culture')."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_bookings",
+        "title": "List my bookings",
+        "description": "List bookings for the signed-in user (matched by verified email). Returns id, tour, date, guests, status, amount and currency. RLS restricts results to the caller's own bookings.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Maximum number of bookings to return (default 20)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_my_booking",
+        "title": "Get one of my bookings",
+        "description": "Get the full details of one of the signed-in user's bookings by id. RLS ensures only the caller's own bookings are returned.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "bookingId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The booking id (UUID)."
+            }
+          },
+          "required": [
+            "bookingId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
