@@ -155,7 +155,7 @@ function Page() {
                       className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
                     >
                       {p.hero_image_url ? (
-                        <div className="relative overflow-hidden aspect-[4/5] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
+                        <div className="relative overflow-hidden aspect-[3/2] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
                           <img
                             src={p.hero_image_url}
                             alt={p.hero_image_alt ?? p.title}
@@ -166,7 +166,7 @@ function Page() {
                           <span className="absolute left-5 bottom-5 block h-px w-8 bg-[color:var(--gold)] opacity-90" />
                         </div>
                       ) : (
-                        <div className="aspect-[4/5] mb-6 bg-[color:var(--sand)]" />
+                        <div className="aspect-[3/2] mb-6 bg-[color:var(--sand)]" />
                       )}
                       <div>
                         {p.region && (
