@@ -2416,7 +2416,7 @@ function BespokeSecureCTA({
           boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--gold) 60%, transparent)",
         }}
       >
-        {busy ? "Securing…" : "Reserve this day"}
+        {busy ? "Securing…" : "Reserve securely"}
         <ArrowRight
           className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px]"
           aria-hidden

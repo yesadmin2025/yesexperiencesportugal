@@ -300,7 +300,7 @@ function Page() {
                   params={{ tourId: PARENT_TOUR_ID }}
                   variant="ghost"
                 >
-                  Tailor this Signature
+                  Tailor this day
                 </CtaButton>
               </div>
               <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">

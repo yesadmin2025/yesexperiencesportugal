@@ -1235,7 +1235,7 @@ function TailorPage() {
                       </>
                     ) : (
                       <>
-                        <Sparkles size={15} /> Reserve this day
+                        <Sparkles size={15} /> Reserve securely
                       </>
                     )}
                   </button>

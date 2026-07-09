@@ -355,7 +355,7 @@ export function EmbeddedConfirmationSheet({
                 textTransform: "uppercase",
               }}
             >
-              {busy ? "Securing…" : "Reserve this day"}
+              {busy ? "Securing…" : "Reserve securely"}
             </button>
             <p
               className="mt-3 text-center text-[11.5px] italic"

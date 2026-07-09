@@ -177,7 +177,7 @@ function ExperiencesPage() {
                       className="flex-1"
                       aria-label={`Reserve ${t.title}`}
                     >
-                      Reserve this day
+                      Check availability & reserve
                     </CtaButton>
                     <CtaButton
                       to="/tours/$tourId/tailor"

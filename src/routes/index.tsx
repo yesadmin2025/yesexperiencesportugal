@@ -760,7 +760,7 @@ function HomePage() {
                             size="sm"
                             aria-label={`Reserve ${t.title}`}
                           >
-                            Reserve this day
+                            Check availability & reserve
                           </CtaButton>
                           <CtaButton
                             to="/tours/$tourId/tailor"
@@ -768,7 +768,7 @@ function HomePage() {
                             variant="hairline"
                             aria-label={`Tailor ${t.title}`}
                           >
-                            Tailor this Signature
+                            Tailor this day
                           </CtaButton>
                         </div>
                       </div>
