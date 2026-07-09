@@ -280,14 +280,17 @@ export const Route = createFileRoute("/local-stories/$slug")({
     if (params.slug === "best-day-trips-from-lisbon") {
       throw redirect({ to: "/day-trips-from-lisbon", statusCode: 301 });
     }
-    // Redirect obvious placeholder slugs ($slug, %24slug, undefined,
-    // template stubs) to the clean index with a permanent 301 so search
-    // engines drop any indexed placeholder URLs on next crawl.
+    // Placeholder / malformed slugs ($slug, %24slug, undefined, template
+    // stubs, anything that can't be a real article) must serve a real 404
+    // with noindex — NOT a 301 to the listing. A 301 keeps the URL alive
+    // in the index and, because the listing links back into the same
+    // /local-stories/* family, Google reports it as a redirect loop.
     const raw = params.slug ?? "";
     const s = raw.trim().toLowerCase();
     const PLACEHOLDERS = new Set(["", "slug", "undefined", "null", "example"]);
-    if (PLACEHOLDERS.has(s) || s.startsWith("$")) {
-      throw redirect({ to: "/local-stories", statusCode: 301 });
+    const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s) && s.length >= 2;
+    if (PLACEHOLDERS.has(s) || s.startsWith("$") || !validSlug) {
+      throw notFound();
     }
     return undefined as never;
   },

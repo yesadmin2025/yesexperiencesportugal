@@ -24,6 +24,11 @@ Disallow: /studio-v2
 Disallow: /typography-audit
 Disallow: /unsubscribe
 
+# Belt-and-braces: block placeholder/template slugs under /local-stories.
+# The route itself now returns 404 (noindex) for these paths.
+Disallow: /local-stories/$slug
+Disallow: /local-stories/%24slug
+
 # Allow major AI / search crawlers explicitly
 User-agent: Googlebot
 Allow: /
