@@ -267,7 +267,7 @@ export function MobileStickyCTA() {
             </Link>
 
             <Link
-              to="/builder"
+              to="/studio-v3"
               onClick={handleChoice("design_private")}
               data-cta="design_private"
               data-cta-surface="mobile_sticky"

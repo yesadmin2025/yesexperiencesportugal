@@ -1252,7 +1252,7 @@ function TailorPage() {
                 <Info size={14} className="shrink-0 mt-0.5 text-[color:var(--gold)]" />
                 Looking for full freedom? You can{" "}
                 <Link
-                  to="/builder"
+                  to="/studio-v3"
                   className="not-italic underline decoration-[color:var(--gold)] underline-offset-2 hover:text-[color:var(--teal)]"
                 >
                   open the Studio

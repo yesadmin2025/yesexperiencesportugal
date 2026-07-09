@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CtaPair } from "@/components/ui/CtaPair";
 
 // Pages from the same real, anonymised private travel file used on
 // the /multi-day Travel Designer page — kept in sync so the homepage
@@ -483,7 +484,7 @@ export function RecentJourney() {
             expands on hover into a small chevron. Primary sits at
             full charcoal; secondary softens to 70% opacity. */}
         <div className="reveal mt-10 md:mt-12 max-w-2xl mx-auto text-center">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
+          <CtaPair justify="center" className="gap-x-10">
             <CtaButton
               to="/multi-day"
               variant="hairline"
@@ -495,7 +496,7 @@ export function RecentJourney() {
             <CtaButton to="/contact" variant="hairline" aria-label="Talk to a designer">
               Talk to a designer
             </CtaButton>
-          </div>
+          </CtaPair>
         </div>
       </div>
     </section>
