@@ -5,6 +5,14 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
+import {
+  BASED_IN_SHORT,
+  EMAIL,
+  EMAIL_HREF,
+  LICENSE_LABEL,
+  PHONE_DISPLAY,
+  whatsappUrl,
+} from "@/config/business-nap";
 
 const TITLE = "About YES Experiences Portugal | Founder-Built Travel";
 const DESCRIPTION =
