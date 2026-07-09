@@ -757,25 +757,25 @@ function GalleryStrip({
             {photos.map((p, i) => (
               <figure
                 key={p.src + i}
-                className={`shrink-0 snap-start relative overflow-hidden ${
+                className={`shrink-0 snap-start relative ${
                   i === 0
-                    ? "w-[80vw] sm:w-[60vw] md:w-[42rem] aspect-[5/6] md:aspect-[16/10]"
-                    : "w-[64vw] sm:w-[40vw] md:w-[22rem] aspect-[4/5]"
+                    ? "w-[80vw] sm:w-[60vw] md:w-[42rem]"
+                    : "w-[64vw] sm:w-[40vw] md:w-[22rem]"
                 }`}
               >
-                <img
+                <TourImage
                   src={p.src}
                   alt={p.alt}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ objectPosition: p.focal ?? "50% 50%" }}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
-                />
-                <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/80 to-transparent">
-                  <figcaption className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
-                    {p.alt}
-                  </figcaption>
-                </div>
+                  ratio="3/2"
+                  focal={p.focal ?? "50% 50%"}
+                  imgClassName="transition-transform duration-700 hover:scale-[1.04]"
+                >
+                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/80 to-transparent">
+                    <figcaption className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
+                      {p.alt}
+                    </figcaption>
+                  </div>
+                </TourImage>
               </figure>
             ))}
           </div>
