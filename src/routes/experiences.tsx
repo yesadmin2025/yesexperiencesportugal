@@ -98,19 +98,20 @@ function ExperiencesPage() {
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: t.id }}
-                    className="lift-layer-sm relative aspect-[4/5] overflow-hidden mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                    className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                     aria-label={`Open ${t.title}`}
                   >
-                    <img
+                    <TourImage
                       {...resolveImg(t, "lg")}
                       alt={`${t.title} — private ${t.theme.toLowerCase()} experience in ${t.region}, Portugal`}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <span className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.25em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
-                      {t.theme}
-                    </span>
+                      ratio="3/2"
+                      focal={t.focal ?? "50% 50%"}
+                      imgClassName="transition-transform duration-700 group-hover:scale-105"
+                    >
+                      <span className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.25em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
+                        {t.theme}
+                      </span>
+                    </TourImage>
                   </Link>
 
                   <Link
