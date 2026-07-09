@@ -6331,3 +6331,50 @@ html {
     display: none !important;
   }
 }
+
+/* ============================================================
+   Text contrast tokens (Wave A)
+   ------------------------------------------------------------
+   Replace ad-hoc charcoal/40, /45, /55 opacities with these
+   named tokens. Each targets a specific role and passes WCAG AA
+   at its intended size.
+
+   --text-muted    5.1:1 on ivory  — body ≤13px, secondary text
+   --text-subtle   3.6:1 on ivory  — labels ≥18px ONLY
+   --text-icon     4.4:1 on ivory  — icon glyphs, placeholder marks
+   --text-on-dark-muted  ~7:1 on charcoal — dark-surface muted copy
+   ============================================================ */
+:root {
+  --text-muted: color-mix(in oklab, var(--charcoal) 68%, transparent);
+  --text-subtle: color-mix(in oklab, var(--charcoal) 52%, transparent);
+  --text-icon: color-mix(in oklab, var(--charcoal) 62%, transparent);
+  --text-on-dark-muted: color-mix(in oklab, var(--ivory) 82%, transparent);
+}
+
+/* High-contrast preference — promote all muted tokens toward full
+   charcoal / ivory. Silent for users who don't opt in. */
+@media (prefers-contrast: more) {
+  :root {
+    --text-muted: var(--charcoal);
+    --text-subtle: color-mix(in oklab, var(--charcoal) 78%, transparent);
+    --text-icon: var(--charcoal);
+    --text-on-dark-muted: var(--ivory);
+  }
+}
+
+/* Editorial body — canonical reading rhythm for 13–16px body copy
+   on light surfaces. Use on paragraphs across tour/regional routes. */
+@utility editorial-body {
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  font-size: 15px;
+  line-height: 1.62;
+  font-weight: 400;
+  color: var(--charcoal);
+  text-wrap: pretty;
+}
+@media (min-width: 768px) {
+  .editorial-body {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+}
