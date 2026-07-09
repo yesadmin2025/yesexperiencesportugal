@@ -462,7 +462,7 @@
   }
   /* Subtle, tactile link hover across the page */
   a {
-    transition: color 220ms ease;
+    transition: color 220ms var(--ease-premium);
   }
 }
 
@@ -957,7 +957,7 @@
       0 0 0 1px color-mix(in oklab, #b3261e 65%, transparent),
       0 0 0 3px color-mix(in oklab, #b3261e 20%, transparent),
       0 10px 26px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent) !important;
-    transition: box-shadow 320ms ease-out;
+    transition: box-shadow 320ms var(--ease-premium);
   }
 
   /* Shimmer sweep for BookingCtaSkeleton — lightweight, brand-ivory wash. */
@@ -1713,7 +1713,7 @@
   @media (prefers-reduced-motion: reduce) {
     .tour-card-link,
     .tour-card-link::after {
-      transition: color 200ms ease !important;
+      transition: color 200ms var(--ease-premium) !important;
     }
   }
 }
@@ -3217,7 +3217,7 @@ html.motion-ready [data-motion].motion-in {
   .decision-scene,
   .decision-scene:hover {
     transform: none !important;
-    transition: box-shadow 200ms ease !important;
+    transition: box-shadow 200ms var(--ease-premium) !important;
   }
   .decision-scene [data-card-image],
   .decision-scene:hover [data-card-image] {
@@ -3324,7 +3324,7 @@ html.motion-ready [data-motion].motion-in {
   position: relative;
   color: var(--teal);
   text-decoration: none;
-  transition: color 220ms ease;
+  transition: color 220ms var(--ease-premium);
 }
 .link-soft::after {
   content: "";
@@ -3391,7 +3391,7 @@ html.motion-ready [data-motion].motion-in {
       border-color 200ms ease !important;
   }
   .link-soft::after {
-    transition: background-color 200ms ease !important;
+    transition: background-color 200ms var(--ease-premium) !important;
   }
 }
 
@@ -4016,7 +4016,7 @@ html.motion-ready [data-motion].motion-in {
   }
   .home-energy .he-card-lift:active::after {
     box-shadow: inset 0 0 0 1px rgba(201, 169, 106, 0.42);
-    transition: box-shadow 140ms ease-out;
+    transition: box-shadow 140ms var(--ease-premium);
   }
   /* Coarse-pointer refinement — on true touch devices, disable the
      hover halo (hover is a phantom sticky state after tap on iOS) and
@@ -4945,7 +4945,7 @@ html.motion-ready [data-motion].motion-in {
 }
 .slv-pin .slv-pin-focus {
   opacity: 0;
-  transition: opacity 160ms ease;
+  transition: opacity 160ms var(--ease-premium);
 }
 .slv-pin:focus-visible .slv-pin-focus,
 .slv-pin:hover .slv-pin-focus {
