@@ -4,6 +4,7 @@
  * review aggregation. Each set targets high-intent Lisbon day-tour
  * queries surfaced in Search Console.
  */
+import { CANCELLATION_SIGNATURE, CANCELLATION_STUDIO } from "@/config/business-nap";
 
 export type FaqItem = { q: string; a: string };
 
