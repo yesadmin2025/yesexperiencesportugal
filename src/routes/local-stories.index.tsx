@@ -19,7 +19,7 @@ type JournalPost = {
   published_at: string | null;
 };
 
-export const Route = createFileRoute("/local-stories")({
+export const Route = createFileRoute("/local-stories/")({
   head: () => ({
     meta: [
       { title: "Local Stories — YES Experiences Portugal" },

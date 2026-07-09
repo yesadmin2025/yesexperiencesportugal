@@ -32,7 +32,6 @@ import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as MomentsRouteImport } from './routes/moments'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
-import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
@@ -52,6 +51,7 @@ import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
@@ -222,11 +222,6 @@ const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
   path: '/luxury-tours-portugal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocalStoriesRoute = LocalStoriesRouteImport.update({
-  id: '/local-stories',
-  path: '/local-stories',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HeroVerifyRoute = HeroVerifyRouteImport.update({
   id: '/hero-verify',
   path: '/hero-verify',
@@ -325,6 +320,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
+  id: '/local-stories/',
+  path: '/local-stories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -356,9 +356,9 @@ const QaHeroRoute = QaHeroRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => LocalStoriesRoute,
+  id: '/local-stories/$slug',
+  path: '/local-stories/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const Itineraries10DayPrivatePortugalTourRoute =
   Itineraries10DayPrivatePortugalTourRouteImport.update({
@@ -624,7 +624,6 @@ export interface FileRoutesByFullPath {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
@@ -689,6 +688,7 @@ export interface FileRoutesByFullPath {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/local-stories/': typeof LocalStoriesIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -723,7 +723,6 @@ export interface FileRoutesByTo {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
@@ -788,6 +787,7 @@ export interface FileRoutesByTo {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
+  '/local-stories': typeof LocalStoriesIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -823,7 +823,6 @@ export interface FileRoutesById {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
@@ -888,6 +887,7 @@ export interface FileRoutesById {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/local-stories/': typeof LocalStoriesIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -924,7 +924,6 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
-    | '/local-stories'
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
@@ -989,6 +988,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin/'
+    | '/local-stories/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1023,7 +1023,6 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
-    | '/local-stories'
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
@@ -1088,6 +1087,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin'
+    | '/local-stories'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1122,7 +1122,6 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
-    | '/local-stories'
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
@@ -1187,6 +1186,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin/'
+    | '/local-stories/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1222,7 +1222,6 @@ export interface RootRouteChildren {
   ExperiencesRoute: typeof ExperiencesRoute
   FaqRoute: typeof FaqRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
-  LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
@@ -1280,12 +1279,14 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ITokenRoute: typeof ITokenRoute
   Itineraries10DayPrivatePortugalTourRoute: typeof Itineraries10DayPrivatePortugalTourRoute
+  LocalStoriesSlugRoute: typeof LocalStoriesSlugRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
+  LocalStoriesIndexRoute: typeof LocalStoriesIndexRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -1462,13 +1463,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LuxuryToursPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/local-stories': {
-      id: '/local-stories'
-      path: '/local-stories'
-      fullPath: '/local-stories'
-      preLoaderRoute: typeof LocalStoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/hero-verify': {
       id: '/hero-verify'
       path: '/hero-verify'
@@ -1602,6 +1596,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/local-stories/': {
+      id: '/local-stories/'
+      path: '/local-stories'
+      fullPath: '/local-stories/'
+      preLoaderRoute: typeof LocalStoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -1646,10 +1647,10 @@ declare module '@tanstack/react-router' {
     }
     '/local-stories/$slug': {
       id: '/local-stories/$slug'
-      path: '/$slug'
+      path: '/local-stories/$slug'
       fullPath: '/local-stories/$slug'
       preLoaderRoute: typeof LocalStoriesSlugRouteImport
-      parentRoute: typeof LocalStoriesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/itineraries/10-day-private-portugal-tour': {
       id: '/itineraries/10-day-private-portugal-tour'
@@ -1983,18 +1984,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LocalStoriesRouteChildren {
-  LocalStoriesSlugRoute: typeof LocalStoriesSlugRoute
-}
-
-const LocalStoriesRouteChildren: LocalStoriesRouteChildren = {
-  LocalStoriesSlugRoute: LocalStoriesSlugRoute,
-}
-
-const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
-  LocalStoriesRouteChildren,
-)
-
 interface StudioV2RouteChildren {
   StudioV2ITokenRoute: typeof StudioV2ITokenRoute
 }
@@ -2039,7 +2028,6 @@ const rootRouteChildren: RootRouteChildren = {
   ExperiencesRoute: ExperiencesRoute,
   FaqRoute: FaqRoute,
   HeroVerifyRoute: HeroVerifyRoute,
-  LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
@@ -2098,12 +2086,14 @@ const rootRouteChildren: RootRouteChildren = {
   ITokenRoute: ITokenRoute,
   Itineraries10DayPrivatePortugalTourRoute:
     Itineraries10DayPrivatePortugalTourRoute,
+  LocalStoriesSlugRoute: LocalStoriesSlugRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
+  LocalStoriesIndexRoute: LocalStoriesIndexRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
@@ -2121,13 +2111,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
