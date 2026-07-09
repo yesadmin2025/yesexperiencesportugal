@@ -275,7 +275,7 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
                   <h3 className="serif text-[1.6rem] md:text-[1.85rem] leading-[1.1] tracking-[-0.005em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
                     {s.title.split(" — ")[0]}
                   </h3>
-                  <p className="mt-3 text-[13.5px] md:text-[14.5px] italic font-light leading-[1.55] text-[color:var(--ivory)]/90 max-w-[34ch]">
+                  <p className="mt-3 text-[13.5px] md:text-[14.5px] italic font-normal leading-[1.55] text-[color:var(--ivory)]/90 max-w-[34ch]">
                     {s.line}
                   </p>
                   <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-medium text-[color:var(--gold-soft)] group-hover:text-[color:var(--gold)] transition-colors">
