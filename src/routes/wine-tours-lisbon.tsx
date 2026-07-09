@@ -159,7 +159,7 @@ function Page() {
                 Explore Signature Experiences
               </CtaButton>
               <CtaButton to="/studio-v3" variant="ghost">
-                Design & Book
+                Check availability & reserve
               </CtaButton>
             </div>
           </div>
@@ -255,7 +255,7 @@ function Page() {
                 Explore Signature Experiences
               </CtaButton>
               <CtaButton to="/studio-v3" variant="ghost">
-                Design & Book
+                Check availability & reserve
               </CtaButton>
             </div>
           </div>
