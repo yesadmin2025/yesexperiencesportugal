@@ -140,7 +140,7 @@ function Page() {
         <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Portugal is small enough to see in a week, and layered enough to spend a month on.
                 We're a licensed tour operator (RNAAT) based in Sesimbra, designing{" "}
                 <strong className="font-medium">private Portugal tours</strong> for travelers who
@@ -154,7 +154,7 @@ function Page() {
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {r.title}
                   </h2>
-                  <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+                  <p className="editorial-body">
                     {r.body}
                   </p>
                   <div className="mt-7">

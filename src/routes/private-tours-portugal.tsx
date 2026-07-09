@@ -116,7 +116,7 @@ function Page() {
         <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Every experience we run is{" "}
                 <strong className="font-medium">private by default</strong> — never joined with
                 strangers, never bus-scheduled. We're a licensed Portuguese operator (RNAAT) based
@@ -129,7 +129,7 @@ function Page() {
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {p.title}
                   </h2>
-                  <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+                  <p className="editorial-body">
                     {p.body}
                   </p>
                   <div className="mt-7">
