@@ -18,6 +18,7 @@ import { installClientErrorLogger } from "@/lib/client-error-logger";
 import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
+import { installAnalyticsAttrs } from "@/lib/analytics";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -225,6 +226,7 @@ function RootComponent() {
   useIframeFooterGuard();
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
+  useEffect(() => installAnalyticsAttrs(), []);
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.

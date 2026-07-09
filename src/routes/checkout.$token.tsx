@@ -9,6 +9,7 @@ import {
   getCustomBookingDraft,
   confirmCustomBookingDraft,
 } from "@/lib/studio-v2/bookings.functions";
+import { TrustStrip } from "@/components/checkout/TrustStrip";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 
 export const Route = createFileRoute("/checkout/$token")({
@@ -321,6 +322,10 @@ function CheckoutPage() {
             {error}
           </p>
         )}
+
+        <TrustStrip placement="bespoke_checkout" itemSlug={token} />
+
+
 
         <button
           type="submit"

@@ -18,6 +18,7 @@ import type { RefineStop } from "@/components/studio-v2/RefineStage";
 import type { StudioBlueprint } from "@/lib/studio-v2/blueprints";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { TrustStrip } from "@/components/checkout/TrustStrip";
 
 interface Props {
   profile: TravelerProfile;
@@ -284,8 +285,11 @@ export function FinalBookingPanel({
         </div>
       </div>
 
+      {/* Trust strip — sits directly above the primary action */}
+      <TrustStrip placement="signature_final_panel" />
+
       {/* PRIMARY action */}
-      <div className="mt-8">
+      <div className="mt-6">
         <button
           type="button"
           onClick={onSayYes}
