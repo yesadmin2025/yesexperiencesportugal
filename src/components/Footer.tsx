@@ -2,6 +2,17 @@ import { Link } from "@tanstack/react-router";
 import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
+import {
+  BASED_IN,
+  BASED_IN_SHORT,
+  BUSINESS_NAME,
+  LICENSE_LABEL,
+  LICENSE_NUMBER,
+  LICENSE_SHORT,
+  whatsappUrl,
+} from "@/config/business-nap";
+
+const LEGAL_META_LINE = `${LICENSE_LABEL} · ${BASED_IN}`;
 
 interface FooterLink {
   to: string;
@@ -63,8 +74,7 @@ export function Footer() {
           >
             Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
             different — designed with you and confirmed in minutes. 700+ five-star reviews ·
-            Licensed tour operator RNAAT nº 31/2023 · Based in Sesimbra, designing private journeys
-            across Portugal.
+            Licensed tour operator {LICENSE_LABEL} · {BASED_IN_SHORT}
           </p>
         </div>
 
@@ -115,7 +125,7 @@ export function Footer() {
                 external: true,
               },
               {
-                to: "https://wa.me/351911889992",
+                to: whatsappUrl(),
                 label: "WhatsApp Support",
                 external: true,
               },
@@ -211,7 +221,7 @@ export function Footer() {
                 className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--gold-warm)]"
                 style={{ fontWeight: 600 }}
               >
-                RNAAT <span className="tabular-nums">nº 31/2023</span>
+                {LICENSE_SHORT} <span className="tabular-nums">nº {LICENSE_NUMBER}</span>
               </span>
             </li>
             <li className="flex items-center gap-2">
@@ -249,8 +259,8 @@ export function Footer() {
             style={{ fontWeight: 400 }}
           >
             <p className="leading-[1.6] text-[color:var(--ivory)]/80">
-              © 2026 YES experiences Portugal. All rights reserved.
-              <span className="hidden md:inline text-[color:var(--ivory)]/80"> · RNAAT nº 31/2023 · Sesimbra, Portugal.</span>
+              © {new Date().getFullYear()} {BUSINESS_NAME}. All rights reserved.
+              <span className="hidden md:inline text-[color:var(--ivory)]/80"> · {LEGAL_META_LINE}.</span>
             </p>
             <nav
               aria-label="Legal and contact"
@@ -280,7 +290,7 @@ export function Footer() {
             </nav>
           </div>
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
-            RNAAT nº 31/2023 · Sesimbra, Portugal
+            {LEGAL_META_LINE}
           </p>
         </div>
       </div>
