@@ -136,7 +136,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 South of the bridge, forty minutes and a different country.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Cross the 25 de Abril Bridge and the road curves through cork and pine into the
                 Arrábida Natural Park — limestone mountains dropping straight into turquoise water,
                 small unguarded beaches, and the wine village of Azeitão at its centre. It is the
@@ -149,7 +149,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Market, wineries, long lunch, viewpoint.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We open at Setúbal's 145-year-old Livramento market, climb to two or three family
                 wineries, and sit down for an unhurried Portuguese lunch in Azeitão. Optional close
                 at Cristo Rei for the Lisbon panorama or Sesimbra Castle for Atlantic light.
@@ -161,7 +161,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 A private car, your own pace.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Group Arrábida tours typically stop at one winery and rush the lunch. Private means
                 hotel pickup, your own driver-guide, and the choice of where to linger — an extra
                 cellar, a swim at Galápos, or a longer walk on Sesimbra's castle walls.

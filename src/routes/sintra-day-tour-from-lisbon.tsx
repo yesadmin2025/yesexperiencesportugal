@@ -162,7 +162,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Sintra is the day everyone has heard of.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We prefer it early, before the main estates fill with buses. The Pena Palace sits
                 above the treeline; Quinta da Regaleira is a garden of grottoes and symbols. From
                 the hill the road runs west to Cabo da Roca, the westernmost point of mainland
@@ -175,7 +175,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 A working winery, not just the postcard list.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Most Sintra day tours stop at the palaces and leave. We add a quiet tasting at Adega
                 Regional de Colares — vines planted in Atlantic sand — and a lunch break above the
                 cliffs at Azenhas do Mar. The mood matters as much as the monuments.
@@ -187,7 +187,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 The train takes you to the town. We take you to the day.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 The Lisbon-to-Sintra train is fine for a half-day glance. A private day means hotel
                 pickup, a single car between Sintra, Cabo da Roca and Cascais, and a licensed local
                 guide who decides which estate to skip when the line is long.

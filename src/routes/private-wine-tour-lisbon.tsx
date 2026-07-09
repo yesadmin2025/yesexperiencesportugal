@@ -140,7 +140,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 The closest serious wine country to Lisbon.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Cross the 25 de Abril Bridge and within forty minutes the road climbs into the
                 Arrábida hills. Cork oaks, low whitewashed wineries, and the Atlantic glinting
                 below. Azeitão is the village at the centre — home to Moscatel de Setúbal and small
@@ -153,7 +153,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Two or three wineries, one long lunch, no rush.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We start with Setúbal's 145-year-old Livramento market — oysters, cheese, the first
                 glass of Moscatel — then move between family wineries with a long traditional lunch
                 in Azeitão in the middle. Optional close at Cristo Rei or Sesimbra Castle for
@@ -166,7 +166,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Your own pace, your own pours.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Group wine tours run on a fixed clock and a fixed cellar list. A private day means
                 you choose how long to linger at each table, which wineries to add, and whether to
                 end the day on a viewpoint or back in the city for dinner.

@@ -136,7 +136,7 @@ function EvoraPrivateLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Ninety minutes south, two thousand years deep.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Évora is a small UNESCO World Heritage city in the heart of Alentejo — Roman Temple,
                 cathedral, narrow lanes and the famous Chapel of Bones, all walkable in an
                 afternoon. From Lisbon it is an easy private drive across cork-oak country.
@@ -148,7 +148,7 @@ function EvoraPrivateLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Roman temple, two wineries, a cork stop, long lunch.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We walk the old town with a local guide, visit two family wineries — one of them
                 with a restaurant — and add a cork tradition stop so you see where Portuguese cork
                 actually comes from. Lunch is Alentejo-slow, plates shared, wine local.
@@ -160,7 +160,7 @@ function EvoraPrivateLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 No coach, no rush, no fixed script.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Hotel pickup, your own driver-guide, your own car. Stay longer in the cathedral
                 cloister, skip a winery, add an extra glass — the day moves with you, not with
                 thirty strangers.

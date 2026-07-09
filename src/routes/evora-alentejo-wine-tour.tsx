@@ -135,7 +135,7 @@ function EvoraAlentejoLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Évora and Alentejo, in one day from Lisbon.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Évora is the UNESCO-listed capital of Alentejo — Roman Temple, Chapel of Bones,
                 narrow lanes. Around it stretches cork-oak country and some of Portugal's most
                 honest family wineries. Done privately, the two fit comfortably into a single full
@@ -148,7 +148,7 @@ function EvoraAlentejoLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Cork, wine, heritage, lunch.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 A cork tradition stop, two family wineries, a walk through Évora's old town with the
                 Roman Temple and Chapel of Bones, and a long Alentejo lunch. The route flexes —
                 fewer stops, deeper ones, or the opposite, depending on what you want.
@@ -160,7 +160,7 @@ function EvoraAlentejoLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Reviewed across independent travel guides.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 The Évora &amp; Alentejo wine experience YES Experiences Portugal operates has been
                 compared, ranked and reviewed by independent travel guides covering full-day tours
                 from Lisbon — see a selection below.
