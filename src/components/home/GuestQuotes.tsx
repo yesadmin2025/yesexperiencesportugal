@@ -174,7 +174,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             className="flex items-stretch gap-4 md:gap-5 px-5 sm:px-6 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-pl-5 sm:scroll-pl-6 text-left list-none p-0"
             aria-label="Recent guest reviews"
           >
-            {quotes.map((q) => (
+            {quotes.map((q, idx) => (
               <li
                 key={q.id}
                 className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[15rem] sm:min-h-[16rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-6 md:p-7 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_10px_28px_-18px_rgba(46,46,46,0.14)]"
@@ -213,7 +213,12 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                       </p>
                     )}
                   </div>
-                  <SourceBadge source={q.source} sourceUrl={q.source_url} />
+                  <ReviewSourceLink
+                    source={q.source}
+                    sourceUrl={q.source_url}
+                    reviewerName={q.reviewer_name}
+                    dim={idx !== activeIndex}
+                  />
                 </div>
               </li>
             ))}
