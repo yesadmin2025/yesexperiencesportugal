@@ -988,16 +988,14 @@ function RelatedTours({ currentId }: { currentId: string }) {
               params={{ tourId: t.id }}
               className="group flex flex-col"
             >
-              <div className="relative aspect-[4/5] overflow-hidden mb-3">
-                <img
-                  {...resolveImg(t, "md")}
-                  alt={t.title}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ objectPosition: t.focal ?? "50% 50%" }}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
+              <TourImage
+                {...resolveImg(t, "md")}
+                alt={t.title}
+                ratio="3/2"
+                focal={t.focal ?? "50% 50%"}
+                className="mb-3"
+                imgClassName="transition-transform duration-700 group-hover:scale-105"
+              />
               <h3 className="serif text-lg">{t.title}</h3>
               <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
                 {t.region}
