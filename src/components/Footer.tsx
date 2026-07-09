@@ -93,7 +93,7 @@ export function Footer() {
           <FooterCol
             title="Occasions"
             links={[
-              { to: "/proposal-in-portugal", label: "Proposals & Celebrations" },
+              { to: "/proposal-in-portugal", label: "Moments" },
               { to: "/corporate", label: "Corporate" },
               { to: "/contact", label: "Private Groups" },
             ]}
