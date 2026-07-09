@@ -5,7 +5,6 @@ import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { FounderByline } from "@/components/ui/FounderByline";
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
@@ -190,11 +189,6 @@ function ProposalInPortugalPage() {
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             We'll help you shape it — discreetly, with people who know the place. No pressure.
           </p>
-          <FounderByline
-            className="mt-8"
-            quote="The moment matters more than the location. We help you shape both, quietly."
-          />
-
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Plan with us

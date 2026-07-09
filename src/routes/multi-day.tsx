@@ -21,7 +21,6 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { FounderByline } from "@/components/ui/FounderByline";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 const samplePage01 = { url: "/travel-file-sample/page-01.jpg" };
@@ -512,11 +511,6 @@ function MultiDayPage() {
             Tell us what you have in mind. We will shape the journey with you, day by day, route by
             route, until Portugal feels like yours.
           </p>
-          <FounderByline
-            className="mt-8"
-            quote="Multi-day Portugal is where the country really opens up — we design it around your rhythm, not a fixed route."
-          />
-
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Begin with a Designer

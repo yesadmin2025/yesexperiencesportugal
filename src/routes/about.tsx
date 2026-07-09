@@ -4,10 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import founderHosting from "@/assets/about-founder-wine-experience.jpg.asset.json";
-import founderOnRoad from "@/assets/founder/nidia-on-the-road.jpg";
-import founderPortrait from "@/assets/founder/nidia-portrait.jpg";
-import founderSignature from "@/assets/founder/nidia-signature.png";
+import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import {
   BASED_IN_SHORT,
   EMAIL,
@@ -93,8 +90,8 @@ function Page() {
 
       {/* Founder-built */}
       <section className="reveal py-20 bg-[color:var(--sand)]">
-        <div className="container-x">
-          <div className="max-w-3xl">
+        <div className="container-x grid lg:grid-cols-[1.15fr_1fr] gap-14 items-start">
+          <div>
             <Eyebrow>Founder-built</Eyebrow>
             <SectionTitle as="h2" size="default">
               Built by the person <SectionTitle.Em>who saw the problem</SectionTitle.Em>.
@@ -112,93 +109,53 @@ function Page() {
               </p>
               <p>The idea was too specific to hand over as a standard agency brief.</p>
             </div>
-          </div>
 
-          {/* Editorial triptych — hosting · on the road · portrait */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-            <figure>
+            <figure className="mt-10 lg:hidden">
               <img
-                src={founderHosting.url}
-                alt="Nídia Almeida hosting a private wine experience with YES guests in Arrábida."
+                src={founderAsset.url}
+                alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
                 loading="lazy"
-                className="w-full aspect-[4/5] object-cover"
+                className="w-full aspect-[4/3] object-cover"
               />
-              <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 italic leading-relaxed">
-                Hosting a private wine table, Arrábida.
+              <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
+                Nídia Almeida, founder of YES Experiences Portugal, hosting a private wine
+                experience in Portugal.
               </figcaption>
             </figure>
-            <figure className="sm:mt-8">
-              <img
-                src={founderOnRoad}
-                alt="Nídia Almeida at a coastal viewpoint along the Arrábida coast at golden hour."
-                loading="lazy"
-                className="w-full aspect-[4/5] object-cover"
-              />
-              <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 italic leading-relaxed">
-                Scouting the coast — the work behind every route.
-              </figcaption>
-            </figure>
-            <figure>
-              <img
-                src={founderPortrait}
-                alt="Editorial portrait of Nídia Almeida, founder of YES Experiences Portugal."
-                loading="lazy"
-                className="w-full aspect-[4/5] object-cover"
-              />
-              <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 italic leading-relaxed">
-                Nídia Almeida, founder.
-              </figcaption>
-            </figure>
-          </div>
 
-          <div className="mt-10 max-w-3xl space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            <p>
-              To make it real, the founder learned to translate travel experience into product
-              structure, booking logic and digital flow — how a guest chooses, how a route changes,
-              how a private day is priced, and how all of that could become a live
-              experience-building system.
-            </p>
-            <p>
-              The website, Studio flow and booking model were conceived, structured, written and
-              built in-house, shaped from real conversations, itinerary changes, guest hesitation
-              and operational constraints.
-            </p>
-            <p>
-              That is why YES is not just a catalogue of tours. It is a founder-built private
-              travel platform, created from the road and still refined through every booking.
-            </p>
-          </div>
-
-          {/* Signed first-person note */}
-          <aside className="mt-14 mx-auto max-w-2xl bg-[color:var(--ivory)] p-8 md:p-10 border-l-2 border-[color:var(--gold)]">
-            <Eyebrow>A note from the founder</Eyebrow>
-            <div className="mt-5 space-y-4 text-[color:var(--charcoal)] leading-relaxed">
+            <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
-                I started YES because the Portugal I loved showing guests never fit inside a fixed
-                tour. Every group arrives with a different rhythm, a different reason for coming.
+                To make it real, the founder learned to translate travel experience into product
+                structure, booking logic and digital flow — how a guest chooses, how a route
+                changes, how a private day is priced, and how all of that could become a live
+                experience-building system.
               </p>
               <p>
-                So we built a way to design the day with you — not sell you one off a shelf. Real
-                routes, real partners, real time to breathe.
+                The website, Studio flow and booking model were conceived, structured, written and
+                built in-house, shaped from real conversations, itinerary changes, guest hesitation
+                and operational constraints.
               </p>
               <p>
-                If you write to us, you reach me or someone on my small local team. Nothing here is
-                outsourced.
+                That is why YES is not just a catalogue of tours. It is a founder-built private
+                travel platform, created from the road and still refined through every booking.
               </p>
             </div>
+          </div>
+
+          <figure className="hidden lg:block lg:sticky lg:top-28">
             <img
-              src={founderSignature}
-              alt="Signature of Nídia Almeida."
+              src={founderAsset.url}
+              alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
               loading="lazy"
-              className="mt-6 h-12 md:h-14 w-auto"
+              className="w-full aspect-[4/3] object-cover"
             />
-            <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-              Nídia Almeida · Founder, YES Experiences Portugal
-            </p>
-          </aside>
+            <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
+              Nídia Almeida, founder of YES Experiences Portugal, hosting a private wine experience
+              in Portugal.
+            </figcaption>
+          </figure>
         </div>
       </section>
-
 
       {/* Founder-led */}
       <section className="reveal py-20">
