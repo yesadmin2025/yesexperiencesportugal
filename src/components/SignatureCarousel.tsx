@@ -247,7 +247,7 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
               <Link
                 to="/tours/$tourId"
                 params={{ tourId: s.id }}
-                className="editorial-card block relative overflow-hidden aspect-[4/5] border border-[color:var(--border)] transition-[transform,box-shadow] duration-[600ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:shadow-[0_28px_56px_-24px_rgba(0,0,0,0.55)] active:scale-[0.995]"
+                className="editorial-card block relative overflow-hidden aspect-[3/2] border border-[color:var(--border)] transition-[transform,box-shadow] duration-[600ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:shadow-[0_28px_56px_-24px_rgba(0,0,0,0.55)] active:scale-[0.995]"
                 aria-label={`Open journey — ${s.title}`}
               >
                 <img
