@@ -260,21 +260,17 @@ function TourHero({
 
       <section className="pb-8">
         <div className="container-x max-w-6xl">
-          {/* Cinematic hero image */}
-          <div className="relative aspect-[4/5] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] overflow-hidden shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]">
-            <img
-              src={heroSrc}
-              alt={heroAlt}
-              width={1600}
-              height={900}
-              fetchPriority="high"
-              loading="eager"
-              decoding="async"
-              sizes="(min-width: 1024px) 1152px, 100vw"
-              style={{ objectPosition: tour.focal ?? "50% 50%" }}
-              className="w-full h-full object-cover motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
-            />
-          </div>
+          {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
+          <TourImage
+            src={heroSrc}
+            alt={heroAlt}
+            ratio="3/2"
+            priority
+            focal={tour.focal ?? "50% 50%"}
+            sizes="(min-width: 1024px) 1152px, 100vw"
+            className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
+            imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
+          />
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
