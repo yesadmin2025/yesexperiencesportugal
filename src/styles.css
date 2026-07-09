@@ -6386,3 +6386,14 @@ html {
   }
 }
 
+
+/* ─────────────────────────────────────────────────────────────
+   LONG-FORM READING MEASURE
+   Applied to article body columns on /about and Local Stories.
+   Constrains measure to ~60–75ch and sets a comfortable leading.
+   ───────────────────────────────────────────────────────────── */
+@utility prose-longform {
+  max-width: 68ch;
+  line-height: 1.6;
+  font-family: var(--font-sans);
+}
