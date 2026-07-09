@@ -323,6 +323,10 @@ function CheckoutPage() {
           </p>
         )}
 
+        <TrustStrip placement="bespoke_checkout" itemSlug={token} />
+
+
+
         <button
           type="submit"
           disabled={submitting || !name.trim() || !email.trim()}

@@ -18,6 +18,7 @@ import type { RefineStop } from "@/components/studio-v2/RefineStage";
 import type { StudioBlueprint } from "@/lib/studio-v2/blueprints";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { TrustStrip } from "@/components/checkout/TrustStrip";
 
 interface Props {
   profile: TravelerProfile;
