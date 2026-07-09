@@ -6379,3 +6379,22 @@ html {
   }
 }
 
+/* Long-form article reading measure — applied via `.prose-yes` wrapper on
+   long-form article routes (Local Stories, About). Constrains line length
+   to the 60–75ch legibility band and relaxes leading to 1.6 for calmer
+   reading rhythm. Brand colors untouched — inherits charcoal from parent. */
+@utility prose-yes {
+  & > p,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > dl {
+    max-width: 68ch;
+    line-height: 1.6;
+  }
+  & > p {
+    text-wrap: pretty;
+  }
+}
+
+
