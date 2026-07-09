@@ -34,7 +34,7 @@ function ErrorShell({ title }: { title: string }) {
         </p>
         <h1 className="serif mt-3 text-[1.8rem] font-semibold leading-tight">{title}</h1>
         <a
-          href="/builder"
+          href="/studio-v3"
           className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4"
         >
           Construir um novo roteiro

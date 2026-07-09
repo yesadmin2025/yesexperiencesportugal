@@ -1945,7 +1945,7 @@ function ProgressiveBuildPreview({
               )}
             </div>
             <Link
-              to="/builder"
+              to="/studio-v3"
               search={{ legacy: "stepper" } as never}
               className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--gold)]/55 bg-[color:var(--gold)]/12 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--gold)] transition-colors hover:bg-[color:var(--gold)]/22 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
               aria-label="Continue this draft in the full builder"
