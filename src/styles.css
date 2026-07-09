@@ -6366,15 +6366,16 @@ html {
    on light surfaces. Use on paragraphs across tour/regional routes. */
 @utility editorial-body {
   font-family: var(--font-sans, Inter, system-ui, sans-serif);
-  font-size: 15px;
-  line-height: 1.62;
+  font-size: 16px;
+  line-height: 1.72;
   font-weight: 400;
   color: var(--charcoal);
   text-wrap: pretty;
 }
 @media (min-width: 768px) {
   .editorial-body {
-    font-size: 16px;
-    line-height: 1.65;
+    font-size: 17px;
+    line-height: 1.78;
   }
 }
+
