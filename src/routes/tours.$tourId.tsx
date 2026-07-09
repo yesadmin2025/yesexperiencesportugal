@@ -874,7 +874,7 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
               </blockquote>
               <figcaption className="mt-5 pt-4 border-t border-[color:var(--border)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                 {r.author}
-                {r.date && <span className="text-[color:var(--gold)] not-italic"> · {r.date}</span>}
+                {r.date && <span className="text-[color:var(--charcoal-soft)] not-italic"> · {r.date}</span>}
               </figcaption>
             </figure>
           ))}
