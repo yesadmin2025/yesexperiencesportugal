@@ -1,32 +1,39 @@
 ## Current state
 
-- `src/components/Navbar.tsx` is already the single shared header, mounted via `SiteLayout` on every public route. There is no per-route header divergence — the same `desktopLinks`/`mobilePrimaryLinks` render everywhere.
-- Real divergence is the **label + link for the Proposals surface**:
-  - Navbar (desktop + mobile primary): `"Moments"` → `/proposal-in-portugal`
-  - Homepage `ThreePathsSection` card: `"Moments"` → `/proposal-in-portugal`
-  - Footer "Occasions" column: `"Proposals & Celebrations"` → `/proposal-in-portugal`
-  - Footer "Popular searches": `"Proposal in Portugal"` → `/proposal-in-portugal`
-  - i18n `nav.moments` = `"Moments"` (all locales)
-  - Redirects already funnel `/moments` and `/proposals` → `/proposal-in-portugal` (canonical URL is fine, no change needed).
+- `src/components/Footer.tsx` is already the single shared footer, mounted once via `SiteLayout` (which every route wraps in). No route renders its own footer or its own payment row.
+- `PaymentMethodsRow` is used only inside `Footer.tsx` — payment-icon set is already identical everywhere.
+- Link columns (Experiences / Occasions / Company / Connect), Popular searches, and Signature Experiences lists live in this one file → already identical across routes.
 
-## Decision
+## Real divergences to fix (within the single footer)
 
-- **Label**: `Moments` — matches Navbar, homepage card, and i18n key already in place; shorter, editorial, on brand.
-- **Canonical URL**: `/proposal-in-portugal` (keyword-targeted route already used everywhere; SEO-friendly; existing redirects preserve inbound links).
+1. **License reference repeats 3×**
+   - Brand tagline paragraph: "Licensed tour operator RNAAT nº 31/2023 · Based in Sesimbra, designing private journeys across Portugal."
+   - Trust strip badge: "RNAAT nº 31/2023"
+   - Bottom legal line: "RNAAT nº 31/2023 · Sesimbra, Portugal"
+2. **"Based in" location repeats 2×** (tagline + bottom legal line), with two different phrasings.
+3. **Divider hairline inconsistency**
+   - Popular searches / Signature Experiences / trust strip separators: `border-[color:var(--gold-warm)]/15`
+   - Bottom bar separator: `border-[color:var(--gold-warm)]/25`
 
-## Changes
+## Changes (`src/components/Footer.tsx` only)
 
-1. **`src/components/Footer.tsx`**
-   - "Occasions" column: rename first item `"Proposals & Celebrations"` → `"Moments"` (link unchanged: `/proposal-in-portugal`).
-   - "Popular searches": leave `"Proposal in Portugal"` as-is — it's an SEO long-tail keyword phrase, not a nav label, and points at the same canonical URL. (Call this out; if you'd rather I also relabel it "Moments" for absolute uniformity, say so.)
+1. **Tagline paragraph** — strip the credential clause. Leave the brand-voice sentence only:
+   > "Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely different — designed with you and confirmed in minutes. 700+ five-star reviews."
+   (Removes both the license mention and the "Based in…" clause from the tagline; both remain elsewhere in canonical positions.)
 
-2. **`src/components/Navbar.tsx`** — no change (already `"Moments"` → `/proposal-in-portugal` in both desktop and mobile arrays, in the same order).
+2. **Trust strip badge (canonical license reference)** — keep `RNAAT nº 31/2023` badge unchanged. This is the single visible license reference.
 
-3. **Verify no other header exists**: `SiteLayout` is the only mount point for `<Navbar />`; every public route wraps in `<SiteLayout>`. No route renders its own header. No code changes needed here beyond a grep confirmation during implementation.
+3. **Bottom legal line (canonical location reference)** — keep `© {year} YES experiences Portugal. All rights reserved.` and reduce the meta suffix to just the location, since the license already appears in the trust strip directly above:
+   - Desktop suffix: ` · Sesimbra, Portugal.`
+   - Mobile secondary line: `Sesimbra, Portugal.`
+   - Update `LEGAL_META_LINE` accordingly (remove `${LICENSE_LABEL} · ` prefix; keep `${BASED_IN}`).
+
+4. **Divider consistency** — set all four inner section separators (Popular searches, Signature Experiences, trust strip, bottom bar) to the same token: `border-t border-[color:var(--gold-warm)]/15`. Change bottom-bar `/25` → `/15`.
 
 ## Not touched
 
-- Brand palette tokens — no hex or CSS variable changes.
-- Route files, redirects, and canonical URLs.
-- Homepage `ThreePathsSection` card (already "Moments").
-- i18n JSON (already `"Moments"` in en/es/pt).
+- Brand palette / any hex or CSS variable (locked palette preserved: charcoal ground, ivory text, gold-warm hairlines, gold-soft hover).
+- `src/config/business-nap.ts` constants (single source of truth stays intact; only the local `LEGAL_META_LINE` template in Footer changes).
+- `PaymentMethodsRow` markup and icon set.
+- Link columns, Popular searches list, Signature Experiences list, legal-nav items.
+- `SiteLayout` mounting (already single point of use).

@@ -4,15 +4,14 @@ import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import {
   BASED_IN,
-  BASED_IN_SHORT,
   BUSINESS_NAME,
-  LICENSE_LABEL,
   LICENSE_NUMBER,
   LICENSE_SHORT,
   whatsappUrl,
 } from "@/config/business-nap";
 
-const LEGAL_META_LINE = `${LICENSE_LABEL} · ${BASED_IN}`;
+
+const LEGAL_META_LINE = BASED_IN;
 
 interface FooterLink {
   to: string;
@@ -73,9 +72,9 @@ export function Footer() {
             style={{ fontWeight: 400, letterSpacing: "0.005em" }}
           >
             Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
-            different — designed with you and confirmed in minutes. 700+ five-star reviews ·
-            Licensed tour operator {LICENSE_LABEL} · {BASED_IN_SHORT}
+            different — designed with you and confirmed in minutes. 700+ five-star reviews.
           </p>
+
         </div>
 
         {/* 4-column nav grid — gap tightened (gap-10 → gap-8) so the column
@@ -253,7 +252,7 @@ export function Footer() {
         <PaymentMethodsRow />
 
         {/* Bottom bar — copyright + discreet legal links. Single quiet line. */}
-        <div className="mt-8 md:mt-10 pt-5 border-t border-[color:var(--gold-warm)]/25">
+        <div className="mt-8 md:mt-10 pt-5 border-t border-[color:var(--gold-warm)]/15">
           <div
             className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/80"
             style={{ fontWeight: 400 }}
