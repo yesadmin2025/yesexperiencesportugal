@@ -6,7 +6,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/builder")({
   head: () => ({
     meta: [
-      { title: "Studio" },
+      { title: "Experience Studio — Design Your Private Portugal Tour | YES" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
