@@ -135,7 +135,7 @@ export function MemoryDeck({
             className="mt-0.5 block truncate text-[11px]"
             style={{
               color: "var(--charcoal)",
-              fontFamily: "var(--font-display), sans-serif",
+              fontFamily: "var(--font-display, Montserrat), sans-serif",
               fontWeight: 600,
             }}
           >

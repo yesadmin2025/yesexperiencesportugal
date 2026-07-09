@@ -176,7 +176,7 @@ function InstantPrimary({
         <p
           className="text-center text-[12px] italic"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, serif",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >

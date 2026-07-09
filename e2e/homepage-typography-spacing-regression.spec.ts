@@ -86,7 +86,7 @@ test.describe("Homepage typography — locked H2 ramp", () => {
       const m = await readComputed(page, `#${h.id}`);
       expect(m, `#${h.id} must exist`).not.toBeNull();
       expect(m!.fontFamily, "H2 uses Georgia italic emphasis stack").toMatch(
-        /Fraunces|Cormorant|serif/i,
+        /Georgia|Cormorant|serif/i,
       );
       // Homepage exception: H2s stay at font-medium (500).
       expect(Number(m!.fontWeight)).toBe(500);

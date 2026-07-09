@@ -163,7 +163,7 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
           <span
             className="tabular-nums"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "'Montserrat', system-ui, sans-serif",
               fontSize: "30px",
               fontWeight: 700,
               lineHeight: 1,
@@ -175,7 +175,7 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
           </span>
           <span
             style={{
-              fontFamily: "var(--font-serif)",
+              fontFamily: "Georgia, 'Times New Roman', serif",
               fontStyle: "italic",
               fontSize: "13px",
               color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
@@ -285,7 +285,7 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
               <p
                 className="mt-4 text-center italic"
                 style={{
-                  fontFamily: "var(--font-serif)",
+                  fontFamily: "Georgia, 'Times New Roman', serif",
                   fontSize: "11.5px",
                   lineHeight: 1.55,
                   color: "color-mix(in oklab, var(--charcoal) 56%, transparent)",

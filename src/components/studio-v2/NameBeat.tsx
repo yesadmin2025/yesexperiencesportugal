@@ -50,7 +50,7 @@ export function NameBeat({ initial = "", onSubmit, onSkip }: Props) {
 
       <p
         className="mt-10 max-w-[26ch] text-[26px] leading-[1.18] sm:text-[30px]"
-        style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+        style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
       >
         What should we call you?
       </p>
@@ -74,7 +74,7 @@ export function NameBeat({ initial = "", onSubmit, onSkip }: Props) {
           className="flex-1 border-0 border-b bg-transparent pb-2 text-center text-[20px] focus:outline-none"
           style={{
             borderColor: "color-mix(in oklab, var(--charcoal) 30%, transparent)",
-            fontFamily: "var(--font-display), sans-serif",
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
             color: "var(--charcoal)",
           }}
         />

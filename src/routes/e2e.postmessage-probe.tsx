@@ -123,7 +123,7 @@ function ProbePage() {
       <h1
         data-testid="probe-status"
         style={{
-          fontFamily: "var(--font-display)",
+          fontFamily: "Montserrat, sans-serif",
           fontWeight: 700,
           fontSize: 28,
           margin: 0,

@@ -52,7 +52,7 @@ function makeDivIcon(color: string, count = 1) {
       transform:rotate(-45deg);background:${color};
       border:2px solid #f5efdf;box-shadow:0 2px 6px rgba(0,0,0,0.3);
       display:flex;align-items:center;justify-content:center;">
-      <span style="transform:rotate(45deg);color:#f5efdf;font-weight:700;font-size:11px;font-family:var(--font-sans);">${inner}</span>
+      <span style="transform:rotate(45deg);color:#f5efdf;font-weight:700;font-size:11px;font-family:ui-sans-serif,system-ui;">${inner}</span>
     </div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size],
@@ -225,7 +225,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
            </div>`
         : `<div style="margin-top:6px;font-size:11px;color:#888;font-style:italic;">No imported tours yet</div>`;
       marker.bindPopup(
-        `<div style="font-family:var(--font-sans);min-width:160px;">
+        `<div style="font-family:ui-sans-serif,system-ui;min-width:160px;">
           <div style="font-weight:700;color:#1a1a1a;">${escapeHtml(m.label)}</div>
           <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:${color};margin-top:2px;">${m.region}</div>
           ${tourList}

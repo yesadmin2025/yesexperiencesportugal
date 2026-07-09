@@ -96,7 +96,6 @@ import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as ApiPublicFontFallbackReportRouteImport } from './routes/api/public/font-fallback-report'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -548,12 +547,6 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicFontFallbackReportRoute =
-  ApiPublicFontFallbackReportRouteImport.update({
-    id: '/api/public/font-fallback-report',
-    path: '/api/public/font-fallback-report',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -697,7 +690,6 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
-  '/api/public/font-fallback-report': typeof ApiPublicFontFallbackReportRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
@@ -797,7 +789,6 @@ export interface FileRoutesByTo {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
-  '/api/public/font-fallback-report': typeof ApiPublicFontFallbackReportRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
@@ -898,7 +889,6 @@ export interface FileRoutesById {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
-  '/api/public/font-fallback-report': typeof ApiPublicFontFallbackReportRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
@@ -1000,7 +990,6 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/api/public/contact'
-    | '/api/public/font-fallback-report'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
@@ -1100,7 +1089,6 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin'
     | '/api/public/contact'
-    | '/api/public/font-fallback-report'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
@@ -1200,7 +1188,6 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/api/public/contact'
-    | '/api/public/font-fallback-report'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
@@ -1300,7 +1287,6 @@ export interface RootRouteChildren {
   ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
-  ApiPublicFontFallbackReportRoute: typeof ApiPublicFontFallbackReportRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
@@ -1924,13 +1910,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/font-fallback-report': {
-      id: '/api/public/font-fallback-report'
-      path: '/api/public/font-fallback-report'
-      fullPath: '/api/public/font-fallback-report'
-      preLoaderRoute: typeof ApiPublicFontFallbackReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -2126,7 +2105,6 @@ const rootRouteChildren: RootRouteChildren = {
   ToursTourIdRoute: ToursTourIdRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
-  ApiPublicFontFallbackReportRoute: ApiPublicFontFallbackReportRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
@@ -2143,3 +2121,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

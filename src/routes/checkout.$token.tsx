@@ -135,7 +135,7 @@ function CheckoutPage() {
       <Shell>
         <h1
           className="text-[24px]"
-          style={{ fontFamily: "var(--font-display), sans-serif", fontWeight: 700 }}
+          style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
         >
           Draft not found.
         </h1>
@@ -170,7 +170,7 @@ function CheckoutPage() {
         </p>
         <h1
           className="mt-3 text-[28px] leading-[1.1] sm:text-[36px]"
-          style={{ fontFamily: "var(--font-display), sans-serif", fontWeight: 700 }}
+          style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
         >
           Your day is in our hands.
         </h1>
@@ -195,14 +195,14 @@ function CheckoutPage() {
       </p>
       <h1
         className="mt-3 text-[26px] leading-[1.1] sm:text-[34px]"
-        style={{ fontFamily: "var(--font-display), sans-serif", fontWeight: 700 }}
+        style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
       >
         A few details to lock it in.
       </h1>
       <p
         className="mt-3 text-[14px] italic"
         style={{
-          fontFamily: "var(--font-serif)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
           color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
         }}
       >
@@ -347,7 +347,7 @@ function CheckoutPage() {
         <p
           className="text-center text-[12px] italic"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >

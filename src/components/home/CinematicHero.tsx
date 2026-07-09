@@ -149,7 +149,7 @@ export function CinematicHero() {
           <p
             className="font-serif italic font-normal"
             style={{
-              fontFamily: 'var(--font-serif)',
+              fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,
@@ -169,7 +169,7 @@ export function CinematicHero() {
           <p
             className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
-              fontFamily: 'var(--font-serif)',
+              fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
               fontStyle: "italic",
               lineHeight: 1.25,

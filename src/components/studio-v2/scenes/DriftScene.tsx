@@ -122,7 +122,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
         <p
           className="text-[15px] leading-[1.3] sm:text-[17px] transition-opacity duration-300"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             fontStyle: "italic",
             color: "var(--ivory)",
             opacity: hovered === "right" ? 0.35 : 1,
@@ -134,7 +134,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
         <p
           className="text-right text-[15px] leading-[1.3] sm:text-[17px] transition-opacity duration-300"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             fontStyle: "italic",
             color: "var(--ivory)",
             opacity: hovered === "left" ? 0.35 : 1,

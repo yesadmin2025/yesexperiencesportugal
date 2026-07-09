@@ -80,7 +80,7 @@ export function ItineraryRibbon({
             >
               <span
                 className="font-serif italic text-[color:var(--gold)] text-[20px] leading-none mt-0.5 min-w-[20px]"
-                style={{ fontFamily: "var(--font-serif)" }}
+                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                 aria-hidden="true"
               >
                 {i + 1}
@@ -88,7 +88,7 @@ export function ItineraryRibbon({
               <div className="flex-1 min-w-0">
                 <p
                   className="text-[13.5px] italic text-[color:var(--charcoal)] leading-snug"
-                  style={{ fontFamily: "var(--font-serif)" }}
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                 >
                   {phrase}
                 </p>

@@ -269,14 +269,14 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
           <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/75" />
           <p
             className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--charcoal)]"
-            style={{ fontFamily: "var(--font-display)" }}
+            style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
           >
             {regionLabel(regionKey)}
           </p>
           <h1
             className="text-[30px] sm:text-[42px] font-semibold leading-[1.04] tracking-[-0.014em] text-[color:var(--ivory)] max-w-[20ch] text-balance"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "Montserrat, system-ui, sans-serif",
               textShadow: "0 2px 26px rgba(0,0,0,0.5)",
             }}
           >
@@ -285,7 +285,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
           <p
             className="italic text-[16.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/88 max-w-[34ch] text-balance"
             style={{
-              fontFamily: "var(--font-serif)",
+              fontFamily: "Georgia, 'Times New Roman', serif",
               textShadow: "0 1px 18px rgba(0,0,0,0.5)",
             }}
           >
@@ -317,14 +317,14 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
               >
                 <span
                   className="italic text-[15px] sm:text-[16px] leading-[1.2] text-[color:var(--text-on-dark-muted)] pt-[3px] tabular-nums"
-                  style={{ fontFamily: "var(--font-serif)" }}
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                   aria-hidden="true"
                 >
                   {time}
                 </span>
                 <p
                   className="italic text-[17.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/92 text-balance"
-                  style={{ fontFamily: "var(--font-serif)" }}
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                 >
                   {sensoryLine(stop, stop.blurb, i)}
                 </p>
@@ -348,7 +348,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
             onClick={handleReserve}
             disabled={busy || reserving || !shareUrl}
             className="w-full inline-flex items-center justify-center min-h-[54px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] disabled:bg-[color:var(--ivory)]/60 disabled:cursor-wait text-[color:var(--charcoal)] px-6 py-3 text-[12.5px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.35)]"
-            style={{ fontFamily: "var(--font-display)" }}
+            style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
           >
             {reserving ? (
               <span className="inline-flex items-center gap-2">
@@ -371,7 +371,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
               type="button"
               onClick={onClose}
               className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
-              style={{ fontFamily: "var(--font-display)" }}
+              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
             >
               Ver o trajeto
             </button>
@@ -379,7 +379,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
               type="button"
               onClick={() => setShareOpen((o) => !o)}
               className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/80 transition-colors"
-              style={{ fontFamily: "var(--font-display)" }}
+              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
               aria-expanded={shareOpen}
             >
               Guardar para mais tarde

@@ -78,7 +78,7 @@ export function EmergingThemes({ sceneWeighting, locale, hasSignal }: Props) {
             )}
             <span
               style={{
-                fontFamily: "var(--font-serif)",
+                fontFamily: "Georgia, 'Times New Roman', serif",
                 fontStyle: "italic",
                 fontSize: "12px",
                 fontWeight: 400,

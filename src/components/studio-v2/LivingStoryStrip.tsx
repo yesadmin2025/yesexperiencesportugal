@@ -84,7 +84,7 @@ export function LivingStoryStrip({
             <p
               className="mt-0.5 truncate text-[13px]"
               style={{
-                fontFamily: "var(--font-serif)",
+                fontFamily: "Georgia, 'Times New Roman', serif",
                 fontStyle: "italic",
                 color: "var(--charcoal)",
               }}
@@ -132,7 +132,7 @@ export function LivingStoryStrip({
                 key={i}
                 className="studio-v2-reveal text-[14px] leading-[1.5]"
                 style={{
-                  fontFamily: "var(--font-serif)",
+                  fontFamily: "Georgia, 'Times New Roman', serif",
                   fontStyle: i === lines.length - 1 ? "italic" : "normal",
                   color:
                     i === lines.length - 1
@@ -163,7 +163,7 @@ export function LivingStoryStrip({
               <p
                 className="mt-1 text-[14px]"
                 style={{
-                  fontFamily: "var(--font-display), sans-serif",
+                  fontFamily: "var(--font-display, Montserrat), sans-serif",
                   fontWeight: 600,
                 }}
               >
@@ -171,7 +171,7 @@ export function LivingStoryStrip({
                 <span
                   className="ml-2 text-[11px] italic"
                   style={{
-                    fontFamily: "var(--font-serif)",
+                    fontFamily: "Georgia, serif",
                     fontWeight: 400,
                     color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                   }}
@@ -193,7 +193,7 @@ export function LivingStoryStrip({
               <p
                 className="mt-1 text-[14px]"
                 style={{
-                  fontFamily: "var(--font-display), sans-serif",
+                  fontFamily: "var(--font-display, Montserrat), sans-serif",
                   fontWeight: 600,
                 }}
               >

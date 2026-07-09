@@ -83,7 +83,7 @@ export function StoryOpener({ profile, region, signals }: Props) {
       <p
         className="mt-3 text-[19px] leading-[1.36] sm:text-[22px]"
         style={{
-          fontFamily: "var(--font-serif)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
           fontStyle: "italic",
           color: "var(--charcoal)",
         }}
