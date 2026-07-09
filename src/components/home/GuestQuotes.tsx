@@ -18,7 +18,7 @@ import {
   type GlobalStats,
   type PublicReview,
 } from "@/lib/reviews.functions";
-import { PlatformBadge } from "@/components/PlatformBadge";
+import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 
 export function GuestQuotes() {
@@ -174,7 +174,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             className="flex items-stretch gap-4 md:gap-5 px-5 sm:px-6 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-pl-5 sm:scroll-pl-6 text-left list-none p-0"
             aria-label="Recent guest reviews"
           >
-            {quotes.map((q) => (
+            {quotes.map((q, idx) => (
               <li
                 key={q.id}
                 className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[15rem] sm:min-h-[16rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-white p-6 md:p-7 relative shadow-[0_1px_0_rgba(46,46,46,0.04),0_10px_28px_-18px_rgba(46,46,46,0.14)]"
@@ -213,7 +213,12 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                       </p>
                     )}
                   </div>
-                  <SourceBadge source={q.source} sourceUrl={q.source_url} />
+                  <ReviewSourceLink
+                    source={q.source}
+                    sourceUrl={q.source_url}
+                    reviewerName={q.reviewer_name}
+                    dim={idx !== activeIndex}
+                  />
                 </div>
               </li>
             ))}
@@ -263,59 +268,8 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
   );
 }
 
-/**
- * Source badge — small platform mark. Tripadvisor renders as a tiny
- * monochrome icon linked to the original review; other sources show as a
- * minimal text pill (linked when a source URL is available). Keeps the
- * review card footer clean, premium, and SEO-friendly.
- */
-function SourceBadge({ source, sourceUrl }: { source: string; sourceUrl?: string | null }) {
-  const label = SOURCE_LABEL[source] ?? source;
+// SourceBadge moved to `@/components/ui/ReviewSourceLink` — shared primitive
+// used by both the homepage carousel and per-tour review grid.
 
-  if (source === "tripadvisor") {
-    const badge = (
-      <span
-        className="shrink-0 inline-flex items-center justify-center h-7 w-7 rounded-full border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]"
-        aria-label="Review from Tripadvisor"
-      >
-        <PlatformBadge platform="tripadvisor" className="h-4 w-auto" />
-      </span>
-    );
-    if (sourceUrl) {
-      return (
-        <a
-          href={sourceUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 inline-flex"
-          aria-label={`Read this review on ${label}`}
-        >
-          {badge}
-        </a>
-      );
-    }
-    return badge;
-  }
-
-  const pill = (
-    <span className="shrink-0 inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[color:var(--charcoal)]/70">
-      {label}
-    </span>
-  );
-  if (sourceUrl) {
-    return (
-      <a
-        href={sourceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="shrink-0 inline-flex"
-        aria-label={`Read this review on ${label}`}
-      >
-        {pill}
-      </a>
-    );
-  }
-  return pill;
-}
 
 export default GuestQuotes;
