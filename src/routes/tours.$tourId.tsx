@@ -51,6 +51,12 @@ export const Route = createFileRoute("/tours/$tourId")({
         ],
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
+    // LCP preload — the hero <img> on this route uses the same resolution
+    // chain (localGallery → viator gallery → t.img). We preload t.img
+    // as the safe cross-render candidate; the actual hero will hit warm
+    // cache when it renders (or fall back cleanly if the resolver picks
+    // a different source). Absolute URL keeps SSR + CDN happy.
+    const lcpHref = t.img?.startsWith("http") ? t.img : t.img;
 
     // Keep <title> under 60 chars for SERP truncation. When the tour supplies
     // an explicit `seoTitle` (Phase 2 SEO focus tours) use it verbatim.
@@ -81,7 +87,10 @@ export const Route = createFileRoute("/tours/$tourId")({
         { property: "og:type", content: "product" },
       ],
 
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        { rel: "preload", as: "image", href: lcpHref, fetchpriority: "high" },
+      ],
       scripts: [
         jsonLdScript(
           breadcrumbLd([
@@ -256,8 +265,12 @@ function TourHero({
             <img
               src={heroSrc}
               alt={heroAlt}
+              width={1600}
+              height={900}
               fetchPriority="high"
+              loading="eager"
               decoding="async"
+              sizes="(min-width: 1024px) 1152px, 100vw"
               style={{ objectPosition: tour.focal ?? "50% 50%" }}
               className="w-full h-full object-cover motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
             />
