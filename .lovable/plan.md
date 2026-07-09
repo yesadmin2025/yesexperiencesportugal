@@ -1,65 +1,83 @@
-# Local Stories placeholder / redirect-loop audit
+# Fix: /local-stories/[slug] renders hub instead of article
 
-## Where the placeholder route is generated
+## Root cause
 
-- Route file: `src/routes/local-stories.$slug.tsx` — declares `createFileRoute("/local-stories/$slug")`.
-- URL `/local-stories/%24slug` decodes to `/local-stories/$slug`, which matches this dynamic route with `params.slug === "$slug"`.
-- `beforeLoad` (lines 278–293) currently detects placeholder slugs (`""`, `"slug"`, `"undefined"`, `"null"`, `"example"`, anything starting with `$`) and throws `redirect({ to: "/local-stories", statusCode: 301 })`.
-- The listing at `/local-stories` (`src/routes/local-stories.tsx`) links to real articles only. Static articles come from `LOCAL_STORIES_ARTICLES` (all real slugs); DB posts come from `journal_posts` (Supabase). No source of a literal `"$slug"` `<Link>` today.
+TanStack flat file routing treats `src/routes/local-stories.tsx` as the **parent layout** of `src/routes/local-stories.$slug.tsx`. A parent whose children extend its path MUST render `<Outlet />` for the child route to mount.
 
-## Why Search Console / crawlers report a redirect loop
+`src/routes/local-stories.tsx` does not render `<Outlet />` — it renders the hub `<Page>` body directly. Result: on `/local-stories/<any-slug>`:
 
-- The placeholder URL is being served with a **301 → `/local-stories`** every time. Google flags URLs that always redirect to a page which itself lists/links back to the same URL family as loop-like, and the URL stays in the index because `301` says "moved permanently, keep tracking it" — not "gone".
-- Google's discovery of `%24slug` almost certainly came from an earlier build that shipped a `<Link to="/local-stories/$slug">` without `params` (Tailwind/TanStack renders that literally). The current listing no longer emits that link, but the indexed URL persists and every crawl still returns 301 → 200 with the same discovered path in history, producing the loop signal.
-- Secondary risk: the 301 handler runs in `beforeLoad`. If SSR ever calls `/local-stories/$slug` (e.g. from prerender or a stray internal link) it will 301 to the listing, and any residual link back to `/$slug` restarts the cycle. A soft-404 served as 301 also prevents Google from ever dropping the URL.
+- The child route (`local-stories.$slug`) IS matched.
+- Its `loader` and `head()` DO run — that is why `<title>` shows the article title.
+- Its `component` never mounts, because the parent has nowhere to render it.
+- The visible body is always the hub listing.
 
-## Sitemap / internal links / canonical
+Verified with `curl` on 5 slugs (`setubal-wine-guide`, `best-wine-regions-near-lisbon`, `arrabida-vs-sintra`, `troia-comporta-guide`, `what-to-do-in-sesimbra`) — all return HTML sourced from `local-stories.tsx:43…` (the hub markup) with the child's `<title>` in `<head>`.
 
-- **Sitemap** (`src/routes/sitemap[.]xml.ts` lines 84–115): iterates `LOCAL_STORIES_ARTICLES` (filters out `best-day-trips-from-lisbon`) and `journal_posts` where `status = 'published'`. The placeholder `$slug` is NOT in the sitemap. No guard against empty/null DB slugs, though — worth hardening.
-- **Internal links**: `src/routes/local-stories.tsx` lines 126 and 153 always pass `params={{ slug: a.slug | p.slug }}`. Grep across `src/` and `public/` shows no other reference to `/local-stories/$slug` or `%24slug` outside the route file itself, `routeTree.gen.ts`, JSON-LD builders, and `llms.txt` (which lists real articles only).
-- **Canonical**: `head()` in `local-stories.$slug.tsx` only emits `rel="canonical"` when a real article OR DB post exists. On the notFound branch (lines 222–230) it emits `robots: noindex, nofollow` and no canonical — correct. Problem is that `beforeLoad` short-circuits with a 301 before that head ever runs for placeholder slugs.
-- **robots.txt**: has no explicit rule for the placeholder path.
+This is not a data / CMS / redirect issue. `getLocalStoryArticle()` correctly returns the article for every listed slug; the sitemap/robots/beforeLoad work fine. It is purely a routing / layout bug.
+
+## All Local Stories slugs
+
+Static (`src/content/local-stories-articles.ts`):
+
+1. `best-day-trips-from-lisbon` — 301 → `/day-trips-from-lisbon` (correct, unaffected)
+2. `arrabida-vs-sintra` — broken (renders hub)
+3. `setubal-wine-guide` — broken
+4. `what-to-do-in-sesimbra` — broken
+5. `private-tour-vs-group-tour` — broken
+6. `troia-comporta-guide` — broken
+7. `southwest-vicentine-coast-guide` — broken
+8. `roman-heritage-alentejo-talha-wines` — broken
+9. `is-a-wine-tour-from-lisbon-worth-it` — broken
+10. `best-wine-regions-near-lisbon` — broken
+11. `arrabida-vs-alentejo` — broken
+12. `best-wineries-near-lisbon` — broken
+
+Plus any published `journal_posts` rows — same route, same bug, all broken.
+
+Placeholder / unknown slugs — correctly 404 via `beforeLoad` + loader `notFound()` (not affected).
 
 ## Safest fix
 
-Serve the placeholder as a real 404 (with `noindex, nofollow`), not a 301. This removes the loop signal, tells Google to drop the URL, and preserves the good redirect (`best-day-trips-from-lisbon` → `/day-trips-from-lisbon`).
+Convert `local-stories.tsx` into a pure layout that renders `<Outlet />`, and move the hub UI/head/JSON-LD into a new `local-stories.index.tsx` leaf that owns the `/local-stories` URL. This is the pattern documented in `tanstack-route-architecture` for promoting a leaf into a parent layout.
 
 ## Implementation steps (build mode, later)
 
-1. **`src/routes/local-stories.$slug.tsx`** — in `beforeLoad`:
-   - Keep the `best-day-trips-from-lisbon` → `/day-trips-from-lisbon` 301 (that's a legitimate content move, single hop, target does not link back).
-   - Replace the placeholder-redirect block with `throw notFound()` for the same set (`""`, `"slug"`, `"undefined"`, `"null"`, `"example"`, `startsWith("$")`, plus URL-decoded `%24…` handled implicitly since routing decodes params). The existing `notFoundComponent: NotFoundView` and the noindex-head branch already handle rendering.
-   - Optional hardening: also treat slugs that fail a simple `[a-z0-9-]{2,}` regex as `notFound()` — catches other malformed placeholders.
+1. **Create `src/routes/local-stories.index.tsx`** — copy the current contents of `src/routes/local-stories.tsx` verbatim, changing only:
+   - `createFileRoute("/local-stories")` → `createFileRoute("/local-stories/")`
+   - Keep the same `head()`, JSON-LD scripts, `Page` component, `EmptyState`, imports.
 
-2. **`src/routes/sitemap[.]xml.ts`** — defensively filter `LOCAL_STORIES_ARTICLES` and `journal_posts` results to skip any entry whose slug is empty, null, starts with `$`, or is one of the placeholder tokens above. Prevents a bad DB row from re-introducing the URL.
+2. **Replace `src/routes/local-stories.tsx`** with a minimal layout:
+   ```tsx
+   import { createFileRoute, Outlet } from "@tanstack/react-router";
+   export const Route = createFileRoute("/local-stories")({
+     component: () => <Outlet />,
+   });
+   ```
+   No `head()` here — the leaf (`.index`) and the `$slug` child each own their own metadata. A `head()` at the parent would concatenate into every child (previously caused the duplicate-canonical bug already documented in the file's comment).
 
-3. **`public/robots.txt`** — add belt-and-braces:
-   - `Disallow: /local-stories/$slug`
-   - `Disallow: /local-stories/%24slug`
-   Keeps well-behaved crawlers off the placeholder even if it resurfaces.
+3. **Let the Router plugin regenerate `src/routeTree.gen.ts`** — do not hand-edit it.
 
-4. **Verify** after edits:
-   - `curl -I` (or Playwright) `/local-stories/%24slug` returns **404** with `<meta name="robots" content="noindex, nofollow">`.
-   - `/local-stories/best-day-trips-from-lisbon` still 301s once to `/day-trips-from-lisbon`.
-   - `/local-stories/arrabida-vs-sintra` still 200s.
-   - `/sitemap.xml` contains only real slugs; no `$slug`.
-   - Grep confirms zero `to="/local-stories/$slug"` without a `params` sibling.
+## Verification
+
+- `curl -s /local-stories/setubal-wine-guide | grep 'Setúbal Wine Country'` returns the article's H1 (currently returns hub markup).
+- Every slug in the list above renders `StaticArticleView` (or `DbPostView` for DB posts).
+- `/local-stories` still renders the hub listing unchanged.
+- `/local-stories/%24slug` still 404s (beforeLoad unchanged).
+- `/local-stories/best-day-trips-from-lisbon` still 301s to `/day-trips-from-lisbon`.
+- No duplicate `<link rel="canonical">` on article pages.
 
 ## Affected files
 
-- `src/routes/local-stories.$slug.tsx` (beforeLoad change)
-- `src/routes/sitemap[.]xml.ts` (defensive filter)
-- `public/robots.txt` (two Disallow lines)
+- `src/routes/local-stories.tsx` (rewritten as layout)
+- `src/routes/local-stories.index.tsx` (new — old hub body)
+- `src/routeTree.gen.ts` (auto-regenerated)
 
 ## Risk
 
-Low. Changes are additive/defensive:
-- Switching 301 → 404 for placeholders is the recommended SEO fix; it does not affect real article URLs or the day-trips redirect.
-- Sitemap filter only drops malformed entries that were never valid.
-- robots.txt lines are scoped to the placeholder path and do not touch real articles.
-- No design, layout, copy, or brand tokens change. No component/UI edits.
+Low. Pattern is the canonical TanStack fix for this exact symptom. No design, copy, data, SEO, or brand-token changes. The hub page and article pages keep their existing markup, head(), and JSON-LD. The only behavioural change is that article routes finally render their own component instead of the hub.
 
 ## Out of scope
 
-- Local Stories visual design, typography, card layout — untouched.
-- Real article routes, DB schema, or content — untouched.
+- Local Stories visual design, typography, spacing.
+- Article content, sitemap, robots, redirects (already correct).
+- DB `journal_posts` schema.
