@@ -81,8 +81,19 @@ export const Route = createFileRoute("/sitemap.xml")({
           priority: SEO_FOCUS_TOUR_IDS.has(t.id) ? "0.95" : "0.7",
         }));
 
+        // Defensive slug filter — skip empty/placeholder/malformed slugs so
+        // a bad row (or a template stub) can never resurface a broken URL
+        // like /local-stories/$slug in the sitemap.
+        const PLACEHOLDER_SLUGS = new Set(["", "slug", "undefined", "null", "example"]);
+        const isRealSlug = (raw: string | null | undefined): raw is string => {
+          if (!raw) return false;
+          const s = raw.trim().toLowerCase();
+          if (PLACEHOLDER_SLUGS.has(s) || s.startsWith("$")) return false;
+          return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s) && s.length >= 2;
+        };
+
         const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter(
-          (a) => a.slug !== "best-day-trips-from-lisbon",
+          (a) => a.slug !== "best-day-trips-from-lisbon" && isRealSlug(a.slug),
         ).map((a) => ({
           path: `/local-stories/${a.slug}`,
           // Omit <lastmod> for static articles — the schema has no
@@ -101,12 +112,14 @@ export const Route = createFileRoute("/sitemap.xml")({
             .order("published_at", { ascending: false })
             .limit(500);
           postEntries =
-            data?.map((p: { slug: string; published_at: string | null }) => ({
-              path: `/local-stories/${p.slug}`,
-              lastmod: p.published_at ?? undefined,
-              changefreq: "monthly",
-              priority: "0.6",
-            })) ?? [];
+            data
+              ?.filter((p: { slug: string | null }) => isRealSlug(p.slug))
+              .map((p: { slug: string; published_at: string | null }) => ({
+                path: `/local-stories/${p.slug}`,
+                lastmod: p.published_at ?? undefined,
+                changefreq: "monthly",
+                priority: "0.6",
+              })) ?? [];
         } catch {
           /* tolerate db failures — static entries still ship */
         }
