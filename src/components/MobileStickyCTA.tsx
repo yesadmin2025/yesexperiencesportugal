@@ -170,7 +170,9 @@ export function MobileStickyCTA() {
     } else {
       root.style.removeProperty("--fab-lift");
     }
-    return () => root.style.removeProperty("--fab-lift");
+    return () => {
+      root.style.removeProperty("--fab-lift");
+    };
   }, [visible]);
 
   const handleSayYes = (e: React.MouseEvent<HTMLButtonElement>) => {
