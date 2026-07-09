@@ -248,7 +248,7 @@ function Page() {
                 <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)] mb-3">
                   Only on YES
                 </span>
-                <h3 className="font-display font-semibold text-[1.15rem] md:text-[1.3rem] leading-[1.3] mb-4">
+                <h3 className="font-display font-medium text-[1.15rem] md:text-[1.3rem] leading-[1.3] mb-4">
                   The only private-day builder in Portugal that designs your Sintra day{" "}
                   <span className="font-serif italic text-[color:var(--gold)]">live</span>.
                 </h3>
