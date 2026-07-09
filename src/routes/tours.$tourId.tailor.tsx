@@ -1026,7 +1026,7 @@ function TailorPage() {
                         >
                           {a.label}
                           {a.priceDelta ? (
-                            <span className="ml-1.5 text-[color:var(--gold)] tracking-normal">
+                            <span className="ml-1.5 text-[color:var(--teal)] tracking-normal">
                               +€{a.priceDelta}
                             </span>
                           ) : null}
