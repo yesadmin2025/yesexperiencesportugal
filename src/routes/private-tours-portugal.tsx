@@ -119,8 +119,8 @@ function Page() {
               <p className="editorial-body">
                 Every experience we run is{" "}
                 <strong className="font-medium">private by default</strong> — never joined with
-                strangers, never bus-scheduled. We're a licensed Portuguese operator (RNAAT) based
-                in Sesimbra, so the guides, the cars, and the estates are ours, not a broker's.
+                strangers, never bus-scheduled. We're a licensed Portuguese tour operator (RNAAT nº 31/2023)
+                based in Sesimbra, so the guides, the cars, and the estates are ours, not a broker's.
               </p>
 
               {ITEMS.map((p, i) => (

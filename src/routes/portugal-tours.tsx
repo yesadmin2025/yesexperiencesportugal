@@ -142,7 +142,7 @@ function Page() {
             <div className="prose-yes">
               <p className="editorial-body">
                 Portugal is small enough to see in a week, and layered enough to spend a month on.
-                We're a licensed tour operator (RNAAT) based in Sesimbra, designing{" "}
+                We're a licensed Portuguese tour operator (RNAAT nº 31/2023) based in Sesimbra, designing{" "}
                 <strong className="font-medium">private Portugal tours</strong> for travelers who
                 want a real day, not a bus route. Every trip below is a real Signature — run by us,
                 priced with everything included, and confirmed in minutes.

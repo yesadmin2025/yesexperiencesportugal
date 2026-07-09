@@ -189,7 +189,7 @@ function Page() {
                 Private. Local. Designed live, not booked off a shelf.
               </h2>
               <p className="editorial-body">
-                We are a licensed Portuguese team (RNAAT 31/2023), not a marketplace reselling
+                We are a licensed Portuguese tour operator (RNAAT nº 31/2023), not a marketplace reselling
                 someone else's bus tour. Every day is private from the start: your group, your pace,
                 your wineries. We open the wineries we have personally worked with — the cellars
                 where the family pours, not a tasting-room queue — and we sit you at a long lunch

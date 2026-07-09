@@ -169,7 +169,7 @@ function Page() {
                 Private from the start. Real cellars. Designed live.
               </h2>
               <p className="editorial-body">
-                We are a licensed Portuguese team (RNAAT 31/2023), not a marketplace re-selling
+                We are a licensed Portuguese tour operator (RNAAT nº 31/2023), not a marketplace re-selling
                 someone else's bus. Every day is private from the start — your group, your pace,
                 your wineries. The cellars we use are ones we have personally worked with, where the
                 family still pours. If a winery isn't open the day you want, we change it — the

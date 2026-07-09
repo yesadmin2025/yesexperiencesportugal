@@ -51,7 +51,7 @@ export function organizationLd() {
       },
     ],
     description:
-      "Licensed Portuguese tour operator (RNAAT) and pioneer of real-time private tour design in Portugal — private, personalized, local journeys built around you, with hidden gems across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Costa Vicentina. The first Portuguese operator to let travellers design AND instantly reserve a private day in real time through the YES Experience Studio, alongside Signature days and a personal Travel Designer service for full Portugal journeys.",
+      "Licensed Portuguese tour operator (RNAAT nº 31/2023), based in Sesimbra, and pioneer of real-time private tour design in Portugal — private, personalized, local journeys built around you, with hidden gems across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Costa Vicentina. The first Portuguese operator to let travellers design AND instantly reserve a private day in real time through the YES Experience Studio, alongside Signature days and a personal Travel Designer service for full Portugal journeys.",
     slogan:
       "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
     keywords:
