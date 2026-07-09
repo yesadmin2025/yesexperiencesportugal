@@ -70,7 +70,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
+  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
