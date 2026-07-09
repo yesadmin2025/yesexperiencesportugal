@@ -247,7 +247,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
           <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms]">
             <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/70" />
             <p
-              className="text-[10px] uppercase tracking-[0.36em] font-bold text-[color:var(--gold)]"
+              className="text-[10px] uppercase tracking-[0.36em] font-bold text-[color:var(--charcoal)]"
               style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
             >
               {invitationLabel(locale)}

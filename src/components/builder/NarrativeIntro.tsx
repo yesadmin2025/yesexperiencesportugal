@@ -67,7 +67,7 @@ export function NarrativeIntro({ onApply, applied, onReset }: NarrativeIntroProp
       >
         <Sparkles className="h-3.5 w-3.5 text-[color:var(--gold)]" aria-hidden />
         <span className="font-serif italic">Tell me your trip in one sentence</span>
-        <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--gold)]">
+        <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--charcoal)]">
           AI
         </span>
       </button>

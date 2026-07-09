@@ -180,7 +180,7 @@ export function TripTypeEntry({ onChoose }: Props) {
 
       <div className="container-x relative z-10 py-12 md:py-20">
         <div className="section-enter max-w-2xl">
-          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
             <Sparkles size={12} aria-hidden="true" />
             Experience studio
           </span>
@@ -270,7 +270,7 @@ function TripCard({ card, onClick }: { card: TripTypeCard; onClick: () => void }
             {card.label}
           </h3>
           <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--ivory)]/80">{card.sub}</p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span className="mt-3 inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             Begin <ArrowRight size={11} />
           </span>
         </div>
@@ -306,7 +306,7 @@ function ConciergeSheet({
           <X size={16} />
         </button>
         <div className="p-6 md:p-8">
-          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
             <Sparkles size={12} aria-hidden="true" />
             Concierge
           </span>

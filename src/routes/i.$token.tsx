@@ -29,7 +29,7 @@ function ErrorShell({ title }: { title: string }) {
   return (
     <div className="min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)] flex items-center justify-center px-6">
       <div className="max-w-md text-center">
-        <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+        <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           YES Experiences
         </p>
         <h1 className="serif mt-3 text-[1.8rem] font-semibold leading-tight">{title}</h1>
@@ -123,14 +123,14 @@ function SharedItineraryPage() {
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3">
           <a
             href="/"
-            className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]"
+            className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]"
           >
             YES Experiences Portugal
           </a>
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)] transition-colors"
           >
             <Printer size={12} />
             PDF
@@ -139,7 +139,7 @@ function SharedItineraryPage() {
       </header>
 
       <article className="mx-auto max-w-3xl px-5 py-10 md:py-16 print:py-6">
-        <p className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+        <p className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           Roteiro privado
         </p>
         <h1 className="serif mt-3 text-[2.2rem] md:text-[3rem] leading-[1.04] tracking-[-0.01em] font-semibold">
@@ -166,7 +166,7 @@ function SharedItineraryPage() {
 
         {/* Itinerary */}
         <section className="mt-10">
-          <h2 className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+          <h2 className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Itinerário
           </h2>
           <ol className="mt-5 flex flex-col gap-5 border-l border-[color:var(--gold)]/30 pl-5">
@@ -182,7 +182,7 @@ function SharedItineraryPage() {
                   </span>
                 </div>
                 {s.tag && (
-                  <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--gold)]">
+                  <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
                     {s.tag}
                   </p>
                 )}
@@ -227,7 +227,7 @@ function SharedItineraryPage() {
 
         {/* Price */}
         <section className="mt-10 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-6 print:bg-transparent">
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Investimento estimado
           </p>
           <p className="mt-2 serif text-[2.4rem] leading-none font-semibold tabular-nums">
@@ -253,7 +253,7 @@ function SharedItineraryPage() {
           </p>
         </div>
 
-        <footer className="mt-16 border-t border-[color:var(--charcoal)]/10 pt-6 text-center text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+        <footer className="mt-16 border-t border-[color:var(--charcoal)]/10 pt-6 text-center text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           YES Experiences Portugal
         </footer>
       </article>
@@ -290,7 +290,7 @@ function Stat({
 function Block({ title, items, muted }: { title: string; items: string[]; muted?: boolean }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5 print:border-[color:var(--charcoal)]/30">
-      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
         {title}
       </p>
       <ul className="mt-2 flex flex-col gap-1.5">

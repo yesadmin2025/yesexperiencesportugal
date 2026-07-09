@@ -20,7 +20,7 @@ export function ElementsShelf({ selected, onToggle }: Props) {
       <div className="flex items-baseline justify-between">
         <span
           id="builder-elements-title"
-          className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]"
+          className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]"
         >
           Add to your day
         </span>

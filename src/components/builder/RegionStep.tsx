@@ -84,7 +84,7 @@ export function RegionStep({ selected, onChoose }: Props) {
   return (
     <div className="builder-step-in">
       <div className="flex flex-col gap-3 builder-reveal">
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
           <Compass size={12} aria-hidden="true" />
           Where in Portugal
         </span>

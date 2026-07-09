@@ -279,7 +279,7 @@ function MultiDayPage() {
                 key={s.n}
                 className="reveal-stagger bg-white border border-[color:var(--border)] p-6 md:p-8"
               >
-                <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--gold)]">
+                <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal)]">
                   {s.n}
                 </div>
                 <h3 className="mt-3 serif text-[1.25rem] md:text-[1.4rem] text-[color:var(--charcoal)] leading-tight">
@@ -339,7 +339,7 @@ function MultiDayPage() {
                     key={c.title}
                     className="bg-white border border-[color:var(--border)] p-4 md:p-5"
                   >
-                    <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                    <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                       {c.title}
                     </div>
                     <p className="mt-2 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">

@@ -671,7 +671,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             </button>
           )}
           {showMap && (
-            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] animate-in fade-in duration-700">
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)] animate-in fade-in duration-700">
               <Compass size={11} />
               {t.yourDay}
             </span>

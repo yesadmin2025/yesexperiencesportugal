@@ -86,7 +86,7 @@ export function AddStopSheet({
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-[color:var(--charcoal)]/10 px-5 pt-5 pb-4">
           <div>
-            <p className="text-[10.5px] uppercase tracking-[0.26em] font-bold text-[color:var(--gold)]">
+            <p className="text-[10.5px] uppercase tracking-[0.26em] font-bold text-[color:var(--charcoal)]">
               Add a stop
             </p>
             <h3 className="serif mt-1 text-[1.25rem] leading-tight font-semibold text-[color:var(--charcoal)]">
@@ -183,13 +183,13 @@ export function AddStopSheet({
                         <p className="text-[13.5px] font-semibold leading-tight text-[color:var(--charcoal)]">
                           {s.label}
                           {suggestedSet.has(s.key) && (
-                            <span className="ml-2 inline-flex items-center rounded-full bg-[color:var(--gold)]/15 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] font-bold text-[color:var(--gold)] align-middle">
+                            <span className="ml-2 inline-flex items-center rounded-full bg-[color:var(--gold)]/15 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] align-middle">
                               Suggested
                             </span>
                           )}
                         </p>
                         {s.tag && (
-                          <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--gold)]">
+                          <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]">
                             {s.tag}
                           </p>
                         )}

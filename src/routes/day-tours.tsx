@@ -90,7 +90,7 @@ function DayToursPage() {
                   </TourImage>
                 </Link>
 
-                <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--gold)]">
+                <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--charcoal)]">
                   {t.region}
                 </p>
                 <Link

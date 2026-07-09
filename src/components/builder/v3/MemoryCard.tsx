@@ -268,7 +268,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
         <div className="relative z-10 w-full max-w-2xl px-6 pt-24 pb-10 flex flex-col items-center text-center gap-6 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms] ease-out">
           <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/75" />
           <p
-            className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--gold)]"
+            className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--charcoal)]"
             style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
           >
             {regionLabel(regionKey)}

@@ -145,7 +145,7 @@ export function LiveMapPreview() {
 
       {/* Live indicator + label overlays */}
       <div className="absolute top-5 left-5 right-5 flex items-center justify-between text-[color:var(--ivory)]">
-        <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
+        <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-70 animate-ping" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
@@ -179,7 +179,7 @@ export function LiveMapPreview() {
       {/* Floor caption */}
       <div className="absolute left-5 bottom-5 right-5 flex items-end justify-between text-[color:var(--ivory)]/90">
         <div>
-          <p className="text-[10.5px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
+          <p className="text-[10.5px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
             Today's draft
           </p>
           <p className="serif italic text-[15px] md:text-[16px] mt-1.5 text-[color:var(--ivory)]/95 leading-tight">

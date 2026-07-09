@@ -31,7 +31,7 @@ export function StepHead({ num, eyebrow, title, onBack, totalChapters, italicSub
             <ArrowLeft size={14} />
           </button>
         )}
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
           <Sparkles size={12} aria-hidden="true" />
           {eyebrow}
         </span>

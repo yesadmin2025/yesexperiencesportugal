@@ -73,7 +73,7 @@ export function JourneyPanel({
     <div className="flex h-full flex-col gap-5 p-5 md:p-6">
       {/* Header */}
       <header>
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
           Your journey
         </span>
         <h3 className="serif mt-2 text-[1.5rem] md:text-[1.8rem] leading-[1.1] font-semibold text-[color:var(--charcoal)]">
@@ -103,7 +103,7 @@ export function JourneyPanel({
           />
         ) : null}
         <div className="p-4">
-          <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+          <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Story
           </span>
           <p
@@ -121,7 +121,7 @@ export function JourneyPanel({
       {/* Stops list */}
       <section>
         <div className="flex items-baseline justify-between">
-          <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+          <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Selected moments
           </span>
           <span className="text-[11px] text-[color:var(--charcoal)]/50 tabular-nums">
@@ -174,7 +174,7 @@ export function JourneyPanel({
                     {s.label}
                   </p>
                   {s.tag && (
-                    <p className="mt-0.5 text-[11px] uppercase tracking-wider text-[color:var(--gold)]">
+                    <p className="mt-0.5 text-[11px] uppercase tracking-wider text-[color:var(--charcoal)]">
                       {s.tag}
                     </p>
                   )}
@@ -250,7 +250,7 @@ export function JourneyPanel({
 
       {/* Pace control */}
       <section>
-        <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+        <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           Rhythm
         </span>
         <div className="mt-2 grid grid-cols-3 gap-2">

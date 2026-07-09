@@ -64,7 +64,7 @@ export function PacingChip({ route, who }: Props) {
         aria-hidden="true"
       />
       <span>
-        <span className="font-semibold uppercase tracking-[0.18em] text-[10px] text-[color:var(--gold)] mr-2">
+        <span className="font-semibold uppercase tracking-[0.18em] text-[10px] text-[color:var(--charcoal)] mr-2">
           Sugestão
         </span>
         {warning}

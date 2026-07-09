@@ -173,7 +173,7 @@ export function NarrativeCompanion({
             aria-hidden
           />
           <span className="font-serif italic truncate max-w-[60vw] sm:max-w-none">{stepHint}</span>
-          <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--gold)]">
+          <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--charcoal)]">
             AI
           </span>
         </button>

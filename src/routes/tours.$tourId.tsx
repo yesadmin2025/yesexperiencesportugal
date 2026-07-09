@@ -460,11 +460,11 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 
               <div className="pt-1 pb-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                     Chapter {i + 1}
                   </span>
                   {s.optional && (
-                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--gold)] bg-[color:var(--gold)]/[0.06]">
+                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
                       Optional
                     </span>
                   )}
@@ -633,7 +633,7 @@ function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
             <ol className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[12.5px] text-[color:var(--ivory)]/90 list-none p-0">
               {points.map((p, i) => (
                 <li key={p.label + i} className="flex items-baseline gap-3">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)] shrink-0 w-6">
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)] shrink-0 w-6">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="leading-snug">{p.raw.label}</span>

@@ -204,7 +204,7 @@ function Page() {
           <ol className="mt-10 space-y-8">
             {DAYS.map((d) => (
               <li key={d.span} className="border-t border-[color:var(--border)] pt-6">
-                <div className="text-[11px] tracking-[0.22em] uppercase text-[color:var(--gold)]">
+                <div className="text-[11px] tracking-[0.22em] uppercase text-[color:var(--charcoal)]">
                   {d.span} · {d.eyebrow}
                 </div>
                 <h3 className="serif text-[22px] md:text-[24px] mt-2 leading-snug text-[color:var(--charcoal)]">

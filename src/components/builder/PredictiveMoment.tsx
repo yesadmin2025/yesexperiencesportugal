@@ -77,7 +77,7 @@ export function PredictiveMoment({ loading, onDone, ready }: Props) {
 
       <div className="container-x relative z-10 grid min-h-[70svh] place-items-center py-16">
         <div className="max-w-xl text-center">
-          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
             <Sparkles size={12} aria-hidden="true" />
             Live preview
           </span>

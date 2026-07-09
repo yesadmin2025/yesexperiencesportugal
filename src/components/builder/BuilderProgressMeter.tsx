@@ -83,7 +83,7 @@ export function BuilderProgressMeter({ step, selectedCount, hint }: Props) {
       <p className="mt-1.5 text-[11px] text-[color:var(--charcoal)]/60 leading-snug">{hint}</p>
       {complete && (
         <p
-          className="mt-2 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] font-bold text-[color:var(--gold)] builder-complete-fade"
+          className="mt-2 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)] builder-complete-fade"
           aria-hidden="true"
         >
           <Sparkles size={11} />

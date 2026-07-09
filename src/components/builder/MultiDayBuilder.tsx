@@ -488,7 +488,7 @@ export function MultiDayBuilder({
       {/* Editorial header */}
       <header className="container-x pt-5 md:pt-8 pb-1 md:pb-2">
         <div className="flex items-start justify-between gap-3 flex-wrap">
-          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
             <Sparkles size={12} aria-hidden="true" />
             {readOnly ? "Shared journey" : "Now shaping"}
             {syncing && !readOnly && (
@@ -688,7 +688,7 @@ export function MultiDayBuilder({
                     : "border-[color:var(--charcoal)]/12 hover:border-[color:var(--charcoal)]/30 bg-[color:var(--ivory)]",
                 ].join(" ")}
               >
-                <span className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--gold)]">
+                <span className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]">
                   Day {idx + 1}
                 </span>
                 <span className="mt-0.5 text-[12px] font-semibold text-[color:var(--charcoal)] tabular-nums">
@@ -752,7 +752,7 @@ export function MultiDayBuilder({
               {/* Day header w/ remove */}
               <header className="flex items-start justify-between gap-3">
                 <div>
-                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                     Day {dayIndex + 1}
                   </span>
                   <h3 className="serif mt-1 text-[1.4rem] leading-[1.1] font-semibold text-[color:var(--charcoal)]">
@@ -800,7 +800,7 @@ export function MultiDayBuilder({
                   className="rounded-[2px] border border-[color:var(--gold)]/30 bg-[color:var(--sand)]/40 px-3.5 py-3.5 sm:p-4"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] font-bold text-[color:var(--gold)]">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                       <Sparkles size={11} aria-hidden="true" />
                       Day {dayIndex + 1} story
                     </span>
@@ -840,7 +840,7 @@ export function MultiDayBuilder({
                       onClick={() => setNarrativeNonce((n) => n + 1)}
                       disabled={narrativeLoading || !narrative}
                       aria-label="Rewrite this day's story"
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3.5 text-[11.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)]/60 hover:text-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3.5 text-[11.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)]/60 hover:text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <RefreshCw
                         size={13}
@@ -854,7 +854,7 @@ export function MultiDayBuilder({
                       onClick={handleCopyNarrative}
                       disabled={!narrative}
                       aria-label="Copy this day's story"
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3.5 text-[11.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)]/60 hover:text-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3.5 text-[11.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)]/60 hover:text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {narrativeCopied ? (
                         <Check size={13} aria-hidden="true" />
@@ -870,7 +870,7 @@ export function MultiDayBuilder({
               {/* Stops list */}
               <section>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                     Selected moments
                   </span>
                   <span className="text-[11px] text-[color:var(--charcoal)]/50 tabular-nums">
@@ -898,7 +898,7 @@ export function MultiDayBuilder({
                             {s.label}
                           </p>
                           {s.tag && (
-                            <p className="mt-0.5 text-[11px] uppercase tracking-wider text-[color:var(--gold)]">
+                            <p className="mt-0.5 text-[11px] uppercase tracking-wider text-[color:var(--charcoal)]">
                               {s.tag}
                             </p>
                           )}
@@ -955,7 +955,7 @@ export function MultiDayBuilder({
               {/* Pace + guests */}
               <section className="mt-auto grid grid-cols-2 gap-3 border-t border-[color:var(--charcoal)]/10 pt-4">
                 <div>
-                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                     Rhythm (all days)
                   </span>
                   <div className="mt-2 grid grid-cols-3 gap-1.5">
@@ -978,7 +978,7 @@ export function MultiDayBuilder({
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+                  <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                     Guests
                   </span>
                   <div className="mt-2 inline-flex items-center gap-2">

@@ -245,7 +245,7 @@ function Page() {
               </ul>
 
               <div className="mt-10 p-6 md:p-8 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-center">
-                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)] mb-3">
+                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--charcoal)] mb-3">
                   Only on YES
                 </span>
                 <h3 className="font-display font-medium text-[1.15rem] md:text-[1.3rem] leading-[1.3] mb-4">
