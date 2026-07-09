@@ -6192,3 +6192,88 @@ html {
     background-position: -200% 0;
   }
 }
+
+/* ============================================================
+   Micro-interaction utilities — Wave 1/2 polish
+   ------------------------------------------------------------
+   .tap             mobile press feedback (opacity + micro-scale)
+   .link-hairline   silent gold-soft underline that fades in on
+                    hover/focus. Use on nav + in-body links.
+   .link-hairline-gold  same, tuned for dark surfaces (footer)
+   All respect prefers-reduced-motion.
+   ============================================================ */
+
+@utility tap {
+  transition:
+    opacity var(--dur-tap) var(--ease-premium),
+    transform var(--dur-tap) var(--ease-snap);
+  &:active {
+    opacity: 0.7;
+    transform: scale(0.994);
+  }
+}
+
+@utility link-hairline {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1px;
+    background: color-mix(in oklab, var(--gold-soft) 70%, transparent);
+    opacity: 0;
+    transform: scaleX(0.6);
+    transform-origin: left center;
+    transition:
+      opacity var(--dur-quick) var(--ease-premium),
+      transform var(--dur-base) var(--ease-premium);
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  &[data-status="active"]::after,
+  &[aria-current="page"]::after {
+    opacity: 0.9;
+    transform: scaleX(1);
+    background: var(--gold);
+  }
+}
+
+@utility link-hairline-gold {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1px;
+    background: color-mix(in oklab, var(--gold) 80%, transparent);
+    opacity: 0;
+    transform: scaleX(0.6);
+    transform-origin: left center;
+    transition:
+      opacity var(--dur-quick) var(--ease-premium),
+      transform var(--dur-base) var(--ease-premium);
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap,
+  .link-hairline::after,
+  .link-hairline-gold::after {
+    transition: none !important;
+  }
+  .tap:active {
+    transform: none !important;
+  }
+}

@@ -159,7 +159,7 @@ export function Footer() {
               <li key={l.to}>
                 <Link
                   to={l.to}
-                  className="text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                  className="link-hairline-gold tap text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                 >
                   {l.label}
                 </Link>
@@ -186,7 +186,7 @@ export function Footer() {
                 <Link
                   to="/tours/$tourId"
                   params={{ tourId: t.slug }}
-                  className="text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                  className="link-hairline-gold tap text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                 >
                   {t.label}
                 </Link>
@@ -266,7 +266,7 @@ export function Footer() {
                 <span key={l.to} className="inline-flex items-center gap-4">
                   <Link
                     to={l.to}
-                    className="inline-flex items-center min-h-[24px] py-1 text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                    className="inline-flex items-center min-h-[24px] py-1 link-hairline-gold tap text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                   >
                     {l.label}
                   </Link>
@@ -308,14 +308,14 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
                 href={l.to}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                className="link-hairline-gold tap text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
               >
                 {l.label}
               </a>
             ) : (
               <Link
                 to={l.to}
-                className="text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                className="link-hairline-gold tap text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
               >
                 {l.label}
               </Link>
