@@ -129,12 +129,7 @@ export const Route = createRootRoute({
       },
       // Sitewide defaults only — page-specific title/description/og:* live
       // on leaf routes. Root keeps site_name, type, locale, twitter card/site,
-      // keywords, geo, robots, verification. See head-meta rules.
-      {
-        name: "keywords",
-        content:
-          "real-time private tour builder Portugal, design your own private tour Portugal, interactive tour builder Portugal, Portugal travel designer, private tours Portugal, Arrábida private wine tour from Lisbon, Southwest Vicentine Coast private tour, Costa Vicentina day tour from Lisbon, vinho de talha wine tour Alentejo, Tróia Comporta private day from Lisbon, Portugal private experiences, Lisbon private tour, Sintra private tour, Sesimbra private tour, bespoke Portugal travel, multi-day Portugal journey, luxury Portugal experiences, YES experiences Portugal, private wine tour Setúbal, Évora private tour",
-      },
+      // geo, robots, verification. See head-meta rules.
       { name: "author", content: "YES experiences Portugal" },
       { name: "robots", content: "index,follow,max-image-preview:large" },
       { name: "geo.region", content: "PT" },
@@ -144,10 +139,9 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: "YES experiences Portugal" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_GB" },
-      { property: "og:locale:alternate", content: "pt_PT" },
-      { property: "og:locale:alternate", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
+
     ],
 
     links: [

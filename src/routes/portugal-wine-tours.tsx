@@ -10,9 +10,10 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/portugal-wine-tours";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Portugal Wine Tours — Arrábida, Setúbal & Alentejo | YES";
+const TITLE = "Portugal Wine Tours | Private Wine Days by YES Experiences";
 const DESCRIPTION =
-  "Private Portugal wine tours — Arrábida, Setúbal, Azeitão and Alentejo. Real cellars, real winemakers, all-inclusive private days from Lisbon.";
+  "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers. All-inclusive private days from Lisbon.";
+
 
 const jsonLd = {
   "@context": "https://schema.org",

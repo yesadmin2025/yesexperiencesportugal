@@ -19,9 +19,10 @@ const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 // Lead review aggregate from our strongest-reviewed wine signature.
 const PARENT_TOUR_ID = "arrabida-wine-allinclusive";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo";
+const TITLE = "Private Wine Tours from Lisbon | Arrábida & Alentejo by YES";
 const DESCRIPTION =
-  "The best private wine tours from Lisbon — Arrábida, Azeitão, Comporta and Alentejo. Family cellars, real winemakers, door-to-door driving.";
+  "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Booked with a licensed local operator.";
+
 
 const productLd = {
   "@context": "https://schema.org",
@@ -80,11 +81,8 @@ export const Route = createFileRoute("/wine-tours-lisbon")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      {
-        name: "keywords",
-        content:
-          "wine tours lisbon, lisbon wine tours, private wine tour lisbon, arrabida wine tour, azeitao wine tour, setubal wine tour, alentejo wine tour from lisbon, evora wine tour",
-      },
+
+
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PAGE_URL },

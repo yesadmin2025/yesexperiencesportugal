@@ -34,18 +34,19 @@ const samplePdf = { url: "/travel-file-sample/sample.pdf" };
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
     meta: [
-      { title: "Travel Designer Portugal | Private Journeys by YES" },
+      { title: "Private Multi-Day Portugal Journeys | Travel Designer by YES" },
       {
         name: "description",
         content:
-          "Full private Portugal journeys, designed with a human travel designer — shaped around your time, rhythm and interests, delivered as a complete travel file.",
+          "Full private Portugal journeys, designed with a local travel designer — shaped around your time, rhythm and interests. Delivered as a complete travel file.",
       },
-      { property: "og:title", content: "Travel Designer Portugal | Private Journeys by YES" },
+      { property: "og:title", content: "Private Multi-Day Portugal Journeys | Travel Designer by YES" },
       {
         property: "og:description",
         content:
-          "Full private Portugal journeys, designed with a human travel designer — shaped around your time, rhythm and interests, delivered as a complete travel file.",
+          "Full private Portugal journeys, designed with a local travel designer — shaped around your time, rhythm and interests. Delivered as a complete travel file.",
       },
+
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
       {
         property: "twitter:image",
