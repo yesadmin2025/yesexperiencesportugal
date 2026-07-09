@@ -338,12 +338,12 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
+    <label className="block">
+      <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
         {icon}
         {label}
-      </label>
+      </span>
       {children}
-    </div>
+    </label>
   );
 }
