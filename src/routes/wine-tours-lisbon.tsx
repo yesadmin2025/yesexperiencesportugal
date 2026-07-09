@@ -19,7 +19,7 @@ const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 // Lead review aggregate from our strongest-reviewed wine signature.
 const PARENT_TOUR_ID = "arrabida-wine-allinclusive";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Private Wine Tours from Lisbon | Arrábida & Alentejo by YES";
+const TITLE = "Private Wine Tours from Lisbon | Arrábida and Alentejo by YES";
 const DESCRIPTION =
   "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Booked with a licensed local operator.";
 

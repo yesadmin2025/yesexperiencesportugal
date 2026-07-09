@@ -10,7 +10,7 @@ import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 
-const TITLE = "Corporate & Private Group Experiences in Portugal | YES";
+const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
   "Private corporate days, team retreats and group experiences across Portugal — designed and hosted by a licensed local operator. Transport, guides and venues coordinated end to end.";
 
