@@ -178,7 +178,7 @@ export function RevelationScene({ profile, region, topIntent, onContinue }: Prop
             phase >= 0 ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
           ].join(" ")}
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--charcoal)",
           }}
@@ -226,7 +226,7 @@ export function RevelationScene({ profile, region, topIntent, onContinue }: Prop
               <span
                 className="text-[16px] leading-[1.35] sm:text-[17px]"
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-serif)",
                   fontStyle: "italic",
                   color: "var(--charcoal)",
                 }}

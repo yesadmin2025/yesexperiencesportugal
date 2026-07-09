@@ -9,7 +9,7 @@
   },
   "metrics": {
     "eyebrow": {
-      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontFamily": "Inter, sans-serif",
       "fontWeight": "700",
       "fontStyle": "normal",
       "fontSizePx": 11,
@@ -21,7 +21,7 @@
       "heightPx": 11
     },
     "headlineLine1": {
-      "fontFamily": "Montserrat, system-ui, sans-serif",
+      "fontFamily": "Fraunces, serif",
       "fontWeight": "700",
       "fontStyle": "normal",
       "fontSizePx": 76,
@@ -33,7 +33,7 @@
       "heightPx": 148.9375
     },
     "headlineLine2": {
-      "fontFamily": "Georgia, \"Cormorant Garamond\", Newsreader, serif",
+      "fontFamily": "Fraunces, serif",
       "fontWeight": "400",
       "fontStyle": "italic",
       "fontSizePx": 76,
@@ -45,7 +45,7 @@
       "heightPx": 74.46875
     },
     "subheadline": {
-      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontFamily": "Inter, sans-serif",
       "fontWeight": "410",
       "fontStyle": "normal",
       "fontSizePx": 18,
@@ -57,7 +57,7 @@
       "heightPx": 81
     },
     "microcopy": {
-      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontFamily": "Inter, sans-serif",
       "fontWeight": "410",
       "fontStyle": "normal",
       "fontSizePx": 13,

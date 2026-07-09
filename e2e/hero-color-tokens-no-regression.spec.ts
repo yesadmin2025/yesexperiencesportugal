@@ -101,7 +101,7 @@ test.describe("Hero color tokens — non-regression", () => {
     expect(field.fontWeight, "headlineLine2 must stay weight 400").toBe("400");
     expect(
       field.fontFamily.toLowerCase(),
-      "headlineLine2 must use the Georgia serif italic token",
-    ).toContain("georgia");
+      "headlineLine2 must use the Fraunces serif italic token",
+    ).toContain("fraunces");
   });
 });

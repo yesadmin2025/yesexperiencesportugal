@@ -99,7 +99,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
       <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
         <h1
           className="font-serif italic text-[26px] sm:text-[34px] md:text-[40px] leading-[1.24] tracking-[-0.005em] text-[color:var(--ivory)] max-w-[22ch] drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] arrival-in"
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          style={{ fontFamily: "var(--font-serif)" }}
         >
           {lines.map((ln, i) => (
             <span key={i} className="block">
