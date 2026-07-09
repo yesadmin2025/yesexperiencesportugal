@@ -74,7 +74,7 @@ export function StudioBuilderChrome({
             style={{
               background: "var(--teal)",
               color: "var(--ivory)",
-              fontFamily: "var(--font-display), sans-serif",
+              fontFamily: "var(--font-display, Montserrat), sans-serif",
             }}
           >
             T
@@ -156,7 +156,7 @@ export function StudioBuilderChrome({
             <span
               className="tabular-nums"
               style={{
-                fontFamily: "var(--font-serif)",
+                fontFamily: "Georgia, serif",
                 fontStyle: "italic",
                 color: "var(--charcoal)",
                 fontSize: 18,
@@ -269,12 +269,12 @@ function EmailDraftModal({
             <h3
               className="mt-2 text-[22px] leading-tight"
               style={{
-                fontFamily: "var(--font-display), sans-serif",
+                fontFamily: "var(--font-display, Montserrat), sans-serif",
                 fontWeight: 700,
               }}
             >
               Email me{" "}
-              <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
+              <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
                 my draft
               </span>
             </h3>

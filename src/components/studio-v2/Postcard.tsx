@@ -229,7 +229,7 @@ export function Postcard({
         <h2
           className="mt-6 text-center text-[1.85rem] leading-[1.08] tracking-[-0.01em] sm:text-[2.15rem]"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             color: "var(--charcoal)",
           }}
         >
@@ -255,7 +255,7 @@ export function Postcard({
                 key={`${i}-${line}`}
                 className="text-[15px] leading-[1.45] sm:text-[16px]"
                 style={{
-                  fontFamily: "var(--font-serif)",
+                  fontFamily: "Georgia, 'Times New Roman', serif",
                   fontStyle: "italic",
                   color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                   opacity: shown ? 1 : 0,

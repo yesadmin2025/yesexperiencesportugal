@@ -115,7 +115,7 @@ function SceneCaption({ label, size = "md" }: { label: string; size?: "sm" | "md
     <span className="absolute inset-x-0 bottom-0 z-10 px-4 sm:px-6 pb-4 sm:pb-5 text-left pointer-events-none">
       <span
         className={`block font-serif italic text-[color:var(--ivory)] drop-shadow-[0_2px_14px_rgba(0,0,0,0.75)] ${cls}`}
-        style={{ fontFamily: "var(--font-serif)" }}
+        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
       >
         {label}
       </span>
@@ -300,7 +300,7 @@ export function CinematicChoices({ t, active, motionMs = 620, onPick, onComplete
         <div className="relative z-10 px-8 pt-[max(env(safe-area-inset-top),1.25rem)] pb-3 text-center pointer-events-none">
           <h2
             className="font-serif italic text-[20px] sm:text-[26px] leading-[1.22] text-[color:var(--ivory)] max-w-[24ch] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)] animate-in fade-in slide-in-from-top-1 duration-[900ms]"
-            style={{ fontFamily: "var(--font-serif)" }}
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
             {framing}
           </h2>

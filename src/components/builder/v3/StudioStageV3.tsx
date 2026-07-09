@@ -563,7 +563,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
               <Sparkles size={12} className="text-[color:var(--gold)]" />
               <span
                 className="text-[12px] italic text-[color:var(--charcoal)] mr-1"
-                style={{ fontFamily: "var(--font-serif)" }}
+                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
                 {t.resumeTitle}
               </span>

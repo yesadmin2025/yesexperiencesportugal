@@ -137,7 +137,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
         <p
           className="text-[13px] italic max-w-[42ch]"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
           }}
         >
@@ -195,7 +195,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
                   <h3
                     className="text-[14.5px] leading-tight font-semibold"
                     style={{
-                      fontFamily: "var(--font-display)",
+                      fontFamily: "Montserrat, system-ui, sans-serif",
                       color: "var(--charcoal)",
                     }}
                   >

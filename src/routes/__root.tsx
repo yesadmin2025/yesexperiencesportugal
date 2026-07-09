@@ -16,7 +16,6 @@ import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
 import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
 import { installDevHardReload } from "@/lib/dev-hard-reload";
-import { installFontFallbackDetector } from "@/lib/font-fallback-detector";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { installAnalyticsAttrs } from "@/lib/analytics";
@@ -184,7 +183,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&family=Inter:wght@100..900&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Inter:wght@100..900&family=Kaushan+Script&display=swap",
       },
       {
         rel: "stylesheet",
@@ -243,7 +242,6 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
-  useEffect(() => installFontFallbackDetector(), []);
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.

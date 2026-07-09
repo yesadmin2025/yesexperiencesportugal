@@ -536,7 +536,7 @@ export function LivingItinerary({
       <p
         className="mt-6 text-center text-[11.5px] italic"
         style={{
-          fontFamily: "var(--font-serif)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
           color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
         }}
       >
@@ -708,7 +708,7 @@ function Scene({
           className="text-[11px] font-bold tabular-nums"
           style={{
             color: "var(--ivory)",
-            fontFamily: "var(--font-display), sans-serif",
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
           }}
         >
           {index + 1}
@@ -735,7 +735,7 @@ function Scene({
         <h3
           className="mt-2 text-[20px] leading-tight"
           style={{
-            fontFamily: "var(--font-display), sans-serif",
+            fontFamily: "var(--font-display, Montserrat), sans-serif",
             fontWeight: 600,
             letterSpacing: "-0.005em",
           }}
@@ -745,7 +745,7 @@ function Scene({
         <p
           className="mt-2 text-[13px] italic leading-snug"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             color: "color-mix(in oklab, var(--ivory) 90%, transparent)",
           }}
         >
@@ -821,7 +821,7 @@ function DayBreakScene({ dayNumber }: { dayNumber: number }) {
         <p
           className="mt-4 text-[17px] leading-snug italic"
           style={{
-            fontFamily: "var(--font-serif)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
             color: "var(--ivory)",
             maxWidth: "26ch",
           }}
@@ -857,7 +857,7 @@ function ComposedPrivatelyMark() {
       <p
         className="mt-2 text-[11.5px] italic"
         style={{
-          fontFamily: "var(--font-serif)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
           color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
           maxWidth: "32ch",
         }}

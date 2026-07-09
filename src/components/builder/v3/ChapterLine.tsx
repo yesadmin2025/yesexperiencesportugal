@@ -37,7 +37,7 @@ export function ChapterLine({ text }: Props) {
     >
       <p
         className="font-serif italic text-[color:var(--ivory)] text-[18px] sm:text-[22px] leading-[1.35] tracking-[-0.005em] max-w-[28ch] drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]"
-        style={{ fontFamily: "var(--font-serif)" }}
+        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
       >
         {shown}
       </p>

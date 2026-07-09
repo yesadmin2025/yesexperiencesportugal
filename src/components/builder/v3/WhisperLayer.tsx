@@ -53,7 +53,7 @@ export function WhisperLayer({ text, ttl = 5200, onDismiss }: Props) {
       />
       <p
         className="font-serif italic text-[12.5px] text-[color:var(--ivory)] leading-tight max-w-[42ch]"
-        style={{ fontFamily: "var(--font-serif)" }}
+        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
       >
         {shown}
       </p>

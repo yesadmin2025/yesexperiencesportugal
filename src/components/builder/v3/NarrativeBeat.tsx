@@ -55,7 +55,7 @@ export function NarrativeBeat({ fragment, at, holdMs = 5500, onComplete }: Props
       <p
         className="max-w-[28ch] text-center italic text-[15px] sm:text-[16px] leading-[1.55] text-[color:var(--ivory)] text-balance transition-all duration-[900ms] ease-out motion-reduce:transition-opacity"
         style={{
-          fontFamily: "var(--font-serif)",
+          fontFamily: "Georgia, 'Times New Roman', serif",
           opacity: visible ? 0.92 : 0,
           transform: visible ? "translateY(0)" : "translateY(6px)",
           textShadow: "0 1px 18px rgba(0,0,0,0.55)",

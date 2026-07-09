@@ -158,7 +158,7 @@ export function StudioLivePreview(props: Props) {
                 <p
                   className="truncate"
                   style={{
-                    fontFamily: "var(--font-display)",
+                    fontFamily: "'Montserrat', system-ui, sans-serif",
                     fontSize: "12.5px",
                     fontWeight: 700,
                     lineHeight: 1.2,
@@ -254,7 +254,7 @@ export function StudioLivePreview(props: Props) {
                 <p
                   className="truncate"
                   style={{
-                    fontFamily: "var(--font-display)",
+                    fontFamily: "'Montserrat', system-ui, sans-serif",
                     fontWeight: 700,
                     fontSize: "16px",
                     lineHeight: 1.2,
@@ -425,7 +425,7 @@ function StoryTab({
             <div className="min-w-0">
               <p
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "'Montserrat', system-ui, sans-serif",
                   fontWeight: 700,
                   fontSize: "13px",
                   lineHeight: 1.25,
@@ -472,7 +472,7 @@ function TimelineTab({
           <span
             className="tabular-nums font-semibold"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "'Montserrat', system-ui, sans-serif",
               fontSize: "13px",
               color: "var(--charcoal)",
               minWidth: 44,
@@ -484,7 +484,7 @@ function TimelineTab({
             <p
               className="truncate"
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "'Montserrat', system-ui, sans-serif",
                 fontWeight: 600,
                 fontSize: "13px",
                 color: "var(--charcoal)",

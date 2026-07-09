@@ -60,7 +60,7 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
               <h2
                 className="text-[28px] sm:text-[38px] font-semibold leading-[1.05] tracking-[-0.012em] text-[color:var(--ivory)] max-w-[20ch]"
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "Montserrat, system-ui, sans-serif",
                   textShadow: "0 1px 22px rgba(0,0,0,0.55)",
                 }}
               >
@@ -71,7 +71,7 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
               <p
                 className="italic text-[16.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/88 max-w-[32ch]"
                 style={{
-                  fontFamily: "var(--font-serif)",
+                  fontFamily: "Georgia, 'Times New Roman', serif",
                   textShadow: "0 1px 18px rgba(0,0,0,0.55)",
                 }}
               >
@@ -84,7 +84,7 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
           <p
             className="italic text-[22px] sm:text-[26px] leading-tight text-[color:var(--ivory)] max-w-[22ch]"
             style={{
-              fontFamily: "var(--font-serif)",
+              fontFamily: "Georgia, 'Times New Roman', serif",
               textShadow: "0 1px 18px rgba(0,0,0,0.55)",
             }}
           >

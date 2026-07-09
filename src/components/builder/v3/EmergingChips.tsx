@@ -110,7 +110,7 @@ export function EmergingChips({
           }
           style={{
             opacity: reveal > 0 ? 1 : 0,
-            fontFamily: isAiLine ? "var(--font-serif)" : undefined,
+            fontFamily: isAiLine ? "Georgia, 'Times New Roman', serif" : undefined,
           }}
         >
           {eyebrow}
@@ -153,7 +153,7 @@ export function EmergingChips({
                 />
                 <span
                   className="text-[14px] italic font-medium text-[color:var(--ivory)] tracking-[0.01em] leading-snug line-clamp-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.55)]"
-                  style={{ fontFamily: "var(--font-serif)" }}
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                 >
                   {phrase}
                 </span>

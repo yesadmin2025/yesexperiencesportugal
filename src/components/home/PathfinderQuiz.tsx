@@ -80,7 +80,7 @@ export function PathfinderQuiz() {
           color: var(--gold);
         }
         .pf-title {
-          font-family: var(--font-serif);
+          font-family: Georgia, "Cormorant Garamond", "Playfair Display", serif;
           font-weight: 500;
           font-size: 28px;
           line-height: 1.15;
@@ -112,7 +112,7 @@ export function PathfinderQuiz() {
           display: block;
         }
         .pf-qtitle {
-          font-family: var(--font-serif);
+          font-family: Georgia, "Cormorant Garamond", serif;
           font-style: italic;
           font-size: 20px;
           color: var(--ivory);
@@ -189,7 +189,7 @@ export function PathfinderQuiz() {
           color: var(--gold);
         }
         .pf-rtitle {
-          font-family: var(--font-serif);
+          font-family: Georgia, "Cormorant Garamond", serif;
           font-size: 22px;
           line-height: 1.3;
           color: var(--ivory);

@@ -164,7 +164,7 @@ export function MapReveal({
                       : "text-[15px] leading-[1.35] sm:text-[17px]"
                   }
                   style={{
-                    fontFamily: "var(--font-serif)",
+                    fontFamily: "Georgia, 'Times New Roman', serif",
                     fontStyle: "italic",
                     color: isHeadline
                       ? "var(--ivory)"
