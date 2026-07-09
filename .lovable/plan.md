@@ -1,161 +1,171 @@
-# Motion & Micro-interaction Polish — Plan
+# Contrast, Readability & Hierarchy Audit — Plan
 
-## Current state (what already exists)
+## Context
 
-Motion tokens (`src/styles.css`):
-- `--ease-premium: cubic-bezier(0.22, 0.61, 0.36, 1)` (canonical)
-- `--dur-tap 140` / `--dur-quick 200` / `--dur-base 320` / `--dur-slow 560`
-- `--ease-snap` for muted tap release
+Motion, CTA behaviour and micro-interactions were rebuilt in the previous four waves — the motion language is now consistent (`--ease-premium`, `--dur-tap/quick/base/slow`), CTAs suppress hover on touch, links carry `.tap` + `.link-hairline`, Studio hydration uses `.editorial-shimmer`. This plan focuses on the areas **not** yet addressed: **contrast**, **readability**, **visual hierarchy**, and the last small motion/CTA gaps.
 
-CTA system (`src/components/ui/CtaButton.tsx`):
-- primary / ghost / ghostDark / hairline with locked arrow-ramp
-- hover `-translate-y-2px` + shadow, `active:scale-[0.985]`, kinetic arrow with gold glow
-- loading (spinner + `aria-busy`), error (nudge keyframe), reduced-motion honored
-- optional `ctaRimBreathe` / `ctaAttentionHalo` for high-intent moments
+## 1. Weaknesses found
 
-Reveal system: `.reveal` IntersectionObserver with dedicated tests, homepage-only `.home-energy` (parallax, sheen, sequenced reveal, all reduced-motion safe).
-
-Hero: 9 named keyframes (`heroFade*`, `heroEnterFrom*`, `heroEnterRiseSoft`, `heroEnterLiftPrimary`, `heroEnterFadeOnly`, `heroEnterFadeWide`).
-
-Verdict: the system is already premium and coherent. What follows is polish, not overhaul.
-
----
-
-## 1. Current issues found
-
-| # | Issue | Where | Severity |
+### CTAs (residual)
+| # | Issue | Where | Sev |
 |---|---|---|---|
-| I1 | Two easing "sources of truth" quietly compete: `--ease-premium` (0.22, 0.61, 0.36, 1) is set as canonical, but many older rules still use bare `ease`, `ease-out`, or `cubic-bezier(0.16, 1, 0.3, 1)` inline. Movement feels almost-consistent — the 5% that isn't reads as "template stiffness". | `styles.css` (~15 offenders), a few components | Medium |
-| I2 | Hero keyframe library is 9 variants deep. Most homepage scenes use 2–3. Extras add cognitive/maintenance load and small perf cost (unused rules still ship). | `styles.css:1726–1945` | Low |
-| I3 | Hover lift is `-2px` on CTAs but `-3px` on some homepage cards; card hover shadow easing is `ease-out`, CTA is `--ease-premium`. Subtle desync when the eye moves button→card. | homepage cards (`EditorialCard`, `SignatureCarousel`) | Medium |
-| I4 | Nav links have color hover (`hover:text-teal`, 300ms), no arrow / underline. Fine, but the CTA in the nav (`Design & Book`) uses full kinetic treatment — the jump from "silent link" to "kinetic button" is abrupt for a header row that should feel like one system. | `Navbar.tsx` | Low |
-| I5 | Footer link hover is instant color swap only (`transition-colors 300ms`). No tap feedback on mobile — link fires with no acknowledgment before the route change. | `Footer.tsx`, other text-link surfaces | Low |
-| I6 | Studio flow has spinners (loader states) but the transition between phases relies on component swap without a shared fade token. Feels harder than the rest of the site. | Studio v3 components | Medium |
-| I7 | Tap feedback on mobile is missing on non-CTA tap targets: nav items, footer links, tour cards, popular-search chips. iOS/Android users get no press acknowledgment (only the CTA scales). | site-wide anchor + card surfaces | Medium |
-| I8 | `.reveal` uses one entry preset (fade+translateY). Adjacent siblings reveal identically — no stagger, so a 4-card row feels like a curtain, not a sequence. Homepage `home-energy` has stagger; the rest of the site does not. | non-homepage sections | Low |
-| I9 | Ghost-CTA border color is `--teal 55%` on ivory. On hover it fills to solid teal — the border-to-fill transition passes through a muddy mid-frame because border color and background are on different transitions. | `CtaButton.tsx` `ghost` variant | Low |
-| I10 | `active:scale-[0.985]` is subtle — good — but the primary CTA also lifts `-2px` on hover; on mobile the "hover" state fires on tap (sticky :hover), then scale fires, then route change. Three motions in ~250ms feels busy. | CTA primary on touch | Medium |
-| I11 | No visible focus-move animation for keyboard users beyond the ring — the ring appears, but the arrow doesn't slide on `:focus-visible`. Keyboard users get less feedback than mouse users. | `CtaButton.tsx` (arrow only slides on `group-hover`) | Low |
+| CTA-1 | Save-Signature button (Studio v3) uses a hand-rolled `<button>` with `hover:-translate-y-0.5 duration-200` — bypasses `CtaButton`, so it inherits none of the touch/reduced-motion rules and its "hover" fires on tap on mobile. | `StudioV3.tsx:4625–4647` | Med |
+| CTA-2 | `TourReviews` / `LandingTourCredibility` eyebrow labels are `text-[10.5px] uppercase charcoal/55` — technically not CTAs, but they read as un-clickable meta and steal weight from the actual CTA below them. | 2 files | Low |
+| CTA-3 | Card-level "See tour" arrow links on Signature slides use a lower opacity than the hero CTA — subtle inconsistency in perceived affordance. | `SignatureCarousel.tsx` | Low |
 
----
+### Contrast
+| # | Issue | Where | Sev |
+|---|---|---|---|
+| C-1 | **~44 instances** of `text-[color:var(--charcoal)]/40` or `/45` on ivory. `charcoal 40%` on `#FAF8F3` ≈ **2.3:1** → fails WCAG AA (needs 4.5:1 for body, 3:1 for ≥18px). Includes input placeholder-icons, secondary metadata, disabled-looking captions. | `AddStopSheet`, `BuilderImage`, `BuilderDebugPanel`, several hero eyebrows | **High** |
+| C-2 | `text-[color:var(--ivory)]/40–/55` on dark charcoal (Footer sub-copy, tour dark hero captions) ≈ **3.4–4.1:1** — passes for ≥18px but fails for the small labels it's often applied to. | Footer meta, tour dark hero | Med |
+| C-3 | `charcoal/55` on ivory ≈ **3.6:1** — passes only for large text; used site-wide for 10.5–13px eyebrows. Legal per AA for ≥18px, borderline for the sizes actually shipped. | `TourReviews`, `LandingTourCredibility`, several eyebrow rows | Med |
+| C-4 | Sunlight-mode risk: on mobile OLED under bright sun, `charcoal 30–40%` and `gold-soft` on ivory both compress to near-invisible. No fallback for `prefers-contrast: more`. | site-wide | Med |
 
-## 2. Micro-interaction improvements (subtle, on-brand)
+### Readability & typography
+| # | Issue | Where | Sev |
+|---|---|---|---|
+| T-1 | **475 uses** of `text-[10px] / [10.5px] / [11px]` — micro-type is doing too much load-bearing work: eyebrows, meta, trust strips, footer legal, some button labels. Below the 12px "read easily on mobile" floor for anything the user must actually read. | site-wide | High |
+| T-2 | `font-light` (Inter 300) on light backgrounds is used for 4 non-decorative surfaces: `SignatureCarousel` body italic, tour hero italic paragraphs, some numeric callouts. Thin weight + off-white bg = low perceived contrast even when hex passes AA. Memory rule `homepage-emphasis` already forbids this on light surfaces — but it survives outside the homepage. | `SignatureCarousel.tsx:278`, `tours.$tourId.tsx:268, 897`, `WhyYesPillars`, `ThreePathsSection` | High |
+| T-3 | Line-height on 13–14px body copy is often `leading-[1.4]` or unset — should be `1.55–1.65` for editorial mobile reading. `.hero-cinematic` and homepage bodies are correct; secondary pages are not. | tour pages, Studio meta text | Med |
+| T-4 | Eyebrow tracking varies (`0.18em`, `0.22em`, `0.24em`, `0.28em`). Reads as five separate systems on a single scroll. | site-wide | Low |
+| T-5 | H2/H3 weight distinction is thin on non-homepage routes — H2 at `font-semibold` (600), H3 also at `font-semibold` (600). Same optical weight, different size. Scan speed suffers. | tour pages, corporate, alentejo, evora routes | Med |
 
-### A. Text links (nav, footer, in-body)
-- Add a **hairline underline** that fades in on hover/focus over `--dur-quick`, using `gold-soft` at 55% opacity. Not a marketing underline — a whisper of a rule. Applies uniformly to Navbar links, Footer links, in-body `<a>`.
-- Add `active:opacity-70` (`--dur-tap`) so mobile users get press feedback.
+### Visual hierarchy
+| # | Issue | Where | Sev |
+|---|---|---|---|
+| H-1 | Trust strips (RNAAT, Tripadvisor, "24h response") sometimes rendered at the same weight and color as CTA microcopy — the eye gets two "primary" cues in the same block. | hero + tour pages | Med |
+| H-2 | Ghost CTAs and text-link CTAs live in the same row with almost identical weight — user can't tell which is the primary action. Especially visible on `/tours/$tourId` where "Reserve" (primary) and "Talk to us" (ghost) share the same visual pitch. | tour + landing pages | Med |
+| H-3 | Section eyebrows (`Signature`, `Tailored`, `Builder`, etc.) all render at the same size/color regardless of section importance — no "you are in the main path" signal. | site-wide sections | Low |
 
-### B. Cards (EditorialCard, Signature, Tour tiles)
-- Standardize hover: `-2px` lift (match CTA), `--ease-premium`, `--dur-base`. Shadow travels on the same curve. Kills I3.
-- Image inside card: `scale(1.02)` over `--dur-slow` on card hover (already close on some cards — make it uniform).
-- On tap (`:active`), card scales `0.994` for `--dur-tap` — the same "material" gesture as the CTA.
+### Animation (residual, small)
+| # | Issue | Where | Sev |
+|---|---|---|---|
+| A-1 | 2 remaining `ease-in-out` on infinite atmospheric animations (Studio breathe, region pulse) — acceptable for infinite loops but inconsistent with the "one language" rule. | `PhaseShell.tsx` inline `<style>` | Low |
+| A-2 | Hero-keyframe library still has 9 variants — 3–4 of them appear unreferenced after the last refactor. Ship cost is trivial; maintenance cost isn't. | `styles.css:1726–1945` | Low |
 
-### C. Arrows (CTA + card CTAs + "See more" chips)
-- Arrow translate distance already varies (4–8px). Lock to `translateX(4px)` for card CTAs, `translateX(6px)` for primary CTAs, both over `--dur-base`. One rhythm.
-- Trigger on `:focus-visible` in addition to `:hover` (fixes I11).
+## 2. Improvements per category
 
-### D. Nav
-- Add the hairline underline (§A) to nav links so the header row's `Design & Book` CTA no longer looks like a bolt-on.
-- Active route: gold-soft underline (persistent) instead of only teal text color. Reinforces "you are here" without a heavier treatment.
+### CTAs
+- **CTA-1** Replace the Save-Signature `<button>` with `<CtaButton variant="ghost" size="sm" icon={null}>` — inherits touch suppression, reduced-motion, focus-ring, error-nudge in one line.
+- **CTA-2/3** Standardize all "read more / see tour" text links to the `hairline` variant of `CtaButton`. Kill hand-rolled arrow rows in cards.
+- Introduce a `data-role="primary"` convention on the intended primary CTA in each section — used to add a whisper `ctaRimBreathe` (already exists) only on the true primary. Solves H-2 without visual noise.
 
-### E. Mobile tap feedback (site-wide)
-- Single utility (e.g. `.tap`) → `active:opacity-70 active:scale-[0.994] transition duration-[var(--dur-tap)]`. Apply to: nav items, footer links, popular-search chips, tour cards, FAQ toggles.
+### Contrast (fixes C-1, C-2, C-3, C-4)
+- **New tokens** in `styles.css`:
+  - `--text-muted: color-mix(in oklab, var(--charcoal) 62%, transparent)` → ~5.1:1 on ivory. Replaces `charcoal/55` on ≤13px surfaces.
+  - `--text-subtle: color-mix(in oklab, var(--charcoal) 48%, transparent)` → ~3.6:1, use ONLY on ≥18px labels.
+  - `--text-icon: color-mix(in oklab, var(--charcoal) 55%, transparent)` → for icon glyphs.
+  - `--text-on-dark-muted: color-mix(in oklab, var(--ivory) 78%, transparent)` → ~7.0:1 on charcoal.
+- Sweep `charcoal/40`, `charcoal/45`, `charcoal/55` → the new tokens based on size.
+- Add `@media (prefers-contrast: more)` block that promotes all muted tokens to full `--charcoal` / `--ivory`. Zero cost when not requested.
+- Placeholder icons (`AddStopSheet`, search fields): move from `/40` to `/60`.
 
-### F. CTA on touch (fixes I10)
-- Suppress hover lift on touch devices via `@media (hover: none)`. Keep only `active:scale-[0.985]` + color swap. Removes the 3-motion cascade on mobile.
+### Readability & typography (fixes T-1, T-2, T-3, T-4, T-5)
+- **Micro-type floor**: raise all load-bearing labels below 12px to 12px. Keep 10.5–11px only for decorative eyebrows above sentence-case titles (never for content the user must read).
+- **Ban `font-light` on light surfaces** globally — replace with `font-normal` (400) or `font-medium` (500) depending on role. `SignatureCarousel` overlay body → normal + tracking-tight; tour hero italic → normal Georgia italic (already legible at 400).
+- **Line-height token**: `--lh-read: 1.6` for 12–15px body, `--lh-tight: 1.35` for headings. Apply via a `.editorial-body` utility so we stop stamping arbitrary values.
+- **Eyebrow tracking lock**: single canonical `.eyebrow` class already exists (`<Eyebrow>` primitive per memory) — enforce it everywhere; delete the 4 rogue tracking values.
+- **H2/H3 differentiation**: H2 → `font-semibold` (600) + `--text-primary` (charcoal 100%); H3 → `font-medium` (500) + `--text-muted`. Same on mobile.
 
-### G. Ghost CTA border→fill (fixes I9)
-- Add `transition-property: background-color, color, border-color, transform, box-shadow` so all four ease in on the same curve. No more muddy mid-frame.
+### Visual hierarchy (fixes H-1, H-2, H-3)
+- Trust strips → dimmer weight (`--text-subtle`, all-caps, tracking-wide) so they never compete with CTAs.
+- Section eyebrows unchanged in style, but the true "primary path" eyebrow (`Design & Book` / `Studio`) gets a subtle gold hairline underneath — a persistent version of the `link-hairline` treatment, at 60% opacity.
+- Primary vs ghost CTA gap: increase the visual weight delta — primary keeps solid teal + shadow, ghost drops to a **hairline-only** treatment (no border box) when it appears next to a primary in the same row. Prevents "two identical buttons" ambiguity.
 
-### H. Studio phase transitions
-- Wrap phase swaps in a shared 240ms fade (`--dur-base`, `--ease-premium`), out→in. One token, whole flow.
-- Loading state: replace any spinner-only moments with a subtle text-shimmer over the placeholder line — matches the editorial voice better than a spinner. Fall back to spinner under reduced-motion.
+### Animation (residual)
+- Tokenize `studioV3Breathe` and `studioV3RegionPulse` easing to `cubic-bezier(0.22, 0.61, 0.36, 1)` (or keep `ease-in-out` if that reads better on infinite loops — accept as a documented exception).
+- Prune unreferenced hero keyframes after grep audit.
 
----
+## 3. Recommended animation system (already partly shipped)
 
-## 3. Animation system recommendations
-
-Consolidate to one motion language. Everything already lives in tokens — the fix is enforcement, not new tokens.
-
-| Concern | Token to use | Applies to |
+| Concern | Duration | Easing |
 |---|---|---|
-| Hover color/opacity swap | `--dur-quick` + `--ease-premium` | links, chip fills |
-| Tap press/release | `--dur-tap` + `--ease-snap` | any tappable element |
-| Arrow slide, small translate, hover lift | `--dur-base` + `--ease-premium` | CTAs, cards, arrows |
-| Section entry, curtain, phase swap | `--dur-slow` + `--ease-premium` | reveal, Studio phase |
-| Image parallax / zoom-in | 1100ms + `--ease-premium` | hero, card images |
+| Hover color/opacity swap | `var(--dur-quick)` 200ms | `var(--ease-premium)` |
+| Tap press/release | `var(--dur-tap)` 140ms | `var(--ease-snap)` |
+| Arrow slide, small translate, hover lift | `var(--dur-base)` 320ms | `var(--ease-premium)` |
+| Section entry, reveal, phase swap | `var(--dur-slow)` 560ms | `var(--ease-premium)` |
+| Image parallax / hero zoom | 1100ms | `var(--ease-premium)` |
+| Reveal stagger between siblings | 70ms increment, cap 380ms | inherited |
+| Infinite atmospheric loop (breathe, pulse) | 6–14s | `ease-in-out` (accepted exception) |
 
-Additional rules:
-- **Ban bare `ease` / `ease-out`** in new code. Sweep the 15 offenders in `styles.css` to `var(--ease-premium)`.
-- **Retire unused hero keyframes**. Audit which of the 9 are actually referenced; delete the rest (I2). Zero visual change, smaller CSS.
-- **Stagger for reveal**: opt-in `data-reveal-stagger="1"` on a parent → children get `animation-delay: calc(var(--i) * 80ms)`. Homepage keeps its bespoke sequencing; other sections get a lightweight equivalent.
-- **Universal reduced-motion guarantee**: any new keyframe must ship with a `@media (prefers-reduced-motion: reduce)` collapse to opacity-only. There are already ~10 blocks — pattern is set, keep it.
+Behaviour patterns:
+- Never animate on touch what already animates on tap.
+- Never delay a CTA visibility for aesthetic entry — CTAs are opacity-0 → opacity-1 in ≤200ms, no `translateY` on primary conversion buttons.
+- Every keyframe collapses to opacity-only under `prefers-reduced-motion`.
 
----
+## 4. Contrast adjustments (where + why)
 
-## 4. Where each change is applied
-
-| Change | Files |
-|---|---|
-| Hairline underline utility + adoption | `src/styles.css` (new `.link-hairline`), `Navbar.tsx`, `Footer.tsx`, in-body `<a>` sweep |
-| Tap utility + adoption | `src/styles.css` (new `.tap`), `Navbar.tsx`, `Footer.tsx`, `EditorialCard`, `SignatureCarousel`, popular-search chips |
-| Card hover normalization | `EditorialCard.tsx`, `SignatureCarousel.tsx`, tour tile components |
-| Arrow slide distance lock + `:focus-visible` | `CtaButton.tsx` |
-| Ghost CTA transition-property fix | `CtaButton.tsx` |
-| Hover-lift suppression on touch | `CtaButton.tsx` (media query wrapper) |
-| Easing sweep (bare `ease` → token) | `src/styles.css` (~15 rules) |
-| Hero keyframe cleanup | `src/styles.css:1726–1945` + component references |
-| Reveal stagger opt-in | `src/styles.css`, `.reveal` observer (no logic change, CSS custom prop only) |
-| Studio phase fade token | Studio v3 phase wrapper |
-| Shimmer loading state | Studio v3 loading surfaces |
-
----
-
-## 5. Implementation complexity
-
-| Change | Complexity | Risk |
+| Change | Where | Why |
 |---|---|---|
-| Hairline underline utility | XS | none |
-| Tap utility | XS | none |
-| CTA `:focus-visible` arrow slide | XS | none |
-| Ghost CTA transition-property | XS | none |
-| Hover-lift suppression on touch | XS | none |
-| Card hover normalization | S | low — visual regression on 3–4 card variants; screenshot check |
-| Easing sweep (bare `ease` → token) | S | low — pure token swap, motion timing shifts by ~20ms in a few places |
-| Nav underline + active state | S | low |
-| Reveal stagger opt-in | S | low — additive only |
-| Studio phase fade | S | medium — needs to route through a shared wrapper; check for state loss on unmount |
-| Hero keyframe cleanup | M | medium — need to prove no reference before deletion; requires ref audit |
-| Shimmer loading in Studio | M | medium — needs skeleton geometry for each load surface |
+| `charcoal/40` → `--text-icon` (55%) | placeholders, icon glyphs (`AddStopSheet`, `BuilderImage`, `BuilderDebugPanel`) | Icon shape carries meaning; must be visible in sunlight |
+| `charcoal/45` → `--text-subtle` (48%) or `--text-muted` (62%) depending on size | ~10 spots in Studio/builder | AA compliance on small labels |
+| `charcoal/55` → `--text-muted` (62%) for ≤13px | `TourReviews`, `LandingTourCredibility`, most eyebrows | Bumps 3.6:1 → ~5.1:1, still calm |
+| `ivory/40–/55` on charcoal → `--text-on-dark-muted` (78%) | Footer sub-copy, tour dark hero captions | Consistent 7:1 on dark backgrounds |
+| `prefers-contrast: more` promotion block | new global rule | Silent a11y improvement, zero visual cost |
 
-Nothing here regresses Core Web Vitals: no new blocking JS, no additional layout shifts, all animations remain GPU-friendly (transform/opacity only), and every keyframe collapses under `prefers-reduced-motion`.
+## 5. Typography adjustments
+
+| Change | Where | Why |
+|---|---|---|
+| Raise load-bearing text below 12px → 12px | anywhere the user must read to decide (trust strips, tour meta, form helpers) | Mobile floor |
+| Ban `font-light` on light surfaces globally | `SignatureCarousel`, `tours.$tourId`, `WhyYesPillars`, `ThreePathsSection` | Perceived contrast, matches homepage memory rule |
+| `.editorial-body` utility (16px / 1.6 / normal) for body paragraphs | tour pages, corporate, alentejo, evora, sintra routes | Scanning speed |
+| H2 semibold + charcoal 100%, H3 medium + `--text-muted` | site-wide non-homepage | Clearer scan pyramid |
+| Consolidate eyebrow tracking to canonical `.eyebrow` / `<Eyebrow>` | 4 rogue tracking values | One system |
+
+## 6. Affected components / files
+
+- `src/styles.css` — new tokens (`--text-muted`, `--text-subtle`, `--text-icon`, `--text-on-dark-muted`), `.editorial-body` utility, `prefers-contrast: more` block, prune unreferenced hero keyframes.
+- `src/components/ui/CtaButton.tsx` — add `data-role="primary"` breathe hook (already partly there via `.cta-breathe`).
+- `src/components/studio-v3/StudioV3.tsx` — replace hand-rolled Save button with `CtaButton`.
+- `src/components/SignatureCarousel.tsx` — body italic weight; card CTA to hairline.
+- `src/components/TourReviews.tsx`, `src/components/LandingTourCredibility.tsx` — swap muted tokens.
+- `src/components/builder/AddStopSheet.tsx`, `BuilderImage.tsx`, `BuilderDebugPanel.tsx` — placeholder + icon opacity.
+- `src/components/Footer.tsx` — dark-surface text tokens.
+- `src/components/home/WhyYesPillars.tsx`, `home/ThreePathsSection.tsx` — numeric callout weight.
+- `src/routes/tours.$tourId.tsx`, `alentejo-*`, `evora-*`, `sintra-*`, `arrabida-*`, `corporate.tsx`, `press.tsx` — H2/H3 weight, italic weight, `.editorial-body` adoption.
+- `src/components/studio-v3/PhaseShell.tsx` — atmospheric easing token (or document exception).
+
+## 7. Implementation complexity
+
+| Group | Complexity | Risk |
+|---|---|---|
+| New color/type tokens + `prefers-contrast` block | **Low** | none — additive |
+| Save-Signature button swap | **Low** | none |
+| Contrast sweep on ~44 charcoal/40/45/55 sites | **Medium** | low — token swap via targeted `sed`, per-file verification |
+| Ban `font-light` on light surfaces (~6 files) | **Low** | none |
+| Micro-type floor raise | **Medium** | medium — 475 hits, needs judgement per site to distinguish decorative from load-bearing |
+| H2/H3 weight sweep | **Medium** | low |
+| `.editorial-body` utility + adoption on secondary routes | **Medium** | low |
+| Eyebrow tracking consolidation | **Low** | low |
+| Primary/ghost weight-delta rule | **Low** | low |
+| Hero keyframe prune | **Low** | low — audit references first |
+| PhaseShell easing token (or exception) | **Low** | none |
+
+## 8. Implementation order (max conversion impact first)
+
+**Wave A — Contrast & readability (highest a11y + conversion lift, lowest risk):**
+1. Add `--text-muted / --text-subtle / --text-icon / --text-on-dark-muted` tokens + `prefers-contrast: more` block.
+2. Sweep `charcoal/40 → --text-icon`, `charcoal/45 → --text-subtle`, `charcoal/55 → --text-muted` where size ≤13px.
+3. Sweep `ivory/40–/55` → `--text-on-dark-muted`.
+4. Ban `font-light` on light surfaces (6 sites).
+
+**Wave B — Type floor & body rhythm:**
+5. `.editorial-body` utility + adoption on tour/corporate/regional routes.
+6. Raise load-bearing sub-12px text to 12px (start with tour pages — highest conversion routes).
+7. H2 semibold + primary color, H3 medium + muted.
+
+**Wave C — CTA hierarchy:**
+8. Save-Signature → `CtaButton` swap.
+9. Primary vs ghost weight-delta rule (ghost → hairline when adjacent to primary).
+10. Trust strips → `--text-subtle`.
+
+**Wave D — Consolidation & cleanup:**
+11. Eyebrow tracking consolidation via `<Eyebrow>` primitive.
+12. Hero keyframe prune + PhaseShell easing token.
+
+Wave A alone lifts perceived quality and passes WCAG AA on the 44 offending surfaces. Waves A+B combined are the largest scanning-speed improvement. Wave C sharpens the "next action" cue — that's the direct conversion move. Wave D is polish.
 
 ---
 
-## 6. Recommended order (max impact first)
-
-**Wave 1 — Coherence pass (highest perceived-quality lift, lowest risk):**
-1. Easing sweep in `styles.css` (I1).
-2. Hover-lift suppression on touch for CTA (I10).
-3. Ghost CTA transition-property (I9).
-4. Arrow slide on `:focus-visible` (I11).
-5. Card hover normalization to match CTA rhythm (I3).
-
-**Wave 2 — Micro-interaction adoption (biggest UX signal for mobile users):**
-6. Tap utility + apply to nav, footer, cards, chips (I5, I7).
-7. Hairline underline utility + apply to nav and footer links (I4, I5).
-8. Nav active-state gold underline (I4).
-
-**Wave 3 — Structural cleanup:**
-9. Reveal stagger opt-in (I8).
-10. Hero keyframe audit + prune (I2).
-
-**Wave 4 — Studio polish:**
-11. Studio phase fade token (I6).
-12. Shimmer loading surfaces (I6).
-
-Waves 1 + 2 together are ~1 focused session and deliver the majority of the felt improvement. Waves 3–4 are lower urgency and can wait.
-
----
-
-Approve the whole plan, or name the waves you want (e.g. "Wave 1 + Wave 2 only") and I'll execute.
+Reply with the wave(s) you want (e.g. "Wave A", "Wave A+B", or "all") and I'll execute.
