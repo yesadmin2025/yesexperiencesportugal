@@ -52,6 +52,7 @@ import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
@@ -324,6 +325,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LocalStoriesRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
@@ -689,6 +695,7 @@ export interface FileRoutesByFullPath {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/local-stories/': typeof LocalStoriesIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -723,7 +730,6 @@ export interface FileRoutesByTo {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
-  '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
@@ -788,6 +794,7 @@ export interface FileRoutesByTo {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
+  '/local-stories': typeof LocalStoriesIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -888,6 +895,7 @@ export interface FileRoutesById {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/local-stories/': typeof LocalStoriesIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -989,6 +997,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin/'
+    | '/local-stories/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1023,7 +1032,6 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
-    | '/local-stories'
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
@@ -1088,6 +1096,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin'
+    | '/local-stories'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1187,6 +1196,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin/'
+    | '/local-stories/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1602,6 +1612,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/local-stories/': {
+      id: '/local-stories/'
+      path: '/'
+      fullPath: '/local-stories/'
+      preLoaderRoute: typeof LocalStoriesIndexRouteImport
+      parentRoute: typeof LocalStoriesRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -1985,10 +2002,12 @@ declare module '@tanstack/react-router' {
 
 interface LocalStoriesRouteChildren {
   LocalStoriesSlugRoute: typeof LocalStoriesSlugRoute
+  LocalStoriesIndexRoute: typeof LocalStoriesIndexRoute
 }
 
 const LocalStoriesRouteChildren: LocalStoriesRouteChildren = {
   LocalStoriesSlugRoute: LocalStoriesSlugRoute,
+  LocalStoriesIndexRoute: LocalStoriesIndexRoute,
 }
 
 const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
@@ -2121,13 +2140,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
