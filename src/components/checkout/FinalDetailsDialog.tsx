@@ -483,7 +483,7 @@ function Field({
         <span>
           {label}
           {required && (
-            <span className="text-[color:var(--gold)] ml-1" aria-hidden>
+            <span className="text-[color:var(--teal)] ml-1" aria-hidden>
               *
             </span>
           )}
