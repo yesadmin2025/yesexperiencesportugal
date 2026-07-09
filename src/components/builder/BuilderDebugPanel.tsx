@@ -49,7 +49,7 @@ export function BuilderDebugPanel({ state, title = "Builder state" }: Props) {
       aria-label="Builder debug panel"
     >
       <div className="flex items-center justify-between gap-2 border-b border-[color:var(--charcoal)]/10 px-3 py-1.5">
-        <span className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+        <span className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
           Debug · {title}
         </span>
         <div className="flex items-center gap-1">

@@ -115,7 +115,7 @@ export function StudioLivePreview() {
     >
       {/* ── Header strip — stepper + live status ─────────────────── */}
       <div className="relative z-20 flex items-center justify-between gap-3 border-b border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/90 px-4 md:px-5 py-2.5 md:py-3 backdrop-blur-[2px]">
-        <span className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold)] tabular-nums">
+        <span className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal)] tabular-nums">
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-70 animate-ping" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
@@ -300,7 +300,7 @@ export function StudioLivePreview() {
         </ul>
 
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 text-[color:var(--ivory)]/90">
-          <p className="text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold)]">
+          <p className="text-[10px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
             Today's draft
           </p>
           <p className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/60 tabular-nums">
@@ -321,7 +321,7 @@ export function StudioLivePreview() {
           <Sparkles size={12} aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
+          <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]">
             Private cellar available
           </span>
           <span className="mt-0.5 block truncate text-[12px] md:text-[12.5px] text-[color:var(--ivory)]/90">
@@ -378,7 +378,7 @@ export function StudioLivePreview() {
           </p>
           <Link
             to="/experiences"
-            className="inline-flex items-center min-h-[24px] py-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+            className="inline-flex items-center min-h-[24px] py-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
           >
             See sample day
           </Link>

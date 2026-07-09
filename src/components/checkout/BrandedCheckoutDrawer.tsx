@@ -213,7 +213,7 @@ function ExperienceSummaryCard({
           </div>
         ) : null}
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
             Your day
           </p>
           <h3 className="serif text-[1.05rem] leading-snug text-[color:var(--charcoal)] mt-1 truncate">
@@ -253,7 +253,7 @@ function ExperienceSummaryCard({
 
       {summary.addOns && summary.addOns.length > 0 ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
-          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
             Add-ons
           </p>
           <ul className="mt-2 space-y-1">

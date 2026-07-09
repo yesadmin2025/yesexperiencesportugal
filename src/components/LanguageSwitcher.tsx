@@ -73,7 +73,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
               className={cn(
                 "transition-colors duration-200",
                 isActive
-                  ? "text-[color:var(--gold)] font-medium"
+                  ? "text-[color:var(--teal)] font-medium"
                   : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
               )}
             >

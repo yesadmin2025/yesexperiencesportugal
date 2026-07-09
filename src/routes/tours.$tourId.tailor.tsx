@@ -745,7 +745,7 @@ function TailorPage() {
                   {/* Choice pool */}
                   {blueprint.choice && (
                     <>
-                      <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                      <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                         Choose {blueprint.choice.pickCount} · {blueprint.choice.label}
                       </p>
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
@@ -882,7 +882,7 @@ function TailorPage() {
                     Remove a stop you'd rather trade for time elsewhere, or add an optional one
                     listed by the local guide.
                   </p>
-                  <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--gold)]">
+                  <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
                     Up to {MAX_EDITS} changes · {editsLeft} left
                   </p>
 
@@ -1026,7 +1026,7 @@ function TailorPage() {
                         >
                           {a.label}
                           {a.priceDelta ? (
-                            <span className="ml-1.5 text-[color:var(--gold)] tracking-normal">
+                            <span className="ml-1.5 text-[color:var(--teal)] tracking-normal">
                               +€{a.priceDelta}
                             </span>
                           ) : null}
@@ -1101,7 +1101,7 @@ function TailorPage() {
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--gold)]"
+                      className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
                     >
                       <MessageCircle size={13} /> Talk to a local
                     </a>
@@ -1163,7 +1163,7 @@ function TailorPage() {
                     <ol className="mt-2 space-y-1.5 list-none p-0">
                       {keptStops.map((s: TourStop, i: number) => (
                         <li key={s.label + i} className="flex gap-2.5">
-                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold)] w-5 shrink-0 mt-0.5">
+                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] w-5 shrink-0 mt-0.5">
                             {String(i + 1).padStart(2, "0")}
                           </span>
                           <span className="text-[13px] leading-snug">{s.label}</span>

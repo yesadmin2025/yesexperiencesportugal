@@ -390,7 +390,7 @@ export function BuilderMap({
               : tr.stopsStatic;
           return (
             <>
-              <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)] shadow-sm">
+              <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)] shadow-sm">
                 <span className="relative inline-flex h-1.5 w-1.5">
                   <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
                   <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />

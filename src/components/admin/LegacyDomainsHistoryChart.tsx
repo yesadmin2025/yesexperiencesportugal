@@ -132,7 +132,7 @@ export function LegacyDomainsHistoryChart() {
     <section className="mt-10 rounded-lg border border-[color:var(--sand)] bg-white p-5">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
             Evolução histórica · últimos 7 dias
           </p>
           <h2 className="mt-1 text-lg font-semibold text-[color:var(--charcoal)]">

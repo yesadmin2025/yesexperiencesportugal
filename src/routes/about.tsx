@@ -250,7 +250,7 @@ function Page() {
 
           <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Licence
               </div>
               <p className="mt-2 font-display text-lg">{LICENSE_LABEL}</p>
@@ -260,7 +260,7 @@ function Page() {
               </p>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Founded
               </div>
               <p className="mt-2 font-display text-lg">2022</p>
@@ -269,7 +269,7 @@ function Page() {
               </p>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Reviews
               </div>
               <p className="mt-2 font-display text-lg">700+ five-star</p>
@@ -279,7 +279,7 @@ function Page() {
               </p>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--gold)]">
+              <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Insurance
               </div>
               <p className="mt-2 font-display text-lg">Civil liability</p>

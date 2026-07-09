@@ -278,7 +278,7 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
                   <p className="mt-3 text-[13.5px] md:text-[14.5px] italic font-normal leading-[1.55] text-[color:var(--ivory)]/90 max-w-[34ch]">
                     {s.line}
                   </p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-medium text-[color:var(--gold-soft)] group-hover:text-[color:var(--gold)] transition-colors">
+                  <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-medium text-[color:var(--gold-soft)] group-hover:text-[color:var(--charcoal)] transition-colors">
                     Discover
                     <ArrowRight
                       size={13}

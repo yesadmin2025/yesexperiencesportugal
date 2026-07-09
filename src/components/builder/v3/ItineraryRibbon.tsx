@@ -60,7 +60,7 @@ export function ItineraryRibbon({
       aria-label={titleLabel}
     >
       <div className="px-4 py-3 border-b border-[color:var(--charcoal)]/10 flex items-center justify-between gap-3">
-        <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+        <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           {titleLabel}
         </span>
         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[color:var(--charcoal)]/70">

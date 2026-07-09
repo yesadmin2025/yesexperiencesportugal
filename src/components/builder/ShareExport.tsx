@@ -94,7 +94,7 @@ export function ShareExport({ route, stops, guests }: Props) {
 
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
-      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
         Exportar & partilhar
       </p>
       <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]/70">
@@ -136,7 +136,7 @@ export function ShareExport({ route, stops, guests }: Props) {
             <button
               type="button"
               onClick={copyLink}
-              className="inline-flex items-center justify-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)] hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)] hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)] transition-colors"
             >
               {copied ? <Check size={13} /> : <Copy size={13} />}
               {copied ? "Copiado" : "Copiar"}
@@ -144,7 +144,7 @@ export function ShareExport({ route, stops, guests }: Props) {
             <button
               type="button"
               onClick={nativeShare}
-              className="inline-flex items-center justify-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)] hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)] hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)] transition-colors"
             >
               <Share2 size={13} />
               Partilhar
@@ -152,7 +152,7 @@ export function ShareExport({ route, stops, guests }: Props) {
             <button
               type="button"
               onClick={openLanding}
-              className="inline-flex items-center justify-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)] hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[2px] border border-[color:var(--charcoal)]/20 bg-[color:var(--ivory)] px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)] hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)] transition-colors"
             >
               <ExternalLink size={13} />
               Abrir

@@ -52,7 +52,7 @@ export function EntryScreen({ onStart }: Props) {
 
       <div className="container-x relative z-10 grid min-h-[78svh] place-items-center py-16 md:py-24">
         <div className="section-enter max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--gold)]">
+          <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
             <Sparkles size={12} aria-hidden="true" />
             Experience studio
           </span>

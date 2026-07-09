@@ -172,7 +172,7 @@ function BookingConfirmedPage() {
                 href={state.data.receiptUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--gold)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1"
+                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1"
               >
                 <Receipt size={14} /> View your receipt
               </a>

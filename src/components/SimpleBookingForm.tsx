@@ -273,7 +273,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <Link
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
-          className="mt-1 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--gold)]"
+          className="mt-1 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
         >
           Tailor this day
         </Link>

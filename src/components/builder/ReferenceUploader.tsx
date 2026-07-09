@@ -214,7 +214,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
       <div className="flex items-baseline justify-between gap-3">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Mood references
           </p>
           <p className="mt-1 text-[13px] text-[color:var(--charcoal)]/75 max-w-md">
@@ -317,7 +317,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
 
       {tone && (
         <div className="mt-4 rounded-[2px] border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/30 p-4">
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Tone read
           </p>
           {tone.toneKeywords.length > 0 && (

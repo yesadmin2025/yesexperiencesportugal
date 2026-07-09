@@ -454,17 +454,17 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           />
           {chapters.map((s, i) => (
             <li key={s.label + i} className="relative pl-12 md:pl-16">
-              <span className="absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[12px] md:text-[13px] text-[color:var(--gold)] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15)]">
+              <span className="absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[12px] md:text-[13px] text-[color:var(--teal)] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15)]">
                 {i + 1}
               </span>
 
               <div className="pt-1 pb-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)]">
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                     Chapter {i + 1}
                   </span>
                   {s.optional && (
-                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--gold)] bg-[color:var(--gold)]/[0.06]">
+                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
                       Optional
                     </span>
                   )}
@@ -633,7 +633,7 @@ function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
             <ol className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[12.5px] text-[color:var(--ivory)]/90 list-none p-0">
               {points.map((p, i) => (
                 <li key={p.label + i} className="flex items-baseline gap-3">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)] shrink-0 w-6">
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)] shrink-0 w-6">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="leading-snug">{p.raw.label}</span>
@@ -874,7 +874,7 @@ function ReviewsBlock({ meta }: { meta?: ViatorMeta }) {
               </blockquote>
               <figcaption className="mt-5 pt-4 border-t border-[color:var(--border)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                 {r.author}
-                {r.date && <span className="text-[color:var(--gold)] not-italic"> · {r.date}</span>}
+                {r.date && <span className="text-[color:var(--charcoal-soft)] not-italic"> · {r.date}</span>}
               </figcaption>
             </figure>
           ))}
