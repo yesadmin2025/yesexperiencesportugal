@@ -158,6 +158,21 @@ export function MobileStickyCTA() {
     if (!visible && sheetOpen) setSheetOpen(false);
   }, [visible, sheetOpen]);
 
+  // Lift the WhatsApp FAB above the sticky bar (~64px + safe area) via a
+  // CSS custom property. Clears the var when the bar hides so the FAB
+  // returns to its resting position. Any surface can opt-in by reading
+  // `bottom: calc(... + var(--fab-lift, 0px))`.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    if (visible) {
+      root.style.setProperty("--fab-lift", "72px");
+    } else {
+      root.style.removeProperty("--fab-lift");
+    }
+    return () => root.style.removeProperty("--fab-lift");
+  }, [visible]);
+
   const handleSayYes = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (submittingRef.current) {
       e.preventDefault();
