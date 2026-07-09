@@ -209,8 +209,11 @@ function AuthPage() {
                 setGoogleBusy(true);
                 setErrorMsg(null);
                 try {
+                  const redirectUri = next
+                    ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
+                    : `${window.location.origin}/auth`;
                   const result = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: window.location.origin + "/auth",
+                    redirect_uri: redirectUri,
                   });
                   if (result.error) {
                     const raw = result.error.message ?? "";
@@ -230,7 +233,7 @@ function AuthPage() {
                   if (result.redirected) return;
                   const { data, error } = await supabase.auth.getUser();
                   if (error) throw new Error("Sessão inválida após Google. Tenta novamente.");
-                  if (data.user) await routeByRole(data.user.id, navigate);
+                  if (data.user) await afterSignIn(data.user.id);
                 } catch (err) {
                   const msg = err instanceof Error ? err.message : "Falha no Google sign-in.";
                   setErrorMsg(msg);
