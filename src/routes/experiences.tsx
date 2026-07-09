@@ -5,6 +5,7 @@ import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
+import { TourImage } from "@/components/tours/TourImage";
 import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
