@@ -77,10 +77,10 @@ export const Route = createFileRoute("/sitemap.xml")({
         ]);
         const tourEntries: SitemapEntry[] = signatureTours.map((t) => ({
           path: `/tours/${t.id}`,
-          lastmod: today,
           changefreq: "monthly",
           priority: SEO_FOCUS_TOUR_IDS.has(t.id) ? "0.95" : "0.7",
         }));
+
         const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter(
           (a) => a.slug !== "best-day-trips-from-lisbon",
         ).map((a) => ({
