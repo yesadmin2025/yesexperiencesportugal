@@ -7,6 +7,15 @@ import { toast } from "sonner";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export const Route = createFileRoute("/auth")({
+  // `next` = same-origin relative path to return to after sign-in. Used by the
+  // OAuth consent route (`/.lovable/oauth/consent`) so external MCP clients
+  // can complete authorisation without the admin-only gate below getting in
+  // the way. Only accepted when it is a same-origin relative path.
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//")
+      ? s.next
+      : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Admin — YES experiences Portugal" },
@@ -44,6 +53,7 @@ async function routeByRole(userId: string, navigate: ReturnType<typeof useNaviga
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,14 +61,26 @@ function AuthPage() {
   const [googleBusy, setGoogleBusy] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Already signed in? Verify role and redirect.
+  // When `next` is present (OAuth consent flow), any signed-in user is
+  // allowed through — do NOT run the admin gate. Otherwise this is the
+  // /admin login page and only admins may proceed.
+  const afterSignIn = async (userId: string) => {
+    if (next) {
+      window.location.href = next;
+      return;
+    }
+    await routeByRole(userId, navigate);
+  };
+
+  // Already signed in? Route by whichever flow applies.
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.user) {
-        routeByRole(data.session.user.id, navigate);
+        void afterSignIn(data.session.user.id);
       }
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, next]);
 
   const translate = (msg: string) => {
     const m = msg.toLowerCase();
