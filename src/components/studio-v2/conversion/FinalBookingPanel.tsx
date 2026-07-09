@@ -285,8 +285,11 @@ export function FinalBookingPanel({
         </div>
       </div>
 
+      {/* Trust strip — sits directly above the primary action */}
+      <TrustStrip placement="signature_final_panel" />
+
       {/* PRIMARY action */}
-      <div className="mt-8">
+      <div className="mt-6">
         <button
           type="button"
           onClick={onSayYes}
