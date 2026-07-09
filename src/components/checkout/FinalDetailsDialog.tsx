@@ -191,6 +191,14 @@ export function FinalDetailsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg p-0 gap-0 bg-[color:var(--ivory)] border border-[color:var(--border)] max-h-[92vh] overflow-hidden flex flex-col">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleSubmit();
+          }}
+          className="flex flex-col flex-1 overflow-hidden"
+          noValidate
+        >
         <DialogHeader className="px-5 sm:px-7 pt-6 pb-3 border-b border-[color:var(--border)]">
           <Eyebrow>Almost there</Eyebrow>
           <DialogTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2">
@@ -406,8 +414,7 @@ export function FinalDetailsDialog({
             <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
           ) : (
             <CtaButton
-              type="button"
-              onClick={handleSubmit}
+              type="submit"
               variant="primary"
               size="md"
               className="w-full"
@@ -420,6 +427,7 @@ export function FinalDetailsDialog({
             Secure checkout · Final price shown before payment
           </p>
         </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -470,19 +478,24 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
+    <label className="block">
+      <span className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
         <span>
           {label}
-          {required && <span className="text-[color:var(--gold)] ml-1">*</span>}
+          {required && (
+            <span className="text-[color:var(--gold)] ml-1" aria-hidden>
+              *
+            </span>
+          )}
+          {required && <span className="sr-only"> (required)</span>}
         </span>
         {hint && (
           <span className="normal-case tracking-normal text-[10px] text-[color:var(--charcoal-soft)]/70">
             {hint}
           </span>
         )}
-      </label>
+      </span>
       {children}
-    </div>
+    </label>
   );
 }
