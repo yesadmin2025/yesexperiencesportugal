@@ -505,7 +505,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         <source type="image/webp" media="(min-width: 768px)" srcSet={HERO_CLIP.posterWebp} />
         <source type="image/jpeg" srcSet={HERO_CLIP.posterJpg} />
         <img
-          src={HERO_CLIP.posterWebpMobile}
+          src={HERO_CLIP.posterJpg}
           alt=""
           width={1080}
           height={1440}
