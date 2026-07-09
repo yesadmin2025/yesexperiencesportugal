@@ -302,7 +302,7 @@ function BuilderImagesQAPage() {
             </div>
           )}
           {!loading && groupOrder.length === 0 && (
-            <div className="rounded-[2px] border border-dashed border-[color:var(--charcoal)]/20 p-10 text-center text-sm text-[color:var(--charcoal)]/55">
+            <div className="rounded-[2px] border border-dashed border-[color:var(--charcoal)]/20 p-10 text-center text-sm text-[color:var(--text-muted)]">
               No images match the current filter.
             </div>
           )}
@@ -324,7 +324,7 @@ function BuilderImagesQAPage() {
                     <h2 className="serif mt-0.5 text-[1.25rem] font-semibold leading-tight text-[color:var(--charcoal)]">
                       {isUnassigned ? "Not linked to a stop" : (stop?.label ?? stopKey)}
                     </h2>
-                    <p className="mt-0.5 text-[11.5px] text-[color:var(--charcoal)]/55">
+                    <p className="mt-0.5 text-[11.5px] text-[color:var(--text-muted)]">
                       <code className="font-mono">{isUnassigned ? "—" : stopKey}</code>
                       {" · "}
                       {group.length} image{group.length === 1 ? "" : "s"} · {activeCount} active
@@ -390,7 +390,7 @@ function BuilderImagesQAPage() {
                       >
                         <BuilderImage src={img.image_url} alt={img.alt_text} ratio="4/5" />
                         <div className="flex items-center justify-between gap-2 text-[10.5px] uppercase tracking-[0.18em] font-bold">
-                          <span className="text-[color:var(--charcoal)]/55">
+                          <span className="text-[color:var(--text-muted)]">
                             {img.usage_role} · {img.image_type}
                           </span>
                           <span

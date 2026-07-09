@@ -191,7 +191,7 @@ export function JourneyPanel({
                     onClick={() => onMove(i, -1)}
                     disabled={i === 0}
                     aria-label={`Move ${s.label} earlier`}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--charcoal)]/45"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--text-subtle)]"
                   >
                     <ArrowUp size={13} />
                   </button>
@@ -200,7 +200,7 @@ export function JourneyPanel({
                     onClick={() => onMove(i, 1)}
                     disabled={i === stops.length - 1}
                     aria-label={`Move ${s.label} later`}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--charcoal)]/45"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-[color:var(--text-subtle)]"
                   >
                     <ArrowDown size={13} />
                   </button>
@@ -208,7 +208,7 @@ export function JourneyPanel({
                     type="button"
                     onClick={() => onRemoveStop(s.key)}
                     aria-label={`Remove ${s.label}`}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-red-700 hover:bg-red-50"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-red-700 hover:bg-red-50"
                   >
                     <X size={13} />
                   </button>
@@ -220,7 +220,7 @@ export function JourneyPanel({
 
         {removablePool && removablePool.length > 0 && excluded.length > 0 && (
           <div className="mt-3 rounded-[2px] border border-dashed border-[color:var(--charcoal)]/15 p-3">
-            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]/55">
+            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--text-muted)]">
               Removed — tap to add back
             </p>
             <ul className="mt-2 flex flex-wrap gap-1.5">
@@ -274,14 +274,14 @@ export function JourneyPanel({
                 <Icon
                   size={14}
                   className={
-                    active ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"
+                    active ? "text-[color:var(--gold)]" : "text-[color:var(--text-muted)]"
                   }
                   strokeWidth={1.6}
                 />
                 <span className="text-[12px] font-semibold text-[color:var(--charcoal)]">
                   {meta.label}
                 </span>
-                <span className="text-[10.5px] text-[color:var(--charcoal)]/55 leading-snug">
+                <span className="text-[10.5px] text-[color:var(--text-muted)] leading-snug">
                   {meta.sub}
                 </span>
               </button>

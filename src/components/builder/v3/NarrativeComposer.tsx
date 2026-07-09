@@ -133,13 +133,13 @@ export function NarrativeComposer({ busy, collapsed, seed, t, onExpand, onSubmit
           placeholder={t.composerPlaceholders[placeholderIdx]}
           rows={2}
           maxLength={500}
-          className="w-full resize-none bg-transparent border-0 outline-none text-[16px] sm:text-[17px] leading-[1.45] text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 placeholder:italic font-serif italic"
+          className="w-full resize-none bg-transparent border-0 outline-none text-[16px] sm:text-[17px] leading-[1.45] text-[color:var(--charcoal)] placeholder:text-[color:var(--text-icon)] placeholder:italic font-serif italic"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           aria-label={t.composerExpand}
           disabled={busy}
         />
         <div className="mt-3 flex items-center justify-between gap-3">
-          <span className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/45 font-semibold">
+          <span className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--text-subtle)] font-semibold">
             {t.composerFooter}
           </span>
           <div className="flex items-center gap-2">

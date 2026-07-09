@@ -40,7 +40,7 @@ export function BookingCtaSkeleton({
         <Shimmer />
       </div>
 
-      <p className="text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/55">
+      <p className="text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
     </div>

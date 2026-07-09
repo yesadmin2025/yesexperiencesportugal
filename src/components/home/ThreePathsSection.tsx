@@ -142,7 +142,7 @@ export function ThreePathsSection() {
                       className="text-[color:var(--teal)] transition-transform duration-300 ease-out group-hover:translate-x-0.5"
                     />
                   </span>
-                  <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-light tabular-nums">
+                  <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-normal tabular-nums">
                     {p.num}
                   </span>
                 </div>

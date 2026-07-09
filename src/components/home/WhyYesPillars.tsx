@@ -99,7 +99,7 @@ export function WhyYesPillars() {
                 <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
                   {p.eyebrow}
                 </span>
-                <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-light tabular-nums">
+                <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-normal tabular-nums">
                   {p.num}
                 </span>
               </div>

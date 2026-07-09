@@ -38,7 +38,7 @@ export function StickyBar({
       <div className="container-x flex items-center justify-between gap-2 sm:gap-3 py-3">
         <div className="flex min-w-0 items-center gap-2 sm:gap-4 text-[color:var(--charcoal)]">
           <span className="inline-flex items-center gap-1 text-[11.5px] sm:text-[12px]">
-            <Clock size={12} className="text-[color:var(--charcoal)]/55" />
+            <Clock size={12} className="text-[color:var(--text-muted)]" />
             <span className="tabular-nums font-semibold">{fmtMinutes(totalMinutes)}</span>
           </span>
 
@@ -52,7 +52,7 @@ export function StickyBar({
               <Minus size={11} />
             </button>
             <span className="inline-flex items-center gap-0.5 px-1 text-[11.5px] tabular-nums font-semibold">
-              <Users size={10} className="text-[color:var(--charcoal)]/55" />
+              <Users size={10} className="text-[color:var(--text-muted)]" />
               {guests}
             </span>
             <button
@@ -66,12 +66,12 @@ export function StickyBar({
           </span>
 
           <span className="flex flex-col leading-tight">
-            <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/55">
+            <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-muted)]">
               From
             </span>
             <span className="text-[14px] sm:text-[15px] tabular-nums font-semibold text-[color:var(--charcoal)]">
               €{total}
-              <span className="ml-1 hidden sm:inline text-[11px] font-normal text-[color:var(--charcoal)]/55">
+              <span className="ml-1 hidden sm:inline text-[11px] font-normal text-[color:var(--text-muted)]">
                 total
               </span>
             </span>

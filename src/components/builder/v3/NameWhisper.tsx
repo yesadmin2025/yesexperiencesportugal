@@ -73,7 +73,7 @@ export function NameWhisper({
           <button
             type="button"
             onClick={onSkip}
-            className="inline-flex items-center min-h-[36px] px-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)]/50 hover:text-[color:var(--ivory)]/85 transition-colors"
+            className="inline-flex items-center min-h-[36px] px-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/85 transition-colors"
           >
             {skipLabel}
           </button>

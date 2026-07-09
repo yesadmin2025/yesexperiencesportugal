@@ -210,7 +210,7 @@ function ScrapeSection() {
 
       {runs.length > 0 && (
         <div className="mt-5">
-          <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55">
+          <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
             Recent runs
           </div>
           <ul className="mt-2 divide-y divide-[color:var(--charcoal)]/10 text-sm list-none p-0">
@@ -937,7 +937,7 @@ function ApprovalQueueSection() {
                     <p className="mt-1 font-medium text-[color:var(--charcoal)]">{r.title}</p>
                   )}
                   <p className="mt-1 text-[color:var(--charcoal)]/85">{r.body}</p>
-                  <p className="mt-2 text-[11px] text-[color:var(--charcoal)]/55">
+                  <p className="mt-2 text-[11px] text-[color:var(--text-muted)]">
                     {r.reviewer_name ?? "Anonymous"}
                     {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
                     {r.scraped_at

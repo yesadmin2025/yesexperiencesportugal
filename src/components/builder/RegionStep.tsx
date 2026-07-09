@@ -147,7 +147,7 @@ export function RegionStep({ selected, onChoose }: Props) {
         })}
       </div>
 
-      <p className="mt-6 text-[11.5px] text-[color:var(--charcoal)]/55 tracking-wide">
+      <p className="mt-6 text-[11.5px] text-[color:var(--text-muted)] tracking-wide">
         Real regions, real stops. We never invent locations.
       </p>
 

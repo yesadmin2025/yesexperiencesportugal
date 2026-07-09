@@ -177,7 +177,7 @@ function SharedItineraryPage() {
                 </span>
                 <div className="flex items-start justify-between gap-3">
                   <p className="serif text-[1.15rem] font-semibold leading-tight">{s.label}</p>
-                  <span className="shrink-0 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55 tabular-nums">
+                  <span className="shrink-0 text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-muted)] tabular-nums">
                     {fmtMinutes(s.duration_minutes)}
                   </span>
                 </div>
@@ -248,7 +248,7 @@ function SharedItineraryPage() {
             <Check size={14} />
             Abrir & ajustar no Experience Studio
           </a>
-          <p className="text-center text-[11px] text-[color:var(--charcoal)]/55">
+          <p className="text-center text-[11px] text-[color:var(--text-muted)]">
             Confirmação instantânea · Anfitrião privado · Roteiro real
           </p>
         </div>
@@ -272,7 +272,7 @@ function Stat({
 }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-3 py-3">
-      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]/55">
+      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p

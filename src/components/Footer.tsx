@@ -271,7 +271,7 @@ export function Footer() {
                     {l.label}
                   </Link>
                   {i < arr.length - 1 && (
-                    <span aria-hidden="true" className="text-[color:var(--ivory)]/55">
+                    <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">
                       ·
                     </span>
                   )}
@@ -279,7 +279,7 @@ export function Footer() {
               ))}
             </nav>
           </div>
-          <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--ivory)]/55 font-[family-name:var(--font-sans)]">
+          <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
             RNAAT nº 31/2023 · Sesimbra, Portugal
           </p>
         </div>

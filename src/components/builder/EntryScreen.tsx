@@ -78,7 +78,7 @@ export function EntryScreen({ onStart }: Props) {
             </CtaButton>
           </div>
 
-          <p className="mt-6 text-[12px] text-[color:var(--charcoal)]/55 tracking-wide">
+          <p className="mt-6 text-[12px] text-[color:var(--text-muted)] tracking-wide">
             About a minute. You shape it. Confirmed instantly.
           </p>
         </div>

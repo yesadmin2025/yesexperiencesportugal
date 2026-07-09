@@ -252,7 +252,7 @@ export function NarrativeCompanion({
             rows={2}
             maxLength={500}
             placeholder="Add a wish, mood, or moment…"
-            className="w-full rounded-xl border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-[14px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none focus:ring-1 focus:ring-[color:var(--gold)]/40"
+            className="w-full rounded-xl border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-[14px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--text-icon)] focus:border-[color:var(--gold)] focus:outline-none focus:ring-1 focus:ring-[color:var(--gold)]/40"
             disabled={loading}
           />
           <div className="flex items-center justify-between gap-3 mt-2">
@@ -282,7 +282,7 @@ export function NarrativeCompanion({
             </p>
           )}
           {(mood || who || intention || pace) && (
-            <p className="mt-2 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/45">
+            <p className="mt-2 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--text-subtle)]">
               Listening with: {[mood, who, intention, pace].filter(Boolean).join(" · ")}
             </p>
           )}

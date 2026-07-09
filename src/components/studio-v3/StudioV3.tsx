@@ -8,7 +8,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { ArrowLeft, ArrowRight, Check, Loader2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
@@ -4649,37 +4649,25 @@ function SaveSignatureButton({
 
   return (
     <div className="flex flex-col items-center w-full">
-      <button
-        type="button"
+      <CtaButton
+        variant="ghost"
+        size="sm"
         onClick={onSave}
-        disabled={status === "saving"}
-        data-testid="studio-v3-save-signature"
-        className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-        style={{
-          color: "var(--charcoal)",
-          background: "transparent",
-          border: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
-        }}
+        loading={status === "saving"}
+        loadingLabel="Saving…"
+        error={status === "error" ? 1 : 0}
+        icon={null}
         aria-label="Save this Signature for later"
+        data-testid="studio-v3-save-signature"
       >
-        {status === "saving" ? (
-          <>
-            <Loader2 size={14} aria-hidden className="animate-spin" />
-            Saving…
-          </>
-        ) : status === "error" ? (
-          <>Try saving again</>
-        ) : (
-          <>Save this Signature</>
-        )}
-      </button>
+        {status === "error" ? "Try saving again" : "Save this Signature"}
+      </CtaButton>
       {status === "error" ? (
         <p
           role="status"
           aria-live="polite"
           data-testid="studio-v3-save-error"
-          className="mt-3 max-w-[340px] text-center text-[12px] leading-[1.5] [text-wrap:pretty]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          className="mt-3 max-w-[340px] text-center text-[12px] leading-[1.5] [text-wrap:pretty] text-[color:var(--text-muted)]"
         >
           We couldn't save this Signature just now. Please try again, or use{" "}
           <span style={{ color: "var(--gold)", fontWeight: 600 }}>Say YES</span> and we'll keep the
@@ -4689,3 +4677,4 @@ function SaveSignatureButton({
     </div>
   );
 }
+

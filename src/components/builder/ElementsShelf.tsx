@@ -58,7 +58,7 @@ export function ElementsShelf({ selected, onToggle }: Props) {
                     size={15}
                     strokeWidth={1.6}
                     className={
-                      active ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"
+                      active ? "text-[color:var(--gold)]" : "text-[color:var(--text-muted)]"
                     }
                   />
                   {active && (
@@ -73,7 +73,7 @@ export function ElementsShelf({ selected, onToggle }: Props) {
                 <p className="mt-1 text-[11.5px] text-[color:var(--charcoal)]/65 leading-snug">
                   {el.sub}
                 </p>
-                <p className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/45">
+                <p className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-subtle)]">
                   Concierge confirms
                 </p>
               </button>

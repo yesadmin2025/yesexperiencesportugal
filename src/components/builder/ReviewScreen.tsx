@@ -182,7 +182,7 @@ export function ReviewScreen({
                   <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--gold)]">
                     Added to your day
                   </p>
-                  <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/55">
+                  <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)]">
                     Concierge confirms
                   </p>
                 </div>
@@ -271,7 +271,7 @@ export function ReviewScreen({
               <button
                 type="button"
                 onClick={onBack}
-                className="text-[12px] underline underline-offset-4 text-[color:var(--charcoal)]/55 hover:text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm px-1 py-0.5"
+                className="text-[12px] underline underline-offset-4 text-[color:var(--text-muted)] hover:text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm px-1 py-0.5"
               >
                 ← Keep adjusting
               </button>
@@ -280,7 +280,7 @@ export function ReviewScreen({
                   type="button"
                   onClick={onReset}
                   aria-label="Start over — clears your selections"
-                  className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55 hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm px-1 py-0.5 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm px-1 py-0.5 transition-colors"
                 >
                   <X size={12} aria-hidden="true" />
                   Start over
@@ -305,7 +305,7 @@ function Stat({
 }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-3 py-2.5">
-      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]/55">
+      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p

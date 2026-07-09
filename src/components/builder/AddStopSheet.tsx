@@ -93,7 +93,7 @@ export function AddStopSheet({
               What's reachable from here
             </h3>
             {rules && (
-              <p className="mt-1 text-[11px] text-[color:var(--charcoal)]/55">
+              <p className="mt-1 text-[11px] text-[color:var(--text-muted)]">
                 Within {rules.max_km_between_stops} km of last stop · max{" "}
                 {rules.max_total_km_per_day} km/day
               </p>
@@ -114,14 +114,14 @@ export function AddStopSheet({
           <div className="relative flex-1">
             <Search
               size={13}
-              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[color:var(--charcoal)]/40"
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[color:var(--text-icon)]"
             />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search stops…"
-              className="w-full rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] py-1.5 pl-8 pr-2.5 text-[13px] text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none"
+              className="w-full rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] py-1.5 pl-8 pr-2.5 text-[13px] text-[color:var(--charcoal)] placeholder:text-[color:var(--text-icon)] focus:border-[color:var(--gold)] focus:outline-none"
             />
           </div>
           <button

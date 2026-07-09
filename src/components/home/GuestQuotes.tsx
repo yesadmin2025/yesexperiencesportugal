@@ -208,7 +208,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                       {q.reviewer_name ?? "Guest"}
                     </p>
                     {q.reviewer_country && (
-                      <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal)]/55 truncate">
+                      <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--text-muted)] truncate">
                         {q.reviewer_country}
                       </p>
                     )}

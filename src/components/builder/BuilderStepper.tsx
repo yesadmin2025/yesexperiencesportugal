@@ -131,7 +131,7 @@ export function BuilderStepper({ step, furthestCompleted = 0, onStepClick }: Pro
                   ? "bg-[color:var(--gold)] text-[color:var(--ivory)] shadow-[0_0_0_4px_color-mix(in_oklab,var(--gold)_25%,transparent)]"
                   : isComplete
                     ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                    : "bg-transparent text-[color:var(--charcoal)]/40 ring-1 ring-[color:var(--charcoal)]/20",
+                    : "bg-transparent text-[color:var(--text-icon)] ring-1 ring-[color:var(--charcoal)]/20",
               ].join(" ")}
               aria-hidden="true"
             >

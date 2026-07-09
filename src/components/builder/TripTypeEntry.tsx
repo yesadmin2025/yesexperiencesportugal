@@ -215,7 +215,7 @@ export function TripTypeEntry({ onChoose }: Props) {
           ))}
         </div>
 
-        <p className="mt-8 text-[12px] text-[color:var(--charcoal)]/55 tracking-wide">
+        <p className="mt-8 text-[12px] text-[color:var(--text-muted)] tracking-wide">
           About a minute. You shape it. Confirmed instantly.
         </p>
       </div>
@@ -331,7 +331,7 @@ function ConciergeSheet({
             </CtaButton>
           </div>
 
-          <p className="mt-5 text-[11.5px] text-[color:var(--charcoal)]/55 tracking-wide">
+          <p className="mt-5 text-[11.5px] text-[color:var(--text-muted)] tracking-wide">
             You always have the freedom to skip concierge and confirm a private day in minutes.
           </p>
         </div>

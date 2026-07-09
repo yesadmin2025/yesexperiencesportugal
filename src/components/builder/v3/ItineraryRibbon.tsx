@@ -92,7 +92,7 @@ export function ItineraryRibbon({
                 >
                   {phrase}
                 </p>
-                <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/45 font-semibold">
+                <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--text-subtle)] font-semibold">
                   {fmtMinutes(s.duration_minutes)}
                 </p>
               </div>

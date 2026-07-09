@@ -189,7 +189,7 @@ function Page() {
           </SectionTitle>
           <div className="mt-10 grid md:grid-cols-2 gap-5">
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
-              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+              <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Signature Experiences
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -197,7 +197,7 @@ function Page() {
               </p>
             </div>
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
-              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+              <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Experience Studio
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -206,7 +206,7 @@ function Page() {
               </p>
             </div>
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
-              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+              <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Travel Designer
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -215,7 +215,7 @@ function Page() {
               </p>
             </div>
             <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
-              <h3 className="font-display text-lg font-semibold text-[color:var(--charcoal)]">
+              <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Moments &amp; Corporate
               </h3>
               <p className="mt-2 text-[color:var(--charcoal-soft)] leading-relaxed">

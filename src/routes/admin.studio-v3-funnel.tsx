@@ -372,7 +372,7 @@ function StudioV3FunnelPage() {
 function KpiCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-[color:var(--charcoal)]/10 bg-white p-4">
-      <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/55">
+      <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p

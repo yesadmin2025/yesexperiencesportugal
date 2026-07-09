@@ -90,7 +90,7 @@ export function PredictiveMoment({ loading, onDone, ready }: Props) {
               {PHRASES[phraseIdx]}
             </span>
           </p>
-          <p className="mt-6 text-[12px] text-[color:var(--charcoal)]/45 tracking-wide">
+          <p className="mt-6 text-[12px] text-[color:var(--text-subtle)] tracking-wide">
             You can adjust everything in a moment.
           </p>
         </div>
