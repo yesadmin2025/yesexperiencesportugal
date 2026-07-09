@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-08T22:02:29.132Z",
-  "filesScanned": 553,
+  "generatedAt": "2026-07-09T16:30:27.556Z",
+  "filesScanned": 558,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -684,19 +684,19 @@
     {
       "file": "src/components/Navbar.tsx",
       "line": 69,
-      "col": 293,
+      "col": 364,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "\"inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-300 rounded-sm focus-visible:outline-none focus",
+      "snippet": "\"link-hairline tap inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] ease-[cubi",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
       "line": 72,
-      "col": 317,
+      "col": 321,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "\"lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-vi",
+      "snippet": "\"tap lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focu",
       "status": "approved"
     },
     {
@@ -711,28 +711,28 @@
     {
       "file": "src/components/Navbar.tsx",
       "line": 177,
-      "col": 319,
+      "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
+      "snippet": "className=\"tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px]",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
       "line": 190,
-      "col": 319,
+      "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
+      "snippet": "className=\"tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px]",
       "status": "approved"
     },
     {
       "file": "src/components/Navbar.tsx",
       "line": 206,
-      "col": 321,
+      "col": 353,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outlin",
+      "snippet": "className=\"tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px]",
       "status": "approved"
     },
     {
@@ -1052,7 +1052,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 89,
+      "line": 94,
       "col": 80,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -1061,7 +1061,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 152,
+      "line": 157,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1070,7 +1070,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 172,
+      "line": 177,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1079,7 +1079,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 202,
+      "line": 207,
       "col": 265,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1088,7 +1088,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 215,
+      "line": 220,
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1097,7 +1097,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 452,
+      "line": 457,
       "col": 13,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1106,7 +1106,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 453,
+      "line": 458,
       "col": 25,
       "raw": "#B8985A",
       "normalized": "#b8985a",
