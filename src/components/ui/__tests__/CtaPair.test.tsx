@@ -6,19 +6,19 @@ describe("CtaPair separator", () => {
   it("inserts an aria-hidden separator between adjacent CTA children", () => {
     const html = renderToStaticMarkup(
       <CtaPair>
-        <a href="#a">Reserve this day</a>
-        <a href="#b">Tailor this Signature</a>
+        <a href="#a">Check availability & reserve</a>
+        <a href="#b">Tailor this day</a>
       </CtaPair>,
     );
 
     // Both labels present
-    expect(html).toContain("Reserve this day");
-    expect(html).toContain("Tailor this Signature");
+    expect(html).toContain("Check availability &amp; reserve");
+    expect(html).toContain("Tailor this day");
 
     // Separator span injected between them so text scrapers don't
-    // flatten to "Reserve this dayTailor this Signature".
-    const idxA = html.indexOf("Reserve this day");
-    const idxB = html.indexOf("Tailor this Signature");
+    // flatten to "Check availability & reserveTailor this day".
+    const idxA = html.indexOf("Check availability &amp; reserve");
+    const idxB = html.indexOf("Tailor this day");
     const between = html.slice(idxA, idxB);
     expect(between).toMatch(/aria-hidden/);
     expect(between).toMatch(/·|,/);

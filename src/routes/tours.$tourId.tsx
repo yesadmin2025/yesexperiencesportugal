@@ -307,14 +307,14 @@ function TourHero({
               href="#book"
               className="flex-1 inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
-              <Sparkles size={14} /> Reserve this day
+              <Sparkles size={14} /> Check availability & reserve
             </a>
             <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
               className="flex-1 inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
-              Tailor this Signature
+              Tailor this day
             </Link>
           </CtaPair>
         </div>
@@ -908,10 +908,10 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             variant="primary"
             iconLeading={<Sparkles size={14} aria-hidden="true" />}
           >
-            Reserve this day
+            Check availability & reserve
           </CtaButton>
           <CtaButton to="/tours/$tourId/tailor" params={{ tourId: tour.id }} variant="ghostDark">
-            Tailor this Signature
+            Tailor this day
           </CtaButton>
         </CtaPair>
 

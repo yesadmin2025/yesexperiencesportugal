@@ -255,7 +255,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           </>
         ) : (
           <>
-            <Sparkles size={15} /> Reserve this day
+            <Sparkles size={15} /> Reserve securely
           </>
         )}
       </button>
@@ -275,7 +275,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           params={{ tourId: tour.id }}
           className="mt-1 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--gold)]"
         >
-          Tailor this Signature
+          Tailor this day
         </Link>
       </div>
 

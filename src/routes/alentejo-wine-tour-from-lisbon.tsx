@@ -240,7 +240,7 @@ function AlentejoWineLanding() {
                   params={{ tourId: PARENT_TOUR_ID }}
                   variant="ghost"
                 >
-                  Tailor this Signature
+                  Tailor this day
                 </CtaButton>
               </div>
             </aside>

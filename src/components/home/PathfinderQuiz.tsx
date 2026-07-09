@@ -490,13 +490,13 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       pills: ["Wine", "Coast", "Private", "From €138"],
       ctas: [
         {
-          label: "Reserve this day",
+          label: "Check availability & reserve",
           to: "/tours/$tourId",
           params: { tourId: "arrabida-wine-allinclusive" },
           variant: "primary",
         },
         {
-          label: "Tailor this Signature",
+          label: "Tailor this day",
           to: "/tours/$tourId/tailor",
           params: { tourId: "arrabida-wine-allinclusive" },
           variant: "outline",
