@@ -4,7 +4,7 @@
  * "Your day is ready." — the closing moment of the flow.
  * Two booking paths:
  *   PRIMARY  · "Ready to say yes?"  → Stripe checkout (demo modal until enabled)
- *   SECONDARY · "Refine with a local designer first" → WhatsApp (wa.me/351911889992)
+ *   SECONDARY · "Refine with a local designer first" → WhatsApp (whatsappUrl helper)
  *
  * Shows a clean, brand-correct summary of the day the user just built:
  * stops + timing, party size, pickup, duration window, inclusions and the

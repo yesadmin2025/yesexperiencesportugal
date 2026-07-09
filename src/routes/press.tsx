@@ -4,6 +4,7 @@ import { breadcrumbLd, jsonLdScript, personFounderLd } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { EMAIL, LICENSE_LABEL, PHONE_DISPLAY } from "@/config/business-nap";
 
 const TITLE = "Press & Brand Kit — YES Experiences Portugal";
 const DESCRIPTION =
@@ -14,15 +15,15 @@ const OG_IMAGE = "https://yesexperiencesportugal.com/brand/yes-brand-board.png";
 // Canonical NAP — keep in lockstep with src/lib/jsonld.ts
 const NAP = {
   name: "YES Experiences Portugal",
-  legal: "Licensed Portuguese tour operator — RNAAT nº 31/2023",
+  legal: `Licensed Portuguese tour operator — ${LICENSE_LABEL}`,
   founder: "Nídia Almeida (Founder & Lead Travel Designer)",
   founderRole: "Founder & Lead Travel Designer",
   founded: "2022",
   locality: "Sesimbra, Setúbal, Portugal",
   serviceArea:
     "Nationwide across Portugal — with deep local networks in Lisbon, Sintra, Arrábida, Sesimbra, Alentejo, Costa Vicentina, Comporta, Évora, Douro, Porto, Azores and Madeira",
-  phone: "+351 911 889 992",
-  email: "info@yesexperiencesportugal.com",
+  phone: PHONE_DISPLAY,
+  email: EMAIL,
   partnerships: "partnerships@yesexperiencesportugal.com",
   press: "press@yesexperiencesportugal.com",
   website: "https://yesexperiencesportugal.com",
