@@ -321,7 +321,7 @@ function AdminBuilderImagesPage() {
               {running ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
               Scrape & save
             </button>
-            <span className="text-[12px] text-[color:var(--charcoal)]/55">
+            <span className="text-[12px] text-[color:var(--text-muted)]">
               Each page yields up to 8 photos · duplicates skipped automatically.
             </span>
           </div>
@@ -332,7 +332,7 @@ function AdminBuilderImagesPage() {
           <div className="flex items-baseline justify-between">
             <h2 className="serif text-[1.3rem] font-semibold">
               Image library{" "}
-              <span className="text-[13px] text-[color:var(--charcoal)]/55">({images.length})</span>
+              <span className="text-[13px] text-[color:var(--text-muted)]">({images.length})</span>
             </h2>
             <button
               type="button"
@@ -344,7 +344,7 @@ function AdminBuilderImagesPage() {
             </button>
           </div>
           {images.length === 0 ? (
-            <div className="mt-6 rounded-[2px] border border-dashed border-[color:var(--charcoal)]/15 p-10 text-center text-[13px] text-[color:var(--charcoal)]/55">
+            <div className="mt-6 rounded-[2px] border border-dashed border-[color:var(--charcoal)]/15 p-10 text-center text-[13px] text-[color:var(--text-muted)]">
               <ImageOff size={22} className="mx-auto mb-2 opacity-50" />
               No images yet. Paste a Viator URL above to populate the library.
             </div>

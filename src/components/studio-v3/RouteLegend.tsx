@@ -88,7 +88,7 @@ export function RouteLegend({
               </span>
               <span className="truncate">
                 <span className="text-[color:var(--charcoal)]/70">{from}</span>
-                <span className="mx-1.5 text-[color:var(--charcoal)]/40">→</span>
+                <span className="mx-1.5 text-[color:var(--text-icon)]">→</span>
                 <span>{to}</span>
               </span>
               <span className="text-[11px] tabular-nums text-[color:var(--charcoal)]/70 whitespace-nowrap">
@@ -100,7 +100,7 @@ export function RouteLegend({
         })}
       </ol>
 
-      <p className="mt-3 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal)]/55">
+      <p className="mt-3 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
         {drivingCount > 0 && `${drivingCount} driving`}
         {drivingCount > 0 && walkingCount > 0 && " · "}
         {walkingCount > 0 && `${walkingCount} walking`}

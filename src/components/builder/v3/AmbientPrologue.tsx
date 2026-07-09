@@ -81,7 +81,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
               e.stopPropagation();
               onExit();
             }}
-            className="inline-flex items-center gap-1.5 min-h-[44px] px-1 text-[10.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
+            className="inline-flex items-center gap-1.5 min-h-[44px] px-1 text-[10.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
             aria-label={t.back}
           >
             <ArrowLeft size={12} />
@@ -142,7 +142,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
             e.stopPropagation();
             awaken(true);
           }}
-          className={`inline-flex items-center min-h-[36px] px-2 text-[10px] tracking-[0.32em] uppercase font-medium text-[color:var(--ivory)]/55 hover:text-[color:var(--gold)] transition-[opacity,color] duration-[1100ms] ease-out ${
+          className={`inline-flex items-center min-h-[36px] px-2 text-[10px] tracking-[0.32em] uppercase font-medium text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--gold)] transition-[opacity,color] duration-[1100ms] ease-out ${
             showContinue ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
           aria-hidden={!showContinue}
@@ -158,7 +158,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
         <a
           href="/builder?mode=pro"
           onClick={(e) => e.stopPropagation()}
-          className={`inline-flex items-center min-h-[32px] px-2 text-[9.5px] tracking-[0.32em] uppercase font-medium text-[color:var(--ivory)]/40 hover:text-[color:var(--gold)] transition-[opacity,color] duration-[1100ms] ease-out ${
+          className={`inline-flex items-center min-h-[32px] px-2 text-[9.5px] tracking-[0.32em] uppercase font-medium text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--gold)] transition-[opacity,color] duration-[1100ms] ease-out ${
             showContinue ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
           aria-hidden={!showContinue}

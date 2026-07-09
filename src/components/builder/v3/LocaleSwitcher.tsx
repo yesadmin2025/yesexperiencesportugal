@@ -30,8 +30,8 @@ export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = f
         aria-expanded={false}
         className={`group inline-flex items-center justify-center min-w-[36px] min-h-[36px] rounded-full transition-opacity ${
           isLight
-            ? "text-[color:var(--ivory)]/45 hover:text-[color:var(--ivory)]/85"
-            : "text-[color:var(--ivory)]/40 hover:text-[color:var(--ivory)]/80"
+            ? "text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/85"
+            : "text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/80"
         }`}
       >
         <Globe size={14} aria-hidden="true" />

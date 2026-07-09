@@ -131,7 +131,7 @@ export function NarrativeIntro({ onApply, applied, onReset }: NarrativeIntroProp
         rows={2}
         maxLength={500}
         placeholder="Romantic weekend, wine and sea, no rush…"
-        className="w-full rounded-xl border border-[color:var(--charcoal)]/15 bg-white px-3 py-2.5 text-[15px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none focus:ring-1 focus:ring-[color:var(--gold)]/40"
+        className="w-full rounded-xl border border-[color:var(--charcoal)]/15 bg-white px-3 py-2.5 text-[15px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--text-icon)] focus:border-[color:var(--gold)] focus:outline-none focus:ring-1 focus:ring-[color:var(--gold)]/40"
         disabled={loading}
       />
       <div className="flex items-center justify-between gap-3 mt-3">

@@ -235,7 +235,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
         <button
           type="button"
           onClick={onBack}
-          className="self-start inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/50 hover:text-[color:var(--ivory)]/85 transition-colors"
+          className="self-start inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/85 transition-colors"
           style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
         >
           <ArrowLeft size={11} />

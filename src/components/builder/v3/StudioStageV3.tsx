@@ -663,7 +663,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             <button
               type="button"
               onClick={onExit}
-              className="self-start inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
+              className="self-start inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
               aria-label={t.back}
             >
               <ArrowLeft size={11} />

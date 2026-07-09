@@ -30,7 +30,7 @@ export function BuilderMobileStepSummary({ step, furthestCompleted = 0, onJump }
       role="region"
     >
       <div className="min-w-0">
-        <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/55 tabular-nums">
+        <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)] tabular-nums">
           Step {current} / {total}
         </p>
         <p className="text-[13px] font-semibold text-[color:var(--charcoal)] truncate">

@@ -50,7 +50,7 @@ export function BuilderProgressMeter({ step, selectedCount, hint }: Props) {
 
   return (
     <div className="mt-5">
-      <div className="flex items-center justify-between text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/55">
+      <div className="flex items-center justify-between text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)]">
         <span className="inline-flex items-center gap-1.5">
           Builder progress
           {complete && (

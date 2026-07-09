@@ -69,7 +69,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
   return (
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
       <div className="text-center">
-        <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/55">
+        <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
           Real guest reviews
         </div>
         <h2
@@ -116,7 +116,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
             >
               <div className="flex items-center justify-between gap-3">
                 <Stars rating={r.rating} />
-                <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55">
+                <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
                   {r.is_first_party ? "Verified guest" : `via ${SOURCE_LABEL[r.source]}`}
                 </span>
               </div>

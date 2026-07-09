@@ -316,7 +316,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
                 }}
               >
                 <span
-                  className="italic text-[15px] sm:text-[16px] leading-[1.2] text-[color:var(--ivory)]/55 pt-[3px] tabular-nums"
+                  className="italic text-[15px] sm:text-[16px] leading-[1.2] text-[color:var(--text-on-dark-muted)] pt-[3px] tabular-nums"
                   style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                   aria-hidden="true"
                 >
@@ -355,7 +355,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
                 <Loader2 size={14} className="animate-spin" />A abrir
               </span>
             ) : busy ? (
-              <span className="inline-flex items-center gap-2 text-[color:var(--charcoal)]/55">
+              <span className="inline-flex items-center gap-2 text-[color:var(--text-muted)]">
                 <Loader2 size={14} className="animate-spin" />A guardar
               </span>
             ) : (
@@ -370,7 +370,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
             <button
               type="button"
               onClick={onClose}
-              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/55 hover:text-[color:var(--ivory)] transition-colors"
+              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
               style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
             >
               Ver o trajeto
@@ -378,7 +378,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
             <button
               type="button"
               onClick={() => setShareOpen((o) => !o)}
-              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--ivory)]/40 hover:text-[color:var(--ivory)]/80 transition-colors"
+              className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/80 transition-colors"
               style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
               aria-expanded={shareOpen}
             >
@@ -390,7 +390,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
           {shareOpen && (
             <div className="w-full pt-2 flex items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-1 duration-500">
               {busy ? (
-                <span className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-[color:var(--ivory)]/55">
+                <span className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-[color:var(--text-on-dark-muted)]">
                   <Loader2 size={12} className="animate-spin" />A guardar
                 </span>
               ) : error ? (

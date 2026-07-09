@@ -78,7 +78,7 @@ export function LandingTourCredibility({
                     <Star key={j} size={13} fill="currentColor" strokeWidth={0} />
                   ))}
                 </span>
-                <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/55">
+                <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
                   via {r.source ?? "Viator"}
                 </span>
               </div>

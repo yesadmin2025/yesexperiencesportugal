@@ -152,7 +152,7 @@ export function LiveMapPreview() {
           </span>
           Routing
         </span>
-        <span className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/55">
+        <span className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--text-on-dark-muted)]">
           Portugal · Live
         </span>
       </div>
@@ -186,7 +186,7 @@ export function LiveMapPreview() {
             A road that opens to the sea.
           </p>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/55">
+        <span className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--text-on-dark-muted)]">
           4 stops · 1 day
         </span>
       </div>

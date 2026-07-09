@@ -80,7 +80,7 @@ function ReviewSubmissionPage() {
 
   return (
     <div className="max-w-xl mx-auto py-14 md:py-20 px-5 md:px-6 text-[color:var(--charcoal)]">
-      <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/55">
+      <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
         Share your experience
       </div>
       <h1 className="mt-2 text-3xl md:text-4xl font-medium leading-tight">
@@ -183,7 +183,7 @@ function ReviewSubmissionPage() {
         >
           {submitting ? "Submitting…" : "Submit review"}
         </button>
-        <p className="text-[11px] text-[color:var(--charcoal)]/55 text-center">
+        <p className="text-[11px] text-[color:var(--text-muted)] text-center">
           By submitting you confirm this is your honest experience. We publish reviews as written.
         </p>
       </form>

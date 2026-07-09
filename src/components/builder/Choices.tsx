@@ -38,7 +38,7 @@ export function StepHead({ num, eyebrow, title, onBack, totalChapters, italicSub
         {chapterMark && (
           <span
             aria-hidden="true"
-            className="ml-auto inline-flex items-center text-[10px] uppercase tracking-[0.3em] font-semibold tabular-nums text-[color:var(--charcoal)]/45"
+            className="ml-auto inline-flex items-center text-[10px] uppercase tracking-[0.3em] font-semibold tabular-nums text-[color:var(--text-subtle)]"
           >
             <span className="mr-2 h-px w-6 bg-[color:var(--charcoal)]/15" />
             {chapterMark}
@@ -134,7 +134,7 @@ export function ChoiceTile({ selected, onClick, label, sub, Icon }: ChoiceTilePr
     >
       <Icon
         size={18}
-        className={selected ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/55"}
+        className={selected ? "text-[color:var(--gold)]" : "text-[color:var(--text-muted)]"}
         strokeWidth={1.6}
       />
       <span className="serif text-[1.05rem] leading-[1.15] font-semibold text-[color:var(--charcoal)]">

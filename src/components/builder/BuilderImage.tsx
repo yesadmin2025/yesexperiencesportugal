@@ -97,7 +97,7 @@ export function BuilderImage({
       )}
 
       {!showImage && (
-        <span className="absolute inset-0 flex items-center justify-center text-[color:var(--charcoal)]/40">
+        <span className="absolute inset-0 flex items-center justify-center text-[color:var(--text-icon)]">
           <ImageOff size={18} strokeWidth={1.5} />
         </span>
       )}

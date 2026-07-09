@@ -46,7 +46,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
   const activeChip =
     "bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] border-[color:var(--gold)]";
   const titleColor = isLight ? "text-[color:var(--ivory)]" : "text-[color:var(--charcoal)]";
-  const hintColor = isLight ? "text-[color:var(--ivory)]/60" : "text-[color:var(--charcoal)]/55";
+  const hintColor = isLight ? "text-[color:var(--ivory)]/60" : "text-[color:var(--text-muted)]";
   const stepColor = isLight ? "text-[color:var(--gold)]" : "text-[color:var(--teal)]";
 
   // Compute first incomplete phase from props (so reload resumes correctly).

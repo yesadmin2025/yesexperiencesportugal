@@ -549,7 +549,7 @@ export function MultiDayBuilder({
               <button
                 type="button"
                 onClick={onReset}
-                className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55 hover:text-[color:var(--teal)] rounded-sm px-1 py-0.5 transition-colors"
+                className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)] hover:text-[color:var(--teal)] rounded-sm px-1 py-0.5 transition-colors"
               >
                 <X size={12} aria-hidden="true" />
                 Start over
@@ -602,7 +602,7 @@ export function MultiDayBuilder({
                     type="button"
                     onClick={() => setRotatedUrl(null)}
                     aria-label="Dismiss"
-                    className="inline-flex min-h-[36px] items-center justify-center rounded-[2px] px-2 text-[color:var(--charcoal)]/55 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--sand)]/60"
+                    className="inline-flex min-h-[36px] items-center justify-center rounded-[2px] px-2 text-[color:var(--text-muted)] hover:text-[color:var(--charcoal)] hover:bg-[color:var(--sand)]/60"
                   >
                     <X size={13} />
                   </button>
@@ -633,7 +633,7 @@ export function MultiDayBuilder({
               }}
               placeholder="Tell us the feeling — e.g. romantic slow weekend, wine + sea"
               maxLength={500}
-              className="flex-1 min-w-0 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3 py-2 text-[13px] text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal)]/40 focus:border-[color:var(--gold)] focus:outline-none"
+              className="flex-1 min-w-0 rounded-[2px] border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3 py-2 text-[13px] text-[color:var(--charcoal)] placeholder:text-[color:var(--text-icon)] focus:border-[color:var(--gold)] focus:outline-none"
             />
             <button
               type="button"
@@ -771,7 +771,7 @@ export function MultiDayBuilder({
                     type="button"
                     onClick={() => activeDay && onRemoveDay(activeDay.id)}
                     aria-label="Remove this day"
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-red-700 hover:bg-red-50"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-red-700 hover:bg-red-50"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -807,7 +807,7 @@ export function MultiDayBuilder({
                     {narrativeLoading && (
                       <Loader2
                         size={11}
-                        className="animate-spin text-[color:var(--charcoal)]/40 shrink-0"
+                        className="animate-spin text-[color:var(--text-icon)] shrink-0"
                         aria-label="Rewriting"
                       />
                     )}
@@ -829,7 +829,7 @@ export function MultiDayBuilder({
                     </div>
                   )}
                   {tripSummary && (
-                    <p className="mt-3 border-t border-[color:var(--charcoal)]/10 pt-2.5 text-[10.5px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.18em] font-semibold text-[color:var(--charcoal)]/55 leading-[1.5] [text-wrap:balance]">
+                    <p className="mt-3 border-t border-[color:var(--charcoal)]/10 pt-2.5 text-[10.5px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.18em] font-semibold text-[color:var(--text-muted)] leading-[1.5] [text-wrap:balance]">
                       {tripSummary}
                     </p>
                   )}
@@ -915,7 +915,7 @@ export function MultiDayBuilder({
                             onClick={() => onMoveStop(i, -1)}
                             disabled={i === 0}
                             aria-label="Move earlier"
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25"
                           >
                             ↑
                           </button>
@@ -924,7 +924,7 @@ export function MultiDayBuilder({
                             onClick={() => onMoveStop(i, 1)}
                             disabled={i === (activeRoute?.stops.length ?? 0) - 1}
                             aria-label="Move later"
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/5 disabled:opacity-25"
                           >
                             ↓
                           </button>
@@ -932,7 +932,7 @@ export function MultiDayBuilder({
                             type="button"
                             onClick={() => onRemoveStop(s.key)}
                             aria-label={`Remove ${s.label}`}
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--charcoal)]/45 hover:text-red-700 hover:bg-red-50"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[color:var(--text-subtle)] hover:text-red-700 hover:bg-red-50"
                           >
                             <X size={13} />
                           </button>
@@ -1012,7 +1012,7 @@ export function MultiDayBuilder({
         {state.days.length > 0 && (
           <div className="mt-6 grid grid-cols-3 gap-3 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-4">
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">
+              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
                 Days
               </p>
               <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
@@ -1020,7 +1020,7 @@ export function MultiDayBuilder({
               </p>
             </div>
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">
+              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
                 Total time
               </p>
               <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
@@ -1028,7 +1028,7 @@ export function MultiDayBuilder({
               </p>
             </div>
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]/55">
+              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
                 Per person
               </p>
               <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">

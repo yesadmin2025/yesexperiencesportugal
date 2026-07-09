@@ -223,7 +223,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
             itinerary.
           </p>
         </div>
-        <span className="shrink-0 text-[11px] text-[color:var(--charcoal)]/55 tabular-nums">
+        <span className="shrink-0 text-[11px] text-[color:var(--text-muted)] tabular-nums">
           {rows.length}/{MAX_FILES}
         </span>
       </div>
@@ -252,7 +252,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               />
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-2 text-center">
-                <FileText size={20} strokeWidth={1.5} className="text-[color:var(--charcoal)]/55" />
+                <FileText size={20} strokeWidth={1.5} className="text-[color:var(--text-muted)]" />
                 <span className="text-[10px] leading-tight text-[color:var(--charcoal)]/65 line-clamp-2">
                   {r.file_name}
                 </span>
@@ -308,7 +308,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
             )}
             {tone ? "Re-read mood" : "Read my mood"}
           </button>
-          <span className="text-[11px] text-[color:var(--charcoal)]/55">
+          <span className="text-[11px] text-[color:var(--text-muted)]">
             <ImageIcon size={11} className="inline -mt-0.5 mr-1" />
             JPG · PNG · WEBP · HEIC · PDF · 10 MB max
           </span>
@@ -337,7 +337,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               “{tone.toneSummary}”
             </p>
           )}
-          <p className="mt-2 text-[10.5px] text-[color:var(--charcoal)]/55">
+          <p className="mt-2 text-[10.5px] text-[color:var(--text-muted)]">
             Used to fine-tune narration only — never to add stops or images.
           </p>
         </div>

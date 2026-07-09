@@ -1562,7 +1562,7 @@ function TextPhase({
         />
         {chapter.help && (
           <p
-            className="mt-3 text-[10.5px] uppercase text-[color:var(--ivory)]/55 text-center"
+            className="mt-3 text-[10.5px] uppercase text-[color:var(--text-on-dark-muted)] text-center"
             style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
           >
             {chapter.help(locale)}
