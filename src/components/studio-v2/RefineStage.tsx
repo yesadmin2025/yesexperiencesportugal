@@ -160,7 +160,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
         <p
           className="text-[11px] italic"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
@@ -194,7 +194,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
                 <p
                   className="text-[15px] leading-tight"
                   style={{
-                    fontFamily: "var(--font-display, Montserrat), sans-serif",
+                    fontFamily: "var(--font-display), sans-serif",
                     fontWeight: 600,
                     color: "var(--charcoal)",
                   }}
@@ -294,7 +294,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
         <p
           className="mt-3 text-center text-[11.5px] italic"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
@@ -306,7 +306,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
         <p
           className="mt-3 text-center text-[12px] italic"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
           }}
         >

@@ -559,7 +559,7 @@ function OpeningScene({
           style={{
             opacity: stage >= 2 ? 1 : 0,
             transform: stage >= 2 ? "translateY(0)" : "translateY(14px)",
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             fontWeight: 400,
             color: "var(--ivory)",
@@ -624,7 +624,7 @@ function OpeningScene({
             <p
               className="mt-3 text-[18px] leading-[1.3] sm:text-[20px]"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-serif)",
                 fontStyle: "italic",
                 color: "var(--ivory)",
               }}
@@ -748,7 +748,7 @@ function MoodSceneView({
           key={`${scene.id}-${dominant.id}-whisper`}
           className="studio-v2-reveal text-[26px] leading-[1.18] sm:text-[34px]"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--ivory)",
             maxWidth: "16ch",
@@ -833,7 +833,7 @@ function MoodSceneView({
               <span
                 className="text-[11px] leading-[1.25]"
                 style={{
-                  fontFamily: "Georgia, serif",
+                  fontFamily: "var(--font-serif)",
                   fontStyle: "italic",
                   color: "var(--ivory)",
                   textShadow: "0 1px 6px rgba(0,0,0,0.5)",
@@ -902,14 +902,14 @@ function LogisticsCard({
         <h2
           className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
           style={{
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: 700,
             letterSpacing: "-0.012em",
             color: "var(--charcoal)",
           }}
         >
           A few{" "}
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
             practical details
           </span>
           .
@@ -921,7 +921,7 @@ function LogisticsCard({
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             maxWidth: "32ch",
             fontStyle: "italic",
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
           }}
         >
           So we can route the day around you — pickup, party size, and when.
@@ -966,7 +966,7 @@ function LogisticsCard({
             <span
               className="tabular-nums leading-none"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-serif)",
                 fontStyle: "italic",
                 fontWeight: 400,
                 fontSize: 64,
@@ -1094,7 +1094,7 @@ function LogisticsCard({
         <p
           className="mt-6 text-[11px] italic"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
@@ -1170,14 +1170,14 @@ function TastesPicker({
         <h2
           className="studio-v2-reveal delay-1 mt-6 text-[30px] leading-[1.08] sm:text-[40px]"
           style={{
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: 700,
             letterSpacing: "-0.012em",
             color: "var(--charcoal)",
           }}
         >
           What you{" "}
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
             actually love
           </span>
           .
@@ -1189,7 +1189,7 @@ function TastesPicker({
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             maxWidth: "34ch",
             fontStyle: "italic",
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
           }}
         >
           Pick up to six. Each one shapes the stops we choose — and what we leave aside.
@@ -1255,7 +1255,7 @@ function TastesPicker({
         <p
           className="mt-6 text-[11px] italic"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
@@ -1372,7 +1372,7 @@ function ConvictionMoment({
                 style={{
                   opacity: shown ? 1 : 0,
                   transform: shown ? "translateY(0)" : "translateY(10px)",
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-serif)",
                   fontStyle: "italic",
                   fontWeight: 400,
                   color: "var(--ivory)",
@@ -1498,13 +1498,13 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
       <h1
         className="studio-v2-reveal delay-1 relative mt-5 text-[36px] leading-[1.05] sm:text-[54px]"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: 700,
           letterSpacing: "-0.01em",
         }}
       >
         Begin your Portugal{" "}
-        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+        <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
           story
         </span>
         .
@@ -1522,7 +1522,7 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
       <p
         className="studio-v2-reveal delay-4 relative mt-6 text-[11px] italic"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif)",
           color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
         }}
       >
@@ -1569,7 +1569,7 @@ function NameBeat({
           style={{
             borderColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
             color: "var(--charcoal)",
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: 600,
           }}
         />
@@ -1609,7 +1609,7 @@ function StoryBeat({ line, onSkip }: { line: string; onSkip: () => void }) {
         <p
           className="studio-v2-reveal delay-1 mt-5 text-[26px] leading-[1.2] sm:text-[34px]"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--charcoal)",
           }}
@@ -1648,7 +1648,7 @@ function InsightBeat({ line, onSkip }: { line: string; onSkip: () => void }) {
         </div>
         <p
           className="studio-v2-reveal delay-1 mt-5 text-[20px] leading-[1.35] sm:text-[24px]"
-          style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 500 }}
+          style={{ fontFamily: "var(--font-display), sans-serif", fontWeight: 500 }}
         >
           {line}
         </p>
@@ -1699,7 +1699,7 @@ function RewardImageBeat({ intent, onSkip }: { intent: IntentAtmosphere; onSkip:
           <p
             className="mt-2 text-[20px] leading-[1.3] sm:text-[26px]"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "var(--font-serif)",
               fontStyle: "italic",
               color: "var(--ivory)",
             }}
@@ -1812,7 +1812,7 @@ function ThinkingBeat({ topIntent }: { topIntent: IntentAtmosphere }) {
           key={idx}
           className="studio-v2-reveal mt-6 text-[22px] leading-[1.3] sm:text-[28px]"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--ivory)",
             textShadow: "0 2px 16px rgba(0,0,0,0.5)",
@@ -2209,7 +2209,7 @@ function RevealStory({
       <h2
         className="mt-3 text-[24px] leading-[1.15] sm:text-[28px]"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: 700,
           letterSpacing: "-0.01em",
           color: "var(--charcoal)",
@@ -2252,7 +2252,7 @@ function RevealStory({
         <p
           className="mt-2 text-[17px] leading-[1.3]"
           style={{
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: 600,
             color: "var(--charcoal)",
           }}
@@ -2262,7 +2262,7 @@ function RevealStory({
         <p
           className="mt-1 text-[12.5px] italic"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
           }}
         >
@@ -2430,7 +2430,7 @@ function BespokeSecureCTA({
       <p
         className="text-center text-[12.5px] italic"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif)",
           color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
         }}
       >
@@ -2666,7 +2666,7 @@ function RevealActions({
       <p
         className="mt-2 text-center text-[12px] italic"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif)",
           color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
         }}
       >
@@ -2802,7 +2802,7 @@ function Headline({ children }: { children: React.ReactNode }) {
   return (
     <h1
       className="mt-3 text-[26px] leading-[1.15] sm:text-[34px]"
-      style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 600 }}
+      style={{ fontFamily: "var(--font-display), sans-serif", fontWeight: 600 }}
     >
       {children}
     </h1>
@@ -2849,7 +2849,7 @@ function OptionCard({
       <span
         className="text-[16px] leading-snug transition-colors duration-300"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: active ? 700 : 600,
           color: "var(--charcoal)",
         }}
@@ -2918,7 +2918,7 @@ function PhotoOptionCard({
         <span
           className="block text-[15px] leading-tight"
           style={{
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: active ? 700 : 600,
             color: "var(--ivory)",
             letterSpacing: "-0.005em",
@@ -3023,7 +3023,7 @@ function StageFooter({
         <span
           className="text-[12.5px] italic"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
           }}
         >
@@ -3288,7 +3288,7 @@ function Reveal({ result }: { result: DesignResult }) {
       <p
         className="mt-4 text-[14.5px] leading-relaxed"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif)",
           fontStyle: "italic",
           color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
         }}
@@ -3316,7 +3316,7 @@ function Reveal({ result }: { result: DesignResult }) {
               <p
                 className="text-[15px]"
                 style={{
-                  fontFamily: "var(--font-display, Montserrat), sans-serif",
+                  fontFamily: "var(--font-display), sans-serif",
                   fontWeight: 600,
                 }}
               >
@@ -3447,7 +3447,7 @@ function Reveal({ result }: { result: DesignResult }) {
                     <p
                       className="text-[14px]"
                       style={{
-                        fontFamily: "var(--font-display, Montserrat), sans-serif",
+                        fontFamily: "var(--font-display), sans-serif",
                         fontWeight: 600,
                       }}
                     >
@@ -3456,7 +3456,7 @@ function Reveal({ result }: { result: DesignResult }) {
                     <p
                       className="mt-1 text-[12.5px] italic"
                       style={{
-                        fontFamily: "Georgia, 'Times New Roman', serif",
+                        fontFamily: "var(--font-serif)",
                         color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
                       }}
                     >
@@ -3536,7 +3536,7 @@ function ScoreRow({ label, value, primary }: { label: string; value: number; pri
       <span
         className="text-[14px] tabular-nums"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: primary ? 700 : 500,
           color: primary
             ? "color-mix(in oklab, var(--gold) 80%, var(--charcoal))"

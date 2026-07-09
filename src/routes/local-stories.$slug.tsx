@@ -346,7 +346,8 @@ function StaticArticleView({
 
         <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
           <div className="container-x max-w-2xl">
-            <div className="prose-yes">
+            <div className="prose-yes prose-longform mx-auto">
+
               {article.sections.map((s, i) => (
                 <div key={i} className="mb-12">
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.6rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
@@ -538,7 +539,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
                 {post.excerpt}
               </p>
             )}
-            <div className="prose-yes">
+            <div className="prose-yes prose-longform mx-auto">
               {paragraphs.map((p, i) => (
                 <p
                   key={i}

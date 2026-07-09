@@ -115,7 +115,7 @@ function AdminDriftBiblePage() {
     <SiteLayout>
       <div className="max-w-5xl mx-auto px-5 py-10 space-y-12">
         <header>
-          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "Montserrat" }}>
+          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
             Drift Bible
           </h1>
           <p className="text-sm text-muted-foreground">

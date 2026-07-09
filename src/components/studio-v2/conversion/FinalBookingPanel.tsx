@@ -151,13 +151,13 @@ export function FinalBookingPanel({
       <h2
         className="text-[30px] leading-[1.05] sm:text-[40px]"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: 700,
           letterSpacing: "-0.01em",
           color: "var(--charcoal)",
         }}
       >
-        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+        <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
           Your day
         </span>{" "}
         is ready.
@@ -198,7 +198,7 @@ export function FinalBookingPanel({
               <span
                 className="shrink-0 text-[11px] tabular-nums"
                 style={{
-                  fontFamily: "var(--font-display, Montserrat), sans-serif",
+                  fontFamily: "var(--font-display), sans-serif",
                   fontWeight: 600,
                   color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
                   minWidth: 18,
@@ -274,7 +274,7 @@ export function FinalBookingPanel({
           <p
             className="text-[34px] leading-none tabular-nums sm:text-[40px]"
             style={{
-              fontFamily: "var(--font-display, Montserrat), sans-serif",
+              fontFamily: "var(--font-display), sans-serif",
               fontWeight: 700,
               color: "var(--charcoal)",
               letterSpacing: "-0.02em",
@@ -343,7 +343,7 @@ export function FinalBookingPanel({
       <p
         className="mt-5 text-center text-[12.5px] italic"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif)",
           color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
           lineHeight: 1.5,
         }}
@@ -379,7 +379,7 @@ function FactCell({ label, value }: { label: string; value: string }) {
       <dd
         className="mt-1.5 text-[14px] leading-[1.25]"
         style={{
-          fontFamily: "var(--font-display, Montserrat), sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: 600,
           color: "var(--charcoal)",
         }}
@@ -434,12 +434,12 @@ function DemoCheckoutModal({
         <h3
           className="mt-3 text-[22px] leading-[1.15]"
           style={{
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: 700,
             color: "var(--charcoal)",
           }}
         >
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
             Almost there —
           </span>{" "}
           secure payments arrive shortly.

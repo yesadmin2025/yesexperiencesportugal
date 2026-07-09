@@ -53,18 +53,18 @@ async function waitForFontsAndHero(page: Page) {
   const fontStatus = await page.evaluate(() => {
     type FontFaceSetLike = { check?: (font: string) => boolean };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
-    if (!fonts?.check) return { montserrat: true, inter: true, georgia: true };
+    if (!fonts?.check) return { fraunces: true, inter: true, frauncesItalic: true };
     return {
-      montserrat: fonts.check('400 16px "Montserrat"'),
+      fraunces: fonts.check(`400 16px "Fraunces"`),
       inter: fonts.check('400 16px "Inter"'),
-      georgia: fonts.check("italic 400 16px Georgia"),
+      frauncesItalic: fonts.check(`italic 400 16px "Fraunces"`),
     };
   });
-  expect(fontStatus.montserrat, "Montserrat 400 not loaded").toBe(true);
+  expect(fontStatus.fraunces, "Fraunces 400 not loaded").toBe(true);
   expect(fontStatus.inter, "Inter 400 not loaded").toBe(true);
   // Georgia ships with the OS — `check()` should always be true; we
   // don't fail the run if a headless image lacks it, only log.
-  if (!fontStatus.georgia)
+  if (!fontStatus.frauncesItalic)
     console.warn(
       "[hero-typography-fontload] Georgia not reported by document.fonts — italic line will use serif fallback",
     );
@@ -126,7 +126,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     expect(eyebrow.letterSpacingEm, "eyebrow tracking").toBeGreaterThan(0.1);
 
     // ── Headline line 1 — Montserrat, 400, NOT italic, ivory ──────────
-    expect(line1.primaryFamily, "headline L1 font-family").toBe("montserrat");
+    expect(line1.primaryFamily, "headline L1 font-family").toBe("fraunces");
     expect(line1.fontWeight, "headline L1 weight").toBe("400");
     expect(line1.fontStyle, "headline L1 style").toBe("normal");
     // line-height ratio between 1.0 and 1.12 — premium editorial leading
@@ -148,7 +148,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     }
 
     // ── Headline line 2 — Georgia, italic, weight 400, gold-soft ──────
-    expect(line2.primaryFamily, "headline L2 font-family").toBe("georgia");
+    expect(line2.primaryFamily, "headline L2 font-family").toBe("fraunces");
     expect(line2.fontStyle, "headline L2 must be italic").toBe("italic");
     expect(line2.fontWeight, "headline L2 weight").toBe("400");
     // Inherits scale from h1 — assert it matches line 1 within 1px.
