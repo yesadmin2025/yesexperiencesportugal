@@ -191,6 +191,14 @@ export function FinalDetailsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg p-0 gap-0 bg-[color:var(--ivory)] border border-[color:var(--border)] max-h-[92vh] overflow-hidden flex flex-col">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleSubmit();
+          }}
+          className="flex flex-col flex-1 overflow-hidden"
+          noValidate
+        >
         <DialogHeader className="px-5 sm:px-7 pt-6 pb-3 border-b border-[color:var(--border)]">
           <Eyebrow>Almost there</Eyebrow>
           <DialogTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2">
