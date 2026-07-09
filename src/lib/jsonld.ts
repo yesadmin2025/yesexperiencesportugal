@@ -10,6 +10,8 @@
  * `<script type="application/ld+json">` per node.
  */
 
+import { PHONE_TEL } from "@/config/business-nap";
+
 export const SITE_URL = "https://yesexperiencesportugal.com";
 
 /**

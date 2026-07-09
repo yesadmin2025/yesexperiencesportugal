@@ -28,7 +28,7 @@ const mobileSecondaryLinks = [
 ];
 
 const mobileSocialLinks = [
-  { href: "https://wa.me/351911889992", label: "WhatsApp" },
+  { href: whatsappUrl(), label: "WhatsApp" },
   { href: "https://www.instagram.com/yesexperiencesportugal", label: "Instagram" },
   {
     href: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
