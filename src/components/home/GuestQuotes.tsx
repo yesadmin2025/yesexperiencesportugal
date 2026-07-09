@@ -18,7 +18,7 @@ import {
   type GlobalStats,
   type PublicReview,
 } from "@/lib/reviews.functions";
-import { PlatformBadge } from "@/components/PlatformBadge";
+import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 
 export function GuestQuotes() {
