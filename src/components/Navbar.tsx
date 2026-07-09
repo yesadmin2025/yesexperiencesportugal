@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 import { CtaButton } from "@/components/ui/CtaButton";
+import { whatsappUrl } from "@/config/business-nap";
 
 const desktopLinks = [
   { to: "/experiences", label: "Experiences", hidden: false },
