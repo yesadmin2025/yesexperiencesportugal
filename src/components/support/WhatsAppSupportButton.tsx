@@ -43,7 +43,7 @@ export function WhatsAppSupportButton() {
   const hiddenByPath = HIDE_PATTERNS.some((re) => re.test(pathname));
   if (hiddenByPath || hiddenByForm) return null;
 
-  const href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_DEFAULT_MESSAGE)}`;
+  const href = whatsappUrl(WA_DEFAULT_MESSAGE);
 
   return (
     <a
