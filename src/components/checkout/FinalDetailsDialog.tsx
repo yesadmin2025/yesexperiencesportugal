@@ -478,19 +478,24 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
+    <label className="block">
+      <span className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
         <span>
           {label}
-          {required && <span className="text-[color:var(--gold)] ml-1">*</span>}
+          {required && (
+            <span className="text-[color:var(--gold)] ml-1" aria-hidden>
+              *
+            </span>
+          )}
+          {required && <span className="sr-only"> (required)</span>}
         </span>
         {hint && (
           <span className="normal-case tracking-normal text-[10px] text-[color:var(--charcoal-soft)]/70">
             {hint}
           </span>
         )}
-      </label>
+      </span>
       {children}
-    </div>
+    </label>
   );
 }
