@@ -3707,7 +3707,7 @@ html.motion-ready [data-motion].motion-in {
      and can be tuned globally. Body copy must NEVER use this — Georgia
      italic on the homepage is reserved for H2 emphasis and bridges. */
   .bridge-whisper {
-    font-family: var(--font-serif, Georgia), Georgia, serif;
+    font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
     font-size: 13px;
