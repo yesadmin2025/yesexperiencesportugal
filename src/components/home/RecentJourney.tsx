@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CtaPair } from "@/components/ui/CtaPair";
 
 // Pages from the same real, anonymised private travel file used on
 // the /multi-day Travel Designer page — kept in sync so the homepage
