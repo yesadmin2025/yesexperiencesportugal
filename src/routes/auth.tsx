@@ -7,15 +7,6 @@ import { toast } from "sonner";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export const Route = createFileRoute("/auth")({
-  // `next` = same-origin relative path to return to after sign-in. Used by the
-  // OAuth consent route (`/.lovable/oauth/consent`) so external MCP clients
-  // can complete authorisation without the admin-only gate below getting in
-  // the way. Only accepted when it is a same-origin relative path.
-  validateSearch: (s: Record<string, unknown>) => ({
-    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//")
-      ? s.next
-      : undefined,
-  }),
   head: () => ({
     meta: [
       { title: "Admin — YES experiences Portugal" },
@@ -53,7 +44,6 @@ async function routeByRole(userId: string, navigate: ReturnType<typeof useNaviga
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { next } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,26 +51,14 @@ function AuthPage() {
   const [googleBusy, setGoogleBusy] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // When `next` is present (OAuth consent flow), any signed-in user is
-  // allowed through — do NOT run the admin gate. Otherwise this is the
-  // /admin login page and only admins may proceed.
-  const afterSignIn = async (userId: string) => {
-    if (next) {
-      window.location.href = next;
-      return;
-    }
-    await routeByRole(userId, navigate);
-  };
-
-  // Already signed in? Route by whichever flow applies.
+  // Already signed in? Verify role and redirect.
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.user) {
-        void afterSignIn(data.session.user.id);
+        routeByRole(data.session.user.id, navigate);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, next]);
+  }, [navigate]);
 
   const translate = (msg: string) => {
     const m = msg.toLowerCase();
@@ -99,15 +77,12 @@ function AuthPage() {
       if (mode === "signin") {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        if (data.user) await afterSignIn(data.user.id);
+        if (data.user) await routeByRole(data.user.id, navigate);
       } else {
-        const emailRedirectTo = next
-          ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
-          : `${window.location.origin}/auth`;
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo },
+          options: { emailRedirectTo: `${window.location.origin}/auth` },
         });
         if (error) throw error;
         toast.success("Conta criada — confirma o email para continuar.");
@@ -209,11 +184,8 @@ function AuthPage() {
                 setGoogleBusy(true);
                 setErrorMsg(null);
                 try {
-                  const redirectUri = next
-                    ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
-                    : `${window.location.origin}/auth`;
                   const result = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: redirectUri,
+                    redirect_uri: window.location.origin + "/auth",
                   });
                   if (result.error) {
                     const raw = result.error.message ?? "";
@@ -233,7 +205,7 @@ function AuthPage() {
                   if (result.redirected) return;
                   const { data, error } = await supabase.auth.getUser();
                   if (error) throw new Error("Sessão inválida após Google. Tenta novamente.");
-                  if (data.user) await afterSignIn(data.user.id);
+                  if (data.user) await routeByRole(data.user.id, navigate);
                 } catch (err) {
                   const msg = err instanceof Error ? err.message : "Falha no Google sign-in.";
                   setErrorMsg(msg);
