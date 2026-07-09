@@ -8,6 +8,7 @@ import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { TourImage } from "@/components/tours/TourImage";
 
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
