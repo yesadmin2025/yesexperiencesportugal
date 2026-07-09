@@ -510,8 +510,8 @@ function PressPage() {
               imagery.
             </li>
             <li>
-              Primary palette: teal <code>#295B61</code>, gold <code>#C9A96A</code>, charcoal{" "}
-              <code>#2E2E2E</code>, ivory <code>#FAF8F3</code>. Full palette on the brand board.
+              Primary palette: teal <code>var(--teal)</code>, gold <code>var(--gold)</code>, charcoal{" "}
+              <code>var(--charcoal)</code>, ivory <code>var(--ivory)</code>. Full palette on the brand board.
             </li>
           </ul>
         </section>
