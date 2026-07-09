@@ -69,7 +69,7 @@ function ImageSide({
         alt={image.alt ?? ""}
         aria-hidden={image.alt ? undefined : "true"}
         loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.04]"
       />
       <div
         aria-hidden="true"
