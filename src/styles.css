@@ -44,10 +44,17 @@
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
 
-  --font-display: "Montserrat", system-ui, sans-serif;
-  --font-serif: Georgia, "Cormorant Garamond", "Newsreader", serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-script: "Kaushan Script", cursive;
+  /* Two-family type system.
+     --font-editorial (Fraunces) drives every heading + italic emphasis span.
+     --font-display and --font-serif are legacy aliases kept so existing
+     `font-[family-name:var(--font-display)]` / `var(--font-serif)` callsites
+     resolve to Fraunces without touching every component. Do NOT reintroduce
+     a third family (Montserrat, Georgia, Cormorant, Newsreader, Kaushan). */
+  --font-editorial: "Fraunces", serif;
+  --font-display: var(--font-editorial);
+  --font-serif: var(--font-editorial);
+  --font-sans: "Inter", sans-serif;
+  --font-script: var(--font-editorial);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
   --shadow-card: 0 20px 40px -24px rgba(46, 46, 46, 0.18);
