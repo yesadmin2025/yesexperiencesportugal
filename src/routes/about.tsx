@@ -14,9 +14,10 @@ import {
   whatsappUrl,
 } from "@/config/business-nap";
 
-const TITLE = "About YES Experiences Portugal | Founder-Built Travel";
+const TITLE = "About YES Experiences Portugal | Founder-Led Private Travel";
 const DESCRIPTION =
-  "YES Experiences Portugal is a licensed private travel platform, founder-built from guest behaviour, live-designed experiences and local expertise across Portugal.";
+  "Founder-led private tour operator based in Sesimbra since 2022. Meet the local team behind YES — licensed RNAAT nº 31/2023, designing private journeys across Portugal.";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({

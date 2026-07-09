@@ -10,9 +10,10 @@ import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 
-const TITLE = "Team Building Portugal — Private Corporate Days & Retreats";
+const TITLE = "Corporate & Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
-  "Team building in Portugal and private corporate retreats — wine days, sailing, cultural off-sites. Transport, guides and venues coordinated end to end by a local team.";
+  "Private corporate days, team retreats and group experiences across Portugal — designed and hosted by a licensed local operator. Transport, guides and venues coordinated end to end.";
+
 
 export const Route = createFileRoute("/corporate")({
   head: () => ({

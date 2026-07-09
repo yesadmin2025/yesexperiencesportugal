@@ -19,9 +19,10 @@ const PAGE_PATH = "/arrabida-wine-tour";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const PARENT_TOUR_ID = "arrabida-wine-allinclusive";
 const PARENT_URL = `${SITE_URL}/tours/${PARENT_TOUR_ID}`;
-const TITLE = "Arrábida Wine Tour from Lisbon — Three Family Cellars";
+const TITLE = "Arrábida Wine Tour from Lisbon | Private Azeitão Day";
 const DESCRIPTION =
-  "Private Arrábida wine tour from Lisbon. Three family wineries in Azeitão, the Setúbal market, a long Portuguese lunch and a panoramic Atlantic close. Designed by a licensed local team.";
+  "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, instant confirmation.";
+
 
 const productLd = {
   "@context": "https://schema.org",
