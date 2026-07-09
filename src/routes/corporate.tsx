@@ -5,6 +5,7 @@ import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { FounderByline } from "@/components/ui/FounderByline";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
@@ -186,6 +187,11 @@ function CorporatePage() {
             Real driving times, real venues, real partners. We shape the proposal around what your
             team actually needs — never a copy-paste template.
           </p>
+          <FounderByline
+            className="mt-8"
+            quote="Every corporate day is scoped around your team's goals — never a copy-paste template."
+          />
+
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Request a Proposal
