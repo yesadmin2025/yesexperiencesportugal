@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CtaPair } from "@/components/ui/CtaPair";
 import { EditorialCard } from "@/components/ui/EditorialCard";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { whatsappUrl } from "@/config/business-nap";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
@@ -955,14 +957,20 @@ function HomePage() {
                     Every journey begins with a conversation. Tell us what matters to you and we’ll
                     shape the rest.
                   </p>
-                  <div className="mt-9 flex flex-col sm:flex-row gap-y-4 gap-x-4 justify-center items-stretch sm:items-center">
+                  <CtaPair className="mt-9" justify="center">
                     <CtaButton to="/studio-v3" variant="primary">
                       Open the Studio
                     </CtaButton>
-                    <CtaButton to="/contact" variant="hairline">
-                      Write to a Local
+                    <CtaButton
+                      href={whatsappUrl("Hello YES — I'd like to plan a Portugal day.")}
+                      variant="hairline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      iconLeading={<MessageCircle size={14} aria-hidden="true" />}
+                    >
+                      Talk on WhatsApp
                     </CtaButton>
-                  </div>
+                  </CtaPair>
                   <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
                     A local usually replies within the hour.
                   </p>
