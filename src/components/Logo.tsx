@@ -1,5 +1,5 @@
-import logoTealAsset from "@/assets/yes-logo-teal.svg";
-import logoGoldAsset from "@/assets/yes-logo-gold.svg";
+import logoTealAsset from "@/assets/yes-logo-approved.webp";
+import logoGoldAsset from "@/assets/yes-logo-approved-gold-silk.webp";
 import { assertBrandLogoTheme, type BrandLogoTheme } from "@/lib/brand-tokens";
 
 const SOURCES: Record<BrandLogoTheme, string> = {
@@ -13,11 +13,17 @@ export type LogoTheme = BrandLogoTheme;
 /**
  * Logo — shared brand wordmark.
  *
- * One consistent asset format (SVG) used in both header and footer, with
- * two color variants required by the locked palette (teal-on-ivory for
- * light surfaces, gold-on-charcoal for dark). The SVGs are already
- * colored with the exact locked hex values, so no CSS filter recipes
- * are applied. Sizing is controlled by the parent via `className`.
+ * Theme drives both the artwork and the matching .logo-mark--* utility
+ * class, so consumers can never accidentally pair (e.g.) the teal artwork
+ * with the gold-on-charcoal filter recipe. Sizing is controlled by the
+ * parent via `className`.
+ *
+ * The `theme` prop is validated at runtime by `assertBrandLogoTheme`:
+ * TypeScript catches bad literals at build time, but anything coming
+ * from a database/URL/CMS at runtime would otherwise silently render a
+ * blank `<img>`. The guard throws in dev (so the offending component
+ * surfaces in the React error overlay) and falls back to the default
+ * theme in production while logging a console.error.
  */
 export function Logo({
   theme,
@@ -32,10 +38,16 @@ export function Logo({
   loading?: "eager" | "lazy";
   fetchPriority?: "high" | "low" | "auto";
 }) {
+  // `theme` is typed but defended at runtime — `theme as unknown` lets
+  // the guard see runtime values that escaped the type system (e.g. a
+  // `theme={someString}` where `someString` is `string`, not the
+  // narrower union).
   const safeTheme: BrandLogoTheme = assertBrandLogoTheme(theme ?? "teal-on-ivory", "Logo");
   return (
     <img
       src={SOURCES[safeTheme]}
+      width={909}
+      height={579}
       alt={alt}
       className={`logo-mark logo-mark--${safeTheme} ${className}`}
       draggable={false}
