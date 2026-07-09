@@ -278,15 +278,16 @@ export const Route = createFileRoute("/local-stories/$slug")({
   beforeLoad: ({ params }) => {
     // The day-trips guide now lives at its own SEO-focused route.
     if (params.slug === "best-day-trips-from-lisbon") {
-      throw redirect({ to: "/day-trips-from-lisbon" });
+      throw redirect({ to: "/day-trips-from-lisbon", statusCode: 301 });
     }
     // Redirect obvious placeholder slugs ($slug, %24slug, undefined,
-    // template stubs) to the clean index — never let them 404.
+    // template stubs) to the clean index with a permanent 301 so search
+    // engines drop any indexed placeholder URLs on next crawl.
     const raw = params.slug ?? "";
     const s = raw.trim().toLowerCase();
     const PLACEHOLDERS = new Set(["", "slug", "undefined", "null", "example"]);
     if (PLACEHOLDERS.has(s) || s.startsWith("$")) {
-      throw redirect({ to: "/local-stories" });
+      throw redirect({ to: "/local-stories", statusCode: 301 });
     }
     return undefined as never;
   },
