@@ -49,7 +49,7 @@ export function PhaseShell({
 
   return (
     <div
-      className={`relative min-h-[100dvh] w-full overflow-hidden transition-opacity duration-[480ms] ease-out motion-reduce:transition-none ${
+      className={`relative min-h-[100dvh] w-full overflow-hidden transition-opacity duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-reduce:transition-none ${
         entered && !exiting ? "opacity-100" : "opacity-0"
       }`}
       style={{ background: "var(--ivory)" }}
@@ -93,7 +93,7 @@ export function PhaseShell({
           data-testid="studio-v3-progress"
           className="hidden sm:block absolute left-1/2 top-4 -translate-x-1/2 w-[min(92vw,520px)] px-1 select-none"
           aria-label={`${Math.round(progress.percent)}% shaped`}
-          style={{ animation: "studioV3RiseIn 520ms ease-out both" }}
+          style={{ animation: "studioV3RiseIn 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both" }}
         >
           <div className="flex items-baseline justify-between gap-3">
             <p
