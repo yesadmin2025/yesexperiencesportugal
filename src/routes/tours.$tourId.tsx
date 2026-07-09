@@ -52,25 +52,29 @@ export const Route = createFileRoute("/tours/$tourId")({
       };
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
 
-    // Keep <title> under 60 chars for SERP truncation. Prefer the full brand
-    // suffix; fall back to a short one, then the raw tour title if needed.
+    // Keep <title> under 60 chars for SERP truncation. When the tour supplies
+    // an explicit `seoTitle` (Phase 2 SEO focus tours) use it verbatim.
+    // Otherwise auto-build: full brand suffix → short suffix → raw → truncated.
     const SUFFIX_FULL = " — YES experiences Portugal";
     const SUFFIX_SHORT = " | YES Portugal";
     const pageTitle =
-      t.title.length + SUFFIX_FULL.length <= 60
+      t.seoTitle ??
+      (t.title.length + SUFFIX_FULL.length <= 60
         ? `${t.title}${SUFFIX_FULL}`
         : t.title.length + SUFFIX_SHORT.length <= 60
           ? `${t.title}${SUFFIX_SHORT}`
           : t.title.length <= 60
             ? t.title
-            : `${t.title.slice(0, 57)}…`;
+            : `${t.title.slice(0, 57)}…`);
+    const pageDescription = t.seoDescription ?? t.blurb;
 
     return {
       meta: [
         { title: pageTitle },
-        { name: "description", content: t.blurb },
+        { name: "description", content: pageDescription },
         { property: "og:title", content: pageTitle },
-        { property: "og:description", content: t.blurb },
+        { property: "og:description", content: pageDescription },
+
         { property: "og:image", content: img },
         { property: "twitter:image", content: img },
         { property: "og:url", content: url },

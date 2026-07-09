@@ -169,6 +169,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "arrabida-wine-allinclusive",
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
+    seoTitle: "Arrábida Private Wine Tour from Lisbon | All-Inclusive",
+    seoDescription:
+      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, all-inclusive.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
@@ -176,6 +179,7 @@ export const signatureTours: SignatureTour[] = [
     theme: "Wine",
     blurb:
       "Two or three family wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
+
     intro:
       "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
     fitsBest: "Couples · friends · wine-curious travelers",
@@ -602,6 +606,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "azeitao-cheese",
     title: "Azeitão Cheese-Making & Wine Private Tour from Lisbon",
+    seoTitle: "Azeitão Cheese & Wine Tour from Lisbon | Private Day by YES",
+    seoDescription:
+      "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra. Private day from Lisbon, designed by a local team.",
     region: "Azeitão · Sesimbra",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -609,6 +616,7 @@ export const signatureTours: SignatureTour[] = [
     theme: "Gastronomy",
     blurb:
       "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra.",
+
     intro:
       "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
     fitsBest: "Foodies · couples · curious first-timers",
