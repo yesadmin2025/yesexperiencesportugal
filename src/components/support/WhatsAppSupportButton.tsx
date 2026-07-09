@@ -51,9 +51,11 @@ export function WhatsAppSupportButton() {
       rel="noopener noreferrer"
       aria-label="WhatsApp Support — chat with the YES team"
       title="WhatsApp Support"
+      data-analytics="whatsapp_click"
+      data-analytics-placement="fab"
       className="
         fixed z-40
-        bottom-[max(1rem,calc(env(safe-area-inset-bottom)+0.75rem))]
+        bottom-[calc(max(1rem,env(safe-area-inset-bottom)+0.75rem)+var(--fab-lift,0px))]
         right-4 md:right-6
         inline-flex items-center justify-center
         h-12 w-12 md:h-14 md:w-14
