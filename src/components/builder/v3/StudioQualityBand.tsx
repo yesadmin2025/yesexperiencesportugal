@@ -120,7 +120,7 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
         <p
           className="tabular-nums"
           style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontFamily: "var(--font-display)",
             fontWeight: 700,
             fontSize: "20px",
             color: "var(--teal)",

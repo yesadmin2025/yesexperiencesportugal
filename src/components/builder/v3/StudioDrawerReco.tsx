@@ -108,7 +108,7 @@ export function StudioDrawerReco({ profile, locale, confidence, excludeId }: Pro
           <p
             className="truncate"
             style={{
-              fontFamily: "'Montserrat', system-ui, sans-serif",
+              fontFamily: "var(--font-display)",
               fontWeight: 600,
               fontSize: "13px",
               color: "var(--charcoal)",

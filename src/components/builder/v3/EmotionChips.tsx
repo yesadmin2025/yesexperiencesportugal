@@ -183,7 +183,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
         </p>
         <h3
           className={`text-center text-[19px] sm:text-[21px] font-semibold leading-tight mb-1 ${titleColor}`}
-          style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {title}
         </h3>

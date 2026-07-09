@@ -1511,7 +1511,7 @@ function TextPhase({
         <label
           className="text-[color:var(--ivory)] text-center mb-8"
           style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontFamily: "var(--font-display)",
             fontSize: "25px",
             fontWeight: 700,
             lineHeight: 1.16,
@@ -1552,7 +1552,7 @@ function TextPhase({
           maxLength={chapter.inputType === "number" ? 3 : 32}
           className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0"
           style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontFamily: "var(--font-display)",
             fontSize: "21px",
             fontWeight: 600,
             letterSpacing: "0",
@@ -1791,7 +1791,7 @@ function ChoicePhase({
               <span
                 className="absolute inset-x-0 bottom-5 z-10 block px-5 text-center text-[color:var(--ivory)] transition-all duration-[1500ms]"
                 style={{
-                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontFamily: "var(--font-display)",
                   fontSize: "16px",
                   fontWeight: 700,
                   lineHeight: 1.18,
@@ -1920,7 +1920,7 @@ function ProgressiveBuildPreview({
               <p
                 className="truncate"
                 style={{
-                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontFamily: "var(--font-display)",
                   fontSize: "12.5px",
                   fontWeight: 700,
                   lineHeight: 1.2,
@@ -2195,7 +2195,7 @@ function ConvergencePhase({
           <h2
             className="mx-auto max-w-[15ch] text-center text-[color:var(--ivory)]"
             style={{
-              fontFamily: "'Montserrat', system-ui, sans-serif",
+              fontFamily: "var(--font-display)",
               fontSize: "30px",
               fontWeight: 700,
               lineHeight: 1.08,
@@ -2381,7 +2381,7 @@ function ConvergencePhase({
                   )}
                   <p
                     style={{
-                      fontFamily: "'Montserrat', system-ui, sans-serif",
+                      fontFamily: "var(--font-display)",
                       fontWeight: 600,
                       fontSize: "14.5px",
                       color: "var(--charcoal)",
@@ -2643,7 +2643,7 @@ function Whisper({
         style={{
           fontFamily: isOpening
             ? "var(--font-serif)"
-            : "'Montserrat', system-ui, sans-serif",
+            : "var(--font-display)",
           fontStyle: isOpening ? "italic" : "normal",
           fontSize: isChoice ? "27px" : isOpening ? "21px" : "25px",
           fontWeight: isOpening ? 400 : 700,

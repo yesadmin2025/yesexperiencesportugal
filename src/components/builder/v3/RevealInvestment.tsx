@@ -163,7 +163,7 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
           <span
             className="tabular-nums"
             style={{
-              fontFamily: "'Montserrat', system-ui, sans-serif",
+              fontFamily: "var(--font-display)",
               fontSize: "30px",
               fontWeight: 700,
               lineHeight: 1,

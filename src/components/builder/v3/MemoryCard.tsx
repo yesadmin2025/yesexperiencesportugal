@@ -269,14 +269,14 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
           <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/75" />
           <p
             className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--charcoal)]"
-            style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+            style={{ fontFamily: "var(--font-display)" }}
           >
             {regionLabel(regionKey)}
           </p>
           <h1
             className="text-[30px] sm:text-[42px] font-semibold leading-[1.04] tracking-[-0.014em] text-[color:var(--ivory)] max-w-[20ch] text-balance"
             style={{
-              fontFamily: "Montserrat, system-ui, sans-serif",
+              fontFamily: "var(--font-display)",
               textShadow: "0 2px 26px rgba(0,0,0,0.5)",
             }}
           >
@@ -348,7 +348,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
             onClick={handleReserve}
             disabled={busy || reserving || !shareUrl}
             className="w-full inline-flex items-center justify-center min-h-[54px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] disabled:bg-[color:var(--ivory)]/60 disabled:cursor-wait text-[color:var(--charcoal)] px-6 py-3 text-[12.5px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.35)]"
-            style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+            style={{ fontFamily: "var(--font-display)" }}
           >
             {reserving ? (
               <span className="inline-flex items-center gap-2">
@@ -371,7 +371,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
               type="button"
               onClick={onClose}
               className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
-              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
             >
               Ver o trajeto
             </button>
@@ -379,7 +379,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
               type="button"
               onClick={() => setShareOpen((o) => !o)}
               className="text-[11px] uppercase tracking-[0.26em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/80 transition-colors"
-              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
               aria-expanded={shareOpen}
             >
               Guardar para mais tarde

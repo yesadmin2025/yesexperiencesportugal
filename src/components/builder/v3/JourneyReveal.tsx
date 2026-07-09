@@ -60,7 +60,7 @@ export function JourneyReveal({ cue, title, subtitle, onDone }: Props) {
               <h2
                 className="text-[28px] sm:text-[38px] font-semibold leading-[1.05] tracking-[-0.012em] text-[color:var(--ivory)] max-w-[20ch]"
                 style={{
-                  fontFamily: "Montserrat, system-ui, sans-serif",
+                  fontFamily: "var(--font-display)",
                   textShadow: "0 1px 22px rgba(0,0,0,0.55)",
                 }}
               >
