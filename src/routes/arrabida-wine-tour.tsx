@@ -140,7 +140,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 The closest serious wine country to Lisbon.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Cross the 25 de Abril Bridge and forty minutes later the road climbs into the
                 Arrábida hills. Cork oaks on one side, the Atlantic glinting on the other. At the
                 centre is the village of Azeitão — home of Moscatel de Setúbal and small family
@@ -154,7 +154,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Three cellars, one long lunch, no rush.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We start at Setúbal's Livramento market — oysters, cheese, the first glass of
                 Moscatel — then move between three family wineries in Azeitão, with a long
                 traditional lunch in the middle. Optional close at Cristo Rei or Sesimbra Castle for
@@ -168,7 +168,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Private from the start. Real cellars. Designed live.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We are a licensed Portuguese team (RNAAT 31/2023), not a marketplace re-selling
                 someone else's bus. Every day is private from the start — your group, your pace,
                 your wineries. The cellars we use are ones we have personally worked with, where the

@@ -174,7 +174,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Three wine regions, all reachable in a day.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Lisbon sits between two serious wine countries. Forty minutes south across the 25 de
                 Abril bridge are the Arrábida hills and Azeitão — Moscatel de Setúbal country, small
                 whitewashed family wineries, the Atlantic just below. An hour and a half east lies
@@ -188,7 +188,7 @@ function Page() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Private. Local. Designed live, not booked off a shelf.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We are a licensed Portuguese team (RNAAT 31/2023), not a marketplace reselling
                 someone else's bus tour. Every day is private from the start: your group, your pace,
                 your wineries. We open the wineries we have personally worked with — the cellars

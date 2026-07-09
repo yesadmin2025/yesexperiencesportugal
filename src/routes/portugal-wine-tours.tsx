@@ -119,7 +119,7 @@ function Page() {
         <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Portugal is a wine country before it's a beach country. Our{" "}
                 <strong className="font-medium">private wine tours</strong> stay off the coach
                 circuit — small cellars, working winemakers, and the kind of lunch that turns a
@@ -132,7 +132,7 @@ function Page() {
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {p.title}
                   </h2>
-                  <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+                  <p className="editorial-body">
                     {p.body}
                   </p>
                   <div className="mt-7">

@@ -135,7 +135,7 @@ function AlentejoWineLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Portugal's most underrated wine region — and the slowest.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Alentejo is plains, cork oaks and family-run wineries that still make wine the way
                 their grandparents did. It is also where most of the world's cork is born. From
                 Lisbon it is a long day, not a short one — which is exactly why it stays quiet.
@@ -147,7 +147,7 @@ function AlentejoWineLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Cork, two wineries, Évora old town, long lunch.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 We open with a cork tradition stop, taste at two family wineries — one with
                 restaurant, one with cellars — and walk Évora's cobbled centre past the Roman Temple
                 and the Chapel of Bones. Lunch is unhurried, somewhere local, somewhere honest.
@@ -159,7 +159,7 @@ function AlentejoWineLanding() {
               <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                 Your driver-guide, your pace.
               </h2>
-              <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
+              <p className="editorial-body">
                 Hotel pickup in Lisbon, a comfortable car, and the freedom to linger an extra glass
                 at a cellar you like or skip a stop you don't. The route is built around you — not a
                 coach schedule.
