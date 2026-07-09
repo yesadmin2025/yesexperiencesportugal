@@ -171,7 +171,7 @@ export function LivingStoryStrip({
                 <span
                   className="ml-2 text-[11px] italic"
                   style={{
-                    fontFamily: "Georgia, serif",
+                    fontFamily: "var(--font-serif)",
                     fontWeight: 400,
                     color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                   }}

@@ -157,7 +157,7 @@ export function FinalBookingPanel({
           color: "var(--charcoal)",
         }}
       >
-        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+        <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
           Your day
         </span>{" "}
         is ready.
@@ -439,7 +439,7 @@ function DemoCheckoutModal({
             color: "var(--charcoal)",
           }}
         >
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
             Almost there —
           </span>{" "}
           secure payments arrive shortly.

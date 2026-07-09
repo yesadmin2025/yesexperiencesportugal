@@ -156,7 +156,7 @@ export function StudioBuilderChrome({
             <span
               className="tabular-nums"
               style={{
-                fontFamily: "Georgia, serif",
+                fontFamily: "var(--font-serif)",
                 fontStyle: "italic",
                 color: "var(--charcoal)",
                 fontSize: 18,
@@ -274,7 +274,7 @@ function EmailDraftModal({
               }}
             >
               Email me{" "}
-              <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+              <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
                 my draft
               </span>
             </h3>

@@ -2250,7 +2250,7 @@ function ConvergencePhase({
         <p
           className="mx-auto mb-4 max-w-[34ch] text-center italic"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             fontSize: "17px",
             lineHeight: 1.55,
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
@@ -2328,7 +2328,7 @@ function ConvergencePhase({
           <p
             className="text-center italic"
             style={{
-              fontFamily: "Georgia, serif",
+              fontFamily: "var(--font-serif)",
               fontSize: "14px",
               color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             }}
@@ -2369,7 +2369,7 @@ function ConvergencePhase({
                     <p
                       className="mb-1 italic"
                       style={{
-                        fontFamily: "Georgia, serif",
+                        fontFamily: "var(--font-serif)",
                         fontSize: "11px",
                         color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
                       }}
@@ -2423,7 +2423,7 @@ function ConvergencePhase({
                 key={w}
                 className="text-center italic"
                 style={{
-                  fontFamily: "Georgia, serif",
+                  fontFamily: "var(--font-serif)",
                   fontSize: "12px",
                   color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                 }}

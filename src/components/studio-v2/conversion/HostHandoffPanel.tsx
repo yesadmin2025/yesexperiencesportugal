@@ -180,7 +180,7 @@ export function HostHandoffPanel({
       <p
         className="max-w-[34ch] text-[13.5px] italic leading-relaxed"
         style={{
-          fontFamily: "Georgia, serif",
+          fontFamily: "var(--font-serif)",
           color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
         }}
       >

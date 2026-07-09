@@ -833,7 +833,7 @@ function MoodSceneView({
               <span
                 className="text-[11px] leading-[1.25]"
                 style={{
-                  fontFamily: "Georgia, serif",
+                  fontFamily: "var(--font-serif)",
                   fontStyle: "italic",
                   color: "var(--ivory)",
                   textShadow: "0 1px 6px rgba(0,0,0,0.5)",
@@ -909,7 +909,7 @@ function LogisticsCard({
           }}
         >
           A few{" "}
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
             practical details
           </span>
           .
@@ -921,7 +921,7 @@ function LogisticsCard({
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             maxWidth: "32ch",
             fontStyle: "italic",
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
           }}
         >
           So we can route the day around you — pickup, party size, and when.
@@ -1094,7 +1094,7 @@ function LogisticsCard({
         <p
           className="mt-6 text-[11px] italic"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
@@ -1177,7 +1177,7 @@ function TastesPicker({
           }}
         >
           What you{" "}
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
             actually love
           </span>
           .
@@ -1189,7 +1189,7 @@ function TastesPicker({
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             maxWidth: "34ch",
             fontStyle: "italic",
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
           }}
         >
           Pick up to six. Each one shapes the stops we choose — and what we leave aside.
@@ -1255,7 +1255,7 @@ function TastesPicker({
         <p
           className="mt-6 text-[11px] italic"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
           }}
         >
@@ -1504,7 +1504,7 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
         }}
       >
         Begin your Portugal{" "}
-        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+        <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
           story
         </span>
         .
@@ -1812,7 +1812,7 @@ function ThinkingBeat({ topIntent }: { topIntent: IntentAtmosphere }) {
           key={idx}
           className="studio-v2-reveal mt-6 text-[22px] leading-[1.3] sm:text-[28px]"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             color: "var(--ivory)",
             textShadow: "0 2px 16px rgba(0,0,0,0.5)",
