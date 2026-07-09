@@ -143,21 +143,18 @@ Automated + manual:
 
 ---
 
-## Order of implementation
+## Status (completed)
 
-1. §1 TrustStrip + CTA vocabulary lock (biggest conversion delta, lowest risk)
-2. §2 Review source links (a11y + trust, 1 file)
-3. §4 FAB overlap (blocks §1's mobile UX)
-4. §5 CTA/contrast tokens (systemic, small)
-5. §6 GA4/GTM plumbing (needs `GTM_CONTAINER_ID` secret from you)
-6. §3 Mobile cards behaviour
-7. §7 Perf pass
-8. §8 A11y sweep
-9. §9 Launch QA tests + checklist
+- [x] §1 TrustStrip + CTA vocabulary lock
+- [x] §2 Review source links (ReviewSourceLink primitive)
+- [x] §3 Mobile cards behaviour (snap-x on reviews + Signature grid)
+- [x] §4 FAB overlap (`--fab-lift` wired to MobileStickyCTA)
+- [x] §5 CTA/contrast polish (CtaButton primitive)
+- [x] §6 GA4 via GTM (`GTM-M82SQS79` in __root, `data-analytics` attrs, dataLayer mirror)
+- [x] §8 A11y sweep — booking + checkout forms (label association, keyboard submit, sr-only "required")
+- [x] §9 Launch QA — smoke `e2e/launch-trust-strip-smoke.spec.ts` + manual checklist `.lovable/launch-qa.md`
 
-## What I need from you before build mode
+## Remaining (deferred, low risk)
 
-1. **GTM Container ID** (format `GTM-XXXXXXX`) — I'll request via `add_secret`.
-2. **Confirm CTA vocabulary** above (Signature/Studio labels) — one-way change, hits ~15 files.
-3. **Free-cancellation window** for TrustStrip — is `48h` correct, or different per tour?
-4. **Review `sourceUrl` data** — does every review currently have one? If not, I'll gate the icon behind presence.
+- §7 Perf pass: hero poster preload, defer GTM after LCP, AVIF conversion. Not launch-blocking — current LCP already inside budget on the preview.
+
