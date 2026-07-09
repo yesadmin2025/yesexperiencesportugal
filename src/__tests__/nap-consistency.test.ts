@@ -56,6 +56,11 @@ const FORBIDDEN_TOKENS: { needle: RegExp; reason: string }[] = [
     needle: /\b(?:48\s?h|48\s?hours?|48-hour)\s+cancel/gi,
     reason: "Cancellation policy is 24h for Signature, never 48h.",
   },
+  {
+    needle: /\b48\s?(?:h|hours?|-hour)\b/gi,
+    reason:
+      "Cancellation window is 24h for Signature — no 48h references in prose. Drive copy from CANCELLATION_SIGNATURE/STUDIO in @/config/business-nap.",
+  },
 ];
 
 const NAP_LITERALS: { needle: RegExp; reason: string }[] = [

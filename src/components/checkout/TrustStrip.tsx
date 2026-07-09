@@ -2,11 +2,15 @@
  * TrustStrip — shared pre-payment trust row.
  *
  * Renders directly above any primary payment CTA (bespoke checkout,
- * Signature booking panel, tour page reserve). Four calm signals in
- * one line on desktop, wrapping to two lines on mobile:
+ * Signature booking panel, tour page reserve). Three calm signals plus
+ * a WhatsApp link:
  *
- *   Secure payment · Stripe   Free cancellation up to 48h
- *   Licensed operator RNAAT 31/2023   WhatsApp support
+ *   Secure payment · Stripe   Free cancellation — up to 24h before (Signature)
+ *   Licensed operator RNAAT nº 31/2023   WhatsApp support
+ *
+ * The cancellation copy is driven by `variant`, using the canonical
+ * strings from @/config/business-nap so no numeric window is ever
+ * hand-authored in this file.
  *
  * Design contract:
  *   - brand tokens only (--charcoal, --gold, --ivory)
@@ -21,25 +25,36 @@ import { Lock, ShieldCheck, RefreshCcw, MessageCircle } from "lucide-react";
 import { whatsappUrl, LICENSE_LABEL } from "@/config/business-nap";
 import { track } from "@/lib/analytics";
 
+type TrustVariant = "signature" | "studio" | "bespoke";
+
 interface Props {
   /** Where the strip is mounted — sent to analytics as `placement`. */
   placement: "bespoke_checkout" | "signature_final_panel" | "tour_page";
   /** Optional itinerary/tour slug for analytics context. */
   itemSlug?: string;
-  /** Cancellation window override in hours (defaults to 48). */
-  cancellationHours?: number;
+  /**
+   * Which product surface the strip sits on. Drives cancellation copy.
+   * Signature = 24h window; Studio/Bespoke = shown before checkout.
+   */
+  variant?: TrustVariant;
 }
 
 const WA_MESSAGE = "Hi YES Experiences — I have a quick question before I book.";
 
-export function TrustStrip({ placement, itemSlug, cancellationHours = 48 }: Props) {
+const CANCELLATION_COPY: Record<TrustVariant, string> = {
+  signature: "Free cancellation — up to 24h before",
+  studio: "Cancellation terms shown before checkout",
+  bespoke: "Cancellation terms shown before checkout",
+};
+
+export function TrustStrip({ placement, itemSlug, variant = "signature" }: Props) {
   useEffect(() => {
     track("checkout_view", { placement, item_slug: itemSlug });
   }, [placement, itemSlug]);
 
   const items = [
     { icon: Lock, label: "Secure payment · Stripe" },
-    { icon: RefreshCcw, label: `Free cancellation up to ${cancellationHours}h` },
+    { icon: RefreshCcw, label: CANCELLATION_COPY[variant] },
     { icon: ShieldCheck, label: `Licensed operator ${LICENSE_LABEL}` },
   ] as const;
 
