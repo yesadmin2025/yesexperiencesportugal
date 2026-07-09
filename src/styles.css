@@ -6277,3 +6277,19 @@ html {
     transform: none !important;
   }
 }
+
+/* Reveal stagger — auto per-child delay when parent is opted in.
+   Usage: <ul data-reveal-stagger> with children carrying .reveal-stagger.
+   Homepage .home-energy keeps its bespoke sequencing; this is the
+   calm fallback for the rest of the site (steps of 70ms, capped). */
+[data-reveal-stagger] > .reveal-stagger:nth-child(1) { animation-delay: 0ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(2) { animation-delay: 70ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(3) { animation-delay: 140ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(4) { animation-delay: 210ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(5) { animation-delay: 280ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(6) { animation-delay: 340ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(n+7) { animation-delay: 380ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-stagger] > .reveal-stagger { animation-delay: 0ms !important; }
+}
