@@ -31,6 +31,7 @@ import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import { TourImage } from "@/components/tours/TourImage";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
