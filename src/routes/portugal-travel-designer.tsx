@@ -116,9 +116,9 @@ function Page() {
                 A <strong className="font-medium">Travel Designer</strong> composes an entire
                 private journey through Portugal — route, stays, transfers, private experiences,
                 timing — as one connected file. It's different from booking a single day: the days
-                are designed to belong together. We're a licensed Portuguese operator (RNAAT) based
-                in Sesimbra, so the guides, cars and trusted partners along the route are ours to
-                coordinate.
+                are designed to belong together. We're a licensed Portuguese tour operator (RNAAT nº 31/2023)
+                based in Sesimbra, so the guides, cars and trusted partners along the route are ours
+                to coordinate.
               </p>
 
               {ITEMS.map((p, i) => (

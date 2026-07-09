@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import {
+  CANCELLATION_SHORT,
+  CANCELLATION_SIGNATURE,
+  CANCELLATION_STUDIO,
+} from "@/config/business-nap";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -9,13 +14,13 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Terms and conditions for booking private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
+          "Terms and conditions for booking private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023).",
       },
       { property: "og:title", content: "Terms & Conditions — YES Experiences Portugal" },
       {
         property: "og:description",
         content:
-          "Booking terms for private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT).",
+          "Booking terms for private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023).",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/terms" },
@@ -57,12 +62,8 @@ function TermsPage() {
               Cancellations
             </h2>
             <p>
-              Cancellation terms are shown before checkout and may vary by experience type.
-              Signature days usually include free cancellation up to 24 hours before the experience
-              start time; cancellations made inside that window are non-refundable. Studio and
-              custom-built experiences display their specific cancellation terms at checkout, as
-              these depend on the partners and reservations involved. We will always do our best to
-              reschedule when possible.
+              {CANCELLATION_SHORT} {CANCELLATION_SIGNATURE} {CANCELLATION_STUDIO} We will always do
+              our best to reschedule when possible.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Liability

@@ -47,3 +47,26 @@ export function footerLegalLine(year: number = new Date().getFullYear()): string
 
 /** Compact credential clause — footer tagline / metadata sentence. */
 export const CREDENTIAL_LINE = `Licensed tour operator ${LICENSE_LABEL} · ${BASED_IN_SHORT}` as const;
+
+/**
+ * Canonical trust one-liner. Use this exact string anywhere the site
+ * shows the operator's legal identity as a single sentence (footer
+ * micro-line, JSON-LD description tail, press meta, llms.txt).
+ * Never hand-compose the same idea elsewhere.
+ */
+export const TRUST_LINE =
+  `Licensed Portuguese tour operator · ${LICENSE_LABEL} · Based in ${BASED_IN}` as const;
+
+/**
+ * Cancellation policy — single source of truth.
+ * All three variants approved for public copy. Use SIGNATURE on Signature
+ * surfaces, STUDIO on Studio / custom-built surfaces, SHORT as a generic
+ * micro-line under totals when policy varies by product.
+ */
+export const CANCELLATION_SIGNATURE =
+  "Signature days usually include free cancellation up to 24h before the experience." as const;
+export const CANCELLATION_STUDIO =
+  "Studio and custom-built experiences show final cancellation terms before checkout." as const;
+export const CANCELLATION_SHORT =
+  "Cancellation terms are shown before checkout and may vary by experience type." as const;
+

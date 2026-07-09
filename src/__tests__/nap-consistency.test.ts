@@ -48,6 +48,14 @@ const FORBIDDEN_TOKENS: { needle: RegExp; reason: string }[] = [
     needle: /Lisbon-based team/gi,
     reason: "The team is based in Sesimbra, not Lisbon.",
   },
+  {
+    needle: /\bRNAAT\s+\d/g,
+    reason: "License must be formatted as 'RNAAT nº 31/2023' (with 'nº').",
+  },
+  {
+    needle: /\b(?:48\s?h|48\s?hours?|48-hour)\s+cancel/gi,
+    reason: "Cancellation policy is 24h for Signature, never 48h.",
+  },
 ];
 
 const NAP_LITERALS: { needle: RegExp; reason: string }[] = [
@@ -115,5 +123,10 @@ describe("NAP + license consistency", () => {
     expect(nap.WHATSAPP_NUMBER).toBe("351911889992");
     expect(nap.BASED_IN).toBe("Sesimbra, Portugal");
     expect(nap.whatsappUrl("hi")).toBe("https://wa.me/351911889992?text=hi");
+    expect(nap.TRUST_LINE).toBe(
+      "Licensed Portuguese tour operator · RNAAT nº 31/2023 · Based in Sesimbra, Portugal",
+    );
+    expect(nap.CANCELLATION_SIGNATURE).toMatch(/24h before the experience/);
+    expect(nap.CANCELLATION_STUDIO).toMatch(/before checkout/);
   });
 });

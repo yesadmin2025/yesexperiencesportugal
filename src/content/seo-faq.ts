@@ -4,6 +4,7 @@
  * review aggregation. Each set targets high-intent Lisbon day-tour
  * queries surfaced in Search Console.
  */
+import { CANCELLATION_SIGNATURE, CANCELLATION_STUDIO } from "@/config/business-nap";
 
 export type FaqItem = { q: string; a: string };
 
@@ -100,7 +101,7 @@ export const SIGNATURE_FAQ: FaqItem[] = [
   },
   {
     q: "What's your cancellation policy?",
-    a: "Signature day tours usually include free cancellation up to 24 hours before the experience start time for a full refund. Cancellations made within 24 hours are non-refundable. Studio and custom-built experiences show their specific cancellation terms before checkout.",
+    a: `${CANCELLATION_SIGNATURE} ${CANCELLATION_STUDIO}`,
   },
 ];
 

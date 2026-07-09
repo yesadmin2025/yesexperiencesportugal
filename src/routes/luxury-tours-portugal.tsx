@@ -113,7 +113,7 @@ function Page() {
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
               <p className="editorial-body">
-                We're a small, licensed Portuguese operator (RNAAT) designing{" "}
+                We're a small, licensed Portuguese tour operator (RNAAT nº 31/2023) designing{" "}
                 <strong className="font-medium">luxury private tours in Portugal</strong> for
                 travelers who want the country shown properly — not a bus route with a badge on it.
                 Every day is private, all-inclusive, and priced with real numbers.
