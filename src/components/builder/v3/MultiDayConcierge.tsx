@@ -266,7 +266,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             <p
               className="italic text-[15.5px] sm:text-[17px] leading-[1.55] text-[color:var(--ivory)]/82 max-w-[32ch] text-balance"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-serif)",
                 textShadow: "0 1px 18px rgba(0,0,0,0.5)",
               }}
             >
@@ -285,7 +285,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             {handoff && (
               <p
                 className="italic text-[15px] sm:text-[16.5px] leading-[1.55] text-[color:var(--ivory)]/88 max-w-[30ch] text-balance"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: "var(--font-serif)" }}
               >
                 {handoff}
               </p>
@@ -293,7 +293,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             {editorLine && (
               <p
                 className="italic text-[13.5px] sm:text-[14.5px] leading-[1.55] text-[color:var(--ivory)]/62 max-w-[32ch] text-balance"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: "var(--font-serif)" }}
               >
                 {editorLine}
               </p>
@@ -330,7 +330,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
                 <label className="flex flex-col gap-2">
                   <span
                     className="text-[12.5px] italic text-[color:var(--ivory)]/80 text-center"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    style={{ fontFamily: "var(--font-serif)" }}
                   >
                     {notePrompt(locale)}
                   </span>
@@ -341,7 +341,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
                     rows={3}
                     placeholder={notePlaceholder(locale)}
                     className="w-full bg-transparent text-[color:var(--ivory)] placeholder:text-[color:var(--ivory)]/35 italic text-[15.5px] leading-[1.6] py-2 px-0 resize-none border-0 border-b border-[color:var(--ivory)]/25 focus:border-[color:var(--gold)]/70 focus:outline-none focus:ring-0 transition-colors"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    style={{ fontFamily: "var(--font-serif)" }}
                   />
                 </label>
 

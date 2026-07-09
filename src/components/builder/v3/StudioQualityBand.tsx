@@ -133,7 +133,7 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
       <p
         className="mb-3 italic"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-serif)",
           fontSize: "12px",
           lineHeight: 1.35,
           color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",

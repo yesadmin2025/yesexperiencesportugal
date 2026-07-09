@@ -285,7 +285,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
           <p
             className="italic text-[16.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/88 max-w-[34ch] text-balance"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "var(--font-serif)",
               textShadow: "0 1px 18px rgba(0,0,0,0.5)",
             }}
           >
@@ -317,14 +317,14 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
               >
                 <span
                   className="italic text-[15px] sm:text-[16px] leading-[1.2] text-[color:var(--text-on-dark-muted)] pt-[3px] tabular-nums"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  style={{ fontFamily: "var(--font-serif)" }}
                   aria-hidden="true"
                 >
                   {time}
                 </span>
                 <p
                   className="italic text-[17.5px] sm:text-[20px] leading-[1.5] text-[color:var(--ivory)]/92 text-balance"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  style={{ fontFamily: "var(--font-serif)" }}
                 >
                   {sensoryLine(stop, stop.blurb, i)}
                 </p>

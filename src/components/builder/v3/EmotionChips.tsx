@@ -189,7 +189,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
         </h3>
         <p
           className={`text-center text-[12px] italic mb-3 ${hintColor}`}
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          style={{ fontFamily: "var(--font-serif)" }}
         >
           {hint}
         </p>

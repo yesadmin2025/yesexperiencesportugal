@@ -137,7 +137,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
         <p
           className="text-[13px] italic max-w-[42ch]"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-serif)",
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
           }}
         >

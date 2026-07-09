@@ -79,7 +79,7 @@ export function SensePairScene({ scene, index, onSignal }: Props) {
 
       <p
         className="mx-auto mt-10 max-w-[28ch] text-center text-[19px] leading-[1.3] sm:text-[22px]"
-        style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
+        style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
       >
         Which one is closer to true?
       </p>
@@ -118,7 +118,7 @@ export function SensePairScene({ scene, index, onSignal }: Props) {
               <div className="px-4 py-4 sm:py-5">
                 <p
                   className="text-[15px] leading-[1.3] sm:text-[16px]"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
+                  style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
                 >
                   {sense.verb}
                 </p>

@@ -147,7 +147,7 @@ export function HostHandoffPanel({
           style={{
             background: "color-mix(in oklab, var(--teal) 92%, transparent)",
             color: "var(--ivory)",
-            fontFamily: "var(--font-display, Montserrat), sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontWeight: 700,
           }}
           aria-hidden
@@ -158,7 +158,7 @@ export function HostHandoffPanel({
           <p
             className="text-[13.5px]"
             style={{
-              fontFamily: "var(--font-display, Montserrat), sans-serif",
+              fontFamily: "var(--font-display), sans-serif",
               fontWeight: 600,
               color: "var(--charcoal)",
             }}

@@ -194,7 +194,7 @@ export function EmbeddedConfirmationSheet({
             <h2
               className="text-[26px] leading-[1.18]"
               style={{
-                fontFamily: "var(--font-display, Montserrat), sans-serif",
+                fontFamily: "var(--font-display), sans-serif",
                 fontWeight: 700,
                 color: "var(--charcoal)",
               }}
@@ -240,7 +240,7 @@ export function EmbeddedConfirmationSheet({
             <h2
               className="mt-2 text-[24px] leading-[1.18]"
               style={{
-                fontFamily: "var(--font-display, Montserrat), sans-serif",
+                fontFamily: "var(--font-display), sans-serif",
                 fontWeight: 700,
                 color: "var(--charcoal)",
               }}

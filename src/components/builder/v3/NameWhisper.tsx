@@ -43,7 +43,7 @@ export function NameWhisper({
       <div className="relative z-10 w-full max-w-md px-6 text-center animate-in fade-in slide-in-from-bottom-1 duration-[1100ms]">
         <h2
           className="font-serif italic text-[24px] sm:text-[30px] leading-[1.2] text-[color:var(--ivory)]"
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          style={{ fontFamily: "var(--font-serif)" }}
         >
           {prompt}
         </h2>
@@ -60,7 +60,7 @@ export function NameWhisper({
             maxLength={40}
             aria-label={prompt}
             className="w-full bg-transparent border-0 border-b border-[color:var(--gold)]/40 focus:border-[color:var(--gold)] outline-none text-center text-[22px] italic text-[color:var(--ivory)] placeholder:text-[color:var(--ivory)]/30 py-3 transition-colors"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            style={{ fontFamily: "var(--font-serif)" }}
           />
 
           <button

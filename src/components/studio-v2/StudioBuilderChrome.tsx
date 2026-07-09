@@ -74,7 +74,7 @@ export function StudioBuilderChrome({
             style={{
               background: "var(--teal)",
               color: "var(--ivory)",
-              fontFamily: "var(--font-display, Montserrat), sans-serif",
+              fontFamily: "var(--font-display), sans-serif",
             }}
           >
             T
@@ -269,7 +269,7 @@ function EmailDraftModal({
             <h3
               className="mt-2 text-[22px] leading-tight"
               style={{
-                fontFamily: "var(--font-display, Montserrat), sans-serif",
+                fontFamily: "var(--font-display), sans-serif",
                 fontWeight: 700,
               }}
             >
