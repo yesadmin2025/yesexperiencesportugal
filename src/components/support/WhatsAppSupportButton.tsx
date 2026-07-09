@@ -15,6 +15,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
+import { whatsappUrl } from "@/config/business-nap";
 
 const WA_NUMBER = "351911889992";
 const WA_DEFAULT_MESSAGE = "Hi YES Experiences Portugal — I'd like a hand with my booking.";

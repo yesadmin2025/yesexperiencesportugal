@@ -1,11 +1,10 @@
 import { MessageCircle } from "lucide-react";
-
-const WA_NUMBER = "351911889992"; // +351 911 889 992
+import { whatsappUrl } from "@/config/business-nap";
 
 /** Build a wa.me deep link with a pre-filled message. */
 // eslint-disable-next-line react-refresh/only-export-components
 export function whatsappHref(message: string): string {
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  return whatsappUrl(message);
 }
 
 const DEFAULT_TEXT = "Olá! Estou a montar a minha experiência e gostaria de uma sugestão.";
