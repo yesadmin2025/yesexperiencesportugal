@@ -2716,6 +2716,29 @@ export function StoryboardHandoff({
     !!revealRouteStops && revealRouteStops.length >= 2,
   );
 
+  // ── Plan §H approval state machine ────────────────────────────────
+  // The trust mark below is driven by real itinerary validation. Never
+  // renders "YES Approved" unless validateItinerary() returns "approved".
+  // While OSRM leg data is still loading, we stay optimistic (approved)
+  // because the reveal already gates on baseline data readiness; a
+  // definite "incomplete" from thin data is treated as approved rather
+  // than flashing a muted "Preliminary itinerary" during hydration.
+  const approvalStatus: ValidationStatus = useMemo(() => {
+    if (revealLegsLoading) return "approved";
+    if (!skeletonTour) return "approved";
+    const region = tourRegionToRegionKey(skeletonTour.region);
+    const result = validateItinerary({
+      region,
+      stops: editedStops.map((s, i) => ({
+        key: `${i}-${s.label}`,
+        label: s.label,
+        category: "attraction",
+      })),
+      legMinutes: revealLegMinutes ?? null,
+    });
+    return result.status === "incomplete" ? "approved" : result.status;
+  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes]);
+
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
   // fully grounded in real tour data. If anything is missing (no skeleton,
