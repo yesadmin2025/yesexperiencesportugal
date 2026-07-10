@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-10T04:55:23.651Z",
-  "filesScanned": 569,
+  "generatedAt": "2026-07-10T14:23:06.427Z",
+  "filesScanned": 570,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -2663,7 +2663,7 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 59,
+      "line": 128,
       "col": 19,
       "raw": "#f5f5f5",
       "normalized": "#f5f5f5",
@@ -2672,7 +2672,7 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 60,
+      "line": 129,
       "col": 14,
       "raw": "#333",
       "normalized": "#333333",
@@ -2681,7 +2681,7 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 71,
+      "line": 140,
       "col": 19,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2690,7 +2690,7 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 72,
+      "line": 141,
       "col": 25,
       "raw": "#ddd",
       "normalized": "#dddddd",
@@ -2699,16 +2699,16 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 81,
-      "col": 14,
+      "line": 147,
+      "col": 52,
       "raw": "#444",
       "normalized": "#444444",
-      "snippet": "color: #444;",
+      "snippet": "h1 { font-size: 24px; font-weight: 600; color: #444; margin: 0 0 14px; line-height: 1.2; }",
       "status": "mismatch"
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 85,
+      "line": 148,
       "col": 51,
       "raw": "#555",
       "normalized": "#555555",
@@ -2717,7 +2717,7 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 86,
+      "line": 149,
       "col": 19,
       "raw": "#777",
       "normalized": "#777777",
@@ -2726,11 +2726,11 @@
     },
     {
       "file": "src/lib/legacy-domain-redirect.ts",
-      "line": 92,
-      "col": 14,
+      "line": 150,
+      "col": 110,
       "raw": "#999",
       "normalized": "#999999",
-      "snippet": "color: #999;",
+      "snippet": ".footnote { margin-top: 24px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #999; }",
       "status": "mismatch"
     },
     {
