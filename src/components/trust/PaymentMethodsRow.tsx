@@ -1,19 +1,26 @@
 /**
  * PaymentMethodsRow — accepted payment methods strip for the footer.
  *
- * Shows the real methods a guest can use at checkout:
- * cards (Visa, Mastercard, Amex), PayPal, MB Way, Apple Pay, Google Pay.
- * Inline SVG marks so there are no external requests and the row is
- * layout-stable across breakpoints.
+ * Single canonical block used site-wide via the shared Footer (which
+ * every route reaches through SiteLayout). Shows the real methods a
+ * guest can use at Stripe checkout: Visa, Mastercard, American Express,
+ * PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay, Google Pay.
+ *
+ * Palette (locked):
+ *   - Badge background: var(--ivory) (Warm Ivory #FAF8F3)
+ *   - Badge hairline:   color-mix(var(--charcoal) 10%)
+ *   - Mark color:       var(--charcoal) (#2E2E2E) via currentColor
+ *
+ * Inline SVGs — no external requests, layout-stable, uniform h-4 marks.
  */
 
 import type { ReactNode } from "react";
 
 type Mark = { id: string; label: string; svg: ReactNode };
 
-// Neutral typographic marks — legible on the charcoal footer without
-// mimicking official brand lockups. Height is uniform (h-4) so the row
-// never reflows across breakpoints.
+// Uniform typographic marks — legible on ivory chips, respectful of
+// brand marks without mimicking official lockups. Height locked to h-4
+// so the row never reflows vertically across breakpoints.
 const MARKS: Mark[] = [
   {
     id: "visa",
@@ -88,8 +95,48 @@ const MARKS: Mark[] = [
     ),
   },
   {
+    id: "klarna",
+    label: "Klarna",
+    svg: (
+      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
+        <text
+          x="28"
+          y="12"
+          textAnchor="middle"
+          fontFamily="Inter, system-ui, sans-serif"
+          fontWeight={700}
+          fontSize="10"
+          fill="currentColor"
+          letterSpacing="0.01em"
+        >
+          Klarna
+        </text>
+      </svg>
+    ),
+  },
+  {
+    id: "multibanco",
+    label: "Multibanco",
+    svg: (
+      <svg viewBox="0 0 68 16" aria-hidden="true" className="h-4 w-auto">
+        <text
+          x="34"
+          y="12"
+          textAnchor="middle"
+          fontFamily="Inter, system-ui, sans-serif"
+          fontWeight={700}
+          fontSize="9"
+          fill="currentColor"
+          letterSpacing="0.06em"
+        >
+          Multibanco
+        </text>
+      </svg>
+    ),
+  },
+  {
     id: "mbway",
-    label: "MB Way",
+    label: "MB WAY",
     svg: (
       <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
         <text
@@ -103,6 +150,26 @@ const MARKS: Mark[] = [
           letterSpacing="0.08em"
         >
           MB WAY
+        </text>
+      </svg>
+    ),
+  },
+  {
+    id: "revolut-pay",
+    label: "Revolut Pay",
+    svg: (
+      <svg viewBox="0 0 64 16" aria-hidden="true" className="h-4 w-auto">
+        <text
+          x="32"
+          y="12"
+          textAnchor="middle"
+          fontFamily="Inter, system-ui, sans-serif"
+          fontWeight={700}
+          fontSize="9"
+          fill="currentColor"
+          letterSpacing="0.04em"
+        >
+          Revolut Pay
         </text>
       </svg>
     ),
@@ -162,13 +229,18 @@ export function PaymentMethodsRow() {
           Accepted payment methods
         </p>
         <ul
-          className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[color:var(--ivory)]/90"
-          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, MB Way, Apple Pay, Google Pay"
+          className="flex flex-wrap items-center gap-x-2 gap-y-2"
+          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay, Google Pay"
         >
           {MARKS.map((m) => (
             <li
               key={m.id}
-              className="inline-flex items-center justify-center h-7 min-w-[3rem] px-2.5 rounded-[3px] bg-[color:var(--ivory)]/[0.04] ring-1 ring-[color:var(--ivory)]/15"
+              className="inline-flex items-center justify-center h-7 min-w-[3rem] px-2.5 rounded-[3px]"
+              style={{
+                background: "var(--ivory)",
+                boxShadow: "inset 0 0 0 1px color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                color: "var(--charcoal)",
+              }}
               title={m.label}
             >
               <span className="sr-only">{m.label}</span>
