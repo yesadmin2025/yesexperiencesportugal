@@ -102,8 +102,15 @@ export type StudioV3Phase =
   | "investment"
   | "map"
   | "storyboard"
+  /**
+   * finalReveal — cinematic editorial presentation of the day the traveller
+   * just refined (kept under the legacy `"confirmation"` string so saved
+   * signatures and existing tests continue to hydrate without migration).
+   */
   | "confirmation"
-  | "guestDetails";
+  | "guestDetails"
+  /** checkoutSummary — compact recap + downloadable one-pager, before payment. */
+  | "checkoutSummary";
 
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
