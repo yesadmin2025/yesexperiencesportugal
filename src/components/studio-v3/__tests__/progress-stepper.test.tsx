@@ -32,6 +32,7 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   date: 2,
   map: 3,
   storyboard: 3,
+  confirmation: 3,
 };
 
 describe("StudioV3ProgressStepper", () => {
