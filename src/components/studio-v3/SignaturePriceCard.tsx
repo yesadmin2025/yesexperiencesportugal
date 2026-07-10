@@ -33,6 +33,7 @@ import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
+import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
