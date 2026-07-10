@@ -1,8 +1,11 @@
 // The inline CTA (`studio-v3-cta-primary`) and the mobile sticky CTA
-// (`studio-v3-cta-sticky`) both render the current investment inline in
-// their label — e.g. "Yes — reserve · €1240". When any add-on toggles,
-// both labels must update immediately to reflect the recalculated
-// `party-total` (or per-person price when party-total is not exposed).
+// (`studio-v3-cta-sticky`) expose the current investment via a
+// `data-total-eur` attribute — the visible label no longer prints the
+// euro amount (the amount lives on the price card; the button advances
+// to the storytelling letter). When any add-on toggles, both attrs must
+// update immediately to reflect the recalculated party-total (or
+// per-person price when party-total is not exposed).
+
 
 import { expect, test } from "@playwright/test";
 import {
