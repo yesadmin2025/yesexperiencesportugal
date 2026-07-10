@@ -430,7 +430,7 @@ export function MapAwakens({
                 animation: "studioV3RiseIn 520ms ease-out both",
               }}
             >
-              To be confirmed by YES
+              Your Signature route
             </div>
           ) : null}
         </div>
@@ -627,7 +627,7 @@ export function MapAwakens({
               className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
             >
-              Suggested route · to be confirmed by YES
+              Your Signature route · confirmed instantly on booking
             </p>
           </div>
         </div>

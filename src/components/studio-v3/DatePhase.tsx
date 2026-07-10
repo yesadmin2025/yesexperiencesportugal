@@ -213,7 +213,7 @@ export function formatExactLabel(iso: string): string {
 export function dateDisplayLabel(dateMode: DateMode | null, dateExact: string | null): string {
   if (dateMode === "exact" && dateExact) return formatExactLabel(dateExact);
   if (dateMode === "flexible") return "Flexible";
-  if (dateMode === "undecided") return "Date to be confirmed";
+  if (dateMode === "undecided") return "Any date";
   return "";
 }
 
