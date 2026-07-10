@@ -192,7 +192,8 @@ function PageLightbox({
     };
   }, [index, total, onClose, onIndex]);
 
-  return (
+  if (typeof document === "undefined") return null;
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
