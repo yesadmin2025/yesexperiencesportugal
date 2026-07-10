@@ -28,12 +28,11 @@ describe("planAddonInsertion", () => {
     stop("lx", "Lisbon pickup", LISBON, "viewpoint"),
     stop("az", "Azeitão wine estate", AZEITAO, "winery"),
     stop("ar", "Arrábida viewpoint", ARRABIDA_VP, "viewpoint"),
-    stop("ss", "Sesimbra lunch", SESIMBRA, "lunch"),
     stop("lx-back", "Lisbon drop-off", LISBON, "viewpoint"),
   ];
-  // Real-ish minutes / km for the base itinerary. 4 legs, total ≈ 125 min.
-  const baseLegMinutes = [35, 15, 20, 55];
-  const baseLegDistancesKm = [40, 12, 18, 55];
+  // Real-ish minutes / km for the base itinerary. 3 legs, total ≈ 90 min.
+  const baseLegMinutes = [35, 15, 40];
+  const baseLegDistancesKm = [40, 12, 45];
 
   it("recommends a small on-route detour (preferred badge)", () => {
     const result = planAddonInsertion({
