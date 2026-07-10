@@ -222,6 +222,8 @@ import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
+import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
+import { sendSignatureStoryEmail } from "@/lib/emails/sendSignatureStoryEmail.functions";
 import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
@@ -2420,6 +2422,25 @@ export function StudioV3() {
               guideNotes: state.guestDraft?.guideNotes ?? null,
             }}
             onBack={() => back("confirmation")}
+            onEmailBlur={async (email) => {
+              try {
+                const snapshot = buildSignatureStorySnapshot(state, {
+                  guests: state.guests ?? undefined,
+                  pickupAddress: state.guestDraft?.pickupAddress,
+                  dateIso: state.dateExact ?? undefined,
+                });
+                await sendSignatureStoryEmail({
+                  data: {
+                    email,
+                    tourId: state.tourId ?? null,
+                    dateIso: state.dateExact ?? null,
+                    snapshot,
+                  },
+                });
+              } catch (err) {
+                console.warn("[studio-v3] signature story dispatch skipped", err);
+              }
+            }}
             onSubmit={async (d) => {
               setPendingGuestDetails(d);
               setState((s) => ({
