@@ -135,26 +135,6 @@ const MARKS: Mark[] = [
     ),
   },
   {
-    id: "mbway",
-    label: "MB WAY",
-    svg: (
-      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
-        <text
-          x="28"
-          y="12"
-          textAnchor="middle"
-          fontFamily="Inter, system-ui, sans-serif"
-          fontWeight={700}
-          fontSize="9"
-          fill="currentColor"
-          letterSpacing="0.08em"
-        >
-          MB WAY
-        </text>
-      </svg>
-    ),
-  },
-  {
     id: "revolut-pay",
     label: "Revolut Pay",
     svg: (
