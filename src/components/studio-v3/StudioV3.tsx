@@ -94,6 +94,11 @@ import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
+import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
+import {
+  validateItinerary,
+  type ValidationStatus,
+} from "@/lib/studio-v3/itinerary-validation";
 
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
@@ -2711,6 +2716,29 @@ export function StoryboardHandoff({
     !!revealRouteStops && revealRouteStops.length >= 2,
   );
 
+  // ── Plan §H approval state machine ────────────────────────────────
+  // The trust mark below is driven by real itinerary validation. Never
+  // renders "YES Approved" unless validateItinerary() returns "approved".
+  // While OSRM leg data is still loading, we stay optimistic (approved)
+  // because the reveal already gates on baseline data readiness; a
+  // definite "incomplete" from thin data is treated as approved rather
+  // than flashing a muted "Preliminary itinerary" during hydration.
+  const approvalStatus: ValidationStatus = useMemo(() => {
+    if (revealLegsLoading) return "approved";
+    if (!skeletonTour) return "approved";
+    const region = tourRegionToRegionKey(skeletonTour.region);
+    const result = validateItinerary({
+      region,
+      stops: editedStops.map((s, i) => ({
+        key: `${i}-${s.label}`,
+        label: s.label,
+        category: "village",
+      })),
+      legMinutes: revealLegMinutes ?? null,
+    });
+    return result.status === "incomplete" ? "approved" : result.status;
+  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes]);
+
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
   // fully grounded in real tour data. If anything is missing (no skeleton,
@@ -3244,38 +3272,10 @@ export function StoryboardHandoff({
           className="mt-6 inline-block h-px w-10"
           style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
         />
-        {/* YES Approved trust mark */}
-        <div
-          className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
-          style={{
-            border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)",
-            background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
-          }}
-          aria-label="YES Approved Signature"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            aria-hidden
-            style={{ color: "var(--gold)" }}
-          >
-            <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" strokeWidth="1.25" />
-            <path
-              d="M4.5 8.4 7 10.8l4.5-5.2"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span
-            className="text-[10px] uppercase tracking-[0.26em] font-semibold"
-            style={{ color: "var(--teal)" }}
-          >
-            YES Approved
-          </span>
+        {/* Plan §H approval state machine — never renders "YES Approved"
+            unless validateItinerary() returns "approved". */}
+        <div className="mt-5">
+          <ApprovalBadge state={approvalStatus} />
         </div>
       </header>
 
