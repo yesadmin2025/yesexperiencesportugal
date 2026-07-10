@@ -200,6 +200,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
+      pricingUnit: "per_person",
       minHours: 6,
       durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
@@ -212,6 +213,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
+      pricingUnit: "per_person",
       minHours: 6,
       durationMinutes: 75,
       lisbonSubRegion: "arrabida-setubal",
@@ -224,6 +226,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
       pricePctOfBase: 0.16,
+      pricingUnit: "per_person",
       durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
       conflictsWith: ["azulejo"],
@@ -235,6 +238,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
       pricePctOfBase: 0.14,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       lisbonSubRegion: "arrabida-setubal",
       conflictsWith: ["cheese"],
@@ -246,6 +250,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Add a short loop through Sintra's romantic hills and Europe's western-most cape on the way home.",
       pricePctOfBase: 0.2,
+      pricingUnit: "per_person",
       minHours: 7,
       minStops: 4,
       durationMinutes: 120,
@@ -261,6 +266,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
       pricePctOfBase: 0.16,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       conflictsWith: ["evora"],
     },
@@ -270,6 +276,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Talha amphora wine tasting",
       blurb: "Taste 2 000-year-old clay-vessel wines in a Vidigueira cellar with the winemaker.",
       pricePctOfBase: 0.18,
+      pricingUnit: "per_person",
       durationMinutes: 75,
       conflictsWith: ["wine-tasting"],
     },
@@ -279,6 +286,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Roman heritage stop",
       blurb: "A guided pause at a real Roman site — columns, mosaics, the same hills they walked.",
       pricePctOfBase: 0.12,
+      pricingUnit: "per_person",
       minStops: 3,
       durationMinutes: 45,
       conflictsWith: ["roman"],
@@ -291,6 +299,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Roman ruins of Tróia",
       blurb: "A quiet guided walk through one of the Atlantic's largest Roman fish-salting sites.",
       pricePctOfBase: 0.14,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       conflictsWith: ["roman"],
     },
@@ -300,6 +309,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Herdade da Comporta wine tasting",
       blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
       pricePctOfBase: 0.2,
+      pricingUnit: "per_person",
       durationMinutes: 75,
       conflictsWith: ["wine-tasting"],
     },
@@ -312,6 +322,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
       pricePctOfBase: 0.18,
+      pricingUnit: "per_person",
       durationMinutes: 75,
       conflictsWith: ["tomar"],
     },
@@ -322,6 +333,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
       pricePctOfBase: 0.14,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       conflictsWith: ["obidos"],
     },
@@ -332,6 +344,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Stand above the canyon that makes Nazaré's monster waves — the Atlantic stretching to the horizon.",
       pricePctOfBase: 0.16,
+      pricingUnit: "per_person",
       minHours: 6,
       durationMinutes: 45,
       conflictsWith: ["nazare"],
