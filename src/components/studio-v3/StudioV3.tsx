@@ -1381,7 +1381,7 @@ export function StudioV3() {
     // GA4 add_to_cart — Studio tier selected.
     try {
       const tierPrice =
-        id === "essential" ? 180 : id === "balanced" ? 320 : id === "full" ? 550 : 950;
+        id === "considered" ? 180 : id === "elevated" ? 320 : id === "bespoke" ? 550 : 0;
       gaAddToCartStudioTier({
         tier: id,
         priceEur: tierPrice,
