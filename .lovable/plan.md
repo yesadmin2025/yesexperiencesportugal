@@ -1,37 +1,119 @@
-Two small dev-only additions to the Preview/Refine Signature screen. Both are gated behind `?qa=1` (or `localStorage.YES_QA=1`) so they never ship to real users.
+## Goal
 
-## 1. QA checklist overlay
+Clean up the two Signature screens so each has one job, one voice, and no clutter — while keeping every rule from the Studio bible (no invented stops, no configurator feel, price truth from Signature data).
 
-A fixed, collapsible panel bottom-left of the Preview/Refine screen. Runs live DOM assertions and shows pass/fail with a colored dot.
+---
 
-Checks:
-- ❌ "Why this works" block is absent (`[data-qa="why-this-works"]` not in DOM)
-- ❌ "Often added" smart-suggestion card is absent (`[data-qa="often-added"]` not in DOM)
-- ✅ Primary CTA exists with label `See my signature story` (via `[data-qa="primary-cta"]`)
-- ✅ Primary CTA carries `data-total-eur` attribute (money preserved for tests, not shown to user)
-- ✅ Secondary CTA is `Save this signature` (via `[data-qa="save-cta"]`)
-- ❌ No CTA text contains `Reserve`, `SAY YES`, `REFINE WITH YES`, `NEED HELP` on this screen
+## Screen 1 — Composer / route-forming screen (before Refine)
 
-Each row shows the rule + current state. Re-runs on route change and on a manual "Re-check" button. Zero prod impact — component returns `null` when the QA flag is off.
+**Rename the primary CTA** that hands off into the Signature card.
 
-## 2. Screenshot export button
+- Current label reads "Preview signature" / "See my signature" (composer handoff).
+- New label: **"Personalise a few details"** (primary)
+  - Alt shortlist to confirm: "Adjust a few details" · "Refine my Signature" · "Fine-tune my day"
+- Keep the secondary quiet link ("Save my signature" via WhatsApp) as-is — it's not part of this cleanup.
 
-Small button in the same overlay: **Export screenshot**. Uses `html-to-image` (`toPng`) against the Preview/Refine root node, captures at the current CSS viewport (393×588 for you right now, at devicePixelRatio 3), and triggers a download as `preview-refine-<viewport>-<timestamp>.png`.
+Wording change only. No layout or logic change on this screen.
 
-Notes:
-- `html-to-image` is ~15 kB gz and works client-side; no server round-trip.
-- Captures exactly what's on screen at real DPR, so it matches what you see in the preview.
-- Add-only dependency; used only inside the QA overlay component so tree-shaking keeps it out of the main bundle for normal users.
+---
+
+## Screen 2 — Signature card (add-ons + refine) — hard declutter
+
+### 2a. Two CTAs only, in this order
+
+1. **Primary — "See my signature story"** → advances to the storytelling reveal (existing `onSecure`).
+2. **Secondary — "Ask a curator for help"** (ghost button, opens the existing WhatsApp handoff with the composed journey title in the message body).
+
+Remove everything else from the CTA stack on this screen:
+
+- Remove the second/duplicate primary rendered by `SignaturePriceCard` (the inline "See my signature story" that duplicates the sticky one — keep only the sticky one on mobile, only the inline one on md+).
+- Remove any "Save my signature" / "Save this signature" button here (Save lives only on the storytelling reveal, per existing pattern).
+- Remove the trust strip micro-line under the CTA ("Nothing is booked yet — you'll confirm the full price on the next step") — the reassurance sentence above the CTA already covers it.
+- Remove the "Real itinerary · Local designer review · Cancellation terms at checkout" chip strip on this screen (the reveal screen keeps its own trust cues).
+
+### 2b. Price block — one number that changes, nothing else
+
+Replace the current stack (From / per-pax hero / party total sub-line / "Drops to €X with 8+ guests" anchor / "See price for your group size" collapsible tier picker / italic disclaimers) with:
+
+```text
+[eyebrow]  For {N} guests
+[hero]     €{perPax} / guest
+[total]    €{partyTotal} total for your group
+```
+
+Rules for the block:
+
+- Uses the guest count the traveller already picked earlier in the flow (`state.guests`). No group-size picker here, no "see price for larger group" affordance, no "drops to" hint.
+- Both numbers **live-update** when add-ons are toggled (already wired via `partyTotalEur` / `displayPerPaxEur` — we just render fewer lines around them).
+- If `state.guests` is missing, fall back to a single "€{perPax} / guest" line and no total (rare path — the composer sets guests).
+- Keep the exact numeric source of truth (`priceEur`, `partyTotalEur`, add-ons) untouched — this is pure presentation.
+
+### 2c. "Included" block — one tight list, no duplication
+
+- Show the real `included[]` from the resolved Signature (already the source), capped at 4–5 items.
+- Auto-append add-on labels the traveller has toggled on, at the bottom of the same list under a subtle "— Your additions" divider (per-line €amount kept, since it's what makes the total move).
+- Drop the second inclusions paragraph / footnote / duration+moments meta chips that repeat what the storytelling screen will show.
+- One header: `Included in your day` (replaces the longer "Included in your selected itinerary" here — the reveal keeps that phrasing).
+
+### 2d. What we explicitly do NOT touch on this screen
+
+- Add-on cards themselves (labels, prices, gating logic).
+- Approval badge, journey title, refine accordion behaviour.
+- Sticky CTA on mobile (kept — just made the single primary).
+
+---
+
+## Screen 3 — Storytelling reveal ("See my signature story") — accurate content
+
+The story timeline currently lists **every** stop from the resolved Signature template. It must list only what the traveller actually kept.
+
+In `FinalRevealStory.tsx`, change the `stops` source so it always uses the refined/kept set:
+
+- Preferred source, in order:
+  1. `state.editedRoutePoints` if present and non-empty (already the first branch).
+  2. Otherwise, the subset of `tour.stops` whose keys/labels appear in `state.acceptedStops` (or whichever refine-state array holds the traveller's kept stops — verify against `useStudioState` and `StudioV3` refine handlers before wiring).
+  3. Only if neither exists (deep-link edge case), fall back to `tour.stops`.
+- Add-on beats stay appended after the kept stops, unchanged.
+- No new copy, no invented stops, no reordering beyond what the traveller set.
+
+CTA row on this screen stays as it already is:
+
+- Primary: "Make this my story in Portugal" (advance to Guest Details).
+- Secondary: "Save my signature".
+- Tertiary text link: "Back to refine".
+
+(That screen already matches the "two buttons + quiet back link" pattern the user wants — no change beyond the story-content fix.)
+
+---
+
+## Copy tokens to update
+
+In `src/content/signature-day-copy.ts`:
+
+- Add `CTA_PERSONALISE = "Personalise a few details"` (composer → refine handoff).
+- Add `CTA_ASK_CURATOR = "Ask a curator for help"` (refine screen secondary).
+- Add `INCLUDED_HEADER_REFINE = "Included in your day"` (refine screen only; reveal keeps `INCLUSION_HEADER`).
+- Keep existing `CTA_PRIMARY`, `CTA_MAKE_STORY`, `CTA_SAVE_SIGNATURE`, `CTA_BACK_TO_REFINE` untouched.
+
+---
 
 ## Files touched
 
-- `src/components/studio-v3/QaOverlay.tsx` — new component (checks + export button)
-- `src/components/studio-v3/StudioV3.tsx` — mount `<QaOverlay />` on the Preview/Refine screen only, add the `data-qa="*"` hooks to the two CTAs
-- `src/components/studio-v3/SignaturePriceCard.tsx` — add `data-qa="primary-cta"` / `data-qa="save-cta"` to the buttons (no logic change)
-- `package.json` — add `html-to-image`
+- `src/content/signature-day-copy.ts` — add three tokens above.
+- `src/components/studio-v3/StudioV3.tsx` — rename composer → refine CTA to `CTA_PERSONALISE`.
+- `src/components/studio-v3/SignaturePriceCard.tsx` — collapse price block, prune trust strip + duplicate CTA + tier picker + "drops to" hint, add "Ask a curator for help" secondary, merge add-ons into the Included list, swap header.
+- `src/components/studio-v3/FinalRevealStory.tsx` — restrict `stops` to the traveller's kept set.
+- Tests to update (labels + count assertions), based on greps: `studio-v3-cta-labels-live.spec.ts`, `studio-v3-unified-signature-card.spec.ts`, `studio-v3-price-anchor-exit-intent.spec.ts`, `studio-v3-final-investment-live.spec.ts`, `price-source-of-truth.test.tsx`, `add-ons-gating-total.test.tsx`. Adjust expectations rather than adding new coverage.
 
-Out of scope: changing any copy, layout, pricing, routing, or Playwright specs; adding the overlay to any screen other than Preview/Refine; wiring it into published builds.
+## Out of scope
 
-## Approve to build
+- Any change to pricing math, add-on catalogue, or Signature source data.
+- Redesign of the storytelling reveal layout (only its data source is fixed).
+- Copy on Guest Details / Checkout Summary screens.
+- Adding QA overlays or screenshot-export tools (superseded by this cleanup).
 
-Reply "approve" and I'll implement. If you'd rather the export button live somewhere visible without the `?qa=1` flag, say so and I'll adjust.
+## Verification
+
+- Manual mobile viewport (393×588): composer CTA reads "Personalise a few details"; refine screen shows exactly two buttons and a single price/total pair that updates live with add-on toggles; storytelling reveal lists only kept stops + selected additions.
+- `bunx vitest run` on the touched tests.
+- Playwright: `studio-v3-cta-labels-live.spec.ts` and `studio-v3-unified-signature-card.spec.ts` re-run against the updated labels.

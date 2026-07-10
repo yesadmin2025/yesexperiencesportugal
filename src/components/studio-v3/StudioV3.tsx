@@ -2374,6 +2374,26 @@ export function StudioV3() {
           <FinalRevealStory
             state={state}
             selectedAddOns={selectedAddOnItems}
+            composedStops={(() => {
+              // The traveller's kept set fallback — matches the composer's
+              // resolved routePoints so the reveal never widens past what
+              // the Studio actually surfaced pre-refine.
+              const resolved = resolveStudioV3Route({
+                feeling: state.feeling,
+                companions: state.companions,
+                rhythm: state.rhythm,
+                interests: state.interests,
+                pickup: state.pickup,
+                occasion: state.occasion,
+                considerations: state.considerations,
+                investment: state.investment,
+                destinationIntent: state.destinationIntent,
+              });
+              return resolved.routePoints.map((p) => ({
+                label: p.label,
+                story: p.story,
+              }));
+            })()}
             perPaxEur={(() => {
               const tour = state.tourId ? findTour(state.tourId) : null;
               if (!tour) return null;

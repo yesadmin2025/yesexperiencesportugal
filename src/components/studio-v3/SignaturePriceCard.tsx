@@ -33,6 +33,7 @@ import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
+import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
@@ -542,9 +543,9 @@ export function SignaturePriceCard({
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              {realPerPax?.real
-                ? `For ${realPerPax.tier === 8 ? "8+" : realPerPax.tier} ${realPerPax.tier === 1 ? "guest" : "guests"}`
-                : "From"}
+              {partyCount != null
+                ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
+                : "Per guest"}
             </p>
             <p
               data-testid="studio-v3-base-price"
@@ -554,56 +555,28 @@ export function SignaturePriceCard({
               className="mt-1 text-[40px] leading-none font-bold tabular-nums"
               style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
             >
-              €{realPerPax?.real ? displayPerPaxEur : priceEur}
+              €{displayPerPaxEur ?? priceEur}
               <span
                 className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
               >
-                / pp
+                / guest
               </span>
             </p>
-            <p
-              className="mt-2 text-[11px] italic"
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-              }}
-            >
-              {realPerPax?.real
-                ? "Real per-pax for your group — driver, guide and every detail handled."
-                : "A private day, just for you — driver, guide and every detail handled. You only show up."}
-            </p>
-            {partyTotalEur != null ? (
+            {partyTotalEur != null && partyCount != null ? (
               <p
                 data-testid="studio-v3-party-total"
-                className="mt-2 text-[12px] font-semibold tabular-nums"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
+                className="mt-3 text-[13.5px] font-semibold tabular-nums"
+                style={{ color: "var(--charcoal)" }}
               >
-                × {partyCount} guests <span style={{ color: "var(--gold)" }}>—</span>{" "}
-                <span style={{ color: "var(--charcoal)" }}>€{partyTotalEur}</span>{" "}
-                <span className="text-[9.5px] uppercase tracking-[0.2em] opacity-70">
-                  investment
+                €{partyTotalEur}{" "}
+                <span
+                  className="text-[10.5px] uppercase tracking-[0.22em] font-semibold ml-0.5"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  total for your group
                 </span>
               </p>
-            ) : null}
-            {cheapestRealTier ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setPickerOpen(true);
-                  setPreviewGuests(cheapestRealTier.tier);
-                  onGuestsChange?.(cheapestRealTier.tier);
-                }}
-                data-testid="studio-v3-anchor-hint"
-                data-anchor-tier={cheapestRealTier.tier}
-                data-anchor-eur={cheapestRealTier.eur}
-                className="mt-2 inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded px-1.5 py-0.5"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-              >
-                <span style={{ color: "var(--gold)" }}>—</span>
-                Drops to <span style={{ color: "var(--charcoal)" }}>€{cheapestRealTier.eur}</span> /
-                pp with {cheapestRealTier.tier === 8 ? "8+" : cheapestRealTier.tier} guests
-              </button>
             ) : null}
           </>
         ) : (
@@ -627,147 +600,7 @@ export function SignaturePriceCard({
           </>
         )}
 
-        {/* Hidden picker — preview per-pax for any group size before checkout. */}
-        {hasPrice && tierRows.length > 0 ? (
-          <div className="mt-5 mx-auto max-w-[380px]" data-testid="studio-v3-tier-picker">
-            <button
-              type="button"
-              onClick={() => setPickerOpen((v) => !v)}
-              aria-expanded={pickerOpen}
-              aria-controls="studio-v3-tier-picker-panel"
-              className="mx-auto inline-flex items-center gap-1.5 px-2 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span>
-              {pickerOpen ? "Hide group pricing" : "See price for your group size"}
-              <ChevronDown
-                size={12}
-                aria-hidden
-                style={{
-                  transform: pickerOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 180ms ease-out",
-                  color: "var(--gold)",
-                }}
-              />
-            </button>
-            {pickerOpen ? (
-              <div
-                id="studio-v3-tier-picker-panel"
-                role="radiogroup"
-                aria-label="Per-person price by group size"
-                className="mt-3 grid grid-cols-4 gap-1.5 rounded-[4px] p-2"
-                style={{
-                  background: "color-mix(in oklab, var(--ivory) 94%, var(--sand))",
-                  border: "1px solid color-mix(in oklab, var(--charcoal) 12%, transparent)",
-                }}
-              >
-                {tierRows.map((r) => {
-                  const active =
-                    (effectiveGuests ?? 0) === r.tier ||
-                    (r.tier === 8 && (effectiveGuests ?? 0) >= 8);
-                  return (
-                    <button
-                      key={r.tier}
-                      type="button"
-                      role="radio"
-                      aria-checked={active}
-                      onClick={() => {
-                        setPreviewGuests(r.tier);
-                        onGuestsChange?.(r.tier);
-                      }}
-                      data-tier={r.tier}
-                      data-active={active ? "true" : "false"}
-                      data-real={r.real ? "true" : "false"}
-                      className="flex flex-col items-center gap-0.5 rounded-[3px] px-1.5 py-2 text-center transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                      style={{
-                        background: active
-                          ? "color-mix(in oklab, var(--gold) 18%, var(--ivory))"
-                          : "var(--ivory)",
-                        borderWidth: 1,
-                        borderStyle: "solid",
-                        borderColor: active
-                          ? "color-mix(in oklab, var(--gold) 70%, transparent)"
-                          : "color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                      }}
-                    >
-                      <span
-                        className="text-[10px] uppercase tracking-[0.16em] font-bold"
-                        style={{
-                          color: active
-                            ? "var(--charcoal)"
-                            : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                        }}
-                      >
-                        {r.tier === 8 ? "8+" : r.tier}
-                      </span>
-                      <span
-                        className="text-[12px] font-bold tabular-nums leading-none"
-                        style={{ color: "var(--charcoal)", fontFamily: "var(--font-display)" }}
-                      >
-                        €{r.eur}
-                      </span>
-                      <span
-                        className="text-[8.5px] uppercase tracking-[0.14em] font-semibold"
-                        style={{
-                          color: r.real
-                            ? "color-mix(in oklab, var(--charcoal) 50%, transparent)"
-                            : "color-mix(in oklab, var(--charcoal) 38%, transparent)",
-                        }}
-                      >
-                        {r.real ? "/ pp" : "from"}
-                      </span>
-                    </button>
-                  );
-                })}
-                <p
-                  className="col-span-4 mt-1 text-center text-[10px] italic leading-snug"
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                  }}
-                >
-                  Private day — same itinerary, per-person rate adjusts with group size.
-                </p>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
 
-        <ul
-          className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] uppercase tracking-[0.18em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-        >
-          {durationLabel ? (
-            <li className="inline-flex items-center gap-1.5">
-              <span
-                aria-hidden
-                className="block h-1 w-1 rounded-full"
-                style={{ background: "var(--gold)" }}
-              />
-              {durationLabel}
-            </li>
-          ) : null}
-          {stopCount > 0 ? (
-            <li className="inline-flex items-center gap-1.5">
-              <span
-                aria-hidden
-                className="block h-1 w-1 rounded-full"
-                style={{ background: "var(--gold)" }}
-              />
-              {stopCount} {stopCount === 1 ? "moment" : "moments"}
-            </li>
-          ) : null}
-          {dateExact ? (
-            <li className="inline-flex items-center gap-1.5">
-              <span
-                aria-hidden
-                className="block h-1 w-1 rounded-full"
-                style={{ background: "var(--gold)" }}
-              />
-              {formatPriceDate(dateExact)}
-            </li>
-          ) : null}
-        </ul>
 
         {/* "Why this works" bullets removed — the itinerary spine below
             ("Your day includes") already surfaces the real inclusions, so
@@ -1026,173 +859,16 @@ export function SignaturePriceCard({
           </fieldset>
         ) : null}
 
-        {/* Itinerary spine — real stop names in order, so the price reads
-            against the actual day. Names sourced from the resolved Signature
-            route; never invented. */}
-        {hasPrice && itineraryStops.length > 0 ? (
-          <section
-            data-testid="studio-v3-itinerary-spine"
-            className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
-            style={{
-              background: "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
-              border: "1px solid color-mix(in oklab, var(--gold) 28%, transparent)",
-            }}
-            aria-label="Your day includes these stops"
-          >
-            <p
-              className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span>
-              Your day includes
-              <span
-                className="ml-auto text-[10px] font-semibold tabular-nums tracking-[0.16em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                {dwellHours != null && dwellHours > 0
-                  ? `≈ ${dwellHours.toFixed(dwellHours < 10 ? 1 : 0)}h · ${itineraryStops.length} stops`
-                  : `${itineraryStops.length} stops`}
-              </span>
-            </p>
-            <ol className="mt-2 flex flex-col gap-1.5">
-              {itineraryStops.slice(0, 5).map((label, i) => (
-                <li
-                  key={`spine-${i}`}
-                  className="flex items-start gap-2 text-[12px] leading-snug"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-                >
-                  <span
-                    aria-hidden
-                    className="mt-[1px] inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold tabular-nums"
-                    style={{
-                      background: "color-mix(in oklab, var(--gold) 22%, transparent)",
-                      color: "var(--charcoal)",
-                    }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span>{label}</span>
-                </li>
-              ))}
-              {itineraryStops.length > 5 ? (
-                <li
-                  className="pl-[26px] text-[10.5px] italic"
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                  }}
-                >
-                  …and {itineraryStops.length - 5} more
-                </li>
-              ) : null}
-              {selectedAddOns.map((a, i) => (
-                <li
-                  key={`spine-addon-${a.id}`}
-                  data-testid="studio-v3-itinerary-addon-row"
-                  data-addon-id={a.id}
-                  className="flex items-start gap-2 text-[12px] leading-snug"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 82%, transparent)" }}
-                >
-                  <span
-                    aria-hidden
-                    className="mt-[1px] inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold tabular-nums"
-                    style={{
-                      background: "color-mix(in oklab, var(--gold) 45%, transparent)",
-                      color: "var(--charcoal)",
-                      border: "1px solid color-mix(in oklab, var(--gold) 70%, transparent)",
-                    }}
-                  >
-                    +
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="font-semibold">{a.label}</span>
-                    {a.durationMinutes > 0 ? (
-                      <span
-                        className="ml-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold"
-                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                      >
-                        +{a.durationMinutes}m
-                      </span>
-                    ) : null}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => toggleAddOn(a.id)}
-                    aria-label={`Remove ${a.label}`}
-                    className="grid h-6 w-6 place-items-center rounded-full text-[12px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-                  >
-                    ✕
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </section>
-        ) : null}
+        {/* Itinerary spine and blueprint optionals removed — the storytelling
+            reveal on the next step lists the traveller's kept stops in order,
+            so repeating them here duplicated the same content in two adjacent
+            surfaces. */}
 
-        {/* Blueprint truth — Optionals from the Tailor blueprint, surfaced
-            here read-only so the builder traveller sees what's *truthfully*
-            optional on this Signature. No invented prices, no toggles —
-            the day is already complete; these are "if the rhythm allows"
-            additions a host confirms after booking. Single source of truth:
-            src/data/tailorBlueprints.ts via getSignatureOptionalAddOns(). */}
-        {hasPrice && tour
-          ? (() => {
-              const optionals = getSignatureOptionalAddOns(tour.id);
-              if (!optionals || optionals.length === 0) return null;
-              return (
-                <section
-                  data-testid="studio-v3-blueprint-optionals"
-                  className="mt-3 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
-                  style={{
-                    background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
-                    border: "1px dashed color-mix(in oklab, var(--gold) 32%, transparent)",
-                  }}
-                  aria-label="Optional stops on this Signature"
-                >
-                  <p
-                    className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-                  >
-                    <span style={{ color: "var(--gold)" }}>—</span>
-                    Optional, if the day allows
-                  </p>
-                  <ul className="mt-2 flex flex-col gap-1.5">
-                    {optionals.slice(0, 3).map((o) => (
-                      <li
-                        key={`bp-opt-${o.id}`}
-                        className="flex items-start gap-2 text-[12px] leading-snug"
-                        style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-                      >
-                        <span
-                          aria-hidden
-                          className="mt-[6px] inline-block h-[5px] w-[5px] shrink-0 rounded-full"
-                          style={{ background: "var(--gold)" }}
-                        />
-                        <span>
-                          <span className="font-medium">{o.label}</span>
-                          {o.blurb ? (
-                            <span
-                              className="block text-[11px] mt-0.5"
-                              style={{
-                                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                              }}
-                            >
-                              {o.blurb}
-                            </span>
-                          ) : null}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              );
-            })()
-          : null}
 
-        {/* S4 — Inclusions footnote: what's actually in the day. Real data
-            from the resolved Signature's `included[]`; never invented. */}
-        {hasPrice && inclusionFootnote.length > 0 ? (
+        {/* Included in your day — the single, tight list. Real included[]
+            from the resolved Signature (capped) + any add-ons the traveller
+            just toggled on, so the block moves with the price above. */}
+        {hasPrice && (inclusionFootnote.length > 0 || selectedAddOns.length > 0) ? (
           <footer
             data-testid="studio-v3-inclusions-footnote"
             className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
@@ -1205,10 +881,10 @@ export function SignaturePriceCard({
               className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              Included in your selected itinerary
+              {INCLUDED_HEADER_REFINE}
             </p>
             <ul className="mt-1.5 flex flex-col gap-1">
-              {inclusionFootnote.map((line, i) => (
+              {inclusionFootnote.slice(0, 4).map((line, i) => (
                 <li
                   key={`inc-${i}`}
                   className="flex items-start gap-2 text-[11.5px] leading-snug"
@@ -1223,78 +899,100 @@ export function SignaturePriceCard({
                 </li>
               ))}
             </ul>
-            <p
-              className="mt-2 text-[10px] italic"
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              }}
-            >
-              Optional additions are priced separately and shown before checkout.
-            </p>
+            {selectedAddOns.length > 0 ? (
+              <>
+                <p
+                  className="mt-3 text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  <span style={{ color: "var(--gold)" }}>—</span>
+                  Your additions
+                </p>
+                <ul className="mt-1.5 flex flex-col gap-1">
+                  {selectedAddOns.map((a) => {
+                    const line = addOnEurFor({
+                      addOn: a,
+                      baseEur: priceEur ?? 0,
+                      guests: summaryGuests,
+                    });
+                    return (
+                      <li
+                        key={`inc-addon-${a.id}`}
+                        data-testid="studio-v3-included-addon-row"
+                        data-addon-id={a.id}
+                        className="flex items-start justify-between gap-3 text-[11.5px] leading-snug"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+                      >
+                        <span className="flex items-start gap-2 min-w-0">
+                          <span
+                            aria-hidden
+                            className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full"
+                            style={{ background: "var(--gold)" }}
+                          />
+                          <span className="font-medium">{a.label}</span>
+                        </span>
+                        <span
+                          className="shrink-0 tabular-nums text-[11px] font-semibold"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          +€{line.amount}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            ) : null}
           </footer>
         ) : null}
 
-        {/* Trust strip — discreet, reduces hesitation right before the CTA. */}
-        {hasPrice ? (
-          <>
-            <MountBadge name="TrustStrip" detail="rendered (hasPrice=true)" />
-            <div
-              data-testid="studio-v3-trust-strip"
-              className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span className="inline-flex items-center gap-1.5">
-                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-                Real itinerary
-              </span>
-              <span
-                aria-hidden
-                style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}
-              >
-                ·
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-                Local designer review
-              </span>
-              <span
-                aria-hidden
-                style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}
-              >
-                ·
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-                Cancellation terms at checkout
-              </span>
-            </div>
-          </>
-        ) : null}
+        {/* Trust strip removed — the reassurance above the CTA + the final
+            reveal's own trust cues cover this without duplication. */}
 
-        <div ref={ctaRef} className="mt-4 flex flex-col items-center gap-2.5">
+        <div ref={ctaRef} className="mt-6 flex flex-col items-center gap-3">
           {hasPrice ? (
-            <button
-              type="button"
-              onClick={onSecure}
-              data-testid="studio-v3-cta-primary"
-              data-total-eur={partyTotalEur ?? totalEur ?? ""}
-              data-party-total-eur={partyTotalEur ?? ""}
-              className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-              style={{
-                background: "var(--charcoal)",
-                color: "var(--ivory)",
-                boxShadow:
-                  "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
-              }}
-            >
-              See my signature story
-              <ArrowRight
-                size={14}
-                aria-hidden
-                className="transition-transform duration-200 group-hover:translate-x-0.5"
-              />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={onSecure}
+                data-testid="studio-v3-cta-primary"
+                data-total-eur={partyTotalEur ?? totalEur ?? ""}
+                data-party-total-eur={partyTotalEur ?? ""}
+                className="group hidden md:inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  background: "var(--charcoal)",
+                  color: "var(--ivory)",
+                  boxShadow:
+                    "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                }}
+              >
+                See my signature story
+                <ArrowRight
+                  size={14}
+                  aria-hidden
+                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                />
+              </button>
+              <a
+                href={whatsappHref(
+                  `Hi YES — I'm refining a Signature in the Studio${
+                    journeyTitle ? ` ("${journeyTitle}")` : ""
+                  } and could use a curator's help before I continue.`,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="studio-v3-cta-secondary"
+                className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+                  background: "transparent",
+                  borderBottom:
+                    "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                }}
+              >
+                {CTA_ASK_CURATOR}
+              </a>
+            </>
           ) : (
             <a
               href={whatsappHref(
@@ -1310,16 +1008,6 @@ export function SignaturePriceCard({
               Request the investment <ArrowRight size={14} aria-hidden />
             </a>
           )}
-
-          {hasPrice ? (
-            <p
-              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px] text-center"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-            >
-              <ShieldCheck size={12} aria-hidden style={{ color: "var(--gold)" }} />
-              Nothing is booked yet — you'll confirm the full price on the next step.
-            </p>
-          ) : null}
 
           {hasPrice && !dateExact ? (
             <p
