@@ -302,6 +302,7 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   map: ["Next, your draft"],
   storyboard: [""],
   confirmation: [""],
+  guestDetails: [""],
 };
 
 function pickTeaser(phase: StudioV3Phase, seed: string): string {
