@@ -156,9 +156,131 @@ function PageSkeleton() {
   );
 }
 
+/**
+ * PageLightbox — full-screen readable overlay for a single travel-file
+ * page. Opens on tap from the flip-book or any thumbnail so guests
+ * viewing on a 393px handset can actually read the itinerary. Pinch-to-
+ * zoom is enabled via `touch-action: pinch-zoom` on the image; ← / →
+ * swipe or arrow keys move between pages; Esc closes.
+ */
+function PageLightbox({
+  index,
+  onClose,
+  onIndex,
+}: {
+  index: number;
+  onClose: () => void;
+  onIndex: (i: number) => void;
+}) {
+  const total = PAGES.length;
+  const touchX = useRef<number | null>(null);
+  const page = PAGES[index];
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowRight") onIndex(Math.min(total - 1, index + 1));
+      else if (e.key === "ArrowLeft") onIndex(Math.max(0, index - 1));
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [index, total, onClose, onIndex]);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Travel file — page ${index + 1} of ${total}: ${page.label}`}
+      className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--ivory)]/98 backdrop-blur-sm animate-in fade-in duration-200"
+      onTouchStart={(e) => {
+        touchX.current = e.touches[0].clientX;
+      }}
+      onTouchEnd={(e) => {
+        if (touchX.current == null) return;
+        const dx = e.changedTouches[0].clientX - touchX.current;
+        touchX.current = null;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0) onIndex(Math.min(total - 1, index + 1));
+        else onIndex(Math.max(0, index - 1));
+      }}
+    >
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[color:var(--charcoal)]/10">
+        <p className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.3em] font-semibold text-[color:var(--charcoal)]">
+          {String(index + 1).padStart(2, "0")}
+          <span className="mx-1.5 text-[color:var(--charcoal-soft)]/60">/</span>
+          {String(total).padStart(2, "0")}
+          <span className="ml-3 font-normal normal-case tracking-normal text-[color:var(--charcoal-soft)] italic">
+            {page.label}
+          </span>
+        </p>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close full-screen page"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[color:var(--charcoal)] hover:bg-[color:var(--charcoal)]/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+        >
+          <X size={20} aria-hidden="true" />
+        </button>
+      </div>
+
+      {/* Page */}
+      <div className="relative flex-1 min-h-0 flex items-center justify-center overflow-auto p-3 sm:p-6">
+        <img
+          key={page.src}
+          src={page.src}
+          alt={page.alt}
+          className="mx-auto max-h-full w-auto max-w-full object-contain shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)] ring-1 ring-[color:var(--charcoal)]/10 bg-white"
+          style={{ touchAction: "pinch-zoom" }}
+          draggable={false}
+        />
+      </div>
+
+      {/* Bottom controls */}
+      <div className="flex items-center justify-between gap-2 px-4 py-3 border-t border-[color:var(--charcoal)]/10">
+        <button
+          type="button"
+          onClick={() => onIndex(Math.max(0, index - 1))}
+          disabled={index === 0}
+          aria-label="Previous page"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+        >
+          <ChevronLeft size={18} aria-hidden="true" />
+        </button>
+        <a
+          href={samplePdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+        >
+          Open the full PDF
+          <ExternalLink size={13} aria-hidden="true" className="text-[color:var(--gold-deep)]" />
+        </a>
+        <button
+          type="button"
+          onClick={() => onIndex(Math.min(total - 1, index + 1))}
+          disabled={index === total - 1}
+          aria-label="Next page"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--charcoal)]/20 text-[color:var(--charcoal)] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+        >
+          <ChevronRight size={18} aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function BookFlip() {
   const [index, setIndex] = useState(0);
   const [flipDir, setFlipDir] = useState<"next" | "prev" | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const openLightbox = useCallback(() => setLightboxOpen(true), []);
+  const closeLightbox = useCallback(() => setLightboxOpen(false), []);
   const reduced = usePrefersReducedMotion();
   const touchStartX = useRef<number | null>(null);
   const flipping = useRef(false);
