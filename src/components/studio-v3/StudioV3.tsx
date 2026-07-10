@@ -3894,9 +3894,9 @@ function StoryboardHandoff({
 
         <a
           href={whatsappHref(
-            `Hi YES — I just composed a Signature in the Studio${
+            `Hi YES — I'm designing my day in the Studio${
               state.journeyTitle ? ` ("${state.journeyTitle}")` : ""
-            } and would like some help.`,
+            } and would like a suggestion.`,
           )}
           target="_blank"
           rel="noopener noreferrer"
