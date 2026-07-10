@@ -135,26 +135,6 @@ const MARKS: Mark[] = [
     ),
   },
   {
-    id: "mbway",
-    label: "MB WAY",
-    svg: (
-      <svg viewBox="0 0 56 16" aria-hidden="true" className="h-4 w-auto">
-        <text
-          x="28"
-          y="12"
-          textAnchor="middle"
-          fontFamily="Inter, system-ui, sans-serif"
-          fontWeight={700}
-          fontSize="9"
-          fill="currentColor"
-          letterSpacing="0.08em"
-        >
-          MB WAY
-        </text>
-      </svg>
-    ),
-  },
-  {
     id: "revolut-pay",
     label: "Revolut Pay",
     svg: (
@@ -230,7 +210,7 @@ export function PaymentMethodsRow() {
         </p>
         <ul
           className="flex flex-wrap items-center gap-x-2 gap-y-2"
-          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay, Google Pay"
+          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, Klarna, Multibanco, Revolut Pay, Apple Pay, Google Pay"
         >
           {MARKS.map((m) => (
             <li
