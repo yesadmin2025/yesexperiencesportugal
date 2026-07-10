@@ -46,10 +46,11 @@ PAGE23_EXTRA = [
     "WHATSAPP +351 911 889 992",
 ]
 
-# Cover page 1: YES logo band (top of page, above the "PRIVATE CURATED..." eyebrow)
-# PDF coords (pdfplumber uses top-left origin, y grows downward)
-COVER_LOGO_BOX = (170, 50, 425, 175)   # (x0, y0, x1, y1) in PDF pts — covers logo mark + wordmark
-COVER_NAME_BOX = (150, 428, 450, 458)  # covers "14 nights · Designed for Jennifer Oliver" line region
+# Cover page 1: fixed pixel-boxes (in PDF pts) — pdfplumber can't extract these
+# because they're rendered as image/glyphs in the cover art.
+COVER_LOGO_BOX = (170, 50, 425, 175)     # YES logo mark + wordmark, top center
+COVER_NAME_BOX = (150, 428, 450, 458)    # "14 nights · Designed for Jennifer Oliver"
+COVER_FOOTER_BOX = (95, 785, 500, 815)   # bottom contact strip (globe/email/whatsapp)
 
 
 def rasterize_page(pdf_path: str, page_num: int, out_jpg: Path, dpi: int = DPI) -> Image.Image:
