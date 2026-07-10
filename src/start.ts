@@ -52,8 +52,8 @@ const noindexNonProdHost = createMiddleware().server(async ({ next, request }) =
 
   if (url.pathname === "/robots.txt") return buildDisallowRobotsResponse();
 
-  const response = await next();
-  return withNoindexHeader(response.response ?? (response as unknown as Response));
+  const result = await next();
+  return { ...result, response: withNoindexHeader(result.response) };
 });
 
 export const startInstance = createStart(() => ({
