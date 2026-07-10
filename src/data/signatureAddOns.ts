@@ -364,6 +364,63 @@ export function addOnEurFromBase(baseEur: number, pct: number): number {
   return roundEur5(baseEur * pct);
 }
 
+/**
+ * Unit-aware line-item pricing for an add-on. Returns the total EUR for
+ * the line and a human unit label ("per guest" / "per group" / etc.).
+ * Both `SignaturePriceCard` and the checkout payload MUST use this so
+ * the displayed total, the invariant test, and the Stripe amount agree.
+ */
+export interface AddOnLineItem {
+  amount: number;
+  perUnit: number;
+  unit: AddOnPricingUnit;
+  unitLabel: string;
+}
+
+export function addOnEurFor(opts: {
+  addOn: Pick<SignatureAddOn, "pricePctOfBase" | "pricingUnit">;
+  baseEur: number;
+  guests: number;
+  vehicleCapacity?: number;
+}): AddOnLineItem {
+  const { addOn, baseEur, guests } = opts;
+  const perAnchor = addOnEurFromBase(baseEur, addOn.pricePctOfBase);
+  const guestsSafe = Math.max(1, Math.floor(guests));
+  const vehicleCap = Math.max(1, Math.floor(opts.vehicleCapacity ?? 4));
+  switch (addOn.pricingUnit) {
+    case "per_person":
+      return {
+        amount: perAnchor * guestsSafe,
+        perUnit: perAnchor,
+        unit: "per_person",
+        unitLabel: "per guest",
+      };
+    case "per_group":
+      return {
+        amount: perAnchor,
+        perUnit: perAnchor,
+        unit: "per_group",
+        unitLabel: "per group",
+      };
+    case "per_vehicle": {
+      const vehicles = Math.ceil(guestsSafe / vehicleCap);
+      return {
+        amount: perAnchor * vehicles,
+        perUnit: perAnchor,
+        unit: "per_vehicle",
+        unitLabel: "per vehicle",
+      };
+    }
+    case "fixed":
+      return {
+        amount: perAnchor,
+        perUnit: perAnchor,
+        unit: "fixed",
+        unitLabel: "flat",
+      };
+  }
+}
+
 /** Parse the loose `durationHours` string (e.g. "7–9h", "6+h") to its lower bound. */
 export function parseDurationLowerHours(label: string | null | undefined): number {
   if (!label) return 0;
