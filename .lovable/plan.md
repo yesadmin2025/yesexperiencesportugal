@@ -1,147 +1,56 @@
-# Legacy domain migration — Hybrid 301s, GBP kept severed
+## Porque é que o site antigo (yesexperiences.pt) ainda aparece no Google
 
-Decision (per your answers):
+O código já está preparado — o middleware em `src/lib/legacy-domain-redirect.ts` devolve 301 para as URLs mapeadas e 410 Gone para as restantes. **Mas nada disto está a acontecer em produção enquanto o DNS de `yesexperiences.pt` continuar a apontar para o WordPress antigo.** O Google só reprocessa (e retira do índice) quando visita as URLs antigas e recebe 301/410 — hoje ainda recebe 200 OK do WordPress, por isso mantém tudo indexado.
 
-- Enforce redirects **in Lovable** (`src/start.ts`), not on WordPress. WP host is decommissioned; DNS for `yesexperiences.pt` + `www.yesexperiences.pt` moves to Lovable.
-- Do **per-path 301** so link equity transfers.
-- **Do NOT** file Google Search Console Change of Address, and do NOT reference the old GBP anywhere — that is what keeps the deprecated Google Business Profile severed while still collecting link equity.
+Além disso, a desindexação é sempre lenta: mesmo com tudo bem configurado, o Google demora tipicamente **2 a 8 semanas** a atualizar os resultados.
 
-This replaces the current 410 Gone middleware.
+## Plano de resolução (sem escrever código novo)
 
----
+### 1. Repontar o DNS de yesexperiences.pt para a Lovable  *(bloqueador — nada funciona sem isto)*
+No registrar do domínio `yesexperiences.pt`:
+- Apagar registos A/CNAME antigos que apontam para o WordPress
+- Registo A: `@` → `185.158.133.1`
+- Registo A: `www` → `185.158.133.1`
+- Registo TXT: `_lovable` → valor de verificação (dado pela Lovable ao adicionar o domínio)
+- Em **Project Settings → Domains** adicionar `yesexperiences.pt` **e** `www.yesexperiences.pt`
+- Manter `yesexperiencesportugal.com` como **Primary**
 
-## Why this can work (and where the risk is)
+A partir daqui, cada pedido a `https://yesexperiences.pt/qualquer-coisa` cai no middleware que já existe e devolve 301 para a URL equivalente no domínio novo, ou 410 Gone. É este sinal que o Google precisa de ver.
 
-- **Change of Address** in GSC is the strongest "these are the same entity" signal for local/GBP. Skipping it plus never linking or citing the old GBP means Google is far less likely to auto-migrate GBP signals along with the 301s.
-- Web-search PageRank still transfers via 301 without CoA — CoA is a search-console-side property migration, not the redirect itself.
-- Residual risk: Google may still merge some entity signals because both sites share brand name + NAP-adjacent copy. Mitigation below (step 4).
+### 2. Manter GBP separado (política híbrida já decidida)
+- **NÃO** submeter Change of Address no Google Search Console — é o que mantém o perfil Google Business antigo desassociado.
+- Marcar o GBP antigo como **permanentemente encerrado** no Google Maps.
+- Não referenciar em lado nenhum do código o place ID, CID ou NAP antigos.
 
----
+### 3. Acelerar a reindexação no Search Console *(quando o DNS já estiver ativo)*
+- Adicionar/verificar `yesexperiencesportugal.com` como propriedade Domain no GSC.
+- Submeter o sitemap novo: `https://yesexperiencesportugal.com/sitemap.xml`.
+- Na propriedade **antiga** (`yesexperiences.pt`), abrir o relatório *Pages → Not indexed* e pedir **Validate fix** — obriga o Google a recolher as URLs antigas e ver os 301/410.
+- Usar **URL Inspection → Request indexing** nas 10–20 URLs mais visitadas do domínio novo.
 
-## Implementation (in Lovable, one edit)
+### 4. Limpar sinais externos que continuam a alimentar o site antigo
+- Backlinks importantes (parceiros, imprensa, diretórios de turismo, Viator, TripAdvisor, redes sociais, assinaturas de email): pedir para atualizarem o link para `yesexperiencesportugal.com`.
+- Perfis sociais (Instagram, Facebook, LinkedIn): trocar o URL no bio.
+- Atualizar Google Ads / Meta Ads se ainda apontarem para o domínio antigo.
 
-### 1. Replace `src/lib/legacy-domain-redirect.ts`
-
-- Keep the module name and `LEGACY_HOSTS`.
-- Export a new `LEGACY_REDIRECT_MAP: Record<string, string>` (exact old path → new path).
-- Export `buildLegacy301Response(request: Request): Response | null` that:
-  - Case-insensitive host match against `LEGACY_HOSTS`, otherwise return null.
-  - Normalize incoming path: lowercase, strip trailing slash (except `/`), drop query for lookup.
-  - Look up in `LEGACY_REDIRECT_MAP`.
-  - **Hit** → 301 to `https://yesexperiencesportugal.com${target}` with `Cache-Control: public, max-age=86400` and `X-Robots-Tag: noindex` (safety net for the legacy URL itself while it drops out of index).
-  - **Miss** → 410 Gone (reuse the current retired-domain body). No blanket homepage redirect — that's the soft-404 trap you called out.
-- Deprecate the current `buildLegacyGoneResponse` export by re-exporting `buildLegacy301Response` under the same name so `src/start.ts` keeps working with a one-line update.
-
-### 2. Update `src/start.ts`
-
-Point `legacyDomainGone` middleware at `buildLegacy301Response`. Update the comment block to reflect the hybrid policy (301 content, 410 fallback, no CoA, no GBP reference).
-
-### 3. Update `src/__tests__/legacy-domain-redirect.test.ts`
-
-Cover:
-- Known WP path → 301 with correct `Location` and status.
-- Unknown legacy path → 410.
-- Canonical host request → null (middleware passes through).
-- Trailing slash + uppercase path normalize to the same mapping.
-- Query string preserved on the redirected `Location`.
-
-### 4. Keep GBP severed (non-code, must-do)
-
-- Do NOT click "Address change" in GSC.
-- In Google Business Profile Manager, mark the OLD listing tied to `yesexperiences.pt` as **permanently closed** (or remove ownership if that listing is already dead). The new brand is a separate GBP for `yesexperiencesportugal.com`.
-- Do not import old GBP reviews, photos, or place ID into the new site. `src/config/business-nap.ts` already contains only the new NAP — keep it that way.
-- `robots.txt`, sitemap, and canonicals already point only at `yesexperiencesportugal.com` — verified. Nothing to change.
-
-### 5. DNS + verification
-
-- Repoint `yesexperiences.pt` and `www.yesexperiences.pt` A/AAAA (or CNAME) to Lovable per the custom-domain instructions. Add both apex and `www` in Lovable's Domains panel, mark canonical domain as `yesexperiencesportugal.com` (unchanged).
-- After DNS propagates, curl each legacy URL from the mapping and confirm `HTTP/1.1 301` + correct `Location`. A shell one-liner is included in the "Verification" section below.
-
-### 6. Keep the 301s live ≥12 months
-
-They live in `src/lib/legacy-domain-redirect.ts` — no expiry. Add a code comment `// Do NOT remove before <today + 12 months>` next to the map.
-
----
-
-## Redirect map (draft — needs your confirmation on WP slugs)
-
-Alias set I can commit today with high confidence:
-
-```text
-/                             → /
-/about                        → /about
-/about-us                     → /about
-/contact                      → /contact
-/contact-us                   → /contact
-/faqs                         → /faq
-/faq                          → /faq
-/tours                        → /experiences
-/experiences                  → /experiences
-/day-tours                    → /day-tours
-/multi-day                    → /multi-day
-/private-tours                → /private-tours-portugal
-/luxury-tours                 → /luxury-tours-portugal
-/blog                         → /local-stories
-/blog/*                       → /local-stories       (fallback; specific posts mapped case-by-case)
-/proposal                     → /proposal-in-portugal
-/corporate                    → /corporate
-/press                        → /press
-/privacy                      → /privacy
-/privacy-policy               → /privacy
-/terms                        → /terms
-/terms-and-conditions         → /terms
-/cookies                      → /cookies
+### 5. Verificar que os 301/410 estão realmente a sair *(depois do DNS propagar, 24–72h)*
+Testes rápidos que confirmam que o middleware está a funcionar em produção:
 ```
-
-For `/tour/<slug>` I need your old WP slugs. Current Signature IDs on the new site (target URLs are `/tours/<id>`):
-
-```text
-arrabida-wine-allinclusive
-wild-beaches-picnic
-arrabida-boat
-tiles-workshop
-azeitao-cheese
-sintra-cascais
-troia-comporta
-evora-alentejo
-tomar-coimbra
-fatima-nazare-obidos
-roman-heritage-alentejo
-southwest-vicentine-coast
+curl -I https://yesexperiences.pt/                    → 301 → https://yesexperiencesportugal.com/
+curl -I https://yesexperiences.pt/about-us            → 301 → /about
+curl -I https://yesexperiences.pt/tour/sintra-tour    → 301 → /tours/sintra-cascais
+curl -I https://yesexperiences.pt/wp-admin            → 410 Gone
 ```
+Os testes automatizados em `src/__tests__/legacy-domain-redirect-exhaustive.test.ts` (418 casos) já validam a lógica — só falta o DNS para chegarem a produção.
 
-Nearest-Signature fallback rules (when the WP slug has no exact match):
+### 6. Timeline realista
+- Semana 1: DNS propaga, 301/410 começam a servir.
+- Semanas 2–4: Google recolhe as URLs antigas, começam a cair do índice.
+- Semanas 4–8: substituição nos resultados de pesquisa fica visível.
+- Manter 301+410 **no ar até pelo menos 2027-07-10** (mínimo 12 meses, já anotado no código).
 
-- Any Arrábida / Setúbal / Azeitão wine slug → `arrabida-wine-allinclusive`
-- Any Sintra / Cascais slug → `sintra-cascais`
-- Any Évora / Alentejo wine slug → `evora-alentejo`
-- Any Comporta / Tróia / south beach slug → `troia-comporta`
-- Any Fátima / Nazaré / Óbidos slug → `fatima-nazare-obidos`
-- Anything else tour-shaped → `/experiences`
+## O que preciso de si para avançar
 
-I'll bake these into the map as specific entries, not a wildcard, so each URL returns a real 301 (not a regex catch-all).
-
----
-
-## Verification (post-deploy)
-
-Run once DNS is live:
-
-```bash
-for path in / /about /about-us /contact /faqs /tour/arrabida-wine-tour /tours /blog; do
-  echo "=== $path ==="
-  curl -sI "https://yesexperiences.pt$path" | grep -iE 'HTTP|location'
-done
-```
-
-Expected: every mapped path → `HTTP/1.1 301` + `location: https://yesexperiencesportugal.com/<target>`. Unmapped paths → `HTTP/1.1 410`.
-
-Optional but recommended: submit the legacy sitemap one last time in GSC (old property) so Google re-crawls quickly and picks up the 301s. **Do not** touch Change of Address.
-
----
-
-## What I need from you before I switch to build mode
-
-1. **Confirm the alias set above** or paste the actual WP slug list (a `wp-cli post list --post_type=tour --field=name` output, or a raw list of URLs) so I can build the exact 1:1 map.
-2. **Confirm DNS repoint is scheduled** for `yesexperiences.pt` + `www.yesexperiences.pt` to Lovable. The middleware is inert until DNS points here.
-3. **Confirm the GBP severance action** (old listing marked closed) is already done or will be done in parallel — this is the part that keeps the hybrid strategy actually hybrid.
+1. Confirma que quer avançar com **repontar o DNS de `yesexperiences.pt` para a Lovable**? (é o único bloqueador real — sem isto, nada acima produz efeito).
+2. Já tem acesso ao registrar onde `yesexperiences.pt` está registado, ou é preciso pedir a alguém?
+3. Quer que eu prepare também uma **lista de URLs prioritárias** para pedir reindexação manual no Search Console (as 20 páginas mais importantes do domínio novo)?
