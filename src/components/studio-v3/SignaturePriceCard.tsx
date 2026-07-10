@@ -249,47 +249,50 @@ export function SignaturePriceCard({
   useEffect(() => {
     onAddOnsChangeRef.current = onAddOnsChange;
   }, [onAddOnsChange]);
-  useEffect(() => {
-    const cb = onAddOnsChangeRef.current;
-    if (!cb) return;
+
+  const summaryGuests = Math.max(1, guests ?? 1);
+  const buildSummary = (ids: string[]): SelectedAddOnSummary => {
     const base = priceEur ?? 0;
-    cb({
-      ids: selectedAddOnIds,
-      totalEur: addOnsTotalEur,
-      totalMinutes: addOnsMinutes,
-      items: selectedAddOns.map((a) => ({
+    const selected = availableAddOns.filter((a) => ids.includes(a.id));
+    const items: SelectedAddOnSummaryItem[] = selected.map((a) => {
+      const line = addOnEurFor({
+        addOn: a,
+        baseEur: base,
+        guests: summaryGuests,
+      });
+      return {
         id: a.id,
         label: a.label,
         priceEur: addOnEurFromBase(base, a.pricePctOfBase),
         durationMinutes: a.durationMinutes || 0,
         pricePctOfBase: a.pricePctOfBase,
-      })),
+        perUnit: line.perUnit,
+        amount: line.amount,
+        unit: line.unit,
+        unitLabel: line.unitLabel,
+      };
     });
-  }, [selectedAddOnIds, addOnsTotalEur, addOnsMinutes, selectedAddOns, priceEur]);
+    return {
+      ids,
+      totalEur: items.reduce((sum, i) => sum + i.priceEur, 0),
+      partyTotalEur: items.reduce((sum, i) => sum + i.amount, 0),
+      totalMinutes: items.reduce((sum, i) => sum + i.durationMinutes, 0),
+      items,
+    };
+  };
+
+  useEffect(() => {
+    const cb = onAddOnsChangeRef.current;
+    if (!cb) return;
+    cb(buildSummary(selectedAddOnIds));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAddOnIds, addOnsTotalEur, addOnsMinutes, selectedAddOns, priceEur, summaryGuests]);
 
   const commitAddOnIds = (next: string[]) => {
     if (isControlled) {
       // Parent owns state; emit the summary optimistically via the callback.
       const cb = onAddOnsChangeRef.current;
-      if (cb) {
-        const base = priceEur ?? 0;
-        const nextSelected = availableAddOns.filter((a) => next.includes(a.id));
-        cb({
-          ids: next,
-          totalEur: nextSelected.reduce(
-            (sum, a) => sum + addOnEurFromBase(base, a.pricePctOfBase),
-            0,
-          ),
-          totalMinutes: nextSelected.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
-          items: nextSelected.map((a) => ({
-            id: a.id,
-            label: a.label,
-            priceEur: addOnEurFromBase(base, a.pricePctOfBase),
-            durationMinutes: a.durationMinutes || 0,
-            pricePctOfBase: a.pricePctOfBase,
-          })),
-        });
-      }
+      if (cb) cb(buildSummary(next));
     } else {
       setUncontrolledAddOnIds(next);
     }
