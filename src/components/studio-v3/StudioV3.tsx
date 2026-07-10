@@ -4025,26 +4025,11 @@ export function StoryboardHandoff({
       {/* ---------- 8. CTA stack ---------- */}
       <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
         <p
-          className="hidden sm:block text-[15px] sm:text-[16px] italic leading-[1.45] text-center text-balance [text-wrap:pretty] max-w-[360px] sm:max-w-[440px]"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-          }}
-        >
-          {name ? `${name}, this is the day you shaped.` : "This is the day you shaped."}
-        </p>
-        <p
           data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[300px] sm:max-w-[420px]"
+          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[320px] sm:max-w-[420px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
         >
-          <span className="sm:hidden">
-            When you're ready — pickup and final details are confirmed before anything is locked in.
-          </span>
-          <span className="hidden sm:inline">
-            Reserve your date now — pickup and final details are confirmed with you before anything
-            is finalised.
-          </span>
+          When you're ready — read your day as a story, then reserve on the next step.
         </p>
 
         {pending ? (
@@ -4056,48 +4041,16 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="Say YES to this Signature"
+            aria-label="See my signature story"
+            data-testid="studio-v3-handoff-primary"
           >
-            Say YES to this Signature
+            See my signature story
           </CtaButton>
         )}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
-
-        <button
-          type="button"
-          onClick={onRefine}
-          className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{
-            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-            background: "transparent",
-          }}
-          aria-label="Refine with YES first"
-        >
-          Refine with YES first
-        </button>
-
-        <a
-          href={whatsappHref(
-            `Hi YES — I'm designing my day in the Studio${
-              state.journeyTitle ? ` ("${state.journeyTitle}")` : ""
-            } and would like a suggestion.`,
-          )}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-2 py-1 min-h-[32px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-          style={{
-            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-            background: "transparent",
-          }}
-          aria-label="Need help? Ask YES on WhatsApp"
-        >
-          <span aria-hidden style={{ color: "var(--gold)" }}>
-            —
-          </span>
-          Need help? Ask YES
-        </a>
       </div>
+
     </div>
   );
 }
