@@ -1,119 +1,109 @@
-## Goal
+## North star
 
-Clean up the two Signature screens so each has one job, one voice, and no clutter — while keeping every rule from the Studio bible (no invented stops, no configurator feel, price truth from Signature data).
-
----
-
-## Screen 1 — Composer / route-forming screen (before Refine)
-
-**Rename the primary CTA** that hands off into the Signature card.
-
-- Current label reads "Preview signature" / "See my signature" (composer handoff).
-- New label: **"Personalise a few details"** (primary)
-  - Alt shortlist to confirm: "Adjust a few details" · "Refine my Signature" · "Fine-tune my day"
-- Keep the secondary quiet link ("Save my signature" via WhatsApp) as-is — it's not part of this cleanup.
-
-Wording change only. No layout or logic change on this screen.
-
----
-
-## Screen 2 — Signature card (add-ons + refine) — hard declutter
-
-### 2a. Two CTAs only, in this order
-
-1. **Primary — "See my signature story"** → advances to the storytelling reveal (existing `onSecure`).
-2. **Secondary — "Ask a curator for help"** (ghost button, opens the existing WhatsApp handoff with the composed journey title in the message body).
-
-Remove everything else from the CTA stack on this screen:
-
-- Remove the second/duplicate primary rendered by `SignaturePriceCard` (the inline "See my signature story" that duplicates the sticky one — keep only the sticky one on mobile, only the inline one on md+).
-- Remove any "Save my signature" / "Save this signature" button here (Save lives only on the storytelling reveal, per existing pattern).
-- Remove the trust strip micro-line under the CTA ("Nothing is booked yet — you'll confirm the full price on the next step") — the reassurance sentence above the CTA already covers it.
-- Remove the "Real itinerary · Local designer review · Cancellation terms at checkout" chip strip on this screen (the reveal screen keeps its own trust cues).
-
-### 2b. Price block — one number that changes, nothing else
-
-Replace the current stack (From / per-pax hero / party total sub-line / "Drops to €X with 8+ guests" anchor / "See price for your group size" collapsible tier picker / italic disclaimers) with:
+Three screens, one job each. Everything the traveller can do lives in exactly one place. No duplicate CTAs, no shadow controls, no invented content.
 
 ```text
-[eyebrow]  For {N} guests
-[hero]     €{perPax} / guest
-[total]    €{partyTotal} total for your group
+   MapAwakens          →           Refine                →       Storytelling Signature      →   Guest Details
+ "This is your day"          "Shape it to fit you"            "Live it before you book"           (existing)
 ```
 
-Rules for the block:
+Current code already runs this sequence, but the middle screen is coded under the confusing phase name `storyboard` and mixes concerns. Plan below tightens each screen, keeps the flow, and locks the handoff contract between them.
 
-- Uses the guest count the traveller already picked earlier in the flow (`state.guests`). No group-size picker here, no "see price for larger group" affordance, no "drops to" hint.
-- Both numbers **live-update** when add-ons are toggled (already wired via `partyTotalEur` / `displayPerPaxEur` — we just render fewer lines around them).
-- If `state.guests` is missing, fall back to a single "€{perPax} / guest" line and no total (rare path — the composer sets guests).
-- Keep the exact numeric source of truth (`priceEur`, `partyTotalEur`, add-ons) untouched — this is pure presentation.
+## Screen 1 — MapAwakens (`phase: "map"`)
 
-### 2c. "Included" block — one tight list, no duplication
+**Role.** Cinematic reveal of the route. Purely emotional. No pricing, no editing.
 
-- Show the real `included[]` from the resolved Signature (already the source), capped at 4–5 items.
-- Auto-append add-on labels the traveller has toggled on, at the bottom of the same list under a subtle "— Your additions" divider (per-line €amount kept, since it's what makes the total move).
-- Drop the second inclusions paragraph / footnote / duration+moments meta chips that repeat what the storytelling screen will show.
-- One header: `Included in your day` (replaces the longer "Included in your selected itinerary" here — the reveal keeps that phrasing).
+**Contract.**
+- Route draws stop-by-stop with existing sequence + hold-journey CTA.
+- Single primary CTA: **"Personalise a few details"** → advances to Refine.
+- No secondary CTA visible on this screen (the "Ask a curator" ghost lives on Refine only, to keep this moment silent).
+- No price chip, no add-on preview, no inclusions here.
 
-### 2d. What we explicitly do NOT touch on this screen
+**Change.** None functionally — just enforce "no price / no CTA duplication" as a lint-style unit assertion.
 
-- Add-on cards themselves (labels, prices, gating logic).
-- Approval badge, journey title, refine accordion behaviour.
-- Sticky CTA on mobile (kept — just made the single primary).
+## Screen 2 — Refine (`phase: "storyboard"`, `StoryboardHandoff` + `SignaturePriceCard`)
 
----
+**Role.** The only place the traveller edits: reorder / remove / swap stops, add moments, toggle add-ons, see live price. Every interaction updates one shared state slice (`editedRoutePoints`, `selectedAddOnIds`, `guests`).
 
-## Screen 3 — Storytelling reveal ("See my signature story") — accurate content
+**Layout, top → bottom, single column, mobile-first:**
 
-The story timeline currently lists **every** stop from the resolved Signature template. It must list only what the traveller actually kept.
+1. **Header.** Journey title (existing) + one-line "for {N} guests in {pickupCity}".
+2. **Stops editor** (`studio-v3-stops-editor`, already implemented, stays exactly as-is):
+   - Drag-reorder.
+   - Per-stop **Remove** (X) → shows an inline "Suggestion" chip pulled from the SAME resolved Signature's pool (never from other tours), tap to accept swap.
+   - Per-stop **Swap** → expands `studio-v3-swap-pool` with pool candidates.
+   - "— Refine the moments" divider then **Add a moment** → expands `studio-v3-add-pool`, capped by rhythm.
+   - "Reset to original" appears only when `editedRoutePoints !== null`.
+3. **Add-ons** (`studio-v3-add-ons`, kept separate from stops per user note): grid of toggleable chips with real `+€N / pp` price. Live `studio-v3-add-ons-total`.
+4. **Included in your day** footnote (`studio-v3-inclusions-footnote`):
+   - Header: `Included in your day` (exact, from `INCLUDED_HEADER_REFINE`).
+   - Real `included[]` from resolved Signature, capped at 4.
+   - After any add-on toggle, appends `— Your additions` divider + one row per toggled add-on with `+€N`. Divider disappears when no add-ons selected.
+5. **Price block** — one live line only:
+   `For {N} guests · €{perPax} / guest · €{partyTotal} total`
+   No tier picker, no "Drops to €X with 8+" hint (already removed), no duration/moments chips.
+6. **CTAs — exactly two, no sticky duplicates on desktop:**
+   - Primary (charcoal, arrow): **"See my signature story"** → advances to Storytelling.
+   - Ghost link: **"Ask a curator for help"** → WhatsApp handoff with journey title in body.
+   - Mobile only: one bottom sticky mirror of the primary CTA + the "Nothing is booked yet · Confirm on the next step" microcopy. Not visible on desktop.
 
-In `FinalRevealStory.tsx`, change the `stops` source so it always uses the refined/kept set:
+**What is explicitly NOT on Refine:** the itinerary spine repeat, blueprint optionals, trust strip, QualityScore, `Save my signature` button (that belongs to Storytelling), any second "See my signature story" outside the sticky mirror.
 
-- Preferred source, in order:
-  1. `state.editedRoutePoints` if present and non-empty (already the first branch).
-  2. Otherwise, the subset of `tour.stops` whose keys/labels appear in `state.acceptedStops` (or whichever refine-state array holds the traveller's kept stops — verify against `useStudioState` and `StudioV3` refine handlers before wiring).
-  3. Only if neither exists (deep-link edge case), fall back to `tour.stops`.
-- Add-on beats stay appended after the kept stops, unchanged.
-- No new copy, no invented stops, no reordering beyond what the traveller set.
+**State written here, read by Screen 3:** `editedRoutePoints`, `selectedAddOnIds`, `guests`, `tourId`. No new state.
 
-CTA row on this screen stays as it already is:
+## Screen 3 — Storytelling Signature (`phase: "confirmation"`, `FinalRevealStory`)
 
-- Primary: "Make this my story in Portugal" (advance to Guest Details).
-- Secondary: "Save my signature".
-- Tertiary text link: "Back to refine".
+**Role.** Cinematic proof: "here is the day you just composed, in words." No editing.
 
-(That screen already matches the "two buttons + quiet back link" pattern the user wants — no change beyond the story-content fix.)
+**Contract.**
+- **Timeline source (locked):** `state.editedRoutePoints ?? composedStops ?? tour.stops` — already wired via the `composedStops` prop set in `StudioV3.tsx:2377`. Never widens past the resolved Signature.
+- **Add-on beats** append after kept stops, in `selectedAddOns` order. Same voice, no invented stops.
+- **Price line** mirrors Refine exactly (`perPax`, `partyTotal`) — read from props, never recomputed with a different rule.
+- **CTAs — exactly two:**
+   - Primary: **"Continue to guest details"** → `onContinue` (advances to `guestDetails`).
+   - Secondary: **"Save my signature"** → `onSaveSignature` (emails the letter; stays on screen with confirmation line).
+- Back button returns to Refine, preserving all edits.
 
----
+**What is explicitly NOT on Storytelling:** stops editor, add-on toggles, swap pool, guest picker. If the traveller wants to change anything, they go back — one direction of edit-authority.
 
-## Copy tokens to update
+## Handoff contract (the one thing that keeps the flow honest)
 
-In `src/content/signature-day-copy.ts`:
+Single source of truth per field, one writer, many readers:
 
-- Add `CTA_PERSONALISE = "Personalise a few details"` (composer → refine handoff).
-- Add `CTA_ASK_CURATOR = "Ask a curator for help"` (refine screen secondary).
-- Add `INCLUDED_HEADER_REFINE = "Included in your day"` (refine screen only; reveal keeps `INCLUSION_HEADER`).
-- Keep existing `CTA_PRIMARY`, `CTA_MAKE_STORY`, `CTA_SAVE_SIGNATURE`, `CTA_BACK_TO_REFINE` untouched.
+| Field                 | Written on | Read on                          |
+|-----------------------|------------|----------------------------------|
+| `tourId`              | `map`      | Refine, Storytelling, Checkout   |
+| `editedRoutePoints`   | Refine     | Storytelling, Checkout           |
+| `selectedAddOnIds`    | Refine     | Storytelling, Checkout           |
+| `guests`              | questions  | Refine, Storytelling, Checkout   |
+| `journeyTitle`        | `map`      | Refine, Storytelling, WhatsApp   |
 
----
+Guarantee: Storytelling never calls `resolveStudioV3Route` with different inputs than Refine did. It receives `composedStops` and `perPax/totalEur` as props only.
 
-## Files touched
+## Naming cleanup (comments + testids only, no phase rename)
 
-- `src/content/signature-day-copy.ts` — add three tokens above.
-- `src/components/studio-v3/StudioV3.tsx` — rename composer → refine CTA to `CTA_PERSONALISE`.
-- `src/components/studio-v3/SignaturePriceCard.tsx` — collapse price block, prune trust strip + duplicate CTA + tier picker + "drops to" hint, add "Ask a curator for help" secondary, merge add-ons into the Included list, swap header.
-- `src/components/studio-v3/FinalRevealStory.tsx` — restrict `stops` to the traveller's kept set.
-- Tests to update (labels + count assertions), based on greps: `studio-v3-cta-labels-live.spec.ts`, `studio-v3-unified-signature-card.spec.ts`, `studio-v3-price-anchor-exit-intent.spec.ts`, `studio-v3-final-investment-live.spec.ts`, `price-source-of-truth.test.tsx`, `add-ons-gating-total.test.tsx`. Adjust expectations rather than adding new coverage.
+Renaming the `storyboard` phase string is a wide-blast-radius change (analytics, saved-signature hydration, tests). Instead:
 
-## Out of scope
+- Add a top-of-file comment in `StudioV3.tsx` mapping the three product screens to their phase strings: `map → MapAwakens`, `storyboard → Refine`, `confirmation → Storytelling`.
+- Add stable testids: `studio-v3-screen="refine"` on `StoryboardHandoff` root, `studio-v3-screen="storytelling"` on `FinalRevealStory` root. Existing testids stay for backward compat.
 
-- Any change to pricing math, add-on catalogue, or Signature source data.
-- Redesign of the storytelling reveal layout (only its data source is fixed).
-- Copy on Guest Details / Checkout Summary screens.
-- Adding QA overlays or screenshot-export tools (superseded by this cleanup).
+## Playwright + unit spec updates (follows the earlier plan you already saw)
+
+- `studio-v3-unified-signature-card.spec.ts` — add: exactly-two-CTA assertion on Refine, `Included in your day` header lock, `Your additions` divider + ordering + styling contract, add-on toggle round-trip. Keep swap-pool / add-pool expand tests.
+- `studio-v3-price-anchor-exit-intent.spec.ts` → rename to `studio-v3-exit-intent.spec.ts`, delete the anchor-hint block, keep exit-intent + questionnaire coverage.
+- `studio-v3-reveal-and-guest-details-mobile.spec.ts` — no functional change; flag PNG baselines for `--update-snapshots`; add a copy-lock that Storytelling has `Continue to guest details` and `Save my signature`, and does NOT have `See my signature story` or add-on toggles.
+- New tiny unit test: `MapAwakens` renders only ONE primary CTA, labelled `Personalise a few details`, and no price string.
+
+## Non-goals (deliberately excluded)
+
+- Renaming the `storyboard` phase string (risky, low value).
+- Any new backend, pricing, or add-on catalogue changes.
+- New animations or visual redesign on any of the three screens.
+- Touching Guest Details / Checkout Summary.
+- Reintroducing anchor hints, tier picker, itinerary spine, or trust strip.
 
 ## Verification
 
-- Manual mobile viewport (393×588): composer CTA reads "Personalise a few details"; refine screen shows exactly two buttons and a single price/total pair that updates live with add-on toggles; storytelling reveal lists only kept stops + selected additions.
-- `bunx vitest run` on the touched tests.
-- Playwright: `studio-v3-cta-labels-live.spec.ts` and `studio-v3-unified-signature-card.spec.ts` re-run against the updated labels.
+1. `bunx tsgo --noEmit` clean.
+2. Headed Playwright run of the unified-signature-card spec against `http://localhost:8080`.
+3. Manual mobile pass at 393×588: MapAwakens → Personalise → Refine (remove one stop, accept suggestion, toggle one add-on, watch price + `Your additions` update) → See my signature story → Storytelling (verify timeline matches kept stops + add-on beats) → Continue.
