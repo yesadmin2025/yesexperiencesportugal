@@ -916,7 +916,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return;
     const onHide = () => {
       if (document.visibilityState !== "hidden") return;
-      if (state.phase === "intro" || state.phase === "storyboard") return;
+      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation") return;
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
