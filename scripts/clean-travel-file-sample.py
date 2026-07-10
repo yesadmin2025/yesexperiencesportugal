@@ -73,27 +73,24 @@ def build_cover_page() -> PageObject:
     def py(pt_top_down: float) -> int:
         return int(round(pt_top_down * H / PAGE_H))
 
-    # ── Zone A: LOGO block. PDF top-down y ≈ 60–255pt. Pure ivory zone,
-    #    so we sample one clean ivory pixel and fill the block flat —
-    #    matches the surrounding frame exactly.
+    # ── Zone A: LOGO block. PDF top-down y ≈ 65–235pt (safely above the
+    #    "PRIVATE CURATED…" eyebrow at ~320 and clear of the "Portugal"
+    #    title at ~275). Pure ivory zone, so flat fill matches the frame.
     ivory = img.getpixel((int(W * 0.12), py(30)))
     draw = ImageDraw.Draw(img)
-    logo_top, logo_bot = py(55), py(260)
-    # Stay inside the decorative gold frame (frame sits ~x=70..2410 at 300dpi).
-    frame_pad = py(38)  # ~38pt margin from edge
-    draw.rectangle([frame_pad, logo_top, W - frame_pad, logo_bot], fill=ivory)
+    frame_pad = py(38)
+    draw.rectangle([frame_pad, py(58), W - frame_pad, py(238)], fill=ivory)
 
-    # ── Zone B: "14 nights · Designed for Jennifer Oliver" line.
-    #    Sits over the sunset gradient — cannot use a flat fill. Copy a
-    #    clean gradient band from just above (between "Beyond the
-    #    Postcards" rule and the September date line).
-    #    Date line "September 8 — September 22, 2026" pdf top-down y ≈ 470–495.
-    #    Name line pdf top-down y ≈ 505–535. Clean source band ≈ 420–450.
-    name_top, name_bot = py(500), py(545)
-    src_top = py(420)
+    # ── Zone B: "14 nights · Designed for Jennifer Oliver" line only.
+    #    Dates line stays. Name line pdf top-down y ≈ 500–545. Source =
+    #    the clean sunset/ocean gradient just below it (y ≈ 552–597),
+    #    before the info card starts (~y 605).
+    name_top, name_bot = py(500), py(548)
+    src_top = py(552)
     band_h = name_bot - name_top
     src = img.crop((0, src_top, W, src_top + band_h))
     img.paste(src, (0, name_top))
+
 
     # ── Rebuild page 1: single-image PDF page at A4.
     img_buf = BytesIO()
