@@ -251,6 +251,28 @@ export function CheckoutSummary({
         </div>
       </div>
 
+      {/* One-pager PDF download */}
+      <div className="mt-6">
+        <CtaButton
+          type="button"
+          variant="ghost"
+          size="md"
+          className="w-full"
+          iconLeading={
+            pdfLoading ? (
+              <Loader2 size={14} className="animate-spin" aria-hidden />
+            ) : (
+              <Download size={14} aria-hidden />
+            )
+          }
+          onClick={handleDownloadPdf}
+          disabled={pdfLoading}
+          data-testid="studio-v3-checkout-summary-pdf"
+        >
+          {pdfLoading ? "Preparing PDF…" : "Download one-pager (PDF)"}
+        </CtaButton>
+      </div>
+
       {/* Guest details recap */}
       <div className="mt-6 flex items-center justify-between">
         <div className="text-[12.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
