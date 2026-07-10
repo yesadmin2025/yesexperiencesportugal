@@ -142,6 +142,7 @@ export function FinalRevealStory({
   return (
     <section
       data-testid={testId ?? "studio-v3-final-reveal"}
+      data-studio-v3-screen="storytelling"
       aria-labelledby="studio-v3-final-reveal-title"
       className={cn(
         "w-full max-w-[620px] mx-auto px-4 pt-6 pb-[calc(env(safe-area-inset-bottom)+7rem)]",

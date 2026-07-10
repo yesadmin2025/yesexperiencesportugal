@@ -49,7 +49,11 @@ export const INCLUDED_HEADER_REFINE = "Included in your day" as const;
 
 // Final Reveal — cinematic story screen after refinement.
 export const REVEAL_TITLE = "Your story in Portugal" as const;
-export const CTA_MAKE_STORY = "Make this my story in Portugal" as const;
+// Primary CTA on Storytelling — advances to Guest Details. Kept literal per
+// the approved flow plan (one job per screen; the emotional beat lives in
+// the letter body, the CTA does its transactional job).
+export const CTA_CONTINUE_TO_GUEST_DETAILS = "Continue to guest details" as const;
+export const CTA_MAKE_STORY = CTA_CONTINUE_TO_GUEST_DETAILS;
 export const CTA_SAVE_SIGNATURE = "Save my signature" as const;
 export const CTA_BACK_TO_REFINE = "Back to refine" as const;
 
