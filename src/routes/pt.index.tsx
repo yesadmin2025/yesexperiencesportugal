@@ -52,9 +52,7 @@ function PtLandingPage() {
           {t("pt_landing.body")}
         </p>
         <div className="mt-10 flex justify-center">
-          <CtaButton asChild>
-            <Link to="/">{t("pt_landing.cta")}</Link>
-          </CtaButton>
+          <CtaButton to="/">{t("pt_landing.cta")}</CtaButton>
         </div>
       </section>
     </SiteLayout>
