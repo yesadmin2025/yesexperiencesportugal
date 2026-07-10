@@ -142,6 +142,19 @@ export type SignatureTour = {
    */
   seoTitle?: string;
   seoDescription?: string;
+  /**
+   * Phase-2 i18n architecture (see src/i18n/tour-i18n.ts).
+   * When true, the /pt/tours/<id> route is published and included in
+   * the PT sitemap + hreflang set. Defaults to false — PT requests
+   * for un-ready tours fall back to EN content silently.
+   */
+  ptReady?: boolean;
+  /**
+   * Optional per-locale overlay for translatable fields.
+   * Populated during Phase 3 (human European Portuguese copy).
+   * Shape: see `TourI18nMap` in src/i18n/tour-i18n.ts.
+   */
+  i18n?: Partial<Record<"en" | "pt", import("@/i18n/tour-i18n").TourLocaleOverlay>>;
 };
 
 
