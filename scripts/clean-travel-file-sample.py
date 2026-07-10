@@ -1,102 +1,54 @@
 #!/usr/bin/env python3
-"""
-Redact personal details + logo wordmark from the public Travel Designer
-sample PDF, in place.
+"""Redact personal details + logo from the public Travel Designer sample PDF.
 
-Source of truth: `public/travel-file-sample/sample.pdf` is a real 23-page
-private travel file. We keep every page — including the later logistics /
-appendix pages — and only strip:
+Cover page (page 1) is a flattened raster — we rasterize it, pixel-edit
+only two zones (logo band and the "Designed for Jennifer Oliver" tail),
+then replace page 1 with the edited image. Interior pages 2–22 get an
+ivory strip over the running header. Page 23 gets a teal strip over the
+"YES experiences PORTUGAL" wordmark. Nothing else is touched.
 
-  1. The running header on pages 2–23:
-       "YES EXPERIENCES PORTUGAL · PRIVATE TRAVEL FILE · JENNIFER OLIVER ...
-        SEPTEMBER 2026"
-  2. On the flattened cover (page 1, one big raster image): the YES logo
-     block at the top and the "Designed for Jennifer Oliver" tail on the
-     14-nights line — both baked into the image, so covered with tone-
-     matched overlays and one clean rewritten line.
-  3. The "YES experiences PORTUGAL" wordmark near the middle of the final
-     page (page 23).
-
-Everything else — body copy, tables, day cards, contact footer — is
-untouched.
+Idempotent — safe to re-run.
 
 Run: `python3 scripts/clean-travel-file-sample.py`
 """
 from __future__ import annotations
+import subprocess, tempfile
 from io import BytesIO
 from pathlib import Path
 
+from PIL import Image, ImageDraw
 from pypdf import PdfReader, PdfWriter, PageObject
 from reportlab.lib.colors import Color
 from reportlab.pdfgen import canvas
 
 SRC = Path("public/travel-file-sample/sample.pdf")
 
-# Tones sampled from the raster cover + brand palette.
-IVORY_INTERIOR = Color(0xFA / 255, 0xF8 / 255, 0xF3 / 255)  # --ivory  #FAF8F3
-IVORY_COVER    = Color(250 / 255, 245 / 255, 239 / 255)     # cover inner frame — sampled
-TEAL           = Color(0x29 / 255, 0x5B / 255, 0x61 / 255)  # --teal (final-page band)
-CHARCOAL_SOFT  = Color(0x5A / 255, 0x5A / 255, 0x5A / 255)
+IVORY_INTERIOR = Color(0xFA / 255, 0xF8 / 255, 0xF3 / 255)
+TEAL           = Color(0x29 / 255, 0x5B / 255, 0x61 / 255)
 
-PAGE_W, PAGE_H = 595.276, 841.89  # A4
+PAGE_W, PAGE_H = 595.276, 841.89  # A4 pt
 
 
-def _base_canvas() -> tuple[canvas.Canvas, BytesIO]:
+def _canvas() -> tuple[canvas.Canvas, BytesIO]:
     buf = BytesIO()
-    c = canvas.Canvas(buf, pagesize=(PAGE_W, PAGE_H))
-    return c, buf
+    return canvas.Canvas(buf, pagesize=(PAGE_W, PAGE_H)), buf
 
 
 def build_header_overlay() -> PageObject:
-    """Full-width ivory strip along the top ~40pt — hides the running
-    'YES EXPERIENCES PORTUGAL · PRIVATE TRAVEL FILE · JENNIFER OLIVER
-    ... SEPTEMBER 2026' line on every interior page."""
-    c, buf = _base_canvas()
+    """Ivory strip over the top ~40pt on interior pages (running header)."""
+    c, buf = _canvas()
     c.setFillColor(IVORY_INTERIOR)
     c.rect(0, PAGE_H - 40, PAGE_W, 40, stroke=0, fill=1)
     c.save()
     buf.seek(0)
     return PdfReader(buf).pages[0]
-
-
-def build_cover_overlay() -> PageObject:
-    """The cover is one flattened image with the logo + client name baked
-    into the raster. Both target areas sit inside the ivory frame at the
-    top of the page (sampling confirmed pixel tone ≈ #FAF5EF), so a
-    full-width ivory rectangle blends seamlessly."""
-    c, buf = _base_canvas()
-
-    # ── 1. Logo block — top of the ivory frame, edge-to-edge inside the
-    # decorative border. Raster y ≈ 40–235 ⇒ PDF y ≈ 673–813.
-    c.setFillColor(IVORY_COVER)
-    c.rect(55, 670, PAGE_W - 110, 145, stroke=0, fill=1)
-
-    # ── 2. Meta line — erases the "Designed for Jennifer Oliver" line
-    # (and the redundant date line above the info card) with a single
-    # ivory rectangle. No text is redrawn: the dates already appear in
-    # the DATES row of the info card immediately below, so removing the
-    # whole meta strip is the cleanest option and preserves the original
-    # typography above ("Beyond the Postcards") and below (info card).
-    c.setFillColor(IVORY_COVER)
-    c.rect(170, 395, PAGE_W - 340, 50, stroke=0, fill=1)
-
-
-
-    c.save()
-    buf.seek(0)
-    return PdfReader(buf).pages[0]
-
 
 
 def build_page23_overlay() -> PageObject:
-    """Same header strip as every other page, plus a teal-tone box over
-    the 'YES experiences PORTUGAL' wordmark that sits on the dark teal
-    band near the middle of the final page."""
-    c, buf = _base_canvas()
+    """Ivory header strip + teal patch over the wordmark on the final page."""
+    c, buf = _canvas()
     c.setFillColor(IVORY_INTERIOR)
     c.rect(0, PAGE_H - 40, PAGE_W, 40, stroke=0, fill=1)
-    # Wordmark words sit at top=240.8→258.8pt.  reportlab y_bottom ≈ 583,
-    # height ≈ 22 (padded). Match the surrounding teal band, not ivory.
     c.setFillColor(TEAL)
     c.rect(80, PAGE_H - 270, PAGE_W - 160, 40, stroke=0, fill=1)
     c.save()
@@ -104,24 +56,77 @@ def build_page23_overlay() -> PageObject:
     return PdfReader(buf).pages[0]
 
 
+def build_cover_page() -> PageObject:
+    """Rasterize page 1 at 300 dpi, erase logo + client-name line via
+    content-aware pixel copy (no drawn text, no visible boxes), then
+    return a fresh PDF page containing the edited image."""
+    with tempfile.TemporaryDirectory() as td:
+        subprocess.run(
+            ["pdftoppm", "-jpeg", "-jpegopt", "quality=94", "-r", "300",
+             "-f", "1", "-l", "1", str(SRC), f"{td}/p"],
+            check=True,
+        )
+        img = Image.open(f"{td}/p-01.jpg").convert("RGB")
+
+    W, H = img.size  # ≈ 2480 x 3508 for A4 @ 300dpi
+    # Helpers: convert PDF top-down pt to pixel y.
+    def py(pt_top_down: float) -> int:
+        return int(round(pt_top_down * H / PAGE_H))
+
+    # ── Zone A: LOGO block. PDF top-down y ≈ 60–255pt. Pure ivory zone,
+    #    so we sample one clean ivory pixel and fill the block flat —
+    #    matches the surrounding frame exactly.
+    ivory = img.getpixel((int(W * 0.12), py(30)))
+    draw = ImageDraw.Draw(img)
+    logo_top, logo_bot = py(55), py(260)
+    # Stay inside the decorative gold frame (frame sits ~x=70..2410 at 300dpi).
+    frame_pad = py(38)  # ~38pt margin from edge
+    draw.rectangle([frame_pad, logo_top, W - frame_pad, logo_bot], fill=ivory)
+
+    # ── Zone B: "14 nights · Designed for Jennifer Oliver" line.
+    #    Sits over the sunset gradient — cannot use a flat fill. Copy a
+    #    clean gradient band from just above (between "Beyond the
+    #    Postcards" rule and the September date line).
+    #    Date line "September 8 — September 22, 2026" pdf top-down y ≈ 470–495.
+    #    Name line pdf top-down y ≈ 505–535. Clean source band ≈ 420–450.
+    name_top, name_bot = py(500), py(545)
+    src_top = py(420)
+    band_h = name_bot - name_top
+    src = img.crop((0, src_top, W, src_top + band_h))
+    img.paste(src, (0, name_top))
+
+    # ── Rebuild page 1: single-image PDF page at A4.
+    img_buf = BytesIO()
+    img.save(img_buf, format="JPEG", quality=92, optimize=True)
+    img_buf.seek(0)
+
+    c, buf = _canvas()
+    from reportlab.lib.utils import ImageReader
+    c.drawImage(ImageReader(img_buf), 0, 0, width=PAGE_W, height=PAGE_H)
+    c.save()
+    buf.seek(0)
+    return PdfReader(buf).pages[0]
+
 
 def main() -> None:
     assert SRC.exists(), f"missing {SRC}"
+    cover_page = build_cover_page()  # rasterize + edit BEFORE opening writer
     reader = PdfReader(str(SRC))
     writer = PdfWriter()
 
     header = build_header_overlay()
-    cover  = build_cover_overlay()
     page23 = build_page23_overlay()
+    last = len(reader.pages) - 1
 
     for i, page in enumerate(reader.pages):
         if i == 0:
-            page.merge_page(cover)
-        elif i == len(reader.pages) - 1:
+            writer.add_page(cover_page)
+        elif i == last:
             page.merge_page(page23)
+            writer.add_page(page)
         else:
             page.merge_page(header)
-        writer.add_page(page)
+            writer.add_page(page)
 
     with open(SRC, "wb") as f:
         writer.write(f)
