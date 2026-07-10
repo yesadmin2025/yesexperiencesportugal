@@ -73,23 +73,31 @@ def build_cover_page() -> PageObject:
     def py(pt_top_down: float) -> int:
         return int(round(pt_top_down * H / PAGE_H))
 
-    # ── Zone A: LOGO block. PDF top-down y ≈ 65–235pt (safely above the
-    #    "PRIVATE CURATED…" eyebrow at ~320 and clear of the "Portugal"
-    #    title at ~275). Pure ivory zone, so flat fill matches the frame.
+    # Measured from the 300dpi raster of the original cover:
+    #   logo YES glyphs        pdf y  84–115
+    #   eyebrow "PRIVATE …"    pdf y ~180–210 (gold, low contrast)
+    #   Portugal title         pdf y 235–323
+    #   Beyond the Postcards   pdf y 408–418
+    #   gold rule              pdf y 432–439
+    #   dates line             pdf y 505–544  (KEEP)
+    #   "14 nights · Designed for Jennifer Oliver"  pdf y 578–592 (ERASE)
+    #   info card starts       pdf y ~619
+
+    # ── Zone A: LOGO only. Pure ivory zone above the eyebrow — flat fill.
     ivory = img.getpixel((int(W * 0.12), py(30)))
     draw = ImageDraw.Draw(img)
     frame_pad = py(38)
-    draw.rectangle([frame_pad, py(58), W - frame_pad, py(238)], fill=ivory)
+    draw.rectangle([frame_pad, py(55), W - frame_pad, py(155)], fill=ivory)
 
-    # ── Zone B: "14 nights · Designed for Jennifer Oliver" line only.
-    #    Dates line stays. Name line pdf top-down y ≈ 500–545. Source =
-    #    the clean sunset/ocean gradient just below it (y ≈ 552–597),
-    #    before the info card starts (~y 605).
-    name_top, name_bot = py(500), py(548)
-    src_top = py(552)
+    # ── Zone B: only the "14 nights · Designed for Jennifer Oliver" line
+    #    (dates line stays). Copy the clean sunset gradient band from
+    #    just above (between dates line and name line) over the name.
+    name_top, name_bot = py(566), py(605)
+    src_top = py(548)  # clean band 548–587 above the name text (text starts 578)
     band_h = name_bot - name_top
     src = img.crop((0, src_top, W, src_top + band_h))
     img.paste(src, (0, name_top))
+
 
 
     # ── Rebuild page 1: single-image PDF page at A4.
