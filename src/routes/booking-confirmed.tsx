@@ -90,6 +90,35 @@ function BookingConfirmedPage() {
     };
   }, [session_id]);
 
+  // GA4 purchase — fire once per session_id when paid.
+  useEffect(() => {
+    if (state.kind !== "ok") return;
+    if (state.data.paymentStatus !== "paid") return;
+    if (!session_id || purchaseFiredFor.current === session_id) return;
+    purchaseFiredFor.current = session_id;
+    const t = tour ? findTour(tour) : null;
+    const valueEur = state.data.amountTotal != null ? state.data.amountTotal / 100 : 0;
+    const item = t
+      ? buildTourItem(t, { quantity: 1, tier: "signature", itemCategory: "Signature" })
+      : {
+          item_id: tour ?? "unknown",
+          item_name: tour ?? "YES experience",
+          item_brand: "YES Experiences Portugal",
+          item_category: "Signature",
+          price: valueEur,
+          quantity: 1,
+          currency: "EUR",
+        };
+    item.price = valueEur;
+    gaPurchase({
+      transactionId: session_id,
+      valueEur,
+      items: [item],
+      currency: state.data.currency ? state.data.currency.toUpperCase() : "EUR",
+    });
+  }, [state, session_id, tour]);
+
+
   const paid = state.kind === "ok" && state.data.paymentStatus === "paid";
   const amountLabel =
     state.kind === "ok" && state.data.amountTotal != null && state.data.currency
