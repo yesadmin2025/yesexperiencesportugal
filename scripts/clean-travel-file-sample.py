@@ -112,7 +112,7 @@ def main() -> None:
 
     header = build_header_overlay()
     cover  = build_cover_overlay()
-    page23 = build_page23_overlay(header)
+    page23 = build_page23_overlay()
 
     for i, page in enumerate(reader.pages):
         if i == 0:
