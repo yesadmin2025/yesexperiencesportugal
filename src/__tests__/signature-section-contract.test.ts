@@ -69,8 +69,14 @@ describe("Signatures section — /day-tours contract", () => {
     expect(visibleTitleIdx).toBeGreaterThan(titleLinkIdx);
 
     // The image Link must have closed BEFORE the visible title renders.
-    const imgIdx = DAY_TOURS_SRC.indexOf("<img");
-    expect(imgIdx).toBeGreaterThan(-1);
+    // The card currently uses the <TourImage> primitive, but we also accept a
+    // raw <img so the check keeps working through future refactors.
+    const imgIdx = (() => {
+      const a = DAY_TOURS_SRC.indexOf("<TourImage");
+      if (a > -1) return a;
+      return DAY_TOURS_SRC.indexOf("<img");
+    })();
+    expect(imgIdx, "hero image node missing on Signature card").toBeGreaterThan(-1);
     const closeAfterImg = DAY_TOURS_SRC.indexOf("</Link>", imgIdx);
     expect(closeAfterImg).toBeGreaterThan(imgIdx);
     expect(closeAfterImg).toBeLessThan(visibleTitleIdx);
