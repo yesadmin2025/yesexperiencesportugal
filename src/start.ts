@@ -1,6 +1,6 @@
 import { createStart, createMiddleware } from "@tanstack/react-start";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
-import { buildLegacyGoneResponse } from "@/lib/legacy-domain-redirect";
+import { buildLegacy301Response } from "@/lib/legacy-domain-redirect";
 import {
   buildDisallowRobotsResponse,
   getRequestHost,
@@ -9,22 +9,25 @@ import {
 } from "@/lib/noindex-nonprod-host";
 
 /**
- * Server-side 410 Gone for the legacy domain (yesexperiences.pt).
+ * Hybrid legacy-domain handler for yesexperiences.pt.
  *
- * The previous 301 redirect to yesexperiencesportugal.com was removed
- * intentionally: we want the two domains treated as unrelated by search
- * engines so the deprecated Google Business Profile attached to the old
- * domain does NOT carry over to the canonical site.
+ * Per-path 301 to yesexperiencesportugal.com for every known WordPress URL
+ * (see LEGACY_REDIRECT_MAP) so PageRank consolidates on the canonical
+ * origin. Unmapped paths get 410 Gone — never a blanket homepage redirect
+ * (that's the soft-404 trap).
+ *
+ * Deliberately paired with: no GSC Change of Address, and no reference
+ * anywhere in the codebase to the deprecated Google Business Profile
+ * attached to the old domain. That combination keeps the old GBP severed
+ * while still transferring web-search authority.
  *
  * Logic lives in `@/lib/legacy-domain-redirect` so it can be unit-tested.
- * Only fires when the request actually reaches this server — the legacy
- * domain's DNS must point here for that to happen.
  */
-const legacyDomainGone = createMiddleware().server(async ({ next, request }) => {
+const legacyDomainRedirect = createMiddleware().server(async ({ next, request }) => {
   const url = new URL(request.url);
   if (url.pathname.startsWith("/lovable/")) return next();
-  const gone = buildLegacyGoneResponse(request);
-  if (gone) return gone;
+  const response = buildLegacy301Response(request);
+  if (response) return response;
   return next();
 });
 
@@ -57,6 +60,6 @@ const noindexNonProdHost = createMiddleware().server(async ({ next, request }) =
 });
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [legacyDomainGone, noindexNonProdHost],
+  requestMiddleware: [legacyDomainRedirect, noindexNonProdHost],
   functionMiddleware: [attachSupabaseAuth],
 }));
