@@ -1043,7 +1043,18 @@ export function StudioV3() {
         event: "select",
         value: { field: String(key), selection: value as unknown },
       });
-      return { ...s, [key]: value };
+      const nextState = { ...s, [key]: value } as StudioV3State;
+      // GA4 studio_step — fire per configurator step selection.
+      try {
+        gaStudioStep({
+          stepNumber: stepOf(s.phase),
+          stepKey: s.phase,
+          qualityScore: computeQualityScore(nextState)?.total ?? null,
+        });
+      } catch {
+        /* silent */
+      }
+      return nextState;
     });
     if (reactionInit) {
       window.setTimeout(() => playReaction({ ...reactionInit, nextPhase: next }), delay);
