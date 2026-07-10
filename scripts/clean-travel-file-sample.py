@@ -78,7 +78,8 @@ def build_cover_overlay() -> PageObject:
     # whole meta strip is the cleanest option and preserves the original
     # typography above ("Beyond the Postcards") and below (info card).
     c.setFillColor(IVORY_COVER)
-    c.rect(120, 385, PAGE_W - 240, 75, stroke=0, fill=1)
+    c.rect(140, 390, PAGE_W - 280, 60, stroke=0, fill=1)
+
 
     c.save()
     buf.seek(0)
