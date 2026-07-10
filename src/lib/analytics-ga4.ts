@@ -125,7 +125,7 @@ export function gaAddToCartSignature(args: {
   guests: number;
   perPaxEur?: number;
 }): void {
-  const price = args.perPaxEur ?? Number(args.tour.priceFrom) || 0;
+  const price = args.perPaxEur ?? (Number(args.tour.priceFrom) || 0);
   const item: GA4Item = {
     ...buildTourItem(args.tour, {
       quantity: args.guests,
