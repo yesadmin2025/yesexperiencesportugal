@@ -29,14 +29,13 @@ from pathlib import Path
 from pypdf import PdfReader, PdfWriter, PageObject
 from reportlab.lib.colors import Color
 from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 
 SRC = Path("public/travel-file-sample/sample.pdf")
 
 # Warm-ivory tokens sampled from the brand palette + cover artwork.
 IVORY = Color(0xFA / 255, 0xF8 / 255, 0xF3 / 255)   # --ivory  #FAF8F3
-SAND  = Color(0xEF / 255, 0xE6 / 255, 0xD4 / 255)   # cover ivory frame
+SAND  = Color(0xF3 / 255, 0xEB / 255, 0xDA / 255)   # cover inner ivory frame (sampled)
+TEAL  = Color(0x29 / 255, 0x5B / 255, 0x61 / 255)   # --teal (page 23 dark band)
 SUNSET = Color(0xE9 / 255, 0xD3 / 255, 0xB0 / 255)  # sampled sunset tone under "14 nights"
 CHARCOAL = Color(0x2E / 255, 0x2E / 255, 0x2E / 255)  # --charcoal
 CHARCOAL_SOFT = Color(0x5A / 255, 0x5A / 255, 0x5A / 255)
