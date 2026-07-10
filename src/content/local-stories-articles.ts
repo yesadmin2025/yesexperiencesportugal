@@ -480,6 +480,341 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
   },
+  // -----------------------------------------------------------------------
+  // Migrated from legacy top-level SEO landers (now 301-redirected here).
+  // Copy preserved verbatim from each former lander's hero + body sections.
+  // -----------------------------------------------------------------------
+  {
+    slug: "arrabida-day-trip-from-lisbon",
+    title: "Arrábida Day Trip from Lisbon — Private Wine & Beaches",
+    metaDescription:
+      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão, a long Portuguese lunch and an optional close at Sesimbra Castle. Door-to-door driving.",
+    h1: "Arrábida Day Trip from Lisbon — wine, hills & sea",
+    eyebrow: "Lisbon · Arrábida Day",
+    standfirst:
+      "Setúbal market, family wineries in Azeitão, a long Portuguese lunch and an optional close above Sesimbra harbour.",
+    sections: [
+      {
+        heading: "South of the bridge, forty minutes and a different country.",
+        body: "Cross the 25 de Abril Bridge and the road curves through cork and pine into the Arrábida Natural Park — limestone mountains dropping straight into turquoise water, small unguarded beaches, and the wine village of Azeitão at its centre. It is the closest serious wine country to Lisbon, and the most under-the-radar.",
+      },
+      {
+        heading: "Market, wineries, long lunch, viewpoint.",
+        body: "We open at Setúbal's 145-year-old Livramento market, climb to two or three family wineries, and sit down for an unhurried Portuguese lunch in Azeitão. Optional close at Cristo Rei for the Lisbon panorama or Sesimbra Castle for Atlantic light.",
+      },
+      {
+        heading: "A private car, your own pace.",
+        body: "Group Arrábida tours typically stop at one winery and rush the lunch. Private means hotel pickup, your own driver-guide, and the choice of where to linger — an extra cellar, a swim at Galápos, or a longer walk on Sesimbra's castle walls.",
+      },
+    ],
+    ctaLead:
+      "This day lives inside our Arrábida Wine Signature — private from the start, paced around the long lunch, home to Lisbon by evening.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "arrabida-boat", label: "Arrábida by Boat" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese" },
+    ],
+    datePublished: "2026-07-01",
+  },
+  {
+    slug: "arrabida-wine-tour",
+    title: "Arrábida Wine Tour from Lisbon | Private Azeitão Day",
+    metaDescription:
+      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, instant confirmation.",
+    h1: "Arrábida Wine Tour — Azeitão & Setúbal, from Lisbon",
+    eyebrow: "Arrábida · Private Wine Day",
+    standfirst:
+      "Three family wineries, the Setúbal market, a long Portuguese lunch — all on the cork-oak side of the Atlantic, with your own driver and guide.",
+    sections: [
+      {
+        heading: "The closest serious wine country to Lisbon.",
+        body: "Cross the 25 de Abril Bridge and forty minutes later the road climbs into the Arrábida hills. Cork oaks on one side, the Atlantic glinting on the other. At the centre is the village of Azeitão — home of Moscatel de Setúbal and small family wineries that have been pouring for seven generations. The Setúbal fish market, 145 years old, is fifteen minutes further down the coast.",
+      },
+      {
+        heading: "Three cellars, one long lunch, no rush.",
+        body: "We start at Setúbal's Livramento market — oysters, cheese, the first glass of Moscatel — then move between three family wineries in Azeitão, with a long traditional lunch in the middle. Optional close at Cristo Rei or Sesimbra Castle for Atlantic light at the end of the day. Pickup and drop-off at your Lisbon hotel; the driving is on us.",
+      },
+      {
+        heading: "Private from the start. Real cellars. Designed live.",
+        body: "We are a licensed Portuguese tour operator (RNAAT nº 31/2023), not a marketplace re-selling someone else's bus. Every day is private from the start — your group, your pace, your wineries. The cellars we use are ones we have personally worked with, where the family still pours. If a winery isn't open the day you want, we change it — the Studio shows you the alternative in real time, with price.",
+      },
+    ],
+    ctaLead:
+      "This is our most-booked private day. Reserve the Signature, or open the Studio and design the same day around your own preferences.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+      { slug: "arrabida-boat", label: "Arrábida by Boat" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    datePublished: "2026-07-02",
+  },
+  {
+    slug: "sintra-day-tour-from-lisbon",
+    title: "Sintra Day Tour from Lisbon — Private & Cabo da Roca",
+    metaDescription:
+      "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.",
+    h1: "Private Sintra Day Tour from Lisbon — without the queues",
+    eyebrow: "Lisbon · Private Sintra Day",
+    standfirst:
+      "Quieter palaces and forest paths, Cabo da Roca and Cascais, finishing with a small private wine tasting.",
+    sections: [
+      {
+        heading: "Sintra is the day everyone has heard of.",
+        body: "We prefer it early, before the main estates fill with buses. The Pena Palace sits above the treeline; Quinta da Regaleira is a garden of grottoes and symbols. From the hill the road runs west to Cabo da Roca, the westernmost point of mainland Europe, and drops to Cascais for late afternoon.",
+      },
+      {
+        heading: "A working winery, not just the postcard list.",
+        body: "Most Sintra day tours stop at the palaces and leave. We add a quiet tasting at Adega Regional de Colares — vines planted in Atlantic sand — and a lunch break above the cliffs at Azenhas do Mar. The mood matters as much as the monuments.",
+      },
+      {
+        heading: "The train takes you to the town. We take you to the day.",
+        body: "The Lisbon-to-Sintra train is fine for a half-day glance. A private day means hotel pickup, a single car between Sintra, Cabo da Roca and Cascais, and a licensed local guide who decides which estate to skip when the line is long.",
+      },
+    ],
+    ctaLead:
+      "This day lives inside our Sintra & Cascais Signature — reserve it, or open the Studio and tailor the palaces, lunch and Cascais close.",
+    ctaLabel: "See the Sintra & Cascais Signature",
+    signatureSlug: "sintra-cascais",
+    relatedSignatures: [
+      { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+      { slug: "fatima-nazare-obidos", label: "Fátima · Nazaré · Óbidos" },
+    ],
+    datePublished: "2026-07-03",
+    faq: [
+      {
+        q: "How long is a Sintra day tour from Lisbon?",
+        a: "A full private day is about 8 hours door-to-door, with hotel pickup in Lisbon, two palaces or estates in Sintra, Cabo da Roca and a stop in Cascais before returning. We can shorten it to a half-day (~5 hours) on request.",
+      },
+      {
+        q: "Is a private Sintra tour worth it vs the train?",
+        a: "The Lisbon-to-Sintra train is fine for a half-day glance at the town. A private day means hotel pickup, a single car between Sintra, Cabo da Roca and Cascais, and a licensed local guide who decides which palace to skip when the queue is long — which matters in Sintra more than almost anywhere else in Portugal.",
+      },
+      {
+        q: "Which palaces are included on the Sintra day tour?",
+        a: "We typically visit two of: Pena Palace, Quinta da Regaleira, Monserrate and the National Palace of Sintra. The pair is chosen on the day based on opening times and crowds — your guide picks the calmest combination.",
+      },
+      {
+        q: "Do you include Cabo da Roca and Cascais?",
+        a: "Yes. After Sintra we drive west to Cabo da Roca — the westernmost point of mainland Europe — then down the Atlantic road to Cascais for late afternoon. A small private wine tasting at Adega Regional de Colares can be added on request.",
+      },
+      {
+        q: "Where does the Sintra tour start and end?",
+        a: "Hotel pickup and drop-off anywhere in central Lisbon, Cascais or Estoril is included. Pickups from Lisbon airport or cruise terminals can be arranged.",
+      },
+    ],
+  },
+  {
+    slug: "portugal-wine-tours",
+    title: "Portugal Wine Tours | Private Wine Days by YES Experiences",
+    metaDescription:
+      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers. All-inclusive private days from Lisbon.",
+    h1: "Portugal wine tours, poured properly.",
+    eyebrow: "Portugal · Wine Tours",
+    standfirst:
+      "Small cellars, real winemakers, and a private day paced around lunch.",
+    sections: [
+      {
+        heading: "Off the coach circuit.",
+        body: "Portugal is a wine country before it's a beach country. Our private wine tours stay off the coach circuit — small cellars, working winemakers, and the kind of lunch that turns a tasting into a proper day.",
+      },
+      {
+        heading: "Arrábida & Setúbal — the wine coast an hour from Lisbon.",
+        body: "Moscatel de Setúbal, Castelão reds, and cellars perched between cork forest and Atlantic cliffs. Our home region — a private day here is what we do best.",
+      },
+      {
+        heading: "Azeitão — a quieter cellar day: cheese, wine, and no queue.",
+        body: "Azeitão's small artisan cheesemakers, a working family cellar, and a lunch table under grapevines. Slower, closer, and often the guest favourite.",
+      },
+      {
+        heading: "Alentejo — Reserva reds under old olive trees.",
+        body: "Two hours south, the Alentejo pours the country's most concentrated reds. Estates that don't take walk-ins, long lunches, and an afternoon in Évora on the way back.",
+      },
+      {
+        heading: "One private car, one guide, one great cellar day.",
+        body: "All-inclusive: transfers from your Lisbon hotel, tastings, lunch, and the guide who knows which cellar is pouring well this month.",
+      },
+    ],
+    ctaLead:
+      "Start with our most-booked wine day — the Arrábida Signature — or design your own combination in the Studio.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "evora-alentejo", label: "Évora & Alentejo Wine" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+    ],
+    datePublished: "2026-07-04",
+  },
+  {
+    slug: "wine-tours-lisbon",
+    title: "Private Wine Tours from Lisbon | Arrábida and Alentejo by YES",
+    metaDescription:
+      "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Booked with a licensed local operator.",
+    h1: "The Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo",
+    eyebrow: "Lisbon · Private Wine Days",
+    standfirst:
+      "Three real wine regions within reach of your hotel. Family producers, long Portuguese lunches, your own driver and guide.",
+    sections: [
+      {
+        heading: "Three wine regions, all reachable in a day.",
+        body: "Lisbon sits between two serious wine countries. Forty minutes south across the 25 de Abril bridge are the Arrábida hills and Azeitão — Moscatel de Setúbal country, small whitewashed family wineries, the Atlantic just below. An hour and a half east lies the Alentejo plain, with the walled town of Évora at its centre. We design private wine days in both, and we drive you door to door.",
+      },
+      {
+        heading: "Private. Local. Designed live, not booked off a shelf.",
+        body: "We are a licensed Portuguese tour operator (RNAAT nº 31/2023), not a marketplace reselling someone else's bus tour. Every day is private from the start: your group, your pace, your wineries. We open the wineries we have personally worked with — the cellars where the family pours, not a tasting-room queue — and we sit you at a long lunch that takes as long as it should.",
+      },
+      {
+        heading: "Real Signature wine days.",
+        body: "Arrábida Wine — All Inclusive (8h): Setúbal's 145-year-old market for oysters and Moscatel, three family wineries in Azeitão, traditional Portuguese lunch, panoramic close at Cristo Rei or Sesimbra. Évora & Alentejo Wine (11h): the walled town of Évora — Roman temple, bone chapel — then two Alentejo wineries with a long lunch under the cork oaks, on the way back to Lisbon. Azeitão Cheese & Wine (half day): a morning with a 7th-generation Azeitão cheesemaker, paired with the local Moscatel — a calm, intimate alternative to a full wine day.",
+      },
+    ],
+    ctaLead:
+      "Reserve a Signature, or open the Studio and design your own wine day — route, wineries, lunch, and close.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "evora-alentejo", label: "Évora & Alentejo Wine" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+    ],
+    datePublished: "2026-07-05",
+  },
+  {
+    slug: "private-wine-tour-lisbon",
+    title: "Private Wine Tour from Lisbon — Arrábida, Azeitão & Setúbal",
+    metaDescription:
+      "Private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving, designed by a licensed local team.",
+    h1: "Private Wine Tour from Lisbon — Arrábida & Azeitão",
+    eyebrow: "Lisbon · Private Wine Day",
+    standfirst:
+      "Two or three family wineries, a long Portuguese lunch and a panoramic close — handled door to door from Lisbon.",
+    sections: [
+      {
+        heading: "The closest serious wine country to Lisbon.",
+        body: "Cross the 25 de Abril Bridge and within forty minutes the road climbs into the Arrábida hills. Cork oaks, low whitewashed wineries, and the Atlantic glinting below. Azeitão is the village at the centre — home to Moscatel de Setúbal and small family producers who have been pouring for seven generations.",
+      },
+      {
+        heading: "Two or three wineries, one long lunch, no rush.",
+        body: "We start with Setúbal's 145-year-old Livramento market — oysters, cheese, the first glass of Moscatel — then move between family wineries with a long traditional lunch in Azeitão in the middle. Optional close at Cristo Rei or Sesimbra Castle for Atlantic light. Pickup and drop-off at your Lisbon hotel; the driving is on us.",
+      },
+      {
+        heading: "Your own pace, your own pours.",
+        body: "Group wine tours run on a fixed clock and a fixed cellar list. A private day means you choose how long to linger at each table, which wineries to add, and whether to end the day on a viewpoint or back in the city for dinner.",
+      },
+    ],
+    ctaLead:
+      "This is the day most guests are imagining when they ask about a wine tour from Lisbon — reserve the Signature, or tailor the wineries and close in the Studio.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese" },
+      { slug: "arrabida-boat", label: "Arrábida by Boat" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    datePublished: "2026-07-06",
+  },
+  {
+    slug: "alentejo-wine-tour-from-lisbon",
+    title: "Alentejo Wine Tour from Lisbon | Private Évora & Cork",
+    metaDescription:
+      "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork tradition stop, with a long Alentejo lunch. Door-to-door driving.",
+    h1: "Alentejo Wine Tour from Lisbon — wine, cork & Évora",
+    eyebrow: "Lisbon · Alentejo wine country",
+    standfirst:
+      "Two family wineries, a cork tradition stop and Évora's UNESCO old town — at the unhurried pace of Alentejo.",
+    sections: [
+      {
+        heading: "Portugal's most underrated wine region — and the slowest.",
+        body: "Alentejo is plains, cork oaks and family-run wineries that still make wine the way their grandparents did. It is also where most of the world's cork is born. From Lisbon it is a long day, not a short one — which is exactly why it stays quiet.",
+      },
+      {
+        heading: "Cork, two wineries, Évora old town, long lunch.",
+        body: "We open with a cork tradition stop, taste at two family wineries — one with restaurant, one with cellars — and walk Évora's cobbled centre past the Roman Temple and the Chapel of Bones. Lunch is unhurried, somewhere local, somewhere honest.",
+      },
+      {
+        heading: "Your driver-guide, your pace.",
+        body: "Hotel pickup in Lisbon, a comfortable car, and the freedom to linger an extra glass at a cellar you like or skip a stop you don't. The route is built around you — not a coach schedule.",
+      },
+    ],
+    ctaLead:
+      "This day lives inside our Évora & Alentejo Signature — reserve it, or tailor the wineries and Évora time in the Studio.",
+    ctaLabel: "See the Évora & Alentejo Signature",
+    signatureSlug: "evora-alentejo",
+    relatedSignatures: [
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+    ],
+    datePublished: "2026-07-07",
+  },
+  {
+    slug: "evora-alentejo-wine-tour",
+    title: "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon",
+    metaDescription:
+      "A private full day from Lisbon combining Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door.",
+    h1: "Évora & Alentejo Wine Tour — one private full day",
+    eyebrow: "Lisbon · Évora & Alentejo",
+    standfirst:
+      "UNESCO heritage, cork traditions, local wines and a route designed around you — from Lisbon, for one day, at your pace.",
+    sections: [
+      {
+        heading: "Évora and Alentejo, in one day from Lisbon.",
+        body: "Évora is the UNESCO-listed capital of Alentejo — Roman Temple, Chapel of Bones, narrow lanes. Around it stretches cork-oak country and some of Portugal's most honest family wineries. Done privately, the two fit comfortably into a single full day.",
+      },
+      {
+        heading: "Cork, wine, heritage, lunch.",
+        body: "A cork tradition stop, two family wineries, a walk through Évora's old town with the Roman Temple and Chapel of Bones, and a long Alentejo lunch. The route flexes — fewer stops, deeper ones, or the opposite, depending on what you want.",
+      },
+      {
+        heading: "Reviewed across independent travel guides.",
+        body: "The Évora & Alentejo wine experience YES Experiences Portugal operates has been compared, ranked and reviewed by independent travel guides covering full-day tours from Lisbon.",
+      },
+    ],
+    ctaLead:
+      "Reserve the Évora & Alentejo Signature, or design your own Alentejo day in the Studio.",
+    ctaLabel: "See the Évora & Alentejo Signature",
+    signatureSlug: "evora-alentejo",
+    relatedSignatures: [
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+    ],
+    datePublished: "2026-07-08",
+  },
+  {
+    slug: "evora-private-tour-from-lisbon",
+    title: "Private Évora Day Tour from Lisbon — UNESCO & Alentejo",
+    metaDescription:
+      "Private Évora tour from Lisbon — the Roman Temple, Chapel of Bones, two family wineries and a cork tradition stop, with an unhurried Alentejo lunch.",
+    h1: "Private Évora Tour from Lisbon — heritage, wine & cork",
+    eyebrow: "Lisbon · Évora private day",
+    standfirst:
+      "Évora's UNESCO centre, two family wineries and a cork tradition stop — a private day across Alentejo at the pace of a long lunch.",
+    sections: [
+      {
+        heading: "Ninety minutes south, two thousand years deep.",
+        body: "Évora is a small UNESCO World Heritage city in the heart of Alentejo — Roman Temple, cathedral, narrow lanes and the famous Chapel of Bones, all walkable in an afternoon. From Lisbon it is an easy private drive across cork-oak country.",
+      },
+      {
+        heading: "Roman temple, two wineries, a cork stop, long lunch.",
+        body: "We walk the old town with a local guide, visit two family wineries — one of them with a restaurant — and add a cork tradition stop so you see where Portuguese cork actually comes from. Lunch is Alentejo-slow, plates shared, wine local.",
+      },
+      {
+        heading: "No coach, no rush, no fixed script.",
+        body: "Hotel pickup, your own driver-guide, your own car. Stay longer in the cathedral cloister, skip a winery, add an extra glass — the day moves with you, not with thirty strangers.",
+      },
+    ],
+    ctaLead:
+      "This day lives inside our Évora & Alentejo Signature — reserve it, or tailor the wineries and Évora time in the Studio.",
+    ctaLabel: "See the Évora & Alentejo Signature",
+    signatureSlug: "evora-alentejo",
+    relatedSignatures: [
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+    ],
+    datePublished: "2026-07-09",
+  },
 ];
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
