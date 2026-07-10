@@ -37,6 +37,13 @@ export interface GuestDetailsStepProps {
   readonly submitting?: boolean;
   readonly onBack: () => void;
   readonly onSubmit: (details: GuestDetails) => Promise<void> | void;
+  /**
+   * Called once the traveller blurs a valid email. Parent owns the
+   * snapshot + email dispatch — this component only forwards the address.
+   * Debounced + deduped internally so repeated blurs of the same address
+   * never fire twice.
+   */
+  readonly onEmailBlur?: (email: string) => Promise<void> | void;
   readonly className?: string;
   readonly testId?: string;
 }
@@ -57,6 +64,7 @@ export function GuestDetailsStep({
   submitting = false,
   onBack,
   onSubmit,
+  onEmailBlur,
   className,
   testId,
 }: GuestDetailsStepProps) {
