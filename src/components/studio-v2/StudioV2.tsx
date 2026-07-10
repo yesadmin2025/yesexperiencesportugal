@@ -2103,8 +2103,8 @@ function RevealStory({
         }
         whatsappHref={whatsappHref(
           profile.name?.trim()
-            ? `Olá! Sou ${profile.name.trim()} e acabei de desenhar um dia em ${regionWhisper(region)}. Gostaria de o refinar com um local designer.`
-            : `Olá! Acabei de desenhar um dia em Portugal no Studio. Gostaria de o refinar com um local designer.`,
+            ? `Hi YES — I'm ${profile.name.trim()}. I just designed a day in ${regionWhisper(region)} in the Studio and would like to refine it with a local designer.`
+            : `Hi YES — I just designed a day in Portugal in the Studio and would like to refine it with a local designer.`,
         )}
         onShare={(channel) =>
           void trackBuilderEvent("studio_v2_postcard_share", {
@@ -2394,8 +2394,8 @@ function BespokeSecureCTA({
   };
 
   const waMsg = profile.name?.trim()
-    ? `Olá! Sou ${profile.name.trim()} e acabei de desenhar um dia em Portugal no Studio. Gostaria de falar com um local designer antes de reservar.`
-    : `Olá! Acabei de desenhar um dia em Portugal no Studio. Gostaria de falar com um local designer antes de reservar.`;
+    ? `Hi YES — I'm ${profile.name.trim()}. I just designed a day in Portugal in the Studio and would like to talk to a local designer before booking.`
+    : `Hi YES — I just designed a day in Portugal in the Studio and would like to talk to a local designer before booking.`;
 
   return (
     <div className="mt-12 flex flex-col gap-4">
@@ -2590,8 +2590,8 @@ function RevealActions({
   const saved = saveState === "saved";
 
   const waMsg = name?.trim()
-    ? `Olá! Sou ${name.trim()} e acabei de desenhar a minha experiência no Studio. Gostaria de a refinar com um local designer.`
-    : "Olá! Acabei de desenhar uma experiência no Studio. Gostaria de a refinar com um local designer.";
+    ? `Hi YES — I'm ${name.trim()}. I just designed my experience in the Studio and would like to refine it with a local designer.`
+    : "Hi YES — I just designed my experience in the Studio and would like to refine it with a local designer.";
   return (
     <div className="mt-12 flex flex-col gap-3">
       {/* Primary Secure CTA now lives in RevealStory (uses real edited stops). */}

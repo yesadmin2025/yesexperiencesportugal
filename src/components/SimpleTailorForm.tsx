@@ -53,7 +53,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
   const message = useMemo(() => {
     const kept = allStops.filter((s) => !skipped.has(s));
     const lines = [
-      `Hi! I'd like to tailor "${tour.title}" (${tour.region}).`,
+      `Hi YES — I'd like to tailor the ${tour.title} (${tour.region}).`,
       `• Date: ${date || "flexible"}`,
       `• Guests: ${guests}`,
       `• Pace: ${pace}`,

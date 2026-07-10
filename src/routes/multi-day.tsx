@@ -517,7 +517,7 @@ function MultiDayPage() {
             </CtaButton>
             <a
               href={whatsappHref(
-                "Hi! I'm interested in a private Travel Designer journey with YES Experiences.",
+                "Hi YES — I'd like to plan a multi-day Portugal journey.",
               )}
               target="_blank"
               rel="noopener noreferrer"

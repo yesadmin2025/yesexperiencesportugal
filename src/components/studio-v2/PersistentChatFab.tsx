@@ -20,10 +20,10 @@ export function PersistentChatFab({ profile }: { profile: TravelerProfile }) {
     ? profile.group.adults + profile.group.teens + profile.group.children
     : null;
   const parts = [
-    "Olá! Estou a desenhar uma experiência no Studio",
-    intentLabel ? `— ${intentLabel}` : null,
-    total ? `para ${total} pessoa${total === 1 ? "" : "s"}` : null,
-    "— gostaria de ajuda de um local.",
+    "Hi YES — I'm designing my experience in the Studio",
+    intentLabel ? `(${intentLabel})` : null,
+    total ? `for ${total} ${total === 1 ? "person" : "people"}` : null,
+    "— and would like a suggestion from a local.",
   ].filter(Boolean);
   const message = parts.join(" ");
 

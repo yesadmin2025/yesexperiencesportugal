@@ -1133,7 +1133,7 @@ function TailorPage() {
                     </p>
                     <a
                       href={whatsappHref(
-                        `Hi! I'd like a quick suggestion for tailoring "${tour.title}".`,
+                        `Hi YES — I'd like to talk to a local about the ${tour.title}.`,
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
