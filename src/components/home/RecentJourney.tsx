@@ -9,11 +9,12 @@ import { CtaPair } from "@/components/ui/CtaPair";
 // the /multi-day Travel Designer page — kept in sync so the homepage
 // proof and the deep page show the exact same document.
 const samplePage01 = { url: "/travel-file-sample/page-01.jpg" };
-import samplePage02 from "@/assets/travel-file-sample/page-02.jpg.asset.json";
-import samplePage03 from "@/assets/travel-file-sample/page-03.jpg.asset.json";
-import samplePage04 from "@/assets/travel-file-sample/page-04.jpg.asset.json";
-import samplePage05 from "@/assets/travel-file-sample/page-05.jpg.asset.json";
-import samplePage06 from "@/assets/travel-file-sample/page-06.jpg.asset.json";
+const samplePage02 = { url: "/travel-file-sample/page-02.jpg" };
+const samplePage03 = { url: "/travel-file-sample/page-03.jpg" };
+const samplePage04 = { url: "/travel-file-sample/page-04.jpg" };
+const samplePage05 = { url: "/travel-file-sample/page-05.jpg" };
+const samplePage06 = { url: "/travel-file-sample/page-06.jpg" };
+const samplePdfUrl = "/travel-file-sample/sample.pdf";
 
 /**
  * Bespoke Travel Designer — proof block.
