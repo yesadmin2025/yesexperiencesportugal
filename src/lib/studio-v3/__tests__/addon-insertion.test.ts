@@ -53,9 +53,9 @@ describe("planAddonInsertion", () => {
   });
 
   it("hides an add-on that would push driving past the cap", () => {
-    // Cabo Espichel is far south-west; forcing it on a already-tight day.
-    const tightLegs = [55, 25, 30, 60];
-    const tightKm = [55, 20, 25, 60];
+    // Already-tight day: any extra detour tips it over the 150-min cap.
+    const tightLegs = [55, 25, 65];
+    const tightKm = [55, 20, 65];
     const result = planAddonInsertion({
       region: "arrabida",
       baseStops,
