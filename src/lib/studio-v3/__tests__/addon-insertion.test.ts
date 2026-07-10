@@ -18,7 +18,7 @@ const stop = (
 ): ValidationStop => ({
   key,
   label,
-  category: "sight",
+  category: "viewpoint",
   coords,
 });
 
@@ -120,7 +120,7 @@ describe("planAddonInsertion", () => {
       addonStop: {
         key: "no-coords",
         label: "Mystery stop",
-        category: "sight",
+        category: "viewpoint",
       },
     });
     expect(result.status).toBe("hidden");
