@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
+import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -42,6 +43,12 @@ export const Route = createFileRoute("/contact")({
         content: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "Contact YES Experiences Portugal — a local team in Sesimbra" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/contact" }],
     scripts: [

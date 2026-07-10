@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
 import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { STUDIO_FAQ } from "@/content/seo-faq";
+import ogImg from "@/assets/decision-studio.jpg";
 
 /**
  * /studio-v3 — Cinematic Journey Composer (prototype).
@@ -29,6 +30,12 @@ export const Route = createFileRoute("/studio-v3")({
         content: "A cinematic, guided composer — not a form. Portugal responds as you choose.",
       },
       { property: "og:url", content: CANONICAL_URL },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "YES Studio — design your private Portugal day" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
     links: [{ rel: "canonical", href: CANONICAL_URL }],
     scripts: [

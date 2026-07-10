@@ -6,6 +6,7 @@ import {
   CANCELLATION_SIGNATURE,
   CANCELLATION_STUDIO,
 } from "@/config/business-nap";
+import ogImg from "@/assets/hero-coast.jpg";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -24,7 +25,12 @@ export const Route = createFileRoute("/terms")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/terms" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "YES Experiences Portugal — Terms & Conditions" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/terms" }],
   }),
