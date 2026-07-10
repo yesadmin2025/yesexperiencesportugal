@@ -1378,6 +1378,19 @@ export function StudioV3() {
       event: "tier_chosen",
       value: { tier: id, label },
     });
+    // GA4 add_to_cart — Studio tier selected.
+    try {
+      const tierPrice =
+        id === "essential" ? 180 : id === "balanced" ? 320 : id === "full" ? 550 : 950;
+      gaAddToCartStudioTier({
+        tier: id,
+        priceEur: tierPrice,
+        tourId: state.tourId ?? null,
+        tourTitle: state.journeyTitle ?? null,
+      });
+    } catch {
+      /* silent */
+    }
 
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({
