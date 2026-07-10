@@ -266,11 +266,15 @@ function Field({
   name,
   type = "text",
   textarea = false,
+  required = true,
+  min,
 }: {
   label: string;
   name: string;
   type?: string;
   textarea?: boolean;
+  required?: boolean;
+  min?: string;
 }) {
   return (
     <label className="block">
@@ -281,7 +285,7 @@ function Field({
         <textarea
           name={name}
           rows={5}
-          required
+          required={required}
           maxLength={4000}
           className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
         />
@@ -289,11 +293,45 @@ function Field({
         <input
           type={type}
           name={name}
-          required
+          required={required}
+          min={min}
           maxLength={type === "email" ? 254 : 80}
           className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors"
         />
       )}
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  name,
+  options,
+}: {
+  label: string;
+  name: string;
+  options: ReadonlyArray<{ value: string; label: string }>;
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </span>
+      <select
+        name={name}
+        required
+        defaultValue=""
+        className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors appearance-none"
+      >
+        <option value="" disabled>
+          Choose one…
+        </option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }
