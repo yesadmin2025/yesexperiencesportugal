@@ -484,9 +484,9 @@ function BookFlip() {
         </button>
       </div>
 
-      {/* Thumbnail rail — visible pagination, direct jump */}
+      {/* Thumbnail rail — 23 pages, horizontally scrollable */}
       <div
-        className="mt-6 flex items-center justify-center gap-2.5 md:gap-3"
+        className="mt-6 flex items-center gap-2.5 md:gap-3 overflow-x-auto snap-x px-4 -mx-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         role="tablist"
         aria-label="Jump to page"
       >
