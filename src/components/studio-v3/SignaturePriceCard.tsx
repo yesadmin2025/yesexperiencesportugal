@@ -1001,9 +1001,9 @@ export function SignaturePriceCard({
                         style={{ color: "var(--charcoal)" }}
                       >
                         <span>
-                          +€{eur}
+                          +€{line.perUnit}
                           <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
-                            / pp
+                            {line.unitLabel}
                           </span>
                         </span>
                         {a.durationMinutes > 0 ? (
