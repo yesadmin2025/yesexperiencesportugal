@@ -52,6 +52,13 @@ export interface FinalRevealStoryProps {
   readonly saving?: boolean;
   readonly className?: string;
   readonly testId?: string;
+  /**
+   * The stops the traveller actually composed (from resolveStudioV3Route
+   * in StudioV3). Used as the storytelling source when the traveller did
+   * not refine (editedRoutePoints === null). Prevents the reveal from
+   * listing every stop in the wider Signature catalog.
+   */
+  readonly composedStops?: ReadonlyArray<{ label: string; story: string }>;
 }
 
 function formatEur(n: number | null): string {
@@ -87,17 +94,26 @@ export function FinalRevealStory({
   saving = false,
   className,
   testId,
+  composedStops,
 }: FinalRevealStoryProps) {
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
-  // Editorial timeline — merge refined route stops with selected add-ons as
-  // confirmed narrative beats. Every entry shown here is instantly confirmed
-  // on booking (date selection already validates availability).
-  const stops = (state.editedRoutePoints && state.editedRoutePoints.length > 0
-    ? state.editedRoutePoints
-    : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }))
-  ).map((s) => ({ label: s.label, story: s.story, kind: "stop" as const }));
+  // Editorial timeline — always reflect the traveller's kept set.
+  // Priority: refined stops (editedRoutePoints) → composed stops (what
+  // Studio actually surfaced pre-refine) → tour catalog (deep-link edge
+  // case only). Never widen beyond what the traveller was shown.
+  const keptStops =
+    state.editedRoutePoints && state.editedRoutePoints.length > 0
+      ? state.editedRoutePoints
+      : composedStops && composedStops.length > 0
+        ? composedStops
+        : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }));
+  const stops = keptStops.map((s) => ({
+    label: s.label,
+    story: s.story,
+    kind: "stop" as const,
+  }));
   const addOnBeats = selectedAddOns.map((a) => ({
     label: a.label,
     story: "",
