@@ -418,7 +418,7 @@ export function GuestDetailsStep({
                 iconLeading={<Lock size={14} aria-hidden />}
                 data-testid="studio-v3-guest-details-submit"
               >
-                Continue to secure checkout
+                Continue to summary
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
