@@ -1,5 +1,5 @@
 import type React from "react";
-import { createFileRoute, Link, notFound, useRouter, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 
 
 import { SiteLayout } from "@/components/SiteLayout";
