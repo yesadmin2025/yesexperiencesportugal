@@ -60,6 +60,6 @@ const noindexNonProdHost = createMiddleware().server(async ({ next, request }) =
 });
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [legacyDomainGone, noindexNonProdHost],
+  requestMiddleware: [legacyDomainRedirect, noindexNonProdHost],
   functionMiddleware: [attachSupabaseAuth],
 }));
