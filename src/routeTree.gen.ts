@@ -62,8 +62,14 @@ import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as PtTermsRouteImport } from './routes/pt.terms'
+import { Route as PtReviewsRouteImport } from './routes/pt.reviews'
+import { Route as PtProposalsRouteImport } from './routes/pt.proposals'
 import { Route as PtPrivacyRouteImport } from './routes/pt.privacy'
+import { Route as PtMomentsRouteImport } from './routes/pt.moments'
+import { Route as PtFaqRouteImport } from './routes/pt.faq'
 import { Route as PtExperiencesRouteImport } from './routes/pt.experiences'
+import { Route as PtDayToursRouteImport } from './routes/pt.day-tours'
+import { Route as PtCorporateRouteImport } from './routes/pt.corporate'
 import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
 import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtAboutRouteImport } from './routes/pt.about'
@@ -385,14 +391,44 @@ const PtTermsRoute = PtTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => PtRoute,
 } as any)
+const PtReviewsRoute = PtReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtProposalsRoute = PtProposalsRouteImport.update({
+  id: '/proposals',
+  path: '/proposals',
+  getParentRoute: () => PtRoute,
+} as any)
 const PtPrivacyRoute = PtPrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
   getParentRoute: () => PtRoute,
 } as any)
+const PtMomentsRoute = PtMomentsRouteImport.update({
+  id: '/moments',
+  path: '/moments',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtFaqRoute = PtFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => PtRoute,
+} as any)
 const PtExperiencesRoute = PtExperiencesRouteImport.update({
   id: '/experiences',
   path: '/experiences',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtDayToursRoute = PtDayToursRouteImport.update({
+  id: '/day-tours',
+  path: '/day-tours',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtCorporateRoute = PtCorporateRouteImport.update({
+  id: '/corporate',
+  path: '/corporate',
   getParentRoute: () => PtRoute,
 } as any)
 const PtCookiesRoute = PtCookiesRouteImport.update({
@@ -748,8 +784,14 @@ export interface FileRoutesByFullPath {
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
   '/pt/cookies': typeof PtCookiesRoute
+  '/pt/corporate': typeof PtCorporateRoute
+  '/pt/day-tours': typeof PtDayToursRoute
   '/pt/experiences': typeof PtExperiencesRoute
+  '/pt/faq': typeof PtFaqRoute
+  '/pt/moments': typeof PtMomentsRoute
   '/pt/privacy': typeof PtPrivacyRoute
+  '/pt/proposals': typeof PtProposalsRoute
+  '/pt/reviews': typeof PtReviewsRoute
   '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -855,8 +897,14 @@ export interface FileRoutesByTo {
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
   '/pt/cookies': typeof PtCookiesRoute
+  '/pt/corporate': typeof PtCorporateRoute
+  '/pt/day-tours': typeof PtDayToursRoute
   '/pt/experiences': typeof PtExperiencesRoute
+  '/pt/faq': typeof PtFaqRoute
+  '/pt/moments': typeof PtMomentsRoute
   '/pt/privacy': typeof PtPrivacyRoute
+  '/pt/proposals': typeof PtProposalsRoute
+  '/pt/reviews': typeof PtReviewsRoute
   '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -965,8 +1013,14 @@ export interface FileRoutesById {
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
   '/pt/cookies': typeof PtCookiesRoute
+  '/pt/corporate': typeof PtCorporateRoute
+  '/pt/day-tours': typeof PtDayToursRoute
   '/pt/experiences': typeof PtExperiencesRoute
+  '/pt/faq': typeof PtFaqRoute
+  '/pt/moments': typeof PtMomentsRoute
   '/pt/privacy': typeof PtPrivacyRoute
+  '/pt/proposals': typeof PtProposalsRoute
+  '/pt/reviews': typeof PtReviewsRoute
   '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -1076,8 +1130,14 @@ export interface FileRouteTypes {
     | '/pt/about'
     | '/pt/contact'
     | '/pt/cookies'
+    | '/pt/corporate'
+    | '/pt/day-tours'
     | '/pt/experiences'
+    | '/pt/faq'
+    | '/pt/moments'
     | '/pt/privacy'
+    | '/pt/proposals'
+    | '/pt/reviews'
     | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1183,8 +1243,14 @@ export interface FileRouteTypes {
     | '/pt/about'
     | '/pt/contact'
     | '/pt/cookies'
+    | '/pt/corporate'
+    | '/pt/day-tours'
     | '/pt/experiences'
+    | '/pt/faq'
+    | '/pt/moments'
     | '/pt/privacy'
+    | '/pt/proposals'
+    | '/pt/reviews'
     | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1292,8 +1358,14 @@ export interface FileRouteTypes {
     | '/pt/about'
     | '/pt/contact'
     | '/pt/cookies'
+    | '/pt/corporate'
+    | '/pt/day-tours'
     | '/pt/experiences'
+    | '/pt/faq'
+    | '/pt/moments'
     | '/pt/privacy'
+    | '/pt/proposals'
+    | '/pt/reviews'
     | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1789,6 +1861,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtTermsRouteImport
       parentRoute: typeof PtRoute
     }
+    '/pt/reviews': {
+      id: '/pt/reviews'
+      path: '/reviews'
+      fullPath: '/pt/reviews'
+      preLoaderRoute: typeof PtReviewsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/proposals': {
+      id: '/pt/proposals'
+      path: '/proposals'
+      fullPath: '/pt/proposals'
+      preLoaderRoute: typeof PtProposalsRouteImport
+      parentRoute: typeof PtRoute
+    }
     '/pt/privacy': {
       id: '/pt/privacy'
       path: '/privacy'
@@ -1796,11 +1882,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtPrivacyRouteImport
       parentRoute: typeof PtRoute
     }
+    '/pt/moments': {
+      id: '/pt/moments'
+      path: '/moments'
+      fullPath: '/pt/moments'
+      preLoaderRoute: typeof PtMomentsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/faq': {
+      id: '/pt/faq'
+      path: '/faq'
+      fullPath: '/pt/faq'
+      preLoaderRoute: typeof PtFaqRouteImport
+      parentRoute: typeof PtRoute
+    }
     '/pt/experiences': {
       id: '/pt/experiences'
       path: '/experiences'
       fullPath: '/pt/experiences'
       preLoaderRoute: typeof PtExperiencesRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/day-tours': {
+      id: '/pt/day-tours'
+      path: '/day-tours'
+      fullPath: '/pt/day-tours'
+      preLoaderRoute: typeof PtDayToursRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/corporate': {
+      id: '/pt/corporate'
+      path: '/corporate'
+      fullPath: '/pt/corporate'
+      preLoaderRoute: typeof PtCorporateRouteImport
       parentRoute: typeof PtRoute
     }
     '/pt/cookies': {
@@ -2189,8 +2303,14 @@ interface PtRouteChildren {
   PtAboutRoute: typeof PtAboutRoute
   PtContactRoute: typeof PtContactRoute
   PtCookiesRoute: typeof PtCookiesRoute
+  PtCorporateRoute: typeof PtCorporateRoute
+  PtDayToursRoute: typeof PtDayToursRoute
   PtExperiencesRoute: typeof PtExperiencesRoute
+  PtFaqRoute: typeof PtFaqRoute
+  PtMomentsRoute: typeof PtMomentsRoute
   PtPrivacyRoute: typeof PtPrivacyRoute
+  PtProposalsRoute: typeof PtProposalsRoute
+  PtReviewsRoute: typeof PtReviewsRoute
   PtTermsRoute: typeof PtTermsRoute
   PtIndexRoute: typeof PtIndexRoute
 }
@@ -2200,8 +2320,14 @@ const PtRouteChildren: PtRouteChildren = {
   PtAboutRoute: PtAboutRoute,
   PtContactRoute: PtContactRoute,
   PtCookiesRoute: PtCookiesRoute,
+  PtCorporateRoute: PtCorporateRoute,
+  PtDayToursRoute: PtDayToursRoute,
   PtExperiencesRoute: PtExperiencesRoute,
+  PtFaqRoute: PtFaqRoute,
+  PtMomentsRoute: PtMomentsRoute,
   PtPrivacyRoute: PtPrivacyRoute,
+  PtProposalsRoute: PtProposalsRoute,
+  PtReviewsRoute: PtReviewsRoute,
   PtTermsRoute: PtTermsRoute,
   PtIndexRoute: PtIndexRoute,
 }
