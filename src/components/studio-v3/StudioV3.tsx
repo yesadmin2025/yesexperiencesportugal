@@ -1721,7 +1721,7 @@ export function StudioV3() {
   ];
   const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
-    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard";
+    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation";
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
