@@ -36,7 +36,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [guests, setGuests] = useState(2);
-  const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
+  const [language, setLanguage] = useState<"en" | "pt">("en");
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -220,8 +220,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           </div>
         </Field>
         <Field label="Guide language">
-          <div className="grid grid-cols-4 border border-[color:var(--border)]">
-            {(["en", "pt", "es", "fr"] as const).map((l) => (
+          <div className="grid grid-cols-2 border border-[color:var(--border)]">
+            {(["en", "pt"] as const).map((l) => (
               <button
                 key={l}
                 type="button"
@@ -238,6 +238,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               </button>
             ))}
           </div>
+          <p className="mt-1.5 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+            Spanish available on request — subject to guide availability.
+          </p>
         </Field>
       </div>
 

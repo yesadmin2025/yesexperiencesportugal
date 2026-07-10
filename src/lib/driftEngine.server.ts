@@ -107,7 +107,7 @@ export async function activateDna(
 
 // ─── AI story (tone-only, never invents stops) ────────────────────────────
 
-export type DriftLocale = "pt" | "en" | "es" | "fr";
+export type DriftLocale = "pt" | "en";
 export type TonalRegister = "intimate" | "expansive" | "playful" | "ritual";
 
 export interface RevealStory {
@@ -220,11 +220,7 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
   const langClause =
     locale === "pt"
       ? "Write in European Portuguese (pt-PT), formal address. Lowercase, no exclamation marks, no clichés."
-      : locale === "es"
-        ? "Write in formal European Spanish. Lowercase, no exclamation marks, no clichés."
-        : locale === "fr"
-          ? "Write in formal French. Lowercase, no exclamation marks, no clichés."
-          : "Write in concise American English. Lowercase, no exclamation marks, no clichés.";
+      : "Write in concise American English. Lowercase, no exclamation marks, no clichés.";
 
   const profileSummary = [
     input.profile.name ? `name=${input.profile.name}` : null,
@@ -377,12 +373,6 @@ export async function assembleReveal(
   const ctaFallback = {
     en: { book: "book this day", save: "save for later", refine: "refine with a local" },
     pt: { book: "reservar este dia", save: "guardar para depois", refine: "afinar com um local" },
-    es: { book: "reservar este día", save: "guardar para después", refine: "afinar con un local" },
-    fr: {
-      book: "réserver cette journée",
-      save: "garder pour plus tard",
-      refine: "affiner avec un local",
-    },
   }[hints.locale ?? "en"];
   const cta = {
     book:

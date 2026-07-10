@@ -173,7 +173,7 @@ function TailorPage() {
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
   const [guests, setGuests] = useState(2);
-  const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
+  const [language, setLanguage] = useState<"en" | "pt">("en");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
 
@@ -715,10 +715,11 @@ function TailorPage() {
                       options={[
                         { v: "en", l: "EN" },
                         { v: "pt", l: "PT" },
-                        { v: "es", l: "ES" },
-                        { v: "fr", l: "FR" },
                       ]}
                     />
+                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                      Spanish available on request — subject to guide availability.
+                    </p>
                   </Field>
                 </div>
               </Group>

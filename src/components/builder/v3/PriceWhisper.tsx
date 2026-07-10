@@ -26,15 +26,11 @@ interface Props {
 const LABEL: Record<DriftLocale, string> = {
   en: "indicative",
   pt: "indicativo",
-  es: "indicativo",
-  fr: "indicatif",
 };
 
 const PER_GUEST: Record<DriftLocale, string> = {
   en: "per guest",
   pt: "por pessoa",
-  es: "por persona",
-  fr: "par personne",
 };
 
 export function PriceWhisper({ revealConfidence, locale, rangeFrom = 145, rangeTo = 320 }: Props) {

@@ -5,8 +5,8 @@
 // LANGUAGE STRATEGY
 // ─────────────────
 // Most YES Experiences clients are international (predominantly American).
-// Default = EN. Portuguese/Spanish/French are chosen only when the browser
-// clearly asks for them. URL override `?lang=en|pt|es|fr` always wins.
+// Default = EN. Portuguese is chosen only when the browser clearly asks for it.
+// URL override `?lang=en|pt` always wins.
 //
 // VOICE (Studio v4 copy reset)
 // ───────────────────────────
@@ -21,7 +21,7 @@
 
 import { useEffect, useState } from "react";
 
-export type DriftLocale = "pt" | "en" | "es" | "fr";
+export type DriftLocale = "pt" | "en";
 
 type Dict = Record<string, string>;
 
@@ -270,212 +270,8 @@ const EN: Dict = {
   "trust.midflow": "700+ five-star reviews · Google · Tripadvisor · Viator",
 };
 
-const ES: Dict = {
-  "chapter.opening": "Portugal, a su ritmo. Sin formularios, sin espera.",
-  "chapter.name": "Para empezar — ¿cómo deberíamos *llamarle*?",
-  "chapter.name_placeholder": "su nombre",
-  "chapter.settling": "Su día empieza a tomar *forma*.",
-  "chapter.settling_named": "{name}, su día empieza a tomar *forma*.",
-  "chapter.companions": "¿Quién *viaja* con usted?",
-  "chapter.pickup": "¿Dónde le gustaría *empezar* el día?",
-  "chapter.duration": "¿Un día, o *varios*?",
-  "chapter.duration_multi_whisper": "Varios días — más profundidad, más descanso entre paradas.",
-  "chapter.radius": "¿Hasta qué *distancia* está dispuesto(a) a viajar?",
-  "chapter.energy": "¿Qué *ritmo* prefiere?",
-  "chapter.style": "¿Qué le *atrae* más de Portugal?",
-  "chapter.social": "¿Y cómo debería *cerrar* el día?",
-  "hint.companions.0": "Solo yo",
-  "hint.companions.1": "Los dos",
-  "hint.companions.2": "Con mi gente",
-  "hint.pickup.0": "Lisboa — la costa cerca",
-  "hint.pickup.1": "Centro de Portugal — pueblos y viñedos",
-  "hint.pickup.2": "Alentejo — amplio y lento",
-  "hint.duration.0": "Un día completo",
-  "hint.duration.1": "Varios días, sin prisa",
-  "hint.radius.0": "Cerca — hasta 1h en coche",
-  "hint.radius.1": "Día completo — hasta 3h",
-  "hint.radius.2": "Lejos — si merece la pena",
-  "hint.energy.0": "Lento — almuerzos largos, lugares tranquilos",
-  "hint.energy.1": "Vivo — miradores, paseos, catas",
-  "hint.style.0": "Costa — acantilados, playas, sal",
-  "hint.style.1": "Patrimonio — palacios y pueblos",
-  "hint.style.2": "Vino — catas y mesas largas",
-  "hint.social.0": "Mesa privada",
-  "hint.social.1": "Compartido con locales",
 
-  "reveal.eyebrow": "Su día en Portugal",
-  "reveal.eyebrow_named": "{name}, su día en Portugal",
-  "reveal.signed_by": "Compuesto con usted · YES Experiences",
-  "reveal.stops": "paradas",
-  "reveal.road": "en ruta",
-  "reveal.departure": "Salida desde",
-  "reveal.drive_from_prev": "min en coche",
-  "reveal.no_day": "Aún no podemos componer un día para esta petición — hable con un local.",
-  "reveal.open_all_day": "abierto todo el día",
-  "reveal.map_label": "Su ruta",
-  "reveal.hero_fallback": "Su día en Portugal está listo.",
-  "reveal.hero_fallback_named": "{name}, su día en Portugal está listo.",
-
-  "build.eyebrow": "Su día hasta ahora",
-
-  "cta.book": "Reservar este día",
-  "cta.save": "Guardar para después",
-  "cta.refine": "Afinar con un local",
-  "cta.explore": "Explorar todo",
-  "cta.whatsapp": "Hablar con un local",
-  "wa.intro": "Hi YES — I'm designing a day in Portugal in the Studio",
-  "wa.with_name": "I'm {name}",
-  "wa.region": "Departure: {region}",
-  "wa.companions": "Company: {companions}",
-  "wa.closing": "I'd like to refine this day with a local.",
-
-  "enc.start": "Su día empieza a componerse",
-  "enc.start_named": "{name}, su día empieza a componerse",
-  "enc.middle": "La ruta está tomando forma",
-  "enc.middle_named": "{name}, la ruta está tomando forma",
-  "enc.late": "Casi listo — afinando los detalles",
-  "enc.late_named": "{name}, casi listo — afinando los detalles",
-  "enc.near": "Listo para reservar",
-  "enc.near_named": "{name}, listo para reservar",
-
-  "text.continue": "Continuar",
-
-  "ui.exit": "Salir",
-  "ui.back": "Volver",
-  "ui.sensing": "sintiendo",
-  "ui.choose": "Elegir: {label}",
-  "trust.reviews": "reseñas",
-  "choice.idle_hint": "Toque una imagen para elegir — o tómese el tiempo que necesite.",
-  "preview.expand": "Abrir vista previa de su día",
-  "preview.dialog": "Su día — vista previa en vivo",
-  "preview.tap_to_open": "toque para abrir",
-  "preview.tab_story": "Historia",
-  "preview.tab_timeline": "Horario",
-  "preview.tab_map": "Mapa",
-  "preview.story_intro":
-    "su día se está formando con paradas reales, elegidas para el ritmo que describió.",
-  "preview.min_drive": "min de coche",
-  "preview.min_stay": "min en el lugar",
-  "preview.indicative": "indicativo",
-  "build.region_label": "Su día · vista en vivo",
-  "reco.eyebrow": "También encaja con usted",
-  "reco.open": "Abrir",
-  "quality.eyebrow": "Calidad del día",
-  "quality.aria": "Puntuación de calidad del día compuesto",
-  "quality.summary_high": "Excelente ritmo y equilibrio entre paradas.",
-  "quality.summary_mid": "Buen ritmo — una señal más lo eleva.",
-  "quality.summary_low": "Composición inicial — siga para afinar.",
-  "quality.wine": "Vino",
-  "quality.coast": "Costa",
-  "quality.heritage": "Patrimonio",
-  "quality.table": "Mesa",
-  "quality.of_five": "de 5",
-};
-
-const FR: Dict = {
-  "chapter.opening": "Le Portugal, à votre rythme. Sans formulaires, sans attente.",
-  "chapter.name": "Pour commencer — comment devrions-nous vous *appeler* ?",
-  "chapter.name_placeholder": "votre prénom",
-  "chapter.settling": "Votre journée commence à prendre *forme*.",
-  "chapter.settling_named": "{name}, votre journée commence à prendre *forme*.",
-  "chapter.companions": "Qui *voyage* avec vous ?",
-  "chapter.pickup": "Où aimeriez-vous *commencer* la journée ?",
-  "chapter.duration": "Un jour, ou *plusieurs* ?",
-  "chapter.duration_multi_whisper":
-    "Plusieurs jours — plus de profondeur, plus de repos entre les étapes.",
-  "chapter.radius": "Jusqu'*où* êtes-vous prêt(e) à voyager ?",
-  "chapter.energy": "Quel *rythme* préférez-vous ?",
-  "chapter.style": "Qu'est-ce qui vous *attire* le plus au Portugal ?",
-  "chapter.social": "Et comment la journée doit-elle *se terminer* ?",
-  "hint.companions.0": "Juste moi",
-  "hint.companions.1": "Nous deux",
-  "hint.companions.2": "Avec mes proches",
-  "hint.pickup.0": "Lisbonne — la côte à proximité",
-  "hint.pickup.1": "Centre du Portugal — villages et vignobles",
-  "hint.pickup.2": "Alentejo — vaste et lent",
-  "hint.duration.0": "Une journée complète",
-  "hint.duration.1": "Plusieurs jours, sans hâte",
-  "hint.radius.0": "Proche — moins d'1h de route",
-  "hint.radius.1": "Journée complète — jusqu'à 3h",
-  "hint.radius.2": "Loin — si cela en vaut la peine",
-  "hint.energy.0": "Lent — déjeuners longs, lieux calmes",
-  "hint.energy.1": "Vivant — points de vue, marches, dégustations",
-  "hint.style.0": "Côte — falaises, plages, sel",
-  "hint.style.1": "Patrimoine — palais et villages",
-  "hint.style.2": "Vin — dégustations et longues tables",
-  "hint.social.0": "Une table privée",
-  "hint.social.1": "Partagé avec des locaux",
-
-  "reveal.eyebrow": "Votre journée au Portugal",
-  "reveal.eyebrow_named": "{name}, votre journée au Portugal",
-  "reveal.signed_by": "Composée avec vous · YES Experiences",
-  "reveal.stops": "arrêts",
-  "reveal.road": "sur la route",
-  "reveal.departure": "Départ de",
-  "reveal.drive_from_prev": "min de route",
-  "reveal.no_day": "Nous ne pouvons pas encore composer cette journée — parlez à un local.",
-  "reveal.open_all_day": "ouvert toute la journée",
-  "reveal.map_label": "Votre itinéraire",
-  "reveal.hero_fallback": "Votre journée au Portugal est prête.",
-  "reveal.hero_fallback_named": "{name}, votre journée au Portugal est prête.",
-
-  "build.eyebrow": "Votre journée jusqu'à présent",
-
-  "cta.book": "Réserver cette journée",
-  "cta.save": "Garder pour plus tard",
-  "cta.refine": "Affiner avec un local",
-  "cta.explore": "Tout explorer",
-  "cta.whatsapp": "Parler à un local",
-  "wa.intro": "Hi YES — I'm designing a day in Portugal in the Studio",
-  "wa.with_name": "I'm {name}",
-  "wa.region": "Departure: {region}",
-  "wa.companions": "Company: {companions}",
-  "wa.closing": "I'd like to refine this day with a local.",
-
-  "enc.start": "Votre journée commence à se composer",
-  "enc.start_named": "{name}, votre journée commence à se composer",
-  "enc.middle": "L'itinéraire prend forme",
-  "enc.middle_named": "{name}, l'itinéraire prend forme",
-  "enc.late": "Presque prêt — réglage des détails",
-  "enc.late_named": "{name}, presque prêt — réglage des détails",
-  "enc.near": "Prêt à réserver",
-  "enc.near_named": "{name}, prêt à réserver",
-
-  "text.continue": "Continuer",
-
-  "ui.exit": "Sortir",
-  "ui.back": "Retour",
-  "ui.sensing": "à l'écoute",
-  "ui.choose": "Choisir : {label}",
-  "trust.reviews": "avis",
-  "choice.idle_hint": "Touchez une image pour choisir — ou prenez votre temps.",
-  "preview.expand": "Ouvrir l'aperçu de votre journée",
-  "preview.dialog": "Votre journée — aperçu en direct",
-  "preview.tap_to_open": "toucher pour ouvrir",
-  "preview.tab_story": "Récit",
-  "preview.tab_timeline": "Horaire",
-  "preview.tab_map": "Carte",
-  "preview.story_intro":
-    "votre journée prend forme avec des étapes réelles, choisies pour le rythme que vous avez décrit.",
-  "preview.min_drive": "min de route",
-  "preview.min_stay": "min sur place",
-  "preview.indicative": "indicatif",
-  "build.region_label": "Votre journée · aperçu en direct",
-  "reco.eyebrow": "Vous correspond aussi",
-  "reco.open": "Ouvrir",
-  "quality.eyebrow": "Qualité du jour",
-  "quality.aria": "Score de qualité de la journée composée",
-  "quality.summary_high": "Excellent rythme et équilibre entre les étapes.",
-  "quality.summary_mid": "Bon rythme — un signal de plus l'élève.",
-  "quality.summary_low": "Composition initiale — continuez pour affiner.",
-  "quality.wine": "Vin",
-  "quality.coast": "Côte",
-  "quality.heritage": "Patrimoine",
-  "quality.table": "Table",
-  "quality.of_five": "sur 5",
-};
-
-const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN, es: ES, fr: FR };
+const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN };
 
 function detect(): DriftLocale {
   // SSR / no-window → default EN (most clients are international).
@@ -483,12 +279,11 @@ function detect(): DriftLocale {
   try {
     const url = new URL(window.location.href);
     const q = url.searchParams.get("lang");
-    if (q === "en" || q === "pt" || q === "es" || q === "fr") return q;
+    if (q === "en" || q === "pt") return q;
   } catch {
     /* noop */
   }
-  // Auto-detect: use the visitor's supported browser language. Anything else
-  // (including de-DE, it-IT, nl-NL, …) falls back to EN for the US-heavy audience.
+  // Auto-detect: only PT is offered; anything else falls back to EN.
   const nav =
     typeof navigator !== "undefined"
       ? (
@@ -498,8 +293,6 @@ function detect(): DriftLocale {
         ).toLowerCase()
       : "en";
   if (nav.startsWith("pt")) return "pt";
-  if (nav.startsWith("es")) return "es";
-  if (nav.startsWith("fr")) return "fr";
   return "en";
 }
 

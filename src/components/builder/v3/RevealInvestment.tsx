@@ -66,30 +66,6 @@ const COPY: Record<
     expand: "view breakdown",
     collapse: "hide breakdown",
   },
-  es: {
-    eyebrow: "inversión estimada",
-    fromLabel: "desde",
-    perGuest: "por persona",
-    indicativeFor: (n) => `indicativo para ${n} ${n === 1 ? "persona" : "personas"}`,
-    indicativeTotal: "estimación total",
-    includedTitle: "Todo incluido",
-    finalNote:
-      "El precio final se confirma en la reserva, según fecha, número de personas y ajustes.",
-    expand: "ver detalle",
-    collapse: "ocultar detalle",
-  },
-  fr: {
-    eyebrow: "investissement estimé",
-    fromLabel: "à partir de",
-    perGuest: "par personne",
-    indicativeFor: (n) => `indicatif pour ${n} ${n === 1 ? "personne" : "personnes"}`,
-    indicativeTotal: "estimation totale",
-    includedTitle: "Tout inclus",
-    finalNote:
-      "Tarif final confirmé à la réservation, selon la date, le nombre de personnes et les ajustements.",
-    expand: "voir le détail",
-    collapse: "masquer le détail",
-  },
 };
 
 /** Conservative party-size estimate by companion type — display only. */

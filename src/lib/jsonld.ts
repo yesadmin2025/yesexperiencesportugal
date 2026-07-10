@@ -254,7 +254,7 @@ export function personFounderLd() {
     description:
       "Portuguese host and founder of YES Experiences Portugal. Designs private Signature days and bespoke journeys in Lisbon, Sintra, Arrábida, Sesimbra and the Alentejo since 2022.",
     nationality: { "@type": "Country", name: "Portugal" },
-    knowsLanguage: ["en", "pt", "es", "fr"],
+    knowsLanguage: ["en", "pt"],
     knowsAbout: [
       "Private day tours in Portugal",
       "Lisbon, Sintra, Arrábida and Sesimbra travel",

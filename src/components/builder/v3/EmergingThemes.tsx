@@ -15,12 +15,12 @@ import { type DriftLocale } from "@/lib/drift/i18n";
  */
 
 const THEME_LABELS: Partial<Record<SceneMood, Record<DriftLocale, string>>> = {
-  intimacy: { en: "intimacy", pt: "intimidade", es: "intimidad", fr: "intimité" },
-  ritual: { en: "ritual", pt: "ritual", es: "ritual", fr: "rituel" },
-  slowness: { en: "slowness", pt: "lentidão", es: "calma", fr: "lenteur" },
-  arrival: { en: "arrival", pt: "chegada", es: "llegada", fr: "arrivée" },
-  discovery: { en: "discovery", pt: "descoberta", es: "descubrir", fr: "découverte" },
-  celebration: { en: "celebration", pt: "celebração", es: "celebración", fr: "célébration" },
+  intimacy: { en: "intimacy", pt: "intimidade" },
+  ritual: { en: "ritual", pt: "ritual" },
+  slowness: { en: "slowness", pt: "lentidão" },
+  arrival: { en: "arrival", pt: "chegada" },
+  discovery: { en: "discovery", pt: "descoberta" },
+  celebration: { en: "celebration", pt: "celebração" },
 };
 
 interface Props {

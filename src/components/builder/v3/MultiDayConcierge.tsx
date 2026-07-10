@@ -41,10 +41,6 @@ function nameHandoff(name: string, locale: StudioLocale): string {
   switch (locale) {
     case "pt":
       return `${name}, isto merece mais do que um único dia.`;
-    case "es":
-      return `${name}, esto merece más que un solo día.`;
-    case "fr":
-      return `${name}, ceci mérite plus qu'une seule journée.`;
     default:
       return `${name}, this deserves more than a single day.`;
   }
@@ -55,10 +51,6 @@ function invitationLabel(locale: StudioLocale): string {
   switch (locale) {
     case "pt":
       return "Por convite";
-    case "es":
-      return "Por invitación";
-    case "fr":
-      return "Sur invitation";
     default:
       return "By invitation";
   }
@@ -69,10 +61,6 @@ function notePrompt(locale: StudioLocale): string {
   switch (locale) {
     case "pt":
       return "Por onde queres começar?";
-    case "es":
-      return "¿Por dónde quieres empezar?";
-    case "fr":
-      return "Par où veux-tu commencer ?";
     default:
       return "What should we begin with?";
   }
@@ -83,10 +71,6 @@ function notePlaceholder(locale: StudioLocale): string {
   switch (locale) {
     case "pt":
       return "uma manhã lenta, uma costa, alguém a chegar de longe…";
-    case "es":
-      return "una mañana lenta, una costa, alguien que llega de lejos…";
-    case "fr":
-      return "un matin lent, une côte, quelqu'un qui arrive de loin…";
     default:
       return "a slow morning, a coastline, someone arriving from afar…";
   }
@@ -97,10 +81,6 @@ function contactPlaceholder(locale: StudioLocale): string {
   switch (locale) {
     case "pt":
       return "como te encontramos · email ou número";
-    case "es":
-      return "cómo te encontramos · email o número";
-    case "fr":
-      return "comment te joindre · e-mail ou numéro";
     default:
       return "where to reach you · email or number";
   }
@@ -111,10 +91,6 @@ function sendLabel(locale: StudioLocale): string {
   switch (locale) {
     case "pt":
       return "Continuar em privado";
-    case "es":
-      return "Continuar en privado";
-    case "fr":
-      return "Continuer en privé";
     default:
       return "Continue privately";
   }

@@ -30,7 +30,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
   const [pace, setPace] = useState<"relaxed" | "balanced" | "packed">("balanced");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [addons, setAddons] = useState<Set<string>>(new Set(["pickup"]));
-  const [language, setLanguage] = useState<"en" | "pt" | "es" | "fr">("en");
+  const [language, setLanguage] = useState<"en" | "pt">("en");
   const [notes, setNotes] = useState("");
 
   const toggleStop = (s: string) => {
@@ -194,7 +194,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
       {/* Language */}
       <Field label="Guide language" className="mt-4">
         <div className="flex flex-wrap gap-2">
-          {(["en", "pt", "es", "fr"] as const).map((l) => (
+          {(["en", "pt"] as const).map((l) => (
             <button
               key={l}
               type="button"
@@ -211,6 +211,9 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
             </button>
           ))}
         </div>
+        <p className="mt-1.5 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+          Spanish available on request — subject to guide availability.
+        </p>
       </Field>
 
       {/* Notes */}
