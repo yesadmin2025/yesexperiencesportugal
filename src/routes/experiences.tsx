@@ -6,7 +6,6 @@ import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
-import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import ogImg from "@/assets/hero-coast.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -84,9 +83,6 @@ function ExperiencesPage() {
       <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">Our Signature Collection</h2>
-          <div className="flex justify-end mb-6">
-            <ImageQualityToggle />
-          </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
               // Real bullets sourced from the matching Viator product page
