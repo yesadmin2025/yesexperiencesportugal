@@ -20,11 +20,11 @@
  */
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const ROOT = process.cwd();
-const SRC = join(ROOT, "src");
+const ROOT = resolve(process.cwd());
+const SRC = resolve(ROOT, "src");
 const SELF = "src/__tests__/no-french-tour-language.test.ts";
 
 const IGNORE_FILES = new Set<string>([SELF]);
