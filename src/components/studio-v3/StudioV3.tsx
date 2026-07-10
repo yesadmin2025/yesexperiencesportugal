@@ -35,6 +35,14 @@ import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceC
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 import { trackStep } from "@/lib/studio-v3-funnel";
+import {
+  gaAddPaymentInfo,
+  gaAddToCartStudioTier,
+  gaBeginCheckout,
+  gaStudioStep,
+  buildTourItem,
+} from "@/lib/analytics-ga4";
+import { computeQualityScore } from "@/lib/studio-v3-quality";
 import { inferKind, summarizeDay } from "@/lib/studio/timing";
 import { PartialReveal } from "./PartialReveal";
 
