@@ -38,6 +38,15 @@ export const CTA_HIDE_DRIVING = "Hide driving details" as const;
 export const CTA_SEE_MORE_ADDONS = "See more options" as const;
 export const CTA_SEE_INCLUSIONS = "See what's included" as const;
 
+// Composer → Refine handoff (MapAwakens primary CTA).
+export const CTA_PERSONALISE = "Personalise a few details" as const;
+
+// Refine screen (SignaturePriceCard) — secondary "quiet help" CTA.
+export const CTA_ASK_CURATOR = "Ask a curator for help" as const;
+
+// Refine screen — shorter, less formal inclusions header (reveal keeps INCLUSION_HEADER).
+export const INCLUDED_HEADER_REFINE = "Included in your day" as const;
+
 // Final Reveal — cinematic story screen after refinement.
 export const REVEAL_TITLE = "Your story in Portugal" as const;
 export const CTA_MAKE_STORY = "Make this my story in Portugal" as const;
