@@ -48,10 +48,30 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Where we actually take friends when they visit — and which trips are worth the drive.",
     sections: [
-      { heading: "South of the bridge: Arrábida and Setúbal", body: "[Body copy to be supplied.]" },
-      { heading: "Sintra without the queues", body: "[Body copy to be supplied.]" },
-      { heading: "Wild beaches and a long lunch", body: "[Body copy to be supplied.]" },
-      { heading: "How to choose", body: "[Body copy to be supplied.]" },
+      {
+        heading: "Lisbon sits on a wide estuary, with very different landscapes within an hour.",
+        body: "South, the Arrábida hills drop into the Atlantic. West, Sintra rises green and misty. The coast road to Cascais catches the evening light. Each direction is a short drive, but the mood changes completely. The right day trip depends on what you want to feel by lunchtime — palace gardens, wine country, or a wild beach with no plans.",
+      },
+      {
+        heading: "South of the bridge, the city loosens.",
+        body: "Cross the 25 de Abril Bridge and the road curves through cork and pine to the Arrábida Natural Park. The mountains meet a string of small, unguarded beaches. Setúbal is a working fishing city with a calm waterfront, grilled fish on the promenade, and the small cellars that make Moscatel de Setúbal. It is a slower day, built around wine, fish, and long views.",
+      },
+      {
+        heading: "The palace-and-forest day, done early.",
+        body: "Sintra is the day everyone has heard of. We prefer it early, before the main estates fill with buses. The Pena Palace sits above the treeline, the Quinta da Regaleira is a garden of grottoes and symbols, and the road west passes Cabo da Roca, Europe's westernmost point, before dropping to Cascais for late afternoon.",
+      },
+      {
+        heading: "A picnic, a cove, and nowhere to be.",
+        body: "For guests who want to move less and feel more, we head to the beaches below the Arrábida ridge. The water is cold, the cliffs are warm, and a long picnic turns the day into something quieter. It is the choice when the goal is to escape the city rather than tick off sights.",
+      },
+      {
+        heading: "Pick the mood, not the itinerary.",
+        body: "If palaces, forest, and a coastal road sound right, choose Sintra. If wine, fish, and a wild coastline sound right, choose Arrábida. If you want to do almost nothing in a beautiful place, choose the beach picnic. All three are within 90 minutes of Lisbon, and each can stand alone as a full day.",
+      },
+      {
+        heading: "The difference is in the rhythm.",
+        body: "Group tours cover the same ground, but they run on a fixed clock and a fixed menu. A private day means you choose when to stop, where to eat, and how long to stay. The route can flex — add a cellar, skip the busiest palace, or spend an hour on a beach you did not plan to find. That flexibility is what turns a day trip into a personal experience.",
+      },
     ],
     ctaLead:
       "Most of these days live inside one of our Signature experiences — private, paced, and shaped to you.",
