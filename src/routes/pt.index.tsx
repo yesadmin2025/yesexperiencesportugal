@@ -1,14 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Clock, MapPin } from "lucide-react";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import { TourImage } from "@/components/tours/TourImage";
+import { signatureTours } from "@/data/signatureTours";
+import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { buildLocaleUrl } from "@/i18n/config";
 
 /**
- * Portuguese homepage (`/pt`). Editorial European Portuguese, standalone —
- * does not attempt to mirror every EN section yet. Points the visitor to
- * the English site for the full booking flow while PT rollout continues.
+ * Portuguese homepage (`/pt`). Editorial European Portuguese, mirroring
+ * the completed PT surface: Signature → Studio (EN) → Multi-day paths,
+ * featured day experiences, corporate & reviews strips, contact.
  */
 export const Route = createFileRoute("/pt/")({
   head: () => ({
@@ -17,7 +22,7 @@ export const Route = createFileRoute("/pt/")({
       {
         name: "description",
         content:
-          "YES Experiences Portugal desenha viagens privadas por Portugal com guias locais — dias no Alentejo e Arrábida, jornadas de vários dias e momentos irrepetíveis, feitos ao seu ritmo.",
+          "Experiências privadas por Portugal desenhadas com guias locais. Dias na Arrábida, Sintra, Douro e Alentejo, jornadas de vários dias e retiros para grupos — feitos ao seu ritmo.",
       },
       { property: "og:title", content: "YES Experiences Portugal" },
       {
@@ -38,113 +43,232 @@ export const Route = createFileRoute("/pt/")({
   component: PtHomePage,
 });
 
+// Featured trio for the homepage — same source of truth as EN.
+const FEATURED_IDS = [
+  "arrabida-wine-allinclusive",
+  "wild-beaches-picnic",
+  "arrabida-boat",
+];
+const FEATURED = FEATURED_IDS.map((id) => signatureTours.find((t) => t.id === id)).filter(
+  (t): t is (typeof signatureTours)[number] => Boolean(t),
+);
+
 function PtHomePage() {
+  const { resolveImg } = useImportedTourImages();
+
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="mx-auto max-w-3xl px-6 pt-20 pb-14 md:pt-28 md:pb-20 text-center">
-        <Eyebrow>Bem-vindo</Eyebrow>
-        <h1 className="mt-6 font-[family-name:var(--font-editorial)] text-4xl md:text-6xl leading-[1.05] text-[color:var(--charcoal)]">
-          Portugal privado,
-          <br />
-          mostrado como um local mostra a um amigo.
-        </h1>
+      <section className="mx-auto max-w-3xl px-6 pt-24 pb-16 md:pt-32 md:pb-20 text-center">
+        <Eyebrow flank>Bem-vindo</Eyebrow>
+        <SectionTitle as="h1" size="anchor" spacing="loose">
+          Portugal privado,{" "}
+          <SectionTitle.Em>mostrado como um local mostra a um amigo.</SectionTitle.Em>
+        </SectionTitle>
         <p className="mt-7 mx-auto max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[color:var(--charcoal-soft)]">
-          Desenhamos viagens privadas por Portugal — do vinho da Arrábida às
-          planícies do Alentejo, de Sintra à costa vicentina — com guias
-          locais, mesas verdadeiras e tempo para respirar. Sem grupos, sem
-          guiões prontos, sem pressa.
+          Desenhamos viagens privadas por Portugal — do vinho da Arrábida às planícies do Alentejo,
+          de Sintra à costa vicentina — com guias locais, mesas verdadeiras e tempo para respirar.
+          Sem grupos, sem guiões prontos, sem pressa.
         </p>
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <CtaButton to="/pt/experiences" variant="primary">
+            Ver experiências Signature
+          </CtaButton>
+          <CtaButton to="/pt/day-tours" variant="ghost">
+            Experiências de um dia
+          </CtaButton>
+        </div>
       </section>
 
-      {/* Positioning */}
+      {/* Positioning — three paths */}
       <section className="bg-[color:var(--sand)]/40 py-16 md:py-24">
-        <div className="mx-auto max-w-4xl px-6 grid gap-10 md:grid-cols-3">
+        <div className="mx-auto max-w-5xl px-6 grid gap-10 md:grid-cols-3">
           {[
             {
               eyebrow: "Signature",
               title: "Dias assinados",
               body: "Dias privados prontos a partir, desenhados pela nossa equipa em torno de uma região e de um tema — vinho, mar, gastronomia, paisagem.",
+              href: "/pt/experiences",
+              cta: "Ver a coleção",
             },
             {
               eyebrow: "Studio",
               title: "Desenhe o seu dia",
               body: "Um estúdio interativo onde compõe a sua experiência em tempo real — ritmo, paragens, mesa, guia — com ajuda editorial ao seu lado.",
+              href: "/",
+              cta: "Abrir o Studio (EN)",
+              external: true,
             },
             {
               eyebrow: "Roteiros à Medida",
               title: "Jornadas de vários dias",
               body: "Roteiros privados de 3 a 14 dias, cosidos à mão por um Travel Designer, com hotéis escolhidos e transições sem esforço.",
+              href: "/pt/contact",
+              cta: "Falar connosco",
             },
           ].map((card) => (
-            <article key={card.title}>
+            <article key={card.title} className="flex flex-col">
               <Eyebrow>{card.eyebrow}</Eyebrow>
-              <h2 className="mt-3 font-[family-name:var(--font-editorial)] text-2xl leading-tight text-[color:var(--charcoal)]">
+              <h2 className="mt-3 font-[family-name:var(--font-editorial)] font-medium text-2xl leading-tight text-[color:var(--charcoal)]">
                 {card.title}
               </h2>
-              <p className="mt-3 text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              <p className="mt-3 text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)] flex-1">
                 {card.body}
               </p>
+              <Link
+                to={card.href}
+                className="mt-5 self-start text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
+              >
+                {card.cta} →
+              </Link>
             </article>
           ))}
         </div>
       </section>
 
-      {/* What to expect */}
-      <section className="mx-auto max-w-3xl px-6 py-16 md:py-24">
-        <Eyebrow>O que esperar</Eyebrow>
-        <h2 className="mt-4 font-[family-name:var(--font-editorial)] text-3xl md:text-4xl leading-[1.1] text-[color:var(--charcoal)]">
-          Experiências privadas, sempre. Guias locais, sempre.
-        </h2>
-        <ul className="mt-8 space-y-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-          <li>
-            <strong className="font-medium text-[color:var(--charcoal)]">
-              Só o seu grupo.
-            </strong>{" "}
-            Nunca partilhamos experiências com desconhecidos.
-          </li>
-          <li>
-            <strong className="font-medium text-[color:var(--charcoal)]">
-              Guias locais.
-            </strong>{" "}
-            Portugueses que conhecem os produtores, os cozinheiros e os
-            miradouros que não estão nos guias.
-          </li>
-          <li>
-            <strong className="font-medium text-[color:var(--charcoal)]">
-              Recolha incluída.
-            </strong>{" "}
-            De Lisboa, Cascais, Sintra, Sesimbra ou Setúbal, no seu hotel ou
-            no seu alojamento.
-          </li>
-          <li>
-            <strong className="font-medium text-[color:var(--charcoal)]">
-              Sem surpresas.
-            </strong>{" "}
-            Preço final claro e política de cancelamento apresentada antes
-            do pagamento.
-          </li>
-        </ul>
+      {/* Featured Signature experiences */}
+      <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+        <div className="max-w-2xl">
+          <Eyebrow>Coleção Signature</Eyebrow>
+          <SectionTitle spacing="loose">
+            Alguns dos nossos <SectionTitle.Em>dias mais pedidos.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Cada experiência é privada, feita ao seu ritmo, com recolha incluída a partir de Lisboa
+            e da região. As páginas detalhadas de cada tour estão, para já, em inglês.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURED.map((t) => (
+            <article key={t.id} className="group flex flex-col text-left">
+              <Link
+                to="/tours/$tourId"
+                params={{ tourId: t.id }}
+                className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                aria-label={`Abrir ${t.title}`}
+              >
+                <TourImage
+                  {...resolveImg(t, "lg")}
+                  alt={`${t.title} — experiência privada em ${t.region}, Portugal`}
+                  ratio="3/2"
+                  focal={t.focal ?? "50% 50%"}
+                  imgClassName="group-hover:scale-105 transition-transform duration-700"
+                />
+              </Link>
+              <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--charcoal)]">
+                {t.region}
+              </p>
+              <Link
+                to="/tours/$tourId"
+                params={{ tourId: t.id }}
+                className="serif text-2xl mt-2 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+              >
+                {t.title}
+              </Link>
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                <span className="flex items-center gap-1.5">
+                  <Clock size={12} /> {t.durationHours}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <MapPin size={12} /> {t.theme}
+                </span>
+                <span className="text-[color:var(--teal)]">Desde €{t.priceFrom}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <CtaButton to="/pt/experiences" variant="ghost">
+            Ver todas as experiências Signature
+          </CtaButton>
+        </div>
       </section>
 
-      {/* Full site notice + CTAs */}
-      <section className="bg-[color:var(--sand)]/40 py-16 md:py-20">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <Eyebrow>Versão portuguesa em lançamento</Eyebrow>
-          <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            Estamos a preparar, com cuidado editorial, cada página em
-            português europeu. Enquanto isso, a reserva e o estúdio
-            completos vivem no nosso site em inglês — é a mesma marca, os
-            mesmos guias, as mesmas experiências privadas.
+      {/* What to expect */}
+      <section className="bg-[color:var(--ivory)] py-20 md:py-24">
+        <div className="mx-auto max-w-3xl px-6">
+          <Eyebrow>O que esperar</Eyebrow>
+          <SectionTitle spacing="loose">
+            Experiências privadas, sempre. <SectionTitle.Em>Guias locais, sempre.</SectionTitle.Em>
+          </SectionTitle>
+          <ul className="mt-8 space-y-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            <li>
+              <strong className="font-medium text-[color:var(--charcoal)]">Só o seu grupo.</strong>{" "}
+              Nunca partilhamos experiências com desconhecidos.
+            </li>
+            <li>
+              <strong className="font-medium text-[color:var(--charcoal)]">Guias locais.</strong>{" "}
+              Portugueses que conhecem os produtores, os cozinheiros e os miradouros que não estão
+              nos guias.
+            </li>
+            <li>
+              <strong className="font-medium text-[color:var(--charcoal)]">
+                Recolha incluída.
+              </strong>{" "}
+              De Lisboa, Cascais, Sintra, Sesimbra ou Setúbal, no seu hotel ou no seu alojamento.
+            </li>
+            <li>
+              <strong className="font-medium text-[color:var(--charcoal)]">Sem surpresas.</strong>{" "}
+              Preço final claro e política de cancelamento apresentada antes do pagamento.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Corporate strip */}
+      <section className="mx-auto max-w-5xl px-6 py-20 md:py-24 grid gap-10 md:grid-cols-2 md:items-center">
+        <div>
+          <Eyebrow>Grupos & Empresas</Eyebrow>
+          <SectionTitle spacing="loose">
+            Retiros e team building, <SectionTitle.Em>desenhados por locais.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Dias corporativos privados, off-sites executivos e hosting de clientes por Portugal —
+            transporte, guias e locais coordenados de ponta a ponta, com fatura em nome da empresa.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <CtaButton to="/">Continuar em Inglês</CtaButton>
-            <Link
-              to="/pt/contact"
-              className="text-[11.5px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
-            >
+          <div className="mt-6">
+            <CtaButton to="/pt/corporate" variant="ghost">
+              Ver experiências corporativas
+            </CtaButton>
+          </div>
+        </div>
+        <div className="border-l border-[color:var(--gold-soft)]/40 pl-8">
+          <Eyebrow>Avaliações reais</Eyebrow>
+          <SectionTitle spacing="loose">
+            O que os clientes <SectionTitle.Em>realmente dizem.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Centenas de avaliações verificadas no Viator, Tripadvisor, GetYourGuide e submissões
+            diretas de clientes.
+          </p>
+          <div className="mt-6">
+            <CtaButton to="/pt/reviews" variant="ghost">
+              Ler as avaliações
+            </CtaButton>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="bg-[color:var(--sand)]/60 py-20 md:py-24">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <Eyebrow flank>Comece por aqui</Eyebrow>
+          <SectionTitle spacing="loose">
+            Vamos desenhar <SectionTitle.Em>o seu Portugal.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Diga-nos as datas, o grupo e o que gostaria de sentir. Respondemos com uma proposta
+            editorial em 24 horas.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <CtaButton to="/pt/contact" variant="primary">
               Falar connosco
-            </Link>
+            </CtaButton>
+            <CtaButton to="/pt/experiences" variant="ghost">
+              Ver a coleção
+            </CtaButton>
           </div>
         </div>
       </section>
