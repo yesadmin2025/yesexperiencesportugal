@@ -8,6 +8,7 @@ import { template as internalLead } from "./internal-lead";
 import { template as internalBooking } from "./internal-booking";
 import { template as welcome } from "./welcome";
 import { template as legacyDomainReady } from "./legacy-domain-ready";
+import { template as signatureStory } from "./signature-story";
 
 export interface TemplateEntry {
   component: ComponentType<any>;
@@ -31,4 +32,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   "internal-booking": internalBooking,
   welcome: welcome,
   "legacy-domain-ready": legacyDomainReady,
+  "signature-story": signatureStory,
 };
