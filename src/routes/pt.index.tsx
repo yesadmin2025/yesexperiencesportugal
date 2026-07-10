@@ -18,17 +18,25 @@ import { buildLocaleUrl } from "@/i18n/config";
 export const Route = createFileRoute("/pt/")({
   head: () => ({
     meta: [
-      { title: "YES Experiences Portugal — Experiências privadas em Portugal" },
+      {
+        title:
+          "YES Experiences Portugal — Portugal privado, como um local mostra a um amigo",
+      },
       {
         name: "description",
         content:
-          "Experiências privadas por Portugal desenhadas com guias locais. Dias na Arrábida, Sintra, Douro e Alentejo, jornadas de vários dias e retiros para grupos — feitos ao seu ritmo.",
+          "Experiências privadas por Portugal com guias locais — da Arrábida ao Douro, de Sintra ao Alentejo. Dias Signature prontos a partir ou jornadas à medida, ao seu ritmo e sem grupos.",
       },
-      { property: "og:title", content: "YES Experiences Portugal" },
+      {
+        property: "og:title",
+        content: "YES Experiences Portugal — Portugal privado, como um local mostra a um amigo",
+      },
       {
         property: "og:description",
-        content: "Experiências privadas em Portugal, desenhadas com guias locais.",
+        content:
+          "Experiências privadas por Portugal com guias locais. Dias Signature prontos a partir ou jornadas à medida, ao seu ritmo e sem grupos.",
       },
+      { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_PT" },
       { property: "og:locale:alternate", content: "en_US" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt" },
