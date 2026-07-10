@@ -17,6 +17,12 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import {
+  gaAddPaymentInfo,
+  gaAddToCartSignature,
+  gaBeginCheckout,
+  buildTourItem,
+} from "@/lib/analytics-ga4";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
