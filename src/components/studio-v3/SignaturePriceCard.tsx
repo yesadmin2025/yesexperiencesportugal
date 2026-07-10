@@ -769,37 +769,10 @@ export function SignaturePriceCard({
           ) : null}
         </ul>
 
-        {/* S3 — Why this works: 3 bullets from the resolved Signature's real
-            `included[]`. No invented copy, no quality score gimmick. */}
-        {hasPrice && whyThisWorks.length > 0 ? (
-          <div
-            data-testid="studio-v3-why-this-works"
-            className="mt-5 mx-auto max-w-[380px] text-left"
-          >
-            <p
-              className="text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span> Why this works
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {whyThisWorks.map((line, i) => (
-                <li
-                  key={`${i}-${line.slice(0, 16)}`}
-                  className="flex items-start gap-2 text-[12px] leading-snug"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
-                >
-                  <span
-                    aria-hidden
-                    className="mt-[7px] inline-block h-1 w-1 shrink-0 rounded-full"
-                    style={{ background: "var(--gold)" }}
-                  />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        {/* "Why this works" bullets removed — the itinerary spine below
+            ("Your day includes") already surfaces the real inclusions, so
+            repeating them here added clutter and duplicated the same facts
+            in two adjacent blocks. */}
 
         {/* S2 — Smart suggestion: promote the most-relevant eligible add-on
             as an "Often added" upsell card above the chip list. Dismissible.
