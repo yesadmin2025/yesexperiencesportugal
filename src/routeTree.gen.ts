@@ -61,6 +61,8 @@ import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
+import { Route as PtTermsRouteImport } from './routes/pt.terms'
+import { Route as PtPrivacyRouteImport } from './routes/pt.privacy'
 import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
 import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtAboutRouteImport } from './routes/pt.about'
@@ -376,6 +378,16 @@ const QaHeroRoute = QaHeroRouteImport.update({
   id: '/qa/hero',
   path: '/qa/hero',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PtTermsRoute = PtTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtPrivacyRoute = PtPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => PtRoute,
 } as any)
 const PtCookiesRoute = PtCookiesRouteImport.update({
   id: '/cookies',
@@ -730,6 +742,8 @@ export interface FileRoutesByFullPath {
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
   '/pt/cookies': typeof PtCookiesRoute
+  '/pt/privacy': typeof PtPrivacyRoute
+  '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -834,6 +848,8 @@ export interface FileRoutesByTo {
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
   '/pt/cookies': typeof PtCookiesRoute
+  '/pt/privacy': typeof PtPrivacyRoute
+  '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -941,6 +957,8 @@ export interface FileRoutesById {
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
   '/pt/cookies': typeof PtCookiesRoute
+  '/pt/privacy': typeof PtPrivacyRoute
+  '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -1049,6 +1067,8 @@ export interface FileRouteTypes {
     | '/pt/about'
     | '/pt/contact'
     | '/pt/cookies'
+    | '/pt/privacy'
+    | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1153,6 +1173,8 @@ export interface FileRouteTypes {
     | '/pt/about'
     | '/pt/contact'
     | '/pt/cookies'
+    | '/pt/privacy'
+    | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1259,6 +1281,8 @@ export interface FileRouteTypes {
     | '/pt/about'
     | '/pt/contact'
     | '/pt/cookies'
+    | '/pt/privacy'
+    | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1746,6 +1770,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaHeroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pt/terms': {
+      id: '/pt/terms'
+      path: '/terms'
+      fullPath: '/pt/terms'
+      preLoaderRoute: typeof PtTermsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/privacy': {
+      id: '/pt/privacy'
+      path: '/privacy'
+      fullPath: '/pt/privacy'
+      preLoaderRoute: typeof PtPrivacyRouteImport
+      parentRoute: typeof PtRoute
+    }
     '/pt/cookies': {
       id: '/pt/cookies'
       path: '/cookies'
@@ -2132,6 +2170,8 @@ interface PtRouteChildren {
   PtAboutRoute: typeof PtAboutRoute
   PtContactRoute: typeof PtContactRoute
   PtCookiesRoute: typeof PtCookiesRoute
+  PtPrivacyRoute: typeof PtPrivacyRoute
+  PtTermsRoute: typeof PtTermsRoute
   PtIndexRoute: typeof PtIndexRoute
 }
 
@@ -2140,6 +2180,8 @@ const PtRouteChildren: PtRouteChildren = {
   PtAboutRoute: PtAboutRoute,
   PtContactRoute: PtContactRoute,
   PtCookiesRoute: PtCookiesRoute,
+  PtPrivacyRoute: PtPrivacyRoute,
+  PtTermsRoute: PtTermsRoute,
   PtIndexRoute: PtIndexRoute,
 }
 
