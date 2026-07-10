@@ -11,6 +11,7 @@
 
 const READY_PATHS = new Set<string>([
   "/", // → /pt
+  "/about", // → /pt/about
   "/contact", // → /pt/contact
   "/cookies", // → /pt/cookies
 ]);
