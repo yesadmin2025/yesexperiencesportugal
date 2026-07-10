@@ -2454,6 +2454,7 @@ const LINEAR_ORDER: StudioV3Phase[] = [
   "map",
   "storyboard",
   "confirmation",
+  "guestDetails",
 ];
 
 /**

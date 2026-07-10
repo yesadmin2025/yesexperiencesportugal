@@ -102,7 +102,8 @@ export type StudioV3Phase =
   | "investment"
   | "map"
   | "storyboard"
-  | "confirmation";
+  | "confirmation"
+  | "guestDetails";
 
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
