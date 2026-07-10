@@ -1137,6 +1137,9 @@ function TailorPage() {
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() =>
+                        gaGenerateLead({ leadSource: "tailor_talk_to_local", method: "whatsapp" })
+                      }
                       className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
                     >
                       <MessageCircle size={13} /> Talk to a local
