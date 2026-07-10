@@ -1278,6 +1278,8 @@ export function SignaturePriceCard({
               type="button"
               onClick={onSecure}
               data-testid="studio-v3-cta-primary"
+              data-total-eur={partyTotalEur ?? totalEur ?? ""}
+              data-party-total-eur={partyTotalEur ?? ""}
               className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{
                 background: "var(--charcoal)",
@@ -1286,12 +1288,7 @@ export function SignaturePriceCard({
                   "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Yes — reserve
-              {partyTotalEur != null
-                ? ` · €${partyTotalEur}`
-                : totalEur != null
-                  ? ` · €${totalEur} /pp`
-                  : ""}
+              See my signature story
               <ArrowRight
                 size={14}
                 aria-hidden
@@ -1316,11 +1313,11 @@ export function SignaturePriceCard({
 
           {hasPrice ? (
             <p
-              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px]"
+              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px] text-center"
               style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
             >
               <ShieldCheck size={12} aria-hidden style={{ color: "var(--gold)" }} />
-              Secure checkout · Cancellation terms shown before you pay
+              Nothing is booked yet — you'll confirm the full price on the next step.
             </p>
           ) : null}
 
@@ -1335,17 +1332,9 @@ export function SignaturePriceCard({
               You'll pick your date in the next step.
             </p>
           ) : null}
-
-          <button
-            type="button"
-            onClick={onRefine}
-            className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
-          >
-            Adjust a few things first
-          </button>
         </div>
       </div>
+
 
       {/* Mobile sticky CTA — appears only after the inline CTA scrolls out of view. */}
       {hasPrice && stickyVisible ? (
