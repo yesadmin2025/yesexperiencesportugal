@@ -198,7 +198,7 @@ function PageLightbox({
       role="dialog"
       aria-modal="true"
       aria-label={`Travel file — page ${index + 1} of ${total}: ${page.label}`}
-      className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--ivory)]/98 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--ivory)] animate-in fade-in duration-200"
       onTouchStart={(e) => {
         touchX.current = e.touches[0].clientX;
       }}
