@@ -864,9 +864,10 @@ export function SignaturePriceCard({
             surfaces. */}
 
 
-        {/* S4 — Inclusions footnote: what's actually in the day. Real data
-            from the resolved Signature's `included[]`; never invented. */}
-        {hasPrice && inclusionFootnote.length > 0 ? (
+        {/* Included in your day — the single, tight list. Real included[]
+            from the resolved Signature (capped) + any add-ons the traveller
+            just toggled on, so the block moves with the price above. */}
+        {hasPrice && (inclusionFootnote.length > 0 || selectedAddOns.length > 0) ? (
           <footer
             data-testid="studio-v3-inclusions-footnote"
             className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
@@ -879,10 +880,10 @@ export function SignaturePriceCard({
               className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              Included in your selected itinerary
+              {INCLUDED_HEADER_REFINE}
             </p>
             <ul className="mt-1.5 flex flex-col gap-1">
-              {inclusionFootnote.map((line, i) => (
+              {inclusionFootnote.slice(0, 4).map((line, i) => (
                 <li
                   key={`inc-${i}`}
                   className="flex items-start gap-2 text-[11.5px] leading-snug"
@@ -897,78 +898,100 @@ export function SignaturePriceCard({
                 </li>
               ))}
             </ul>
-            <p
-              className="mt-2 text-[10px] italic"
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-              }}
-            >
-              Optional additions are priced separately and shown before checkout.
-            </p>
+            {selectedAddOns.length > 0 ? (
+              <>
+                <p
+                  className="mt-3 text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  <span style={{ color: "var(--gold)" }}>—</span>
+                  Your additions
+                </p>
+                <ul className="mt-1.5 flex flex-col gap-1">
+                  {selectedAddOns.map((a) => {
+                    const line = addOnEurFor({
+                      addOn: a,
+                      baseEur: priceEur ?? 0,
+                      guests: summaryGuests,
+                    });
+                    return (
+                      <li
+                        key={`inc-addon-${a.id}`}
+                        data-testid="studio-v3-included-addon-row"
+                        data-addon-id={a.id}
+                        className="flex items-start justify-between gap-3 text-[11.5px] leading-snug"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+                      >
+                        <span className="flex items-start gap-2 min-w-0">
+                          <span
+                            aria-hidden
+                            className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full"
+                            style={{ background: "var(--gold)" }}
+                          />
+                          <span className="font-medium">{a.label}</span>
+                        </span>
+                        <span
+                          className="shrink-0 tabular-nums text-[11px] font-semibold"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          +€{line.amount}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            ) : null}
           </footer>
         ) : null}
 
-        {/* Trust strip — discreet, reduces hesitation right before the CTA. */}
-        {hasPrice ? (
-          <>
-            <MountBadge name="TrustStrip" detail="rendered (hasPrice=true)" />
-            <div
-              data-testid="studio-v3-trust-strip"
-              className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span className="inline-flex items-center gap-1.5">
-                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-                Real itinerary
-              </span>
-              <span
-                aria-hidden
-                style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}
-              >
-                ·
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-                Local designer review
-              </span>
-              <span
-                aria-hidden
-                style={{ color: "color-mix(in oklab, var(--gold) 50%, transparent)" }}
-              >
-                ·
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check size={11} aria-hidden style={{ color: "var(--gold)" }} />
-                Cancellation terms at checkout
-              </span>
-            </div>
-          </>
-        ) : null}
+        {/* Trust strip removed — the reassurance above the CTA + the final
+            reveal's own trust cues cover this without duplication. */}
 
-        <div ref={ctaRef} className="mt-4 flex flex-col items-center gap-2.5">
+        <div ref={ctaRef} className="mt-6 flex flex-col items-center gap-3">
           {hasPrice ? (
-            <button
-              type="button"
-              onClick={onSecure}
-              data-testid="studio-v3-cta-primary"
-              data-total-eur={partyTotalEur ?? totalEur ?? ""}
-              data-party-total-eur={partyTotalEur ?? ""}
-              className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-              style={{
-                background: "var(--charcoal)",
-                color: "var(--ivory)",
-                boxShadow:
-                  "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
-              }}
-            >
-              See my signature story
-              <ArrowRight
-                size={14}
-                aria-hidden
-                className="transition-transform duration-200 group-hover:translate-x-0.5"
-              />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={onSecure}
+                data-testid="studio-v3-cta-primary"
+                data-total-eur={partyTotalEur ?? totalEur ?? ""}
+                data-party-total-eur={partyTotalEur ?? ""}
+                className="group hidden md:inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  background: "var(--charcoal)",
+                  color: "var(--ivory)",
+                  boxShadow:
+                    "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                }}
+              >
+                See my signature story
+                <ArrowRight
+                  size={14}
+                  aria-hidden
+                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                />
+              </button>
+              <a
+                href={whatsappHref(
+                  `Hi YES — I'm refining a Signature in the Studio${
+                    journeyTitle ? ` ("${journeyTitle}")` : ""
+                  } and could use a curator's help before I continue.`,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="studio-v3-cta-secondary"
+                className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{
+                  color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+                  background: "transparent",
+                  borderBottom:
+                    "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                }}
+              >
+                {CTA_ASK_CURATOR}
+              </a>
+            </>
           ) : (
             <a
               href={whatsappHref(
@@ -984,16 +1007,6 @@ export function SignaturePriceCard({
               Request the investment <ArrowRight size={14} aria-hidden />
             </a>
           )}
-
-          {hasPrice ? (
-            <p
-              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px] text-center"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-            >
-              <ShieldCheck size={12} aria-hidden style={{ color: "var(--gold)" }} />
-              Nothing is booked yet — you'll confirm the full price on the next step.
-            </p>
-          ) : null}
 
           {hasPrice && !dateExact ? (
             <p
