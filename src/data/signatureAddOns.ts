@@ -66,12 +66,29 @@ export type InclusionTag =
   | "obidos"
   | "nazare";
 
+/**
+ * Pricing unit for an add-on. Every add-on MUST declare one — ambiguous
+ * labels like "ADD +€40" are banned by the pricing hierarchy (plan §F/§G).
+ *   - per_person  → multiply by guest count
+ *   - per_group   → single flat fee for the party
+ *   - per_vehicle → multiply by ceil(guests / vehicleCapacity)
+ *   - fixed       → single flat fee, independent of party size
+ */
+export type AddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fixed";
+
 export interface SignatureAddOn {
   id: string;
   label: string;
   blurb: string;
-  /** Price as a fraction of the base "from" price (per person). */
+  /**
+   * Price as a fraction of the base "from" price. Interpretation depends
+   * on `pricingUnit`: for `per_person` this is per person; for `per_group`
+   * / `per_vehicle` / `fixed` it is the whole line-item as a fraction of
+   * the base per-person "from" anchor (rounded to €5).
+   */
   pricePctOfBase: number;
+  /** How the add-on is billed. Required for accurate totals & Stripe. */
+  pricingUnit: AddOnPricingUnit;
   /** The sibling Signature this experience belongs to. Must exist. */
   sourceTourId: string;
   /** Minimum stops in the resolved itinerary for this add-on to surface. */
