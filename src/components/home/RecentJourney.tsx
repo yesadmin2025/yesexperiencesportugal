@@ -526,20 +526,7 @@ function BookFlip() {
         })}
       </div>
 
-      {/* Full-PDF CTA — the flip-book shows six pages; the real file is
-          23 pages including logistics, accommodations and every day.
-          Guests on mobile tap this to read the whole document. */}
-      <div className="mt-6 flex items-center justify-center">
-        <a
-          href={samplePdfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
-        >
-          Open the full 15-day PDF
-          <ExternalLink size={13} aria-hidden="true" className="text-[color:var(--gold-deep)]" />
-        </a>
-      </div>
+      {/* All 23 pages are shown in the flip-book above and open full-screen on tap. */}
 
       {lightboxOpen ? (
         <PageLightbox
