@@ -42,18 +42,20 @@ function buildItineraryMessage(
   region: string,
   stops: RefineStop[],
 ): string {
-  const greeting = profile.name?.trim() ? `Olá! Sou ${profile.name.trim()}.` : "Olá!";
+  const greeting = profile.name?.trim()
+    ? `Hi YES — I'm ${profile.name.trim()}.`
+    : "Hi YES —";
   const guests =
     (profile.group?.adults ?? 0) + (profile.group?.teens ?? 0) + (profile.group?.children ?? 0);
   const lines: string[] = [
     greeting,
     "",
-    `Acabei de desenhar um dia em Portugal no Studio — região ${region}${guests > 0 ? `, ${guests} pessoa${guests === 1 ? "" : "s"}` : ""}${profile.ops?.preferredDate ? `, para ${profile.ops.preferredDate}` : ""}.`,
+    `I just designed a day in Portugal in the Studio — region ${region}${guests > 0 ? `, ${guests} ${guests === 1 ? "person" : "people"}` : ""}${profile.ops?.preferredDate ? `, for ${profile.ops.preferredDate}` : ""}.`,
     "",
-    "Roteiro real:",
+    "Itinerary:",
     ...stops.map((s, i) => `${i + 1}. ${s.label}${s.tag ? ` · ${s.tag}` : ""}`),
     "",
-    "Gostaria de refinar com um local designer antes de confirmar.",
+    "I'd like to refine it with a local designer before confirming.",
   ];
   return lines.join("\n");
 }

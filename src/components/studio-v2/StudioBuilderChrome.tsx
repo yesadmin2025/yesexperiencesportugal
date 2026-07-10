@@ -38,7 +38,7 @@ function progressPct(step: number, total: number): number {
   return Math.round((0.2 + 0.8 * t) * 100);
 }
 
-const HOST_WA_MSG = "Olá Tiago! Estou a desenhar o meu dia no YES Studio e gostava da tua ajuda.";
+const HOST_WA_MSG = "Hi YES — I'm designing my day in the Studio and would like a suggestion.";
 
 export function StudioBuilderChrome({
   step,

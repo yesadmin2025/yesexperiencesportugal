@@ -77,25 +77,25 @@ function buildDraftMessage({
     .join("\n");
 
   return [
-    `Olá! Sou ${who}.`,
+    `Hi YES — I'm ${who}.`,
     ``,
-    `Acabei de desenhar um dia no Studio e gostaria de o refinar com um local designer antes de reservar.`,
+    `I just designed a day in the Studio and would like to refine it with a local designer before booking.`,
     ``,
-    `— Resumo —`,
-    `Região: ${region}`,
-    `Atmosfera: ${intent}`,
-    `Ritmo: ${paceLabel(profile.pace)}`,
-    `Grupo: ${pax} ${pax === 1 ? "pessoa" : "pessoas"}`,
-    `Pickup: ${pickup || "a confirmar"}`,
-    `Duração estimada: ${durationHours[0]}–${durationHours[1]} h`,
+    `— Summary —`,
+    `Region: ${region}`,
+    `Atmosphere: ${intent}`,
+    `Pace: ${paceLabel(profile.pace)}`,
+    `Group: ${pax} ${pax === 1 ? "person" : "people"}`,
+    `Pickup: ${pickup || "to confirm"}`,
+    `Estimated duration: ${durationHours[0]}–${durationHours[1]} h`,
     ``,
-    `— Paragens (${stops.length}) —`,
+    `— Stops (${stops.length}) —`,
     stopList,
     ``,
-    `— Investimento estimado —`,
-    `€${perGuest}/pessoa × ${pax} = €${totalPrice}`,
+    `— Estimated investment —`,
+    `€${perGuest}/person × ${pax} = €${totalPrice}`,
     ``,
-    `Aguardo sugestões. Obrigado!`,
+    `Looking forward to your suggestions. Thank you!`,
   ].join("\n");
 }
 
