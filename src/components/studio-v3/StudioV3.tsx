@@ -218,8 +218,9 @@ import {
 } from "./types";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
-import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { ConfirmationPause } from "./ConfirmationPause";
+import { GuestDetailsStep } from "./GuestDetailsStep";
 import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
@@ -2338,30 +2339,34 @@ export function StudioV3() {
           <ConfirmationPause
             journeyTitle={state.journeyTitle ?? "Your Signature Day"}
             summaryLine={buildConfirmationSummary(state)}
-            onContinue={() => requestStripeCheckout(state)}
+            onContinue={() => advance("guestDetails")}
             onBack={() => back("storyboard")}
           />
         </PhaseShell>
       ) : null}
 
-      <FinalDetailsDialog
-        open={detailsOpen}
-        onOpenChange={setDetailsOpen}
-        submitting={checkoutPending}
-        tourId={(detailsState ?? state).tourId ?? undefined}
-        initial={{
-          tourDate: detailsState?.dateExact ?? state.dateExact ?? null,
-          guests:
-            typeof (detailsState ?? state).guests === "number" &&
-            ((detailsState ?? state).guests as number) > 0
-              ? Math.min(12, Math.max(1, Math.round((detailsState ?? state).guests as number)))
-              : 2,
-          pickupAddress: pickupCityLabel((detailsState ?? state).pickup) ?? null,
-        }}
-        onConfirm={async (d) => {
-          await handleStripeCheckout(detailsState ?? state, d);
-        }}
-      />
+      {state.phase === "guestDetails" ? (
+        <PhaseShell accent="ivory" exiting={exiting}>
+          <GuestDetailsStep
+            tourId={state.tourId ?? undefined}
+            journeyTitle={state.journeyTitle ?? undefined}
+            submitting={checkoutPending}
+            initial={{
+              tourDate: state.dateExact ?? null,
+              guests:
+                typeof state.guests === "number" && state.guests > 0
+                  ? Math.min(12, Math.max(1, Math.round(state.guests)))
+                  : 2,
+              pickupAddress: pickupCityLabel(state.pickup) ?? null,
+            }}
+            onBack={() => back("confirmation")}
+            onSubmit={async (d) => {
+              await handleStripeCheckout(state, d);
+            }}
+          />
+        </PhaseShell>
+      ) : null}
+
 
       <BrandedCheckoutDrawer
         open={checkoutOpen}
