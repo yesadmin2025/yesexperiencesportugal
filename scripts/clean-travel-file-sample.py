@@ -155,6 +155,7 @@ def process(pdf_path: str, out_dir: Path):
             if i == 1:
                 boxes.append(COVER_LOGO_BOX)
                 boxes.append(COVER_NAME_BOX)
+                boxes.append(COVER_FOOTER_BOX)
 
             # paint each box (expand a hair for anti-aliased glyph edges)
             for b in boxes:
