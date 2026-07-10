@@ -1062,13 +1062,50 @@ export function SignaturePriceCard({
             >
               {selectedAddOnIds.length > 0 && totalEur != null ? (
                 <>
-                  Investment <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                  Additions <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
                   <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
                 </>
               ) : (
                 <span className="sr-only">No add-ons selected</span>
               )}
             </output>
+            {/* Final estimated total — the single figure that matches the
+                Reserve CTA and, on booking, the checkout payload. Unit-aware:
+                base × guests + Σ(add-on line totals). */}
+            {selectedAddOnIds.length > 0 &&
+            partyTotalEur != null &&
+            partyCount != null ? (
+              <div
+                data-testid="studio-v3-final-total"
+                data-final-eur={partyTotalEur}
+                className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
+                  border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                }}
+              >
+                <p
+                  className="text-[10px] uppercase tracking-[0.24em] font-bold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                >
+                  Final estimated total
+                </p>
+                <p
+                  className="mt-1 text-[22px] font-bold tabular-nums leading-none"
+                  style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                >
+                  €{partyTotalEur}
+                </p>
+                <p
+                  className="mt-1 text-[10.5px]"
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+                  }}
+                >
+                  {partyCount} guests · additions priced by their own unit
+                </p>
+              </div>
+            ) : null}
           </fieldset>
         ) : null}
 
