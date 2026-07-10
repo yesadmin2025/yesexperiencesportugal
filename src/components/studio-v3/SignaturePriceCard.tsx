@@ -16,11 +16,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, ShieldCheck } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import {
+  addOnEurFor,
   addOnEurFromBase,
   selectSignatureAddOns,
   selectSignatureAddOnsWithBudget,
   regionBucket,
   LISBON_SUBREGION_BY_TOUR_ID,
+  type AddOnPricingUnit,
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -43,14 +45,34 @@ function usdToEurAnchor(usd: number): number {
 export interface SelectedAddOnSummaryItem {
   id: string;
   label: string;
+  /**
+   * Legacy per-person anchor for this add-on. Retained for backward
+   * compatibility with checkout code that still scales add-ons by
+   * `guests`. New code should read `amount` / `perUnit` / `unit`.
+   */
   priceEur: number;
   durationMinutes: number;
   pricePctOfBase: number;
+  /** Unit-aware per-unit price (per_person → per guest, etc.). */
+  perUnit: number;
+  /** Unit-aware line total for the current party size. */
+  amount: number;
+  /** How the add-on is billed. */
+  unit: AddOnPricingUnit;
+  /** Human unit label (e.g. "per guest", "per group"). */
+  unitLabel: string;
 }
 
 export interface SelectedAddOnSummary {
   ids: string[];
+  /**
+   * Legacy per-person total (sum of `priceEur`). Checkout code that
+   * scales add-ons by guest count still reads this; new code should
+   * prefer `partyTotalEur` which is already unit-aware.
+   */
   totalEur: number;
+  /** Unit-aware party total = sum of `items[].amount`. */
+  partyTotalEur: number;
   totalMinutes: number;
   items: SelectedAddOnSummaryItem[];
 }
@@ -218,6 +240,20 @@ export function SignaturePriceCard({
     () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
     [selectedAddOns],
   );
+  // Unit-aware party total for the selected add-ons — sum of line items
+  // priced by their own unit (per_person × guests, per_group × 1, etc.).
+  // Used by the "Final estimated total" line and by the Reserve CTA when
+  // the guest count is known. Never scaled a second time by the caller.
+  const addOnsPartyTotalEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    const partyGuests = Math.max(1, guests ?? 1);
+    return selectedAddOns.reduce(
+      (sum, a) =>
+        sum +
+        addOnEurFor({ addOn: a, baseEur: priceEur, guests: partyGuests }).amount,
+      0,
+    );
+  }, [selectedAddOns, hasPrice, priceEur, guests]);
   const freeMinutes = remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
 
   // Notify the parent whenever the effective add-on selection or its resolved
@@ -227,47 +263,50 @@ export function SignaturePriceCard({
   useEffect(() => {
     onAddOnsChangeRef.current = onAddOnsChange;
   }, [onAddOnsChange]);
-  useEffect(() => {
-    const cb = onAddOnsChangeRef.current;
-    if (!cb) return;
+
+  const summaryGuests = Math.max(1, guests ?? 1);
+  const buildSummary = (ids: string[]): SelectedAddOnSummary => {
     const base = priceEur ?? 0;
-    cb({
-      ids: selectedAddOnIds,
-      totalEur: addOnsTotalEur,
-      totalMinutes: addOnsMinutes,
-      items: selectedAddOns.map((a) => ({
+    const selected = availableAddOns.filter((a) => ids.includes(a.id));
+    const items: SelectedAddOnSummaryItem[] = selected.map((a) => {
+      const line = addOnEurFor({
+        addOn: a,
+        baseEur: base,
+        guests: summaryGuests,
+      });
+      return {
         id: a.id,
         label: a.label,
         priceEur: addOnEurFromBase(base, a.pricePctOfBase),
         durationMinutes: a.durationMinutes || 0,
         pricePctOfBase: a.pricePctOfBase,
-      })),
+        perUnit: line.perUnit,
+        amount: line.amount,
+        unit: line.unit,
+        unitLabel: line.unitLabel,
+      };
     });
-  }, [selectedAddOnIds, addOnsTotalEur, addOnsMinutes, selectedAddOns, priceEur]);
+    return {
+      ids,
+      totalEur: items.reduce((sum, i) => sum + i.priceEur, 0),
+      partyTotalEur: items.reduce((sum, i) => sum + i.amount, 0),
+      totalMinutes: items.reduce((sum, i) => sum + i.durationMinutes, 0),
+      items,
+    };
+  };
+
+  useEffect(() => {
+    const cb = onAddOnsChangeRef.current;
+    if (!cb) return;
+    cb(buildSummary(selectedAddOnIds));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAddOnIds, addOnsTotalEur, addOnsMinutes, selectedAddOns, priceEur, summaryGuests]);
 
   const commitAddOnIds = (next: string[]) => {
     if (isControlled) {
       // Parent owns state; emit the summary optimistically via the callback.
       const cb = onAddOnsChangeRef.current;
-      if (cb) {
-        const base = priceEur ?? 0;
-        const nextSelected = availableAddOns.filter((a) => next.includes(a.id));
-        cb({
-          ids: next,
-          totalEur: nextSelected.reduce(
-            (sum, a) => sum + addOnEurFromBase(base, a.pricePctOfBase),
-            0,
-          ),
-          totalMinutes: nextSelected.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
-          items: nextSelected.map((a) => ({
-            id: a.id,
-            label: a.label,
-            priceEur: addOnEurFromBase(base, a.pricePctOfBase),
-            durationMinutes: a.durationMinutes || 0,
-            pricePctOfBase: a.pricePctOfBase,
-          })),
-        });
-      }
+      if (cb) cb(buildSummary(next));
     } else {
       setUncontrolledAddOnIds(next);
     }
@@ -314,12 +353,24 @@ export function SignaturePriceCard({
   );
 
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
-  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyCount = effectiveGuests && effectiveGuests >= 2 ? effectiveGuests : null;
+  // Unit-aware add-on total for the currently *previewed* party — used
+  // in the visible "Final estimated total" so the picker updates it live.
+  const displayGuests = Math.max(1, effectiveGuests ?? guests ?? 1);
+  const addOnsDisplayPartyEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    return selectedAddOns.reduce(
+      (sum, a) =>
+        sum +
+        addOnEurFor({ addOn: a, baseEur: priceEur, guests: displayGuests }).amount,
+      0,
+    );
+  }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
+  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyBaseEur =
     displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
   const partyTotalEur =
-    partyBaseEur != null ? partyBaseEur + addOnsTotalEur * (partyCount ?? 1) : null;
+    partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
   // Tier rows for the picker — real per-pax when available, "from" anchor otherwise.
   const tierRows = useMemo(() => {
@@ -790,7 +841,14 @@ export function SignaturePriceCard({
                 className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-semibold transition-transform duration-200 hover:-translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
               >
-                Add +€{addOnEurFromBase(priceEur ?? 0, suggestion.pricePctOfBase)}
+                {(() => {
+                  const line = addOnEurFor({
+                    addOn: suggestion,
+                    baseEur: priceEur ?? 0,
+                    guests: summaryGuests,
+                  });
+                  return `Add +€${line.perUnit} ${line.unitLabel}`;
+                })()}
               </button>
               <button
                 type="button"
@@ -882,8 +940,11 @@ export function SignaturePriceCard({
               : null}
             <ul className="flex flex-col gap-2">
               {availableAddOns.map((a) => {
-                const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
-
+                const line = addOnEurFor({
+                  addOn: a,
+                  baseEur: priceEur ?? 0,
+                  guests: summaryGuests,
+                });
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
                 const fits = fitsBudgetById[a.id] !== false;
@@ -966,9 +1027,9 @@ export function SignaturePriceCard({
                         style={{ color: "var(--charcoal)" }}
                       >
                         <span>
-                          +€{eur}
+                          +€{line.perUnit}
                           <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
-                            / pp
+                            {line.unitLabel}
                           </span>
                         </span>
                         {a.durationMinutes > 0 ? (
@@ -1001,13 +1062,50 @@ export function SignaturePriceCard({
             >
               {selectedAddOnIds.length > 0 && totalEur != null ? (
                 <>
-                  Investment <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                  Additions <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
                   <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
                 </>
               ) : (
                 <span className="sr-only">No add-ons selected</span>
               )}
             </output>
+            {/* Final estimated total — the single figure that matches the
+                Reserve CTA and, on booking, the checkout payload. Unit-aware:
+                base × guests + Σ(add-on line totals). */}
+            {selectedAddOnIds.length > 0 &&
+            partyTotalEur != null &&
+            partyCount != null ? (
+              <div
+                data-testid="studio-v3-final-total"
+                data-final-eur={partyTotalEur}
+                className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
+                  border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                }}
+              >
+                <p
+                  className="text-[10px] uppercase tracking-[0.24em] font-bold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                >
+                  Final estimated total
+                </p>
+                <p
+                  className="mt-1 text-[22px] font-bold tabular-nums leading-none"
+                  style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                >
+                  €{partyTotalEur}
+                </p>
+                <p
+                  className="mt-1 text-[10.5px]"
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+                  }}
+                >
+                  {partyCount} guests · additions priced by their own unit
+                </p>
+              </div>
+            ) : null}
           </fieldset>
         ) : null}
 
@@ -1190,7 +1288,7 @@ export function SignaturePriceCard({
               className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              Included
+              Included in your selected itinerary
             </p>
             <ul className="mt-1.5 flex flex-col gap-1">
               {inclusionFootnote.map((line, i) => (
@@ -1215,7 +1313,7 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
               }}
             >
-              No hidden fees — every detail of the day is included.
+              Optional additions are priced separately and shown before checkout.
             </p>
           </footer>
         ) : null}
