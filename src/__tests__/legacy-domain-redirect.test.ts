@@ -84,19 +84,51 @@ describe("legacy-domain hybrid (301 + 410)", () => {
     expect(res!.headers.get("x-robots-tag")).toContain("noindex");
   });
 
-  it("returns null for the canonical domain (middleware passes through)", () => {
+  it("returns null for the canonical domain root (middleware passes through)", () => {
     const res = buildLegacy301Response(
       req("https://yesexperiencesportugal.com/"),
     );
     expect(res).toBeNull();
   });
 
-  it("returns null for unrelated hosts", () => {
+  it("returns null on canonical host when source path equals target (no self-loop)", () => {
+    // /about is a legit canonical path AND appears in the map as /about → /about.
+    // Must NOT 301 to itself.
+    const res = buildLegacy301Response(
+      req("https://yesexperiencesportugal.com/about"),
+    );
+    expect(res).toBeNull();
+  });
+
+  it("301s legacy paths on the canonical host too (catches Lovable's 302→primary)", () => {
+    // Lovable's platform 302s yesexperiences.pt/about-us → yesexperiencesportugal.com/about-us
+    // BEFORE our middleware runs. We catch it on the primary and 301 → /about.
+    const res = buildLegacy301Response(
+      req("https://yesexperiencesportugal.com/about-us"),
+    );
+    expect(res!.status).toBe(301);
+    expect(res!.headers.get("location")).toBe(
+      "https://yesexperiencesportugal.com/about",
+    );
+  });
+
+  it("410s WP-only paths on the canonical host (soft-404 prevention)", () => {
+    for (const path of ["/wp-admin", "/wp-login.php", "/category/wine", "/tag/porto", "/author/joao", "/tour/does-not-exist"]) {
+      const res = buildLegacy301Response(
+        req(`https://yesexperiencesportugal.com${path}`),
+      );
+      expect(res, `no response for ${path}`).not.toBeNull();
+      expect(res!.status, path).toBe(410);
+    }
+  });
+
+  it("returns null for unrelated hosts on non-legacy paths", () => {
     expect(buildLegacy301Response(req("https://example.com/"))).toBeNull();
     expect(
       buildLegacy301Response(req("http://localhost:8080/builder")),
     ).toBeNull();
   });
+
 
   it("every value in LEGACY_REDIRECT_MAP is a canonical-site path", () => {
     for (const [key, value] of Object.entries(LEGACY_REDIRECT_MAP)) {
