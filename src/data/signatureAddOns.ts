@@ -66,12 +66,29 @@ export type InclusionTag =
   | "obidos"
   | "nazare";
 
+/**
+ * Pricing unit for an add-on. Every add-on MUST declare one — ambiguous
+ * labels like "ADD +€40" are banned by the pricing hierarchy (plan §F/§G).
+ *   - per_person  → multiply by guest count
+ *   - per_group   → single flat fee for the party
+ *   - per_vehicle → multiply by ceil(guests / vehicleCapacity)
+ *   - fixed       → single flat fee, independent of party size
+ */
+export type AddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fixed";
+
 export interface SignatureAddOn {
   id: string;
   label: string;
   blurb: string;
-  /** Price as a fraction of the base "from" price (per person). */
+  /**
+   * Price as a fraction of the base "from" price. Interpretation depends
+   * on `pricingUnit`: for `per_person` this is per person; for `per_group`
+   * / `per_vehicle` / `fixed` it is the whole line-item as a fraction of
+   * the base per-person "from" anchor (rounded to €5).
+   */
   pricePctOfBase: number;
+  /** How the add-on is billed. Required for accurate totals & Stripe. */
+  pricingUnit: AddOnPricingUnit;
   /** The sibling Signature this experience belongs to. Must exist. */
   sourceTourId: string;
   /** Minimum stops in the resolved itinerary for this add-on to surface. */
@@ -183,6 +200,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Slip into Galapinhos or Portinho da Arrábida for a slow picnic on the sand — bread, cheese, wine, no crowds.",
       pricePctOfBase: 0.18,
+      pricingUnit: "per_person",
       minHours: 6,
       durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
@@ -195,6 +213,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "An hour on the water along the Arrábida cliffs — caves, turquoise bays, Atlantic light.",
       pricePctOfBase: 0.22,
+      pricingUnit: "per_person",
       minHours: 6,
       durationMinutes: 75,
       lisbonSubRegion: "arrabida-setubal",
@@ -207,6 +226,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Paint your own cobalt-blue tile inside an Azeitão atelier — five centuries of tradition, one hour of your own.",
       pricePctOfBase: 0.16,
+      pricingUnit: "per_person",
       durationMinutes: 90,
       lisbonSubRegion: "arrabida-setubal",
       conflictsWith: ["azulejo"],
@@ -218,6 +238,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A short hands-on session with a small Azeitão dairy — taste raw-milk cheeses at the source.",
       pricePctOfBase: 0.14,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       lisbonSubRegion: "arrabida-setubal",
       conflictsWith: ["cheese"],
@@ -229,6 +250,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Add a short loop through Sintra's romantic hills and Europe's western-most cape on the way home.",
       pricePctOfBase: 0.2,
+      pricingUnit: "per_person",
       minHours: 7,
       minStops: 4,
       durationMinutes: 120,
@@ -244,6 +266,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Évora's haunting bone chapel and the old town walls — your guide times the visit for quiet light.",
       pricePctOfBase: 0.16,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       conflictsWith: ["evora"],
     },
@@ -253,6 +276,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Talha amphora wine tasting",
       blurb: "Taste 2 000-year-old clay-vessel wines in a Vidigueira cellar with the winemaker.",
       pricePctOfBase: 0.18,
+      pricingUnit: "per_person",
       durationMinutes: 75,
       conflictsWith: ["wine-tasting"],
     },
@@ -262,6 +286,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Roman heritage stop",
       blurb: "A guided pause at a real Roman site — columns, mosaics, the same hills they walked.",
       pricePctOfBase: 0.12,
+      pricingUnit: "per_person",
       minStops: 3,
       durationMinutes: 45,
       conflictsWith: ["roman"],
@@ -274,6 +299,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Roman ruins of Tróia",
       blurb: "A quiet guided walk through one of the Atlantic's largest Roman fish-salting sites.",
       pricePctOfBase: 0.14,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       conflictsWith: ["roman"],
     },
@@ -283,6 +309,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       label: "Herdade da Comporta wine tasting",
       blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
       pricePctOfBase: 0.2,
+      pricingUnit: "per_person",
       durationMinutes: 75,
       conflictsWith: ["wine-tasting"],
     },
@@ -295,6 +322,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Step inside the Convent of Christ — eight centuries of Templar and Order history, in stone.",
       pricePctOfBase: 0.18,
+      pricingUnit: "per_person",
       durationMinutes: 75,
       conflictsWith: ["tomar"],
     },
@@ -305,6 +333,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "A slow walk along Óbidos' whitewashed lanes — a glass of ginja in a chocolate cup, included.",
       pricePctOfBase: 0.14,
+      pricingUnit: "per_person",
       durationMinutes: 60,
       conflictsWith: ["obidos"],
     },
@@ -315,6 +344,7 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
       blurb:
         "Stand above the canyon that makes Nazaré's monster waves — the Atlantic stretching to the horizon.",
       pricePctOfBase: 0.16,
+      pricingUnit: "per_person",
       minHours: 6,
       durationMinutes: 45,
       conflictsWith: ["nazare"],
@@ -332,6 +362,63 @@ export function roundEur5(eur: number): number {
 /** Convert an add-on's percent to a per-person EUR anchor. */
 export function addOnEurFromBase(baseEur: number, pct: number): number {
   return roundEur5(baseEur * pct);
+}
+
+/**
+ * Unit-aware line-item pricing for an add-on. Returns the total EUR for
+ * the line and a human unit label ("per guest" / "per group" / etc.).
+ * Both `SignaturePriceCard` and the checkout payload MUST use this so
+ * the displayed total, the invariant test, and the Stripe amount agree.
+ */
+export interface AddOnLineItem {
+  amount: number;
+  perUnit: number;
+  unit: AddOnPricingUnit;
+  unitLabel: string;
+}
+
+export function addOnEurFor(opts: {
+  addOn: Pick<SignatureAddOn, "pricePctOfBase" | "pricingUnit">;
+  baseEur: number;
+  guests: number;
+  vehicleCapacity?: number;
+}): AddOnLineItem {
+  const { addOn, baseEur, guests } = opts;
+  const perAnchor = addOnEurFromBase(baseEur, addOn.pricePctOfBase);
+  const guestsSafe = Math.max(1, Math.floor(guests));
+  const vehicleCap = Math.max(1, Math.floor(opts.vehicleCapacity ?? 4));
+  switch (addOn.pricingUnit) {
+    case "per_person":
+      return {
+        amount: perAnchor * guestsSafe,
+        perUnit: perAnchor,
+        unit: "per_person",
+        unitLabel: "per guest",
+      };
+    case "per_group":
+      return {
+        amount: perAnchor,
+        perUnit: perAnchor,
+        unit: "per_group",
+        unitLabel: "per group",
+      };
+    case "per_vehicle": {
+      const vehicles = Math.ceil(guestsSafe / vehicleCap);
+      return {
+        amount: perAnchor * vehicles,
+        perUnit: perAnchor,
+        unit: "per_vehicle",
+        unitLabel: "per vehicle",
+      };
+    }
+    case "fixed":
+      return {
+        amount: perAnchor,
+        perUnit: perAnchor,
+        unit: "fixed",
+        unitLabel: "flat",
+      };
+  }
 }
 
 /** Parse the loose `durationHours` string (e.g. "7–9h", "6+h") to its lower bound. */
