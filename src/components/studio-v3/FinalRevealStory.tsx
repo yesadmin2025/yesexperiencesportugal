@@ -344,8 +344,20 @@ export function FinalRevealStory({
         </div>
       </details>
 
-      {/* CTAs */}
+      {/* CTAs — one primary, save as small link, back tertiary */}
       <div className="mt-8 flex flex-col items-stretch gap-3">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onSaveSignature}
+            disabled={saving}
+            data-testid="studio-v3-final-reveal-save"
+            className="inline-flex items-center min-h-[36px] px-1 text-[12px] tracking-[0.02em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60"
+            style={{ color: "var(--teal)" }}
+          >
+            {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
+          </button>
+        </div>
         <button
           type="button"
           onClick={onContinue}
@@ -355,20 +367,6 @@ export function FinalRevealStory({
         >
           {CTA_MAKE_STORY}
           <span aria-hidden>→</span>
-        </button>
-        <button
-          type="button"
-          onClick={onSaveSignature}
-          disabled={saving}
-          data-testid="studio-v3-final-reveal-save"
-          className="w-full min-h-[48px] inline-flex items-center justify-center rounded-full border px-6 text-[12.5px] uppercase tracking-[0.22em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60"
-          style={{
-            borderColor: "var(--teal)",
-            color: "var(--teal)",
-            background: "transparent",
-          }}
-        >
-          {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
         </button>
         <button
           type="button"
@@ -382,6 +380,7 @@ export function FinalRevealStory({
           ← {CTA_BACK_TO_REFINE}
         </button>
       </div>
+
     </section>
   );
 }
