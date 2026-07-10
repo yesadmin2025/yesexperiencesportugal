@@ -1288,7 +1288,7 @@ export function SignaturePriceCard({
               className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              Included
+              Included in your selected itinerary
             </p>
             <ul className="mt-1.5 flex flex-col gap-1">
               {inclusionFootnote.map((line, i) => (
