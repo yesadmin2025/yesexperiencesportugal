@@ -16,10 +16,13 @@ import subprocess, tempfile
 from io import BytesIO
 from pathlib import Path
 
+import cv2
+import numpy as np
 from PIL import Image, ImageDraw
 from pypdf import PdfReader, PdfWriter, PageObject
 from reportlab.lib.colors import Color
 from reportlab.pdfgen import canvas
+
 
 SRC = Path("public/travel-file-sample/sample.pdf")
 
@@ -89,14 +92,19 @@ def build_cover_page() -> PageObject:
     frame_pad = py(38)
     draw.rectangle([frame_pad, py(55), W - frame_pad, py(155)], fill=ivory)
 
-    # ── Zone B: only the "14 nights · Designed for Jennifer Oliver" line
-    #    (dates line stays). Source = clean sunset band between dates
-    #    (ends 544) and name (starts 578); must NOT include the name.
-    src_top, src_bot = py(548), py(575)          # 27pt clean gradient
-    dst_top          = py(573)                    # covers name 578–592
-    band_h           = src_bot - src_top
-    src = img.crop((0, src_top, W, src_top + band_h))
-    img.paste(src, (0, dst_top))
+    # ── Zone B: erase "14 nights · Designed for Jennifer Oliver" line.
+    #    Verified via cropped inspection: name line sits at pdf y ≈ 432–452
+    #    (dates "September 8 — September 22, 2026" is just above at ≈ 405–425).
+    #    Use OpenCV inpainting so the sunset gradient reconstructs seamlessly.
+    arr = np.array(img)
+    mask = np.zeros(arr.shape[:2], dtype=np.uint8)
+    mask[py(428):py(456), py(120):W - py(120)] = 255
+    inpainted = cv2.inpaint(
+        cv2.cvtColor(arr, cv2.COLOR_RGB2BGR), mask, 8, cv2.INPAINT_TELEA
+    )
+    img = Image.fromarray(cv2.cvtColor(inpainted, cv2.COLOR_BGR2RGB))
+
+
 
 
 
