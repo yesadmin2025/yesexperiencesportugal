@@ -11,8 +11,12 @@
 
 const READY_PATHS = new Set<string>([
   "/", // → /pt
+  "/about", // → /pt/about
   "/contact", // → /pt/contact
   "/cookies", // → /pt/cookies
+  "/experiences", // → /pt/experiences
+  "/privacy", // → /pt/privacy
+  "/terms", // → /pt/terms
 ]);
 
 export function isPtReady(path: string): boolean {
