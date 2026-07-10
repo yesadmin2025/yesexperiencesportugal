@@ -35,6 +35,14 @@ import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceC
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
 import { trackStep } from "@/lib/studio-v3-funnel";
+import {
+  gaAddPaymentInfo,
+  gaAddToCartStudioTier,
+  gaBeginCheckout,
+  gaStudioStep,
+  buildTourItem,
+} from "@/lib/analytics-ga4";
+import { computeQualityScore } from "@/lib/studio-v3-quality";
 import { inferKind, summarizeDay } from "@/lib/studio/timing";
 import { PartialReveal } from "./PartialReveal";
 
@@ -753,6 +761,16 @@ export function StudioV3() {
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
       setCheckoutOpen(true);
+      // GA4 begin_checkout — user reached Stripe surface.
+      try {
+        const item = buildTourItem(
+          { id: tour.id, title: tour.title ?? tour.id, priceFrom: perPaxBase },
+          { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
+        );
+        gaBeginCheckout({ items: [item], valueEur: totalEur });
+      } catch {
+        /* silent */
+      }
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
@@ -785,6 +803,16 @@ export function StudioV3() {
         }
         setClientSecret(resp.clientSecret);
         setPublishableKey(resp.publishableKey);
+        // GA4 add_payment_info — payment surface (Stripe embedded) is ready.
+        try {
+          const item = buildTourItem(
+            { id: tour.id, title: tour.title ?? tour.id, priceFrom: perPaxBase },
+            { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
+          );
+          gaAddPaymentInfo({ paymentType: "stripe", items: [item], valueEur: totalEur });
+        } catch {
+          /* silent */
+        }
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
@@ -1035,7 +1063,18 @@ export function StudioV3() {
         event: "select",
         value: { field: String(key), selection: value as unknown },
       });
-      return { ...s, [key]: value };
+      const nextState = { ...s, [key]: value } as StudioV3State;
+      // GA4 studio_step — fire per configurator step selection.
+      try {
+        gaStudioStep({
+          stepNumber: stepOf(s.phase),
+          stepKey: s.phase,
+          qualityScore: computeQualityScore(nextState)?.score ?? null,
+        });
+      } catch {
+        /* silent */
+      }
+      return nextState;
     });
     if (reactionInit) {
       window.setTimeout(() => playReaction({ ...reactionInit, nextPhase: next }), delay);
@@ -1359,6 +1398,19 @@ export function StudioV3() {
       event: "tier_chosen",
       value: { tier: id, label },
     });
+    // GA4 add_to_cart — Studio tier selected.
+    try {
+      const tierPrice =
+        id === "considered" ? 180 : id === "elevated" ? 320 : id === "bespoke" ? 550 : 0;
+      gaAddToCartStudioTier({
+        tier: id,
+        priceEur: tierPrice,
+        tourId: state.tourId ?? null,
+        tourTitle: state.journeyTitle ?? null,
+      });
+    } catch {
+      /* silent */
+    }
 
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({

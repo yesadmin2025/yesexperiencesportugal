@@ -132,6 +132,18 @@ export function installAnalyticsAttrs(): void {
       params[paramKey] = value;
     }
     track(event, params);
+    // GA4 generate_lead — any WhatsApp click across the site is a lead.
+    if (event === "whatsapp_click") {
+      void import("@/lib/analytics-ga4").then((m) =>
+        m.gaGenerateLead({
+          leadSource:
+            typeof params.placement === "string" && params.placement.length > 0
+              ? String(params.placement)
+              : "whatsapp",
+          method: "whatsapp",
+        }),
+      );
+    }
   };
 
   document.addEventListener("click", handler, { capture: true, passive: true });

@@ -8,10 +8,12 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { findTour } from "@/data/signatureTours";
+import { gaPurchase, buildTourItem } from "@/lib/analytics-ga4";
 
 interface Search {
   session_id?: string;
@@ -54,6 +56,7 @@ function BookingConfirmedPage() {
     | { kind: "ok"; data: SessionStatus }
     | { kind: "error"; message: string }
   >({ kind: session_id ? "loading" : "idle" });
+  const purchaseFiredFor = useRef<string | null>(null);
 
   useEffect(() => {
     if (!session_id) return;
@@ -86,6 +89,35 @@ function BookingConfirmedPage() {
       cancelled = true;
     };
   }, [session_id]);
+
+  // GA4 purchase — fire once per session_id when paid.
+  useEffect(() => {
+    if (state.kind !== "ok") return;
+    if (state.data.paymentStatus !== "paid") return;
+    if (!session_id || purchaseFiredFor.current === session_id) return;
+    purchaseFiredFor.current = session_id;
+    const t = tour ? findTour(tour) : null;
+    const valueEur = state.data.amountTotal != null ? state.data.amountTotal / 100 : 0;
+    const item = t
+      ? buildTourItem(t, { quantity: 1, tier: "signature", itemCategory: "Signature" })
+      : {
+          item_id: tour ?? "unknown",
+          item_name: tour ?? "YES experience",
+          item_brand: "YES Experiences Portugal",
+          item_category: "Signature",
+          price: valueEur,
+          quantity: 1,
+          currency: "EUR",
+        };
+    item.price = valueEur;
+    gaPurchase({
+      transactionId: session_id,
+      valueEur,
+      items: [item],
+      currency: state.data.currency ? state.data.currency.toUpperCase() : "EUR",
+    });
+  }, [state, session_id, tour]);
+
 
   const paid = state.kind === "ok" && state.data.paymentStatus === "paid";
   const amountLabel =

@@ -33,6 +33,13 @@ import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import {
+  gaAddPaymentInfo,
+  gaAddToCartSignature,
+  gaBeginCheckout,
+  gaGenerateLead,
+  buildTourItem,
+} from "@/lib/analytics-ga4";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -385,6 +392,19 @@ function TailorPage() {
     });
     setDetailsOpen(false);
     setCheckoutOpen(true);
+    // GA4 add_to_cart + begin_checkout — Tailored reserve intent.
+    try {
+      gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: estimatedPrice });
+      const item = buildTourItem(tour, {
+        quantity: details.guests,
+        tier: "tailored",
+        itemCategory: "Signature",
+      });
+      item.price = estimatedPrice;
+      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests) });
+    } catch {
+      /* silent */
+    }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
@@ -424,6 +444,22 @@ function TailorPage() {
       }
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
+      // GA4 add_payment_info — payment surface ready.
+      try {
+        const item = buildTourItem(tour, {
+          quantity: details.guests,
+          tier: "tailored",
+          itemCategory: "Signature",
+        });
+        item.price = estimatedPrice;
+        gaAddPaymentInfo({
+          paymentType: "stripe",
+          items: [item],
+          valueEur: Math.round(estimatedPrice * details.guests),
+        });
+      } catch {
+        /* silent */
+      }
     } catch (e) {
       console.error("Tailor checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
@@ -1101,6 +1137,9 @@ function TailorPage() {
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() =>
+                        gaGenerateLead({ leadSource: "tailor_talk_to_local", method: "whatsapp" })
+                      }
                       className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
                     >
                       <MessageCircle size={13} /> Talk to a local
