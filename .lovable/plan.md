@@ -1,157 +1,108 @@
-# Studio Post-Builder Flow Correction — Revised Plan v2 (re-issued)
+# Studio Post-Builder Flow — Corrected Order (v2)
 
-Same north star: add a **Final Signature Day** climax between refinement and guest details, fix broken mobile cards, remove the sparse ConfirmationPause. No changes to Stripe, pricing math, or route/feasibility engine. Incorporates all 12 corrections.
+Change from previous plan: **all "to be confirmed" / "pending" / "TBC" language removed everywhere.** Date selection already guarantees availability, so every stop and add-on shown is confirmed instantly.
 
-The seven points you just called out are all locked in below (guestDraft, back navigation, mobile @ 393px, Playwright, progressive reveal, full ConfirmationPause removal, live-state-only on final screen).
+## Canonical phase order
 
----
-
-## 1. Split route vs. timeline (§1, §2, §7)
-
-Pure module `src/components/studio-v3/finalItinerary.ts`:
-
-```ts
-type AddOnPlacementType = "overlay" | "physical";
-
-interface RouteStop {                    // map + driving math only
-  id: string; label: string;
-  lat: number; lng: number;              // required, validated
-  source: "signature" | "physical-addon-validated";
-}
-
-interface TimelineEntry {                // editorial timeline only
-  id: string;                            // stable: `stop:${key}` | `addon:${addOnId}`
-  kind: "stop" | "overlay-addon" | "physical-addon-validated" | "physical-addon-pending";
-  title: string; blurb?: string;
-  slot: "morning" | "midday" | "afternoon" | "closing";
-  anchorStopId?: string;
-  durationMin?: number;
-  isPending?: boolean;
-}
+```text
+refine (compose signature + add-ons + prices)
+  → finalReveal (cinematic story of THEIR day, add-ons woven in)
+     → guestDetails (name / email / phone / notes)
+        → checkoutSummary (compact recap + download one-pager)
+           → payment
 ```
 
-- `routeStops` = refined signature stops ∪ physical add-ons whose coords are present AND already accepted by existing feasibility output. Map filter is explicit `Number.isFinite(lat) && Number.isFinite(lng)`.
-- `finalTimelineEntries` = real stops + overlay add-ons (slotted/anchored) + validated physical + pending physical (flagged).
-- Overlay never touches `routeStops` and never invents coordinates.
-- Unvalidated physical → excluded from `routeStops`, shown in timeline as pending, listed under "To be confirmed with your designer" (§5). Never contributes driving time.
+## 1. Rename phase and reorder
 
-Add `placement: AddOnPlacementType` to `SignatureAddOn` in `src/data/signatureAddOns.ts` (default `"overlay"`, explicit `"physical"` where applicable). No price change.
+- `types.ts` `StudioV3Phase`: rename `finalSignature` → `finalReveal`, add `checkoutSummary`.
+- `curation.ts` `LINEAR_ORDER` / `PHASE_ORDER`:
+  `intro → questionnaire → curation → storyboard → refine → finalReveal → guestDetails → checkoutSummary → payment`.
+- Migration: `confirmation | finalSignature → finalReveal`.
 
-### `mergeAddOnsIntoStops` — idempotent (§7)
-Pure, non-mutating; stable ids; preserves real stop order and selection order; `anchorStopId` beats `slot`; missing anchor falls back to slot; missing slot appends. Rerun on already-merged input returns structurally-equal output.
+## 2. Availability + confirmation language
 
-Tests (`finalItinerary.test.ts`): idempotence; missing anchor fallback; multiple add-ons in same slot; overlay without coords; validated physical with coords; pending physical.
+- Remove `isPending`, `PENDING_HEADER`, `STATUS_ROUTE_PREPARED`, and any "To be confirmed with your designer" copy from `signature-day-copy.ts`, `finalItinerary.ts`, `TimelineView.tsx`, `signatureAddOns.ts`, and the reveal/checkout/email templates.
+- `finalItinerary.ts` still splits `routeStops` (validated coordinates only) vs `finalTimelineEntries` (all confirmed entries), but there is no pending flag or pending group. If an add-on can't resolve to a stop, it stays inline in the timeline as a confirmed narrative beat with no map pin — never labelled pending.
+- Add-ons that require date-specific availability are gated in Refine: if unavailable for the chosen date they are hidden or disabled with plain copy ("Not available on 12 May — try another date"), not carried forward as "pending".
+- Inclusions section on Reveal and Checkout has two groups only: **Included** and **Your additions**. No third "to be confirmed" group.
+- Reassurance copy replaces the removed status line: *"Instant confirmation. Your date is held the moment you reserve."*
 
-## 2. Canonical duration + price (§3, §4)
+## 3. Final Reveal (`FinalRevealStory.tsx`, new)
 
-**Duration:** new selector `selectFinalDurationMinutes(state)` composed from the existing pieces the reveal already uses (refined experience minutes + validated route driving minutes + Σ confirmed overlay `durationMin` + existing operational buffer). Pending durations are shown as a separate "+ pending" line, never silently summed. `FinalSignatureDay` does **not** compute duration independently.
+Live state only.
 
-**Price:** consumed via the same selectors that feed `SignaturePriceCard` and `createSignatureCheckout`. Line items use existing `addOnEurFor({ addOn, baseEur, guests, vehicleCapacity })`. `per_group` and `fixed` never multiplied by guests. Each line shows its unit label ("per guest" / "per group" / "per vehicle" / "flat").
+- Opening frame: hero + title *"Your story in Portugal"* + one-line proposal sentence + discreet date/party meta.
+- Story body: chaptered narrative from `finalTimelineEntries`, add-ons woven in as confirmed beats.
+- Route ribbon: small inline map, `routeStops` only, no controls.
+- Collapsible *"See what's included"* (`<details>`, closed by default): Included + Your additions + canonical total. Only place on this page with prices.
+- No admin chrome, no "YES Approved", no comparison prices, no stepper above the fold, no "pending" or "to be confirmed" anywhere.
 
-Invariant test `src/lib/checkout/__tests__/final-signature-total.test.ts`: mixed per_person + per_group + fixed cart — Σ displayed line amounts === checkout total.
+CTAs (mobile sticky bottom, desktop right-rail):
+- Primary (gold fill): **"Make this my story in Portugal"** → `guestDetails`.
+- Secondary (ghost teal): **"Save my signature"** → persists state; toast "Saved to your journey".
+- Tertiary text link: **"Back to refine"**.
 
-## 3. Phase rename + migration (§6)
+## 4. Guest Details (`GuestDetailsStep.tsx`, adjusted)
 
-- `StudioV3Phase`: `"confirmation"` → `"finalSignature"` (types.ts, PHASE_ORDER, LINEAR_ORDER in curation.ts).
-- Migration in every hydration path:
-  ```ts
-  const migrated = raw.phase === "confirmation" ? "finalSignature" : raw.phase;
-  const phase = PHASE_ORDER.includes(migrated) ? migrated : "storyboard";
-  ```
-- Test added to `phase-7d-hydration.test.ts`: `"confirmation"` restores as `"finalSignature"`; unknown phase falls back to `"storyboard"`.
+- Header: *"A few details to hold your story"*.
+- Collapsed live summary strip (name, date, guests, total).
+- Fields: name, email, phone, notes.
+- `guestDraft` persists on blur + 400ms debounce; survives back nav.
+- **Email-blur auto-send**: valid `.email()` + 800ms debounce → `sendSignatureStoryEmail` fires ONCE per `(email, signatureId)`. Dedupe map in `state.emailedSignatures`. Typo correction resends once to the corrected address. Inline confirmation *"Sent to name@…"*.
+- Continue → `checkoutSummary`.
 
-## 4. `FinalSignatureDay` (§5, §10, §12) — live state only
+## 5. Checkout Summary (`CheckoutSummary.tsx`, new)
 
-`src/components/studio-v3/FinalSignatureDay.tsx`. Every value re-derived from current `state.editedRoutePoints`, `state.addOns`, `state.guests`, `state.date`, `state.pickup`, `state.language`, `state.proposal`. No reveal snapshot fallback anywhere.
+- Header: *"Ready to reserve"*.
+- Tour summary card: name, date, party, pickup, language, canonical duration, inclusions + additions, canonical total (same selectors as `SignaturePriceCard`).
+- **Download the signature** → client-side one-pager PDF: date, guests, price, inclusions. No narrative (narrative goes by email).
+- Guest details recap with Edit link.
+- Reassurance: *"Instant confirmation the moment you reserve."*
+- CTA: **"Reserve and pay"** → existing Stripe flow, untouched.
 
-Sections:
-- **A. Header** — eyebrow "Your final design", Signature name, region, date, guests, canonical duration (with pending line if any), per-guest + total price (live). One editorial sentence from resolved region + top intentions.
-- **B. Day at a glance** — reuse `DayAtGlance` over `finalTimelineEntries` grouped by slot.
-- **C. Final route** — reuse `StudioV3SignatureMap` fed **only `routeStops`**. Below: driving time + distance + experience duration + pickup + return from live route result.
-- **D. Timeline** — reuse `TimelineView` extended to `TimelineEntry[]`; "Addition" chip on overlay/validated-physical, "Pending" chip on pending-physical.
-- **E. Designed around you** — `DesignedForYou` fed only guest-facing tokens (no raw DB keys).
-- **F. Why this day works** — `WhyRouteWorks`, max 3 points from actual final stop set.
-- **G. Inclusions** — three groups: `INCLUSION_HEADER` (existing) / "Your selected additions" (with per-unit prices) / **"To be confirmed with your designer"** (rendered only when non-empty). Never "Everything included".
-- **H. Price summary** — transparent breakdown from existing pricing selectors, each line shows its unit label.
-- **I. Reassurance** — `ReassuranceStrip`, max 3 (Private guide · Private transport · **Final designer review included**) + one line: "Availability and operational details are confirmed before your day." No "YES Approved" / "Confirmed availability" unless a real status flag exists.
-- **J. Actions** — primary `Continue to guest details`; secondary `Back to refine my day`; tertiary `Save this Signature` (only when existing save affordance is wired).
+## 6. Email pipeline
 
-**Mobile hierarchy @ 393px (§10):** No forced above-the-fold. Order: Signature name → one-line description → price + guests → route status → map → primary CTA. CTA becomes sticky-bottom on mobile after the header scrolls past — reachable without compressing content.
+- **Signature Story email** (new `src/lib/email-templates/signature-story.tsx`) — editorial layout mirroring Reveal: hero, chaptered narrative, small map, inclusions collapsed, price at bottom. Subject: *"Your story in Portugal, {name}"*. No "to be confirmed" language.
+- Server fn `sendSignatureStoryEmail({ email, signatureId, snapshot })` — snapshot frozen at send time.
+- Dedupe via `email_send_log` idempotency key = `signatureId`.
+- Booking confirmation email unchanged.
 
-## 5. Reveal repositioning + progressive disclosure
+## 7. Files
 
-- `SignatureDayReveal`/`StoryboardHandoff`: primary CTA becomes **"See my final Signature"**. Reservation CTA removed from reveal.
-- Above the fold: Signature name, one-line description, price + guests, route status, map, primary CTA. Behind `<details>`: full transit breakdown, all DNA tags, long inclusions, price comparisons. Add-ons stay in refine.
-- New copy tokens in `signature-day-copy.ts`:
-  `CTA_SEE_FINAL`, `CTA_CONTINUE_TO_DETAILS`, `CTA_BACK_TO_REFINE`, `INCLUSION_PENDING_HEADER = "To be confirmed with your designer"`, `STATUS_ROUTE_PREPARED = "Route prepared — pending final availability"`.
+**New**
+- `src/components/studio-v3/FinalRevealStory.tsx`
+- `src/components/studio-v3/CheckoutSummary.tsx`
+- `src/components/studio-v3/finalItinerary.ts` (+ `.test.ts`)
+- `src/components/studio-v3/signatureOnePagerPdf.tsx`
+- `src/lib/email-templates/signature-story.tsx`
+- `src/lib/studio/sendSignatureStoryEmail.functions.ts`
+- `e2e/studio-v3-flow-mobile.spec.ts` — 393×852 walkthrough refine → reveal → email blur → checkout → download
 
-## 6. ConfirmationPause — full removal from the chain
+**Edited**
+- `StudioV3.tsx` — phase map, remove `ConfirmationPause`, add `finalReveal` + `checkoutSummary` branches
+- `types.ts`, `curation.ts` — rename + reorder + `savedSignatures`, `emailedSignatures`, `guestDraft`; drop `isPending`
+- `GuestDetailsStep.tsx` — collapsed summary, email-blur auto-send, dedupe
+- `SignatureDayReveal.tsx` — refine-stage primary CTA becomes *"See my final story"* → `finalReveal`
+- `StudioV3ProgressStepper.tsx` — new step labels
+- `signature-day-copy.ts` — remove pending tokens; add `REVEAL_TITLE`, `CTA_MAKE_STORY`, `CTA_SAVE_SIGNATURE`, `CHECKOUT_HEADER`, `EMAIL_SENT_INLINE`, `INCLUSIONS_TOGGLE`, `INSTANT_CONFIRMATION`
+- `TimelineView.tsx`, `signatureAddOns.ts`, `RefineStopCard.tsx` — strip pending states/chips; date-availability gating in Refine
+- Any test asserting "To be confirmed" text — updated
 
-- Deleted from `PHASE_ORDER` and `LINEAR_ORDER`.
-- Render branch + import removed from `StudioV3.tsx`.
-- No route or component references it after this change (grep-verified before shipping).
-- File `ConfirmationPause.tsx` left on disk this turn only to avoid touching its own test file; removed in an immediate follow-up commit once tests are updated.
+**Removed**
+- `ConfirmationPause.tsx` from chain
 
-## 7. Guest details + draft persistence (§11)
+## 8. State-preservation guarantees
 
-`GuestDetailsStep.tsx`:
-- Header **"A few details for your Signature Day"**.
-- Small collapsed live summary strip: Signature name · date · guests · total · selected additions.
-- Local form state stays local for keystroke performance. Sync to `state.guestDraft` on `onBlur` and via 400ms trailing debounce during typing.
-- On mount, hydrate the local form from `state.guestDraft` when present.
-- Back button routes to `finalSignature` and preserves both refine edits (already in reducer) and typed guest fields (via `guestDraft`).
-- `guestDraft` = `{ name?, email?, phone?, notes? }` only. No payment/card fields.
-- Refinements (stop reorder, add-on toggle) never wipe `guestDraft`. Changing `state.guests` re-validates only the guest-count-dependent field.
+- Back nav Refine ↔ Reveal ↔ Guest Details ↔ Checkout keeps all edits.
+- `guestDraft` and `emailedSignatures` persist across those transitions.
+- Reveal, email, and Checkout derive from the same live `state` selectors.
+- `savedSignatures` → Supabase for signed-in users, `localStorage["studio.v3.saved"]` for guests.
 
-## 8. Back navigation
+## 9. Out of scope
 
-- `back()` from `finalSignature` → `storyboard` with all refinement edits intact (reducer already keeps state).
-- `back()` from `guestDetails` → `finalSignature`; on returning to `guestDetails`, form rehydrates from `guestDraft`.
-- `advance()`/`back()` logic unchanged beyond the phase enum swap; existing `PHASE_ORDER` guards still gate transitions.
+Stripe math, feasibility engine, questionnaire, nav, brand tokens, booking backend, production data.
 
-## 9. Mobile cards @ 393px (§8, §9)
+## Confirm before I implement
 
-**RefineStopCard.tsx** — 3-row layout already in place. Fixes:
-- Toolbar labels: visible short text **at every width < 640px** (`Up · Down · Replace · Remove`). Remove the current `hidden sm:inline` rule that hides labels below 360px only. At `sm+`, icon-only allowed with existing `aria-label`, `title`, 44×44 hit area.
-- Description row remains full-width Row 2, never shares a row with actions.
-
-**Add-on card** (`RefineAccordion.tsx` add-ons block) — stacked mobile layout:
-- L1 title / L2 full-width description / L3 duration · price / L4 full-width toggle **"Add to my day" / "Added ✓" / "Remove"**. No floating overlay chips.
-
-**Test split (§9):**
-- **RTL (vitest/jsdom):** structure, aria-labels, ordering, copy contract, phase migration, mergeAddOns idempotence, pricing invariants.
-- **Playwright** — new `e2e/studio-v3-final-signature-mobile.spec.ts` at `viewport: { width: 393, height: 852 }` (reuses existing Playwright config). Asserts:
-  - no horizontal overflow on Refine + FinalSignature + GuestDetails,
-  - refine description bounding-box width ≥ ~260px,
-  - toolbar controls never intersect description bounding box,
-  - every action button ≥ 44×44,
-  - add-on cards render stacked (title/desc/meta/CTA on separate y-rows),
-  - primary CTA on FinalSignature reachable (in viewport or sticky),
-  - GuestDetails not in DOM until Continue is pressed on FinalSignature.
-
-## 10. State summary (`types.ts`)
-
-- `guestDraft?: { name?: string; email?: string; phone?: string; notes?: string }` — no payment data.
-- `addOns: SelectedAddOn[]` — confirm carries add-on id + selection order.
-- `SignatureAddOn` extended with `placement: AddOnPlacementType`.
-
-## 11. Files touched
-
-New:
-- `src/components/studio-v3/FinalSignatureDay.tsx`
-- `src/components/studio-v3/finalItinerary.ts` (+ `finalItinerary.test.ts`)
-- `e2e/studio-v3-final-signature-mobile.spec.ts`
-- `src/lib/checkout/__tests__/final-signature-total.test.ts`
-
-Edited:
-- `StudioV3.tsx`, `types.ts`, `curation.ts`, `signature-day-copy.ts`, `signatureAddOns.ts`, `RefineStopCard.tsx`, `RefineAccordion.tsx`, `SignatureDayReveal.tsx`, `GuestDetailsStep.tsx`, `TimelineView.tsx`, `__tests__/phase-7d-hydration.test.ts`, `__tests__/reveal-section-order.test.ts`, `src/__tests__/signature-section-contract.test.ts`.
-
-Removed from render chain (file deleted in follow-up): `ConfirmationPause.tsx`.
-
-## 12. Out of scope
-
-Stripe/checkout, pricing math, route/feasibility engine, Studio questionnaire, brand system, main nav, production data.
-
----
-
-Approve to proceed.
+1. Save-my-signature for guests: localStorage OK, or sign-in required?
+2. One-pager PDF client-side (`@react-pdf/renderer`) OK, or server-generated signed URL (needed only if you also want it attached to the confirmation email)?
