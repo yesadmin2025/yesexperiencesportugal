@@ -263,6 +263,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "storyboard",
   "confirmation",
   "guestDetails",
+  "checkoutSummary",
 ];
 
 function stepOf(phase: StudioV3Phase): number {
@@ -305,6 +306,7 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   storyboard: [""],
   confirmation: [""],
   guestDetails: [""],
+  checkoutSummary: [""],
 };
 
 function pickTeaser(phase: StudioV3Phase, seed: string): string {
