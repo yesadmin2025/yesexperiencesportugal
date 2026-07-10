@@ -82,6 +82,19 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     });
     setDetailsOpen(false);
     setCheckoutOpen(true);
+    // GA4 add_to_cart + begin_checkout — Signature Reserve intent.
+    try {
+      gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: perPaxForSummary });
+      const item = buildTourItem(tour, {
+        quantity: details.guests,
+        tier: "signature",
+        itemCategory: "Signature",
+      });
+      item.price = perPaxForSummary;
+      gaBeginCheckout({ items: [item], valueEur: Math.round(perPaxForSummary * details.guests) });
+    } catch {
+      /* silent */
+    }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const stopLabels = (tour.stops ?? []).slice(0, 6).map((s) => s.label);
@@ -115,6 +128,22 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       }
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
+      // GA4 add_payment_info — payment surface ready.
+      try {
+        const item = buildTourItem(tour, {
+          quantity: details.guests,
+          tier: "signature",
+          itemCategory: "Signature",
+        });
+        item.price = perPaxForSummary;
+        gaAddPaymentInfo({
+          paymentType: "stripe",
+          items: [item],
+          valueEur: Math.round(perPaxForSummary * details.guests),
+        });
+      } catch {
+        /* silent */
+      }
     } catch (e) {
       console.error("Signature checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
