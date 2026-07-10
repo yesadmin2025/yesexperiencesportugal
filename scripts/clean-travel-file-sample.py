@@ -71,29 +71,19 @@ def build_cover_overlay() -> PageObject:
     c.setFillColor(IVORY_COVER)
     c.rect(55, 670, PAGE_W - 110, 145, stroke=0, fill=1)
 
-    # ── 2. Meta lines — kills the "September 8 …" + "14 nights ·
-    # Designed for Jennifer Oliver" pair, then re-draws them cleanly
-    # without the personal name. Original text raster y ≈ 567–612
-    # ⇒ PDF y ≈ 402–434. Rect kept inside the ivory zone (< raster 660)
-    # so it never bleeds into the sunset photo.
+    # ── 2. Meta line — erases the "Designed for Jennifer Oliver" line
+    # (and the redundant date line above the info card) with a single
+    # ivory rectangle. No text is redrawn: the dates already appear in
+    # the DATES row of the info card immediately below, so removing the
+    # whole meta strip is the cleanest option and preserves the original
+    # typography above ("Beyond the Postcards") and below (info card).
     c.setFillColor(IVORY_COVER)
-    c.rect(140, 390, PAGE_W - 280, 60, stroke=0, fill=1)
-
-    c.setFillColor(Color(0x2E / 255, 0x2E / 255, 0x2E / 255))
-    c.setFont("Helvetica-Bold", 15)
-    dates = "September 8 \u2014 September 22, 2026"
-    tw = c.stringWidth(dates, "Helvetica-Bold", 15)
-    c.drawString((PAGE_W - tw) / 2, 425, dates)
-
-    c.setFillColor(CHARCOAL_SOFT)
-    c.setFont("Helvetica", 12)
-    line = "14 nights  \u00b7  A private Portugal journey"
-    tw = c.stringWidth(line, "Helvetica", 12)
-    c.drawString((PAGE_W - tw) / 2, 400, line)
+    c.rect(120, 385, PAGE_W - 240, 75, stroke=0, fill=1)
 
     c.save()
     buf.seek(0)
     return PdfReader(buf).pages[0]
+
 
 
 def build_page23_overlay() -> PageObject:
