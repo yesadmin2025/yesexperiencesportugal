@@ -59,6 +59,12 @@ export interface RegionStop {
   anchorTourId?: string;
   /** false = operational fields are best-guess; need human verification. */
   verified: boolean;
+  /** Max party size the stop can host (null/undefined = no known cap). */
+  capacityMax?: number;
+  /** Wheelchair / step-free access. Undefined = unknown, not "no". */
+  mobilityFriendly?: boolean;
+  /** Suitable for children (age-restrictions checked separately). */
+  childFriendly?: boolean;
 }
 
 /** Pickup origins per region — for distance budget from start of day. */
